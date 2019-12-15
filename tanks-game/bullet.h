@@ -32,7 +32,6 @@ public:
 
 	void powerCalculate();
 	void removePower(int index);
-
 	bool isFullyOutOfBounds();
 	bool isPartiallyOutOfBounds();
 	void edgeConstrain(); //probably never going to be used

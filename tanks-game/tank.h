@@ -38,7 +38,6 @@ public:
 	double& giveMaxSpeed() { return maxSpeed; }
 	double& giveX() { return x; }
 	double& giveY() { return y; }
-
 private:
 	ColorValueHolder defaultColor = ColorValueHolder(0x88, 0x88, 0x88);
 	bool dead = false;

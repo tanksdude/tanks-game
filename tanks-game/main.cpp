@@ -104,7 +104,7 @@ void appDrawScene() {
     
     glEnd();
 	*/
-    
+  
 	for (int i = 0; i < powerups.size(); i++) {
 		powerups[i]->draw();
 	}
