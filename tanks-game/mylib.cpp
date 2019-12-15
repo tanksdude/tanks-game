@@ -39,3 +39,43 @@ std::string toLowerCase(std::string stuff) {
 	}
 	return letters;
 }
+
+double findMax(double* arr, int len) { //precondition: length of array > 0
+	double max = arr[0];
+	for (int i = 1; i < len; i++) {
+		if (arr[i] > max) {
+			max = arr[i];
+		}
+	}
+	return max;
+}
+
+double findMin(double* arr, int len) { //precondition: length of array > 0
+	double min = arr[0];
+	for (int i = 1; i < len; i++) {
+		if (arr[i] < min) {
+			min = arr[i];
+		}
+	}
+	return min;
+}
+
+int findMaxIndex(double* arr, int len) { //precondition: length of array > 0
+	int index = 0;
+	for (int i = 1; i < len; i++) {
+		if (arr[i] > arr[index]) {
+			index = i;
+		}
+	}
+	return index;
+}
+
+int findMinIndex(double* arr, int len) { //precondition: length of array > 0
+	int index = 0;
+	for (int i = 1; i < len; i++) {
+		if (arr[i] < arr[index]) {
+			index = i;
+		}
+	}
+	return index;
+}

@@ -24,11 +24,44 @@ Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_) 
 
 Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_, std::vector<BulletPower*> bp) : Bullet(x_,y_,r_,a,vel,id_) {
 	bulletPowers = bp;
+
+	for (int i = 0; i < bulletPowers.size(); i++) {
+		bulletPowers[i]->initialize(this);
+	}
+}
+
+double Bullet::getAngle() {
+	return fmod(fmod(angle, 2*PI) + 2*PI, 2*PI);
 }
 
 void Bullet::move() {
-	x += velocity*cos(angle);
-	y += velocity*sin(angle);
+	bool modifiedMovement = false;
+	bool overridedMovement = false;
+	bool noMoreMovement = false;
+
+	for (int i = 0; i < bulletPowers.size(); i++) {
+		if (bulletPowers[i]->modifiesMovement) {
+			if (bulletPowers[i]->modifiedMovementCanOnlyWorkIndividually && modifiedMovement) {
+				continue;
+			}
+			if (noMoreMovement) {
+				continue;
+			}
+			modifiedMovement = true;
+			if (bulletPowers[i]->overridesMovement) {
+				overridedMovement = true;
+			}
+			if (!bulletPowers[i]->modifiedMovementCanWorkWithOthers) {
+				noMoreMovement = true;
+			}
+			bulletPowers[i]->modifiedMovement(this);
+		}
+	}
+
+	if (!overridedMovement) {
+		x += velocity*cos(angle);
+		y += velocity*sin(angle);
+	}
 }
 
 void Bullet::powerCalculate() {

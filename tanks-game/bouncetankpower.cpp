@@ -17,8 +17,8 @@ BulletPower* BounceTankPower::makeBulletPower() {
 }
 
 BounceTankPower::BounceTankPower() {
-	maxTime = 50000;
-	timeLeft = 50000;
+	maxTime = 500;
+	timeLeft = 500;
 }
 
 /*

@@ -1,9 +1,11 @@
 #pragma once
+class TripleBulletPower;
+
 #include "power.h"
 #include "bulletpower.h"
-#include "multishotpower.h"
+#include "triplepower.h"
 
-class MultishotBulletPower : public BulletPower {
+class TripleBulletPower : public BulletPower {
 
 public:
 	virtual void initialize(Bullet* parent);
@@ -11,19 +13,15 @@ public:
 
 	virtual void tick() { return; }
 	virtual ColorValueHolder getColor() {
-		return MultishotPower::getClassColor();
+		return TriplePower::getClassColor();
 	}
 
 	virtual TankPower* makeTankPower();
-
-	//virtual void modifiedMovement();
-
-	//void (*modifiedCollisionWithWall)(Bullet*, Wall*, BulletPower*);
 
 	//virtual double getOffenseTier() { return 0; }
 	//virtual double getOffenseValue() { return 0; }
 	//virtual double getDefenseTier() { return 0; }
 	//virtual double getDefenseValue() { return 0; }
 
-	MultishotBulletPower();
+	TripleBulletPower();
 };

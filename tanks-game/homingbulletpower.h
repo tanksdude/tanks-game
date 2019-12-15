@@ -1,15 +1,14 @@
 #pragma once
-class BounceBulletPower;
+class HomingBulletPower;
 
 #include "power.h"
 #include "bulletpower.h"
-#include "bouncepower.h"
+#include "homingpower.h"
 
-class BounceBulletPower : public BulletPower {
+class HomingBulletPower : public BulletPower {
 protected:
 public:
-	static const short maxBounces;
-	short bouncesLeft;
+	static const double homingStrength;
 
 public:
 	virtual void initialize(Bullet* parent);
@@ -17,16 +16,16 @@ public:
 
 	virtual void tick() { return; }
 	virtual ColorValueHolder getColor() {
-		return BouncePower::getClassColor();
+		return HomingPower::getClassColor();
 	}
 
 	virtual TankPower* makeTankPower();
-	
-	//bool modifiesCollisionWithWall = true;
-	virtual bool modifiedCollisionWithWall(Bullet*, Wall*);
-	//bool overridesCollisionWithWall = true;
-	//bool modifiedCollisionWithWallCanWorkWithOthers = true;
-	//bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;
+
+	//bool modifiesMovement = false;
+	virtual void modifiedMovement(Bullet*);
+	//bool overridesMovement = false;
+	//bool modifiedMovementCanWorkWithOthers = true;
+	//bool modifiedMovementCanOnlyWorkIndividually = false;
 
 	//bool modifiesCollisionWithEdge = true;
 	virtual bool modifiedEdgeCollision(Bullet*);
@@ -39,5 +38,5 @@ public:
 	//virtual double getDefenseTier() { return 0; }
 	//virtual double getDefenseValue() { return 0; }
 
-	BounceBulletPower();
+	HomingBulletPower();
 };

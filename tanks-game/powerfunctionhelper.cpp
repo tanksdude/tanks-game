@@ -4,9 +4,10 @@
 #include "bullet.h"
 #include "wall.h"
 #include "collisionhandler.h"
+#include "constants.h"
+#include "mylib.h"
 #include <math.h>
 #include <iostream>
-#include "constants.h"
 
 bool PowerFunctionHelper::wallhackGenericBullet(Bullet*, Wall*) {
 	return false; //anticlimactic
@@ -148,7 +149,85 @@ void PowerFunctionHelper::equallySpacedCannonPoints(Tank*, std::vector<CannonPoi
 	}
 }
 
-bool PowerFunctionHelper::homingGeneric(Bullet*, double) {
-	//fix: deal with later
-	return false;
+bool PowerFunctionHelper::homingGeneric(Bullet* b, double maxAngleMove, bool moveByAngle) { //moveByAngle = target based on angle differences, not distance
+	//TODO: when team mode is a thing (or single-player campaign?), this will need an update
+	char targetTank = -1;
+	
+	if (moveByAngle) {
+		double* angleDiffs = new double[tanks.size()];
+		for (int i = 0; i < tanks.size(); i++) {
+			if (tanks[i]->getID() == b->getID()) {
+				angleDiffs[i] = 2*PI * 2; //
+				continue;
+			}
+			angleDiffs[i] = abs(atan2(b->y - tanks[i]->y, b->x - tanks[i]->x));
+		}
+		targetTank = findMinIndex(angleDiffs, tanks.size());
+		if (targetTank == b->getID()) {
+			targetTank = -1;
+		}
+	} else { //moveByDistance
+		double* distDiffs = new double[tanks.size()];
+		for (int i = 0; i < tanks.size(); i++) {
+			if (tanks[i]->getID() == b->getID()) {
+				distDiffs[i] = GAME_WIDTH * GAME_HEIGHT; //should be enough
+				continue;
+			}
+			distDiffs[i] = sqrt(pow(b->x - tanks[i]->x, 2) + pow(b->y - tanks[i]->y, 2));
+		}
+		targetTank = findMinIndex(distDiffs, tanks.size());
+		if (targetTank == b->getID()) {
+			targetTank = -1;
+		}
+	}
+
+	if (targetTank == -1) {
+		return false; //means there was nothing to target; realistically, shouldn't be happening, unless 1-tank mode is a thing
+	}
+	double targetAngle = atan2(tanks[targetTank]->y - b->y, tanks[targetTank]->x - b->x);
+	double posTargetAngle = fmod(targetAngle + 2*PI, 2*PI);
+	double bulletAngle = (b->getAngle()>PI ? b->getAngle() - 2*PI : b->getAngle());
+	//std::cout << targetAngle << " " << bulletAngle << " " << maxAngleMove << std::endl;
+	
+	if ((abs(targetAngle - bulletAngle) <= maxAngleMove) || (abs(fmod(targetAngle + PI, 2*PI) - fmod(bulletAngle + PI, 2*PI)) <= maxAngleMove)) {
+		b->angle = targetAngle;
+	} else {
+		//I don't remember why it works, but it does
+		if (b->getAngle() > PI/2 && b->getAngle() <= 3*PI/2) { //<= instead of < because edgecase fix: tank angle = 0, power multishot+bounce+homing (bounce optional but helps); bullet going up wouldn't home on other tank (probably tangent domain error)
+			if (tanks[targetTank]->y - b->y < tan(b->angle) * (tanks[targetTank]->x - b->x)) {
+				b->angle += maxAngleMove;
+			} else {
+				b->angle -= maxAngleMove;
+			}
+		} else {
+			if (tanks[targetTank]->y - b->y < tan(b->angle) * (tanks[targetTank]->x - b->x)) {
+				b->angle -= maxAngleMove;
+			} else {
+				b->angle += maxAngleMove;
+			}
+		}
+		//first if checks whether only positive angles can be used (quadrant II and III edgecase) or positive and negative can be used (quadrant I and IV edgecase) (I think)
+		//second if checks whether tank is above or below bullet (I think)
+
+		//unfinished code that might have looked nicer:
+		/*
+		if (bulletAngle > PI/2 && bulletAngle < 3*PI/2) {
+			if (posTargetAngle > PI/2 && bulletAngle < 3*PI/2) {
+				if (bulletAngle < posTargetAngle) {
+
+				}
+			} else {
+				
+			}
+		} else {
+			if (posTargetAngle > PI/2 && bulletAngle < 3*PI/2) {
+				
+			} else {
+				
+			}
+		}
+		*/
+	}
+	
+	return true; //could target something
 }

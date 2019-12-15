@@ -14,7 +14,7 @@ public:
 	virtual std::string getName() { return BouncePower::getClassName(); }
 	static std::string getClassName() { return "bounce"; }
 	virtual ColorValueHolder getColor() { return BouncePower::getClassColor(); }
-	static ColorValueHolder getClassColor() { return ColorValueHolder(0xFF, 0x00, 0xCC); }
+	static ColorValueHolder getClassColor() { return ColorValueHolder(0xFF, 0x00, 0xCC); } //pink
 
 	virtual TankPower* makeTankPower();
 	virtual BulletPower* makeBulletPower();

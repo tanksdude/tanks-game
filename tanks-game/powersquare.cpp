@@ -1,4 +1,6 @@
 #pragma once
+class PowerSquare;
+
 #include <string>
 #include <iostream>
 #include "powersquare.h"
@@ -84,8 +86,8 @@ void PowerSquare::givePower(Tank* t) {
 
 		t->tankPowers[t->tankPowers.size()-1]->initialize(t);
 	}
+	t->determineShootingAngles();
 	//good enough for now
-	//fix: SpeedPower is in PowerSquare, generates a TankPower and a BulletPower for a tank here
 }
 
 void PowerSquare::givePower(Bullet*) { return; } //don't think about it now, possibly ever; it's weird

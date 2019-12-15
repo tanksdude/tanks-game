@@ -25,6 +25,7 @@ WallhackTankPower::WallhackTankPower() {
 	timeLeft = 250;
 
 	modifiesCollisionWithWall = true;
+	modifiedCollisionWithWallCanWorkWithOthers = false;
 }
 
 

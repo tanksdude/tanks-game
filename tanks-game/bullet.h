@@ -16,6 +16,7 @@ public: //hopefully temporary
 	char id;
 	ColorValueHolder defaultColor = ColorValueHolder(0x88, 0x88, 0x88);
 	//ColorValueHolder* explosionColor; //needed?
+	double getAngle();
 
 public:
 	std::vector<BulletPower*> bulletPowers; //change eventually?
