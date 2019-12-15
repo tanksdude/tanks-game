@@ -4,8 +4,6 @@
 #include "bouncepower.h"
 #include "powerfunctionhelper.h"
 
-typedef bool (BounceBulletPower::*junkFuncForBounceBulletPower)(Bullet*, Wall*);
-
 const short BounceBulletPower::maxBounces = 16;
 
 bool BounceBulletPower::dummyBounceFunction(Bullet* b, Wall* w, BounceBulletPower* bp) {
@@ -20,8 +18,13 @@ bool BounceBulletPower::dummyIntermediateBounceFunction(Bullet* b, Wall* w) {
 	return (this->bouncesLeft < 0);
 }
 
-void BounceBulletPower::initialize(Bullet*) { return; }
-void BounceBulletPower::removeEffects(Bullet*) { return; }
+void BounceBulletPower::initialize(Bullet* b) {
+	b->velocity /= 2;
+}
+
+void BounceBulletPower::removeEffects(Bullet * b) {
+	b->velocity *= 2;
+}
 
 TankPower* BounceBulletPower::makeTankPower() {
 	return new BounceTankPower();
@@ -33,5 +36,6 @@ BounceBulletPower::BounceBulletPower(){
 
 	bouncesLeft = BounceBulletPower::maxBounces;
 
-	modifiedCollisionWithWall = nullptr; //dummyIntermediateBounceFunction;
+	//bool (*tempFunc)(Bullet*, Wall*) = BounceBulletPower::dummyIntermediateBounceFunction;
+	modifiedCollisionWithWall = PowerFunctionHelper::bounceGeneric;
 }

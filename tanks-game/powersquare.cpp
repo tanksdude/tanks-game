@@ -1,4 +1,6 @@
 #pragma once
+class PowerSquare;
+
 #include <string>
 #include <iostream>
 #include "powersquare.h"
@@ -111,6 +113,7 @@ PowerSquare::PowerSquare(double x_, double y_, std::string* names, int num) {
 	h = POWER_HEIGHT;
 
 	numOfPowers = num;
+	heldPower = new Power*[num];
 	for (int i = 0; i < num; i++) {
 		heldPower[i] = powerLookup[names[i]]();
 	}

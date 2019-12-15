@@ -125,7 +125,11 @@ void Tank::shoot() {
 }
 
 void Tank::makeBullet(double x, double y, double angle, double radius, double speed, std::vector<BulletPower*>* bp) {
-	bullets.push_back(new Bullet(x, y, radius, angle, speed, id, *bp));
+	Bullet* temp = new Bullet(x, y, radius, angle, speed, id, *bp);
+	for (int i = 0; i < bp->size(); i++) {
+		temp->bulletPowers[i]->initialize(temp);
+	}
+	bullets.push_back(temp);
 }
 
 void Tank::determineShootingAngles() {
@@ -206,7 +210,7 @@ void Tank::draw(double xpos, double ypos) {
 	glBegin(GL_POLYGON);
 
 	glVertex3f(xpos, ypos, 0);
-	for (int i = 0; i < Circle::numOfSides, (double)i / Circle::numOfSides < shootCount/maxShootCount; i++) {
+	for (int i = 0; i < Circle::numOfSides, (double)i / Circle::numOfSides < shootCount/(maxShootCount*getShootingSpeedMultiplier()); i++) {
 		glVertex3f(xpos + r*cos(i * 2*PI / Circle::numOfSides + angle) * 5/4, ypos + r*sin(i * 2*PI / Circle::numOfSides + angle) * 5/4, 0);
 	}
 	glVertex3f(xpos, ypos, 0);
@@ -406,13 +410,14 @@ void Tank::drawName(double xpos, double ypos) {
 
 }
 
-void Tank::resetThings(double x, double y, double a, char id, std::string name) {
+void Tank::resetThings(double x, double y, double a, char id, std::string name) { //TODO: finish
 	this->x = x;
 	this->y = y;
 	this->angle = a;
 	this->id = id;
 	this->name = name;
 	shootCount = 0;
+	velocity = 0;
 
 	this->powerReset();
 }

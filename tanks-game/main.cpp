@@ -280,7 +280,7 @@ void appMotionFunc(int x, int y) {
 			tanks[0]->giveY() = (1 - y / float(height)) * GAME_HEIGHT;
 		}
 		else { //tank 2
-			tanks[1]->giveX() = (x / float(width));
+			tanks[1]->giveX() = (x / float(width)) * GAME_WIDTH;
 			tanks[1]->giveY() = (1 - y / float(height)) * GAME_HEIGHT;
 		}
 	}
@@ -474,7 +474,7 @@ void tick(int){ //pass in physics rate eventually
 
 	//bullet collision:
 	for (int i = bullets.size() - 1; i >= 0; i--) {
-		for (int j = bullets.size() - 1; j >= 0; j--) {
+		for (int j = bullets.size() - 1; j >= 0; j--) { //could start at i-1?
 			if (bullets[i]->getID() == bullets[j]->getID()) {
 				continue;
 			}
@@ -482,13 +482,14 @@ void tick(int){ //pass in physics rate eventually
 				//powers aren't fully implemented yet so this doesn't get to shine
 				//but they will be soon
 				
-				Bullet* result = BulletPriorityHandler::determinePriority(bullets[i], bullets[j]);
+				Bullet* result = BulletPriorityHandler::determinePriority(bullets[i], bullets[j]); //TODO: returns number, not pointer, because that makes more sense
 				if (result == nullptr) {
 					Bullet* temp1 = bullets[i];
 					Bullet* temp2 = bullets[j];
 					if (i > j) {
 						bullets.erase(bullets.begin() + i);
 						bullets.erase(bullets.begin() + j);
+						i--;
 					}
 					else {
 						bullets.erase(bullets.begin() + j);
@@ -499,19 +500,18 @@ void tick(int){ //pass in physics rate eventually
 					break;
 				} else if (result == junkBullet) {
 					//it's a draw, so neither dies
-					//delete result;
+					//continue;
 				} else {
 					if (bullets[i] == result) { //index = i
-						Bullet* temp = bullets[i];
+						delete bullets[i];
 						bullets.erase(bullets.begin() + i);
-						delete temp;
 						break;
 					} else { //index = j
-						Bullet* temp = bullets[j];
-						bullets.erase(bullets.begin() + j);
 						delete bullets[j];
+						bullets.erase(bullets.begin() + j);
+						continue; //not needed
 					}
-					delete result;
+					//delete result;
 				}
 
 				//break;
@@ -519,11 +519,9 @@ void tick(int){ //pass in physics rate eventually
 		}
 	}
 
-	//tank to edge collision: (move later)
+	//tank to edge collision: (move later) (to where?)
 	for (int i = 0; i < tanks.size(); i++) {
-		//if (tanks[i]->isOutOfBounds()) {
-			tanks[i]->edgeConstrain();
-		//}
+		tanks[i]->edgeConstrain();
 	}
 
 	//bullet to tank collision:

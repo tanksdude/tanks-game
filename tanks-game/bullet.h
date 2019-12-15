@@ -10,6 +10,7 @@ class Bullet : public Circle {
 	friend class ResetThings;
 	friend class BulletPriorityHandler;
 	friend class PowerFunctionHelper;
+public: //hopefully temporary
 	double angle;
 	double velocity;
 	char id;
