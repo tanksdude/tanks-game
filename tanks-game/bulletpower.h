@@ -32,19 +32,32 @@ public:
 
 	virtual TankPower* makeTankPower() = 0;
 
-	bool (*modifiedMovement)();
+	bool modifiesMovement = false;
+	virtual void modifiedMovement(Bullet*) { return; }
 
-	bool (*modifiedCollisionWithTank)(Bullet*, Tank*);
-	bool (*modifiedCollisionWithWall)(Bullet*, Wall*);
-	//virtual void modifiedCollisionWithPower(Power*) { return; } //probably shouldn't be used
-	//virtual void modifiedCollisionWithBullet(Bullet*) { return; } //probably shouldn't be used
-	//virtual void modifiedCollisionWithHazard(Hazard*);
-	//virtual void modifiedEdgeCollision();
+	bool modifiesCollisionWithEdge = false;
+	virtual bool modifiedEdgeCollision(Bullet*) { return false; }
 
+	bool modifiesCollisionWithTank = false;
+	virtual bool modifiedCollisionWithTank(Bullet*, Tank*) { return false; }
+
+	bool modifiesCollisionWithWall = false;
+	virtual bool modifiedCollisionWithWall(Bullet*, Wall*) { return false; }
+
+	//bool modifiesCollisionWithPower = false;
+	//virtual void modifiedCollisionWithPower(Bullet*, Power*) { return; } //probably shouldn't be used
+
+	//bool modifiesCollisionWithBullet = false;
+	//virtual void modifiedCollisionWithBullet(Bullet* parent, Bullet* other) { return; } //probably shouldn't be used
+
+	//bool modifiesCollisionWithHazard = false;
+	//virtual void modifiedCollisionWithHazard(Bullet*, Hazard*);
+
+	bool modifiesBulletDrawings = false;
 	virtual void modifiedBulletDrawings(Bullet* parent) { return; } //probably not going to be used
 
-	//virtual double getOffenseTier() { return 0; } //don't want it to be a variable because a function can change its value much easier
-	//virtual double getOffenseValue() { return 0; } //only one tier per power
+	//virtual double getOffenseTier() { return 0; }
+	//virtual double getOffenseValue() { return 0; }
 	//virtual double getDefenseTier() { return 0; }
-	//virtual double getDefenseValue() { return 0; } //return 0 by default, else 1 probably
+	//virtual double getDefenseValue() { return 0; }
 };

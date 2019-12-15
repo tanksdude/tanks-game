@@ -397,10 +397,9 @@ void tick(int){ //pass in physics rate eventually
 
 		for (int j = 0; j < walls.size(); j++) {
 			for (int k = 0; k < tanks[i]->tankPowers.size(); k++) {
-				bool (*temp)(Tank*, Wall*) = tanks[i]->tankPowers[k]->modifiedCollisionWithWall;
-				if (temp != nullptr) {
+				if (tanks[i]->tankPowers[k]->modifiesCollisionWithWall) {
 					modifiedWallCollision = true;
-					bool check_temp = temp(tanks[i], walls[j]);
+					bool check_temp = tanks[i]->tankPowers[k]->modifiedCollisionWithWall(tanks[i], walls[j]);
 					if (check_temp) {
 						shouldBeKilled = true;
 					}
@@ -428,6 +427,22 @@ void tick(int){ //pass in physics rate eventually
 
 	//bullet to edge collision:
 	for (int i = bullets.size() - 1; i >= 0; i--) {
+		bool modifiedEdgeCollision = false;
+		bool shouldBeKilled = false;
+		
+		for (int k = 0; k < bullets[i]->bulletPowers.size(); k++) {
+			if (bullets[i]->bulletPowers[k]->modifiesCollisionWithEdge) {
+				modifiedEdgeCollision = true;
+				bool check_temp = bullets[i]->bulletPowers[k]->modifiedEdgeCollision(bullets[i]);
+				if (check_temp) {
+					shouldBeKilled = true;
+				}
+			}
+		}
+
+		if (modifiedEdgeCollision) {
+			continue;
+		}
 		if (bullets[i]->isFullyOutOfBounds()) {
 			delete bullets[i];
 			bullets.erase(bullets.begin() + i);
@@ -442,12 +457,11 @@ void tick(int){ //pass in physics rate eventually
 
 		for (int j = 0; j < walls.size(); j++) {
 			for (int k = 0; k < bullets[i]->bulletPowers.size(); k++) {
-				bool (*temp)(Bullet*, Wall*) = bullets[i]->bulletPowers[k]->modifiedCollisionWithWall;
 				//cout << temp << " " << (temp==nullptr) << endl;
-				if (temp != nullptr) {
+				if (bullets[i]->bulletPowers[k]->modifiesCollisionWithWall) {
 					modifiedWallCollision = true;
 					//cout << temp(bullets[i], walls[j]) << endl;
-					bool check_temp = temp(bullets[i], walls[j]);
+					bool check_temp = bullets[i]->bulletPowers[k]->modifiedCollisionWithWall(bullets[i], walls[j]);
 					//cout << check_temp << endl;
 					if (check_temp) {
 						shouldBeDeleted = true;
@@ -554,8 +568,8 @@ void tick(int){ //pass in physics rate eventually
 		glutTimerFunc(10, tick, tank_dead);
 	} else {
 		tank_dead = 0;
-		glutTimerFunc(500, ResetThings::reset, 0);
-		glutTimerFunc(510, tick, tank_dead);
+		glutTimerFunc(1000, ResetThings::reset, 0);
+		glutTimerFunc(1010, tick, tank_dead);
 	}
 }
 void tick() { tick(tank_dead); }
@@ -584,6 +598,8 @@ int main(int argc, char** argv) {
 
 	tanks.push_back(tank1);
 	tanks.push_back(tank2);
+
+	bullets.reserve(800);
 	
 	/*
 	for (int i = 0; i < 4; i++) {
@@ -649,3 +665,11 @@ int main(int argc, char** argv) {
 	glutMainLoop();
 
 }
+
+/*
+ * estimated total completion:
+ * 75% theoretical foundation: no hazards
+ * 50% actual foundation: not every "modification function" actually does something in the main
+ * 15% game code: I mean there's not much; few levels (one, unless empty counts), few powerups
+ * last build: 10% actual game code: I forgot the differences but I had to rewrite inheritedpowercommon stuff and bounce works correctly now
+*/

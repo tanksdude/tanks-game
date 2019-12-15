@@ -17,11 +17,8 @@ BulletPower* BounceTankPower::makeBulletPower() {
 }
 
 BounceTankPower::BounceTankPower() {
-	maxTime = 500;
-	timeLeft = 500;
-
-	modifiedCollisionWithWall = nullptr;
-	addShootingPoints = nullptr;
+	maxTime = 50000;
+	timeLeft = 50000;
 }
 
 /*

@@ -10,8 +10,6 @@ protected:
 public:
 	static const short maxBounces;
 	short bouncesLeft;
-	static bool dummyBounceFunction(Bullet*, Wall*, BounceBulletPower*);
-	bool dummyIntermediateBounceFunction(Bullet*, Wall*);
 
 public:
 	virtual void initialize(Bullet* parent);
@@ -24,9 +22,11 @@ public:
 
 	virtual TankPower* makeTankPower();
 	
-	//virtual void modifiedMovement();
+	//bool modifiesCollisionWithWall = true;
+	virtual bool modifiedCollisionWithWall(Bullet*, Wall*);
 
-	//bool (*modifiedCollisionWithWall)(Bullet*, Wall*);
+	//bool modifiesCollisionWithEdge = true;
+	virtual bool modifiedEdgeCollision(Bullet*);
 
 	//virtual double getOffenseTier() { return 0; }
 	//virtual double getOffenseValue() { return 0; }

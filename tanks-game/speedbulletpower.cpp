@@ -15,5 +15,4 @@ TankPower* SpeedBulletPower::makeTankPower() {
 SpeedBulletPower::SpeedBulletPower(){
 	timeLeft = 0;
 	maxTime = -1;
-	modifiedCollisionWithWall = nullptr;
 }
