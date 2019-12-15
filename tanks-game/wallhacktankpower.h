@@ -20,10 +20,7 @@ public:
 
 	//virtual void modifiedMovement();
 
-	virtual void modifiedCollisionWithWall(Wall*);
-
-	//virtual void modifiedShooting(Tank* parent);
-	//virtual void modifiedTankDrawings(Tank* parent);
+	//bool (*modifiedCollisionWithWall)(Tank*, Wall*);
 
 	//virtual double getOffenseTier(); //don't want it to be a variable because a function can change its value much easier
 	//virtual double getOffenseValue(); //only one tier per power

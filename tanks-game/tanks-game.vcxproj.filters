@@ -84,6 +84,18 @@
     <ClCompile Include="wallhacktankpower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="cannonpoint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="multishotbulletpower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="multishotpower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="multishottankpower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -177,6 +189,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="wallhacktankpower.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cannonpoint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="multishotbulletpower.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="multishotpower.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="multishottankpower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

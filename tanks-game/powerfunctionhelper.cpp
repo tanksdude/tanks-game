@@ -4,14 +4,15 @@
 #include "bullet.h"
 #include "wall.h"
 
-void PowerFunctionHelper::wallhackGenericWall(Bullet*, Wall*) {
-	return;
+bool PowerFunctionHelper::wallhackGenericBullet(Bullet*, Wall*) {
+	return false;
 }
 
-void PowerFunctionHelper::wallhackGenericTank(Tank*, Wall*) {
-	return;
+bool PowerFunctionHelper::wallhackGenericTank(Tank*, Wall*) {
+	return false;
 }
 
-void PowerFunctionHelper::homingGeneric(Bullet*, double) {
-	return; //fix: deal with later
+bool PowerFunctionHelper::homingGeneric(Bullet*, double) {
+	//fix: deal with later
+	return false;
 }

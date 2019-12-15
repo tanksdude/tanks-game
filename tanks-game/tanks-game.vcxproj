@@ -137,6 +137,7 @@
   <ItemGroup>
     <ClCompile Include="bullet.cpp" />
     <ClCompile Include="bulletpriorityhandler.cpp" />
+    <ClCompile Include="cannonpoint.cpp" />
     <ClCompile Include="collisionhandler.cpp" />
     <ClCompile Include="colormixer.cpp" />
     <ClCompile Include="colorvalueholder.cpp" />
@@ -144,6 +145,9 @@
     <ClCompile Include="emptylevel.cpp" />
     <ClCompile Include="leveleffect.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="multishotbulletpower.cpp" />
+    <ClCompile Include="multishotpower.cpp" />
+    <ClCompile Include="multishottankpower.cpp" />
     <ClCompile Include="mylib.cpp" />
     <ClCompile Include="powerfunctionhelper.cpp" />
     <ClCompile Include="powersquare.cpp" />
@@ -163,6 +167,7 @@
     <ClInclude Include="bullet.h" />
     <ClInclude Include="bulletpower.h" />
     <ClInclude Include="bulletpriorityhandler.h" />
+    <ClInclude Include="cannonpoint.h" />
     <ClInclude Include="circle.h" />
     <ClInclude Include="collisionhandler.h" />
     <ClInclude Include="collisionobject.h" />
@@ -174,6 +179,9 @@
     <ClInclude Include="inheritedpowercommon.h" />
     <ClInclude Include="level.h" />
     <ClInclude Include="leveleffect.h" />
+    <ClInclude Include="multishotbulletpower.h" />
+    <ClInclude Include="multishotpower.h" />
+    <ClInclude Include="multishottankpower.h" />
     <ClInclude Include="mylib.h" />
     <ClInclude Include="power.h" />
     <ClInclude Include="powerfunctionhelper.h" />

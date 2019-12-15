@@ -10,8 +10,9 @@ class BulletPower;
 
 class BulletPower : public InheritedPowerCommon{
 protected:
-	double timeLeft = 0;
-	double maxTime = -1; //bullet powers typically last forever, so they should default to -1
+public:
+	//double timeLeft = 0;
+	//double maxTime = -1; //bullet powers typically last forever, so they should default to -1
 
 public:
 	virtual void initialize(Bullet* parent) = 0; //unlikely to be used
@@ -28,12 +29,12 @@ public:
 
 	virtual TankPower* makeTankPower() = 0;
 
-	virtual void modifiedMovement() { return; }
+	bool (*modifiedMovement)();
 
-	virtual void modifiedCollisionWithTank(Tank*) { return; } //TODO: replace with std::function
-	virtual void modifiedCollisionWithWall(Wall*) { return; }
-	//virtual void modifiedCollisionWithPower(Power*); //probably shouldn't be used
-	//virtual void modifiedCollisionWithBullet(Bullet*); //probably shouldn't be used
+	bool (*modifiedCollisionWithTank)(Bullet*, Tank*);
+	bool (*modifiedCollisionWithWall)(Bullet*, Wall*);
+	//virtual void modifiedCollisionWithPower(Power*) { return; } //probably shouldn't be used
+	//virtual void modifiedCollisionWithBullet(Bullet*) { return; } //probably shouldn't be used
 	//virtual void modifiedCollisionWithHazard(Hazard*);
 
 	virtual void modifiedBulletDrawings(Bullet* parent) { return; } //probably not going to be used

@@ -37,12 +37,14 @@ public:
 
 /*
 list of (eventual) powers:
-speed
-wallhack
+|speed
+|wallhack
 bounce
+homing
 triple shot (note to self: use PI/16 as the angle difference, not PI/8; will work much better with multishot)
 multishot (adds cannon points instead of looping to shoot each bullet)
-homing
+(what the frick does double multishot look like?! triple?!???!?!?!?!!?!?!?!?!1)
+(finds angle difference between the first and second cannon point (loops on itself) (this is a loop), and puts 7 equally spaced between them) (this means that a powerup that shoots just behind and forward will get 16 total shots, and two multishots will get 64)
 grenade?
 fire?
 banana (will be tough unless I did everything correctly)
@@ -50,10 +52,10 @@ barrier (if hit, provides one extra hitpoint (basically life, but might add some
 invincibility (tier 1)
 big (tier 2)
 mega-death (variable big)
-the super (tier 3) (name WIP)
+the super (tier 3) (name WIP) (come on, of course the name isn't going to be temporary!)
 godmode
 super life/shield/barrier (barrier health dependent on time left on power)
-swarm
+swarm (check notes if you forgot, me)
 
 
 invincibility series notes:
@@ -78,7 +80,7 @@ tracking?
 
 other ideas, some of which are jokes, some of which are lesser jokes:
 nukes (???)
-sword (melee power)
+sword (melee power) (heck yeah, but would have to let Tank hold an object; shouldn't be too hard?)
 ghost (color would be partially transparent)
 the ID changer
 poison? (like, another bullet/hazard is hit and it stops) (tank hits poisoned tank and dies)

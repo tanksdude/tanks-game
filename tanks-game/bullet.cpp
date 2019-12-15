@@ -44,6 +44,7 @@ void Bullet::powerCalculate() {
 }
 
 void Bullet::removePower(int i) {
+	bulletPowers[i]->removeEffects(this);
 	delete bulletPowers[i];
 	bulletPowers.erase(bulletPowers.begin() + i);
 }
@@ -51,8 +52,7 @@ void Bullet::removePower(int i) {
 ColorValueHolder Bullet::getColor() {
 	if (bulletPowers.size() == 0) {
 		return defaultColor;
-	}
-	else {
+	} else {
 		return ColorMixer::mix(bulletPowers);
 	}
 }

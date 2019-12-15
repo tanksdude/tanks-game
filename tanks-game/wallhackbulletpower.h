@@ -4,7 +4,6 @@ class WallhackBulletPower;
 #include "power.h"
 #include "bulletpower.h"
 #include "wallhackpower.h"
-#include <functional>
 
 class WallhackBulletPower : public BulletPower {
 
@@ -21,10 +20,7 @@ public:
 	
 	//virtual void modifiedMovement();
 
-	virtual void modifiedCollisionWithWall(Wall*);
-	std::function<void(Bullet*, Wall*)> test;
-
-	//virtual void modifiedBulletDrawings(Bullet* parent); //probably not going to be used
+	//void (*modifiedCollisionWithWall)(Bullet*, Wall*);
 
 	//virtual double getOffenseTier() { return 0; } //don't want it to be a variable because a function can change its value much easier
 	//virtual double getOffenseValue() { return 0; } //only one tier per power

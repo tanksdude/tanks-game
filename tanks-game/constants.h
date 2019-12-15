@@ -13,7 +13,8 @@ typedef void(*voidFunction)(void);
 typedef Power*(*PowerFunction)(void);
 
 //void nothingFunctionBase() { return; }
-//void(*nothingFunction)() = nothingFunctionBase;
+//void (*nothingFunction)() = nothingFunctionBase;
+//void (*moreNothing)(); //nullptr
 
 //double collisionConstant = 4; //used as an efficiency check(?)
 //double drawMultiplier = 1;
