@@ -3,6 +3,7 @@ class TankPower;
 
 #include "colorvalueholder.h"
 #include "tank.h"
+#include "cannonpoint.h"
 #include "bullet.h"
 #include "wall.h"
 #include "inheritedpowercommon.h"
@@ -30,19 +31,24 @@ public:
 
 	virtual BulletPower* makeBulletPower() = 0;
 
-	virtual void modifiedMovement() { return; }
+	bool (*modifiedMovement)();
 
-	//virtual void modifiedCollisionWithTank(Tank*); //TODO: replace with std::function
-	//virtual void modifiedCollisionWithWall(Wall*);
+	bool (*modifiedCollisionWithTank)(Tank*, Tank*); //self then other
+	bool (*modifiedCollisionWithWall)(Tank*, Wall*);
 	//virtual void modifiedCollisionWithPower(Power*); //probably not going to be used
 	//virtual void modifiedCollisionWithBullet(Bullet*); //probably shouldn't be used
 	//virtual void modifiedCollisionWithHazard(Hazard*);
 
-	virtual void modifiedShooting(Tank* parent) { return; }
+	virtual void modifiedShooting(Tank* parent) { return; } //for melee-class powerups
+	virtual void additionalShooting(Tank* parent) { return; } //for regular powerups
+	void (*addShootingPoints)(Tank*, std::vector<CannonPoint>*);
 	virtual void modifiedTankDrawings(Tank* parent) { return; }
 
+	virtual double getShootingMultiplier() { return 1; }
 	//virtual double getOffenseTier() { return 0; } //don't want it to be a variable because a function can change its value much easier
 	//virtual double getOffenseValue() { return 0; } //only one tier per power
 	//virtual double getDefenseTier() { return 0; }
 	//virtual double getDefenseValue() { return 0; } //return 0 by default, else 1 probably
+
+	//might need a destructor for all the function pointers
 };

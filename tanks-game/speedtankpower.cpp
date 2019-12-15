@@ -1,4 +1,6 @@
 #pragma once
+class SpeedTankPower;
+
 #include "speedtankpower.h"
 #include "speedbulletpower.h"
 #include "speedpower.h"
@@ -17,6 +19,8 @@ BulletPower* SpeedTankPower::makeBulletPower() {
 SpeedTankPower::SpeedTankPower() {
 	maxTime = 500;
 	timeLeft = 500;
+	modifiedCollisionWithWall = nullptr;
+	addShootingPoints = nullptr;
 }
 
 /*

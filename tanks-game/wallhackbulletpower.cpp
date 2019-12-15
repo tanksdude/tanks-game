@@ -9,14 +9,12 @@ class WallhackBulletPower;
 void WallhackBulletPower::initialize(Bullet*) { return; }
 void WallhackBulletPower::removeEffects(Bullet*) { return; }
 
-void WallhackBulletPower::modifiedCollisionWithWall(Wall* w) {
-	return;
-}
-
 TankPower* WallhackBulletPower::makeTankPower() {
 	return new WallhackTankPower();
 }
 
 WallhackBulletPower::WallhackBulletPower(){
-	test = PowerFunctionHelper::wallhackGenericWall;
+	timeLeft = 0;
+	maxTime = -1;
+	modifiedCollisionWithWall = PowerFunctionHelper::wallhackGenericBullet;
 }

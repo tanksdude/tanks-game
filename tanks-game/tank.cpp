@@ -21,6 +21,8 @@ Tank::Tank(double x_, double y_, double a, char id_, std::string name_) {
 	id = id_;
 	r = 16;
 	name = name_;
+
+	shootingPoints = new std::vector<CannonPoint>;
 }
 
 Tank::Tank() {
@@ -30,6 +32,8 @@ Tank::Tank() {
 	id = -1;
 	r = 16;
 	name = "";
+
+	shootingPoints = new std::vector<CannonPoint>;
 }
 
 void Tank::move() {
@@ -75,17 +79,34 @@ void Tank::terminalVelocity() {
 
 void Tank::shoot() {
 	//TODO: fix so it can handle multiple shooting cooldowns(?)
-	
 	if(shootCount > 0) //check isn't really needed, but it also doesn't decrease performance by a real amount
 		shootCount--;
 
 	if(shooting && shootCount <= 0){
-		std::vector<BulletPower*> bp;
-		for (int i = 0; i < tankPowers.size(); i++) {
-			bp.push_back(tankPowers[i]->makeBulletPower());
+		//std::cout << "1: " << shootingPoints->size() << std::endl;
+		determineShootingAngles();
+		//std::cout << "2: " << shootingPoints->size() << " " << bullets.size() << std::endl;
+
+		/*
+		std::cout << "2.5: " << shootingPoints->at(0).angle;
+		for (int i = 1; i < shootingPoints->size(); i++) {
+			std::cout << ", " << shootingPoints->at(i).angle;
 		}
-		bullets.push_back(new Bullet(x + r*cos(angle), y + r*sin(angle), r/4, angle, maxSpeed*2, id, bp)); //should be maxSpeed*4
-		shootCount = maxShootCount;
+		std::cout << std::endl;
+		*/
+
+		for (int i = 0; i < shootingPoints->size(); i++) {
+			std::vector<BulletPower*>* bp = new std::vector<BulletPower*>;
+			for (int i = 0; i < tankPowers.size(); i++) {
+				bp->push_back(tankPowers[i]->makeBulletPower());
+			}
+			makeBullet(x + r*cos(shootingPoints->at(i).angle + angle), y + r*sin(shootingPoints->at(i).angle + angle), shootingPoints->at(i).angle + angle, r/4, maxSpeed*2, bp); //should be maxSpeed*4
+		}
+		//don't delete any bp! it's being used!
+		//makeBullet(x + r*cos(angle), y + r*sin(angle), angle, r/4, maxSpeed*2, bp); //should be maxSpeed*4
+		//std::cout << "3: " << shootingPoints->size() << " " << bullets.size() << std::endl;
+
+		shootCount = maxShootCount * getShootingSpeedMultiplier();
 	}
 
 	//if (shooting && shootCount <= 0) {
@@ -101,6 +122,45 @@ void Tank::shoot() {
 		*/
 		//this.shootCount = shootSpeed*this.shootMultiplier;
 	//}
+}
+
+void Tank::makeBullet(double x, double y, double angle, double radius, double speed, std::vector<BulletPower*>* bp) {
+	bullets.push_back(new Bullet(x, y, radius, angle, speed, id, *bp));
+}
+
+void Tank::determineShootingAngles() {
+	shootingPoints->clear();
+	//std::cout << "4: " << shootingPoints->size() << std::endl;
+	shootingPoints->push_back(CannonPoint(0));
+	//std::cout << "5: " << shootingPoints->size() << std::endl;
+	for (int i = 0; i < tankPowers.size(); i++) {
+		void (*get)(Tank*, std::vector<CannonPoint>*) = tankPowers[i]->addShootingPoints; //"may as well use auto"
+		if (get != nullptr) {
+			get(this, shootingPoints);
+		}
+	}
+	//std::cout << "6: " << shootingPoints->size() << std::endl;
+}
+
+double Tank::getShootingSpeedMultiplier() {
+	//so this function will look at the shooting speed multipliers provided by the tankpowers
+	//(0-1] range: use lowest; (1-inf) range: use highest
+	//if there are values in each range, then there are three options:
+	//1. return either lowest or highest; 2. return average of lowest and highest; 3. return lowest * highest
+	//1 is dumb, 2 would probably be fine if there aren't *8 or /8 multipliers, 3 will probably be what I'll use (they will typically be recipricols, so it makes sense)
+
+	double highest = 1;
+	double lowest = 1;
+	for (int i = 0; i < tankPowers.size(); i++) {
+		double value = tankPowers[i]->getShootingMultiplier();
+		if (value < 1 && value < lowest) {
+			lowest = value;
+		} else if (value > 1 && value > highest) {
+			highest = value;
+		}
+		//technically don't need to check value against 1, no do I?
+	}
+	return highest * lowest; //unintentionally works out cleanly
 }
 
 void Tank::powerCalculate() {
@@ -129,8 +189,7 @@ void Tank::powerReset() {
 ColorValueHolder Tank::getBodyColor() {
 	if (tankPowers.size() == 0) {
 		return defaultColor;
-	}
-	else {
+	} else {
 		return ColorMixer::mix(tankPowers);
 	}
 }
@@ -155,14 +214,29 @@ void Tank::draw(double xpos, double ypos) {
 	glEnd();
 
 	//power cooldown outlines:
+	//first, sort by timeLeft/maxTime
+	std::vector<TankPower*> sortedTankPowers; //there shouldn't be more than a few powers, so no need to do anything more complex than an array
+	sortedTankPowers.reserve(tankPowers.size());
 	for (int i = 0; i < tankPowers.size(); i++) {
-		ColorValueHolder c = tankPowers[i]->getColor();
+		//insertion sort because I don't want to think about something more complex for something this small
+		sortedTankPowers.push_back(tankPowers[i]);
+		for (int j = sortedTankPowers.size() - 1; j >= 1; j--) {
+			if (sortedTankPowers[j]->timeLeft/sortedTankPowers[j]->maxTime > sortedTankPowers[j-1]->timeLeft/sortedTankPowers[j-1]->maxTime){
+				std::swap(sortedTankPowers[j], sortedTankPowers[j-1]);
+			} else {
+				break;
+			}
+		}
+	}
+	//second, actually draw them
+	for (int i = 0; i < sortedTankPowers.size(); i++) {
+		ColorValueHolder c = sortedTankPowers[i]->getColor();
 
 		glColor3f(c.getRf(), c.getGf(), c.getBf());
 		glBegin(GL_POLYGON);
 
 		glVertex3f(xpos, ypos, 0);
-		for (int j = 0; j < Circle::numOfSides, (double)j / Circle::numOfSides < tankPowers[i]->timeLeft / tankPowers[i]->maxTime; j++) {
+		for (int j = 0; j < Circle::numOfSides, (double)j / Circle::numOfSides < sortedTankPowers[i]->timeLeft/sortedTankPowers[i]->maxTime; j++) {
 			glVertex3f(xpos + r*cos(j * 2*PI / Circle::numOfSides + angle) * 9/8, ypos + r*sin(j * 2*PI / Circle::numOfSides + angle) * 9/8, 0);
 		}
 		glVertex3f(xpos, ypos, 0);
@@ -372,6 +446,7 @@ Tank::~Tank() {
 	for (int i = 0; i < tankPowers.size(); i++) {
 		delete tankPowers[i];
 	}
+	tankPowers.clear();
 
-	tankPowers.clear(); //don't know if this is needed
+	delete shootingPoints;
 }

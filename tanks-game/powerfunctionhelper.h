@@ -1,12 +1,12 @@
 #pragma once
-class PowerFunctionHelper;
+struct PowerFunctionHelper;
 
 #include "tank.h"
 #include "bullet.h"
 #include "wall.h"
 
 struct PowerFunctionHelper {
-	static void wallhackGenericWall(Bullet*, Wall*);
-	static void wallhackGenericTank(Tank*, Wall*);
-	static void homingGeneric(Bullet*, double);
+	static bool wallhackGenericBullet(Bullet*, Wall*);
+	static bool wallhackGenericTank(Tank*, Wall*);
+	static bool homingGeneric(Bullet*, double);
 };

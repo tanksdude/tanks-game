@@ -15,7 +15,9 @@ class Bullet : public Circle {
 	char id;
 	ColorValueHolder defaultColor = ColorValueHolder(0x88, 0x88, 0x88);
 	//ColorValueHolder* explosionColor; //needed?
-	std::vector<BulletPower*> bulletPowers;
+
+public:
+	std::vector<BulletPower*> bulletPowers; //change eventually?
 
 public:
 	//helper functions:
@@ -32,6 +34,7 @@ public:
 
 	void powerCalculate();
 	void removePower(int index);
+
 	bool isFullyOutOfBounds();
 	bool isPartiallyOutOfBounds();
 	void edgeConstrain(); //probably never going to be used

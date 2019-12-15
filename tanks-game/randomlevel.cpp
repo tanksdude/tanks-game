@@ -19,8 +19,9 @@ void RandomLevel::initialize() {
 	}
 
 	powerups.push_back(new PowerSquare(20, 20, "speed"));
-	//powerups.push_back(new PowerSquare(20, 40, "speed"));
-	powerups.push_back(new PowerSquare(20, 40, "wallhack"));
+	powerups.push_back(new PowerSquare(40, 20, "wallhack"));
+	//powerups.push_back(new PowerSquare(60, 20, "bounce"));
+	powerups.push_back(new PowerSquare(80, 20, "multishot"));
 }
 
 Wall* RandomLevel::makeNewWall(double x_beginning, double y_beginning, double width_ofArea, double height_ofArea, ColorValueHolder c, double minW, double minH, double maxW, double maxH) {

@@ -25,11 +25,11 @@ public:
 
 	virtual ColorValueHolder getColor() = 0;
 
-	virtual void modifiedMovement() { return; }
+	//void (*modifiedMovement)();
 	virtual bool isDone() = 0; //as in, is finished, shouldn't exist anymore
 
-	virtual void modifiedCollisionWithTank(Tank*) { return; } //something might use it
-	virtual void modifiedCollisionWithWall(Wall*) { return; } //wallhack and bounce
+	//void (*modifiedCollisionWithTank)(Tank*); //something might use it
+	//void (*modifiedCollisionWithWall)(Wall*); //wallhack and bounce
 	//virtual void modifiedCollisionWithPower(Power*); //probably not going to be used
 	//virtual void modifiedCollisionWithBullet(Bullet*); //probably shouldn't be used
 	//virtual void modifiedCollisionWithHazard(Hazard*);

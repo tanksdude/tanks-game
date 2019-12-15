@@ -2,8 +2,10 @@
 #include <iostream>
 #include <vector>
 #include <time.h>
+#include <unordered_map>
 #include "colorvalueholder.h"
 #include "tank.h"
+#include "cannonpoint.h"
 #include "wall.h"
 #include "bullet.h"
 
@@ -27,6 +29,9 @@
 #include "wallhacktankpower.h"
 #include "wallhackbulletpower.h"
 #include "wallhackpower.h"
+#include "multishottankpower.h"
+#include "multishotbulletpower.h"
+#include "multishotpower.h"
 
 #if defined WIN32
 #include <freeglut.h>
@@ -83,28 +88,7 @@ void appDrawScene() {
 	glLoadIdentity();
 
 
-
-    // Draw stuff here
-	/*
-    glColor3f(1.0, 0.0, 0.0);
     
-    glBegin(GL_LINES);
-    
-    glVertex2f(-1, 0);
-    glVertex2f(1, 0);
-    
-    glVertex2f(0, 1);
-    glVertex2f(0, -1);
-
-	glVertex2f(0, 160);
-	glVertex2f(640, 160);
-
-	glVertex2f(320, 0);
-	glVertex2f(320, 320);
-    
-    glEnd();
-	*/
-  
 	for (int i = 0; i < powerups.size(); i++) {
 		powerups[i]->draw();
 	}
@@ -396,22 +380,42 @@ void tick(int){ //pass in physics rate eventually
 	for (int i = 0; i < tanks.size(); i++) {
 		tanks[i]->powerCalculate();
 	}
-
 	for (int i = 0; i < bullets.size(); i++) {
 		bullets[i]->powerCalculate();
 	}
 
-	//other things
 	for(int i = 0; i < tanks.size(); i++){
 		tanks[i]->shoot();
 	}
 
 	//tank to wall collision:
 	for (int i = 0; i < tanks.size(); i++) {
+		bool modifiedWallCollision = false;
+		bool shouldBeKilled = false; //maybe the walls are poison with a certain powerup? I dunno, but gotta have it as an option
+
 		for (int j = 0; j < walls.size(); j++) {
+			for (int k = 0; k < tanks[i]->tankPowers.size(); k++) {
+				bool (*temp)(Tank*, Wall*) = tanks[i]->tankPowers[k]->modifiedCollisionWithWall;
+				if (temp != nullptr) {
+					modifiedWallCollision = true;
+					bool check_temp = temp(tanks[i], walls[j]);
+					if (check_temp) {
+						shouldBeKilled = true;
+					}
+				}
+			}
+
+			if (modifiedWallCollision) {
+				continue;
+			}
+
 			if (CollisionHandler::partiallyCollided(tanks[i], walls[j])) {
 				CollisionHandler::pushMovableAwayFromImmovable(tanks[i], walls[j]);
 			}
+		}
+
+		if (shouldBeKilled) {
+			tank_dead = 1; //TODO: proper implementation
 		}
 	}
 	
@@ -423,22 +427,46 @@ void tick(int){ //pass in physics rate eventually
 	//bullet to edge collision:
 	for (int i = bullets.size() - 1; i >= 0; i--) {
 		if (bullets[i]->isFullyOutOfBounds()) {
-			Bullet* temp = bullets[i];
+			delete bullets[i];
 			bullets.erase(bullets.begin() + i);
-			delete temp;
 			continue;
 		}
 	}
 
 	//bullet to wall collision:
 	for (int i = bullets.size() - 1; i >= 0; i--) {
+		bool modifiedWallCollision = false;
+		bool shouldBeDeleted = false;
+
 		for (int j = 0; j < walls.size(); j++) {
+			for (int k = 0; k < bullets[i]->bulletPowers.size(); k++) {
+				bool (*temp)(Bullet*, Wall*) = bullets[i]->bulletPowers[k]->modifiedCollisionWithWall;
+				//cout << temp << " " << (temp==nullptr) << endl;
+				if (temp != nullptr) {
+					modifiedWallCollision = true;
+					//cout << temp(bullets[i], walls[j]) << endl;
+					bool check_temp = temp(bullets[i], walls[j]);
+					//cout << check_temp << endl;
+					if (check_temp) {
+						shouldBeDeleted = true;
+					}
+				}
+			}
+
+			if (modifiedWallCollision) {
+				continue;
+			}
+
 			if (CollisionHandler::partiallyCollided(bullets[i], walls[j])) {
-				Bullet* temp = bullets[i];
-				bullets.erase(bullets.begin() + i);
-				delete temp;
+				shouldBeDeleted = true;
 				break;
 			}
+		}
+
+		if (shouldBeDeleted) {
+			delete bullets[i];
+			bullets.erase(bullets.begin() + i);
+			//continue;
 		}
 	}
 
@@ -449,7 +477,8 @@ void tick(int){ //pass in physics rate eventually
 				continue;
 			}
 			if (CollisionHandler::partiallyCollided(bullets[i], bullets[j])) {
-				//powers aren't in yet so this doesn't get to shine
+				//powers aren't fully implemented yet so this doesn't get to shine
+				//but they will be soon
 				
 				Bullet* result = BulletPriorityHandler::determinePriority(bullets[i], bullets[j]);
 				if (result == nullptr) {
@@ -510,6 +539,7 @@ void tick(int){ //pass in physics rate eventually
 	}
 
 	//edge constrain tanks again in case bullet decides to move tank
+	//don't edge constrain if said tank is dead //fix: implement
 	/*
 	for (int i = 0; i < tanks.size(); i++) {
 		//if (tanks[i]->isOutOfBounds())) {
@@ -549,6 +579,8 @@ int main(int argc, char** argv) {
 
 	powerLookup.insert({ "speed",  SpeedPower::factory });
 	powerLookup.insert({ "wallhack",  WallhackPower::factory });
+	//powerLookup.insert({ "bounce",  BouncePower::factory });
+	powerLookup.insert({ "multishot", MultishotPower::factory });
 
 	tanks.push_back(tank1);
 	tanks.push_back(tank2);
