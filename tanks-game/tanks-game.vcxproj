@@ -167,7 +167,6 @@
     <ClCompile Include="triplepower.cpp" />
     <ClCompile Include="tripletankpower.cpp" />
     <ClCompile Include="wall.cpp" />
-    <ClCompile Include="walledge.cpp" />
     <ClCompile Include="wallhackbulletpower.cpp" />
     <ClCompile Include="wallhackpower.cpp" />
     <ClCompile Include="wallhacktankpower.cpp" />
@@ -213,7 +212,6 @@
     <ClInclude Include="triplepower.h" />
     <ClInclude Include="tripletankpower.h" />
     <ClInclude Include="wall.h" />
-    <ClInclude Include="walledge.h" />
     <ClInclude Include="wallhackbulletpower.h" />
     <ClInclude Include="wallhackpower.h" />
     <ClInclude Include="wallhacktankpower.h" />

@@ -32,14 +32,14 @@ public:
 	void draw();
 	void draw(double, double);
 	char getID() { return id; }
-	short determineDamage();
+	short determineDamage(); //TODO: wait, what is this supposed to do again? (isn't everything supposed to have 1 health? so there's no point for this)
 
 	void powerCalculate();
 	void removePower(int index);
 
 	bool isFullyOutOfBounds();
 	bool isPartiallyOutOfBounds();
-	void edgeConstrain(); //probably never going to be used
+	void edgeConstrain(); //probably never going to be needed
 
 	~Bullet();
 };

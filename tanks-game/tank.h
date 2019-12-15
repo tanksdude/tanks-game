@@ -26,6 +26,7 @@ public:
 	double maxSpeed = 1;
 	double acceleration = 1.0/16; //intentional acceleration, not total
 	double velocity = 0; //intentional velocity, not total
+	//TODO: system that can apply forces
 	double turningIncrement = 64;
 	double angle;
 	std::vector<CannonPoint>* shootingPoints;
@@ -33,6 +34,9 @@ public:
 	//double shootingSpeedMultiplier = 1;
 	double getShootingSpeedMultiplier();
 	//double powerMultiplier; //would be used for an ini
+
+	double getBulletSpeedMultiplier(); //BIG TODO: this isn't going to work if a bullet picks up a power; solution: worry about it later
+	double getBulletRadiusMultiplier();
 
 public:
 	bool turnL;

@@ -1,6 +1,4 @@
 #pragma once
-class SpeedBulletPower;
-
 #include "speedbulletpower.h"
 #include "speedtankpower.h"
 #include "speedpower.h"

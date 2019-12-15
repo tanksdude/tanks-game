@@ -24,4 +24,3 @@ public:
 	float getGf(){return G/255.0;}
 	float getBf(){return B/255.0;}
 };
-

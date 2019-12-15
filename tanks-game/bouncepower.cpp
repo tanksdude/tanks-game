@@ -4,7 +4,6 @@
 #include "bouncebulletpower.h"
 
 const bool BouncePower::canBeInARandomLevel = true;
-//ColorValueHolder BouncePower::classColor = ColorValueHolder(0xFF, 0xFF, 0x00);
 
 TankPower* BouncePower::makeTankPower() {
 	return new BounceTankPower();

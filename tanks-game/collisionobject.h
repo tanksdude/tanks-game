@@ -7,5 +7,5 @@ protected:
 	double y;
 
 public:
-	virtual void draw() = 0;
+	virtual void draw() = 0; //fix: needed? it's only so a CollisionObject object can't be created
 };

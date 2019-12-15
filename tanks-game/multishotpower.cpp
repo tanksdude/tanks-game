@@ -4,7 +4,6 @@
 #include "multishotbulletpower.h"
 
 const bool MultishotPower::canBeInARandomLevel = true;
-//ColorValueHolder WallhackPower::classColor = ColorValueHolder(0x88, 0x00, 0xFF);
 
 TankPower* MultishotPower::makeTankPower() {
 	return new MultishotTankPower();

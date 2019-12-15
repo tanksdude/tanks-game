@@ -4,7 +4,6 @@
 #include "speedbulletpower.h"
 
 const bool SpeedPower::canBeInARandomLevel = true;
-//ColorValueHolder SpeedPower::classColor = ColorValueHolder(0x44, 0x44, 0xFF);
 
 TankPower* SpeedPower::makeTankPower() {
 	return new SpeedTankPower();

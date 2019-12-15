@@ -12,7 +12,7 @@ public:
 };
 
 /*
-TODO: separate levels from level effects
+TODO: separate levels from level effects?
 
 
 list of (eventual) levels or level effects, I dunno:

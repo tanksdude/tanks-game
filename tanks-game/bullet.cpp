@@ -59,8 +59,8 @@ void Bullet::move() {
 	}
 
 	if (!overridedMovement) {
-		x += velocity*cos(angle);
-		y += velocity*sin(angle);
+		x += velocity * cos(angle);
+		y += velocity * sin(angle);
 	}
 }
 
@@ -69,8 +69,7 @@ void Bullet::powerCalculate() {
 		bulletPowers[i]->tick(); //I don't think any power will use this, but whatever
 		if (bulletPowers[i]->isDone()) {
 			removePower(i);
-		}
-		else { //to make each power last its full length, not n-1 length
+		} else { //to make each power last its full length, not n-1 length
 			bulletPowers[i]->powerTick();
 		}
 	}

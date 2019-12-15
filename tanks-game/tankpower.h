@@ -70,6 +70,7 @@ public:
 	bool modifiedShootingCanWorkWithOthers = true;
 	bool modifiedShootingCanOnlyWorkIndividually = false;
 
+	//TODO: modify this so something like fire + multishot + triple will work beter (not sure that would be the case, actually)
 	bool modifiesAdditionalShooting = false;
 	virtual void additionalShooting(Tank* parent, CannonPoint) { return; } //for regular powerups (triple and shotgun)
 	bool overridesAdditionalShooting = false; //probably should only be false
@@ -89,6 +90,9 @@ public:
 	bool modifiedTankDrawingsCanOnlyWorkIndividually = false;
 
 	virtual double getShootingMultiplier() { return 1; }
+	virtual double getBulletSpeedMultiplier() { return 1; }
+	virtual double getBulletRadiusMultiplier() { return 1; }
+
 	//virtual double getOffenseTier() { return 0; }
 	//virtual double getOffenseValue() { return 0; }
 	//virtual double getDefenseTier() { return 0; }

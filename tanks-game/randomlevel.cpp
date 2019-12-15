@@ -28,10 +28,12 @@ void RandomLevel::initialize() {
 	powerups.push_back(new PowerSquare(GAME_WIDTH-20, GAME_HEIGHT-20, new std::string[2]{ "multishot", "multishot" }, 2));
 	powerups.push_back(new PowerSquare(GAME_WIDTH-40, GAME_HEIGHT-20, new std::string[2]{ "speed", "wallhack" }, 2));
 	powerups.push_back(new PowerSquare(GAME_WIDTH-60, GAME_HEIGHT-20, new std::string[2]{ "bounce", "homing" }, 2));
+	//are those memory leaks?
 }
 
 Wall* RandomLevel::makeNewWall(double x_beginning, double y_beginning, double width_ofArea, double height_ofArea, ColorValueHolder c, double minW, double minH, double maxW, double maxH) {
 
+	//fix: not sure if rand() needs to be cast to a double, but worry about that later
 	double w = fmod((double)rand(), (maxW - minW)) + minW;
 	double h = fmod((double)rand(), (maxH - minH)) + minH;
 

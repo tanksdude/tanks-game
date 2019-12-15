@@ -3,8 +3,10 @@
 #include "bulletpriorityhandler.h"
 #include "bullet.h"
 
-Bullet* BulletPriorityHandler::determinePriority(Bullet* a, Bullet* b) {
-	return nullptr; //for now, all die
+char BulletPriorityHandler::determinePriority(Bullet* a, Bullet* b) {
+	return -1; //for now, all die
+
+	//actually this is definitely not what I want anymore but I'll replace it soon:
 
 	//balance between what I can implement, what I wanted, and code complexity:
 	/*
