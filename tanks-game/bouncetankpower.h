@@ -18,6 +18,9 @@ public:
 
 	virtual BulletPower* makeBulletPower();
 
+	virtual double getBulletSpeedMultiplier();
+	//virtual double getBulletRadiusMultiplier();
+
 	//virtual double getOffenseTier();
 	//virtual double getOffenseValue();
 	//virtual double getDefenseTier();

@@ -35,6 +35,9 @@ public:
 	double getShootingSpeedMultiplier();
 	//double powerMultiplier; //would be used for an ini
 
+	double getBulletSpeedMultiplier(); //BIG TODO: this isn't going to work if a bullet picks up a power; solution: worry about it later
+	double getBulletRadiusMultiplier();
+
 public:
 	bool turnL;
 	bool turnR;

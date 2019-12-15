@@ -110,10 +110,10 @@ void Tank::shoot() {
 			}
 
 			if (!overridedShooting){
-				defaultMakeBullet(x + r*cos(shootingPoints->at(i).angle + angle), y + r*sin(shootingPoints->at(i).angle + angle), shootingPoints->at(i).angle + angle); //should be maxSpeed*4
+				defaultMakeBullet(x + r*cos(shootingPoints->at(i).angle + angle), y + r*sin(shootingPoints->at(i).angle + angle), shootingPoints->at(i).angle + angle);
 			}
 		}
-		//makeBullet(x + r*cos(angle), y + r*sin(angle), angle, r/4, maxSpeed*2, bp); //should be maxSpeed*4
+		//makeBullet(x + r*cos(angle), y + r*sin(angle), angle, r/4, maxSpeed*2, bp); //should be maxSpeed*4 //this is old, don't look at for too long
 
 		shootCount = maxShootCount * getShootingSpeedMultiplier();
 	}
@@ -134,7 +134,7 @@ void Tank::makeBullet(double x, double y, double angle, double radius, double sp
 }
 
 inline void Tank::defaultMakeBullet(double x, double y, double angle) {
-	makeBullet(x, y, angle, r/4, maxSpeed*2);
+	makeBullet(x, y, angle, r*getBulletRadiusMultiplier(), maxSpeed*getBulletSpeedMultiplier());
 }
 
 void Tank::determineShootingAngles() {
@@ -163,9 +163,41 @@ double Tank::getShootingSpeedMultiplier() {
 		} else if (value > 1 && value > highest) {
 			highest = value;
 		}
-		//technically don't need to check value against 1, no do I?
+		//technically don't need to check value against 1, now do I?
 	}
 	return highest * lowest; //unintentionally works out cleanly
+}
+
+double Tank::getBulletSpeedMultiplier() {
+	//look at getShootingSpeedMultiplier()
+
+	double highest = 1;
+	double lowest = 1;
+	for (int i = 0; i < tankPowers.size(); i++) {
+		double value = tankPowers[i]->getBulletSpeedMultiplier();
+		if (value < 1 && value < lowest) {
+			lowest = value;
+		} else if (value > 1 && value > highest) {
+			highest = value;
+		}
+	}
+	return highest * lowest * 2; //based off of maxSpeed, so *2 //technically *4 from JS Tanks
+}
+
+double Tank::getBulletRadiusMultiplier() {
+	//look at getShootingSpeedMultiplier()
+
+	double highest = 1;
+	double lowest = 1;
+	for (int i = 0; i < tankPowers.size(); i++) {
+		double value = tankPowers[i]->getBulletRadiusMultiplier();
+		if (value < 1 && value < lowest) {
+			lowest = value;
+		} else if (value > 1 && value > highest) {
+			highest = value;
+		}
+	}
+	return highest * lowest / 4.0; //based off of r, so /4
 }
 
 void Tank::powerCalculate() {

@@ -90,6 +90,9 @@ public:
 	bool modifiedTankDrawingsCanOnlyWorkIndividually = false;
 
 	virtual double getShootingMultiplier() { return 1; }
+	virtual double getBulletSpeedMultiplier() { return 1; }
+	virtual double getBulletRadiusMultiplier() { return 1; }
+
 	//virtual double getOffenseTier() { return 0; }
 	//virtual double getOffenseValue() { return 0; }
 	//virtual double getDefenseTier() { return 0; }

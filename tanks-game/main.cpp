@@ -471,8 +471,7 @@ void tick(int physicsUPS) {
 			glutPostRedisplay();
 		}
 		++frameCount %= ticksUntilFrame;
-	}
-	else {
+	} else {
 		tank_dead = 0;
 		glutPostRedisplay();
 		glutTimerFunc(1000, ResetThings::reset, 0);

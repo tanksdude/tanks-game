@@ -74,11 +74,11 @@ bool BounceBulletPower::modifiedEdgeCollision(Bullet* b) {
 }
 
 void BounceBulletPower::initialize(Bullet* b) {
-	b->velocity /= 2; //TODO: ability for bullets to have a getSpeed thing similar to tank's getSpeedMultiplier
+	//b->velocity /= 2; //no longer needs this
 }
 
 void BounceBulletPower::removeEffects(Bullet * b) {
-	b->velocity *= 2;
+	//b->velocity *= 2;
 }
 
 TankPower* BounceBulletPower::makeTankPower() {
