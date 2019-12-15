@@ -14,6 +14,4 @@ TankPower* MultishotBulletPower::makeTankPower() {
 MultishotBulletPower::MultishotBulletPower() {
 	timeLeft = 0;
 	maxTime = -1;
-
-	modifiedCollisionWithWall = nullptr;
 }

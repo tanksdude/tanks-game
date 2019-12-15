@@ -138,9 +138,8 @@ void Tank::determineShootingAngles() {
 	shootingPoints->push_back(CannonPoint(0));
 	//std::cout << "5: " << shootingPoints->size() << std::endl;
 	for (int i = 0; i < tankPowers.size(); i++) {
-		void (*get)(Tank*, std::vector<CannonPoint>*) = tankPowers[i]->addShootingPoints; //"may as well use auto"
-		if (get != nullptr) {
-			get(this, shootingPoints);
+		if (tankPowers[i]->addsShootingPoints) {
+			tankPowers[i]->addShootingPoints(this, shootingPoints);
 		}
 	}
 	//std::cout << "6: " << shootingPoints->size() << std::endl;

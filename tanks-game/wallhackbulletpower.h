@@ -18,7 +18,8 @@ public:
 
 	virtual TankPower* makeTankPower();
 	
-	//virtual void modifiedMovement();
+	//bool modifiesCollisionWithWall = true;
+	virtual bool modifiedCollisionWithWall(Bullet*, Wall*);
 
 	//virtual double getOffenseTier() { return 0; } //don't want it to be a variable because a function can change its value much easier
 	//virtual double getOffenseValue() { return 0; } //only one tier per power

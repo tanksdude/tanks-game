@@ -31,25 +31,43 @@ public:
 
 	virtual BulletPower* makeBulletPower() = 0;
 
-	bool (*modifiedMovement)();
+	bool modifiesMovement = false;
+	virtual void modifiedMovement(Tank*) { return; }
 
-	bool (*modifiedCollisionWithTank)(Tank*, Tank*); //self then other
-	bool (*modifiedCollisionWithWall)(Tank*, Wall*);
-	//virtual void modifiedCollisionWithPower(Power*); //probably not going to be used
-	//virtual void modifiedCollisionWithBullet(Bullet*); //probably shouldn't be used
-	//virtual void modifiedCollisionWithHazard(Hazard*);
-	//virtual void modifiedEdgeCollision();
+	bool modifiesCollisionWithEdge = false;
+	virtual bool modifiedEdgeCollision(Tank*) { return false; }
 
+	bool modifiesCollisionWithTank = false;
+	virtual bool modifiedCollisionWithTank(Tank* parent, Tank* other) { return false; }
+	
+	bool modifiesCollisionWithWall = false;
+	virtual bool modifiedCollisionWithWall(Tank*, Wall*) { return false; }
+
+	//bool modifiesCollisionWithPower = false;
+	//virtual void modifiedCollisionWithPower(Tank*, Power*) { return; } //probably not going to be used
+
+	//bool modifiesCollisionWithBullet = false;
+	//virtual void modifiedCollisionWithBullet(Tank*, Bullet*) { return; } //probably shouldn't be used
+
+	//bool modifiesCollisionWithHazard = false;
+	//virtual void modifiedCollisionWithHazard(Tank*, Hazard*) { return; }
+
+	bool modifiesShooting = false;
 	virtual void modifiedShooting(Tank* parent) { return; } //for melee-class powerups
+
+	bool modifiesAdditionalShooting = false;
 	virtual void additionalShooting(Tank* parent) { return; } //for regular powerups
-	void (*addShootingPoints)(Tank*, std::vector<CannonPoint>*);
+
+	bool addsShootingPoints = false;
+	virtual void addShootingPoints(Tank*, std::vector<CannonPoint>*) { return; } //shouldn't need the Tank*
+	
+	bool modifiesTankDrawings = false;
 	virtual void modifiedTankDrawings(Tank* parent) { return; }
 
 	virtual double getShootingMultiplier() { return 1; }
-	//virtual double getOffenseTier() { return 0; } //don't want it to be a variable because a function can change its value much easier
-	//virtual double getOffenseValue() { return 0; } //only one tier per power
+	//virtual double getOffenseTier() { return 0; }
+	//virtual double getOffenseValue() { return 0; }
 	//virtual double getDefenseTier() { return 0; }
-	//virtual double getDefenseValue() { return 0; } //return 0 by default, else 1 probably
+	//virtual double getDefenseValue() { return 0; }
 
-	//might need a destructor for all the function pointers
 };

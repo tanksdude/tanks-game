@@ -39,7 +39,7 @@ public:
 list of (eventual) powers:
 |speed
 |wallhack
-bounce (need rewrite: either store bools for whether the functions are modified or find some member function pointer solution)
+|bounce
 |multishot
 homing
 triple shot (note to self: use PI/16 as the angle difference, not PI/8; will work much better with multishot)
@@ -54,6 +54,11 @@ the super (tier 3) (name WIP) (come on, of course the name isn't going to be tem
 godmode
 super life/shield/barrier (barrier health dependent on time left on power)
 swarm (check notes if you forgot, me)
+
+powers that are rare because the level wants them, not because they're good:
+mines
+blast
+tracking?
 
 
 invincibility series notes:
@@ -70,22 +75,16 @@ poison: tank/hazard: tier 0 defense (importance 0), tier 1 offense (importance 0
 weak invincibility: tank/hazard: tier 1 defense (importance 0), tier 0 offense (importance 0); bullet: tier 0 offense against tank/hazard (importance 0), tier 0 offense against bullet (importance 0), tier 0 defense (importance 0)
 
 
-powers that are rare because the level wants them, not because they're good:
-mines
-blast
-tracking?
-
-
 other ideas, some of which are jokes, some of which are lesser jokes:
-nukes (???)
+nukes (???) (the only thing I remember about its conception is that it would act like Snake's final smash in Brawl)
 sword (melee power) (heck yeah, but would have to let Tank hold an object; shouldn't be too hard?)
 ghost (color would be partially transparent)
 the ID changer
 poison? (like, another bullet/hazard is hit and it stops) (tank hits poisoned tank and dies)
 boomerang (non-refillable? except when the shot is destroyed)
 shurikan (shouldn't be too hard, especially if blast gets in)
-teleport
-ring-shooter? (shoots a ring of bullets. just looks amusing) (multishot but all the angles are the same)
+teleport? (will have a teleport hazard, but how would a powerup look like? the longer you hold down shoot the further you'll teleport?)
+ring-shooter? (shoots a ring of bullets; just looks amusing) (multishot but all the angles are the same)
 
 
 things the powers need to access, override, and/or deal with (of bullets and tanks, probably hazards too):
@@ -110,6 +109,6 @@ can leave out-of-bounds, both real and fake (fake in the case of a portal level 
 
 
 
-if you don't know where I got these names: that's okay, I do
-but they're from my JS game "Tanks: Battle of the Circles" (hosted on uncreativeusername.neocities.org), and this is a C++ port/remake/remaster/sequel (closest to remake)
+if you don't know where I got these names: that's okay, I do (more or less)
+but they're from my JS game "Tanks: Battle of the Circles" (hosted on uncreativeusername.neocities.org), and this is a C++ port/remake/remaster/sequel (closest to sequel, closer to remake, barely a remaster, hardly a port)
 */

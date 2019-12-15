@@ -7,10 +7,6 @@
 #include "cannonpoint.h"
 #include "powerfunctionhelper.h"
 
-void MultishotTankPower::addCannonPointsDummy(Tank* t, std::vector<CannonPoint>* cannonPoints) {
-	PowerFunctionHelper::equallySpacedCannonPoints(t, cannonPoints, MultishotPower::bulletConstant);
-}
-
 void MultishotTankPower::initialize(Tank* parent) {
 	//deals with cannon points; nothing to initialize
 }
@@ -22,11 +18,14 @@ BulletPower* MultishotTankPower::makeBulletPower() {
 	return new MultishotBulletPower();
 }
 
+void MultishotTankPower::addShootingPoints(Tank* t, std::vector<CannonPoint>* cannonPoints) {
+	PowerFunctionHelper::equallySpacedCannonPoints(t, cannonPoints, MultishotPower::bulletConstant);
+}
+
 MultishotTankPower::MultishotTankPower() {
 	maxTime = 500;
 	timeLeft = 500;
-	modifiedCollisionWithWall = nullptr;
-	addShootingPoints = MultishotTankPower::addCannonPointsDummy;
+	addsShootingPoints = true;
 }
 
 /*

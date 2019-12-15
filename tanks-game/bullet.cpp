@@ -76,7 +76,7 @@ void Bullet::draw(double xpos, double ypos) {
 
 	//outline:
 	glColor3f(0, 0, 0);
-	glLineWidth(2);
+	glLineWidth(1);
 
 	glBegin(GL_LINE_LOOP);
 
