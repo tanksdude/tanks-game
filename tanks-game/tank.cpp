@@ -1,6 +1,7 @@
 #pragma once
 #include "tank.h"
 #include "constants.h"
+#include "colormixer.h"
 #include <math.h>
 #include <string>
 #include <iostream>
@@ -79,7 +80,11 @@ void Tank::shoot() {
 		shootCount--;
 
 	if(shooting && shootCount <= 0){
-		bullets.push_back(new Bullet(x + r*cos(angle), y + r*sin(angle), r/4, angle, maxSpeed*2, id));
+		std::vector<BulletPower*> bp;
+		for (int i = 0; i < tankPowers.size(); i++) {
+			bp.push_back(tankPowers[i]->makeBulletPower());
+		}
+		bullets.push_back(new Bullet(x + r*cos(angle), y + r*sin(angle), r/4, angle, maxSpeed*2, id, bp)); //should be maxSpeed*4
 		shootCount = maxShootCount;
 	}
 
@@ -99,24 +104,35 @@ void Tank::shoot() {
 }
 
 void Tank::powerCalculate() {
-	//also figure out later
-
-	/*
-	for (var i = this.powerCount.length - 1; i >= 0; i--) {
-		if (this.powerCount[i]>0)
-			this.powerCount[i]--;
-		else
-			this.removePower(i, this.power.type[i]);
+	for (int i = tankPowers.size() - 1; i >= 0; i--) {
+		tankPowers[i]->tick(); //I don't think any power will use this, but whatever
+		if (tankPowers[i]->isDone()) {
+			removePower(i);
+		} else { //to make each power last its full length, not n-1 length
+			tankPowers[i]->powerTick();
+		}
 	}
-	*/
 }
 
-void Tank::removePower() {
-
+void Tank::removePower(int index) {
+	tankPowers[index]->removeEffects(this);
+	delete tankPowers[index];
+	tankPowers.erase(tankPowers.begin() + index);
 }
 
 void Tank::powerReset() {
-	//is this needed?
+	for (int i = tankPowers.size() - 1; i >= 0; i--) {
+		removePower(i);
+	}
+}
+
+ColorValueHolder Tank::getBodyColor() {
+	if (tankPowers.size() == 0) {
+		return defaultColor;
+	}
+	else {
+		return ColorMixer::mix(tankPowers);
+	}
 }
 
 void Tank::draw() {
@@ -138,8 +154,25 @@ void Tank::draw(double xpos, double ypos) {
 
 	glEnd();
 
+	//power cooldown outlines:
+	for (int i = 0; i < tankPowers.size(); i++) {
+		ColorValueHolder c = tankPowers[i]->getColor();
+
+		glColor3f(c.getRf(), c.getGf(), c.getBf());
+		glBegin(GL_POLYGON);
+
+		glVertex3f(xpos, ypos, 0);
+		for (int j = 0; j < Circle::numOfSides, (double)j / Circle::numOfSides < tankPowers[i]->timeLeft / tankPowers[i]->maxTime; j++) {
+			glVertex3f(xpos + r*cos(j * 2*PI / Circle::numOfSides + angle) * 9/8, ypos + r*sin(j * 2*PI / Circle::numOfSides + angle) * 9/8, 0);
+		}
+		glVertex3f(xpos, ypos, 0);
+
+		glEnd();
+	}
+
 	//main body:
-	glColor3f(defaultColor.getRf(), defaultColor.getGf(), defaultColor.getBf());
+	ColorValueHolder color = getBodyColor();
+	glColor3f(color.getRf(), color.getGf(), color.getBf());
 	
 	glBegin(GL_POLYGON);
 
@@ -296,48 +329,6 @@ void Tank::drawName(double xpos, double ypos) {
 	delete[] widths;
 
 	glPopMatrix();
-	
-
-	/*
-	canvas.font = 8 * multiplier + "pt Times";
-	if (!performanceMode) {
-		canvas.strokeStyle = defaultNameStroke;
-		canvas.lineWidth = Math.ceil(multiplier);
-		canvas.fillStyle = defaultNameFill;
-	}
-	else
-		canvas.fillStyle = defaultNameStroke;
-
-	//this really needs fixing
-	if (this.ypos - this.size<parseFloat(canvas.font) / (3 * multiplier / 4) && !(level.portal && this.xpos - this.size >= 112 && this.xpos + this.size <= 528)) {
-		canvas.textBaseline = "top";
-		var top = this.ypos + this.size + 2 * multiplier;
-	}
-	else {
-		canvas.textBaseline = "bottom";
-		var top = this.ypos - this.size - 2 * multiplier;
-	}
-
-	if (canvas.measureText(this.name).width / 2 / multiplier>this.xpos) {
-		canvas.textAlign = "left";
-		if (!performanceMode)
-			canvas.strokeText(this.name, 0, top*multiplier);
-		canvas.fillText(this.name, 0, top*multiplier);
-	}
-	else if (canvas.measureText(this.name).width / 2 / multiplier + this.xpos>640) {
-		canvas.textAlign = "right";
-		if (!performanceMode)
-			canvas.strokeText(this.name, game.width, top*multiplier);
-		canvas.fillText(this.name, game.width, top*multiplier);
-	}
-	else {
-		canvas.textAlign = "center";
-		if (!performanceMode)
-			canvas.strokeText(this.name, this.xpos*multiplier, top*multiplier);
-		canvas.fillText(this.name, this.xpos*multiplier, top*multiplier);
-	}
-
-	*/
 
 }
 
@@ -348,6 +339,8 @@ void Tank::resetThings(double x, double y, double a, char id, std::string name) 
 	this->id = id;
 	this->name = name;
 	shootCount = 0;
+
+	this->powerReset();
 }
 
 void Tank::edgeConstrain() {
@@ -376,4 +369,9 @@ bool Tank::isFullyOutOfBounds() {
 
 Tank::~Tank() {
 	//delete explosionColor;
+	for (int i = 0; i < tankPowers.size(); i++) {
+		delete tankPowers[i];
+	}
+
+	tankPowers.clear(); //don't know if this is needed
 }

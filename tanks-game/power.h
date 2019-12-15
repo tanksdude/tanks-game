@@ -1,34 +1,51 @@
 #pragma once
+class Power;
+
+#include <string>
 #include "colorvalueholder.h"
 #include "tankpower.h"
 #include "bulletpower.h"
 
 class Power {
 protected:
-	TankPower tp;
-	BulletPower bp;
+	//anything needed here?
+	//static ColorValueHolder classColor;
 
 public:
-	const static ColorValueHolder color;
-	const bool canBeInARandomLevel;
-	const bool canBeMixed;
+	const static bool canBeInARandomLevel;
+	virtual bool getCanBeMixed() { return true; }
 
-	Power();
+	virtual std::string getName() = 0;
+	static std::string getClassName();
+	virtual ColorValueHolder getColor() = 0;
+	static ColorValueHolder getClassColor();
 
+	virtual TankPower* makeTankPower() = 0;
+	virtual BulletPower* makeBulletPower() = 0;
+	//virtual HazardPower* makeHazardPower() = 0;
+
+	static Power* factory();
+
+	/*
+	friend bool operator== (Power& a, Power& b) {
+		return a.getName() == b.getName();
+	}
+	Power(Power& other);
+	*/
 };
 
 
 /*
 list of (eventual) powers:
 speed
+wallhack
 bounce
 triple shot (note to self: use PI/16 as the angle difference, not PI/8; will work much better with multishot)
 multishot (adds cannon points instead of looping to shoot each bullet)
-wallhack
 homing
 grenade?
 fire?
-banana
+banana (will be tough unless I did everything correctly)
 barrier (if hit, provides one extra hitpoint (basically life, but might add some differences))
 invincibility (tier 1)
 big (tier 2)

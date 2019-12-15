@@ -16,6 +16,11 @@ void ResetThings::reset(int) {
 	}
 	bullets.clear();
 
+	for (int i = 0; i < powerups.size(); i++) {
+		delete powerups[i];
+	}
+	powerups.clear();
+
 	for (int i = 0; i < levels.size(); i++) {
 		delete levels[i];
 	}

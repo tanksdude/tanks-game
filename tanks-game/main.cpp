@@ -2,26 +2,31 @@
 #include <iostream>
 #include <vector>
 #include <time.h>
-#include <unordered_map>
-#include "constants.h"
-
 #include "colorvalueholder.h"
 #include "tank.h"
 #include "wall.h"
-#include "walledge.h"
 #include "bullet.h"
 
 //classes with important handling functions:
 #include "collisionhandler.h"
 #include "resetthings.h"
 #include "bulletpriorityhandler.h"
+#include "colormixer.h"
+#include "powerfunctionhelper.h"
 
 //levels:
 #include "randomlevel.h"
 #include "emptylevel.h"
 
 //powers:
-//none yet
+#include "inheritedpowercommon.h"
+#include "powersquare.h"
+#include "speedtankpower.h"
+#include "speedbulletpower.h"
+#include "speedpower.h"
+#include "wallhacktankpower.h"
+#include "wallhackbulletpower.h"
+#include "wallhackpower.h"
 
 #if defined WIN32
 #include <freeglut.h>
@@ -40,10 +45,8 @@ Tank* tank1 = new Tank(20, 160, 0, 0, "WASD");
 Tank* tank2 = new Tank(620, 160, PI, 1, "Arrow Keys");
 int tank_dead = 0;
 
-WallEdge* top_edge =  new WallEdge(-100, 320, 640 + 200, 100);
-WallEdge* bottom_edge = new WallEdge(-100, -100, 640 + 200, 100);
-WallEdge* left_edge = new WallEdge(-100, -100, 100, 320 + 200);
-WallEdge* right_edge = new WallEdge(640, -100, 100, 320 + 200);
+bool leftMouse = false;
+bool rightMouse = false;
 
 void doThing() {
 	/*
@@ -101,7 +104,10 @@ void appDrawScene() {
     
     glEnd();
 	*/
-    
+  
+	for (int i = 0; i < powerups.size(); i++) {
+		powerups[i]->draw();
+	}
 	for (int i = 0; i < walls.size(); i++) {
 		walls[i]->draw();
 	}
@@ -160,7 +166,7 @@ void appReshapeFunc(int w, int h) {
 
 	// Set up the projection matrix using a orthographic projection that will
 	// maintain the aspect ratio of the scene no matter the aspect ratio of
-	// the window, and also set the min/max coordinates to be the disered ones
+	// the window, and also set the min/max coordinates to be the disired ones
 	w = (w == 0) ? 1 : w;
 	h = (h == 0) ? 1 : h;
 
@@ -244,6 +250,7 @@ glOrtho(winXmin, winXmax, winYmin, winYmax, -1, 1);
 //	s 	 - state, either mouse-up or mouse-down
 //	x, y - coordinates of the mouse when click occured
 //-------------------------------------------------------
+/*
 void appMouseFunc(int b, int s, int x, int y) {
 	// Convert from Window to Scene coordinates
 	float mx = (float)x;
@@ -270,8 +277,9 @@ void appMouseFunc(int b, int s, int x, int y) {
     }
 	// Redraw the scene by calling appDrawScene above
 	// so that the point we added above will get painted
-	glutPostRedisplay();
+	//glutPostRedisplay();
 }
+*/
 
 //-------------------------------------------------------
 // A function to handle mouse dragging
@@ -280,9 +288,35 @@ void appMouseFunc(int b, int s, int x, int y) {
 //	x, y - current coordinates of the mouse
 //-------------------------------------------------------
 void appMotionFunc(int x, int y) {
+	if (leftMouse) {
+		if (!rightMouse) { //tank 1
+			tanks[0]->giveX() = (x / float(width)) * GAME_WIDTH;
+			tanks[0]->giveY() = (1 - y / float(height)) * GAME_HEIGHT;
+		}
+		else { //tank 2
+			tanks[1]->giveX() = (x / float(width));
+			tanks[1]->giveY() = (1 - y / float(height)) * GAME_HEIGHT;
+		}
+	}
 
 	// Again, we redraw the scene
-	glutPostRedisplay();
+	//glutPostRedisplay();
+}
+
+void mouse_func(int button, int state, int x, int y) {
+	if (state == GLUT_DOWN) {
+		if (button == GLUT_LEFT_BUTTON) {
+			leftMouse = true;
+		}
+		else if (button == GLUT_RIGHT_BUTTON) {
+			rightMouse = !rightMouse;
+		}
+	}
+	else {
+		if (button == GLUT_LEFT_BUTTON) {
+			leftMouse = false;
+		}
+	}
 }
 
 //-------------------------------------------------------
@@ -297,32 +331,32 @@ void keyboard_down(unsigned char key, int x, int y) {
 	
     
 	// After all the state changes, redraw the scene
-	glutPostRedisplay();
+	//glutPostRedisplay();
 }
 
 void special_keyboard_down(int key, int x, int y) {
 	specialKeyStates[key] = true;
 
 	// After all the state changes, redraw the scene
-	glutPostRedisplay();
+	//glutPostRedisplay();
 }
 
 void keyboard_up(unsigned char key, int x, int y) {
 	normalKeyStates[key] = false;
 
 	// After all the state changes, redraw the scene
-	glutPostRedisplay();
+	//glutPostRedisplay();
 }
 
 void special_keyboard_up(int key, int x, int y) {
 	specialKeyStates[key] = false;
 
 	// After all the state changes, redraw the scene
-	glutPostRedisplay();
+	//glutPostRedisplay();
 }
 
 
-void tick(int){ //pass in physics rate
+void tick(int){ //pass in physics rate eventually
 
 	//temporary: need to figure out better implementation
 	tanks[0]->forward = normalKeyStates['w'];
@@ -346,6 +380,28 @@ void tick(int){ //pass in physics rate
 	}
 
 	//do the special things
+	for (int i = powerups.size() - 1; i >= 0; i--) {
+		for (int j = 0; j < tanks.size(); j++) {
+			if (CollisionHandler::partiallyCollided(powerups[i], tanks[j])) {
+				powerups[i]->givePower(tanks[j]);
+				delete powerups[i];
+				powerups.erase(powerups.begin() + i);
+				break;
+			}
+		}
+	}
+
+	//cout << WallhackPower::getClassColor().getBf() << endl;
+
+	for (int i = 0; i < tanks.size(); i++) {
+		tanks[i]->powerCalculate();
+	}
+
+	for (int i = 0; i < bullets.size(); i++) {
+		bullets[i]->powerCalculate();
+	}
+
+	//other things
 	for(int i = 0; i < tanks.size(); i++){
 		tanks[i]->shoot();
 	}
@@ -370,7 +426,7 @@ void tick(int){ //pass in physics rate
 			Bullet* temp = bullets[i];
 			bullets.erase(bullets.begin() + i);
 			delete temp;
-			break;
+			continue;
 		}
 	}
 
@@ -390,7 +446,7 @@ void tick(int){ //pass in physics rate
 	for (int i = bullets.size() - 1; i >= 0; i--) {
 		for (int j = bullets.size() - 1; j >= 0; j--) {
 			if (bullets[i]->getID() == bullets[j]->getID()) {
-				break;
+				continue;
 			}
 			if (CollisionHandler::partiallyCollided(bullets[i], bullets[j])) {
 				//powers aren't in yet so this doesn't get to shine
@@ -409,20 +465,25 @@ void tick(int){ //pass in physics rate
 					}
 					delete temp1;
 					delete temp2;
-					//break;
+					break;
 				} else if (result == junkBullet) {
 					//it's a draw, so neither dies
 					//delete result;
 				} else {
 					if (bullets[i] == result) { //index = i
+						Bullet* temp = bullets[i];
 						bullets.erase(bullets.begin() + i);
+						delete temp;
+						break;
 					} else { //index = j
+						Bullet* temp = bullets[j];
 						bullets.erase(bullets.begin() + j);
+						delete bullets[j];
 					}
 					delete result;
 				}
 
-				break;
+				//break;
 			}
 		}
 	}
@@ -450,13 +511,10 @@ void tick(int){ //pass in physics rate
 
 	//edge constrain tanks again in case bullet decides to move tank
 	/*
-	//tank to edge collision: (move later)
 	for (int i = 0; i < tanks.size(); i++) {
-		for (int j = 0; j < edges.size(); j++) {
-			if (CollisionHandler::partiallyCollided(tanks[i], edges[j])) {
-				CollisionHandler::pushMovableAwayFromImmovable(tanks[i], edges[j]);
-			}
-		}
+		//if (tanks[i]->isOutOfBounds())) {
+			tanks[i]->edgeConstrain();
+		//}
 	}
 	*/
     
@@ -472,7 +530,9 @@ void tick(int){ //pass in physics rate
 }
 void tick() { tick(tank_dead); }
 
+
 int main(int argc, char** argv) {
+
 	srand(time(NULL));
 
 	normalKeyStates.insert({ 'w', false });
@@ -487,22 +547,19 @@ int main(int argc, char** argv) {
 	levelLookup.insert({ "random", new RandomLevel()});
 	levelLookup.insert({ "empty", new EmptyLevel()});
 
+	powerLookup.insert({ "speed",  SpeedPower::factory });
+	powerLookup.insert({ "wallhack",  WallhackPower::factory });
+
 	tanks.push_back(tank1);
 	tanks.push_back(tank2);
 	
 	/*
 	for (int i = 0; i < 4; i++) {
-		walls.push_back(new Wall(320 - 240*(((3-i)/2) * 2 - 1) - 32*((((3-i)/2) + 1) % 2), i%2 * (320-128), 32, 128, ColorValueHolder(0,255,255)));
+		walls.push_back(new Wall(320 - 240*(((3-i)/2) * 2 - 1) - 32*((((3-i)/2) + 1) % 2), i%2 * (320-128), 32, 128, ColorValueHolder(255,0,255)));
 	}
 	*/
 
 	levelLookup["random"]->initialize();
-
-	edges.push_back(top_edge);
-	edges.push_back(bottom_edge);
-	edges.push_back(left_edge);
-	edges.push_back(right_edge);
-	edges.shrink_to_fit();
 
 	// Initialize GLUT
 	glutInit(&argc, argv);
@@ -510,7 +567,7 @@ int main(int argc, char** argv) {
 
 	// Setup window position, size, and title
 	glutInitWindowPosition(60, 60);
-	glutInitWindowSize(width, height);
+	glutInitWindowSize(width*1.25, height*1.25);
 	glutCreateWindow("Tanks Test");
 
     glPointSize(2);
@@ -530,7 +587,7 @@ int main(int argc, char** argv) {
 	glutReshapeFunc(appReshapeFunc);
 
 	// Set callback to handle mouse clicks
-	glutMouseFunc(appMouseFunc);
+	//glutMouseFunc(appMouseFunc);
 
 	// Set callback to handle mouse dragging
 	glutMotionFunc(appMotionFunc);
@@ -552,6 +609,9 @@ int main(int argc, char** argv) {
 
 	//framelimiter
 	glutTimerFunc(10, tick, tank_dead);
+
+	//mouse function
+	glutMouseFunc(mouse_func);
 
 	// Start the main loop
 	glutMainLoop();

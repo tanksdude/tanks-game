@@ -3,6 +3,7 @@
 #include "mylib.h"
 
 class ColorValueHolder{
+public:
 	friend class ColorMixer;
 	unsigned char R;
 	unsigned char G;

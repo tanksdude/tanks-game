@@ -1,8 +1,9 @@
 #pragma once
-#include "constants.h"
 #include "bullet.h"
+#include "constants.h"
 #include <math.h>
 #include "circle.h"
+#include "colormixer.h"
 
 #if defined WIN32
 #include <freeglut.h>
@@ -21,9 +22,39 @@ Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_) 
 	this->id = id_;
 }
 
+Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_, std::vector<BulletPower*> bp) : Bullet(x_,y_,r_,a,vel,id_) {
+	bulletPowers = bp;
+}
+
 void Bullet::move() {
 	x += velocity*cos(angle);
 	y += velocity*sin(angle);
+}
+
+void Bullet::powerCalculate() {
+	for (int i = bulletPowers.size() - 1; i >= 0; i--) {
+		bulletPowers[i]->tick(); //I don't think any power will use this, but whatever
+		if (bulletPowers[i]->isDone()) {
+			removePower(i);
+		}
+		else { //to make each power last its full length, not n-1 length
+			bulletPowers[i]->powerTick();
+		}
+	}
+}
+
+void Bullet::removePower(int i) {
+	delete bulletPowers[i];
+	bulletPowers.erase(bulletPowers.begin() + i);
+}
+
+ColorValueHolder Bullet::getColor() {
+	if (bulletPowers.size() == 0) {
+		return defaultColor;
+	}
+	else {
+		return ColorMixer::mix(bulletPowers);
+	}
 }
 
 void Bullet::draw() {
@@ -32,7 +63,8 @@ void Bullet::draw() {
 
 void Bullet::draw(double xpos, double ypos) {
 	//main body:
-	glColor3f(defaultColor.getRf(), defaultColor.getGf(), defaultColor.getBf());
+	ColorValueHolder color = getColor();
+	glColor3f(color.getRf(), color.getGf(), color.getBf());
 
 	glBegin(GL_POLYGON);
 
@@ -68,6 +100,8 @@ bool Bullet::isFullyOutOfBounds() {
 }
 
 Bullet::~Bullet() {
-	//remove powers
-	return;
+	for (int i = 0; i < bulletPowers.size(); i++) {
+		delete bulletPowers[i];
+	}
+	bulletPowers.clear();
 }
