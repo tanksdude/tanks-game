@@ -157,7 +157,7 @@ bool PowerFunctionHelper::homingGeneric(Bullet* b, double maxAngleMove, bool mov
 		double* angleDiffs = new double[tanks.size()];
 		for (int i = 0; i < tanks.size(); i++) {
 			if (tanks[i]->getID() == b->getID()) {
-				angleDiffs[i] = 2*PI * 2; //
+				angleDiffs[i] = 2*PI * 2; //is way more than enough
 				continue;
 			}
 			angleDiffs[i] = abs(atan2(b->y - tanks[i]->y, b->x - tanks[i]->x));

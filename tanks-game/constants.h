@@ -40,6 +40,5 @@ extern std::vector<Bullet*> bullets;
 extern std::vector<Level*> levels; //active levels
 extern std::vector<PowerSquare*> powerups;
 
-
 extern std::unordered_map<std::string, Level*> levelLookup;
 extern std::unordered_map<std::string, PowerFunction> powerLookup;

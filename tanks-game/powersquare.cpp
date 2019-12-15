@@ -1,6 +1,4 @@
 #pragma once
-class PowerSquare;
-
 #include <string>
 #include <iostream>
 #include "powersquare.h"

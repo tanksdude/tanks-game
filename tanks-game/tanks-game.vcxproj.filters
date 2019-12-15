@@ -57,9 +57,6 @@
     <ClCompile Include="wall.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="walledge.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="constants.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -195,9 +192,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="wall.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="walledge.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="inheritedpowercommon.h">

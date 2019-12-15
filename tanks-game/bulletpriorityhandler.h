@@ -5,5 +5,5 @@ class BulletPriorityHandler {
 private:
 	//static short getNextHighestTier(Bullet* z, short current_tier);
 public:
-	static Bullet* determinePriority(Bullet* a, Bullet* b); //returns whichever wins; returns null if equal and both die, junk bullet if both live
+	static char determinePriority(Bullet* a, Bullet* b); //-1 is both die, 0 is a dies, 1 is b dies, >=2 is neither dies //the Java way is to return an int
 };

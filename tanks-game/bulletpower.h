@@ -9,7 +9,9 @@ class BulletPower;
 #include "inheritedpowercommon.h"
 #include "tankpower.h"
 
-typedef bool (BulletPower::*memberFuncPointerForBulletPower)(Bullet*, Wall*);
+//TODO long-term: look into std::shared_ptr<BulletPower> for stronger memory management
+//(note to self: a bulletpower would need to make a "child" of itself in the case of banana (delete a banana from list of bulletpowers), in order to have super strong memory management)
+//that would probably be really complex to fully implement (but simple enough to think about? maybe it is simple to implement) so that will wait
 
 class BulletPower : public InheritedPowerCommon{
 	friend class PowerFunctionHelper;

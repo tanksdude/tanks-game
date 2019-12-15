@@ -239,6 +239,7 @@ void Tank::draw(double xpos, double ypos) {
 	sortedTankPowers.reserve(tankPowers.size());
 	for (int i = 0; i < tankPowers.size(); i++) {
 		//insertion sort because I don't want to think about something more complex for something this small
+		//insertion sort has best case O(n) when the list is mostly/entirely sorted, which is possible to get but I don't because it's reversed (easy fix, do later)
 		sortedTankPowers.push_back(tankPowers[i]);
 		for (int j = sortedTankPowers.size() - 1; j >= 1; j--) {
 			if (sortedTankPowers[j]->timeLeft/sortedTankPowers[j]->maxTime > sortedTankPowers[j-1]->timeLeft/sortedTankPowers[j-1]->maxTime){
