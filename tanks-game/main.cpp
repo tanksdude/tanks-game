@@ -2,7 +2,6 @@
 #include <iostream>
 #include <vector>
 #include <time.h>
-#include <unordered_map>
 #include "colorvalueholder.h"
 #include "tank.h"
 #include "cannonpoint.h"
@@ -32,6 +31,9 @@
 #include "multishottankpower.h"
 #include "multishotbulletpower.h"
 #include "multishotpower.h"
+#include "bouncetankpower.h"
+#include "bouncebulletpower.h"
+#include "bouncepower.h"
 
 #if defined WIN32
 #include <freeglut.h>
@@ -579,7 +581,7 @@ int main(int argc, char** argv) {
 
 	powerLookup.insert({ "speed",  SpeedPower::factory });
 	powerLookup.insert({ "wallhack",  WallhackPower::factory });
-	//powerLookup.insert({ "bounce",  BouncePower::factory });
+	powerLookup.insert({ "bounce",  BouncePower::factory });
 	powerLookup.insert({ "multishot", MultishotPower::factory });
 
 	tanks.push_back(tank1);

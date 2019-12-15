@@ -135,6 +135,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="bouncebulletpower.cpp" />
+    <ClCompile Include="bouncepower.cpp" />
+    <ClCompile Include="bouncetankpower.cpp" />
     <ClCompile Include="bullet.cpp" />
     <ClCompile Include="bulletpriorityhandler.cpp" />
     <ClCompile Include="cannonpoint.cpp" />
@@ -164,6 +167,9 @@
     <ClCompile Include="wallhacktankpower.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="bouncebulletpower.h" />
+    <ClInclude Include="bouncepower.h" />
+    <ClInclude Include="bouncetankpower.h" />
     <ClInclude Include="bullet.h" />
     <ClInclude Include="bulletpower.h" />
     <ClInclude Include="bulletpriorityhandler.h" />
