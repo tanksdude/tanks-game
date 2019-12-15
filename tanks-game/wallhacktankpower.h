@@ -20,6 +20,9 @@ public:
 
 	//bool modifiesCollisionWithWall = true;
 	virtual bool modifiedCollisionWithWall(Tank*, Wall*);
+	//bool overridesCollisionWithWall = true;
+	//bool modifiedCollisionWithWallCanWorkWithOthers = false;
+	//bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;
 
 	//virtual double getOffenseTier();
 	//virtual double getOffenseValue();

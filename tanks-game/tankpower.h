@@ -33,15 +33,27 @@ public:
 
 	bool modifiesMovement = false;
 	virtual void modifiedMovement(Tank*) { return; }
+	bool overridesMovement = false; //set to true if the power completely changes how it moves; regular powers slightly modify movement and still want basic tank move
+	bool modifiedMovementCanWorkWithOthers = true; //stops later powerups in list from activating
+	bool modifiedMovementCanOnlyWorkIndividually = false; //if another power was used previously, this power can't activate
 
 	bool modifiesCollisionWithEdge = false;
 	virtual bool modifiedEdgeCollision(Tank*) { return false; }
+	bool overridesEdgeCollision = true;
+	bool modifiedEdgeCollisionCanWorkWithOthers = true;
+	bool modifiedEdgeCollisionCanOnlyWorkIndividually = false;
 
 	bool modifiesCollisionWithTank = false;
 	virtual bool modifiedCollisionWithTank(Tank* parent, Tank* other) { return false; }
+	bool overridesCollisionWithTank = true;
+	bool modifiedCollisionWithTankCanWorkWithOthers = true;
+	bool modifiedCollisionWithTankCanOnlyWorkIndividually = false;
 	
 	bool modifiesCollisionWithWall = false;
 	virtual bool modifiedCollisionWithWall(Tank*, Wall*) { return false; }
+	bool overridesCollisionWithWall = true;
+	bool modifiedCollisionWithWallCanWorkWithOthers = true; //big: set to false
+	bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;
 
 	//bool modifiesCollisionWithPower = false;
 	//virtual void modifiedCollisionWithPower(Tank*, Power*) { return; } //probably not going to be used
@@ -54,15 +66,27 @@ public:
 
 	bool modifiesShooting = false;
 	virtual void modifiedShooting(Tank* parent) { return; } //for melee-class powerups
+	bool overridesShooting = true; //false? dunno
+	bool modifiedShootingCanWorkWithOthers = true;
+	bool modifiedShootingCanOnlyWorkIndividually = false;
 
 	bool modifiesAdditionalShooting = false;
-	virtual void additionalShooting(Tank* parent) { return; } //for regular powerups
+	virtual void additionalShooting(Tank* parent, CannonPoint) { return; } //for regular powerups (triple and shotgun)
+	bool overridesAdditionalShooting = false; //probably should only be false
+	bool additionalShootingCanWorkWithOthers = true; //probably should only be true
+	bool additionalShootingCanOnlyWorkIndividually = false;
 
 	bool addsShootingPoints = false;
 	virtual void addShootingPoints(Tank*, std::vector<CannonPoint>*) { return; } //shouldn't need the Tank*
+	bool overridesAddShootingPoints = false; //should only be false
+	bool addShootingPointsCanWorkWithOthers = true; //should only be true
+	bool addShootingPointsCanOnlyWorkIndividually = false;
 	
 	bool modifiesTankDrawings = false;
 	virtual void modifiedTankDrawings(Tank* parent) { return; }
+	bool overridesTankDrawings = false;
+	bool modifiedTankDrawingsCanWorkWithOthers = true;
+	bool modifiedTankDrawingsCanOnlyWorkIndividually = false;
 
 	virtual double getShootingMultiplier() { return 1; }
 	//virtual double getOffenseTier() { return 0; }

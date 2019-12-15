@@ -20,12 +20,15 @@ public:
 
 	//bool addsShootingPoints = true;
 	virtual void addShootingPoints(Tank*, std::vector<CannonPoint>*);
+	//bool overridesAddShootingPoints = false;
+	//bool addShootingPointsCanWorkWithOthers = true;
+	//bool addShootingPointsCanOnlyWorkIndividually = false;
 
 	virtual double getShootingMultiplier() { return .5; }
-	//virtual double getOffenseTier(); //don't want it to be a variable because a function can change its value much easier
-	//virtual double getOffenseValue(); //only one tier per power
+	//virtual double getOffenseTier();
+	//virtual double getOffenseValue();
 	//virtual double getDefenseTier();
-	//virtual double getDefenseValue(); //return 0 by default, else 1 probably
+	//virtual double getDefenseValue();
 
 	MultishotTankPower();
 };

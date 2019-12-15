@@ -146,6 +146,9 @@
     <ClCompile Include="colorvalueholder.cpp" />
     <ClCompile Include="constants.cpp" />
     <ClCompile Include="emptylevel.cpp" />
+    <ClCompile Include="homingbulletpower.cpp" />
+    <ClCompile Include="homingpower.cpp" />
+    <ClCompile Include="homingtankpower.cpp" />
     <ClCompile Include="leveleffect.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="multishotbulletpower.cpp" />
@@ -160,6 +163,9 @@
     <ClCompile Include="speedpower.cpp" />
     <ClCompile Include="speedtankpower.cpp" />
     <ClCompile Include="tank.cpp" />
+    <ClCompile Include="triplebulletpower.cpp" />
+    <ClCompile Include="triplepower.cpp" />
+    <ClCompile Include="tripletankpower.cpp" />
     <ClCompile Include="wall.cpp" />
     <ClCompile Include="walledge.cpp" />
     <ClCompile Include="wallhackbulletpower.cpp" />
@@ -182,6 +188,9 @@
     <ClInclude Include="constants.h" />
     <ClInclude Include="emptylevel.h" />
     <ClInclude Include="hazard.h" />
+    <ClInclude Include="homingbulletpower.h" />
+    <ClInclude Include="homingpower.h" />
+    <ClInclude Include="homingtankpower.h" />
     <ClInclude Include="inheritedpowercommon.h" />
     <ClInclude Include="level.h" />
     <ClInclude Include="leveleffect.h" />
@@ -200,6 +209,9 @@
     <ClInclude Include="speedtankpower.h" />
     <ClInclude Include="tank.h" />
     <ClInclude Include="tankpower.h" />
+    <ClInclude Include="triplebulletpower.h" />
+    <ClInclude Include="triplepower.h" />
+    <ClInclude Include="tripletankpower.h" />
     <ClInclude Include="wall.h" />
     <ClInclude Include="walledge.h" />
     <ClInclude Include="wallhackbulletpower.h" />

@@ -1,4 +1,6 @@
 #pragma once
+class ColorMixer;
+
 #include <vector>
 #include "colorvalueholder.h"
 #include "power.h"

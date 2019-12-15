@@ -20,6 +20,9 @@ public:
 	
 	//bool modifiesCollisionWithWall = true;
 	virtual bool modifiedCollisionWithWall(Bullet*, Wall*);
+	//bool overridesCollisionWithWall = true; //false means also use the default
+	//bool modifiedCollisionWithWallCanWorkWithOthers = false;
+	//bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;
 
 	//virtual double getOffenseTier() { return 0; } //don't want it to be a variable because a function can change its value much easier
 	//virtual double getOffenseValue() { return 0; } //only one tier per power

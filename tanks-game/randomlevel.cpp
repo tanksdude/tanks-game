@@ -22,8 +22,12 @@ void RandomLevel::initialize() {
 	powerups.push_back(new PowerSquare(40, 20, "wallhack"));
 	powerups.push_back(new PowerSquare(60, 20, "bounce"));
 	powerups.push_back(new PowerSquare(80, 20, "multishot"));
+	powerups.push_back(new PowerSquare(100, 20, "triple"));
+	powerups.push_back(new PowerSquare(120, 20, "homing"));
+
 	powerups.push_back(new PowerSquare(GAME_WIDTH-20, GAME_HEIGHT-20, new std::string[2]{ "multishot", "multishot" }, 2));
 	powerups.push_back(new PowerSquare(GAME_WIDTH-40, GAME_HEIGHT-20, new std::string[2]{ "speed", "wallhack" }, 2));
+	powerups.push_back(new PowerSquare(GAME_WIDTH-60, GAME_HEIGHT-20, new std::string[2]{ "bounce", "homing" }, 2));
 }
 
 Wall* RandomLevel::makeNewWall(double x_beginning, double y_beginning, double width_ofArea, double height_ofArea, ColorValueHolder c, double minW, double minH, double maxW, double maxH) {

@@ -25,13 +25,6 @@ public:
 	//virtual HazardPower* makeHazardPower() = 0;
 
 	static Power* factory();
-
-	/*
-	friend bool operator== (Power& a, Power& b) {
-		return a.getName() == b.getName();
-	}
-	Power(Power& other);
-	*/
 };
 
 
@@ -39,21 +32,21 @@ public:
 list of (eventual) powers:
 |speed
 |wallhack
-|bounce
 |multishot
-homing
-triple shot (note to self: use PI/16 as the angle difference, not PI/8; will work much better with multishot)
-grenade?
-fire?
-banana (will be tough unless I did everything correctly)
-barrier (if hit, provides one extra hitpoint (basically life, but might add some differences))
+|bounce
+|triple shot (any want for shotgun?)
+|homing
 invincibility (tier 1)
 big (tier 2)
 mega-death (variable big)
 the super (tier 3) (name WIP) (come on, of course the name isn't going to be temporary!)
+grenade?
+fire?
+banana (will be tough unless I did everything correctly)
 godmode
+barrier (if hit, provides one extra hitpoint (basically life, but might add some differences))
 super life/shield/barrier (barrier health dependent on time left on power)
-swarm (check notes if you forgot, me)
+swarm (check notes if you forgot, me) (modifiedMovementCanOnlyWorkIndividually = true?)
 
 powers that are rare because the level wants them, not because they're good:
 mines
@@ -85,6 +78,7 @@ boomerang (non-refillable? except when the shot is destroyed)
 shurikan (shouldn't be too hard, especially if blast gets in)
 teleport? (will have a teleport hazard, but how would a powerup look like? the longer you hold down shoot the further you'll teleport?)
 ring-shooter? (shoots a ring of bullets; just looks amusing) (multishot but all the angles are the same)
+trickster (moves in circles around its path; imagine MewTwo's shadow ball)
 
 
 things the powers need to access, override, and/or deal with (of bullets and tanks, probably hazards too):

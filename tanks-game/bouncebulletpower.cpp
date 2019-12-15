@@ -8,7 +8,7 @@
 const short BounceBulletPower::maxBounces = 16;
 
 bool BounceBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
-	if (abs(b->velocity) <= 1) {
+	if (abs(b->velocity) <= .5) {
 		if (PowerFunctionHelper::bounceGenericWithCorners(b, w)) {
 			bouncesLeft--;
 		}
@@ -91,5 +91,6 @@ BounceBulletPower::BounceBulletPower(){
 
 	bouncesLeft = BounceBulletPower::maxBounces;
 	modifiesCollisionWithWall = true;
+	//modifiedCollisionWithWallCanWorkWithOthers = false;
 	modifiesCollisionWithEdge = true;
 }

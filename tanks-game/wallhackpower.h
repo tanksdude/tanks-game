@@ -14,7 +14,7 @@ public:
 	virtual std::string getName() { return WallhackPower::getClassName(); }
 	static std::string getClassName() { return "wallhack"; }
 	virtual ColorValueHolder getColor() { return WallhackPower::getClassColor(); }
-	static ColorValueHolder getClassColor() { return ColorValueHolder(0xFF, 0xFF, 0x00); }
+	static ColorValueHolder getClassColor() { return ColorValueHolder(0xFF, 0xFF, 0x00); } //yellow
 
 	virtual TankPower* makeTankPower();
 	virtual BulletPower* makeBulletPower();

@@ -14,6 +14,7 @@
 #include "bulletpriorityhandler.h"
 #include "colormixer.h"
 #include "powerfunctionhelper.h"
+#include "mylib.h"
 
 //levels:
 #include "randomlevel.h"
@@ -34,6 +35,12 @@
 #include "bouncetankpower.h"
 #include "bouncebulletpower.h"
 #include "bouncepower.h"
+#include "tripletankpower.h"
+#include "triplebulletpower.h"
+#include "triplepower.h"
+#include "homingtankpower.h"
+#include "homingbulletpower.h"
+#include "homingpower.h"
 
 #if defined WIN32
 #include <freeglut.h>
@@ -51,6 +58,11 @@ unordered_map<int, bool> specialKeyStates;
 Tank* tank1 = new Tank(20, 160, 0, 0, "WASD");
 Tank* tank2 = new Tank(620, 160, PI, 1, "Arrow Keys");
 int tank_dead = 0;
+
+long frameCount = 0; //doesn't need a long for how it's interpreted...
+long ticksUntilFrame = 2;
+int physicsRate = 100;
+bool currentlyDrawing = false;
 
 bool leftMouse = false;
 bool rightMouse = false;
@@ -70,6 +82,8 @@ int height = 600;
 // A function to draw the scene
 //-------------------------------------------------------
 void appDrawScene() {
+	currentlyDrawing = true;
+
 	// Clear the screen
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -112,6 +126,8 @@ void appDrawScene() {
 	// Swap the buffers to see the result of what we drew
 	glFlush();
 	glutSwapBuffers();
+
+	currentlyDrawing = false;
 }
 
 //-------------------------------------------------------
@@ -342,7 +358,8 @@ void special_keyboard_up(int key, int x, int y) {
 }
 
 
-void tick(int){ //pass in physics rate eventually
+void tick(int physicsUPS){
+	//while (currentlyDrawing) {}
 
 	//temporary: need to figure out better implementation
 	tanks[0]->forward = normalKeyStates['w'];
@@ -376,8 +393,6 @@ void tick(int){ //pass in physics rate eventually
 			}
 		}
 	}
-
-	//cout << WallhackPower::getClassColor().getBf() << endl;
 
 	for (int i = 0; i < tanks.size(); i++) {
 		tanks[i]->powerCalculate();
@@ -428,11 +443,25 @@ void tick(int){ //pass in physics rate eventually
 	//bullet to edge collision:
 	for (int i = bullets.size() - 1; i >= 0; i--) {
 		bool modifiedEdgeCollision = false;
+		bool overridedEdgeCollision = false;
+		bool noMoreEdgeCollisionSpecials = false;
 		bool shouldBeKilled = false;
 		
 		for (int k = 0; k < bullets[i]->bulletPowers.size(); k++) {
 			if (bullets[i]->bulletPowers[k]->modifiesCollisionWithEdge) {
+				if (bullets[i]->bulletPowers[k]->modifiedEdgeCollisionCanOnlyWorkIndividually && modifiedEdgeCollision) {
+					continue;
+				}
+				if (noMoreEdgeCollisionSpecials) {
+					continue;
+				}
 				modifiedEdgeCollision = true;
+				if (bullets[i]->bulletPowers[k]->overridesEdgeCollision) {
+					overridedEdgeCollision = true;
+				}
+				if (!bullets[i]->bulletPowers[k]->modifiedEdgeCollisionCanWorkWithOthers) {
+					noMoreEdgeCollisionSpecials = true;
+				}
 				bool check_temp = bullets[i]->bulletPowers[k]->modifiedEdgeCollision(bullets[i]);
 				if (check_temp) {
 					shouldBeKilled = true;
@@ -440,7 +469,7 @@ void tick(int){ //pass in physics rate eventually
 			}
 		}
 
-		if (modifiedEdgeCollision) {
+		if (overridedEdgeCollision) {
 			continue;
 		}
 		if (bullets[i]->isFullyOutOfBounds()) {
@@ -452,24 +481,36 @@ void tick(int){ //pass in physics rate eventually
 
 	//bullet to wall collision:
 	for (int i = bullets.size() - 1; i >= 0; i--) {
-		bool modifiedWallCollision = false;
 		bool shouldBeDeleted = false;
 
-		for (int j = 0; j < walls.size(); j++) {
+		for (int j = walls.size() - 1; j >= 0; j--) {
+			bool modifiedWallCollision = false;
+			bool overridedWallCollision = false;
+			bool noMoreWallCollisionSpecials = false;
+			
 			for (int k = 0; k < bullets[i]->bulletPowers.size(); k++) {
-				//cout << temp << " " << (temp==nullptr) << endl;
 				if (bullets[i]->bulletPowers[k]->modifiesCollisionWithWall) {
+					if (bullets[i]->bulletPowers[k]->modifiedCollisionWithWallCanOnlyWorkIndividually && modifiedWallCollision) {
+						continue;
+					}
+					if (noMoreWallCollisionSpecials) {
+						continue;
+					}
 					modifiedWallCollision = true;
-					//cout << temp(bullets[i], walls[j]) << endl;
+					if (bullets[i]->bulletPowers[k]->overridesCollisionWithWall) {
+						overridedWallCollision = true;
+					}
+					if (!bullets[i]->bulletPowers[k]->modifiedCollisionWithWallCanWorkWithOthers) {
+						noMoreWallCollisionSpecials = true;
+					}
 					bool check_temp = bullets[i]->bulletPowers[k]->modifiedCollisionWithWall(bullets[i], walls[j]);
-					//cout << check_temp << endl;
 					if (check_temp) {
 						shouldBeDeleted = true;
 					}
 				}
 			}
 
-			if (modifiedWallCollision) {
+			if (overridedWallCollision) {
 				continue;
 			}
 
@@ -562,17 +603,22 @@ void tick(int){ //pass in physics rate eventually
 	}
 	*/
     
-    glutPostRedisplay();
 
 	if (tank_dead == 0) {
-		glutTimerFunc(10, tick, tank_dead);
+		glutTimerFunc(1000/physicsUPS, tick, physicsUPS);
+		if (frameCount == 0) {
+			glutPostRedisplay();
+		}
+		++frameCount %= ticksUntilFrame;
 	} else {
 		tank_dead = 0;
+		glutPostRedisplay();
 		glutTimerFunc(1000, ResetThings::reset, 0);
-		glutTimerFunc(1010, tick, tank_dead);
+		glutTimerFunc(1000 + 1000/physicsUPS, tick, physicsUPS);
 	}
 }
-void tick() { tick(tank_dead); }
+void tick() { tick(physicsRate); }
+void draw() { glutPostRedisplay(); }
 
 
 int main(int argc, char** argv) {
@@ -595,6 +641,8 @@ int main(int argc, char** argv) {
 	powerLookup.insert({ "wallhack",  WallhackPower::factory });
 	powerLookup.insert({ "bounce",  BouncePower::factory });
 	powerLookup.insert({ "multishot", MultishotPower::factory });
+	powerLookup.insert({ "triple", TriplePower::factory });
+	powerLookup.insert({ "homing", HomingPower::factory });
 
 	tanks.push_back(tank1);
 	tanks.push_back(tank2);
@@ -607,6 +655,9 @@ int main(int argc, char** argv) {
 	}
 	*/
 
+	//TODO: proper solution
+	tanks[0]->determineShootingAngles();
+	tanks[1]->determineShootingAngles();
 	levelLookup["random"]->initialize();
 
 	// Initialize GLUT
@@ -654,9 +705,10 @@ int main(int argc, char** argv) {
 
     // Set callback for the idle function
     //glutIdleFunc(tick);
+	//glutIdleFunc(draw);
 
 	//framelimiter
-	glutTimerFunc(10, tick, tank_dead);
+	glutTimerFunc(1000/physicsRate, tick, physicsRate);
 
 	//mouse function
 	glutMouseFunc(mouse_func);
@@ -669,7 +721,14 @@ int main(int argc, char** argv) {
 /*
  * estimated total completion:
  * 75% theoretical foundation: no hazards
- * 50% actual foundation: not every "modification function" actually does something in the main
- * 15% game code: I mean there's not much; few levels (one, unless empty counts), few powerups
- * last build: 10% actual game code: I forgot the differences but I had to rewrite inheritedpowercommon stuff and bounce works correctly now
+ * 55% actual foundation: not every "modification function" actually does something in the main
+ * 15% game code:
+ * * first off, don't know what will be final beyond the ideas located in power.h and elsewhere
+ * * second, it's a complete estimate (obviously) and this is a restatement of the first
+ * * third, 100% probably won't be "finished" on this scale (restatement of the second?)
+ * * fourth, percentage is horribly imprecise because, like most people, I think about completion percentages on personal projects in 5% increments (restatement of third)
+ * * fifth, here's what's next: 
+ * * * complete overhaul of drawing; draw on GPU, not CPU; use VBOs
+ * * * invincibility series of powerups (overhaul priority handling)
+ * * * even later: newer levels
 */

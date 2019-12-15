@@ -96,40 +96,56 @@ void Tank::shoot() {
 		*/
 
 		for (int i = 0; i < shootingPoints->size(); i++) {
-			std::vector<BulletPower*>* bp = new std::vector<BulletPower*>;
-			for (int i = 0; i < tankPowers.size(); i++) {
-				bp->push_back(tankPowers[i]->makeBulletPower());
+			bool modifiedAdditionalShooting = false;
+			bool overridedShooting = false;
+			bool noMoreOtherAdditionalShooting = false;
+
+			for (int j = 0; j < tankPowers.size(); j++) {
+				if (tankPowers[j]->modifiesAdditionalShooting) {
+					if (tankPowers[j]->additionalShootingCanOnlyWorkIndividually && modifiedAdditionalShooting) {
+						continue;
+					}
+					if (noMoreOtherAdditionalShooting) {
+						continue;
+					}
+					modifiedAdditionalShooting = true;
+					if (tankPowers[j]->overridesAdditionalShooting) {
+						overridedShooting = true;
+					}
+					if (!tankPowers[j]->additionalShootingCanWorkWithOthers) {
+						noMoreOtherAdditionalShooting = true;
+					}
+					tankPowers[j]->additionalShooting(this, shootingPoints->at(i));
+				}
 			}
-			makeBullet(x + r*cos(shootingPoints->at(i).angle + angle), y + r*sin(shootingPoints->at(i).angle + angle), shootingPoints->at(i).angle + angle, r/4, maxSpeed*2, bp); //should be maxSpeed*4
+
+			if (!overridedShooting){
+				defaultMakeBullet(x + r*cos(shootingPoints->at(i).angle + angle), y + r*sin(shootingPoints->at(i).angle + angle), shootingPoints->at(i).angle + angle); //should be maxSpeed*4
+			}
 		}
-		//don't delete any bp! it's being used!
 		//makeBullet(x + r*cos(angle), y + r*sin(angle), angle, r/4, maxSpeed*2, bp); //should be maxSpeed*4
 		//std::cout << "3: " << shootingPoints->size() << " " << bullets.size() << std::endl;
 
 		shootCount = maxShootCount * getShootingSpeedMultiplier();
 	}
-
-	//if (shooting && shootCount <= 0) {
-		//figure it out later
-
-
-		/*
-		if (this.specialShooting)
-			for (let i = 0; i<this.power.type.length; i++)
-				tankShooting[this.power.type[i]](this.index);
-		else
-			shots.push(new Shot(this.xpos + Math.cos(this.angle)*this.size, this.ypos + Math.sin(this.angle)*this.size, this.angle, this.maxSpeed*this.shotVelocityMultiplier, 0, 0, 0, this.index, this.size / 4 * this.shotSizeMultiplier, this.shootingPower)); //normal
-		*/
-		//this.shootCount = shootSpeed*this.shootMultiplier;
-	//}
 }
 
-void Tank::makeBullet(double x, double y, double angle, double radius, double speed, std::vector<BulletPower*>* bp) {
-	Bullet* temp = new Bullet(x, y, radius, angle, speed, id, *bp);
-	for (int i = 0; i < bp->size(); i++) {
-		temp->bulletPowers[i]->initialize(temp);
+void Tank::makeBullet(double x, double y, double angle, double radius, double speed) {
+	std::vector<BulletPower*>* bp = new std::vector<BulletPower*>;
+	for (int k = 0; k < tankPowers.size(); k++) {
+		bp->push_back(tankPowers[k]->makeBulletPower());
 	}
+	bp->shrink_to_fit();
+
+	Bullet* temp = new Bullet(x, y, radius, angle, speed, id, *bp);
 	bullets.push_back(temp);
+
+	//delete bp;
+	//don't delete any bp! it's being used! //(doesn't bp need to be deleted though?)
+}
+
+inline void Tank::defaultMakeBullet(double x, double y, double angle) {
+	makeBullet(x, y, angle, r/4, maxSpeed*2);
 }
 
 void Tank::determineShootingAngles() {
@@ -181,6 +197,7 @@ void Tank::removePower(int index) {
 	tankPowers[index]->removeEffects(this);
 	delete tankPowers[index];
 	tankPowers.erase(tankPowers.begin() + index);
+	determineShootingAngles();
 }
 
 void Tank::powerReset() {
@@ -259,6 +276,19 @@ void Tank::draw(double xpos, double ypos) {
 
 	glEnd();
 
+	//other barrels:
+	glColor4f(.5, .5, .5, .25);
+	glLineWidth(2);
+
+	glBegin(GL_LINES);
+
+	for (int i = 1; i < shootingPoints->size(); i++) {
+		glVertex2f(x, y);
+		glVertex2f(x + r*cos(angle + shootingPoints->at(i).angle), y + r*sin(angle + shootingPoints->at(i).angle));
+	}
+
+	glEnd();
+
 	//outline:
 	glColor3f(0, 0, 0);
 	glLineWidth(2);
@@ -278,76 +308,9 @@ void Tank::draw(double xpos, double ypos) {
 	glBegin(GL_LINES);
 
 	glVertex2f(x, y);
-	glVertex2f(x + r*cos(angle), y + r*sin(angle));
+	glVertex2f(x + r * cos(angle), y + r * sin(angle));
 
 	glEnd();
-
-	//if (shootCount > 0) { //shooting countdown
-		
-
-		/*
-		canvas.beginPath();
-		canvas.arc(this.xpos*multiplier, yp*multiplier, (this.size + 4)*multiplier, this.angle, Math.PI * 2 * this.shootCount / (shootSpeed*this.shootMultiplier) + this.angle); // *5/4
-		canvas.lineTo(this.xpos*multiplier, yp*multiplier);
-		canvas.fillStyle = defaultColor; //getColor()
-		canvas.fill();
-		*/
-	//}
-	if (false /*this.power.color.length>0*/) { //power-up countdown
-		
-
-		/*
-		let powerOrder = this.powerCount.slice(0); //sort the power colors from greatest amount left to least amount left (then reverse)
-		for (let i = 0; i<powerOrder.length; i++)
-			powerOrder[i] /= this.maxPowerCount[i];
-		powerOrder = powerCountSort(powerOrder);
-		//for(let i=0; i<powerOrder[0].length; i++)
-		//powerOrder[0][i]*=this.maxPowerCount[powerOrder[1][i]];
-		for (let i = powerOrder[0].length - 1; i >= 0; i--) { //drawn in reverse order, was done so the power countdowns don't overlap others so you can see all countdowns
-			canvas.beginPath();
-			canvas.arc(this.xpos*multiplier, yp*multiplier, (this.size + 2)*multiplier, this.angle, Math.PI * 2 * powerOrder[0][i]/(0&this.maxPowerCount[powerOrder[1][i]] +1) + this.angle); // *9/8
-			canvas.lineTo(this.xpos*multiplier, yp*multiplier);
-			canvas.fillStyle = this.power.color[powerOrder[1][i]];
-			canvas.fill();
-		}
-		*/
-	}
-
-	/*
-	canvas.beginPath(); //tank body
-	canvas.arc(this.xpos*multiplier, yp*multiplier, this.size*multiplier, 0, Math.PI * 2);
-
-	//not used:
-	if(document.getElementById("powerFade").checked){
-	if(this.power.rainbow)
-	canvas.fillStyle=colorMix(this.colorDefault,level.getRainbow(),this.powerCount[this.power.type.indexOf(18)]/this.maxPowerCount[this.power.type.indexOf(18));
-	else if(this.power.color.length>0){
-	let colors=[];
-	for(let i=0; i<this.power.color.length; i++)
-	colors.push(colorMix(this.colorDefault,this.power.color[i],this.powerCount[i]/this.maxPowerCount[i]));
-	canvas.fillStyle=colorCombine(colors);
-	}else
-	canvas.fillStyle=this.colorDefault;
-	}else{
-	//end not used
-
-	if (this.power.rainbow)
-		canvas.fillStyle = level.getRainbow();
-	else if (this.power.color.length>0)
-		canvas.fillStyle = colorCombine(this.power.color);
-	else
-		canvas.fillStyle = this.colorDefault;
-	//}
-	canvas.fill();
-	*/
-
-	/*
-	if (!performanceMode && this.power.type.length>0 && !this.power.rainbow) //extra lines
-		for (let i = 0; i<this.power.type.length; i++)
-			extraTankDrawings[this.power.type[i]](this.xpos, yp, this.size, this.angle);
-	*/
-
-	
 }
 
 void Tank::drawName() {
@@ -419,6 +382,7 @@ void Tank::resetThings(double x, double y, double a, char id, std::string name) 
 	velocity = 0;
 
 	this->powerReset();
+	determineShootingAngles();
 }
 
 void Tank::edgeConstrain() {
