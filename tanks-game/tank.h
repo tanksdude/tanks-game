@@ -1,17 +1,26 @@
 #pragma once
-#include "circle.h"
-#include "colorvalueholder.h"
+class Tank;
+
 #include <string>
 #include <vector>
+#include "circle.h"
+#include "colorvalueholder.h"
 #include "resetthings.h"
+#include "powerfunctionhelper.h"
+#include "tankpower.h"
+#include "bulletpower.h"
+//include hazardpower?
 
 class Tank : public Circle {
+public:
 	friend class ResetThings;
 	friend class Level; //might remove
+	friend class PowerFunctionHelper;
 	char id;
 	std::string name;
 
 	int wins = 0;
+	std::vector<TankPower*> tankPowers;
 
 	double maxSpeed = 1;
 	double acceleration = 1.0/16; //intentional acceleration, not total
@@ -26,6 +35,10 @@ public:
 	bool shooting;
 	//bool backwards; //not the point of the game
 
+	double& giveMaxSpeed() { return maxSpeed; }
+	double& giveX() { return x; }
+	double& giveY() { return y; }
+
 private:
 	ColorValueHolder defaultColor = ColorValueHolder(0x88, 0x88, 0x88);
 	bool dead = false;
@@ -36,9 +49,9 @@ private:
 	void resetThings(double x, double y, double a, char id, std::string name);
 
 	double shootCount = 0;
-	double maxShootCount = 200; //temporary?
+	double maxShootCount = 200; //temporary? //should be 100
 
-	//CannonPoint thing; //position on where to shoot, just needs radius input
+	//std::vector<double> getCannonPoints();
 
 	//std::vector<Power> powers;
 	/*
@@ -60,17 +73,21 @@ private:
 	*/
 
 public:
+	//helper stuff:
+	ColorValueHolder getBodyColor();
+
+public:
 	Tank(double x, double y, double a, char id, std::string name);
 	Tank();
 
 	void move();
 	void terminalVelocity(); //move to protected
-	void edgeConstrain(); //hitEdge but doesn't use a "WallEdge"
+	void edgeConstrain();
 	bool isPartiallyOutOfBounds();
 	bool isFullyOutOfBounds();
 	void shoot();
 	void powerCalculate();
-	void removePower();
+	void removePower(int index);
 	void powerReset();
 	void draw();
 	void draw(double xpos, double ypos);

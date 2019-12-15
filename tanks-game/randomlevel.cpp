@@ -2,6 +2,7 @@
 #include "randomlevel.h"
 #include "constants.h"
 #include "tank.h"
+#include "powersquare.h"
 #include <time.h>
 #include <math.h>
 
@@ -14,8 +15,12 @@ void RandomLevel::initialize() {
 	ColorValueHolder randColor(rand()%256, rand()%256, rand()%256);
 
 	for (int i = 0; i < 16; i++) {
-		walls.push_back(RandomLevel::makeNewWall(32, 32, GAME_WIDTH - 2*32, GAME_HEIGHT - 2*32, randColor));
+		walls.push_back(RandomLevel::makeNewWall(40, 32, GAME_WIDTH - 2*40, GAME_HEIGHT - 2*32, randColor));
 	}
+
+	powerups.push_back(new PowerSquare(20, 20, "speed"));
+	//powerups.push_back(new PowerSquare(20, 40, "speed"));
+	powerups.push_back(new PowerSquare(20, 40, "wallhack"));
 }
 
 Wall* RandomLevel::makeNewWall(double x_beginning, double y_beginning, double width_ofArea, double height_ofArea, ColorValueHolder c, double minW, double minH, double maxW, double maxH) {

@@ -138,19 +138,26 @@
     <ClCompile Include="bullet.cpp" />
     <ClCompile Include="bulletpriorityhandler.cpp" />
     <ClCompile Include="collisionhandler.cpp" />
+    <ClCompile Include="colormixer.cpp" />
     <ClCompile Include="colorvalueholder.cpp" />
     <ClCompile Include="constants.cpp" />
     <ClCompile Include="emptylevel.cpp" />
     <ClCompile Include="leveleffect.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mylib.cpp" />
+    <ClCompile Include="powerfunctionhelper.cpp" />
     <ClCompile Include="powersquare.cpp" />
     <ClCompile Include="randomlevel.cpp" />
     <ClCompile Include="resetthings.cpp" />
+    <ClCompile Include="speedbulletpower.cpp" />
+    <ClCompile Include="speedpower.cpp" />
     <ClCompile Include="speedtankpower.cpp" />
     <ClCompile Include="tank.cpp" />
     <ClCompile Include="wall.cpp" />
     <ClCompile Include="walledge.cpp" />
+    <ClCompile Include="wallhackbulletpower.cpp" />
+    <ClCompile Include="wallhackpower.cpp" />
+    <ClCompile Include="wallhacktankpower.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h" />
@@ -164,20 +171,26 @@
     <ClInclude Include="constants.h" />
     <ClInclude Include="emptylevel.h" />
     <ClInclude Include="hazard.h" />
+    <ClInclude Include="inheritedpowercommon.h" />
     <ClInclude Include="level.h" />
     <ClInclude Include="leveleffect.h" />
     <ClInclude Include="mylib.h" />
     <ClInclude Include="power.h" />
+    <ClInclude Include="powerfunctionhelper.h" />
     <ClInclude Include="powersquare.h" />
     <ClInclude Include="randomlevel.h" />
     <ClInclude Include="rect.h" />
     <ClInclude Include="resetthings.h" />
+    <ClInclude Include="speedbulletpower.h" />
     <ClInclude Include="speedpower.h" />
     <ClInclude Include="speedtankpower.h" />
     <ClInclude Include="tank.h" />
     <ClInclude Include="tankpower.h" />
     <ClInclude Include="wall.h" />
     <ClInclude Include="walledge.h" />
+    <ClInclude Include="wallhackbulletpower.h" />
+    <ClInclude Include="wallhackpower.h" />
+    <ClInclude Include="wallhacktankpower.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="freeglut.dll" />

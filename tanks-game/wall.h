@@ -1,10 +1,14 @@
 #pragma once
+class Wall;
+
 #include "rect.h"
 #include "colorvalueholder.h"
 #include "resetthings.h"
+#include "powerfunctionhelper.h"
 
 class Wall : public Rect{
 	friend class ResetThings; //not really needed
+	friend class PowerFunctionHelper;
 	ColorValueHolder color;
 	short id = -1;
 

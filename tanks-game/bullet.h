@@ -1,23 +1,37 @@
 #pragma once
+class Bullet;
+
 #include "circle.h"
 #include "colorvalueholder.h"
+#include "bulletpower.h"
+#include "powerfunctionhelper.h"
 
 class Bullet : public Circle {
 	friend class ResetThings;
 	friend class BulletPriorityHandler;
+	friend class PowerFunctionHelper;
 	double angle;
 	double velocity;
 	char id;
 	ColorValueHolder defaultColor = ColorValueHolder(0x88, 0x88, 0x88);
 	//ColorValueHolder* explosionColor; //needed?
+	std::vector<BulletPower*> bulletPowers;
+
+public:
+	//helper functions:
+	ColorValueHolder getColor();
 	
 public:
 	Bullet(double x_, double y_, double r_, double a, double vel, char id_);
+	Bullet(double x_, double y_, double r_, double a, double vel, char id_, std::vector<BulletPower*>);
 	void move();
 	void draw();
 	void draw(double, double);
 	char getID() { return id; }
 	short determineDamage();
+
+	void powerCalculate();
+	void removePower(int index);
 
 	bool isFullyOutOfBounds();
 	bool isPartiallyOutOfBounds();
