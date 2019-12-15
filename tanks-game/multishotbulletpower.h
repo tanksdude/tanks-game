@@ -16,10 +16,6 @@ public:
 
 	virtual TankPower* makeTankPower();
 
-	//virtual void modifiedMovement();
-
-	//void (*modifiedCollisionWithWall)(Bullet*, Wall*, BulletPower*);
-
 	//virtual double getOffenseTier() { return 0; }
 	//virtual double getOffenseValue() { return 0; }
 	//virtual double getDefenseTier() { return 0; }

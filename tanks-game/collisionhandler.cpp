@@ -70,16 +70,14 @@ void CollisionHandler::pushMovableAwayFromImmovable(Rect* movable, Rect* immovab
 	if ((movable->y + movable->h / 2) - immovable->y <= (immovable->h / immovable->w) * ((movable->x + movable->w / 2) - immovable->x)) { //I think this is top right
 		if ((movable->y + movable->h / 2) - (immovable->y + immovable->h) <= (-immovable->h / immovable->w) * ((movable->x + movable->w / 2) - immovable->x)) { //top
 			movable->y = immovable->y - movable->h;
-		}
-		else { //right
+		} else { //right
 			movable->x = immovable->x + immovable->w;
 		}
 	}
 	else { //bottom left?
 		if ((movable->y + movable->h / 2) - (immovable->y + immovable->h) <= (-immovable->h / immovable->w) * ((movable->x + movable->w / 2) - immovable->x)) { //left
 			movable->x = immovable->x - movable->w;
-		}
-		else { //bottom
+		} else { //bottom
 			movable->y = immovable->y + immovable->h;
 		}
 	}
@@ -122,20 +120,17 @@ void CollisionHandler::pushMovableAwayFromMovable(Rect* movable1, Rect* movable2
 			double d = (movable1->y + movable1->h) - movable2->y;
 			movable1->y -= d/2;
 			movable2->y += d/2;
-		}
-		else { //right
+		} else { //right
 			double d = (movable2->x + movable2->w) - movable1->x;
 			movable1->x += d/2;
 			movable2->x -= d/2;
 		}
-	}
-	else { //bottom left?
+	} else { //bottom left?
 		if ((movable1->y + movable1->h / 2) - (movable2->y + movable2->h) <= (-movable2->h / movable2->w) * ((movable1->x + movable1->w / 2) - movable2->x)) { //left
 			double d = (movable1->x + movable1->w) - movable2->x;
 			movable1->x -= d/2;
 			movable2->x += d/2;
-		}
-		else { //bottom
+		} else { //bottom
 			double d = (movable2->y + movable2->h) - movable1->y;
 			movable1->y += d/2;
 			movable1->y -= d/2;
@@ -221,16 +216,13 @@ void CollisionHandler::pushMovableAwayFromImmovable(Circle* movable, Rect* immov
 	if (movable->y - immovable->y <= (immovable->h / immovable->w) * (movable->x - immovable->x)) { //I think this is bottom right
 		if (movable->y - (immovable->y + immovable->h) <= (-immovable->h / immovable->w) * (movable->x - immovable->x)) { //bottom
 			movable->y = immovable->y - movable->r;
-		}
-		else { //right
+		} else { //right
 			movable->x = immovable->x + immovable->w + movable->r;
 		}
-	}
-	else { //top left?
+	} else { //top left?
 		if (movable->y - (immovable->y + immovable->h) <= (-immovable->h / immovable->w) * (movable->x - immovable->x)) { //left
 			movable->x = immovable->x - movable->r;
-		}
-		else { //top
+		} else { //top
 			movable->y = immovable->y + immovable->h + movable->r;
 		}
 	}
@@ -289,16 +281,13 @@ void CollisionHandler::pushMovableAwayFromImmovable(Rect* movable, Circle* immov
 	if (immovable->y - movable->y <= (movable->h / movable->w) * (immovable->x - movable->x)) { //I think this is top right
 		if (immovable->y - (movable->y + movable->h) <= (-movable->h / movable->w) * (immovable->x - movable->x)) { //top
 			movable->y = immovable->y - immovable->r - movable->h;
-		}
-		else { //right
+		} else { //right
 			movable->x = immovable->x + immovable->r;
 		}
-	}
-	else { //bottom left?
+	} else { //bottom left?
 		if (immovable->y - (movable->y + movable->h) <= (-movable->h / movable->w) * (immovable->x - movable->x)) { //left
 			movable->x = immovable->x - immovable->r - movable->w;
-		}
-		else { //bottom
+		} else { //bottom
 			movable->y = immovable->y + immovable->r;
 		}
 	}
@@ -342,20 +331,17 @@ void CollisionHandler::pushMovableAwayFromMovable(Rect* movable1, Circle* movabl
 			double d = movable2->y + movable2->r - movable1->y;
 			movable2->y -= d/2;
 			movable1->y += d/2;
-		}
-		else { //right
+		} else { //right
 			double d = (movable1->x + movable1->w) - (movable2->x - movable2->r);
 			movable2->x += d/2;
 			movable1->x -= d/2;
 		}
-	}
-	else { //bottom left?
+	} else { //bottom left?
 		if (movable2->y - (movable1->y + movable1->h) <= (-movable1->h / movable1->w) * (movable2->x - movable1->x)) { //left
 			double d = (movable2->x + movable2->r) - movable1->x;
 			movable2->x -= d/2;
 			movable1->x += d/2;
-		}
-		else { //bottom
+		} else { //bottom
 			double d = (movable1->y + movable1->h) - (movable2->y - movable2->r);
 			movable2->y += d/2;
 			movable1->y -= d/2;

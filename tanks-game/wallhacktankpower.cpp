@@ -1,6 +1,4 @@
 #pragma once
-class WallhackTankPower;
-
 #include "wallhacktankpower.h"
 #include "wallhackbulletpower.h"
 #include "wallhackpower.h"

@@ -55,10 +55,10 @@ void Tank::move() {
 		terminalVelocity();
 	//}
 	/*else {
-	if (forward)
-	velocity = maxSpeed;
-	else
-	velocity = 0;
+		if (forward)
+			velocity = maxSpeed;
+		else
+			velocity = 0;
 	}*/
 
 	x += cos(angle) * velocity;
@@ -78,22 +78,12 @@ void Tank::terminalVelocity() {
 }
 
 void Tank::shoot() {
-	//TODO: fix so it can handle multiple shooting cooldowns(?)
+	//TODO: allow it to handle multiple shooting cooldowns(?)
 	if(shootCount > 0) //check isn't really needed, but it also doesn't decrease performance by a real amount
 		shootCount--;
 
 	if(shooting && shootCount <= 0){
-		//std::cout << "1: " << shootingPoints->size() << std::endl;
 		determineShootingAngles();
-		//std::cout << "2: " << shootingPoints->size() << " " << bullets.size() << std::endl;
-
-		/*
-		std::cout << "2.5: " << shootingPoints->at(0).angle;
-		for (int i = 1; i < shootingPoints->size(); i++) {
-			std::cout << ", " << shootingPoints->at(i).angle;
-		}
-		std::cout << std::endl;
-		*/
 
 		for (int i = 0; i < shootingPoints->size(); i++) {
 			bool modifiedAdditionalShooting = false;
@@ -124,7 +114,6 @@ void Tank::shoot() {
 			}
 		}
 		//makeBullet(x + r*cos(angle), y + r*sin(angle), angle, r/4, maxSpeed*2, bp); //should be maxSpeed*4
-		//std::cout << "3: " << shootingPoints->size() << " " << bullets.size() << std::endl;
 
 		shootCount = maxShootCount * getShootingSpeedMultiplier();
 	}
@@ -150,15 +139,12 @@ inline void Tank::defaultMakeBullet(double x, double y, double angle) {
 
 void Tank::determineShootingAngles() {
 	shootingPoints->clear();
-	//std::cout << "4: " << shootingPoints->size() << std::endl;
 	shootingPoints->push_back(CannonPoint(0));
-	//std::cout << "5: " << shootingPoints->size() << std::endl;
 	for (int i = 0; i < tankPowers.size(); i++) {
 		if (tankPowers[i]->addsShootingPoints) {
 			tankPowers[i]->addShootingPoints(this, shootingPoints);
 		}
 	}
-	//std::cout << "6: " << shootingPoints->size() << std::endl;
 }
 
 double Tank::getShootingSpeedMultiplier() {
@@ -297,7 +283,7 @@ void Tank::draw(double xpos, double ypos) {
 	glBegin(GL_LINE_LOOP);
 
 	for (int i = 0; i < Circle::numOfSides; i++) {
-		glVertex2f(xpos + r*cos(i * 2 * PI / Circle::numOfSides), ypos + r*sin(i * 2 * PI / Circle::numOfSides));
+		glVertex2f(xpos + r*cos(i * 2*PI / Circle::numOfSides), ypos + r*sin(i * 2*PI / Circle::numOfSides));
 	}
 
 	glEnd();
@@ -309,7 +295,7 @@ void Tank::draw(double xpos, double ypos) {
 	glBegin(GL_LINES);
 
 	glVertex2f(x, y);
-	glVertex2f(x + r * cos(angle), y + r * sin(angle));
+	glVertex2f(x + r*cos(angle), y + r*sin(angle));
 
 	glEnd();
 }
@@ -319,6 +305,8 @@ void Tank::drawName() {
 }
 
 void Tank::drawName(double xpos, double ypos) {
+	//I'm not certain this can be done on the GPU, but I will find out
+
 	if (name.size() == 0)
 		return;
 
@@ -373,7 +361,7 @@ void Tank::drawName(double xpos, double ypos) {
 
 }
 
-void Tank::resetThings(double x, double y, double a, char id, std::string name) { //TODO: finish
+void Tank::resetThings(double x, double y, double a, char id, std::string name) { //TODO: finish?
 	this->x = x;
 	this->y = y;
 	this->angle = a;
@@ -389,17 +377,15 @@ void Tank::resetThings(double x, double y, double a, char id, std::string name) 
 void Tank::edgeConstrain() {
 	if (x + r > GAME_WIDTH) {
 		x = GAME_WIDTH - r;
-	}
-	else if (x - r < 0) {
+	} else if (x - r < 0) {
 		x = r;
 	}
 	if (y + r > GAME_HEIGHT) {
 		y = GAME_HEIGHT - r;
-	}
-	else if (y - r < 0) {
+	} else if (y - r < 0) {
 		y = r;
 	}
-	//technically, checking down before up (and left before right) would probably have a slight efficiency increase, but it would be extremely (negligible) small
+	//technically, checking down before up (and left before right) would probably have a slight efficiency increase, but it would be extremely (negligibly) small
 }
 
 bool Tank::isPartiallyOutOfBounds() {

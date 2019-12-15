@@ -5,9 +5,6 @@
 
 class SpeedPower : public Power{
 protected:
-	//tp = new SpeedTankPower();
-	//bp = nullptr;
-	//static ColorValueHolder classColor;
 
 public:
 	const static bool canBeInARandomLevel;

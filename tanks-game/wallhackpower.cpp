@@ -4,7 +4,6 @@
 #include "wallhackbulletpower.h"
 
 const bool WallhackPower::canBeInARandomLevel = true;
-//ColorValueHolder WallhackPower::classColor = ColorValueHolder(0xFF, 0xFF, 0x00);
 
 TankPower* WallhackPower::makeTankPower() {
 	return new WallhackTankPower();

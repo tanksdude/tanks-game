@@ -71,15 +71,12 @@ bool leftMouse = false;
 bool rightMouse = false;
 
 void doThing() {
-	
+	return;
 }
 
 int width = 1200;
 int height = 600;
 
-//-------------------------------------------------------
-// A function to draw the scene
-//-------------------------------------------------------
 void appDrawScene() {
 	currentlyDrawing = true;
 
@@ -120,34 +117,19 @@ void appDrawScene() {
 		tanks[i]->draw();
 	}
 
-
-	// We have been drawing everything to the back buffer
-	// Swap the buffers to see the result of what we drew
+	// Swap the buffers to see the result of the drawing
 	glFlush();
 	glutSwapBuffers();
 
 	currentlyDrawing = false;
 }
 
-//-------------------------------------------------------
-// A function to convert window coordinates to scene
-// We use it when a mouse event is handled
-// Arguments: 	
-//	x, y - the coordinates to be updated
-//-------------------------------------------------------
 void windowToScene(float& x, float& y) {
 	x = (2.0f * (x / float(width))) - 1.0f;
 	y = 1.0f - (2.0f * (y / float(height)));
 }
 
-//-------------------------------------------------------
-// A function to handle window resizing
-// Called every time the window is resized
-// Arguments: 	
-//	b    - mouse button that was clicked, left or right
-//	s 	 - state, either mouse-up or mouse-down
-//	x, y - coordinates of the mouse when click occured
-//-------------------------------------------------------
+// Handles window resizing
 void appReshapeFunc(int w, int h) {
 	// Window size has changed
 	width = w;
@@ -194,13 +176,8 @@ void appReshapeFunc(int w, int h) {
 	glOrtho(winXmin, winXmax, winYmin, winYmax, -1, 1);
 }
 
-//-------------------------------------------------------
-// A function to handle mouse dragging
-// Called every time mouse moves while button held down
-// Arguments: 	
-//	x, y - current coordinates of the mouse
-//-------------------------------------------------------
 void appMotionFunc(int x, int y) {
+	//dev tools
 	if (leftMouse) {
 		if (!rightMouse) { //tank 1
 			tanks[0]->giveX() = (x / double(width)) * GAME_WIDTH;
@@ -211,61 +188,36 @@ void appMotionFunc(int x, int y) {
 			tanks[1]->giveY() = (1 - y / double(height)) * GAME_HEIGHT;
 		}
 	}
-
-	// Again, we redraw the scene
-	//glutPostRedisplay();
 }
 
 void mouse_func(int button, int state, int x, int y) {
 	if (state == GLUT_DOWN) {
 		if (button == GLUT_LEFT_BUTTON) {
 			leftMouse = true;
-		}
-		else if (button == GLUT_RIGHT_BUTTON) {
+		} else if (button == GLUT_RIGHT_BUTTON) {
 			rightMouse = !rightMouse;
 		}
-	}
-	else {
+	} else {
 		if (button == GLUT_LEFT_BUTTON) {
 			leftMouse = false;
 		}
 	}
 }
 
-//-------------------------------------------------------
-// A function to handle keyboard events
-// Called every time a key is pressed on the keyboard
-// Arguments: 	
-//	key  - the key that was pressed
-//	x, y - coordinates of the mouse when key is pressed
-//-------------------------------------------------------
 void keyboard_down(unsigned char key, int x, int y) {
 	normalKeyStates[key] = true;
-
-
-	// After all the state changes, redraw the scene
-	//glutPostRedisplay();
 }
 
 void special_keyboard_down(int key, int x, int y) {
 	specialKeyStates[key] = true;
-
-	// After all the state changes, redraw the scene
-	//glutPostRedisplay();
 }
 
 void keyboard_up(unsigned char key, int x, int y) {
 	normalKeyStates[key] = false;
-
-	// After all the state changes, redraw the scene
-	//glutPostRedisplay();
 }
 
 void special_keyboard_up(int key, int x, int y) {
 	specialKeyStates[key] = false;
-
-	// After all the state changes, redraw the scene
-	//glutPostRedisplay();
 }
 
 
@@ -283,7 +235,7 @@ void tick(int physicsUPS) {
 	tanks[1]->turnR = specialKeyStates[GLUT_KEY_RIGHT];
 	tanks[1]->shooting = specialKeyStates[GLUT_KEY_DOWN];
 
-	//each tick portion needs to go in its own separate function; that way a level can override some parts of it without having to rewrite everything
+	//TODO: each tick portion needs to go in its own separate function; that way a level can override some parts of it without having to rewrite everything
 
 	//move everything
 	for (int i = 0; i < tanks.size(); i++) {
@@ -476,7 +428,6 @@ void tick(int physicsUPS) {
 						bullets.erase(bullets.begin() + j);
 						continue; //not needed
 					}
-					//delete result;
 				}
 
 				//break;
@@ -484,7 +435,7 @@ void tick(int physicsUPS) {
 		}
 	}
 
-	//tank to edge collision: (move later) (to where?)
+	//tank to edge collision: (move later?) (to where?)
 	for (int i = 0; i < tanks.size(); i++) {
 		tanks[i]->edgeConstrain();
 	}
@@ -583,7 +534,6 @@ int main(int argc, char** argv) {
 	glPointSize(2);
 
 	// Setup some OpenGL options
-	//glEnable(GL_DEPTH_TEST);
 	glEnable(GL_POINT_SMOOTH);
 	glEnable(GL_LINE_SMOOTH);
 	glDisable(GL_DEPTH_TEST);

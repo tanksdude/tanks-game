@@ -26,6 +26,7 @@ public:
 	double maxSpeed = 1;
 	double acceleration = 1.0/16; //intentional acceleration, not total
 	double velocity = 0; //intentional velocity, not total
+	//TODO: system that can apply forces
 	double turningIncrement = 64;
 	double angle;
 	std::vector<CannonPoint>* shootingPoints;

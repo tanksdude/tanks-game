@@ -41,9 +41,9 @@ ColorValueHolder ColorMixer::mix(std::vector<TankPower*> p) {
 	float* colors = new float[3]{ 0,0,0 };
 	for (int i = 0; i < p.size(); i++) {
 		ColorValueHolder a = p[i]->getColor();
-		colors[0] += p[i]->getColor().getR();
-		colors[1] += p[i]->getColor().getG();
-		colors[2] += p[i]->getColor().getB();
+		colors[0] += a.getR();
+		colors[1] += a.getG();
+		colors[2] += a.getB();
 	}
 
 	ColorValueHolder mixed = ColorValueHolder(colors[0]/p.size(), colors[1]/p.size(), colors[2]/p.size());
@@ -58,9 +58,9 @@ ColorValueHolder ColorMixer::mix(std::vector<BulletPower*> p) {
 	float* colors = new float[3]{ 0,0,0 };
 	for (int i = 0; i < p.size(); i++) {
 		ColorValueHolder a = p[i]->getColor();
-		colors[0] += p[i]->getColor().getR();
-		colors[1] += p[i]->getColor().getG();
-		colors[2] += p[i]->getColor().getB();
+		colors[0] += a.getR();
+		colors[1] += a.getG();
+		colors[2] += a.getB();
 	}
 
 	ColorValueHolder mixed = ColorValueHolder(colors[0]/p.size(), colors[1]/p.size(), colors[2]/p.size());

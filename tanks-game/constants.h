@@ -12,13 +12,6 @@
 typedef void(*voidFunction)(void);
 typedef Power*(*PowerFunction)(void);
 
-//void nothingFunctionBase() { return; }
-//void (*nothingFunction)() = nothingFunctionBase;
-//void (*moreNothing)(); //nullptr (actually it's not and that's unfortunate)
-
-//double collisionConstant = 4; //used as an efficiency check(?)
-//double drawMultiplier = 1;
-
 extern const double PI;
 extern ColorValueHolder backColor;
 

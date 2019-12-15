@@ -5,7 +5,6 @@
 
 class WallhackPower : public Power{
 protected:
-	//static ColorValueHolder classColor;
 
 public:
 	const static bool canBeInARandomLevel;

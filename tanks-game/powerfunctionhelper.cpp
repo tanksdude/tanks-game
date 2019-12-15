@@ -26,18 +26,15 @@ bool PowerFunctionHelper::bounceGeneric(Bullet* b, Wall* w) {
 		if (b->y - (w->y + w->h) <= (-w->h / w->w) * (b->x - w->x)) { //bottom
 			b->y -= (b->y + b->r - w->y) * 2; //b->y = w->y - b->r
 			b->angle = b->angle * -1;
-		}
-		else { //right
+		} else { //right
 			b->x += (w->x + w->w - (b->x - b->r)) * 2; //b->x = w->x + w->w + w->r
 			b->angle = PI - b->angle;
 		}
-	}
-	else { //top left?
+	} else { //top left?
 		if (b->y - (w->y + w->h) <= (-w->h / w->w) * (b->x - w->x)) { //left
 			b->x -= (b->x + b->r - w->x) * 2; //b->x = w->x - b->r
 			b->angle = PI - b->angle;
-		}
-		else { //top
+		} else { //top
 			b->y += (w->y + w->h - (b->y - b->r)) * 2; //b->y = w->y + w->h + b->r
 			b->angle = b->angle * -1;
 		}
@@ -83,6 +80,7 @@ bool PowerFunctionHelper::bounceGenericWithCornersCornerHandler(Bullet* b, doubl
 
 			//so a rectangle has an area of influence against a circle: outer edges + radius, and corners are radius (picture a rounded rectangle)
 			//when a bullet's center enters the area, it is inside the rectangle, and therefore needs to reflect
+			//in effect, rounded rectangle against a point is the same as rectangle against circle
 			//the bullet's angle needs to reflect off of the perpendicular to the tangent, and the tangent goes through the intersection between the bullet's path and the area of influence
 
 			double newAngle = 2*angle - (b->angle - PI);
@@ -173,7 +171,7 @@ bool PowerFunctionHelper::homingGeneric(Bullet* b, double maxAngleMove, bool mov
 				distDiffs[i] = GAME_WIDTH * GAME_HEIGHT; //should be enough
 				continue;
 			}
-			distDiffs[i] = sqrt(pow(b->x - tanks[i]->x, 2) + pow(b->y - tanks[i]->y, 2));
+			distDiffs[i] = sqrt(pow(b->x - tanks[i]->x, 2) + pow(b->y - tanks[i]->y, 2)); //TODO: this an issue?
 		}
 		targetTank = findMinIndex(distDiffs, tanks.size());
 		if (targetTank == b->getID()) {
