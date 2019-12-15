@@ -20,7 +20,7 @@ void RandomLevel::initialize() {
 
 	powerups.push_back(new PowerSquare(20, 20, "speed"));
 	powerups.push_back(new PowerSquare(40, 20, "wallhack"));
-	//powerups.push_back(new PowerSquare(60, 20, "bounce"));
+	powerups.push_back(new PowerSquare(60, 20, "bounce"));
 	powerups.push_back(new PowerSquare(80, 20, "multishot"));
 }
 

@@ -1,32 +1,27 @@
 #pragma once
-#include "constants.h"
-#include <vector>
-#include "multishottankpower.h"
-#include "multishotbulletpower.h"
-#include "multishotpower.h"
-#include "cannonpoint.h"
-#include "powerfunctionhelper.h"
+class BounceTankPower;
 
-void MultishotTankPower::addCannonPointsDummy(Tank* t, std::vector<CannonPoint>* cannonPoints) {
-	PowerFunctionHelper::equallySpacedCannonPoints(t, cannonPoints, MultishotPower::bulletConstant);
+#include "bouncetankpower.h"
+#include "bouncebulletpower.h"
+#include "bouncepower.h"
+
+void BounceTankPower::initialize(Tank* parent) {
+	//parent->r /= 2;
+}
+void BounceTankPower::removeEffects(Tank* parent) {
+	//parent->r *= 2;
 }
 
-void MultishotTankPower::initialize(Tank* parent) {
-	//deals with cannon points; nothing to initialize
-}
-void MultishotTankPower::removeEffects(Tank* parent) {
-	//regenerate cannon points?
+BulletPower* BounceTankPower::makeBulletPower() {
+	return new BounceBulletPower();
 }
 
-BulletPower* MultishotTankPower::makeBulletPower() {
-	return new MultishotBulletPower();
-}
-
-MultishotTankPower::MultishotTankPower() {
+BounceTankPower::BounceTankPower() {
 	maxTime = 500;
 	timeLeft = 500;
+
 	modifiedCollisionWithWall = nullptr;
-	addShootingPoints = MultishotTankPower::addCannonPointsDummy;
+	addShootingPoints = nullptr;
 }
 
 /*

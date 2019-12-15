@@ -8,7 +8,10 @@ class BulletPower;
 #include "inheritedpowercommon.h"
 #include "tankpower.h"
 
+typedef bool (BulletPower::*memberFuncPointerForBulletPower)(Bullet*, Wall*);
+
 class BulletPower : public InheritedPowerCommon{
+	friend class PowerFunctionHelper;
 protected:
 public:
 	//double timeLeft = 0;
