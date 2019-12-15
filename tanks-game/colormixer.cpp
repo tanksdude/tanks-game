@@ -26,12 +26,12 @@ ColorValueHolder ColorMixer::mix(Power** p, int num) {
 	double* colors = new double[3]{ 0,0,0 };
 	for (int i = 0; i < num; i++) {
 		ColorValueHolder a = p[i]->getColor();
-		colors[0] += a.getRf();
-		colors[1] += a.getGf();
-		colors[2] += a.getBf();
+		colors[0] += a.getR();
+		colors[1] += a.getG();
+		colors[2] += a.getB();
 	}
 
-	ColorValueHolder mixed = ColorValueHolder(colors[0]/num * 256, colors[1]/num * 256, colors[2]/num * 256);
+	ColorValueHolder mixed = ColorValueHolder(colors[0]/num, colors[1]/num, colors[2]/num);
 	delete[] colors;
 
 	return mixed;

@@ -39,6 +39,7 @@ public:
 	//virtual void modifiedCollisionWithPower(Power*) { return; } //probably shouldn't be used
 	//virtual void modifiedCollisionWithBullet(Bullet*) { return; } //probably shouldn't be used
 	//virtual void modifiedCollisionWithHazard(Hazard*);
+	//virtual void modifiedEdgeCollision();
 
 	virtual void modifiedBulletDrawings(Bullet* parent) { return; } //probably not going to be used
 

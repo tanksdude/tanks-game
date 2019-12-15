@@ -39,12 +39,10 @@ public:
 list of (eventual) powers:
 |speed
 |wallhack
-bounce
+bounce (need rewrite: either store bools for whether the functions are modified or find some member function pointer solution)
+|multishot
 homing
 triple shot (note to self: use PI/16 as the angle difference, not PI/8; will work much better with multishot)
-multishot (adds cannon points instead of looping to shoot each bullet)
-(what the frick does double multishot look like?! triple?!???!?!?!?!!?!?!?!?!1)
-(finds angle difference between the first and second cannon point (loops on itself) (this is a loop), and puts 7 equally spaced between them) (this means that a powerup that shoots just behind and forward will get 16 total shots, and two multishots will get 64)
 grenade?
 fire?
 banana (will be tough unless I did everything correctly)
@@ -86,8 +84,8 @@ the ID changer
 poison? (like, another bullet/hazard is hit and it stops) (tank hits poisoned tank and dies)
 boomerang (non-refillable? except when the shot is destroyed)
 shurikan (shouldn't be too hard, especially if blast gets in)
-teleport?
-ring-shooter? (shoots a ring of bullets. just looks amusing)
+teleport
+ring-shooter? (shoots a ring of bullets. just looks amusing) (multishot but all the angles are the same)
 
 
 things the powers need to access, override, and/or deal with (of bullets and tanks, probably hazards too):
@@ -103,7 +101,6 @@ if powers cannot be mixed on level, ability to persist over other powers (use VE
 ability to be permanently applied
 ability to override duration
 give tank a time limit before it can fire the new power, but must be overridable and dependent on default shooting speed
-do bullet speed modifiers multiply or is it just use the worse/best one?
 can leave out-of-bounds, both real and fake (fake in the case of a portal level situation: center can leave out-of-bounds, edges might, dividing walls can't)
 
 

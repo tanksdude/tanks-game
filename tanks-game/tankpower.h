@@ -38,6 +38,7 @@ public:
 	//virtual void modifiedCollisionWithPower(Power*); //probably not going to be used
 	//virtual void modifiedCollisionWithBullet(Bullet*); //probably shouldn't be used
 	//virtual void modifiedCollisionWithHazard(Hazard*);
+	//virtual void modifiedEdgeCollision();
 
 	virtual void modifiedShooting(Tank* parent) { return; } //for melee-class powerups
 	virtual void additionalShooting(Tank* parent) { return; } //for regular powerups

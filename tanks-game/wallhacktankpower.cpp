@@ -17,8 +17,8 @@ BulletPower* WallhackTankPower::makeBulletPower() {
 }
 
 WallhackTankPower::WallhackTankPower() {
-	maxTime = 500;
-	timeLeft = 500;
+	maxTime = 250;
+	timeLeft = 250;
 	modifiedCollisionWithWall = PowerFunctionHelper::wallhackGenericTank;
 	addShootingPoints = nullptr;
 }

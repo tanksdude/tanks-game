@@ -19,9 +19,9 @@ bool PowerFunctionHelper::bounceGeneric(Bullet* b, Wall* w) {
 		return false;
 	}
 
-	if (b->y - b->y <= (w->h / w->w) * (b->x - w->x)) { //I think this is bottom right
+	if (b->y - w->y <= (w->h / w->w) * (b->x - w->x)) { //I think this is bottom right
 		if (b->y - (w->y + w->h) <= (-w->h / w->w) * (b->x - w->x)) { //bottom
-			b->y += (w->y + w->h - (b->y - b->r)) * 2; //b->y = w->y + w->h + b->r
+			b->y -= (b->y + b->r - w->y) * 2; //b->y = w->y - b->r
 			b->angle = b->angle * -1;
 		}
 		else { //right
@@ -35,12 +35,13 @@ bool PowerFunctionHelper::bounceGeneric(Bullet* b, Wall* w) {
 			b->angle = PI - b->angle;
 		}
 		else { //top
-			b->y -= (b->y + b->r - w->y) * 2; //b->y = w->y - b->r
+			b->y += (w->y + w->h - (b->y - b->r)) * 2; //b->y = w->y + w->h + b->r
 			b->angle = b->angle * -1;
 		}
 	}
+	//TODO: ensure bullet is not actually in wall; move bullet to edge of relevant wall
 
-	return true; //this means the bullet bounced, not that it should be deleted
+	return false; //this means the bullet bounced, not that it should be deleted //TODO: currently not true; make it true
 }
 
 bool PowerFunctionHelper::bounceGenericWithCorners(Bullet* b, Wall* w) { //not the default because bullets move too quickly on average
