@@ -120,6 +120,9 @@
     <ClCompile Include="tripletankpower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="shaderfromfile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -251,8 +254,13 @@
     <ClInclude Include="tripletankpower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="shaderfromfile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="freeglut.dll" />
+    <None Include="res\shaders\test-vertex.shader" />
+    <None Include="res\shaders\test-fragment.shader" />
   </ItemGroup>
 </Project>
