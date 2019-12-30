@@ -45,6 +45,8 @@
 #include "homingbulletpower.h"
 #include "homingpower.h"
 
+#include <GL/glew.h>
+
 #if defined WIN32
 #include <freeglut.h>
 #elif defined __APPLE__
@@ -392,7 +394,7 @@ void tick(int physicsUPS) {
 
 	//bullet collision:
 	for (int i = bullets.size() - 1; i >= 0; i--) {
-		for (int j = bullets.size() - 1; j >= 0; j--) { //could start at i-1?
+		for (int j = bullets.size() - 1; j >= 0; j--) { //could start at i-1? //fix: find out
 			if (bullets[i]->getID() == bullets[j]->getID()) {
 				continue;
 			}
@@ -401,7 +403,7 @@ void tick(int physicsUPS) {
 				//but they will be soon
 
 				char result = BulletPriorityHandler::determinePriority(bullets[i], bullets[j]);
-				if (result == -1) {
+				if (result <= -1) { //both die
 					Bullet* temp1 = bullets[i];
 					Bullet* temp2 = bullets[j];
 					if (i > j) {
@@ -415,8 +417,7 @@ void tick(int physicsUPS) {
 					delete temp1;
 					delete temp2;
 					break;
-				} else if (result >= 2) {
-					//it's a draw, so neither dies
+				} else if (result >= 2) { //it's a draw, so neither dies
 					//continue;
 				} else {
 					if (result == 0) {
@@ -426,7 +427,7 @@ void tick(int physicsUPS) {
 					} else {
 						delete bullets[j];
 						bullets.erase(bullets.begin() + j);
-						continue; //not needed
+						continue; //not needed //fix: should it be break? because a single bullet should really only have collision with one bullet, right? (my logic is showing its inconsistencies)
 					}
 				}
 
@@ -580,9 +581,10 @@ int main(int argc, char** argv) {
 
 /*
  * estimated total completion:
- * 75% theoretical foundation: no hazards
- * 55% actual foundation: not every "modification function" actually does something in the main
- * 15% game code:
+ * ??% GPU drawing stuff
+ * 80% theoretical foundation: no hazards
+ * 60% actual foundation: not every "modification function" actually does something in the main
+ * 20% game code:
  * * first off, don't know what will be final beyond the ideas located in power.h and elsewhere
  * * second, it's a complete estimate (obviously) and this is a restatement of the first
  * * third, 100% probably won't be "finished" on this scale (restatement of the second?)

@@ -262,5 +262,6 @@
     <None Include="freeglut.dll" />
     <None Include="res\shaders\test-vertex.shader" />
     <None Include="res\shaders\test-fragment.shader" />
+    <None Include="glew32.dll" />
   </ItemGroup>
 </Project>
