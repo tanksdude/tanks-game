@@ -16,7 +16,7 @@ public:
 	virtual std::string getName() { return TriplePower::getClassName(); }
 	static std::string getClassName() { return "triple"; }
 	virtual ColorValueHolder getColor() { return TriplePower::getClassColor(); }
-	static ColorValueHolder getClassColor() { return ColorValueHolder(0xCC, 0xCC, 0x88); } //beige
+	static ColorValueHolder getClassColor() { return ColorValueHolder(0xCC/255.0, 0xCC/255.0, .5f); } //beige
 
 	virtual TankPower* makeTankPower();
 	virtual BulletPower* makeBulletPower();

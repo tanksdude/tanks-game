@@ -14,7 +14,7 @@ public:
 	virtual std::string getName() { return HomingPower::getClassName(); }
 	static std::string getClassName() { return "homing"; }
 	virtual ColorValueHolder getColor() { return HomingPower::getClassColor(); }
-	static ColorValueHolder getClassColor() { return ColorValueHolder(0xBB, 0x66, 0xAA); } //really faded purple
+	static ColorValueHolder getClassColor() { return ColorValueHolder(0xBB/255.0, 0x66/255.0, 0xAA/255.0); } //really faded purple
 
 	virtual TankPower* makeTankPower();
 	virtual BulletPower* makeBulletPower();

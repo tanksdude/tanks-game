@@ -55,11 +55,11 @@ public:
 	void determineShootingAngles();
 
 private:
-	ColorValueHolder defaultColor = ColorValueHolder(0x88, 0x88, 0x88);
+	ColorValueHolder defaultColor = ColorValueHolder(.5f, .5f, .5f);
 	bool dead = false;
 	ColorValueHolder* explosionColor;
-	ColorValueHolder defaultNameFill = ColorValueHolder(0xFF, 0xFF, 0xFF);
-	ColorValueHolder defaultNameStroke = ColorValueHolder(0x00, 0x00, 0x00);
+	ColorValueHolder defaultNameFill = ColorValueHolder(1.f, 1.f, 1.f);
+	ColorValueHolder defaultNameStroke = ColorValueHolder(0, 0, 0);
 
 	void resetThings(double x, double y, double a, char id, std::string name);
 

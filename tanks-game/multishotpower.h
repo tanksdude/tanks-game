@@ -15,7 +15,7 @@ public:
 	virtual std::string getName() { return MultishotPower::getClassName(); }
 	static std::string getClassName() { return "multishot"; }
 	virtual ColorValueHolder getColor() { return MultishotPower::getClassColor(); }
-	static ColorValueHolder getClassColor() { return ColorValueHolder(0x88, 0x00, 0xFF); } //purple
+	static ColorValueHolder getClassColor() { return ColorValueHolder(.5f, 0.f, 1.f); } //purple
 
 	virtual TankPower* makeTankPower();
 	virtual BulletPower* makeBulletPower();

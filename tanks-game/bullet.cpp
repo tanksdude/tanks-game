@@ -13,7 +13,7 @@
 #include <GL/freeglut.h>
 #endif
 
-Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_) {
+Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_) { //TODO: make private?
 	this->x = x_;
 	this->y = y_;
 	this->r = r_;

@@ -11,6 +11,7 @@
 #include "wall.h"
 #include "bullet.h"
 #include "powersquare.h"
+#include "level.h"
 
 //classes with important handling functions:
 #include "collisionhandler.h"

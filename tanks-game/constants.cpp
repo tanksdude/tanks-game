@@ -2,7 +2,7 @@
 #include "constants.h"
 
 const double PI = 3.141592653589793238462643383279502884L;
-ColorValueHolder backColor = ColorValueHolder(0xDD, 0xDD, 0xDD);
+ColorValueHolder backColor = ColorValueHolder(0xDD/255.0, 0xDD/255.0, 0xDD/255.0);
 
 const double GAME_WIDTH = 640;
 const double GAME_HEIGHT = 320;

@@ -17,7 +17,7 @@ std::string numToHex(unsigned char x) {
 
 std::string toUpperCase(std::string stuff) {
 	std::string letters = "";
-	for (short i = 0; i < stuff.size(); i++) {
+	for (int i = 0; i < stuff.size(); i++) {
 		if (stuff[i] >= 97 && stuff[i] <= 122) {
 			letters += (stuff[i] - 32);
 		} else {
@@ -29,7 +29,7 @@ std::string toUpperCase(std::string stuff) {
 
 std::string toLowerCase(std::string stuff) {
 	std::string letters = "";
-	for (short i = 0; i < stuff.size(); i++) {
+	for (int i = 0; i < stuff.size(); i++) {
 		if (stuff[i] >= 65 && stuff[i] <= 90) {
 			letters += (stuff[i] + 32);
 		}
@@ -79,3 +79,11 @@ int findMinIndex(double* arr, int len) { //precondition: length of array > 0
 	}
 	return index;
 }
+
+/*
+template <typename numType>
+numType constrain(numType value, numType min, numType max) {
+	return ((value < min ? min : value) > max ? max : value);
+	//is separating it from ternary operators going to be more efficient? does it even matter?
+}
+*/

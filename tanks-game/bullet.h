@@ -14,7 +14,7 @@ public: //hopefully temporary
 	double angle;
 	double velocity;
 	char id;
-	ColorValueHolder defaultColor = ColorValueHolder(0x88, 0x88, 0x88);
+	ColorValueHolder defaultColor = ColorValueHolder(.5f, .5f, .5f);
 	//ColorValueHolder* explosionColor; //needed?
 	double getAngle();
 
@@ -39,7 +39,7 @@ public:
 
 	bool isFullyOutOfBounds();
 	bool isPartiallyOutOfBounds();
-	void edgeConstrain(); //probably never going to be needed
+	//void edgeConstrain(); //probably never going to be needed
 
 	~Bullet();
 };

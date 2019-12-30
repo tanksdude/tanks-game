@@ -1,23 +1,15 @@
 #pragma once
 #include "colorvalueholder.h"
 #include "mylib.h"
-#include <string>
+#include <vector>
 
-ColorValueHolder::ColorValueHolder(unsigned char r, unsigned char g, unsigned char b){
-	R = r;
-	G = g;
-	B = b;
-	hex = "#" + numToHex(R) + numToHex(G) + numToHex(B);
+ColorValueHolder::ColorValueHolder(float r, float g, float b) {
+	R = constrain<float>(r, 0.0, 1.0);
+	G = constrain<float>(g, 0.0, 1.0);
+	B = constrain<float>(b, 0.0, 1.0);
+	A = 1;
 }
 
-std::string ColorValueHolder::getHex() {
-	return hex;
-}
-
-unsigned char* ColorValueHolder::getRGBv() {
-	unsigned char* arr = new unsigned char[3];
-	arr[0] = R;
-	arr[1] = G;
-	arr[2] = B;
-	return arr;
+ColorValueHolder::ColorValueHolder(float r, float g, float b, float a) : ColorValueHolder(r, g, b){
+	A = constrain<float>(a, 0.0, 1.0); //small inefficiency because A is defined twice but what can I do other than copying code
 }

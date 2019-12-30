@@ -36,9 +36,6 @@
     <ClCompile Include="leveleffect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="mylib.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="powersquare.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -123,6 +120,9 @@
     <ClCompile Include="shaderfromfile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="mylib.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -162,9 +162,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="leveleffect.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="mylib.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="power.h">
@@ -255,6 +252,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="shaderfromfile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mylib.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
