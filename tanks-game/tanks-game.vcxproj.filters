@@ -117,10 +117,16 @@
     <ClCompile Include="tripletankpower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="shaderfromfile.cpp">
+    <ClCompile Include="mylib.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="mylib.cpp">
+    <ClCompile Include="indexbuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vertexbuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -251,10 +257,16 @@
     <ClInclude Include="tripletankpower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="shaderfromfile.h">
+    <ClInclude Include="mylib.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="mylib.h">
+    <ClInclude Include="indexbuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vertexbuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -263,5 +275,9 @@
     <None Include="res\shaders\test-vertex.shader" />
     <None Include="res\shaders\test-fragment.shader" />
     <None Include="glew32.dll" />
+    <None Include="res\shaders\default-fragment.shader" />
+    <None Include="res\shaders\default-vertex.shader" />
+    <None Include="res\shaders\uniform-fragment.shader" />
+    <None Include="res\shaders\uniform-vertex.shader" />
   </ItemGroup>
 </Project>

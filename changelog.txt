@@ -12,7 +12,9 @@ stuff. primarily the framework and some powers to test the framework. (look at c
 
 future notes:
 0.1.0: GPU rendering
-0.X.0: big change in levels or powers or something else, like bulletpower memory management (std::shared_ptr)
-Z.X+1.0: multithreading? (std::async to start)
+0.A.0: big change in levels or powers or something else, like bulletpower memory management (std::shared_ptr)
+B.A+1.0: multithreading? (std::async to start)
 1.0.0: all levels, powers, and other stuff that I want
 2.0.0: level editor and/or power editor and/or game engine something thing (save for sequel instead?)
+
+other note: consider SDL instead of FreeGLUT

@@ -149,6 +149,7 @@
     <ClCompile Include="homingbulletpower.cpp" />
     <ClCompile Include="homingpower.cpp" />
     <ClCompile Include="homingtankpower.cpp" />
+    <ClCompile Include="indexbuffer.cpp" />
     <ClCompile Include="leveleffect.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="multishotbulletpower.cpp" />
@@ -158,8 +159,8 @@
     <ClCompile Include="powerfunctionhelper.cpp" />
     <ClCompile Include="powersquare.cpp" />
     <ClCompile Include="randomlevel.cpp" />
+    <ClCompile Include="renderer.cpp" />
     <ClCompile Include="resetthings.cpp" />
-    <ClCompile Include="shaderfromfile.cpp" />
     <ClCompile Include="speedbulletpower.cpp" />
     <ClCompile Include="speedpower.cpp" />
     <ClCompile Include="speedtankpower.cpp" />
@@ -167,6 +168,7 @@
     <ClCompile Include="triplebulletpower.cpp" />
     <ClCompile Include="triplepower.cpp" />
     <ClCompile Include="tripletankpower.cpp" />
+    <ClCompile Include="vertexbuffer.cpp" />
     <ClCompile Include="wall.cpp" />
     <ClCompile Include="wallhackbulletpower.cpp" />
     <ClCompile Include="wallhackpower.cpp" />
@@ -191,6 +193,7 @@
     <ClInclude Include="homingbulletpower.h" />
     <ClInclude Include="homingpower.h" />
     <ClInclude Include="homingtankpower.h" />
+    <ClInclude Include="indexbuffer.h" />
     <ClInclude Include="inheritedpowercommon.h" />
     <ClInclude Include="level.h" />
     <ClInclude Include="leveleffect.h" />
@@ -203,8 +206,8 @@
     <ClInclude Include="powersquare.h" />
     <ClInclude Include="randomlevel.h" />
     <ClInclude Include="rect.h" />
+    <ClInclude Include="renderer.h" />
     <ClInclude Include="resetthings.h" />
-    <ClInclude Include="shaderfromfile.h" />
     <ClInclude Include="speedbulletpower.h" />
     <ClInclude Include="speedpower.h" />
     <ClInclude Include="speedtankpower.h" />
@@ -213,6 +216,7 @@
     <ClInclude Include="triplebulletpower.h" />
     <ClInclude Include="triplepower.h" />
     <ClInclude Include="tripletankpower.h" />
+    <ClInclude Include="vertexbuffer.h" />
     <ClInclude Include="wall.h" />
     <ClInclude Include="wallhackbulletpower.h" />
     <ClInclude Include="wallhackpower.h" />
@@ -221,8 +225,12 @@
   <ItemGroup>
     <None Include="freeglut.dll" />
     <None Include="glew32.dll" />
+    <None Include="res\shaders\default-fragment.shader" />
+    <None Include="res\shaders\default-vertex.shader" />
     <None Include="res\shaders\test-vertex.shader" />
     <None Include="res\shaders\test-fragment.shader" />
+    <None Include="res\shaders\uniform-fragment.shader" />
+    <None Include="res\shaders\uniform-vertex.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
