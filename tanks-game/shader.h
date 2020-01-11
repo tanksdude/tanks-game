@@ -4,6 +4,7 @@
 #include <vector>
 #include <unordered_map>
 #include <GL/glew.h> //feels bad including this just for #define stuff, but files that need this file will already be including glew
+#include "res/vendor/glm/glm.hpp"
 
 class Shader {
 private:
@@ -26,4 +27,5 @@ public:
 	void Unbind() const;
 
 	void setUniform4f(const std::string& name, float v0, float v1, float v2, float v3);
+	void setUniformMat4f(const std::string& name, const glm::mat4& matrix);
 };

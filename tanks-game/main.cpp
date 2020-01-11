@@ -110,11 +110,17 @@ void appDrawScene() {
 
 	//newer hardware testing!!
 	/*
+	//float positions[] = {
+	//	  GAME_WIDTH/4,   GAME_HEIGHT/4,
+	//	3*GAME_WIDTH/4,   GAME_HEIGHT/4,
+	//	3*GAME_WIDTH/4, 3*GAME_HEIGHT/4,
+	//	  GAME_WIDTH/4, 3*GAME_HEIGHT/4
+	//};
 	float positions[] = {
-		-0.5f, -0.5f,
-		 0.5f, -0.5f,
-		 0.5f,  0.5f,
-		-0.5f,  0.5f
+		0, 0,
+		GAME_WIDTH, 0,
+		GAME_WIDTH, GAME_HEIGHT,
+		0, GAME_HEIGHT
 	};
 	unsigned int indices[] = {
 		0, 1, 2,
@@ -132,17 +138,20 @@ void appDrawScene() {
 
 	Shader shader = Shader("res/shaders/uniform-vertex.shader", "res/shaders/uniform-fragment.shader");
 	shader.Bind();
-	shader.setUniform4f("u_color", 1.0f, 0.0f, 1.0f, 1.0f);
+	shader.setUniform4f("u_color", backColor.getRf(), backColor.getGf(), backColor.getBf(), backColor.getAf());
+	shader.setUniformMat4f("u_MVPM", proj);
 
 	va.Bind();
 	ib.Bind();
 
 	Renderer::Draw(va, ib, shader);
 	Renderer::Cleanup(); //possibly put glutSwapBuffers in this
+	
+	shader.setUniform4f("u_color", 1.0f, 0.0f, 1.0f, 1.0f); //just so the other stuff is, well, visible
 
 	//glutSwapBuffers();
 	*/
-
+	
 	//new hardware testing!
 	/*
 	float positions[] = {
@@ -201,7 +210,7 @@ void appDrawScene() {
 		bullets[i]->draw();
 	}
 	for (int i = 0; i < tanks.size(); i++) {
-		tanks[i]->drawName();
+		//tanks[i]->drawName();
 	}
 	for (int i = 0; i < tanks.size(); i++) {
 		tanks[i]->draw();
