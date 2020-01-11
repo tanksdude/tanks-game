@@ -58,34 +58,13 @@ private:
 	ColorValueHolder defaultColor = ColorValueHolder(.5f, .5f, .5f);
 	bool dead = false;
 	ColorValueHolder* explosionColor;
-	ColorValueHolder defaultNameFill = ColorValueHolder(1.f, 1.f, 1.f);
+	ColorValueHolder defaultNameFill = ColorValueHolder(1.0f, 1.0f, 1.0f);
 	ColorValueHolder defaultNameStroke = ColorValueHolder(0, 0, 0);
 
 	void resetThings(double x, double y, double a, char id, std::string name);
 
 	double shootCount = 0;
 	double maxShootCount = 200; //temporary? //should be 100
-
-	//std::vector<double> getCannonPoints();
-
-	//std::vector<Power> powers;
-	/*
-	this.shootCount = 0,
-	this.shootMultiplier = 1,
-	this.powerMultiplier = 10,
-
-	this.powerCount = [],
-	this.maxPowerCount = [],
-	this.power = new PowerStuff(),
-	this.trapped = false,
-	this.specialShooting = 0,
-	this.colorDefault = normalColor,
-
-	this.shootingPower = new ShotPowerStuff(),
-	this.shotSizeMultiplier = 1,
-	this.shotVelocityMultiplier = 1,
-
-	*/
 
 public:
 	//helper stuff:
@@ -106,6 +85,8 @@ public:
 	void powerReset();
 	void draw();
 	void draw(double xpos, double ypos);
+	void drawCPU();
+	void drawCPU(double, double);
 	void drawName();
 	void drawName(double xpos, double ypos);
 	char getID() { return id; }
