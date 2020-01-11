@@ -37,6 +37,7 @@ Will need them eventually, though
 * Visual Studio - it's VS, come on
 * [FreeGLUT](http://freeglut.sourceforge.net/) - OpenGL graphics toolkit
 * [GLEW](http://glew.sourceforge.net/) - OpenGL Extension Wrangler Library; for getting the latest OpenGL commands on Windows
+* [OpenGL Mathematics (GLM)](https://github.com/g-truc/glm) - OpenGL-happy matrix and vector math library
 
 ## Contributing
 
