@@ -10,6 +10,8 @@
 #include "vertexarray.h"
 #include "shader.h"
 #include "renderer.h"
+#include "res/vendor/glm/glm.hpp" //this library is overkill but I can make my own later if necessary
+#include "res/vendor/glm/gtc/matrix_transform.hpp"
 
 //important stuff:
 #include "colorvalueholder.h"
@@ -86,6 +88,7 @@ void doThing() {
 
 int width = 1200;
 int height = 600;
+glm::mat4 proj = glm::ortho(0.0f, (float)GAME_WIDTH, 0.0f, (float)GAME_HEIGHT);
 
 void appDrawScene() {
 	currentlyDrawing = true;
@@ -240,21 +243,23 @@ void appReshapeFunc(int w, int h) {
 	w = (w == 0) ? 1 : w;
 	h = (h == 0) ? 1 : h;
 
-	if ((appXmax - appXmin) / w < (appYmax - appYmin) / h) {
+	if ((appXmax - appXmin) / w < (appYmax - appYmin) / h) { //too wide
 		scale = ((appYmax - appYmin) / h) / ((appXmax - appXmin) / w);
 		center = 0;
 		winXmin = center - (center - appXmin) * scale;
 		winXmax = center + (appXmax - center) * scale;
 		winYmin = appYmin;
 		winYmax = appYmax;
+		proj = glm::ortho(0.0f, float(GAME_WIDTH*scale), 0.0f, (float)GAME_HEIGHT);
 	}
-	else {
+	else { //too tall
 		scale = ((appXmax - appXmin) / w) / ((appYmax - appYmin) / h);
 		center = 0;
 		winYmin = center - (center - appYmin) * scale;
 		winYmax = center + (appYmax - center) * scale;
 		winXmin = appXmin;
 		winXmax = appXmax;
+		proj = glm::ortho(0.0f, (float)GAME_WIDTH, 0.0f, float(GAME_HEIGHT*scale));
 	}
 
 	// Now we use glOrtho to set up our viewing frustum
@@ -275,6 +280,7 @@ void appMotionFunc(int x, int y) {
 			tanks[1]->giveY() = (1 - y / double(height)) * GAME_HEIGHT;
 		}
 	}
+	//positions are off when window aspect ratio isn't 2:1
 }
 
 void mouse_func(int button, int state, int x, int y) {
