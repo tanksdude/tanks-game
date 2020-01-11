@@ -88,7 +88,18 @@ void doThing() {
 
 int width = 1200;
 int height = 600;
-glm::mat4 proj = glm::ortho(0.0f, (float)GAME_WIDTH, 0.0f, (float)GAME_HEIGHT);
+
+//TODO: move to an object
+float background_positions[] = {
+	0, 0,
+	GAME_WIDTH, 0,
+	GAME_WIDTH, GAME_HEIGHT,
+	0, GAME_HEIGHT
+};
+unsigned int background_indices[] = {
+	0, 1, 2,
+	2, 3, 0
+};
 
 void appDrawScene() {
 	currentlyDrawing = true;
@@ -109,32 +120,23 @@ void appDrawScene() {
 	*/
 
 	//newer hardware testing!!
-	/*
+	
 	//float positions[] = {
 	//	  GAME_WIDTH/4,   GAME_HEIGHT/4,
 	//	3*GAME_WIDTH/4,   GAME_HEIGHT/4,
 	//	3*GAME_WIDTH/4, 3*GAME_HEIGHT/4,
 	//	  GAME_WIDTH/4, 3*GAME_HEIGHT/4
 	//};
-	float positions[] = {
-		0, 0,
-		GAME_WIDTH, 0,
-		GAME_WIDTH, GAME_HEIGHT,
-		0, GAME_HEIGHT
-	};
-	unsigned int indices[] = {
-		0, 1, 2,
-		2, 3, 0
-	};
-
+	
+	//TODO: move to an object
 	VertexArray va;
-	VertexBuffer vb(positions, 4*2 * sizeof(float));
+	VertexBuffer vb(background_positions, 4*2 * sizeof(float));
 
 	VertexBufferLayout layout;
 	layout.Push_f(2);
 	va.AddBuffer(vb, layout);
 
-	IndexBuffer ib(indices, 6);
+	IndexBuffer ib(background_indices, 6);
 
 	Shader shader = Shader("res/shaders/uniform-vertex.shader", "res/shaders/uniform-fragment.shader");
 	shader.Bind();
@@ -145,55 +147,9 @@ void appDrawScene() {
 	ib.Bind();
 
 	Renderer::Draw(va, ib, shader);
-	Renderer::Cleanup(); //possibly put glutSwapBuffers in this
 	
 	shader.setUniform4f("u_color", 1.0f, 0.0f, 1.0f, 1.0f); //just so the other stuff is, well, visible
-
-	//glutSwapBuffers();
-	*/
 	
-	//new hardware testing!
-	/*
-	float positions[] = {
-		-0.5f, -0.5f,
-		 0.5f, -0.5f,
-		 0.5f,  0.5f,
-		-0.5f,  0.5f
-	};
-	unsigned int indices[] = {
-		0, 1, 2,
-		2, 3, 0
-	};
-
-	//glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	GLuint vao;
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);
-
-	VertexBuffer vb(positions, 4*2 * sizeof(float));
-
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
-
-	IndexBuffer ib(indices, 6);
-
-	GLuint shader = create_program("res/shaders/uniform-vertex.shader", "res/shaders/uniform-fragment.shader");
-	int location = glGetUniformLocation(shader, "u_color");
-	glUniform4f(location, 1.0f, 0.0f, 1.0f, 1.0f);
-
-	glBindVertexArray(vao);
-	ib.Bind();
-
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
-	glDisableVertexAttribArray(0); //disable vertex attribute to avoid issues
-
-	glDeleteProgram(shader);
-	
-	glFlush();
-	*/
-
 	// Set up the transformations stack
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -216,7 +172,8 @@ void appDrawScene() {
 		tanks[i]->draw();
 	}
 
-	// Swap the buffers to see the result of the drawing
+	Renderer::Cleanup(); //possibly put glutSwapBuffers in this
+
 	glFlush();
 	glutSwapBuffers();
 
