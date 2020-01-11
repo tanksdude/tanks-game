@@ -8,8 +8,8 @@ public:
 	IndexBuffer(const unsigned int* data, unsigned int count);
 	~IndexBuffer();
 
-	void Bind();
-	void Unbind();
+	void Bind() const;
+	void Unbind() const;
 
-	inline unsigned int getCount() { return m_count; }
+	inline unsigned int getCount() const { return m_count; }
 };

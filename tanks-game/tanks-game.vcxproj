@@ -161,6 +161,7 @@
     <ClCompile Include="randomlevel.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="resetthings.cpp" />
+    <ClCompile Include="shader.cpp" />
     <ClCompile Include="speedbulletpower.cpp" />
     <ClCompile Include="speedpower.cpp" />
     <ClCompile Include="speedtankpower.cpp" />
@@ -168,6 +169,7 @@
     <ClCompile Include="triplebulletpower.cpp" />
     <ClCompile Include="triplepower.cpp" />
     <ClCompile Include="tripletankpower.cpp" />
+    <ClCompile Include="vertexarray.cpp" />
     <ClCompile Include="vertexbuffer.cpp" />
     <ClCompile Include="wall.cpp" />
     <ClCompile Include="wallhackbulletpower.cpp" />
@@ -208,6 +210,7 @@
     <ClInclude Include="rect.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="resetthings.h" />
+    <ClInclude Include="shader.h" />
     <ClInclude Include="speedbulletpower.h" />
     <ClInclude Include="speedpower.h" />
     <ClInclude Include="speedtankpower.h" />
@@ -216,7 +219,9 @@
     <ClInclude Include="triplebulletpower.h" />
     <ClInclude Include="triplepower.h" />
     <ClInclude Include="tripletankpower.h" />
+    <ClInclude Include="vertexarray.h" />
     <ClInclude Include="vertexbuffer.h" />
+    <ClInclude Include="vertexbufferlayout.h" />
     <ClInclude Include="wall.h" />
     <ClInclude Include="wallhackbulletpower.h" />
     <ClInclude Include="wallhackpower.h" />

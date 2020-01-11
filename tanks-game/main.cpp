@@ -5,16 +5,11 @@
 #include <unordered_map>
 
 //GPU rendering:
-#include "renderer.h"
 #include "vertexbuffer.h"
 #include "indexbuffer.h"
-
-//Solarian Programmer reading files and compiling shaders:
-#include <cstdlib>
-//#include <iostream>
-#include <fstream>
-//#include <vector>
-#include <ctime>
+#include "vertexarray.h"
+#include "shader.h"
+#include "renderer.h"
 
 //important stuff:
 #include "colorvalueholder.h"
@@ -92,26 +87,13 @@ void doThing() {
 int width = 1200;
 int height = 600;
 
-//Solarian Programmer:
-// Read a shader source from a file, store the shader source in a std::vector<char>
-void read_shader_src(const char* fname, std::vector<char>& buffer);
-// Compile a shader
-GLuint load_and_compile_shader(const char* fname, GLenum shaderType);
-// Create a program from two shaders
-GLuint create_program(const char* path_vert_shader, const char* path_frag_shader);
-
-GLuint vbo; //not sure if needed
-GLuint ibo;
-
 void appDrawScene() {
 	currentlyDrawing = true;
 
-	// Set background color to black
-	glClearColor(0, 0, 0, 1);
 
-	// Clear the screen
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+	Renderer::Initialize(); //TODO: move to main(), but also increase what it does (you know, initialize some glut stuff)
+	Renderer::Clear();
+	
 	//background rectangle
 	/*
 	glColor3f(backColor.getRf(), backColor.getGf(), backColor.getBf());
@@ -121,6 +103,41 @@ void appDrawScene() {
 	glVertex3f(GAME_WIDTH, GAME_HEIGHT, 0);
 	glVertex3f(0, GAME_HEIGHT, 0);
 	glEnd();
+	*/
+
+	//newer hardware testing!!
+	/*
+	float positions[] = {
+		-0.5f, -0.5f,
+		 0.5f, -0.5f,
+		 0.5f,  0.5f,
+		-0.5f,  0.5f
+	};
+	unsigned int indices[] = {
+		0, 1, 2,
+		2, 3, 0
+	};
+
+	VertexArray va;
+	VertexBuffer vb(positions, 4*2 * sizeof(float));
+
+	VertexBufferLayout layout;
+	layout.Push_f(2);
+	va.AddBuffer(vb, layout);
+
+	IndexBuffer ib(indices, 6);
+
+	Shader shader = Shader("res/shaders/uniform-vertex.shader", "res/shaders/uniform-fragment.shader");
+	shader.Bind();
+	shader.setUniform4f("u_color", 1.0f, 0.0f, 1.0f, 1.0f);
+
+	va.Bind();
+	ib.Bind();
+
+	Renderer::Draw(va, ib, shader);
+	Renderer::Cleanup(); //possibly put glutSwapBuffers in this
+
+	//glutSwapBuffers();
 	*/
 
 	//new hardware testing!
@@ -163,29 +180,6 @@ void appDrawScene() {
 	glDeleteProgram(shader);
 	
 	glFlush();
-	*/
-
-	//hardware rendering testing
-	/*
-	GLfloat backgroundRect_vertices[] = {
-		0.0f,   0.0f,
-		640.0f, 0.0f,
-		640.0f, 320.0f,
-		0.0f,   320.0f
-	};
-
-	GLuint backgroundRect_indices[] = {
-		0, 1, 2,
-		2, 3, 0
-	};
-
-	GLuint backgroundRect_eab;
-	glGenBuffers(1, &backgroundRect_eab);
-
-	glBindBuffer(GL_ARRAY_BUFFER, backgroundRect_eab);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(backgroundRect_indices), backgroundRect_indices, GL_STATIC_DRAW);
-
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	*/
 
 	// Set up the transformations stack
@@ -573,72 +567,6 @@ void tick(int physicsUPS) {
 void tick() { tick(physicsRate); }
 void draw() { glutPostRedisplay(); }
 
-//stuff from Solarian Programmer
-// Read a shader source from a file
-// store the shader source in a std::vector<char>
-void read_shader_src(const char* fname, std::vector<char>& buffer) {
-	std::ifstream in;
-	in.open(fname, std::ios::binary);
-
-	if (in.is_open()) {
-		// Get the number of bytes stored in this file
-		in.seekg(0, std::ios::end);
-		size_t length = (size_t)in.tellg();
-
-		// Go to start of the file
-		in.seekg(0, std::ios::beg);
-
-		// Read the content of the file in a buffer
-		buffer.resize(length + 1);
-		in.read(&buffer[0], length);
-		in.close();
-		// Add a valid C - string end
-		buffer[length] = '\0';
-	}
-	else {
-		std::cerr << "Unable to open " << fname << " I'm out!" << std::endl;
-		exit(-1);
-	}
-}
-
-// Compile a shader
-GLuint load_and_compile_shader(const char* fname, GLenum shaderType) {
-	// Load a shader from an external file
-	std::vector<char> buffer;
-	read_shader_src(fname, buffer);
-	const char* src = &buffer[0];
-
-	// Compile the shader
-	GLuint shader = glCreateShader(shaderType);
-	glShaderSource(shader, 1, &src, NULL);
-	glCompileShader(shader);
-	// Check the result of the compilation
-	GLint test;
-	glGetShaderiv(shader, GL_COMPILE_STATUS, &test);
-	return shader;
-}
-
-// Create a program from two shaders
-GLuint create_program(const char* path_vert_shader, const char* path_frag_shader) {
-	// Load and compile the vertex and fragment shaders
-	GLuint vertexShader = load_and_compile_shader(path_vert_shader, GL_VERTEX_SHADER);
-	GLuint fragmentShader = load_and_compile_shader(path_frag_shader, GL_FRAGMENT_SHADER);
-
-	// Attach the above shader to a program
-	GLuint shaderProgram = glCreateProgram();
-	glAttachShader(shaderProgram, vertexShader);
-	glAttachShader(shaderProgram, fragmentShader);
-
-	// Flag the shaders for deletion
-	glDeleteShader(vertexShader);
-	glDeleteShader(fragmentShader);
-
-	// Link and use the program
-	glLinkProgram(shaderProgram);
-	glUseProgram(shaderProgram);
-
-	return shaderProgram;
-}
 
 
 int main(int argc, char** argv) {

@@ -4,14 +4,26 @@
 #include <GL/glew.h>
 #include <iostream>
 
-void GLClearError() {
-	while (glGetError() != GL_NO_ERROR);
+void Renderer::Initialize() {
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 }
 
-bool GLLogCall(const char* function, const char* file, int line) {
-	while (GLenum error = glGetError()) {
-		std::cout << "[OpenGL Error] (" << error << "): " << function << " " << file << ":" << line << std::endl;
-		return false;
-	}
+void Renderer::Clear() {
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
+void Renderer::Clear(int flags) {
+	glClear(flags);
+}
+
+void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader) {
+	shader.Bind();
+	va.Bind();
+	ib.Bind();
+
+	glDrawElements(GL_TRIANGLES, ib.getCount(), GL_UNSIGNED_INT, nullptr);
+}
+
+void Renderer::Cleanup() {
+	glDisableVertexAttribArray(0); //disable vertex attribute to avoid issues
+}
