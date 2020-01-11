@@ -1,9 +1,17 @@
 #pragma once
 #include "wall.h"
+#include "constants.h"
+#include "renderer.h"
 
 #include "GL/glew.h"
-#include "renderer.h"
-#include "constants.h"
+
+#if defined WIN32
+#include <freeglut.h>
+#elif defined __APPLE__
+#include <GLUT/glut.h>
+#else
+#include <GL/freeglut.h>
+#endif
 
 Wall::Wall(double x_, double y_, double w_, double h_, ColorValueHolder c) {
 	this->x = x_;
