@@ -20,4 +20,5 @@ public:
 		return id;
 	}
 	void draw();
+	void CPUdraw();
 };
