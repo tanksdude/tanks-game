@@ -9,7 +9,7 @@ class PowerSquare;
 
 class PowerSquare : public Rect {
 public:
-	Power** heldPower; //array of pointers
+	Power** heldPower; //array of pointers (can do a vector for simplicity but I don't foresee a powersquare getting more powers
 	short numOfPowers;
 	//double w = POWER_WIDTH;
 	//double h = POWER_HEIGHT;
@@ -18,6 +18,7 @@ public:
 
 	ColorValueHolder getColor();
 	void draw(); //draws at center
+	void drawCPU();
 	void givePower(Tank*);
 	void givePower(Bullet*); //don't think about it now, possibly ever; it's weird
 	//void givePower(Hazard*);
