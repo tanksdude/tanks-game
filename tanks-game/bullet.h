@@ -31,6 +31,8 @@ public:
 	void move();
 	void draw();
 	void draw(double, double);
+	void drawCPU();
+	void drawCPU(double, double);
 	char getID() { return id; }
 	short determineDamage(); //TODO: wait, what is this supposed to do again? (isn't everything supposed to have 1 health? so there's no point for this)
 

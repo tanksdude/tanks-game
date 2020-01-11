@@ -4,6 +4,9 @@
 #include <math.h>
 #include "circle.h"
 #include "colormixer.h"
+#include "renderer.h"
+
+#include <GL/glew.h>
 
 #if defined WIN32
 #include <freeglut.h>
@@ -89,11 +92,11 @@ ColorValueHolder Bullet::getColor() {
 	}
 }
 
-void Bullet::draw() {
-	draw(x, y);
+void Bullet::drawCPU() {
+	drawCPU(x, y);
 }
 
-void Bullet::draw(double xpos, double ypos) {
+void Bullet::drawCPU(double xpos, double ypos) {
 	//main body:
 	ColorValueHolder color = getColor();
 	glColor3f(color.getRf(), color.getGf(), color.getBf());
@@ -117,6 +120,64 @@ void Bullet::draw(double xpos, double ypos) {
 	}
 
 	glEnd();
+}
+
+void Bullet::draw() {
+	draw(x, y);
+}
+
+void Bullet::draw(double xpos, double ypos) {
+	//main body:
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+	ColorValueHolder color = getColor();
+
+	float positions[(Circle::numOfSides+1)*2];
+	for (int i = 0; i < Circle::numOfSides; i++) {
+		positions[i*2]   = xpos + r*cos(i * 2*PI / Circle::numOfSides);
+		positions[i*2+1] = ypos + r*sin(i * 2*PI / Circle::numOfSides);
+	}
+	positions[Circle::numOfSides*2]   = xpos;
+	positions[Circle::numOfSides*2+1] = ypos;
+
+	unsigned int indices[Circle::numOfSides*3];
+	for (int i = 0; i < Circle::numOfSides; i++) {
+		indices[i*3]   = Circle::numOfSides;
+		indices[i*3+1] = i;
+		indices[i*3+2] = (i+1) % Circle::numOfSides;
+	}
+
+	VertexArray va;
+	VertexBuffer vb(positions, (Circle::numOfSides+1)*2 * sizeof(float));
+
+	VertexBufferLayout layout;
+	layout.Push_f(2);
+	va.AddBuffer(vb, layout);
+
+	IndexBuffer ib(indices, Circle::numOfSides*3);
+
+	Shader shader = Shader("res/shaders/uniform-vertex.shader", "res/shaders/uniform-fragment.shader");
+	shader.Bind();
+	shader.setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+	shader.setUniformMat4f("u_MVPM", proj);
+
+	Renderer::Draw(va, ib, shader);
+
+	/*
+	//outline:
+	glEnable(GL_POLYGON_OFFSET_LINE);
+	glPolygonOffset(-1, -1);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	shader.setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 1.0f);
+
+	Renderer::Draw(va, ib, shader);
+	
+	//cleanup:
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glDisable(GL_POLYGON_OFFSET_LINE);
+	*/
+	//so to draw an outline, either a geometry shader can be used (ugh), the CPU (big ugh), or a fragment shader (lesser ugh)
+	//in other words, I'll avoid this for now
 }
 
 short Bullet::determineDamage() { //TODO: finish once powers start existing
