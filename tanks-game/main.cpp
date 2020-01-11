@@ -143,9 +143,6 @@ void appDrawScene() {
 	shader.setUniform4f("u_color", backColor.getRf(), backColor.getGf(), backColor.getBf(), backColor.getAf());
 	shader.setUniformMat4f("u_MVPM", proj);
 
-	va.Bind();
-	ib.Bind();
-
 	Renderer::Draw(va, ib, shader);
 	
 	shader.setUniform4f("u_color", 1.0f, 0.0f, 1.0f, 1.0f); //just so the other stuff is, well, visible
