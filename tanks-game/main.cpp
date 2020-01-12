@@ -86,8 +86,8 @@ void doThing() {
 	return;
 }
 
-int width = 1200;
-int height = 600;
+int width = 1200*1.25;
+int height = 600*1.25;
 
 //TODO: move to an object
 float background_positions[] = {
@@ -581,7 +581,7 @@ int main(int argc, char** argv) {
 
 	// Setup window position, size, and title
 	glutInitWindowPosition(60, 60);
-	glutInitWindowSize(width*1.25, height*1.25);
+	glutInitWindowSize(width, height);
 	glutCreateWindow("Tanks Test");
 
 	glPointSize(2);
