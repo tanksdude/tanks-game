@@ -4,9 +4,16 @@
 #include "vertexarray.h"
 #include "indexbuffer.h"
 #include "shader.h"
+#include <string>
+#include <unordered_map>
 
 class Renderer {
+private:
+	static std::unordered_map<std::string, Shader*> shaderCache;
+	static unsigned int currentShader;
+	static inline void bindShader(Shader*);
 public:
+	static Shader* getShader(std::string);
 	static void Clear();
 	static void Clear(int bits);
 	static void Initialize();

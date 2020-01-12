@@ -50,12 +50,12 @@ void Wall::draw() {
 
 	IndexBuffer ib(indices, 6);
 
-	Shader shader = Shader("res/shaders/uniform-vertex.shader", "res/shaders/uniform-fragment.shader");
-	shader.Bind();
-	shader.setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-	shader.setUniformMat4f("u_MVPM", proj);
+	Shader* shader = Renderer::getShader("uniform");
+	//shader->Bind();
+	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+	shader->setUniformMat4f("u_MVPM", proj);
 
-	Renderer::Draw(va, ib, shader);
+	Renderer::Draw(va, ib, *shader);
 }
 
 void Wall::CPUdraw() {

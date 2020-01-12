@@ -463,12 +463,12 @@ void Tank::draw(double xpos, double ypos) {
 
 	IndexBuffer ib2(indices, Circle::numOfSides*3);
 
-	Shader shader("res/shaders/uniform-vertex.shader", "res/shaders/uniform-fragment.shader");
-	shader.Bind();
-	shader.setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-	shader.setUniformMat4f("u_MVPM", proj);
+	Shader* shader = Renderer::getShader("uniform");
+	shader->Bind();
+	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+	shader->setUniformMat4f("u_MVPM", proj);
 
-	Renderer::Draw(va2, ib2, shader);
+	Renderer::Draw(va2, ib2, *shader);
 	delete[] positions, indices;
 
 	//other barrels:

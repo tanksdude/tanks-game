@@ -104,8 +104,6 @@ unsigned int background_indices[] = {
 void appDrawScene() {
 	currentlyDrawing = true;
 
-
-	Renderer::Initialize(); //TODO: move to main(), but also increase what it does (you know, initialize some glut stuff)
 	Renderer::Clear();
 	
 	//background rectangle
@@ -599,6 +597,9 @@ int main(int argc, char** argv) {
 	glEnable(GL_POINT_SMOOTH);
 	glEnable(GL_LINE_SMOOTH);
 	glDisable(GL_DEPTH_TEST);
+
+
+	Renderer::Initialize();
 
 
 	// Set callback for drawing the scene

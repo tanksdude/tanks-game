@@ -69,6 +69,7 @@ PowerSquare::~PowerSquare() {
 void PowerSquare::draw() {
 	//BIG TODO: reduce code duplication
 	ColorValueHolder color = getColor();
+	Shader* shader = Renderer::getShader("uniform");
 	if (numOfPowers > 1) { //move to drawUnder()
 		float extendingMultiplier = POWER_LINE_WIDTH*(1 - POWER_OUTLINE_MULTIPLIER);
 		ColorValueHolder backgroundMix = ColorMixer::mix(color, backColor);
@@ -117,12 +118,11 @@ void PowerSquare::draw() {
 
 		IndexBuffer ib(indices, 6*4);
 
-		Shader shader = Shader("res/shaders/uniform-vertex.shader", "res/shaders/uniform-fragment.shader");
-		shader.Bind();
-		shader.setUniform4f("u_color", backgroundMix.getRf(), backgroundMix.getGf(), backgroundMix.getBf(), backgroundMix.getAf());
-		shader.setUniformMat4f("u_MVPM", proj);
+		//shader->Bind();
+		shader->setUniform4f("u_color", backgroundMix.getRf(), backgroundMix.getGf(), backgroundMix.getBf(), backgroundMix.getAf());
+		shader->setUniformMat4f("u_MVPM", proj);
 
-		Renderer::Draw(va, ib, shader);
+		Renderer::Draw(va, ib, *shader);
 	}
 	//probable TODO: put all vertices in positions, then make two index buffers (then draw)
 
@@ -171,12 +171,11 @@ void PowerSquare::draw() {
 
 	IndexBuffer ib(indices, 6*4);
 
-	Shader shader = Shader("res/shaders/uniform-vertex.shader", "res/shaders/uniform-fragment.shader");
-	shader.Bind();
-	shader.setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-	shader.setUniformMat4f("u_MVPM", proj);
+	//shader->Bind();
+	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+	shader->setUniformMat4f("u_MVPM", proj);
 
-	Renderer::Draw(va, ib, shader);
+	Renderer::Draw(va, ib, *shader);
 }
 
 void PowerSquare::drawCPU() {

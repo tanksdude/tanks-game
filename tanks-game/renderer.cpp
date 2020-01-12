@@ -4,8 +4,34 @@
 #include <GL/glew.h>
 #include <iostream>
 
+std::unordered_map<std::string, Shader*> Renderer::shaderCache;
+unsigned int Renderer::currentShader = 0;
+
 void Renderer::Initialize() {
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	Shader* shader = new Shader("res/shaders/uniform-vertex.shader", "res/shaders/uniform-fragment.shader");
+	shader->Bind();
+	currentShader = shader->getRendererID();
+	shaderCache.insert({ "uniform", shader });
+}
+
+inline void Renderer::bindShader(Shader* shader) {
+	if (currentShader != shader->getRendererID()) {
+		shader->Bind();
+		currentShader = shader->getRendererID();
+	}
+}
+
+Shader* Renderer::getShader(std::string s) {
+	//return shaderCache[s];
+	
+	auto get = shaderCache.find(s);
+	if (get != shaderCache.end()) {
+		Shader* shader = shaderCache[s];
+		bindShader(shader);
+		return shader;
+	}
+	return nullptr;
 }
 
 void Renderer::Clear() {
@@ -17,7 +43,10 @@ void Renderer::Clear(int flags) {
 }
 
 void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader) {
-	shader.Bind();
+	if (currentShader != shader.getRendererID()) {
+		currentShader = shader.getRendererID();
+		shader.Bind();
+	}
 	va.Bind();
 	ib.Bind();
 
