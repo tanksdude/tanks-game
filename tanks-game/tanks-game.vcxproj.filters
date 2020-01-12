@@ -293,8 +293,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="freeglut.dll" />
-    <None Include="res\shaders\test-vertex.shader" />
-    <None Include="res\shaders\test-fragment.shader" />
     <None Include="glew32.dll" />
     <None Include="res\shaders\default-fragment.shader" />
     <None Include="res\shaders\default-vertex.shader" />
