@@ -9,10 +9,14 @@ unsigned int Renderer::currentShader = 0;
 
 void Renderer::Initialize() {
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+
 	Shader* shader = new Shader("res/shaders/uniform-vertex.shader", "res/shaders/uniform-fragment.shader");
 	shader->Bind();
 	currentShader = shader->getRendererID();
 	shaderCache.insert({ "uniform", shader });
+
+	shader = new Shader("res/shaders/default-vertex.shader", "res/shaders/default-fragment.shader");
+	shaderCache.insert({ "default", shader });
 }
 
 inline void Renderer::bindShader(Shader* shader) {
@@ -31,7 +35,17 @@ Shader* Renderer::getShader(std::string s) {
 		bindShader(shader);
 		return shader;
 	}
-	return nullptr;
+	//shader wasn't found
+
+	//return the magenta shader, just so there's something
+	get = shaderCache.find("default");
+	if (get != shaderCache.end()) {
+		Shader* shader = shaderCache[s];
+		bindShader(shader);
+		return shader;
+	}
+
+	return nullptr; //default magenta shader is missing
 }
 
 void Renderer::Clear() {
