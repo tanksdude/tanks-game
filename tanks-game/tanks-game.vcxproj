@@ -234,6 +234,8 @@
     <None Include="glew32.dll" />
     <None Include="res\shaders\default-fragment.shader" />
     <None Include="res\shaders\default-vertex.shader" />
+    <None Include="res\shaders\translation-fragment.shader" />
+    <None Include="res\shaders\translation-vertex.shader" />
     <None Include="res\shaders\uniform-fragment.shader" />
     <None Include="res\shaders\uniform-vertex.shader" />
   </ItemGroup>

@@ -11,9 +11,12 @@ void Renderer::Initialize() {
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 	Shader* shader = new Shader("res/shaders/uniform-vertex.shader", "res/shaders/uniform-fragment.shader");
-	shader->Bind();
+	shader->Bind(); //uniform shader will be used most often (probably entirely) so it gets binded at start
 	currentShader = shader->getRendererID();
 	shaderCache.insert({ "uniform", shader });
+
+	shader = new Shader("res/shaders/translation-vertex.shader", "res/shaders/translation-fragment.shader");
+	shaderCache.insert({ "translation", shader });
 
 	shader = new Shader("res/shaders/default-vertex.shader", "res/shaders/default-fragment.shader");
 	shaderCache.insert({ "default", shader });
@@ -35,7 +38,8 @@ Shader* Renderer::getShader(std::string s) {
 		bindShader(shader);
 		return shader;
 	}
-	//shader wasn't found
+	//else shader wasn't found
+	std::cout << "Could not find '" << s << "' shader!" << std::endl;
 
 	//return the magenta shader, just so there's something
 	get = shaderCache.find("default");
@@ -44,6 +48,8 @@ Shader* Renderer::getShader(std::string s) {
 		bindShader(shader);
 		return shader;
 	}
+	//else big uh-oh
+	std::cout << "Could not find the default shader!" << std::endl;
 
 	return nullptr; //default magenta shader is missing
 }
