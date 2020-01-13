@@ -11,7 +11,12 @@ class Renderer {
 private:
 	static std::unordered_map<std::string, Shader*> shaderCache;
 	static unsigned int currentShader;
+	static unsigned int currentVertexArray;
+	static unsigned int currentIndexBuffer;
 	static inline void bindShader(Shader*);
+	static inline void bindShader(const Shader&);
+	static inline void bindVertexArray(const VertexArray&);
+	static inline void bindIndexBuffer(const IndexBuffer&);
 public:
 	static Shader* getShader(std::string);
 	static void Clear();

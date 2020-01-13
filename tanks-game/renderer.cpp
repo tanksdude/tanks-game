@@ -5,7 +5,9 @@
 #include <iostream>
 
 std::unordered_map<std::string, Shader*> Renderer::shaderCache;
-unsigned int Renderer::currentShader = 0;
+unsigned int Renderer::currentShader = -1;
+unsigned int Renderer::currentVertexArray = -1;
+unsigned int Renderer::currentIndexBuffer = -1;
 
 void Renderer::Initialize() {
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -26,6 +28,27 @@ inline void Renderer::bindShader(Shader* shader) {
 	if (currentShader != shader->getRendererID()) {
 		shader->Bind();
 		currentShader = shader->getRendererID();
+	}
+}
+
+inline void Renderer::bindShader(const Shader& shader) {
+	if (currentShader != shader.getRendererID()) {
+		shader.Bind();
+		currentShader = shader.getRendererID();
+	}
+}
+
+inline void Renderer::bindVertexArray(const VertexArray& va) {
+	if (currentVertexArray != va.getRendererID()) {
+		va.Bind();
+		currentVertexArray = va.getRendererID();
+	}
+}
+
+inline void Renderer::bindIndexBuffer(const IndexBuffer& ib) {
+	if (currentIndexBuffer != ib.getRendererID()) {
+		ib.Bind();
+		currentIndexBuffer = ib.getRendererID();
 	}
 }
 
@@ -63,12 +86,9 @@ void Renderer::Clear(int flags) {
 }
 
 void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader) {
-	if (currentShader != shader.getRendererID()) {
-		currentShader = shader.getRendererID();
-		shader.Bind();
-	}
-	va.Bind();
-	ib.Bind();
+	bindShader(shader);
+	bindVertexArray(va);
+	bindIndexBuffer(ib);
 
 	glDrawElements(GL_TRIANGLES, ib.getCount(), GL_UNSIGNED_INT, nullptr);
 }
