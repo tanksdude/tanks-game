@@ -5,6 +5,9 @@
 #include "circle.h"
 #include "colormixer.h"
 #include "renderer.h"
+#include <glm/glm.hpp>
+#include <glm/gtx/transform.hpp>
+#include <iostream>
 
 #include <GL/glew.h>
 
@@ -23,6 +26,32 @@ Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_) 
 	this->angle = a;
 	this->velocity = vel;
 	this->id = id_;
+
+
+
+	float positions[(Circle::numOfSides+1)*2];
+	for (int i = 0; i < Circle::numOfSides; i++) {
+		positions[i*2]   = r*cos(i * 2*PI / Circle::numOfSides);
+		positions[i*2+1] = r*sin(i * 2*PI / Circle::numOfSides);
+	}
+	positions[Circle::numOfSides*2]   = 0;
+	positions[Circle::numOfSides*2+1] = 0;
+
+	unsigned int indices[Circle::numOfSides*3];
+	for (int i = 0; i < Circle::numOfSides; i++) {
+		indices[i*3]   = Circle::numOfSides;
+		indices[i*3+1] = i;
+		indices[i*3+2] = (i+1) % Circle::numOfSides;
+	}
+
+	test_va = new VertexArray();
+	test_vb = new VertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float));
+
+	VertexBufferLayout layout;
+	layout.Push_f(2);
+	test_va->AddBuffer(*test_vb, layout);
+
+	test_ib = new IndexBuffer(indices, Circle::numOfSides*3);
 }
 
 Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_, std::vector<BulletPower*> bp) : Bullet(x_,y_,r_,a,vel,id_) {
@@ -127,6 +156,27 @@ void Bullet::draw() {
 }
 
 void Bullet::draw(double xpos, double ypos) {
+	
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+	ColorValueHolder color = getColor();
+
+	//IndexBuffer* a = &test_ib;
+	//VertexBuffer* b = &test_vb;
+	//VertexArray* c = &test_va;
+	
+	//std::cout << a << " " << b << " " << c << " " << std::endl;
+
+	Shader* shader = Renderer::getShader("translation");
+	//shader->Bind();
+	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+	glm::mat4 trans = glm::translate(proj, glm::vec3(xpos, ypos, 0.0f));
+	shader->setUniformMat4f("u_TM", trans);
+
+	Renderer::Draw(*test_va, *test_ib, *shader);
+
+	
+	/*
 	//main body:
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
@@ -162,6 +212,7 @@ void Bullet::draw(double xpos, double ypos) {
 	shader->setUniformMat4f("u_MVPM", proj);
 
 	Renderer::Draw(va, ib, *shader);
+	*/
 
 	/*
 	//outline:
