@@ -78,7 +78,7 @@ Tank* tank2 = new Tank(620, 160, PI, 1, "Arrow Keys");
 int tank_dead = 0;
 
 long frameCount = 0; //doesn't need a long for how it's interpreted...
-long ticksUntilFrame = 1; //whatever again
+long ticksUntilFrame = 2; //whatever again
 long trueFrameCount = 0;
 int physicsRate = 100;
 bool currentlyDrawing = false; //look into std::mutex
@@ -98,20 +98,12 @@ void appDrawScene() {
 
 	auto start = Diagnostics::getTime();
 
-	Renderer::Clear();
-	
-	//background rectangle
-	/*
-	glColor3f(backColor.getRf(), backColor.getGf(), backColor.getBf());
-	glBegin(GL_POLYGON);
-	glVertex3f(0, 0, 0);
-	glVertex3f(GAME_WIDTH, 0, 0);
-	glVertex3f(GAME_WIDTH, GAME_HEIGHT, 0);
-	glVertex3f(0, GAME_HEIGHT, 0);
-	glEnd();
-	*/
+	Diagnostics::startTiming();
+	Diagnostics::addName("clear");
 
-	//newer hardware testing!!
+	Renderer::Clear();
+
+	Diagnostics::endTiming();
 	
 	Diagnostics::startTiming();
 	Diagnostics::addName("background rect");
@@ -168,7 +160,7 @@ void appDrawScene() {
 
 	Renderer::Cleanup(); //possibly put glutSwapBuffers in this
 
-	glFlush();
+	//glFlush(); //swapping buffers flushes implicitly
 	glutSwapBuffers();
 
 	Diagnostics::endTiming();
