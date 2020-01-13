@@ -28,7 +28,7 @@ public:
 	ColorValueHolder getColor();
 
 private:
-	//IMPORTANT: GLEW initialized before these are set
+	//IMPORTANT: GLEW must be initialized before these are set
 	VertexArray* va;
 	VertexBuffer* vb;
 	IndexBuffer* ib;

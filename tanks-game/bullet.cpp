@@ -164,7 +164,7 @@ void Bullet::draw(double xpos, double ypos) {
 	Shader* shader = Renderer::getShader("translation");
 	//shader->Bind();
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-	glm::mat4 trans = glm::translate(proj, glm::vec3(xpos, ypos, 0.0f));
+	glm::mat4 trans = glm::translate(proj, glm::vec3(xpos, ypos, 0.0f)); //calculate full matrix on CPU
 	shader->setUniformMat4f("u_TM", trans);
 
 	Renderer::Draw(*va, *ib, *shader);
