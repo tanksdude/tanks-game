@@ -605,6 +605,7 @@ int main(int argc, char** argv) {
 	Renderer::Initialize();
 	Bullet::initializeGPU();
 	BackgroundRect::initializeGPU();
+	PowerSquare::initializeGPU();
 
 
 	// Set callback for drawing the scene

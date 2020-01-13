@@ -6,6 +6,7 @@ class PowerSquare;
 #include <string>
 #include "power.h"
 #include "rect.h"
+#include "renderer.h"
 
 class PowerSquare : public Rect {
 public:
@@ -13,6 +14,14 @@ public:
 	short numOfPowers;
 	//double w = POWER_WIDTH;
 	//double h = POWER_HEIGHT;
+
+private:
+	static VertexArray* va;
+	static VertexBuffer* vb;
+	static IndexBuffer* ib_main; //the main thing
+	static IndexBuffer* ib_outline; //the extra bit when numOfPowers >= 2
+public:
+	static void initializeGPU();
 
 public:
 
