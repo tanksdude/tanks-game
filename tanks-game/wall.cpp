@@ -2,6 +2,9 @@
 #include "wall.h"
 #include "constants.h"
 #include "renderer.h"
+#include <glm/glm.hpp>
+#include <glm/gtx/transform.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include "GL/glew.h"
 
@@ -19,19 +22,21 @@ Wall::Wall(double x_, double y_, double w_, double h_, ColorValueHolder c) {
 	this->w = w_;
 	this->h = h_;
 	color = c;
-
-	initializeGPU();
 }
 Wall::Wall(double x_, double y_, double w_, double h_, ColorValueHolder c, short id_) : Wall(x_, y_, w_, h_, c){
 	this->id = id_;
 }
 
+VertexArray* Wall::va;
+VertexBuffer* Wall::vb;
+IndexBuffer* Wall::ib;
+
 void Wall::initializeGPU() {
 	float positions[] = {
-		x, y,
-		x + w, y,
-		x + w, y + h,
-		x, y + h
+		0, 0,
+		1, 0,
+		1, 1,
+		0, 1
 	};
 	unsigned int indices[] = {
 		0, 1, 2,
@@ -49,10 +54,12 @@ void Wall::initializeGPU() {
 }
 
 void Wall::draw() {
-	Shader* shader = Renderer::getShader("uniform");
+	Shader* shader = Renderer::getShader("scaling");
 	//shader->Bind();
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-	shader->setUniformMat4f("u_MVPM", proj);
+	glm::mat4 trans = glm::translate(proj, glm::vec3(x, y, 0.0f));
+	glm::mat4 sc = glm::scale(trans, glm::vec3(w, h, 0));
+	shader->setUniformMat4f("u_SM", sc);
 
 	Renderer::Draw(*va, *ib, *shader);
 }

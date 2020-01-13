@@ -609,6 +609,7 @@ int main(int argc, char** argv) {
 	Bullet::initializeGPU();
 	BackgroundRect::initializeGPU();
 	PowerSquare::initializeGPU();
+	Wall::initializeGPU();
 	Tank::initializeGPU();
 
 

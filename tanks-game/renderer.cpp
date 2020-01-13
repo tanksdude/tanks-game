@@ -20,6 +20,9 @@ void Renderer::Initialize() {
 	shader = new Shader("res/shaders/translation-vertex.shader", "res/shaders/translation-fragment.shader");
 	shaderCache.insert({ "translation", shader });
 
+	shader = new Shader("res/shaders/scale-vertex.shader", "res/shaders/scale-fragment.shader");
+	shaderCache.insert({ "scaling", shader });
+
 	shader = new Shader("res/shaders/default-vertex.shader", "res/shaders/default-fragment.shader");
 	shaderCache.insert({ "default", shader });
 }

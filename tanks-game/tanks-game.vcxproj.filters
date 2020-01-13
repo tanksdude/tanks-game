@@ -312,5 +312,7 @@
     <None Include="res\shaders\uniform-vertex.shader" />
     <None Include="res\shaders\translation-fragment.shader" />
     <None Include="res\shaders\translation-vertex.shader" />
+    <None Include="res\shaders\scale-fragment.shader" />
+    <None Include="res\shaders\scale-vertex.shader" />
   </ItemGroup>
 </Project>
