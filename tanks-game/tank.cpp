@@ -7,6 +7,8 @@
 #include <iostream>
 #include "mylib.h"
 #include "renderer.h"
+#include <glm/glm.hpp>
+#include <glm/gtx/transform.hpp>
 
 #include "GL/glew.h"
 
@@ -336,6 +338,36 @@ void Tank::drawCPU(double xpos, double ypos) {
 	glEnd();
 }
 
+VertexArray* Tank::va;
+VertexBuffer* Tank::vb;
+IndexBuffer* Tank::ib;
+
+void Tank::initializeGPU() {
+	float positions[(Circle::numOfSides+1)*2];
+	for (int i = 0; i < Circle::numOfSides; i++) {
+		positions[i*2]   = 16*cos(i * 2*PI / Circle::numOfSides); //TODO: change 16 to Tank::default_radius or something
+		positions[i*2+1] = 16*sin(i * 2*PI / Circle::numOfSides);
+	}
+	positions[Circle::numOfSides*2]   = 0;
+	positions[Circle::numOfSides*2+1] = 0;
+
+	unsigned int indices[Circle::numOfSides*3];
+	for (int i = 0; i < Circle::numOfSides; i++) {
+		indices[i*3]   = Circle::numOfSides;
+		indices[i*3+1] = i;
+		indices[i*3+2] = (i+1) % Circle::numOfSides;
+	}
+
+	va = new VertexArray();
+	vb = new VertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float));
+
+	VertexBufferLayout layout;
+	layout.Push_f(2);
+	va->AddBuffer(*vb, layout);
+
+	ib = new IndexBuffer(indices, Circle::numOfSides*3);
+}
+
 void Tank::draw() {
 	draw(x, y);
 }
@@ -439,37 +471,14 @@ void Tank::draw(double xpos, double ypos) {
 	//main body:
 	ColorValueHolder color = getBodyColor();
 
-	float* positions = new float[(Circle::numOfSides+1)*2];
-	for (int i = 0; i < Circle::numOfSides; i++) {
-		positions[i*2]   = xpos + r*cos(i * 2*PI / Circle::numOfSides);
-		positions[i*2+1] = ypos + r*sin(i * 2*PI / Circle::numOfSides);
-	}
-	positions[Circle::numOfSides*2]   = xpos;
-	positions[Circle::numOfSides*2+1] = ypos;
-
-	unsigned int* indices = new unsigned int[Circle::numOfSides*3];
-	for (int i = 0; i < Circle::numOfSides; i++) {
-		indices[i*3]   = Circle::numOfSides;
-		indices[i*3+1] = i;
-		indices[i*3+2] = (i+1) % Circle::numOfSides;
-	}
-
-	VertexArray va2;
-	VertexBuffer vb2(positions, (Circle::numOfSides+1)*2 * sizeof(float));
-
-	VertexBufferLayout layout2;
-	layout2.Push_f(2);
-	va2.AddBuffer(vb2, layout2);
-
-	IndexBuffer ib2(indices, Circle::numOfSides*3);
-
 	Shader* shader = Renderer::getShader("uniform");
-	shader->Bind();
+	shader = Renderer::getShader("translation");
+	//shader->Bind();
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-	shader->setUniformMat4f("u_MVPM", proj);
+	glm::mat4 trans = glm::translate(proj, glm::vec3(xpos, ypos, 0.0f));
+	shader->setUniformMat4f("u_TM", trans);
 
-	Renderer::Draw(va2, ib2, *shader);
-	delete[] positions, indices;
+	Renderer::Draw(*va, *ib, *shader);
 
 	//other barrels:
 	

@@ -134,12 +134,15 @@ void appDrawScene() {
 	}
 	Diagnostics::endTiming();
 
+
+	//TODO: not all walls are being drawn: fix!
 	Diagnostics::startTiming();
 	Diagnostics::addName("walls");
 	for (int i = 0; i < walls.size(); i++) {
 		walls[i]->draw();
 	}
 	Diagnostics::endTiming();
+
 
 	Diagnostics::startTiming();
 	Diagnostics::addName("bullets");
@@ -606,6 +609,7 @@ int main(int argc, char** argv) {
 	Bullet::initializeGPU();
 	BackgroundRect::initializeGPU();
 	PowerSquare::initializeGPU();
+	Tank::initializeGPU();
 
 
 	// Set callback for drawing the scene
