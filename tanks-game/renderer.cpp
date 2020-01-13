@@ -80,6 +80,33 @@ Shader* Renderer::getShader(std::string s) {
 	return nullptr; //default magenta shader is missing
 }
 
+void Renderer::Unbind(const VertexArray& va) {
+	if (currentVertexArray == va.getRendererID()) {
+		va.Unbind();
+		currentVertexArray = -1;
+	}
+}
+
+void Renderer::Unbind(const IndexBuffer& ib) {
+	if (currentVertexArray == ib.getRendererID()) {
+		ib.Unbind();
+		currentIndexBuffer = -1;
+	}
+}
+
+void Renderer::Unbind(const Shader& s) {
+	if (currentVertexArray == s.getRendererID()) {
+		s.Unbind();
+		currentShader = -1;
+	}
+}
+
+void Renderer::UnbindAll() {
+	glUseProgram(0); //shader
+	glBindVertexArray(0); //array buffer
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); //index buffer
+}
+
 void Renderer::Clear() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
