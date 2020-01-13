@@ -12,6 +12,7 @@
 #include "renderer.h"
 #include "res/vendor/glm/glm.hpp" //this library is overkill but I can make my own later if necessary
 #include "res/vendor/glm/gtc/matrix_transform.hpp"
+#include "backgroundrect.h"
 
 //important stuff:
 #include "colorvalueholder.h"
@@ -65,6 +66,8 @@
 #include <GL/freeglut.h>
 #endif
 
+#include "diagnostics.h"
+
 using namespace std;
 
 unordered_map<unsigned char, bool> normalKeyStates;
@@ -76,6 +79,7 @@ int tank_dead = 0;
 
 long frameCount = 0; //doesn't need a long for how it's interpreted...
 long ticksUntilFrame = 1; //whatever again
+long trueFrameCount = 0;
 int physicsRate = 100;
 bool currentlyDrawing = false; //look into std::mutex
 
@@ -89,20 +93,10 @@ void doThing() {
 int width = 1200*1.25;
 int height = 600*1.25;
 
-//TODO: move to an object
-float background_positions[] = {
-	0, 0,
-	GAME_WIDTH, 0,
-	GAME_WIDTH, GAME_HEIGHT,
-	0, GAME_HEIGHT
-};
-unsigned int background_indices[] = {
-	0, 1, 2,
-	2, 3, 0
-};
-
 void appDrawScene() {
 	currentlyDrawing = true;
+
+	auto start = Diagnostics::getTime();
 
 	Renderer::Clear();
 	
@@ -119,58 +113,67 @@ void appDrawScene() {
 
 	//newer hardware testing!!
 	
-	//float positions[] = {
-	//	  GAME_WIDTH/4,   GAME_HEIGHT/4,
-	//	3*GAME_WIDTH/4,   GAME_HEIGHT/4,
-	//	3*GAME_WIDTH/4, 3*GAME_HEIGHT/4,
-	//	  GAME_WIDTH/4, 3*GAME_HEIGHT/4
-	//};
+	Diagnostics::startTiming();
+	Diagnostics::addName("background rect");
+
+	BackgroundRect::draw();
 	
-	//TODO: move to an object
-	VertexArray va;
-	VertexBuffer vb(background_positions, 4*2 * sizeof(float));
-
-	VertexBufferLayout layout;
-	layout.Push_f(2);
-	va.AddBuffer(vb, layout);
-
-	IndexBuffer ib(background_indices, 6);
-
-	Shader shader = Shader("res/shaders/uniform-vertex.shader", "res/shaders/uniform-fragment.shader");
-	shader.Bind();
-	shader.setUniform4f("u_color", backColor.getRf(), backColor.getGf(), backColor.getBf(), backColor.getAf());
-	shader.setUniformMat4f("u_MVPM", proj);
-
-	Renderer::Draw(va, ib, shader);
+	Diagnostics::endTiming();
 	
-	shader.setUniform4f("u_color", 1.0f, 0.0f, 1.0f, 1.0f); //just so the other stuff is, well, visible
-	
+
+	//is this needed?
 	// Set up the transformations stack
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
 
-
+	Diagnostics::startTiming();
+	Diagnostics::addName("powerups");
 	for (int i = 0; i < powerups.size(); i++) {
 		powerups[i]->draw();
 	}
+	Diagnostics::endTiming();
+
+	Diagnostics::startTiming();
+	Diagnostics::addName("walls");
 	for (int i = 0; i < walls.size(); i++) {
 		walls[i]->draw();
 	}
+	Diagnostics::endTiming();
+
+	Diagnostics::startTiming();
+	Diagnostics::addName("bullets");
 	for (int i = 0; i < bullets.size(); i++) {
 		bullets[i]->draw();
 	}
+	Diagnostics::endTiming();
+
 	for (int i = 0; i < tanks.size(); i++) {
 		//tanks[i]->drawName();
 	}
+
+	Diagnostics::startTiming();
+	Diagnostics::addName("tanks");
 	for (int i = 0; i < tanks.size(); i++) {
 		tanks[i]->draw();
 	}
+	Diagnostics::endTiming();
+
+	Diagnostics::startTiming();
+	Diagnostics::addName("flush");
 
 	Renderer::Cleanup(); //possibly put glutSwapBuffers in this
 
 	glFlush();
 	glutSwapBuffers();
+
+	Diagnostics::endTiming();
+
+	auto end = Diagnostics::getTime();
+
+	Diagnostics::printTimings();
+	Diagnostics::clearTimes();
+	cout << "entire: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << "ms" << endl;
 
 	currentlyDrawing = false;
 }
@@ -517,7 +520,7 @@ void tick(int physicsUPS) {
 	}
 	*/
 
-
+	trueFrameCount++;
 	if (tank_dead == 0) {
 		glutTimerFunc(1000/physicsUPS, tick, physicsUPS);
 		if (frameCount == 0) {
@@ -601,6 +604,7 @@ int main(int argc, char** argv) {
 
 	Renderer::Initialize();
 	Bullet::initializeGPU();
+	BackgroundRect::initializeGPU();
 
 
 	// Set callback for drawing the scene
