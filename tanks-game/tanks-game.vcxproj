@@ -145,6 +145,7 @@
     <ClCompile Include="colormixer.cpp" />
     <ClCompile Include="colorvalueholder.cpp" />
     <ClCompile Include="constants.cpp" />
+    <ClCompile Include="diagnostics.cpp" />
     <ClCompile Include="emptylevel.cpp" />
     <ClCompile Include="homingbulletpower.cpp" />
     <ClCompile Include="homingpower.cpp" />
@@ -190,6 +191,7 @@
     <ClInclude Include="colormixer.h" />
     <ClInclude Include="colorvalueholder.h" />
     <ClInclude Include="constants.h" />
+    <ClInclude Include="diagnostics.h" />
     <ClInclude Include="emptylevel.h" />
     <ClInclude Include="hazard.h" />
     <ClInclude Include="homingbulletpower.h" />
