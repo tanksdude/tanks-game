@@ -132,23 +132,23 @@ void appDrawScene() {
 	for (int i = 0; i < powerups.size(); i++) {
 		powerups[i]->draw();
 	}
+	Renderer::UnbindAll();
 	Diagnostics::endTiming();
 
-
-	//TODO: not all walls are being drawn: fix!
 	Diagnostics::startTiming();
 	Diagnostics::addName("walls");
 	for (int i = 0; i < walls.size(); i++) {
 		walls[i]->draw();
 	}
+	Renderer::UnbindAll();
 	Diagnostics::endTiming();
-
-
+	
 	Diagnostics::startTiming();
 	Diagnostics::addName("bullets");
 	for (int i = 0; i < bullets.size(); i++) {
 		bullets[i]->draw();
 	}
+	Renderer::UnbindAll();
 	Diagnostics::endTiming();
 
 	for (int i = 0; i < tanks.size(); i++) {
@@ -160,6 +160,7 @@ void appDrawScene() {
 	for (int i = 0; i < tanks.size(); i++) {
 		tanks[i]->draw();
 	}
+	Renderer::UnbindAll();
 	Diagnostics::endTiming();
 
 	Diagnostics::startTiming();
