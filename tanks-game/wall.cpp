@@ -19,17 +19,14 @@ Wall::Wall(double x_, double y_, double w_, double h_, ColorValueHolder c) {
 	this->w = w_;
 	this->h = h_;
 	color = c;
+
+	initializeGPU();
 }
-Wall::Wall(double x_, double y_, double w_, double h_, ColorValueHolder c, short id_) {
-	this->x = x_;
-	this->y = y_;
-	this->w = w_;
-	this->h = h_;
-	color = c;
+Wall::Wall(double x_, double y_, double w_, double h_, ColorValueHolder c, short id_) : Wall(x_, y_, w_, h_, c){
 	this->id = id_;
 }
 
-void Wall::draw() {
+void Wall::initializeGPU() {
 	float positions[] = {
 		x, y,
 		x + w, y,
@@ -41,21 +38,23 @@ void Wall::draw() {
 		2, 3, 0
 	};
 
-	VertexArray va;
-	VertexBuffer vb(positions, 4*2 * sizeof(float));
+	va = new VertexArray();
+	vb = new VertexBuffer(positions, 4*2 * sizeof(float));
 
 	VertexBufferLayout layout;
 	layout.Push_f(2);
-	va.AddBuffer(vb, layout);
+	va->AddBuffer(*vb, layout);
 
-	IndexBuffer ib(indices, 6);
+	ib = new IndexBuffer(indices, 6);
+}
 
+void Wall::draw() {
 	Shader* shader = Renderer::getShader("uniform");
 	//shader->Bind();
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 	shader->setUniformMat4f("u_MVPM", proj);
 
-	Renderer::Draw(va, ib, *shader);
+	Renderer::Draw(*va, *ib, *shader);
 }
 
 void Wall::CPUdraw() {

@@ -573,11 +573,6 @@ int main(int argc, char** argv) {
 	}
 	*/
 
-	//TODO: proper solution
-	tanks[0]->determineShootingAngles();
-	tanks[1]->determineShootingAngles();
-	levelLookup["random"]->initialize();
-
 	// Initialize GLUT
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH);
@@ -600,6 +595,11 @@ int main(int argc, char** argv) {
 	glEnable(GL_POINT_SMOOTH);
 	glEnable(GL_LINE_SMOOTH);
 	glDisable(GL_DEPTH_TEST);
+
+	//TODO: proper solution
+	tanks[0]->determineShootingAngles();
+	tanks[1]->determineShootingAngles();
+	levelLookup["random"]->initialize();
 
 
 	Renderer::Initialize();
