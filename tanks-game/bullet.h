@@ -29,9 +29,9 @@ public:
 
 private:
 	//IMPORTANT: GLEW initialized before these are set
-	VertexArray* test_va;
-	VertexBuffer* test_vb;
-	IndexBuffer* test_ib;
+	VertexArray* va;
+	VertexBuffer* vb;
+	IndexBuffer* ib;
 	
 public:
 	Bullet(double x_, double y_, double r_, double a, double vel, char id_);
