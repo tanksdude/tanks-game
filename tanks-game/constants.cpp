@@ -11,8 +11,6 @@ glm::mat4 proj = glm::ortho(0.0f, (float)GAME_WIDTH, 0.0f, (float)GAME_HEIGHT);
 
 const ColorValueHolder* defaultExplosionColor = new ColorValueHolder(0, 0, 0);
 
-const Bullet* junkBullet = new Bullet(0, 0, 0, 0, 0, -1);
-
 const double POWER_WIDTH = 6;
 const double POWER_HEIGHT = 6;
 const double POWER_LINE_WIDTH = .333;
