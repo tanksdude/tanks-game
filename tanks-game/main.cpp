@@ -600,6 +600,7 @@ int main(int argc, char** argv) {
 
 
 	Renderer::Initialize();
+	Bullet::initializeGPU();
 
 
 	// Set callback for drawing the scene

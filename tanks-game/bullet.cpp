@@ -26,13 +26,25 @@ Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_) 
 	this->angle = a;
 	this->velocity = vel;
 	this->id = id_;
+}
 
+Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_, std::vector<BulletPower*> bp) : Bullet(x_,y_,r_,a,vel,id_) {
+	bulletPowers = bp;
 
+	for (int i = 0; i < bulletPowers.size(); i++) {
+		bulletPowers[i]->initialize(this);
+	}
+}
 
+VertexArray* Bullet::va;
+VertexBuffer* Bullet::vb;
+IndexBuffer* Bullet::ib;
+
+void Bullet::initializeGPU() {
 	float positions[(Circle::numOfSides+1)*2];
 	for (int i = 0; i < Circle::numOfSides; i++) {
-		positions[i*2]   = r*cos(i * 2*PI / Circle::numOfSides);
-		positions[i*2+1] = r*sin(i * 2*PI / Circle::numOfSides);
+		positions[i*2]   = 4*cos(i * 2*PI / Circle::numOfSides); //TODO: change 4 to Bullet::default_radius or something
+		positions[i*2+1] = 4*sin(i * 2*PI / Circle::numOfSides);
 	}
 	positions[Circle::numOfSides*2]   = 0;
 	positions[Circle::numOfSides*2+1] = 0;
@@ -52,14 +64,6 @@ Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_) 
 	va->AddBuffer(*vb, layout);
 
 	ib = new IndexBuffer(indices, Circle::numOfSides*3);
-}
-
-Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_, std::vector<BulletPower*> bp) : Bullet(x_,y_,r_,a,vel,id_) {
-	bulletPowers = bp;
-
-	for (int i = 0; i < bulletPowers.size(); i++) {
-		bulletPowers[i]->initialize(this);
-	}
 }
 
 double Bullet::getAngle() {
