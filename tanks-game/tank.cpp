@@ -397,51 +397,27 @@ void Tank::draw() {
 
 void Tank::draw(double xpos, double ypos) {
 	//shooting cooldown outline:
-	/*
 	double shootingOutlinePercent = constrain<double>(shootCount/(maxShootCount*getShootingSpeedMultiplier()), 0, 1);
 	unsigned int shootingOutlineVertices = Circle::numOfSides * shootingOutlinePercent;
 
-	float* positions = new float[(shootingOutlineVertices+1)*2];
-	for (int i = 0; i < Circle::numOfSides; i++) {
-		positions[i*2]   = xpos + r*cos(i * 2*PI / Circle::numOfSides) * 5/4;
-		positions[i*2+1] = ypos + r*sin(i * 2*PI / Circle::numOfSides) * 5/4;
-	}
-	positions[shootingOutlineVertices*2]   = xpos;
-	positions[shootingOutlineVertices*2+1] = ypos;
+	Shader* shader = Renderer::getShader("rotation");
+	//shader->Bind();
+	shader->setUniform4f("u_color", 1.0f, 1.0f, 1.0f, 1.0f);
+	glm::mat4 trans = glm::translate(proj, glm::vec3(xpos, ypos, 0.0f));
+	glm::mat4 rot = glm::rotate(trans, (float)getAngle(), glm::vec3(0.0f, 0.0f, 1.0f));
+	glm::mat4 scale = glm::scale(rot, glm::vec3(5.0/4.0, 5.0/4.0, 0));
+	shader->setUniformMat4f("u_MVPM", scale);
 
-	unsigned int* indices = new unsigned int[shootingOutlineVertices*3];
-	for (int i = 0; i < shootingOutlineVertices; i++) {
-		indices[i*3]   = shootingOutlineVertices;
-		indices[i*3+1] = i;
-		indices[i*3+2] = (i+1) % shootingOutlineVertices;
-	}
+	Renderer::Draw(*va, *ib, *shader, shootingOutlineVertices*3);
 
-	VertexArray va;
-	VertexBuffer vb(positions, (shootingOutlineVertices+1)*2 * sizeof(float));
-
-	VertexBufferLayout layout;
-	layout.Push_f(2);
-	va.AddBuffer(vb, layout);
-
-	IndexBuffer ib(indices, shootingOutlineVertices*3);
-
-	Shader shader = Shader("res/shaders/uniform-vertex.shader", "res/shaders/uniform-fragment.shader");
-	shader.Bind();
-	shader.setUniform4f("u_color", 1.0f, 1.0f, 1.0f, 1.0f);
-	shader.setUniformMat4f("u_MVPM", proj);
-
-	Renderer::Draw(va, ib, shader);
-	delete[] positions, indices;
-	*/
-
-	/*
+	
 	//power cooldown outlines:
 	//first, sort by timeLeft/maxTime
 	std::vector<TankPower*> sortedTankPowers; //there shouldn't be more than a few powers, so no need to do anything more complex than an array
 	sortedTankPowers.reserve(tankPowers.size());
 	for (int i = 0; i < tankPowers.size(); i++) {
 		//insertion sort because I don't want to think about something more complex for something this small
-		//insertion sort has best case O(n) when the list is mostly/entirely sorted, which is possible to get but I don't because it's reversed (easy fix, do later)
+		//insertion sort has best case O(n) when the list is mostly/entirely sorted, which is possible to obtain but I that doesn't happen because it's reversed (easy fix, do later)
 		sortedTankPowers.push_back(tankPowers[i]);
 		for (int j = sortedTankPowers.size() - 1; j >= 1; j--) {
 			if (sortedTankPowers[j]->timeLeft/sortedTankPowers[j]->maxTime > sortedTankPowers[j-1]->timeLeft/sortedTankPowers[j-1]->maxTime){
@@ -453,52 +429,28 @@ void Tank::draw(double xpos, double ypos) {
 	}
 	//second, actually draw them
 	for (int i = 0; i < sortedTankPowers.size(); i++) {
-		ColorValueHolder c = sortedTankPowers[i]->getColor();
-		
-		double powerOutlinePercent = constrain<double>(shootCount/(maxShootCount*getShootingSpeedMultiplier()), 0, 1);
+		double powerOutlinePercent = constrain<double>(sortedTankPowers[i]->timeLeft/sortedTankPowers[i]->maxTime, 0, 1);
 		unsigned int powerOutlineVertices = Circle::numOfSides * powerOutlinePercent;
 
-		float* positions = new float[(powerOutlineVertices+1)*2];
-		for (int i = 0; i < Circle::numOfSides; i++) {
-			positions[i*2]   = xpos + r*cos(i * 2*PI / Circle::numOfSides + angle) * 9/8;
-			positions[i*2+1] = ypos + r*sin(i * 2*PI / Circle::numOfSides + angle) * 9/8;
-		}
-		positions[powerOutlineVertices*2]   = xpos;
-		positions[powerOutlineVertices*2+1] = ypos;
+		ColorValueHolder c = sortedTankPowers[i]->getColor();
 
-		unsigned int* indices = new unsigned int[powerOutlineVertices*3];
-		for (int i = 0; i < powerOutlineVertices; i++) {
-			indices[i*3]   = powerOutlineVertices;
-			indices[i*3+1] = i;
-			indices[i*3+2] = (i+1) % powerOutlineVertices;
-		}
+		shader->setUniform4f("u_color", c.getRf(), c.getGf(), c.getBf(), c.getAf());
+		glm::mat4 trans = glm::translate(proj, glm::vec3(xpos, ypos, 0.0f));
+		glm::mat4 rot = glm::rotate(trans, (float)getAngle(), glm::vec3(0.0f, 0.0f, 1.0f));
+		glm::mat4 scale = glm::scale(rot, glm::vec3(9.0/8.0, 9.0/8.0, 0));
+		shader->setUniformMat4f("u_MVPM", scale);
 
-		VertexArray va;
-		VertexBuffer vb(positions, (powerOutlineVertices+1)*2 * sizeof(float));
-
-		VertexBufferLayout layout;
-		layout.Push_f(2);
-		va.AddBuffer(vb, layout);
-
-		IndexBuffer ib(indices, powerOutlineVertices*3);
-
-		shader.Bind();
-		shader.setUniform4f("u_color", c.getRf(), c.getGf(), c.getBf(), c.getAf());
-		shader.setUniformMat4f("u_MVPM", proj);
-
-		Renderer::Draw(va, ib, shader);
-		delete[] positions, indices;
+		Renderer::Draw(*va, *ib, *shader, powerOutlineVertices*3);
 	}
-	*/
+	
 
 	//main body:
 	ColorValueHolder color = getBodyColor();
 
-	Shader* shader = Renderer::getShader("uniform");
 	shader = Renderer::getShader("translation");
 	//shader->Bind();
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-	glm::mat4 trans = glm::translate(proj, glm::vec3(xpos, ypos, 0.0f));
+	trans = glm::translate(proj, glm::vec3(xpos, ypos, 0.0f));
 	shader->setUniformMat4f("u_TM", trans);
 
 	Renderer::Draw(*va, *ib, *shader);
@@ -533,8 +485,8 @@ void Tank::draw(double xpos, double ypos) {
 	glLineWidth(2.0f);
 	shader->setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 1.0f);
 	trans = glm::translate(proj, glm::vec3(xpos, ypos, 0.0f));
-	glm::mat4 rot = glm::rotate(trans, (float)getAngle(), glm::vec3(0.0f, 0.0f, 1.0f));
-	glm::mat4 scale = glm::scale(rot, glm::vec3(r, 1, 0));
+	rot = glm::rotate(trans, (float)getAngle(), glm::vec3(0.0f, 0.0f, 1.0f));
+	scale = glm::scale(rot, glm::vec3(r, 1, 0));
 	shader->setUniformMat4f("u_MVPM", scale);
 
 	Renderer::Draw(*cannon_va, *shader, GL_LINES, 0, 2);
