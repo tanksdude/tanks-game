@@ -484,7 +484,13 @@ void Tank::draw(double xpos, double ypos) {
 	
 
 	//outline:
-	
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glLineWidth(1.0f);
+	shader->setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 1.0f);
+
+	glDrawArrays(GL_LINE_LOOP, 0, Circle::numOfSides); //TODO: move to Renderer
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	//barrel:
 	
