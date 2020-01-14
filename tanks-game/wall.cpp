@@ -64,7 +64,7 @@ void Wall::draw() {
 	Renderer::Draw(*va, *ib, *shader);
 }
 
-void Wall::CPUdraw() {
+void Wall::drawCPU() {
 	glColor3f(color.getRf(), color.getGf(), color.getBf());
 
 	glBegin(GL_POLYGON);
