@@ -30,6 +30,8 @@ public:
 	double turningIncrement = 64;
 	double angle;
 	double getAngle();
+	double getCannonAngle(int index);
+	double getRealCannonAngle(int index);
 	std::vector<CannonPoint>* shootingPoints;
 
 	//double shootingSpeedMultiplier = 1;

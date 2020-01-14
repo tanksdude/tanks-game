@@ -242,6 +242,14 @@ double Tank::getAngle() {
 	return fmod(fmod(angle, 2*PI) + 2*PI, 2*PI);
 }
 
+double Tank::getCannonAngle(int i) {
+	return fmod(fmod(shootingPoints->at(i).angle, 2*PI) + 2*PI, 2*PI);
+}
+
+double Tank::getRealCannonAngle(int i) {
+	return fmod(fmod(shootingPoints->at(i).angle + angle, 2 * PI) + 2 * PI, 2 * PI);
+}
+
 void Tank::drawCPU() {
 	//TODO: need ability for more special drawing
 	drawCPU(x, y);
@@ -496,14 +504,27 @@ void Tank::draw(double xpos, double ypos) {
 	Renderer::Draw(*va, *ib, *shader);
 
 	//other barrels:
-	
-
-	//outline:
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glLineWidth(1.0f);
+
+	shader = Renderer::getShader("rotation");
+	//shader->setUniform4f("u_color", .5f, .5f, .5f, .25f); //CPU
+	shader->setUniform4f("u_color", .75f, .75f, .75f, 1.0f);
+	
+	for (int i = 1; i < shootingPoints->size(); i++) {
+		glm::mat4 trans = glm::translate(proj, glm::vec3(xpos, ypos, 0.0f));
+		glm::mat4 rot = glm::rotate(trans, (float)getRealCannonAngle(i), glm::vec3(0.0f, 0.0f, 1.0f));
+		glm::mat4 scale = glm::scale(rot, glm::vec3(r, 1, 0));
+		shader->setUniformMat4f("u_MVPM", scale);
+
+		Renderer::Draw(*cannon_va, *shader, GL_LINES, 0, 2);
+	}
+
+	//outline:
+	shader = Renderer::getShader("translation");
 	shader->setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 1.0f);
 
-	Renderer::Draw(GL_LINE_LOOP, 0, Circle::numOfSides);
+	Renderer::Draw(*va, *shader, GL_LINE_LOOP, 0, Circle::numOfSides);
 
 	//barrel:
 	
