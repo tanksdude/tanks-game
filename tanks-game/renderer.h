@@ -23,6 +23,9 @@ public:
 	static void Clear(int bits);
 	static void Initialize();
 	static void Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader);
+	static void Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader, unsigned int count);
+	static void Draw(const VertexArray& va, const Shader& shader, GLenum type, GLint first, GLsizei count);
+	static void Draw(GLenum type, GLint first, GLsizei count);
 	static void Unbind(const VertexArray&);
 	static void Unbind(const IndexBuffer&);
 	static void Unbind(const Shader&);

@@ -181,7 +181,7 @@ void Bullet::draw(double xpos, double ypos) {
 	glLineWidth(1.0f); //lines still look ugly even with glEnable(GL_LINE_SMOOTH), so I don't know what to set it at
 	shader->setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 1.0f);
 
-	glDrawArrays(GL_LINE_LOOP, 0, Circle::numOfSides); //TODO: move to Renderer
+	Renderer::Draw(GL_LINE_LOOP, 0, Circle::numOfSides);
 	
 	//cleanup:
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

@@ -29,6 +29,9 @@ public:
 	//TODO: system that can apply forces
 	double turningIncrement = 64;
 	double angle;
+	double getAngle();
+	double getCannonAngle(int index);
+	double getRealCannonAngle(int index);
 	std::vector<CannonPoint>* shootingPoints;
 
 	//double shootingSpeedMultiplier = 1;
@@ -74,6 +77,8 @@ private:
 	static VertexArray* va;
 	static VertexBuffer* vb;
 	static IndexBuffer* ib;
+	static VertexArray* cannon_va;
+	static VertexBuffer* cannon_vb;
 public:
 	static void initializeGPU();
 
