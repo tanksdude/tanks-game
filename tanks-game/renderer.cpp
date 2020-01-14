@@ -126,6 +126,18 @@ void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& 
 	glDrawElements(GL_TRIANGLES, ib.getCount(), GL_UNSIGNED_INT, nullptr);
 }
 
+void Renderer::Draw(const VertexArray& va, const Shader& shader, GLenum type, GLint first, GLsizei count) {
+	bindShader(shader);
+	bindVertexArray(va);
+	currentIndexBuffer = -1;
+
+	glDrawArrays(type, first, count);
+}
+
+void Renderer::Draw(GLenum type, GLint first, GLsizei count) {
+	glDrawArrays(type, first, count);
+}
+
 void Renderer::Cleanup() {
 	glDisableVertexAttribArray(0); //disable vertex attribute to avoid issues
 }
