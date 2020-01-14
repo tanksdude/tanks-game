@@ -126,6 +126,14 @@ void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& 
 	glDrawElements(GL_TRIANGLES, ib.getCount(), GL_UNSIGNED_INT, nullptr);
 }
 
+void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader, unsigned int count) {
+	bindShader(shader);
+	bindVertexArray(va);
+	bindIndexBuffer(ib);
+
+	glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
+}
+
 void Renderer::Draw(const VertexArray& va, const Shader& shader, GLenum type, GLint first, GLsizei count) {
 	bindShader(shader);
 	bindVertexArray(va);
