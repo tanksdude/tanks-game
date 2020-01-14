@@ -74,6 +74,8 @@ private:
 	static VertexArray* va;
 	static VertexBuffer* vb;
 	static IndexBuffer* ib;
+	static VertexArray* cannon_va;
+	static VertexBuffer* cannon_vb;
 public:
 	static void initializeGPU();
 

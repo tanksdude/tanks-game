@@ -341,6 +341,8 @@ void Tank::drawCPU(double xpos, double ypos) {
 VertexArray* Tank::va;
 VertexBuffer* Tank::vb;
 IndexBuffer* Tank::ib;
+VertexArray* Tank::cannon_va;
+VertexBuffer* Tank::cannon_vb;
 
 void Tank::initializeGPU() {
 	float positions[(Circle::numOfSides+1)*2];
@@ -366,6 +368,15 @@ void Tank::initializeGPU() {
 	va->AddBuffer(*vb, layout);
 
 	ib = new IndexBuffer(indices, Circle::numOfSides*3);
+
+
+	float cannon_positions[4] = { 0.0f, 0.0f, 1.0f, 0.0f };
+	cannon_va = new VertexArray();
+	cannon_vb = new VertexBuffer(cannon_positions, 2*2 * sizeof(float));
+
+	VertexBufferLayout cannon_layout;
+	cannon_layout.Push_f(2);
+	cannon_va->AddBuffer(*cannon_vb, cannon_layout);
 }
 
 void Tank::draw() {
@@ -490,11 +501,12 @@ void Tank::draw(double xpos, double ypos) {
 
 	glDrawArrays(GL_LINE_LOOP, 0, Circle::numOfSides); //TODO: move to Renderer
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
 	//barrel:
 	
+
 	
+	//cleanup
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 void Tank::drawName() {
