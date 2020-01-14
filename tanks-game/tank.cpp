@@ -238,6 +238,10 @@ ColorValueHolder Tank::getBodyColor() {
 	}
 }
 
+double Tank::getAngle() {
+	return fmod(fmod(angle, 2*PI) + 2*PI, 2*PI);
+}
+
 void Tank::drawCPU() {
 	//TODO: need ability for more special drawing
 	drawCPU(x, y);
@@ -370,7 +374,7 @@ void Tank::initializeGPU() {
 	ib = new IndexBuffer(indices, Circle::numOfSides*3);
 
 
-	float cannon_positions[4] = { 0.0f, 0.0f, 16.0f, 0.0f };
+	float cannon_positions[4] = { 0.0f, 0.0f, 1.0f, 0.0f };
 	cannon_va = new VertexArray();
 	cannon_vb = new VertexBuffer(cannon_positions, 2*2 * sizeof(float));
 
@@ -508,8 +512,9 @@ void Tank::draw(double xpos, double ypos) {
 	glLineWidth(2.0f);
 	shader->setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 1.0f);
 	trans = glm::translate(proj, glm::vec3(xpos, ypos, 0.0f));
-	glm::mat4 rot = glm::rotate(trans, (float)angle, glm::vec3(0.0f, 0.0f, 1.0f));
-	shader->setUniformMat4f("u_MVPM", rot);
+	glm::mat4 rot = glm::rotate(trans, (float)getAngle(), glm::vec3(0.0f, 0.0f, 1.0f));
+	glm::mat4 scale = glm::scale(rot, glm::vec3(r, 1, 0));
+	shader->setUniformMat4f("u_MVPM", scale);
 
 	Renderer::Draw(*cannon_va, *shader, GL_LINES, 0, 2);
 	

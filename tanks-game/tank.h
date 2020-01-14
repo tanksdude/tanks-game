@@ -29,6 +29,7 @@ public:
 	//TODO: system that can apply forces
 	double turningIncrement = 64;
 	double angle;
+	double getAngle();
 	std::vector<CannonPoint>* shootingPoints;
 
 	//double shootingSpeedMultiplier = 1;
