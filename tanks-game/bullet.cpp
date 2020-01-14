@@ -161,7 +161,7 @@ void Bullet::draw() {
 
 void Bullet::draw(double xpos, double ypos) {
 	//main body:
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); //should already be enabled
 
 	ColorValueHolder color = getColor();
 
@@ -173,21 +173,22 @@ void Bullet::draw(double xpos, double ypos) {
 
 	Renderer::Draw(*va, *ib, *shader);
 
-	/*
 	//outline:
-	glEnable(GL_POLYGON_OFFSET_LINE);
-	glPolygonOffset(-1, -1);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	shader.setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 1.0f);
+	//glEnable(GL_POLYGON_OFFSET_LINE); //I don't know if this is needed, but it works without
+	//glPolygonOffset(-1, -1);
 
-	Renderer::Draw(*va, *ib, shader);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glLineWidth(1.0f); //lines still look ugly even with glEnable(GL_LINE_SMOOTH), so I don't know what to set it at
+	shader->setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 1.0f);
+
+	glDrawArrays(GL_LINE_LOOP, 0, Circle::numOfSides); //TODO: move to Renderer
 	
 	//cleanup:
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	glDisable(GL_POLYGON_OFFSET_LINE);
-	*/
-	//so to draw an outline, either a geometry shader can be used (ugh), the CPU (big ugh), or a fragment shader (lesser ugh)
-	//in other words, I'll avoid this for now
+
+	//glDisable(GL_POLYGON_OFFSET_LINE);
+
+	//drawing an outline: use a geometry shader (ugh) or another VAO+IBO (lesser ugh), the CPU (big ugh), or glDrawArrays with GL_LINE_LOOP (yay!)
 }
 
 short Bullet::determineDamage() { //TODO: finish once powers start existing
