@@ -23,6 +23,9 @@ void Renderer::Initialize() {
 	shader = new Shader("res/shaders/scale-vertex.shader", "res/shaders/scale-fragment.shader");
 	shaderCache.insert({ "scaling", shader });
 
+	shader = new Shader("res/shaders/rotate-vertex.shader", "res/shaders/rotate-fragment.shader");
+	shaderCache.insert({ "rotation", shader });
+
 	shader = new Shader("res/shaders/default-vertex.shader", "res/shaders/default-fragment.shader");
 	shaderCache.insert({ "default", shader });
 }
