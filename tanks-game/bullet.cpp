@@ -5,6 +5,9 @@
 #include "circle.h"
 #include "colormixer.h"
 #include "renderer.h"
+#include <glm/glm.hpp>
+#include <glm/gtx/transform.hpp>
+#include <iostream>
 
 #include <GL/glew.h>
 
@@ -31,6 +34,36 @@ Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_, 
 	for (int i = 0; i < bulletPowers.size(); i++) {
 		bulletPowers[i]->initialize(this);
 	}
+}
+
+VertexArray* Bullet::va;
+VertexBuffer* Bullet::vb;
+IndexBuffer* Bullet::ib;
+
+void Bullet::initializeGPU() {
+	float positions[(Circle::numOfSides+1)*2];
+	for (int i = 0; i < Circle::numOfSides; i++) {
+		positions[i*2]   = 4*cos(i * 2*PI / Circle::numOfSides); //TODO: change 4 to Bullet::default_radius or something
+		positions[i*2+1] = 4*sin(i * 2*PI / Circle::numOfSides);
+	}
+	positions[Circle::numOfSides*2]   = 0;
+	positions[Circle::numOfSides*2+1] = 0;
+
+	unsigned int indices[Circle::numOfSides*3];
+	for (int i = 0; i < Circle::numOfSides; i++) {
+		indices[i*3]   = Circle::numOfSides;
+		indices[i*3+1] = i;
+		indices[i*3+2] = (i+1) % Circle::numOfSides;
+	}
+
+	va = new VertexArray();
+	vb = new VertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float));
+
+	VertexBufferLayout layout;
+	layout.Push_f(2);
+	va->AddBuffer(*vb, layout);
+
+	ib = new IndexBuffer(indices, Circle::numOfSides*3);
 }
 
 double Bullet::getAngle() {
@@ -128,40 +161,17 @@ void Bullet::draw() {
 
 void Bullet::draw(double xpos, double ypos) {
 	//main body:
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	ColorValueHolder color = getColor();
 
-	float positions[(Circle::numOfSides+1)*2];
-	for (int i = 0; i < Circle::numOfSides; i++) {
-		positions[i*2]   = xpos + r*cos(i * 2*PI / Circle::numOfSides);
-		positions[i*2+1] = ypos + r*sin(i * 2*PI / Circle::numOfSides);
-	}
-	positions[Circle::numOfSides*2]   = xpos;
-	positions[Circle::numOfSides*2+1] = ypos;
+	Shader* shader = Renderer::getShader("translation");
+	//shader->Bind();
+	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+	glm::mat4 trans = glm::translate(proj, glm::vec3(xpos, ypos, 0.0f)); //calculate full matrix on CPU
+	shader->setUniformMat4f("u_TM", trans);
 
-	unsigned int indices[Circle::numOfSides*3];
-	for (int i = 0; i < Circle::numOfSides; i++) {
-		indices[i*3]   = Circle::numOfSides;
-		indices[i*3+1] = i;
-		indices[i*3+2] = (i+1) % Circle::numOfSides;
-	}
-
-	VertexArray va;
-	VertexBuffer vb(positions, (Circle::numOfSides+1)*2 * sizeof(float));
-
-	VertexBufferLayout layout;
-	layout.Push_f(2);
-	va.AddBuffer(vb, layout);
-
-	IndexBuffer ib(indices, Circle::numOfSides*3);
-
-	Shader shader = Shader("res/shaders/uniform-vertex.shader", "res/shaders/uniform-fragment.shader");
-	shader.Bind();
-	shader.setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-	shader.setUniformMat4f("u_MVPM", proj);
-
-	Renderer::Draw(va, ib, shader);
+	Renderer::Draw(*va, *ib, *shader);
 
 	/*
 	//outline:
@@ -170,7 +180,7 @@ void Bullet::draw(double xpos, double ypos) {
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	shader.setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 1.0f);
 
-	Renderer::Draw(va, ib, shader);
+	Renderer::Draw(*va, *ib, shader);
 	
 	//cleanup:
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

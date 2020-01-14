@@ -6,6 +6,8 @@ class Bullet;
 #include "bulletpower.h"
 #include "powerfunctionhelper.h"
 
+#include "renderer.h"
+
 class Bullet : public Circle {
 	friend class ResetThings;
 	friend class BulletPriorityHandler;
@@ -24,6 +26,14 @@ public:
 public:
 	//helper functions:
 	ColorValueHolder getColor();
+
+private:
+	//IMPORTANT: GLEW must be initialized before these are set
+	static VertexArray* va;
+	static VertexBuffer* vb;
+	static IndexBuffer* ib;
+public:
+	static void initializeGPU();
 	
 public:
 	Bullet(double x_, double y_, double r_, double a, double vel, char id_);

@@ -4,6 +4,8 @@
 #include "powersquare.h"
 #include "colormixer.h"
 #include "renderer.h"
+#include <glm/glm.hpp>
+#include <glm/gtx/transform.hpp>
 
 #include <GL/glew.h>
 
@@ -66,117 +68,100 @@ PowerSquare::~PowerSquare() {
 	delete[] heldPower;
 }
 
-void PowerSquare::draw() {
-	//BIG TODO: reduce code duplication
-	ColorValueHolder color = getColor();
-	if (numOfPowers > 1) { //move to drawUnder()
-		float extendingMultiplier = POWER_LINE_WIDTH*(1 - POWER_OUTLINE_MULTIPLIER);
-		ColorValueHolder backgroundMix = ColorMixer::mix(color, backColor);
-		float positions[] = { //a bunch of trapezoids
-			//bottom
-			x, y, //0
-			x + w, y, //1
-			x + w - w*extendingMultiplier, y + h*extendingMultiplier, //2
-			x + w*extendingMultiplier, y + h*extendingMultiplier, //3
+VertexArray* PowerSquare::va;
+VertexBuffer* PowerSquare::vb;
+IndexBuffer* PowerSquare::ib_main;
+IndexBuffer* PowerSquare::ib_outline;
 
-			//right
-			//x + w, y, //1
-			x + w, y + h, //4
-			x + w - w*extendingMultiplier, y + h - h*extendingMultiplier, //5
-			//x + w - w*extendingMultiplier, y + h*extendingMultiplier, //2
+void PowerSquare::initializeGPU() {
+	float extendingMultiplier = POWER_LINE_WIDTH * (POWER_OUTLINE_MULTIPLIER - 1);
+	float w = POWER_WIDTH;
+	float h = POWER_HEIGHT;
 
-			//left (remember that the indices on this have to go counterclockwise)
-			//x, y, //0
-			x, y + h, //6
-			x + w*extendingMultiplier, y + h - h*extendingMultiplier, //7
-			//x + w*extendingMultiplier, y + h*extendingMultiplier, //3
+	float positions[] = {
+		//outer ring (not part of the main stuff)
+		-w/2 - w*extendingMultiplier, -h/2 - h*extendingMultiplier, //0
+		 w/2 + w*extendingMultiplier, -h/2 - h*extendingMultiplier, //1
+		 w/2 + w*extendingMultiplier,  h/2 + h*extendingMultiplier, //2
+		-w/2 - w*extendingMultiplier,  h/2 + h*extendingMultiplier, //3
 
-			//top
-			//x + w, y + h, //4
-			//x, y + h, //6
-			//x + w*extendingMultiplier, y + h - h*extendingMultiplier, //7
-			//x + w - w*extendingMultiplier, y + h - h*extendingMultiplier //5
-		};
-		unsigned int indices[] = {
-			0, 1, 2,
-			2, 3, 0,
-			1, 4, 5,
-			5, 2, 1,
-			3, 7, 6,
-			6, 0, 3,
-			4, 6, 7,
-			7, 5, 4
-		};
+		//main ring
+		-w/2, -h/2, //4
+		 w/2, -h/2, //5
+		 w/2,  h/2, //6
+		-w/2,  h/2, //7
 
-		VertexArray va;
-		VertexBuffer vb(positions, 8*2 * sizeof(float));
-
-		VertexBufferLayout layout;
-		layout.Push_f(2);
-		va.AddBuffer(vb, layout);
-
-		IndexBuffer ib(indices, 6*4);
-
-		Shader shader = Shader("res/shaders/uniform-vertex.shader", "res/shaders/uniform-fragment.shader");
-		shader.Bind();
-		shader.setUniform4f("u_color", backgroundMix.getRf(), backgroundMix.getGf(), backgroundMix.getBf(), backgroundMix.getAf());
-		shader.setUniformMat4f("u_MVPM", proj);
-
-		Renderer::Draw(va, ib, shader);
-	}
-	//probable TODO: put all vertices in positions, then make two index buffers (then draw)
-
-	float positions[] = { //a bunch of trapezoids
+		//inner ring
+		-w/2 + w*POWER_LINE_WIDTH, -h/2 + h*POWER_LINE_WIDTH, //8
+		 w/2 - w*POWER_LINE_WIDTH, -h/2 + h*POWER_LINE_WIDTH, //9
+		 w/2 - w*POWER_LINE_WIDTH,  h/2 - h*POWER_LINE_WIDTH, //10
+		-w/2 + w*POWER_LINE_WIDTH,  h/2 - h*POWER_LINE_WIDTH  //11
+	};
+	unsigned int outline_indices[] = { //trapezoids
 		//bottom
-		x, y, //0
-		x + w, y, //1
-		x + w - w*POWER_LINE_WIDTH, y + h*POWER_LINE_WIDTH, //2
-		x + w*POWER_LINE_WIDTH, y + h*POWER_LINE_WIDTH, //3
+		0, 1, 5,
+		5, 4, 0,
 
 		//right
-		//x + w, y, //1
-		x + w, y + h, //4
-		x + w - w*POWER_LINE_WIDTH, y + h - h*POWER_LINE_WIDTH, //5
-		//x + w - w*POWER_LINE_WIDTH, y + h*POWER_LINE_WIDTH, //2
+		1, 2, 6,
+		6, 5, 1,
 
-		//left (remember that the indices on this have to go counterclockwise)
-		//x, y, //0
-		x, y + h, //6
-		x + w*POWER_LINE_WIDTH, y + h - h*POWER_LINE_WIDTH, //7
-		//x + w*POWER_LINE_WIDTH, y + h*POWER_LINE_WIDTH, //3
+		//left
+		4, 7, 3,
+		3, 0, 4,
 
 		//top
-		//x + w, y + h, //4
-		//x, y + h, //6
-		//x + w*POWER_LINE_WIDTH, y + h - h*POWER_LINE_WIDTH, //7
-		//x + w - w*POWER_LINE_WIDTH, y + h - h*POWER_LINE_WIDTH //5
-	}; //TODO: organize it as the four vertices for collision then the four inner vertices
-	unsigned int indices[] = {
-		0, 1, 2,
-		2, 3, 0,
-		1, 4, 5,
-		5, 2, 1,
-		3, 7, 6,
-		6, 0, 3,
-		4, 6, 7,
-		7, 5, 4
+		2, 3, 7,
+		7, 6, 2
+	};
+	unsigned int main_indices[] = { //trapezoids
+		//bottom
+		4, 5, 9,
+		9, 8, 4,
+
+		//right
+		5, 6, 10,
+		10, 9, 5,
+
+		//left
+		8, 11, 7,
+		7, 4, 8,
+
+		//top
+		6, 7, 11,
+		11, 10, 6
 	};
 
-	VertexArray va;
-	VertexBuffer vb(positions, 8*2 * sizeof(float));
+	va = new VertexArray();
+	vb = new VertexBuffer(positions, 12*2 * sizeof(float));
 
 	VertexBufferLayout layout;
 	layout.Push_f(2);
-	va.AddBuffer(vb, layout);
+	va->AddBuffer(*vb, layout);
 
-	IndexBuffer ib(indices, 6*4);
+	ib_main = new IndexBuffer(main_indices, 6*4);
+	ib_outline = new IndexBuffer(outline_indices, 6*4);
 
-	Shader shader = Shader("res/shaders/uniform-vertex.shader", "res/shaders/uniform-fragment.shader");
-	shader.Bind();
-	shader.setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-	shader.setUniformMat4f("u_MVPM", proj);
+}
 
-	Renderer::Draw(va, ib, shader);
+void PowerSquare::draw() {
+	ColorValueHolder color = getColor();
+	Shader* shader = Renderer::getShader("translation");
+	glm::mat4 trans = glm::translate(proj, glm::vec3(x, y, 0.0f));
+	if (numOfPowers > 1) { //move to drawUnder()
+		ColorValueHolder backgroundMix = ColorMixer::mix(color, backColor);
+		//shader->Bind();
+		shader->setUniform4f("u_color", backgroundMix.getRf(), backgroundMix.getGf(), backgroundMix.getBf(), backgroundMix.getAf());
+		shader->setUniformMat4f("u_TM", trans);
+
+		Renderer::Draw(*va, *ib_outline, *shader);
+	}
+
+	//shader->Bind();
+	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+	shader->setUniformMat4f("u_TM", trans);
+
+	Renderer::Draw(*va, *ib_main, *shader);
 }
 
 void PowerSquare::drawCPU() {

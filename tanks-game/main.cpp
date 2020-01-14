@@ -12,6 +12,7 @@
 #include "renderer.h"
 #include "res/vendor/glm/glm.hpp" //this library is overkill but I can make my own later if necessary
 #include "res/vendor/glm/gtc/matrix_transform.hpp"
+#include "backgroundrect.h"
 
 //important stuff:
 #include "colorvalueholder.h"
@@ -65,6 +66,8 @@
 #include <GL/freeglut.h>
 #endif
 
+#include "diagnostics.h"
+
 using namespace std;
 
 unordered_map<unsigned char, bool> normalKeyStates;
@@ -76,6 +79,7 @@ int tank_dead = 0;
 
 long frameCount = 0; //doesn't need a long for how it's interpreted...
 long ticksUntilFrame = 1; //whatever again
+long trueFrameCount = 0;
 int physicsRate = 100;
 bool currentlyDrawing = false; //look into std::mutex
 
@@ -86,93 +90,86 @@ void doThing() {
 	return;
 }
 
-int width = 1200;
-int height = 600;
-
-//TODO: move to an object
-float background_positions[] = {
-	0, 0,
-	GAME_WIDTH, 0,
-	GAME_WIDTH, GAME_HEIGHT,
-	0, GAME_HEIGHT
-};
-unsigned int background_indices[] = {
-	0, 1, 2,
-	2, 3, 0
-};
+int width = 1200*1.25;
+int height = 600*1.25;
 
 void appDrawScene() {
 	currentlyDrawing = true;
 
+	auto start = Diagnostics::getTime();
 
-	Renderer::Initialize(); //TODO: move to main(), but also increase what it does (you know, initialize some glut stuff)
+	Diagnostics::startTiming();
+	Diagnostics::addName("clear");
+
 	Renderer::Clear();
-	
-	//background rectangle
-	/*
-	glColor3f(backColor.getRf(), backColor.getGf(), backColor.getBf());
-	glBegin(GL_POLYGON);
-	glVertex3f(0, 0, 0);
-	glVertex3f(GAME_WIDTH, 0, 0);
-	glVertex3f(GAME_WIDTH, GAME_HEIGHT, 0);
-	glVertex3f(0, GAME_HEIGHT, 0);
-	glEnd();
-	*/
 
-	//newer hardware testing!!
+	Diagnostics::endTiming();
 	
-	//float positions[] = {
-	//	  GAME_WIDTH/4,   GAME_HEIGHT/4,
-	//	3*GAME_WIDTH/4,   GAME_HEIGHT/4,
-	//	3*GAME_WIDTH/4, 3*GAME_HEIGHT/4,
-	//	  GAME_WIDTH/4, 3*GAME_HEIGHT/4
-	//};
+	Diagnostics::startTiming();
+	Diagnostics::addName("background rect");
+
+	BackgroundRect::draw();
 	
-	//TODO: move to an object
-	VertexArray va;
-	VertexBuffer vb(background_positions, 4*2 * sizeof(float));
-
-	VertexBufferLayout layout;
-	layout.Push_f(2);
-	va.AddBuffer(vb, layout);
-
-	IndexBuffer ib(background_indices, 6);
-
-	Shader shader = Shader("res/shaders/uniform-vertex.shader", "res/shaders/uniform-fragment.shader");
-	shader.Bind();
-	shader.setUniform4f("u_color", backColor.getRf(), backColor.getGf(), backColor.getBf(), backColor.getAf());
-	shader.setUniformMat4f("u_MVPM", proj);
-
-	Renderer::Draw(va, ib, shader);
+	Diagnostics::endTiming();
 	
-	shader.setUniform4f("u_color", 1.0f, 0.0f, 1.0f, 1.0f); //just so the other stuff is, well, visible
-	
+
+	//is this needed?
 	// Set up the transformations stack
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
 
-
+	Diagnostics::startTiming();
+	Diagnostics::addName("powerups");
 	for (int i = 0; i < powerups.size(); i++) {
 		powerups[i]->draw();
 	}
+	Renderer::UnbindAll();
+	Diagnostics::endTiming();
+
+	Diagnostics::startTiming();
+	Diagnostics::addName("walls");
 	for (int i = 0; i < walls.size(); i++) {
 		walls[i]->draw();
 	}
+	Renderer::UnbindAll();
+	Diagnostics::endTiming();
+	
+	Diagnostics::startTiming();
+	Diagnostics::addName("bullets");
 	for (int i = 0; i < bullets.size(); i++) {
 		bullets[i]->draw();
 	}
+	Renderer::UnbindAll();
+	Diagnostics::endTiming();
+
 	for (int i = 0; i < tanks.size(); i++) {
 		//tanks[i]->drawName();
 	}
+
+	Diagnostics::startTiming();
+	Diagnostics::addName("tanks");
 	for (int i = 0; i < tanks.size(); i++) {
 		tanks[i]->draw();
 	}
+	Renderer::UnbindAll();
+	Diagnostics::endTiming();
+
+	Diagnostics::startTiming();
+	Diagnostics::addName("flush");
 
 	Renderer::Cleanup(); //possibly put glutSwapBuffers in this
 
 	glFlush();
-	glutSwapBuffers();
+	//glutSwapBuffers(); //swapping buffers flushes implicitly
+
+	Diagnostics::endTiming();
+
+	auto end = Diagnostics::getTime();
+
+	Diagnostics::printTimings();
+	Diagnostics::clearTimes();
+	cout << "entire: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << "ms" << endl;
 
 	currentlyDrawing = false;
 }
@@ -519,7 +516,7 @@ void tick(int physicsUPS) {
 	}
 	*/
 
-
+	trueFrameCount++;
 	if (tank_dead == 0) {
 		glutTimerFunc(1000/physicsUPS, tick, physicsUPS);
 		if (frameCount == 0) {
@@ -572,18 +569,14 @@ int main(int argc, char** argv) {
 	}
 	*/
 
-	//TODO: proper solution
-	tanks[0]->determineShootingAngles();
-	tanks[1]->determineShootingAngles();
-	levelLookup["random"]->initialize();
-
 	// Initialize GLUT
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH);
+	glutInitDisplayMode(GLUT_SINGLE | GLUT_DEPTH);
+	//thanks to https://community.khronos.org/t/wglmakecurrent-issues/62656/3 for solving why a draw call would take ~15ms for no reason
 
 	// Setup window position, size, and title
 	glutInitWindowPosition(60, 60);
-	glutInitWindowSize(width*1.25, height*1.25);
+	glutInitWindowSize(width, height);
 	glutCreateWindow("Tanks Test");
 
 	glPointSize(2);
@@ -599,6 +592,19 @@ int main(int argc, char** argv) {
 	glEnable(GL_POINT_SMOOTH);
 	glEnable(GL_LINE_SMOOTH);
 	glDisable(GL_DEPTH_TEST);
+
+	//TODO: proper solution
+	tanks[0]->determineShootingAngles();
+	tanks[1]->determineShootingAngles();
+	levelLookup["random"]->initialize();
+
+
+	Renderer::Initialize();
+	Bullet::initializeGPU();
+	BackgroundRect::initializeGPU();
+	PowerSquare::initializeGPU();
+	Wall::initializeGPU();
+	Tank::initializeGPU();
 
 
 	// Set callback for drawing the scene

@@ -14,4 +14,6 @@ public:
 
 	void Bind() const;
 	void Unbind() const;
+
+	unsigned int getRendererID() const { return rendererID; }
 };

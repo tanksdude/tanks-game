@@ -135,6 +135,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="backgroundrect.cpp" />
     <ClCompile Include="bouncebulletpower.cpp" />
     <ClCompile Include="bouncepower.cpp" />
     <ClCompile Include="bouncetankpower.cpp" />
@@ -145,6 +146,7 @@
     <ClCompile Include="colormixer.cpp" />
     <ClCompile Include="colorvalueholder.cpp" />
     <ClCompile Include="constants.cpp" />
+    <ClCompile Include="diagnostics.cpp" />
     <ClCompile Include="emptylevel.cpp" />
     <ClCompile Include="homingbulletpower.cpp" />
     <ClCompile Include="homingpower.cpp" />
@@ -177,6 +179,7 @@
     <ClCompile Include="wallhacktankpower.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="backgroundrect.h" />
     <ClInclude Include="bouncebulletpower.h" />
     <ClInclude Include="bouncepower.h" />
     <ClInclude Include="bouncetankpower.h" />
@@ -190,6 +193,7 @@
     <ClInclude Include="colormixer.h" />
     <ClInclude Include="colorvalueholder.h" />
     <ClInclude Include="constants.h" />
+    <ClInclude Include="diagnostics.h" />
     <ClInclude Include="emptylevel.h" />
     <ClInclude Include="hazard.h" />
     <ClInclude Include="homingbulletpower.h" />
@@ -234,8 +238,10 @@
     <None Include="glew32.dll" />
     <None Include="res\shaders\default-fragment.shader" />
     <None Include="res\shaders\default-vertex.shader" />
-    <None Include="res\shaders\test-vertex.shader" />
-    <None Include="res\shaders\test-fragment.shader" />
+    <None Include="res\shaders\scale-fragment.shader" />
+    <None Include="res\shaders\scale-vertex.shader" />
+    <None Include="res\shaders\translation-fragment.shader" />
+    <None Include="res\shaders\translation-vertex.shader" />
     <None Include="res\shaders\uniform-fragment.shader" />
     <None Include="res\shaders\uniform-vertex.shader" />
   </ItemGroup>

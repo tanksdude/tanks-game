@@ -70,6 +70,13 @@ public:
 	//helper stuff:
 	ColorValueHolder getBodyColor();
 
+private:
+	static VertexArray* va;
+	static VertexBuffer* vb;
+	static IndexBuffer* ib;
+public:
+	static void initializeGPU();
+
 public:
 	Tank(double x, double y, double a, char id, std::string name);
 	Tank();

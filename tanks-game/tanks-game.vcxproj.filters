@@ -135,6 +135,12 @@
     <ClCompile Include="shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="diagnostics.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="backgroundrect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -290,15 +296,23 @@
     <ClInclude Include="res\vendor\glm\gtc\matrix_transform.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="diagnostics.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="backgroundrect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="freeglut.dll" />
-    <None Include="res\shaders\test-vertex.shader" />
-    <None Include="res\shaders\test-fragment.shader" />
     <None Include="glew32.dll" />
     <None Include="res\shaders\default-fragment.shader" />
     <None Include="res\shaders\default-vertex.shader" />
     <None Include="res\shaders\uniform-fragment.shader" />
     <None Include="res\shaders\uniform-vertex.shader" />
+    <None Include="res\shaders\translation-fragment.shader" />
+    <None Include="res\shaders\translation-vertex.shader" />
+    <None Include="res\shaders\scale-fragment.shader" />
+    <None Include="res\shaders\scale-vertex.shader" />
   </ItemGroup>
 </Project>
