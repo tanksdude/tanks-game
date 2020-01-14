@@ -11,11 +11,12 @@ private:
 	static bool currentlyTiming;
 public:
 	static std::chrono::time_point<std::chrono::steady_clock> getTime();
-	static long long getDiff(std::chrono::time_point<std::chrono::steady_clock> start, std::chrono::time_point<std::chrono::steady_clock> end);
+	static long double getDiff(std::chrono::time_point<std::chrono::steady_clock> start, std::chrono::time_point<std::chrono::steady_clock> end);
 
 	static void startTiming();
 	static void endTiming();
 	static void addName(std::string);
 	static void clearTimes(); //(and names)
-	static void printTimings();
+	static void printTimings(); //plain milliseconds
+	static void printPreciseTimings(); //microsecond accuracy
 };

@@ -147,7 +147,7 @@ void PowerSquare::initializeGPU() {
 void PowerSquare::draw() {
 	ColorValueHolder color = getColor();
 	Shader* shader = Renderer::getShader("translation");
-	glm::mat4 trans = glm::translate(proj, glm::vec3(x, y, 0.0f));
+	glm::mat4 trans = glm::translate(proj, glm::vec3(x + w/2, y + h/2, 0.0f));
 	if (numOfPowers > 1) { //move to drawUnder()
 		ColorValueHolder backgroundMix = ColorMixer::mix(color, backColor);
 		//shader->Bind();
