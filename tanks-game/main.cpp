@@ -167,9 +167,10 @@ void appDrawScene() {
 
 	auto end = Diagnostics::getTime();
 
-	Diagnostics::printPreciseTimings();
+	//Diagnostics::printPreciseTimings();
 	Diagnostics::clearTimes();
-	std::cout << "entire: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << "ms" << endl << endl;
+
+	//std::cout << "entire: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << "ms" << endl << endl;
 
 	currentlyDrawing = false;
 }
@@ -553,10 +554,10 @@ void tick(int physicsUPS) {
 
 	auto end = Diagnostics::getTime();
 
-	Diagnostics::printPreciseTimings();
+	//Diagnostics::printPreciseTimings();
 	Diagnostics::clearTimes();
 
-	std::cout << "tick: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << "ms" << endl << endl;
+	//std::cout << "tick: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << "ms" << endl << endl;
 
 	trueFrameCount++;
 	if (tank_dead == 0) {
@@ -690,7 +691,12 @@ int main(int argc, char** argv) {
 
 /*
  * estimated total completion:
- * ??% GPU drawing stuff
+ * 80% GPU drawing stuff
+ * * gotta learn how to do batching
+ * * add a gradient shader
+ * * add scaling to all classes
+ * * partial circles (on tanks)
+ * * make things more efficient (way easier said than done, I suppose)
  * 80% theoretical foundation: no hazards
  * 60% actual foundation: not every "modification function" actually does something in the main
  * 20% game code:
@@ -699,7 +705,6 @@ int main(int argc, char** argv) {
  * * third, 100% probably won't be "finished" on this scale (restatement of the second?)
  * * fourth, percentage is horribly imprecise because, like most people, I think about completion percentages on personal projects in 5% increments (restatement of third)
  * * fifth, here's what's next:
- * * * complete overhaul of drawing; draw on GPU, not CPU; use VBOs
  * * * invincibility series of powerups (overhaul priority handling)
  * * * even later: newer levels
 */
