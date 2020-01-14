@@ -78,7 +78,7 @@ Tank* tank2 = new Tank(620, 160, PI, 1, "Arrow Keys");
 int tank_dead = 0;
 
 long frameCount = 0; //doesn't need a long for how it's interpreted...
-long ticksUntilFrame = 2; //whatever again
+long ticksUntilFrame = 1; //whatever again
 long trueFrameCount = 0;
 int physicsRate = 100;
 bool currentlyDrawing = false; //look into std::mutex
@@ -160,8 +160,8 @@ void appDrawScene() {
 
 	Renderer::Cleanup(); //possibly put glutSwapBuffers in this
 
-	//glFlush(); //swapping buffers flushes implicitly
-	glutSwapBuffers();
+	glFlush();
+	//glutSwapBuffers(); //swapping buffers flushes implicitly
 
 	Diagnostics::endTiming();
 
@@ -571,7 +571,7 @@ int main(int argc, char** argv) {
 
 	// Initialize GLUT
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH);
+	glutInitDisplayMode(GLUT_SINGLE | GLUT_DEPTH);
 
 	// Setup window position, size, and title
 	glutInitWindowPosition(60, 60);
