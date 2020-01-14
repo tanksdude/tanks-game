@@ -167,9 +167,9 @@ void appDrawScene() {
 
 	auto end = Diagnostics::getTime();
 
-	Diagnostics::printTimings();
+	Diagnostics::printPreciseTimings();
 	Diagnostics::clearTimes();
-	cout << "entire: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << "ms" << endl;
+	std::cout << "entire: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << "ms" << endl << endl;
 
 	currentlyDrawing = false;
 }
@@ -277,6 +277,10 @@ void special_keyboard_up(int key, int x, int y) {
 void tick(int physicsUPS) {
 	//while (currentlyDrawing) {}
 
+	auto start = Diagnostics::getTime();
+
+	Diagnostics::startTiming();
+	Diagnostics::addName("bool movement");
 	//temporary: need to figure out better implementation
 	tanks[0]->forward = normalKeyStates['w'];
 	tanks[0]->turnL = normalKeyStates['a'];
@@ -287,9 +291,12 @@ void tick(int physicsUPS) {
 	tanks[1]->turnL = specialKeyStates[GLUT_KEY_LEFT];
 	tanks[1]->turnR = specialKeyStates[GLUT_KEY_RIGHT];
 	tanks[1]->shooting = specialKeyStates[GLUT_KEY_DOWN];
+	Diagnostics::endTiming();
 
 	//TODO: each tick portion needs to go in its own separate function; that way a level can override some parts of it without having to rewrite everything
 
+	Diagnostics::startTiming();
+	Diagnostics::addName("move");
 	//move everything
 	for (int i = 0; i < tanks.size(); i++) {
 		tanks[i]->move();
@@ -297,7 +304,10 @@ void tick(int physicsUPS) {
 	for (int i = 0; i < bullets.size(); i++) {
 		bullets[i]->move();
 	}
+	Diagnostics::endTiming();
 
+	Diagnostics::startTiming();
+	Diagnostics::addName("powerup-tank");
 	//do the special things
 	for (int i = powerups.size() - 1; i >= 0; i--) {
 		for (int j = 0; j < tanks.size(); j++) {
@@ -309,7 +319,10 @@ void tick(int physicsUPS) {
 			}
 		}
 	}
+	Diagnostics::endTiming();
 
+	Diagnostics::startTiming();
+	Diagnostics::addName("powerCalculate and shoot");
 	for (int i = 0; i < tanks.size(); i++) {
 		tanks[i]->powerCalculate();
 	}
@@ -320,7 +333,10 @@ void tick(int physicsUPS) {
 	for (int i = 0; i < tanks.size(); i++) {
 		tanks[i]->shoot();
 	}
+	Diagnostics::endTiming();
 
+	Diagnostics::startTiming();
+	Diagnostics::addName("tank-wall");
 	//tank to wall collision:
 	for (int i = 0; i < tanks.size(); i++) {
 		bool modifiedWallCollision = false;
@@ -350,12 +366,18 @@ void tick(int physicsUPS) {
 			tank_dead = 1; //TODO: proper implementation
 		}
 	}
+	Diagnostics::endTiming();
 
+	Diagnostics::startTiming();
+	Diagnostics::addName("tank-tank");
 	//tank collision (temporary? yes because additional tanks):
 	if (CollisionHandler::partiallyCollided(tanks[0], tanks[1])) {
 		CollisionHandler::pushMovableAwayFromMovable(tanks[0], tanks[1]);
 	}
+	Diagnostics::endTiming();
 
+	Diagnostics::startTiming();
+	Diagnostics::addName("bullet-edge");
 	//bullet to edge collision:
 	for (int i = bullets.size() - 1; i >= 0; i--) {
 		bool modifiedEdgeCollision = false;
@@ -394,7 +416,10 @@ void tick(int physicsUPS) {
 			continue;
 		}
 	}
+	Diagnostics::endTiming();
 
+	Diagnostics::startTiming();
+	Diagnostics::addName("bullet-wall");
 	//bullet to wall collision:
 	for (int i = bullets.size() - 1; i >= 0; i--) {
 		bool shouldBeDeleted = false;
@@ -442,7 +467,10 @@ void tick(int physicsUPS) {
 			//continue;
 		}
 	}
+	Diagnostics::endTiming();
 
+	Diagnostics::startTiming();
+	Diagnostics::addName("bullet-bullet");
 	//bullet collision:
 	for (int i = bullets.size() - 1; i >= 0; i--) {
 		for (int j = bullets.size() - 1; j >= 0; j--) { //could start at i-1? //fix: find out
@@ -486,12 +514,18 @@ void tick(int physicsUPS) {
 			}
 		}
 	}
+	Diagnostics::endTiming();
 
+	Diagnostics::startTiming();
+	Diagnostics::addName("tank-edge");
 	//tank to edge collision: (move later?) (to where?)
 	for (int i = 0; i < tanks.size(); i++) {
 		tanks[i]->edgeConstrain();
 	}
+	Diagnostics::endTiming();
 
+	Diagnostics::startTiming();
+	Diagnostics::addName("bullet-tank");
 	//bullet to tank collision:
 	for (int i = 0; i < tanks.size(); i++) {
 		for (int j = 0; j < bullets.size(); j++) {
@@ -505,6 +539,7 @@ void tick(int physicsUPS) {
 			}
 		}
 	}
+	Diagnostics::endTiming();
 
 	//edge constrain tanks again in case bullet decides to move tank
 	//don't edge constrain if said tank is dead //fix: implement
@@ -515,6 +550,13 @@ void tick(int physicsUPS) {
 		//}
 	}
 	*/
+
+	auto end = Diagnostics::getTime();
+
+	Diagnostics::printPreciseTimings();
+	Diagnostics::clearTimes();
+
+	std::cout << "tick: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << "ms" << endl << endl;
 
 	trueFrameCount++;
 	if (tank_dead == 0) {
