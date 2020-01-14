@@ -572,6 +572,7 @@ int main(int argc, char** argv) {
 	// Initialize GLUT
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_SINGLE | GLUT_DEPTH);
+	//thanks to https://community.khronos.org/t/wglmakecurrent-issues/62656/3 for solving why a draw call would take ~15ms for no reason
 
 	// Setup window position, size, and title
 	glutInitWindowPosition(60, 60);
