@@ -400,13 +400,13 @@ void Tank::draw(double xpos, double ypos) {
 	double shootingOutlinePercent = constrain<double>(shootCount/(maxShootCount*getShootingSpeedMultiplier()), 0, 1);
 	unsigned int shootingOutlineVertices = Circle::numOfSides * shootingOutlinePercent;
 
-	Shader* shader = Renderer::getShader("rotation");
+	Shader* shader = Renderer::getShader("main");
 	shader->setUniform4f("u_color", 1.0f, 1.0f, 1.0f, 1.0f);
 	glm::mat4 MVPM = Renderer::GenerateMatrix(5.0/4.0, 5.0/4.0, getAngle(), xpos, ypos);
-	shader->setUniformMat4f("u_MVPM", MVPM);
+	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*va, *ib, *shader, shootingOutlineVertices*3);
-	
+
 	//power cooldown outlines:
 	//first, sort by timeLeft/maxTime
 	std::vector<TankPower*> sortedTankPowers; //there shouldn't be more than a few powers, so no need to do anything more complex than an array
@@ -432,7 +432,7 @@ void Tank::draw(double xpos, double ypos) {
 
 		shader->setUniform4f("u_color", c.getRf(), c.getGf(), c.getBf(), c.getAf());
 		MVPM = Renderer::GenerateMatrix(9.0/8.0, 9.0/8.0, getAngle(), xpos, ypos);
-		shader->setUniformMat4f("u_MVPM", MVPM);
+		shader->setUniformMat4f("u_MVP", MVPM);
 
 		Renderer::Draw(*va, *ib, *shader, powerOutlineVertices*3);
 	}
@@ -441,10 +441,9 @@ void Tank::draw(double xpos, double ypos) {
 	//main body:
 	ColorValueHolder color = getBodyColor();
 
-	shader = Renderer::getShader("translation");
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 	MVPM = Renderer::GenerateMatrix(1, 1, 0, xpos, ypos); //TODO: change scaling when the static vertexbuffer gets fixed
-	shader->setUniformMat4f("u_TM", MVPM);
+	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*va, *ib, *shader);
 
@@ -452,31 +451,28 @@ void Tank::draw(double xpos, double ypos) {
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glLineWidth(1.0f);
 
-	shader = Renderer::getShader("rotation");
 	//shader->setUniform4f("u_color", .5f, .5f, .5f, .25f); //CPU method
 	shader->setUniform4f("u_color", .75f, .75f, .75f, 1.0f);
 	
 	for (int i = 1; i < shootingPoints->size(); i++) {
 		MVPM = Renderer::GenerateMatrix(r, 1, getRealCannonAngle(i), xpos, ypos);
-		shader->setUniformMat4f("u_MVPM", MVPM);
+		shader->setUniformMat4f("u_MVP", MVPM);
 
 		Renderer::Draw(*cannon_va, *shader, GL_LINES, 0, 2);
 	}
 
 	//outline:
-	shader = Renderer::getShader("translation");
 	MVPM = Renderer::GenerateMatrix(1, 1, 0, xpos, ypos); //TODO: change scaling when the static vertexbuffer gets fixed
 	shader->setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 1.0f);
-	shader->setUniformMat4f("u_TM", MVPM);
+	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*va, *shader, GL_LINE_LOOP, 0, Circle::numOfSides);
 
 	//barrel:
-	shader = Renderer::getShader("rotation");
 	glLineWidth(2.0f);
 	shader->setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 1.0f);
 	MVPM = Renderer::GenerateMatrix(r, 1, getAngle(), xpos, ypos);
-	shader->setUniformMat4f("u_MVPM", MVPM);
+	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*cannon_va, *shader, GL_LINES, 0, 2);
 	
