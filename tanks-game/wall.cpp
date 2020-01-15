@@ -4,15 +4,8 @@
 #include "renderer.h"
 #include <glm/glm.hpp>
 
-#include "GL/glew.h"
-
-#if defined WIN32
-#include <freeglut.h>
-#elif defined __APPLE__
-#include <GLUT/glut.h>
-#else
+#include <GL/glew.h>
 #include <GL/freeglut.h>
-#endif
 
 Wall::Wall(double x_, double y_, double w_, double h_, ColorValueHolder c) {
 	this->x = x_;

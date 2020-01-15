@@ -9,15 +9,8 @@
 #include "renderer.h"
 #include <glm/glm.hpp>
 
-#include "GL/glew.h"
-
-#if defined WIN32
-#include <freeglut.h>
-#elif defined __APPLE__
-#include <GLUT/glut.h>
-#else
+#include <GL/glew.h>
 #include <GL/freeglut.h>
-#endif
 
 const double Tank::default_radius = 16;
 Tank::Tank(double x_, double y_, double a, char id_, std::string name_) {

@@ -9,14 +9,7 @@
 #include <iostream>
 
 #include <GL/glew.h>
-
-#if defined WIN32
-#include <freeglut.h>
-#elif defined __APPLE__
-#include <GLUT/glut.h>
-#else
 #include <GL/freeglut.h>
-#endif
 
 const double Bullet::default_radius = 4;
 Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_) { //TODO: make private?

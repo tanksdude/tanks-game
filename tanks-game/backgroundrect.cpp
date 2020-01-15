@@ -6,14 +6,7 @@
 #include "constants.h"
 
 #include <GL/glew.h>
-
-#if defined WIN32
-#include <freeglut.h>
-#elif defined __APPLE__
-#include <GLUT/glut.h>
-#else
 #include <GL/freeglut.h>
-#endif
 
 VertexArray* BackgroundRect::va;
 VertexBuffer* BackgroundRect::vb;

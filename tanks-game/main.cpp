@@ -58,14 +58,7 @@
 #include "homingpower.h"
 
 #include <GL/glew.h>
-
-#if defined WIN32
-#include <freeglut.h>
-#elif defined __APPLE__
-#include <GLUT/glut.h>
-#else
 #include <GL/freeglut.h>
-#endif
 
 #include "diagnostics.h"
 
@@ -712,4 +705,4 @@ int main(int argc, char** argv) {
  * * fifth, here's what's next:
  * * * invincibility series of powerups (overhaul priority handling)
  * * * even later: newer levels
-*/
+ */
