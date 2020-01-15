@@ -12,21 +12,9 @@ unsigned int Renderer::currentIndexBuffer = -1;
 void Renderer::Initialize() {
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-	Shader* shader = new Shader("res/shaders/uniform-vertex.shader", "res/shaders/uniform-fragment.shader");
-	shader->Bind(); //uniform shader will be used most often (probably entirely) so it gets binded at start
+	Shader* shader = new Shader("res/shaders/main-vertex.shader", "res/shaders/main-fragment.shader");
+	shader->Bind(); //the main shader will be used most often so it gets binded at start
 	currentShader = shader->getRendererID();
-	shaderCache.insert({ "uniform", shader });
-
-	shader = new Shader("res/shaders/translation-vertex.shader", "res/shaders/translation-fragment.shader");
-	shaderCache.insert({ "translation", shader });
-
-	shader = new Shader("res/shaders/scale-vertex.shader", "res/shaders/scale-fragment.shader");
-	shaderCache.insert({ "scaling", shader });
-
-	shader = new Shader("res/shaders/rotate-vertex.shader", "res/shaders/rotate-fragment.shader");
-	shaderCache.insert({ "rotation", shader });
-
-	shader = new Shader("res/shaders/main-vertex.shader", "res/shaders/main-fragment.shader");
 	shaderCache.insert({ "main", shader });
 
 	shader = new Shader("res/shaders/default-vertex.shader", "res/shaders/default-fragment.shader");

@@ -241,14 +241,6 @@
     <None Include="res\shaders\default-vertex.shader" />
     <None Include="res\shaders\main-fragment.shader" />
     <None Include="res\shaders\main-vertex.shader" />
-    <None Include="res\shaders\rotate-fragment.shader" />
-    <None Include="res\shaders\rotate-vertex.shader" />
-    <None Include="res\shaders\scale-fragment.shader" />
-    <None Include="res\shaders\scale-vertex.shader" />
-    <None Include="res\shaders\translation-fragment.shader" />
-    <None Include="res\shaders\translation-vertex.shader" />
-    <None Include="res\shaders\uniform-fragment.shader" />
-    <None Include="res\shaders\uniform-vertex.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
