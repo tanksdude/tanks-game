@@ -5,7 +5,6 @@
 #include "colormixer.h"
 #include "renderer.h"
 #include <glm/glm.hpp>
-#include <glm/gtx/transform.hpp>
 
 #include <GL/glew.h>
 

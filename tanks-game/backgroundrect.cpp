@@ -2,6 +2,7 @@
 
 #include "backgroundrect.h"
 #include "renderer.h"
+#include <glm/glm.hpp>
 #include "constants.h"
 
 #include <GL/glew.h>
