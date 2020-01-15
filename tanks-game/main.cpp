@@ -10,12 +10,13 @@
 #include "vertexarray.h"
 #include "shader.h"
 #include "renderer.h"
-#include "res/vendor/glm/glm.hpp" //this library is overkill but I can make my own later if necessary
+#include "res/vendor/glm/glm.hpp" //this library is overkill but that's okay
 #include "res/vendor/glm/gtc/matrix_transform.hpp"
-#include "backgroundrect.h"
+#include "res/vendor/glm/gtx/transform.hpp"
 
 //important stuff:
 #include "colorvalueholder.h"
+#include "backgroundrect.h"
 #include "tank.h"
 #include "cannonpoint.h"
 #include "wall.h"
@@ -113,7 +114,7 @@ void appDrawScene() {
 	Diagnostics::endTiming();
 	
 
-	//is this needed?
+	//is this needed? //ehh it can stay, may be needed for emergency CPU drawings
 	// Set up the transformations stack
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -143,9 +144,11 @@ void appDrawScene() {
 	Renderer::UnbindAll();
 	Diagnostics::endTiming();
 
+	/*
 	for (int i = 0; i < tanks.size(); i++) {
-		//tanks[i]->drawName();
+		tanks[i]->drawName();
 	}
+	*/
 
 	Diagnostics::startTiming();
 	Diagnostics::addName("tanks");
@@ -642,6 +645,7 @@ int main(int argc, char** argv) {
 	levelLookup["random"]->initialize();
 
 
+	//make the classes load their vertices and indices onto VRAM to avoid CPU<->GPU syncs
 	Renderer::Initialize();
 	Bullet::initializeGPU();
 	BackgroundRect::initializeGPU();
@@ -653,7 +657,7 @@ int main(int argc, char** argv) {
 	// Set callback for drawing the scene
 	glutDisplayFunc(appDrawScene);
 
-	// Set callback for resizing th window
+	// Set callback for resizing the window
 	glutReshapeFunc(appReshapeFunc);
 
 	// Set callback to handle mouse clicks
@@ -691,12 +695,13 @@ int main(int argc, char** argv) {
 
 /*
  * estimated total completion:
- * 80% GPU drawing stuff
+ * 100% required GPU drawing stuff!
+ * 20% theoretical GPU stuff (may not attempt)
  * * gotta learn how to do batching
  * * add a gradient shader
- * * add scaling to all classes
- * * partial circles (on tanks)
  * * make things more efficient (way easier said than done, I suppose)
+ * * * where do I even start (besides batching)?
+ * * * can have rect and circle store their stuff, then have every drawing thing just scale and rotate as needed
  * 80% theoretical foundation: no hazards
  * 60% actual foundation: not every "modification function" actually does something in the main
  * 20% game code:
