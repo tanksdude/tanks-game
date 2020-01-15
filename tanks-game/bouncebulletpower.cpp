@@ -3,12 +3,11 @@
 #include "bouncetankpower.h"
 #include "bouncepower.h"
 #include "powerfunctionhelper.h"
-#include <math.h>
 
 const short BounceBulletPower::maxBounces = 16;
 
 bool BounceBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
-	if (abs(b->velocity) <= .5) {
+	if (abs(b->velocity) * Bullet::default_radius/b->r <= .5) {
 		if (PowerFunctionHelper::bounceGenericWithCorners(b, w)) {
 			bouncesLeft--;
 		}

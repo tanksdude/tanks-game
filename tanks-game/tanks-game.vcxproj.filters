@@ -36,9 +36,6 @@
     <ClCompile Include="leveleffect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="mylib.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="powersquare.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -120,6 +117,30 @@
     <ClCompile Include="tripletankpower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="mylib.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="indexbuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vertexbuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vertexarray.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="diagnostics.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="backgroundrect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -159,9 +180,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="leveleffect.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="mylib.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="power.h">
@@ -251,8 +269,49 @@
     <ClInclude Include="tripletankpower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="mylib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="indexbuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vertexbuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vertexarray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vertexbufferlayout.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="res\vendor\glm\glm.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="res\vendor\glm\gtc\matrix_transform.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="diagnostics.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="backgroundrect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="res\vendor\glm\gtx\transform.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="freeglut.dll" />
+    <None Include="glew32.dll" />
+    <None Include="res\shaders\default-fragment.shader" />
+    <None Include="res\shaders\default-vertex.shader" />
+    <None Include="res\shaders\main-fragment.shader" />
+    <None Include="res\shaders\main-vertex.shader" />
   </ItemGroup>
 </Project>

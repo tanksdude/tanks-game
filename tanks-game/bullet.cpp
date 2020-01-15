@@ -4,16 +4,15 @@
 #include <math.h>
 #include "circle.h"
 #include "colormixer.h"
+#include "renderer.h"
+#include <glm/glm.hpp>
+#include <iostream>
 
-#if defined WIN32
-#include <freeglut.h>
-#elif defined __APPLE__
-#include <GLUT/glut.h>
-#else
+#include <GL/glew.h>
 #include <GL/freeglut.h>
-#endif
 
-Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_) {
+const double Bullet::default_radius = 4;
+Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_) { //TODO: make private?
 	this->x = x_;
 	this->y = y_;
 	this->r = r_;
@@ -28,6 +27,36 @@ Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_, 
 	for (int i = 0; i < bulletPowers.size(); i++) {
 		bulletPowers[i]->initialize(this);
 	}
+}
+
+VertexArray* Bullet::va;
+VertexBuffer* Bullet::vb;
+IndexBuffer* Bullet::ib;
+
+void Bullet::initializeGPU() {
+	float positions[(Circle::numOfSides+1)*2];
+	for (int i = 0; i < Circle::numOfSides; i++) {
+		positions[i*2]   = cos(i * 2*PI / Circle::numOfSides);
+		positions[i*2+1] = sin(i * 2*PI / Circle::numOfSides);
+	}
+	positions[Circle::numOfSides*2]   = 0;
+	positions[Circle::numOfSides*2+1] = 0;
+
+	unsigned int indices[Circle::numOfSides*3];
+	for (int i = 0; i < Circle::numOfSides; i++) {
+		indices[i*3]   = Circle::numOfSides;
+		indices[i*3+1] = i;
+		indices[i*3+2] = (i+1) % Circle::numOfSides;
+	}
+
+	va = new VertexArray();
+	vb = new VertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float));
+
+	VertexBufferLayout layout;
+	layout.Push_f(2);
+	va->AddBuffer(*vb, layout);
+
+	ib = new IndexBuffer(indices, Circle::numOfSides*3);
 }
 
 double Bullet::getAngle() {
@@ -89,11 +118,11 @@ ColorValueHolder Bullet::getColor() {
 	}
 }
 
-void Bullet::draw() {
-	draw(x, y);
+void Bullet::drawCPU() {
+	drawCPU(x, y);
 }
 
-void Bullet::draw(double xpos, double ypos) {
+void Bullet::drawCPU(double xpos, double ypos) {
 	//main body:
 	ColorValueHolder color = getColor();
 	glColor3f(color.getRf(), color.getGf(), color.getBf());
@@ -117,6 +146,45 @@ void Bullet::draw(double xpos, double ypos) {
 	}
 
 	glEnd();
+}
+
+void Bullet::draw() {
+	draw(x, y);
+}
+
+void Bullet::draw(double xpos, double ypos) {
+	drawBody(xpos, ypos);
+	drawOutline(xpos, ypos);
+}
+
+void Bullet::drawBody(double xpos, double ypos) {
+	ColorValueHolder color = getColor();
+
+	Shader* shader = Renderer::getShader("main");
+	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, 0, xpos, ypos);
+	shader->setUniformMat4f("u_MVP", MVPM);
+
+	Renderer::Draw(*va, *ib, *shader);
+}
+
+void Bullet::drawOutline(double xpos, double ypos) {
+	Shader* shader = Renderer::getShader("main");
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glLineWidth(1.0f); //lines still look ugly even with glEnable(GL_LINE_SMOOTH), so I don't know what to set it at
+	
+	shader->setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 1.0f);
+	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, 0, xpos, ypos); //duplication but necessary for body/outline methods to be separate
+	shader->setUniformMat4f("u_MVP", MVPM);
+
+	Renderer::Draw(GL_LINE_LOOP, 0, Circle::numOfSides);
+	
+	//cleanup:
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+	//drawing an outline: use a geometry shader (ugh) or another VAO+IBO (lesser ugh), the CPU (big ugh), or glDrawArrays with GL_LINE_LOOP (yay!)
+
 }
 
 short Bullet::determineDamage() { //TODO: finish once powers start existing

@@ -164,6 +164,7 @@ bool PowerFunctionHelper::homingGeneric(Bullet* b, double maxAngleMove, bool mov
 		if (targetTank == b->getID()) {
 			targetTank = -1;
 		}
+		delete[] angleDiffs;
 	} else { //moveByDistance
 		double* distDiffs = new double[tanks.size()];
 		for (int i = 0; i < tanks.size(); i++) {
@@ -177,6 +178,7 @@ bool PowerFunctionHelper::homingGeneric(Bullet* b, double maxAngleMove, bool mov
 		if (targetTank == b->getID()) {
 			targetTank = -1;
 		}
+		delete[] distDiffs;
 	}
 
 	if (targetTank == -1) {

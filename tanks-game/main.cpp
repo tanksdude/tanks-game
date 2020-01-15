@@ -4,13 +4,25 @@
 #include <time.h>
 #include <unordered_map>
 
+//GPU rendering:
+#include "vertexbuffer.h"
+#include "indexbuffer.h"
+#include "vertexarray.h"
+#include "shader.h"
+#include "renderer.h"
+#include "res/vendor/glm/glm.hpp" //this library is overkill but that's okay
+#include "res/vendor/glm/gtc/matrix_transform.hpp"
+#include "res/vendor/glm/gtx/transform.hpp"
+
 //important stuff:
 #include "colorvalueholder.h"
+#include "backgroundrect.h"
 #include "tank.h"
 #include "cannonpoint.h"
 #include "wall.h"
 #include "bullet.h"
 #include "powersquare.h"
+#include "level.h"
 
 //classes with important handling functions:
 #include "collisionhandler.h"
@@ -45,13 +57,11 @@
 #include "homingbulletpower.h"
 #include "homingpower.h"
 
-#if defined WIN32
-#include <freeglut.h>
-#elif defined __APPLE__
-#include <GLUT/glut.h>
-#else
+#include <GL/glew.h>
 #include <GL/freeglut.h>
-#endif
+//TODO: move glm to Dependencies instead of res/vendor?
+
+#include "diagnostics.h"
 
 using namespace std;
 
@@ -64,7 +74,8 @@ int tank_dead = 0;
 
 long frameCount = 0; //doesn't need a long for how it's interpreted...
 long ticksUntilFrame = 1; //whatever again
-int physicsRate = 100;
+long trueFrameCount = 0;
+int physicsRate = 100; //(in Hz)
 bool currentlyDrawing = false; //look into std::mutex
 
 bool leftMouse = false;
@@ -74,52 +85,93 @@ void doThing() {
 	return;
 }
 
-int width = 1200;
-int height = 600;
+int width = 1200*1.25;
+int height = 600*1.25;
 
 void appDrawScene() {
 	currentlyDrawing = true;
 
-	// Clear the screen
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	auto start = Diagnostics::getTime();
 
-	// Set background color to black
-	glClearColor(0, 0, 0, 1);
+	Diagnostics::startTiming();
+	Diagnostics::addName("clear");
 
-	//background rectangle
-	glColor3f(backColor.getRf(), backColor.getGf(), backColor.getBf());
-	glBegin(GL_POLYGON);
-	glVertex3f(0, 0, 0);
-	glVertex3f(GAME_WIDTH, 0, 0);
-	glVertex3f(GAME_WIDTH, GAME_HEIGHT, 0);
-	glVertex3f(0, GAME_HEIGHT, 0);
-	glEnd();
+	Renderer::Clear();
 
+	Diagnostics::endTiming();
+	
+	Diagnostics::startTiming();
+	Diagnostics::addName("background rect");
+
+	BackgroundRect::draw();
+	Renderer::UnbindAll(); //I honestly don't know if this is needed anymore but it doesn't hurt performance too much so it can stay
+	
+	Diagnostics::endTiming();
+	
+
+	//is this needed? //ehh it can stay, may be needed for emergency CPU drawings
 	// Set up the transformations stack
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
 
-
+	Diagnostics::startTiming();
+	Diagnostics::addName("powerups");
 	for (int i = 0; i < powerups.size(); i++) {
 		powerups[i]->draw();
 	}
+	Renderer::UnbindAll();
+	Diagnostics::endTiming();
+
+	Diagnostics::startTiming();
+	Diagnostics::addName("walls");
 	for (int i = 0; i < walls.size(); i++) {
 		walls[i]->draw();
 	}
+	Renderer::UnbindAll();
+	Diagnostics::endTiming();
+	
+	Diagnostics::startTiming();
+	Diagnostics::addName("bullets");
 	for (int i = 0; i < bullets.size(); i++) {
 		bullets[i]->draw();
 	}
+	Renderer::UnbindAll();
+	Diagnostics::endTiming();
+
+	//drawing text on the GPU will need a library, so names don't get drawn anymore
+	/*
 	for (int i = 0; i < tanks.size(); i++) {
 		tanks[i]->drawName();
 	}
+	*/
+
+	Diagnostics::startTiming();
+	Diagnostics::addName("tanks");
 	for (int i = 0; i < tanks.size(); i++) {
 		tanks[i]->draw();
 	}
+	Renderer::UnbindAll();
+	Diagnostics::endTiming();
 
-	// Swap the buffers to see the result of the drawing
+	Diagnostics::startTiming();
+	Diagnostics::addName("flush");
+
+	Renderer::Cleanup(); //possibly put glFlush/glutSwapBuffers in this
+
+	//for single framebuffer, use glFlush; for double framebuffer, swap the buffers
+	//swapping buffers is limited to monitor refresh rate, so I use glFlush
 	glFlush();
-	glutSwapBuffers();
+	//glutSwapBuffers();
+
+	Diagnostics::endTiming();
+
+	auto end = Diagnostics::getTime();
+
+	//Diagnostics::printPreciseTimings();
+	Diagnostics::clearTimes();
+
+	//std::cout << "entire: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << "ms" << endl << endl;
 
 	currentlyDrawing = false;
 }
@@ -131,46 +183,47 @@ void windowToScene(float& x, float& y) {
 
 // Handles window resizing
 void appReshapeFunc(int w, int h) {
-	// Window size has changed
 	width = w;
 	height = h;
 
 	double scale, center;
 	double winXmin, winXmax, winYmin, winYmax;
 
-	// Define x-axis and y-axis range
+	// Define x-axis and y-axis range (for CPU)
 	const double appXmin = 0.0;
 	const double appXmax = GAME_WIDTH;
 	const double appYmin = 0.0;
 	const double appYmax = GAME_HEIGHT;
 
-	// Define that OpenGL should use the whole window for rendering
+	// Define that OpenGL should use the whole window for rendering (on CPU)
 	glViewport(0, 0, w, h);
 
 	// Set up the projection matrix using a orthographic projection that will
 	// maintain the aspect ratio of the scene no matter the aspect ratio of
-	// the window, and also set the min/max coordinates to be the disired ones
+	// the window, and also set the min/max coordinates to be the disired ones (CPU only)
 	w = (w == 0) ? 1 : w;
 	h = (h == 0) ? 1 : h;
 
-	if ((appXmax - appXmin) / w < (appYmax - appYmin) / h) {
+	if ((appXmax - appXmin) / w < (appYmax - appYmin) / h) { //too wide
 		scale = ((appYmax - appYmin) / h) / ((appXmax - appXmin) / w);
 		center = 0;
 		winXmin = center - (center - appXmin) * scale;
 		winXmax = center + (appXmax - center) * scale;
 		winYmin = appYmin;
 		winYmax = appYmax;
+		proj = glm::ortho(0.0f, float(GAME_WIDTH*scale), 0.0f, (float)GAME_HEIGHT); //GPU
 	}
-	else {
+	else { //too tall
 		scale = ((appXmax - appXmin) / w) / ((appYmax - appYmin) / h);
 		center = 0;
 		winYmin = center - (center - appYmin) * scale;
 		winYmax = center + (appYmax - center) * scale;
 		winXmin = appXmin;
 		winXmax = appXmax;
+		proj = glm::ortho(0.0f, (float)GAME_WIDTH, 0.0f, float(GAME_HEIGHT*scale)); //GPU
 	}
 
-	// Now we use glOrtho to set up our viewing frustum
+	// Now we use glOrtho to set up our viewing frustum (CPU only)
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(winXmin, winXmax, winYmin, winYmax, -1, 1);
@@ -188,6 +241,7 @@ void appMotionFunc(int x, int y) {
 			tanks[1]->giveY() = (1 - y / double(height)) * GAME_HEIGHT;
 		}
 	}
+	//positions are off when window aspect ratio isn't 2:1
 }
 
 void mouse_func(int button, int state, int x, int y) {
@@ -224,6 +278,10 @@ void special_keyboard_up(int key, int x, int y) {
 void tick(int physicsUPS) {
 	//while (currentlyDrawing) {}
 
+	auto start = Diagnostics::getTime();
+
+	Diagnostics::startTiming();
+	Diagnostics::addName("bool movement");
 	//temporary: need to figure out better implementation
 	tanks[0]->forward = normalKeyStates['w'];
 	tanks[0]->turnL = normalKeyStates['a'];
@@ -234,9 +292,12 @@ void tick(int physicsUPS) {
 	tanks[1]->turnL = specialKeyStates[GLUT_KEY_LEFT];
 	tanks[1]->turnR = specialKeyStates[GLUT_KEY_RIGHT];
 	tanks[1]->shooting = specialKeyStates[GLUT_KEY_DOWN];
+	Diagnostics::endTiming();
 
 	//TODO: each tick portion needs to go in its own separate function; that way a level can override some parts of it without having to rewrite everything
 
+	Diagnostics::startTiming();
+	Diagnostics::addName("move");
 	//move everything
 	for (int i = 0; i < tanks.size(); i++) {
 		tanks[i]->move();
@@ -244,7 +305,10 @@ void tick(int physicsUPS) {
 	for (int i = 0; i < bullets.size(); i++) {
 		bullets[i]->move();
 	}
+	Diagnostics::endTiming();
 
+	Diagnostics::startTiming();
+	Diagnostics::addName("powerup-tank");
 	//do the special things
 	for (int i = powerups.size() - 1; i >= 0; i--) {
 		for (int j = 0; j < tanks.size(); j++) {
@@ -256,7 +320,10 @@ void tick(int physicsUPS) {
 			}
 		}
 	}
+	Diagnostics::endTiming();
 
+	Diagnostics::startTiming();
+	Diagnostics::addName("powerCalculate and shoot");
 	for (int i = 0; i < tanks.size(); i++) {
 		tanks[i]->powerCalculate();
 	}
@@ -267,7 +334,10 @@ void tick(int physicsUPS) {
 	for (int i = 0; i < tanks.size(); i++) {
 		tanks[i]->shoot();
 	}
+	Diagnostics::endTiming();
 
+	Diagnostics::startTiming();
+	Diagnostics::addName("tank-wall");
 	//tank to wall collision:
 	for (int i = 0; i < tanks.size(); i++) {
 		bool modifiedWallCollision = false;
@@ -297,12 +367,18 @@ void tick(int physicsUPS) {
 			tank_dead = 1; //TODO: proper implementation
 		}
 	}
+	Diagnostics::endTiming();
 
+	Diagnostics::startTiming();
+	Diagnostics::addName("tank-tank");
 	//tank collision (temporary? yes because additional tanks):
 	if (CollisionHandler::partiallyCollided(tanks[0], tanks[1])) {
 		CollisionHandler::pushMovableAwayFromMovable(tanks[0], tanks[1]);
 	}
+	Diagnostics::endTiming();
 
+	Diagnostics::startTiming();
+	Diagnostics::addName("bullet-edge");
 	//bullet to edge collision:
 	for (int i = bullets.size() - 1; i >= 0; i--) {
 		bool modifiedEdgeCollision = false;
@@ -341,7 +417,10 @@ void tick(int physicsUPS) {
 			continue;
 		}
 	}
+	Diagnostics::endTiming();
 
+	Diagnostics::startTiming();
+	Diagnostics::addName("bullet-wall");
 	//bullet to wall collision:
 	for (int i = bullets.size() - 1; i >= 0; i--) {
 		bool shouldBeDeleted = false;
@@ -389,10 +468,14 @@ void tick(int physicsUPS) {
 			//continue;
 		}
 	}
+	Diagnostics::endTiming();
+	//bullet to wall is a big timesink, but it can only really be sped up by multithreading
 
+	Diagnostics::startTiming();
+	Diagnostics::addName("bullet-bullet");
 	//bullet collision:
 	for (int i = bullets.size() - 1; i >= 0; i--) {
-		for (int j = bullets.size() - 1; j >= 0; j--) { //could start at i-1?
+		for (int j = bullets.size() - 1; j >= 0; j--) { //could start at i-1? //fix: find out
 			if (bullets[i]->getID() == bullets[j]->getID()) {
 				continue;
 			}
@@ -401,7 +484,7 @@ void tick(int physicsUPS) {
 				//but they will be soon
 
 				char result = BulletPriorityHandler::determinePriority(bullets[i], bullets[j]);
-				if (result == -1) {
+				if (result <= -1) { //both die
 					Bullet* temp1 = bullets[i];
 					Bullet* temp2 = bullets[j];
 					if (i > j) {
@@ -415,8 +498,7 @@ void tick(int physicsUPS) {
 					delete temp1;
 					delete temp2;
 					break;
-				} else if (result >= 2) {
-					//it's a draw, so neither dies
+				} else if (result >= 2) { //it's a draw, so neither dies
 					//continue;
 				} else {
 					if (result == 0) {
@@ -426,7 +508,7 @@ void tick(int physicsUPS) {
 					} else {
 						delete bullets[j];
 						bullets.erase(bullets.begin() + j);
-						continue; //not needed
+						continue; //not needed //fix: should it be break? because a single bullet should really only have collision with one bullet, right? (my logic is showing its inconsistencies)
 					}
 				}
 
@@ -434,12 +516,20 @@ void tick(int physicsUPS) {
 			}
 		}
 	}
+	Diagnostics::endTiming();
+	//bullet to bullet collision is the biggest timesink (obviously)
+	//unfortunately it can only be O(n^2), and multithreading doesn't seem like it would work
 
+	Diagnostics::startTiming();
+	Diagnostics::addName("tank-edge");
 	//tank to edge collision: (move later?) (to where?)
 	for (int i = 0; i < tanks.size(); i++) {
 		tanks[i]->edgeConstrain();
 	}
+	Diagnostics::endTiming();
 
+	Diagnostics::startTiming();
+	Diagnostics::addName("bullet-tank");
 	//bullet to tank collision:
 	for (int i = 0; i < tanks.size(); i++) {
 		for (int j = 0; j < bullets.size(); j++) {
@@ -453,6 +543,7 @@ void tick(int physicsUPS) {
 			}
 		}
 	}
+	Diagnostics::endTiming();
 
 	//edge constrain tanks again in case bullet decides to move tank
 	//don't edge constrain if said tank is dead //fix: implement
@@ -464,7 +555,14 @@ void tick(int physicsUPS) {
 	}
 	*/
 
+	auto end = Diagnostics::getTime();
 
+	//Diagnostics::printPreciseTimings();
+	Diagnostics::clearTimes();
+
+	//std::cout << "tick: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << "ms" << endl << endl;
+
+	trueFrameCount++;
 	if (tank_dead == 0) {
 		glutTimerFunc(1000/physicsUPS, tick, physicsUPS);
 		if (frameCount == 0) {
@@ -482,10 +580,12 @@ void tick() { tick(physicsRate); }
 void draw() { glutPostRedisplay(); }
 
 
+
 int main(int argc, char** argv) {
 
 	srand(time(NULL));
 
+	//TODO: move some of this stuff to an initialization file so testing can be done
 	normalKeyStates.insert({ 'w', false });
 	normalKeyStates.insert({ 'a', false });
 	normalKeyStates.insert({ 's', false });
@@ -516,37 +616,53 @@ int main(int argc, char** argv) {
 	}
 	*/
 
+	// Initialize GLUT
+	glutInit(&argc, argv);
+	glutInitDisplayMode(GLUT_SINGLE | GLUT_DEPTH);
+	//thanks to https://community.khronos.org/t/wglmakecurrent-issues/62656/3 for solving why a draw call would take ~15ms for no reason
+
+	// Setup window position, size, and title
+	glutInitWindowPosition(60, 60);
+	glutInitWindowSize(width, height);
+	glutCreateWindow("Tanks Test");
+
+	// Setup some OpenGL options
+	glPointSize(2);
+	glEnable(GL_POINT_SMOOTH);
+	glEnable(GL_LINE_SMOOTH);
+	glDisable(GL_DEPTH_TEST);
+
+	//initialize glew
+	glewExperimental = GL_TRUE;
+	GLenum res = glewInit();
+	if (res != GLEW_OK) {
+		fprintf(stderr, "Error: '%s'\n", glewGetErrorString(res));
+		return 1;
+	}
+
 	//TODO: proper solution
 	tanks[0]->determineShootingAngles();
 	tanks[1]->determineShootingAngles();
 	levelLookup["random"]->initialize();
 
-	// Initialize GLUT
-	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH);
 
-	// Setup window position, size, and title
-	glutInitWindowPosition(60, 60);
-	glutInitWindowSize(width*1.25, height*1.25);
-	glutCreateWindow("Tanks Test");
-
-	glPointSize(2);
-
-	// Setup some OpenGL options
-	glEnable(GL_POINT_SMOOTH);
-	glEnable(GL_LINE_SMOOTH);
-	glDisable(GL_DEPTH_TEST);
-
+	//make the classes load their vertices and indices onto VRAM to avoid CPU<->GPU syncs
+	Renderer::Initialize();
+	Bullet::initializeGPU();
+	BackgroundRect::initializeGPU();
+	PowerSquare::initializeGPU();
+	Wall::initializeGPU();
+	Tank::initializeGPU();
 
 
 	// Set callback for drawing the scene
 	glutDisplayFunc(appDrawScene);
 
-	// Set callback for resizing th window
+	// Set callback for resizing the window
 	glutReshapeFunc(appReshapeFunc);
 
-	// Set callback to handle mouse clicks
-	//glutMouseFunc(appMouseFunc);
+	//mouse clicking
+	glutMouseFunc(mouse_func);
 
 	// Set callback to handle mouse dragging
 	glutMotionFunc(appMotionFunc);
@@ -564,14 +680,10 @@ int main(int argc, char** argv) {
 	glutSpecialUpFunc(special_keyboard_up);
 
 	// Set callback for the idle function
-	//glutIdleFunc(tick);
 	//glutIdleFunc(draw);
 
 	//framelimiter
 	glutTimerFunc(1000/physicsRate, tick, physicsRate);
-
-	//mouse function
-	glutMouseFunc(mouse_func);
 
 	// Start the main loop
 	glutMainLoop();
@@ -580,15 +692,21 @@ int main(int argc, char** argv) {
 
 /*
  * estimated total completion:
- * 75% theoretical foundation: no hazards
- * 55% actual foundation: not every "modification function" actually does something in the main
- * 15% game code:
+ * 100% required GPU drawing stuff!
+ * 20% theoretical GPU stuff (may not attempt)
+ * * gotta learn how to do batching
+ * * add a gradient shader
+ * * make things more efficient (way easier said than done, I suppose)
+ * * * where do I even start (besides batching)?
+ * * * can have rect and circle store their stuff, then have every drawing thing just scale and rotate as needed
+ * 80% theoretical foundation: no hazards
+ * 60% actual foundation: not every "modification function" actually does something in the main
+ * 20% game code:
  * * first off, don't know what will be final beyond the ideas located in power.h and elsewhere
  * * second, it's a complete estimate (obviously) and this is a restatement of the first
  * * third, 100% probably won't be "finished" on this scale (restatement of the second?)
  * * fourth, percentage is horribly imprecise because, like most people, I think about completion percentages on personal projects in 5% increments (restatement of third)
  * * fifth, here's what's next:
- * * * complete overhaul of drawing; draw on GPU, not CPU; use VBOs
  * * * invincibility series of powerups (overhaul priority handling)
  * * * even later: newer levels
-*/
+ */

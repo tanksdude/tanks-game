@@ -8,19 +8,19 @@
 #include "level.h"
 #include "power.h"
 #include "powersquare.h"
+#include "res/vendor/glm/glm.hpp"
 
 typedef void(*voidFunction)(void);
 typedef Power*(*PowerFunction)(void);
 
-extern const double PI;
+extern const double PI; //so this exists in math.h ... I'll remove it later
 extern ColorValueHolder backColor;
 
 extern const double GAME_WIDTH;
 extern const double GAME_HEIGHT;
+extern glm::mat4 proj;
 
 extern const ColorValueHolder* defaultExplosionColor;
-
-extern const Bullet* junkBullet;
 
 extern const double POWER_WIDTH;
 extern const double POWER_HEIGHT;

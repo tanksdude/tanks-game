@@ -76,12 +76,12 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\freeglut\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\freeglut\include;$(SolutionDir)Dependencies\glew\include;$(ProjectDir)res\vendor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\freeglut\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\freeglut\lib;$(SolutionDir)Dependencies\glew\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>freeglut.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -90,12 +90,12 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\freeglut\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\freeglut\include;$(SolutionDir)Dependencies\glew\include;$(ProjectDir)res\vendor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\freeglut\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\freeglut\lib;$(SolutionDir)Dependencies\glew\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>freeglut.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -106,14 +106,14 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\freeglut\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\freeglut\include;$(SolutionDir)Dependencies\glew\include;$(ProjectDir)res\vendor</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\freeglut\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\freeglut\lib;$(SolutionDir)Dependencies\glew\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>freeglut.lib;glew32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -124,17 +124,18 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\freeglut\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\freeglut\include;$(SolutionDir)Dependencies\glew\include;$(ProjectDir)res\vendor</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\freeglut\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\freeglut\lib;$(SolutionDir)Dependencies\glew\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>freeglut.lib;glew32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="backgroundrect.cpp" />
     <ClCompile Include="bouncebulletpower.cpp" />
     <ClCompile Include="bouncepower.cpp" />
     <ClCompile Include="bouncetankpower.cpp" />
@@ -145,10 +146,12 @@
     <ClCompile Include="colormixer.cpp" />
     <ClCompile Include="colorvalueholder.cpp" />
     <ClCompile Include="constants.cpp" />
+    <ClCompile Include="diagnostics.cpp" />
     <ClCompile Include="emptylevel.cpp" />
     <ClCompile Include="homingbulletpower.cpp" />
     <ClCompile Include="homingpower.cpp" />
     <ClCompile Include="homingtankpower.cpp" />
+    <ClCompile Include="indexbuffer.cpp" />
     <ClCompile Include="leveleffect.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="multishotbulletpower.cpp" />
@@ -158,7 +161,9 @@
     <ClCompile Include="powerfunctionhelper.cpp" />
     <ClCompile Include="powersquare.cpp" />
     <ClCompile Include="randomlevel.cpp" />
+    <ClCompile Include="renderer.cpp" />
     <ClCompile Include="resetthings.cpp" />
+    <ClCompile Include="shader.cpp" />
     <ClCompile Include="speedbulletpower.cpp" />
     <ClCompile Include="speedpower.cpp" />
     <ClCompile Include="speedtankpower.cpp" />
@@ -166,12 +171,15 @@
     <ClCompile Include="triplebulletpower.cpp" />
     <ClCompile Include="triplepower.cpp" />
     <ClCompile Include="tripletankpower.cpp" />
+    <ClCompile Include="vertexarray.cpp" />
+    <ClCompile Include="vertexbuffer.cpp" />
     <ClCompile Include="wall.cpp" />
     <ClCompile Include="wallhackbulletpower.cpp" />
     <ClCompile Include="wallhackpower.cpp" />
     <ClCompile Include="wallhacktankpower.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="backgroundrect.h" />
     <ClInclude Include="bouncebulletpower.h" />
     <ClInclude Include="bouncepower.h" />
     <ClInclude Include="bouncetankpower.h" />
@@ -185,11 +193,13 @@
     <ClInclude Include="colormixer.h" />
     <ClInclude Include="colorvalueholder.h" />
     <ClInclude Include="constants.h" />
+    <ClInclude Include="diagnostics.h" />
     <ClInclude Include="emptylevel.h" />
     <ClInclude Include="hazard.h" />
     <ClInclude Include="homingbulletpower.h" />
     <ClInclude Include="homingpower.h" />
     <ClInclude Include="homingtankpower.h" />
+    <ClInclude Include="indexbuffer.h" />
     <ClInclude Include="inheritedpowercommon.h" />
     <ClInclude Include="level.h" />
     <ClInclude Include="leveleffect.h" />
@@ -202,7 +212,12 @@
     <ClInclude Include="powersquare.h" />
     <ClInclude Include="randomlevel.h" />
     <ClInclude Include="rect.h" />
+    <ClInclude Include="renderer.h" />
     <ClInclude Include="resetthings.h" />
+    <ClInclude Include="res\vendor\glm\glm.hpp" />
+    <ClInclude Include="res\vendor\glm\gtc\matrix_transform.hpp" />
+    <ClInclude Include="res\vendor\glm\gtx\transform.hpp" />
+    <ClInclude Include="shader.h" />
     <ClInclude Include="speedbulletpower.h" />
     <ClInclude Include="speedpower.h" />
     <ClInclude Include="speedtankpower.h" />
@@ -211,6 +226,9 @@
     <ClInclude Include="triplebulletpower.h" />
     <ClInclude Include="triplepower.h" />
     <ClInclude Include="tripletankpower.h" />
+    <ClInclude Include="vertexarray.h" />
+    <ClInclude Include="vertexbuffer.h" />
+    <ClInclude Include="vertexbufferlayout.h" />
     <ClInclude Include="wall.h" />
     <ClInclude Include="wallhackbulletpower.h" />
     <ClInclude Include="wallhackpower.h" />
@@ -218,6 +236,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="freeglut.dll" />
+    <None Include="glew32.dll" />
+    <None Include="res\shaders\default-fragment.shader" />
+    <None Include="res\shaders\default-vertex.shader" />
+    <None Include="res\shaders\main-fragment.shader" />
+    <None Include="res\shaders\main-vertex.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

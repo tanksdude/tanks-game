@@ -5,27 +5,26 @@
 #include <math.h>
 #include <string>
 #include <iostream>
+#include "mylib.h"
+#include "renderer.h"
+#include <glm/glm.hpp>
 
-#if defined WIN32
-#include <freeglut.h>
-#elif defined __APPLE__
-#include <GLUT/glut.h>
-#else
+#include <GL/glew.h>
 #include <GL/freeglut.h>
-#endif
 
+const double Tank::default_radius = 16;
 Tank::Tank(double x_, double y_, double a, char id_, std::string name_) {
 	x = x_;
 	y = y_;
 	angle = a;
 	id = id_;
-	r = 16;
+	r = Tank::default_radius;
 	name = name_;
 
 	shootingPoints = new std::vector<CannonPoint>;
 }
 
-Tank::Tank() {
+Tank::Tank() { //don't use
 	x = -100;
 	y = -100;
 	angle = 0;
@@ -232,12 +231,24 @@ ColorValueHolder Tank::getBodyColor() {
 	}
 }
 
-void Tank::draw() {
-	//TODO: need ability for more special drawing
-	draw(x, y);
+double Tank::getAngle() {
+	return fmod(fmod(angle, 2*PI) + 2*PI, 2*PI);
 }
 
-void Tank::draw(double xpos, double ypos) {
+double Tank::getCannonAngle(int i) {
+	return fmod(fmod(shootingPoints->at(i).angle, 2*PI) + 2*PI, 2*PI);
+}
+
+double Tank::getRealCannonAngle(int i) {
+	return fmod(fmod(shootingPoints->at(i).angle + angle, 2 * PI) + 2 * PI, 2 * PI);
+}
+
+void Tank::drawCPU() {
+	//TODO: need ability for more special drawing
+	drawCPU(x, y);
+}
+
+void Tank::drawCPU(double xpos, double ypos) {
 
 	//shooting cooldown outline:
 	glColor3f(1.0f, 1.0f, 1.0f);
@@ -332,12 +343,142 @@ void Tank::draw(double xpos, double ypos) {
 	glEnd();
 }
 
+VertexArray* Tank::va;
+VertexBuffer* Tank::vb;
+IndexBuffer* Tank::ib;
+VertexArray* Tank::cannon_va;
+VertexBuffer* Tank::cannon_vb;
+
+void Tank::initializeGPU() {
+	float positions[(Circle::numOfSides+1)*2];
+	for (int i = 0; i < Circle::numOfSides; i++) {
+		positions[i*2]   = cos(i * 2*PI / Circle::numOfSides);
+		positions[i*2+1] = sin(i * 2*PI / Circle::numOfSides);
+	}
+	positions[Circle::numOfSides*2]   = 0;
+	positions[Circle::numOfSides*2+1] = 0;
+
+	unsigned int indices[Circle::numOfSides*3];
+	for (int i = 0; i < Circle::numOfSides; i++) {
+		indices[i*3]   = Circle::numOfSides;
+		indices[i*3+1] = i;
+		indices[i*3+2] = (i+1) % Circle::numOfSides;
+	}
+
+	va = new VertexArray();
+	vb = new VertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float));
+
+	VertexBufferLayout layout;
+	layout.Push_f(2);
+	va->AddBuffer(*vb, layout);
+
+	ib = new IndexBuffer(indices, Circle::numOfSides*3);
+
+
+	float cannon_positions[4] = { 0.0f, 0.0f, 1.0f, 0.0f };
+	cannon_va = new VertexArray();
+	cannon_vb = new VertexBuffer(cannon_positions, 2*2 * sizeof(float));
+
+	VertexBufferLayout cannon_layout;
+	cannon_layout.Push_f(2);
+	cannon_va->AddBuffer(*cannon_vb, cannon_layout);
+}
+
+void Tank::draw() {
+	draw(x, y);
+}
+
+void Tank::draw(double xpos, double ypos) {
+	//shooting cooldown outline:
+	double shootingOutlinePercent = constrain<double>(shootCount/(maxShootCount*getShootingSpeedMultiplier()), 0, 1);
+	unsigned int shootingOutlineVertices = Circle::numOfSides * shootingOutlinePercent;
+
+	Shader* shader = Renderer::getShader("main");
+	shader->setUniform4f("u_color", 1.0f, 1.0f, 1.0f, 1.0f);
+	glm::mat4 MVPM = Renderer::GenerateMatrix(r * 5.0/4.0, r * 5.0/4.0, getAngle(), xpos, ypos);
+	shader->setUniformMat4f("u_MVP", MVPM);
+
+	Renderer::Draw(*va, *ib, *shader, shootingOutlineVertices*3);
+
+	//power cooldown outlines:
+	//first, sort by timeLeft/maxTime
+	std::vector<TankPower*> sortedTankPowers; //there shouldn't be more than a few powers, so no need to do anything more complex than an array
+	sortedTankPowers.reserve(tankPowers.size());
+	for (int i = 0; i < tankPowers.size(); i++) {
+		//insertion sort because I don't want to think about something more complex for something this small
+		//insertion sort has best case O(n) when the list is mostly/entirely sorted, which is possible to obtain but that doesn't happen because it's reversed (easy fix, do later)
+		sortedTankPowers.push_back(tankPowers[i]);
+		for (int j = sortedTankPowers.size() - 1; j >= 1; j--) {
+			if (sortedTankPowers[j]->timeLeft/sortedTankPowers[j]->maxTime > sortedTankPowers[j-1]->timeLeft/sortedTankPowers[j-1]->maxTime){
+				std::swap(sortedTankPowers[j], sortedTankPowers[j-1]);
+			} else {
+				break;
+			}
+		}
+	}
+	//second, actually draw them
+	for (int i = 0; i < sortedTankPowers.size(); i++) {
+		double powerOutlinePercent = constrain<double>(sortedTankPowers[i]->timeLeft/sortedTankPowers[i]->maxTime, 0, 1);
+		unsigned int powerOutlineVertices = Circle::numOfSides * powerOutlinePercent;
+
+		ColorValueHolder c = sortedTankPowers[i]->getColor();
+
+		shader->setUniform4f("u_color", c.getRf(), c.getGf(), c.getBf(), c.getAf());
+		MVPM = Renderer::GenerateMatrix(r * 9.0/8.0, r * 9.0/8.0, getAngle(), xpos, ypos);
+		shader->setUniformMat4f("u_MVP", MVPM);
+
+		Renderer::Draw(*va, *ib, *shader, powerOutlineVertices*3);
+	}
+	
+
+	//main body:
+	ColorValueHolder color = getBodyColor();
+
+	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+	MVPM = Renderer::GenerateMatrix(r, r, 0, xpos, ypos);
+	shader->setUniformMat4f("u_MVP", MVPM);
+
+	Renderer::Draw(*va, *ib, *shader);
+
+	//other barrels:
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glLineWidth(1.0f);
+
+	//shader->setUniform4f("u_color", .5f, .5f, .5f, .25f); //CPU method
+	shader->setUniform4f("u_color", .75f, .75f, .75f, 1.0f);
+	
+	for (int i = 1; i < shootingPoints->size(); i++) {
+		MVPM = Renderer::GenerateMatrix(r, 1, getRealCannonAngle(i), xpos, ypos);
+		shader->setUniformMat4f("u_MVP", MVPM);
+
+		Renderer::Draw(*cannon_va, *shader, GL_LINES, 0, 2);
+	}
+
+	//outline:
+	MVPM = Renderer::GenerateMatrix(r, r, 0, xpos, ypos);
+	shader->setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 1.0f);
+	shader->setUniformMat4f("u_MVP", MVPM);
+
+	Renderer::Draw(*va, *shader, GL_LINE_LOOP, 0, Circle::numOfSides);
+
+	//barrel:
+	glLineWidth(2.0f);
+	shader->setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 1.0f);
+	MVPM = Renderer::GenerateMatrix(r, 1, getAngle(), xpos, ypos);
+	shader->setUniformMat4f("u_MVP", MVPM);
+
+	Renderer::Draw(*cannon_va, *shader, GL_LINES, 0, 2);
+	
+	//cleanup
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
+
 void Tank::drawName() {
 	drawName(x, y);
 }
 
 void Tank::drawName(double xpos, double ypos) {
-	//I'm not certain this can be done on the GPU, but I will find out
+	//this cannot be done on the GPU easily; will find a library for it eventually
 
 	if (name.size() == 0)
 		return;

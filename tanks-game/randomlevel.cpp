@@ -12,7 +12,7 @@ void RandomLevel::initialize() {
 	tanks[1]->y = (4-randPos)*64 + 32;
 	//reset power and shooting
 
-	ColorValueHolder randColor(rand()%256, rand()%256, rand()%256);
+	ColorValueHolder randColor((rand()%256)/255.0, (rand()%256)/255.0, (rand()%256)/255.0);
 
 	for (int i = 0; i < 16; i++) {
 		walls.push_back(RandomLevel::makeNewWall(40, 32, GAME_WIDTH - 2*40, GAME_HEIGHT - 2*32, randColor));
