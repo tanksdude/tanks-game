@@ -20,18 +20,19 @@
 #include <GL/freeglut.h>
 #endif
 
+const double Tank::default_radius = 16;
 Tank::Tank(double x_, double y_, double a, char id_, std::string name_) {
 	x = x_;
 	y = y_;
 	angle = a;
 	id = id_;
-	r = 16;
+	r = Tank::default_radius;
 	name = name_;
 
 	shootingPoints = new std::vector<CannonPoint>;
 }
 
-Tank::Tank() {
+Tank::Tank() { //don't use
 	x = -100;
 	y = -100;
 	angle = 0;
@@ -359,8 +360,8 @@ VertexBuffer* Tank::cannon_vb;
 void Tank::initializeGPU() {
 	float positions[(Circle::numOfSides+1)*2];
 	for (int i = 0; i < Circle::numOfSides; i++) {
-		positions[i*2]   = 16*cos(i * 2*PI / Circle::numOfSides); //TODO: change 16 to Tank::default_radius or something
-		positions[i*2+1] = 16*sin(i * 2*PI / Circle::numOfSides);
+		positions[i*2]   = cos(i * 2*PI / Circle::numOfSides);
+		positions[i*2+1] = sin(i * 2*PI / Circle::numOfSides);
 	}
 	positions[Circle::numOfSides*2]   = 0;
 	positions[Circle::numOfSides*2+1] = 0;
@@ -402,7 +403,7 @@ void Tank::draw(double xpos, double ypos) {
 
 	Shader* shader = Renderer::getShader("main");
 	shader->setUniform4f("u_color", 1.0f, 1.0f, 1.0f, 1.0f);
-	glm::mat4 MVPM = Renderer::GenerateMatrix(5.0/4.0, 5.0/4.0, getAngle(), xpos, ypos);
+	glm::mat4 MVPM = Renderer::GenerateMatrix(r * 5.0/4.0, r * 5.0/4.0, getAngle(), xpos, ypos);
 	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*va, *ib, *shader, shootingOutlineVertices*3);
@@ -431,7 +432,7 @@ void Tank::draw(double xpos, double ypos) {
 		ColorValueHolder c = sortedTankPowers[i]->getColor();
 
 		shader->setUniform4f("u_color", c.getRf(), c.getGf(), c.getBf(), c.getAf());
-		MVPM = Renderer::GenerateMatrix(9.0/8.0, 9.0/8.0, getAngle(), xpos, ypos);
+		MVPM = Renderer::GenerateMatrix(r * 9.0/8.0, r * 9.0/8.0, getAngle(), xpos, ypos);
 		shader->setUniformMat4f("u_MVP", MVPM);
 
 		Renderer::Draw(*va, *ib, *shader, powerOutlineVertices*3);
@@ -442,7 +443,7 @@ void Tank::draw(double xpos, double ypos) {
 	ColorValueHolder color = getBodyColor();
 
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-	MVPM = Renderer::GenerateMatrix(1, 1, 0, xpos, ypos); //TODO: change scaling when the static vertexbuffer gets fixed
+	MVPM = Renderer::GenerateMatrix(r, r, 0, xpos, ypos);
 	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*va, *ib, *shader);
@@ -462,7 +463,7 @@ void Tank::draw(double xpos, double ypos) {
 	}
 
 	//outline:
-	MVPM = Renderer::GenerateMatrix(1, 1, 0, xpos, ypos); //TODO: change scaling when the static vertexbuffer gets fixed
+	MVPM = Renderer::GenerateMatrix(r, r, 0, xpos, ypos);
 	shader->setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 1.0f);
 	shader->setUniformMat4f("u_MVP", MVPM);
 

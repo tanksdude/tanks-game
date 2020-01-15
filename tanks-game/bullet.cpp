@@ -19,6 +19,7 @@
 #include <GL/freeglut.h>
 #endif
 
+const double Bullet::default_radius = 4;
 Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_) { //TODO: make private?
 	this->x = x_;
 	this->y = y_;
@@ -43,8 +44,8 @@ IndexBuffer* Bullet::ib;
 void Bullet::initializeGPU() {
 	float positions[(Circle::numOfSides+1)*2];
 	for (int i = 0; i < Circle::numOfSides; i++) {
-		positions[i*2]   = 4*cos(i * 2*PI / Circle::numOfSides); //TODO: change 4 to Bullet::default_radius or something
-		positions[i*2+1] = 4*sin(i * 2*PI / Circle::numOfSides);
+		positions[i*2]   = cos(i * 2*PI / Circle::numOfSides);
+		positions[i*2+1] = sin(i * 2*PI / Circle::numOfSides);
 	}
 	positions[Circle::numOfSides*2]   = 0;
 	positions[Circle::numOfSides*2+1] = 0;
@@ -165,7 +166,7 @@ void Bullet::draw(double xpos, double ypos) {
 
 	Shader* shader = Renderer::getShader("main");
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-	glm::mat4 MVPM = Renderer::GenerateMatrix(1.0f, 1.0f, 0, xpos, ypos);
+	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, 0, xpos, ypos);
 	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*va, *ib, *shader);

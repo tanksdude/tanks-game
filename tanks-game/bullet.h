@@ -29,6 +29,8 @@ public:
 	//helper functions:
 	ColorValueHolder getColor();
 
+	static const double default_radius;
+
 private:
 	//IMPORTANT: GLEW must be initialized before these are set
 	static VertexArray* va;

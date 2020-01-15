@@ -37,6 +37,8 @@ public:
 	double getRealCannonAngle(int index);
 	std::vector<CannonPoint>* shootingPoints;
 
+	static const double default_radius;
+
 	//double shootingSpeedMultiplier = 1;
 	double getShootingSpeedMultiplier();
 	//double powerMultiplier; //would be used for an ini
