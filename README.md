@@ -10,11 +10,11 @@ I'm pretty sure you just need a computer that can run Visual Studio (2019) and c
 
 ### Prerequisites
 
-* Your computer must support Visual Studio (2019) and some OpenGL 3.2+ (I'm not actually sure)
+* Your computer must support Visual Studio (2019) and some OpenGL 3.3+ (I'm not actually sure)
 
 * I don't know how to make software rendering an option yet so you need a graphics card (or use a branch before v0.1.0, such as v0.0.7.1)
 
-* Single-core CPU is enough (for now)
+* Single-core CPU is enough (for now) (no multithreading)
 
 * RAM requirements unknown, but at least 100MB, possibly more
 
@@ -24,7 +24,7 @@ I'm pretty sure you just need a computer that can run Visual Studio (2019) and c
 
 ### Installing
 
-Install Visual Studio (2019) and the GitHub extension (I don't know if that's needed), then clone this project and run x86 Debug (or Release if you want to) (also make sure you're on the solution, not project)
+Install Visual Studio (2019) and the GitHub extension (I don't know if that's needed), then clone this project and run x86 Release (or Debug if you want to) (also make sure you're on the solution, not project)
 
 ## Running the tests
 
@@ -56,8 +56,8 @@ Basically, by using or modifying this code, you will not sell the code, you will
 ## Acknowledgments
 
 * JS game (made by me): [tanks.html](https://uncreativeusername.neocities.org/tanks.html)
-* Credited a few people for some functions (in comments; a genuine list will come later)
-* Lots of YouTube tutorials, StackOverflow, GDC, and my CS professors
+* Many people across the Interwebs who made StackOverflow and other forum posts
+* Lots of YouTube tutorials, GDC talks, and my CS professors providing assistance
 
 ## More acknowledgements
 
