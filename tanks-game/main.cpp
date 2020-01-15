@@ -59,6 +59,7 @@
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
+//TODO: move glm to Dependencies instead of res/vendor?
 
 #include "diagnostics.h"
 
@@ -74,7 +75,7 @@ int tank_dead = 0;
 long frameCount = 0; //doesn't need a long for how it's interpreted...
 long ticksUntilFrame = 1; //whatever again
 long trueFrameCount = 0;
-int physicsRate = 100;
+int physicsRate = 100; //(in Hz)
 bool currentlyDrawing = false; //look into std::mutex
 
 bool leftMouse = false;
@@ -103,6 +104,7 @@ void appDrawScene() {
 	Diagnostics::addName("background rect");
 
 	BackgroundRect::draw();
+	Renderer::UnbindAll(); //I honestly don't know if this is needed anymore but it doesn't hurt performance too much so it can stay
 	
 	Diagnostics::endTiming();
 	
@@ -137,6 +139,7 @@ void appDrawScene() {
 	Renderer::UnbindAll();
 	Diagnostics::endTiming();
 
+	//drawing text on the GPU will need a library, so names don't get drawn anymore
 	/*
 	for (int i = 0; i < tanks.size(); i++) {
 		tanks[i]->drawName();
@@ -154,10 +157,12 @@ void appDrawScene() {
 	Diagnostics::startTiming();
 	Diagnostics::addName("flush");
 
-	Renderer::Cleanup(); //possibly put glutSwapBuffers in this
+	Renderer::Cleanup(); //possibly put glFlush/glutSwapBuffers in this
 
+	//for single framebuffer, use glFlush; for double framebuffer, swap the buffers
+	//swapping buffers is limited to monitor refresh rate, so I use glFlush
 	glFlush();
-	//glutSwapBuffers(); //swapping buffers flushes implicitly
+	//glutSwapBuffers();
 
 	Diagnostics::endTiming();
 
@@ -178,25 +183,24 @@ void windowToScene(float& x, float& y) {
 
 // Handles window resizing
 void appReshapeFunc(int w, int h) {
-	// Window size has changed
 	width = w;
 	height = h;
 
 	double scale, center;
 	double winXmin, winXmax, winYmin, winYmax;
 
-	// Define x-axis and y-axis range
+	// Define x-axis and y-axis range (for CPU)
 	const double appXmin = 0.0;
 	const double appXmax = GAME_WIDTH;
 	const double appYmin = 0.0;
 	const double appYmax = GAME_HEIGHT;
 
-	// Define that OpenGL should use the whole window for rendering
+	// Define that OpenGL should use the whole window for rendering (on CPU)
 	glViewport(0, 0, w, h);
 
 	// Set up the projection matrix using a orthographic projection that will
 	// maintain the aspect ratio of the scene no matter the aspect ratio of
-	// the window, and also set the min/max coordinates to be the disired ones
+	// the window, and also set the min/max coordinates to be the disired ones (CPU only)
 	w = (w == 0) ? 1 : w;
 	h = (h == 0) ? 1 : h;
 
@@ -207,7 +211,7 @@ void appReshapeFunc(int w, int h) {
 		winXmax = center + (appXmax - center) * scale;
 		winYmin = appYmin;
 		winYmax = appYmax;
-		proj = glm::ortho(0.0f, float(GAME_WIDTH*scale), 0.0f, (float)GAME_HEIGHT);
+		proj = glm::ortho(0.0f, float(GAME_WIDTH*scale), 0.0f, (float)GAME_HEIGHT); //GPU
 	}
 	else { //too tall
 		scale = ((appXmax - appXmin) / w) / ((appYmax - appYmin) / h);
@@ -216,10 +220,10 @@ void appReshapeFunc(int w, int h) {
 		winYmax = center + (appYmax - center) * scale;
 		winXmin = appXmin;
 		winXmax = appXmax;
-		proj = glm::ortho(0.0f, (float)GAME_WIDTH, 0.0f, float(GAME_HEIGHT*scale));
+		proj = glm::ortho(0.0f, (float)GAME_WIDTH, 0.0f, float(GAME_HEIGHT*scale)); //GPU
 	}
 
-	// Now we use glOrtho to set up our viewing frustum
+	// Now we use glOrtho to set up our viewing frustum (CPU only)
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(winXmin, winXmax, winYmin, winYmax, -1, 1);
@@ -465,6 +469,7 @@ void tick(int physicsUPS) {
 		}
 	}
 	Diagnostics::endTiming();
+	//bullet to wall is a big timesink, but it can only really be sped up by multithreading
 
 	Diagnostics::startTiming();
 	Diagnostics::addName("bullet-bullet");
@@ -512,6 +517,8 @@ void tick(int physicsUPS) {
 		}
 	}
 	Diagnostics::endTiming();
+	//bullet to bullet collision is the biggest timesink (obviously)
+	//unfortunately it can only be O(n^2), and multithreading doesn't seem like it would work
 
 	Diagnostics::startTiming();
 	Diagnostics::addName("tank-edge");
@@ -578,6 +585,7 @@ int main(int argc, char** argv) {
 
 	srand(time(NULL));
 
+	//TODO: move some of this stuff to an initialization file so testing can be done
 	normalKeyStates.insert({ 'w', false });
 	normalKeyStates.insert({ 'a', false });
 	normalKeyStates.insert({ 's', false });
@@ -618,19 +626,19 @@ int main(int argc, char** argv) {
 	glutInitWindowSize(width, height);
 	glutCreateWindow("Tanks Test");
 
+	// Setup some OpenGL options
 	glPointSize(2);
+	glEnable(GL_POINT_SMOOTH);
+	glEnable(GL_LINE_SMOOTH);
+	glDisable(GL_DEPTH_TEST);
 
+	//initialize glew
 	glewExperimental = GL_TRUE;
 	GLenum res = glewInit();
 	if (res != GLEW_OK) {
 		fprintf(stderr, "Error: '%s'\n", glewGetErrorString(res));
 		return 1;
 	}
-
-	// Setup some OpenGL options
-	glEnable(GL_POINT_SMOOTH);
-	glEnable(GL_LINE_SMOOTH);
-	glDisable(GL_DEPTH_TEST);
 
 	//TODO: proper solution
 	tanks[0]->determineShootingAngles();
@@ -653,8 +661,8 @@ int main(int argc, char** argv) {
 	// Set callback for resizing the window
 	glutReshapeFunc(appReshapeFunc);
 
-	// Set callback to handle mouse clicks
-	//glutMouseFunc(appMouseFunc);
+	//mouse clicking
+	glutMouseFunc(mouse_func);
 
 	// Set callback to handle mouse dragging
 	glutMotionFunc(appMotionFunc);
@@ -672,14 +680,10 @@ int main(int argc, char** argv) {
 	glutSpecialUpFunc(special_keyboard_up);
 
 	// Set callback for the idle function
-	//glutIdleFunc(tick);
 	//glutIdleFunc(draw);
 
 	//framelimiter
 	glutTimerFunc(1000/physicsRate, tick, physicsRate);
-
-	//mouse function
-	glutMouseFunc(mouse_func);
 
 	// Start the main loop
 	glutMainLoop();
