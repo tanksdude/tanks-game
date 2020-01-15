@@ -402,10 +402,8 @@ void Tank::draw(double xpos, double ypos) {
 
 	Shader* shader = Renderer::getShader("rotation");
 	shader->setUniform4f("u_color", 1.0f, 1.0f, 1.0f, 1.0f);
-	glm::mat4 trans = glm::translate(proj, glm::vec3(xpos, ypos, 0.0f));
-	glm::mat4 rot = glm::rotate(trans, (float)getAngle(), glm::vec3(0.0f, 0.0f, 1.0f));
-	glm::mat4 scale = glm::scale(rot, glm::vec3(5.0/4.0, 5.0/4.0, 0));
-	shader->setUniformMat4f("u_MVPM", scale);
+	glm::mat4 MVPM = Renderer::GenerateMatrix(5.0/4.0, 5.0/4.0, getAngle(), xpos, ypos);
+	shader->setUniformMat4f("u_MVPM", MVPM);
 
 	Renderer::Draw(*va, *ib, *shader, shootingOutlineVertices*3);
 	
@@ -433,10 +431,8 @@ void Tank::draw(double xpos, double ypos) {
 		ColorValueHolder c = sortedTankPowers[i]->getColor();
 
 		shader->setUniform4f("u_color", c.getRf(), c.getGf(), c.getBf(), c.getAf());
-		glm::mat4 trans = glm::translate(proj, glm::vec3(xpos, ypos, 0.0f));
-		glm::mat4 rot = glm::rotate(trans, (float)getAngle(), glm::vec3(0.0f, 0.0f, 1.0f));
-		glm::mat4 scale = glm::scale(rot, glm::vec3(9.0/8.0, 9.0/8.0, 0));
-		shader->setUniformMat4f("u_MVPM", scale);
+		MVPM = Renderer::GenerateMatrix(9.0/8.0, 9.0/8.0, getAngle(), xpos, ypos);
+		shader->setUniformMat4f("u_MVPM", MVPM);
 
 		Renderer::Draw(*va, *ib, *shader, powerOutlineVertices*3);
 	}
@@ -447,8 +443,8 @@ void Tank::draw(double xpos, double ypos) {
 
 	shader = Renderer::getShader("translation");
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-	trans = glm::translate(proj, glm::vec3(xpos, ypos, 0.0f));
-	shader->setUniformMat4f("u_TM", trans);
+	MVPM = Renderer::GenerateMatrix(1, 1, 0, xpos, ypos); //TODO: change scaling when the static vertexbuffer gets fixed
+	shader->setUniformMat4f("u_TM", MVPM);
 
 	Renderer::Draw(*va, *ib, *shader);
 
@@ -461,17 +457,17 @@ void Tank::draw(double xpos, double ypos) {
 	shader->setUniform4f("u_color", .75f, .75f, .75f, 1.0f);
 	
 	for (int i = 1; i < shootingPoints->size(); i++) {
-		glm::mat4 trans = glm::translate(proj, glm::vec3(xpos, ypos, 0.0f));
-		glm::mat4 rot = glm::rotate(trans, (float)getRealCannonAngle(i), glm::vec3(0.0f, 0.0f, 1.0f));
-		glm::mat4 scale = glm::scale(rot, glm::vec3(r, 1, 0));
-		shader->setUniformMat4f("u_MVPM", scale);
+		MVPM = Renderer::GenerateMatrix(r, 1, getRealCannonAngle(i), xpos, ypos);
+		shader->setUniformMat4f("u_MVPM", MVPM);
 
 		Renderer::Draw(*cannon_va, *shader, GL_LINES, 0, 2);
 	}
 
 	//outline:
 	shader = Renderer::getShader("translation");
+	MVPM = Renderer::GenerateMatrix(1, 1, 0, xpos, ypos); //TODO: change scaling when the static vertexbuffer gets fixed
 	shader->setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 1.0f);
+	shader->setUniformMat4f("u_TM", MVPM);
 
 	Renderer::Draw(*va, *shader, GL_LINE_LOOP, 0, Circle::numOfSides);
 
@@ -479,10 +475,8 @@ void Tank::draw(double xpos, double ypos) {
 	shader = Renderer::getShader("rotation");
 	glLineWidth(2.0f);
 	shader->setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 1.0f);
-	trans = glm::translate(proj, glm::vec3(xpos, ypos, 0.0f));
-	rot = glm::rotate(trans, (float)getAngle(), glm::vec3(0.0f, 0.0f, 1.0f));
-	scale = glm::scale(rot, glm::vec3(r, 1, 0));
-	shader->setUniformMat4f("u_MVPM", scale);
+	MVPM = Renderer::GenerateMatrix(r, 1, getAngle(), xpos, ypos);
+	shader->setUniformMat4f("u_MVPM", MVPM);
 
 	Renderer::Draw(*cannon_va, *shader, GL_LINES, 0, 2);
 	

@@ -1,6 +1,8 @@
 #pragma once
 
-#include "renderer.h"
+#include "vertexarray.h"
+#include "vertexbuffer.h"
+#include "indexbuffer.h"
 
 struct BackgroundRect {
 private:

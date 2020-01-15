@@ -6,7 +6,9 @@ class Bullet;
 #include "bulletpower.h"
 #include "powerfunctionhelper.h"
 
-#include "renderer.h"
+#include "vertexarray.h"
+#include "vertexbuffer.h"
+#include "indexbuffer.h"
 
 class Bullet : public Circle {
 	friend class ResetThings;

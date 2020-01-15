@@ -1,7 +1,7 @@
 #pragma once
 
 #include "renderer.h"
-#include <GL/glew.h>
+#include "constants.h"
 #include <iostream>
 
 std::unordered_map<std::string, Shader*> Renderer::shaderCache;
@@ -28,6 +28,12 @@ void Renderer::Initialize() {
 
 	shader = new Shader("res/shaders/default-vertex.shader", "res/shaders/default-fragment.shader");
 	shaderCache.insert({ "default", shader });
+}
+
+glm::mat4 Renderer::GenerateMatrix(float scaleX, float scaleY, float rotateAngle, float transX, float transY) {
+	glm::mat4 trans = glm::translate(proj, glm::vec3(transX, transY, 0.0f));
+	glm::mat4 rot = glm::rotate(trans, rotateAngle, glm::vec3(0.0f, 0.0f, 1.0f));
+	return glm::scale(rot, glm::vec3(scaleX, scaleY, 0));
 }
 
 inline void Renderer::bindShader(Shader* shader) {

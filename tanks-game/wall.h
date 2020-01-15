@@ -5,7 +5,9 @@ class Wall;
 #include "colorvalueholder.h"
 #include "resetthings.h"
 #include "powerfunctionhelper.h"
-#include "renderer.h"
+#include "vertexarray.h"
+#include "vertexbuffer.h"
+#include "indexbuffer.h"
 
 class Wall : public Rect{
 	friend class ResetThings; //not really needed

@@ -1,11 +1,14 @@
 #pragma once
 
 #include <GL/glew.h>
+#include "constants.h"
 #include "vertexarray.h"
 #include "indexbuffer.h"
 #include "shader.h"
 #include <string>
 #include <unordered_map>
+#include <glm/glm.hpp>
+#include <glm/gtx/transform.hpp>
 
 class Renderer {
 private:
@@ -26,6 +29,7 @@ public:
 	static void Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader, unsigned int count);
 	static void Draw(const VertexArray& va, const Shader& shader, GLenum type, GLint first, GLsizei count);
 	static void Draw(GLenum type, GLint first, GLsizei count);
+	static glm::mat4 GenerateMatrix(float scaleX, float scaleY, float rotateAngle, float transX, float transY);
 	static void Unbind(const VertexArray&);
 	static void Unbind(const IndexBuffer&);
 	static void Unbind(const Shader&);

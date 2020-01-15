@@ -6,11 +6,13 @@ class PowerSquare;
 #include <string>
 #include "power.h"
 #include "rect.h"
-#include "renderer.h"
+#include "vertexarray.h"
+#include "vertexbuffer.h"
+#include "indexbuffer.h"
 
 class PowerSquare : public Rect {
 public:
-	Power** heldPower; //array of pointers (can do a vector for simplicity but I don't foresee a powersquare getting more powers
+	Power** heldPower; //array of pointers (can do a vector for simplicity but I don't foresee a powersquare getting more powers)
 	short numOfPowers;
 	//double w = POWER_WIDTH;
 	//double h = POWER_HEIGHT;
