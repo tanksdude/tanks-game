@@ -26,6 +26,9 @@ void Renderer::Initialize() {
 	shader = new Shader("res/shaders/rotate-vertex.shader", "res/shaders/rotate-fragment.shader");
 	shaderCache.insert({ "rotation", shader });
 
+	shader = new Shader("res/shaders/main-vertex.shader", "res/shaders/main-fragment.shader");
+	shaderCache.insert({ "main", shader });
+
 	shader = new Shader("res/shaders/default-vertex.shader", "res/shaders/default-fragment.shader");
 	shaderCache.insert({ "default", shader });
 }

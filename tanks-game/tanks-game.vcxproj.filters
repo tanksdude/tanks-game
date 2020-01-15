@@ -319,5 +319,7 @@
     <None Include="res\shaders\scale-vertex.shader" />
     <None Include="res\shaders\rotate-fragment.shader" />
     <None Include="res\shaders\rotate-vertex.shader" />
+    <None Include="res\shaders\main-fragment.shader" />
+    <None Include="res\shaders\main-vertex.shader" />
   </ItemGroup>
 </Project>

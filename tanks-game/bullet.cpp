@@ -161,22 +161,16 @@ void Bullet::draw() {
 
 void Bullet::draw(double xpos, double ypos) {
 	//main body:
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); //should already be enabled
-
 	ColorValueHolder color = getColor();
 
-	Shader* shader = Renderer::getShader("translation");
-	//shader->Bind();
+	Shader* shader = Renderer::getShader("main");
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-	glm::mat4 trans = glm::translate(proj, glm::vec3(xpos, ypos, 0.0f)); //calculate full matrix on CPU
-	shader->setUniformMat4f("u_TM", trans);
+	glm::mat4 MVPM = Renderer::GenerateMatrix(1.0f, 1.0f, 0, xpos, ypos);
+	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*va, *ib, *shader);
 
 	//outline:
-	//glEnable(GL_POLYGON_OFFSET_LINE); //I don't know if this is needed, but it works without
-	//glPolygonOffset(-1, -1);
-
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glLineWidth(1.0f); //lines still look ugly even with glEnable(GL_LINE_SMOOTH), so I don't know what to set it at
 	shader->setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 1.0f);
@@ -185,8 +179,6 @@ void Bullet::draw(double xpos, double ypos) {
 	
 	//cleanup:
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-	//glDisable(GL_POLYGON_OFFSET_LINE);
 
 	//drawing an outline: use a geometry shader (ugh) or another VAO+IBO (lesser ugh), the CPU (big ugh), or glDrawArrays with GL_LINE_LOOP (yay!)
 }
