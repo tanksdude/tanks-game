@@ -146,20 +146,20 @@ void PowerSquare::initializeGPU() {
 
 void PowerSquare::draw() {
 	ColorValueHolder color = getColor();
-	Shader* shader = Renderer::getShader("translation");
-	glm::mat4 trans = glm::translate(proj, glm::vec3(x + w/2, y + h/2, 0.0f));
+	Shader* shader = Renderer::getShader("main");
+	glm::mat4 MVPM = Renderer::GenerateMatrix(1, 1, 0, x + w/2, y + h/2); //TODO: adjust this to scale by w and h
 	if (numOfPowers > 1) { //move to drawUnder()
 		ColorValueHolder backgroundMix = ColorMixer::mix(color, backColor);
 		//shader->Bind();
 		shader->setUniform4f("u_color", backgroundMix.getRf(), backgroundMix.getGf(), backgroundMix.getBf(), backgroundMix.getAf());
-		shader->setUniformMat4f("u_TM", trans);
+		shader->setUniformMat4f("u_MVP", MVPM);
 
 		Renderer::Draw(*va, *ib_outline, *shader);
 	}
 
 	//shader->Bind();
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-	shader->setUniformMat4f("u_TM", trans);
+	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*va, *ib_main, *shader);
 }
