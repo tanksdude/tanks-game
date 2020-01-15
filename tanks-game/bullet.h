@@ -38,6 +38,9 @@ private:
 	static IndexBuffer* ib;
 public:
 	static void initializeGPU();
+
+	void drawBody(double, double);
+	void drawOutline(double, double);
 	
 public:
 	Bullet(double x_, double y_, double r_, double a, double vel, char id_);

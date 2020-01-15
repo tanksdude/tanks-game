@@ -153,7 +153,11 @@ void Bullet::draw() {
 }
 
 void Bullet::draw(double xpos, double ypos) {
-	//main body:
+	drawBody(xpos, ypos);
+	drawOutline(xpos, ypos);
+}
+
+void Bullet::drawBody(double xpos, double ypos) {
 	ColorValueHolder color = getColor();
 
 	Shader* shader = Renderer::getShader("main");
@@ -162,11 +166,17 @@ void Bullet::draw(double xpos, double ypos) {
 	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*va, *ib, *shader);
+}
 
-	//outline:
+void Bullet::drawOutline(double xpos, double ypos) {
+	Shader* shader = Renderer::getShader("main");
+
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glLineWidth(1.0f); //lines still look ugly even with glEnable(GL_LINE_SMOOTH), so I don't know what to set it at
+	
 	shader->setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 1.0f);
+	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, 0, xpos, ypos); //duplication but necessary for body/outline methods to be separate
+	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(GL_LINE_LOOP, 0, Circle::numOfSides);
 	
@@ -174,6 +184,7 @@ void Bullet::draw(double xpos, double ypos) {
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	//drawing an outline: use a geometry shader (ugh) or another VAO+IBO (lesser ugh), the CPU (big ugh), or glDrawArrays with GL_LINE_LOOP (yay!)
+
 }
 
 short Bullet::determineDamage() { //TODO: finish once powers start existing
