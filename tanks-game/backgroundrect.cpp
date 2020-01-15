@@ -51,10 +51,10 @@ void BackgroundRect::drawCPU() {
 }
 
 void BackgroundRect::draw() {
-	Shader* shader = Renderer::getShader("uniform");
+	Shader* shader = Renderer::getShader("main");
 	//shader->Bind();
 	shader->setUniform4f("u_color", backColor.getRf(), backColor.getGf(), backColor.getBf(), backColor.getAf());
-	shader->setUniformMat4f("u_MVPM", proj);
+	shader->setUniformMat4f("u_MVP", proj); //no need to fully migrate, unless size of board can change...
 
 	Renderer::Draw(*va, *ib, *shader);
 }
