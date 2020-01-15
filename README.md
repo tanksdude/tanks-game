@@ -35,7 +35,7 @@ Will need them eventually, though
 ## Built With
 
 * Visual Studio - it's VS, come on
-* [FreeGLUT](http://freeglut.sourceforge.net/) - OpenGL Utility Toolkit (except that it's not the original GLUT)
+* [FreeGLUT](http://freeglut.sourceforge.net/) - OpenGL Utility Toolkit; an updated version of the original GLUT
 * [GLEW](http://glew.sourceforge.net/) - OpenGL Extension Wrangler Library; for getting the latest OpenGL commands on Windows
 * [OpenGL Mathematics (GLM)](https://github.com/g-truc/glm) - OpenGL-happy matrix and vector math library
 
