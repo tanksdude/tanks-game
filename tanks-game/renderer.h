@@ -20,6 +20,9 @@ private:
 	static inline void bindShader(const Shader&);
 	static inline void bindVertexArray(const VertexArray&);
 	static inline void bindIndexBuffer(const IndexBuffer&);
+
+	static std::string getErrorString(GLenum err);
+
 public:
 	static Shader* getShader(std::string);
 	static void Clear();
@@ -35,4 +38,6 @@ public:
 	static void Unbind(const Shader&);
 	static void UnbindAll();
 	static void Cleanup();
+
+	static void printGLError();
 };

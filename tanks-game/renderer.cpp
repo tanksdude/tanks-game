@@ -115,8 +115,41 @@ void Renderer::Unbind(const Shader& s) {
 
 void Renderer::UnbindAll() {
 	glUseProgram(0); //shader
-	glBindVertexArray(0); //array buffer
+	glBindVertexArray(0); //vertex array
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); //index buffer
+
+	currentShader = -1;
+	currentVertexArray = -1;
+	currentIndexBuffer = -1;
+}
+
+std::string Renderer::getErrorString(GLenum err) {
+	//gotten from https://codeyarns.com/2015/09/14/how-to-check-error-in-opengl/
+	switch (err) {
+		case GL_NO_ERROR:          return "No error";
+		case GL_INVALID_ENUM:      return "Invalid enum";
+		case GL_INVALID_VALUE:     return "Invalid value";
+		case GL_INVALID_OPERATION: return "Invalid operation";
+		case GL_STACK_OVERFLOW:    return "Stack overflow";
+		case GL_STACK_UNDERFLOW:   return "Stack underflow";
+		case GL_OUT_OF_MEMORY:     return "Out of memory";
+		default:                   return "Unknown error";
+	}
+}
+
+void Renderer::printGLError() {
+	bool error = false;
+	while (true) {
+		const GLenum err = glGetError();
+		if (GL_NO_ERROR == err)
+			break;
+
+		std::cout << "GL Error: " << getErrorString(err) << std::endl;
+		error = true; //set breakpoint to here when debugging!
+	}
+	if (!error) {
+		std::cout << "no error" << std::endl;
+	}
 }
 
 void Renderer::Clear() {
