@@ -5,6 +5,7 @@ class Wall;
 #include "colorvalueholder.h"
 #include "resetthings.h"
 #include "powerfunctionhelper.h"
+
 #include "vertexarray.h"
 #include "vertexbuffer.h"
 #include "indexbuffer.h"

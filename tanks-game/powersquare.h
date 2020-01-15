@@ -6,6 +6,7 @@ class PowerSquare;
 #include <string>
 #include "power.h"
 #include "rect.h"
+
 #include "vertexarray.h"
 #include "vertexbuffer.h"
 #include "indexbuffer.h"

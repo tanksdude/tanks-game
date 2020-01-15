@@ -1,12 +1,11 @@
 #pragma once
 
-#include <GL/glew.h>
-#include "constants.h"
+#include <string>
+#include <unordered_map>
 #include "vertexarray.h"
 #include "indexbuffer.h"
 #include "shader.h"
-#include <string>
-#include <unordered_map>
+#include <GL/glew.h>
 #include <glm/glm.hpp>
 
 class Renderer {

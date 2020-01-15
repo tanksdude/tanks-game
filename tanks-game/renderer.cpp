@@ -3,7 +3,7 @@
 #include "renderer.h"
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
-//#include "constants.h" //where is this needed?
+#include "constants.h"
 #include <iostream>
 
 std::unordered_map<std::string, Shader*> Renderer::shaderCache;

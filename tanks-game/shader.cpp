@@ -4,7 +4,6 @@
 #include <string>
 #include <fstream>
 #include <iostream>
-#include <cstdlib>
 #include <unordered_map>
 
 Shader::Shader(const std::string& vert_filepath, const std::string& frag_filepath) {

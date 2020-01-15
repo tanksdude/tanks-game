@@ -11,6 +11,7 @@ class Tank;
 #include "tankpower.h"
 #include "bulletpower.h"
 //include hazardpower?
+
 #include "vertexarray.h"
 #include "vertexbuffer.h"
 #include "indexbuffer.h"
