@@ -3,7 +3,6 @@
 #include "bouncetankpower.h"
 #include "bouncepower.h"
 #include "powerfunctionhelper.h"
-#include <math.h>
 
 const short BounceBulletPower::maxBounces = 16;
 
