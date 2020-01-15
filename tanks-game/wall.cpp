@@ -54,12 +54,11 @@ void Wall::initializeGPU() {
 }
 
 void Wall::draw() {
-	Shader* shader = Renderer::getShader("scaling");
+	Shader* shader = Renderer::getShader("main");
 	//shader->Bind();
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-	glm::mat4 trans = glm::translate(proj, glm::vec3(x, y, 0.0f));
-	glm::mat4 sc = glm::scale(trans, glm::vec3(w, h, 0));
-	shader->setUniformMat4f("u_SM", sc);
+	glm::mat4 MVPM = Renderer::GenerateMatrix(w, h, 0, x, y);
+	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*va, *ib, *shader);
 }
