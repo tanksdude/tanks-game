@@ -3,7 +3,6 @@
 #include "homingtankpower.h"
 #include "homingpower.h"
 #include "powerfunctionhelper.h"
-#include <math.h>
 #include "constants.h"
 
 const double HomingBulletPower::homingStrength = 2*PI / 256;
