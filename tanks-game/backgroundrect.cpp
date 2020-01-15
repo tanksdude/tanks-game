@@ -3,7 +3,7 @@
 #include "backgroundrect.h"
 #include "renderer.h"
 #include <glm/glm.hpp>
-#include "constants.h"
+#include "constants.h" //TODO: move backColor to here, then make other files include this one (well, the .h, not .cpp, obviously)
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
@@ -15,9 +15,9 @@ IndexBuffer* BackgroundRect::ib;
 void BackgroundRect::initializeGPU() {
 	float background_positions[] = {
 		0, 0,
-		GAME_WIDTH, 0,
-		GAME_WIDTH, GAME_HEIGHT,
-		0, GAME_HEIGHT
+		1, 0,
+		1, 1,
+		0, 1
 	};
 	unsigned int background_indices[] = {
 		0, 1, 2,
@@ -46,9 +46,9 @@ void BackgroundRect::drawCPU() {
 
 void BackgroundRect::draw() {
 	Shader* shader = Renderer::getShader("main");
-	//shader->Bind();
 	shader->setUniform4f("u_color", backColor.getRf(), backColor.getGf(), backColor.getBf(), backColor.getAf());
-	shader->setUniformMat4f("u_MVP", proj); //no need to fully migrate, unless size of board can change...
+	glm::mat4 MVPM = Renderer::GenerateMatrix(GAME_WIDTH, GAME_HEIGHT, 0, 0, 0);
+	shader->setUniformMat4f("u_MVP", MVPM); //little point in generating a new matrix instead of just using proj but "consistency" and all
 
 	Renderer::Draw(*va, *ib, *shader);
 }
