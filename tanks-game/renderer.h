@@ -8,7 +8,6 @@
 #include <string>
 #include <unordered_map>
 #include <glm/glm.hpp>
-#include <glm/gtx/transform.hpp>
 
 class Renderer {
 private:
