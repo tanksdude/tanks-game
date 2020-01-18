@@ -56,6 +56,9 @@
 #include "homingtankpower.h"
 #include "homingbulletpower.h"
 #include "homingpower.h"
+#include "invinciblenamedtankpower.h"
+#include "invinciblenamedbulletpower.h"
+#include "invinciblenamedpower.h"
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
@@ -604,6 +607,7 @@ int main(int argc, char** argv) {
 	powerLookup.insert({ "multishot", MultishotPower::factory });
 	powerLookup.insert({ "triple", TriplePower::factory });
 	powerLookup.insert({ "homing", HomingPower::factory });
+	powerLookup.insert({ "invincible", InvincibleNamedPower::factory });
 
 	tanks.push_back(tank1);
 	tanks.push_back(tank2);

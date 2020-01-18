@@ -152,6 +152,9 @@
     <ClCompile Include="homingpower.cpp" />
     <ClCompile Include="homingtankpower.cpp" />
     <ClCompile Include="indexbuffer.cpp" />
+    <ClCompile Include="invinciblenamedbulletpower.cpp" />
+    <ClCompile Include="invinciblenamedpower.cpp" />
+    <ClCompile Include="invinciblenamedtankpower.cpp" />
     <ClCompile Include="leveleffect.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="multishotbulletpower.cpp" />
@@ -201,6 +204,9 @@
     <ClInclude Include="homingtankpower.h" />
     <ClInclude Include="indexbuffer.h" />
     <ClInclude Include="inheritedpowercommon.h" />
+    <ClInclude Include="invinciblenamedbulletpower.h" />
+    <ClInclude Include="invinciblenamedpower.h" />
+    <ClInclude Include="invinciblenamedtankpower.h" />
     <ClInclude Include="level.h" />
     <ClInclude Include="leveleffect.h" />
     <ClInclude Include="multishotbulletpower.h" />

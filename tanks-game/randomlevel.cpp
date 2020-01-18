@@ -24,6 +24,7 @@ void RandomLevel::initialize() {
 	powerups.push_back(new PowerSquare(80, 20, "multishot"));
 	powerups.push_back(new PowerSquare(100, 20, "triple"));
 	powerups.push_back(new PowerSquare(120, 20, "homing"));
+	powerups.push_back(new PowerSquare(140, 20, "invincible"));
 
 	powerups.push_back(new PowerSquare(GAME_WIDTH-20, GAME_HEIGHT-20, new std::string[2]{ "multishot", "multishot" }, 2));
 	powerups.push_back(new PowerSquare(GAME_WIDTH-40, GAME_HEIGHT-20, new std::string[2]{ "speed", "wallhack" }, 2));
