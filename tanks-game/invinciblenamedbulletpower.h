@@ -22,7 +22,7 @@ public:
 	virtual double getOffenseImportance() { return 0; }
 	virtual double getOffenseTier() { return 1; }
 	virtual double getDefenseImportance() { return 0; }
-	virtual double getDefenseTier() { return 2.5; }
+	virtual double getDefenseTier() { return 1; }
 
 	InvincibleNamedBulletPower();
 };

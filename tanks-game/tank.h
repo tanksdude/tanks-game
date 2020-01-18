@@ -25,7 +25,6 @@ public:
 	std::string name;
 
 	int wins = 0;
-	std::vector<TankPower*> tankPowers;
 
 	double maxSpeed = 1;
 	double acceleration = 1.0/16; //intentional acceleration, not total
@@ -38,6 +37,16 @@ public:
 	double getRealCannonAngle(int index);
 	std::vector<CannonPoint>* shootingPoints;
 
+	std::vector<TankPower*> tankPowers;
+	double getOffenseTier();
+	double getDefenseTier();
+private:
+	double getHighestOffenseImportance();
+	double getHighestOffenseTier(double importance);
+	double getHighestDefenseImportance();
+	double getHighestDefenseTier(double importance);
+
+public:
 	static const double default_radius;
 
 	//double shootingSpeedMultiplier = 1;

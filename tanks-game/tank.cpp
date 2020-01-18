@@ -561,6 +561,59 @@ void Tank::edgeConstrain() {
 	//technically, checking down before up (and left before right) would probably have a slight efficiency increase, but it would be extremely (negligibly) small
 }
 
+double Tank::getHighestOffenseImportance() {
+	double highest = -1; //anything below -1 is really, really unimportant; so much so that it doesn't matter
+	for (int i = 0; i < tankPowers.size(); i++) {
+		if (tankPowers[i]->getOffenseImportance() > highest) {
+			highest = tankPowers[i]->getOffenseImportance();
+		}
+	}
+	return highest;
+}
+
+double Tank::getHighestOffenseTier(double importance) {
+	double highest = -999; //TODO: define these constants somewhere or just have a bool for initialization
+	for (int i = 0; i < tankPowers.size(); i++) {
+		if (tankPowers[i]->getOffenseImportance() == importance) {
+			if (tankPowers[i]->getOffenseTier() > highest) {
+				highest = tankPowers[i]->getOffenseTier();
+			}
+		}
+	}
+	return highest;
+}
+
+double Tank::getOffenseTier() {
+	return getHighestOffenseTier(getHighestOffenseImportance());
+}
+
+double Tank::getHighestDefenseImportance() {
+	double highest = -1; //anything below -1 is really, really unimportant; so much so that it doesn't matter
+	for (int i = 0; i < tankPowers.size(); i++) {
+		if (tankPowers[i]->getDefenseImportance() > highest) {
+			highest = tankPowers[i]->getDefenseImportance();
+		}
+	}
+	return highest;
+}
+
+double Tank::getHighestDefenseTier(double importance) {
+	double highest = -999; //TODO: define these constants somewhere or just have a bool for initialization
+	for (int i = 0; i < tankPowers.size(); i++) {
+		if (tankPowers[i]->getDefenseImportance() == importance) {
+			if (tankPowers[i]->getDefenseTier() > highest) {
+				highest = tankPowers[i]->getDefenseTier();
+			}
+		}
+	}
+	return highest;
+}
+
+double Tank::getDefenseTier() {
+	return getHighestDefenseTier(getHighestDefenseImportance());
+}
+
+
 bool Tank::isPartiallyOutOfBounds() {
 	return ((x + r > GAME_WIDTH) || (x - r < 0) || (y + r > GAME_HEIGHT) || (y - r < 0));
 } //doesn't care if touching edge
