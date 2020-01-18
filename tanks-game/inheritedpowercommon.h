@@ -36,17 +36,10 @@ public:
 	//virtual void modifiedCollisionWithHazard(Hazard*);
 
 	//virtual void modifiedShooting();
-	//virtual void modifiedTankDrawings();
 
-	virtual double getOffenseTier() { return 0; } //don't want it to be a variable because a function can change its value much easier
-	virtual double getOffenseValue() { return 0; } //only one tier per power
+	virtual double getOffenseImportance() { return 0; } //"importance" = "override" value (when dealing with other powers)
+	virtual double getOffenseTier() { return 0; }
+	virtual double getDefenseImportance() { return 0; }
 	virtual double getDefenseTier() { return 0; }
-	virtual double getDefenseValue() { return 0; } //return 0 by default, else 1 probably
-
-	//virtual double getOffenseImportance() { return 0; } //"importance" = "override" value
-	//virtual double getOffenseTier() { return 0; }
-	//virtual double getOffenceValue() { return 0; }
-	//virtual double getDefenseImportance() { return 0; }
-	//virtual double getDefenseTier() { return 0; }
-	//virtual double getDefenceValue() { return 0; }
+	//removed values to the tiers because they probably wouldn't get used
 };
