@@ -24,6 +24,13 @@ public: //hopefully temporary
 
 public:
 	std::vector<BulletPower*> bulletPowers; //change eventually?
+	double getOffenseTier();
+	double getDefenseTier();
+private:
+	double getHighestOffenseImportance();
+	double getHighestOffenseTier(double importance);
+	double getHighestDefenseImportance();
+	double getHighestDefenseTier(double importance);
 
 public:
 	//helper functions:

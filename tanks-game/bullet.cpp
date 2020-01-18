@@ -191,6 +191,58 @@ short Bullet::determineDamage() { //TODO: finish once powers start existing
 	return 1;
 }
 
+double Bullet::getHighestOffenseImportance() {
+	double highest = -1; //anything below -1 is really, really unimportant; so much so that it doesn't matter
+	for (int i = 0; i < bulletPowers.size(); i++) {
+		if (bulletPowers[i]->getOffenseImportance() > highest) {
+			highest = bulletPowers[i]->getOffenseImportance();
+		}
+	}
+	return highest;
+}
+
+double Bullet::getHighestOffenseTier(double importance) {
+	double highest = -999; //TODO: define these constants somewhere or just have a bool for initialization
+	for (int i = 0; i < bulletPowers.size(); i++) {
+		if (bulletPowers[i]->getOffenseImportance() == importance) {
+			if (bulletPowers[i]->getOffenseTier() > highest) {
+				highest = bulletPowers[i]->getOffenseTier();
+			}
+		}
+	}
+	return highest;
+}
+
+double Bullet::getOffenseTier() {
+	return getHighestOffenseTier(getHighestOffenseImportance());
+}
+
+double Bullet::getHighestDefenseImportance() {
+	double highest = -1; //anything below -1 is really, really unimportant; so much so that it doesn't matter
+	for (int i = 0; i < bulletPowers.size(); i++) {
+		if (bulletPowers[i]->getDefenseImportance() > highest) {
+			highest = bulletPowers[i]->getDefenseImportance();
+		}
+	}
+	return highest;
+}
+
+double Bullet::getHighestDefenseTier(double importance) {
+	double highest = -999; //TODO: define these constants somewhere or just have a bool for initialization
+	for (int i = 0; i < bulletPowers.size(); i++) {
+		if (bulletPowers[i]->getDefenseImportance() == importance) {
+			if (bulletPowers[i]->getDefenseTier() > highest) {
+				highest = bulletPowers[i]->getDefenseTier();
+			}
+		}
+	}
+	return highest;
+}
+
+double Bullet::getDefenseTier() {
+	return getHighestDefenseTier(getHighestDefenseImportance());
+}
+
 bool Bullet::isPartiallyOutOfBounds() {
 	return ((x + r > GAME_WIDTH) || (x - r < 0) || (y + r > GAME_HEIGHT) || (y - r < 0));
 } //care about equals edge?
