@@ -542,12 +542,16 @@ void tick(int physicsUPS) {
 					}
 				}
 			}
+
+			if (overridedEdgeCollision) {
+				continue;
+			}
+			if (bullets[i]->isFullyOutOfBounds()) {
+				shouldBeKilled = true;
+			}
 		}
 
-		if (overridedEdgeCollision) {
-			continue;
-		}
-		if (bullets[i]->isFullyOutOfBounds() || shouldBeKilled) {
+		if (shouldBeKilled) {
 			delete bullets[i];
 			bullets.erase(bullets.begin() + i);
 			continue;
