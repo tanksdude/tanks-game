@@ -405,9 +405,61 @@ void tick(int physicsUPS) {
 
 	Diagnostics::startTiming();
 	Diagnostics::addName("tank-tank");
-	//tank collision (temporary? yes because additional tanks):
-	if (CollisionHandler::partiallyCollided(tanks[0], tanks[1])) {
-		CollisionHandler::pushMovableAwayFromMovable(tanks[0], tanks[1]);
+	for (int i = 0; i < tanks.size(); i++) {
+		bool shouldBeKilled = false;
+		for (int j = 0; j < tanks.size(); j++) {
+			if (i == j) {
+				continue;
+			}
+
+			bool modifiedTankCollision = false;
+			bool overridedTankCollision = false;
+			bool noMoreTankCollisionSpecials = false;
+			bool killOtherTank = false;
+
+			if (CollisionHandler::partiallyCollided(tanks[i], tanks[j])) {
+				for (int k = 0; k < tanks[i]->tankPowers.size(); k++) {
+					if (tanks[i]->tankPowers[k]->modifiesCollisionWithWall) {
+						if (tanks[i]->tankPowers[k]->modifiedCollisionWithTankCanOnlyWorkIndividually && modifiedTankCollision) {
+							continue;
+						}
+						if (noMoreTankCollisionSpecials) {
+							continue;
+						}
+
+						modifiedTankCollision = true;
+						if (tanks[i]->tankPowers[k]->overridesCollisionWithTank) {
+							overridedTankCollision = true;
+						}
+						if (!tanks[i]->tankPowers[k]->modifiedCollisionWithTankCanWorkWithOthers) {
+							noMoreTankCollisionSpecials = true;
+						}
+
+						PowerInteractionBoolHolder check_temp = tanks[i]->tankPowers[k]->modifiedCollisionWithTank(tanks[i], tanks[j]);
+						if (check_temp.shouldDie) {
+							shouldBeKilled = true;
+						}
+						if (check_temp.otherShouldDie) {
+							if (tanks[i]->getID() != tanks[j]->getID()) {
+								killOtherTank = true;
+							}
+						}
+					}
+				}
+
+				if (!overridedTankCollision) {
+					CollisionHandler::pushMovableAwayFromImmovable(tanks[i], walls[j]);
+				}
+			}
+
+			if (killOtherTank) {
+				tank_dead = 1;
+			}
+		}
+
+		if (shouldBeKilled) {
+			tank_dead = 1;
+		}
 	}
 	Diagnostics::endTiming();
 
