@@ -13,6 +13,8 @@ class BulletPower;
 //(note to self: a bulletpower would need to make a "child" of itself in the case of banana (delete a banana from list of bulletpowers), in order to have super strong memory management)
 //that would probably be really complex to fully implement (but simple enough to think about? maybe it is simple to implement) so that will wait
 
+//TODO: add better preconditions to the functions (modifiedWallCollision precondition is hit wall, not necessarily in wall (due to bounce))
+
 class BulletPower : public InheritedPowerCommon{
 	friend class PowerFunctionHelper;
 protected:
@@ -52,6 +54,7 @@ public:
 
 	bool modifiesCollisionWithWall = false;
 	virtual bool modifiedCollisionWithWall(Bullet*, Wall*) { return false; }
+	virtual bool modifiedCollisionWithWall(Bullet* b, Wall* w, int index) { return modifiedCollisionWithWall(b, w); }
 	bool overridesCollisionWithWall = true; //false means also use the default, which is just destroy the bullet if it collides
 	bool modifiedCollisionWithWallCanWorkWithOthers = true;
 	bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;

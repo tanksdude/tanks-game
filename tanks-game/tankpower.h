@@ -51,6 +51,7 @@ public:
 	
 	bool modifiesCollisionWithWall = false;
 	virtual bool modifiedCollisionWithWall(Tank*, Wall*) { return false; }
+	virtual bool modifiedCollisionWithWall(Tank* t, Wall* w, int wallIndex) { return modifiedCollisionWithWall(t, w); }
 	bool overridesCollisionWithWall = true;
 	bool modifiedCollisionWithWallCanWorkWithOthers = true; //big: set to false
 	bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;

@@ -59,6 +59,9 @@
 #include "invinciblenamedtankpower.h"
 #include "invinciblenamedbulletpower.h"
 #include "invinciblenamedpower.h"
+#include "bignamedtankpower.h"
+#include "bignamedbulletpower.h"
+#include "bignamedpower.h"
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
@@ -448,7 +451,7 @@ void tick(int physicsUPS) {
 					if (!bullets[i]->bulletPowers[k]->modifiedCollisionWithWallCanWorkWithOthers) {
 						noMoreWallCollisionSpecials = true;
 					}
-					bool check_temp = bullets[i]->bulletPowers[k]->modifiedCollisionWithWall(bullets[i], walls[j]);
+					bool check_temp = bullets[i]->bulletPowers[k]->modifiedCollisionWithWall(bullets[i], walls[j], j); //TODO: bulletpowers return a tiny struct with bools to handle this stuff
 					if (check_temp) {
 						shouldBeDeleted = true;
 					}
@@ -652,6 +655,7 @@ int main(int argc, char** argv) {
 	powerLookup.insert({ "triple", TriplePower::factory });
 	powerLookup.insert({ "homing", HomingPower::factory });
 	powerLookup.insert({ "invincible", InvincibleNamedPower::factory });
+	powerLookup.insert({ "big", BigNamedPower::factory });
 
 	tanks.push_back(tank1);
 	tanks.push_back(tank2);

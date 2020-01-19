@@ -150,6 +150,15 @@
     <ClCompile Include="invinciblenamedtankpower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="bignamedbulletpower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="bignamedpower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="bignamedtankpower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -321,6 +330,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="invinciblenamedtankpower.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="bignamedbulletpower.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="bignamedpower.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="bignamedtankpower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

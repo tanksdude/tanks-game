@@ -1,5 +1,6 @@
 0.1.1 (obviously not here yet):
-invincibility n' stuff
+invincibility n' stuff (invincibility, big, megadeath)
+cleaned up how powers interacted
 
 0.1.0:
 rendering on GPU!

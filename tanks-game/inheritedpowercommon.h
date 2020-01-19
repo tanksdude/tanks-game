@@ -1,12 +1,17 @@
 #pragma once
-#include "colorvalueholder.h"
-
 class InheritedPowerCommon;
 
+#include "colorvalueholder.h"
 #include "tank.h"
 #include "wall.h"
 //#include "power.h"
 //#include "bullet.h"
+
+//TODO: implement this soon
+struct PowerInteractionBoolHolder {
+	bool shouldDie;
+	bool otherShouldDie;
+};
 
 class InheritedPowerCommon {
 protected:

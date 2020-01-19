@@ -41,7 +41,7 @@ char BulletPriorityHandler::determinePriority(Bullet* a, Tank* b) {
 	if (a_offense >= b_defense) {
 		b_dies = true;
 	}
-	if (b_offense >= a_defense) {
+	if (b_offense >= a_defense || b_defense >= a_offense) {
 		a_dies = true;
 	}
 

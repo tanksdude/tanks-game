@@ -136,6 +136,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="backgroundrect.cpp" />
+    <ClCompile Include="bignamedbulletpower.cpp" />
+    <ClCompile Include="bignamedpower.cpp" />
+    <ClCompile Include="bignamedtankpower.cpp" />
     <ClCompile Include="bouncebulletpower.cpp" />
     <ClCompile Include="bouncepower.cpp" />
     <ClCompile Include="bouncetankpower.cpp" />
@@ -183,6 +186,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="backgroundrect.h" />
+    <ClInclude Include="bignamedbulletpower.h" />
+    <ClInclude Include="bignamedpower.h" />
+    <ClInclude Include="bignamedtankpower.h" />
     <ClInclude Include="bouncebulletpower.h" />
     <ClInclude Include="bouncepower.h" />
     <ClInclude Include="bouncetankpower.h" />
