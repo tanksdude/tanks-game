@@ -10,6 +10,7 @@ class InheritedPowerCommon;
 struct PowerInteractionBoolHolder {
 	bool shouldDie;
 	bool otherShouldDie;
+	PowerInteractionBoolHolder() : PowerInteractionBoolHolder(false, false) {}
 	PowerInteractionBoolHolder(bool a, bool b) {
 		shouldDie = a;
 		otherShouldDie = b;

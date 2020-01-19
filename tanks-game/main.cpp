@@ -349,32 +349,57 @@ void tick(int physicsUPS) {
 	Diagnostics::addName("tank-wall");
 	//tank to wall collision:
 	for (int i = 0; i < tanks.size(); i++) {
-		bool modifiedWallCollision = false;
 		bool shouldBeKilled = false; //maybe the walls are poison with a certain powerup? I dunno, but gotta have it as an option
 
 		for (int j = 0; j < walls.size(); j++) {
-			for (int k = 0; k < tanks[i]->tankPowers.size(); k++) {
-				if (tanks[i]->tankPowers[k]->modifiesCollisionWithWall) {
-					modifiedWallCollision = true;
-					bool check_temp = tanks[i]->tankPowers[k]->modifiedCollisionWithWall(tanks[i], walls[j]);
-					if (check_temp) {
-						shouldBeKilled = true;
+			bool modifiedWallCollision = false;
+			bool overridedWallCollision = false;
+			bool noMoreWallCollisionSpecials = false;
+			bool killWall = false;
+
+			if (CollisionHandler::partiallyCollided(tanks[i], walls[j])) {
+				for (int k = 0; k < tanks[i]->tankPowers.size(); k++) {
+					if (tanks[i]->tankPowers[k]->modifiesCollisionWithWall) {
+						if (tanks[i]->tankPowers[k]->modifiedCollisionWithWallCanOnlyWorkIndividually && modifiedWallCollision) {
+							continue;
+						}
+						if (noMoreWallCollisionSpecials) {
+							continue;
+						}
+
+						modifiedWallCollision = true;
+						if (tanks[i]->tankPowers[k]->overridesCollisionWithWall) {
+							overridedWallCollision = true;
+						}
+						if (!tanks[i]->tankPowers[k]->modifiedEdgeCollisionCanWorkWithOthers) {
+							noMoreWallCollisionSpecials = true;
+						}
+
+						PowerInteractionBoolHolder check_temp = tanks[i]->tankPowers[k]->modifiedCollisionWithWall(tanks[i], walls[j]);
+						if (check_temp.shouldDie) {
+							shouldBeKilled = true;
+						}
+						if (check_temp.otherShouldDie) {
+							killWall = true;
+						}
 					}
+				}
+
+				if (!overridedWallCollision) {
+					CollisionHandler::pushMovableAwayFromImmovable(tanks[i], walls[j]);
 				}
 			}
 
-			if (modifiedWallCollision) {
-				continue;
-			}
-
-			if (CollisionHandler::partiallyCollided(tanks[i], walls[j])) {
-				CollisionHandler::pushMovableAwayFromImmovable(tanks[i], walls[j]);
+			if (killWall) {
+				walls.erase(walls.begin() + j);
+				j--;
 			}
 		}
 
 		if (shouldBeKilled) {
 			tank_dead = 1; //TODO: proper implementation
 		}
+
 	}
 	Diagnostics::endTiming();
 
@@ -383,6 +408,14 @@ void tick(int physicsUPS) {
 	//tank collision (temporary? yes because additional tanks):
 	if (CollisionHandler::partiallyCollided(tanks[0], tanks[1])) {
 		CollisionHandler::pushMovableAwayFromMovable(tanks[0], tanks[1]);
+	}
+	Diagnostics::endTiming();
+
+	Diagnostics::startTiming();
+	Diagnostics::addName("tank-edge");
+	//tank to edge collision:
+	for (int i = 0; i < tanks.size(); i++) {
+		tanks[i]->edgeConstrain();
 	}
 	Diagnostics::endTiming();
 
@@ -538,14 +571,6 @@ void tick(int physicsUPS) {
 	Diagnostics::endTiming();
 	//bullet to bullet collision is the biggest timesink (obviously)
 	//unfortunately it can only be O(n^2), and multithreading doesn't seem like it would work
-
-	Diagnostics::startTiming();
-	Diagnostics::addName("tank-edge");
-	//tank to edge collision: (move later?) (to where?)
-	for (int i = 0; i < tanks.size(); i++) {
-		tanks[i]->edgeConstrain();
-	}
-	Diagnostics::endTiming();
 
 	Diagnostics::startTiming();
 	Diagnostics::addName("bullet-tank");

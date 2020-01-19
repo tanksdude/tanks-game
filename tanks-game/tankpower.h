@@ -56,7 +56,7 @@ public:
 	virtual PowerInteractionBoolHolder modifiedCollisionWithWall(Tank*, Wall*) { return { false, false }; }
 	//precondition: hit wall, is not necessariliy inside wall
 	bool overridesCollisionWithWall = true;
-	bool modifiedCollisionWithWallCanWorkWithOthers = true; //big: set to false
+	bool modifiedCollisionWithWallCanWorkWithOthers = true;
 	bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;
 
 	//bool modifiesCollisionWithPower = false;
