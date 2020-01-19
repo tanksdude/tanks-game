@@ -483,13 +483,21 @@ void tick(int physicsUPS) {
 				continue;
 			}
 			if (CollisionHandler::partiallyCollided(bullets[i], bullets[j])) {
-				//powers aren't fully implemented yet so this doesn't get to shine
-				//but they will be soon
-
 				char result = BulletPriorityHandler::determinePriority(bullets[i], bullets[j]);
-				if (result <= -1) { //both die
-					Bullet* temp1 = bullets[i];
-					Bullet* temp2 = bullets[j];
+				if (result <= -2) {
+					bool firstDies = rand()%2;
+					if (firstDies) {
+						delete bullets[i];
+						bullets.erase(bullets.begin() + i);
+						break;
+					} else {
+						delete bullets[j];
+						bullets.erase(bullets.begin() + j);
+						continue; //fix: is this supposed to be break?
+					}
+				} else if (result == -1) { //both die
+					delete bullets[i];
+					delete bullets[j];
 					if (i > j) {
 						bullets.erase(bullets.begin() + i);
 						bullets.erase(bullets.begin() + j);
@@ -498,8 +506,6 @@ void tick(int physicsUPS) {
 						bullets.erase(bullets.begin() + j);
 						bullets.erase(bullets.begin() + i);
 					}
-					delete temp1;
-					delete temp2;
 					break;
 				} else if (result >= 2) { //it's a draw, so neither dies
 					//continue;
@@ -507,11 +513,15 @@ void tick(int physicsUPS) {
 					if (result == 0) {
 						delete bullets[i];
 						bullets.erase(bullets.begin() + i);
+						i--;
 						break;
 					} else {
 						delete bullets[j];
 						bullets.erase(bullets.begin() + j);
-						continue; //not needed //fix: should it be break? because a single bullet should really only have collision with one bullet, right? (my logic is showing its inconsistencies)
+						if (i > j) {
+							i--;
+						}
+						continue; //not needed //shouldn't be break because a single bullet may be capable of destroying multiple other bullets (invincibility stuff)
 					}
 				}
 
@@ -540,9 +550,43 @@ void tick(int physicsUPS) {
 				continue;
 			}
 			if (CollisionHandler::partiallyCollided(tanks[i], bullets[j])) {
-				//dead
-				tank_dead = 1;
-				//CollisionHandler::pushMovableAwayFromImmovable(tanks[i], bullets[j]);
+				char result = BulletPriorityHandler::determinePriority(bullets[j], tanks[i]);
+				if (result <= -2) {
+					bool firstDies = rand()%2;
+					if (firstDies) {
+						tank_dead = 1;
+						continue;
+					} else {
+						delete bullets[j];
+						bullets.erase(bullets.begin() + j);
+						j--;
+						continue; //fix: is this supposed to be break?
+					}
+				} else if (result == -1) { //both die
+					tank_dead = 1;
+
+					/*
+					delete bullets[j];
+					bullets.erase(bullets.begin() + j);
+					j--;
+					*/
+
+					continue;
+				} else if (result >= 2) { //it's a draw, so neither dies (probably not going to happen)
+					//continue;
+				} else {
+					if (result == 0) {
+						delete bullets[j];
+						bullets.erase(bullets.begin() + j);
+						j--;
+						continue; //not needed //fix: should it be break?
+					} else {
+						tank_dead = 1;
+						continue;
+					}
+				}
+
+				//break;
 			}
 		}
 	}

@@ -202,13 +202,16 @@ double Bullet::getHighestOffenseImportance() {
 }
 
 double Bullet::getHighestOffenseTier(double importance) {
-	double highest = -999; //TODO: define these constants somewhere or just have a bool for initialization
+	double highest = -999; //TODO: define these constants somewhere
 	for (int i = 0; i < bulletPowers.size(); i++) {
 		if (bulletPowers[i]->getOffenseImportance() == importance) {
 			if (bulletPowers[i]->getOffenseTier() > highest) {
 				highest = bulletPowers[i]->getOffenseTier();
 			}
 		}
+	}
+	if (bulletPowers.size() == 0) {
+		return 0;
 	}
 	return highest;
 }
@@ -228,13 +231,16 @@ double Bullet::getHighestDefenseImportance() {
 }
 
 double Bullet::getHighestDefenseTier(double importance) {
-	double highest = -999; //TODO: define these constants somewhere or just have a bool for initialization
+	double highest = -999; //TODO: define these constants somewhere
 	for (int i = 0; i < bulletPowers.size(); i++) {
 		if (bulletPowers[i]->getDefenseImportance() == importance) {
 			if (bulletPowers[i]->getDefenseTier() > highest) {
 				highest = bulletPowers[i]->getDefenseTier();
 			}
 		}
+	}
+	if (bulletPowers.size() == 0) {
+		return 0;
 	}
 	return highest;
 }

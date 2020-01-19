@@ -580,6 +580,9 @@ double Tank::getHighestOffenseTier(double importance) {
 			}
 		}
 	}
+	if (tankPowers.size() == 0) {
+		return 0;
+	}
 	return highest;
 }
 
@@ -605,6 +608,9 @@ double Tank::getHighestDefenseTier(double importance) {
 				highest = tankPowers[i]->getDefenseTier();
 			}
 		}
+	}
+	if (tankPowers.size() == 0) {
+		return 0;
 	}
 	return highest;
 }
