@@ -518,24 +518,28 @@ void tick(int physicsUPS) {
 		bool noMoreEdgeCollisionSpecials = false;
 		bool shouldBeKilled = false;
 
-		for (int k = 0; k < bullets[i]->bulletPowers.size(); k++) {
-			if (bullets[i]->bulletPowers[k]->modifiesCollisionWithEdge) {
-				if (bullets[i]->bulletPowers[k]->modifiedEdgeCollisionCanOnlyWorkIndividually && modifiedEdgeCollision) {
-					continue;
-				}
-				if (noMoreEdgeCollisionSpecials) {
-					continue;
-				}
-				modifiedEdgeCollision = true;
-				if (bullets[i]->bulletPowers[k]->overridesEdgeCollision) {
-					overridedEdgeCollision = true;
-				}
-				if (!bullets[i]->bulletPowers[k]->modifiedEdgeCollisionCanWorkWithOthers) {
-					noMoreEdgeCollisionSpecials = true;
-				}
-				bool check_temp = bullets[i]->bulletPowers[k]->modifiedEdgeCollision(bullets[i]);
-				if (check_temp) {
-					shouldBeKilled = true;
+		if (bullets[i]->isPartiallyOutOfBounds()) {
+			for (int k = 0; k < bullets[i]->bulletPowers.size(); k++) {
+				if (bullets[i]->bulletPowers[k]->modifiesCollisionWithEdge) {
+					if (bullets[i]->bulletPowers[k]->modifiedEdgeCollisionCanOnlyWorkIndividually && modifiedEdgeCollision) {
+						continue;
+					}
+					if (noMoreEdgeCollisionSpecials) {
+						continue;
+					}
+
+					modifiedEdgeCollision = true;
+					if (bullets[i]->bulletPowers[k]->overridesEdgeCollision) {
+						overridedEdgeCollision = true;
+					}
+					if (!bullets[i]->bulletPowers[k]->modifiedEdgeCollisionCanWorkWithOthers) {
+						noMoreEdgeCollisionSpecials = true;
+					}
+
+					PowerInteractionBoolHolder check_temp = bullets[i]->bulletPowers[k]->modifiedEdgeCollision(bullets[i]);
+					if (check_temp.shouldDie) {
+						shouldBeKilled = true;
+					}
 				}
 			}
 		}
