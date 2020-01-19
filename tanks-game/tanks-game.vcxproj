@@ -160,6 +160,9 @@
     <ClCompile Include="invinciblenamedtankpower.cpp" />
     <ClCompile Include="leveleffect.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="megadeathbulletpower.cpp" />
+    <ClCompile Include="megadeathpower.cpp" />
+    <ClCompile Include="megadeathtankpower.cpp" />
     <ClCompile Include="multishotbulletpower.cpp" />
     <ClCompile Include="multishotpower.cpp" />
     <ClCompile Include="multishottankpower.cpp" />
@@ -215,6 +218,9 @@
     <ClInclude Include="invinciblenamedtankpower.h" />
     <ClInclude Include="level.h" />
     <ClInclude Include="leveleffect.h" />
+    <ClInclude Include="megadeathbulletpower.h" />
+    <ClInclude Include="megadeathpower.h" />
+    <ClInclude Include="megadeathtankpower.h" />
     <ClInclude Include="multishotbulletpower.h" />
     <ClInclude Include="multishotpower.h" />
     <ClInclude Include="multishottankpower.h" />

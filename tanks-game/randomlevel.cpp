@@ -27,11 +27,12 @@ void RandomLevel::initialize() {
 	powerups.push_back(new PowerSquare(140, 20, "invincible"));
 
 	powerups.push_back(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2 + 20, "big"));
+	powerups.push_back(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2 - 20, "megadeath"));
 
 	powerups.push_back(new PowerSquare(GAME_WIDTH-20, GAME_HEIGHT-20, new std::string[2]{ "multishot", "multishot" }, 2));
 	powerups.push_back(new PowerSquare(GAME_WIDTH-40, GAME_HEIGHT-20, new std::string[2]{ "speed", "wallhack" }, 2));
 	powerups.push_back(new PowerSquare(GAME_WIDTH-60, GAME_HEIGHT-20, new std::string[2]{ "bounce", "homing" }, 2));
-	powerups.push_back(new PowerSquare(GAME_WIDTH-60, GAME_HEIGHT-20, new std::string[2]{ "bounce", "big" }, 2));
+	powerups.push_back(new PowerSquare(GAME_WIDTH-80, GAME_HEIGHT-20, new std::string[2]{ "big", "bounce" }, 2));
 	//are those memory leaks?
 }
 

@@ -62,6 +62,9 @@
 #include "bignamedtankpower.h"
 #include "bignamedbulletpower.h"
 #include "bignamedpower.h"
+#include "megadeathtankpower.h"
+#include "megadeathbulletpower.h"
+#include "megadeathpower.h"
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
@@ -656,6 +659,7 @@ int main(int argc, char** argv) {
 	powerLookup.insert({ "homing", HomingPower::factory });
 	powerLookup.insert({ "invincible", InvincibleNamedPower::factory });
 	powerLookup.insert({ "big", BigNamedPower::factory });
+	powerLookup.insert({ "megadeath", MegaDeathPower::factory });
 
 	tanks.push_back(tank1);
 	tanks.push_back(tank2);

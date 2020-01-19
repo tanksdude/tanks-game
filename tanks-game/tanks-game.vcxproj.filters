@@ -159,6 +159,15 @@
     <ClCompile Include="bignamedtankpower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="megadeathbulletpower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="megadeathpower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="megadeathtankpower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -339,6 +348,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="bignamedtankpower.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="megadeathbulletpower.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="megadeathpower.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="megadeathtankpower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
