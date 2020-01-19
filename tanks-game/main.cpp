@@ -467,7 +467,45 @@ void tick(int physicsUPS) {
 	Diagnostics::addName("tank-edge");
 	//tank to edge collision:
 	for (int i = 0; i < tanks.size(); i++) {
-		tanks[i]->edgeConstrain();
+		bool shouldBeKilled = false;
+		
+		bool modifiedEdgeCollision = false;
+		bool overridedEdgeCollision = false;
+		bool noMoreEdgeCollisionSpecials = false;
+
+		if (tanks[i]->isPartiallyOutOfBounds()) {
+			for (int k = 0; k < tanks[i]->tankPowers.size(); k++) {
+				if (tanks[i]->tankPowers[k]->modifiesCollisionWithEdge) {
+					if (tanks[i]->tankPowers[k]->modifiedEdgeCollisionCanOnlyWorkIndividually && modifiedEdgeCollision) {
+						continue;
+					}
+					if (noMoreEdgeCollisionSpecials) {
+						continue;
+					}
+
+					modifiedEdgeCollision = true;
+					if (tanks[i]->tankPowers[k]->overridesEdgeCollision) {
+						overridedEdgeCollision = true;
+					}
+					if (!tanks[i]->tankPowers[k]->modifiedEdgeCollisionCanWorkWithOthers) {
+						noMoreEdgeCollisionSpecials = true;
+					}
+
+					PowerInteractionBoolHolder check_temp = tanks[i]->tankPowers[k]->modifiedEdgeCollision(tanks[i]);
+					if (check_temp.shouldDie) {
+						shouldBeKilled = true;
+					}
+				}
+			}
+
+			if (!overridedEdgeCollision) {
+				tanks[i]->edgeConstrain();
+			}
+		}
+
+		if (shouldBeKilled) {
+			tank_dead = 1;
+		}
 	}
 	Diagnostics::endTiming();
 
