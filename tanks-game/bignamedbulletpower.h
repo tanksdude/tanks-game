@@ -27,8 +27,10 @@ public:
 
 	virtual double getOffenseImportance() { return 0; }
 	virtual double getOffenseTier() { return 2; }
+	virtual double getOffenseTier(Bullet*) { return getOffenseTier(); }
 	virtual double getDefenseImportance() { return 0; }
 	virtual double getDefenseTier() { return 2; }
+	virtual double getDefenseTier(Bullet*) { return getDefenseTier(); }
 
 	BigNamedBulletPower();
 };

@@ -575,7 +575,7 @@ double Tank::getHighestOffenseTier(double importance) {
 	double highest = -999; //TODO: define these constants somewhere or just have a bool for initialization
 	for (int i = 0; i < tankPowers.size(); i++) {
 		if (tankPowers[i]->getOffenseImportance() == importance) {
-			if (tankPowers[i]->getOffenseTier() > highest) {
+			if (tankPowers[i]->getOffenseTier(this) > highest) {
 				highest = tankPowers[i]->getOffenseTier(this);
 			}
 		}
@@ -604,7 +604,7 @@ double Tank::getHighestDefenseTier(double importance) {
 	double highest = -999; //TODO: define these constants somewhere or just have a bool for initialization
 	for (int i = 0; i < tankPowers.size(); i++) {
 		if (tankPowers[i]->getDefenseImportance() == importance) {
-			if (tankPowers[i]->getDefenseTier() > highest) {
+			if (tankPowers[i]->getDefenseTier(this) > highest) {
 				highest = tankPowers[i]->getDefenseTier(this);
 			}
 		}

@@ -20,8 +20,10 @@ public:
 
 	virtual double getOffenseImportance() { return 0; }
 	virtual double getOffenseTier() { return 0; }
+	virtual double getOffenseTier(Tank*) { return getOffenseTier(); }
 	virtual double getDefenseImportance() { return 0; }
 	virtual double getDefenseTier() { return 2.5; }
+	virtual double getDefenseTier(Tank*) { return getDefenseTier(); }
 
 	InvincibleNamedTankPower();
 };
