@@ -18,10 +18,5 @@ public:
 
 	virtual BulletPower* makeBulletPower();
 
-	//virtual double getOffenseTier();
-	//virtual double getOffenseValue();
-	//virtual double getDefenseTier();
-	//virtual double getDefenseValue();
-
 	HomingTankPower();
 };
