@@ -22,7 +22,7 @@ PowerInteractionBoolHolder BounceBulletPower::modifiedCollisionWithWall(Bullet* 
 		modifiesCollisionWithWall = false;
 	}
 
-	return { this->bouncesLeft < 0 };
+	return { this->bouncesLeft < 0, false };
 }
 //TODO: need ability to delete just the bulletpower (needed? wanted?)
 
