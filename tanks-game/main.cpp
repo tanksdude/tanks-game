@@ -563,49 +563,58 @@ void tick(int physicsUPS) {
 	Diagnostics::addName("bullet-wall");
 	//bullet to wall collision:
 	for (int i = bullets.size() - 1; i >= 0; i--) {
-		bool shouldBeDeleted = false;
+		bool shouldBeKilled = false;
 
 		for (int j = walls.size() - 1; j >= 0; j--) {
 			bool modifiedWallCollision = false;
 			bool overridedWallCollision = false;
 			bool noMoreWallCollisionSpecials = false;
+			bool killWall = false;
 
-			for (int k = 0; k < bullets[i]->bulletPowers.size(); k++) {
-				if (bullets[i]->bulletPowers[k]->modifiesCollisionWithWall) {
-					if (bullets[i]->bulletPowers[k]->modifiedCollisionWithWallCanOnlyWorkIndividually && modifiedWallCollision) {
-						continue;
+			if (CollisionHandler::partiallyCollided(bullets[i], walls[j])) {
+				for (int k = 0; k < bullets[i]->bulletPowers.size(); k++) {
+					if (bullets[i]->bulletPowers[k]->modifiesCollisionWithWall) {
+						if (bullets[i]->bulletPowers[k]->modifiedCollisionWithWallCanOnlyWorkIndividually && modifiedWallCollision) {
+							continue;
+						}
+						if (noMoreWallCollisionSpecials) {
+							continue;
+						}
+
+						modifiedWallCollision = true;
+						if (bullets[i]->bulletPowers[k]->overridesCollisionWithWall) {
+							overridedWallCollision = true;
+						}
+						if (!bullets[i]->bulletPowers[k]->modifiedCollisionWithWallCanWorkWithOthers) {
+							noMoreWallCollisionSpecials = true;
+						}
+
+						PowerInteractionBoolHolder check_temp = bullets[i]->bulletPowers[k]->modifiedCollisionWithWall(bullets[i], walls[j]);
+						if (check_temp.shouldDie) {
+							shouldBeKilled = true;
+						}
+						if (check_temp.otherShouldDie) {
+							killWall = true;
+						}
 					}
-					if (noMoreWallCollisionSpecials) {
-						continue;
-					}
-					modifiedWallCollision = true;
-					if (bullets[i]->bulletPowers[k]->overridesCollisionWithWall) {
-						overridedWallCollision = true;
-					}
-					if (!bullets[i]->bulletPowers[k]->modifiedCollisionWithWallCanWorkWithOthers) {
-						noMoreWallCollisionSpecials = true;
-					}
-					bool check_temp = bullets[i]->bulletPowers[k]->modifiedCollisionWithWall(bullets[i], walls[j], j); //TODO: bulletpowers return a tiny struct with bools to handle this stuff
-					if (check_temp) {
-						shouldBeDeleted = true;
+				}
+
+				if (!overridedWallCollision) {
+					if (CollisionHandler::partiallyCollided(bullets[i], walls[j])) {
+						shouldBeKilled = true;
 					}
 				}
 			}
 
-			if (overridedWallCollision) {
-				continue;
-			}
-
-			if (CollisionHandler::partiallyCollided(bullets[i], walls[j])) {
-				shouldBeDeleted = true;
-				break;
+			if (killWall) {
+				delete walls[j];
+				walls.erase(walls.begin() + j);
 			}
 		}
 
-		if (shouldBeDeleted) {
+		if (shouldBeKilled) {
 			delete bullets[i];
 			bullets.erase(bullets.begin() + i);
-			//continue;
 		}
 	}
 	Diagnostics::endTiming();
