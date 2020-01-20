@@ -4,7 +4,7 @@
 #include "powerfunctionhelper.h"
 #include "constants.h"
 #include "collisionhandler.h"
-#include "bignamedbulletpower.h"
+//#include "bignamedbulletpower.h" //include if it has the tier needed for destroying walls as static (could put it in constants.h)
 
 const double MegaDeathBulletPower::destroyWallTier = 2;
 
@@ -30,14 +30,14 @@ void MegaDeathBulletPower::modifiedMovement(Bullet* b) {
 
 double MegaDeathBulletPower::getDefenseTier(Bullet* b) {
 	double value = b->r / Tank::default_radius * destroyWallTier;
-	return (value >= destroyWallTier ? value : 0);
-	//return value;
+	//return (value >= destroyWallTier ? value : 0);
+	return value;
 }
 
 double MegaDeathBulletPower::getOffenseTier(Bullet* b) {
 	double value = b->r / Tank::default_radius * destroyWallTier;
-	return (value >= destroyWallTier ? value : 0);
-	//return value;
+	//return (value >= destroyWallTier ? value : 0); //this is what I originally wanted in JS Tanks, I think, but in practice isn't preferable
+	return value;
 }
 
 void MegaDeathBulletPower::initialize(Bullet* b) {
