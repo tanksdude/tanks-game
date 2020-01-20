@@ -26,16 +26,17 @@ public:
 	//bool modifiedMovementCanOnlyWorkIndividually = false;
 
 	//bool modifiesCollisionWithWall = true;
-	//virtual bool modifiedCollisionWithWall(Bullet*, Wall*);
-	virtual bool modifiedCollisionWithWall(Bullet*, Wall*, int);
+	virtual PowerInteractionBoolHolder modifiedCollisionWithWall(Bullet*, Wall*);
 	//bool overridesCollisionWithWall = true;
 	//bool modifiedCollisionWithWallCanWorkWithOthers = true;
 	//bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;
 
 	virtual double getOffenseImportance() { return 0; }
-	virtual double getOffenseTier();
+	//virtual double getOffenseTier();
+	virtual double getOffenseTier(Bullet*);
 	virtual double getDefenseImportance() { return 0; }
-	virtual double getDefenseTier();
+	//virtual double getDefenseTier();
+	virtual double getDefenseTier(Bullet*);
 
 	MegaDeathBulletPower();
 };
