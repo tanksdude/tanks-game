@@ -136,6 +136,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="backgroundrect.cpp" />
+    <ClCompile Include="bignamedbulletpower.cpp" />
+    <ClCompile Include="bignamedpower.cpp" />
+    <ClCompile Include="bignamedtankpower.cpp" />
     <ClCompile Include="bouncebulletpower.cpp" />
     <ClCompile Include="bouncepower.cpp" />
     <ClCompile Include="bouncetankpower.cpp" />
@@ -152,8 +155,14 @@
     <ClCompile Include="homingpower.cpp" />
     <ClCompile Include="homingtankpower.cpp" />
     <ClCompile Include="indexbuffer.cpp" />
+    <ClCompile Include="invinciblenamedbulletpower.cpp" />
+    <ClCompile Include="invinciblenamedpower.cpp" />
+    <ClCompile Include="invinciblenamedtankpower.cpp" />
     <ClCompile Include="leveleffect.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="megadeathbulletpower.cpp" />
+    <ClCompile Include="megadeathpower.cpp" />
+    <ClCompile Include="megadeathtankpower.cpp" />
     <ClCompile Include="multishotbulletpower.cpp" />
     <ClCompile Include="multishotpower.cpp" />
     <ClCompile Include="multishottankpower.cpp" />
@@ -180,6 +189,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="backgroundrect.h" />
+    <ClInclude Include="bignamedbulletpower.h" />
+    <ClInclude Include="bignamedpower.h" />
+    <ClInclude Include="bignamedtankpower.h" />
     <ClInclude Include="bouncebulletpower.h" />
     <ClInclude Include="bouncepower.h" />
     <ClInclude Include="bouncetankpower.h" />
@@ -201,8 +213,14 @@
     <ClInclude Include="homingtankpower.h" />
     <ClInclude Include="indexbuffer.h" />
     <ClInclude Include="inheritedpowercommon.h" />
+    <ClInclude Include="invinciblenamedbulletpower.h" />
+    <ClInclude Include="invinciblenamedpower.h" />
+    <ClInclude Include="invinciblenamedtankpower.h" />
     <ClInclude Include="level.h" />
     <ClInclude Include="leveleffect.h" />
+    <ClInclude Include="megadeathbulletpower.h" />
+    <ClInclude Include="megadeathpower.h" />
+    <ClInclude Include="megadeathtankpower.h" />
     <ClInclude Include="multishotbulletpower.h" />
     <ClInclude Include="multishotpower.h" />
     <ClInclude Include="multishottankpower.h" />

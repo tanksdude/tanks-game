@@ -24,6 +24,7 @@ public:
 	virtual void powerTick() {
 		timeLeft--;
 	}
+	virtual void powerTick(Tank*) { powerTick(); }
 	virtual bool isDone() {
 		return timeLeft <= 0;
 	}
@@ -33,26 +34,30 @@ public:
 
 	bool modifiesMovement = false;
 	virtual void modifiedMovement(Tank*) { return; }
+	//precondition: nothing
 	bool overridesMovement = false; //set to true if the power completely changes how it moves; regular powers slightly modify movement and still want basic tank move
 	bool modifiedMovementCanWorkWithOthers = true; //stops later powerups in list from activating
 	bool modifiedMovementCanOnlyWorkIndividually = false; //if another power was used previously, this power can't activate
 
 	bool modifiesCollisionWithEdge = false;
-	virtual bool modifiedEdgeCollision(Tank*) { return false; }
+	virtual PowerInteractionBoolHolder modifiedEdgeCollision(Tank*) { return { false, false }; }
+	//precondition: was out-of-bounds, is not necessarily out-of-bounds
 	bool overridesEdgeCollision = true;
 	bool modifiedEdgeCollisionCanWorkWithOthers = true;
 	bool modifiedEdgeCollisionCanOnlyWorkIndividually = false;
 
 	bool modifiesCollisionWithTank = false;
-	virtual bool modifiedCollisionWithTank(Tank* parent, Tank* other) { return false; }
+	virtual PowerInteractionBoolHolder modifiedCollisionWithTank(Tank* parent, Tank* other) { return { false, false }; }
+	//precondition: hit tank, is not necessarily inside tank
 	bool overridesCollisionWithTank = true;
 	bool modifiedCollisionWithTankCanWorkWithOthers = true;
 	bool modifiedCollisionWithTankCanOnlyWorkIndividually = false;
 	
 	bool modifiesCollisionWithWall = false;
-	virtual bool modifiedCollisionWithWall(Tank*, Wall*) { return false; }
+	virtual PowerInteractionBoolHolder modifiedCollisionWithWall(Tank*, Wall*) { return { false, false }; }
+	//precondition: hit wall, is not necessariliy inside wall
 	bool overridesCollisionWithWall = true;
-	bool modifiedCollisionWithWallCanWorkWithOthers = true; //big: set to false
+	bool modifiedCollisionWithWallCanWorkWithOthers = true;
 	bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;
 
 	//bool modifiesCollisionWithPower = false;
@@ -93,9 +98,11 @@ public:
 	virtual double getBulletSpeedMultiplier() { return 1; }
 	virtual double getBulletRadiusMultiplier() { return 1; }
 
-	//virtual double getOffenseTier() { return 0; }
-	//virtual double getOffenseValue() { return 0; }
-	//virtual double getDefenseTier() { return 0; }
-	//virtual double getDefenseValue() { return 0; }
+	virtual double getOffenseImportance() { return 0; } //"importance" = "override" value (when dealing with other powers)
+	virtual double getOffenseTier() { return 0; }
+	virtual double getOffenseTier(Tank*) { return getOffenseTier(); }
+	virtual double getDefenseImportance() { return 0; }
+	virtual double getDefenseTier() { return 0; }
+	virtual double getDefenseTier(Tank*) { return getOffenseTier(); }
 
 };

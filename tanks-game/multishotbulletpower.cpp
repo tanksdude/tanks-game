@@ -2,7 +2,6 @@
 #include "multishotbulletpower.h"
 #include "multishottankpower.h"
 #include "multishotpower.h"
-#include "powerfunctionhelper.h"
 
 void MultishotBulletPower::initialize(Bullet*) { return; }
 void MultishotBulletPower::removeEffects(Bullet*) { return; }

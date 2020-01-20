@@ -25,5 +25,6 @@ void MultishotTankPower::addShootingPoints(Tank* t, std::vector<CannonPoint>* ca
 MultishotTankPower::MultishotTankPower() {
 	maxTime = 500;
 	timeLeft = 500;
+
 	addsShootingPoints = true;
 }

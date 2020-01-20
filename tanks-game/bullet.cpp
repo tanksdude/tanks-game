@@ -99,7 +99,7 @@ void Bullet::powerCalculate() {
 		if (bulletPowers[i]->isDone()) {
 			removePower(i);
 		} else { //to make each power last its full length, not n-1 length
-			bulletPowers[i]->powerTick();
+			bulletPowers[i]->powerTick(this);
 		}
 	}
 }
@@ -189,6 +189,64 @@ void Bullet::drawOutline(double xpos, double ypos) {
 
 short Bullet::determineDamage() { //TODO: finish once powers start existing
 	return 1;
+}
+
+double Bullet::getHighestOffenseImportance() {
+	double highest = -1; //anything below -1 is really, really unimportant; so much so that it doesn't matter
+	for (int i = 0; i < bulletPowers.size(); i++) {
+		if (bulletPowers[i]->getOffenseImportance() > highest) {
+			highest = bulletPowers[i]->getOffenseImportance();
+		}
+	}
+	return highest;
+}
+
+double Bullet::getHighestOffenseTier(double importance) {
+	double highest = -999; //TODO: define these constants somewhere
+	for (int i = 0; i < bulletPowers.size(); i++) {
+		if (bulletPowers[i]->getOffenseImportance() == importance) {
+			if (bulletPowers[i]->getOffenseTier(this) > highest) {
+				highest = bulletPowers[i]->getOffenseTier(this);
+			}
+		}
+	}
+	if (bulletPowers.size() == 0) {
+		return 0;
+	}
+	return highest;
+}
+
+double Bullet::getOffenseTier() {
+	return getHighestOffenseTier(getHighestOffenseImportance());
+}
+
+double Bullet::getHighestDefenseImportance() {
+	double highest = -1; //anything below -1 is really, really unimportant; so much so that it doesn't matter
+	for (int i = 0; i < bulletPowers.size(); i++) {
+		if (bulletPowers[i]->getDefenseImportance() > highest) {
+			highest = bulletPowers[i]->getDefenseImportance();
+		}
+	}
+	return highest;
+}
+
+double Bullet::getHighestDefenseTier(double importance) {
+	double highest = -999; //TODO: define these constants somewhere
+	for (int i = 0; i < bulletPowers.size(); i++) {
+		if (bulletPowers[i]->getDefenseImportance() == importance) {
+			if (bulletPowers[i]->getDefenseTier(this) > highest) {
+				highest = bulletPowers[i]->getDefenseTier(this);
+			}
+		}
+	}
+	if (bulletPowers.size() == 0) {
+		return 0;
+	}
+	return highest;
+}
+
+double Bullet::getDefenseTier() {
+	return getHighestDefenseTier(getHighestDefenseImportance());
 }
 
 bool Bullet::isPartiallyOutOfBounds() {

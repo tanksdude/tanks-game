@@ -14,8 +14,8 @@ void HomingBulletPower::modifiedMovement(Bullet* b) {
 	}
 }
 
-bool HomingBulletPower::modifiedEdgeCollision(Bullet* b) {
-	return (b->x - b->r <= 0 || b->x + b->r >= GAME_WIDTH);
+PowerInteractionBoolHolder HomingBulletPower::modifiedEdgeCollision(Bullet* b) {
+	return { b->x - b->r <= 0 || b->x + b->r >= GAME_WIDTH };
 }
 
 void HomingBulletPower::initialize(Bullet* b) {

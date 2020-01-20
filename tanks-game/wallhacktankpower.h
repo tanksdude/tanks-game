@@ -19,15 +19,10 @@ public:
 	virtual BulletPower* makeBulletPower();
 
 	//bool modifiesCollisionWithWall = true;
-	virtual bool modifiedCollisionWithWall(Tank*, Wall*);
+	virtual PowerInteractionBoolHolder modifiedCollisionWithWall(Tank*, Wall*);
 	//bool overridesCollisionWithWall = true;
 	//bool modifiedCollisionWithWallCanWorkWithOthers = false;
 	//bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;
-
-	//virtual double getOffenseTier();
-	//virtual double getOffenseValue();
-	//virtual double getDefenseTier();
-	//virtual double getDefenseValue();
 
 	WallhackTankPower();
 };

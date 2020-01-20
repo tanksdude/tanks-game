@@ -1,15 +1,12 @@
 #pragma once
-class BounceBulletPower;
+class BigNamedBulletPower;
 
 #include "power.h"
 #include "bulletpower.h"
-#include "bouncepower.h"
+#include "bignamedpower.h"
 
-class BounceBulletPower : public BulletPower {
+class BigNamedBulletPower : public BulletPower {
 protected:
-public:
-	static const short maxBounces;
-	short bouncesLeft;
 
 public:
 	virtual void initialize(Bullet* parent);
@@ -17,22 +14,23 @@ public:
 
 	virtual void tick() { return; }
 	virtual ColorValueHolder getColor() {
-		return BouncePower::getClassColor();
+		return BigNamedPower::getClassColor();
 	}
 
 	virtual TankPower* makeTankPower();
-	
+
 	//bool modifiesCollisionWithWall = true;
 	virtual PowerInteractionBoolHolder modifiedCollisionWithWall(Bullet*, Wall*);
 	//bool overridesCollisionWithWall = true;
 	//bool modifiedCollisionWithWallCanWorkWithOthers = true;
 	//bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;
 
-	//bool modifiesCollisionWithEdge = true;
-	virtual PowerInteractionBoolHolder modifiedEdgeCollision(Bullet*);
-	//bool overridesEdgeCollision = true;
-	//bool modifiedEdgeCollisionCanWorkWithOthers = false;
-	//bool modifiedEdgeCollisionCanOnlyWorkIndividually = false;
+	virtual double getOffenseImportance() { return 0; }
+	virtual double getOffenseTier() { return 2; }
+	virtual double getOffenseTier(Bullet*) { return getOffenseTier(); }
+	virtual double getDefenseImportance() { return 0; }
+	virtual double getDefenseTier() { return 2; }
+	virtual double getDefenseTier(Bullet*) { return getDefenseTier(); }
 
-	BounceBulletPower();
+	BigNamedBulletPower();
 };

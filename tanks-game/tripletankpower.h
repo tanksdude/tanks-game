@@ -25,10 +25,5 @@ public:
 	//bool additionalShootingCanWorkWithOthers = true;
 	//bool additionalShootingCanOnlyWorkIndividually = false;
 
-	//virtual double getOffenseTier();
-	//virtual double getOffenseValue();
-	//virtual double getDefenseTier();
-	//virtual double getDefenseValue();
-
 	TripleTankPower();
 };

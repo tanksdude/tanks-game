@@ -205,7 +205,7 @@ void Tank::powerCalculate() {
 		if (tankPowers[i]->isDone()) {
 			removePower(i);
 		} else { //to make each power last its full length, not n-1 length
-			tankPowers[i]->powerTick();
+			tankPowers[i]->powerTick(this);
 		}
 	}
 }
@@ -560,6 +560,65 @@ void Tank::edgeConstrain() {
 	}
 	//technically, checking down before up (and left before right) would probably have a slight efficiency increase, but it would be extremely (negligibly) small
 }
+
+double Tank::getHighestOffenseImportance() {
+	double highest = -1; //anything below -1 is really, really unimportant; so much so that it doesn't matter
+	for (int i = 0; i < tankPowers.size(); i++) {
+		if (tankPowers[i]->getOffenseImportance() > highest) {
+			highest = tankPowers[i]->getOffenseImportance();
+		}
+	}
+	return highest;
+}
+
+double Tank::getHighestOffenseTier(double importance) {
+	double highest = -999; //TODO: define these constants somewhere or just have a bool for initialization
+	for (int i = 0; i < tankPowers.size(); i++) {
+		if (tankPowers[i]->getOffenseImportance() == importance) {
+			if (tankPowers[i]->getOffenseTier(this) > highest) {
+				highest = tankPowers[i]->getOffenseTier(this);
+			}
+		}
+	}
+	if (tankPowers.size() == 0) {
+		return 0;
+	}
+	return highest;
+}
+
+double Tank::getOffenseTier() {
+	return getHighestOffenseTier(getHighestOffenseImportance());
+}
+
+double Tank::getHighestDefenseImportance() {
+	double highest = -1; //anything below -1 is really, really unimportant; so much so that it doesn't matter
+	for (int i = 0; i < tankPowers.size(); i++) {
+		if (tankPowers[i]->getDefenseImportance() > highest) {
+			highest = tankPowers[i]->getDefenseImportance();
+		}
+	}
+	return highest;
+}
+
+double Tank::getHighestDefenseTier(double importance) {
+	double highest = -999; //TODO: define these constants somewhere or just have a bool for initialization
+	for (int i = 0; i < tankPowers.size(); i++) {
+		if (tankPowers[i]->getDefenseImportance() == importance) {
+			if (tankPowers[i]->getDefenseTier(this) > highest) {
+				highest = tankPowers[i]->getDefenseTier(this);
+			}
+		}
+	}
+	if (tankPowers.size() == 0) {
+		return 0;
+	}
+	return highest;
+}
+
+double Tank::getDefenseTier() {
+	return getHighestDefenseTier(getHighestDefenseImportance());
+}
+
 
 bool Tank::isPartiallyOutOfBounds() {
 	return ((x + r > GAME_WIDTH) || (x - r < 0) || (y + r > GAME_HEIGHT) || (y - r < 0));
