@@ -1,4 +1,9 @@
-0.1.1 (obviously not here yet):
+0.1.2 (obviously not here yet)
+bullet acceleration
+a new level?
+either banana, grenade, fire/blast, or all
+
+0.1.1
 invincibility n' stuff (invincibility, big, megadeath)
 cleaned up how powers interacted
 
@@ -14,8 +19,8 @@ stuff. primarily the framework and some powers to test the framework. (look at c
 
 future notes:
 0.2.0: fix constants file (PI, object holders)
-0.A.0: big change in levels or powers or something else, like bulletpower memory management (std::shared_ptr)
-X.Y.0: multithreading? (std::async to start)
+0.X.0: big change in levels or powers or something else, like bulletpower memory management (std::shared_ptr)
+A.B.0: multithreading? (std::async to start)
 1.0.0: all levels, powers, and other stuff that I want
 2.0.0: level editor and/or power editor and/or game engine something thing (save for sequel instead?)
 
