@@ -448,7 +448,7 @@ void tick(int physicsUPS) {
 				}
 
 				if (!overridedTankCollision) {
-					CollisionHandler::pushMovableAwayFromImmovable(tanks[i], walls[j]);
+					CollisionHandler::pushMovableAwayFromMovable(tanks[i], tanks[j]);
 				}
 			}
 
