@@ -12,6 +12,8 @@ public:
 	virtual void initialize(Bullet* parent);
 	virtual void removeEffects(Bullet* parent);
 
+	virtual void powerTick(Bullet* b); //for updating wall collision bools based 
+
 	virtual void tick() { return; }
 	virtual ColorValueHolder getColor() {
 		return MegaDeathPower::getClassColor();

@@ -205,7 +205,7 @@ void Tank::powerCalculate() {
 		if (tankPowers[i]->isDone()) {
 			removePower(i);
 		} else { //to make each power last its full length, not n-1 length
-			tankPowers[i]->powerTick();
+			tankPowers[i]->powerTick(this);
 		}
 	}
 }

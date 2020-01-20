@@ -24,6 +24,7 @@ public:
 	virtual void powerTick() {
 		timeLeft--;
 	}
+	virtual void powerTick(Tank*) { powerTick(); }
 	virtual bool isDone() {
 		return timeLeft <= 0;
 	}

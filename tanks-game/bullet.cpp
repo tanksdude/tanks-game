@@ -99,7 +99,7 @@ void Bullet::powerCalculate() {
 		if (bulletPowers[i]->isDone()) {
 			removePower(i);
 		} else { //to make each power last its full length, not n-1 length
-			bulletPowers[i]->powerTick();
+			bulletPowers[i]->powerTick(this);
 		}
 	}
 }

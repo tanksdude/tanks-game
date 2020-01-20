@@ -5,6 +5,12 @@
 #include "constants.h"
 #include "collisionhandler.h"
 
+void MegaDeathBulletPower::powerTick(Bullet* b) {
+	if (getOffenseTier(b) >= 2) {
+		modifiedCollisionWithWallCanWorkWithOthers = false;
+	}
+}
+
 PowerInteractionBoolHolder MegaDeathBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
 	if (getOffenseTier(b) >= 2) {
 		return { false, true };
@@ -26,9 +32,6 @@ double MegaDeathBulletPower::getDefenseTier(Bullet* b) {
 
 double MegaDeathBulletPower::getOffenseTier(Bullet* b) {
 	double value = b->r / Tank::default_radius * 2;
-	if (value >= 2) {
-		modifiedCollisionWithWallCanWorkWithOthers = false;
-	}
 	return value;
 }
 

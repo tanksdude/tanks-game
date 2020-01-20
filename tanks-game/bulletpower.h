@@ -26,6 +26,7 @@ public:
 
 	virtual void tick() = 0; //most will be doing a lot, though they shouldn't need this, but just in case
 	virtual void powerTick() { return; }
+	virtual void powerTick(Bullet*) { powerTick(); }
 	virtual bool isDone() { return false; }
 	virtual ColorValueHolder getColor() = 0;
 
