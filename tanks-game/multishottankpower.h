@@ -25,10 +25,6 @@ public:
 	//bool addShootingPointsCanOnlyWorkIndividually = false;
 
 	virtual double getShootingMultiplier() { return .5; }
-	//virtual double getOffenseTier();
-	//virtual double getOffenseValue();
-	//virtual double getDefenseTier();
-	//virtual double getDefenseValue();
 
 	MultishotTankPower();
 };

@@ -16,10 +16,5 @@ public:
 
 	virtual TankPower* makeTankPower();
 
-	//virtual double getOffenseTier() { return 0; }
-	//virtual double getOffenseValue() { return 0; }
-	//virtual double getDefenseTier() { return 0; }
-	//virtual double getDefenseValue() { return 0; }
-
 	MultishotBulletPower();
 };
