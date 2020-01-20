@@ -36,10 +36,10 @@ list of (eventual) powers:
 |bounce
 |triple shot (any want for shotgun?)
 |homing
-invincibility (tier 1)
-big (tier 2)
-mega-death (variable big)
-the super (tier 3) (name WIP) (come on, of course the name isn't going to be temporary!)
+|invincibility (tier 1)
+|big (tier 2)
+|mega-death (variable big)
+the super (tier 3) (name WIP) (come on, of course the name isn't going to be temporary!) (save for later because there's little point in including it as of now)
 grenade?
 fire?
 banana (will be tough unless I did everything correctly)
