@@ -34,10 +34,5 @@ public:
 	//bool modifiedEdgeCollisionCanWorkWithOthers = false;
 	//bool modifiedEdgeCollisionCanOnlyWorkIndividually = false;
 
-	//virtual double getOffenseTier() { return 0; }
-	//virtual double getOffenseValue() { return 0; }
-	//virtual double getDefenseTier() { return 0; }
-	//virtual double getDefenseValue() { return 0; }
-
 	BounceBulletPower();
 };
