@@ -206,7 +206,7 @@ double Bullet::getHighestOffenseTier(double importance) {
 	for (int i = 0; i < bulletPowers.size(); i++) {
 		if (bulletPowers[i]->getOffenseImportance() == importance) {
 			if (bulletPowers[i]->getOffenseTier() > highest) {
-				highest = bulletPowers[i]->getOffenseTier();
+				highest = bulletPowers[i]->getOffenseTier(this);
 			}
 		}
 	}
@@ -235,7 +235,7 @@ double Bullet::getHighestDefenseTier(double importance) {
 	for (int i = 0; i < bulletPowers.size(); i++) {
 		if (bulletPowers[i]->getDefenseImportance() == importance) {
 			if (bulletPowers[i]->getDefenseTier() > highest) {
-				highest = bulletPowers[i]->getDefenseTier();
+				highest = bulletPowers[i]->getDefenseTier(this);
 			}
 		}
 	}
