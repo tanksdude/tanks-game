@@ -13,8 +13,6 @@ class BulletPower;
 //(note to self: a bulletpower would need to make a "child" of itself in the case of banana (delete a banana from list of bulletpowers), in order to have super strong memory management)
 //that would probably be really complex to fully implement (but simple enough to think about? maybe it is simple to implement) so that will wait
 
-//TODO: add better preconditions to the functions (modifiedWallCollision precondition is hit wall, not necessarily in wall (due to bounce))
-
 class BulletPower : public InheritedPowerCommon{
 	friend class PowerFunctionHelper;
 protected:
@@ -35,26 +33,29 @@ public:
 
 	bool modifiesMovement = false; //true if it, you know, modifies the movement
 	virtual void modifiedMovement(Bullet*) { return; } //default does nothing, obviously
+	//precondition: nothing
 	bool overridesMovement = false; //true if the power completely changes how it moves; regular powers slightly modify movement (think homing) and still want basic bullet move
 	bool modifiedMovementCanWorkWithOthers = true; //false stops later powerups in list from activating
 	bool modifiedMovementCanOnlyWorkIndividually = false; //true means that if another power was used previously, this power can't activate
 	//fix: have super override value? so the power can ensure that it and only it will activate (I don't think a power should have this kind of authority, but it might be needed)
 
 	bool modifiesCollisionWithEdge = false;
-	virtual bool modifiedEdgeCollision(Bullet*) { return false; }
+	virtual PowerInteractionBoolHolder modifiedEdgeCollision(Bullet*) { return { false, false }; }
+	//precondition: was out-of-bounds, is not necessarily out-of-bounds
 	bool overridesEdgeCollision = true;
 	bool modifiedEdgeCollisionCanWorkWithOthers = false; //options: either it bounces or temporarily stays outside, so it has no need to work with others; that makes the promise of powerup mixing kinda depressing
 	bool modifiedEdgeCollisionCanOnlyWorkIndividually = false;
 
 	bool modifiesCollisionWithTank = false;
-	virtual bool modifiedCollisionWithTank(Bullet*, Tank*) { return false; }
+	virtual PowerInteractionBoolHolder modifiedCollisionWithTank(Bullet*, Tank*) { return { false, false }; }
+	//precondition: hit tank, is not necessarily inside tank
 	bool overridesCollisionWithTank = true;
 	bool modifiedCollisionWithTankCanWorkWithOthers = true;
 	bool modifiedCollisionWithTankCanOnlyWorkIndividually = false;
 
 	bool modifiesCollisionWithWall = false;
-	virtual bool modifiedCollisionWithWall(Bullet*, Wall*) { return false; }
-	virtual bool modifiedCollisionWithWall(Bullet* b, Wall* w, int index) { return modifiedCollisionWithWall(b, w); }
+	virtual PowerInteractionBoolHolder modifiedCollisionWithWall(Bullet*, Wall*) { return { false, false }; }
+	//precondition: hit wall, is not necessarily inside wall
 	bool overridesCollisionWithWall = true; //false means also use the default, which is just destroy the bullet if it collides
 	bool modifiedCollisionWithWallCanWorkWithOthers = true;
 	bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;
@@ -76,8 +77,10 @@ public:
 
 	virtual double getOffenseImportance() { return 0; } //"importance" = "override" value (when dealing with other powers)
 	virtual double getOffenseTier() { return 0; }
+	virtual double getOffenseTier(Bullet*) { return getOffenseTier(); }
 	virtual double getDefenseImportance() { return 0; }
 	virtual double getDefenseTier() { return 0; }
+	virtual double getDefenseTier(Bullet*) { return getDefenseTier(); }
 
 	//need separate offense stuff for different situations: tank vs bullet offense could be different (would it be more effective to have that stuff in modifiedTankCollision?)
 };

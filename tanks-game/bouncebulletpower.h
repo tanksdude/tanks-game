@@ -23,21 +23,16 @@ public:
 	virtual TankPower* makeTankPower();
 	
 	//bool modifiesCollisionWithWall = true;
-	virtual bool modifiedCollisionWithWall(Bullet*, Wall*);
+	virtual PowerInteractionBoolHolder modifiedCollisionWithWall(Bullet*, Wall*);
 	//bool overridesCollisionWithWall = true;
 	//bool modifiedCollisionWithWallCanWorkWithOthers = true;
 	//bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;
 
 	//bool modifiesCollisionWithEdge = true;
-	virtual bool modifiedEdgeCollision(Bullet*);
+	virtual PowerInteractionBoolHolder modifiedEdgeCollision(Bullet*);
 	//bool overridesEdgeCollision = true;
 	//bool modifiedEdgeCollisionCanWorkWithOthers = false;
 	//bool modifiedEdgeCollisionCanOnlyWorkIndividually = false;
-
-	//virtual double getOffenseTier() { return 0; }
-	//virtual double getOffenseValue() { return 0; }
-	//virtual double getDefenseTier() { return 0; }
-	//virtual double getDefenseValue() { return 0; }
 
 	BounceBulletPower();
 };

@@ -5,15 +5,11 @@
 #include "constants.h"
 #include "collisionhandler.h"
 
-bool MegaDeathBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w, int index) {
-	if (getOffenseTier() >= 2) {
-		if (CollisionHandler::partiallyCollided(b, w)) {
-			delete walls[index];
-			walls.erase(walls.begin() + index);
-		}
-		return false;
+PowerInteractionBoolHolder MegaDeathBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
+	if (getOffenseTier(b) >= 2) {
+		return { false, true };
 	} else {
-		return CollisionHandler::partiallyCollided(b, w);
+		return { CollisionHandler::partiallyCollided(b, w), false };
 	}
 }
 
@@ -23,19 +19,14 @@ void MegaDeathBulletPower::modifiedMovement(Bullet* b) {
 	b->r *= 65.0/64;
 }
 
-double MegaDeathBulletPower::getDefenseTier() {
-	double value = 2; //TODO: bulletpower knows its bullet? (the memory management big refactoring would be nullified) //no because tankpowers can make bulletpowers
-	if (value >= 2) {
-		modifiesCollisionWithWall = true;
-		modifiedCollisionWithWallCanWorkWithOthers = false;
-	}
+double MegaDeathBulletPower::getDefenseTier(Bullet* b) {
+	double value = b->r / Tank::default_radius * 2;
 	return value;
 }
 
-double MegaDeathBulletPower::getOffenseTier() {
-	double value = 2;
+double MegaDeathBulletPower::getOffenseTier(Bullet* b) {
+	double value = b->r / Tank::default_radius * 2;
 	if (value >= 2) {
-		modifiesCollisionWithWall = true;
 		modifiedCollisionWithWallCanWorkWithOthers = false;
 	}
 	return value;
@@ -58,6 +49,6 @@ MegaDeathBulletPower::MegaDeathBulletPower(){
 	maxTime = -1;
 
 	modifiesMovement = true;
-	//modifiesCollisionWithWall = true;
+	modifiesCollisionWithWall = true;
 	//modifiedCollisionWithWallCanWorkWithOthers = false;
 }

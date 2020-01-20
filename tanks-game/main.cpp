@@ -349,40 +349,163 @@ void tick(int physicsUPS) {
 	Diagnostics::addName("tank-wall");
 	//tank to wall collision:
 	for (int i = 0; i < tanks.size(); i++) {
-		bool modifiedWallCollision = false;
 		bool shouldBeKilled = false; //maybe the walls are poison with a certain powerup? I dunno, but gotta have it as an option
 
 		for (int j = 0; j < walls.size(); j++) {
-			for (int k = 0; k < tanks[i]->tankPowers.size(); k++) {
-				if (tanks[i]->tankPowers[k]->modifiesCollisionWithWall) {
-					modifiedWallCollision = true;
-					bool check_temp = tanks[i]->tankPowers[k]->modifiedCollisionWithWall(tanks[i], walls[j]);
-					if (check_temp) {
-						shouldBeKilled = true;
+			bool modifiedWallCollision = false;
+			bool overridedWallCollision = false;
+			bool noMoreWallCollisionSpecials = false;
+			bool killWall = false;
+
+			if (CollisionHandler::partiallyCollided(tanks[i], walls[j])) {
+				for (int k = 0; k < tanks[i]->tankPowers.size(); k++) {
+					if (tanks[i]->tankPowers[k]->modifiesCollisionWithWall) {
+						if (tanks[i]->tankPowers[k]->modifiedCollisionWithWallCanOnlyWorkIndividually && modifiedWallCollision) {
+							continue;
+						}
+						if (noMoreWallCollisionSpecials) {
+							continue;
+						}
+
+						modifiedWallCollision = true;
+						if (tanks[i]->tankPowers[k]->overridesCollisionWithWall) {
+							overridedWallCollision = true;
+						}
+						if (!tanks[i]->tankPowers[k]->modifiedEdgeCollisionCanWorkWithOthers) {
+							noMoreWallCollisionSpecials = true;
+						}
+
+						PowerInteractionBoolHolder check_temp = tanks[i]->tankPowers[k]->modifiedCollisionWithWall(tanks[i], walls[j]);
+						if (check_temp.shouldDie) {
+							shouldBeKilled = true;
+						}
+						if (check_temp.otherShouldDie) {
+							killWall = true;
+						}
 					}
+				}
+
+				if (!overridedWallCollision) {
+					CollisionHandler::pushMovableAwayFromImmovable(tanks[i], walls[j]);
 				}
 			}
 
-			if (modifiedWallCollision) {
-				continue;
-			}
-
-			if (CollisionHandler::partiallyCollided(tanks[i], walls[j])) {
-				CollisionHandler::pushMovableAwayFromImmovable(tanks[i], walls[j]);
+			if (killWall) {
+				walls.erase(walls.begin() + j);
+				j--;
 			}
 		}
 
 		if (shouldBeKilled) {
 			tank_dead = 1; //TODO: proper implementation
 		}
+
 	}
 	Diagnostics::endTiming();
 
 	Diagnostics::startTiming();
 	Diagnostics::addName("tank-tank");
-	//tank collision (temporary? yes because additional tanks):
-	if (CollisionHandler::partiallyCollided(tanks[0], tanks[1])) {
-		CollisionHandler::pushMovableAwayFromMovable(tanks[0], tanks[1]);
+	for (int i = 0; i < tanks.size(); i++) {
+		bool shouldBeKilled = false;
+		for (int j = 0; j < tanks.size(); j++) {
+			if (i == j) {
+				continue;
+			}
+
+			bool modifiedTankCollision = false;
+			bool overridedTankCollision = false;
+			bool noMoreTankCollisionSpecials = false;
+			bool killOtherTank = false;
+
+			if (CollisionHandler::partiallyCollided(tanks[i], tanks[j])) {
+				for (int k = 0; k < tanks[i]->tankPowers.size(); k++) {
+					if (tanks[i]->tankPowers[k]->modifiesCollisionWithWall) {
+						if (tanks[i]->tankPowers[k]->modifiedCollisionWithTankCanOnlyWorkIndividually && modifiedTankCollision) {
+							continue;
+						}
+						if (noMoreTankCollisionSpecials) {
+							continue;
+						}
+
+						modifiedTankCollision = true;
+						if (tanks[i]->tankPowers[k]->overridesCollisionWithTank) {
+							overridedTankCollision = true;
+						}
+						if (!tanks[i]->tankPowers[k]->modifiedCollisionWithTankCanWorkWithOthers) {
+							noMoreTankCollisionSpecials = true;
+						}
+
+						PowerInteractionBoolHolder check_temp = tanks[i]->tankPowers[k]->modifiedCollisionWithTank(tanks[i], tanks[j]);
+						if (check_temp.shouldDie) {
+							shouldBeKilled = true;
+						}
+						if (check_temp.otherShouldDie) {
+							if (tanks[i]->getID() != tanks[j]->getID()) {
+								killOtherTank = true;
+							}
+						}
+					}
+				}
+
+				if (!overridedTankCollision) {
+					CollisionHandler::pushMovableAwayFromImmovable(tanks[i], walls[j]);
+				}
+			}
+
+			if (killOtherTank) {
+				tank_dead = 1;
+			}
+		}
+
+		if (shouldBeKilled) {
+			tank_dead = 1;
+		}
+	}
+	Diagnostics::endTiming();
+
+	Diagnostics::startTiming();
+	Diagnostics::addName("tank-edge");
+	//tank to edge collision:
+	for (int i = 0; i < tanks.size(); i++) {
+		bool shouldBeKilled = false;
+		
+		bool modifiedEdgeCollision = false;
+		bool overridedEdgeCollision = false;
+		bool noMoreEdgeCollisionSpecials = false;
+
+		if (tanks[i]->isPartiallyOutOfBounds()) {
+			for (int k = 0; k < tanks[i]->tankPowers.size(); k++) {
+				if (tanks[i]->tankPowers[k]->modifiesCollisionWithEdge) {
+					if (tanks[i]->tankPowers[k]->modifiedEdgeCollisionCanOnlyWorkIndividually && modifiedEdgeCollision) {
+						continue;
+					}
+					if (noMoreEdgeCollisionSpecials) {
+						continue;
+					}
+
+					modifiedEdgeCollision = true;
+					if (tanks[i]->tankPowers[k]->overridesEdgeCollision) {
+						overridedEdgeCollision = true;
+					}
+					if (!tanks[i]->tankPowers[k]->modifiedEdgeCollisionCanWorkWithOthers) {
+						noMoreEdgeCollisionSpecials = true;
+					}
+
+					PowerInteractionBoolHolder check_temp = tanks[i]->tankPowers[k]->modifiedEdgeCollision(tanks[i]);
+					if (check_temp.shouldDie) {
+						shouldBeKilled = true;
+					}
+				}
+			}
+
+			if (!overridedEdgeCollision) {
+				tanks[i]->edgeConstrain();
+			}
+		}
+
+		if (shouldBeKilled) {
+			tank_dead = 1;
+		}
 	}
 	Diagnostics::endTiming();
 
@@ -395,32 +518,40 @@ void tick(int physicsUPS) {
 		bool noMoreEdgeCollisionSpecials = false;
 		bool shouldBeKilled = false;
 
-		for (int k = 0; k < bullets[i]->bulletPowers.size(); k++) {
-			if (bullets[i]->bulletPowers[k]->modifiesCollisionWithEdge) {
-				if (bullets[i]->bulletPowers[k]->modifiedEdgeCollisionCanOnlyWorkIndividually && modifiedEdgeCollision) {
-					continue;
+		if (bullets[i]->isPartiallyOutOfBounds()) {
+			for (int k = 0; k < bullets[i]->bulletPowers.size(); k++) {
+				if (bullets[i]->bulletPowers[k]->modifiesCollisionWithEdge) {
+					if (bullets[i]->bulletPowers[k]->modifiedEdgeCollisionCanOnlyWorkIndividually && modifiedEdgeCollision) {
+						continue;
+					}
+					if (noMoreEdgeCollisionSpecials) {
+						continue;
+					}
+
+					modifiedEdgeCollision = true;
+					if (bullets[i]->bulletPowers[k]->overridesEdgeCollision) {
+						overridedEdgeCollision = true;
+					}
+					if (!bullets[i]->bulletPowers[k]->modifiedEdgeCollisionCanWorkWithOthers) {
+						noMoreEdgeCollisionSpecials = true;
+					}
+
+					PowerInteractionBoolHolder check_temp = bullets[i]->bulletPowers[k]->modifiedEdgeCollision(bullets[i]);
+					if (check_temp.shouldDie) {
+						shouldBeKilled = true;
+					}
 				}
-				if (noMoreEdgeCollisionSpecials) {
-					continue;
-				}
-				modifiedEdgeCollision = true;
-				if (bullets[i]->bulletPowers[k]->overridesEdgeCollision) {
-					overridedEdgeCollision = true;
-				}
-				if (!bullets[i]->bulletPowers[k]->modifiedEdgeCollisionCanWorkWithOthers) {
-					noMoreEdgeCollisionSpecials = true;
-				}
-				bool check_temp = bullets[i]->bulletPowers[k]->modifiedEdgeCollision(bullets[i]);
-				if (check_temp) {
-					shouldBeKilled = true;
-				}
+			}
+
+			if (overridedEdgeCollision) {
+				continue;
+			}
+			if (bullets[i]->isFullyOutOfBounds()) {
+				shouldBeKilled = true;
 			}
 		}
 
-		if (overridedEdgeCollision) {
-			continue;
-		}
-		if (bullets[i]->isFullyOutOfBounds() || shouldBeKilled) {
+		if (shouldBeKilled) {
 			delete bullets[i];
 			bullets.erase(bullets.begin() + i);
 			continue;
@@ -432,49 +563,58 @@ void tick(int physicsUPS) {
 	Diagnostics::addName("bullet-wall");
 	//bullet to wall collision:
 	for (int i = bullets.size() - 1; i >= 0; i--) {
-		bool shouldBeDeleted = false;
+		bool shouldBeKilled = false;
 
 		for (int j = walls.size() - 1; j >= 0; j--) {
 			bool modifiedWallCollision = false;
 			bool overridedWallCollision = false;
 			bool noMoreWallCollisionSpecials = false;
+			bool killWall = false;
 
-			for (int k = 0; k < bullets[i]->bulletPowers.size(); k++) {
-				if (bullets[i]->bulletPowers[k]->modifiesCollisionWithWall) {
-					if (bullets[i]->bulletPowers[k]->modifiedCollisionWithWallCanOnlyWorkIndividually && modifiedWallCollision) {
-						continue;
+			if (CollisionHandler::partiallyCollided(bullets[i], walls[j])) {
+				for (int k = 0; k < bullets[i]->bulletPowers.size(); k++) {
+					if (bullets[i]->bulletPowers[k]->modifiesCollisionWithWall) {
+						if (bullets[i]->bulletPowers[k]->modifiedCollisionWithWallCanOnlyWorkIndividually && modifiedWallCollision) {
+							continue;
+						}
+						if (noMoreWallCollisionSpecials) {
+							continue;
+						}
+
+						modifiedWallCollision = true;
+						if (bullets[i]->bulletPowers[k]->overridesCollisionWithWall) {
+							overridedWallCollision = true;
+						}
+						if (!bullets[i]->bulletPowers[k]->modifiedCollisionWithWallCanWorkWithOthers) {
+							noMoreWallCollisionSpecials = true;
+						}
+
+						PowerInteractionBoolHolder check_temp = bullets[i]->bulletPowers[k]->modifiedCollisionWithWall(bullets[i], walls[j]);
+						if (check_temp.shouldDie) {
+							shouldBeKilled = true;
+						}
+						if (check_temp.otherShouldDie) {
+							killWall = true;
+						}
 					}
-					if (noMoreWallCollisionSpecials) {
-						continue;
-					}
-					modifiedWallCollision = true;
-					if (bullets[i]->bulletPowers[k]->overridesCollisionWithWall) {
-						overridedWallCollision = true;
-					}
-					if (!bullets[i]->bulletPowers[k]->modifiedCollisionWithWallCanWorkWithOthers) {
-						noMoreWallCollisionSpecials = true;
-					}
-					bool check_temp = bullets[i]->bulletPowers[k]->modifiedCollisionWithWall(bullets[i], walls[j], j); //TODO: bulletpowers return a tiny struct with bools to handle this stuff
-					if (check_temp) {
-						shouldBeDeleted = true;
+				}
+
+				if (!overridedWallCollision) {
+					if (CollisionHandler::partiallyCollided(bullets[i], walls[j])) {
+						shouldBeKilled = true;
 					}
 				}
 			}
 
-			if (overridedWallCollision) {
-				continue;
-			}
-
-			if (CollisionHandler::partiallyCollided(bullets[i], walls[j])) {
-				shouldBeDeleted = true;
-				break;
+			if (killWall) {
+				delete walls[j];
+				walls.erase(walls.begin() + j);
 			}
 		}
 
-		if (shouldBeDeleted) {
+		if (shouldBeKilled) {
 			delete bullets[i];
 			bullets.erase(bullets.begin() + i);
-			//continue;
 		}
 	}
 	Diagnostics::endTiming();
@@ -483,6 +623,7 @@ void tick(int physicsUPS) {
 	Diagnostics::startTiming();
 	Diagnostics::addName("bullet-bullet");
 	//bullet collision:
+	//TODO: modernize (add default vs custom collision stuff)
 	for (int i = bullets.size() - 1; i >= 0; i--) {
 		for (int j = bullets.size() - 1; j >= 0; j--) { //could start at i-1? //fix: find out
 			if (bullets[i]->getID() == bullets[j]->getID()) {
@@ -540,16 +681,9 @@ void tick(int physicsUPS) {
 	//unfortunately it can only be O(n^2), and multithreading doesn't seem like it would work
 
 	Diagnostics::startTiming();
-	Diagnostics::addName("tank-edge");
-	//tank to edge collision: (move later?) (to where?)
-	for (int i = 0; i < tanks.size(); i++) {
-		tanks[i]->edgeConstrain();
-	}
-	Diagnostics::endTiming();
-
-	Diagnostics::startTiming();
 	Diagnostics::addName("bullet-tank");
 	//bullet to tank collision:
+	//TODO: modernize (add default vs custom collision stuff)
 	for (int i = 0; i < tanks.size(); i++) {
 		for (int j = 0; j < bullets.size(); j++) {
 			if (bullets[j]->getID() == tanks[i]->getID()) {
