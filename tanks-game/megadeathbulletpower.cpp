@@ -4,15 +4,18 @@
 #include "powerfunctionhelper.h"
 #include "constants.h"
 #include "collisionhandler.h"
+#include "bignamedbulletpower.h"
+
+const double MegaDeathBulletPower::destroyWallTier = 2;
 
 void MegaDeathBulletPower::powerTick(Bullet* b) {
-	if (getOffenseTier(b) >= 2) {
+	if (getOffenseTier(b) >= destroyWallTier) {
 		modifiedCollisionWithWallCanWorkWithOthers = false;
 	}
 }
 
 PowerInteractionBoolHolder MegaDeathBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
-	if (getOffenseTier(b) >= 2) {
+	if (getOffenseTier(b) >= destroyWallTier) {
 		return { false, true };
 	} else {
 		return { CollisionHandler::partiallyCollided(b, w), false };
@@ -26,13 +29,15 @@ void MegaDeathBulletPower::modifiedMovement(Bullet* b) {
 }
 
 double MegaDeathBulletPower::getDefenseTier(Bullet* b) {
-	double value = b->r / Tank::default_radius * 2;
-	return value;
+	double value = b->r / Tank::default_radius * destroyWallTier;
+	return (value >= destroyWallTier ? value : 0);
+	//return value;
 }
 
 double MegaDeathBulletPower::getOffenseTier(Bullet* b) {
-	double value = b->r / Tank::default_radius * 2;
-	return value;
+	double value = b->r / Tank::default_radius * destroyWallTier;
+	return (value >= destroyWallTier ? value : 0);
+	//return value;
 }
 
 void MegaDeathBulletPower::initialize(Bullet* b) {

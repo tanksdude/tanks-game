@@ -7,6 +7,8 @@ class MegaDeathBulletPower;
 
 class MegaDeathBulletPower : public BulletPower {
 protected:
+public:
+	static const double destroyWallTier;
 
 public:
 	virtual void initialize(Bullet* parent);
