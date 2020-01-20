@@ -623,6 +623,7 @@ void tick(int physicsUPS) {
 	Diagnostics::startTiming();
 	Diagnostics::addName("bullet-bullet");
 	//bullet collision:
+	//TODO: modernize (add default vs custom collision stuff)
 	for (int i = bullets.size() - 1; i >= 0; i--) {
 		for (int j = bullets.size() - 1; j >= 0; j--) { //could start at i-1? //fix: find out
 			if (bullets[i]->getID() == bullets[j]->getID()) {
@@ -682,6 +683,7 @@ void tick(int physicsUPS) {
 	Diagnostics::startTiming();
 	Diagnostics::addName("bullet-tank");
 	//bullet to tank collision:
+	//TODO: modernize (add default vs custom collision stuff)
 	for (int i = 0; i < tanks.size(); i++) {
 		for (int j = 0; j < bullets.size(); j++) {
 			if (bullets[j]->getID() == tanks[i]->getID()) {

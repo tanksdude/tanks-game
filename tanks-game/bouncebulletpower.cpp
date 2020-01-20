@@ -6,7 +6,7 @@
 
 const short BounceBulletPower::maxBounces = 16;
 
-bool BounceBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
+PowerInteractionBoolHolder BounceBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
 	if (abs(b->velocity) * Bullet::default_radius/b->r <= .5) {
 		if (PowerFunctionHelper::bounceGenericWithCorners(b, w)) {
 			bouncesLeft--;
@@ -22,11 +22,11 @@ bool BounceBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
 		modifiesCollisionWithWall = false;
 	}
 
-	return (this->bouncesLeft < 0);
+	return { this->bouncesLeft < 0 };
 }
 //TODO: need ability to delete just the bulletpower (needed? wanted?)
 
-bool BounceBulletPower::modifiedEdgeCollision(Bullet* b) {
+PowerInteractionBoolHolder BounceBulletPower::modifiedEdgeCollision(Bullet* b) {
 	//the bullet can bounce off of edges twice in a single tick
 	//therefore, it can lose 2 bounces at once
 	//shouldn't ever have negative bounces, so need to check Y, then X, then Y if Y wasn't already checked, and check bouncesLeft after each edge bounce
@@ -42,7 +42,7 @@ bool BounceBulletPower::modifiedEdgeCollision(Bullet* b) {
 
 	if (bouncesLeft <= 0) {
 		modifiesCollisionWithEdge = false;
-		return b->isFullyOutOfBounds();
+		return { b->isFullyOutOfBounds() };
 	}
 
 	//bool bouncedX = false;
@@ -55,7 +55,7 @@ bool BounceBulletPower::modifiedEdgeCollision(Bullet* b) {
 
 	if (bouncesLeft <= 0) {
 		modifiesCollisionWithEdge = false;
-		return b->isFullyOutOfBounds();
+		return { b->isFullyOutOfBounds() };
 	}
 
 	if(!bouncedY && b->isPartiallyOutOfBounds()) {
@@ -69,7 +69,7 @@ bool BounceBulletPower::modifiedEdgeCollision(Bullet* b) {
 		modifiesCollisionWithEdge = false;
 	}
 
-	return b->isFullyOutOfBounds();
+	return { b->isFullyOutOfBounds() };
 }
 
 void BounceBulletPower::initialize(Bullet* b) {
