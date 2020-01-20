@@ -5,12 +5,8 @@
 #include "constants.h"
 #include "collisionhandler.h"
 
-bool BigNamedBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w, int index) {
-	if (CollisionHandler::partiallyCollided(b, w)) {
-		delete walls[index];
-		walls.erase(walls.begin() + index);
-	}
-	return false;
+PowerInteractionBoolHolder BigNamedBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
+	return { false, true };
 }
 
 void BigNamedBulletPower::initialize(Bullet* b) {
