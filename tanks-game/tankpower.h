@@ -97,6 +97,7 @@ public:
 	virtual double getShootingMultiplier() { return 1; }
 	virtual double getBulletSpeedMultiplier() { return 1; }
 	virtual double getBulletRadiusMultiplier() { return 1; }
+	virtual double getBulletAcceleration() { return 0; }
 
 	virtual double getOffenseImportance() { return 0; } //"importance" = "override" value (when dealing with other powers)
 	virtual double getOffenseTier() { return 0; }

@@ -12,16 +12,17 @@
 #include <GL/freeglut.h>
 
 const double Bullet::default_radius = 4;
-Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_) { //TODO: make private?
+Bullet::Bullet(double x_, double y_, double r_, double a, double vel, double acc, char id_) { //TODO: make private?
 	this->x = x_;
 	this->y = y_;
 	this->r = r_;
 	this->angle = a;
 	this->velocity = vel;
+	this->acceleration = acc;
 	this->id = id_;
 }
 
-Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_, std::vector<BulletPower*> bp) : Bullet(x_,y_,r_,a,vel,id_) {
+Bullet::Bullet(double x_, double y_, double r_, double a, double vel, double acc, char id_, std::vector<BulletPower*> bp) : Bullet(x_,y_,r_,a,vel,acc,id_) {
 	bulletPowers = bp;
 
 	for (int i = 0; i < bulletPowers.size(); i++) {
