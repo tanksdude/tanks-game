@@ -77,11 +77,9 @@ public:
 	bool modifiedBulletDrawingsCanOnlyWorkIndividually = false;
 
 	virtual double getOffenseImportance() { return 0; } //"importance" = "override" value (when dealing with other powers)
-	virtual double getOffenseTier() { return 0; }
-	virtual double getOffenseTier(Bullet*) { return getOffenseTier(); }
+	virtual double getOffenseTier(Bullet*) { return 0; }
 	virtual double getDefenseImportance() { return 0; }
-	virtual double getDefenseTier() { return 0; }
-	virtual double getDefenseTier(Bullet*) { return getDefenseTier(); }
+	virtual double getDefenseTier(Bullet*) { return 0; }
 
 	//need separate offense stuff for different situations: tank vs bullet offense could be different (would it be more effective to have that stuff in modifiedTankCollision?)
 };

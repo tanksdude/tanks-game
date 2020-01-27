@@ -36,10 +36,8 @@ public:
 	//bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;
 
 	virtual double getOffenseImportance() { return 0; }
-	//virtual double getOffenseTier();
 	virtual double getOffenseTier(Bullet*);
 	virtual double getDefenseImportance() { return 0; }
-	//virtual double getDefenseTier();
 	virtual double getDefenseTier(Bullet*);
 
 	MegaDeathBulletPower();

@@ -19,11 +19,9 @@ public:
 	virtual BulletPower* makeBulletPower();
 
 	virtual double getOffenseImportance() { return 0; }
-	virtual double getOffenseTier() { return 0; }
-	virtual double getOffenseTier(Tank*) { return getOffenseTier(); }
+	virtual double getOffenseTier(Tank*) { return 0; }
 	virtual double getDefenseImportance() { return 0; }
-	virtual double getDefenseTier() { return 2.5; }
-	virtual double getDefenseTier(Tank*) { return getDefenseTier(); }
+	virtual double getDefenseTier(Tank*) { return 2.5; }
 
 	InvincibleNamedTankPower();
 };
