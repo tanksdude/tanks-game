@@ -23,8 +23,6 @@ PowerInteractionBoolHolder MegaDeathBulletPower::modifiedCollisionWithWall(Bulle
 }
 
 void MegaDeathBulletPower::modifiedMovement(Bullet* b) {
-	//b->velocity *= 1 + 1.0/64;
-	b->velocity += 1.0/64;
 	b->r *= 65.0/64;
 }
 

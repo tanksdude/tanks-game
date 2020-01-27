@@ -89,6 +89,7 @@ void Bullet::move() {
 	}
 
 	if (!overridedMovement) {
+		velocity += acceleration;
 		x += velocity * cos(angle);
 		y += velocity * sin(angle);
 	}
