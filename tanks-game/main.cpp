@@ -65,6 +65,9 @@
 #include "megadeathtankpower.h"
 #include "megadeathbulletpower.h"
 #include "megadeathpower.h"
+#include "grenadetankpower.h"
+#include "grenadebulletpower.h"
+#include "grenadepower.h"
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
@@ -338,6 +341,12 @@ void tick(int physicsUPS) {
 	}
 	for (int i = 0; i < bullets.size(); i++) {
 		bullets[i]->powerCalculate();
+		if (bullets[i]->isDead()) {
+			delete bullets[i];
+			bullets.erase(bullets.begin() + i);
+			i--;
+			continue;
+		}
 	}
 
 	for (int i = 0; i < tanks.size(); i++) {
@@ -794,6 +803,7 @@ int main(int argc, char** argv) {
 	powerLookup.insert({ "invincible", InvincibleNamedPower::factory });
 	powerLookup.insert({ "big", BigNamedPower::factory });
 	powerLookup.insert({ "megadeath", MegaDeathPower::factory });
+	powerLookup.insert({ "grenade", GrenadePower::factory });
 
 	tanks.push_back(tank1);
 	tanks.push_back(tank2);
@@ -821,6 +831,8 @@ int main(int argc, char** argv) {
 	glEnable(GL_POINT_SMOOTH);
 	glEnable(GL_LINE_SMOOTH);
 	glDisable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	//initialize glew
 	glewExperimental = GL_TRUE;

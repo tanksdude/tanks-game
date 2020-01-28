@@ -151,6 +151,9 @@
     <ClCompile Include="constants.cpp" />
     <ClCompile Include="diagnostics.cpp" />
     <ClCompile Include="emptylevel.cpp" />
+    <ClCompile Include="grenadebulletpower.cpp" />
+    <ClCompile Include="grenadepower.cpp" />
+    <ClCompile Include="grenadetankpower.cpp" />
     <ClCompile Include="homingbulletpower.cpp" />
     <ClCompile Include="homingpower.cpp" />
     <ClCompile Include="homingtankpower.cpp" />
@@ -207,6 +210,9 @@
     <ClInclude Include="constants.h" />
     <ClInclude Include="diagnostics.h" />
     <ClInclude Include="emptylevel.h" />
+    <ClInclude Include="grenadebulletpower.h" />
+    <ClInclude Include="grenadepower.h" />
+    <ClInclude Include="grenadetankpower.h" />
     <ClInclude Include="hazard.h" />
     <ClInclude Include="homingbulletpower.h" />
     <ClInclude Include="homingpower.h" />
