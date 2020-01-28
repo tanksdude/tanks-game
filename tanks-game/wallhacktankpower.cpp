@@ -15,7 +15,7 @@ BulletPower* WallhackTankPower::makeBulletPower() {
 }
 
 PowerInteractionBoolHolder WallhackTankPower::modifiedCollisionWithWall(Tank* t, Wall* w) {
-	return { PowerFunctionHelper::wallhackGenericTank(t, w), false };
+	return { false, false };
 }
 
 WallhackTankPower::WallhackTankPower() {
