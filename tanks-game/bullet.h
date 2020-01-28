@@ -22,6 +22,8 @@ public: //hopefully temporary
 	ColorValueHolder defaultColor = ColorValueHolder(.5f, .5f, .5f);
 	//ColorValueHolder* explosionColor; //needed?
 	double getAngle();
+	double alpha; //[0,100] to avoid minor float imprecision
+	bool isDead();
 
 public:
 	std::vector<BulletPower*> bulletPowers; //change eventually?

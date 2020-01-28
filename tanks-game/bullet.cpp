@@ -1,6 +1,7 @@
 #pragma once
 #include "bullet.h"
 #include "constants.h"
+#include "mylib.h"
 #include <math.h>
 #include "circle.h"
 #include "colormixer.h"
@@ -20,6 +21,7 @@ Bullet::Bullet(double x_, double y_, double r_, double a, double vel, double acc
 	this->velocity = vel;
 	this->acceleration = acc;
 	this->id = id_;
+	this->alpha = 100;
 }
 
 Bullet::Bullet(double x_, double y_, double r_, double a, double vel, double acc, char id_, std::vector<BulletPower*> bp) : Bullet(x_,y_,r_,a,vel,acc,id_) {
@@ -28,6 +30,10 @@ Bullet::Bullet(double x_, double y_, double r_, double a, double vel, double acc
 	for (int i = 0; i < bulletPowers.size(); i++) {
 		bulletPowers[i]->initialize(this);
 	}
+}
+
+bool Bullet::isDead() {
+	return (alpha <= 0);
 }
 
 VertexArray* Bullet::va;
@@ -163,10 +169,24 @@ void Bullet::drawBody(double xpos, double ypos) {
 	ColorValueHolder color = getColor();
 
 	Shader* shader = Renderer::getShader("main");
-	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, 0, xpos, ypos);
-	shader->setUniformMat4f("u_MVP", MVPM);
 
+	if (glIsEnabled(GL_BLEND)) {
+		shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), this->alpha/100);
+	} else {
+		if(alpha < 100) {
+			shader->setUniform4f("u_color", 1.0f, 1.0f, 1.0f, 1.0f);
+			glm::mat4 MVPM_2 = Renderer::GenerateMatrix((r+2) * 9/8.0, (r+2) * 9/8.0, PI/2, xpos, ypos);
+			double deathPercent = constrain<double>(alpha/100, 0, 1);
+			unsigned int deathVertices = Circle::numOfSides * deathPercent;
+			shader->setUniformMat4f("u_MVP", MVPM_2);
+			Renderer::Draw(*va, *ib, *shader, deathVertices*3);
+		}
+
+		shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), this->alpha / 100);
+	}
+
+	shader->setUniformMat4f("u_MVP", MVPM);
 	Renderer::Draw(*va, *ib, *shader);
 }
 
@@ -186,7 +206,6 @@ void Bullet::drawOutline(double xpos, double ypos) {
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	//drawing an outline: use a geometry shader (ugh) or another VAO+IBO (lesser ugh), the CPU (big ugh), or glDrawArrays with GL_LINE_LOOP (yay!)
-
 }
 
 short Bullet::determineDamage() { //TODO: finish once powers start existing
