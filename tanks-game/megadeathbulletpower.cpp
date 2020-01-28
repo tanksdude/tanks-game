@@ -27,13 +27,13 @@ void MegaDeathBulletPower::modifiedMovement(Bullet* b) {
 }
 
 double MegaDeathBulletPower::getDefenseTier(Bullet* b) {
-	double value = b->r / Tank::default_radius * destroyWallTier;
+	double value = b->r / (Bullet::default_radius*4) * destroyWallTier;
 	//return (value >= destroyWallTier ? value : 0);
 	return value;
 }
 
 double MegaDeathBulletPower::getOffenseTier(Bullet* b) {
-	double value = b->r / Tank::default_radius * destroyWallTier;
+	double value = b->r / (Bullet::default_radius*4) * destroyWallTier;
 	//return (value >= destroyWallTier ? value : 0); //this is what I originally wanted in JS Tanks, I think, but in practice isn't preferable
 	return value;
 }
