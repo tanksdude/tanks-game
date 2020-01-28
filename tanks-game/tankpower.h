@@ -21,10 +21,9 @@ public:
 		//most shouldn't be doing anything
 		return;
 	}
-	virtual void powerTick() {
+	virtual void powerTick(Tank*) {
 		timeLeft--;
 	}
-	virtual void powerTick(Tank*) { powerTick(); }
 	virtual bool isDone() {
 		return timeLeft <= 0;
 	}

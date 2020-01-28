@@ -25,8 +25,7 @@ public:
 	virtual void removeEffects(Bullet* parent) = 0; //not really needed
 
 	virtual void tick() = 0; //most will be doing a lot, though they shouldn't need this, but just in case
-	virtual void powerTick() { return; }
-	virtual void powerTick(Bullet*) { powerTick(); }
+	virtual void powerTick(Bullet*) { return; }
 	virtual bool isDone() { return false; }
 	virtual ColorValueHolder getColor() = 0;
 
