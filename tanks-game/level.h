@@ -1,6 +1,7 @@
 #pragma once
 #include "leveleffect.h"
 #include <vector>
+#include <string>
 
 class Level {
 private:
@@ -9,6 +10,18 @@ public:
 	virtual void initialize() = 0;
 	virtual void tick() = 0;
 	virtual void draw() = 0;
+	static std::string powerAlternate(int position, int rand, std::string p1, std::string p2) {
+		return ( (int)ceil(( (float)((position * 2) % 3)) / 3) + rand) % 2 == 0 ? p1 : p2;
+		/*
+		{0,   1,   2,  3} // start
+		{0,   2,   4,  6} // *2
+		{0,   2,   1,  0} // %3, then cast to float
+		{0,  .6,  .3,  0} // /3, then add rand
+		{0,  .6,  .3,  0} (rand=0) -> ceil -> {0, 1, 1, 0}
+		{1, 1.6, 1.3,  1} (rand=1) -> ceil -> {1, 2, 2, 1}
+		{0, 1, 1, 0} OR	{1, 0, 0, 1} // %2
+		*/
+	}
 };
 
 /*

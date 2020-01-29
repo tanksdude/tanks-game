@@ -34,6 +34,7 @@
 //levels:
 #include "randomlevel.h"
 #include "emptylevel.h"
+#include "corridorlevel.h"
 
 //powers:
 #include "inheritedpowercommon.h"
@@ -793,6 +794,7 @@ int main(int argc, char** argv) {
 
 	levelLookup.insert({ "random", new RandomLevel() });
 	levelLookup.insert({ "empty", new EmptyLevel() });
+	levelLookup.insert({ "corridor", new CorridorLevel() });
 
 	powerLookup.insert({ "speed",  SpeedPower::factory });
 	powerLookup.insert({ "wallhack",  WallhackPower::factory });
