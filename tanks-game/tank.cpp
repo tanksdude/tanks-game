@@ -213,7 +213,7 @@ double Tank::getBulletAcceleration() {
 		}
 	}
 	return highest + lowest;
-	//return (highest > lowest ? highest : lowest);
+	//return (abs(highest) > abs(lowest) ? highest : lowest);
 }
 
 void Tank::powerCalculate() {
@@ -257,7 +257,7 @@ double Tank::getCannonAngle(int i) {
 }
 
 double Tank::getRealCannonAngle(int i) {
-	return fmod(fmod(shootingPoints->at(i).angle + angle, 2 * PI) + 2 * PI, 2 * PI);
+	return fmod(fmod(shootingPoints->at(i).angle + angle, 2*PI) + 2*PI, 2*PI);
 }
 
 void Tank::drawCPU() {
