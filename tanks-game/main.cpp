@@ -916,13 +916,14 @@ int main(int argc, char** argv) {
  * * * where do I even start (besides batching)?
  * * * can have rect and circle store their stuff, then have every drawing thing just scale and rotate as needed
  * 80% theoretical foundation: no hazards
- * 60% actual foundation: not every "modification function" actually does something in the main
- * 20% game code:
+ * 70% actual foundation: not every "modification function" actually does something in the main
+ * 25% game code:
  * * first off, don't know what will be final beyond the ideas located in power.h and elsewhere
  * * second, it's a complete estimate (obviously) and this is a restatement of the first
  * * third, 100% probably won't be "finished" on this scale (restatement of the second?)
  * * fourth, percentage is horribly imprecise because, like most people, I think about completion percentages on personal projects in 5% increments (restatement of third)
  * * fifth, here's what's next:
- * * * invincibility series of powerups (overhaul priority handling)
- * * * even later: newer levels
+ * * * new powerups
+ * * * new levels
+ * * * hazards, and soon
  */

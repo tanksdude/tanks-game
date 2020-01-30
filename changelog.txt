@@ -1,7 +1,8 @@
 0.1.2 (obviously not here yet)
 bullet acceleration
-a new level?
-either banana, grenade, fire/blast, or all
+corridor level
+transparency in color is interpreted (not fully implemented) (also disabled now)
+powerups: grenade, fire, blast
 
 0.1.1
 invincibility n' stuff (invincibility, big, megadeath)
