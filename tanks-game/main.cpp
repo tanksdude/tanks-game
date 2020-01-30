@@ -792,20 +792,32 @@ int main(int argc, char** argv) {
 	specialKeyStates.insert({ GLUT_KEY_RIGHT, false });
 	specialKeyStates.insert({ GLUT_KEY_DOWN, false });
 
-	levelLookup.insert({ "random", new RandomLevel() });
-	levelLookup.insert({ "empty", new EmptyLevel() });
-	levelLookup.insert({ "corridor", new CorridorLevel() });
+	levelList.push_back(new RandomLevel());
+	levelList.push_back(new EmptyLevel());
+	levelList.push_back(new CorridorLevel());
 
-	powerLookup.insert({ "speed",  SpeedPower::factory });
-	powerLookup.insert({ "wallhack",  WallhackPower::factory });
-	powerLookup.insert({ "bounce",  BouncePower::factory });
-	powerLookup.insert({ "multishot", MultishotPower::factory });
-	powerLookup.insert({ "triple", TriplePower::factory });
-	powerLookup.insert({ "homing", HomingPower::factory });
-	powerLookup.insert({ "invincible", InvincibleNamedPower::factory });
-	powerLookup.insert({ "big", BigNamedPower::factory });
-	powerLookup.insert({ "megadeath", MegaDeathPower::factory });
-	powerLookup.insert({ "grenade", GrenadePower::factory });
+	for (int i = 0; i < levelList.size(); i++) {
+		Level* l = levelList[i];
+		levelLookup.insert({ l->getName(), l });
+	}
+
+	powerList.push_back(SpeedPower::factory);
+	powerList.push_back(WallhackPower::factory);
+	powerList.push_back(BouncePower::factory);
+	powerList.push_back(MultishotPower::factory);
+	powerList.push_back(TriplePower::factory);
+	powerList.push_back(HomingPower::factory);
+	powerList.push_back(InvincibleNamedPower::factory);
+	powerList.push_back(BigNamedPower::factory);
+	powerList.push_back(MegaDeathPower::factory);
+	powerList.push_back(GrenadePower::factory);
+
+	for (int i = 0; i < powerList.size(); i++) {
+		PowerFunction f = powerList[i];
+		Power* p = f();
+		powerLookup.insert({ p->getName(), powerList[i] });
+		delete p;
+	}
 
 	tanks.push_back(tank1);
 	tanks.push_back(tank2);
