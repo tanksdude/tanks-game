@@ -27,6 +27,7 @@ void RandomLevel::initialize() {
 	powerups.push_back(new PowerSquare(140, 20, "invincible"));
 	powerups.push_back(new PowerSquare(160, 20, "grenade"));
 	powerups.push_back(new PowerSquare(180, 20, "fire"));
+	powerups.push_back(new PowerSquare(200, 20, "blast"));
 
 	powerups.push_back(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2 + 20, "big"));
 	powerups.push_back(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2 - 20, "megadeath"));

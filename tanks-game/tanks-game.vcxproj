@@ -139,6 +139,9 @@
     <ClCompile Include="bignamedbulletpower.cpp" />
     <ClCompile Include="bignamedpower.cpp" />
     <ClCompile Include="bignamedtankpower.cpp" />
+    <ClCompile Include="blastbulletpower.cpp" />
+    <ClCompile Include="blastpower.cpp" />
+    <ClCompile Include="blasttankpower.cpp" />
     <ClCompile Include="bouncebulletpower.cpp" />
     <ClCompile Include="bouncepower.cpp" />
     <ClCompile Include="bouncetankpower.cpp" />
@@ -199,6 +202,9 @@
     <ClInclude Include="bignamedbulletpower.h" />
     <ClInclude Include="bignamedpower.h" />
     <ClInclude Include="bignamedtankpower.h" />
+    <ClInclude Include="blastbulletpower.h" />
+    <ClInclude Include="blastpower.h" />
+    <ClInclude Include="blasttankpower.h" />
     <ClInclude Include="bouncebulletpower.h" />
     <ClInclude Include="bouncepower.h" />
     <ClInclude Include="bouncetankpower.h" />
