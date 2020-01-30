@@ -88,3 +88,7 @@ double constrain_d(double value, double min, double max) {
 	return ((value < min ? min : value) > max ? max : value);
 	//is separating it from ternary operators going to be more efficient? does it even matter?
 }
+
+bool XOR(bool a, bool b) {
+	return ((a || b) && !(a && b));
+}

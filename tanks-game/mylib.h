@@ -12,3 +12,5 @@ int findMinIndex(double*, int len);
 
 int constrain_i(int value, int min, int max);
 double constrain_d(double value, double min, double max);
+
+bool XOR(bool, bool);
