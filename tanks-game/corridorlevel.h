@@ -4,8 +4,9 @@
 #include "colorvalueholder.h"
 
 class CorridorLevel : public Level {
-	//called "evened corridors" in JS Tanks
+	//referred to as "evened corridors" in JS Tanks
 public:
+	std::string getName() { return "corridor"; }
 	void initialize();
 	void tick() { return; }
 	void draw() { return; }

@@ -7,6 +7,7 @@ class Level {
 private:
 	std::vector<LevelEffect*> effects;
 public:
+	virtual std::string getName() = 0;
 	virtual void initialize() = 0;
 	virtual void tick() = 0;
 	virtual void draw() = 0;

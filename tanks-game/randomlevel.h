@@ -9,6 +9,7 @@ class RandomLevel : public Level { //is this a level or level effect?
 		return RandomLevel::makeNewWall(x_beginning, y_beginning, width_ofArea, height_ofArea, c, 12, 8, 64, 96);
 	}
 public:
+	std::string getName() { return "random"; }
 	void initialize();
 	void tick() { return; }
 	void draw() { return; }
