@@ -152,6 +152,9 @@
     <ClCompile Include="corridorlevel.cpp" />
     <ClCompile Include="diagnostics.cpp" />
     <ClCompile Include="emptylevel.cpp" />
+    <ClCompile Include="firenamedbulletpower.cpp" />
+    <ClCompile Include="firenamedpower.cpp" />
+    <ClCompile Include="firenamedtankpower.cpp" />
     <ClCompile Include="grenadebulletpower.cpp" />
     <ClCompile Include="grenadepower.cpp" />
     <ClCompile Include="grenadetankpower.cpp" />
@@ -212,6 +215,9 @@
     <ClInclude Include="corridorlevel.h" />
     <ClInclude Include="diagnostics.h" />
     <ClInclude Include="emptylevel.h" />
+    <ClInclude Include="firenamedbulletpower.h" />
+    <ClInclude Include="firenamedpower.h" />
+    <ClInclude Include="firenamedtankpower.h" />
     <ClInclude Include="grenadebulletpower.h" />
     <ClInclude Include="grenadepower.h" />
     <ClInclude Include="grenadetankpower.h" />

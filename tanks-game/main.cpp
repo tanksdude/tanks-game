@@ -69,6 +69,9 @@
 #include "grenadetankpower.h"
 #include "grenadebulletpower.h"
 #include "grenadepower.h"
+#include "firenamedtankpower.h"
+#include "firenamedbulletpower.h"
+#include "firenamedpower.h"
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
@@ -811,6 +814,7 @@ int main(int argc, char** argv) {
 	powerList.push_back(BigNamedPower::factory);
 	powerList.push_back(MegaDeathPower::factory);
 	powerList.push_back(GrenadePower::factory);
+	powerList.push_back(FireNamedPower::factory);
 
 	for (int i = 0; i < powerList.size(); i++) {
 		PowerFunction f = powerList[i];
