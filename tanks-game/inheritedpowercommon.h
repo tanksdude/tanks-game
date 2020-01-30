@@ -34,7 +34,7 @@ public:
 	//virtual void removePower(Tank* parent);
 
 	virtual void tick() = 0;
-	virtual void powerTick() = 0;
+	//virtual void powerTick() = 0; //now it takes a parent
 
 	virtual ColorValueHolder getColor() = 0;
 

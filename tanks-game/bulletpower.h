@@ -25,8 +25,7 @@ public:
 	virtual void removeEffects(Bullet* parent) = 0; //not really needed
 
 	virtual void tick() = 0; //most will be doing a lot, though they shouldn't need this, but just in case
-	virtual void powerTick() { return; }
-	virtual void powerTick(Bullet*) { powerTick(); }
+	virtual void powerTick(Bullet*) { return; }
 	virtual bool isDone() { return false; }
 	virtual ColorValueHolder getColor() = 0;
 
@@ -77,11 +76,9 @@ public:
 	bool modifiedBulletDrawingsCanOnlyWorkIndividually = false;
 
 	virtual double getOffenseImportance() { return 0; } //"importance" = "override" value (when dealing with other powers)
-	virtual double getOffenseTier() { return 0; }
-	virtual double getOffenseTier(Bullet*) { return getOffenseTier(); }
+	virtual double getOffenseTier(Bullet*) { return 0; }
 	virtual double getDefenseImportance() { return 0; }
-	virtual double getDefenseTier() { return 0; }
-	virtual double getDefenseTier(Bullet*) { return getDefenseTier(); }
+	virtual double getDefenseTier(Bullet*) { return 0; }
 
 	//need separate offense stuff for different situations: tank vs bullet offense could be different (would it be more effective to have that stuff in modifiedTankCollision?)
 };

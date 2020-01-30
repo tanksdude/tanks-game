@@ -21,10 +21,9 @@ public:
 		//most shouldn't be doing anything
 		return;
 	}
-	virtual void powerTick() {
+	virtual void powerTick(Tank*) {
 		timeLeft--;
 	}
-	virtual void powerTick(Tank*) { powerTick(); }
 	virtual bool isDone() {
 		return timeLeft <= 0;
 	}
@@ -97,12 +96,11 @@ public:
 	virtual double getShootingMultiplier() { return 1; }
 	virtual double getBulletSpeedMultiplier() { return 1; }
 	virtual double getBulletRadiusMultiplier() { return 1; }
+	virtual double getBulletAcceleration() { return 0; }
 
 	virtual double getOffenseImportance() { return 0; } //"importance" = "override" value (when dealing with other powers)
-	virtual double getOffenseTier() { return 0; }
-	virtual double getOffenseTier(Tank*) { return getOffenseTier(); }
+	virtual double getOffenseTier(Tank*) { return 0; }
 	virtual double getDefenseImportance() { return 0; }
-	virtual double getDefenseTier() { return 0; }
-	virtual double getDefenseTier(Tank*) { return getOffenseTier(); }
+	virtual double getDefenseTier(Tank*) { return 0; }
 
 };

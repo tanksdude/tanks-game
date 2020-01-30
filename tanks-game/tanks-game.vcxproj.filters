@@ -168,6 +168,36 @@
     <ClCompile Include="megadeathtankpower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="grenadebulletpower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="grenadepower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="grenadetankpower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="corridorlevel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="firenamedbulletpower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="firenamedpower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="firenamedtankpower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="blastbulletpower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="blastpower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="blasttankpower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -357,6 +387,36 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="megadeathtankpower.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="grenadebulletpower.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="grenadepower.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="grenadetankpower.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="corridorlevel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="firenamedbulletpower.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="firenamedpower.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="firenamedtankpower.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="blastbulletpower.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="blastpower.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="blasttankpower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -12,9 +12,6 @@ private:
 	static bool bounceGenericWithCornersCornerHandler(Bullet*, double x, double y);
 
 public:
-	static bool wallhackGenericBullet(Bullet*, Wall*);
-	static bool wallhackGenericTank(Tank*, Wall*);
-	//can combine the wallhacks to take a Circle* but not a big deal
 	static bool homingGeneric(Bullet*, double, bool moveByAngle);
 	static bool bounceGeneric(Bullet*, Wall*);
 	static bool bounceGenericWithCorners(Bullet*, Wall*);

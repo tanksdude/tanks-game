@@ -118,14 +118,14 @@ void Tank::shoot() {
 	}
 }
 
-void Tank::makeBullet(double x, double y, double angle, double radius, double speed) {
+void Tank::makeBullet(double x, double y, double angle, double radius, double speed, double acc) {
 	std::vector<BulletPower*>* bp = new std::vector<BulletPower*>;
 	for (int k = 0; k < tankPowers.size(); k++) {
 		bp->push_back(tankPowers[k]->makeBulletPower());
 	}
 	bp->shrink_to_fit();
 
-	Bullet* temp = new Bullet(x, y, radius, angle, speed, id, *bp);
+	Bullet* temp = new Bullet(x, y, radius, angle, speed, acc, id, *bp);
 	bullets.push_back(temp);
 
 	//delete bp;
@@ -133,7 +133,7 @@ void Tank::makeBullet(double x, double y, double angle, double radius, double sp
 }
 
 inline void Tank::defaultMakeBullet(double x, double y, double angle) {
-	makeBullet(x, y, angle, r*getBulletRadiusMultiplier(), maxSpeed*getBulletSpeedMultiplier());
+	makeBullet(x, y, angle, r*getBulletRadiusMultiplier(), maxSpeed*getBulletSpeedMultiplier(), getBulletAcceleration());
 }
 
 void Tank::determineShootingAngles() {
@@ -199,6 +199,23 @@ double Tank::getBulletRadiusMultiplier() {
 	return highest * lowest / 4.0; //based off of r, so /4
 }
 
+double Tank::getBulletAcceleration() {
+	//look at getShootingSpeedMultiplier()
+
+	double highest = 0;
+	double lowest = 0;
+	for (int i = 0; i < tankPowers.size(); i++) {
+		double value = tankPowers[i]->getBulletAcceleration();
+		if (value < 0 && value < lowest) {
+			lowest = value;
+		} else if (value > 0 && value > highest) {
+			highest = value;
+		}
+	}
+	return highest + lowest;
+	//return (abs(highest) > abs(lowest) ? highest : lowest);
+}
+
 void Tank::powerCalculate() {
 	for (int i = tankPowers.size() - 1; i >= 0; i--) {
 		tankPowers[i]->tick(); //I don't think any power will use this, but whatever
@@ -240,7 +257,7 @@ double Tank::getCannonAngle(int i) {
 }
 
 double Tank::getRealCannonAngle(int i) {
-	return fmod(fmod(shootingPoints->at(i).angle + angle, 2 * PI) + 2 * PI, 2 * PI);
+	return fmod(fmod(shootingPoints->at(i).angle + angle, 2*PI) + 2*PI, 2*PI);
 }
 
 void Tank::drawCPU() {
@@ -390,7 +407,7 @@ void Tank::draw() {
 
 void Tank::draw(double xpos, double ypos) {
 	//shooting cooldown outline:
-	double shootingOutlinePercent = constrain<double>(shootCount/(maxShootCount*getShootingSpeedMultiplier()), 0, 1);
+	double shootingOutlinePercent = constrain_d(shootCount/(maxShootCount*getShootingSpeedMultiplier()), 0, 1);
 	unsigned int shootingOutlineVertices = Circle::numOfSides * shootingOutlinePercent;
 
 	Shader* shader = Renderer::getShader("main");
@@ -418,7 +435,7 @@ void Tank::draw(double xpos, double ypos) {
 	}
 	//second, actually draw them
 	for (int i = 0; i < sortedTankPowers.size(); i++) {
-		double powerOutlinePercent = constrain<double>(sortedTankPowers[i]->timeLeft/sortedTankPowers[i]->maxTime, 0, 1);
+		double powerOutlinePercent = constrain_d(sortedTankPowers[i]->timeLeft/sortedTankPowers[i]->maxTime, 0, 1);
 		unsigned int powerOutlineVertices = Circle::numOfSides * powerOutlinePercent;
 
 		ColorValueHolder c = sortedTankPowers[i]->getColor();

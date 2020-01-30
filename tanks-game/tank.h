@@ -55,6 +55,7 @@ public:
 
 	double getBulletSpeedMultiplier(); //BIG TODO: this isn't going to work if a bullet picks up a power; solution: worry about it later
 	double getBulletRadiusMultiplier();
+	double getBulletAcceleration();
 
 public:
 	bool turnL;
@@ -67,7 +68,7 @@ public:
 	double& giveX() { return x; }
 	double& giveY() { return y; }
 
-	void makeBullet(double x, double y, double angle, double radius, double speed); //move to private eventually, just public for emergency testing
+	void makeBullet(double x, double y, double angle, double radius, double speed, double acc); //move to private eventually, just public for emergency testing
 	void defaultMakeBullet(double x, double y, double angle);
 	//next up: make cannon points a thing; function should get list of cannon points (probably make a struct to hold x, y, angle) (for multishot), shoot function does the shooting (possibly modified uwu (for triple/shotgun))
 	void determineShootingAngles();

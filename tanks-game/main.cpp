@@ -34,6 +34,7 @@
 //levels:
 #include "randomlevel.h"
 #include "emptylevel.h"
+#include "corridorlevel.h"
 
 //powers:
 #include "inheritedpowercommon.h"
@@ -65,6 +66,15 @@
 #include "megadeathtankpower.h"
 #include "megadeathbulletpower.h"
 #include "megadeathpower.h"
+#include "grenadetankpower.h"
+#include "grenadebulletpower.h"
+#include "grenadepower.h"
+#include "firenamedtankpower.h"
+#include "firenamedbulletpower.h"
+#include "firenamedpower.h"
+#include "blasttankpower.h"
+#include "blastbulletpower.h"
+#include "blastpower.h"
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
@@ -338,6 +348,12 @@ void tick(int physicsUPS) {
 	}
 	for (int i = 0; i < bullets.size(); i++) {
 		bullets[i]->powerCalculate();
+		if (bullets[i]->isDead()) {
+			delete bullets[i];
+			bullets.erase(bullets.begin() + i);
+			i--;
+			continue;
+		}
 	}
 
 	for (int i = 0; i < tanks.size(); i++) {
@@ -782,18 +798,34 @@ int main(int argc, char** argv) {
 	specialKeyStates.insert({ GLUT_KEY_RIGHT, false });
 	specialKeyStates.insert({ GLUT_KEY_DOWN, false });
 
-	levelLookup.insert({ "random", new RandomLevel() });
-	levelLookup.insert({ "empty", new EmptyLevel() });
+	levelList.push_back(new RandomLevel());
+	levelList.push_back(new EmptyLevel());
+	levelList.push_back(new CorridorLevel());
 
-	powerLookup.insert({ "speed",  SpeedPower::factory });
-	powerLookup.insert({ "wallhack",  WallhackPower::factory });
-	powerLookup.insert({ "bounce",  BouncePower::factory });
-	powerLookup.insert({ "multishot", MultishotPower::factory });
-	powerLookup.insert({ "triple", TriplePower::factory });
-	powerLookup.insert({ "homing", HomingPower::factory });
-	powerLookup.insert({ "invincible", InvincibleNamedPower::factory });
-	powerLookup.insert({ "big", BigNamedPower::factory });
-	powerLookup.insert({ "megadeath", MegaDeathPower::factory });
+	for (int i = 0; i < levelList.size(); i++) {
+		Level* l = levelList[i];
+		levelLookup.insert({ l->getName(), l });
+	}
+
+	powerList.push_back(SpeedPower::factory);
+	powerList.push_back(WallhackPower::factory);
+	powerList.push_back(BouncePower::factory);
+	powerList.push_back(MultishotPower::factory);
+	powerList.push_back(TriplePower::factory);
+	powerList.push_back(HomingPower::factory);
+	powerList.push_back(InvincibleNamedPower::factory);
+	powerList.push_back(BigNamedPower::factory);
+	powerList.push_back(MegaDeathPower::factory);
+	powerList.push_back(GrenadePower::factory);
+	powerList.push_back(FireNamedPower::factory);
+	powerList.push_back(BlastPower::factory);
+
+	for (int i = 0; i < powerList.size(); i++) {
+		PowerFunction f = powerList[i];
+		Power* p = f();
+		powerLookup.insert({ p->getName(), powerList[i] });
+		delete p;
+	}
 
 	tanks.push_back(tank1);
 	tanks.push_back(tank2);
@@ -821,6 +853,8 @@ int main(int argc, char** argv) {
 	glEnable(GL_POINT_SMOOTH);
 	glEnable(GL_LINE_SMOOTH);
 	glDisable(GL_DEPTH_TEST);
+	//glEnable(GL_BLEND);
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	//initialize glew
 	glewExperimental = GL_TRUE;
@@ -890,13 +924,14 @@ int main(int argc, char** argv) {
  * * * where do I even start (besides batching)?
  * * * can have rect and circle store their stuff, then have every drawing thing just scale and rotate as needed
  * 80% theoretical foundation: no hazards
- * 60% actual foundation: not every "modification function" actually does something in the main
- * 20% game code:
+ * 70% actual foundation: not every "modification function" actually does something in the main
+ * 25% game code:
  * * first off, don't know what will be final beyond the ideas located in power.h and elsewhere
  * * second, it's a complete estimate (obviously) and this is a restatement of the first
  * * third, 100% probably won't be "finished" on this scale (restatement of the second?)
  * * fourth, percentage is horribly imprecise because, like most people, I think about completion percentages on personal projects in 5% increments (restatement of third)
  * * fifth, here's what's next:
- * * * invincibility series of powerups (overhaul priority handling)
- * * * even later: newer levels
+ * * * new powerups
+ * * * new levels
+ * * * hazards, and soon
  */

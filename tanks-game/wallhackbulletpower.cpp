@@ -2,7 +2,6 @@
 #include "wallhackbulletpower.h"
 #include "wallhacktankpower.h"
 #include "wallhackpower.h"
-#include "powerfunctionhelper.h"
 
 void WallhackBulletPower::initialize(Bullet*) { return; }
 void WallhackBulletPower::removeEffects(Bullet*) { return; }
@@ -12,7 +11,7 @@ TankPower* WallhackBulletPower::makeTankPower() {
 }
 
 PowerInteractionBoolHolder WallhackBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
-	return { PowerFunctionHelper::wallhackGenericBullet(b, w), false };
+	return { false, false };
 }
 
 WallhackBulletPower::WallhackBulletPower() {

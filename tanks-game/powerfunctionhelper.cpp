@@ -9,14 +9,6 @@
 #include <math.h>
 #include <iostream>
 
-bool PowerFunctionHelper::wallhackGenericBullet(Bullet*, Wall*) {
-	return false; //anticlimactic
-}
-
-bool PowerFunctionHelper::wallhackGenericTank(Tank*, Wall*) {
-	return false;
-}
-
 bool PowerFunctionHelper::bounceGeneric(Bullet* b, Wall* w) {
 	if (!CollisionHandler::partiallyCollided(b, w)) {
 		return false;

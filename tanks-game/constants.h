@@ -34,4 +34,6 @@ extern std::vector<Level*> levels; //active levels
 extern std::vector<PowerSquare*> powerups;
 
 extern std::unordered_map<std::string, Level*> levelLookup;
+extern std::vector<Level*> levelList;
 extern std::unordered_map<std::string, PowerFunction> powerLookup;
+extern std::vector<PowerFunction> powerList;

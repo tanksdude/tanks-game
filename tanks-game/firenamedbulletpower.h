@@ -1,12 +1,14 @@
 #pragma once
-class BigNamedBulletPower;
+class FireNamedBulletPower;
 
 #include "power.h"
 #include "bulletpower.h"
-#include "bignamedpower.h"
+#include "firenamedpower.h"
 
-class BigNamedBulletPower : public BulletPower {
+class FireNamedBulletPower : public BulletPower {
 protected:
+	static const double degradeAmount;
+	static const double growAmount;
 
 public:
 	virtual void initialize(Bullet* parent);
@@ -14,10 +16,16 @@ public:
 
 	virtual void tick() { return; }
 	virtual ColorValueHolder getColor() {
-		return BigNamedPower::getClassColor();
+		return FireNamedPower::getClassColor();
 	}
 
 	virtual TankPower* makeTankPower();
+
+	//bool modifiesMovement = true;
+	virtual void modifiedMovement(Bullet*);
+	//bool overridesMovement = false;
+	//bool modifiedMovementCanWorkWithOthers = true;
+	//bool modifiedMovementCanOnlyWorkIndividually = false;
 
 	//bool modifiesCollisionWithWall = true;
 	virtual PowerInteractionBoolHolder modifiedCollisionWithWall(Bullet*, Wall*);
@@ -25,10 +33,5 @@ public:
 	//bool modifiedCollisionWithWallCanWorkWithOthers = true;
 	//bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;
 
-	virtual double getOffenseImportance() { return 0; }
-	virtual double getOffenseTier(Bullet*) { return 2; }
-	virtual double getDefenseImportance() { return 0; }
-	virtual double getDefenseTier(Bullet*) { return 2; }
-
-	BigNamedBulletPower();
+	FireNamedBulletPower();
 };

@@ -80,10 +80,15 @@ int findMinIndex(double* arr, int len) { //precondition: length of array > 0
 	return index;
 }
 
-/*
-template <typename numType>
-numType constrain(numType value, numType min, numType max) {
+int constrain_i(int value, int min, int max) {
+	return ((value < min ? min : value) > max ? max : value);
+}
+
+double constrain_d(double value, double min, double max) {
 	return ((value < min ? min : value) > max ? max : value);
 	//is separating it from ternary operators going to be more efficient? does it even matter?
 }
-*/
+
+bool XOR(bool a, bool b) {
+	return ((a || b) && !(a && b));
+}

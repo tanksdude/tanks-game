@@ -23,19 +23,17 @@ PowerInteractionBoolHolder MegaDeathBulletPower::modifiedCollisionWithWall(Bulle
 }
 
 void MegaDeathBulletPower::modifiedMovement(Bullet* b) {
-	//b->velocity *= 1 + 1.0/64;
-	b->velocity += 1.0/64;
 	b->r *= 65.0/64;
 }
 
 double MegaDeathBulletPower::getDefenseTier(Bullet* b) {
-	double value = b->r / Tank::default_radius * destroyWallTier;
+	double value = b->r / (Bullet::default_radius*4) * destroyWallTier;
 	//return (value >= destroyWallTier ? value : 0);
 	return value;
 }
 
 double MegaDeathBulletPower::getOffenseTier(Bullet* b) {
-	double value = b->r / Tank::default_radius * destroyWallTier;
+	double value = b->r / (Bullet::default_radius*4) * destroyWallTier;
 	//return (value >= destroyWallTier ? value : 0); //this is what I originally wanted in JS Tanks, I think, but in practice isn't preferable
 	return value;
 }

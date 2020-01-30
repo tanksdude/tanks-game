@@ -14,7 +14,7 @@ public:
 	virtual void initialize(Bullet* parent);
 	virtual void removeEffects(Bullet* parent);
 
-	virtual void powerTick(Bullet* b); //for updating wall collision bools based 
+	virtual void powerTick(Bullet* b); //for updating wall collision bools based on size
 
 	virtual void tick() { return; }
 	virtual ColorValueHolder getColor() {
@@ -36,10 +36,8 @@ public:
 	//bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;
 
 	virtual double getOffenseImportance() { return 0; }
-	//virtual double getOffenseTier();
 	virtual double getOffenseTier(Bullet*);
 	virtual double getDefenseImportance() { return 0; }
-	//virtual double getDefenseTier();
 	virtual double getDefenseTier(Bullet*);
 
 	MegaDeathBulletPower();

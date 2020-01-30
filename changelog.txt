@@ -1,7 +1,17 @@
-0.1.2 (obviously not here yet)
-bullet acceleration
-a new level?
-either banana, grenade, fire/blast, or all
+0.1.4 (obviously definitely not here)
+class managers (bullet, tank, hazard, key presses, etc.)
+tick() separated into parts
+constants file fixed up?
+
+0.1.3 (obviously not here yet)
+hazards
+stationary turret
+
+0.1.2
+bullet acceleration (needs work)
+corridor level
+transparency in color is interpreted (not fully implemented) (also disabled now)
+powerups: grenade, fire, blast
 
 0.1.1
 invincibility n' stuff (invincibility, big, megadeath)

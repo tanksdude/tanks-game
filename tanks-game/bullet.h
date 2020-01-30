@@ -17,10 +17,13 @@ class Bullet : public Circle {
 public: //hopefully temporary
 	double angle;
 	double velocity;
+	double acceleration;
 	char id;
 	ColorValueHolder defaultColor = ColorValueHolder(.5f, .5f, .5f);
 	//ColorValueHolder* explosionColor; //needed?
 	double getAngle();
+	double alpha; //[0,100] to avoid minor float imprecision
+	bool isDead();
 
 public:
 	std::vector<BulletPower*> bulletPowers; //change eventually?
@@ -50,8 +53,8 @@ public:
 	void drawOutline(double, double);
 	
 public:
-	Bullet(double x_, double y_, double r_, double a, double vel, char id_);
-	Bullet(double x_, double y_, double r_, double a, double vel, char id_, std::vector<BulletPower*>);
+	Bullet(double x_, double y_, double r_, double a, double vel, double acc, char id_);
+	Bullet(double x_, double y_, double r_, double a, double vel, double acc, char id_, std::vector<BulletPower*>);
 	void move();
 	void draw();
 	void draw(double, double);
