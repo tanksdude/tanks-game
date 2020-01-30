@@ -177,7 +177,7 @@ void Bullet::drawBody(double xpos, double ypos) {
 		if(alpha < 100) {
 			shader->setUniform4f("u_color", 1.0f, 1.0f, 1.0f, 1.0f);
 			glm::mat4 MVPM_2 = Renderer::GenerateMatrix((r+2) * 9/8.0, (r+2) * 9/8.0, PI/2, xpos, ypos);
-			double deathPercent = constrain<double>(alpha/100, 0, 1);
+			double deathPercent = constrain_d(alpha/100, 0, 1);
 			unsigned int deathVertices = Circle::numOfSides * deathPercent;
 			shader->setUniformMat4f("u_MVP", MVPM_2);
 			Renderer::Draw(*va, *ib, *shader, deathVertices*3);

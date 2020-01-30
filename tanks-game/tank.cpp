@@ -407,7 +407,7 @@ void Tank::draw() {
 
 void Tank::draw(double xpos, double ypos) {
 	//shooting cooldown outline:
-	double shootingOutlinePercent = constrain<double>(shootCount/(maxShootCount*getShootingSpeedMultiplier()), 0, 1);
+	double shootingOutlinePercent = constrain_d(shootCount/(maxShootCount*getShootingSpeedMultiplier()), 0, 1);
 	unsigned int shootingOutlineVertices = Circle::numOfSides * shootingOutlinePercent;
 
 	Shader* shader = Renderer::getShader("main");
@@ -435,7 +435,7 @@ void Tank::draw(double xpos, double ypos) {
 	}
 	//second, actually draw them
 	for (int i = 0; i < sortedTankPowers.size(); i++) {
-		double powerOutlinePercent = constrain<double>(sortedTankPowers[i]->timeLeft/sortedTankPowers[i]->maxTime, 0, 1);
+		double powerOutlinePercent = constrain_d(sortedTankPowers[i]->timeLeft/sortedTankPowers[i]->maxTime, 0, 1);
 		unsigned int powerOutlineVertices = Circle::numOfSides * powerOutlinePercent;
 
 		ColorValueHolder c = sortedTankPowers[i]->getColor();
