@@ -35,6 +35,7 @@
 #include "randomlevel.h"
 #include "emptylevel.h"
 #include "corridorlevel.h"
+#include "bigfunlevel.h"
 
 //powers:
 #include "inheritedpowercommon.h"
@@ -801,10 +802,12 @@ int main(int argc, char** argv) {
 	levelList.push_back(new RandomLevel());
 	levelList.push_back(new EmptyLevel());
 	levelList.push_back(new CorridorLevel());
+	levelList.push_back(new BigFunLevel());
 
 	for (int i = 0; i < levelList.size(); i++) {
 		Level* l = levelList[i];
 		levelLookup.insert({ l->getName(), l });
+		levelNameList.push_back(l->getName());
 	}
 
 	powerList.push_back(SpeedPower::factory);
@@ -824,6 +827,7 @@ int main(int argc, char** argv) {
 		PowerFunction f = powerList[i];
 		Power* p = f();
 		powerLookup.insert({ p->getName(), powerList[i] });
+		powerNameList.push_back(p->getName());
 		delete p;
 	}
 
