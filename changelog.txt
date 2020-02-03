@@ -7,6 +7,10 @@ constants file fixed up?
 hazards
 stationary turret
 
+0.1.2.1
+added a fun level: only has simple powerups and big (fun with superfast shooting)
+big bullet size stacks (and other stuff can also stack)
+
 0.1.2
 bullet acceleration (needs work)
 corridor level
