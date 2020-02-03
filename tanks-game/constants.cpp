@@ -24,6 +24,8 @@ std::vector<PowerSquare*> powerups;
 
 std::unordered_map<std::string, Level*> levelLookup;
 std::vector<Level*> levelList;
+std::vector<std::string> levelNameList;
 std::unordered_map<std::string, PowerFunction> powerLookup;
 std::vector<PowerFunction> powerList;
+std::vector<std::string> powerNameList;
 
