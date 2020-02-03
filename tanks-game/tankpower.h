@@ -94,8 +94,11 @@ public:
 	bool modifiedTankDrawingsCanOnlyWorkIndividually = false;
 
 	virtual double getShootingMultiplier() { return 1; }
+	bool shootingMultiplierStacks = false;
 	virtual double getBulletSpeedMultiplier() { return 1; }
+	bool bulletSpeedStacks = false;
 	virtual double getBulletRadiusMultiplier() { return 1; }
+	bool bulletRadiusStacks = false;
 	virtual double getBulletAcceleration() { return 0; }
 
 	virtual double getOffenseImportance() { return 0; } //"importance" = "override" value (when dealing with other powers)

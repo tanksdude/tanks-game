@@ -20,6 +20,7 @@ public:
 
 	virtual double getBulletSpeedMultiplier() { return .25; }
 	virtual double getBulletRadiusMultiplier() { return 4; }
+	//bool bulletRadiusStacks = true;
 
 	BigNamedTankPower();
 };

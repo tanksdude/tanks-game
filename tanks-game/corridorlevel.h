@@ -1,6 +1,5 @@
 #pragma once
 #include "level.h"
-#include "wall.h"
 #include "colorvalueholder.h"
 
 class CorridorLevel : public Level {

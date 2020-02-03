@@ -17,4 +17,6 @@ BulletPower* BigNamedTankPower::makeBulletPower() {
 BigNamedTankPower::BigNamedTankPower() {
 	maxTime = 500;
 	timeLeft = 500;
+
+	bulletRadiusStacks = true;
 }

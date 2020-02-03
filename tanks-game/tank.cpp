@@ -155,16 +155,28 @@ double Tank::getShootingSpeedMultiplier() {
 
 	double highest = 1;
 	double lowest = 1;
+	std::vector<double> stackList;
+
 	for (int i = 0; i < tankPowers.size(); i++) {
 		double value = tankPowers[i]->getShootingMultiplier();
-		if (value < 1 && value < lowest) {
-			lowest = value;
-		} else if (value > 1 && value > highest) {
-			highest = value;
+		if (tankPowers[i]->bulletSpeedStacks) {
+			stackList.push_back(value);
+		} else {
+			if (value < 1 && value < lowest) {
+				lowest = value;
+			} else if (value > 1 && value > highest) {
+				highest = value;
+			}
 		}
 		//technically don't need to check value against 1, now do I?
 	}
-	return highest * lowest; //unintentionally works out cleanly
+
+	double value = 1;
+	for (int i = 0; i < stackList.size(); i++) {
+		value *= stackList[i];
+	}
+
+	return highest * lowest * value; //unintentionally works out cleanly
 }
 
 double Tank::getBulletSpeedMultiplier() {
@@ -172,15 +184,27 @@ double Tank::getBulletSpeedMultiplier() {
 
 	double highest = 1;
 	double lowest = 1;
+	std::vector<double> stackList;
+
 	for (int i = 0; i < tankPowers.size(); i++) {
 		double value = tankPowers[i]->getBulletSpeedMultiplier();
-		if (value < 1 && value < lowest) {
-			lowest = value;
-		} else if (value > 1 && value > highest) {
-			highest = value;
+		if (tankPowers[i]->bulletSpeedStacks) {
+			stackList.push_back(value);
+		} else {
+			if (value < 1 && value < lowest) {
+				lowest = value;
+			} else if (value > 1 && value > highest) {
+				highest = value;
+			}
 		}
 	}
-	return highest * lowest * 2; //based off of maxSpeed, so *2 //technically *4 from JS Tanks
+
+	double value = 1;
+	for (int i = 0; i < stackList.size(); i++) {
+		value *= stackList[i];
+	}
+
+	return highest * lowest * value * 2; //based off of maxSpeed, so *2 //technically *4 from JS Tanks
 }
 
 double Tank::getBulletRadiusMultiplier() {
@@ -188,15 +212,26 @@ double Tank::getBulletRadiusMultiplier() {
 
 	double highest = 1;
 	double lowest = 1;
+	std::vector<double> stackList;
+
 	for (int i = 0; i < tankPowers.size(); i++) {
 		double value = tankPowers[i]->getBulletRadiusMultiplier();
-		if (value < 1 && value < lowest) {
-			lowest = value;
-		} else if (value > 1 && value > highest) {
-			highest = value;
+		if (tankPowers[i]->bulletRadiusStacks) {
+			stackList.push_back(value);
+		} else {
+			if (value < 1 && value < lowest) {
+				lowest = value;
+			} else if (value > 1 && value > highest) {
+				highest = value;
+			}
 		}
 	}
-	return highest * lowest / 4.0; //based off of r, so /4
+
+	double value = 1;
+	for (int i = 0; i < stackList.size(); i++) {
+		value *= stackList[i];
+	}
+	return highest * lowest * value / 4.0; //based off of r, so /4
 }
 
 double Tank::getBulletAcceleration() {

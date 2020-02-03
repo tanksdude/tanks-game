@@ -136,6 +136,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="backgroundrect.cpp" />
+    <ClCompile Include="bigfunlevel.cpp" />
     <ClCompile Include="bignamedbulletpower.cpp" />
     <ClCompile Include="bignamedpower.cpp" />
     <ClCompile Include="bignamedtankpower.cpp" />
@@ -199,6 +200,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="backgroundrect.h" />
+    <ClInclude Include="bigfunlevel.h" />
     <ClInclude Include="bignamedbulletpower.h" />
     <ClInclude Include="bignamedpower.h" />
     <ClInclude Include="bignamedtankpower.h" />
