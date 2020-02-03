@@ -14,3 +14,13 @@ int constrain_i(int value, int min, int max);
 double constrain_d(double value, double min, double max);
 
 bool XOR(bool, bool);
+
+template<typename T>
+bool isInArray(T find, T* arr, int length) {
+	for (int i = 0; i < length; i++) {
+		if (arr[i] == find) {
+			return true;
+		}
+	}
+	return false;
+}
