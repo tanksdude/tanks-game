@@ -4,7 +4,8 @@
 class Hazard {
 	friend class ResetThings;
 	char id;
-	//bool canAcceptPowers; //for now, don't worry about this; first one to need it will be patrolling turret and maybe lightning (speed, multishot, big?)
+	bool canAcceptPowers;
+	//std::vector<HazardPower*> hazardPowers;
 
 public:
 	virtual ColorValueHolder getColor();

@@ -26,9 +26,6 @@
 #include "hazard.h"
 #include "circlehazard.h"
 #include "recthazard.h"
-#include "powerhazard.h"
-#include "circlepowerhazard.h"
-#include "rectpowerhazard.h"
 
 //classes with important handling functions:
 #include "collisionhandler.h"

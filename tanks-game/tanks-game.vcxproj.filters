@@ -437,15 +437,6 @@
     <ClInclude Include="recthazard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="powerhazard.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="circlepowerhazard.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rectpowerhazard.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="freeglut.dll" />

@@ -218,7 +218,6 @@
     <ClInclude Include="cannonpoint.h" />
     <ClInclude Include="circle.h" />
     <ClInclude Include="circlehazard.h" />
-    <ClInclude Include="circlepowerhazard.h" />
     <ClInclude Include="collisionhandler.h" />
     <ClInclude Include="collisionobject.h" />
     <ClInclude Include="colormixer.h" />
@@ -253,12 +252,10 @@
     <ClInclude Include="mylib.h" />
     <ClInclude Include="power.h" />
     <ClInclude Include="powerfunctionhelper.h" />
-    <ClInclude Include="powerhazard.h" />
     <ClInclude Include="powersquare.h" />
     <ClInclude Include="randomlevel.h" />
     <ClInclude Include="rect.h" />
     <ClInclude Include="recthazard.h" />
-    <ClInclude Include="rectpowerhazard.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="resetthings.h" />
     <ClInclude Include="res\vendor\glm\glm.hpp" />
