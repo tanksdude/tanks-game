@@ -7,10 +7,11 @@
 #include "indexbuffer.h"
 
 class CircleHazard : public Hazard, public Circle {
-private:
+protected:
 	static VertexArray* va;
 	static VertexBuffer* vb;
 	static IndexBuffer* ib;
 public:
 	static void initializeGPU();
+	virtual void draw() = 0;
 };

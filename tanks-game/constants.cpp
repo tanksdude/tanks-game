@@ -21,6 +21,8 @@ std::vector<Wall*> walls;
 std::vector<Bullet*> bullets;
 std::vector<Level*> levels; //active levels
 std::vector<PowerSquare*> powerups;
+std::vector<CircleHazard*> circleHazards;
+std::vector<RectHazard*> rectHazards;
 
 std::unordered_map<std::string, Level*> levelLookup;
 std::vector<Level*> levelList;

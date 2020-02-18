@@ -40,6 +40,9 @@
 #include "corridorlevel.h"
 #include "bigfunlevel.h"
 
+//hazards:
+#include "stationaryturret.h"
+
 //powers:
 #include "inheritedpowercommon.h"
 #include "powersquare.h"
@@ -142,6 +145,17 @@ void appDrawScene() {
 	Diagnostics::addName("powerups");
 	for (int i = 0; i < powerups.size(); i++) {
 		powerups[i]->draw();
+	}
+	Renderer::UnbindAll();
+	Diagnostics::endTiming();
+
+	Diagnostics::startTiming();
+	Diagnostics::addName("hazards");
+	for (int i = 0; i < circleHazards.size(); i++) {
+		circleHazards[i]->draw();
+	}
+	for (int i = 0; i < rectHazards.size(); i++) {
+		rectHazards[i]->draw();
 	}
 	Renderer::UnbindAll();
 	Diagnostics::endTiming();
@@ -346,7 +360,7 @@ void tick(int physicsUPS) {
 	Diagnostics::endTiming();
 
 	Diagnostics::startTiming();
-	Diagnostics::addName("powerCalculate and shoot");
+	Diagnostics::addName("powerCalculate and shoot and tick hazards");
 	for (int i = 0; i < tanks.size(); i++) {
 		tanks[i]->powerCalculate();
 	}
@@ -360,6 +374,12 @@ void tick(int physicsUPS) {
 		}
 	}
 
+	for (int i = 0; i < circleHazards.size(); i++) {
+		circleHazards[i]->tick();
+	}
+	for (int i = 0; i < rectHazards.size(); i++) {
+		rectHazards[i]->tick();
+	}
 	for (int i = 0; i < tanks.size(); i++) {
 		tanks[i]->shoot();
 	}
@@ -420,6 +440,25 @@ void tick(int physicsUPS) {
 			tank_dead = 1; //TODO: proper implementation
 		}
 
+	}
+	Diagnostics::endTiming();
+
+	Diagnostics::startTiming();
+	Diagnostics::addName("tank-hazards");
+	//tank to all hazards (temporary):
+	for (int i = 0; i < tanks.size(); i++) {
+		//circles:
+		for (int j = 0; j < circleHazards.size(); j++) {
+			if (CollisionHandler::partiallyCollided(tanks[i], circleHazards[j])) {
+				CollisionHandler::pushMovableAwayFromImmovable(tanks[i], circleHazards[j]);
+			}
+		}
+		//rectangles:
+		for (int j = 0; j < rectHazards.size(); j++) {
+			if (CollisionHandler::partiallyCollided(tanks[i], rectHazards[j])) {
+				CollisionHandler::pushMovableAwayFromImmovable(tanks[i], rectHazards[j]);
+			}
+		}
 	}
 	Diagnostics::endTiming();
 
@@ -639,6 +678,34 @@ void tick(int physicsUPS) {
 	}
 	Diagnostics::endTiming();
 	//bullet to wall is a big timesink, but it can only really be sped up by multithreading
+
+	Diagnostics::startTiming();
+	Diagnostics::addName("bullet-hazards");
+	//bullet to all hazards (temporary):
+	for (int i = bullets.size() - 1; i >= 0; i--) {
+		//circles:
+		bool bullet_died = false;
+		for (int j = 0; j < circleHazards.size(); j++) {
+			if (CollisionHandler::partiallyCollided(bullets[i], circleHazards[j])) {
+				delete bullets[i];
+				bullets.erase(bullets.begin() + i);
+				bullet_died = true;
+				break;
+			}
+		}
+		if (bullet_died) {
+			continue;
+		}
+		//rectangles:
+		for (int j = 0; j < rectHazards.size(); j++) {
+			if (CollisionHandler::partiallyCollided(bullets[i], rectHazards[j])) {
+				delete bullets[i];
+				bullets.erase(bullets.begin() + i);
+				break;
+			}
+		}
+	}
+	Diagnostics::endTiming();
 
 	Diagnostics::startTiming();
 	Diagnostics::addName("bullet-bullet");
@@ -875,6 +942,7 @@ int main(int argc, char** argv) {
 	tanks[0]->determineShootingAngles();
 	tanks[1]->determineShootingAngles();
 	levelLookup["random"]->initialize();
+	circleHazards.push_back(new StationaryTurret(GAME_WIDTH/2, GAME_HEIGHT/2, PI));
 
 
 	//make the classes load their vertices and indices onto VRAM to avoid CPU<->GPU syncs
@@ -932,8 +1000,8 @@ int main(int argc, char** argv) {
  * * add a gradient shader
  * * make things more efficient (way easier said than done, I suppose)
  * * * where do I even start (besides batching)?
- * * * can have rect and circle store their stuff, then have every drawing thing just scale and rotate as needed
- * 80% theoretical foundation: no hazards
+ * * * can have rect and circle store their stuff, then have every drawing thing just scale and rotate as needed (actually, this is bad on modern GPUs)
+ * 85% theoretical foundation: no hazards
  * 70% actual foundation: not every "modification function" actually does something in the main
  * 25% game code:
  * * first off, don't know what will be final beyond the ideas located in power.h and elsewhere

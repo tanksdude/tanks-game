@@ -2,19 +2,20 @@
 #include "colorvalueholder.h"
 
 class Hazard {
+protected:
 	friend class ResetThings;
 	char id;
 	bool canAcceptPowers;
 	//std::vector<HazardPower*> hazardPowers;
 
 public:
-	virtual ColorValueHolder getColor();
+	//virtual ColorValueHolder getColor();
 	virtual char getID() { return id; }
 	//virtual bool getCanAcceptPowers();
 
 	virtual void tick() = 0;
 	virtual void draw() = 0;
-	virtual void drawCPU();
+	//virtual void drawCPU();
 };
 
 /*

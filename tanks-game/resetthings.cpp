@@ -21,6 +21,15 @@ void ResetThings::reset(int) {
 	}
 	powerups.clear();
 
+	for (int i = 0; i < circleHazards.size(); i++) {
+		delete circleHazards[i];
+	}
+	for (int i = 0; i < rectHazards.size(); i++) {
+		delete rectHazards[i];
+	}
+	circleHazards.clear();
+	rectHazards.clear();
+
 	for (int i = 0; i < levels.size(); i++) {
 		delete levels[i];
 	}
