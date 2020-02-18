@@ -23,6 +23,12 @@
 #include "bullet.h"
 #include "powersquare.h"
 #include "level.h"
+#include "hazard.h"
+#include "circlehazard.h"
+#include "recthazard.h"
+#include "powerhazard.h"
+#include "circlepowerhazard.h"
+#include "rectpowerhazard.h"
 
 //classes with important handling functions:
 #include "collisionhandler.h"
@@ -875,12 +881,15 @@ int main(int argc, char** argv) {
 
 
 	//make the classes load their vertices and indices onto VRAM to avoid CPU<->GPU syncs
+	//I now realize this is bad because modern GPUs are set up for streaming VRAM data instead of being very VRAM-starved and will fix this eventually (basically, each object has its own VA instead of each one using their class's VA)
 	Renderer::Initialize();
 	Bullet::initializeGPU();
 	BackgroundRect::initializeGPU();
 	PowerSquare::initializeGPU();
 	Wall::initializeGPU();
 	Tank::initializeGPU();
+	RectHazard::initializeGPU();
+	CircleHazard::initializeGPU();
 
 
 	// Set callback for drawing the scene
