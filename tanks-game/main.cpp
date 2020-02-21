@@ -339,14 +339,14 @@ void tick(int physicsUPS) {
 	for (int i = 0; i < tanks.size(); i++) {
 		tanks[i]->move();
 	}
-	cout << "1: " << bullets.size() << endl;
+	
 	for (int i = 0; i < circleHazards.size(); i++) {
 		circleHazards[i]->tick();
 	}
 	for (int i = 0; i < rectHazards.size(); i++) {
 		rectHazards[i]->tick();
 	}
-	cout << "2: " << bullets.size() << endl;
+	
 	for (int i = 0; i < bullets.size(); i++) {
 		bullets[i]->move();
 	}
