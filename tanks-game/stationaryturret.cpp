@@ -1,6 +1,9 @@
 #pragma once
 #include "stationaryturret.h"
 #include "renderer.h"
+#include "colormixer.h"
+#include "constants.h"
+#include <math.h>
 #include "tank.h"
 
 StationaryTurret::StationaryTurret(double xpos, double ypos, double angle) {
@@ -9,10 +12,11 @@ StationaryTurret::StationaryTurret(double xpos, double ypos, double angle) {
 	this->angle = angle;
 	r = Tank::default_radius / 4;
 
-	tickCycle = 200;
+	tickCycle = 200; //100 is JS default (because of shooting speed) and 200 just looks weird (change in a "gamify update")
+	//so I don't forget the gamify update: make an actual random level (don't leave the powers in their testing places), restore shooting speed and bullet speed to JS, and other JS game-y stuff
 	maxState = 3;
 	stateMultiplier = new short[maxState] {2, 1, 2};
-	stateColors = new ColorValueHolder[maxState] {getColor(), {1.0f, 0x22/255.0, 0x11/255.0}, {0, 0.5f, 1.0f} };
+	stateColors = new ColorValueHolder[maxState] { {.5f, .5f, .5f}, {1.0f, 0x22/255.0, 0x11/255.0}, {0, 0.5f, 1.0f} };
 
 	canAcceptPowers = false;
 }
@@ -23,30 +27,41 @@ StationaryTurret::StationaryTurret(double xpos, double ypos, double angle, doubl
 
 StationaryTurret::~StationaryTurret() {
 	delete[] stateMultiplier;
+	delete[] stateColors;
 }
 
 void StationaryTurret::tick() {
 	tickCount++;
-	bool stateChanged = false;
-	if (tickCount >= tickCycle * stateMultiplier[currentState]) {
-		tickCount = 0;
-		++currentState %= maxState;
-		stateChanged = true;
-	}
-
-	if (currentState == 0) {
-
-	} else if (currentState == 1) {
-		
-	} else { //currentState == 2
-		if (stateChanged) {
-			//fire bullet
+	bool mustShoot = false; //in case two state cycles happen at once (this will have annoying unit tests)
+	while (tickCount >= tickCycle * stateMultiplier[currentState]) {
+		if (tickCycle * stateMultiplier[currentState] <= 0) {
+			tickCount = 0;
+			currentState = 2;
+			mustShoot = true;
+			break;
+		} else {
+			tickCount -= tickCycle * stateMultiplier[currentState];
+			++currentState %= maxState;
+			if (currentState == 2) {
+				mustShoot = true;
+			}
 		}
+	}
+	if (mustShoot) {
+		bullets.push_back(new Bullet(x + r*cos(angle), y + r*sin(angle), r/2, angle, 2, 0, -1)); //default speed is 4? (at least in JS)
+		bullets[bullets.size() - 1]->move(); //otherwise the bullet will spawn inside the turret
 	}
 }
 
 ColorValueHolder StationaryTurret::getColor() {
-	return ColorValueHolder(.5f, .5f, .5f);
+	return ColorMixer::mix(stateColors[currentState], stateColors[(currentState+1)%maxState], tickCount/(tickCycle*stateMultiplier[currentState]));
+}
+
+ColorValueHolder StationaryTurret::getColor(short state) {
+	if (state < 0) {
+		return stateColors[0];
+	}
+	return stateColors[state % maxState];
 }
 
 void StationaryTurret::draw() {
