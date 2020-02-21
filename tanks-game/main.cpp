@@ -334,11 +334,19 @@ void tick(int physicsUPS) {
 	//TODO: each tick portion needs to go in its own separate function; that way a level can override some parts of it without having to rewrite everything
 
 	Diagnostics::startTiming();
-	Diagnostics::addName("move");
+	Diagnostics::addName("move and hazard tick");
 	//move everything
 	for (int i = 0; i < tanks.size(); i++) {
 		tanks[i]->move();
 	}
+	cout << "1: " << bullets.size() << endl;
+	for (int i = 0; i < circleHazards.size(); i++) {
+		circleHazards[i]->tick();
+	}
+	for (int i = 0; i < rectHazards.size(); i++) {
+		rectHazards[i]->tick();
+	}
+	cout << "2: " << bullets.size() << endl;
 	for (int i = 0; i < bullets.size(); i++) {
 		bullets[i]->move();
 	}
@@ -360,7 +368,7 @@ void tick(int physicsUPS) {
 	Diagnostics::endTiming();
 
 	Diagnostics::startTiming();
-	Diagnostics::addName("powerCalculate and shoot and tick hazards");
+	Diagnostics::addName("powerCalculate and tank shoot");
 	for (int i = 0; i < tanks.size(); i++) {
 		tanks[i]->powerCalculate();
 	}
@@ -372,13 +380,6 @@ void tick(int physicsUPS) {
 			i--;
 			continue;
 		}
-	}
-
-	for (int i = 0; i < circleHazards.size(); i++) {
-		circleHazards[i]->tick();
-	}
-	for (int i = 0; i < rectHazards.size(); i++) {
-		rectHazards[i]->tick();
 	}
 	for (int i = 0; i < tanks.size(); i++) {
 		tanks[i]->shoot();
