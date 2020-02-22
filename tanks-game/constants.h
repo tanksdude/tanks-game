@@ -12,15 +12,14 @@
 #include "circlehazard.h"
 #include "recthazard.h"
 
-typedef void(*voidFunction)(void);
-typedef Power*(*PowerFunction)(void);
-
-extern const double PI; //so this exists in math.h ... I'll remove it later
+//these 5 are all that's really needed:
+extern const double PI; //this doesn't need to exist but typing the #define before the #include<math.h> is annoying
 extern ColorValueHolder backColor;
-
 extern const double GAME_WIDTH;
 extern const double GAME_HEIGHT;
 extern glm::mat4 proj;
+
+//typedef void(*voidFunction)(void); //this isn't used
 
 extern const ColorValueHolder* defaultExplosionColor;
 
@@ -40,6 +39,7 @@ extern std::vector<RectHazard*> rectHazards;
 extern std::unordered_map<std::string, Level*> levelLookup;
 extern std::vector<Level*> levelList;
 extern std::vector<std::string> levelNameList;
+typedef Power*(*PowerFunction)(void);
 extern std::unordered_map<std::string, PowerFunction> powerLookup;
 extern std::vector<PowerFunction> powerList;
 extern std::vector<std::string> powerNameList;

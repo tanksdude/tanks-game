@@ -1,8 +1,10 @@
 #pragma once
 #include "constants.h"
 #include "res/vendor/glm/gtc/matrix_transform.hpp"
+#define _USE_MATH_DEFINES
+#include <math.h>
 
-const double PI = 3.141592653589793238462643383279502884L;
+const double PI = M_PI;
 ColorValueHolder backColor = ColorValueHolder(0xDD/255.0, 0xDD/255.0, 0xDD/255.0);
 
 const double GAME_WIDTH = 640;
