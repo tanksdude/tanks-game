@@ -309,14 +309,142 @@ void special_keyboard_up(int key, int x, int y) {
 	specialKeyStates[key] = false;
 }
 
+//tick stuff:
+void boolMovementUpdate();
+void moveTanks();
+void tankToPowerup();
+void tickHazards();
+void moveBullets();
+void tankPowerCalculate();
+void bulletPowerCalculate();
+void tankShoot();
+void tankToWall();
+void tankToHazard();
+void tankToTank();
+void tankToEdge();
+void bulletToEdge();
+void bulletToWall();
+void bulletToHazard();
+void bulletToBullet();
+void bulletToTank();
 
 void tick(int physicsUPS) {
 	//while (currentlyDrawing) {}
 
 	auto start = Diagnostics::getTime();
 
+	//update the bools for movement on tanks:
+	boolMovementUpdate();
+
+	//move tanks:
+	moveTanks();
+
+	//collide tanks with powerups:
 	Diagnostics::startTiming();
-	Diagnostics::addName("bool movement");
+	Diagnostics::addName("tank to powerups");
+	tankToPowerup();
+	Diagnostics::endTiming();
+	
+	//tick hazards:
+	tickHazards();
+	
+	//move bullets:
+	moveBullets();
+
+	//powerCalculate on tanks and bullets, then tank shoot:
+	Diagnostics::startTiming();
+	Diagnostics::addName("powerCalculate and tank shoot");
+	tankPowerCalculate();
+	bulletPowerCalculate();
+	tankShoot();
+	Diagnostics::endTiming();
+
+	//collide tanks with walls:
+	Diagnostics::startTiming();
+	Diagnostics::addName("tank to walls");
+	tankToWall();
+	Diagnostics::endTiming();
+
+	//collide tanks with hazards:
+	Diagnostics::startTiming();
+	Diagnostics::addName("tank-hazards");
+	tankToHazard();
+	Diagnostics::endTiming();
+
+	//collide tanks with tanks:
+	Diagnostics::startTiming();
+	Diagnostics::addName("tank-tank");
+	tankToTank();
+	Diagnostics::endTiming();
+
+	//collide tanks against edges:
+	tankToEdge();
+	
+	//collide bullets against edges:
+	Diagnostics::startTiming();
+	Diagnostics::addName("bullet-edge");
+	bulletToEdge();
+	Diagnostics::endTiming();
+
+	//collide bullets with walls:
+	Diagnostics::startTiming();
+	Diagnostics::addName("bullet-wall");
+	bulletToWall();
+	Diagnostics::endTiming();
+	//bullet to wall is a big timesink, but it can only really be sped up by multithreading
+
+	//collide bullets with hazards:
+	Diagnostics::startTiming();
+	Diagnostics::addName("bullet-hazards");
+	bulletToHazard();
+	Diagnostics::endTiming();
+	//probably another big timesink, but there aren't many hazards
+
+	//collide bullets with bullets:
+	Diagnostics::startTiming();
+	Diagnostics::addName("bullet-bullet");
+	bulletToBullet();
+	Diagnostics::endTiming();
+	//bullet to bullet collision is the biggest timesink (obviously)
+	//unfortunately it can only be O(n^2), and multithreading doesn't seem like it would work
+
+	//collide bullets with tanks:
+	Diagnostics::startTiming();
+	Diagnostics::addName("bullet-tank");
+	bulletToTank();
+	Diagnostics::endTiming();
+
+	//edge constrain tanks again in case bullet decided to move tank
+	//don't edge constrain if said tank is dead //fix: implement
+	/*
+	tankToEdge();
+	*/
+
+	auto end = Diagnostics::getTime();
+
+	//Diagnostics::printPreciseTimings();
+	Diagnostics::clearTimes();
+
+	//std::cout << "tick: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << "ms" << endl << endl;
+
+	trueFrameCount++;
+	if (tank_dead == 0) {
+		glutTimerFunc(1000/physicsUPS, tick, physicsUPS);
+		if (frameCount == 0) {
+			glutPostRedisplay();
+		}
+		++frameCount %= ticksUntilFrame;
+	} else {
+		tank_dead = 0;
+		glutPostRedisplay();
+		glutTimerFunc(1000, ResetThings::reset, 0);
+		glutTimerFunc(1000 + 1000/physicsUPS, tick, physicsUPS);
+	}
+}
+void tick() { tick(physicsRate); }
+void draw() { glutPostRedisplay(); }
+
+void boolMovementUpdate() {
 	//temporary: need to figure out better implementation
 	tanks[0]->forward = normalKeyStates['w'];
 	tanks[0]->turnL = normalKeyStates['a'];
@@ -327,32 +455,17 @@ void tick(int physicsUPS) {
 	tanks[1]->turnL = specialKeyStates[GLUT_KEY_LEFT];
 	tanks[1]->turnR = specialKeyStates[GLUT_KEY_RIGHT];
 	tanks[1]->shooting = specialKeyStates[GLUT_KEY_DOWN];
-	Diagnostics::endTiming();
 
-	//TODO: each tick portion needs to go in its own separate function; that way a level can override some parts of it without having to rewrite everything
+	//better implementation: tank takes movement keys when constructed
+}
 
-	Diagnostics::startTiming();
-	Diagnostics::addName("move and hazard tick");
-	//move everything
+void moveTanks() {
 	for (int i = 0; i < tanks.size(); i++) {
 		tanks[i]->move();
 	}
-	
-	for (int i = 0; i < circleHazards.size(); i++) {
-		circleHazards[i]->tick();
-	}
-	for (int i = 0; i < rectHazards.size(); i++) {
-		rectHazards[i]->tick();
-	}
-	
-	for (int i = 0; i < bullets.size(); i++) {
-		bullets[i]->move();
-	}
-	Diagnostics::endTiming();
+}
 
-	Diagnostics::startTiming();
-	Diagnostics::addName("powerup-tank");
-	//do the special things
+void tankToPowerup() {
 	for (int i = powerups.size() - 1; i >= 0; i--) {
 		for (int j = 0; j < tanks.size(); j++) {
 			if (CollisionHandler::partiallyCollided(powerups[i], tanks[j])) {
@@ -363,13 +476,30 @@ void tick(int physicsUPS) {
 			}
 		}
 	}
-	Diagnostics::endTiming();
+}
 
-	Diagnostics::startTiming();
-	Diagnostics::addName("powerCalculate and tank shoot");
+void tickHazards() {
+	for (int i = 0; i < circleHazards.size(); i++) {
+		circleHazards[i]->tick();
+	}
+	for (int i = 0; i < rectHazards.size(); i++) {
+		rectHazards[i]->tick();
+	}
+}
+
+void moveBullets() {
+	for (int i = 0; i < bullets.size(); i++) {
+		bullets[i]->move();
+	}
+}
+
+void tankPowerCalculate() {
 	for (int i = 0; i < tanks.size(); i++) {
 		tanks[i]->powerCalculate();
 	}
+}
+
+void bulletPowerCalculate() {
 	for (int i = 0; i < bullets.size(); i++) {
 		bullets[i]->powerCalculate();
 		if (bullets[i]->isDead()) {
@@ -379,14 +509,15 @@ void tick(int physicsUPS) {
 			continue;
 		}
 	}
+}
+
+void tankShoot() {
 	for (int i = 0; i < tanks.size(); i++) {
 		tanks[i]->shoot();
 	}
-	Diagnostics::endTiming();
+}
 
-	Diagnostics::startTiming();
-	Diagnostics::addName("tank-wall");
-	//tank to wall collision:
+void tankToWall() {
 	for (int i = 0; i < tanks.size(); i++) {
 		bool shouldBeKilled = false; //maybe the walls are poison with a certain powerup? I dunno, but gotta have it as an option
 
@@ -440,11 +571,10 @@ void tick(int physicsUPS) {
 		}
 
 	}
-	Diagnostics::endTiming();
+}
 
-	Diagnostics::startTiming();
-	Diagnostics::addName("tank-hazards");
-	//tank to all hazards (temporary):
+void tankToHazard() {
+	//temporary!
 	for (int i = 0; i < tanks.size(); i++) {
 		//circles:
 		for (int j = 0; j < circleHazards.size(); j++) {
@@ -459,10 +589,9 @@ void tick(int physicsUPS) {
 			}
 		}
 	}
-	Diagnostics::endTiming();
+}
 
-	Diagnostics::startTiming();
-	Diagnostics::addName("tank-tank");
+void tankToTank() {
 	for (int i = 0; i < tanks.size(); i++) {
 		bool shouldBeKilled = false;
 		for (int j = 0; j < tanks.size(); j++) {
@@ -519,14 +648,12 @@ void tick(int physicsUPS) {
 			tank_dead = 1;
 		}
 	}
-	Diagnostics::endTiming();
+}
 
-	Diagnostics::startTiming();
-	Diagnostics::addName("tank-edge");
-	//tank to edge collision:
+void tankToEdge() {
 	for (int i = 0; i < tanks.size(); i++) {
 		bool shouldBeKilled = false;
-		
+
 		bool modifiedEdgeCollision = false;
 		bool overridedEdgeCollision = false;
 		bool noMoreEdgeCollisionSpecials = false;
@@ -565,11 +692,9 @@ void tick(int physicsUPS) {
 			tank_dead = 1;
 		}
 	}
-	Diagnostics::endTiming();
+}
 
-	Diagnostics::startTiming();
-	Diagnostics::addName("bullet-edge");
-	//bullet to edge collision:
+void bulletToEdge() {
 	for (int i = bullets.size() - 1; i >= 0; i--) {
 		bool modifiedEdgeCollision = false;
 		bool overridedEdgeCollision = false;
@@ -615,11 +740,9 @@ void tick(int physicsUPS) {
 			continue;
 		}
 	}
-	Diagnostics::endTiming();
+}
 
-	Diagnostics::startTiming();
-	Diagnostics::addName("bullet-wall");
-	//bullet to wall collision:
+void bulletToWall() {
 	for (int i = bullets.size() - 1; i >= 0; i--) {
 		bool shouldBeKilled = false;
 
@@ -675,12 +798,10 @@ void tick(int physicsUPS) {
 			bullets.erase(bullets.begin() + i);
 		}
 	}
-	Diagnostics::endTiming();
-	//bullet to wall is a big timesink, but it can only really be sped up by multithreading
+}
 
-	Diagnostics::startTiming();
-	Diagnostics::addName("bullet-hazards");
-	//bullet to all hazards (temporary):
+void bulletToHazard() {
+	//temporary!
 	for (int i = bullets.size() - 1; i >= 0; i--) {
 		//circles:
 		bool bullet_died = false;
@@ -704,11 +825,9 @@ void tick(int physicsUPS) {
 			}
 		}
 	}
-	Diagnostics::endTiming();
+}
 
-	Diagnostics::startTiming();
-	Diagnostics::addName("bullet-bullet");
-	//bullet collision:
+void bulletToBullet() {
 	//TODO: modernize (add default vs custom collision stuff)
 	for (int i = bullets.size() - 1; i >= 0; i--) {
 		for (int j = bullets.size() - 1; j >= 0; j--) { //could start at i-1? //fix: find out
@@ -762,13 +881,9 @@ void tick(int physicsUPS) {
 			}
 		}
 	}
-	Diagnostics::endTiming();
-	//bullet to bullet collision is the biggest timesink (obviously)
-	//unfortunately it can only be O(n^2), and multithreading doesn't seem like it would work
+}
 
-	Diagnostics::startTiming();
-	Diagnostics::addName("bullet-tank");
-	//bullet to tank collision:
+void bulletToTank() {
 	//TODO: modernize (add default vs custom collision stuff)
 	for (int i = 0; i < tanks.size(); i++) {
 		for (int j = 0; j < bullets.size(); j++) {
@@ -816,41 +931,7 @@ void tick(int physicsUPS) {
 			}
 		}
 	}
-	Diagnostics::endTiming();
-
-	//edge constrain tanks again in case bullet decides to move tank
-	//don't edge constrain if said tank is dead //fix: implement
-	/*
-	for (int i = 0; i < tanks.size(); i++) {
-		//if (tanks[i]->isOutOfBounds())) {
-			tanks[i]->edgeConstrain();
-		//}
-	}
-	*/
-
-	auto end = Diagnostics::getTime();
-
-	//Diagnostics::printPreciseTimings();
-	Diagnostics::clearTimes();
-
-	//std::cout << "tick: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << "ms" << endl << endl;
-
-	trueFrameCount++;
-	if (tank_dead == 0) {
-		glutTimerFunc(1000/physicsUPS, tick, physicsUPS);
-		if (frameCount == 0) {
-			glutPostRedisplay();
-		}
-		++frameCount %= ticksUntilFrame;
-	} else {
-		tank_dead = 0;
-		glutPostRedisplay();
-		glutTimerFunc(1000, ResetThings::reset, 0);
-		glutTimerFunc(1000 + 1000/physicsUPS, tick, physicsUPS);
-	}
 }
-void tick() { tick(physicsRate); }
-void draw() { glutPostRedisplay(); }
 
 
 
