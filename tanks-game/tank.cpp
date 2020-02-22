@@ -221,7 +221,7 @@ double Tank::getBulletSpeedMultiplier() {
 		value *= stackList[i];
 	}
 
-	return highest * lowest * value * 2; //based off of maxSpeed, so *2 //technically *4 from JS Tanks
+	return highest * lowest * value * 4; //based off of maxSpeed, so *4 //honestly, while *4 is the JS speed that makes the game faster and more fun, *2 is all right
 }
 
 double Tank::getBulletRadiusMultiplier() {

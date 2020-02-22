@@ -83,7 +83,7 @@ private:
 	void resetThings(double x, double y, double a, char id, std::string name);
 
 	double shootCount = 0;
-	double maxShootCount = 200; //temporary? //should be 100
+	double maxShootCount = 100;
 
 public:
 	//helper stuff:
