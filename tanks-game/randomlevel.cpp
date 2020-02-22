@@ -7,6 +7,7 @@
 #include <time.h>
 #include <math.h>
 #include "stationaryturret.h" //TODO: vector and hashtable of hazards
+#include "powerupmanager.h"
 
 void RandomLevel::initialize() {
 	int randPos = rand() % 5;
@@ -22,26 +23,31 @@ void RandomLevel::initialize() {
 
 	circleHazards.push_back(new StationaryTurret(GAME_WIDTH/2, GAME_HEIGHT/2, double(rand())/double(RAND_MAX+1) * 2*PI));
 
-	powerups.push_back(new PowerSquare(20, 20, "speed"));
-	powerups.push_back(new PowerSquare(40, 20, "wallhack"));
-	powerups.push_back(new PowerSquare(60, 20, "bounce"));
-	powerups.push_back(new PowerSquare(80, 20, "multishot"));
-	powerups.push_back(new PowerSquare(100, 20, "triple"));
-	powerups.push_back(new PowerSquare(120, 20, "homing"));
-	powerups.push_back(new PowerSquare(140, 20, "invincible"));
-	powerups.push_back(new PowerSquare(160, 20, "grenade"));
-	powerups.push_back(new PowerSquare(180, 20, "fire"));
-	powerups.push_back(new PowerSquare(200, 20, "blast"));
+	PowerupManager::pushPowerup(new PowerSquare(20, 20, "speed"));
+	PowerupManager::pushPowerup(new PowerSquare(40, 20, "wallhack"));
+	PowerupManager::pushPowerup(new PowerSquare(60, 20, "bounce"));
+	PowerupManager::pushPowerup(new PowerSquare(80, 20, "multishot"));
+	PowerupManager::pushPowerup(new PowerSquare(100, 20, "triple"));
+	PowerupManager::pushPowerup(new PowerSquare(120, 20, "homing"));
+	PowerupManager::pushPowerup(new PowerSquare(140, 20, "invincible"));
+	PowerupManager::pushPowerup(new PowerSquare(160, 20, "grenade"));
+	PowerupManager::pushPowerup(new PowerSquare(180, 20, "fire"));
+	PowerupManager::pushPowerup(new PowerSquare(200, 20, "blast"));
 
-	powerups.push_back(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2 + 20, "big"));
-	powerups.push_back(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2 - 20, "megadeath"));
+	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2 + 20, "big"));
+	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2 - 20, "megadeath"));
 
-	powerups.push_back(new PowerSquare(GAME_WIDTH-20, GAME_HEIGHT-20, new std::string[2]{ "multishot", "multishot" }, 2));
-	powerups.push_back(new PowerSquare(GAME_WIDTH-40, GAME_HEIGHT-20, new std::string[2]{ "speed", "wallhack" }, 2));
-	powerups.push_back(new PowerSquare(GAME_WIDTH-60, GAME_HEIGHT-20, new std::string[2]{ "bounce", "homing" }, 2));
-	powerups.push_back(new PowerSquare(GAME_WIDTH-80, GAME_HEIGHT-20, new std::string[2]{ "bounce", "big" }, 2));
-	powerups.push_back(new PowerSquare(GAME_WIDTH-100, GAME_HEIGHT-20, new std::string[2]{ "wallhack", "grenade" }, 2));
-	//are those memory leaks?
+	std::string* names = new std::string[2]{ "multishot", "multishot" };
+	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH-20, GAME_HEIGHT-20, names, 2));
+	names[0] = "speed", names[1] = "wallhack";
+	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH-40, GAME_HEIGHT-20, names, 2));
+	names[0] = "bounce", names[1] = "homing";
+	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH-60, GAME_HEIGHT-20, names, 2));
+	names[0] = "bounce", names[1] = "big";
+	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH-80, GAME_HEIGHT-20, names, 2));
+	names[0] = "wallhack", names[1] = "grenade";
+	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH-100, GAME_HEIGHT-20, names, 2));
+	delete[] names;
 }
 
 Wall* RandomLevel::makeNewWall(double x_beginning, double y_beginning, double width_ofArea, double height_ofArea, ColorValueHolder c, double minW, double minH, double maxW, double maxH) {

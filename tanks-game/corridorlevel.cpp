@@ -5,6 +5,7 @@
 #include "wall.h"
 #include <math.h>
 #include <string>
+#include "powerupmanager.h"
 
 void CorridorLevel::initialize() {
 	int randPos = rand() % 5;
@@ -23,15 +24,15 @@ void CorridorLevel::initialize() {
 	for (int i = 0; i < 4; i++)
 		walls.push_back(new Wall(112 + i % 2 * (320 + 18 - 112), 36 + (i / 2) * 230, 320 - 112 - 18, 18, color));
 
-	powerups.push_back(new PowerSquare(320, 160, "bounce"));
+	PowerupManager::pushPowerup(new PowerSquare(320, 160, "bounce"));
 
 	int tempRand = rand() % 2;
 	for (int i = 0; i < 4; i++)
-		powerups.push_back(new PowerSquare(320 + (i % 2 * 2 - 1) * 190, 160 + ((i / 2) * 2 - 1) * 142, Level::powerAlternate(i, tempRand, "invincible", "wallhack")));
+		PowerupManager::pushPowerup(new PowerSquare(320 + (i % 2 * 2 - 1) * 190, 160 + ((i / 2) * 2 - 1) * 142, Level::powerAlternate(i, tempRand, "invincible", "wallhack")));
 
 	tempRand = rand() % 2;
 	for (int i = 0; i < 4; i++)
-		powerups.push_back(new PowerSquare(320 + (i % 2 * 2 - 1) * 190, 160 + ((i / 2) * 2 - 1) * 90, Level::powerAlternate(i, tempRand, "speed", "big"))); //big=life here
+		PowerupManager::pushPowerup(new PowerSquare(320 + (i % 2 * 2 - 1) * 190, 160 + ((i / 2) * 2 - 1) * 90, Level::powerAlternate(i, tempRand, "speed", "big"))); //big=life here
 }
 
 CorridorLevel::CorridorLevel() { return; }

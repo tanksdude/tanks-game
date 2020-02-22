@@ -6,6 +6,7 @@
 #include <math.h>
 #include <string>
 #include "randomlevel.h"
+#include "powerupmanager.h"
 
 void BigFunLevel::initialize() {
 	int randPos = rand() % 5;
@@ -31,7 +32,7 @@ void BigFunLevel::initialize() {
 	for (int i = 0; i < 4; i++) {
 		int count = rand() % 3 + 1; //{1, 2, 3}
 		std::string* randPowers = RandomLevel::getRandomPowers(count, true, 6, possiblePowers);
-		powerups.push_back(new PowerSquare(320 - (320-128) * ((i%2)*2-1), 160 - (160-16) * ((i/2)*2-1), randPowers, count));
+		PowerupManager::pushPowerup(new PowerSquare(320 - (320-128) * ((i%2)*2-1), 160 - (160-16) * ((i/2)*2-1), randPowers, count));
 		delete[] randPowers;
 	}
 }

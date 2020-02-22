@@ -2,6 +2,7 @@
 #include "resetthings.h"
 #include "constants.h"
 #include "bulletmanager.h"
+#include "powerupmanager.h"
 
 void ResetThings::reset(int) {
 	tanks[0]->resetThings(20, GAME_HEIGHT/2, 0, tanks[0]->getID(), tanks[0]->getName());
@@ -17,10 +18,10 @@ void ResetThings::reset(int) {
 	}
 	BulletManager::bullets.clear();
 
-	for (int i = 0; i < powerups.size(); i++) {
-		delete powerups[i];
+	for (int i = 0; i < PowerupManager::getNumPowerups(); i++) {
+		delete PowerupManager::powerups[i];
 	}
-	powerups.clear();
+	PowerupManager::powerups.clear();
 
 	for (int i = 0; i < circleHazards.size(); i++) {
 		delete circleHazards[i];

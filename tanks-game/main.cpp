@@ -26,7 +26,9 @@
 #include "hazard.h"
 #include "circlehazard.h"
 #include "recthazard.h"
+//managers:
 #include "bulletmanager.h"
+#include "powerupmanager.h"
 
 //classes with important handling functions:
 #include "collisionhandler.h"
@@ -142,8 +144,8 @@ void appDrawScene() {
 
 	Diagnostics::startTiming();
 	Diagnostics::addName("powerups");
-	for (int i = 0; i < powerups.size(); i++) {
-		powerups[i]->draw();
+	for (int i = 0; i < PowerupManager::getNumPowerups(); i++) {
+		PowerupManager::getPowerup(i)->draw();
 	}
 	Renderer::UnbindAll();
 	Diagnostics::endTiming();
@@ -467,12 +469,13 @@ void moveTanks() {
 }
 
 void tankToPowerup() {
-	for (int i = powerups.size() - 1; i >= 0; i--) {
+	for (int i = PowerupManager::getNumPowerups() - 1; i >= 0; i--) {
+		PowerSquare* p = PowerupManager::getPowerup(i);
+
 		for (int j = 0; j < tanks.size(); j++) {
-			if (CollisionHandler::partiallyCollided(powerups[i], tanks[j])) {
-				powerups[i]->givePower(tanks[j]);
-				delete powerups[i];
-				powerups.erase(powerups.begin() + i);
+			if (CollisionHandler::partiallyCollided(p, tanks[j])) {
+				p->givePower(tanks[j]);
+				PowerupManager::deletePowerup(i);
 				break;
 			}
 		}
