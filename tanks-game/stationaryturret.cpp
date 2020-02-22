@@ -13,8 +13,7 @@ StationaryTurret::StationaryTurret(double xpos, double ypos, double angle) {
 	this->angle = angle;
 	r = Tank::default_radius / 4;
 
-	tickCycle = 200; //100 is JS default (because of shooting speed) and 200 just looks weird (change in a "gamify update")
-	//so I don't forget the gamify update: make an actual random level (don't leave the powers in their testing places), restore shooting speed and bullet speed to JS, and other JS game-y stuff
+	tickCycle = 100; //100 is JS default (because of shooting speed) and 200 just looks weird
 	maxState = 3;
 	stateMultiplier = new short[maxState] {2, 1, 2};
 	stateColors = new ColorValueHolder[maxState] { {.5f, .5f, .5f}, {1.0f, 0x22/255.0, 0x11/255.0}, {0, 0.5f, 1.0f} };
