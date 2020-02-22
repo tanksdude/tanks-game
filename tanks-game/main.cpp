@@ -1014,6 +1014,8 @@ int main(int argc, char** argv) {
 	tanks.push_back(new Tank(620, 160, PI, 1, "Arrow Keys"));
 
 	BulletManager::initialize();
+	PowerupManager::initialize();
+	WallManager::initialize();
 
 	/*
 	for (int i = 0; i < 4; i++) {
@@ -1082,7 +1084,7 @@ int main(int argc, char** argv) {
  * * add a gradient shader
  * * make things more efficient (way easier said than done, I suppose)
  * * * where do I even start (besides batching)?
- * 90% theoretical foundation: no hazard powers
+ * 90% theoretical foundation: no hazard powers, no level... anything
  * 70% actual foundation: not every "modification function" actually does something in the main
  * 25% game code:
  * * first off, don't know what will be final beyond the ideas located in power.h and elsewhere

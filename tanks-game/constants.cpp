@@ -26,6 +26,7 @@ std::vector<Level*> levels; //active levels
 std::vector<CircleHazard*> circleHazards;
 std::vector<RectHazard*> rectHazards;
 
+//TODO: figure out good solution to managing these
 std::unordered_map<std::string, Level*> levelLookup;
 std::vector<Level*> levelList;
 std::vector<std::string> levelNameList;

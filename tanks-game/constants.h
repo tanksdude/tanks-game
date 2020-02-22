@@ -36,6 +36,7 @@ extern std::vector<Level*> levels; //active levels
 extern std::vector<CircleHazard*> circleHazards;
 extern std::vector<RectHazard*> rectHazards;
 
+//TODO: figure out good solution to managing these
 extern std::unordered_map<std::string, Level*> levelLookup;
 extern std::vector<Level*> levelList;
 extern std::vector<std::string> levelNameList;
