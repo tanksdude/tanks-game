@@ -30,6 +30,7 @@
 #include "bulletmanager.h"
 #include "powerupmanager.h"
 #include "wallmanager.h"
+#include "hazardmanager.h"
 
 //classes with important handling functions:
 #include "collisionhandler.h"
@@ -153,11 +154,11 @@ void appDrawScene() {
 
 	Diagnostics::startTiming();
 	Diagnostics::addName("hazards");
-	for (int i = 0; i < circleHazards.size(); i++) {
-		circleHazards[i]->draw();
+	for (int i = 0; i < HazardManager::getNumCircleHazards(); i++) {
+		HazardManager::getCircleHazard(i)->draw();
 	}
-	for (int i = 0; i < rectHazards.size(); i++) {
-		rectHazards[i]->draw();
+	for (int i = 0; i < HazardManager::getNumRectHazards(); i++) {
+		HazardManager::getRectHazard(i)->draw();
 	}
 	Renderer::UnbindAll();
 	Diagnostics::endTiming();
@@ -484,11 +485,11 @@ void tankToPowerup() {
 }
 
 void tickHazards() {
-	for (int i = 0; i < circleHazards.size(); i++) {
-		circleHazards[i]->tick();
+	for (int i = 0; i < HazardManager::getNumCircleHazards(); i++) {
+		HazardManager::getCircleHazard(i)->tick();
 	}
-	for (int i = 0; i < rectHazards.size(); i++) {
-		rectHazards[i]->tick();
+	for (int i = 0; i < HazardManager::getNumRectHazards(); i++) {
+		HazardManager::getRectHazard(i)->tick();
 	}
 }
 
@@ -583,15 +584,17 @@ void tankToHazard() {
 	//temporary!
 	for (int i = 0; i < tanks.size(); i++) {
 		//circles:
-		for (int j = 0; j < circleHazards.size(); j++) {
-			if (CollisionHandler::partiallyCollided(tanks[i], circleHazards[j])) {
-				CollisionHandler::pushMovableAwayFromImmovable(tanks[i], circleHazards[j]);
+		for (int j = 0; j < HazardManager::getNumCircleHazards(); j++) {
+			CircleHazard* ch = HazardManager::getCircleHazard(j);
+			if (CollisionHandler::partiallyCollided(tanks[i], ch)) {
+				CollisionHandler::pushMovableAwayFromImmovable(tanks[i], ch);
 			}
 		}
 		//rectangles:
-		for (int j = 0; j < rectHazards.size(); j++) {
-			if (CollisionHandler::partiallyCollided(tanks[i], rectHazards[j])) {
-				CollisionHandler::pushMovableAwayFromImmovable(tanks[i], rectHazards[j]);
+		for (int j = 0; j < HazardManager::getNumRectHazards(); j++) {
+			RectHazard* rh = HazardManager::getRectHazard(j);
+			if (CollisionHandler::partiallyCollided(tanks[i], rh)) {
+				CollisionHandler::pushMovableAwayFromImmovable(tanks[i], rh);
 			}
 		}
 	}
@@ -813,8 +816,8 @@ void bulletToHazard() {
 
 		bool bullet_died = false;
 		//circles:
-		for (int j = 0; j < circleHazards.size(); j++) {
-			if (CollisionHandler::partiallyCollided(b, circleHazards[j])) {
+		for (int j = 0; j < HazardManager::getNumCircleHazards(); j++) {
+			if (CollisionHandler::partiallyCollided(b, HazardManager::getCircleHazard(j))) {
 				BulletManager::deleteBullet(i);
 				bullet_died = true;
 				break;
@@ -824,8 +827,8 @@ void bulletToHazard() {
 			continue;
 		}
 		//rectangles:
-		for (int j = 0; j < rectHazards.size(); j++) {
-			if (CollisionHandler::partiallyCollided(b, rectHazards[j])) {
+		for (int j = 0; j < HazardManager::getNumRectHazards(); j++) {
+			if (CollisionHandler::partiallyCollided(b, HazardManager::getRectHazard(j))) {
 				BulletManager::deleteBullet(i);
 				break;
 			}
@@ -1016,6 +1019,7 @@ int main(int argc, char** argv) {
 	BulletManager::initialize();
 	PowerupManager::initialize();
 	WallManager::initialize();
+	HazardManager::initialize();
 
 	/*
 	for (int i = 0; i < 4; i++) {

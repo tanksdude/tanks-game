@@ -23,8 +23,8 @@ std::vector<Tank*> tanks;
 //std::vector<Bullet*> bullets;
 std::vector<Level*> levels; //active levels
 //std::vector<PowerSquare*> powerups;
-std::vector<CircleHazard*> circleHazards;
-std::vector<RectHazard*> rectHazards;
+//std::vector<CircleHazard*> circleHazards;
+//std::vector<RectHazard*> rectHazards;
 
 //TODO: figure out good solution to managing these
 std::unordered_map<std::string, Level*> levelLookup;

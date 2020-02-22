@@ -33,8 +33,8 @@ extern std::vector<Tank*> tanks; //pretty much no point in having a manager for 
 //extern std::vector<Bullet*> bullets;
 extern std::vector<Level*> levels; //active levels
 //extern std::vector<PowerSquare*> powerups;
-extern std::vector<CircleHazard*> circleHazards;
-extern std::vector<RectHazard*> rectHazards;
+//extern std::vector<CircleHazard*> circleHazards;
+//extern std::vector<RectHazard*> rectHazards;
 
 //TODO: figure out good solution to managing these
 extern std::unordered_map<std::string, Level*> levelLookup;

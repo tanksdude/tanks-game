@@ -4,6 +4,7 @@
 #include "bulletmanager.h"
 #include "powerupmanager.h"
 #include "wallmanager.h"
+#include "hazardmanager.h"
 
 void ResetThings::reset(int) {
 	tanks[0]->resetThings(20, GAME_HEIGHT/2, 0, tanks[0]->getID(), tanks[0]->getName());
@@ -24,14 +25,14 @@ void ResetThings::reset(int) {
 	}
 	PowerupManager::powerups.clear();
 
-	for (int i = 0; i < circleHazards.size(); i++) {
-		delete circleHazards[i];
+	for (int i = 0; i < HazardManager::getNumCircleHazards(); i++) {
+		delete HazardManager::circleHazards[i];
 	}
-	for (int i = 0; i < rectHazards.size(); i++) {
-		delete rectHazards[i];
+	for (int i = 0; i < HazardManager::getNumRectHazards(); i++) {
+		delete HazardManager::rectHazards[i];
 	}
-	circleHazards.clear();
-	rectHazards.clear();
+	HazardManager::circleHazards.clear();
+	HazardManager::rectHazards.clear();
 
 	for (int i = 0; i < levels.size(); i++) {
 		delete levels[i];

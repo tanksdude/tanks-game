@@ -164,6 +164,7 @@
     <ClCompile Include="grenadebulletpower.cpp" />
     <ClCompile Include="grenadepower.cpp" />
     <ClCompile Include="grenadetankpower.cpp" />
+    <ClCompile Include="hazardmanager.cpp" />
     <ClCompile Include="homingbulletpower.cpp" />
     <ClCompile Include="homingpower.cpp" />
     <ClCompile Include="homingtankpower.cpp" />
@@ -238,6 +239,7 @@
     <ClInclude Include="grenadepower.h" />
     <ClInclude Include="grenadetankpower.h" />
     <ClInclude Include="hazard.h" />
+    <ClInclude Include="hazardmanager.h" />
     <ClInclude Include="homingbulletpower.h" />
     <ClInclude Include="homingpower.h" />
     <ClInclude Include="homingtankpower.h" />
