@@ -12,6 +12,10 @@ ColorValueHolder ColorMixer::mix(ColorValueHolder a, ColorValueHolder b) {
 	return ColorValueHolder((a.getRf() + b.getRf())/2, (a.getGf() + b.getGf())/2, (a.getBf() + b.getBf())/2);
 }
 
+ColorValueHolder ColorMixer::mix(ColorValueHolder a, ColorValueHolder b, double amt) {
+	return ColorValueHolder((a.getRf() + (b.getRf() - a.getRf())*amt), (a.getGf() + (b.getGf() - a.getGf())*amt), (a.getBf() + (b.getBf() - a.getBf())*amt));
+}
+
 ColorValueHolder ColorMixer::mix(ColorValueHolder* c, int num) { //not sure this is being used
 	float* colors = new float[3]{ 0,0,0 };
 	for (int i = 0; i < num; i++) {

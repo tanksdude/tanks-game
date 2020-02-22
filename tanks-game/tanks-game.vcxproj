@@ -149,6 +149,7 @@
     <ClCompile Include="bullet.cpp" />
     <ClCompile Include="bulletpriorityhandler.cpp" />
     <ClCompile Include="cannonpoint.cpp" />
+    <ClCompile Include="circlehazard.cpp" />
     <ClCompile Include="collisionhandler.cpp" />
     <ClCompile Include="colormixer.cpp" />
     <ClCompile Include="colorvalueholder.cpp" />
@@ -181,12 +182,14 @@
     <ClCompile Include="powerfunctionhelper.cpp" />
     <ClCompile Include="powersquare.cpp" />
     <ClCompile Include="randomlevel.cpp" />
+    <ClCompile Include="recthazard.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="resetthings.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="speedbulletpower.cpp" />
     <ClCompile Include="speedpower.cpp" />
     <ClCompile Include="speedtankpower.cpp" />
+    <ClCompile Include="stationaryturret.cpp" />
     <ClCompile Include="tank.cpp" />
     <ClCompile Include="triplebulletpower.cpp" />
     <ClCompile Include="triplepower.cpp" />
@@ -215,6 +218,7 @@
     <ClInclude Include="bulletpriorityhandler.h" />
     <ClInclude Include="cannonpoint.h" />
     <ClInclude Include="circle.h" />
+    <ClInclude Include="circlehazard.h" />
     <ClInclude Include="collisionhandler.h" />
     <ClInclude Include="collisionobject.h" />
     <ClInclude Include="colormixer.h" />
@@ -252,6 +256,7 @@
     <ClInclude Include="powersquare.h" />
     <ClInclude Include="randomlevel.h" />
     <ClInclude Include="rect.h" />
+    <ClInclude Include="recthazard.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="resetthings.h" />
     <ClInclude Include="res\vendor\glm\glm.hpp" />
@@ -261,6 +266,7 @@
     <ClInclude Include="speedbulletpower.h" />
     <ClInclude Include="speedpower.h" />
     <ClInclude Include="speedtankpower.h" />
+    <ClInclude Include="stationaryturret.h" />
     <ClInclude Include="tank.h" />
     <ClInclude Include="tankpower.h" />
     <ClInclude Include="triplebulletpower.h" />

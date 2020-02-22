@@ -201,6 +201,15 @@
     <ClCompile Include="bigfunlevel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="circlehazard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="recthazard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="stationaryturret.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -423,6 +432,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="bigfunlevel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="circlehazard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="recthazard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stationaryturret.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

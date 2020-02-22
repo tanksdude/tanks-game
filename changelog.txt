@@ -1,11 +1,21 @@
-0.1.4 (obviously definitely not here)
-class managers (bullet, tank, hazard, key presses, etc.)
-tick() separated into parts
-constants file fixed up?
+0.2.0 (obviously super definitely not here)
+all objects load their vertices onto VRAM when initialized (instead of using one circle/rect and modifying it)
+* (that's a massive performance increase on modern GPUs... if I did batching; only a large performance increase instead)
+* batching is probably easier to implement now
+
+0.1.4 "gamify" (obviously definitely not here)
+actual levels used instead of only the developer level
+* ackchyually there were other levels in the game but they were only selectable if you changed a few lines
+other cleanup that makes developing easier:
+* constants file fixed up, now primarily holds default constant values for things (stuff like tank radius)
+* class managers (bullet, tank, hazard, key presses, etc.)
+* tick() separated into parts (not a big change but... cleanup!)
+constants and speeds restored to faster JS settings because slow Tanks isn't fun Tanks
 
 0.1.3 (obviously not here yet)
-hazards
-stationary turret
+hazards (no hazard powers yet)
+stationary turret mostly implemented
+* doesn't display its shooting angle 
 
 0.1.2.1
 added a fun level: only has simple powerups and big (fun with superfast shooting)

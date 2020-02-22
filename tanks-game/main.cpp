@@ -23,6 +23,9 @@
 #include "bullet.h"
 #include "powersquare.h"
 #include "level.h"
+#include "hazard.h"
+#include "circlehazard.h"
+#include "recthazard.h"
 
 //classes with important handling functions:
 #include "collisionhandler.h"
@@ -36,6 +39,9 @@
 #include "emptylevel.h"
 #include "corridorlevel.h"
 #include "bigfunlevel.h"
+
+//hazards:
+#include "stationaryturret.h"
 
 //powers:
 #include "inheritedpowercommon.h"
@@ -88,8 +94,6 @@ using namespace std;
 unordered_map<unsigned char, bool> normalKeyStates;
 unordered_map<int, bool> specialKeyStates;
 
-Tank* tank1 = new Tank(20, 160, 0, 0, "WASD");
-Tank* tank2 = new Tank(620, 160, PI, 1, "Arrow Keys");
 int tank_dead = 0;
 
 long frameCount = 0; //doesn't need a long for how it's interpreted...
@@ -139,6 +143,17 @@ void appDrawScene() {
 	Diagnostics::addName("powerups");
 	for (int i = 0; i < powerups.size(); i++) {
 		powerups[i]->draw();
+	}
+	Renderer::UnbindAll();
+	Diagnostics::endTiming();
+
+	Diagnostics::startTiming();
+	Diagnostics::addName("hazards");
+	for (int i = 0; i < circleHazards.size(); i++) {
+		circleHazards[i]->draw();
+	}
+	for (int i = 0; i < rectHazards.size(); i++) {
+		rectHazards[i]->draw();
 	}
 	Renderer::UnbindAll();
 	Diagnostics::endTiming();
@@ -317,11 +332,19 @@ void tick(int physicsUPS) {
 	//TODO: each tick portion needs to go in its own separate function; that way a level can override some parts of it without having to rewrite everything
 
 	Diagnostics::startTiming();
-	Diagnostics::addName("move");
+	Diagnostics::addName("move and hazard tick");
 	//move everything
 	for (int i = 0; i < tanks.size(); i++) {
 		tanks[i]->move();
 	}
+	
+	for (int i = 0; i < circleHazards.size(); i++) {
+		circleHazards[i]->tick();
+	}
+	for (int i = 0; i < rectHazards.size(); i++) {
+		rectHazards[i]->tick();
+	}
+	
 	for (int i = 0; i < bullets.size(); i++) {
 		bullets[i]->move();
 	}
@@ -343,7 +366,7 @@ void tick(int physicsUPS) {
 	Diagnostics::endTiming();
 
 	Diagnostics::startTiming();
-	Diagnostics::addName("powerCalculate and shoot");
+	Diagnostics::addName("powerCalculate and tank shoot");
 	for (int i = 0; i < tanks.size(); i++) {
 		tanks[i]->powerCalculate();
 	}
@@ -356,7 +379,6 @@ void tick(int physicsUPS) {
 			continue;
 		}
 	}
-
 	for (int i = 0; i < tanks.size(); i++) {
 		tanks[i]->shoot();
 	}
@@ -417,6 +439,25 @@ void tick(int physicsUPS) {
 			tank_dead = 1; //TODO: proper implementation
 		}
 
+	}
+	Diagnostics::endTiming();
+
+	Diagnostics::startTiming();
+	Diagnostics::addName("tank-hazards");
+	//tank to all hazards (temporary):
+	for (int i = 0; i < tanks.size(); i++) {
+		//circles:
+		for (int j = 0; j < circleHazards.size(); j++) {
+			if (CollisionHandler::partiallyCollided(tanks[i], circleHazards[j])) {
+				CollisionHandler::pushMovableAwayFromImmovable(tanks[i], circleHazards[j]);
+			}
+		}
+		//rectangles:
+		for (int j = 0; j < rectHazards.size(); j++) {
+			if (CollisionHandler::partiallyCollided(tanks[i], rectHazards[j])) {
+				CollisionHandler::pushMovableAwayFromImmovable(tanks[i], rectHazards[j]);
+			}
+		}
 	}
 	Diagnostics::endTiming();
 
@@ -638,6 +679,34 @@ void tick(int physicsUPS) {
 	//bullet to wall is a big timesink, but it can only really be sped up by multithreading
 
 	Diagnostics::startTiming();
+	Diagnostics::addName("bullet-hazards");
+	//bullet to all hazards (temporary):
+	for (int i = bullets.size() - 1; i >= 0; i--) {
+		//circles:
+		bool bullet_died = false;
+		for (int j = 0; j < circleHazards.size(); j++) {
+			if (CollisionHandler::partiallyCollided(bullets[i], circleHazards[j])) {
+				delete bullets[i];
+				bullets.erase(bullets.begin() + i);
+				bullet_died = true;
+				break;
+			}
+		}
+		if (bullet_died) {
+			continue;
+		}
+		//rectangles:
+		for (int j = 0; j < rectHazards.size(); j++) {
+			if (CollisionHandler::partiallyCollided(bullets[i], rectHazards[j])) {
+				delete bullets[i];
+				bullets.erase(bullets.begin() + i);
+				break;
+			}
+		}
+	}
+	Diagnostics::endTiming();
+
+	Diagnostics::startTiming();
 	Diagnostics::addName("bullet-bullet");
 	//bullet collision:
 	//TODO: modernize (add default vs custom collision stuff)
@@ -786,8 +855,34 @@ void draw() { glutPostRedisplay(); }
 
 
 int main(int argc, char** argv) {
-
 	srand(time(NULL));
+
+	// Initialize GLUT
+	glutInit(&argc, argv);
+	glutInitDisplayMode(GLUT_SINGLE | GLUT_DEPTH);
+	//thanks to https://community.khronos.org/t/wglmakecurrent-issues/62656/3 for solving why a draw call would take ~15ms for no reason
+
+	// Setup window position, size, and title
+	glutInitWindowPosition(60, 60);
+	glutInitWindowSize(width, height);
+	glutCreateWindow("Tanks Test");
+
+	// Setup some OpenGL options
+	glPointSize(2);
+	glEnable(GL_POINT_SMOOTH);
+	glEnable(GL_LINE_SMOOTH);
+	glDisable(GL_DEPTH_TEST);
+	//glEnable(GL_BLEND);
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	//initialize glew
+	glewExperimental = GL_TRUE;
+	GLenum res = glewInit();
+	if (res != GLEW_OK) {
+		fprintf(stderr, "Error: '%s'\n", glewGetErrorString(res));
+		return 1;
+	}
+
 
 	//TODO: move some of this stuff to an initialization file so testing can be done
 	normalKeyStates.insert({ 'w', false });
@@ -831,8 +926,8 @@ int main(int argc, char** argv) {
 		delete p;
 	}
 
-	tanks.push_back(tank1);
-	tanks.push_back(tank2);
+	tanks.push_back(new Tank(20, 160, 0, 0, "WASD"));
+	tanks.push_back(new Tank(620, 160, PI, 1, "Arrow Keys"));
 
 	bullets.reserve(800);
 
@@ -842,32 +937,6 @@ int main(int argc, char** argv) {
 	}
 	*/
 
-	// Initialize GLUT
-	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_SINGLE | GLUT_DEPTH);
-	//thanks to https://community.khronos.org/t/wglmakecurrent-issues/62656/3 for solving why a draw call would take ~15ms for no reason
-
-	// Setup window position, size, and title
-	glutInitWindowPosition(60, 60);
-	glutInitWindowSize(width, height);
-	glutCreateWindow("Tanks Test");
-
-	// Setup some OpenGL options
-	glPointSize(2);
-	glEnable(GL_POINT_SMOOTH);
-	glEnable(GL_LINE_SMOOTH);
-	glDisable(GL_DEPTH_TEST);
-	//glEnable(GL_BLEND);
-	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	//initialize glew
-	glewExperimental = GL_TRUE;
-	GLenum res = glewInit();
-	if (res != GLEW_OK) {
-		fprintf(stderr, "Error: '%s'\n", glewGetErrorString(res));
-		return 1;
-	}
-
 	//TODO: proper solution
 	tanks[0]->determineShootingAngles();
 	tanks[1]->determineShootingAngles();
@@ -875,12 +944,15 @@ int main(int argc, char** argv) {
 
 
 	//make the classes load their vertices and indices onto VRAM to avoid CPU<->GPU syncs
+	//I now realize this is bad because modern GPUs are set up for streaming VRAM data instead of being very VRAM-starved and will fix this eventually (basically, each object has its own VA instead of each one using their class's VA)
 	Renderer::Initialize();
 	Bullet::initializeGPU();
 	BackgroundRect::initializeGPU();
 	PowerSquare::initializeGPU();
 	Wall::initializeGPU();
 	Tank::initializeGPU();
+	RectHazard::initializeGPU();
+	CircleHazard::initializeGPU();
 
 
 	// Set callback for drawing the scene
@@ -926,8 +998,7 @@ int main(int argc, char** argv) {
  * * add a gradient shader
  * * make things more efficient (way easier said than done, I suppose)
  * * * where do I even start (besides batching)?
- * * * can have rect and circle store their stuff, then have every drawing thing just scale and rotate as needed
- * 80% theoretical foundation: no hazards
+ * 90% theoretical foundation: no hazard powers
  * 70% actual foundation: not every "modification function" actually does something in the main
  * 25% game code:
  * * first off, don't know what will be final beyond the ideas located in power.h and elsewhere

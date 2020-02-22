@@ -9,6 +9,8 @@
 #include "power.h"
 #include "powersquare.h"
 #include "res/vendor/glm/glm.hpp"
+#include "circlehazard.h"
+#include "recthazard.h"
 
 typedef void(*voidFunction)(void);
 typedef Power*(*PowerFunction)(void);
@@ -32,6 +34,8 @@ extern std::vector<Wall*> walls;
 extern std::vector<Bullet*> bullets;
 extern std::vector<Level*> levels; //active levels
 extern std::vector<PowerSquare*> powerups;
+extern std::vector<CircleHazard*> circleHazards;
+extern std::vector<RectHazard*> rectHazards;
 
 extern std::unordered_map<std::string, Level*> levelLookup;
 extern std::vector<Level*> levelList;
