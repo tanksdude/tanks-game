@@ -13,6 +13,12 @@
 #include <GL/freeglut.h>
 
 const double Tank::default_radius = 16;
+VertexArray* Tank::va;
+VertexBuffer* Tank::vb;
+IndexBuffer* Tank::ib;
+VertexArray* Tank::cannon_va;
+VertexBuffer* Tank::cannon_vb;
+
 Tank::Tank(double x_, double y_, double a, char id_, std::string name_) {
 	x = x_;
 	y = y_;
@@ -22,6 +28,16 @@ Tank::Tank(double x_, double y_, double a, char id_, std::string name_) {
 	name = name_;
 
 	shootingPoints = new std::vector<CannonPoint>;
+}
+
+Tank::~Tank() {
+	//delete explosionColor;
+	for (int i = 0; i < tankPowers.size(); i++) {
+		delete tankPowers[i];
+	}
+	tankPowers.clear();
+
+	delete shootingPoints;
 }
 
 Tank::Tank() { //don't use
@@ -395,12 +411,6 @@ void Tank::drawCPU(double xpos, double ypos) {
 	glEnd();
 }
 
-VertexArray* Tank::va;
-VertexBuffer* Tank::vb;
-IndexBuffer* Tank::ib;
-VertexArray* Tank::cannon_va;
-VertexBuffer* Tank::cannon_vb;
-
 void Tank::initializeGPU() {
 	float positions[(Circle::numOfSides+1)*2];
 	for (int i = 0; i < Circle::numOfSides; i++) {
@@ -671,7 +681,6 @@ double Tank::getDefenseTier() {
 	return getHighestDefenseTier(getHighestDefenseImportance());
 }
 
-
 bool Tank::isPartiallyOutOfBounds() {
 	return ((x + r > GAME_WIDTH) || (x - r < 0) || (y + r > GAME_HEIGHT) || (y - r < 0));
 } //doesn't care if touching edge
@@ -680,12 +689,3 @@ bool Tank::isFullyOutOfBounds() {
 	return ((x - r > GAME_WIDTH) || (x + r < 0) || (y - r > GAME_HEIGHT) || (y + r < 0));
 }
 
-Tank::~Tank() {
-	//delete explosionColor;
-	for (int i = 0; i < tankPowers.size(); i++) {
-		delete tankPowers[i];
-	}
-	tankPowers.clear();
-
-	delete shootingPoints;
-}

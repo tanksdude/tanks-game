@@ -94,8 +94,6 @@ using namespace std;
 unordered_map<unsigned char, bool> normalKeyStates;
 unordered_map<int, bool> specialKeyStates;
 
-Tank* tank1 = new Tank(20, 160, 0, 0, "WASD");
-Tank* tank2 = new Tank(620, 160, PI, 1, "Arrow Keys");
 int tank_dead = 0;
 
 long frameCount = 0; //doesn't need a long for how it's interpreted...
@@ -857,8 +855,34 @@ void draw() { glutPostRedisplay(); }
 
 
 int main(int argc, char** argv) {
-
 	srand(time(NULL));
+
+	// Initialize GLUT
+	glutInit(&argc, argv);
+	glutInitDisplayMode(GLUT_SINGLE | GLUT_DEPTH);
+	//thanks to https://community.khronos.org/t/wglmakecurrent-issues/62656/3 for solving why a draw call would take ~15ms for no reason
+
+	// Setup window position, size, and title
+	glutInitWindowPosition(60, 60);
+	glutInitWindowSize(width, height);
+	glutCreateWindow("Tanks Test");
+
+	// Setup some OpenGL options
+	glPointSize(2);
+	glEnable(GL_POINT_SMOOTH);
+	glEnable(GL_LINE_SMOOTH);
+	glDisable(GL_DEPTH_TEST);
+	//glEnable(GL_BLEND);
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	//initialize glew
+	glewExperimental = GL_TRUE;
+	GLenum res = glewInit();
+	if (res != GLEW_OK) {
+		fprintf(stderr, "Error: '%s'\n", glewGetErrorString(res));
+		return 1;
+	}
+
 
 	//TODO: move some of this stuff to an initialization file so testing can be done
 	normalKeyStates.insert({ 'w', false });
@@ -902,8 +926,8 @@ int main(int argc, char** argv) {
 		delete p;
 	}
 
-	tanks.push_back(tank1);
-	tanks.push_back(tank2);
+	tanks.push_back(new Tank(20, 160, 0, 0, "WASD"));
+	tanks.push_back(new Tank(620, 160, PI, 1, "Arrow Keys"));
 
 	bullets.reserve(800);
 
@@ -913,37 +937,10 @@ int main(int argc, char** argv) {
 	}
 	*/
 
-	// Initialize GLUT
-	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_SINGLE | GLUT_DEPTH);
-	//thanks to https://community.khronos.org/t/wglmakecurrent-issues/62656/3 for solving why a draw call would take ~15ms for no reason
-
-	// Setup window position, size, and title
-	glutInitWindowPosition(60, 60);
-	glutInitWindowSize(width, height);
-	glutCreateWindow("Tanks Test");
-
-	// Setup some OpenGL options
-	glPointSize(2);
-	glEnable(GL_POINT_SMOOTH);
-	glEnable(GL_LINE_SMOOTH);
-	glDisable(GL_DEPTH_TEST);
-	//glEnable(GL_BLEND);
-	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	//initialize glew
-	glewExperimental = GL_TRUE;
-	GLenum res = glewInit();
-	if (res != GLEW_OK) {
-		fprintf(stderr, "Error: '%s'\n", glewGetErrorString(res));
-		return 1;
-	}
-
 	//TODO: proper solution
 	tanks[0]->determineShootingAngles();
 	tanks[1]->determineShootingAngles();
 	levelLookup["random"]->initialize();
-	circleHazards.push_back(new StationaryTurret(GAME_WIDTH/2, GAME_HEIGHT/2, PI));
 
 
 	//make the classes load their vertices and indices onto VRAM to avoid CPU<->GPU syncs
@@ -1001,8 +998,7 @@ int main(int argc, char** argv) {
  * * add a gradient shader
  * * make things more efficient (way easier said than done, I suppose)
  * * * where do I even start (besides batching)?
- * * * can have rect and circle store their stuff, then have every drawing thing just scale and rotate as needed (actually, this is bad on modern GPUs)
- * 85% theoretical foundation: no hazards
+ * 90% theoretical foundation: no hazard powers
  * 70% actual foundation: not every "modification function" actually does something in the main
  * 25% game code:
  * * first off, don't know what will be final beyond the ideas located in power.h and elsewhere

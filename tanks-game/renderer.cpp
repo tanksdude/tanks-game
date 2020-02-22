@@ -15,8 +15,7 @@ void Renderer::Initialize() {
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 	Shader* shader = new Shader("res/shaders/main-vertex.shader", "res/shaders/main-fragment.shader");
-	shader->Bind(); //the main shader will be used most often so it gets binded at start
-	currentShader = shader->getRendererID();
+	bindShader(shader); //the main shader will be used most often so it gets binded at start
 	shaderCache.insert({ "main", shader });
 
 	shader = new Shader("res/shaders/default-vertex.shader", "res/shaders/default-fragment.shader");
@@ -104,13 +103,13 @@ void Renderer::Unbind(const Shader& s) {
 }
 
 void Renderer::UnbindAll() {
-	glUseProgram(0); //shader
 	glBindVertexArray(0); //vertex array
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); //index buffer
+	glUseProgram(0); //shader
 
-	currentShader = -1;
 	currentVertexArray = -1;
 	currentIndexBuffer = -1;
+	currentShader = -1;
 }
 
 std::string Renderer::getErrorString(GLenum err) {
