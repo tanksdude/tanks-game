@@ -1,6 +1,7 @@
 #pragma once
 #include "resetthings.h"
 #include "constants.h"
+#include "bulletmanager.h"
 
 void ResetThings::reset(int) {
 	tanks[0]->resetThings(20, GAME_HEIGHT/2, 0, tanks[0]->getID(), tanks[0]->getName());
@@ -11,10 +12,10 @@ void ResetThings::reset(int) {
 	}
 	walls.clear();
 
-	for (int i = 0; i < bullets.size(); i++) {
-		delete bullets[i];
+	for (int i = 0; i < BulletManager::bullets.size(); i++) {
+		delete BulletManager::bullets[i];
 	}
-	bullets.clear();
+	BulletManager::bullets.clear();
 
 	for (int i = 0; i < powerups.size(); i++) {
 		delete powerups[i];

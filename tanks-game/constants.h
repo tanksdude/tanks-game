@@ -30,7 +30,7 @@ extern const double POWER_OUTLINE_MULTIPLIER;
 
 extern std::vector<Tank*> tanks;
 extern std::vector<Wall*> walls;
-extern std::vector<Bullet*> bullets;
+//extern std::vector<Bullet*> bullets;
 extern std::vector<Level*> levels; //active levels
 extern std::vector<PowerSquare*> powerups;
 extern std::vector<CircleHazard*> circleHazards;

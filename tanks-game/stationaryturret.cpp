@@ -5,6 +5,7 @@
 #include "constants.h"
 #include <math.h>
 #include "tank.h"
+#include "bulletmanager.h"
 
 StationaryTurret::StationaryTurret(double xpos, double ypos, double angle) {
 	x = xpos;
@@ -48,8 +49,7 @@ void StationaryTurret::tick() {
 		}
 	}
 	if (mustShoot) {
-		bullets.push_back(new Bullet(x + r*cos(angle), y + r*sin(angle), r/2, angle, 2, 0, -1)); //default speed is 4? (at least in JS)
-		bullets[bullets.size() - 1]->move(); //otherwise the bullet will spawn inside the turret
+		BulletManager::pushBullet(new Bullet(x + r*cos(angle), y + r*sin(angle), r/2, angle, 4, 0, -1)); //TODO: make default speed dependent on a constant that Tank uses for its default speed
 	}
 }
 

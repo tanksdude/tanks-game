@@ -20,7 +20,7 @@ const double POWER_OUTLINE_MULTIPLIER = 1.5;
 
 std::vector<Tank*> tanks;
 std::vector<Wall*> walls;
-std::vector<Bullet*> bullets;
+//std::vector<Bullet*> bullets;
 std::vector<Level*> levels; //active levels
 std::vector<PowerSquare*> powerups;
 std::vector<CircleHazard*> circleHazards;

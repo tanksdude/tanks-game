@@ -26,6 +26,7 @@
 #include "hazard.h"
 #include "circlehazard.h"
 #include "recthazard.h"
+#include "bulletmanager.h"
 
 //classes with important handling functions:
 #include "collisionhandler.h"
@@ -168,8 +169,8 @@ void appDrawScene() {
 	
 	Diagnostics::startTiming();
 	Diagnostics::addName("bullets");
-	for (int i = 0; i < bullets.size(); i++) {
-		bullets[i]->draw();
+	for (int i = 0; i < BulletManager::getNumBullets(); i++) {
+		BulletManager::getBullet(i)->draw();
 	}
 	Renderer::UnbindAll();
 	Diagnostics::endTiming();
@@ -488,8 +489,8 @@ void tickHazards() {
 }
 
 void moveBullets() {
-	for (int i = 0; i < bullets.size(); i++) {
-		bullets[i]->move();
+	for (int i = 0; i < BulletManager::getNumBullets(); i++) {
+		BulletManager::getBullet(i)->move();
 	}
 }
 
@@ -500,11 +501,11 @@ void tankPowerCalculate() {
 }
 
 void bulletPowerCalculate() {
-	for (int i = 0; i < bullets.size(); i++) {
-		bullets[i]->powerCalculate();
-		if (bullets[i]->isDead()) {
-			delete bullets[i];
-			bullets.erase(bullets.begin() + i);
+	for (int i = 0; i < BulletManager::getNumBullets(); i++) {
+		Bullet* b = BulletManager::getBullet(i);
+		b->powerCalculate();
+		if (b->isDead()) {
+			BulletManager::deleteBullet(i);
 			i--;
 			continue;
 		}
@@ -695,16 +696,17 @@ void tankToEdge() {
 }
 
 void bulletToEdge() {
-	for (int i = bullets.size() - 1; i >= 0; i--) {
+	for (int i = BulletManager::getNumBullets() - 1; i >= 0; i--) {
 		bool modifiedEdgeCollision = false;
 		bool overridedEdgeCollision = false;
 		bool noMoreEdgeCollisionSpecials = false;
 		bool shouldBeKilled = false;
+		Bullet* b = BulletManager::getBullet(i);
 
-		if (bullets[i]->isPartiallyOutOfBounds()) {
-			for (int k = 0; k < bullets[i]->bulletPowers.size(); k++) {
-				if (bullets[i]->bulletPowers[k]->modifiesCollisionWithEdge) {
-					if (bullets[i]->bulletPowers[k]->modifiedEdgeCollisionCanOnlyWorkIndividually && modifiedEdgeCollision) {
+		if (b->isPartiallyOutOfBounds()) {
+			for (int k = 0; k < b->bulletPowers.size(); k++) {
+				if (b->bulletPowers[k]->modifiesCollisionWithEdge) {
+					if (b->bulletPowers[k]->modifiedEdgeCollisionCanOnlyWorkIndividually && modifiedEdgeCollision) {
 						continue;
 					}
 					if (noMoreEdgeCollisionSpecials) {
@@ -712,14 +714,14 @@ void bulletToEdge() {
 					}
 
 					modifiedEdgeCollision = true;
-					if (bullets[i]->bulletPowers[k]->overridesEdgeCollision) {
+					if (b->bulletPowers[k]->overridesEdgeCollision) {
 						overridedEdgeCollision = true;
 					}
-					if (!bullets[i]->bulletPowers[k]->modifiedEdgeCollisionCanWorkWithOthers) {
+					if (!b->bulletPowers[k]->modifiedEdgeCollisionCanWorkWithOthers) {
 						noMoreEdgeCollisionSpecials = true;
 					}
 
-					PowerInteractionBoolHolder check_temp = bullets[i]->bulletPowers[k]->modifiedEdgeCollision(bullets[i]);
+					PowerInteractionBoolHolder check_temp = b->bulletPowers[k]->modifiedEdgeCollision(b);
 					if (check_temp.shouldDie) {
 						shouldBeKilled = true;
 					}
@@ -729,22 +731,22 @@ void bulletToEdge() {
 			if (overridedEdgeCollision) {
 				continue;
 			}
-			if (bullets[i]->isFullyOutOfBounds()) {
+			if (b->isFullyOutOfBounds()) {
 				shouldBeKilled = true;
 			}
 		}
 
 		if (shouldBeKilled) {
-			delete bullets[i];
-			bullets.erase(bullets.begin() + i);
+			BulletManager::deleteBullet(i);
 			continue;
 		}
 	}
 }
 
 void bulletToWall() {
-	for (int i = bullets.size() - 1; i >= 0; i--) {
+	for (int i = BulletManager::getNumBullets() - 1; i >= 0; i--) {
 		bool shouldBeKilled = false;
+		Bullet* b = BulletManager::getBullet(i);
 
 		for (int j = walls.size() - 1; j >= 0; j--) {
 			bool modifiedWallCollision = false;
@@ -752,10 +754,10 @@ void bulletToWall() {
 			bool noMoreWallCollisionSpecials = false;
 			bool killWall = false;
 
-			if (CollisionHandler::partiallyCollided(bullets[i], walls[j])) {
-				for (int k = 0; k < bullets[i]->bulletPowers.size(); k++) {
-					if (bullets[i]->bulletPowers[k]->modifiesCollisionWithWall) {
-						if (bullets[i]->bulletPowers[k]->modifiedCollisionWithWallCanOnlyWorkIndividually && modifiedWallCollision) {
+			if (CollisionHandler::partiallyCollided(b, walls[j])) {
+				for (int k = 0; k < b->bulletPowers.size(); k++) {
+					if (b->bulletPowers[k]->modifiesCollisionWithWall) {
+						if (b->bulletPowers[k]->modifiedCollisionWithWallCanOnlyWorkIndividually && modifiedWallCollision) {
 							continue;
 						}
 						if (noMoreWallCollisionSpecials) {
@@ -763,14 +765,14 @@ void bulletToWall() {
 						}
 
 						modifiedWallCollision = true;
-						if (bullets[i]->bulletPowers[k]->overridesCollisionWithWall) {
+						if (b->bulletPowers[k]->overridesCollisionWithWall) {
 							overridedWallCollision = true;
 						}
-						if (!bullets[i]->bulletPowers[k]->modifiedCollisionWithWallCanWorkWithOthers) {
+						if (!b->bulletPowers[k]->modifiedCollisionWithWallCanWorkWithOthers) {
 							noMoreWallCollisionSpecials = true;
 						}
 
-						PowerInteractionBoolHolder check_temp = bullets[i]->bulletPowers[k]->modifiedCollisionWithWall(bullets[i], walls[j]);
+						PowerInteractionBoolHolder check_temp = b->bulletPowers[k]->modifiedCollisionWithWall(b, walls[j]);
 						if (check_temp.shouldDie) {
 							shouldBeKilled = true;
 						}
@@ -781,7 +783,7 @@ void bulletToWall() {
 				}
 
 				if (!overridedWallCollision) {
-					if (CollisionHandler::partiallyCollided(bullets[i], walls[j])) {
+					if (CollisionHandler::partiallyCollided(b, walls[j])) {
 						shouldBeKilled = true;
 					}
 				}
@@ -794,21 +796,21 @@ void bulletToWall() {
 		}
 
 		if (shouldBeKilled) {
-			delete bullets[i];
-			bullets.erase(bullets.begin() + i);
+			BulletManager::deleteBullet(i);
 		}
 	}
 }
 
 void bulletToHazard() {
 	//temporary!
-	for (int i = bullets.size() - 1; i >= 0; i--) {
-		//circles:
+	for (int i = BulletManager::getNumBullets() - 1; i >= 0; i--) {
+		Bullet* b = BulletManager::getBullet(i);
+
 		bool bullet_died = false;
+		//circles:
 		for (int j = 0; j < circleHazards.size(); j++) {
-			if (CollisionHandler::partiallyCollided(bullets[i], circleHazards[j])) {
-				delete bullets[i];
-				bullets.erase(bullets.begin() + i);
+			if (CollisionHandler::partiallyCollided(b, circleHazards[j])) {
+				BulletManager::deleteBullet(i);
 				bullet_died = true;
 				break;
 			}
@@ -818,9 +820,8 @@ void bulletToHazard() {
 		}
 		//rectangles:
 		for (int j = 0; j < rectHazards.size(); j++) {
-			if (CollisionHandler::partiallyCollided(bullets[i], rectHazards[j])) {
-				delete bullets[i];
-				bullets.erase(bullets.begin() + i);
+			if (CollisionHandler::partiallyCollided(b, rectHazards[j])) {
+				BulletManager::deleteBullet(i);
 				break;
 			}
 		}
@@ -829,47 +830,45 @@ void bulletToHazard() {
 
 void bulletToBullet() {
 	//TODO: modernize (add default vs custom collision stuff)
-	for (int i = bullets.size() - 1; i >= 0; i--) {
-		for (int j = bullets.size() - 1; j >= 0; j--) { //could start at i-1? //fix: find out
-			if (bullets[i]->getID() == bullets[j]->getID()) {
+	for (int i = BulletManager::getNumBullets() - 1; i >= 0; i--) {
+		Bullet* b_outer = BulletManager::getBullet(i);
+
+		for (int j = BulletManager::getNumBullets() - 1; j >= 0; j--) { //could start at i-1? //fix: find out
+			Bullet* b_inner = BulletManager::getBullet(j);
+
+			if (b_outer->getID() == b_inner->getID()) {
 				continue;
 			}
-			if (CollisionHandler::partiallyCollided(bullets[i], bullets[j])) {
-				char result = BulletPriorityHandler::determinePriority(bullets[i], bullets[j]);
+			if (CollisionHandler::partiallyCollided(b_outer, b_inner)) {
+				char result = BulletPriorityHandler::determinePriority(b_outer, b_inner);
 				if (result <= -2) {
 					bool firstDies = rand()%2;
 					if (firstDies) {
-						delete bullets[i];
-						bullets.erase(bullets.begin() + i);
+						BulletManager::deleteBullet(i);
 						break;
 					} else {
-						delete bullets[j];
-						bullets.erase(bullets.begin() + j);
+						BulletManager::deleteBullet(j);
 						continue; //fix: is this supposed to be break?
 					}
 				} else if (result == -1) { //both die
-					delete bullets[i];
-					delete bullets[j];
 					if (i > j) {
-						bullets.erase(bullets.begin() + i);
-						bullets.erase(bullets.begin() + j);
+						BulletManager::deleteBullet(i);
+						BulletManager::deleteBullet(j);
 						i--;
 					} else {
-						bullets.erase(bullets.begin() + j);
-						bullets.erase(bullets.begin() + i);
+						BulletManager::deleteBullet(j);
+						BulletManager::deleteBullet(i);
 					}
 					break;
 				} else if (result >= 2) { //it's a draw, so neither dies
 					//continue;
 				} else {
 					if (result == 0) {
-						delete bullets[i];
-						bullets.erase(bullets.begin() + i);
+						BulletManager::deleteBullet(i);
 						i--;
 						break;
 					} else {
-						delete bullets[j];
-						bullets.erase(bullets.begin() + j);
+						BulletManager::deleteBullet(j);
 						if (i > j) {
 							i--;
 						}
@@ -886,20 +885,21 @@ void bulletToBullet() {
 void bulletToTank() {
 	//TODO: modernize (add default vs custom collision stuff)
 	for (int i = 0; i < tanks.size(); i++) {
-		for (int j = 0; j < bullets.size(); j++) {
-			if (bullets[j]->getID() == tanks[i]->getID()) {
+		for (int j = 0; j < BulletManager::getNumBullets(); j++) {
+			Bullet* b = BulletManager::getBullet(j);
+
+			if (b->getID() == tanks[i]->getID()) {
 				continue;
 			}
-			if (CollisionHandler::partiallyCollided(tanks[i], bullets[j])) {
-				char result = BulletPriorityHandler::determinePriority(bullets[j], tanks[i]);
+			if (CollisionHandler::partiallyCollided(tanks[i], b)) {
+				char result = BulletPriorityHandler::determinePriority(b, tanks[i]);
 				if (result <= -2) {
 					bool firstDies = rand()%2;
 					if (firstDies) {
 						tank_dead = 1;
 						continue;
 					} else {
-						delete bullets[j];
-						bullets.erase(bullets.begin() + j);
+						BulletManager::deleteBullet(j);
 						j--;
 						continue; //fix: is this supposed to be break?
 					}
@@ -907,8 +907,7 @@ void bulletToTank() {
 					tank_dead = 1;
 
 					/*
-					delete bullets[j];
-					bullets.erase(bullets.begin() + j);
+					BulletManager::deleteBullet(j);
 					j--;
 					*/
 
@@ -917,8 +916,7 @@ void bulletToTank() {
 					//continue;
 				} else {
 					if (result == 0) {
-						delete bullets[j];
-						bullets.erase(bullets.begin() + j);
+						BulletManager::deleteBullet(j);
 						j--;
 						continue; //not needed //fix: should it be break?
 					} else {
@@ -1010,7 +1008,7 @@ int main(int argc, char** argv) {
 	tanks.push_back(new Tank(20, 160, 0, 0, "WASD"));
 	tanks.push_back(new Tank(620, 160, PI, 1, "Arrow Keys"));
 
-	bullets.reserve(800);
+	BulletManager::initialize();
 
 	/*
 	for (int i = 0; i < 4; i++) {

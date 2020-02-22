@@ -11,6 +11,7 @@ class Bullet;
 #include "indexbuffer.h"
 
 class Bullet : public Circle {
+	friend class BulletManager;
 	friend class ResetThings;
 	friend class BulletPriorityHandler;
 	friend class PowerFunctionHelper;

@@ -8,6 +8,7 @@
 #include "mylib.h"
 #include "renderer.h"
 #include <glm/glm.hpp>
+#include "bulletmanager.h"
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
@@ -142,7 +143,7 @@ void Tank::makeBullet(double x, double y, double angle, double radius, double sp
 	bp->shrink_to_fit();
 
 	Bullet* temp = new Bullet(x, y, radius, angle, speed, acc, id, *bp);
-	bullets.push_back(temp);
+	BulletManager::pushBullet(temp);
 
 	//delete bp;
 	//don't delete any bp! it's being used! //(doesn't bp need to be deleted though?)
