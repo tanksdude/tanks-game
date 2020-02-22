@@ -18,6 +18,12 @@ public:
 	//double w = POWER_WIDTH;
 	//double h = POWER_HEIGHT;
 
+public:
+	static const double POWER_WIDTH;
+	static const double POWER_HEIGHT;
+	static const double POWER_LINE_WIDTH;
+	static const double POWER_OUTLINE_MULTIPLIER;
+
 private:
 	static VertexArray* va;
 	static VertexBuffer* vb;
