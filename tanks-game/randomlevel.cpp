@@ -20,7 +20,7 @@ void RandomLevel::initialize() {
 		walls.push_back(RandomLevel::makeNewWall(40, 32, GAME_WIDTH - 2*40, GAME_HEIGHT - 2*32, randColor));
 	}
 
-	circleHazards.push_back(new StationaryTurret(GAME_WIDTH/2, GAME_HEIGHT/2, double(rand())/double(RAND_MAX) * 2*PI));
+	circleHazards.push_back(new StationaryTurret(GAME_WIDTH/2, GAME_HEIGHT/2, double(rand())/double(RAND_MAX+1) * 2*PI));
 
 	powerups.push_back(new PowerSquare(20, 20, "speed"));
 	powerups.push_back(new PowerSquare(40, 20, "wallhack"));
