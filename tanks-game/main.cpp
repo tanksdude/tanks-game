@@ -29,6 +29,7 @@
 //managers:
 #include "bulletmanager.h"
 #include "powerupmanager.h"
+#include "wallmanager.h"
 
 //classes with important handling functions:
 #include "collisionhandler.h"
@@ -163,8 +164,8 @@ void appDrawScene() {
 
 	Diagnostics::startTiming();
 	Diagnostics::addName("walls");
-	for (int i = 0; i < walls.size(); i++) {
-		walls[i]->draw();
+	for (int i = 0; i < WallManager::getNumWalls(); i++) {
+		WallManager::getWall(i)->draw();
 	}
 	Renderer::UnbindAll();
 	Diagnostics::endTiming();
@@ -525,13 +526,14 @@ void tankToWall() {
 	for (int i = 0; i < tanks.size(); i++) {
 		bool shouldBeKilled = false; //maybe the walls are poison with a certain powerup? I dunno, but gotta have it as an option
 
-		for (int j = 0; j < walls.size(); j++) {
+		for (int j = 0; j < WallManager::getNumWalls(); j++) {
 			bool modifiedWallCollision = false;
 			bool overridedWallCollision = false;
 			bool noMoreWallCollisionSpecials = false;
 			bool killWall = false;
+			Wall* w = WallManager::getWall(j);
 
-			if (CollisionHandler::partiallyCollided(tanks[i], walls[j])) {
+			if (CollisionHandler::partiallyCollided(tanks[i], w)) {
 				for (int k = 0; k < tanks[i]->tankPowers.size(); k++) {
 					if (tanks[i]->tankPowers[k]->modifiesCollisionWithWall) {
 						if (tanks[i]->tankPowers[k]->modifiedCollisionWithWallCanOnlyWorkIndividually && modifiedWallCollision) {
@@ -549,7 +551,7 @@ void tankToWall() {
 							noMoreWallCollisionSpecials = true;
 						}
 
-						PowerInteractionBoolHolder check_temp = tanks[i]->tankPowers[k]->modifiedCollisionWithWall(tanks[i], walls[j]);
+						PowerInteractionBoolHolder check_temp = tanks[i]->tankPowers[k]->modifiedCollisionWithWall(tanks[i], w);
 						if (check_temp.shouldDie) {
 							shouldBeKilled = true;
 						}
@@ -560,12 +562,12 @@ void tankToWall() {
 				}
 
 				if (!overridedWallCollision) {
-					CollisionHandler::pushMovableAwayFromImmovable(tanks[i], walls[j]);
+					CollisionHandler::pushMovableAwayFromImmovable(tanks[i], w);
 				}
 			}
 
 			if (killWall) {
-				walls.erase(walls.begin() + j);
+				WallManager::deleteWall(j);
 				j--;
 			}
 		}
@@ -751,13 +753,14 @@ void bulletToWall() {
 		bool shouldBeKilled = false;
 		Bullet* b = BulletManager::getBullet(i);
 
-		for (int j = walls.size() - 1; j >= 0; j--) {
+		for (int j = WallManager::getNumWalls() - 1; j >= 0; j--) {
 			bool modifiedWallCollision = false;
 			bool overridedWallCollision = false;
 			bool noMoreWallCollisionSpecials = false;
 			bool killWall = false;
+			Wall* w = WallManager::getWall(j);
 
-			if (CollisionHandler::partiallyCollided(b, walls[j])) {
+			if (CollisionHandler::partiallyCollided(b, w)) {
 				for (int k = 0; k < b->bulletPowers.size(); k++) {
 					if (b->bulletPowers[k]->modifiesCollisionWithWall) {
 						if (b->bulletPowers[k]->modifiedCollisionWithWallCanOnlyWorkIndividually && modifiedWallCollision) {
@@ -775,7 +778,7 @@ void bulletToWall() {
 							noMoreWallCollisionSpecials = true;
 						}
 
-						PowerInteractionBoolHolder check_temp = b->bulletPowers[k]->modifiedCollisionWithWall(b, walls[j]);
+						PowerInteractionBoolHolder check_temp = b->bulletPowers[k]->modifiedCollisionWithWall(b, w);
 						if (check_temp.shouldDie) {
 							shouldBeKilled = true;
 						}
@@ -786,15 +789,14 @@ void bulletToWall() {
 				}
 
 				if (!overridedWallCollision) {
-					if (CollisionHandler::partiallyCollided(b, walls[j])) {
+					if (CollisionHandler::partiallyCollided(b, w)) {
 						shouldBeKilled = true;
 					}
 				}
 			}
 
 			if (killWall) {
-				delete walls[j];
-				walls.erase(walls.begin() + j);
+				WallManager::deleteWall(j);
 			}
 		}
 

@@ -8,6 +8,7 @@
 #include <math.h>
 #include "stationaryturret.h" //TODO: vector and hashtable of hazards
 #include "powerupmanager.h"
+#include "wallmanager.h"
 
 void RandomLevel::initialize() {
 	int randPos = rand() % 5;
@@ -18,7 +19,7 @@ void RandomLevel::initialize() {
 	ColorValueHolder randColor((rand()%256)/255.0, (rand()%256)/255.0, (rand()%256)/255.0);
 
 	for (int i = 0; i < 16; i++) {
-		walls.push_back(RandomLevel::makeNewWall(40, 32, GAME_WIDTH - 2*40, GAME_HEIGHT - 2*32, randColor));
+		WallManager::pushWall(RandomLevel::makeNewWall(40, 32, GAME_WIDTH - 2*40, GAME_HEIGHT - 2*32, randColor));
 	}
 
 	circleHazards.push_back(new StationaryTurret(GAME_WIDTH/2, GAME_HEIGHT/2, double(rand())/double(RAND_MAX+1) * 2*PI));

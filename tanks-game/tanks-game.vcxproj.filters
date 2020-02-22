@@ -216,6 +216,9 @@
     <ClCompile Include="powerupmanager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="wallmanager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -453,6 +456,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="powerupmanager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="wallmanager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

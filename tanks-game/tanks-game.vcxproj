@@ -202,6 +202,7 @@
     <ClCompile Include="wallhackbulletpower.cpp" />
     <ClCompile Include="wallhackpower.cpp" />
     <ClCompile Include="wallhacktankpower.cpp" />
+    <ClCompile Include="wallmanager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="backgroundrect.h" />
@@ -283,6 +284,7 @@
     <ClInclude Include="wallhackbulletpower.h" />
     <ClInclude Include="wallhackpower.h" />
     <ClInclude Include="wallhacktankpower.h" />
+    <ClInclude Include="wallmanager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="freeglut.dll" />

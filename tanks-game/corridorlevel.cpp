@@ -6,6 +6,7 @@
 #include <math.h>
 #include <string>
 #include "powerupmanager.h"
+#include "wallmanager.h"
 
 void CorridorLevel::initialize() {
 	int randPos = rand() % 5;
@@ -15,14 +16,14 @@ void CorridorLevel::initialize() {
 	ColorValueHolder color = ColorValueHolder(0x22/255.0, 0.5, 1.0);
 
 	for (int i = 0; i < 4; i++) {
-		walls.push_back(new Wall(320 - 240*(((3-i)/2) * 2 - 1) - 32*((((3-i)/2) + 1) % 2), i%2 * (320-128), 32, 128, color));
+		WallManager::pushWall(new Wall(320 - 240*(((3-i)/2) * 2 - 1) - 32*((((3-i)/2) + 1) % 2), i%2 * (320-128), 32, 128, color));
 	}
 	
-	walls.push_back(new Wall(320 - 90, 90, 20, 320 - 180, color));
-	walls.push_back(new Wall(320 + 70, 90, 20, 320 - 180, color));
+	WallManager::pushWall(new Wall(320 - 90, 90, 20, 320 - 180, color));
+	WallManager::pushWall(new Wall(320 + 70, 90, 20, 320 - 180, color));
 
 	for (int i = 0; i < 4; i++)
-		walls.push_back(new Wall(112 + i % 2 * (320 + 18 - 112), 36 + (i / 2) * 230, 320 - 112 - 18, 18, color));
+		WallManager::pushWall(new Wall(112 + i % 2 * (320 + 18 - 112), 36 + (i / 2) * 230, 320 - 112 - 18, 18, color));
 
 	PowerupManager::pushPowerup(new PowerSquare(320, 160, "bounce"));
 
