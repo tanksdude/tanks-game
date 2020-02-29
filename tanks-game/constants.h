@@ -22,13 +22,6 @@ extern const double TANK_RADIUS;
 
 //typedef void(*voidFunction)(void); //this isn't used
 
-extern const ColorValueHolder* defaultExplosionColor;
-
-//extern const double POWER_WIDTH;
-//extern const double POWER_HEIGHT;
-//extern const double POWER_LINE_WIDTH;
-//extern const double POWER_OUTLINE_MULTIPLIER;
-
 extern std::vector<Tank*> tanks; //pretty much no point in having a manager for the tanks (unless singleplayer is a thing, or a main menu)
 //extern std::vector<Wall*> walls;
 //extern std::vector<Bullet*> bullets;

@@ -11,13 +11,6 @@ const double GAME_HEIGHT = 320;
 glm::mat4 proj = glm::ortho(0.0f, (float)GAME_WIDTH, 0.0f, (float)GAME_HEIGHT);
 const double TANK_RADIUS = 16;
 
-const ColorValueHolder* defaultExplosionColor = new ColorValueHolder(0, 0, 0);
-
-//const double POWER_WIDTH = 6;
-//const double POWER_HEIGHT = 6;
-//const double POWER_LINE_WIDTH = .333;
-//const double POWER_OUTLINE_MULTIPLIER = 1.5;
-
 std::vector<Tank*> tanks;
 //std::vector<Wall*> walls;
 //std::vector<Bullet*> bullets;
