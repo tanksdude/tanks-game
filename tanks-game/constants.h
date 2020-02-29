@@ -12,12 +12,13 @@
 #include "circlehazard.h"
 #include "recthazard.h"
 
-//these 5 are all that's really needed:
+//these are all that's really needed:
 extern const double PI; //this doesn't need to exist but typing the #define before the #include<math.h> is annoying
 extern ColorValueHolder backColor;
 extern const double GAME_WIDTH;
 extern const double GAME_HEIGHT;
 extern glm::mat4 proj;
+extern const double TANK_RADIUS;
 
 //typedef void(*voidFunction)(void); //this isn't used
 

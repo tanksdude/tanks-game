@@ -11,7 +11,7 @@ StationaryTurret::StationaryTurret(double xpos, double ypos, double angle) {
 	x = xpos;
 	y = ypos;
 	this->angle = angle;
-	r = Tank::default_radius / 4;
+	r = TANK_RADIUS / 4;
 
 	tickCycle = 100; //100 is JS default (because of shooting speed) and 200 just looks weird
 	maxState = 3;

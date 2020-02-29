@@ -13,7 +13,6 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 
-const double Tank::default_radius = 16;
 VertexArray* Tank::va;
 VertexBuffer* Tank::vb;
 IndexBuffer* Tank::ib;
@@ -25,7 +24,7 @@ Tank::Tank(double x_, double y_, double a, char id_, std::string name_) {
 	y = y_;
 	angle = a;
 	id = id_;
-	r = Tank::default_radius;
+	r = TANK_RADIUS;
 	name = name_;
 
 	shootingPoints = new std::vector<CannonPoint>;
