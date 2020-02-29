@@ -1,15 +1,17 @@
-0.2.0 (obviously definitely not here)
+0.2.0 (obviously not here)
 all objects load their vertices onto VRAM when initialized (instead of using one circle/rect and modifying it)
 * (that's a massive performance increase on modern GPUs... if I did batching; only a large performance increase instead)
 * batching is probably easier to implement now
 
-0.1.4 "gamify" (obviously not here)
+0.1.4 "gamify"
 actual levels used instead of only the developer level
 * ackchyually there were other levels in the game but they were only selectable if you changed a few lines
 other cleanup that makes developing easier:
 * constants file fixed up, now primarily holds default constant values for things (stuff like tank radius)
+* * still has a little work but it's much better now
 * class managers (bullet, tank, hazard, key presses, etc.)
 * tick() separated into parts (not a big change but... cleanup!)
+* initialization stuff in main() moved elsewhere
 constants and speeds restored to faster JS settings because slow Tanks isn't fun Tanks
 
 0.1.3
@@ -42,9 +44,10 @@ cleanup for me (very little actual change)
 stuff. primarily the framework and some powers to test the framework. (look at commit history)
 
 future notes:
-0.2.0: fix constants file (PI, object holders)
+0.2.X: redo tank/bullet initialization; system for applying attribute changes
+0.2.X+1: bulletpower shooting dependencies removed from tankpowers (so a bulletpower doesn't need a tankpower on a tank to exist; bulletpower can tell tank what things need to change (tanks don't hold bulletpowers which is why this is merely a future note and not an already-merged commit))
 0.X.0: big change in levels or powers or something else, like bulletpower memory management (std::shared_ptr)
-A.B.0: multithreading? (std::async to start)
+0.A.0: multithreading? (std::async to start)
 1.0.0: all levels, powers, and other stuff that I want
 2.0.0: level editor and/or power editor and/or game engine something thing (save for sequel instead?)
 

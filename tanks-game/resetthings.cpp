@@ -39,5 +39,5 @@ void ResetThings::reset(int) {
 	}
 	levels.clear();
 
-	levelLookup["random"]->initialize();
+	levelLookup["dev0"]->initialize();
 }

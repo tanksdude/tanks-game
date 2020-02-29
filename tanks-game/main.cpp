@@ -41,6 +41,7 @@
 
 //levels:
 #include "randomlevel.h"
+#include "developerlevel0.h"
 #include "emptylevel.h"
 #include "corridorlevel.h"
 #include "bigfunlevel.h"
@@ -981,7 +982,7 @@ int main(int argc, char** argv) {
 	specialKeyStates.insert({ GLUT_KEY_RIGHT, false });
 	specialKeyStates.insert({ GLUT_KEY_DOWN, false });
 
-	levelList.push_back(new RandomLevel());
+	levelList.push_back(new DeveloperLevel0());
 	levelList.push_back(new EmptyLevel());
 	levelList.push_back(new CorridorLevel());
 	levelList.push_back(new BigFunLevel());
@@ -1030,7 +1031,7 @@ int main(int argc, char** argv) {
 	//TODO: proper solution
 	tanks[0]->determineShootingAngles();
 	tanks[1]->determineShootingAngles();
-	levelLookup["random"]->initialize();
+	levelLookup["dev0"]->initialize();
 
 
 	//make the classes load their vertices and indices onto VRAM to avoid CPU<->GPU syncs

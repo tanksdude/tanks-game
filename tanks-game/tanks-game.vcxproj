@@ -184,6 +184,7 @@
     <ClCompile Include="powerfunctionhelper.cpp" />
     <ClCompile Include="powersquare.cpp" />
     <ClCompile Include="powerupmanager.cpp" />
+    <ClCompile Include="developerlevel0.cpp" />
     <ClCompile Include="randomlevel.cpp" />
     <ClCompile Include="recthazard.cpp" />
     <ClCompile Include="renderer.cpp" />
@@ -261,6 +262,7 @@
     <ClInclude Include="powerfunctionhelper.h" />
     <ClInclude Include="powersquare.h" />
     <ClInclude Include="powerupmanager.h" />
+    <ClInclude Include="developerlevel0.h" />
     <ClInclude Include="randomlevel.h" />
     <ClInclude Include="rect.h" />
     <ClInclude Include="recthazard.h" />

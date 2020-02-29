@@ -39,9 +39,6 @@
     <ClCompile Include="powersquare.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="randomlevel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="resetthings.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -222,6 +219,12 @@
     <ClCompile Include="hazardmanager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="developerlevel0.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="randomlevel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -267,9 +270,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="powersquare.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="randomlevel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="rect.h">
@@ -465,6 +465,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="hazardmanager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="developerlevel0.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="randomlevel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
