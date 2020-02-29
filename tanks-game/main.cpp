@@ -30,6 +30,7 @@
 #include "bulletmanager.h"
 #include "powerupmanager.h"
 #include "wallmanager.h"
+#include "levelmanager.h"
 #include "hazardmanager.h"
 
 //classes with important handling functions:
@@ -1020,6 +1021,7 @@ int main(int argc, char** argv) {
 	BulletManager::initialize();
 	PowerupManager::initialize();
 	WallManager::initialize();
+	LevelManager::initialize();
 	HazardManager::initialize();
 
 	/*

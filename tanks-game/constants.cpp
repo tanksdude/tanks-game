@@ -21,7 +21,7 @@ const ColorValueHolder* defaultExplosionColor = new ColorValueHolder(0, 0, 0);
 std::vector<Tank*> tanks;
 //std::vector<Wall*> walls;
 //std::vector<Bullet*> bullets;
-std::vector<Level*> levels; //active levels
+//std::vector<Level*> levels; //active levels
 //std::vector<PowerSquare*> powerups;
 //std::vector<CircleHazard*> circleHazards;
 //std::vector<RectHazard*> rectHazards;

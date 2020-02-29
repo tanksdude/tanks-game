@@ -32,7 +32,7 @@ extern const ColorValueHolder* defaultExplosionColor;
 extern std::vector<Tank*> tanks; //pretty much no point in having a manager for the tanks (unless singleplayer is a thing, or a main menu)
 //extern std::vector<Wall*> walls;
 //extern std::vector<Bullet*> bullets;
-extern std::vector<Level*> levels; //active levels
+//extern std::vector<Level*> levels; //active levels
 //extern std::vector<PowerSquare*> powerups;
 //extern std::vector<CircleHazard*> circleHazards;
 //extern std::vector<RectHazard*> rectHazards;

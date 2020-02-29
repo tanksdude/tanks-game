@@ -4,6 +4,7 @@
 #include "bulletmanager.h"
 #include "powerupmanager.h"
 #include "wallmanager.h"
+#include "levelmanager.h"
 #include "hazardmanager.h"
 
 void ResetThings::reset(int) {
@@ -34,10 +35,11 @@ void ResetThings::reset(int) {
 	HazardManager::circleHazards.clear();
 	HazardManager::rectHazards.clear();
 
-	for (int i = 0; i < levels.size(); i++) {
-		delete levels[i];
+	//below code is just LevelManager::clearLevels(), but it's not being called in case it needs to be modified later
+	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
+		delete LevelManager::levels[i];
 	}
-	levels.clear();
+	LevelManager::levels.clear();
 
 	levelLookup["dev0"]->initialize();
 }
