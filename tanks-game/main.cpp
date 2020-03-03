@@ -299,7 +299,6 @@ void mouse_func(int button, int state, int x, int y) {
 }
 
 //tick stuff:
-void boolMovementUpdate();
 void moveTanks();
 void tankToPowerup();
 void tickHazards();
@@ -321,9 +320,6 @@ void tick(int physicsUPS) {
 	//while (currentlyDrawing) {}
 
 	auto start = Diagnostics::getTime();
-
-	//update the bools for movement on tanks:
-	boolMovementUpdate();
 
 	//move tanks:
 	moveTanks();
@@ -432,21 +428,6 @@ void tick(int physicsUPS) {
 }
 void tick() { tick(physicsRate); }
 void draw() { glutPostRedisplay(); }
-
-void boolMovementUpdate() {
-	//temporary: need to figure out better implementation
-	tanks[0]->forward = KeypressManager::getNormalKey('w');
-	tanks[0]->turnL = KeypressManager::getNormalKey('a');
-	tanks[0]->turnR = KeypressManager::getNormalKey('d');
-	tanks[0]->shooting = KeypressManager::getNormalKey('s');
-	//still temporary
-	tanks[1]->forward = KeypressManager::getSpecialKey(GLUT_KEY_UP);
-	tanks[1]->turnL = KeypressManager::getSpecialKey(GLUT_KEY_LEFT);
-	tanks[1]->turnR = KeypressManager::getSpecialKey(GLUT_KEY_RIGHT);
-	tanks[1]->shooting = KeypressManager::getSpecialKey(GLUT_KEY_DOWN);
-
-	//better implementation: tank takes movement keys when constructed
-}
 
 void moveTanks() {
 	for (int i = 0; i < tanks.size(); i++) {
@@ -987,8 +968,8 @@ int main(int argc, char** argv) {
 		delete p;
 	}
 
-	tanks.push_back(new Tank(20, 160, 0, 0, "WASD"));
-	tanks.push_back(new Tank(620, 160, PI, 1, "Arrow Keys"));
+	tanks.push_back(new Tank(20, 160, 0, 0, "WASD", { false, 'w' }, { false, 'a' }, { false, 'd' }, { false, 's' }));
+	tanks.push_back(new Tank(620, 160, PI, 1, "Arrow Keys", { true, GLUT_KEY_UP }, { true, GLUT_KEY_LEFT }, { true, GLUT_KEY_RIGHT }, { true, GLUT_KEY_DOWN }));
 
 	KeypressManager::initialize();
 	BulletManager::initialize();
