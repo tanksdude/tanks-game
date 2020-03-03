@@ -42,6 +42,9 @@ void ResetThings::reset(int) {
 	}
 	LevelManager::levels.clear();
 
+#if _DEBUG
+	LevelManager::getLevelByName("dev0")->initialize();
+#else
 	int randLevel = rand() % LevelManager::getNumLevelTypes();
 	std::string levelName = LevelManager::getLevelName(randLevel);
 	if (levelName != "default random" || levelName == "dev0" || levelName == "empty") {
@@ -53,4 +56,5 @@ void ResetThings::reset(int) {
 		}
 	}
 	LevelManager::getLevelByName(levelName)->initialize();
+#endif
 }
