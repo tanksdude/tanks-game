@@ -28,6 +28,7 @@
 #include "recthazard.h"
 //managers:
 #include "keypressmanager.h"
+#include "tankmanager.h"
 #include "bulletmanager.h"
 #include "powerupmanager.h"
 #include "wallmanager.h"
@@ -188,8 +189,8 @@ void appDrawScene() {
 
 	Diagnostics::startTiming();
 	Diagnostics::addName("tanks");
-	for (int i = 0; i < tanks.size(); i++) {
-		tanks[i]->draw();
+	for (int i = 0; i < TankManager::getNumTanks(); i++) {
+		TankManager::getTank(i)->draw();
 	}
 	Renderer::UnbindAll();
 	Diagnostics::endTiming();
@@ -273,12 +274,12 @@ void appMotionFunc(int x, int y) {
 	//dev tools
 	if (leftMouse) {
 		if (!rightMouse) { //tank 1
-			tanks[0]->giveX() = (x / double(width)) * GAME_WIDTH;
-			tanks[0]->giveY() = (1 - y / double(height)) * GAME_HEIGHT;
+			TankManager::getTank(0)->giveX() = (x / double(width)) * GAME_WIDTH;
+			TankManager::getTank(0)->giveY() = (1 - y / double(height)) * GAME_HEIGHT;
 		}
 		else { //tank 2
-			tanks[1]->giveX() = (x / double(width)) * GAME_WIDTH;
-			tanks[1]->giveY() = (1 - y / double(height)) * GAME_HEIGHT;
+			TankManager::getTank(1)->giveX() = (x / double(width)) * GAME_WIDTH;
+			TankManager::getTank(1)->giveY() = (1 - y / double(height)) * GAME_HEIGHT;
 		}
 	}
 	//positions are off when window aspect ratio isn't 2:1
@@ -430,8 +431,8 @@ void tick() { tick(physicsRate); }
 void draw() { glutPostRedisplay(); }
 
 void moveTanks() {
-	for (int i = 0; i < tanks.size(); i++) {
-		tanks[i]->move();
+	for (int i = 0; i < TankManager::getNumTanks(); i++) {
+		TankManager::getTank(i)->move();
 	}
 }
 
@@ -439,9 +440,10 @@ void tankToPowerup() {
 	for (int i = PowerupManager::getNumPowerups() - 1; i >= 0; i--) {
 		PowerSquare* p = PowerupManager::getPowerup(i);
 
-		for (int j = 0; j < tanks.size(); j++) {
-			if (CollisionHandler::partiallyCollided(p, tanks[j])) {
-				p->givePower(tanks[j]);
+		for (int j = 0; j < TankManager::getNumTanks(); j++) {
+			Tank* t = TankManager::getTank(j);
+			if (CollisionHandler::partiallyCollided(p, t)) {
+				p->givePower(t);
 				PowerupManager::deletePowerup(i);
 				break;
 			}
@@ -465,8 +467,8 @@ void moveBullets() {
 }
 
 void tankPowerCalculate() {
-	for (int i = 0; i < tanks.size(); i++) {
-		tanks[i]->powerCalculate();
+	for (int i = 0; i < TankManager::getNumTanks(); i++) {
+		TankManager::getTank(i)->powerCalculate();
 	}
 }
 
@@ -483,14 +485,15 @@ void bulletPowerCalculate() {
 }
 
 void tankShoot() {
-	for (int i = 0; i < tanks.size(); i++) {
-		tanks[i]->shoot();
+	for (int i = 0; i < TankManager::getNumTanks(); i++) {
+		TankManager::getTank(i)->shoot();
 	}
 }
 
 void tankToWall() {
-	for (int i = 0; i < tanks.size(); i++) {
+	for (int i = 0; i < TankManager::getNumTanks(); i++) {
 		bool shouldBeKilled = false; //maybe the walls are poison with a certain powerup? I dunno, but gotta have it as an option
+		Tank* t = TankManager::getTank(i);
 
 		for (int j = 0; j < WallManager::getNumWalls(); j++) {
 			bool modifiedWallCollision = false;
@@ -499,10 +502,10 @@ void tankToWall() {
 			bool killWall = false;
 			Wall* w = WallManager::getWall(j);
 
-			if (CollisionHandler::partiallyCollided(tanks[i], w)) {
-				for (int k = 0; k < tanks[i]->tankPowers.size(); k++) {
-					if (tanks[i]->tankPowers[k]->modifiesCollisionWithWall) {
-						if (tanks[i]->tankPowers[k]->modifiedCollisionWithWallCanOnlyWorkIndividually && modifiedWallCollision) {
+			if (CollisionHandler::partiallyCollided(t, w)) {
+				for (int k = 0; k < t->tankPowers.size(); k++) {
+					if (t->tankPowers[k]->modifiesCollisionWithWall) {
+						if (t->tankPowers[k]->modifiedCollisionWithWallCanOnlyWorkIndividually && modifiedWallCollision) {
 							continue;
 						}
 						if (noMoreWallCollisionSpecials) {
@@ -510,14 +513,14 @@ void tankToWall() {
 						}
 
 						modifiedWallCollision = true;
-						if (tanks[i]->tankPowers[k]->overridesCollisionWithWall) {
+						if (t->tankPowers[k]->overridesCollisionWithWall) {
 							overridedWallCollision = true;
 						}
-						if (!tanks[i]->tankPowers[k]->modifiedEdgeCollisionCanWorkWithOthers) {
+						if (!t->tankPowers[k]->modifiedEdgeCollisionCanWorkWithOthers) {
 							noMoreWallCollisionSpecials = true;
 						}
 
-						PowerInteractionBoolHolder check_temp = tanks[i]->tankPowers[k]->modifiedCollisionWithWall(tanks[i], w);
+						PowerInteractionBoolHolder check_temp = t->tankPowers[k]->modifiedCollisionWithWall(t, w);
 						if (check_temp.shouldDie) {
 							shouldBeKilled = true;
 						}
@@ -528,7 +531,7 @@ void tankToWall() {
 				}
 
 				if (!overridedWallCollision) {
-					CollisionHandler::pushMovableAwayFromImmovable(tanks[i], w);
+					CollisionHandler::pushMovableAwayFromImmovable(t, w);
 				}
 			}
 
@@ -547,28 +550,31 @@ void tankToWall() {
 
 void tankToHazard() {
 	//temporary!
-	for (int i = 0; i < tanks.size(); i++) {
+	for (int i = 0; i < TankManager::getNumTanks(); i++) {
+		Tank* t = TankManager::getTank(i);
 		//circles:
 		for (int j = 0; j < HazardManager::getNumCircleHazards(); j++) {
 			CircleHazard* ch = HazardManager::getCircleHazard(j);
-			if (CollisionHandler::partiallyCollided(tanks[i], ch)) {
-				CollisionHandler::pushMovableAwayFromImmovable(tanks[i], ch);
+			if (CollisionHandler::partiallyCollided(t, ch)) {
+				CollisionHandler::pushMovableAwayFromImmovable(t, ch);
 			}
 		}
 		//rectangles:
 		for (int j = 0; j < HazardManager::getNumRectHazards(); j++) {
 			RectHazard* rh = HazardManager::getRectHazard(j);
-			if (CollisionHandler::partiallyCollided(tanks[i], rh)) {
-				CollisionHandler::pushMovableAwayFromImmovable(tanks[i], rh);
+			if (CollisionHandler::partiallyCollided(t, rh)) {
+				CollisionHandler::pushMovableAwayFromImmovable(t, rh);
 			}
 		}
 	}
 }
 
 void tankToTank() {
-	for (int i = 0; i < tanks.size(); i++) {
+	for (int i = 0; i < TankManager::getNumTanks(); i++) {
 		bool shouldBeKilled = false;
-		for (int j = 0; j < tanks.size(); j++) {
+		Tank* t1 = TankManager::getTank(i);
+
+		for (int j = 0; j < TankManager::getNumTanks(); j++) {
 			if (i == j) {
 				continue;
 			}
@@ -577,11 +583,12 @@ void tankToTank() {
 			bool overridedTankCollision = false;
 			bool noMoreTankCollisionSpecials = false;
 			bool killOtherTank = false;
+			Tank* t2 = TankManager::getTank(j);
 
-			if (CollisionHandler::partiallyCollided(tanks[i], tanks[j])) {
-				for (int k = 0; k < tanks[i]->tankPowers.size(); k++) {
-					if (tanks[i]->tankPowers[k]->modifiesCollisionWithWall) {
-						if (tanks[i]->tankPowers[k]->modifiedCollisionWithTankCanOnlyWorkIndividually && modifiedTankCollision) {
+			if (CollisionHandler::partiallyCollided(t1, t2)) {
+				for (int k = 0; k < t1->tankPowers.size(); k++) {
+					if (t1->tankPowers[k]->modifiesCollisionWithWall) {
+						if (t1->tankPowers[k]->modifiedCollisionWithTankCanOnlyWorkIndividually && modifiedTankCollision) {
 							continue;
 						}
 						if (noMoreTankCollisionSpecials) {
@@ -589,19 +596,19 @@ void tankToTank() {
 						}
 
 						modifiedTankCollision = true;
-						if (tanks[i]->tankPowers[k]->overridesCollisionWithTank) {
+						if (t1->tankPowers[k]->overridesCollisionWithTank) {
 							overridedTankCollision = true;
 						}
-						if (!tanks[i]->tankPowers[k]->modifiedCollisionWithTankCanWorkWithOthers) {
+						if (!t1->tankPowers[k]->modifiedCollisionWithTankCanWorkWithOthers) {
 							noMoreTankCollisionSpecials = true;
 						}
 
-						PowerInteractionBoolHolder check_temp = tanks[i]->tankPowers[k]->modifiedCollisionWithTank(tanks[i], tanks[j]);
+						PowerInteractionBoolHolder check_temp = t1->tankPowers[k]->modifiedCollisionWithTank(t1, t2);
 						if (check_temp.shouldDie) {
 							shouldBeKilled = true;
 						}
 						if (check_temp.otherShouldDie) {
-							if (tanks[i]->getID() != tanks[j]->getID()) {
+							if (t1->getID() != t2->getID()) {
 								killOtherTank = true;
 							}
 						}
@@ -609,7 +616,7 @@ void tankToTank() {
 				}
 
 				if (!overridedTankCollision) {
-					CollisionHandler::pushMovableAwayFromMovable(tanks[i], tanks[j]);
+					CollisionHandler::pushMovableAwayFromMovable(t1, t2);
 				}
 			}
 
@@ -625,17 +632,18 @@ void tankToTank() {
 }
 
 void tankToEdge() {
-	for (int i = 0; i < tanks.size(); i++) {
+	for (int i = 0; i < TankManager::getNumTanks(); i++) {
 		bool shouldBeKilled = false;
 
 		bool modifiedEdgeCollision = false;
 		bool overridedEdgeCollision = false;
 		bool noMoreEdgeCollisionSpecials = false;
+		Tank* t = TankManager::getTank(i);
 
-		if (tanks[i]->isPartiallyOutOfBounds()) {
-			for (int k = 0; k < tanks[i]->tankPowers.size(); k++) {
-				if (tanks[i]->tankPowers[k]->modifiesCollisionWithEdge) {
-					if (tanks[i]->tankPowers[k]->modifiedEdgeCollisionCanOnlyWorkIndividually && modifiedEdgeCollision) {
+		if (t->isPartiallyOutOfBounds()) {
+			for (int k = 0; k < t->tankPowers.size(); k++) {
+				if (t->tankPowers[k]->modifiesCollisionWithEdge) {
+					if (t->tankPowers[k]->modifiedEdgeCollisionCanOnlyWorkIndividually && modifiedEdgeCollision) {
 						continue;
 					}
 					if (noMoreEdgeCollisionSpecials) {
@@ -643,14 +651,14 @@ void tankToEdge() {
 					}
 
 					modifiedEdgeCollision = true;
-					if (tanks[i]->tankPowers[k]->overridesEdgeCollision) {
+					if (t->tankPowers[k]->overridesEdgeCollision) {
 						overridedEdgeCollision = true;
 					}
-					if (!tanks[i]->tankPowers[k]->modifiedEdgeCollisionCanWorkWithOthers) {
+					if (!t->tankPowers[k]->modifiedEdgeCollisionCanWorkWithOthers) {
 						noMoreEdgeCollisionSpecials = true;
 					}
 
-					PowerInteractionBoolHolder check_temp = tanks[i]->tankPowers[k]->modifiedEdgeCollision(tanks[i]);
+					PowerInteractionBoolHolder check_temp = t->tankPowers[k]->modifiedEdgeCollision(t);
 					if (check_temp.shouldDie) {
 						shouldBeKilled = true;
 					}
@@ -658,7 +666,7 @@ void tankToEdge() {
 			}
 
 			if (!overridedEdgeCollision) {
-				tanks[i]->edgeConstrain();
+				t->edgeConstrain();
 			}
 		}
 
@@ -857,15 +865,17 @@ void bulletToBullet() {
 
 void bulletToTank() {
 	//TODO: modernize (add default vs custom collision stuff)
-	for (int i = 0; i < tanks.size(); i++) {
+	for (int i = 0; i < TankManager::getNumTanks(); i++) {
+		Tank* t = TankManager::getTank(i);
+
 		for (int j = 0; j < BulletManager::getNumBullets(); j++) {
 			Bullet* b = BulletManager::getBullet(j);
 
-			if (b->getID() == tanks[i]->getID()) {
+			if (b->getID() == t->getID()) {
 				continue;
 			}
-			if (CollisionHandler::partiallyCollided(tanks[i], b)) {
-				char result = BulletPriorityHandler::determinePriority(b, tanks[i]);
+			if (CollisionHandler::partiallyCollided(t, b)) {
+				char result = BulletPriorityHandler::determinePriority(b, t);
 				if (result <= -2) {
 					bool firstDies = rand()%2;
 					if (firstDies) {
@@ -1016,11 +1026,11 @@ int main(int argc, char** argv) {
 	//glutIdleFunc(draw);
 
 	//main game code initialization stuff:
-	tanks.push_back(new Tank(20, 160, 0, 0, "WASD", { false, 'w' }, { false, 'a' }, { false, 'd' }, { false, 's' }));
-	tanks.push_back(new Tank(620, 160, PI, 1, "Arrow Keys", { true, GLUT_KEY_UP }, { true, GLUT_KEY_LEFT }, { true, GLUT_KEY_RIGHT }, { true, GLUT_KEY_DOWN }));
+	TankManager::pushTank(new Tank(20, 160, 0, 0, "WASD", { false, 'w' }, { false, 'a' }, { false, 'd' }, { false, 's' }));
+	TankManager::pushTank(new Tank(620, 160, PI, 1, "Arrow Keys", { true, GLUT_KEY_UP }, { true, GLUT_KEY_LEFT }, { true, GLUT_KEY_RIGHT }, { true, GLUT_KEY_DOWN }));
 	//TODO: proper solution
-	tanks[0]->determineShootingAngles();
-	tanks[1]->determineShootingAngles();
+	TankManager::getTank(0)->determineShootingAngles();
+	TankManager::getTank(1)->determineShootingAngles();
 	levelLookup["dev0"]->initialize();
 	/*
 	for (int i = 0; i < 4; i++) {

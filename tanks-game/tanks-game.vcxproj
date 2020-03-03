@@ -197,6 +197,7 @@
     <ClCompile Include="speedtankpower.cpp" />
     <ClCompile Include="stationaryturret.cpp" />
     <ClCompile Include="tank.cpp" />
+    <ClCompile Include="tankmanager.cpp" />
     <ClCompile Include="triplebulletpower.cpp" />
     <ClCompile Include="triplepower.cpp" />
     <ClCompile Include="tripletankpower.cpp" />
@@ -281,6 +282,7 @@
     <ClInclude Include="speedtankpower.h" />
     <ClInclude Include="stationaryturret.h" />
     <ClInclude Include="tank.h" />
+    <ClInclude Include="tankmanager.h" />
     <ClInclude Include="tankpower.h" />
     <ClInclude Include="triplebulletpower.h" />
     <ClInclude Include="triplepower.h" />

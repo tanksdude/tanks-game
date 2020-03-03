@@ -5,13 +5,14 @@
 #include "wall.h"
 #include <math.h>
 #include <string>
+#include "tankmanager.h"
 #include "powerupmanager.h"
 #include "wallmanager.h"
 
 void CorridorLevel::initialize() {
 	int randPos = rand() % 5;
-	tanks[0]->y = randPos * 64 + 32;
-	tanks[1]->y = (4 - randPos) * 64 + 32;
+	TankManager::getTank(0)->y = randPos * 64 + 32;
+	TankManager::getTank(1)->y = (4 - randPos) * 64 + 32;
 
 	ColorValueHolder color = ColorValueHolder(0x22/255.0, 0.5, 1.0);
 

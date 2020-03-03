@@ -231,6 +231,9 @@
     <ClCompile Include="keypressmanager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="tankmanager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -483,6 +486,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="keypressmanager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="tankmanager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

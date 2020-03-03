@@ -6,15 +6,16 @@
 #include <math.h>
 #include <string>
 #include "randomlevel.h"
+#include "tankmanager.h"
 #include "powerupmanager.h"
 #include "wallmanager.h"
 
 void BigFunLevel::initialize() {
 	int randPos = rand() % 5;
-	tanks[0]->y = randPos * 64 + 32;
-	tanks[1]->y = (4 - randPos) * 64 + 32;
-	tanks[0]->x = 40;
-	tanks[1]->x = GAME_WIDTH - 40;
+	TankManager::getTank(0)->y = randPos * 64 + 32;
+	TankManager::getTank(1)->y = (4 - randPos) * 64 + 32;
+	TankManager::getTank(0)->x = 40;
+	TankManager::getTank(1)->x = GAME_WIDTH - 40;
 	//classic
 
 	ColorValueHolder color = ColorValueHolder(.75f, 0.25f, 0.5f);

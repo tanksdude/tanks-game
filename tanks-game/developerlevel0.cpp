@@ -6,6 +6,7 @@
 #include "mylib.h"
 #include "randomlevel.h"
 #include <math.h>
+#include "tankmanager.h"
 #include "powerupmanager.h"
 #include "wallmanager.h"
 #include "hazardmanager.h"
@@ -13,8 +14,8 @@
 
 void DeveloperLevel0::initialize() {
 	int randPos = rand() % 5;
-	tanks[0]->y = randPos*64 + 32;
-	tanks[1]->y = (4-randPos)*64 + 32;
+	TankManager::getTank(0)->y = randPos*64 + 32;
+	TankManager::getTank(1)->y = (4-randPos)*64 + 32;
 	//reset power and shooting
 
 	ColorValueHolder randColor((rand()%256)/255.0, (rand()%256)/255.0, (rand()%256)/255.0);

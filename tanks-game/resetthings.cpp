@@ -1,6 +1,7 @@
 #pragma once
 #include "resetthings.h"
 #include "constants.h"
+#include "tankmanager.h"
 #include "bulletmanager.h"
 #include "powerupmanager.h"
 #include "wallmanager.h"
@@ -8,8 +9,8 @@
 #include "hazardmanager.h"
 
 void ResetThings::reset(int) {
-	tanks[0]->resetThings(20, GAME_HEIGHT/2, 0, tanks[0]->getID(), tanks[0]->getName());
-	tanks[1]->resetThings(GAME_WIDTH - 20, GAME_HEIGHT/2, PI, tanks[1]->getID(), tanks[1]->getName());
+	TankManager::tanks[0]->resetThings(20, GAME_HEIGHT/2, 0, TankManager::tanks[0]->getID(), TankManager::tanks[0]->getName());
+	TankManager::tanks[1]->resetThings(GAME_WIDTH - 20, GAME_HEIGHT/2, PI, TankManager::tanks[1]->getID(), TankManager::tanks[1]->getName());
 
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		delete WallManager::walls[i];

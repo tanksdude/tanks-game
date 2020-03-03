@@ -17,12 +17,12 @@ extern const double PI; //this doesn't need to exist but typing the #define befo
 extern ColorValueHolder backColor;
 extern const double GAME_WIDTH;
 extern const double GAME_HEIGHT;
-extern glm::mat4 proj;
+extern glm::mat4 proj; //TODO: move to Renderer
 extern const double TANK_RADIUS;
 
 //typedef void(*voidFunction)(void); //this isn't used
 
-extern std::vector<Tank*> tanks; //pretty much no point in having a manager for the tanks (unless singleplayer is a thing, or a main menu)
+//extern std::vector<Tank*> tanks;
 //extern std::vector<Wall*> walls;
 //extern std::vector<Bullet*> bullets;
 //extern std::vector<Level*> levels; //active levels

@@ -11,7 +11,7 @@ const double GAME_HEIGHT = 320;
 glm::mat4 proj = glm::ortho(0.0f, (float)GAME_WIDTH, 0.0f, (float)GAME_HEIGHT);
 const double TANK_RADIUS = 16;
 
-std::vector<Tank*> tanks;
+//std::vector<Tank*> tanks;
 //std::vector<Wall*> walls;
 //std::vector<Bullet*> bullets;
 //std::vector<Level*> levels; //active levels
