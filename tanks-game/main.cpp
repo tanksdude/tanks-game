@@ -27,6 +27,7 @@
 #include "circlehazard.h"
 #include "recthazard.h"
 //managers:
+#include "keypressmanager.h"
 #include "bulletmanager.h"
 #include "powerupmanager.h"
 #include "wallmanager.h"
@@ -97,9 +98,6 @@
 #include "diagnostics.h"
 
 using namespace std;
-
-unordered_map<unsigned char, bool> normalKeyStates;
-unordered_map<int, bool> specialKeyStates;
 
 int tank_dead = 0;
 
@@ -300,22 +298,6 @@ void mouse_func(int button, int state, int x, int y) {
 	}
 }
 
-void keyboard_down(unsigned char key, int x, int y) {
-	normalKeyStates[key] = true;
-}
-
-void special_keyboard_down(int key, int x, int y) {
-	specialKeyStates[key] = true;
-}
-
-void keyboard_up(unsigned char key, int x, int y) {
-	normalKeyStates[key] = false;
-}
-
-void special_keyboard_up(int key, int x, int y) {
-	specialKeyStates[key] = false;
-}
-
 //tick stuff:
 void boolMovementUpdate();
 void moveTanks();
@@ -453,15 +435,15 @@ void draw() { glutPostRedisplay(); }
 
 void boolMovementUpdate() {
 	//temporary: need to figure out better implementation
-	tanks[0]->forward = normalKeyStates['w'];
-	tanks[0]->turnL = normalKeyStates['a'];
-	tanks[0]->turnR = normalKeyStates['d'];
-	tanks[0]->shooting = normalKeyStates['s'];
+	tanks[0]->forward = KeypressManager::getNormalKey('w');
+	tanks[0]->turnL = KeypressManager::getNormalKey('a');
+	tanks[0]->turnR = KeypressManager::getNormalKey('d');
+	tanks[0]->shooting = KeypressManager::getNormalKey('s');
 	//still temporary
-	tanks[1]->forward = specialKeyStates[GLUT_KEY_UP];
-	tanks[1]->turnL = specialKeyStates[GLUT_KEY_LEFT];
-	tanks[1]->turnR = specialKeyStates[GLUT_KEY_RIGHT];
-	tanks[1]->shooting = specialKeyStates[GLUT_KEY_DOWN];
+	tanks[1]->forward = KeypressManager::getSpecialKey(GLUT_KEY_UP);
+	tanks[1]->turnL = KeypressManager::getSpecialKey(GLUT_KEY_LEFT);
+	tanks[1]->turnR = KeypressManager::getSpecialKey(GLUT_KEY_RIGHT);
+	tanks[1]->shooting = KeypressManager::getSpecialKey(GLUT_KEY_DOWN);
 
 	//better implementation: tank takes movement keys when constructed
 }
@@ -973,16 +955,6 @@ int main(int argc, char** argv) {
 	}
 
 
-	//TODO: move some of this stuff to an initialization file so testing can be done
-	normalKeyStates.insert({ 'w', false });
-	normalKeyStates.insert({ 'a', false });
-	normalKeyStates.insert({ 's', false });
-	normalKeyStates.insert({ 'd', false });
-	specialKeyStates.insert({ GLUT_KEY_UP, false });
-	specialKeyStates.insert({ GLUT_KEY_LEFT, false });
-	specialKeyStates.insert({ GLUT_KEY_RIGHT, false });
-	specialKeyStates.insert({ GLUT_KEY_DOWN, false });
-
 	levelList.push_back(new DeveloperLevel0());
 	levelList.push_back(new EmptyLevel());
 	levelList.push_back(new CorridorLevel());
@@ -1018,6 +990,7 @@ int main(int argc, char** argv) {
 	tanks.push_back(new Tank(20, 160, 0, 0, "WASD"));
 	tanks.push_back(new Tank(620, 160, PI, 1, "Arrow Keys"));
 
+	KeypressManager::initialize();
 	BulletManager::initialize();
 	PowerupManager::initialize();
 	WallManager::initialize();
@@ -1061,16 +1034,16 @@ int main(int argc, char** argv) {
 	glutMotionFunc(appMotionFunc);
 
 	// Set callback to handle keyboard events
-	glutKeyboardFunc(keyboard_down);
+	glutKeyboardFunc(KeypressManager::setNormalKey);
 
 	//callback for keyboard up events
-	glutKeyboardUpFunc(keyboard_up);
+	glutKeyboardUpFunc(KeypressManager::unsetNormalKey);
 
 	//special keyboard down
-	glutSpecialFunc(special_keyboard_down);
+	glutSpecialFunc(KeypressManager::setSpecialKey);
 
 	//special keyboard up
-	glutSpecialUpFunc(special_keyboard_up);
+	glutSpecialUpFunc(KeypressManager::unsetSpecialKey);
 
 	// Set callback for the idle function
 	//glutIdleFunc(draw);

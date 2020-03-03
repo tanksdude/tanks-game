@@ -172,6 +172,7 @@
     <ClCompile Include="invinciblenamedbulletpower.cpp" />
     <ClCompile Include="invinciblenamedpower.cpp" />
     <ClCompile Include="invinciblenamedtankpower.cpp" />
+    <ClCompile Include="keypressmanager.cpp" />
     <ClCompile Include="leveleffect.cpp" />
     <ClCompile Include="levelmanager.cpp" />
     <ClCompile Include="main.cpp" />
@@ -250,6 +251,7 @@
     <ClInclude Include="invinciblenamedbulletpower.h" />
     <ClInclude Include="invinciblenamedpower.h" />
     <ClInclude Include="invinciblenamedtankpower.h" />
+    <ClInclude Include="keypressmanager.h" />
     <ClInclude Include="level.h" />
     <ClInclude Include="leveleffect.h" />
     <ClInclude Include="levelmanager.h" />

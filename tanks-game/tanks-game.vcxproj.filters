@@ -228,6 +228,9 @@
     <ClCompile Include="levelmanager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="keypressmanager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -477,6 +480,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="levelmanager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="keypressmanager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
