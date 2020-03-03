@@ -2,6 +2,7 @@
 #include "powersquare.h"
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 typedef Power* (*PowerFunction)(void);
 
