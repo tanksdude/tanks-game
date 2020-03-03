@@ -968,26 +968,12 @@ int main(int argc, char** argv) {
 		delete p;
 	}
 
-	tanks.push_back(new Tank(20, 160, 0, 0, "WASD", { false, 'w' }, { false, 'a' }, { false, 'd' }, { false, 's' }));
-	tanks.push_back(new Tank(620, 160, PI, 1, "Arrow Keys", { true, GLUT_KEY_UP }, { true, GLUT_KEY_LEFT }, { true, GLUT_KEY_RIGHT }, { true, GLUT_KEY_DOWN }));
-
 	KeypressManager::initialize();
 	BulletManager::initialize();
 	PowerupManager::initialize();
 	WallManager::initialize();
 	LevelManager::initialize();
 	HazardManager::initialize();
-
-	/*
-	for (int i = 0; i < 4; i++) {
-		walls.push_back(new Wall(320 - 240*(((3-i)/2) * 2 - 1) - 32*((((3-i)/2) + 1) % 2), i%2 * (320-128), 32, 128, ColorValueHolder(255,0,255)));
-	}
-	*/
-
-	//TODO: proper solution
-	tanks[0]->determineShootingAngles();
-	tanks[1]->determineShootingAngles();
-	levelLookup["dev0"]->initialize();
 
 
 	//make the classes load their vertices and indices onto VRAM to avoid CPU<->GPU syncs
@@ -1029,6 +1015,19 @@ int main(int argc, char** argv) {
 	// Set callback for the idle function
 	//glutIdleFunc(draw);
 
+	//main game code initialization stuff:
+	tanks.push_back(new Tank(20, 160, 0, 0, "WASD", { false, 'w' }, { false, 'a' }, { false, 'd' }, { false, 's' }));
+	tanks.push_back(new Tank(620, 160, PI, 1, "Arrow Keys", { true, GLUT_KEY_UP }, { true, GLUT_KEY_LEFT }, { true, GLUT_KEY_RIGHT }, { true, GLUT_KEY_DOWN }));
+	//TODO: proper solution
+	tanks[0]->determineShootingAngles();
+	tanks[1]->determineShootingAngles();
+	levelLookup["dev0"]->initialize();
+	/*
+	for (int i = 0; i < 4; i++) {
+		walls.push_back(new Wall(320 - 240*(((3-i)/2) * 2 - 1) - 32*((((3-i)/2) + 1) % 2), i%2 * (320-128), 32, 128, ColorValueHolder(255,0,255)));
+	}
+	*/
+
 	//framelimiter
 	glutTimerFunc(1000/physicsRate, tick, physicsRate);
 
@@ -1040,11 +1039,11 @@ int main(int argc, char** argv) {
 /*
  * estimated total completion:
  * 100% required GPU drawing stuff!
+ * * <10% highly recommended GPU drawing stuff (streaming vertices)
  * 20% theoretical GPU stuff (may not attempt)
  * * gotta learn how to do batching
  * * add a gradient shader
  * * make things more efficient (way easier said than done, I suppose)
- * * * where do I even start (besides batching)?
  * 90% theoretical foundation: no hazard powers, no level... anything
  * 70% actual foundation: not every "modification function" actually does something in the main
  * 25% game code:
@@ -1055,5 +1054,5 @@ int main(int argc, char** argv) {
  * * fifth, here's what's next:
  * * * new powerups
  * * * new levels
- * * * hazards, and soon
+ * * * more hazards
  */
