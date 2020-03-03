@@ -3,8 +3,12 @@
 #include "renderer.h"
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include "constants.h"
 #include <iostream>
+
+glm::mat4 Renderer::proj = glm::ortho(0.0f, (float)GAME_WIDTH, 0.0f, (float)GAME_HEIGHT);
+glm::mat4 Renderer::getProj() { return proj; }
 
 std::unordered_map<std::string, Shader*> Renderer::shaderCache;
 unsigned int Renderer::currentShader = -1;

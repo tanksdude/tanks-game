@@ -252,7 +252,7 @@ void appReshapeFunc(int w, int h) {
 		winXmax = center + (appXmax - center) * scale;
 		winYmin = appYmin;
 		winYmax = appYmax;
-		proj = glm::ortho(0.0f, float(GAME_WIDTH*scale), 0.0f, (float)GAME_HEIGHT); //GPU
+		Renderer::proj = glm::ortho(0.0f, float(GAME_WIDTH*scale), 0.0f, (float)GAME_HEIGHT); //GPU
 	}
 	else { //too tall
 		scale = ((appXmax - appXmin) / w) / ((appYmax - appYmin) / h);
@@ -261,7 +261,7 @@ void appReshapeFunc(int w, int h) {
 		winYmax = center + (appYmax - center) * scale;
 		winXmin = appXmin;
 		winXmax = appXmax;
-		proj = glm::ortho(0.0f, (float)GAME_WIDTH, 0.0f, float(GAME_HEIGHT*scale)); //GPU
+		Renderer::proj = glm::ortho(0.0f, (float)GAME_WIDTH, 0.0f, float(GAME_HEIGHT*scale)); //GPU
 	}
 
 	// Now we use glOrtho to set up our viewing frustum (CPU only)
