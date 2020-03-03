@@ -2,6 +2,10 @@
 #include "levelmanager.h"
 
 std::vector<Level*> LevelManager::levels;
+std::unordered_map<std::string, Level*> LevelManager::levelLookup;
+std::vector<Level*> LevelManager::levelList;
+std::vector<std::string> LevelManager::levelNameList;
+
 void LevelManager::initialize() {
 	return;
 }
@@ -41,3 +45,22 @@ void LevelManager::deleteLevel(int index) {
 	levels.erase(levels.begin() + index);
 }
 */
+
+
+void LevelManager::addLevelToHashmap(Level* l) {
+	levelNameList.push_back(l->getName());
+	levelList.push_back(l);
+	levelLookup.insert({ l->getName(), l });
+}
+
+Level* LevelManager::getLevelByName(std::string name) {
+	return levelLookup[name];
+}
+
+std::string LevelManager::getLevelName(int index) {
+	return levelNameList[index];
+}
+
+int LevelManager::getNumLevelTypes() {
+	return levelNameList.size();
+}

@@ -958,17 +958,14 @@ int main(int argc, char** argv) {
 	PowerupManager::addPowerFactory(FireNamedPower::factory);
 	PowerupManager::addPowerFactory(BlastPower::factory);
 
-	levelList.push_back(new DeveloperLevel0());
-	levelList.push_back(new EmptyLevel());
-	levelList.push_back(new CorridorLevel());
-	levelList.push_back(new BigFunLevel());
+	LevelManager::addLevelToHashmap(new DeveloperLevel0());
+	LevelManager::addLevelToHashmap(new EmptyLevel());
+	LevelManager::addLevelToHashmap(new CorridorLevel());
+	LevelManager::addLevelToHashmap(new BigFunLevel());
 
-	for (int i = 0; i < levelList.size(); i++) {
-		Level* l = levelList[i];
-		levelLookup.insert({ l->getName(), l });
-		levelNameList.push_back(l->getName());
-	}
+	//HazardManager::addHazardFactory(StationaryTurret::factory);
 
+	//initialize managers:
 	KeypressManager::initialize();
 	BulletManager::initialize();
 	PowerupManager::initialize();
@@ -1022,7 +1019,7 @@ int main(int argc, char** argv) {
 	//TODO: proper solution
 	TankManager::getTank(0)->determineShootingAngles();
 	TankManager::getTank(1)->determineShootingAngles();
-	levelLookup["dev0"]->initialize();
+	LevelManager::getLevelByName("dev0")->initialize();
 	/*
 	for (int i = 0; i < 4; i++) {
 		walls.push_back(new Wall(320 - 240*(((3-i)/2) * 2 - 1) - 32*((((3-i)/2) + 1) % 2), i%2 * (320-128), 32, 128, ColorValueHolder(255,0,255)));

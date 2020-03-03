@@ -42,5 +42,5 @@ void ResetThings::reset(int) {
 	}
 	LevelManager::levels.clear();
 
-	levelLookup["dev0"]->initialize();
+	LevelManager::getLevelByName("dev0")->initialize();
 }

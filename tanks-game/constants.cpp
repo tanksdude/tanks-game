@@ -19,10 +19,9 @@ const double TANK_RADIUS = 16;
 //std::vector<CircleHazard*> circleHazards;
 //std::vector<RectHazard*> rectHazards;
 
-//TODO: figure out good solution to managing these
-std::unordered_map<std::string, Level*> levelLookup;
-std::vector<Level*> levelList;
-std::vector<std::string> levelNameList;
+//std::unordered_map<std::string, Level*> levelLookup;
+//std::vector<Level*> levelList;
+//std::vector<std::string> levelNameList;
 //std::unordered_map<std::string, PowerFunction> powerLookup;
 //std::vector<PowerFunction> powerList;
 //std::vector<std::string> powerNameList;
