@@ -2,7 +2,6 @@
 #include "developerlevel0.h"
 #include "constants.h"
 #include "tank.h"
-#include "powersquare.h"
 #include "mylib.h"
 #include "randomlevel.h"
 #include <math.h>

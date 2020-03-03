@@ -156,6 +156,7 @@
     <ClCompile Include="colorvalueholder.cpp" />
     <ClCompile Include="constants.cpp" />
     <ClCompile Include="corridorlevel.cpp" />
+    <ClCompile Include="defaultrandomlevel.cpp" />
     <ClCompile Include="diagnostics.cpp" />
     <ClCompile Include="emptylevel.cpp" />
     <ClCompile Include="firenamedbulletpower.cpp" />
@@ -234,6 +235,7 @@
     <ClInclude Include="colorvalueholder.h" />
     <ClInclude Include="constants.h" />
     <ClInclude Include="corridorlevel.h" />
+    <ClInclude Include="defaultrandomlevel.h" />
     <ClInclude Include="diagnostics.h" />
     <ClInclude Include="emptylevel.h" />
     <ClInclude Include="firenamedbulletpower.h" />

@@ -43,7 +43,7 @@
 #include "powerfunctionhelper.h"
 
 //levels:
-#include "randomlevel.h"
+#include "defaultrandomlevel.h"
 #include "developerlevel0.h"
 #include "emptylevel.h"
 #include "corridorlevel.h"
@@ -959,6 +959,7 @@ int main(int argc, char** argv) {
 	PowerupManager::addPowerFactory(BlastPower::factory);
 
 	LevelManager::addLevelToHashmap(new DeveloperLevel0());
+	LevelManager::addLevelToHashmap(new DefaultRandomLevel());
 	LevelManager::addLevelToHashmap(new EmptyLevel());
 	LevelManager::addLevelToHashmap(new CorridorLevel());
 	LevelManager::addLevelToHashmap(new BigFunLevel());
@@ -1019,7 +1020,7 @@ int main(int argc, char** argv) {
 	//TODO: proper solution
 	TankManager::getTank(0)->determineShootingAngles();
 	TankManager::getTank(1)->determineShootingAngles();
-	LevelManager::getLevelByName("dev0")->initialize();
+	LevelManager::getLevelByName("default random")->initialize();
 	/*
 	for (int i = 0; i < 4; i++) {
 		walls.push_back(new Wall(320 - 240*(((3-i)/2) * 2 - 1) - 32*((((3-i)/2) + 1) % 2), i%2 * (320-128), 32, 128, ColorValueHolder(255,0,255)));
