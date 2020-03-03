@@ -3,10 +3,15 @@
 #include "backgroundrect.h"
 #include "renderer.h"
 #include <glm/glm.hpp>
-#include "constants.h" //TODO: move backColor to here, then make other files include this one (well, the .h, not .cpp, obviously)
+#include "constants.h"
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
+
+ColorValueHolder BackgroundRect::backColor = ColorValueHolder(0xDD/255.0, 0xDD/255.0, 0xDD/255.0);
+ColorValueHolder BackgroundRect::getBackColor() {
+	return backColor;
+}
 
 VertexArray* BackgroundRect::va;
 VertexBuffer* BackgroundRect::vb;

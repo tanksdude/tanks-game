@@ -1,11 +1,12 @@
 #pragma once
-#include <string>
-#include <iostream>
 #include "powersquare.h"
+#include <string>
+#include "backgroundrect.h"
 #include "colormixer.h"
 #include "renderer.h"
 #include <glm/glm.hpp>
 #include "powerupmanager.h"
+#include <iostream>
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
@@ -147,7 +148,7 @@ void PowerSquare::draw() {
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 MVPM = Renderer::GenerateMatrix(1, 1, 0, x + w/2, y + h/2); //TODO: adjust this to scale by w and h
 	if (numOfPowers > 1) { //move to drawUnder()
-		ColorValueHolder backgroundMix = ColorMixer::mix(color, backColor);
+		ColorValueHolder backgroundMix = ColorMixer::mix(color, BackgroundRect::getBackColor());
 		//shader->Bind();
 		shader->setUniform4f("u_color", backgroundMix.getRf(), backgroundMix.getGf(), backgroundMix.getBf(), backgroundMix.getAf());
 		shader->setUniformMat4f("u_MVP", MVPM);
@@ -165,7 +166,7 @@ void PowerSquare::draw() {
 void PowerSquare::drawCPU() {
 	ColorValueHolder color = getColor();
 	if (numOfPowers > 1) { //move to drawUnder()
-		ColorValueHolder backgroundMix = ColorMixer::mix(color, backColor);
+		ColorValueHolder backgroundMix = ColorMixer::mix(color, BackgroundRect::getBackColor());
 		glColor3f(backgroundMix.getRf(), backgroundMix.getGf(), backgroundMix.getBf());
 
 		glBegin(GL_QUADS);

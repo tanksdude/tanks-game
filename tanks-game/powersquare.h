@@ -1,7 +1,6 @@
 #pragma once
 class PowerSquare;
 
-#include "constants.h"
 #include "colorvalueholder.h"
 #include <string>
 #include "power.h"

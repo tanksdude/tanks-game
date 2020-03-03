@@ -1,4 +1,5 @@
 #pragma once
+#include "colorvalueholder.h"
 
 #include "vertexarray.h"
 #include "vertexbuffer.h"
@@ -10,7 +11,10 @@ private:
 	static VertexBuffer* vb;
 	static IndexBuffer* ib;
 
+	static ColorValueHolder backColor;
 public:
+	static ColorValueHolder getBackColor();
+
 	static void draw();
 	static void drawCPU();
 	static void initializeGPU();
