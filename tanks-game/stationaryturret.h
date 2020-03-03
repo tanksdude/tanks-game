@@ -16,6 +16,8 @@ protected:
 public:
 	virtual ColorValueHolder getColor();
 	virtual ColorValueHolder getColor(short state);
+	virtual std::string getName() { return getClassName(); };
+	static std::string getClassName() { return "stationary turret"; };
 	double getAngle() { return fmod(fmod(angle, 2*PI) + 2*PI, 2*PI); }
 
 	void tick();
@@ -24,4 +26,5 @@ public:
 	StationaryTurret(double xpos, double ypos, double angle);
 	StationaryTurret(double xpos, double ypos, double angle, double radius);
 	~StationaryTurret();
+	static CircleHazard* factory(int, std::string*);
 };

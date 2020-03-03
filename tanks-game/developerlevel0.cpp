@@ -10,7 +10,6 @@
 #include "powerupmanager.h"
 #include "wallmanager.h"
 #include "hazardmanager.h"
-#include "stationaryturret.h" //TODO: vector and hashtable of hazards
 
 void DeveloperLevel0::initialize() {
 	int randPos = rand() % 5;
@@ -24,7 +23,9 @@ void DeveloperLevel0::initialize() {
 		WallManager::pushWall(RandomLevel::makeNewWall(TANK_RADIUS*2.5, TANK_RADIUS*2, GAME_WIDTH - 2*(TANK_RADIUS*2.5), GAME_HEIGHT - 2*(TANK_RADIUS*2), randColor));
 	}
 
-	HazardManager::pushCircleHazard(new StationaryTurret(GAME_WIDTH/2, GAME_HEIGHT/2, double(rand())/double(RAND_MAX+1) * 2*PI));
+	std::string* paras = new std::string[3]{std::to_string(GAME_WIDTH/2), std::to_string(GAME_HEIGHT/2), std::to_string(double(rand())/double(RAND_MAX+1) * 2*PI)};
+	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("stationary turret")(3, paras));
+	delete[] paras;
 
 	//assumption: TANK_RADIUS=16 (why it would ever be changed is beyond me)
 	PowerupManager::pushPowerup(new PowerSquare(20, 20, "speed"));

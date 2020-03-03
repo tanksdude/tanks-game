@@ -963,7 +963,7 @@ int main(int argc, char** argv) {
 	LevelManager::addLevelToHashmap(new CorridorLevel());
 	LevelManager::addLevelToHashmap(new BigFunLevel());
 
-	//HazardManager::addHazardFactory(StationaryTurret::factory);
+	HazardManager::addCircleHazardFactory(StationaryTurret::factory);
 
 	//initialize managers:
 	KeypressManager::initialize();

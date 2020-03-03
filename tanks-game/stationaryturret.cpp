@@ -30,6 +30,16 @@ StationaryTurret::~StationaryTurret() {
 	delete[] stateColors;
 }
 
+CircleHazard* StationaryTurret::factory(int argc, std::string* argv) {
+	if (argc == 3) {
+		double x = std::stod(argv[0]);
+		double y = std::stod(argv[1]);
+		double a = std::stod(argv[2]);
+		return new StationaryTurret(x, y, a);
+	}
+	return new StationaryTurret(0, 0, 0);
+}
+
 void StationaryTurret::tick() {
 	tickCount++;
 	bool mustShoot = false; //in case two state cycles happen at once (this will have annoying unit tests)
