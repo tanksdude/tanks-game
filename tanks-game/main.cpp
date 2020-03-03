@@ -945,6 +945,18 @@ int main(int argc, char** argv) {
 		return 1;
 	}
 
+	PowerupManager::addPowerFactory(SpeedPower::factory);
+	PowerupManager::addPowerFactory(WallhackPower::factory);
+	PowerupManager::addPowerFactory(BouncePower::factory);
+	PowerupManager::addPowerFactory(MultishotPower::factory);
+	PowerupManager::addPowerFactory(TriplePower::factory);
+	PowerupManager::addPowerFactory(HomingPower::factory);
+	PowerupManager::addPowerFactory(InvincibleNamedPower::factory);
+	PowerupManager::addPowerFactory(BigNamedPower::factory);
+	PowerupManager::addPowerFactory(MegaDeathPower::factory);
+	PowerupManager::addPowerFactory(GrenadePower::factory);
+	PowerupManager::addPowerFactory(FireNamedPower::factory);
+	PowerupManager::addPowerFactory(BlastPower::factory);
 
 	levelList.push_back(new DeveloperLevel0());
 	levelList.push_back(new EmptyLevel());
@@ -955,27 +967,6 @@ int main(int argc, char** argv) {
 		Level* l = levelList[i];
 		levelLookup.insert({ l->getName(), l });
 		levelNameList.push_back(l->getName());
-	}
-
-	powerList.push_back(SpeedPower::factory);
-	powerList.push_back(WallhackPower::factory);
-	powerList.push_back(BouncePower::factory);
-	powerList.push_back(MultishotPower::factory);
-	powerList.push_back(TriplePower::factory);
-	powerList.push_back(HomingPower::factory);
-	powerList.push_back(InvincibleNamedPower::factory);
-	powerList.push_back(BigNamedPower::factory);
-	powerList.push_back(MegaDeathPower::factory);
-	powerList.push_back(GrenadePower::factory);
-	powerList.push_back(FireNamedPower::factory);
-	powerList.push_back(BlastPower::factory);
-
-	for (int i = 0; i < powerList.size(); i++) {
-		PowerFunction f = powerList[i];
-		Power* p = f();
-		powerLookup.insert({ p->getName(), powerList[i] });
-		powerNameList.push_back(p->getName());
-		delete p;
 	}
 
 	KeypressManager::initialize();

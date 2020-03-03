@@ -5,6 +5,7 @@
 #include "colormixer.h"
 #include "renderer.h"
 #include <glm/glm.hpp>
+#include "powerupmanager.h"
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
@@ -42,7 +43,7 @@ PowerSquare::PowerSquare(double x_, double y_, std::string name) {
 
 	numOfPowers = 1;
 	heldPower = new Power*[1];
-	heldPower[0] = powerLookup[name]();
+	heldPower[0] = PowerupManager::getPowerFactory(name)();
 }
 
 PowerSquare::PowerSquare(double x_, double y_, std::string* names, int num) {
@@ -54,7 +55,7 @@ PowerSquare::PowerSquare(double x_, double y_, std::string* names, int num) {
 	numOfPowers = num;
 	heldPower = new Power*[num];
 	for (int i = 0; i < num; i++) {
-		heldPower[i] = powerLookup[names[i]]();
+		heldPower[i] = PowerupManager::getPowerFactory(names[i])();
 	}
 }
 
