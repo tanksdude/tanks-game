@@ -1,3 +1,7 @@
+0.2.1 (obviously definitely not here)
+better system for tankpowers adjusting tank values
+other better adjusting stuff
+
 0.2.0 (obviously not here)
 all objects load their vertices onto VRAM when initialized (instead of using one circle/rect and modifying it)
 * (that's a massive performance increase on modern GPUs... if I did batching; only a large performance increase instead)
@@ -13,7 +17,6 @@ other cleanup that makes developing easier:
 * initialization stuff in main() cleaned up
 constants and speeds restored to faster JS settings because slow Tanks isn't fun Tanks
 * not all speeds are faster and not all are JS settings but it's better now
-slightly better system for tankpowers adjusting tank values
 
 0.1.3
 hazards (no hazard powers yet)
