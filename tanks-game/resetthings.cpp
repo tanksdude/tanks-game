@@ -1,39 +1,68 @@
 #pragma once
 #include "resetthings.h"
 #include "constants.h"
+#include "tankmanager.h"
+#include "bulletmanager.h"
+#include "powerupmanager.h"
+#include "wallmanager.h"
+#include "levelmanager.h"
+#include "hazardmanager.h"
 
 void ResetThings::reset(int) {
-	tanks[0]->resetThings(20, GAME_HEIGHT/2, 0, tanks[0]->getID(), tanks[0]->getName());
-	tanks[1]->resetThings(GAME_WIDTH - 20, GAME_HEIGHT/2, PI, tanks[1]->getID(), tanks[1]->getName());
+	TankManager::tanks[0]->resetThings(20, GAME_HEIGHT/2, 0, TankManager::tanks[0]->getID(), TankManager::tanks[0]->getName());
+	TankManager::tanks[1]->resetThings(GAME_WIDTH - 20, GAME_HEIGHT/2, PI, TankManager::tanks[1]->getID(), TankManager::tanks[1]->getName());
 
-	for (int i = 0; i < walls.size(); i++) {
-		delete walls[i];
+	for (int i = 0; i < WallManager::getNumWalls(); i++) {
+		delete WallManager::walls[i];
 	}
-	walls.clear();
+	WallManager::walls.clear();
 
-	for (int i = 0; i < bullets.size(); i++) {
-		delete bullets[i];
+	for (int i = 0; i < BulletManager::bullets.size(); i++) {
+		delete BulletManager::bullets[i];
 	}
-	bullets.clear();
+	BulletManager::bullets.clear();
 
-	for (int i = 0; i < powerups.size(); i++) {
-		delete powerups[i];
+	for (int i = 0; i < PowerupManager::getNumPowerups(); i++) {
+		delete PowerupManager::powerups[i];
 	}
-	powerups.clear();
+	PowerupManager::powerups.clear();
 
-	for (int i = 0; i < circleHazards.size(); i++) {
-		delete circleHazards[i];
+	for (int i = 0; i < HazardManager::getNumCircleHazards(); i++) {
+		delete HazardManager::circleHazards[i];
 	}
-	for (int i = 0; i < rectHazards.size(); i++) {
-		delete rectHazards[i];
+	for (int i = 0; i < HazardManager::getNumRectHazards(); i++) {
+		delete HazardManager::rectHazards[i];
 	}
-	circleHazards.clear();
-	rectHazards.clear();
+	HazardManager::circleHazards.clear();
+	HazardManager::rectHazards.clear();
 
-	for (int i = 0; i < levels.size(); i++) {
-		delete levels[i];
+	//below code is just LevelManager::clearLevels(), but it's not being called in case it needs to be modified later
+	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
+		delete LevelManager::levels[i];
 	}
-	levels.clear();
+	LevelManager::levels.clear();
 
-	levelLookup["random"]->initialize();
+	//initialize levels from LevelManager level list
+	/*
+	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
+		LevelManager::levels[i]->initialize();
+	}
+	*/
+	//not being used now
+
+#if _DEBUG
+	LevelManager::getLevelByName("dev0")->initialize();
+#else
+	int randLevel = rand() % LevelManager::getNumLevelTypes();
+	std::string levelName = LevelManager::getLevelName(randLevel);
+	if (levelName != "default random" || levelName == "dev0" || levelName == "empty") {
+		int randLevel = rand() % LevelManager::getNumLevelTypes();
+		std::string levelName = LevelManager::getLevelName(randLevel);
+		if (levelName == "empty") {
+			int randLevel = rand() % LevelManager::getNumLevelTypes();
+			std::string levelName = LevelManager::getLevelName(randLevel);
+		}
+	}
+	LevelManager::getLevelByName(levelName)->initialize();
+#endif
 }

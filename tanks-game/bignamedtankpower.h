@@ -18,9 +18,11 @@ public:
 
 	virtual BulletPower* makeBulletPower();
 
-	virtual double getBulletSpeedMultiplier() { return .25; }
+	virtual double getBulletSpeedMultiplier() { return .125; }
 	virtual double getBulletRadiusMultiplier() { return 4; }
 	//bool bulletRadiusStacks = true;
+
+	virtual double getShootingMultiplier() { return 2; } // *4 is JS setting
 
 	BigNamedTankPower();
 };

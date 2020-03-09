@@ -1,7 +1,6 @@
 #pragma once
 class PowerSquare;
 
-#include "constants.h"
 #include "colorvalueholder.h"
 #include <string>
 #include "power.h"
@@ -17,6 +16,12 @@ public:
 	short numOfPowers;
 	//double w = POWER_WIDTH;
 	//double h = POWER_HEIGHT;
+
+public:
+	static const double POWER_WIDTH;
+	static const double POWER_HEIGHT;
+	static const double POWER_LINE_WIDTH;
+	static const double POWER_OUTLINE_MULTIPLIER;
 
 private:
 	static VertexArray* va;

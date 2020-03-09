@@ -8,24 +8,46 @@
 #include "mylib.h"
 #include "renderer.h"
 #include <glm/glm.hpp>
+#include "keypressmanager.h"
+#include "bulletmanager.h"
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 
-const double Tank::default_radius = 16;
+TankInputChar::TankInputChar(bool special, int c) {
+	isSpecial = special;
+	character = c;
+}
+TankInputChar::TankInputChar() {
+	isSpecial = false;
+	character = '`';
+}
+
+bool TankInputChar::getKeyState() {
+	if (isSpecial) {
+		return KeypressManager::getSpecialKey(character);
+	}
+	return KeypressManager::getNormalKey(character);
+}
+
 VertexArray* Tank::va;
 VertexBuffer* Tank::vb;
 IndexBuffer* Tank::ib;
 VertexArray* Tank::cannon_va;
 VertexBuffer* Tank::cannon_vb;
 
-Tank::Tank(double x_, double y_, double a, char id_, std::string name_) {
+Tank::Tank(double x_, double y_, double a, char id_, std::string name_, TankInputChar forward, TankInputChar left, TankInputChar right, TankInputChar shoot) {
 	x = x_;
 	y = y_;
 	angle = a;
 	id = id_;
-	r = Tank::default_radius;
+	r = TANK_RADIUS;
 	name = name_;
+
+	this->forward = forward;
+	this->turnL = left;
+	this->turnR = right;
+	this->shooting = shoot;
 
 	shootingPoints = new std::vector<CannonPoint>;
 }
@@ -40,37 +62,26 @@ Tank::~Tank() {
 	delete shootingPoints;
 }
 
-Tank::Tank() { //don't use
-	x = -100;
-	y = -100;
-	angle = 0;
-	id = -1;
-	r = 16;
-	name = "";
-
-	shootingPoints = new std::vector<CannonPoint>;
-}
-
 void Tank::move() {
 	//TODO: go through each power in the power vector, then use the function that it points to for movement; if none modified movement, use this default
 
 	//if (!forward || !document.getElementById("moveturn").checked) { //change && to || and remove second ! to flip playstyle
-		if (turnL) {
+		if (turnL.getKeyState()) {
 			angle += PI / turningIncrement;
 		}
-		if (turnR) {
+		if (turnR.getKeyState()) {
 			angle -= PI / turningIncrement;
 		}
 	//}
 	//if (!document.getElementById("acceleration").checked) {
-		if (forward)
+		if (forward.getKeyState())
 			velocity += acceleration;
 		else
 			velocity -= acceleration; //can result in negative velocities, but that's okay, altered in terminalVelocity()
 		terminalVelocity();
 	//}
 	/*else {
-		if (forward)
+		if (forward.getKeyState())
 			velocity = maxSpeed;
 		else
 			velocity = 0;
@@ -83,7 +94,7 @@ void Tank::move() {
 void Tank::terminalVelocity() {
 	if (velocity > maxSpeed + acceleration) {
 		velocity -= acceleration;
-		if (forward && velocity > maxSpeed) //so the tank doesn't stay at a high velocity if it loses its ability to go as fast as it previously could
+		if (forward.getKeyState() && velocity > maxSpeed) //so the tank doesn't stay at a high velocity if it loses its ability to go as fast as it previously could
 			velocity -= acceleration;
 	}
 	else if (velocity > maxSpeed)
@@ -97,7 +108,7 @@ void Tank::shoot() {
 	if(shootCount > 0) //check isn't really needed, but it also doesn't decrease performance by a real amount
 		shootCount--;
 
-	if(shooting && shootCount <= 0){
+	if(shooting.getKeyState() && shootCount <= 0){
 		determineShootingAngles();
 
 		for (int i = 0; i < shootingPoints->size(); i++) {
@@ -142,7 +153,7 @@ void Tank::makeBullet(double x, double y, double angle, double radius, double sp
 	bp->shrink_to_fit();
 
 	Bullet* temp = new Bullet(x, y, radius, angle, speed, acc, id, *bp);
-	bullets.push_back(temp);
+	BulletManager::pushBullet(temp);
 
 	//delete bp;
 	//don't delete any bp! it's being used! //(doesn't bp need to be deleted though?)
@@ -220,7 +231,7 @@ double Tank::getBulletSpeedMultiplier() {
 		value *= stackList[i];
 	}
 
-	return highest * lowest * value * 2; //based off of maxSpeed, so *2 //technically *4 from JS Tanks
+	return highest * lowest * value * 4; //based off of maxSpeed, so *4 //honestly, while *4 is the JS speed that makes the game faster and more fun, *2 is all right
 }
 
 double Tank::getBulletRadiusMultiplier() {

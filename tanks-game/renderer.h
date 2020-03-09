@@ -9,6 +9,11 @@
 #include <glm/glm.hpp>
 
 class Renderer {
+public:
+	//public until I rewrite rendering
+	static glm::mat4 proj;
+	static glm::mat4 getProj();
+
 private:
 	static std::unordered_map<std::string, Shader*> shaderCache;
 	static unsigned int currentShader;

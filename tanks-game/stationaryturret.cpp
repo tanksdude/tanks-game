@@ -5,15 +5,15 @@
 #include "constants.h"
 #include <math.h>
 #include "tank.h"
+#include "bulletmanager.h"
 
 StationaryTurret::StationaryTurret(double xpos, double ypos, double angle) {
 	x = xpos;
 	y = ypos;
 	this->angle = angle;
-	r = Tank::default_radius / 4;
+	r = TANK_RADIUS / 4;
 
-	tickCycle = 200; //100 is JS default (because of shooting speed) and 200 just looks weird (change in a "gamify update")
-	//so I don't forget the gamify update: make an actual random level (don't leave the powers in their testing places), restore shooting speed and bullet speed to JS, and other JS game-y stuff
+	tickCycle = 100; //100 is JS default (because of shooting speed) and 200 just looks weird
 	maxState = 3;
 	stateMultiplier = new short[maxState] {2, 1, 2};
 	stateColors = new ColorValueHolder[maxState] { {.5f, .5f, .5f}, {1.0f, 0x22/255.0, 0x11/255.0}, {0, 0.5f, 1.0f} };
@@ -28,6 +28,16 @@ StationaryTurret::StationaryTurret(double xpos, double ypos, double angle, doubl
 StationaryTurret::~StationaryTurret() {
 	delete[] stateMultiplier;
 	delete[] stateColors;
+}
+
+CircleHazard* StationaryTurret::factory(int argc, std::string* argv) {
+	if (argc == 3) {
+		double x = std::stod(argv[0]);
+		double y = std::stod(argv[1]);
+		double a = std::stod(argv[2]);
+		return new StationaryTurret(x, y, a);
+	}
+	return new StationaryTurret(0, 0, 0);
 }
 
 void StationaryTurret::tick() {
@@ -48,8 +58,7 @@ void StationaryTurret::tick() {
 		}
 	}
 	if (mustShoot) {
-		bullets.push_back(new Bullet(x + r*cos(angle), y + r*sin(angle), r/2, angle, 2, 0, -1)); //default speed is 4? (at least in JS)
-		bullets[bullets.size() - 1]->move(); //otherwise the bullet will spawn inside the turret
+		BulletManager::pushBullet(new Bullet(x + r*cos(angle), y + r*sin(angle), r/2, angle, 4, 0, -1)); //TODO: make default speed dependent on a constant that Tank uses for its default speed
 	}
 }
 

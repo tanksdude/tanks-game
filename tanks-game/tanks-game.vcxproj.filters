@@ -39,9 +39,6 @@
     <ClCompile Include="powersquare.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="randomlevel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="resetthings.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -210,6 +207,36 @@
     <ClCompile Include="stationaryturret.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="bulletmanager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="powerupmanager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wallmanager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="hazardmanager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="developerlevel0.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="randomlevel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="levelmanager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="keypressmanager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="tankmanager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="defaultrandomlevel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -255,9 +282,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="powersquare.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="randomlevel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="rect.h">
@@ -441,6 +465,36 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="stationaryturret.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="bulletmanager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="powerupmanager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="wallmanager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hazardmanager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="developerlevel0.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="randomlevel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="levelmanager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="keypressmanager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="tankmanager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="defaultrandomlevel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

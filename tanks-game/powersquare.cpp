@@ -1,13 +1,20 @@
 #pragma once
-#include <string>
-#include <iostream>
 #include "powersquare.h"
+#include <string>
+#include "backgroundrect.h"
 #include "colormixer.h"
 #include "renderer.h"
 #include <glm/glm.hpp>
+#include "powerupmanager.h"
+#include <iostream>
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
+
+const double PowerSquare::POWER_WIDTH = 6;
+const double PowerSquare::POWER_HEIGHT = 6;
+const double PowerSquare::POWER_LINE_WIDTH = 1.0/3.0;
+const double PowerSquare::POWER_OUTLINE_MULTIPLIER = 1.5;
 
 ColorValueHolder PowerSquare::getColor() {
 	if (numOfPowers == 1) {
@@ -30,26 +37,26 @@ void PowerSquare::givePower(Bullet*) { return; } //don't think about it now, pos
 //void givePower(Hazard*);
 
 PowerSquare::PowerSquare(double x_, double y_, std::string name) {
-	x = x_ - POWER_WIDTH/2;
-	y = y_ - POWER_HEIGHT/2;
-	w = POWER_WIDTH;
-	h = POWER_HEIGHT;
+	x = x_ - PowerSquare::POWER_WIDTH/2;
+	y = y_ - PowerSquare::POWER_HEIGHT/2;
+	w = PowerSquare::POWER_WIDTH;
+	h = PowerSquare::POWER_HEIGHT;
 
 	numOfPowers = 1;
 	heldPower = new Power*[1];
-	heldPower[0] = powerLookup[name]();
+	heldPower[0] = PowerupManager::getPowerFactory(name)();
 }
 
 PowerSquare::PowerSquare(double x_, double y_, std::string* names, int num) {
-	x = x_ - POWER_WIDTH/2;
-	y = y_ - POWER_HEIGHT/2;
-	w = POWER_WIDTH;
-	h = POWER_HEIGHT;
+	x = x_ - PowerSquare::POWER_WIDTH/2;
+	y = y_ - PowerSquare::POWER_HEIGHT/2;
+	w = PowerSquare::POWER_WIDTH;
+	h = PowerSquare::POWER_HEIGHT;
 
 	numOfPowers = num;
 	heldPower = new Power*[num];
 	for (int i = 0; i < num; i++) {
-		heldPower[i] = powerLookup[names[i]]();
+		heldPower[i] = PowerupManager::getPowerFactory(names[i])();
 	}
 }
 
@@ -66,9 +73,9 @@ IndexBuffer* PowerSquare::ib_main;
 IndexBuffer* PowerSquare::ib_outline;
 
 void PowerSquare::initializeGPU() {
-	float extendingMultiplier = POWER_LINE_WIDTH * (POWER_OUTLINE_MULTIPLIER - 1);
-	float w = POWER_WIDTH;
-	float h = POWER_HEIGHT;
+	float extendingMultiplier = PowerSquare::POWER_LINE_WIDTH * (PowerSquare::POWER_OUTLINE_MULTIPLIER - 1);
+	float w = PowerSquare::POWER_WIDTH;
+	float h = PowerSquare::POWER_HEIGHT;
 
 	float positions[] = {
 		//outer ring (not part of the main stuff)
@@ -84,10 +91,10 @@ void PowerSquare::initializeGPU() {
 		-w/2,  h/2, //7
 
 		//inner ring
-		-w/2 + w*POWER_LINE_WIDTH, -h/2 + h*POWER_LINE_WIDTH, //8
-		 w/2 - w*POWER_LINE_WIDTH, -h/2 + h*POWER_LINE_WIDTH, //9
-		 w/2 - w*POWER_LINE_WIDTH,  h/2 - h*POWER_LINE_WIDTH, //10
-		-w/2 + w*POWER_LINE_WIDTH,  h/2 - h*POWER_LINE_WIDTH  //11
+		-w/2 + w*PowerSquare::POWER_LINE_WIDTH, -h/2 + h*PowerSquare::POWER_LINE_WIDTH, //8
+		 w/2 - w*PowerSquare::POWER_LINE_WIDTH, -h/2 + h*PowerSquare::POWER_LINE_WIDTH, //9
+		 w/2 - w*PowerSquare::POWER_LINE_WIDTH,  h/2 - h*PowerSquare::POWER_LINE_WIDTH, //10
+		-w/2 + w*PowerSquare::POWER_LINE_WIDTH,  h/2 - h*PowerSquare::POWER_LINE_WIDTH  //11
 	};
 	unsigned int outline_indices[] = { //trapezoids
 		//bottom
@@ -141,7 +148,7 @@ void PowerSquare::draw() {
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 MVPM = Renderer::GenerateMatrix(1, 1, 0, x + w/2, y + h/2); //TODO: adjust this to scale by w and h
 	if (numOfPowers > 1) { //move to drawUnder()
-		ColorValueHolder backgroundMix = ColorMixer::mix(color, backColor);
+		ColorValueHolder backgroundMix = ColorMixer::mix(color, BackgroundRect::getBackColor());
 		//shader->Bind();
 		shader->setUniform4f("u_color", backgroundMix.getRf(), backgroundMix.getGf(), backgroundMix.getBf(), backgroundMix.getAf());
 		shader->setUniformMat4f("u_MVP", MVPM);
@@ -159,7 +166,7 @@ void PowerSquare::draw() {
 void PowerSquare::drawCPU() {
 	ColorValueHolder color = getColor();
 	if (numOfPowers > 1) { //move to drawUnder()
-		ColorValueHolder backgroundMix = ColorMixer::mix(color, backColor);
+		ColorValueHolder backgroundMix = ColorMixer::mix(color, BackgroundRect::getBackColor());
 		glColor3f(backgroundMix.getRf(), backgroundMix.getGf(), backgroundMix.getBf());
 
 		glBegin(GL_QUADS);

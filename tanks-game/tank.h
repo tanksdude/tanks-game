@@ -16,6 +16,14 @@ class Tank;
 #include "vertexbuffer.h"
 #include "indexbuffer.h"
 
+struct TankInputChar {
+	bool isSpecial;
+	int character;
+	bool getKeyState();
+	TankInputChar(bool, int);
+	TankInputChar();
+};
+
 class Tank : public Circle {
 public:
 	friend class ResetThings;
@@ -47,8 +55,6 @@ private:
 	double getHighestDefenseTier(double importance);
 
 public:
-	static const double default_radius;
-
 	//double shootingSpeedMultiplier = 1;
 	double getShootingSpeedMultiplier();
 	//double powerMultiplier; //would be used for an ini
@@ -58,11 +64,11 @@ public:
 	double getBulletAcceleration();
 
 public:
-	bool turnL;
-	bool turnR;
-	bool forward;
-	bool shooting;
-	//bool backwards; //not the point of the game
+	TankInputChar forward;
+	TankInputChar turnL;
+	TankInputChar turnR;
+	TankInputChar shooting;
+	//TankInputChar backwards; //not the point of the game
 
 	double& giveMaxSpeed() { return maxSpeed; }
 	double& giveX() { return x; }
@@ -83,7 +89,7 @@ private:
 	void resetThings(double x, double y, double a, char id, std::string name);
 
 	double shootCount = 0;
-	double maxShootCount = 200; //temporary? //should be 100
+	double maxShootCount = 100;
 
 public:
 	//helper stuff:
@@ -99,8 +105,7 @@ public:
 	static void initializeGPU();
 
 public:
-	Tank(double x, double y, double a, char id, std::string name);
-	Tank();
+	Tank(double x, double y, double a, char id, std::string name, TankInputChar forward, TankInputChar left, TankInputChar right, TankInputChar shoot);
 
 	void move();
 	void terminalVelocity(); //move to protected

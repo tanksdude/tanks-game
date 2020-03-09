@@ -6,6 +6,7 @@
 #include "collisionhandler.h"
 #include "constants.h"
 #include "mylib.h"
+#include "tankmanager.h"
 #include <math.h>
 #include <iostream>
 
@@ -144,29 +145,31 @@ bool PowerFunctionHelper::homingGeneric(Bullet* b, double maxAngleMove, bool mov
 	char targetTank = -1;
 	
 	if (moveByAngle) {
-		double* angleDiffs = new double[tanks.size()];
-		for (int i = 0; i < tanks.size(); i++) {
-			if (tanks[i]->getID() == b->getID()) {
+		double* angleDiffs = new double[TankManager::getNumTanks()];
+		for (int i = 0; i < TankManager::getNumTanks(); i++) {
+			Tank* t = TankManager::getTank(i);
+			if (t->getID() == b->getID()) {
 				angleDiffs[i] = 2*PI * 2; //is way more than enough
 				continue;
 			}
-			angleDiffs[i] = abs(atan2(b->y - tanks[i]->y, b->x - tanks[i]->x));
+			angleDiffs[i] = abs(atan2(b->y - t->y, b->x - t->x));
 		}
-		targetTank = findMinIndex(angleDiffs, tanks.size());
+		targetTank = findMinIndex(angleDiffs, TankManager::getNumTanks());
 		if (targetTank == b->getID()) {
 			targetTank = -1;
 		}
 		delete[] angleDiffs;
 	} else { //moveByDistance
-		double* distDiffs = new double[tanks.size()];
-		for (int i = 0; i < tanks.size(); i++) {
-			if (tanks[i]->getID() == b->getID()) {
+		double* distDiffs = new double[TankManager::getNumTanks()];
+		for (int i = 0; i < TankManager::getNumTanks(); i++) {
+			Tank* t = TankManager::getTank(i);
+			if (t->getID() == b->getID()) {
 				distDiffs[i] = GAME_WIDTH * GAME_HEIGHT; //should be enough
 				continue;
 			}
-			distDiffs[i] = sqrt(pow(b->x - tanks[i]->x, 2) + pow(b->y - tanks[i]->y, 2)); //TODO: this an issue?
+			distDiffs[i] = sqrt(pow(b->x - t->x, 2) + pow(b->y - t->y, 2)); //TODO: this an issue?
 		}
-		targetTank = findMinIndex(distDiffs, tanks.size());
+		targetTank = findMinIndex(distDiffs, TankManager::getNumTanks());
 		if (targetTank == b->getID()) {
 			targetTank = -1;
 		}
@@ -176,7 +179,9 @@ bool PowerFunctionHelper::homingGeneric(Bullet* b, double maxAngleMove, bool mov
 	if (targetTank == -1) {
 		return false; //means there was nothing to target; realistically, shouldn't be happening, unless 1-tank mode is a thing
 	}
-	double targetAngle = atan2(tanks[targetTank]->y - b->y, tanks[targetTank]->x - b->x);
+	Tank* t = TankManager::getTank(targetTank);
+
+	double targetAngle = atan2(t->y - b->y, t->x - b->x);
 	double posTargetAngle = fmod(targetAngle + 2*PI, 2*PI);
 	double bulletAngle = (b->getAngle()>PI ? b->getAngle() - 2*PI : b->getAngle());
 	//std::cout << targetAngle << " " << bulletAngle << " " << maxAngleMove << std::endl;
@@ -186,13 +191,13 @@ bool PowerFunctionHelper::homingGeneric(Bullet* b, double maxAngleMove, bool mov
 	} else {
 		//I don't remember why it works, but it does
 		if (b->getAngle() > PI/2 && b->getAngle() <= 3*PI/2) { //<= instead of < because edgecase fix: tank angle = 0, power multishot+bounce+homing (bounce optional but helps); bullet going up wouldn't home on other tank (probably tangent domain error)
-			if (tanks[targetTank]->y - b->y < tan(b->angle) * (tanks[targetTank]->x - b->x)) {
+			if (t->y - b->y < tan(b->angle) * (t->x - b->x)) {
 				b->angle += maxAngleMove;
 			} else {
 				b->angle -= maxAngleMove;
 			}
 		} else {
-			if (tanks[targetTank]->y - b->y < tan(b->angle) * (tanks[targetTank]->x - b->x)) {
+			if (t->y - b->y < tan(b->angle) * (t->x - b->x)) {
 				b->angle -= maxAngleMove;
 			} else {
 				b->angle += maxAngleMove;

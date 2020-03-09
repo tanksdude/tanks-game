@@ -4,8 +4,10 @@
 #include <string>
 
 class Level {
+	friend class LevelManager; //actually needs this unlike the other managers because the manager has more control
 private:
 	std::vector<LevelEffect*> effects;
+	int getNumEffects() { return effects.size(); } //kinda pointless but "clean code"
 public:
 	virtual std::string getName() = 0;
 	virtual void initialize() = 0;

@@ -147,6 +147,7 @@
     <ClCompile Include="bouncepower.cpp" />
     <ClCompile Include="bouncetankpower.cpp" />
     <ClCompile Include="bullet.cpp" />
+    <ClCompile Include="bulletmanager.cpp" />
     <ClCompile Include="bulletpriorityhandler.cpp" />
     <ClCompile Include="cannonpoint.cpp" />
     <ClCompile Include="circlehazard.cpp" />
@@ -155,6 +156,7 @@
     <ClCompile Include="colorvalueholder.cpp" />
     <ClCompile Include="constants.cpp" />
     <ClCompile Include="corridorlevel.cpp" />
+    <ClCompile Include="defaultrandomlevel.cpp" />
     <ClCompile Include="diagnostics.cpp" />
     <ClCompile Include="emptylevel.cpp" />
     <ClCompile Include="firenamedbulletpower.cpp" />
@@ -163,6 +165,7 @@
     <ClCompile Include="grenadebulletpower.cpp" />
     <ClCompile Include="grenadepower.cpp" />
     <ClCompile Include="grenadetankpower.cpp" />
+    <ClCompile Include="hazardmanager.cpp" />
     <ClCompile Include="homingbulletpower.cpp" />
     <ClCompile Include="homingpower.cpp" />
     <ClCompile Include="homingtankpower.cpp" />
@@ -170,7 +173,9 @@
     <ClCompile Include="invinciblenamedbulletpower.cpp" />
     <ClCompile Include="invinciblenamedpower.cpp" />
     <ClCompile Include="invinciblenamedtankpower.cpp" />
+    <ClCompile Include="keypressmanager.cpp" />
     <ClCompile Include="leveleffect.cpp" />
+    <ClCompile Include="levelmanager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="megadeathbulletpower.cpp" />
     <ClCompile Include="megadeathpower.cpp" />
@@ -181,6 +186,8 @@
     <ClCompile Include="mylib.cpp" />
     <ClCompile Include="powerfunctionhelper.cpp" />
     <ClCompile Include="powersquare.cpp" />
+    <ClCompile Include="powerupmanager.cpp" />
+    <ClCompile Include="developerlevel0.cpp" />
     <ClCompile Include="randomlevel.cpp" />
     <ClCompile Include="recthazard.cpp" />
     <ClCompile Include="renderer.cpp" />
@@ -191,6 +198,7 @@
     <ClCompile Include="speedtankpower.cpp" />
     <ClCompile Include="stationaryturret.cpp" />
     <ClCompile Include="tank.cpp" />
+    <ClCompile Include="tankmanager.cpp" />
     <ClCompile Include="triplebulletpower.cpp" />
     <ClCompile Include="triplepower.cpp" />
     <ClCompile Include="tripletankpower.cpp" />
@@ -200,6 +208,7 @@
     <ClCompile Include="wallhackbulletpower.cpp" />
     <ClCompile Include="wallhackpower.cpp" />
     <ClCompile Include="wallhacktankpower.cpp" />
+    <ClCompile Include="wallmanager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="backgroundrect.h" />
@@ -214,6 +223,7 @@
     <ClInclude Include="bouncepower.h" />
     <ClInclude Include="bouncetankpower.h" />
     <ClInclude Include="bullet.h" />
+    <ClInclude Include="bulletmanager.h" />
     <ClInclude Include="bulletpower.h" />
     <ClInclude Include="bulletpriorityhandler.h" />
     <ClInclude Include="cannonpoint.h" />
@@ -225,6 +235,7 @@
     <ClInclude Include="colorvalueholder.h" />
     <ClInclude Include="constants.h" />
     <ClInclude Include="corridorlevel.h" />
+    <ClInclude Include="defaultrandomlevel.h" />
     <ClInclude Include="diagnostics.h" />
     <ClInclude Include="emptylevel.h" />
     <ClInclude Include="firenamedbulletpower.h" />
@@ -234,6 +245,7 @@
     <ClInclude Include="grenadepower.h" />
     <ClInclude Include="grenadetankpower.h" />
     <ClInclude Include="hazard.h" />
+    <ClInclude Include="hazardmanager.h" />
     <ClInclude Include="homingbulletpower.h" />
     <ClInclude Include="homingpower.h" />
     <ClInclude Include="homingtankpower.h" />
@@ -242,8 +254,10 @@
     <ClInclude Include="invinciblenamedbulletpower.h" />
     <ClInclude Include="invinciblenamedpower.h" />
     <ClInclude Include="invinciblenamedtankpower.h" />
+    <ClInclude Include="keypressmanager.h" />
     <ClInclude Include="level.h" />
     <ClInclude Include="leveleffect.h" />
+    <ClInclude Include="levelmanager.h" />
     <ClInclude Include="megadeathbulletpower.h" />
     <ClInclude Include="megadeathpower.h" />
     <ClInclude Include="megadeathtankpower.h" />
@@ -254,6 +268,8 @@
     <ClInclude Include="power.h" />
     <ClInclude Include="powerfunctionhelper.h" />
     <ClInclude Include="powersquare.h" />
+    <ClInclude Include="powerupmanager.h" />
+    <ClInclude Include="developerlevel0.h" />
     <ClInclude Include="randomlevel.h" />
     <ClInclude Include="rect.h" />
     <ClInclude Include="recthazard.h" />
@@ -268,6 +284,7 @@
     <ClInclude Include="speedtankpower.h" />
     <ClInclude Include="stationaryturret.h" />
     <ClInclude Include="tank.h" />
+    <ClInclude Include="tankmanager.h" />
     <ClInclude Include="tankpower.h" />
     <ClInclude Include="triplebulletpower.h" />
     <ClInclude Include="triplepower.h" />
@@ -279,6 +296,7 @@
     <ClInclude Include="wallhackbulletpower.h" />
     <ClInclude Include="wallhackpower.h" />
     <ClInclude Include="wallhacktankpower.h" />
+    <ClInclude Include="wallmanager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="freeglut.dll" />

@@ -26,6 +26,14 @@
 #include "hazard.h"
 #include "circlehazard.h"
 #include "recthazard.h"
+//managers:
+#include "keypressmanager.h"
+#include "tankmanager.h"
+#include "bulletmanager.h"
+#include "powerupmanager.h"
+#include "wallmanager.h"
+#include "levelmanager.h"
+#include "hazardmanager.h"
 
 //classes with important handling functions:
 #include "collisionhandler.h"
@@ -35,7 +43,8 @@
 #include "powerfunctionhelper.h"
 
 //levels:
-#include "randomlevel.h"
+#include "defaultrandomlevel.h"
+#include "developerlevel0.h"
 #include "emptylevel.h"
 #include "corridorlevel.h"
 #include "bigfunlevel.h"
@@ -91,9 +100,6 @@
 
 using namespace std;
 
-unordered_map<unsigned char, bool> normalKeyStates;
-unordered_map<int, bool> specialKeyStates;
-
 int tank_dead = 0;
 
 long frameCount = 0; //doesn't need a long for how it's interpreted...
@@ -141,35 +147,35 @@ void appDrawScene() {
 
 	Diagnostics::startTiming();
 	Diagnostics::addName("powerups");
-	for (int i = 0; i < powerups.size(); i++) {
-		powerups[i]->draw();
+	for (int i = 0; i < PowerupManager::getNumPowerups(); i++) {
+		PowerupManager::getPowerup(i)->draw();
 	}
 	Renderer::UnbindAll();
 	Diagnostics::endTiming();
 
 	Diagnostics::startTiming();
 	Diagnostics::addName("hazards");
-	for (int i = 0; i < circleHazards.size(); i++) {
-		circleHazards[i]->draw();
+	for (int i = 0; i < HazardManager::getNumCircleHazards(); i++) {
+		HazardManager::getCircleHazard(i)->draw();
 	}
-	for (int i = 0; i < rectHazards.size(); i++) {
-		rectHazards[i]->draw();
+	for (int i = 0; i < HazardManager::getNumRectHazards(); i++) {
+		HazardManager::getRectHazard(i)->draw();
 	}
 	Renderer::UnbindAll();
 	Diagnostics::endTiming();
 
 	Diagnostics::startTiming();
 	Diagnostics::addName("walls");
-	for (int i = 0; i < walls.size(); i++) {
-		walls[i]->draw();
+	for (int i = 0; i < WallManager::getNumWalls(); i++) {
+		WallManager::getWall(i)->draw();
 	}
 	Renderer::UnbindAll();
 	Diagnostics::endTiming();
 	
 	Diagnostics::startTiming();
 	Diagnostics::addName("bullets");
-	for (int i = 0; i < bullets.size(); i++) {
-		bullets[i]->draw();
+	for (int i = 0; i < BulletManager::getNumBullets(); i++) {
+		BulletManager::getBullet(i)->draw();
 	}
 	Renderer::UnbindAll();
 	Diagnostics::endTiming();
@@ -183,8 +189,8 @@ void appDrawScene() {
 
 	Diagnostics::startTiming();
 	Diagnostics::addName("tanks");
-	for (int i = 0; i < tanks.size(); i++) {
-		tanks[i]->draw();
+	for (int i = 0; i < TankManager::getNumTanks(); i++) {
+		TankManager::getTank(i)->draw();
 	}
 	Renderer::UnbindAll();
 	Diagnostics::endTiming();
@@ -246,7 +252,7 @@ void appReshapeFunc(int w, int h) {
 		winXmax = center + (appXmax - center) * scale;
 		winYmin = appYmin;
 		winYmax = appYmax;
-		proj = glm::ortho(0.0f, float(GAME_WIDTH*scale), 0.0f, (float)GAME_HEIGHT); //GPU
+		Renderer::proj = glm::ortho(0.0f, float(GAME_WIDTH*scale), 0.0f, (float)GAME_HEIGHT); //GPU
 	}
 	else { //too tall
 		scale = ((appXmax - appXmin) / w) / ((appYmax - appYmin) / h);
@@ -255,7 +261,7 @@ void appReshapeFunc(int w, int h) {
 		winYmax = center + (appYmax - center) * scale;
 		winXmin = appXmin;
 		winXmax = appXmax;
-		proj = glm::ortho(0.0f, (float)GAME_WIDTH, 0.0f, float(GAME_HEIGHT*scale)); //GPU
+		Renderer::proj = glm::ortho(0.0f, (float)GAME_WIDTH, 0.0f, float(GAME_HEIGHT*scale)); //GPU
 	}
 
 	// Now we use glOrtho to set up our viewing frustum (CPU only)
@@ -268,12 +274,12 @@ void appMotionFunc(int x, int y) {
 	//dev tools
 	if (leftMouse) {
 		if (!rightMouse) { //tank 1
-			tanks[0]->giveX() = (x / double(width)) * GAME_WIDTH;
-			tanks[0]->giveY() = (1 - y / double(height)) * GAME_HEIGHT;
+			TankManager::getTank(0)->giveX() = (x / double(width)) * GAME_WIDTH;
+			TankManager::getTank(0)->giveY() = (1 - y / double(height)) * GAME_HEIGHT;
 		}
 		else { //tank 2
-			tanks[1]->giveX() = (x / double(width)) * GAME_WIDTH;
-			tanks[1]->giveY() = (1 - y / double(height)) * GAME_HEIGHT;
+			TankManager::getTank(1)->giveX() = (x / double(width)) * GAME_WIDTH;
+			TankManager::getTank(1)->giveY() = (1 - y / double(height)) * GAME_HEIGHT;
 		}
 	}
 	//positions are off when window aspect ratio isn't 2:1
@@ -293,539 +299,111 @@ void mouse_func(int button, int state, int x, int y) {
 	}
 }
 
-void keyboard_down(unsigned char key, int x, int y) {
-	normalKeyStates[key] = true;
-}
-
-void special_keyboard_down(int key, int x, int y) {
-	specialKeyStates[key] = true;
-}
-
-void keyboard_up(unsigned char key, int x, int y) {
-	normalKeyStates[key] = false;
-}
-
-void special_keyboard_up(int key, int x, int y) {
-	specialKeyStates[key] = false;
-}
-
+//tick stuff:
+void moveTanks();
+void tankToPowerup();
+void tickHazards();
+void moveBullets();
+void tankPowerCalculate();
+void bulletPowerCalculate();
+void tankShoot();
+void tankToWall();
+void tankToHazard();
+void tankToTank();
+void tankToEdge();
+void bulletToEdge();
+void bulletToWall();
+void bulletToHazard();
+void bulletToBullet();
+void bulletToTank();
 
 void tick(int physicsUPS) {
 	//while (currentlyDrawing) {}
 
 	auto start = Diagnostics::getTime();
 
+	//move tanks:
+	moveTanks();
+
+	//collide tanks with powerups:
 	Diagnostics::startTiming();
-	Diagnostics::addName("bool movement");
-	//temporary: need to figure out better implementation
-	tanks[0]->forward = normalKeyStates['w'];
-	tanks[0]->turnL = normalKeyStates['a'];
-	tanks[0]->turnR = normalKeyStates['d'];
-	tanks[0]->shooting = normalKeyStates['s'];
-	//still temporary
-	tanks[1]->forward = specialKeyStates[GLUT_KEY_UP];
-	tanks[1]->turnL = specialKeyStates[GLUT_KEY_LEFT];
-	tanks[1]->turnR = specialKeyStates[GLUT_KEY_RIGHT];
-	tanks[1]->shooting = specialKeyStates[GLUT_KEY_DOWN];
+	Diagnostics::addName("tank to powerups");
+	tankToPowerup();
 	Diagnostics::endTiming();
-
-	//TODO: each tick portion needs to go in its own separate function; that way a level can override some parts of it without having to rewrite everything
-
-	Diagnostics::startTiming();
-	Diagnostics::addName("move and hazard tick");
-	//move everything
-	for (int i = 0; i < tanks.size(); i++) {
-		tanks[i]->move();
-	}
 	
-	for (int i = 0; i < circleHazards.size(); i++) {
-		circleHazards[i]->tick();
-	}
-	for (int i = 0; i < rectHazards.size(); i++) {
-		rectHazards[i]->tick();
-	}
+	//tick hazards:
+	tickHazards();
 	
-	for (int i = 0; i < bullets.size(); i++) {
-		bullets[i]->move();
-	}
-	Diagnostics::endTiming();
+	//move bullets:
+	moveBullets();
 
-	Diagnostics::startTiming();
-	Diagnostics::addName("powerup-tank");
-	//do the special things
-	for (int i = powerups.size() - 1; i >= 0; i--) {
-		for (int j = 0; j < tanks.size(); j++) {
-			if (CollisionHandler::partiallyCollided(powerups[i], tanks[j])) {
-				powerups[i]->givePower(tanks[j]);
-				delete powerups[i];
-				powerups.erase(powerups.begin() + i);
-				break;
-			}
-		}
-	}
-	Diagnostics::endTiming();
-
+	//powerCalculate on tanks and bullets, then tank shoot:
 	Diagnostics::startTiming();
 	Diagnostics::addName("powerCalculate and tank shoot");
-	for (int i = 0; i < tanks.size(); i++) {
-		tanks[i]->powerCalculate();
-	}
-	for (int i = 0; i < bullets.size(); i++) {
-		bullets[i]->powerCalculate();
-		if (bullets[i]->isDead()) {
-			delete bullets[i];
-			bullets.erase(bullets.begin() + i);
-			i--;
-			continue;
-		}
-	}
-	for (int i = 0; i < tanks.size(); i++) {
-		tanks[i]->shoot();
-	}
+	tankPowerCalculate();
+	bulletPowerCalculate();
+	tankShoot();
 	Diagnostics::endTiming();
 
+	//collide tanks with walls:
 	Diagnostics::startTiming();
-	Diagnostics::addName("tank-wall");
-	//tank to wall collision:
-	for (int i = 0; i < tanks.size(); i++) {
-		bool shouldBeKilled = false; //maybe the walls are poison with a certain powerup? I dunno, but gotta have it as an option
-
-		for (int j = 0; j < walls.size(); j++) {
-			bool modifiedWallCollision = false;
-			bool overridedWallCollision = false;
-			bool noMoreWallCollisionSpecials = false;
-			bool killWall = false;
-
-			if (CollisionHandler::partiallyCollided(tanks[i], walls[j])) {
-				for (int k = 0; k < tanks[i]->tankPowers.size(); k++) {
-					if (tanks[i]->tankPowers[k]->modifiesCollisionWithWall) {
-						if (tanks[i]->tankPowers[k]->modifiedCollisionWithWallCanOnlyWorkIndividually && modifiedWallCollision) {
-							continue;
-						}
-						if (noMoreWallCollisionSpecials) {
-							continue;
-						}
-
-						modifiedWallCollision = true;
-						if (tanks[i]->tankPowers[k]->overridesCollisionWithWall) {
-							overridedWallCollision = true;
-						}
-						if (!tanks[i]->tankPowers[k]->modifiedEdgeCollisionCanWorkWithOthers) {
-							noMoreWallCollisionSpecials = true;
-						}
-
-						PowerInteractionBoolHolder check_temp = tanks[i]->tankPowers[k]->modifiedCollisionWithWall(tanks[i], walls[j]);
-						if (check_temp.shouldDie) {
-							shouldBeKilled = true;
-						}
-						if (check_temp.otherShouldDie) {
-							killWall = true;
-						}
-					}
-				}
-
-				if (!overridedWallCollision) {
-					CollisionHandler::pushMovableAwayFromImmovable(tanks[i], walls[j]);
-				}
-			}
-
-			if (killWall) {
-				walls.erase(walls.begin() + j);
-				j--;
-			}
-		}
-
-		if (shouldBeKilled) {
-			tank_dead = 1; //TODO: proper implementation
-		}
-
-	}
+	Diagnostics::addName("tank to walls");
+	tankToWall();
 	Diagnostics::endTiming();
 
+	//collide tanks with hazards:
 	Diagnostics::startTiming();
 	Diagnostics::addName("tank-hazards");
-	//tank to all hazards (temporary):
-	for (int i = 0; i < tanks.size(); i++) {
-		//circles:
-		for (int j = 0; j < circleHazards.size(); j++) {
-			if (CollisionHandler::partiallyCollided(tanks[i], circleHazards[j])) {
-				CollisionHandler::pushMovableAwayFromImmovable(tanks[i], circleHazards[j]);
-			}
-		}
-		//rectangles:
-		for (int j = 0; j < rectHazards.size(); j++) {
-			if (CollisionHandler::partiallyCollided(tanks[i], rectHazards[j])) {
-				CollisionHandler::pushMovableAwayFromImmovable(tanks[i], rectHazards[j]);
-			}
-		}
-	}
+	tankToHazard();
 	Diagnostics::endTiming();
 
+	//collide tanks with tanks:
 	Diagnostics::startTiming();
 	Diagnostics::addName("tank-tank");
-	for (int i = 0; i < tanks.size(); i++) {
-		bool shouldBeKilled = false;
-		for (int j = 0; j < tanks.size(); j++) {
-			if (i == j) {
-				continue;
-			}
-
-			bool modifiedTankCollision = false;
-			bool overridedTankCollision = false;
-			bool noMoreTankCollisionSpecials = false;
-			bool killOtherTank = false;
-
-			if (CollisionHandler::partiallyCollided(tanks[i], tanks[j])) {
-				for (int k = 0; k < tanks[i]->tankPowers.size(); k++) {
-					if (tanks[i]->tankPowers[k]->modifiesCollisionWithWall) {
-						if (tanks[i]->tankPowers[k]->modifiedCollisionWithTankCanOnlyWorkIndividually && modifiedTankCollision) {
-							continue;
-						}
-						if (noMoreTankCollisionSpecials) {
-							continue;
-						}
-
-						modifiedTankCollision = true;
-						if (tanks[i]->tankPowers[k]->overridesCollisionWithTank) {
-							overridedTankCollision = true;
-						}
-						if (!tanks[i]->tankPowers[k]->modifiedCollisionWithTankCanWorkWithOthers) {
-							noMoreTankCollisionSpecials = true;
-						}
-
-						PowerInteractionBoolHolder check_temp = tanks[i]->tankPowers[k]->modifiedCollisionWithTank(tanks[i], tanks[j]);
-						if (check_temp.shouldDie) {
-							shouldBeKilled = true;
-						}
-						if (check_temp.otherShouldDie) {
-							if (tanks[i]->getID() != tanks[j]->getID()) {
-								killOtherTank = true;
-							}
-						}
-					}
-				}
-
-				if (!overridedTankCollision) {
-					CollisionHandler::pushMovableAwayFromMovable(tanks[i], tanks[j]);
-				}
-			}
-
-			if (killOtherTank) {
-				tank_dead = 1;
-			}
-		}
-
-		if (shouldBeKilled) {
-			tank_dead = 1;
-		}
-	}
+	tankToTank();
 	Diagnostics::endTiming();
 
-	Diagnostics::startTiming();
-	Diagnostics::addName("tank-edge");
-	//tank to edge collision:
-	for (int i = 0; i < tanks.size(); i++) {
-		bool shouldBeKilled = false;
-		
-		bool modifiedEdgeCollision = false;
-		bool overridedEdgeCollision = false;
-		bool noMoreEdgeCollisionSpecials = false;
-
-		if (tanks[i]->isPartiallyOutOfBounds()) {
-			for (int k = 0; k < tanks[i]->tankPowers.size(); k++) {
-				if (tanks[i]->tankPowers[k]->modifiesCollisionWithEdge) {
-					if (tanks[i]->tankPowers[k]->modifiedEdgeCollisionCanOnlyWorkIndividually && modifiedEdgeCollision) {
-						continue;
-					}
-					if (noMoreEdgeCollisionSpecials) {
-						continue;
-					}
-
-					modifiedEdgeCollision = true;
-					if (tanks[i]->tankPowers[k]->overridesEdgeCollision) {
-						overridedEdgeCollision = true;
-					}
-					if (!tanks[i]->tankPowers[k]->modifiedEdgeCollisionCanWorkWithOthers) {
-						noMoreEdgeCollisionSpecials = true;
-					}
-
-					PowerInteractionBoolHolder check_temp = tanks[i]->tankPowers[k]->modifiedEdgeCollision(tanks[i]);
-					if (check_temp.shouldDie) {
-						shouldBeKilled = true;
-					}
-				}
-			}
-
-			if (!overridedEdgeCollision) {
-				tanks[i]->edgeConstrain();
-			}
-		}
-
-		if (shouldBeKilled) {
-			tank_dead = 1;
-		}
-	}
-	Diagnostics::endTiming();
-
+	//collide tanks against edges:
+	tankToEdge();
+	
+	//collide bullets against edges:
 	Diagnostics::startTiming();
 	Diagnostics::addName("bullet-edge");
-	//bullet to edge collision:
-	for (int i = bullets.size() - 1; i >= 0; i--) {
-		bool modifiedEdgeCollision = false;
-		bool overridedEdgeCollision = false;
-		bool noMoreEdgeCollisionSpecials = false;
-		bool shouldBeKilled = false;
-
-		if (bullets[i]->isPartiallyOutOfBounds()) {
-			for (int k = 0; k < bullets[i]->bulletPowers.size(); k++) {
-				if (bullets[i]->bulletPowers[k]->modifiesCollisionWithEdge) {
-					if (bullets[i]->bulletPowers[k]->modifiedEdgeCollisionCanOnlyWorkIndividually && modifiedEdgeCollision) {
-						continue;
-					}
-					if (noMoreEdgeCollisionSpecials) {
-						continue;
-					}
-
-					modifiedEdgeCollision = true;
-					if (bullets[i]->bulletPowers[k]->overridesEdgeCollision) {
-						overridedEdgeCollision = true;
-					}
-					if (!bullets[i]->bulletPowers[k]->modifiedEdgeCollisionCanWorkWithOthers) {
-						noMoreEdgeCollisionSpecials = true;
-					}
-
-					PowerInteractionBoolHolder check_temp = bullets[i]->bulletPowers[k]->modifiedEdgeCollision(bullets[i]);
-					if (check_temp.shouldDie) {
-						shouldBeKilled = true;
-					}
-				}
-			}
-
-			if (overridedEdgeCollision) {
-				continue;
-			}
-			if (bullets[i]->isFullyOutOfBounds()) {
-				shouldBeKilled = true;
-			}
-		}
-
-		if (shouldBeKilled) {
-			delete bullets[i];
-			bullets.erase(bullets.begin() + i);
-			continue;
-		}
-	}
+	bulletToEdge();
 	Diagnostics::endTiming();
 
+	//collide bullets with walls:
 	Diagnostics::startTiming();
 	Diagnostics::addName("bullet-wall");
-	//bullet to wall collision:
-	for (int i = bullets.size() - 1; i >= 0; i--) {
-		bool shouldBeKilled = false;
-
-		for (int j = walls.size() - 1; j >= 0; j--) {
-			bool modifiedWallCollision = false;
-			bool overridedWallCollision = false;
-			bool noMoreWallCollisionSpecials = false;
-			bool killWall = false;
-
-			if (CollisionHandler::partiallyCollided(bullets[i], walls[j])) {
-				for (int k = 0; k < bullets[i]->bulletPowers.size(); k++) {
-					if (bullets[i]->bulletPowers[k]->modifiesCollisionWithWall) {
-						if (bullets[i]->bulletPowers[k]->modifiedCollisionWithWallCanOnlyWorkIndividually && modifiedWallCollision) {
-							continue;
-						}
-						if (noMoreWallCollisionSpecials) {
-							continue;
-						}
-
-						modifiedWallCollision = true;
-						if (bullets[i]->bulletPowers[k]->overridesCollisionWithWall) {
-							overridedWallCollision = true;
-						}
-						if (!bullets[i]->bulletPowers[k]->modifiedCollisionWithWallCanWorkWithOthers) {
-							noMoreWallCollisionSpecials = true;
-						}
-
-						PowerInteractionBoolHolder check_temp = bullets[i]->bulletPowers[k]->modifiedCollisionWithWall(bullets[i], walls[j]);
-						if (check_temp.shouldDie) {
-							shouldBeKilled = true;
-						}
-						if (check_temp.otherShouldDie) {
-							killWall = true;
-						}
-					}
-				}
-
-				if (!overridedWallCollision) {
-					if (CollisionHandler::partiallyCollided(bullets[i], walls[j])) {
-						shouldBeKilled = true;
-					}
-				}
-			}
-
-			if (killWall) {
-				delete walls[j];
-				walls.erase(walls.begin() + j);
-			}
-		}
-
-		if (shouldBeKilled) {
-			delete bullets[i];
-			bullets.erase(bullets.begin() + i);
-		}
-	}
+	bulletToWall();
 	Diagnostics::endTiming();
 	//bullet to wall is a big timesink, but it can only really be sped up by multithreading
 
+	//collide bullets with hazards:
 	Diagnostics::startTiming();
 	Diagnostics::addName("bullet-hazards");
-	//bullet to all hazards (temporary):
-	for (int i = bullets.size() - 1; i >= 0; i--) {
-		//circles:
-		bool bullet_died = false;
-		for (int j = 0; j < circleHazards.size(); j++) {
-			if (CollisionHandler::partiallyCollided(bullets[i], circleHazards[j])) {
-				delete bullets[i];
-				bullets.erase(bullets.begin() + i);
-				bullet_died = true;
-				break;
-			}
-		}
-		if (bullet_died) {
-			continue;
-		}
-		//rectangles:
-		for (int j = 0; j < rectHazards.size(); j++) {
-			if (CollisionHandler::partiallyCollided(bullets[i], rectHazards[j])) {
-				delete bullets[i];
-				bullets.erase(bullets.begin() + i);
-				break;
-			}
-		}
-	}
+	bulletToHazard();
 	Diagnostics::endTiming();
+	//probably another big timesink, but there aren't many hazards
 
+	//collide bullets with bullets:
 	Diagnostics::startTiming();
 	Diagnostics::addName("bullet-bullet");
-	//bullet collision:
-	//TODO: modernize (add default vs custom collision stuff)
-	for (int i = bullets.size() - 1; i >= 0; i--) {
-		for (int j = bullets.size() - 1; j >= 0; j--) { //could start at i-1? //fix: find out
-			if (bullets[i]->getID() == bullets[j]->getID()) {
-				continue;
-			}
-			if (CollisionHandler::partiallyCollided(bullets[i], bullets[j])) {
-				char result = BulletPriorityHandler::determinePriority(bullets[i], bullets[j]);
-				if (result <= -2) {
-					bool firstDies = rand()%2;
-					if (firstDies) {
-						delete bullets[i];
-						bullets.erase(bullets.begin() + i);
-						break;
-					} else {
-						delete bullets[j];
-						bullets.erase(bullets.begin() + j);
-						continue; //fix: is this supposed to be break?
-					}
-				} else if (result == -1) { //both die
-					delete bullets[i];
-					delete bullets[j];
-					if (i > j) {
-						bullets.erase(bullets.begin() + i);
-						bullets.erase(bullets.begin() + j);
-						i--;
-					} else {
-						bullets.erase(bullets.begin() + j);
-						bullets.erase(bullets.begin() + i);
-					}
-					break;
-				} else if (result >= 2) { //it's a draw, so neither dies
-					//continue;
-				} else {
-					if (result == 0) {
-						delete bullets[i];
-						bullets.erase(bullets.begin() + i);
-						i--;
-						break;
-					} else {
-						delete bullets[j];
-						bullets.erase(bullets.begin() + j);
-						if (i > j) {
-							i--;
-						}
-						continue; //not needed //shouldn't be break because a single bullet may be capable of destroying multiple other bullets (invincibility stuff)
-					}
-				}
-
-				//break;
-			}
-		}
-	}
+	bulletToBullet();
 	Diagnostics::endTiming();
 	//bullet to bullet collision is the biggest timesink (obviously)
 	//unfortunately it can only be O(n^2), and multithreading doesn't seem like it would work
 
+	//collide bullets with tanks:
 	Diagnostics::startTiming();
 	Diagnostics::addName("bullet-tank");
-	//bullet to tank collision:
-	//TODO: modernize (add default vs custom collision stuff)
-	for (int i = 0; i < tanks.size(); i++) {
-		for (int j = 0; j < bullets.size(); j++) {
-			if (bullets[j]->getID() == tanks[i]->getID()) {
-				continue;
-			}
-			if (CollisionHandler::partiallyCollided(tanks[i], bullets[j])) {
-				char result = BulletPriorityHandler::determinePriority(bullets[j], tanks[i]);
-				if (result <= -2) {
-					bool firstDies = rand()%2;
-					if (firstDies) {
-						tank_dead = 1;
-						continue;
-					} else {
-						delete bullets[j];
-						bullets.erase(bullets.begin() + j);
-						j--;
-						continue; //fix: is this supposed to be break?
-					}
-				} else if (result == -1) { //both die
-					tank_dead = 1;
-
-					/*
-					delete bullets[j];
-					bullets.erase(bullets.begin() + j);
-					j--;
-					*/
-
-					continue;
-				} else if (result >= 2) { //it's a draw, so neither dies (probably not going to happen)
-					//continue;
-				} else {
-					if (result == 0) {
-						delete bullets[j];
-						bullets.erase(bullets.begin() + j);
-						j--;
-						continue; //not needed //fix: should it be break?
-					} else {
-						tank_dead = 1;
-						continue;
-					}
-				}
-
-				//break;
-			}
-		}
-	}
+	bulletToTank();
 	Diagnostics::endTiming();
 
-	//edge constrain tanks again in case bullet decides to move tank
+	//edge constrain tanks again in case bullet decided to move tank
 	//don't edge constrain if said tank is dead //fix: implement
 	/*
-	for (int i = 0; i < tanks.size(); i++) {
-		//if (tanks[i]->isOutOfBounds())) {
-			tanks[i]->edgeConstrain();
-		//}
-	}
+	tankToEdge();
 	*/
 
 	auto end = Diagnostics::getTime();
@@ -851,6 +429,490 @@ void tick(int physicsUPS) {
 }
 void tick() { tick(physicsRate); }
 void draw() { glutPostRedisplay(); }
+
+void moveTanks() {
+	for (int i = 0; i < TankManager::getNumTanks(); i++) {
+		TankManager::getTank(i)->move();
+	}
+}
+
+void tankToPowerup() {
+	for (int i = PowerupManager::getNumPowerups() - 1; i >= 0; i--) {
+		PowerSquare* p = PowerupManager::getPowerup(i);
+
+		for (int j = 0; j < TankManager::getNumTanks(); j++) {
+			Tank* t = TankManager::getTank(j);
+			if (CollisionHandler::partiallyCollided(p, t)) {
+				p->givePower(t);
+				PowerupManager::deletePowerup(i);
+				break;
+			}
+		}
+	}
+}
+
+void tickHazards() {
+	for (int i = 0; i < HazardManager::getNumCircleHazards(); i++) {
+		HazardManager::getCircleHazard(i)->tick();
+	}
+	for (int i = 0; i < HazardManager::getNumRectHazards(); i++) {
+		HazardManager::getRectHazard(i)->tick();
+	}
+}
+
+void moveBullets() {
+	for (int i = 0; i < BulletManager::getNumBullets(); i++) {
+		BulletManager::getBullet(i)->move();
+	}
+}
+
+void tankPowerCalculate() {
+	for (int i = 0; i < TankManager::getNumTanks(); i++) {
+		TankManager::getTank(i)->powerCalculate();
+	}
+}
+
+void bulletPowerCalculate() {
+	for (int i = 0; i < BulletManager::getNumBullets(); i++) {
+		Bullet* b = BulletManager::getBullet(i);
+		b->powerCalculate();
+		if (b->isDead()) {
+			BulletManager::deleteBullet(i);
+			i--;
+			continue;
+		}
+	}
+}
+
+void tankShoot() {
+	for (int i = 0; i < TankManager::getNumTanks(); i++) {
+		TankManager::getTank(i)->shoot();
+	}
+}
+
+void tankToWall() {
+	for (int i = 0; i < TankManager::getNumTanks(); i++) {
+		bool shouldBeKilled = false; //maybe the walls are poison with a certain powerup? I dunno, but gotta have it as an option
+		Tank* t = TankManager::getTank(i);
+
+		for (int j = 0; j < WallManager::getNumWalls(); j++) {
+			bool modifiedWallCollision = false;
+			bool overridedWallCollision = false;
+			bool noMoreWallCollisionSpecials = false;
+			bool killWall = false;
+			Wall* w = WallManager::getWall(j);
+
+			if (CollisionHandler::partiallyCollided(t, w)) {
+				for (int k = 0; k < t->tankPowers.size(); k++) {
+					if (t->tankPowers[k]->modifiesCollisionWithWall) {
+						if (t->tankPowers[k]->modifiedCollisionWithWallCanOnlyWorkIndividually && modifiedWallCollision) {
+							continue;
+						}
+						if (noMoreWallCollisionSpecials) {
+							continue;
+						}
+
+						modifiedWallCollision = true;
+						if (t->tankPowers[k]->overridesCollisionWithWall) {
+							overridedWallCollision = true;
+						}
+						if (!t->tankPowers[k]->modifiedEdgeCollisionCanWorkWithOthers) {
+							noMoreWallCollisionSpecials = true;
+						}
+
+						PowerInteractionBoolHolder check_temp = t->tankPowers[k]->modifiedCollisionWithWall(t, w);
+						if (check_temp.shouldDie) {
+							shouldBeKilled = true;
+						}
+						if (check_temp.otherShouldDie) {
+							killWall = true;
+						}
+					}
+				}
+
+				if (!overridedWallCollision) {
+					CollisionHandler::pushMovableAwayFromImmovable(t, w);
+				}
+			}
+
+			if (killWall) {
+				WallManager::deleteWall(j);
+				j--;
+			}
+		}
+
+		if (shouldBeKilled) {
+			tank_dead = 1; //TODO: proper implementation
+		}
+
+	}
+}
+
+void tankToHazard() {
+	//temporary!
+	for (int i = 0; i < TankManager::getNumTanks(); i++) {
+		Tank* t = TankManager::getTank(i);
+		//circles:
+		for (int j = 0; j < HazardManager::getNumCircleHazards(); j++) {
+			CircleHazard* ch = HazardManager::getCircleHazard(j);
+			if (CollisionHandler::partiallyCollided(t, ch)) {
+				CollisionHandler::pushMovableAwayFromImmovable(t, ch);
+			}
+		}
+		//rectangles:
+		for (int j = 0; j < HazardManager::getNumRectHazards(); j++) {
+			RectHazard* rh = HazardManager::getRectHazard(j);
+			if (CollisionHandler::partiallyCollided(t, rh)) {
+				CollisionHandler::pushMovableAwayFromImmovable(t, rh);
+			}
+		}
+	}
+}
+
+void tankToTank() {
+	for (int i = 0; i < TankManager::getNumTanks(); i++) {
+		bool shouldBeKilled = false;
+		Tank* t1 = TankManager::getTank(i);
+
+		for (int j = 0; j < TankManager::getNumTanks(); j++) {
+			if (i == j) {
+				continue;
+			}
+
+			bool modifiedTankCollision = false;
+			bool overridedTankCollision = false;
+			bool noMoreTankCollisionSpecials = false;
+			bool killOtherTank = false;
+			Tank* t2 = TankManager::getTank(j);
+
+			if (CollisionHandler::partiallyCollided(t1, t2)) {
+				for (int k = 0; k < t1->tankPowers.size(); k++) {
+					if (t1->tankPowers[k]->modifiesCollisionWithWall) {
+						if (t1->tankPowers[k]->modifiedCollisionWithTankCanOnlyWorkIndividually && modifiedTankCollision) {
+							continue;
+						}
+						if (noMoreTankCollisionSpecials) {
+							continue;
+						}
+
+						modifiedTankCollision = true;
+						if (t1->tankPowers[k]->overridesCollisionWithTank) {
+							overridedTankCollision = true;
+						}
+						if (!t1->tankPowers[k]->modifiedCollisionWithTankCanWorkWithOthers) {
+							noMoreTankCollisionSpecials = true;
+						}
+
+						PowerInteractionBoolHolder check_temp = t1->tankPowers[k]->modifiedCollisionWithTank(t1, t2);
+						if (check_temp.shouldDie) {
+							shouldBeKilled = true;
+						}
+						if (check_temp.otherShouldDie) {
+							if (t1->getID() != t2->getID()) {
+								killOtherTank = true;
+							}
+						}
+					}
+				}
+
+				if (!overridedTankCollision) {
+					CollisionHandler::pushMovableAwayFromMovable(t1, t2);
+				}
+			}
+
+			if (killOtherTank) {
+				tank_dead = 1;
+			}
+		}
+
+		if (shouldBeKilled) {
+			tank_dead = 1;
+		}
+	}
+}
+
+void tankToEdge() {
+	for (int i = 0; i < TankManager::getNumTanks(); i++) {
+		bool shouldBeKilled = false;
+
+		bool modifiedEdgeCollision = false;
+		bool overridedEdgeCollision = false;
+		bool noMoreEdgeCollisionSpecials = false;
+		Tank* t = TankManager::getTank(i);
+
+		if (t->isPartiallyOutOfBounds()) {
+			for (int k = 0; k < t->tankPowers.size(); k++) {
+				if (t->tankPowers[k]->modifiesCollisionWithEdge) {
+					if (t->tankPowers[k]->modifiedEdgeCollisionCanOnlyWorkIndividually && modifiedEdgeCollision) {
+						continue;
+					}
+					if (noMoreEdgeCollisionSpecials) {
+						continue;
+					}
+
+					modifiedEdgeCollision = true;
+					if (t->tankPowers[k]->overridesEdgeCollision) {
+						overridedEdgeCollision = true;
+					}
+					if (!t->tankPowers[k]->modifiedEdgeCollisionCanWorkWithOthers) {
+						noMoreEdgeCollisionSpecials = true;
+					}
+
+					PowerInteractionBoolHolder check_temp = t->tankPowers[k]->modifiedEdgeCollision(t);
+					if (check_temp.shouldDie) {
+						shouldBeKilled = true;
+					}
+				}
+			}
+
+			if (!overridedEdgeCollision) {
+				t->edgeConstrain();
+			}
+		}
+
+		if (shouldBeKilled) {
+			tank_dead = 1;
+		}
+	}
+}
+
+void bulletToEdge() {
+	for (int i = BulletManager::getNumBullets() - 1; i >= 0; i--) {
+		bool modifiedEdgeCollision = false;
+		bool overridedEdgeCollision = false;
+		bool noMoreEdgeCollisionSpecials = false;
+		bool shouldBeKilled = false;
+		Bullet* b = BulletManager::getBullet(i);
+
+		if (b->isPartiallyOutOfBounds()) {
+			for (int k = 0; k < b->bulletPowers.size(); k++) {
+				if (b->bulletPowers[k]->modifiesCollisionWithEdge) {
+					if (b->bulletPowers[k]->modifiedEdgeCollisionCanOnlyWorkIndividually && modifiedEdgeCollision) {
+						continue;
+					}
+					if (noMoreEdgeCollisionSpecials) {
+						continue;
+					}
+
+					modifiedEdgeCollision = true;
+					if (b->bulletPowers[k]->overridesEdgeCollision) {
+						overridedEdgeCollision = true;
+					}
+					if (!b->bulletPowers[k]->modifiedEdgeCollisionCanWorkWithOthers) {
+						noMoreEdgeCollisionSpecials = true;
+					}
+
+					PowerInteractionBoolHolder check_temp = b->bulletPowers[k]->modifiedEdgeCollision(b);
+					if (check_temp.shouldDie) {
+						shouldBeKilled = true;
+					}
+				}
+			}
+
+			if (overridedEdgeCollision) {
+				continue;
+			}
+			if (b->isFullyOutOfBounds()) {
+				shouldBeKilled = true;
+			}
+		}
+
+		if (shouldBeKilled) {
+			BulletManager::deleteBullet(i);
+			continue;
+		}
+	}
+}
+
+void bulletToWall() {
+	for (int i = BulletManager::getNumBullets() - 1; i >= 0; i--) {
+		bool shouldBeKilled = false;
+		Bullet* b = BulletManager::getBullet(i);
+
+		for (int j = WallManager::getNumWalls() - 1; j >= 0; j--) {
+			bool modifiedWallCollision = false;
+			bool overridedWallCollision = false;
+			bool noMoreWallCollisionSpecials = false;
+			bool killWall = false;
+			Wall* w = WallManager::getWall(j);
+
+			if (CollisionHandler::partiallyCollided(b, w)) {
+				for (int k = 0; k < b->bulletPowers.size(); k++) {
+					if (b->bulletPowers[k]->modifiesCollisionWithWall) {
+						if (b->bulletPowers[k]->modifiedCollisionWithWallCanOnlyWorkIndividually && modifiedWallCollision) {
+							continue;
+						}
+						if (noMoreWallCollisionSpecials) {
+							continue;
+						}
+
+						modifiedWallCollision = true;
+						if (b->bulletPowers[k]->overridesCollisionWithWall) {
+							overridedWallCollision = true;
+						}
+						if (!b->bulletPowers[k]->modifiedCollisionWithWallCanWorkWithOthers) {
+							noMoreWallCollisionSpecials = true;
+						}
+
+						PowerInteractionBoolHolder check_temp = b->bulletPowers[k]->modifiedCollisionWithWall(b, w);
+						if (check_temp.shouldDie) {
+							shouldBeKilled = true;
+						}
+						if (check_temp.otherShouldDie) {
+							killWall = true;
+						}
+					}
+				}
+
+				if (!overridedWallCollision) {
+					if (CollisionHandler::partiallyCollided(b, w)) {
+						shouldBeKilled = true;
+					}
+				}
+			}
+
+			if (killWall) {
+				WallManager::deleteWall(j);
+			}
+		}
+
+		if (shouldBeKilled) {
+			BulletManager::deleteBullet(i);
+		}
+	}
+}
+
+void bulletToHazard() {
+	//temporary!
+	for (int i = BulletManager::getNumBullets() - 1; i >= 0; i--) {
+		Bullet* b = BulletManager::getBullet(i);
+
+		bool bullet_died = false;
+		//circles:
+		for (int j = 0; j < HazardManager::getNumCircleHazards(); j++) {
+			if (CollisionHandler::partiallyCollided(b, HazardManager::getCircleHazard(j))) {
+				BulletManager::deleteBullet(i);
+				bullet_died = true;
+				break;
+			}
+		}
+		if (bullet_died) {
+			continue;
+		}
+		//rectangles:
+		for (int j = 0; j < HazardManager::getNumRectHazards(); j++) {
+			if (CollisionHandler::partiallyCollided(b, HazardManager::getRectHazard(j))) {
+				BulletManager::deleteBullet(i);
+				break;
+			}
+		}
+	}
+}
+
+void bulletToBullet() {
+	//TODO: modernize (add default vs custom collision stuff)
+	for (int i = BulletManager::getNumBullets() - 1; i >= 0; i--) {
+		Bullet* b_outer = BulletManager::getBullet(i);
+
+		for (int j = BulletManager::getNumBullets() - 1; j >= 0; j--) { //could start at i-1? //fix: find out
+			Bullet* b_inner = BulletManager::getBullet(j);
+
+			if (b_outer->getID() == b_inner->getID()) {
+				continue;
+			}
+			if (CollisionHandler::partiallyCollided(b_outer, b_inner)) {
+				char result = BulletPriorityHandler::determinePriority(b_outer, b_inner);
+				if (result <= -2) {
+					bool firstDies = rand()%2;
+					if (firstDies) {
+						BulletManager::deleteBullet(i);
+						break;
+					} else {
+						BulletManager::deleteBullet(j);
+						continue; //fix: is this supposed to be break?
+					}
+				} else if (result == -1) { //both die
+					if (i > j) {
+						BulletManager::deleteBullet(i);
+						BulletManager::deleteBullet(j);
+						i--;
+					} else {
+						BulletManager::deleteBullet(j);
+						BulletManager::deleteBullet(i);
+					}
+					break;
+				} else if (result >= 2) { //it's a draw, so neither dies
+					//continue;
+				} else {
+					if (result == 0) {
+						BulletManager::deleteBullet(i);
+						i--;
+						break;
+					} else {
+						BulletManager::deleteBullet(j);
+						if (i > j) {
+							i--;
+						}
+						continue; //not needed //shouldn't be break because a single bullet may be capable of destroying multiple other bullets (invincibility stuff)
+					}
+				}
+
+				//break;
+			}
+		}
+	}
+}
+
+void bulletToTank() {
+	//TODO: modernize (add default vs custom collision stuff)
+	for (int i = 0; i < TankManager::getNumTanks(); i++) {
+		Tank* t = TankManager::getTank(i);
+
+		for (int j = 0; j < BulletManager::getNumBullets(); j++) {
+			Bullet* b = BulletManager::getBullet(j);
+
+			if (b->getID() == t->getID()) {
+				continue;
+			}
+			if (CollisionHandler::partiallyCollided(t, b)) {
+				char result = BulletPriorityHandler::determinePriority(b, t);
+				if (result <= -2) {
+					bool firstDies = rand()%2;
+					if (firstDies) {
+						tank_dead = 1;
+						continue;
+					} else {
+						BulletManager::deleteBullet(j);
+						j--;
+						continue; //fix: is this supposed to be break?
+					}
+				} else if (result == -1) { //both die
+					tank_dead = 1;
+
+					/*
+					BulletManager::deleteBullet(j);
+					j--;
+					*/
+
+					continue;
+				} else if (result >= 2) { //it's a draw, so neither dies (probably not going to happen)
+					//continue;
+				} else {
+					if (result == 0) {
+						BulletManager::deleteBullet(j);
+						j--;
+						continue; //not needed //fix: should it be break?
+					} else {
+						tank_dead = 1;
+						continue;
+					}
+				}
+
+				//break;
+			}
+		}
+	}
+}
 
 
 
@@ -883,64 +945,34 @@ int main(int argc, char** argv) {
 		return 1;
 	}
 
+	PowerupManager::addPowerFactory(SpeedPower::factory);
+	PowerupManager::addPowerFactory(WallhackPower::factory);
+	PowerupManager::addPowerFactory(BouncePower::factory);
+	PowerupManager::addPowerFactory(MultishotPower::factory);
+	PowerupManager::addPowerFactory(TriplePower::factory);
+	PowerupManager::addPowerFactory(HomingPower::factory);
+	PowerupManager::addPowerFactory(InvincibleNamedPower::factory);
+	PowerupManager::addPowerFactory(BigNamedPower::factory);
+	PowerupManager::addPowerFactory(MegaDeathPower::factory);
+	PowerupManager::addPowerFactory(GrenadePower::factory);
+	PowerupManager::addPowerFactory(FireNamedPower::factory);
+	PowerupManager::addPowerFactory(BlastPower::factory);
 
-	//TODO: move some of this stuff to an initialization file so testing can be done
-	normalKeyStates.insert({ 'w', false });
-	normalKeyStates.insert({ 'a', false });
-	normalKeyStates.insert({ 's', false });
-	normalKeyStates.insert({ 'd', false });
-	specialKeyStates.insert({ GLUT_KEY_UP, false });
-	specialKeyStates.insert({ GLUT_KEY_LEFT, false });
-	specialKeyStates.insert({ GLUT_KEY_RIGHT, false });
-	specialKeyStates.insert({ GLUT_KEY_DOWN, false });
+	LevelManager::addLevelToHashmap(new DeveloperLevel0());
+	LevelManager::addLevelToHashmap(new DefaultRandomLevel());
+	LevelManager::addLevelToHashmap(new EmptyLevel());
+	LevelManager::addLevelToHashmap(new CorridorLevel());
+	LevelManager::addLevelToHashmap(new BigFunLevel());
 
-	levelList.push_back(new RandomLevel());
-	levelList.push_back(new EmptyLevel());
-	levelList.push_back(new CorridorLevel());
-	levelList.push_back(new BigFunLevel());
+	HazardManager::addCircleHazardFactory(StationaryTurret::factory);
 
-	for (int i = 0; i < levelList.size(); i++) {
-		Level* l = levelList[i];
-		levelLookup.insert({ l->getName(), l });
-		levelNameList.push_back(l->getName());
-	}
-
-	powerList.push_back(SpeedPower::factory);
-	powerList.push_back(WallhackPower::factory);
-	powerList.push_back(BouncePower::factory);
-	powerList.push_back(MultishotPower::factory);
-	powerList.push_back(TriplePower::factory);
-	powerList.push_back(HomingPower::factory);
-	powerList.push_back(InvincibleNamedPower::factory);
-	powerList.push_back(BigNamedPower::factory);
-	powerList.push_back(MegaDeathPower::factory);
-	powerList.push_back(GrenadePower::factory);
-	powerList.push_back(FireNamedPower::factory);
-	powerList.push_back(BlastPower::factory);
-
-	for (int i = 0; i < powerList.size(); i++) {
-		PowerFunction f = powerList[i];
-		Power* p = f();
-		powerLookup.insert({ p->getName(), powerList[i] });
-		powerNameList.push_back(p->getName());
-		delete p;
-	}
-
-	tanks.push_back(new Tank(20, 160, 0, 0, "WASD"));
-	tanks.push_back(new Tank(620, 160, PI, 1, "Arrow Keys"));
-
-	bullets.reserve(800);
-
-	/*
-	for (int i = 0; i < 4; i++) {
-		walls.push_back(new Wall(320 - 240*(((3-i)/2) * 2 - 1) - 32*((((3-i)/2) + 1) % 2), i%2 * (320-128), 32, 128, ColorValueHolder(255,0,255)));
-	}
-	*/
-
-	//TODO: proper solution
-	tanks[0]->determineShootingAngles();
-	tanks[1]->determineShootingAngles();
-	levelLookup["random"]->initialize();
+	//initialize managers:
+	KeypressManager::initialize();
+	BulletManager::initialize();
+	PowerupManager::initialize();
+	WallManager::initialize();
+	LevelManager::initialize();
+	HazardManager::initialize();
 
 
 	//make the classes load their vertices and indices onto VRAM to avoid CPU<->GPU syncs
@@ -968,19 +1000,36 @@ int main(int argc, char** argv) {
 	glutMotionFunc(appMotionFunc);
 
 	// Set callback to handle keyboard events
-	glutKeyboardFunc(keyboard_down);
+	glutKeyboardFunc(KeypressManager::setNormalKey);
 
 	//callback for keyboard up events
-	glutKeyboardUpFunc(keyboard_up);
+	glutKeyboardUpFunc(KeypressManager::unsetNormalKey);
 
 	//special keyboard down
-	glutSpecialFunc(special_keyboard_down);
+	glutSpecialFunc(KeypressManager::setSpecialKey);
 
 	//special keyboard up
-	glutSpecialUpFunc(special_keyboard_up);
+	glutSpecialUpFunc(KeypressManager::unsetSpecialKey);
 
 	// Set callback for the idle function
 	//glutIdleFunc(draw);
+
+	//main game code initialization stuff:
+	TankManager::pushTank(new Tank(20, 160, 0, 0, "WASD", { false, 'w' }, { false, 'a' }, { false, 'd' }, { false, 's' }));
+	TankManager::pushTank(new Tank(620, 160, PI, 1, "Arrow Keys", { true, GLUT_KEY_UP }, { true, GLUT_KEY_LEFT }, { true, GLUT_KEY_RIGHT }, { true, GLUT_KEY_DOWN }));
+	//TODO: proper solution
+	TankManager::getTank(0)->determineShootingAngles();
+	TankManager::getTank(1)->determineShootingAngles();
+#if _DEBUG
+	LevelManager::getLevelByName("dev0")->initialize();
+#else
+	LevelManager::getLevelByName("default random")->initialize();
+#endif
+	/*
+	for (int i = 0; i < 4; i++) {
+		walls.push_back(new Wall(320 - 240*(((3-i)/2) * 2 - 1) - 32*((((3-i)/2) + 1) % 2), i%2 * (320-128), 32, 128, ColorValueHolder(255,0,255)));
+	}
+	*/
 
 	//framelimiter
 	glutTimerFunc(1000/physicsRate, tick, physicsRate);
@@ -993,12 +1042,12 @@ int main(int argc, char** argv) {
 /*
  * estimated total completion:
  * 100% required GPU drawing stuff!
+ * * <10% highly recommended GPU drawing stuff (streaming vertices)
  * 20% theoretical GPU stuff (may not attempt)
  * * gotta learn how to do batching
  * * add a gradient shader
  * * make things more efficient (way easier said than done, I suppose)
- * * * where do I even start (besides batching)?
- * 90% theoretical foundation: no hazard powers
+ * 90% theoretical foundation: no hazard powers, no level... anything
  * 70% actual foundation: not every "modification function" actually does something in the main
  * 25% game code:
  * * first off, don't know what will be final beyond the ideas located in power.h and elsewhere
@@ -1008,5 +1057,5 @@ int main(int argc, char** argv) {
  * * fifth, here's what's next:
  * * * new powerups
  * * * new levels
- * * * hazards, and soon
+ * * * more hazards
  */
