@@ -42,6 +42,14 @@ void ResetThings::reset(int) {
 	}
 	LevelManager::levels.clear();
 
+	//initialize levels from LevelManager level list
+	/*
+	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
+		LevelManager::levels[i]->initialize();
+	}
+	*/
+	//not being used now
+
 #if _DEBUG
 	LevelManager::getLevelByName("dev0")->initialize();
 #else
