@@ -30,12 +30,6 @@ bool TankInputChar::getKeyState() {
 	return KeypressManager::getNormalKey(character);
 }
 
-VertexArray* Tank::va;
-VertexBuffer* Tank::vb;
-IndexBuffer* Tank::ib;
-VertexArray* Tank::cannon_va;
-VertexBuffer* Tank::cannon_vb;
-
 Tank::Tank(double x_, double y_, double a, char id_, std::string name_, TankInputChar forward, TankInputChar left, TankInputChar right, TankInputChar shoot) {
 	x = x_;
 	y = y_;
@@ -44,12 +38,17 @@ Tank::Tank(double x_, double y_, double a, char id_, std::string name_, TankInpu
 	r = TANK_RADIUS;
 	name = name_;
 
+	shootCount = 0;
+	maxShootCount = 0;
+
 	this->forward = forward;
 	this->turnL = left;
 	this->turnR = right;
 	this->shooting = shoot;
 
 	shootingPoints = new std::vector<CannonPoint>;
+
+	initializeGPU();
 }
 
 Tank::~Tank() {
@@ -60,6 +59,12 @@ Tank::~Tank() {
 	tankPowers.clear();
 
 	delete shootingPoints;
+
+	delete va;
+	delete vb;
+	delete ib;
+	delete cannon_va;
+	delete cannon_vb;
 }
 
 void Tank::move() {
@@ -182,7 +187,7 @@ double Tank::getShootingSpeedMultiplier() {
 
 	double highest = 1;
 	double lowest = 1;
-	std::vector<double> stackList;
+	std::vector<double> stackList; //only now have I realized this isn't a great name; no, it's not a data structure known as a stack
 
 	for (int i = 0; i < tankPowers.size(); i++) {
 		double value = tankPowers[i]->getShootingMultiplier();
@@ -438,23 +443,21 @@ void Tank::initializeGPU() {
 		indices[i*3+2] = (i+1) % Circle::numOfSides;
 	}
 
-	va = new VertexArray();
+	//va = new VertexArray();
 	vb = new VertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float));
 
-	VertexBufferLayout layout;
-	layout.Push_f(2);
-	va->AddBuffer(*vb, layout);
+	VertexBufferLayout layout(2);
+	va = new VertexArray(*vb, layout);
 
 	ib = new IndexBuffer(indices, Circle::numOfSides*3);
 
 
 	float cannon_positions[4] = { 0.0f, 0.0f, 1.0f, 0.0f };
-	cannon_va = new VertexArray();
+	//cannon_va = new VertexArray();
 	cannon_vb = new VertexBuffer(cannon_positions, 2*2 * sizeof(float));
 
-	VertexBufferLayout cannon_layout;
-	cannon_layout.Push_f(2);
-	cannon_va->AddBuffer(*cannon_vb, cannon_layout);
+	VertexBufferLayout cannon_layout(2);
+	cannon_va = new VertexArray(*cannon_vb, cannon_layout);
 }
 
 void Tank::draw() {

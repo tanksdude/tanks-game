@@ -3,10 +3,7 @@
 #include "renderer.h"
 #include "constants.h"
 
-VertexArray* CircleHazard::va;
-VertexBuffer* CircleHazard::vb;
-IndexBuffer* CircleHazard::ib;
-
+/*
 void CircleHazard::initializeGPU() {
 	float positions[(Circle::numOfSides+1)*2];
 	for (int i = 0; i < Circle::numOfSides; i++) {
@@ -23,12 +20,12 @@ void CircleHazard::initializeGPU() {
 		indices[i*3+2] = (i+1) % Circle::numOfSides;
 	}
 
-	va = new VertexArray();
+	//va = new VertexArray();
 	vb = new VertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float));
 
-	VertexBufferLayout layout;
-	layout.Push_f(2);
-	va->AddBuffer(*vb, layout);
+	VertexBufferLayout layout(2);
+	va = new VertexArray(*vb, layout);
 
 	ib = new IndexBuffer(indices, Circle::numOfSides*3);
 }
+*/

@@ -36,23 +36,22 @@ void PowerSquare::givePower(Tank* t) {
 void PowerSquare::givePower(Bullet*) { return; } //don't think about it now, possibly ever; it's weird
 //void givePower(Hazard*);
 
-PowerSquare::PowerSquare(double x_, double y_, std::string name) {
+PowerSquare::PowerSquare(double x_, double y_) {
 	x = x_ - PowerSquare::POWER_WIDTH/2;
 	y = y_ - PowerSquare::POWER_HEIGHT/2;
 	w = PowerSquare::POWER_WIDTH;
 	h = PowerSquare::POWER_HEIGHT;
 
+	initializeGPU();
+}
+
+PowerSquare::PowerSquare(double x_, double y_, std::string name) : PowerSquare(x_, y_){
 	numOfPowers = 1;
 	heldPower = new Power*[1];
 	heldPower[0] = PowerupManager::getPowerFactory(name)();
 }
 
-PowerSquare::PowerSquare(double x_, double y_, std::string* names, int num) {
-	x = x_ - PowerSquare::POWER_WIDTH/2;
-	y = y_ - PowerSquare::POWER_HEIGHT/2;
-	w = PowerSquare::POWER_WIDTH;
-	h = PowerSquare::POWER_HEIGHT;
-
+PowerSquare::PowerSquare(double x_, double y_, std::string* names, int num) : PowerSquare(x_, y_){
 	numOfPowers = num;
 	heldPower = new Power*[num];
 	for (int i = 0; i < num; i++) {
@@ -65,12 +64,12 @@ PowerSquare::~PowerSquare() {
 		delete heldPower[i];
 	}
 	delete[] heldPower;
-}
 
-VertexArray* PowerSquare::va;
-VertexBuffer* PowerSquare::vb;
-IndexBuffer* PowerSquare::ib_main;
-IndexBuffer* PowerSquare::ib_outline;
+	delete va;
+	delete vb;
+	delete ib_main;
+	delete ib_outline;
+}
 
 void PowerSquare::initializeGPU() {
 	float extendingMultiplier = PowerSquare::POWER_LINE_WIDTH * (PowerSquare::POWER_OUTLINE_MULTIPLIER - 1);
@@ -131,12 +130,11 @@ void PowerSquare::initializeGPU() {
 		11, 10, 6
 	};
 
-	va = new VertexArray();
+	//va = new VertexArray();
 	vb = new VertexBuffer(positions, 12*2 * sizeof(float));
 
-	VertexBufferLayout layout;
-	layout.Push_f(2);
-	va->AddBuffer(*vb, layout);
+	VertexBufferLayout layout(2);
+	va = new VertexArray(*vb, layout);
 
 	ib_main = new IndexBuffer(main_indices, 6*4);
 	ib_outline = new IndexBuffer(outline_indices, 6*4);

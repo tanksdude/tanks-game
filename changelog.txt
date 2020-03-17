@@ -6,6 +6,7 @@ other better adjusting stuff
 all objects load their vertices onto VRAM when initialized (instead of using one circle/rect and modifying it)
 * (that's a massive performance increase on modern GPUs... if I did batching; only a large performance increase instead)
 * batching is probably easier to implement now
+stationary turret shows its barrel
 
 0.1.4 "gamify"
 actual levels used instead of only the developer level
@@ -50,6 +51,7 @@ stuff. primarily the framework and some powers to test the framework. (look at c
 future notes:
 0.2.X: redo tank/bullet initialization; system for applying attribute changes
 0.2.X+1: bulletpower shooting dependencies removed from tankpowers (so a bulletpower doesn't need a tankpower on a tank to exist; bulletpower can tell tank what things need to change (tanks don't hold bulletpowers which is why this is merely a future note and not an already-merged commit))
+0.3.0: an ini file
 0.X.0: big change in levels or powers or something else, like bulletpower memory management (std::shared_ptr)
 0.A.0: multithreading? (std::async to start)
 1.0.0: all levels, powers, and other stuff that I want

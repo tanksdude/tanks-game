@@ -1,6 +1,5 @@
 #pragma once
 
-#include <vector>
 #include <GL/glew.h>
 
 struct VertexBufferElement {
@@ -20,7 +19,7 @@ struct VertexBufferElement {
 
 class VertexBufferLayout {
 private:
-	std::vector<VertexBufferElement> elements;
+	VertexBufferElement elements;
 	unsigned int stride;
 
 public:
@@ -28,21 +27,21 @@ public:
 		stride = 0;
 	}
 
-	void Push_f(unsigned int count) { //float
-		elements.push_back({ GL_FLOAT, count, GL_FALSE });
-		stride += count * sizeof(float);
+	VertexBufferLayout(unsigned int floatCount) {
+		elements = { GL_FLOAT, floatCount, GL_FALSE };
+		stride = floatCount * sizeof(float);
 	}
 
-	void Push_ui(unsigned int count) { //unsigned int
-		elements.push_back({ GL_UNSIGNED_INT, count, GL_FALSE });
-		stride += count * sizeof(unsigned int);
+	void Push_2f() { //2D floats
+		elements = { GL_FLOAT, 2, GL_FALSE };
+		stride = 2 * sizeof(float);
 	}
 
-	void Push_uc(unsigned int count) { //unsigned char (byte)
-		elements.push_back({ GL_UNSIGNED_BYTE, count, GL_TRUE });
-		stride += count * sizeof(unsigned char);
+	void Push_3f() { //3D floats
+		elements = { GL_FLOAT, 3, GL_FALSE };
+		stride = 3 * sizeof(float);
 	}
 
-	inline const std::vector<VertexBufferElement>& getElements() const { return elements; }
+	inline const VertexBufferElement& getElement() const { return elements; }
 	inline unsigned int getStride() const { return stride; }
 };

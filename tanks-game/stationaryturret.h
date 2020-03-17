@@ -13,6 +13,9 @@ protected:
 	short* stateMultiplier;
 	ColorValueHolder* stateColors;
 
+	VertexArray* cannon_va;
+	VertexBuffer* cannon_vb;
+
 public:
 	virtual ColorValueHolder getColor();
 	virtual ColorValueHolder getColor(short state);
@@ -23,6 +26,7 @@ public:
 	void tick();
 	void draw();
 	void drawCPU();
+	virtual void initializeGPU();
 	StationaryTurret(double xpos, double ypos, double angle);
 	StationaryTurret(double xpos, double ypos, double angle, double radius);
 	~StationaryTurret();

@@ -13,14 +13,18 @@ Wall::Wall(double x_, double y_, double w_, double h_, ColorValueHolder c) {
 	this->w = w_;
 	this->h = h_;
 	color = c;
+
+	initializeGPU();
 }
 Wall::Wall(double x_, double y_, double w_, double h_, ColorValueHolder c, short id_) : Wall(x_, y_, w_, h_, c){
 	this->id = id_;
 }
 
-VertexArray* Wall::va;
-VertexBuffer* Wall::vb;
-IndexBuffer* Wall::ib;
+Wall::~Wall() {
+	delete va;
+	delete vb;
+	delete ib;
+}
 
 void Wall::initializeGPU() {
 	float positions[] = {
@@ -34,12 +38,11 @@ void Wall::initializeGPU() {
 		2, 3, 0
 	};
 
-	va = new VertexArray();
+	//va = new VertexArray();
 	vb = new VertexBuffer(positions, 4*2 * sizeof(float));
 
-	VertexBufferLayout layout;
-	layout.Push_f(2);
-	va->AddBuffer(*vb, layout);
+	VertexBufferLayout layout(2);
+	va = new VertexArray(*vb, layout);
 
 	ib = new IndexBuffer(indices, 6);
 }

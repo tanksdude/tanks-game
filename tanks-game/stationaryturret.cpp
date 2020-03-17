@@ -19,6 +19,8 @@ StationaryTurret::StationaryTurret(double xpos, double ypos, double angle) {
 	stateColors = new ColorValueHolder[maxState] { {.5f, .5f, .5f}, {1.0f, 0x22/255.0, 0x11/255.0}, {0, 0.5f, 1.0f} };
 
 	canAcceptPowers = false;
+
+	initializeGPU();
 }
 
 StationaryTurret::StationaryTurret(double xpos, double ypos, double angle, double radius) : StationaryTurret(xpos, ypos, angle) {
@@ -28,6 +30,45 @@ StationaryTurret::StationaryTurret(double xpos, double ypos, double angle, doubl
 StationaryTurret::~StationaryTurret() {
 	delete[] stateMultiplier;
 	delete[] stateColors;
+
+	delete va;
+	delete vb;
+	delete ib;
+	delete cannon_va;
+	delete cannon_vb;
+}
+
+void StationaryTurret::initializeGPU() {
+	float positions[(Circle::numOfSides+1)*2];
+	for (int i = 0; i < Circle::numOfSides; i++) {
+		positions[i*2]   = cos(i * 2*PI / Circle::numOfSides);
+		positions[i*2+1] = sin(i * 2*PI / Circle::numOfSides);
+	}
+	positions[Circle::numOfSides*2]   = 0;
+	positions[Circle::numOfSides*2+1] = 0;
+
+	unsigned int indices[Circle::numOfSides*3];
+	for (int i = 0; i < Circle::numOfSides; i++) {
+		indices[i*3]   = Circle::numOfSides;
+		indices[i*3+1] = i;
+		indices[i*3+2] = (i+1) % Circle::numOfSides;
+	}
+
+	//va = new VertexArray();
+	vb = new VertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float));
+
+	VertexBufferLayout layout(2);
+	va = new VertexArray(*vb, layout);
+
+	ib = new IndexBuffer(indices, Circle::numOfSides*3);
+
+
+	float cannon_positions[4] = { 0.0f, 0.0f, 1.0f, 0.0f };
+	//cannon_va = new VertexArray();
+	cannon_vb = new VertexBuffer(cannon_positions, 2*2 * sizeof(float));
+
+	VertexBufferLayout cannon_layout(2);
+	cannon_va = new VertexArray(*cannon_vb, cannon_layout);
 }
 
 CircleHazard* StationaryTurret::factory(int argc, std::string* argv) {
@@ -88,8 +129,15 @@ void StationaryTurret::draw() {
 
 	//outline:
 	shader->setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 1.0f);
-
 	Renderer::Draw(*va, *shader, GL_LINE_LOOP, 0, Circle::numOfSides);
+
+	//barrel:
+	glLineWidth(2.0f);
+	shader->setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 1.0f);
+	MVPM = Renderer::GenerateMatrix(r, 1, angle, x, y);
+	shader->setUniformMat4f("u_MVP", MVPM);
+
+	Renderer::Draw(*cannon_va, *shader, GL_LINES, 0, 2);
 
 	//cleanup
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

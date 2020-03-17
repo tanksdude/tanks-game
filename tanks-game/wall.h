@@ -17,11 +17,11 @@ class Wall : public Rect{
 	short id = -1;
 
 private:
-	static VertexArray* va;
-	static VertexBuffer* vb;
-	static IndexBuffer* ib;
+	VertexArray* va;
+	VertexBuffer* vb;
+	IndexBuffer* ib;
 public:
-	static void initializeGPU();
+	void initializeGPU();
 
 public:
 	Wall(double x, double y, double w, double h, ColorValueHolder);
@@ -32,4 +32,6 @@ public:
 	}
 	void draw();
 	void drawCPU();
+
+	~Wall();
 };

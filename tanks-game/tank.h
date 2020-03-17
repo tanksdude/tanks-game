@@ -88,21 +88,21 @@ private:
 
 	void resetThings(double x, double y, double a, char id, std::string name);
 
-	double shootCount = 0;
-	double maxShootCount = 100;
+	double shootCount;
+	double maxShootCount;
 
 public:
 	//helper stuff:
 	ColorValueHolder getBodyColor();
 
 private:
-	static VertexArray* va;
-	static VertexBuffer* vb;
-	static IndexBuffer* ib;
-	static VertexArray* cannon_va;
-	static VertexBuffer* cannon_vb;
+	VertexArray* va;
+	VertexBuffer* vb;
+	IndexBuffer* ib;
+	VertexArray* cannon_va;
+	VertexBuffer* cannon_vb;
 public:
-	static void initializeGPU();
+	void initializeGPU();
 
 public:
 	Tank(double x, double y, double a, char id, std::string name, TankInputChar forward, TankInputChar left, TankInputChar right, TankInputChar shoot);

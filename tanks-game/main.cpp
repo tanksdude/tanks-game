@@ -975,16 +975,15 @@ int main(int argc, char** argv) {
 	HazardManager::initialize();
 
 
-	//make the classes load their vertices and indices onto VRAM to avoid CPU<->GPU syncs
-	//I now realize this is bad because modern GPUs are set up for streaming VRAM data instead of being very VRAM-starved and will fix this eventually (basically, each object has its own VA instead of each one using their class's VA)
+	//I genuinely don't know if what I have now is actually better than each class having a static VAO, VBO, and IBO
 	Renderer::Initialize();
-	Bullet::initializeGPU();
 	BackgroundRect::initializeGPU();
-	PowerSquare::initializeGPU();
-	Wall::initializeGPU();
-	Tank::initializeGPU();
-	RectHazard::initializeGPU();
-	CircleHazard::initializeGPU();
+	//Tank::initializeGPU();
+	//Bullet::initializeGPU();
+	//PowerSquare::initializeGPU();
+	//Wall::initializeGPU();
+	//RectHazard::initializeGPU();
+	//CircleHazard::initializeGPU();
 
 
 	// Set callback for drawing the scene
@@ -1042,7 +1041,7 @@ int main(int argc, char** argv) {
 /*
  * estimated total completion:
  * 100% required GPU drawing stuff!
- * * <10% highly recommended GPU drawing stuff (streaming vertices)
+ * * ~20% highly recommended GPU drawing stuff (streaming vertices)
  * 20% theoretical GPU stuff (may not attempt)
  * * gotta learn how to do batching
  * * add a gradient shader

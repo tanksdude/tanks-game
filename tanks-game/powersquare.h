@@ -24,14 +24,18 @@ public:
 	static const double POWER_OUTLINE_MULTIPLIER;
 
 private:
-	static VertexArray* va;
-	static VertexBuffer* vb;
-	static IndexBuffer* ib_main; //the main thing
-	static IndexBuffer* ib_outline; //the extra bit when numOfPowers >= 2
+	VertexArray* va;
+	VertexBuffer* vb;
+	IndexBuffer* ib_main; //the main thing
+	IndexBuffer* ib_outline; //the extra bit when numOfPowers >= 2
 public:
-	static void initializeGPU();
+	void initializeGPU();
 
+private:
+	PowerSquare(double x, double y);
 public:
+	PowerSquare(double x, double y, std::string name);
+	PowerSquare(double x, double y, std::string* names, int num);
 
 	ColorValueHolder getColor();
 	void draw(); //draws at center
@@ -39,7 +43,6 @@ public:
 	void givePower(Tank*);
 	void givePower(Bullet*); //don't think about it now, possibly ever; it's weird
 	//void givePower(Hazard*);
-	PowerSquare(double x, double y, std::string name);
-	PowerSquare(double x, double y, std::string* names, int num);
+
 	~PowerSquare();
 };

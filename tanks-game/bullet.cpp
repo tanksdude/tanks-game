@@ -22,6 +22,8 @@ Bullet::Bullet(double x_, double y_, double r_, double a, double vel, double acc
 	this->acceleration = acc;
 	this->id = id_;
 	this->alpha = 100;
+
+	initializeGPU();
 }
 
 Bullet::Bullet(double x_, double y_, double r_, double a, double vel, double acc, char id_, std::vector<BulletPower*> bp) : Bullet(x_,y_,r_,a,vel,acc,id_) {
@@ -32,13 +34,20 @@ Bullet::Bullet(double x_, double y_, double r_, double a, double vel, double acc
 	}
 }
 
+Bullet::~Bullet() {
+	for (int i = 0; i < bulletPowers.size(); i++) {
+		delete bulletPowers[i];
+	}
+	bulletPowers.clear();
+
+	delete va;
+	delete vb;
+	delete ib;
+}
+
 bool Bullet::isDead() {
 	return (alpha <= 0);
 }
-
-VertexArray* Bullet::va;
-VertexBuffer* Bullet::vb;
-IndexBuffer* Bullet::ib;
 
 void Bullet::initializeGPU() {
 	float positions[(Circle::numOfSides+1)*2];
@@ -56,12 +65,11 @@ void Bullet::initializeGPU() {
 		indices[i*3+2] = (i+1) % Circle::numOfSides;
 	}
 
-	va = new VertexArray();
+	//va = new VertexArray();
 	vb = new VertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float));
 
-	VertexBufferLayout layout;
-	layout.Push_f(2);
-	va->AddBuffer(*vb, layout);
+	VertexBufferLayout layout(2);
+	va = new VertexArray(*vb, layout);
 
 	ib = new IndexBuffer(indices, Circle::numOfSides*3);
 }
@@ -276,11 +284,4 @@ bool Bullet::isPartiallyOutOfBounds() {
 
 bool Bullet::isFullyOutOfBounds() {
 	return ((x - r >= GAME_WIDTH) || (x + r <= 0) || (y - r >= GAME_HEIGHT) || (y + r <= 0));
-}
-
-Bullet::~Bullet() {
-	for (int i = 0; i < bulletPowers.size(); i++) {
-		delete bulletPowers[i];
-	}
-	bulletPowers.clear();
 }
