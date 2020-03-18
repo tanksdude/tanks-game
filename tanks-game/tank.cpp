@@ -429,18 +429,18 @@ void Tank::drawCPU(double xpos, double ypos) {
 
 void Tank::initializeGPU() {
 	float positions[(Circle::numOfSides+1)*2];
-	for (int i = 0; i < Circle::numOfSides; i++) {
-		positions[i*2]   = cos(i * 2*PI / Circle::numOfSides);
-		positions[i*2+1] = sin(i * 2*PI / Circle::numOfSides);
+	positions[0] = 0;
+	positions[1] = 0;
+	for (int i = 1; i < Circle::numOfSides+1; i++) {
+		positions[i*2]   = cos((i-1) * 2*PI / Circle::numOfSides);
+		positions[i*2+1] = sin((i-1) * 2*PI / Circle::numOfSides);
 	}
-	positions[Circle::numOfSides*2]   = 0;
-	positions[Circle::numOfSides*2+1] = 0;
 
 	unsigned int indices[Circle::numOfSides*3];
 	for (int i = 0; i < Circle::numOfSides; i++) {
-		indices[i*3]   = Circle::numOfSides;
-		indices[i*3+1] = i;
-		indices[i*3+2] = (i+1) % Circle::numOfSides;
+		indices[i*3]   = 0;
+		indices[i*3+1] = i+1;
+		indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
 	}
 
 	/*
@@ -489,11 +489,11 @@ void Tank::draw(double xpos, double ypos) {
 	unsigned int shootingOutlineVertices = Circle::numOfSides * shootingOutlinePercent;
 
 	float* test_vertices = new float[(shootingOutlineVertices+1)*2];
-	test_vertices[shootingOutlineVertices*2]   = xpos;
-	test_vertices[shootingOutlineVertices*2+1] = ypos;
-	for (int i = 0; i < shootingOutlineVertices; i++) {
-		test_vertices[i*2]   = r * 5.0/4.0 * cos(i * 2*PI / Circle::numOfSides + angle) + xpos;
-		test_vertices[i*2+1] = r * 5.0/4.0 * sin(i * 2*PI / Circle::numOfSides + angle) + ypos;
+	test_vertices[0] = xpos;
+	test_vertices[1] = ypos;
+	for (int i = 1; i < shootingOutlineVertices+1; i++) {
+		test_vertices[i*2]   = r * 5.0/4.0 * cos((i-1) * 2*PI / Circle::numOfSides + angle) + xpos;
+		test_vertices[i*2+1] = r * 5.0/4.0 * sin((i-1) * 2*PI / Circle::numOfSides + angle) + ypos;
 	}
 
 	/*
@@ -511,9 +511,7 @@ void Tank::draw(double xpos, double ypos) {
 	glm::mat4 MVPM;
 	shader->setUniformMat4f("u_MVP", Renderer::getProj());
 
-	Renderer::Draw(*test_va, *test_ib, *shader, shootingOutlineVertices*3);
-
-	//return;
+	Renderer::Draw(*test_va, *test_ib, *shader, (shootingOutlineVertices-1)*3);
 
 	//power cooldown outlines:
 	//first, sort by timeLeft/maxTime
@@ -538,13 +536,29 @@ void Tank::draw(double xpos, double ypos) {
 
 		ColorValueHolder c = sortedTankPowers[i]->getColor();
 
-		shader->setUniform4f("u_color", c.getRf(), c.getGf(), c.getBf(), c.getAf());
-		MVPM = Renderer::GenerateMatrix(r * 9.0/8.0, r * 9.0/8.0, getAngle(), xpos, ypos);
-		shader->setUniformMat4f("u_MVP", MVPM);
+		float* test_vertices = new float[(powerOutlineVertices+1)*2];
+		test_vertices[0] = xpos;
+		test_vertices[1] = ypos;
+		for (int i = 1; i < powerOutlineVertices+1; i++) {
+			test_vertices[i*2]   = r * 9.0/8.0 * cos((i-1) * 2*PI / Circle::numOfSides + angle) + xpos;
+			test_vertices[i*2+1] = r * 9.0/8.0 * sin((i-1) * 2*PI / Circle::numOfSides + angle) + ypos;
+		}
 
-		Renderer::Draw(*va, *ib, *shader, powerOutlineVertices*3);
+		/*
+		for (int i = 0; i < shootingOutlineVertices+1; i++) {
+			std::cout << test_vertices[i*2] << " " << test_vertices[i*2+1] << std::endl;
+		}
+		*/
+
+		test_vb->modifyData(test_vertices, (powerOutlineVertices+1)*2 * sizeof(float));
+		delete[] test_vertices;
+
+		shader->setUniform4f("u_color", c.getRf(), c.getGf(), c.getBf(), c.getAf());
+		//MVPM = Renderer::GenerateMatrix(r * 9.0/8.0, r * 9.0/8.0, getAngle(), xpos, ypos);
+		shader->setUniformMat4f("u_MVP", Renderer::getProj());
+
+		Renderer::Draw(*test_va, *test_ib, *shader, (powerOutlineVertices-1)*3);
 	}
-	
 
 	//main body:
 	ColorValueHolder color = getBodyColor();
@@ -559,7 +573,7 @@ void Tank::draw(double xpos, double ypos) {
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glLineWidth(1.0f);
 
-	//shader->setUniform4f("u_color", .5f, .5f, .5f, .25f); //CPU method
+	//shader->setUniform4f("u_color", .5f, .5f, .5f, .25f); //CPU color
 	shader->setUniform4f("u_color", .75f, .75f, .75f, 1.0f);
 	
 	for (int i = 1; i < shootingPoints->size(); i++) {
