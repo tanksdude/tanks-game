@@ -10,7 +10,6 @@ VertexArray::VertexArray(const VertexBuffer& vb, const VertexBufferLayout& layou
 	vb.Bind();
 	
 	const auto& element = layout.getElement();
-	
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, element.count, element.type, element.normalized, layout.getStride(), (const void*)0);
 }
