@@ -57,7 +57,6 @@ void BackgroundRect::drawCPU() {
 void BackgroundRect::draw() {
 	Shader* shader = Renderer::getShader("main");
 	shader->setUniform4f("u_color", backColor.getRf(), backColor.getGf(), backColor.getBf(), backColor.getAf());
-	//glm::mat4 MVPM = Renderer::GenerateMatrix(GAME_WIDTH, GAME_HEIGHT, 0, 0, 0);
 	shader->setUniformMat4f("u_MVP", Renderer::getProj());
 
 	Renderer::Draw(*va, *ib, *shader);
