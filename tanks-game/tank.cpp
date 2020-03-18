@@ -561,15 +561,27 @@ void Tank::draw(double xpos, double ypos) {
 	}
 
 	//main body:
+	test_vertices = new float[(Circle::numOfSides+1)*2];
+	test_vertices[0] = xpos;
+	test_vertices[1] = ypos;
+	for (int i = 1; i < Circle::numOfSides+1; i++) {
+		test_vertices[i*2]   = r * cos((i-1) * 2*PI / Circle::numOfSides) + xpos;
+		test_vertices[i*2+1] = r * sin((i-1) * 2*PI / Circle::numOfSides) + ypos;
+	}
+
+	test_vb->modifyData(test_vertices, (Circle::numOfSides+1)*2 * sizeof(float));
+	delete[] test_vertices;
+
 	ColorValueHolder color = getBodyColor();
 
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-	MVPM = Renderer::GenerateMatrix(r, r, 0, xpos, ypos);
-	shader->setUniformMat4f("u_MVP", MVPM);
+	//MVPM = Renderer::GenerateMatrix(r, r, 0, xpos, ypos);
+	shader->setUniformMat4f("u_MVP", Renderer::getProj());
 
-	Renderer::Draw(*va, *ib, *shader);
+	Renderer::Draw(*test_va, *test_ib, *shader);
 
 	//other barrels:
+	//to be honest, it probably better to reuse the cannon instead of overwriting it constantly (with the extra barrels)
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glLineWidth(1.0f);
 
@@ -584,11 +596,11 @@ void Tank::draw(double xpos, double ypos) {
 	}
 
 	//outline:
-	MVPM = Renderer::GenerateMatrix(r, r, 0, xpos, ypos);
+	//MVPM = Renderer::GenerateMatrix(r, r, 0, xpos, ypos);
 	shader->setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 1.0f);
-	shader->setUniformMat4f("u_MVP", MVPM);
+	shader->setUniformMat4f("u_MVP", Renderer::getProj());
 
-	Renderer::Draw(*va, *shader, GL_LINE_LOOP, 0, Circle::numOfSides);
+	Renderer::Draw(*test_va, *shader, GL_LINE_LOOP, 1, Circle::numOfSides);
 
 	//barrel:
 	glLineWidth(2.0f);
