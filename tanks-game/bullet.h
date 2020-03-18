@@ -51,6 +51,8 @@ public:
 
 	void drawBody(double, double);
 	void drawOutline(double, double);
+protected:
+	void drawOutline(double, double, bool verticesUpdated);
 	
 public:
 	Bullet(double x_, double y_, double r_, double a, double vel, double acc, char id_);

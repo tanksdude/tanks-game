@@ -39,7 +39,7 @@ Tank::Tank(double x_, double y_, double a, char id_, std::string name_, TankInpu
 	name = name_;
 
 	shootCount = 0;
-	maxShootCount = 100; //will change whenever while I'm testing
+	maxShootCount = 1; //will change whenever while I'm testing
 
 	this->forward = forward;
 	this->turnL = left;
@@ -476,11 +476,11 @@ void Tank::draw() {
 void Tank::draw(double xpos, double ypos) {
 	//stuff that will be used:
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM;
+	glm::mat4 MVPM; //for the cannons because they don't stream vertices
 
 	//shooting cooldown outline:
 	double shootingOutlinePercent;
-	if (maxShootCount <= 0) {
+	if (maxShootCount*getShootingSpeedMultiplier() <= 0) {
 		shootingOutlinePercent = 0;
 	} else {
 		shootingOutlinePercent = constrain_d(shootCount/(maxShootCount*getShootingSpeedMultiplier()), 0, 1);
