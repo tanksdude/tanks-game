@@ -101,10 +101,6 @@ private:
 	IndexBuffer* ib;
 	VertexArray* cannon_va;
 	VertexBuffer* cannon_vb;
-
-	VertexArray* test_va;
-	VertexBuffer* test_vb;
-	IndexBuffer* test_ib;
 public:
 	void initializeGPU();
 
