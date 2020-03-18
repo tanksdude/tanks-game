@@ -10,7 +10,7 @@ public:
 	VertexBuffer(const void* data, unsigned int size, GLenum hint);
 	~VertexBuffer();
 
-	void modifyData(const void* data, int offset, unsigned int size); //don't use; hasn't been tested yet
+	void modifyData(const void* data, int offset, unsigned int size);
 	inline void modifyData(const void* data, unsigned int size) { modifyData(data, 0, size); }
 
 	void Bind() const;

@@ -39,7 +39,7 @@ Tank::Tank(double x_, double y_, double a, char id_, std::string name_, TankInpu
 	name = name_;
 
 	shootCount = 0;
-	maxShootCount = 0; //will be changed back to 100 when I'm done testing
+	maxShootCount = 100; //will change whenever while I'm testing
 
 	this->forward = forward;
 	this->turnL = left;
@@ -443,6 +443,15 @@ void Tank::initializeGPU() {
 		indices[i*3+2] = (i+1) % Circle::numOfSides;
 	}
 
+	/*
+	for (int i = 0; i < Circle::numOfSides+1; i++) {
+		std::cout << i << ": " << positions[i*2] << " " << positions[i*2+1] << std::endl;
+	}
+	for (int i = 0; i < Circle::numOfSides; i++) {
+		std::cout << i << ": " << indices[i*3] << " " << indices[i*3+1] << " " << indices[i*3+2] << std::endl;
+	}
+	*/
+
 	//va = new VertexArray();
 	vb = new VertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float));
 
@@ -450,6 +459,11 @@ void Tank::initializeGPU() {
 	va = new VertexArray(*vb, layout);
 
 	ib = new IndexBuffer(indices, Circle::numOfSides*3);
+
+
+	test_vb = new VertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float), GL_STREAM_DRAW);
+	test_va = new VertexArray(*test_vb, layout);
+	test_ib = new IndexBuffer(indices, Circle::numOfSides*3);
 
 
 	float cannon_positions[4] = { 0.0f, 0.0f, 1.0f, 0.0f };
@@ -466,15 +480,40 @@ void Tank::draw() {
 
 void Tank::draw(double xpos, double ypos) {
 	//shooting cooldown outline:
-	double shootingOutlinePercent = constrain_d(shootCount/(maxShootCount*getShootingSpeedMultiplier()), 0, 1);
+	double shootingOutlinePercent;
+	if (maxShootCount <= 0) {
+		shootingOutlinePercent = 0;
+	} else {
+		shootingOutlinePercent = constrain_d(shootCount/(maxShootCount*getShootingSpeedMultiplier()), 0, 1);
+	}
 	unsigned int shootingOutlineVertices = Circle::numOfSides * shootingOutlinePercent;
+
+	float* test_vertices = new float[(shootingOutlineVertices+1)*2];
+	test_vertices[shootingOutlineVertices*2]   = xpos;
+	test_vertices[shootingOutlineVertices*2+1] = ypos;
+	for (int i = 0; i < shootingOutlineVertices; i++) {
+		test_vertices[i*2]   = r * 5.0/4.0 * cos(i * 2*PI / Circle::numOfSides + angle) + xpos;
+		test_vertices[i*2+1] = r * 5.0/4.0 * sin(i * 2*PI / Circle::numOfSides + angle) + ypos;
+	}
+
+	/*
+	for (int i = 0; i < shootingOutlineVertices+1; i++) {
+		std::cout << test_vertices[i*2] << " " << test_vertices[i*2+1] << std::endl;
+	}
+	*/
+
+	test_vb->modifyData(test_vertices, (shootingOutlineVertices+1)*2 * sizeof(float));
+	delete[] test_vertices;
 
 	Shader* shader = Renderer::getShader("main");
 	shader->setUniform4f("u_color", 1.0f, 1.0f, 1.0f, 1.0f);
-	glm::mat4 MVPM = Renderer::GenerateMatrix(r * 5.0/4.0, r * 5.0/4.0, getAngle(), xpos, ypos);
-	shader->setUniformMat4f("u_MVP", MVPM);
+	//glm::mat4 MVPM = Renderer::GenerateMatrix(r * 5.0/4.0, r * 5.0/4.0, getAngle(), xpos, ypos);
+	glm::mat4 MVPM;
+	shader->setUniformMat4f("u_MVP", Renderer::getProj());
 
-	Renderer::Draw(*va, *ib, *shader, shootingOutlineVertices*3);
+	Renderer::Draw(*test_va, *test_ib, *shader, shootingOutlineVertices*3);
+
+	//return;
 
 	//power cooldown outlines:
 	//first, sort by timeLeft/maxTime
