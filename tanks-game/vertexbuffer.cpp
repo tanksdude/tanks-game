@@ -3,10 +3,8 @@
 #include "vertexbuffer.h"
 #include <GL/glew.h>
 
-VertexBuffer::VertexBuffer(const void* data, unsigned int size) {
-	glGenBuffers(1, &rendererID);
-	glBindBuffer(GL_ARRAY_BUFFER, rendererID);
-	glBufferData(GL_ARRAY_BUFFER, size, data, GL_DYNAMIC_DRAW);
+VertexBuffer::VertexBuffer(const void* data, unsigned int size) : VertexBuffer(data, size, GL_DYNAMIC_DRAW){
+	//nothing
 }
 
 VertexBuffer::VertexBuffer(const void* data, unsigned int size, GLenum hint) {

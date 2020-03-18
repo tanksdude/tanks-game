@@ -1,5 +1,5 @@
 #pragma once
-struct PowerFunctionHelper;
+class PowerFunctionHelper;
 
 #include <vector>
 #include "tank.h"
@@ -7,7 +7,7 @@ struct PowerFunctionHelper;
 #include "bullet.h"
 #include "wall.h"
 
-struct PowerFunctionHelper {
+class PowerFunctionHelper {
 private:
 	static bool bounceGenericWithCornersCornerHandler(Bullet*, double x, double y);
 

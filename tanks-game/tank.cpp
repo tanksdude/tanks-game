@@ -39,7 +39,7 @@ Tank::Tank(double x_, double y_, double a, char id_, std::string name_, TankInpu
 	name = name_;
 
 	shootCount = 0;
-	maxShootCount = 0;
+	maxShootCount = 0; //will be changed back to 100 when I'm done testing
 
 	this->forward = forward;
 	this->turnL = left;
