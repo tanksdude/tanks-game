@@ -40,22 +40,22 @@ StationaryTurret::~StationaryTurret() {
 
 void StationaryTurret::initializeGPU() {
 	float positions[(Circle::numOfSides+1)*2];
-	for (int i = 0; i < Circle::numOfSides; i++) {
-		positions[i*2]   = cos(i * 2*PI / Circle::numOfSides);
-		positions[i*2+1] = sin(i * 2*PI / Circle::numOfSides);
+	positions[0] = x;
+	positions[1] = y;
+	for (int i = 1; i < Circle::numOfSides+1; i++) {
+		positions[i*2]   = x + r*cos((i-1) * 2*PI / Circle::numOfSides);
+		positions[i*2+1] = y + r*sin((i-1) * 2*PI / Circle::numOfSides);
 	}
-	positions[Circle::numOfSides*2]   = 0;
-	positions[Circle::numOfSides*2+1] = 0;
 
 	unsigned int indices[Circle::numOfSides*3];
 	for (int i = 0; i < Circle::numOfSides; i++) {
-		indices[i*3]   = Circle::numOfSides;
-		indices[i*3+1] = i;
-		indices[i*3+2] = (i+1) % Circle::numOfSides;
+		indices[i*3]   = 0;
+		indices[i*3+1] = i+1;
+		indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
 	}
 
 	//va = new VertexArray();
-	vb = new VertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float));
+	vb = new VertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float), GL_STATIC_DRAW);
 
 	VertexBufferLayout layout(2);
 	va = new VertexArray(*vb, layout);
@@ -116,20 +116,33 @@ ColorValueHolder StationaryTurret::getColor(short state) {
 
 void StationaryTurret::draw() {
 	Shader* shader = Renderer::getShader("main");
-	shader->setUniform4f("u_color", 1.0f, 1.0f, 1.0f, 1.0f);
-	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, 0, x, y);
-	shader->setUniformMat4f("u_MVP", MVPM);
-
+	glm::mat4 MVPM; //for cannon(s)
+	
 	//main body:
-	ColorValueHolder color = getColor();
+	if ((old_x != x) || (old_y != y)) {
+		old_x = x;
+		old_y = y;
 
+		float* stream_vertices = new float[(Circle::numOfSides+1)*2];
+		stream_vertices[0] = x;
+		stream_vertices[1] = y;
+		for (int i = 1; i < Circle::numOfSides+1; i++) {
+			stream_vertices[i*2]   = x + r*cos((i-1) * 2*PI / Circle::numOfSides);
+			stream_vertices[i*2+1] = y + r*sin((i-1) * 2*PI / Circle::numOfSides);
+		}
+
+		vb->modifyData(stream_vertices, (Circle::numOfSides+1)*2 * sizeof(float));
+		delete[] stream_vertices;
+	}
+
+	ColorValueHolder color = getColor();
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
 	Renderer::Draw(*va, *ib, *shader);
 
 	//outline:
 	shader->setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 1.0f);
-	Renderer::Draw(*va, *shader, GL_LINE_LOOP, 0, Circle::numOfSides);
+	Renderer::Draw(*va, *shader, GL_LINE_LOOP, 1, Circle::numOfSides);
 
 	//barrel:
 	glLineWidth(2.0f);

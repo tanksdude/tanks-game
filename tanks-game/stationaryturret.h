@@ -15,6 +15,10 @@ protected:
 
 	VertexArray* cannon_va;
 	VertexBuffer* cannon_vb;
+protected:
+	//for determining whether the VertexBuffer needs to be updated
+	double old_x;
+	double old_y;
 
 public:
 	virtual ColorValueHolder getColor();
