@@ -928,7 +928,7 @@ int main(int argc, char** argv) {
 	// Setup window position, size, and title
 	glutInitWindowPosition(60, 60);
 	glutInitWindowSize(width, height);
-	glutCreateWindow("Tanks Test");
+	glutCreateWindow("Tanks Test v0.2.0 NOT FINAL"); //this is not guranteed to be correct every commit but likely will be
 
 	// Setup some OpenGL options
 	glPointSize(2);
