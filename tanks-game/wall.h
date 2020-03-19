@@ -16,6 +16,13 @@ class Wall : public Rect{
 	ColorValueHolder color;
 	short id = -1;
 
+protected:
+	//these are for figuring out if the VertexBuffer needs to be updated
+	double old_x;
+	double old_y;
+	double old_w;
+	double old_h;
+
 private:
 	VertexArray* va;
 	VertexBuffer* vb;
