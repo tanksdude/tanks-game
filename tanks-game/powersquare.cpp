@@ -78,22 +78,22 @@ void PowerSquare::initializeGPU() {
 
 	float positions[] = {
 		//outer ring (not part of the main stuff)
-		-w/2 - w*extendingMultiplier, -h/2 - h*extendingMultiplier, //0
-		 w/2 + w*extendingMultiplier, -h/2 - h*extendingMultiplier, //1
-		 w/2 + w*extendingMultiplier,  h/2 + h*extendingMultiplier, //2
-		-w/2 - w*extendingMultiplier,  h/2 + h*extendingMultiplier, //3
+		x     - w*extendingMultiplier, y     - h*extendingMultiplier, //0
+		x + w + w*extendingMultiplier, y     - h*extendingMultiplier, //1
+		x + w + w*extendingMultiplier, y + h + h*extendingMultiplier, //2
+		x     - w*extendingMultiplier, y + h + h*extendingMultiplier, //3
 
 		//main ring
-		-w/2, -h/2, //4
-		 w/2, -h/2, //5
-		 w/2,  h/2, //6
-		-w/2,  h/2, //7
+		x    , y,     //4
+		x + w, y,     //5
+		x + w, y + h, //6
+		x    , y + h, //7
 
 		//inner ring
-		-w/2 + w*PowerSquare::POWER_LINE_WIDTH, -h/2 + h*PowerSquare::POWER_LINE_WIDTH, //8
-		 w/2 - w*PowerSquare::POWER_LINE_WIDTH, -h/2 + h*PowerSquare::POWER_LINE_WIDTH, //9
-		 w/2 - w*PowerSquare::POWER_LINE_WIDTH,  h/2 - h*PowerSquare::POWER_LINE_WIDTH, //10
-		-w/2 + w*PowerSquare::POWER_LINE_WIDTH,  h/2 - h*PowerSquare::POWER_LINE_WIDTH  //11
+		x +     w*PowerSquare::POWER_LINE_WIDTH, y +     h*PowerSquare::POWER_LINE_WIDTH, //8
+		x + w - w*PowerSquare::POWER_LINE_WIDTH, y +     h*PowerSquare::POWER_LINE_WIDTH, //9
+		x + w - w*PowerSquare::POWER_LINE_WIDTH, y + h - h*PowerSquare::POWER_LINE_WIDTH, //10
+		x +     w*PowerSquare::POWER_LINE_WIDTH, y + h - h*PowerSquare::POWER_LINE_WIDTH  //11
 	};
 	unsigned int outline_indices[] = { //trapezoids
 		//bottom
@@ -131,7 +131,7 @@ void PowerSquare::initializeGPU() {
 	};
 
 	//va = new VertexArray();
-	vb = new VertexBuffer(positions, 12*2 * sizeof(float));
+	vb = new VertexBuffer(positions, 12*2 * sizeof(float), GL_STATIC_DRAW); //change this if powersquares can move
 
 	VertexBufferLayout layout(2);
 	va = new VertexArray(*vb, layout);
@@ -142,21 +142,20 @@ void PowerSquare::initializeGPU() {
 }
 
 void PowerSquare::draw() {
+	//assumption: powersquare cannot move; therefore, no vertex streaming done
 	ColorValueHolder color = getColor();
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM = Renderer::GenerateMatrix(1, 1, 0, x + w/2, y + h/2); //TODO: adjust this to scale by w and h
+
 	if (numOfPowers > 1) { //move to drawUnder()
 		ColorValueHolder backgroundMix = ColorMixer::mix(color, BackgroundRect::getBackColor());
-		//shader->Bind();
 		shader->setUniform4f("u_color", backgroundMix.getRf(), backgroundMix.getGf(), backgroundMix.getBf(), backgroundMix.getAf());
-		shader->setUniformMat4f("u_MVP", MVPM);
+		shader->setUniformMat4f("u_MVP", Renderer::getProj());
 
 		Renderer::Draw(*va, *ib_outline, *shader);
 	}
 
-	//shader->Bind();
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-	shader->setUniformMat4f("u_MVP", MVPM);
+	shader->setUniformMat4f("u_MVP", Renderer::getProj());
 
 	Renderer::Draw(*va, *ib_main, *shader);
 }
