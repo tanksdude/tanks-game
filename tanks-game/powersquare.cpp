@@ -42,6 +42,9 @@ PowerSquare::PowerSquare(double x_, double y_) {
 	w = PowerSquare::POWER_WIDTH;
 	h = PowerSquare::POWER_HEIGHT;
 
+	old_x = x;
+	old_y = y;
+
 	initializeGPU();
 }
 
@@ -73,8 +76,6 @@ PowerSquare::~PowerSquare() {
 
 void PowerSquare::initializeGPU() {
 	float extendingMultiplier = PowerSquare::POWER_LINE_WIDTH * (PowerSquare::POWER_OUTLINE_MULTIPLIER - 1);
-	float w = PowerSquare::POWER_WIDTH;
-	float h = PowerSquare::POWER_HEIGHT;
 
 	float positions[] = {
 		//outer ring (not part of the main stuff)
@@ -142,9 +143,38 @@ void PowerSquare::initializeGPU() {
 }
 
 void PowerSquare::draw() {
-	//assumption: powersquare cannot move; therefore, no vertex streaming done
-	ColorValueHolder color = getColor();
 	Shader* shader = Renderer::getShader("main");
+	ColorValueHolder color = getColor();
+
+	if ((old_x != x) || (old_y != y)) {
+		old_x = x;
+		old_y = y;
+
+		float extendingMultiplier = PowerSquare::POWER_LINE_WIDTH * (PowerSquare::POWER_OUTLINE_MULTIPLIER - 1);
+
+		float stream_vertices[] = {
+			//outer ring (not part of the main stuff)
+			x     - w*extendingMultiplier, y     - h*extendingMultiplier, //0
+			x + w + w*extendingMultiplier, y     - h*extendingMultiplier, //1
+			x + w + w*extendingMultiplier, y + h + h*extendingMultiplier, //2
+			x     - w*extendingMultiplier, y + h + h*extendingMultiplier, //3
+
+			//main ring
+			x    , y,     //4
+			x + w, y,     //5
+			x + w, y + h, //6
+			x    , y + h, //7
+
+			//inner ring
+			x +     w*PowerSquare::POWER_LINE_WIDTH, y +     h*PowerSquare::POWER_LINE_WIDTH, //8
+			x + w - w*PowerSquare::POWER_LINE_WIDTH, y +     h*PowerSquare::POWER_LINE_WIDTH, //9
+			x + w - w*PowerSquare::POWER_LINE_WIDTH, y + h - h*PowerSquare::POWER_LINE_WIDTH, //10
+			x +     w*PowerSquare::POWER_LINE_WIDTH, y + h - h*PowerSquare::POWER_LINE_WIDTH  //11
+		};
+
+		vb->modifyData(stream_vertices, 12*2 * sizeof(float));
+		//delete[] stream_vertices;
+	}
 
 	if (numOfPowers > 1) { //move to drawUnder()
 		ColorValueHolder backgroundMix = ColorMixer::mix(color, BackgroundRect::getBackColor());

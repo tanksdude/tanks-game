@@ -28,8 +28,11 @@ private:
 	VertexBuffer* vb;
 	IndexBuffer* ib_main; //the main thing
 	IndexBuffer* ib_outline; //the extra bit when numOfPowers >= 2
-public:
 	void initializeGPU();
+protected:
+	//for determining whether the VertexBuffer needs to be updated
+	double old_x;
+	double old_y;
 
 private:
 	PowerSquare(double x, double y);
