@@ -672,6 +672,13 @@ void Tank::resetThings(double x, double y, double a, char id, std::string name) 
 	shootCount = 0;
 	velocity = 0;
 
+	if (rand() % 4096 == 0) {
+		//shiny tank (yes, 1/8192 is the chance before Sword/Shield)
+		defaultColor = ColorValueHolder(.75f, .75f, .75f);
+	} else {
+		defaultColor = ColorValueHolder(.5f, .5f, .5f);
+	}
+
 	this->powerReset();
 	determineShootingAngles();
 }

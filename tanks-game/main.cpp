@@ -343,7 +343,7 @@ void tick(int physicsUPS) {
 	tankPowerCalculate();
 	bulletPowerCalculate();
 	tankShoot();
-	cout << BulletManager::getNumBullets() << endl;
+	//cout << BulletManager::getNumBullets() << endl;
 	Diagnostics::endTiming();
 
 	//collide tanks with walls:
