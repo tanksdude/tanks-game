@@ -7,6 +7,7 @@ all objects load their vertices onto VRAM when initialized (instead of using one
 * (that's a massive performance increase on modern GPUs... if I did batching; only a large performance increase instead)
 * batching is probably easier to implement now
 stationary turret shows its barrel
+graphs for diagnostics
 
 0.1.4 "gamify"
 actual levels used instead of only the developer level
