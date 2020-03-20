@@ -392,6 +392,7 @@ void tick(int physicsUPS) {
 	Diagnostics::addName("bullet-bullet");
 	bulletToBullet();
 	Diagnostics::endTiming();
+	//add another shader: main uses proj, modify doesn't
 	//bullet to bullet collision is the biggest timesink (obviously)
 	//unfortunately it can only be O(n^2), and multithreading doesn't seem like it would work
 
@@ -976,7 +977,7 @@ int main(int argc, char** argv) {
 	HazardManager::initialize();
 
 
-	//I genuinely don't know if what I have now is actually better than each class having a static VAO, VBO, and IBO
+	//v0.1.4 static VAO, VBO, and IBO had better performance
 	Renderer::Initialize();
 	BackgroundRect::initializeGPU();
 	//Tank::initializeGPU();
@@ -1042,10 +1043,9 @@ int main(int argc, char** argv) {
 /*
  * estimated total completion:
  * 100% required GPU drawing stuff!
- * * ~20% highly recommended GPU drawing stuff (streaming vertices)
  * 20% theoretical GPU stuff (may not attempt)
- * * gotta learn how to do batching
  * * add a gradient shader
+ * * gotta learn how to do batching
  * * make things more efficient (way easier said than done, I suppose)
  * 90% theoretical foundation: no hazard powers, no level... anything
  * 70% actual foundation: not every "modification function" actually does something in the main
