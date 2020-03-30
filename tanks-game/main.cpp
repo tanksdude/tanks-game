@@ -55,41 +55,17 @@
 //powers:
 #include "inheritedpowercommon.h"
 #include "powersquare.h"
-#include "speedtankpower.h"
-#include "speedbulletpower.h"
 #include "speedpower.h"
-#include "wallhacktankpower.h"
-#include "wallhackbulletpower.h"
 #include "wallhackpower.h"
-#include "multishottankpower.h"
-#include "multishotbulletpower.h"
 #include "multishotpower.h"
-#include "bouncetankpower.h"
-#include "bouncebulletpower.h"
 #include "bouncepower.h"
-#include "tripletankpower.h"
-#include "triplebulletpower.h"
 #include "triplepower.h"
-#include "homingtankpower.h"
-#include "homingbulletpower.h"
 #include "homingpower.h"
-#include "invinciblenamedtankpower.h"
-#include "invinciblenamedbulletpower.h"
 #include "invinciblenamedpower.h"
-#include "bignamedtankpower.h"
-#include "bignamedbulletpower.h"
 #include "bignamedpower.h"
-#include "megadeathtankpower.h"
-#include "megadeathbulletpower.h"
 #include "megadeathpower.h"
-#include "grenadetankpower.h"
-#include "grenadebulletpower.h"
 #include "grenadepower.h"
-#include "firenamedtankpower.h"
-#include "firenamedbulletpower.h"
 #include "firenamedpower.h"
-#include "blasttankpower.h"
-#include "blastbulletpower.h"
 #include "blastpower.h"
 
 #include <GL/glew.h>
@@ -1034,6 +1010,10 @@ int main(int argc, char** argv) {
 
 	//framelimiter
 	glutTimerFunc(1000/physicsRate, tick, physicsRate);
+
+	cout << "OpenGL renderer: " << glGetString(GL_RENDERER) << endl;
+	cout << "OpenGL vendor: " << glGetString(GL_VENDOR) << endl;
+	cout << "OpenGL version: " << glGetString(GL_VERSION) << endl;
 
 	// Start the main loop
 	glutMainLoop();
