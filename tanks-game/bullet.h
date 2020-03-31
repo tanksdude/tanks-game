@@ -43,14 +43,16 @@ public:
 
 private:
 	//IMPORTANT: GLEW must be initialized before these are set
-	static VertexArray* va;
-	static VertexBuffer* vb;
-	static IndexBuffer* ib;
+	VertexArray* va;
+	VertexBuffer* vb;
+	IndexBuffer* ib;
 public:
-	static void initializeGPU();
+	void initializeGPU();
 
 	void drawBody(double, double);
 	void drawOutline(double, double);
+protected:
+	void drawOutline(double, double, bool verticesUpdated);
 	
 public:
 	Bullet(double x_, double y_, double r_, double a, double vel, double acc, char id_);

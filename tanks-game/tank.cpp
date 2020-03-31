@@ -30,12 +30,6 @@ bool TankInputChar::getKeyState() {
 	return KeypressManager::getNormalKey(character);
 }
 
-VertexArray* Tank::va;
-VertexBuffer* Tank::vb;
-IndexBuffer* Tank::ib;
-VertexArray* Tank::cannon_va;
-VertexBuffer* Tank::cannon_vb;
-
 Tank::Tank(double x_, double y_, double a, char id_, std::string name_, TankInputChar forward, TankInputChar left, TankInputChar right, TankInputChar shoot) {
 	x = x_;
 	y = y_;
@@ -44,12 +38,17 @@ Tank::Tank(double x_, double y_, double a, char id_, std::string name_, TankInpu
 	r = TANK_RADIUS;
 	name = name_;
 
+	shootCount = 0;
+	maxShootCount = 100; //will change whenever while I'm testing
+
 	this->forward = forward;
 	this->turnL = left;
 	this->turnR = right;
 	this->shooting = shoot;
 
 	shootingPoints = new std::vector<CannonPoint>;
+
+	initializeGPU();
 }
 
 Tank::~Tank() {
@@ -60,6 +59,12 @@ Tank::~Tank() {
 	tankPowers.clear();
 
 	delete shootingPoints;
+
+	delete va;
+	delete vb;
+	delete ib;
+	delete cannon_va;
+	delete cannon_vb;
 }
 
 void Tank::move() {
@@ -182,7 +187,7 @@ double Tank::getShootingSpeedMultiplier() {
 
 	double highest = 1;
 	double lowest = 1;
-	std::vector<double> stackList;
+	std::vector<double> stackList; //only now have I realized this isn't a great name; no, it's not a data structure known as a stack
 
 	for (int i = 0; i < tankPowers.size(); i++) {
 		double value = tankPowers[i]->getShootingMultiplier();
@@ -423,38 +428,45 @@ void Tank::drawCPU(double xpos, double ypos) {
 }
 
 void Tank::initializeGPU() {
+	//no point in doing this but I'll leave it in case I need to revert to the old method
 	float positions[(Circle::numOfSides+1)*2];
-	for (int i = 0; i < Circle::numOfSides; i++) {
-		positions[i*2]   = cos(i * 2*PI / Circle::numOfSides);
-		positions[i*2+1] = sin(i * 2*PI / Circle::numOfSides);
+	positions[0] = 0;
+	positions[1] = 0;
+	for (int i = 1; i < Circle::numOfSides+1; i++) {
+		positions[i*2]   = cos((i-1) * 2*PI / Circle::numOfSides);
+		positions[i*2+1] = sin((i-1) * 2*PI / Circle::numOfSides);
 	}
-	positions[Circle::numOfSides*2]   = 0;
-	positions[Circle::numOfSides*2+1] = 0;
 
 	unsigned int indices[Circle::numOfSides*3];
 	for (int i = 0; i < Circle::numOfSides; i++) {
-		indices[i*3]   = Circle::numOfSides;
-		indices[i*3+1] = i;
-		indices[i*3+2] = (i+1) % Circle::numOfSides;
+		indices[i*3]   = 0;
+		indices[i*3+1] = i+1;
+		indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
 	}
 
-	va = new VertexArray();
-	vb = new VertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float));
+	/*
+	for (int i = 0; i < Circle::numOfSides+1; i++) {
+		std::cout << i << ": " << positions[i*2] << " " << positions[i*2+1] << std::endl;
+	}
+	for (int i = 0; i < Circle::numOfSides; i++) {
+		std::cout << i << ": " << indices[i*3] << " " << indices[i*3+1] << " " << indices[i*3+2] << std::endl;
+	}
+	*/
 
-	VertexBufferLayout layout;
-	layout.Push_f(2);
-	va->AddBuffer(*vb, layout);
+	//va = new VertexArray();
+	vb = new VertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float), GL_STREAM_DRAW);
+
+	VertexBufferLayout layout(2);
+	va = new VertexArray(*vb, layout);
 
 	ib = new IndexBuffer(indices, Circle::numOfSides*3);
 
-
 	float cannon_positions[4] = { 0.0f, 0.0f, 1.0f, 0.0f };
-	cannon_va = new VertexArray();
+	//cannon_va = new VertexArray();
 	cannon_vb = new VertexBuffer(cannon_positions, 2*2 * sizeof(float));
 
-	VertexBufferLayout cannon_layout;
-	cannon_layout.Push_f(2);
-	cannon_va->AddBuffer(*cannon_vb, cannon_layout);
+	VertexBufferLayout cannon_layout(2);
+	cannon_va = new VertexArray(*cannon_vb, cannon_layout);
 }
 
 void Tank::draw() {
@@ -462,17 +474,37 @@ void Tank::draw() {
 }
 
 void Tank::draw(double xpos, double ypos) {
+	//stuff that will be used:
+	Shader* shader = Renderer::getShader("main");
+	glm::mat4 MVPM; //for the cannons because they don't stream vertices
+
 	//shooting cooldown outline:
-	double shootingOutlinePercent = constrain_d(shootCount/(maxShootCount*getShootingSpeedMultiplier()), 0, 1);
+	double shootingOutlinePercent;
+	if (maxShootCount*getShootingSpeedMultiplier() <= 0) {
+		shootingOutlinePercent = 0;
+	} else {
+		shootingOutlinePercent = constrain_d(shootCount/(maxShootCount*getShootingSpeedMultiplier()), 0, 1);
+	}
 	unsigned int shootingOutlineVertices = Circle::numOfSides * shootingOutlinePercent;
 
-	Shader* shader = Renderer::getShader("main");
-	shader->setUniform4f("u_color", 1.0f, 1.0f, 1.0f, 1.0f);
-	glm::mat4 MVPM = Renderer::GenerateMatrix(r * 5.0/4.0, r * 5.0/4.0, getAngle(), xpos, ypos);
-	shader->setUniformMat4f("u_MVP", MVPM);
+	if(shootingOutlineVertices > 0) {
+		float* stream_vertices = new float[(shootingOutlineVertices+1)*2];
+		stream_vertices[0] = xpos;
+		stream_vertices[1] = ypos;
+		for (int i = 1; i < shootingOutlineVertices+1; i++) {
+			stream_vertices[i*2]   = r * 5.0/4.0 * cos((i-1) * 2*PI / Circle::numOfSides + angle) + xpos;
+			stream_vertices[i*2+1] = r * 5.0/4.0 * sin((i-1) * 2*PI / Circle::numOfSides + angle) + ypos;
+		}
 
-	Renderer::Draw(*va, *ib, *shader, shootingOutlineVertices*3);
+		vb->modifyData(stream_vertices, (shootingOutlineVertices+1)*2 * sizeof(float));
+		delete[] stream_vertices;
 
+		shader->setUniform4f("u_color", 1.0f, 1.0f, 1.0f, 1.0f);
+		shader->setUniformMat4f("u_MVP", Renderer::getProj());
+
+		Renderer::Draw(*va, *ib, *shader, (shootingOutlineVertices-1)*3);
+	}
+	
 	//power cooldown outlines:
 	//first, sort by timeLeft/maxTime
 	std::vector<TankPower*> sortedTankPowers; //there shouldn't be more than a few powers, so no need to do anything more complex than an array
@@ -491,33 +523,58 @@ void Tank::draw(double xpos, double ypos) {
 	}
 	//second, actually draw them
 	for (int i = 0; i < sortedTankPowers.size(); i++) {
-		double powerOutlinePercent = constrain_d(sortedTankPowers[i]->timeLeft/sortedTankPowers[i]->maxTime, 0, 1);
+		double powerOutlinePercent;
+		if (sortedTankPowers[i]->maxTime <= 0) {
+			powerOutlinePercent = 0;
+		} else {
+			powerOutlinePercent = constrain_d(sortedTankPowers[i]->timeLeft/sortedTankPowers[i]->maxTime, 0, 1);
+		}
 		unsigned int powerOutlineVertices = Circle::numOfSides * powerOutlinePercent;
 
-		ColorValueHolder c = sortedTankPowers[i]->getColor();
+		if (powerOutlineVertices > 0) {
+			float* stream_vertices = new float[(powerOutlineVertices+1)*2];
+			stream_vertices[0] = xpos;
+			stream_vertices[1] = ypos;
+			for (int i = 1; i < powerOutlineVertices+1; i++) {
+				stream_vertices[i*2]   = r * 9.0/8.0 * cos((i-1) * 2*PI / Circle::numOfSides + angle) + xpos;
+				stream_vertices[i*2+1] = r * 9.0/8.0 * sin((i-1) * 2*PI / Circle::numOfSides + angle) + ypos;
+			}
 
-		shader->setUniform4f("u_color", c.getRf(), c.getGf(), c.getBf(), c.getAf());
-		MVPM = Renderer::GenerateMatrix(r * 9.0/8.0, r * 9.0/8.0, getAngle(), xpos, ypos);
-		shader->setUniformMat4f("u_MVP", MVPM);
+			vb->modifyData(stream_vertices, (powerOutlineVertices+1)*2 * sizeof(float));
+			delete[] stream_vertices;
 
-		Renderer::Draw(*va, *ib, *shader, powerOutlineVertices*3);
+			ColorValueHolder c = sortedTankPowers[i]->getColor();
+			shader->setUniform4f("u_color", c.getRf(), c.getGf(), c.getBf(), c.getAf());
+			shader->setUniformMat4f("u_MVP", Renderer::getProj());
+
+			Renderer::Draw(*va, *ib, *shader, (powerOutlineVertices-1)*3);
+		}
 	}
-	
 
 	//main body:
-	ColorValueHolder color = getBodyColor();
+	float* stream_vertices = new float[(Circle::numOfSides+1)*2];
+	stream_vertices[0] = xpos;
+	stream_vertices[1] = ypos;
+	for (int i = 1; i < Circle::numOfSides+1; i++) {
+		stream_vertices[i*2]   = r * cos((i-1) * 2*PI / Circle::numOfSides) + xpos;
+		stream_vertices[i*2+1] = r * sin((i-1) * 2*PI / Circle::numOfSides) + ypos;
+	}
 
+	vb->modifyData(stream_vertices, (Circle::numOfSides+1)*2 * sizeof(float));
+	delete[] stream_vertices;
+
+	ColorValueHolder color = getBodyColor();
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-	MVPM = Renderer::GenerateMatrix(r, r, 0, xpos, ypos);
-	shader->setUniformMat4f("u_MVP", MVPM);
+	shader->setUniformMat4f("u_MVP", Renderer::getProj());
 
 	Renderer::Draw(*va, *ib, *shader);
 
 	//other barrels:
+	//to be honest, it probably better to reuse the cannon instead of overwriting it constantly (with the extra barrels)
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glLineWidth(1.0f);
 
-	//shader->setUniform4f("u_color", .5f, .5f, .5f, .25f); //CPU method
+	//shader->setUniform4f("u_color", .5f, .5f, .5f, .25f); //CPU color
 	shader->setUniform4f("u_color", .75f, .75f, .75f, 1.0f);
 	
 	for (int i = 1; i < shootingPoints->size(); i++) {
@@ -528,11 +585,10 @@ void Tank::draw(double xpos, double ypos) {
 	}
 
 	//outline:
-	MVPM = Renderer::GenerateMatrix(r, r, 0, xpos, ypos);
 	shader->setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 1.0f);
-	shader->setUniformMat4f("u_MVP", MVPM);
+	shader->setUniformMat4f("u_MVP", Renderer::getProj());
 
-	Renderer::Draw(*va, *shader, GL_LINE_LOOP, 0, Circle::numOfSides);
+	Renderer::Draw(*va, *shader, GL_LINE_LOOP, 1, Circle::numOfSides);
 
 	//barrel:
 	glLineWidth(2.0f);
@@ -615,6 +671,13 @@ void Tank::resetThings(double x, double y, double a, char id, std::string name) 
 	this->name = name;
 	shootCount = 0;
 	velocity = 0;
+
+	if (rand() % 4096 == 0) {
+		//shiny tank (yes, 1/8192 is the chance before Sword/Shield)
+		defaultColor = ColorValueHolder(.75f, .75f, .75f);
+	} else {
+		defaultColor = ColorValueHolder(.5f, .5f, .5f);
+	}
 
 	this->powerReset();
 	determineShootingAngles();

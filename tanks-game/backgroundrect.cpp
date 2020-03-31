@@ -20,23 +20,28 @@ IndexBuffer* BackgroundRect::ib;
 void BackgroundRect::initializeGPU() {
 	float background_positions[] = {
 		0, 0,
-		1, 0,
-		1, 1,
-		0, 1
+		GAME_WIDTH, 0,
+		GAME_WIDTH, GAME_HEIGHT,
+		0, GAME_HEIGHT
 	};
 	unsigned int background_indices[] = {
 		0, 1, 2,
 		2, 3, 0
 	};
 
-	va = new VertexArray();
-	vb = new VertexBuffer(background_positions, 4*2 * sizeof(float));
+	//va = new VertexArray();
+	vb = new VertexBuffer(background_positions, 4*2 * sizeof(float), GL_STATIC_DRAW);
 
-	VertexBufferLayout layout;
-	layout.Push_f(2);
-	va->AddBuffer(*vb, layout);
+	VertexBufferLayout layout(2);
+	va = new VertexArray(*vb, layout);
 
 	ib = new IndexBuffer(background_indices, 6);
+}
+
+void BackgroundRect::uninitializeGPU() {
+	delete vb;
+	delete va;
+	delete ib;
 }
 
 void BackgroundRect::drawCPU() {
@@ -52,8 +57,7 @@ void BackgroundRect::drawCPU() {
 void BackgroundRect::draw() {
 	Shader* shader = Renderer::getShader("main");
 	shader->setUniform4f("u_color", backColor.getRf(), backColor.getGf(), backColor.getBf(), backColor.getAf());
-	glm::mat4 MVPM = Renderer::GenerateMatrix(GAME_WIDTH, GAME_HEIGHT, 0, 0, 0);
-	shader->setUniformMat4f("u_MVP", MVPM); //little point in generating a new matrix instead of just using proj but "consistency" and all
+	shader->setUniformMat4f("u_MVP", Renderer::getProj());
 
 	Renderer::Draw(*va, *ib, *shader);
 }

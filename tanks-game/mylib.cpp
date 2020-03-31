@@ -81,12 +81,23 @@ int findMinIndex(double* arr, int len) { //precondition: length of array > 0
 }
 
 int constrain_i(int value, int min, int max) {
-	return ((value < min ? min : value) > max ? max : value);
+	if (value < min) {
+		return min;
+	}
+	if (value > max) {
+		return max;
+	}
+	return value;
 }
 
 double constrain_d(double value, double min, double max) {
-	return ((value < min ? min : value) > max ? max : value);
-	//is separating it from ternary operators going to be more efficient? does it even matter?
+	if (value < min) {
+		return min;
+	}
+	if (value > max) {
+		return max;
+	}
+	return value;
 }
 
 bool XOR(bool a, bool b) {

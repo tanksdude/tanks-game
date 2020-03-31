@@ -19,8 +19,8 @@ void Renderer::Initialize() {
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 	Shader* shader = new Shader("res/shaders/main-vertex.shader", "res/shaders/main-fragment.shader");
-	bindShader(shader); //the main shader will be used most often so it gets binded at start
 	shaderCache.insert({ "main", shader });
+	bindShader(shader); //the main shader will be used most often so it gets binded at start
 
 	shader = new Shader("res/shaders/default-vertex.shader", "res/shaders/default-fragment.shader");
 	shaderCache.insert({ "default", shader });

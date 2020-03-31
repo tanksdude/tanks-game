@@ -55,41 +55,17 @@
 //powers:
 #include "inheritedpowercommon.h"
 #include "powersquare.h"
-#include "speedtankpower.h"
-#include "speedbulletpower.h"
 #include "speedpower.h"
-#include "wallhacktankpower.h"
-#include "wallhackbulletpower.h"
 #include "wallhackpower.h"
-#include "multishottankpower.h"
-#include "multishotbulletpower.h"
 #include "multishotpower.h"
-#include "bouncetankpower.h"
-#include "bouncebulletpower.h"
 #include "bouncepower.h"
-#include "tripletankpower.h"
-#include "triplebulletpower.h"
 #include "triplepower.h"
-#include "homingtankpower.h"
-#include "homingbulletpower.h"
 #include "homingpower.h"
-#include "invinciblenamedtankpower.h"
-#include "invinciblenamedbulletpower.h"
 #include "invinciblenamedpower.h"
-#include "bignamedtankpower.h"
-#include "bignamedbulletpower.h"
 #include "bignamedpower.h"
-#include "megadeathtankpower.h"
-#include "megadeathbulletpower.h"
 #include "megadeathpower.h"
-#include "grenadetankpower.h"
-#include "grenadebulletpower.h"
 #include "grenadepower.h"
-#include "firenamedtankpower.h"
-#include "firenamedbulletpower.h"
 #include "firenamedpower.h"
-#include "blasttankpower.h"
-#include "blastbulletpower.h"
 #include "blastpower.h"
 
 #include <GL/glew.h>
@@ -343,6 +319,7 @@ void tick(int physicsUPS) {
 	tankPowerCalculate();
 	bulletPowerCalculate();
 	tankShoot();
+	//cout << BulletManager::getNumBullets() << endl;
 	Diagnostics::endTiming();
 
 	//collide tanks with walls:
@@ -391,6 +368,7 @@ void tick(int physicsUPS) {
 	Diagnostics::addName("bullet-bullet");
 	bulletToBullet();
 	Diagnostics::endTiming();
+	//add another shader: main uses proj, modify doesn't
 	//bullet to bullet collision is the biggest timesink (obviously)
 	//unfortunately it can only be O(n^2), and multithreading doesn't seem like it would work
 
@@ -927,7 +905,7 @@ int main(int argc, char** argv) {
 	// Setup window position, size, and title
 	glutInitWindowPosition(60, 60);
 	glutInitWindowSize(width, height);
-	glutCreateWindow("Tanks Test");
+	glutCreateWindow("Tanks Test v0.2.0"); //this is not guranteed to be correct every commit but likely will be
 
 	// Setup some OpenGL options
 	glPointSize(2);
@@ -975,16 +953,15 @@ int main(int argc, char** argv) {
 	HazardManager::initialize();
 
 
-	//make the classes load their vertices and indices onto VRAM to avoid CPU<->GPU syncs
-	//I now realize this is bad because modern GPUs are set up for streaming VRAM data instead of being very VRAM-starved and will fix this eventually (basically, each object has its own VA instead of each one using their class's VA)
+	//v0.1.4 static VAO, VBO, and IBO had better performance
 	Renderer::Initialize();
-	Bullet::initializeGPU();
 	BackgroundRect::initializeGPU();
-	PowerSquare::initializeGPU();
-	Wall::initializeGPU();
-	Tank::initializeGPU();
-	RectHazard::initializeGPU();
-	CircleHazard::initializeGPU();
+	//Tank::initializeGPU();
+	//Bullet::initializeGPU();
+	//PowerSquare::initializeGPU();
+	//Wall::initializeGPU();
+	//RectHazard::initializeGPU();
+	//CircleHazard::initializeGPU();
 
 
 	// Set callback for drawing the scene
@@ -1034,6 +1011,10 @@ int main(int argc, char** argv) {
 	//framelimiter
 	glutTimerFunc(1000/physicsRate, tick, physicsRate);
 
+	cout << "OpenGL renderer: " << glGetString(GL_RENDERER) << endl;
+	cout << "OpenGL vendor: " << glGetString(GL_VENDOR) << endl;
+	cout << "OpenGL version: " << glGetString(GL_VERSION) << endl;
+
 	// Start the main loop
 	glutMainLoop();
 
@@ -1042,10 +1023,9 @@ int main(int argc, char** argv) {
 /*
  * estimated total completion:
  * 100% required GPU drawing stuff!
- * * <10% highly recommended GPU drawing stuff (streaming vertices)
  * 20% theoretical GPU stuff (may not attempt)
- * * gotta learn how to do batching
  * * add a gradient shader
+ * * gotta learn how to do batching
  * * make things more efficient (way easier said than done, I suppose)
  * 90% theoretical foundation: no hazard powers, no level... anything
  * 70% actual foundation: not every "modification function" actually does something in the main

@@ -9,11 +9,11 @@
 
 class CircleHazard : public Hazard, public Circle {
 protected:
-	static VertexArray* va;
-	static VertexBuffer* vb;
-	static IndexBuffer* ib;
+	VertexArray* va;
+	VertexBuffer* vb;
+	IndexBuffer* ib;
 public:
-	static void initializeGPU();
+	virtual void initializeGPU() = 0;
 	virtual void draw() = 0;
 	virtual std::string getName() = 0;
 	static std::string getClassName();

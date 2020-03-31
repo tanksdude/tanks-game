@@ -36,23 +36,25 @@ void PowerSquare::givePower(Tank* t) {
 void PowerSquare::givePower(Bullet*) { return; } //don't think about it now, possibly ever; it's weird
 //void givePower(Hazard*);
 
-PowerSquare::PowerSquare(double x_, double y_, std::string name) {
+PowerSquare::PowerSquare(double x_, double y_) {
 	x = x_ - PowerSquare::POWER_WIDTH/2;
 	y = y_ - PowerSquare::POWER_HEIGHT/2;
 	w = PowerSquare::POWER_WIDTH;
 	h = PowerSquare::POWER_HEIGHT;
 
+	old_x = x;
+	old_y = y;
+
+	initializeGPU();
+}
+
+PowerSquare::PowerSquare(double x_, double y_, std::string name) : PowerSquare(x_, y_){
 	numOfPowers = 1;
 	heldPower = new Power*[1];
 	heldPower[0] = PowerupManager::getPowerFactory(name)();
 }
 
-PowerSquare::PowerSquare(double x_, double y_, std::string* names, int num) {
-	x = x_ - PowerSquare::POWER_WIDTH/2;
-	y = y_ - PowerSquare::POWER_HEIGHT/2;
-	w = PowerSquare::POWER_WIDTH;
-	h = PowerSquare::POWER_HEIGHT;
-
+PowerSquare::PowerSquare(double x_, double y_, std::string* names, int num) : PowerSquare(x_, y_){
 	numOfPowers = num;
 	heldPower = new Power*[num];
 	for (int i = 0; i < num; i++) {
@@ -65,36 +67,34 @@ PowerSquare::~PowerSquare() {
 		delete heldPower[i];
 	}
 	delete[] heldPower;
-}
 
-VertexArray* PowerSquare::va;
-VertexBuffer* PowerSquare::vb;
-IndexBuffer* PowerSquare::ib_main;
-IndexBuffer* PowerSquare::ib_outline;
+	delete va;
+	delete vb;
+	delete ib_main;
+	delete ib_outline;
+}
 
 void PowerSquare::initializeGPU() {
 	float extendingMultiplier = PowerSquare::POWER_LINE_WIDTH * (PowerSquare::POWER_OUTLINE_MULTIPLIER - 1);
-	float w = PowerSquare::POWER_WIDTH;
-	float h = PowerSquare::POWER_HEIGHT;
 
 	float positions[] = {
 		//outer ring (not part of the main stuff)
-		-w/2 - w*extendingMultiplier, -h/2 - h*extendingMultiplier, //0
-		 w/2 + w*extendingMultiplier, -h/2 - h*extendingMultiplier, //1
-		 w/2 + w*extendingMultiplier,  h/2 + h*extendingMultiplier, //2
-		-w/2 - w*extendingMultiplier,  h/2 + h*extendingMultiplier, //3
+		x     - w*extendingMultiplier, y     - h*extendingMultiplier, //0
+		x + w + w*extendingMultiplier, y     - h*extendingMultiplier, //1
+		x + w + w*extendingMultiplier, y + h + h*extendingMultiplier, //2
+		x     - w*extendingMultiplier, y + h + h*extendingMultiplier, //3
 
 		//main ring
-		-w/2, -h/2, //4
-		 w/2, -h/2, //5
-		 w/2,  h/2, //6
-		-w/2,  h/2, //7
+		x    , y,     //4
+		x + w, y,     //5
+		x + w, y + h, //6
+		x    , y + h, //7
 
 		//inner ring
-		-w/2 + w*PowerSquare::POWER_LINE_WIDTH, -h/2 + h*PowerSquare::POWER_LINE_WIDTH, //8
-		 w/2 - w*PowerSquare::POWER_LINE_WIDTH, -h/2 + h*PowerSquare::POWER_LINE_WIDTH, //9
-		 w/2 - w*PowerSquare::POWER_LINE_WIDTH,  h/2 - h*PowerSquare::POWER_LINE_WIDTH, //10
-		-w/2 + w*PowerSquare::POWER_LINE_WIDTH,  h/2 - h*PowerSquare::POWER_LINE_WIDTH  //11
+		x +     w*PowerSquare::POWER_LINE_WIDTH, y +     h*PowerSquare::POWER_LINE_WIDTH, //8
+		x + w - w*PowerSquare::POWER_LINE_WIDTH, y +     h*PowerSquare::POWER_LINE_WIDTH, //9
+		x + w - w*PowerSquare::POWER_LINE_WIDTH, y + h - h*PowerSquare::POWER_LINE_WIDTH, //10
+		x +     w*PowerSquare::POWER_LINE_WIDTH, y + h - h*PowerSquare::POWER_LINE_WIDTH  //11
 	};
 	unsigned int outline_indices[] = { //trapezoids
 		//bottom
@@ -131,12 +131,11 @@ void PowerSquare::initializeGPU() {
 		11, 10, 6
 	};
 
-	va = new VertexArray();
-	vb = new VertexBuffer(positions, 12*2 * sizeof(float));
+	//va = new VertexArray();
+	vb = new VertexBuffer(positions, 12*2 * sizeof(float), GL_STATIC_DRAW); //change this if powersquares can move
 
-	VertexBufferLayout layout;
-	layout.Push_f(2);
-	va->AddBuffer(*vb, layout);
+	VertexBufferLayout layout(2);
+	va = new VertexArray(*vb, layout);
 
 	ib_main = new IndexBuffer(main_indices, 6*4);
 	ib_outline = new IndexBuffer(outline_indices, 6*4);
@@ -144,21 +143,49 @@ void PowerSquare::initializeGPU() {
 }
 
 void PowerSquare::draw() {
-	ColorValueHolder color = getColor();
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM = Renderer::GenerateMatrix(1, 1, 0, x + w/2, y + h/2); //TODO: adjust this to scale by w and h
+	ColorValueHolder color = getColor();
+
+	if ((old_x != x) || (old_y != y)) {
+		old_x = x;
+		old_y = y;
+
+		float extendingMultiplier = PowerSquare::POWER_LINE_WIDTH * (PowerSquare::POWER_OUTLINE_MULTIPLIER - 1);
+
+		float stream_vertices[] = {
+			//outer ring (not part of the main stuff)
+			x     - w*extendingMultiplier, y     - h*extendingMultiplier, //0
+			x + w + w*extendingMultiplier, y     - h*extendingMultiplier, //1
+			x + w + w*extendingMultiplier, y + h + h*extendingMultiplier, //2
+			x     - w*extendingMultiplier, y + h + h*extendingMultiplier, //3
+
+			//main ring
+			x    , y,     //4
+			x + w, y,     //5
+			x + w, y + h, //6
+			x    , y + h, //7
+
+			//inner ring
+			x +     w*PowerSquare::POWER_LINE_WIDTH, y +     h*PowerSquare::POWER_LINE_WIDTH, //8
+			x + w - w*PowerSquare::POWER_LINE_WIDTH, y +     h*PowerSquare::POWER_LINE_WIDTH, //9
+			x + w - w*PowerSquare::POWER_LINE_WIDTH, y + h - h*PowerSquare::POWER_LINE_WIDTH, //10
+			x +     w*PowerSquare::POWER_LINE_WIDTH, y + h - h*PowerSquare::POWER_LINE_WIDTH  //11
+		};
+
+		vb->modifyData(stream_vertices, 12*2 * sizeof(float));
+		//delete[] stream_vertices;
+	}
+
 	if (numOfPowers > 1) { //move to drawUnder()
 		ColorValueHolder backgroundMix = ColorMixer::mix(color, BackgroundRect::getBackColor());
-		//shader->Bind();
 		shader->setUniform4f("u_color", backgroundMix.getRf(), backgroundMix.getGf(), backgroundMix.getBf(), backgroundMix.getAf());
-		shader->setUniformMat4f("u_MVP", MVPM);
+		shader->setUniformMat4f("u_MVP", Renderer::getProj());
 
 		Renderer::Draw(*va, *ib_outline, *shader);
 	}
 
-	//shader->Bind();
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-	shader->setUniformMat4f("u_MVP", MVPM);
+	shader->setUniformMat4f("u_MVP", Renderer::getProj());
 
 	Renderer::Draw(*va, *ib_main, *shader);
 }

@@ -2,10 +2,7 @@
 #include "recthazard.h"
 #include "renderer.h"
 
-VertexArray* RectHazard::va;
-VertexBuffer* RectHazard::vb;
-IndexBuffer* RectHazard::ib;
-
+/*
 void RectHazard::initializeGPU() {
 	float positions[] = {
 		0, 0,
@@ -18,12 +15,12 @@ void RectHazard::initializeGPU() {
 		2, 3, 0
 	};
 
-	va = new VertexArray();
+	//va = new VertexArray();
 	vb = new VertexBuffer(positions, 4*2 * sizeof(float));
 
-	VertexBufferLayout layout;
-	layout.Push_f(2);
-	va->AddBuffer(*vb, layout);
+	VertexBufferLayout layout(2);
+	va = new VertexArray(*vb, layout);
 
 	ib = new IndexBuffer(indices, 6);
 }
+*/

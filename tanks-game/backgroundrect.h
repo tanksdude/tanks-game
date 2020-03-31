@@ -18,4 +18,5 @@ public:
 	static void draw();
 	static void drawCPU();
 	static void initializeGPU();
+	static void uninitializeGPU();
 };

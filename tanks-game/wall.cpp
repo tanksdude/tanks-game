@@ -13,43 +13,67 @@ Wall::Wall(double x_, double y_, double w_, double h_, ColorValueHolder c) {
 	this->w = w_;
 	this->h = h_;
 	color = c;
+
+	old_x = x;
+	old_y = y;
+	old_w = w;
+	old_h = h;
+
+	initializeGPU();
 }
 Wall::Wall(double x_, double y_, double w_, double h_, ColorValueHolder c, short id_) : Wall(x_, y_, w_, h_, c){
 	this->id = id_;
 }
 
-VertexArray* Wall::va;
-VertexBuffer* Wall::vb;
-IndexBuffer* Wall::ib;
+Wall::~Wall() {
+	delete va;
+	delete vb;
+	delete ib;
+}
 
 void Wall::initializeGPU() {
 	float positions[] = {
-		0, 0,
-		1, 0,
-		1, 1,
-		0, 1
+		x, y,
+		x + w, y,
+		x + w, y + h,
+		x, y + h
 	};
 	unsigned int indices[] = {
 		0, 1, 2,
 		2, 3, 0
 	};
 
-	va = new VertexArray();
-	vb = new VertexBuffer(positions, 4*2 * sizeof(float));
+	//va = new VertexArray();
+	vb = new VertexBuffer(positions, 4*2 * sizeof(float), GL_STATIC_DRAW); //realistically, a wall isn't going to move
 
-	VertexBufferLayout layout;
-	layout.Push_f(2);
-	va->AddBuffer(*vb, layout);
+	VertexBufferLayout layout(2);
+	va = new VertexArray(*vb, layout);
 
 	ib = new IndexBuffer(indices, 6);
 }
 
 void Wall::draw() {
 	Shader* shader = Renderer::getShader("main");
-	//shader->Bind();
+
+	if ((old_x != x) || (old_y != y) || (old_w != w) || (old_h != h)) {
+		old_x = x;
+		old_y = y;
+		old_w = w;
+		old_h = h;
+
+		float stream_vertices[] = {
+			x, y,
+			x + w, y,
+			x + w, y + h,
+			x, y + h
+		};
+
+		vb->modifyData(stream_vertices, 4*2 * sizeof(float));
+		//delete[] stream_vertices;
+	}
+
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-	glm::mat4 MVPM = Renderer::GenerateMatrix(w, h, 0, x, y);
-	shader->setUniformMat4f("u_MVP", MVPM);
+	shader->setUniformMat4f("u_MVP", Renderer::getProj());
 
 	Renderer::Draw(*va, *ib, *shader);
 }

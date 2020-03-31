@@ -16,12 +16,19 @@ class Wall : public Rect{
 	ColorValueHolder color;
 	short id = -1;
 
+protected:
+	//these are for figuring out if the VertexBuffer needs to be updated
+	double old_x;
+	double old_y;
+	double old_w;
+	double old_h;
+
 private:
-	static VertexArray* va;
-	static VertexBuffer* vb;
-	static IndexBuffer* ib;
+	VertexArray* va;
+	VertexBuffer* vb;
+	IndexBuffer* ib;
 public:
-	static void initializeGPU();
+	void initializeGPU();
 
 public:
 	Wall(double x, double y, double w, double h, ColorValueHolder);
@@ -32,4 +39,6 @@ public:
 	}
 	void draw();
 	void drawCPU();
+
+	~Wall();
 };

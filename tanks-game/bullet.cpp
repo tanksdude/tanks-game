@@ -22,6 +22,8 @@ Bullet::Bullet(double x_, double y_, double r_, double a, double vel, double acc
 	this->acceleration = acc;
 	this->id = id_;
 	this->alpha = 100;
+
+	initializeGPU();
 }
 
 Bullet::Bullet(double x_, double y_, double r_, double a, double vel, double acc, char id_, std::vector<BulletPower*> bp) : Bullet(x_,y_,r_,a,vel,acc,id_) {
@@ -32,36 +34,42 @@ Bullet::Bullet(double x_, double y_, double r_, double a, double vel, double acc
 	}
 }
 
+Bullet::~Bullet() {
+	for (int i = 0; i < bulletPowers.size(); i++) {
+		delete bulletPowers[i];
+	}
+	bulletPowers.clear();
+
+	delete va;
+	delete vb;
+	delete ib;
+}
+
 bool Bullet::isDead() {
 	return (alpha <= 0);
 }
 
-VertexArray* Bullet::va;
-VertexBuffer* Bullet::vb;
-IndexBuffer* Bullet::ib;
-
 void Bullet::initializeGPU() {
 	float positions[(Circle::numOfSides+1)*2];
-	for (int i = 0; i < Circle::numOfSides; i++) {
-		positions[i*2]   = cos(i * 2*PI / Circle::numOfSides);
-		positions[i*2+1] = sin(i * 2*PI / Circle::numOfSides);
-	}
 	positions[Circle::numOfSides*2]   = 0;
 	positions[Circle::numOfSides*2+1] = 0;
+	for (int i = 1; i < Circle::numOfSides+1; i++) {
+		positions[i*2]   = cos((i-1) * 2*PI / Circle::numOfSides);
+		positions[i*2+1] = sin((i-1) * 2*PI / Circle::numOfSides);
+	}
 
 	unsigned int indices[Circle::numOfSides*3];
 	for (int i = 0; i < Circle::numOfSides; i++) {
-		indices[i*3]   = Circle::numOfSides;
-		indices[i*3+1] = i;
-		indices[i*3+2] = (i+1) % Circle::numOfSides;
+		indices[i*3]   = 0;
+		indices[i*3+1] = i+1;
+		indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
 	}
 
-	va = new VertexArray();
-	vb = new VertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float));
+	//va = new VertexArray();
+	vb = new VertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float), GL_STREAM_DRAW);
 
-	VertexBufferLayout layout;
-	layout.Push_f(2);
-	va->AddBuffer(*vb, layout);
+	VertexBufferLayout layout(2);
+	va = new VertexArray(*vb, layout);
 
 	ib = new IndexBuffer(indices, Circle::numOfSides*3);
 }
@@ -162,45 +170,84 @@ void Bullet::draw() {
 
 void Bullet::draw(double xpos, double ypos) {
 	drawBody(xpos, ypos);
-	drawOutline(xpos, ypos);
+	drawOutline(xpos, ypos, true);
 }
 
 void Bullet::drawBody(double xpos, double ypos) {
 	ColorValueHolder color = getColor();
-
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, 0, xpos, ypos);
 
 	if (glIsEnabled(GL_BLEND)) {
 		shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), this->alpha/100);
 	} else {
 		if(alpha < 100) {
-			shader->setUniform4f("u_color", 1.0f, 1.0f, 1.0f, 1.0f);
-			glm::mat4 MVPM_2 = Renderer::GenerateMatrix((r+2) * 9/8.0, (r+2) * 9/8.0, PI/2, xpos, ypos);
 			double deathPercent = constrain_d(alpha/100, 0, 1);
 			unsigned int deathVertices = Circle::numOfSides * deathPercent;
-			shader->setUniformMat4f("u_MVP", MVPM_2);
-			Renderer::Draw(*va, *ib, *shader, deathVertices*3);
+
+			if (deathVertices > 0) {
+				float* stream_vertices = new float[(deathVertices+1)*2];
+				stream_vertices[0] = xpos;
+				stream_vertices[1] = ypos;
+				for (int i = 1; i < deathVertices+1; i++) {
+					stream_vertices[i*2]   = (r+2) * 9.0/8.0 * cos((i-1) * 2*PI / Circle::numOfSides + PI/2) + xpos;
+					stream_vertices[i*2+1] = (r+2) * 9.0/8.0 * sin((i-1) * 2*PI / Circle::numOfSides + PI/2) + ypos;
+				}
+
+				vb->modifyData(stream_vertices, (deathVertices+1)*2 * sizeof(float));
+				delete[] stream_vertices;
+
+				shader->setUniform4f("u_color", 1.0f, 1.0f, 1.0f, 1.0f);
+				shader->setUniformMat4f("u_MVP", Renderer::getProj());
+
+				Renderer::Draw(*va, *ib, *shader, (deathVertices-1)*3);
+			}
 		}
 
-		shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), this->alpha / 100);
+		shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), 1.0f);
 	}
 
-	shader->setUniformMat4f("u_MVP", MVPM);
+	float* stream_vertices = new float[(Circle::numOfSides+1)*2];
+	stream_vertices[0] = xpos;
+	stream_vertices[1] = ypos;
+	for (int i = 1; i < Circle::numOfSides+1; i++) {
+		stream_vertices[i*2]   = r * cos((i-1) * 2*PI / Circle::numOfSides + angle) + xpos;
+		stream_vertices[i*2+1] = r * sin((i-1) * 2*PI / Circle::numOfSides + angle) + ypos;
+	}
+
+	vb->modifyData(stream_vertices, (Circle::numOfSides+1)*2 * sizeof(float));
+	delete[] stream_vertices;
+
+	shader->setUniformMat4f("u_MVP", Renderer::getProj());
 	Renderer::Draw(*va, *ib, *shader);
 }
 
 void Bullet::drawOutline(double xpos, double ypos) {
+	drawOutline(xpos, ypos, false);
+}
+
+void Bullet::drawOutline(double xpos, double ypos, bool verticesUpdated) {
 	Shader* shader = Renderer::getShader("main");
 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glLineWidth(1.0f); //lines still look ugly even with glEnable(GL_LINE_SMOOTH), so I don't know what to set it at
 	
-	shader->setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 1.0f);
-	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, 0, xpos, ypos); //duplication but necessary for body/outline methods to be separate
-	shader->setUniformMat4f("u_MVP", MVPM);
+	if (!verticesUpdated) { //probably move to another method later
+		float* stream_vertices = new float[(Circle::numOfSides+1)*2];
+		stream_vertices[0] = xpos;
+		stream_vertices[1] = ypos;
+		for (int i = 1; i < Circle::numOfSides+1; i++) {
+			stream_vertices[i*2]   = r * cos((i-1) * 2*PI / Circle::numOfSides + angle) + xpos;
+			stream_vertices[i*2+1] = r * sin((i-1) * 2*PI / Circle::numOfSides + angle) + ypos;
+		}
 
-	Renderer::Draw(GL_LINE_LOOP, 0, Circle::numOfSides);
+		vb->modifyData(stream_vertices, (Circle::numOfSides+1)*2 * sizeof(float));
+		delete[] stream_vertices;
+	}
+
+	shader->setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 1.0f);
+	shader->setUniformMat4f("u_MVP", Renderer::getProj());
+
+	Renderer::Draw(GL_LINE_LOOP, 1, Circle::numOfSides);
 	
 	//cleanup:
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -276,11 +323,4 @@ bool Bullet::isPartiallyOutOfBounds() {
 
 bool Bullet::isFullyOutOfBounds() {
 	return ((x - r >= GAME_WIDTH) || (x + r <= 0) || (y - r >= GAME_HEIGHT) || (y + r <= 0));
-}
-
-Bullet::~Bullet() {
-	for (int i = 0; i < bulletPowers.size(); i++) {
-		delete bulletPowers[i];
-	}
-	bulletPowers.clear();
 }
