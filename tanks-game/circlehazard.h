@@ -8,12 +8,12 @@
 #include "indexbuffer.h"
 
 class CircleHazard : public Hazard, public Circle {
-protected:
-	VertexArray* va;
-	VertexBuffer* vb;
-	IndexBuffer* ib;
+protected: //this may be wrong to include, but I'll figure that out soon
+	//static VertexArray* va;
+	//static VertexBuffer* vb;
+	//static IndexBuffer* ib;
 public:
-	virtual void initializeGPU() = 0;
+	//virtual void initializeGPU() = 0;
 	virtual void draw() = 0;
 	virtual std::string getName() = 0;
 	static std::string getClassName();

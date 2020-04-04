@@ -905,7 +905,7 @@ int main(int argc, char** argv) {
 	// Setup window position, size, and title
 	glutInitWindowPosition(60, 60);
 	glutInitWindowSize(width, height);
-	glutCreateWindow("Tanks Test v0.2.0"); //this is not guranteed to be correct every commit but likely will be
+	glutCreateWindow("Tanks Test v0.2.1 NOT FINAL"); //this is not guranteed to be correct every commit but likely will be
 
 	// Setup some OpenGL options
 	glPointSize(2);
@@ -953,7 +953,7 @@ int main(int argc, char** argv) {
 	HazardManager::initialize();
 
 
-	//v0.1.4 static VAO, VBO, and IBO had better performance
+	//static VAO, VBO, and IBO has better performance
 	Renderer::Initialize();
 	BackgroundRect::initializeGPU();
 	//Tank::initializeGPU();
@@ -987,6 +987,9 @@ int main(int argc, char** argv) {
 
 	//special keyboard up
 	glutSpecialUpFunc(KeypressManager::unsetSpecialKey);
+
+	//mousewheel
+	//glutMouseWheelFunc();
 
 	// Set callback for the idle function
 	//glutIdleFunc(draw);

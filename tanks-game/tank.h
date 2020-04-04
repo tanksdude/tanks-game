@@ -96,13 +96,15 @@ public:
 	ColorValueHolder getBodyColor();
 
 private:
-	VertexArray* va;
-	VertexBuffer* vb;
-	IndexBuffer* ib;
-	VertexArray* cannon_va;
-	VertexBuffer* cannon_vb;
-public:
-	void initializeGPU();
+	static VertexArray* va;
+	static VertexBuffer* vb;
+	static IndexBuffer* ib;
+	static VertexArray* cannon_va;
+	static VertexBuffer* cannon_vb;
+	static bool initialized_GPU;
+public: //TODO: protected?
+	static bool initializeGPU();
+	static bool uninitializeGPU();
 
 public:
 	Tank(double x, double y, double a, char id, std::string name, TankInputChar forward, TankInputChar left, TankInputChar right, TankInputChar shoot);
@@ -120,8 +122,8 @@ public:
 	void draw(double xpos, double ypos);
 	void drawCPU();
 	void drawCPU(double, double);
-	void drawName();
-	void drawName(double xpos, double ypos);
+	void drawNameCPU();
+	void drawNameCPU(double xpos, double ypos);
 	char getID() { return id; }
 	std::string getName() { return name; }
 	

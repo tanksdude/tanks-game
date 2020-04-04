@@ -28,6 +28,9 @@ void Renderer::Initialize() {
 
 glm::mat4 Renderer::GenerateMatrix(float scaleX, float scaleY, float rotateAngle, float transX, float transY) {
 	glm::mat4 trans = glm::translate(proj, glm::vec3(transX, transY, 0.0f));
+	if (rotateAngle == 0) {
+		return glm::scale(trans, glm::vec3(scaleX, scaleY, 0));
+	}
 	glm::mat4 rot = glm::rotate(trans, rotateAngle, glm::vec3(0.0f, 0.0f, 1.0f));
 	return glm::scale(rot, glm::vec3(scaleX, scaleY, 0));
 }

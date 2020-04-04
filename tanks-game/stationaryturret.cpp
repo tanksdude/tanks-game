@@ -7,6 +7,13 @@
 #include "tank.h"
 #include "bulletmanager.h"
 
+VertexArray* StationaryTurret::va;
+VertexBuffer* StationaryTurret::vb;
+IndexBuffer* StationaryTurret::ib;
+VertexArray* StationaryTurret::cannon_va;
+VertexBuffer* StationaryTurret::cannon_vb;
+bool StationaryTurret::initialized_GPU = false;
+
 StationaryTurret::StationaryTurret(double xpos, double ypos, double angle) {
 	x = xpos;
 	y = ypos;
@@ -31,20 +38,20 @@ StationaryTurret::~StationaryTurret() {
 	delete[] stateMultiplier;
 	delete[] stateColors;
 
-	delete va;
-	delete vb;
-	delete ib;
-	delete cannon_va;
-	delete cannon_vb;
+	//uninitializeGPU();
 }
 
-void StationaryTurret::initializeGPU() {
+bool StationaryTurret::initializeGPU() {
+	if (initialized_GPU) {
+		return false;
+	}
+
 	float positions[(Circle::numOfSides+1)*2];
-	positions[0] = x;
-	positions[1] = y;
+	positions[0] = 0;
+	positions[1] = 0;
 	for (int i = 1; i < Circle::numOfSides+1; i++) {
-		positions[i*2]   = x + r*cos((i-1) * 2*PI / Circle::numOfSides);
-		positions[i*2+1] = y + r*sin((i-1) * 2*PI / Circle::numOfSides);
+		positions[i*2]   = cos((i-1) * 2*PI / Circle::numOfSides);
+		positions[i*2+1] = sin((i-1) * 2*PI / Circle::numOfSides);
 	}
 
 	unsigned int indices[Circle::numOfSides*3];
@@ -54,21 +61,34 @@ void StationaryTurret::initializeGPU() {
 		indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
 	}
 
-	//va = new VertexArray();
 	vb = new VertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float), GL_STATIC_DRAW);
-
 	VertexBufferLayout layout(2);
 	va = new VertexArray(*vb, layout);
 
 	ib = new IndexBuffer(indices, Circle::numOfSides*3);
 
-
 	float cannon_positions[4] = { 0.0f, 0.0f, 1.0f, 0.0f };
-	//cannon_va = new VertexArray();
 	cannon_vb = new VertexBuffer(cannon_positions, 2*2 * sizeof(float));
-
 	VertexBufferLayout cannon_layout(2);
 	cannon_va = new VertexArray(*cannon_vb, cannon_layout);
+
+	initialized_GPU = true;
+	return true;
+}
+
+bool StationaryTurret::uninitializeGPU() {
+	if (!initialized_GPU) {
+		return false;
+	}
+
+	delete va;
+	delete vb;
+	delete ib;
+	delete cannon_va;
+	delete cannon_vb;
+
+	initialized_GPU = false;
+	return true;
 }
 
 CircleHazard* StationaryTurret::factory(int argc, std::string* argv) {
@@ -116,32 +136,19 @@ ColorValueHolder StationaryTurret::getColor(short state) {
 
 void StationaryTurret::draw() {
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM; //for cannon(s)
+	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, angle, x, y);
 	
 	//main body:
-	if ((old_x != x) || (old_y != y)) {
-		old_x = x;
-		old_y = y;
-
-		float* stream_vertices = new float[(Circle::numOfSides+1)*2];
-		stream_vertices[0] = x;
-		stream_vertices[1] = y;
-		for (int i = 1; i < Circle::numOfSides+1; i++) {
-			stream_vertices[i*2]   = x + r*cos((i-1) * 2*PI / Circle::numOfSides);
-			stream_vertices[i*2+1] = y + r*sin((i-1) * 2*PI / Circle::numOfSides);
-		}
-
-		vb->modifyData(stream_vertices, (Circle::numOfSides+1)*2 * sizeof(float));
-		delete[] stream_vertices;
-	}
-
 	ColorValueHolder color = getColor();
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*va, *ib, *shader);
 
 	//outline:
 	shader->setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 1.0f);
+	//shader->setUniformMat4f("u_MVP", MVPM);
+
 	Renderer::Draw(*va, *shader, GL_LINE_LOOP, 1, Circle::numOfSides);
 
 	//barrel:
@@ -153,7 +160,7 @@ void StationaryTurret::draw() {
 	Renderer::Draw(*cannon_va, *shader, GL_LINES, 0, 2);
 
 	//cleanup
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 void StationaryTurret::drawCPU() {
