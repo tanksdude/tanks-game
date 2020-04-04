@@ -7,7 +7,7 @@
 #include <iostream>
 #include "mylib.h"
 #include "renderer.h"
-#include <glm/glm.hpp>
+#include <glm.hpp>
 #include "keypressmanager.h"
 #include "bulletmanager.h"
 

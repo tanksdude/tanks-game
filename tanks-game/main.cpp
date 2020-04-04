@@ -10,9 +10,9 @@
 #include "vertexarray.h"
 #include "shader.h"
 #include "renderer.h"
-#include "res/vendor/glm/glm.hpp" //this library is overkill but that's okay
-#include "res/vendor/glm/gtc/matrix_transform.hpp"
-#include "res/vendor/glm/gtx/transform.hpp"
+#include <glm.hpp> //GLM is overkill but that's okay
+#include <gtc/matrix_transform.hpp>
+#include <gtx/transform.hpp>
 
 //important stuff:
 #include "colorvalueholder.h"

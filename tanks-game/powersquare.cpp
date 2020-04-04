@@ -4,7 +4,7 @@
 #include "backgroundrect.h"
 #include "colormixer.h"
 #include "renderer.h"
-#include <glm/glm.hpp>
+#include <glm.hpp>
 #include "powerupmanager.h"
 #include <iostream>
 

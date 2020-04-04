@@ -4,7 +4,7 @@
 #include <vector>
 #include <unordered_map>
 #include <GL/glew.h> //feels bad including this just for #define stuff, but files that need this file will already be including glew
-#include "res/vendor/glm/glm.hpp"
+#include <glm.hpp>
 
 class Shader {
 private:

@@ -2,7 +2,7 @@
 #include "wall.h"
 #include "constants.h"
 #include "renderer.h"
-#include <glm/glm.hpp>
+#include <glm.hpp>
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
