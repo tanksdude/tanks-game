@@ -275,6 +275,20 @@ void mouse_func(int button, int state, int x, int y) {
 	}
 }
 
+void mousewheel_func(int wheel, int dir, int x, int y) {
+	// in the future, the wheel should change the index of some list of stuffs as a dev menu to insert said stuffs
+	int real_x = (x / double(width)) * GAME_WIDTH;
+	int real_y = (1 - y / double(height)) * GAME_HEIGHT;
+
+	if (dir == 1) { //scroll up
+		PowerupManager::pushPowerup(new PowerSquare(real_x, real_y, "invincible"));
+	} else { //scroll down
+		HazardManager::pushCircleHazard(new StationaryTurret(real_x, real_y, 0));
+	}
+
+	//cout << "wheel:" << wheel << ", dir:" << dir << endl;
+}
+
 //tick stuff:
 void moveTanks();
 void tankToPowerup();
@@ -989,7 +1003,7 @@ int main(int argc, char** argv) {
 	glutSpecialUpFunc(KeypressManager::unsetSpecialKey);
 
 	//mousewheel
-	//glutMouseWheelFunc();
+	glutMouseWheelFunc(mousewheel_func);
 
 	// Set callback for the idle function
 	//glutIdleFunc(draw);
