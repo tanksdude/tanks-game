@@ -16,8 +16,13 @@ ColorValueHolder BackgroundRect::getBackColor() {
 VertexArray* BackgroundRect::va;
 VertexBuffer* BackgroundRect::vb;
 IndexBuffer* BackgroundRect::ib;
+bool BackgroundRect::initialized_GPU = false;
 
-void BackgroundRect::initializeGPU() {
+bool BackgroundRect::initializeGPU() {
+	if (initialized_GPU) {
+		return false;
+	}
+
 	float background_positions[] = {
 		0, 0,
 		GAME_WIDTH, 0,
@@ -29,19 +34,27 @@ void BackgroundRect::initializeGPU() {
 		2, 3, 0
 	};
 
-	//va = new VertexArray();
-	vb = new VertexBuffer(background_positions, 4*2 * sizeof(float), GL_STATIC_DRAW);
-
+	vb = new VertexBuffer(background_positions, 4*2 * sizeof(float), GL_DYNAMIC_DRAW);
 	VertexBufferLayout layout(2);
 	va = new VertexArray(*vb, layout);
 
 	ib = new IndexBuffer(background_indices, 6);
+
+	initialized_GPU = true;
+	return true;
 }
 
-void BackgroundRect::uninitializeGPU() {
+bool BackgroundRect::uninitializeGPU() {
+	if (!initialized_GPU) {
+		return false;
+	}
+
 	delete vb;
 	delete va;
 	delete ib;
+
+	initialized_GPU = false;
+	return true;
 }
 
 void BackgroundRect::drawCPU() {

@@ -7,16 +7,18 @@
 
 struct BackgroundRect {
 private:
+	static ColorValueHolder backColor;
+	
 	static VertexArray* va;
 	static VertexBuffer* vb;
 	static IndexBuffer* ib;
-
-	static ColorValueHolder backColor;
+	static bool initialized_GPU;
 public:
+	static bool initializeGPU();
+	static bool uninitializeGPU();
+
 	static ColorValueHolder getBackColor();
 
 	static void draw();
 	static void drawCPU();
-	static void initializeGPU();
-	static void uninitializeGPU();
 };
