@@ -54,6 +54,7 @@ Tank::Tank(double x_, double y_, double a, char id_, std::string name_, TankInpu
 	this->shooting = shoot;
 
 	shootingPoints = new std::vector<CannonPoint>;
+	determineShootingAngles();
 
 	initializeGPU();
 }
@@ -222,8 +223,8 @@ void Tank::makeBullet(double x, double y, double angle, double radius, double sp
 	Bullet* temp = new Bullet(x, y, radius, angle, speed, acc, id, *bp);
 	BulletManager::pushBullet(temp);
 
-	//delete bp;
-	//don't delete any bp! it's being used! //(doesn't bp need to be deleted though?)
+	delete bp;
+	//don't delete bp! it's being used! //(doesn't bp need to be deleted though?) (yes because copy constructor is called, which I'll fix later)
 }
 
 inline void Tank::defaultMakeBullet(double x, double y, double angle) {

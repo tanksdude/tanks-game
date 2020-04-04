@@ -26,6 +26,7 @@
 #include "hazard.h"
 #include "circlehazard.h"
 #include "recthazard.h"
+
 //managers:
 #include "keypressmanager.h"
 #include "tankmanager.h"
@@ -70,7 +71,6 @@
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
-//TODO: move glm to Dependencies instead of res/vendor?
 
 #include "diagnostics.h"
 
@@ -193,11 +193,6 @@ void appDrawScene() {
 	currentlyDrawing = false;
 }
 
-void windowToScene(float& x, float& y) {
-	x = (2.0f * (x / float(width))) - 1.0f;
-	y = 1.0f - (2.0f * (y / float(height)));
-}
-
 // Handles window resizing
 void appReshapeFunc(int w, int h) {
 	width = w;
@@ -281,7 +276,9 @@ void mousewheel_func(int wheel, int dir, int x, int y) {
 	int real_y = (1 - y / double(height)) * GAME_HEIGHT;
 
 	if (dir == 1) { //scroll up
-		PowerupManager::pushPowerup(new PowerSquare(real_x, real_y, "invincible"));
+		std::string* powers = new std::string[2]{ "homing", "bounce" };
+		PowerupManager::pushPowerup(new PowerSquare(real_x, real_y, powers, 2));
+		delete[] powers;
 	} else { //scroll down
 		HazardManager::pushCircleHazard(new StationaryTurret(real_x, real_y, 0));
 	}
@@ -965,8 +962,7 @@ int main(int argc, char** argv) {
 	WallManager::initialize();
 	LevelManager::initialize();
 	HazardManager::initialize();
-
-
+	
 	//static VAO, VBO, and IBO has better performance
 	Renderer::Initialize();
 	BackgroundRect::initializeGPU();
@@ -1011,9 +1007,6 @@ int main(int argc, char** argv) {
 	//main game code initialization stuff:
 	TankManager::pushTank(new Tank(20, 160, 0, 0, "WASD", { false, 'w' }, { false, 'a' }, { false, 'd' }, { false, 's' }));
 	TankManager::pushTank(new Tank(620, 160, PI, 1, "Arrow Keys", { true, GLUT_KEY_UP }, { true, GLUT_KEY_LEFT }, { true, GLUT_KEY_RIGHT }, { true, GLUT_KEY_DOWN }));
-	//TODO: proper solution
-	TankManager::getTank(0)->determineShootingAngles();
-	TankManager::getTank(1)->determineShootingAngles();
 #if _DEBUG
 	LevelManager::getLevelByName("dev0")->initialize();
 #else
