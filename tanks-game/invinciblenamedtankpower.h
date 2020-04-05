@@ -18,6 +18,9 @@ public:
 
 	virtual BulletPower* makeBulletPower();
 
+	virtual double getTankMaxSpeedMultiplier() { return .5; }
+	virtual double getTankAccelerationMultiplier() { return .5; }
+	
 	virtual double getOffenseImportance() { return 0; }
 	virtual double getOffenseTier(Tank*) { return 0; }
 	virtual double getDefenseImportance() { return 0; }

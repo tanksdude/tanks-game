@@ -18,6 +18,7 @@ public:
 
 	virtual BulletPower* makeBulletPower();
 
+	virtual double getShootingMultiplier() { return 4; }
 	virtual double getBulletSpeedMultiplier() { return .25; }
 	//virtual double getBulletRadiusMultiplier() { return 1; }
 	virtual double getBulletAcceleration() { return 1.0/64; }

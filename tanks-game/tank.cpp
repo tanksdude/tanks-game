@@ -172,7 +172,7 @@ void Tank::terminalVelocity() {
 }
 
 void Tank::shoot() {
-	//TODO: allow it to handle multiple shooting cooldowns(?)
+	//TODO: allow it to handle multiple shooting cooldowns? (not the point of the game (if it was, shooting cooldown color = mix(white, power color)))
 	if(shootCount > 0) //check isn't really needed, but it also doesn't decrease performance by a real amount
 		shootCount--;
 
@@ -346,6 +346,67 @@ double Tank::getBulletAcceleration() {
 	//return (abs(highest) > abs(lowest) ? highest : lowest);
 }
 
+void Tank::updateValues() {
+	updateMaxSpeed();
+	updateAcceleration();
+}
+
+void Tank::updateMaxSpeed() {
+	//look at getShootingSpeedMultiplier()
+
+	double highest = 1;
+	double lowest = 1;
+	std::vector<double> stackList;
+
+	for (int i = 0; i < tankPowers.size(); i++) {
+		double value = tankPowers[i]->getTankMaxSpeedMultiplier();
+		if (tankPowers[i]->tankMaxSpeedStacks) {
+			stackList.push_back(value);
+		} else {
+			if (value < 1 && value < lowest) {
+				lowest = value;
+			} else if (value > 1 && value > highest) {
+				highest = value;
+			}
+		}
+	}
+
+	double value = 1;
+	for (int i = 0; i < stackList.size(); i++) {
+		value *= stackList[i];
+	}
+
+	maxSpeed = highest * lowest * value;
+}
+
+void Tank::updateAcceleration() {
+	//look at getShootingSpeedMultiplier()
+
+	double highest = 1;
+	double lowest = 1;
+	std::vector<double> stackList;
+
+	for (int i = 0; i < tankPowers.size(); i++) {
+		double value = tankPowers[i]->getTankAccelerationMultiplier();
+		if (tankPowers[i]->tankAccelerationStacks) {
+			stackList.push_back(value);
+		} else {
+			if (value < 1 && value < lowest) {
+				lowest = value;
+			} else if (value > 1 && value > highest) {
+				highest = value;
+			}
+		}
+	}
+
+	double value = 1;
+	for (int i = 0; i < stackList.size(); i++) {
+		value *= stackList[i];
+	}
+
+	acceleration = highest * lowest * value * 1.0/16;
+}
+
 void Tank::powerCalculate() {
 	for (int i = tankPowers.size() - 1; i >= 0; i--) {
 		tankPowers[i]->tick(); //I don't think any power will use this, but whatever
@@ -362,6 +423,7 @@ void Tank::removePower(int index) {
 	delete tankPowers[index];
 	tankPowers.erase(tankPowers.begin() + index);
 	determineShootingAngles();
+	updateValues();
 }
 
 void Tank::powerReset() {
@@ -662,8 +724,10 @@ void Tank::resetThings(double x, double y, double a, char id, std::string name) 
 	this->y = y;
 	this->angle = a;
 	this->id = id;
+	//this->r = TANK_RADIUS;
 	this->name = name;
 	shootCount = 0;
+	//don't update maxShootCount
 	velocity = 0;
 
 	if (rand() % 4096 == 0) {

@@ -4,10 +4,14 @@
 #include "speedpower.h"
 
 void SpeedTankPower::initialize(Tank* parent) {
-	parent->giveMaxSpeed() *= 2;
+	//parent->giveMaxSpeed() *= 2;
 }
 void SpeedTankPower::removeEffects(Tank* parent) {
-	parent->giveMaxSpeed() /= 2;
+	//parent->giveMaxSpeed() /= 2;
+}
+
+double SpeedTankPower::getTankMaxSpeedMultiplier() {
+	return 2;
 }
 
 BulletPower* SpeedTankPower::makeBulletPower() {
@@ -17,5 +21,7 @@ BulletPower* SpeedTankPower::makeBulletPower() {
 SpeedTankPower::SpeedTankPower() {
 	maxTime = 500;
 	timeLeft = 500;
+
+	tankMaxSpeedStacks = true;
 }
 

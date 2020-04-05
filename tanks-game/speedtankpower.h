@@ -18,5 +18,8 @@ public:
 
 	virtual BulletPower* makeBulletPower();
 
+	virtual double getTankMaxSpeedMultiplier();
+	//bool tankMaxSpeedStacks = true;
+
 	SpeedTankPower();
 };
