@@ -9,6 +9,7 @@
 #include <glm.hpp>
 
 class Renderer {
+	friend class DeveloperManager;
 public:
 	//public until I rewrite rendering
 	static glm::mat4 proj;

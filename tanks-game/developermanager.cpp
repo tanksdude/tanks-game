@@ -23,17 +23,18 @@ double DeveloperManager::getH(Rect* r) { return r->h; }
 
 void DeveloperManager::mouseDragFunc(int x, int y) {
 	//dev tools
+	int real_x = x;
+	int real_y = y - (Renderer::window_height - Renderer::gamewindow_height);
 	if (leftMouse) {
 		if (!rightMouse) { //tank 1
-			TankManager::getTank(0)->x = (x / double(Renderer::window_width)) * GAME_WIDTH;
-			TankManager::getTank(0)->y = (1 - y / double(Renderer::window_height)) * GAME_HEIGHT;
+			TankManager::getTank(0)->x = (real_x / double(Renderer::gamewindow_width)) * GAME_WIDTH;
+			TankManager::getTank(0)->y = (1 - real_y / double(Renderer::gamewindow_height)) * GAME_HEIGHT;
 		}
 		else { //tank 2
-			TankManager::getTank(1)->x = (x / double(Renderer::window_width)) * GAME_WIDTH;
-			TankManager::getTank(1)->y = (1 - y / double(Renderer::window_height)) * GAME_HEIGHT;
+			TankManager::getTank(1)->x = (real_x / double(Renderer::gamewindow_width)) * GAME_WIDTH;
+			TankManager::getTank(1)->y = (1 - real_y / double(Renderer::gamewindow_height)) * GAME_HEIGHT;
 		}
 	}
-	//positions are off when window aspect ratio isn't 2:1
 }
 
 void DeveloperManager::mouseClickFunc(int button, int state, int x, int y) {
