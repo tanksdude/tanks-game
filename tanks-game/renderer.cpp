@@ -9,6 +9,8 @@
 
 glm::mat4 Renderer::proj = glm::ortho(0.0f, (float)GAME_WIDTH, 0.0f, (float)GAME_HEIGHT);
 glm::mat4 Renderer::getProj() { return proj; }
+int Renderer::window_width = GAME_WIDTH*2 * 1.25;
+int Renderer::window_height = GAME_HEIGHT*2 * 1.25;
 
 std::unordered_map<std::string, Shader*> Renderer::shaderCache;
 unsigned int Renderer::currentShader = -1;

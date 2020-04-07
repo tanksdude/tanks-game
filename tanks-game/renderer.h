@@ -13,6 +13,8 @@ public:
 	//public until I rewrite rendering
 	static glm::mat4 proj;
 	static glm::mat4 getProj();
+	static int window_width;
+	static int window_height;
 
 private:
 	static std::unordered_map<std::string, Shader*> shaderCache;

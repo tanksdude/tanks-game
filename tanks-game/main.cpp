@@ -3,6 +3,7 @@
 #include <vector>
 #include <time.h>
 #include <unordered_map>
+#include <exception>
 
 //GPU rendering:
 #include "vertexbuffer.h"
@@ -28,6 +29,8 @@
 #include "recthazard.h"
 
 //managers:
+#include "openglinitializer.h"
+#include "developermanager.h"
 #include "keypressmanager.h"
 #include "tankmanager.h"
 #include "bulletmanager.h"
@@ -90,9 +93,6 @@ bool rightMouse = false;
 void doThing() {
 	return;
 }
-
-int width = 1200*1.25;
-int height = 600*1.25;
 
 void appDrawScene() {
 	currentlyDrawing = true;
@@ -195,8 +195,8 @@ void appDrawScene() {
 
 // Handles window resizing
 void appReshapeFunc(int w, int h) {
-	width = w;
-	height = h;
+	Renderer::window_width = w;
+	Renderer::window_height = h;
 
 	double scale, center;
 	double winXmin, winXmax, winYmin, winYmax;
@@ -245,12 +245,12 @@ void appMotionFunc(int x, int y) {
 	//dev tools
 	if (leftMouse) {
 		if (!rightMouse) { //tank 1
-			TankManager::getTank(0)->giveX() = (x / double(width)) * GAME_WIDTH;
-			TankManager::getTank(0)->giveY() = (1 - y / double(height)) * GAME_HEIGHT;
+			TankManager::getTank(0)->x = (x / double(Renderer::window_width)) * GAME_WIDTH;
+			TankManager::getTank(0)->y = (1 - y / double(Renderer::window_height)) * GAME_HEIGHT;
 		}
 		else { //tank 2
-			TankManager::getTank(1)->giveX() = (x / double(width)) * GAME_WIDTH;
-			TankManager::getTank(1)->giveY() = (1 - y / double(height)) * GAME_HEIGHT;
+			TankManager::getTank(1)->x = (x / double(Renderer::window_width)) * GAME_WIDTH;
+			TankManager::getTank(1)->y = (1 - y / double(Renderer::window_height)) * GAME_HEIGHT;
 		}
 	}
 	//positions are off when window aspect ratio isn't 2:1
@@ -272,8 +272,8 @@ void mouse_func(int button, int state, int x, int y) {
 
 void mousewheel_func(int wheel, int dir, int x, int y) {
 	// in the future, the wheel should change the index of some list of stuffs as a dev menu to insert said stuffs
-	int real_x = (x / double(width)) * GAME_WIDTH;
-	int real_y = (1 - y / double(height)) * GAME_HEIGHT;
+	int real_x = (x / double(Renderer::window_width)) * GAME_WIDTH;
+	int real_y = (1 - y / double(Renderer::window_height)) * GAME_HEIGHT;
 
 	if (dir == 1) { //scroll up
 		std::string* powers = new std::string[2]{ "homing", "bounce" };
@@ -908,32 +908,44 @@ void bulletToTank() {
 int main(int argc, char** argv) {
 	srand(time(NULL));
 
-	// Initialize GLUT
-	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_SINGLE | GLUT_DEPTH);
-	//thanks to https://community.khronos.org/t/wglmakecurrent-issues/62656/3 for solving why a draw call would take ~15ms for no reason
-
-	// Setup window position, size, and title
-	glutInitWindowPosition(60, 60);
-	glutInitWindowSize(width, height);
-	glutCreateWindow("Tanks Test v0.2.1 NOT FINAL"); //this is not guranteed to be correct every commit but likely will be
-
-	// Setup some OpenGL options
-	glPointSize(2);
-	glEnable(GL_POINT_SMOOTH);
-	glEnable(GL_LINE_SMOOTH);
-	glDisable(GL_DEPTH_TEST);
-	//glEnable(GL_BLEND);
-	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	//initialize glew
-	glewExperimental = GL_TRUE;
-	GLenum res = glewInit();
-	if (res != GLEW_OK) {
-		fprintf(stderr, "Error: '%s'\n", glewGetErrorString(res));
+	try {
+		OpenGLInitializer::Initialize(&argc, argv, "Tanks Test v0.2.1 NOT FINAL"); //this is not guaranteed to be correct every commit but likely will be
+	}
+	catch (exception& e) {
+		cout << e.what() << endl;
 		return 1;
 	}
+	
+	// Set callback for drawing the scene
+	glutDisplayFunc(appDrawScene);
 
+	// Set callback for resizing the window
+	glutReshapeFunc(appReshapeFunc);
+
+	//mouse clicking
+	glutMouseFunc(mouse_func);
+
+	// Set callback to handle mouse dragging
+	glutMotionFunc(appMotionFunc);
+
+	// Set callback to handle keyboard events
+	glutKeyboardFunc(KeypressManager::setNormalKey);
+
+	//callback for keyboard up events
+	glutKeyboardUpFunc(KeypressManager::unsetNormalKey);
+
+	//special keyboard down
+	glutSpecialFunc(KeypressManager::setSpecialKey);
+
+	//special keyboard up
+	glutSpecialUpFunc(KeypressManager::unsetSpecialKey);
+
+	//mousewheel
+	glutMouseWheelFunc(mousewheel_func);
+
+	// Set callback for the idle function
+	//glutIdleFunc(draw);
+	
 	PowerupManager::addPowerFactory(SpeedPower::factory);
 	PowerupManager::addPowerFactory(WallhackPower::factory);
 	PowerupManager::addPowerFactory(BouncePower::factory);
@@ -973,37 +985,6 @@ int main(int argc, char** argv) {
 	//RectHazard::initializeGPU();
 	//CircleHazard::initializeGPU();
 
-
-	// Set callback for drawing the scene
-	glutDisplayFunc(appDrawScene);
-
-	// Set callback for resizing the window
-	glutReshapeFunc(appReshapeFunc);
-
-	//mouse clicking
-	glutMouseFunc(mouse_func);
-
-	// Set callback to handle mouse dragging
-	glutMotionFunc(appMotionFunc);
-
-	// Set callback to handle keyboard events
-	glutKeyboardFunc(KeypressManager::setNormalKey);
-
-	//callback for keyboard up events
-	glutKeyboardUpFunc(KeypressManager::unsetNormalKey);
-
-	//special keyboard down
-	glutSpecialFunc(KeypressManager::setSpecialKey);
-
-	//special keyboard up
-	glutSpecialUpFunc(KeypressManager::unsetSpecialKey);
-
-	//mousewheel
-	glutMouseWheelFunc(mousewheel_func);
-
-	// Set callback for the idle function
-	//glutIdleFunc(draw);
-
 	//main game code initialization stuff:
 	TankManager::pushTank(new Tank(20, 160, 0, 0, "WASD", { false, 'w' }, { false, 'a' }, { false, 'd' }, { false, 's' }));
 	TankManager::pushTank(new Tank(620, 160, PI, 1, "Arrow Keys", { true, GLUT_KEY_UP }, { true, GLUT_KEY_LEFT }, { true, GLUT_KEY_RIGHT }, { true, GLUT_KEY_DOWN }));
@@ -1018,12 +999,12 @@ int main(int argc, char** argv) {
 	}
 	*/
 
-	//framelimiter
-	glutTimerFunc(1000/physicsRate, tick, physicsRate);
-
 	cout << "OpenGL renderer: " << glGetString(GL_RENDERER) << endl;
 	cout << "OpenGL vendor: " << glGetString(GL_VENDOR) << endl;
 	cout << "OpenGL version: " << glGetString(GL_VERSION) << endl;
+
+	//framelimiter
+	glutTimerFunc(1000/physicsRate, tick, physicsRate);
 
 	// Start the main loop
 	glutMainLoop();

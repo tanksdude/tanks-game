@@ -157,6 +157,7 @@
     <ClCompile Include="constants.cpp" />
     <ClCompile Include="corridorlevel.cpp" />
     <ClCompile Include="defaultrandomlevel.cpp" />
+    <ClCompile Include="developermanager.cpp" />
     <ClCompile Include="diagnostics.cpp" />
     <ClCompile Include="emptylevel.cpp" />
     <ClCompile Include="firenamedbulletpower.cpp" />
@@ -184,6 +185,7 @@
     <ClCompile Include="multishotpower.cpp" />
     <ClCompile Include="multishottankpower.cpp" />
     <ClCompile Include="mylib.cpp" />
+    <ClCompile Include="openglinitializer.cpp" />
     <ClCompile Include="powerfunctionhelper.cpp" />
     <ClCompile Include="powersquare.cpp" />
     <ClCompile Include="powerupmanager.cpp" />
@@ -230,12 +232,12 @@
     <ClInclude Include="circle.h" />
     <ClInclude Include="circlehazard.h" />
     <ClInclude Include="collisionhandler.h" />
-    <ClInclude Include="collisionobject.h" />
     <ClInclude Include="colormixer.h" />
     <ClInclude Include="colorvalueholder.h" />
     <ClInclude Include="constants.h" />
     <ClInclude Include="corridorlevel.h" />
     <ClInclude Include="defaultrandomlevel.h" />
+    <ClInclude Include="developermanager.h" />
     <ClInclude Include="diagnostics.h" />
     <ClInclude Include="emptylevel.h" />
     <ClInclude Include="firenamedbulletpower.h" />
@@ -265,6 +267,7 @@
     <ClInclude Include="multishotpower.h" />
     <ClInclude Include="multishottankpower.h" />
     <ClInclude Include="mylib.h" />
+    <ClInclude Include="openglinitializer.h" />
     <ClInclude Include="power.h" />
     <ClInclude Include="powerfunctionhelper.h" />
     <ClInclude Include="powersquare.h" />

@@ -74,10 +74,6 @@ public:
 	TankInputChar shooting;
 	//TankInputChar backwards; //not the point of the game
 
-	double& giveMaxSpeed() { return maxSpeed; }
-	double& giveX() { return x; }
-	double& giveY() { return y; }
-
 	void makeBullet(double x, double y, double angle, double radius, double speed, double acc); //move to private eventually, just public for emergency testing
 	void defaultMakeBullet(double x, double y, double angle);
 	//next up: make cannon points a thing; function should get list of cannon points (probably make a struct to hold x, y, angle) (for multishot), shoot function does the shooting (possibly modified uwu (for triple/shotgun))

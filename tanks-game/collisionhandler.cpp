@@ -5,7 +5,6 @@
 #include <math.h>
 #include "constants.h"
 #include <iostream>
-using namespace std;
 
 bool CollisionHandler::partiallyCollided(Rect* a, Rect* b) {
 	return ((a->x + a->w >= b->x) && (a->x- a->w <= b->x + b->w) && (a->y+ a->h >= b->y) && (a->y - a->h <= b->y + b->h));
@@ -431,7 +430,7 @@ return (((b->x + b->r) >= a->x) && ((b->x - b->r) <= (a->x + a->w)) && ((b->y + 
 //bool CollisionHandler::partiallyCollided(Circle* a, Rect* b);
 
 bool CollisionHandler::partiallyCollided(Circle* a, Circle* b) {
-cout << a->x << " " << b->x << endl;
+std::cout << a->x << " " << b->x << std::endl;
 //std::cout << (abs(a->x - b->x) <= a->r + b->r) << " " << (abs(a->y - b->y) <= a->r + b->r) << std::endl;
 if ((abs(a->x - b->x) <= a->r + b->r) && (abs(a->y - b->y) <= a->r + b->r)) {
 return (sqrt(pow(a->x - b->x, 2) + pow(a->y - b->y, 2)) <= a->r + b->r);
