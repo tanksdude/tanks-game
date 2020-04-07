@@ -92,7 +92,7 @@ bool StationaryTurret::uninitializeGPU() {
 }
 
 CircleHazard* StationaryTurret::factory(int argc, std::string* argv) {
-	if (argc == 3) {
+	if (argc >= 3) {
 		double x = std::stod(argv[0]);
 		double y = std::stod(argv[1]);
 		double a = std::stod(argv[2]);
