@@ -96,19 +96,13 @@ void appDrawScene() {
 
 	auto start = Diagnostics::getTime();
 
-	Diagnostics::startTiming();
-	Diagnostics::addName("clear");
-
+	Diagnostics::startTiming("clear");
 	Renderer::Clear();
-
 	Diagnostics::endTiming();
 	
-	Diagnostics::startTiming();
-	Diagnostics::addName("background rect");
-
+	Diagnostics::startTiming("background rect");
 	BackgroundRect::draw();
 	Renderer::UnbindAll(); //I honestly don't know if this is needed anymore but it doesn't hurt performance too much so it can stay
-	
 	Diagnostics::endTiming();
 	
 
@@ -118,16 +112,14 @@ void appDrawScene() {
 	glLoadIdentity();
 
 
-	Diagnostics::startTiming();
-	Diagnostics::addName("powerups");
+	Diagnostics::startTiming("powerups");
 	for (int i = 0; i < PowerupManager::getNumPowerups(); i++) {
 		PowerupManager::getPowerup(i)->draw();
 	}
 	Renderer::UnbindAll();
 	Diagnostics::endTiming();
 
-	Diagnostics::startTiming();
-	Diagnostics::addName("hazards");
+	Diagnostics::startTiming("hazards");
 	for (int i = 0; i < HazardManager::getNumCircleHazards(); i++) {
 		HazardManager::getCircleHazard(i)->draw();
 	}
@@ -137,16 +129,14 @@ void appDrawScene() {
 	Renderer::UnbindAll();
 	Diagnostics::endTiming();
 
-	Diagnostics::startTiming();
-	Diagnostics::addName("walls");
+	Diagnostics::startTiming("walls");
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		WallManager::getWall(i)->draw();
 	}
 	Renderer::UnbindAll();
 	Diagnostics::endTiming();
 	
-	Diagnostics::startTiming();
-	Diagnostics::addName("bullets");
+	Diagnostics::startTiming("bullets");
 	for (int i = 0; i < BulletManager::getNumBullets(); i++) {
 		BulletManager::getBullet(i)->draw();
 	}
@@ -160,16 +150,14 @@ void appDrawScene() {
 	}
 	*/
 
-	Diagnostics::startTiming();
-	Diagnostics::addName("tanks");
+	Diagnostics::startTiming("tanks");
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
 		TankManager::getTank(i)->draw();
 	}
 	Renderer::UnbindAll();
 	Diagnostics::endTiming();
 
-	Diagnostics::startTiming();
-	Diagnostics::addName("flush");
+	Diagnostics::startTiming("flush");
 
 	Renderer::Cleanup(); //possibly put glFlush/glutSwapBuffers in this
 
@@ -217,8 +205,7 @@ void tick(int physicsUPS) {
 	moveTanks();
 
 	//collide tanks with powerups:
-	Diagnostics::startTiming();
-	Diagnostics::addName("tank to powerups");
+	Diagnostics::startTiming("tank to powerups");
 	tankToPowerup();
 	Diagnostics::endTiming();
 	
@@ -229,8 +216,7 @@ void tick(int physicsUPS) {
 	moveBullets();
 
 	//powerCalculate on tanks and bullets, then tank shoot:
-	Diagnostics::startTiming();
-	Diagnostics::addName("powerCalculate and tank shoot");
+	Diagnostics::startTiming("powerCalculate and tank shoot");
 	tankPowerCalculate();
 	bulletPowerCalculate();
 	tankShoot();
@@ -238,20 +224,17 @@ void tick(int physicsUPS) {
 	Diagnostics::endTiming();
 
 	//collide tanks with walls:
-	Diagnostics::startTiming();
-	Diagnostics::addName("tank to walls");
+	Diagnostics::startTiming("tank to walls");
 	tankToWall();
 	Diagnostics::endTiming();
 
 	//collide tanks with hazards:
-	Diagnostics::startTiming();
-	Diagnostics::addName("tank-hazards");
+	Diagnostics::startTiming("tank-hazards");
 	tankToHazard();
 	Diagnostics::endTiming();
 
 	//collide tanks with tanks:
-	Diagnostics::startTiming();
-	Diagnostics::addName("tank-tank");
+	Diagnostics::startTiming("tank-tank");
 	tankToTank();
 	Diagnostics::endTiming();
 
@@ -259,28 +242,24 @@ void tick(int physicsUPS) {
 	tankToEdge();
 	
 	//collide bullets against edges:
-	Diagnostics::startTiming();
-	Diagnostics::addName("bullet-edge");
+	Diagnostics::startTiming("bullet-edge");
 	bulletToEdge();
 	Diagnostics::endTiming();
 
 	//collide bullets with walls:
-	Diagnostics::startTiming();
-	Diagnostics::addName("bullet-wall");
+	Diagnostics::startTiming("bullet-wall");
 	bulletToWall();
 	Diagnostics::endTiming();
 	//bullet to wall is a big timesink, but it can only really be sped up by multithreading
 
 	//collide bullets with hazards:
-	Diagnostics::startTiming();
-	Diagnostics::addName("bullet-hazards");
+	Diagnostics::startTiming("bullet-hazards");
 	bulletToHazard();
 	Diagnostics::endTiming();
 	//probably another big timesink, but there aren't many hazards
 
 	//collide bullets with bullets:
-	Diagnostics::startTiming();
-	Diagnostics::addName("bullet-bullet");
+	Diagnostics::startTiming("bullet-bullet");
 	bulletToBullet();
 	Diagnostics::endTiming();
 	//add another shader: main uses proj, modify doesn't
@@ -288,8 +267,7 @@ void tick(int physicsUPS) {
 	//unfortunately it can only be O(n^2), and multithreading doesn't seem like it would work
 
 	//collide bullets with tanks:
-	Diagnostics::startTiming();
-	Diagnostics::addName("bullet-tank");
+	Diagnostics::startTiming("bullet-tank");
 	bulletToTank();
 	Diagnostics::endTiming();
 
