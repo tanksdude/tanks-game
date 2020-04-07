@@ -11,6 +11,64 @@ glm::mat4 Renderer::proj = glm::ortho(0.0f, (float)GAME_WIDTH, 0.0f, (float)GAME
 glm::mat4 Renderer::getProj() { return proj; }
 int Renderer::window_width = GAME_WIDTH*2 * 1.25;
 int Renderer::window_height = GAME_HEIGHT*2 * 1.25;
+int Renderer::gamewindow_width = Renderer::window_width;
+int Renderer::gamewindow_height = Renderer::window_height;
+
+// Handles window resizing (FreeGLUT event function)
+void Renderer::windowResizeFunc(int w, int h) {
+	Renderer::window_width = w;
+	Renderer::window_height = h;
+
+	double scale, center;
+	double winXmin, winXmax, winYmin, winYmax;
+
+	// Define x-axis and y-axis range (for CPU)
+	const double appXmin = 0.0;
+	const double appXmax = GAME_WIDTH;
+	const double appYmin = 0.0;
+	const double appYmax = GAME_HEIGHT;
+
+	// Define that OpenGL should use the whole window for rendering (on CPU)
+	glViewport(0, 0, w, h);
+
+	// Set up the projection matrix using a orthographic projection that will
+	// maintain the aspect ratio of the scene no matter the aspect ratio of
+	// the window, and also set the min/max coordinates to be the disired ones (CPU only)
+	w = (w == 0) ? 1 : w;
+	h = (h == 0) ? 1 : h;
+
+	if ((appXmax - appXmin) / w < (appYmax - appYmin) / h) { //too wide
+		scale = ((appYmax - appYmin) / h) / ((appXmax - appXmin) / w);
+		center = 0;
+		winXmin = center - (center - appXmin) * scale;
+		winXmax = center + (appXmax - center) * scale;
+		winYmin = appYmin;
+		winYmax = appYmax;
+
+		Renderer::proj = glm::ortho(0.0f, float(GAME_WIDTH*scale), 0.0f, (float)GAME_HEIGHT); //GPU
+		Renderer::gamewindow_width = Renderer::window_height * (GAME_WIDTH/GAME_HEIGHT);
+		Renderer::gamewindow_height = Renderer::window_height;
+	}
+	else { //too tall
+		scale = ((appXmax - appXmin) / w) / ((appYmax - appYmin) / h);
+		center = 0;
+		winYmin = center - (center - appYmin) * scale;
+		winYmax = center + (appYmax - center) * scale;
+		winXmin = appXmin;
+		winXmax = appXmax;
+
+		Renderer::proj = glm::ortho(0.0f, (float)GAME_WIDTH, 0.0f, float(GAME_HEIGHT*scale)); //GPU
+		Renderer::gamewindow_width = Renderer::window_width;
+		Renderer::gamewindow_height = Renderer::window_width * (GAME_HEIGHT/GAME_WIDTH);
+	}
+
+	// Now we use glOrtho to set up our viewing frustum (CPU only)
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(winXmin, winXmax, winYmin, winYmax, -1, 1);
+}
+
+//actual renderer code:
 
 std::unordered_map<std::string, Shader*> Renderer::shaderCache;
 unsigned int Renderer::currentShader = -1;
