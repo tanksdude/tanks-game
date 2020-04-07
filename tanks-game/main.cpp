@@ -87,9 +87,6 @@ long trueFrameCount = 0;
 int physicsRate = 100; //(in Hz)
 bool currentlyDrawing = false; //look into std::mutex
 
-bool leftMouse = false;
-bool rightMouse = false;
-
 void doThing() {
 	return;
 }
@@ -239,51 +236,6 @@ void appReshapeFunc(int w, int h) {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(winXmin, winXmax, winYmin, winYmax, -1, 1);
-}
-
-void appMotionFunc(int x, int y) {
-	//dev tools
-	if (leftMouse) {
-		if (!rightMouse) { //tank 1
-			TankManager::getTank(0)->x = (x / double(Renderer::window_width)) * GAME_WIDTH;
-			TankManager::getTank(0)->y = (1 - y / double(Renderer::window_height)) * GAME_HEIGHT;
-		}
-		else { //tank 2
-			TankManager::getTank(1)->x = (x / double(Renderer::window_width)) * GAME_WIDTH;
-			TankManager::getTank(1)->y = (1 - y / double(Renderer::window_height)) * GAME_HEIGHT;
-		}
-	}
-	//positions are off when window aspect ratio isn't 2:1
-}
-
-void mouse_func(int button, int state, int x, int y) {
-	if (state == GLUT_DOWN) {
-		if (button == GLUT_LEFT_BUTTON) {
-			leftMouse = true;
-		} else if (button == GLUT_RIGHT_BUTTON) {
-			rightMouse = !rightMouse;
-		}
-	} else {
-		if (button == GLUT_LEFT_BUTTON) {
-			leftMouse = false;
-		}
-	}
-}
-
-void mousewheel_func(int wheel, int dir, int x, int y) {
-	// in the future, the wheel should change the index of some list of stuffs as a dev menu to insert said stuffs
-	int real_x = (x / double(Renderer::window_width)) * GAME_WIDTH;
-	int real_y = (1 - y / double(Renderer::window_height)) * GAME_HEIGHT;
-
-	if (dir == 1) { //scroll up
-		std::string* powers = new std::string[2]{ "homing", "bounce" };
-		PowerupManager::pushPowerup(new PowerSquare(real_x, real_y, powers, 2));
-		delete[] powers;
-	} else { //scroll down
-		HazardManager::pushCircleHazard(new StationaryTurret(real_x, real_y, 0));
-	}
-
-	//cout << "wheel:" << wheel << ", dir:" << dir << endl;
 }
 
 //tick stuff:
@@ -923,10 +875,10 @@ int main(int argc, char** argv) {
 	glutReshapeFunc(appReshapeFunc);
 
 	//mouse clicking
-	glutMouseFunc(mouse_func);
+	glutMouseFunc(DeveloperManager::mouseClickFunc);
 
 	// Set callback to handle mouse dragging
-	glutMotionFunc(appMotionFunc);
+	glutMotionFunc(DeveloperManager::mouseDragFunc);
 
 	// Set callback to handle keyboard events
 	glutKeyboardFunc(KeypressManager::setNormalKey);
@@ -941,7 +893,7 @@ int main(int argc, char** argv) {
 	glutSpecialUpFunc(KeypressManager::unsetSpecialKey);
 
 	//mousewheel
-	glutMouseWheelFunc(mousewheel_func);
+	glutMouseWheelFunc(DeveloperManager::mouseWheelFunc);
 
 	// Set callback for the idle function
 	//glutIdleFunc(draw);
