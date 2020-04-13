@@ -97,6 +97,8 @@ public:
 	bool tankMaxSpeedStacks = false;
 	virtual double getTankAccelerationMultiplier() { return 1; }
 	bool tankAccelerationStacks = false;
+	virtual double getTankRadiusMultiplier() { return 1; }
+	bool tankRadiusStacks = false;
 
 	virtual double getShootingMultiplier() { return 1; }
 	bool shootingMultiplierStacks = false;

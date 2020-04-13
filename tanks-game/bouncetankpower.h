@@ -18,8 +18,8 @@ public:
 
 	virtual BulletPower* makeBulletPower();
 
+	//virtual double getTankRadiusMultiplier() { return .5; }
 	virtual double getBulletSpeedMultiplier();
-	//virtual double getBulletRadiusMultiplier();
 
 	BounceTankPower();
 };

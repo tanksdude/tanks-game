@@ -63,9 +63,10 @@ public:
 	double getBulletRadiusMultiplier();
 	double getBulletAcceleration();
 
-	void updateValues(); //this is supposed to update all values that can get affected by powers, such as maxSpeed and acceleration
+	void updateAllValues(); //this is supposed to update all values that can get affected by powers, such as maxSpeed and acceleration
 	void updateMaxSpeed();
 	void updateAcceleration();
+	void updateRadius();
 
 public:
 	TankInputChar forward;

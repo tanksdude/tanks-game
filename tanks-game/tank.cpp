@@ -346,10 +346,46 @@ double Tank::getBulletAcceleration() {
 	//return (abs(highest) > abs(lowest) ? highest : lowest);
 }
 
-void Tank::updateValues() {
+void Tank::updateAllValues() {
 	updateMaxSpeed();
 	updateAcceleration();
+	updateRadius();
 }
+
+/*
+// C++ really sucks sometimes
+// this was going to make the copy & pasted code so much cleaner, but C++ gotta be like C sometimes
+typedef double (TankPower::*memberFuncPointer)(void);
+void Tank::updateSpecificValue(double& attribute, double (TankPower::*func)(void), bool (TankPower::*b), double multiplier) {
+	//look at getShootingSpeedMultiplier()
+
+	double highest = 1;
+	double lowest = 1;
+	std::vector<double> stackList;
+
+	memberFuncPointer p = &TankPower::getTankMaxSpeedMultiplier;
+
+	for (int i = 0; i < tankPowers.size(); i++) {
+		double value = func();
+		if (tankPowers[i]->tankMaxSpeedStacks) {
+			stackList.push_back(value);
+		} else {
+			if (value < 1 && value < lowest) {
+				lowest = value;
+			} else if (value > 1 && value > highest) {
+				highest = value;
+			}
+		}
+	}
+
+	double value = 1;
+	for (int i = 0; i < stackList.size(); i++) {
+		value *= stackList[i];
+	}
+
+	attribute = highest * lowest * value * multiplier;
+}
+*/
 
 void Tank::updateMaxSpeed() {
 	//look at getShootingSpeedMultiplier()
@@ -407,6 +443,34 @@ void Tank::updateAcceleration() {
 	acceleration = highest * lowest * value * 1.0/16;
 }
 
+void Tank::updateRadius() {
+	//look at getShootingSpeedMultiplier()
+
+	double highest = 1;
+	double lowest = 1;
+	std::vector<double> stackList;
+
+	for (int i = 0; i < tankPowers.size(); i++) {
+		double value = tankPowers[i]->getTankRadiusMultiplier();
+		if (tankPowers[i]->tankRadiusStacks) {
+			stackList.push_back(value);
+		} else {
+			if (value < 1 && value < lowest) {
+				lowest = value;
+			} else if (value > 1 && value > highest) {
+				highest = value;
+			}
+		}
+	}
+
+	double value = 1;
+	for (int i = 0; i < stackList.size(); i++) {
+		value *= stackList[i];
+	}
+
+	r = highest * lowest * value * TANK_RADIUS;
+}
+
 void Tank::powerCalculate() {
 	for (int i = tankPowers.size() - 1; i >= 0; i--) {
 		tankPowers[i]->tick(); //I don't think any power will use this, but whatever
@@ -423,7 +487,7 @@ void Tank::removePower(int index) {
 	delete tankPowers[index];
 	tankPowers.erase(tankPowers.begin() + index);
 	determineShootingAngles();
-	updateValues();
+	updateAllValues();
 }
 
 void Tank::powerReset() {

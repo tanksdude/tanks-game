@@ -154,7 +154,7 @@ void PowerSquare::givePower(Tank* t) {
 		t->tankPowers[t->tankPowers.size()-1]->initialize(t);
 	}
 	t->determineShootingAngles();
-	t->updateValues();
+	t->updateAllValues();
 	//good enough for now
 }
 
