@@ -4,13 +4,15 @@
 #include "powerfunctionhelper.h"
 #include "constants.h"
 #include "collisionhandler.h"
-//#include "bignamedbulletpower.h" //include if it has the tier needed for destroying walls as static (could put it in constants.h)
 
-const double MegaDeathBulletPower::destroyWallTier = 2;
+const double MegaDeathBulletPower::destroyWallTier = DESTRUCTION_TIER;
+const double MegaDeathBulletPower::bulletSizeMultiplierPerTick = 65.0/64.0;
 
 void MegaDeathBulletPower::powerTick(Bullet* b) {
 	if (getOffenseTier(b) >= destroyWallTier) {
 		modifiedCollisionWithWallCanWorkWithOthers = false;
+		modifiedCollisionWithCircleHazardCanWorkWithOthers = false;
+		modifiedCollisionWithRectHazardCanWorkWithOthers = false;
 	}
 }
 
@@ -22,19 +24,35 @@ PowerInteractionBoolHolder MegaDeathBulletPower::modifiedCollisionWithWall(Bulle
 	}
 }
 
-void MegaDeathBulletPower::modifiedMovement(Bullet* b) {
-	b->r *= 65.0/64;
+PowerInteractionBoolHolder MegaDeathBulletPower::modifiedCollisionWithCircleHazard(Bullet* b, CircleHazard* ch) {
+	if (getOffenseTier(b) >= destroyWallTier) {
+		return { false, true };
+	} else {
+		return { CollisionHandler::partiallyCollided(b, ch), false };
+	}
 }
 
-double MegaDeathBulletPower::getDefenseTier(Bullet* b) {
-	double value = b->r / (Bullet::default_radius*4) * destroyWallTier;
-	//return (value >= destroyWallTier ? value : 0);
-	return value;
+PowerInteractionBoolHolder MegaDeathBulletPower::modifiedCollisionWithRectHazard(Bullet* b, RectHazard* rh) {
+	if (getOffenseTier(b) >= destroyWallTier) {
+		return { false, true };
+	} else {
+		return { CollisionHandler::partiallyCollided(b, rh), false };
+	}
+}
+
+void MegaDeathBulletPower::modifiedMovement(Bullet* b) {
+	b->r *= bulletSizeMultiplierPerTick;
 }
 
 double MegaDeathBulletPower::getOffenseTier(Bullet* b) {
 	double value = b->r / (Bullet::default_radius*4) * destroyWallTier;
-	//return (value >= destroyWallTier ? value : 0); //this is what I originally wanted in JS Tanks, I think, but in practice isn't preferable
+	//return (value >= destroyWallTier ? floor(value) : 0); //this is what I originally wanted in JS Tanks, I think, but in practice isn't preferable
+	return value;
+}
+
+double MegaDeathBulletPower::getDefenseTier(Bullet* b) {
+	double value = b->r / (Bullet::default_radius*4) * destroyWallTier;
+	//return (value >= destroyWallTier ? floor(value) : 0);
 	return value;
 }
 
@@ -57,4 +75,8 @@ MegaDeathBulletPower::MegaDeathBulletPower(){
 	modifiesMovement = true;
 	modifiesCollisionWithWall = true;
 	//modifiedCollisionWithWallCanWorkWithOthers = false;
+	modifiesCollisionWithCircleHazard = true;
+	//modifiedCollisionWithCircleHazardCanWorkWithOthers = false;
+	modifiesCollisionWithRectHazard = true;
+	//modifiedCollisionWithRectHazardCanWorkWithOthers = false;
 }

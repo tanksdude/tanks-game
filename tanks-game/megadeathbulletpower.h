@@ -6,9 +6,9 @@ class MegaDeathBulletPower;
 #include "megadeathpower.h"
 
 class MegaDeathBulletPower : public BulletPower {
-protected:
 public:
-	static const double destroyWallTier;
+	static const double destroyWallTier; //(and destroyHazardTier)
+	static const double bulletSizeMultiplierPerTick;
 
 public:
 	virtual void initialize(Bullet* parent);
@@ -34,6 +34,18 @@ public:
 	//bool overridesCollisionWithWall = true;
 	//bool modifiedCollisionWithWallCanWorkWithOthers = true;
 	//bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;
+
+	//bool modifiesCollisionWithCircleHazard = true;
+	virtual PowerInteractionBoolHolder modifiedCollisionWithCircleHazard(Bullet*, CircleHazard*);
+	//bool overridesCollisionWithCircleHazard = true;
+	//bool modifiedCollisionWithCircleHazardCanWorkWithOthers = true;
+	//bool modifiedCollisionWithCircleHazardCanOnlyWorkIndividually = false;
+
+	//bool modifiesCollisionWithRectHazard = true;
+	virtual PowerInteractionBoolHolder modifiedCollisionWithRectHazard(Bullet*, RectHazard*);
+	//bool overridesCollisionWithRectHazard = true;
+	//bool modifiedCollisionWithRectHazardCanWorkWithOthers = true;
+	//bool modifiedCollisionWithRectHazardCanOnlyWorkIndividually = false;
 
 	virtual double getOffenseImportance() { return 0; }
 	virtual double getOffenseTier(Bullet*);
