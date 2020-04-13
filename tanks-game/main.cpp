@@ -654,28 +654,113 @@ void bulletToWall() {
 }
 
 void bulletToHazard() {
-	//temporary!
 	for (int i = BulletManager::getNumBullets() - 1; i >= 0; i--) {
+		bool shouldBeKilled = false;
 		Bullet* b = BulletManager::getBullet(i);
 
-		bool bullet_died = false;
 		//circles:
 		for (int j = 0; j < HazardManager::getNumCircleHazards(); j++) {
-			if (CollisionHandler::partiallyCollided(b, HazardManager::getCircleHazard(j))) {
-				BulletManager::deleteBullet(i);
-				bullet_died = true;
-				break;
+			bool modifiedCircleHazardCollision = false;
+			bool overridedCircleHazardCollision = false;
+			bool noMoreCircleHazardCollisionSpecials = false;
+			bool killCircleHazard = false;
+			CircleHazard* ch = HazardManager::getCircleHazard(j);
+
+			if (CollisionHandler::partiallyCollided(b, ch)) {
+				for (int k = 0; k < b->bulletPowers.size(); k++) {
+					if (b->bulletPowers[k]->modifiesCollisionWithCircleHazard) {
+						if (b->bulletPowers[k]->modifiedCollisionWithCircleHazardCanOnlyWorkIndividually && modifiedCircleHazardCollision) {
+							continue;
+						}
+						if (noMoreCircleHazardCollisionSpecials) {
+							continue;
+						}
+
+						modifiedCircleHazardCollision = true;
+						if (b->bulletPowers[k]->overridesCollisionWithCircleHazard) {
+							overridedCircleHazardCollision = true;
+						}
+						if (!b->bulletPowers[k]->modifiedCollisionWithCircleHazardCanWorkWithOthers) {
+							noMoreCircleHazardCollisionSpecials = true;
+						}
+
+						PowerInteractionBoolHolder check_temp = b->bulletPowers[k]->modifiedCollisionWithCircleHazard(b, ch);
+						if (check_temp.shouldDie) {
+							shouldBeKilled = true;
+						}
+						if (check_temp.otherShouldDie) {
+							killCircleHazard = true;
+						}
+					}
+				}
+
+				if (!overridedCircleHazardCollision) {
+					if (CollisionHandler::partiallyCollided(b, ch)) {
+						shouldBeKilled = true;
+					}
+				}
+			}
+
+			if (killCircleHazard) {
+				HazardManager::deleteCircleHazard(j);
 			}
 		}
-		if (bullet_died) {
-			continue;
+
+		if (shouldBeKilled) {
+			BulletManager::deleteBullet(i);
+			continue; //bullet died, can't do any more collision with it
 		}
+		
 		//rectangles:
 		for (int j = 0; j < HazardManager::getNumRectHazards(); j++) {
-			if (CollisionHandler::partiallyCollided(b, HazardManager::getRectHazard(j))) {
-				BulletManager::deleteBullet(i);
-				break;
+			bool modifiedRectHazardCollision = false;
+			bool overridedRectHazardCollision = false;
+			bool noMoreRectHazardCollisionSpecials = false;
+			bool killRectHazard = false;
+			RectHazard* rh = HazardManager::getRectHazard(j);
+
+			if (CollisionHandler::partiallyCollided(b, rh)) {
+				for (int k = 0; k < b->bulletPowers.size(); k++) {
+					if (b->bulletPowers[k]->modifiesCollisionWithRectHazard) {
+						if (b->bulletPowers[k]->modifiedCollisionWithRectHazardCanOnlyWorkIndividually && modifiedRectHazardCollision) {
+							continue;
+						}
+						if (noMoreRectHazardCollisionSpecials) {
+							continue;
+						}
+
+						modifiedRectHazardCollision = true;
+						if (b->bulletPowers[k]->overridesCollisionWithRectHazard) {
+							overridedRectHazardCollision = true;
+						}
+						if (!b->bulletPowers[k]->modifiedCollisionWithRectHazardCanWorkWithOthers) {
+							noMoreRectHazardCollisionSpecials = true;
+						}
+
+						PowerInteractionBoolHolder check_temp = b->bulletPowers[k]->modifiedCollisionWithRectHazard(b, rh);
+						if (check_temp.shouldDie) {
+							shouldBeKilled = true;
+						}
+						if (check_temp.otherShouldDie) {
+							killRectHazard = true;
+						}
+					}
+				}
+
+				if (!overridedRectHazardCollision) {
+					if (CollisionHandler::partiallyCollided(b, rh)) {
+						shouldBeKilled = true;
+					}
+				}
 			}
+
+			if (killRectHazard) {
+				HazardManager::deleteRectHazard(j);
+			}
+		}
+
+		if (shouldBeKilled) {
+			BulletManager::deleteBullet(i);
 		}
 	}
 }
@@ -791,7 +876,7 @@ int main(int argc, char** argv) {
 	srand(time(NULL));
 
 	try {
-		OpenGLInitializer::Initialize(&argc, argv, "Tanks Test v0.2.1 NOT FINAL"); //this is not guaranteed to be correct every commit but likely will be
+		OpenGLInitializer::Initialize(&argc, argv, "Tanks Test v0.2.1"); //this is not guaranteed to be correct every commit but likely will be
 	}
 	catch (exception& e) {
 		cout << e.what() << endl;
@@ -901,8 +986,8 @@ int main(int argc, char** argv) {
  * * gotta learn how to do batching
  * * make things more efficient (way easier said than done, I suppose)
  * 90% theoretical foundation: no hazard powers, no level... anything
- * 70% actual foundation: not every "modification function" actually does something in the main
- * 25% game code:
+ * 75?% actual foundation: not every "modification function" actually does something in the main
+ * 30% game code:
  * * first off, don't know what will be final beyond the ideas located in power.h and elsewhere
  * * second, it's a complete estimate (obviously) and this is a restatement of the first
  * * third, 100% probably won't be "finished" on this scale (restatement of the second?)
