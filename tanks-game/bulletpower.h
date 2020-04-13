@@ -6,6 +6,8 @@ class BulletPower;
 #include "tank.h"
 #include "bullet.h"
 #include "wall.h"
+#include "circlehazard.h"
+#include "recthazard.h"
 #include "inheritedpowercommon.h"
 #include "tankpower.h"
 
@@ -66,8 +68,19 @@ public:
 	//bool modifiesCollisionWithBullet = false;
 	//virtual void modifiedCollisionWithBullet(Bullet* parent, Bullet* other) { return; } //probably shouldn't be used
 
-	//bool modifiesCollisionWithHazard = false;
-	//virtual void modifiedCollisionWithHazard(Bullet*, Hazard*);
+	bool modifiesCollisionWithCircleHazard = false;
+	virtual PowerInteractionBoolHolder modifiedCollisionWithCircleHazard(Bullet*, CircleHazard*) { return { false, false }; }
+	//precondition: hit circlehazard, is not necessarily inside circlehazard
+	bool overridesCollisionWithCircleHazard = true; //false means also use the default, which means destroy the bullet if it collides
+	bool modifiedCollisionWithCircleHazardCanWorkWithOthers = true;
+	bool modifiedCollisionWithCircleHazardCanOnlyWorkIndividually = false;
+
+	bool modifiesCollisionWithRectHazard = false;
+	virtual PowerInteractionBoolHolder modifiedCollisionWithRectHazard(Bullet*, RectHazard*) { return { false, false }; }
+	//precondition: hit recthazard, is not necessarily inside recthazard
+	bool overridesCollisionWithRectHazard = true; //false means also use the default, which means destroy the bullet if it collides
+	bool modifiedCollisionWithRectHazardCanWorkWithOthers = true;
+	bool modifiedCollisionWithRectHazardCanOnlyWorkIndividually = false;
 
 	bool modifiesBulletDrawings = false;
 	virtual void modifiedBulletDrawings(Bullet* parent) { return; } //probably not going to be used

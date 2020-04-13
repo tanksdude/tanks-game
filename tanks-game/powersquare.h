@@ -24,15 +24,14 @@ public:
 	static const double POWER_OUTLINE_MULTIPLIER;
 
 private:
-	VertexArray* va;
-	VertexBuffer* vb;
-	IndexBuffer* ib_main; //the main thing
-	IndexBuffer* ib_outline; //the extra bit when numOfPowers >= 2
-	void initializeGPU();
-protected:
-	//for determining whether the VertexBuffer needs to be updated
-	double old_x;
-	double old_y;
+	static VertexArray* va;
+	static VertexBuffer* vb;
+	static IndexBuffer* ib_main; //the main thing
+	static IndexBuffer* ib_outline; //the extra bit when numOfPowers >= 2
+	static bool initialized_GPU;
+public:
+	static bool initializeGPU();
+	static bool uninitializeGPU();
 
 private:
 	PowerSquare(double x, double y);

@@ -63,16 +63,17 @@ public:
 	double getBulletRadiusMultiplier();
 	double getBulletAcceleration();
 
+	void updateAllValues(); //this is supposed to update all values that can get affected by powers, such as maxSpeed and acceleration
+	void updateMaxSpeed();
+	void updateAcceleration();
+	void updateRadius();
+
 public:
 	TankInputChar forward;
 	TankInputChar turnL;
 	TankInputChar turnR;
 	TankInputChar shooting;
 	//TankInputChar backwards; //not the point of the game
-
-	double& giveMaxSpeed() { return maxSpeed; }
-	double& giveX() { return x; }
-	double& giveY() { return y; }
 
 	void makeBullet(double x, double y, double angle, double radius, double speed, double acc); //move to private eventually, just public for emergency testing
 	void defaultMakeBullet(double x, double y, double angle);
@@ -96,13 +97,15 @@ public:
 	ColorValueHolder getBodyColor();
 
 private:
-	VertexArray* va;
-	VertexBuffer* vb;
-	IndexBuffer* ib;
-	VertexArray* cannon_va;
-	VertexBuffer* cannon_vb;
-public:
-	void initializeGPU();
+	static VertexArray* va;
+	static VertexBuffer* vb;
+	static IndexBuffer* ib;
+	static VertexArray* cannon_va;
+	static VertexBuffer* cannon_vb;
+	static bool initialized_GPU;
+public: //TODO: protected?
+	static bool initializeGPU();
+	static bool uninitializeGPU();
 
 public:
 	Tank(double x, double y, double a, char id, std::string name, TankInputChar forward, TankInputChar left, TankInputChar right, TankInputChar shoot);
@@ -120,8 +123,8 @@ public:
 	void draw(double xpos, double ypos);
 	void drawCPU();
 	void drawCPU(double, double);
-	void drawName();
-	void drawName(double xpos, double ypos);
+	void drawNameCPU();
+	void drawNameCPU(double xpos, double ypos);
 	char getID() { return id; }
 	std::string getName() { return name; }
 	

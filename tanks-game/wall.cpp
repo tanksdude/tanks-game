@@ -2,10 +2,15 @@
 #include "wall.h"
 #include "constants.h"
 #include "renderer.h"
-#include <glm/glm.hpp>
+#include <glm.hpp>
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
+
+VertexArray* Wall::va;
+VertexBuffer* Wall::vb;
+IndexBuffer* Wall::ib;
+bool Wall::initialized_GPU = false;
 
 Wall::Wall(double x_, double y_, double w_, double h_, ColorValueHolder c) {
 	this->x = x_;
@@ -14,11 +19,6 @@ Wall::Wall(double x_, double y_, double w_, double h_, ColorValueHolder c) {
 	this->h = h_;
 	color = c;
 
-	old_x = x;
-	old_y = y;
-	old_w = w;
-	old_h = h;
-
 	initializeGPU();
 }
 Wall::Wall(double x_, double y_, double w_, double h_, ColorValueHolder c, short id_) : Wall(x_, y_, w_, h_, c){
@@ -26,54 +26,54 @@ Wall::Wall(double x_, double y_, double w_, double h_, ColorValueHolder c, short
 }
 
 Wall::~Wall() {
-	delete va;
-	delete vb;
-	delete ib;
+	//uninitializeGPU();
 }
 
-void Wall::initializeGPU() {
+bool Wall::initializeGPU() {
+	if (initialized_GPU) {
+		return false;
+	}
+	
 	float positions[] = {
-		x, y,
-		x + w, y,
-		x + w, y + h,
-		x, y + h
+		0, 0,
+		1, 0,
+		1, 1,
+		0, 1
 	};
 	unsigned int indices[] = {
 		0, 1, 2,
 		2, 3, 0
 	};
 
-	//va = new VertexArray();
-	vb = new VertexBuffer(positions, 4*2 * sizeof(float), GL_STATIC_DRAW); //realistically, a wall isn't going to move
-
+	vb = new VertexBuffer(positions, 4*2 * sizeof(float), GL_DYNAMIC_DRAW);
 	VertexBufferLayout layout(2);
 	va = new VertexArray(*vb, layout);
 
 	ib = new IndexBuffer(indices, 6);
+
+	initialized_GPU = true;
+	return true;
+}
+
+bool Wall::uninitializeGPU() {
+	if (!initialized_GPU) {
+		return false;
+	}
+
+	delete va;
+	delete vb;
+	delete ib;
+
+	initialized_GPU = false;
+	return true;
 }
 
 void Wall::draw() {
 	Shader* shader = Renderer::getShader("main");
-
-	if ((old_x != x) || (old_y != y) || (old_w != w) || (old_h != h)) {
-		old_x = x;
-		old_y = y;
-		old_w = w;
-		old_h = h;
-
-		float stream_vertices[] = {
-			x, y,
-			x + w, y,
-			x + w, y + h,
-			x, y + h
-		};
-
-		vb->modifyData(stream_vertices, 4*2 * sizeof(float));
-		//delete[] stream_vertices;
-	}
+	glm::mat4 MVPM = Renderer::GenerateMatrix(w, h, 0, x, y);
 
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-	shader->setUniformMat4f("u_MVP", Renderer::getProj());
+	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*va, *ib, *shader);
 }

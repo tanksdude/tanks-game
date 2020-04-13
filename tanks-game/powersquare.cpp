@@ -4,46 +4,29 @@
 #include "backgroundrect.h"
 #include "colormixer.h"
 #include "renderer.h"
-#include <glm/glm.hpp>
+#include <glm.hpp>
 #include "powerupmanager.h"
 #include <iostream>
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 
+VertexArray* PowerSquare::va;
+VertexBuffer* PowerSquare::vb;
+IndexBuffer* PowerSquare::ib_main;
+IndexBuffer* PowerSquare::ib_outline;
+bool PowerSquare::initialized_GPU = false;
+
 const double PowerSquare::POWER_WIDTH = 6;
 const double PowerSquare::POWER_HEIGHT = 6;
 const double PowerSquare::POWER_LINE_WIDTH = 1.0/3.0;
 const double PowerSquare::POWER_OUTLINE_MULTIPLIER = 1.5;
-
-ColorValueHolder PowerSquare::getColor() {
-	if (numOfPowers == 1) {
-		return heldPower[0]->getColor();
-	}
-	return ColorMixer::mix(heldPower, numOfPowers);
-}
-
-void PowerSquare::givePower(Tank* t) {
-	for (int i = 0; i < numOfPowers; i++) {
-		t->tankPowers.push_back(heldPower[i]->makeTankPower());
-
-		t->tankPowers[t->tankPowers.size()-1]->initialize(t);
-	}
-	t->determineShootingAngles();
-	//good enough for now
-}
-
-void PowerSquare::givePower(Bullet*) { return; } //don't think about it now, possibly ever; it's weird
-//void givePower(Hazard*);
 
 PowerSquare::PowerSquare(double x_, double y_) {
 	x = x_ - PowerSquare::POWER_WIDTH/2;
 	y = y_ - PowerSquare::POWER_HEIGHT/2;
 	w = PowerSquare::POWER_WIDTH;
 	h = PowerSquare::POWER_HEIGHT;
-
-	old_x = x;
-	old_y = y;
 
 	initializeGPU();
 }
@@ -68,33 +51,34 @@ PowerSquare::~PowerSquare() {
 	}
 	delete[] heldPower;
 
-	delete va;
-	delete vb;
-	delete ib_main;
-	delete ib_outline;
+	//uninitializeGPU();
 }
 
-void PowerSquare::initializeGPU() {
+bool PowerSquare::initializeGPU() {
+	if (initialized_GPU) {
+		return false;
+	}
+
 	float extendingMultiplier = PowerSquare::POWER_LINE_WIDTH * (PowerSquare::POWER_OUTLINE_MULTIPLIER - 1);
 
 	float positions[] = {
 		//outer ring (not part of the main stuff)
-		x     - w*extendingMultiplier, y     - h*extendingMultiplier, //0
-		x + w + w*extendingMultiplier, y     - h*extendingMultiplier, //1
-		x + w + w*extendingMultiplier, y + h + h*extendingMultiplier, //2
-		x     - w*extendingMultiplier, y + h + h*extendingMultiplier, //3
+		0 - extendingMultiplier, 0 - extendingMultiplier, //0
+		1 + extendingMultiplier, 0 - extendingMultiplier, //1
+		1 + extendingMultiplier, 1 + extendingMultiplier, //2
+		0 - extendingMultiplier, 1 + extendingMultiplier, //3
 
 		//main ring
-		x    , y,     //4
-		x + w, y,     //5
-		x + w, y + h, //6
-		x    , y + h, //7
+		0, 0, //4
+		1, 0, //5
+		1, 1, //6
+		0, 1, //7
 
 		//inner ring
-		x +     w*PowerSquare::POWER_LINE_WIDTH, y +     h*PowerSquare::POWER_LINE_WIDTH, //8
-		x + w - w*PowerSquare::POWER_LINE_WIDTH, y +     h*PowerSquare::POWER_LINE_WIDTH, //9
-		x + w - w*PowerSquare::POWER_LINE_WIDTH, y + h - h*PowerSquare::POWER_LINE_WIDTH, //10
-		x +     w*PowerSquare::POWER_LINE_WIDTH, y + h - h*PowerSquare::POWER_LINE_WIDTH  //11
+		0 + PowerSquare::POWER_LINE_WIDTH, 0 + PowerSquare::POWER_LINE_WIDTH, //8
+		1 - PowerSquare::POWER_LINE_WIDTH, 0 + PowerSquare::POWER_LINE_WIDTH, //9
+		1 - PowerSquare::POWER_LINE_WIDTH, 1 - PowerSquare::POWER_LINE_WIDTH, //10
+		0 + PowerSquare::POWER_LINE_WIDTH, 1 - PowerSquare::POWER_LINE_WIDTH  //11
 	};
 	unsigned int outline_indices[] = { //trapezoids
 		//bottom
@@ -131,61 +115,67 @@ void PowerSquare::initializeGPU() {
 		11, 10, 6
 	};
 
-	//va = new VertexArray();
-	vb = new VertexBuffer(positions, 12*2 * sizeof(float), GL_STATIC_DRAW); //change this if powersquares can move
-
+	vb = new VertexBuffer(positions, 12*2 * sizeof(float), GL_DYNAMIC_DRAW);
 	VertexBufferLayout layout(2);
 	va = new VertexArray(*vb, layout);
 
 	ib_main = new IndexBuffer(main_indices, 6*4);
 	ib_outline = new IndexBuffer(outline_indices, 6*4);
 
+	initialized_GPU = true;
+	return true;
 }
+
+bool PowerSquare::uninitializeGPU() {
+	if (!initialized_GPU) {
+		return false;
+	}
+
+	delete va;
+	delete vb;
+	delete ib_main;
+	delete ib_outline;
+
+	initialized_GPU = false;
+	return true;
+}
+
+ColorValueHolder PowerSquare::getColor() {
+	if (numOfPowers == 1) {
+		return heldPower[0]->getColor();
+	}
+	return ColorMixer::mix(heldPower, numOfPowers);
+}
+
+void PowerSquare::givePower(Tank* t) {
+	for (int i = 0; i < numOfPowers; i++) {
+		t->tankPowers.push_back(heldPower[i]->makeTankPower());
+
+		t->tankPowers[t->tankPowers.size()-1]->initialize(t);
+	}
+	t->determineShootingAngles();
+	t->updateAllValues();
+	//good enough for now
+}
+
+void PowerSquare::givePower(Bullet*) { return; } //don't think about it now, possibly ever; it's weird
+//void givePower(Hazard*);
 
 void PowerSquare::draw() {
 	Shader* shader = Renderer::getShader("main");
+	glm::mat4 MVPM = Renderer::GenerateMatrix(w, h, 0, x, y);
 	ColorValueHolder color = getColor();
-
-	if ((old_x != x) || (old_y != y)) {
-		old_x = x;
-		old_y = y;
-
-		float extendingMultiplier = PowerSquare::POWER_LINE_WIDTH * (PowerSquare::POWER_OUTLINE_MULTIPLIER - 1);
-
-		float stream_vertices[] = {
-			//outer ring (not part of the main stuff)
-			x     - w*extendingMultiplier, y     - h*extendingMultiplier, //0
-			x + w + w*extendingMultiplier, y     - h*extendingMultiplier, //1
-			x + w + w*extendingMultiplier, y + h + h*extendingMultiplier, //2
-			x     - w*extendingMultiplier, y + h + h*extendingMultiplier, //3
-
-			//main ring
-			x    , y,     //4
-			x + w, y,     //5
-			x + w, y + h, //6
-			x    , y + h, //7
-
-			//inner ring
-			x +     w*PowerSquare::POWER_LINE_WIDTH, y +     h*PowerSquare::POWER_LINE_WIDTH, //8
-			x + w - w*PowerSquare::POWER_LINE_WIDTH, y +     h*PowerSquare::POWER_LINE_WIDTH, //9
-			x + w - w*PowerSquare::POWER_LINE_WIDTH, y + h - h*PowerSquare::POWER_LINE_WIDTH, //10
-			x +     w*PowerSquare::POWER_LINE_WIDTH, y + h - h*PowerSquare::POWER_LINE_WIDTH  //11
-		};
-
-		vb->modifyData(stream_vertices, 12*2 * sizeof(float));
-		//delete[] stream_vertices;
-	}
 
 	if (numOfPowers > 1) { //move to drawUnder()
 		ColorValueHolder backgroundMix = ColorMixer::mix(color, BackgroundRect::getBackColor());
 		shader->setUniform4f("u_color", backgroundMix.getRf(), backgroundMix.getGf(), backgroundMix.getBf(), backgroundMix.getAf());
-		shader->setUniformMat4f("u_MVP", Renderer::getProj());
+		shader->setUniformMat4f("u_MVP", MVPM);
 
 		Renderer::Draw(*va, *ib_outline, *shader);
 	}
 
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-	shader->setUniformMat4f("u_MVP", Renderer::getProj());
+	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*va, *ib_main, *shader);
 }

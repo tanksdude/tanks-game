@@ -6,11 +6,16 @@
 #include "circle.h"
 #include "colormixer.h"
 #include "renderer.h"
-#include <glm/glm.hpp>
+#include <glm.hpp>
 #include <iostream>
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
+
+VertexArray* Bullet::va;
+VertexBuffer* Bullet::vb;
+IndexBuffer* Bullet::ib;
+bool Bullet::initialized_GPU = false;
 
 const double Bullet::default_radius = 4;
 Bullet::Bullet(double x_, double y_, double r_, double a, double vel, double acc, char id_) { //TODO: make private?
@@ -40,19 +45,21 @@ Bullet::~Bullet() {
 	}
 	bulletPowers.clear();
 
-	delete va;
-	delete vb;
-	delete ib;
+	//uninitializeGPU();
 }
 
 bool Bullet::isDead() {
 	return (alpha <= 0);
 }
 
-void Bullet::initializeGPU() {
+bool Bullet::initializeGPU() {
+	if (initialized_GPU) {
+		return false;
+	}
+
 	float positions[(Circle::numOfSides+1)*2];
-	positions[Circle::numOfSides*2]   = 0;
-	positions[Circle::numOfSides*2+1] = 0;
+	positions[0] = 0;
+	positions[1] = 0;
 	for (int i = 1; i < Circle::numOfSides+1; i++) {
 		positions[i*2]   = cos((i-1) * 2*PI / Circle::numOfSides);
 		positions[i*2+1] = sin((i-1) * 2*PI / Circle::numOfSides);
@@ -65,13 +72,27 @@ void Bullet::initializeGPU() {
 		indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
 	}
 
-	//va = new VertexArray();
-	vb = new VertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float), GL_STREAM_DRAW);
-
+	vb = new VertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float), GL_DYNAMIC_DRAW);
 	VertexBufferLayout layout(2);
 	va = new VertexArray(*vb, layout);
-
+	
 	ib = new IndexBuffer(indices, Circle::numOfSides*3);
+
+	initialized_GPU = true;
+	return true;
+}
+
+bool Bullet::uninitializeGPU() {
+	if (!initialized_GPU) {
+		return false;
+	}
+
+	delete va;
+	delete vb;
+	delete ib;
+
+	initialized_GPU = false;
+	return true;
 }
 
 double Bullet::getAngle() {
@@ -170,12 +191,13 @@ void Bullet::draw() {
 
 void Bullet::draw(double xpos, double ypos) {
 	drawBody(xpos, ypos);
-	drawOutline(xpos, ypos, true);
+	drawOutline(xpos, ypos);
 }
 
 void Bullet::drawBody(double xpos, double ypos) {
 	ColorValueHolder color = getColor();
 	Shader* shader = Renderer::getShader("main");
+	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, 0, xpos, ypos);
 
 	if (glIsEnabled(GL_BLEND)) {
 		shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), this->alpha/100);
@@ -185,72 +207,36 @@ void Bullet::drawBody(double xpos, double ypos) {
 			unsigned int deathVertices = Circle::numOfSides * deathPercent;
 
 			if (deathVertices > 0) {
-				float* stream_vertices = new float[(deathVertices+1)*2];
-				stream_vertices[0] = xpos;
-				stream_vertices[1] = ypos;
-				for (int i = 1; i < deathVertices+1; i++) {
-					stream_vertices[i*2]   = (r+2) * 9.0/8.0 * cos((i-1) * 2*PI / Circle::numOfSides + PI/2) + xpos;
-					stream_vertices[i*2+1] = (r+2) * 9.0/8.0 * sin((i-1) * 2*PI / Circle::numOfSides + PI/2) + ypos;
-				}
-
-				vb->modifyData(stream_vertices, (deathVertices+1)*2 * sizeof(float));
-				delete[] stream_vertices;
+				glm::mat4 MVPM_deathOutline = Renderer::GenerateMatrix((r+2) * 9.0/8.0, (r+2) * 9.0/8.0, PI/2, xpos, ypos);
 
 				shader->setUniform4f("u_color", 1.0f, 1.0f, 1.0f, 1.0f);
-				shader->setUniformMat4f("u_MVP", Renderer::getProj());
+				shader->setUniformMat4f("u_MVP", MVPM_deathOutline);
 
-				Renderer::Draw(*va, *ib, *shader, (deathVertices-1)*3);
+				Renderer::Draw(*va, *ib, *shader, deathVertices*3);
 			}
 		}
 
 		shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), 1.0f);
 	}
 
-	float* stream_vertices = new float[(Circle::numOfSides+1)*2];
-	stream_vertices[0] = xpos;
-	stream_vertices[1] = ypos;
-	for (int i = 1; i < Circle::numOfSides+1; i++) {
-		stream_vertices[i*2]   = r * cos((i-1) * 2*PI / Circle::numOfSides + angle) + xpos;
-		stream_vertices[i*2+1] = r * sin((i-1) * 2*PI / Circle::numOfSides + angle) + ypos;
-	}
-
-	vb->modifyData(stream_vertices, (Circle::numOfSides+1)*2 * sizeof(float));
-	delete[] stream_vertices;
-
-	shader->setUniformMat4f("u_MVP", Renderer::getProj());
+	shader->setUniformMat4f("u_MVP", MVPM);
 	Renderer::Draw(*va, *ib, *shader);
 }
 
 void Bullet::drawOutline(double xpos, double ypos) {
-	drawOutline(xpos, ypos, false);
-}
-
-void Bullet::drawOutline(double xpos, double ypos, bool verticesUpdated) {
 	Shader* shader = Renderer::getShader("main");
+	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, 0, xpos, ypos);
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glLineWidth(1.0f); //lines still look ugly even with glEnable(GL_LINE_SMOOTH), so I don't know what to set it at
-	
-	if (!verticesUpdated) { //probably move to another method later
-		float* stream_vertices = new float[(Circle::numOfSides+1)*2];
-		stream_vertices[0] = xpos;
-		stream_vertices[1] = ypos;
-		for (int i = 1; i < Circle::numOfSides+1; i++) {
-			stream_vertices[i*2]   = r * cos((i-1) * 2*PI / Circle::numOfSides + angle) + xpos;
-			stream_vertices[i*2+1] = r * sin((i-1) * 2*PI / Circle::numOfSides + angle) + ypos;
-		}
-
-		vb->modifyData(stream_vertices, (Circle::numOfSides+1)*2 * sizeof(float));
-		delete[] stream_vertices;
-	}
 
 	shader->setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 1.0f);
-	shader->setUniformMat4f("u_MVP", Renderer::getProj());
+	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(GL_LINE_LOOP, 1, Circle::numOfSides);
 	
 	//cleanup:
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	//drawing an outline: use a geometry shader (ugh) or another VAO+IBO (lesser ugh), the CPU (big ugh), or glDrawArrays with GL_LINE_LOOP (yay!)
 }

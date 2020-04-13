@@ -33,6 +33,11 @@ void Diagnostics::addName(std::string s) {
 	timeNames.push_back(s);
 }
 
+void Diagnostics::startTiming(std::string s) {
+	startTiming();
+	addName(s);
+}
+
 void Diagnostics::clearTimes() {
 	times.clear();
 	currentlyTiming = false;

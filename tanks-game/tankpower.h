@@ -93,6 +93,13 @@ public:
 	bool modifiedTankDrawingsCanWorkWithOthers = true;
 	bool modifiedTankDrawingsCanOnlyWorkIndividually = false;
 
+	virtual double getTankMaxSpeedMultiplier() { return 1; }
+	bool tankMaxSpeedStacks = false;
+	virtual double getTankAccelerationMultiplier() { return 1; }
+	bool tankAccelerationStacks = false;
+	virtual double getTankRadiusMultiplier() { return 1; }
+	bool tankRadiusStacks = false;
+
 	virtual double getShootingMultiplier() { return 1; }
 	bool shootingMultiplierStacks = false;
 	virtual double getBulletSpeedMultiplier() { return 1; }

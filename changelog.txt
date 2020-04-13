@@ -1,8 +1,16 @@
-0.2.1 (obviously not here)
+0.2.2 (obviously not here)
+lightning hazards
+lava hazard
+banana power
+fire and blast draw the region they shoot in?
+some sort of "game manager" for initialization code instead of leaving it in main.cpp?
+
+0.2.1
 switched back to static vertex buffers
 * batching probably not possible in this state but I'll save that for another day
 better system for tankpowers adjusting tank values
-other better adjusting stuff (... like what?)
+a few things moved out of main.cpp (mostly event handlers)
+big (and megadeath) bullet can destroy turrets
 glm moved to Dependencies from res/vendor
 
 0.2.0
@@ -52,7 +60,7 @@ cleanup for me (very little actual change)
 stuff. primarily the framework and some powers to test the framework. (look at commit history)
 
 future notes:
-0.2.A: redo tank/bullet initialization; system for applying attribute changes
+0.2.A: redo tank/bullet initialization(?) (is this so fire/blast can take a parameter?)
 0.2.A+1: bulletpower shooting dependencies removed from tankpowers (so a bulletpower doesn't need a tankpower on a tank to exist; bulletpower can tell tank what things need to change (tanks don't hold bulletpowers which is why this is merely a future note and not an already-merged commit))
 0.A.B: graphs for diagnostics
 0.3.0: an ini file

@@ -1,14 +1,15 @@
 #pragma once
-#include "collisionobject.h"
 
-class Circle : public CollisionObject {
+class Circle {
+	friend class DeveloperManager;
 	friend class CollisionHandler;
+	friend class PowerFunctionHelper;
+
 public:
 	double x;
 	double y;
 	double r;
 	
 public:
-	static const unsigned short numOfSides = 64; //need a short?
-
+	static const unsigned int numOfSides = 64;
 };

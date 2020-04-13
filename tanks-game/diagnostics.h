@@ -14,6 +14,7 @@ public:
 	static long double getDiff(std::chrono::time_point<std::chrono::steady_clock> start, std::chrono::time_point<std::chrono::steady_clock> end);
 
 	static void startTiming();
+	static void startTiming(std::string);
 	static void endTiming();
 	static void addName(std::string);
 	static void clearTimes(); //(and names)

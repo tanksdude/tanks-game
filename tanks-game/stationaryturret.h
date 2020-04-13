@@ -13,12 +13,16 @@ protected:
 	short* stateMultiplier;
 	ColorValueHolder* stateColors;
 
-	VertexArray* cannon_va;
-	VertexBuffer* cannon_vb;
-protected:
-	//for determining whether the VertexBuffer needs to be updated
-	double old_x;
-	double old_y;
+private:
+	static VertexArray* va;
+	static VertexBuffer* vb;
+	static IndexBuffer* ib;
+	static VertexArray* cannon_va;
+	static VertexBuffer* cannon_vb;
+	static bool initialized_GPU;
+public:
+	static bool initializeGPU();
+	static bool uninitializeGPU();
 
 public:
 	virtual ColorValueHolder getColor();
@@ -30,7 +34,7 @@ public:
 	void tick();
 	void draw();
 	void drawCPU();
-	virtual void initializeGPU();
+
 	StationaryTurret(double xpos, double ypos, double angle);
 	StationaryTurret(double xpos, double ypos, double angle, double radius);
 	~StationaryTurret();

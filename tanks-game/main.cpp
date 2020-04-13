@@ -3,6 +3,7 @@
 #include <vector>
 #include <time.h>
 #include <unordered_map>
+#include <exception>
 
 //GPU rendering:
 #include "vertexbuffer.h"
@@ -10,9 +11,9 @@
 #include "vertexarray.h"
 #include "shader.h"
 #include "renderer.h"
-#include "res/vendor/glm/glm.hpp" //this library is overkill but that's okay
-#include "res/vendor/glm/gtc/matrix_transform.hpp"
-#include "res/vendor/glm/gtx/transform.hpp"
+#include <glm.hpp> //GLM is overkill but that's okay
+#include <gtc/matrix_transform.hpp>
+#include <gtx/transform.hpp>
 
 //important stuff:
 #include "colorvalueholder.h"
@@ -26,7 +27,10 @@
 #include "hazard.h"
 #include "circlehazard.h"
 #include "recthazard.h"
+
 //managers:
+#include "openglinitializer.h"
+#include "developermanager.h"
 #include "keypressmanager.h"
 #include "tankmanager.h"
 #include "bulletmanager.h"
@@ -70,7 +74,6 @@
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
-//TODO: move glm to Dependencies instead of res/vendor?
 
 #include "diagnostics.h"
 
@@ -84,34 +87,22 @@ long trueFrameCount = 0;
 int physicsRate = 100; //(in Hz)
 bool currentlyDrawing = false; //look into std::mutex
 
-bool leftMouse = false;
-bool rightMouse = false;
-
 void doThing() {
 	return;
 }
-
-int width = 1200*1.25;
-int height = 600*1.25;
 
 void appDrawScene() {
 	currentlyDrawing = true;
 
 	auto start = Diagnostics::getTime();
 
-	Diagnostics::startTiming();
-	Diagnostics::addName("clear");
-
+	Diagnostics::startTiming("clear");
 	Renderer::Clear();
-
 	Diagnostics::endTiming();
 	
-	Diagnostics::startTiming();
-	Diagnostics::addName("background rect");
-
+	Diagnostics::startTiming("background rect");
 	BackgroundRect::draw();
 	Renderer::UnbindAll(); //I honestly don't know if this is needed anymore but it doesn't hurt performance too much so it can stay
-	
 	Diagnostics::endTiming();
 	
 
@@ -121,16 +112,14 @@ void appDrawScene() {
 	glLoadIdentity();
 
 
-	Diagnostics::startTiming();
-	Diagnostics::addName("powerups");
+	Diagnostics::startTiming("powerups");
 	for (int i = 0; i < PowerupManager::getNumPowerups(); i++) {
 		PowerupManager::getPowerup(i)->draw();
 	}
 	Renderer::UnbindAll();
 	Diagnostics::endTiming();
 
-	Diagnostics::startTiming();
-	Diagnostics::addName("hazards");
+	Diagnostics::startTiming("hazards");
 	for (int i = 0; i < HazardManager::getNumCircleHazards(); i++) {
 		HazardManager::getCircleHazard(i)->draw();
 	}
@@ -140,16 +129,14 @@ void appDrawScene() {
 	Renderer::UnbindAll();
 	Diagnostics::endTiming();
 
-	Diagnostics::startTiming();
-	Diagnostics::addName("walls");
+	Diagnostics::startTiming("walls");
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		WallManager::getWall(i)->draw();
 	}
 	Renderer::UnbindAll();
 	Diagnostics::endTiming();
 	
-	Diagnostics::startTiming();
-	Diagnostics::addName("bullets");
+	Diagnostics::startTiming("bullets");
 	for (int i = 0; i < BulletManager::getNumBullets(); i++) {
 		BulletManager::getBullet(i)->draw();
 	}
@@ -163,16 +150,14 @@ void appDrawScene() {
 	}
 	*/
 
-	Diagnostics::startTiming();
-	Diagnostics::addName("tanks");
+	Diagnostics::startTiming("tanks");
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
 		TankManager::getTank(i)->draw();
 	}
 	Renderer::UnbindAll();
 	Diagnostics::endTiming();
 
-	Diagnostics::startTiming();
-	Diagnostics::addName("flush");
+	Diagnostics::startTiming("flush");
 
 	Renderer::Cleanup(); //possibly put glFlush/glutSwapBuffers in this
 
@@ -191,88 +176,6 @@ void appDrawScene() {
 	//std::cout << "entire: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << "ms" << endl << endl;
 
 	currentlyDrawing = false;
-}
-
-void windowToScene(float& x, float& y) {
-	x = (2.0f * (x / float(width))) - 1.0f;
-	y = 1.0f - (2.0f * (y / float(height)));
-}
-
-// Handles window resizing
-void appReshapeFunc(int w, int h) {
-	width = w;
-	height = h;
-
-	double scale, center;
-	double winXmin, winXmax, winYmin, winYmax;
-
-	// Define x-axis and y-axis range (for CPU)
-	const double appXmin = 0.0;
-	const double appXmax = GAME_WIDTH;
-	const double appYmin = 0.0;
-	const double appYmax = GAME_HEIGHT;
-
-	// Define that OpenGL should use the whole window for rendering (on CPU)
-	glViewport(0, 0, w, h);
-
-	// Set up the projection matrix using a orthographic projection that will
-	// maintain the aspect ratio of the scene no matter the aspect ratio of
-	// the window, and also set the min/max coordinates to be the disired ones (CPU only)
-	w = (w == 0) ? 1 : w;
-	h = (h == 0) ? 1 : h;
-
-	if ((appXmax - appXmin) / w < (appYmax - appYmin) / h) { //too wide
-		scale = ((appYmax - appYmin) / h) / ((appXmax - appXmin) / w);
-		center = 0;
-		winXmin = center - (center - appXmin) * scale;
-		winXmax = center + (appXmax - center) * scale;
-		winYmin = appYmin;
-		winYmax = appYmax;
-		Renderer::proj = glm::ortho(0.0f, float(GAME_WIDTH*scale), 0.0f, (float)GAME_HEIGHT); //GPU
-	}
-	else { //too tall
-		scale = ((appXmax - appXmin) / w) / ((appYmax - appYmin) / h);
-		center = 0;
-		winYmin = center - (center - appYmin) * scale;
-		winYmax = center + (appYmax - center) * scale;
-		winXmin = appXmin;
-		winXmax = appXmax;
-		Renderer::proj = glm::ortho(0.0f, (float)GAME_WIDTH, 0.0f, float(GAME_HEIGHT*scale)); //GPU
-	}
-
-	// Now we use glOrtho to set up our viewing frustum (CPU only)
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(winXmin, winXmax, winYmin, winYmax, -1, 1);
-}
-
-void appMotionFunc(int x, int y) {
-	//dev tools
-	if (leftMouse) {
-		if (!rightMouse) { //tank 1
-			TankManager::getTank(0)->giveX() = (x / double(width)) * GAME_WIDTH;
-			TankManager::getTank(0)->giveY() = (1 - y / double(height)) * GAME_HEIGHT;
-		}
-		else { //tank 2
-			TankManager::getTank(1)->giveX() = (x / double(width)) * GAME_WIDTH;
-			TankManager::getTank(1)->giveY() = (1 - y / double(height)) * GAME_HEIGHT;
-		}
-	}
-	//positions are off when window aspect ratio isn't 2:1
-}
-
-void mouse_func(int button, int state, int x, int y) {
-	if (state == GLUT_DOWN) {
-		if (button == GLUT_LEFT_BUTTON) {
-			leftMouse = true;
-		} else if (button == GLUT_RIGHT_BUTTON) {
-			rightMouse = !rightMouse;
-		}
-	} else {
-		if (button == GLUT_LEFT_BUTTON) {
-			leftMouse = false;
-		}
-	}
 }
 
 //tick stuff:
@@ -302,8 +205,7 @@ void tick(int physicsUPS) {
 	moveTanks();
 
 	//collide tanks with powerups:
-	Diagnostics::startTiming();
-	Diagnostics::addName("tank to powerups");
+	Diagnostics::startTiming("tank to powerups");
 	tankToPowerup();
 	Diagnostics::endTiming();
 	
@@ -314,8 +216,7 @@ void tick(int physicsUPS) {
 	moveBullets();
 
 	//powerCalculate on tanks and bullets, then tank shoot:
-	Diagnostics::startTiming();
-	Diagnostics::addName("powerCalculate and tank shoot");
+	Diagnostics::startTiming("powerCalculate and tank shoot");
 	tankPowerCalculate();
 	bulletPowerCalculate();
 	tankShoot();
@@ -323,20 +224,17 @@ void tick(int physicsUPS) {
 	Diagnostics::endTiming();
 
 	//collide tanks with walls:
-	Diagnostics::startTiming();
-	Diagnostics::addName("tank to walls");
+	Diagnostics::startTiming("tank to walls");
 	tankToWall();
 	Diagnostics::endTiming();
 
 	//collide tanks with hazards:
-	Diagnostics::startTiming();
-	Diagnostics::addName("tank-hazards");
+	Diagnostics::startTiming("tank-hazards");
 	tankToHazard();
 	Diagnostics::endTiming();
 
 	//collide tanks with tanks:
-	Diagnostics::startTiming();
-	Diagnostics::addName("tank-tank");
+	Diagnostics::startTiming("tank-tank");
 	tankToTank();
 	Diagnostics::endTiming();
 
@@ -344,28 +242,24 @@ void tick(int physicsUPS) {
 	tankToEdge();
 	
 	//collide bullets against edges:
-	Diagnostics::startTiming();
-	Diagnostics::addName("bullet-edge");
+	Diagnostics::startTiming("bullet-edge");
 	bulletToEdge();
 	Diagnostics::endTiming();
 
 	//collide bullets with walls:
-	Diagnostics::startTiming();
-	Diagnostics::addName("bullet-wall");
+	Diagnostics::startTiming("bullet-wall");
 	bulletToWall();
 	Diagnostics::endTiming();
 	//bullet to wall is a big timesink, but it can only really be sped up by multithreading
 
 	//collide bullets with hazards:
-	Diagnostics::startTiming();
-	Diagnostics::addName("bullet-hazards");
+	Diagnostics::startTiming("bullet-hazards");
 	bulletToHazard();
 	Diagnostics::endTiming();
 	//probably another big timesink, but there aren't many hazards
 
 	//collide bullets with bullets:
-	Diagnostics::startTiming();
-	Diagnostics::addName("bullet-bullet");
+	Diagnostics::startTiming("bullet-bullet");
 	bulletToBullet();
 	Diagnostics::endTiming();
 	//add another shader: main uses proj, modify doesn't
@@ -373,8 +267,7 @@ void tick(int physicsUPS) {
 	//unfortunately it can only be O(n^2), and multithreading doesn't seem like it would work
 
 	//collide bullets with tanks:
-	Diagnostics::startTiming();
-	Diagnostics::addName("bullet-tank");
+	Diagnostics::startTiming("bullet-tank");
 	bulletToTank();
 	Diagnostics::endTiming();
 
@@ -761,28 +654,113 @@ void bulletToWall() {
 }
 
 void bulletToHazard() {
-	//temporary!
 	for (int i = BulletManager::getNumBullets() - 1; i >= 0; i--) {
+		bool shouldBeKilled = false;
 		Bullet* b = BulletManager::getBullet(i);
 
-		bool bullet_died = false;
 		//circles:
 		for (int j = 0; j < HazardManager::getNumCircleHazards(); j++) {
-			if (CollisionHandler::partiallyCollided(b, HazardManager::getCircleHazard(j))) {
-				BulletManager::deleteBullet(i);
-				bullet_died = true;
-				break;
+			bool modifiedCircleHazardCollision = false;
+			bool overridedCircleHazardCollision = false;
+			bool noMoreCircleHazardCollisionSpecials = false;
+			bool killCircleHazard = false;
+			CircleHazard* ch = HazardManager::getCircleHazard(j);
+
+			if (CollisionHandler::partiallyCollided(b, ch)) {
+				for (int k = 0; k < b->bulletPowers.size(); k++) {
+					if (b->bulletPowers[k]->modifiesCollisionWithCircleHazard) {
+						if (b->bulletPowers[k]->modifiedCollisionWithCircleHazardCanOnlyWorkIndividually && modifiedCircleHazardCollision) {
+							continue;
+						}
+						if (noMoreCircleHazardCollisionSpecials) {
+							continue;
+						}
+
+						modifiedCircleHazardCollision = true;
+						if (b->bulletPowers[k]->overridesCollisionWithCircleHazard) {
+							overridedCircleHazardCollision = true;
+						}
+						if (!b->bulletPowers[k]->modifiedCollisionWithCircleHazardCanWorkWithOthers) {
+							noMoreCircleHazardCollisionSpecials = true;
+						}
+
+						PowerInteractionBoolHolder check_temp = b->bulletPowers[k]->modifiedCollisionWithCircleHazard(b, ch);
+						if (check_temp.shouldDie) {
+							shouldBeKilled = true;
+						}
+						if (check_temp.otherShouldDie) {
+							killCircleHazard = true;
+						}
+					}
+				}
+
+				if (!overridedCircleHazardCollision) {
+					if (CollisionHandler::partiallyCollided(b, ch)) {
+						shouldBeKilled = true;
+					}
+				}
+			}
+
+			if (killCircleHazard) {
+				HazardManager::deleteCircleHazard(j);
 			}
 		}
-		if (bullet_died) {
-			continue;
+
+		if (shouldBeKilled) {
+			BulletManager::deleteBullet(i);
+			continue; //bullet died, can't do any more collision with it
 		}
+		
 		//rectangles:
 		for (int j = 0; j < HazardManager::getNumRectHazards(); j++) {
-			if (CollisionHandler::partiallyCollided(b, HazardManager::getRectHazard(j))) {
-				BulletManager::deleteBullet(i);
-				break;
+			bool modifiedRectHazardCollision = false;
+			bool overridedRectHazardCollision = false;
+			bool noMoreRectHazardCollisionSpecials = false;
+			bool killRectHazard = false;
+			RectHazard* rh = HazardManager::getRectHazard(j);
+
+			if (CollisionHandler::partiallyCollided(b, rh)) {
+				for (int k = 0; k < b->bulletPowers.size(); k++) {
+					if (b->bulletPowers[k]->modifiesCollisionWithRectHazard) {
+						if (b->bulletPowers[k]->modifiedCollisionWithRectHazardCanOnlyWorkIndividually && modifiedRectHazardCollision) {
+							continue;
+						}
+						if (noMoreRectHazardCollisionSpecials) {
+							continue;
+						}
+
+						modifiedRectHazardCollision = true;
+						if (b->bulletPowers[k]->overridesCollisionWithRectHazard) {
+							overridedRectHazardCollision = true;
+						}
+						if (!b->bulletPowers[k]->modifiedCollisionWithRectHazardCanWorkWithOthers) {
+							noMoreRectHazardCollisionSpecials = true;
+						}
+
+						PowerInteractionBoolHolder check_temp = b->bulletPowers[k]->modifiedCollisionWithRectHazard(b, rh);
+						if (check_temp.shouldDie) {
+							shouldBeKilled = true;
+						}
+						if (check_temp.otherShouldDie) {
+							killRectHazard = true;
+						}
+					}
+				}
+
+				if (!overridedRectHazardCollision) {
+					if (CollisionHandler::partiallyCollided(b, rh)) {
+						shouldBeKilled = true;
+					}
+				}
 			}
+
+			if (killRectHazard) {
+				HazardManager::deleteRectHazard(j);
+			}
+		}
+
+		if (shouldBeKilled) {
+			BulletManager::deleteBullet(i);
 		}
 	}
 }
@@ -897,32 +875,44 @@ void bulletToTank() {
 int main(int argc, char** argv) {
 	srand(time(NULL));
 
-	// Initialize GLUT
-	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_SINGLE | GLUT_DEPTH);
-	//thanks to https://community.khronos.org/t/wglmakecurrent-issues/62656/3 for solving why a draw call would take ~15ms for no reason
-
-	// Setup window position, size, and title
-	glutInitWindowPosition(60, 60);
-	glutInitWindowSize(width, height);
-	glutCreateWindow("Tanks Test v0.2.0"); //this is not guranteed to be correct every commit but likely will be
-
-	// Setup some OpenGL options
-	glPointSize(2);
-	glEnable(GL_POINT_SMOOTH);
-	glEnable(GL_LINE_SMOOTH);
-	glDisable(GL_DEPTH_TEST);
-	//glEnable(GL_BLEND);
-	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	//initialize glew
-	glewExperimental = GL_TRUE;
-	GLenum res = glewInit();
-	if (res != GLEW_OK) {
-		fprintf(stderr, "Error: '%s'\n", glewGetErrorString(res));
+	try {
+		OpenGLInitializer::Initialize(&argc, argv, "Tanks Test v0.2.1"); //this is not guaranteed to be correct every commit but likely will be
+	}
+	catch (exception& e) {
+		cout << e.what() << endl;
 		return 1;
 	}
+	
+	// Set callback for drawing the scene
+	glutDisplayFunc(appDrawScene);
 
+	// Set callback for resizing the window
+	glutReshapeFunc(Renderer::windowResizeFunc);
+
+	//mouse clicking
+	glutMouseFunc(DeveloperManager::mouseClickFunc);
+
+	// Set callback to handle mouse dragging
+	glutMotionFunc(DeveloperManager::mouseDragFunc);
+
+	// Set callback to handle keyboard events
+	glutKeyboardFunc(KeypressManager::setNormalKey);
+
+	//callback for keyboard up events
+	glutKeyboardUpFunc(KeypressManager::unsetNormalKey);
+
+	//special keyboard down
+	glutSpecialFunc(KeypressManager::setSpecialKey);
+
+	//special keyboard up
+	glutSpecialUpFunc(KeypressManager::unsetSpecialKey);
+
+	//mousewheel
+	glutMouseWheelFunc(DeveloperManager::mouseWheelFunc);
+
+	// Set callback for the idle function
+	//glutIdleFunc(draw);
+	
 	PowerupManager::addPowerFactory(SpeedPower::factory);
 	PowerupManager::addPowerFactory(WallhackPower::factory);
 	PowerupManager::addPowerFactory(BouncePower::factory);
@@ -951,9 +941,8 @@ int main(int argc, char** argv) {
 	WallManager::initialize();
 	LevelManager::initialize();
 	HazardManager::initialize();
-
-
-	//v0.1.4 static VAO, VBO, and IBO had better performance
+	
+	//static VAO, VBO, and IBO has better performance
 	Renderer::Initialize();
 	BackgroundRect::initializeGPU();
 	//Tank::initializeGPU();
@@ -963,40 +952,9 @@ int main(int argc, char** argv) {
 	//RectHazard::initializeGPU();
 	//CircleHazard::initializeGPU();
 
-
-	// Set callback for drawing the scene
-	glutDisplayFunc(appDrawScene);
-
-	// Set callback for resizing the window
-	glutReshapeFunc(appReshapeFunc);
-
-	//mouse clicking
-	glutMouseFunc(mouse_func);
-
-	// Set callback to handle mouse dragging
-	glutMotionFunc(appMotionFunc);
-
-	// Set callback to handle keyboard events
-	glutKeyboardFunc(KeypressManager::setNormalKey);
-
-	//callback for keyboard up events
-	glutKeyboardUpFunc(KeypressManager::unsetNormalKey);
-
-	//special keyboard down
-	glutSpecialFunc(KeypressManager::setSpecialKey);
-
-	//special keyboard up
-	glutSpecialUpFunc(KeypressManager::unsetSpecialKey);
-
-	// Set callback for the idle function
-	//glutIdleFunc(draw);
-
 	//main game code initialization stuff:
 	TankManager::pushTank(new Tank(20, 160, 0, 0, "WASD", { false, 'w' }, { false, 'a' }, { false, 'd' }, { false, 's' }));
 	TankManager::pushTank(new Tank(620, 160, PI, 1, "Arrow Keys", { true, GLUT_KEY_UP }, { true, GLUT_KEY_LEFT }, { true, GLUT_KEY_RIGHT }, { true, GLUT_KEY_DOWN }));
-	//TODO: proper solution
-	TankManager::getTank(0)->determineShootingAngles();
-	TankManager::getTank(1)->determineShootingAngles();
 #if _DEBUG
 	LevelManager::getLevelByName("dev0")->initialize();
 #else
@@ -1008,12 +966,12 @@ int main(int argc, char** argv) {
 	}
 	*/
 
-	//framelimiter
-	glutTimerFunc(1000/physicsRate, tick, physicsRate);
-
 	cout << "OpenGL renderer: " << glGetString(GL_RENDERER) << endl;
 	cout << "OpenGL vendor: " << glGetString(GL_VENDOR) << endl;
 	cout << "OpenGL version: " << glGetString(GL_VERSION) << endl;
+
+	//framelimiter
+	glutTimerFunc(1000/physicsRate, tick, physicsRate);
 
 	// Start the main loop
 	glutMainLoop();
@@ -1028,8 +986,8 @@ int main(int argc, char** argv) {
  * * gotta learn how to do batching
  * * make things more efficient (way easier said than done, I suppose)
  * 90% theoretical foundation: no hazard powers, no level... anything
- * 70% actual foundation: not every "modification function" actually does something in the main
- * 25% game code:
+ * 75?% actual foundation: not every "modification function" actually does something in the main
+ * 30% game code:
  * * first off, don't know what will be final beyond the ideas located in power.h and elsewhere
  * * second, it's a complete estimate (obviously) and this is a restatement of the first
  * * third, 100% probably won't be "finished" on this scale (restatement of the second?)
