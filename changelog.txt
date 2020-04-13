@@ -1,11 +1,11 @@
-0.2.2 (obviously definitely not here)
+0.2.2 (obviously not here)
 lightning hazards
 lava hazard
 banana power
 fire and blast draw the region they shoot in?
 some sort of "game manager" for initialization code instead of leaving it in main.cpp?
 
-0.2.1 (obviously not here)
+0.2.1
 switched back to static vertex buffers
 * batching probably not possible in this state but I'll save that for another day
 better system for tankpowers adjusting tank values
