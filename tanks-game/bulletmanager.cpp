@@ -2,8 +2,11 @@
 #include "bulletmanager.h"
 
 std::vector<Bullet*> BulletManager::bullets;
+int BulletManager::maxBullets = 800;
+
 void BulletManager::initialize() {
-	bullets.reserve(800);
+	bullets.reserve(4096);
+	//512 is the max I expect to be fired at once (3 multishots); 2048 might get reached, so 4096 should be way more than enough
 }
 
 Bullet* const BulletManager::getBullet(int index) {

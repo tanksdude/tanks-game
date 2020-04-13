@@ -4,10 +4,6 @@
 #include <GL/glew.h>
 #include <GL/glut.h>
 
-void OpenGLInitializer::Initialize(int* argc, char** argv) {
-	OpenGLInitializer::Initialize(argc, argv, "Tanks Test VERSION UNSPECIFIED");
-}
-
 void OpenGLInitializer::Initialize(int* argc, char** argv, std::string windowName) {
 	OpenGLInitializer::Initialize(argc, argv, windowName, 60, 60);
 }

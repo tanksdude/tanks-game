@@ -24,7 +24,7 @@ public:
 	virtual double getOffenseImportance() { return 0; }
 	virtual double getOffenseTier(Tank*) { return 0; }
 	virtual double getDefenseImportance() { return 0; }
-	virtual double getDefenseTier(Tank*) { return 2.5; }
+	virtual double getDefenseTier(Tank*) { return 2.5; } // this is not DESTRUCTION_TIER+.5 in case someone wants to have a higher destruction tier
 
 	InvincibleNamedTankPower();
 };
