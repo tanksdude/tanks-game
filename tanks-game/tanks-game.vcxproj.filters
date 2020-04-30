@@ -243,6 +243,12 @@
     <ClCompile Include="openglinitializer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="horizontallightning.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="developerlevel1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -504,6 +510,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="openglinitializer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="horizontallightning.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="developerlevel1.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

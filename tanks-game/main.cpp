@@ -52,9 +52,12 @@
 #include "emptylevel.h"
 #include "corridorlevel.h"
 #include "bigfunlevel.h"
+//dev levels (dev0 is a dev level but shush)
+#include "developerlevel1.h"
 
 //hazards:
 #include "stationaryturret.h"
+#include "horizontallightning.h"
 
 //powers:
 #include "inheritedpowercommon.h"
@@ -876,7 +879,7 @@ int main(int argc, char** argv) {
 	srand(time(NULL));
 
 	try {
-		OpenGLInitializer::Initialize(&argc, argv, "Tanks Test v0.2.1"); //this is not guaranteed to be correct every commit but likely will be
+		OpenGLInitializer::Initialize(&argc, argv, "Tanks Test v0.2.2 NOT FINAL"); //this is not guaranteed to be correct every commit but likely will be
 	}
 	catch (exception& e) {
 		cout << e.what() << endl;
@@ -932,7 +935,10 @@ int main(int argc, char** argv) {
 	LevelManager::addLevelToHashmap(new CorridorLevel());
 	LevelManager::addLevelToHashmap(new BigFunLevel());
 
+	LevelManager::addLevelToHashmap(new DeveloperLevel1());
+
 	HazardManager::addCircleHazardFactory(StationaryTurret::factory);
+	HazardManager::addRectHazardFactory(HorizontalLightning::factory);
 
 	//initialize managers:
 	KeypressManager::initialize();
@@ -956,7 +962,7 @@ int main(int argc, char** argv) {
 	TankManager::pushTank(new Tank(20, 160, 0, 0, "WASD", { false, 'w' }, { false, 'a' }, { false, 'd' }, { false, 's' }));
 	TankManager::pushTank(new Tank(620, 160, PI, 1, "Arrow Keys", { true, GLUT_KEY_UP }, { true, GLUT_KEY_LEFT }, { true, GLUT_KEY_RIGHT }, { true, GLUT_KEY_DOWN }));
 #if _DEBUG
-	LevelManager::getLevelByName("dev0")->initialize();
+	LevelManager::getLevelByName("dev1")->initialize();
 #else
 	LevelManager::getLevelByName("default random")->initialize();
 #endif

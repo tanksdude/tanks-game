@@ -157,6 +157,7 @@
     <ClCompile Include="constants.cpp" />
     <ClCompile Include="corridorlevel.cpp" />
     <ClCompile Include="defaultrandomlevel.cpp" />
+    <ClCompile Include="developerlevel1.cpp" />
     <ClCompile Include="developermanager.cpp" />
     <ClCompile Include="diagnostics.cpp" />
     <ClCompile Include="emptylevel.cpp" />
@@ -170,6 +171,7 @@
     <ClCompile Include="homingbulletpower.cpp" />
     <ClCompile Include="homingpower.cpp" />
     <ClCompile Include="homingtankpower.cpp" />
+    <ClCompile Include="horizontallightning.cpp" />
     <ClCompile Include="indexbuffer.cpp" />
     <ClCompile Include="invinciblenamedbulletpower.cpp" />
     <ClCompile Include="invinciblenamedpower.cpp" />
@@ -237,6 +239,7 @@
     <ClInclude Include="constants.h" />
     <ClInclude Include="corridorlevel.h" />
     <ClInclude Include="defaultrandomlevel.h" />
+    <ClInclude Include="developerlevel1.h" />
     <ClInclude Include="developermanager.h" />
     <ClInclude Include="diagnostics.h" />
     <ClInclude Include="emptylevel.h" />
@@ -251,6 +254,7 @@
     <ClInclude Include="homingbulletpower.h" />
     <ClInclude Include="homingpower.h" />
     <ClInclude Include="homingtankpower.h" />
+    <ClInclude Include="horizontallightning.h" />
     <ClInclude Include="indexbuffer.h" />
     <ClInclude Include="inheritedpowercommon.h" />
     <ClInclude Include="invinciblenamedbulletpower.h" />
