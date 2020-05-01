@@ -20,7 +20,7 @@ LavaBubble::LavaBubble(float radius, float x0, float y0, float x1, float y1, dou
 
 LavaBubble::LavaBubble(float radius, float x0, float y0, float x1, float y1, double tickStart, double* tickMultiplier)
 : LavaBubble(radius, x0, y0, x1, y1, tickStart) {
-	std::copy(tickMultiplier, tickMultiplier+4, stateMultiplier);
+	std::copy(tickMultiplier, tickMultiplier+3, stateMultiplier); //the last one isn't supposed to be modified (or used)
 }
 
 void LavaBubble::tick() {

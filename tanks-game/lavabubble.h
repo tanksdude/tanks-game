@@ -11,7 +11,7 @@ private:
 	float xEnd; //[r,w-r]
 	float yEnd; //[r,h-r]
 
-	int tickCount; //int instead of a double because it makes no sense to have a double when tick++ is all that happens
+	int tickCount; //int instead of a double because it makes no sense to have a double when tickCount++ is all that happens
 	double tickMax; //double just to avoid an explicit cast for finding the alpha when bubble is rising or falling
 
 	double stateMultiplier[4];
@@ -28,5 +28,5 @@ private:
 	float getY();
 
 	LavaBubble(float radius, float x0, float y0, float x1, float y1, double tickStart);
-	LavaBubble(float radius, float x0, float y0, float x1, float y1, double tickStart, double* tickMultiplier); //tickMultiplier length = 4
+	LavaBubble(float radius, float x0, float y0, float x1, float y1, double tickStart, double* tickMultiplier); //tickMultiplier length = 3
 };
