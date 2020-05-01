@@ -14,6 +14,7 @@ int constrain_i(int value, int min, int max);
 double constrain_d(double value, double min, double max);
 
 bool XOR(bool, bool);
+double randFunc(); //[0,1)
 
 template<typename T>
 bool isInArray(T find, T* arr, int length) {

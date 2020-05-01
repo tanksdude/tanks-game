@@ -103,3 +103,7 @@ double constrain_d(double value, double min, double max) {
 bool XOR(bool a, bool b) {
 	return ((a || b) && !(a && b));
 }
+
+double randFunc() {
+	return double(rand()) / double(RAND_MAX+1);
+}
