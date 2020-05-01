@@ -23,7 +23,7 @@ protected:
 
 	const unsigned int maxBolts = 2; //this is maximum amount of normal bolts; the lightning can still make more bolts when it has to destroy a lot of bullets
 	double lengthOfBolt = 4;
-	std::vector<LightningBolt> bolts;
+	std::vector<LightningBolt*> bolts; //is a vector of pointers instead of objects so resizes take less time
 	double boltTick = 0;
 	double boltCycle = 4; //how often bolts get refreshed
 	virtual void refreshBolts(); //how often bolts get refreshed

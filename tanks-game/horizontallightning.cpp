@@ -5,7 +5,6 @@
 #include "colormixer.h"
 #include "mylib.h"
 #include <math.h>
-#include <math.h>
 #include <exception>
 #include <stdexcept>
 #include <iostream>
@@ -31,10 +30,10 @@ HorizontalLightning::HorizontalLightning(double xpos, double ypos, double width,
 	for (int i = 0; i < maxBolts; i++) {
 		int boltPoints = ceil(width / lengthOfBolt); //not floor because the last point is the edge of the lightning area
 		boltPoints = (boltPoints < 2 ? 2 : boltPoints);
-		bolts.push_back(LightningBolt(boltPoints));
+		bolts.push_back(new LightningBolt(boltPoints));
 		for (int j = 0; j < boltPoints; j++) {
-			bolts[i].positions.push_back(float(j)/(boltPoints - 1));
-			bolts[i].positions.push_back(.5);
+			bolts[i]->positions.push_back(float(j)/(boltPoints - 1));
+			bolts[i]->positions.push_back(.5);
 		}
 	}
 
@@ -78,13 +77,13 @@ bool HorizontalLightning::initializeGPU() {
 }
 
 void HorizontalLightning::local_initializeGPU() {
-	float* positions = new float[bolts[0].length*2];
-	for (int i = 0; i < bolts[0].length; i++) {
-		positions[i*2]   = bolts[0].positions[i*2];
-		positions[i*2+1] = bolts[0].positions[i*2+1];
+	float* positions = new float[bolts[0]->length*2];
+	for (int i = 0; i < bolts[0]->length; i++) {
+		positions[i*2]   = bolts[0]->positions[i*2];
+		positions[i*2+1] = bolts[0]->positions[i*2+1];
 	}
 	
-	bolt_vb = new VertexBuffer(positions, bolts[0].length*2 * sizeof(float), GL_STREAM_DRAW);
+	bolt_vb = new VertexBuffer(positions, bolts[0]->length*2 * sizeof(float), GL_STREAM_DRAW);
 	VertexBufferLayout layout(2);
 	bolt_va = new VertexArray(*bolt_vb, layout);
 
@@ -110,7 +109,7 @@ void HorizontalLightning::local_uninitializeGPU() {
 }
 
 void HorizontalLightning::streamBoltVertices(unsigned int boltNum) {
-	bolt_vb->modifyData(&bolts[boltNum].positions[0], bolts[boltNum].length*2 * sizeof(float));
+	bolt_vb->modifyData(&bolts[boltNum]->positions[0], bolts[boltNum]->length*2 * sizeof(float));
 }
 
 RectHazard* HorizontalLightning::factory(int argc, std::string* argv) {
@@ -176,9 +175,9 @@ bool HorizontalLightning::validLocation() {
 
 void HorizontalLightning::refreshBolts() {
 	for (int i = 0; i < bolts.size(); i++) {
-		for (int j = 0; j < bolts[i].length; j++) {
-			bolts[i].positions[j*2]   = float(j)/(bolts[i].length - 1);
-			bolts[i].positions[j*2+1] = rand()/double(RAND_MAX);
+		for (int j = 0; j < bolts[i]->length; j++) {
+			bolts[i]->positions[j*2]   = float(j)/(bolts[i]->length - 1);
+			bolts[i]->positions[j*2+1] = rand()/double(RAND_MAX);
 		}
 	}
 }
@@ -218,7 +217,7 @@ void HorizontalLightning::draw() {
 
 	for (int i = 0; i < bolts.size(); i++) {
 		streamBoltVertices(i);
-		Renderer::Draw(*bolt_va, *shader, GL_LINE_STRIP, 0, bolts[i].length);
+		Renderer::Draw(*bolt_va, *shader, GL_LINE_STRIP, 0, bolts[i]->length);
 	}
 }
 
