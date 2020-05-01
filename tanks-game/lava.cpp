@@ -162,8 +162,6 @@ ColorValueHolder Lava::getBubbleColor(LavaBubble* bubble) {
 }
 
 void Lava::draw() {
-	std::cout << bubbles.size() << std::endl;
-
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 MVPM = Renderer::GenerateMatrix(w, h, 0, x, y);
 	
@@ -181,7 +179,6 @@ void Lava::draw() {
 	}
 
 	glLineWidth(2.0f);
-	//std::cout << "r: " << bubbles[0]->r << ", X: " << (bubbles[0]->getX()+x) << ", Y: " << (bubbles[0]->getY()+y) << ", A: " << bubbles[0]->getAlpha() << std::endl;
 	//first, sort by alpha: lowest to highest
 	std::vector<LavaBubble*> sortedBubbles;
 	sortedBubbles.reserve(bubbles.size());
