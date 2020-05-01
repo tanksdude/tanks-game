@@ -58,6 +58,7 @@
 //hazards:
 #include "stationaryturret.h"
 #include "horizontallightning.h"
+#include "lava.h"
 
 //powers:
 #include "inheritedpowercommon.h"
@@ -939,6 +940,7 @@ int main(int argc, char** argv) {
 
 	HazardManager::addCircleHazardFactory(StationaryTurret::factory);
 	HazardManager::addRectHazardFactory(HorizontalLightning::factory);
+	HazardManager::addRectHazardFactory(Lava::factory);
 
 	//initialize managers:
 	KeypressManager::initialize();

@@ -17,7 +17,8 @@ void DeveloperLevel1::initialize() {
 	WallManager::pushWall(new Wall(GAME_WIDTH/2 + 80 - 20, GAME_HEIGHT/2 - 20, 20, 40, wallColor));
 
 	std::string* paras = new std::string[4]{std::to_string(GAME_WIDTH/2 - 80 + 20), std::to_string(GAME_HEIGHT/2 - 20), std::to_string((80-20)*2), std::to_string(20*2)};
-	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("horizontal lightning")(4, paras));
+	//HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("horizontal lightning")(4, paras));
+	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("lava")(4, paras));
 	delete[] paras;
 
 	//assumption: TANK_RADIUS=16 (why it would ever be changed is beyond me)

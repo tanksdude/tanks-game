@@ -249,6 +249,12 @@
     <ClCompile Include="developerlevel1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="lava.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lavabubble.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -516,6 +522,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="developerlevel1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lava.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lavabubble.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
