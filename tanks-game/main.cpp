@@ -424,22 +424,113 @@ void tankToWall() {
 }
 
 void tankToHazard() {
-	//temporary!
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
+		bool shouldBeKilled = false;
 		Tank* t = TankManager::getTank(i);
+
 		//circles:
 		for (int j = 0; j < HazardManager::getNumCircleHazards(); j++) {
+			bool modifiedCircleHazardCollision = false;
+			bool overridedCircleHazardCollision = false;
+			bool noMoreCircleHazardCollisionSpecials = false;
+			bool killCircleHazard = false;
 			CircleHazard* ch = HazardManager::getCircleHazard(j);
+
 			if (CollisionHandler::partiallyCollided(t, ch)) {
-				CollisionHandler::pushMovableAwayFromImmovable(t, ch);
+				for (int k = 0; k < t->tankPowers.size(); k++) {
+					if (t->tankPowers[k]->modifiesCollisionWithCircleHazard) {
+						if (t->tankPowers[k]->modifiedCollisionWithCircleHazardCanOnlyWorkIndividually && modifiedCircleHazardCollision) {
+							continue;
+						}
+						if (noMoreCircleHazardCollisionSpecials) {
+							continue;
+						}
+
+						modifiedCircleHazardCollision = true;
+						if (t->tankPowers[k]->overridesCollisionWithCircleHazard) {
+							overridedCircleHazardCollision = true;
+						}
+						if (!t->tankPowers[k]->modifiedCollisionWithCircleHazardCanWorkWithOthers) {
+							noMoreCircleHazardCollisionSpecials = true;
+						}
+
+						PowerInteractionBoolHolder check_temp = t->tankPowers[k]->modifiedCollisionWithCircleHazard(t, ch);
+						if (check_temp.shouldDie) {
+							shouldBeKilled = true;
+						}
+						if (check_temp.otherShouldDie) {
+							killCircleHazard = true;
+						}
+					}
+				}
+
+				if (!overridedCircleHazardCollision) {
+					if (CollisionHandler::partiallyCollided(t, ch)) {
+						CollisionHandler::pushMovableAwayFromImmovable(t, ch);
+					}
+				}
+			}
+
+			if (killCircleHazard) {
+				HazardManager::deleteCircleHazard(j);
 			}
 		}
+
+		if (shouldBeKilled) {
+			tank_dead = 1; //TODO: proper implementation
+			//continue;
+		}
+		
 		//rectangles:
 		for (int j = 0; j < HazardManager::getNumRectHazards(); j++) {
+			bool modifiedRectHazardCollision = false;
+			bool overridedRectHazardCollision = false;
+			bool noMoreRectHazardCollisionSpecials = false;
+			bool killRectHazard = false;
 			RectHazard* rh = HazardManager::getRectHazard(j);
+
 			if (CollisionHandler::partiallyCollided(t, rh)) {
-				CollisionHandler::pushMovableAwayFromImmovable(t, rh);
+				for (int k = 0; k < t->tankPowers.size(); k++) {
+					if (t->tankPowers[k]->modifiesCollisionWithRectHazard) {
+						if (t->tankPowers[k]->modifiedCollisionWithRectHazardCanOnlyWorkIndividually && modifiedRectHazardCollision) {
+							continue;
+						}
+						if (noMoreRectHazardCollisionSpecials) {
+							continue;
+						}
+
+						modifiedRectHazardCollision = true;
+						if (t->tankPowers[k]->overridesCollisionWithRectHazard) {
+							overridedRectHazardCollision = true;
+						}
+						if (!t->tankPowers[k]->modifiedCollisionWithRectHazardCanWorkWithOthers) {
+							noMoreRectHazardCollisionSpecials = true;
+						}
+
+						PowerInteractionBoolHolder check_temp = t->tankPowers[k]->modifiedCollisionWithRectHazard(t, rh);
+						if (check_temp.shouldDie) {
+							shouldBeKilled = true;
+						}
+						if (check_temp.otherShouldDie) {
+							killRectHazard = true;
+						}
+					}
+				}
+
+				if (!overridedRectHazardCollision) {
+					if (CollisionHandler::partiallyCollided(t, rh)) {
+						CollisionHandler::pushMovableAwayFromImmovable(t, rh);
+					}
+				}
 			}
+
+			if (killRectHazard) {
+				HazardManager::deleteRectHazard(j);
+			}
+		}
+
+		if (shouldBeKilled) {
+			tank_dead = 1;
 		}
 	}
 }
