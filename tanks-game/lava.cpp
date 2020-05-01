@@ -157,8 +157,8 @@ ColorValueHolder Lava::getBackgroundColor() {
 }
 
 ColorValueHolder Lava::getBubbleColor(LavaBubble* bubble) {
+	//a bubble's natural color is white, but with an alpha of .5, but blending is expensive so it's just mixed with the lava background
 	return ColorMixer::mix(ColorValueHolder(1.0f, 1.0f, 1.0f), getBackgroundColor(), 1 - bubble->getAlpha());
-	//this is just for sorting the bubbles based on their alpha
 }
 
 void Lava::draw() {
