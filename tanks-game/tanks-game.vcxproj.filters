@@ -21,9 +21,6 @@
     <ClCompile Include="bullet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="bulletpriorityhandler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="collisionhandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -255,15 +252,15 @@
     <ClCompile Include="lavabubble.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="priorityhandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="bulletpower.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="bulletpriorityhandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="circle.h">
@@ -528,6 +525,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="lavabubble.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="priorityhandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

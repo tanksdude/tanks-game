@@ -1,9 +1,9 @@
 #pragma once
+#include "priorityhandler.h"
 #include "constants.h"
-#include "bulletpriorityhandler.h"
 #include "bullet.h"
 
-char BulletPriorityHandler::determinePriority(Bullet* a, Bullet* b) {
+char PriorityHandler::determinePriority(Bullet* a, Bullet* b) {
 	double a_offense = a->getOffenseTier();
 	double a_defense = a->getDefenseTier();
 	double b_offense = b->getOffenseTier();
@@ -30,7 +30,7 @@ char BulletPriorityHandler::determinePriority(Bullet* a, Bullet* b) {
 	return 2;
 }
 
-char BulletPriorityHandler::determinePriority(Bullet* a, Tank* b) {
+char PriorityHandler::determinePriority(Bullet* a, Tank* b) {
 	double a_offense = a->getOffenseTier();
 	double a_defense = a->getDefenseTier();
 	double b_offense = b->getOffenseTier();

@@ -42,7 +42,7 @@
 //classes with important handling functions:
 #include "collisionhandler.h"
 #include "resetthings.h"
-#include "bulletpriorityhandler.h"
+#include "priorityhandler.h"
 #include "colormixer.h"
 #include "powerfunctionhelper.h"
 
@@ -872,7 +872,7 @@ void bulletToBullet() {
 				continue;
 			}
 			if (CollisionHandler::partiallyCollided(b_outer, b_inner)) {
-				char result = BulletPriorityHandler::determinePriority(b_outer, b_inner);
+				char result = PriorityHandler::determinePriority(b_outer, b_inner);
 				if (result <= -2) {
 					bool firstDies = rand()%2;
 					if (firstDies) {
@@ -926,7 +926,7 @@ void bulletToTank() {
 				continue;
 			}
 			if (CollisionHandler::partiallyCollided(t, b)) {
-				char result = BulletPriorityHandler::determinePriority(b, t);
+				char result = PriorityHandler::determinePriority(b, t);
 				if (result <= -2) {
 					bool firstDies = rand()%2;
 					if (firstDies) {
