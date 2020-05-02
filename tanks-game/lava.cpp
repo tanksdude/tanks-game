@@ -28,6 +28,9 @@ Lava::Lava(double xpos, double ypos, double width, double height) {
 	
 	canAcceptPowers = false;
 
+	modifiesTankCollision = true;
+	modifiesBulletCollision = true;
+
 	initializeGPU();
 }
 
@@ -117,7 +120,7 @@ void Lava::tick() {
 		tickCount -= tickCycle;
 	}
 
-	if (randFunc() < .125) {
+	if (randFunc() < bubbleChance) {
 		if (bubbles.size() < maxBubbles) {
 			pushNewBubble(4); //possible radius: sqrt(w * h * 2) / 50
 		}

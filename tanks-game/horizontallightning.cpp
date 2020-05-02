@@ -39,6 +39,9 @@ HorizontalLightning::HorizontalLightning(double xpos, double ypos, double width,
 
 	canAcceptPowers = false;
 
+	modifiesTankCollision = true;
+	modifiesBulletCollision = true;
+
 	local_initializeGPU();
 	initializeGPU();
 }
@@ -149,6 +152,16 @@ void HorizontalLightning::tick() {
 	} else {
 		boltTick = 0;
 	}
+}
+
+void HorizontalLightning::modifiedTankCollision(Tank* t) {
+	//TODO: add lightning bolts to the location
+	return;
+}
+
+void HorizontalLightning::modifiedBulletCollision(Bullet* b) {
+	//TODO: add lightning bolts to the location
+	return;
 }
 
 bool HorizontalLightning::validLocation() {

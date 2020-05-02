@@ -25,6 +25,11 @@ public:
 	static bool uninitializeGPU();
 
 public:
+	virtual double getDefaultOffense() { return 0; }
+	virtual double getDefaultDefense() { return DESTRUCTION_TIER; }
+	
+	//needs some sort of "overriding priority" function to destroy bullets with offense less than this defense
+
 	virtual ColorValueHolder getColor();
 	virtual ColorValueHolder getColor(short state);
 	virtual std::string getName() { return getClassName(); };

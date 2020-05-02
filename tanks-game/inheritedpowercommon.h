@@ -2,8 +2,8 @@
 class InheritedPowerCommon;
 
 #include "colorvalueholder.h"
-#include "tank.h"
-#include "wall.h"
+//#include "tank.h"
+//#include "wall.h"
 //#include "power.h"
 //#include "bullet.h"
 

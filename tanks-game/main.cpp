@@ -437,6 +437,7 @@ void tankToHazard() {
 			CircleHazard* ch = HazardManager::getCircleHazard(j);
 
 			if (CollisionHandler::partiallyCollided(t, ch)) {
+				//tankpower decides whether to use the partial collision or the true collision
 				for (int k = 0; k < t->tankPowers.size(); k++) {
 					if (t->tankPowers[k]->modifiesCollisionWithCircleHazard) {
 						if (t->tankPowers[k]->modifiedCollisionWithCircleHazardCanOnlyWorkIndividually && modifiedCircleHazardCollision) {
@@ -466,13 +467,39 @@ void tankToHazard() {
 
 				if (!overridedCircleHazardCollision) {
 					if (CollisionHandler::partiallyCollided(t, ch)) {
-						CollisionHandler::pushMovableAwayFromImmovable(t, ch);
+						if (ch->actuallyCollided(t)) {
+							char result = PriorityHandler::determinePriority(t, ch);
+							if (result <= -2) {
+								bool firstDies = rand()%2;
+								if (firstDies) {
+									shouldBeKilled = true;
+								} else {
+									killCircleHazard = true;
+								}
+							} else if (result == -1) { //both die
+								shouldBeKilled = true;
+								killCircleHazard = true;
+							} else if (result >= 2) { //it's a draw, so neither dies
+								if (ch->modifiesTankCollision) {
+									ch->modifiedTankCollision(t);
+								} else {
+									CollisionHandler::pushMovableAwayFromImmovable(t, ch);
+								}
+							} else {
+								if (result == 0) {
+									shouldBeKilled = true;
+								} else {
+									killCircleHazard = true;
+								}
+							}
+						}
 					}
 				}
 			}
 
 			if (killCircleHazard) {
 				HazardManager::deleteCircleHazard(j);
+				j--;
 			}
 		}
 
@@ -519,13 +546,39 @@ void tankToHazard() {
 
 				if (!overridedRectHazardCollision) {
 					if (CollisionHandler::partiallyCollided(t, rh)) {
-						CollisionHandler::pushMovableAwayFromImmovable(t, rh);
+						if (rh->actuallyCollided(t)) {
+							char result = PriorityHandler::determinePriority(t, rh);
+							if (result <= -2) {
+								bool firstDies = rand()%2;
+								if (firstDies) {
+									shouldBeKilled = true;
+								} else {
+									killRectHazard = true;
+								}
+							} else if (result == -1) { //both die
+								shouldBeKilled = true;
+								killRectHazard = true;
+							} else if (result >= 2) { //it's a draw, so neither dies
+								if (rh->modifiesTankCollision) {
+									rh->modifiedTankCollision(t);
+								} else {
+									CollisionHandler::pushMovableAwayFromImmovable(t, rh);
+								}
+							} else {
+								if (result == 0) {
+									shouldBeKilled = true;
+								} else {
+									killRectHazard = true;
+								}
+							}
+						}
 					}
 				}
 			}
 
 			if (killRectHazard) {
 				HazardManager::deleteRectHazard(j);
+				j--;
 			}
 		}
 
@@ -582,7 +635,30 @@ void tankToTank() {
 				}
 
 				if (!overridedTankCollision) {
-					CollisionHandler::pushMovableAwayFromMovable(t1, t2);
+					char result = PriorityHandler::determinePriority(t1, t2);
+					if (result <= -2) {
+						bool firstDies = rand()%2;
+						if (firstDies) {
+							tank_dead = 1;
+							//continue;
+						} else {
+							tank_dead = 1;
+							//continue; //TODO: figure out what this is supposed to be
+						}
+					} else if (result == -1) { //both die
+						tank_dead = 1;
+						//continue;
+					} else if (result >= 2) { //it's a draw, so neither dies (normal result)
+						CollisionHandler::pushMovableAwayFromMovable(t1, t2);
+					} else {
+						if (result == 0) {
+							tank_dead = 1;
+							//continue;
+						} else {
+							tank_dead = 1;
+							//continue;
+						}
+					}
 				}
 			}
 
@@ -791,13 +867,39 @@ void bulletToHazard() {
 
 				if (!overridedCircleHazardCollision) {
 					if (CollisionHandler::partiallyCollided(b, ch)) {
-						shouldBeKilled = true;
+						if (ch->actuallyCollided(b)) {
+							char result = PriorityHandler::determinePriority(b, ch);
+							if (result <= -2) {
+								bool firstDies = rand()%2;
+								if (firstDies) {
+									shouldBeKilled = true;
+								} else {
+									killCircleHazard = true;
+								}
+							} else if (result == -1) { //both die
+								shouldBeKilled = true;
+								killCircleHazard = true;
+							} else if (result >= 2) { //it's a draw, so neither dies
+								if (ch->modifiesBulletCollision) {
+									ch->modifiedBulletCollision(b);
+								} else {
+									CollisionHandler::pushMovableAwayFromImmovable(b, ch);
+								}
+							} else {
+								if (result == 0) {
+									shouldBeKilled = true;
+								} else {
+									killCircleHazard = true;
+								}
+							}
+						}
 					}
 				}
 			}
 
 			if (killCircleHazard) {
 				HazardManager::deleteCircleHazard(j);
+				j--;
 			}
 		}
 
@@ -844,13 +946,39 @@ void bulletToHazard() {
 
 				if (!overridedRectHazardCollision) {
 					if (CollisionHandler::partiallyCollided(b, rh)) {
-						shouldBeKilled = true;
+						if (rh->actuallyCollided(b)) {
+							char result = PriorityHandler::determinePriority(b, rh);
+							if (result <= -2) {
+								bool firstDies = rand()%2;
+								if (firstDies) {
+									shouldBeKilled = true;
+								} else {
+									killRectHazard = true;
+								}
+							} else if (result == -1) { //both die
+								shouldBeKilled = true;
+								killRectHazard = true;
+							} else if (result >= 2) { //it's a draw, so neither dies
+								if (rh->modifiesBulletCollision) {
+									rh->modifiedBulletCollision(b);
+								} else {
+									CollisionHandler::pushMovableAwayFromImmovable(b, rh);
+								}
+							} else {
+								if (result == 0) {
+									shouldBeKilled = true;
+								} else {
+									killRectHazard = true;
+								}
+							}
+						}
 					}
 				}
 			}
 
 			if (killRectHazard) {
 				HazardManager::deleteRectHazard(j);
+				j--;
 			}
 		}
 
@@ -1085,7 +1213,7 @@ int main(int argc, char** argv) {
  * * gotta learn how to do batching
  * * make things more efficient (way easier said than done, I suppose)
  * 90% theoretical foundation: no hazard powers, no level... anything
- * 75?% actual foundation: not every "modification function" actually does something in the main
+ * 80% actual foundation: not every "modification function" actually does something in the main
  * 30% game code:
  * * first off, don't know what will be final beyond the ideas located in power.h and elsewhere
  * * second, it's a complete estimate (obviously) and this is a restatement of the first

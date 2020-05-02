@@ -26,14 +26,17 @@ public:
 	//bool modifiedCollisionWithWallCanWorkWithOthers = true;
 	//bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;
 
+	//bullet-hazard collision now uses priority, making the below modification functions obsolete
+	//however, I do like the idea of big being able to destroy any hazard, but it sure would be awkward for something like lava
+
 	//bool modifiesCollisionWithCircleHazard = true;
-	virtual PowerInteractionBoolHolder modifiedCollisionWithCircleHazard(Bullet*, CircleHazard*);
+	//virtual PowerInteractionBoolHolder modifiedCollisionWithCircleHazard(Bullet*, CircleHazard*);
 	//bool overridesCollisionWithCircleHazard = true;
 	//bool modifiedCollisionWithCircleHazardCanWorkWithOthers = true;
 	//bool modifiedCollisionWithCircleHazardCanOnlyWorkIndividually = false;
 
 	//bool modifiesCollisionWithRectHazard = true;
-	virtual PowerInteractionBoolHolder modifiedCollisionWithRectHazard(Bullet*, RectHazard*);
+	//virtual PowerInteractionBoolHolder modifiedCollisionWithRectHazard(Bullet*, RectHazard*);
 	//bool overridesCollisionWithRectHazard = true;
 	//bool modifiedCollisionWithRectHazardCanWorkWithOthers = true;
 	//bool modifiedCollisionWithRectHazardCanOnlyWorkIndividually = false;

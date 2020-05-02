@@ -25,11 +25,20 @@ private:
 	static bool initialized_GPU;
 public:
 	static bool initializeGPU();
-	//void local_initializeGPU();
 	static bool uninitializeGPU();
-	//void local_uninitializeGPU();
 
 public:
+	virtual double getDefaultOffense() { return .5; }
+	virtual double getDefaultDefense() { return 999; }
+
+	//bool modifiesTankCollision = true;
+	virtual bool actuallyCollided(Tank*) { return true; }
+	virtual void modifiedTankCollision(Tank*) { return; }
+	
+	//bool modifiesBulletCollision = true;
+	virtual bool actuallyCollided(Bullet* b) { return (b->velocity == 0); }
+	virtual void modifiedBulletCollision(Bullet*) { return; }
+
 	virtual ColorValueHolder getBackgroundColor();
 	virtual ColorValueHolder getBubbleColor(LavaBubble* bubble);
 	virtual std::string getName() { return getClassName(); };

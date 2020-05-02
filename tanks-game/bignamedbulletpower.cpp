@@ -9,14 +9,6 @@ PowerInteractionBoolHolder BigNamedBulletPower::modifiedCollisionWithWall(Bullet
 	return { false, true };
 }
 
-PowerInteractionBoolHolder BigNamedBulletPower::modifiedCollisionWithCircleHazard(Bullet* b, CircleHazard* ch) {
-	return { false, true };
-}
-
-PowerInteractionBoolHolder BigNamedBulletPower::modifiedCollisionWithRectHazard(Bullet* b, RectHazard* rh) {
-	return { false, true };
-}
-
 void BigNamedBulletPower::initialize(Bullet* b) {
 	//nothing
 }
@@ -35,8 +27,4 @@ BigNamedBulletPower::BigNamedBulletPower(){
 
 	modifiesCollisionWithWall = true;
 	modifiedCollisionWithWallCanWorkWithOthers = false;
-	modifiesCollisionWithCircleHazard = true;
-	modifiedCollisionWithCircleHazardCanWorkWithOthers = false;
-	modifiesCollisionWithRectHazard = true;
-	modifiedCollisionWithRectHazardCanWorkWithOthers = false;
 }
