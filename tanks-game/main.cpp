@@ -48,11 +48,11 @@
 
 //levels:
 #include "defaultrandomlevel.h"
-#include "developerlevel0.h"
 #include "emptylevel.h"
 #include "corridorlevel.h"
 #include "bigfunlevel.h"
-//dev levels (dev0 is a dev level but shush)
+//dev levels
+#include "developerlevel0.h"
 #include "developerlevel1.h"
 
 //hazards:
@@ -1149,13 +1149,13 @@ int main(int argc, char** argv) {
 	PowerupManager::addPowerFactory(FireNamedPower::factory);
 	PowerupManager::addPowerFactory(BlastPower::factory);
 
-	LevelManager::addLevelToHashmap(new DeveloperLevel0());
 	LevelManager::addLevelToHashmap(new DefaultRandomLevel());
 	LevelManager::addLevelToHashmap(new EmptyLevel());
 	LevelManager::addLevelToHashmap(new CorridorLevel());
 	LevelManager::addLevelToHashmap(new BigFunLevel());
 
-	LevelManager::addLevelToHashmap(new DeveloperLevel1());
+	LevelManager::addDevLevelToHashmap(new DeveloperLevel0());
+	LevelManager::addDevLevelToHashmap(new DeveloperLevel1());
 
 	HazardManager::addCircleHazardFactory(StationaryTurret::factory);
 	HazardManager::addRectHazardFactory(HorizontalLightning::factory);
@@ -1183,7 +1183,7 @@ int main(int argc, char** argv) {
 	TankManager::pushTank(new Tank(20, 160, 0, 0, "WASD", { false, 'w' }, { false, 'a' }, { false, 'd' }, { false, 's' }));
 	TankManager::pushTank(new Tank(620, 160, PI, 1, "Arrow Keys", { true, GLUT_KEY_UP }, { true, GLUT_KEY_LEFT }, { true, GLUT_KEY_RIGHT }, { true, GLUT_KEY_DOWN }));
 #if _DEBUG
-	LevelManager::getLevelByName("dev1")->initialize();
+	LevelManager::getDevLevelByName("dev1")->initialize();
 #else
 	LevelManager::getLevelByName("default random")->initialize();
 #endif

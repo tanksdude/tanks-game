@@ -3,6 +3,7 @@
 
 std::vector<Level*> LevelManager::levels;
 std::unordered_map<std::string, Level*> LevelManager::levelLookup;
+std::unordered_map<std::string, Level*> LevelManager::devLevelLookup;
 std::vector<Level*> LevelManager::levelList;
 std::vector<std::string> LevelManager::levelNameList;
 
@@ -53,8 +54,16 @@ void LevelManager::addLevelToHashmap(Level* l) {
 	levelLookup.insert({ l->getName(), l });
 }
 
+void LevelManager::addDevLevelToHashmap(Level* l) {
+	devLevelLookup.insert({ l->getName(), l });
+}
+
 Level* LevelManager::getLevelByName(std::string name) {
 	return levelLookup[name];
+}
+
+Level* LevelManager::getDevLevelByName(std::string name) {
+	return devLevelLookup[name];
 }
 
 std::string LevelManager::getLevelName(int index) {
