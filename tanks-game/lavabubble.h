@@ -6,10 +6,10 @@ struct LavaBubble {
 private:
 	//floats, not doubles, since it's not like you can see the difference anyway (also less implicit casting)
 	float r;
-	float xStart; //[r,w-r]
-	float yStart; //[r,h-r]
-	float xEnd; //[r,w-r]
-	float yEnd; //[r,h-r]
+	float xStart; //[0,1]
+	float yStart; //[0,1]
+	float xEnd;   //[0,1]
+	float yEnd;   //[0,1]
 
 	int tickCount; //int instead of a double because it makes no sense to have a double when tickCount++ is all that happens
 	double tickMax; //double just to avoid an explicit cast for finding the alpha when bubble is rising or falling

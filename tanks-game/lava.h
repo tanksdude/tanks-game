@@ -27,6 +27,8 @@ public:
 	static bool initializeGPU();
 	static bool uninitializeGPU();
 
+protected:
+	virtual ColorValueHolder getBubbleColor(LavaBubble* bubble);
 public:
 	virtual double getDefaultOffense() { return .5; }
 	virtual double getDefaultDefense() { return 999; }
@@ -40,7 +42,6 @@ public:
 	virtual void modifiedBulletCollision(Bullet*) { return; }
 
 	virtual ColorValueHolder getBackgroundColor();
-	virtual ColorValueHolder getBubbleColor(LavaBubble* bubble);
 	virtual std::string getName() { return getClassName(); };
 	static std::string getClassName() { return "lava"; };
 
