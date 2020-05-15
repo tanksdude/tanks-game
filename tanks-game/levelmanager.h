@@ -10,10 +10,9 @@ private:
 	static std::vector<Level*> levels; //active levels
 	//static std::vector<LevelEffect*> leveleffects; //miscellaneous level effects //would this ever get used? aren't all level effects supposed to be attached to levels? (note: multiple levels can use the same level effect)
 
-	static std::unordered_map<std::string, Level*> levelLookup;
-	static std::unordered_map<std::string, Level*> devLevelLookup; //TODO, I guess: hashmap of hashmaps (levels["normal"]["average level 1"] kind of thing)
-	static std::vector<Level*> levelList;
-	static std::vector<std::string> levelNameList;
+	static std::unordered_map<std::string, std::unordered_map<std::string, Level*>> levelLookup;
+	static std::unordered_map<std::string, std::vector<Level*>> levelList;
+	static std::unordered_map<std::string, std::vector<std::string>> levelNameList;
 public:
 	static void initialize();
 	static Level* const getLevel(int index); //why would this be needed
@@ -29,9 +28,12 @@ public:
 	//static void deleteLevelEffect(int index); //this doesn't make sense
 
 	static void addLevelToHashmap(Level* l);
-	static void addDevLevelToHashmap(Level* l);
 	static Level* getLevelByName(std::string name);
-	static Level* getDevLevelByName(std::string name);
 	static std::string getLevelName(int index);
 	static int getNumLevelTypes();
+
+	static void addSpecialLevelToHashmap(std::string type, Level* l);
+	static Level* getSpecialLevelByName(std::string type, std::string name);
+	static std::string getSpecialLevelName(std::string type, int index);
+	static int getNumSpecialLevelTypes(std::string type);
 };

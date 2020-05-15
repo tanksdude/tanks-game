@@ -51,7 +51,7 @@ void ResetThings::reset(int) {
 	//not being used now
 
 #if _DEBUG
-	LevelManager::getDevLevelByName("dev0")->initialize();
+	LevelManager::getSpecialLevelByName("dev", "dev0")->initialize();
 #else
 	int randLevel = rand() % LevelManager::getNumLevelTypes();
 	std::string levelName = LevelManager::getLevelName(randLevel);

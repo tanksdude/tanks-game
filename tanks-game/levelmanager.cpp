@@ -1,14 +1,15 @@
 #pragma once
 #include "levelmanager.h"
+#include <stdexcept>
 
 std::vector<Level*> LevelManager::levels;
-std::unordered_map<std::string, Level*> LevelManager::levelLookup;
-std::unordered_map<std::string, Level*> LevelManager::devLevelLookup;
-std::vector<Level*> LevelManager::levelList;
-std::vector<std::string> LevelManager::levelNameList;
+std::unordered_map<std::string, std::unordered_map<std::string, Level*>> LevelManager::levelLookup;
+std::unordered_map<std::string, std::vector<Level*>> LevelManager::levelList;
+std::unordered_map<std::string, std::vector<std::string>> LevelManager::levelNameList;
 
 void LevelManager::initialize() {
-	return;
+	levelLookup.insert({ "vanilla", std::unordered_map<std::string, Level*>() });
+	levelLookup.insert({ "dev", std::unordered_map<std::string, Level*>() });
 }
 
 Level* const LevelManager::getLevel(int index) {
@@ -49,27 +50,50 @@ void LevelManager::deleteLevel(int index) {
 
 
 void LevelManager::addLevelToHashmap(Level* l) {
-	levelNameList.push_back(l->getName());
-	levelList.push_back(l);
-	levelLookup.insert({ l->getName(), l });
-}
-
-void LevelManager::addDevLevelToHashmap(Level* l) {
-	devLevelLookup.insert({ l->getName(), l });
+	levelNameList["vanilla"].push_back(l->getName());
+	levelList["vanilla"].push_back(l);
+	levelLookup["vanilla"].insert({ l->getName(), l });
 }
 
 Level* LevelManager::getLevelByName(std::string name) {
-	return levelLookup[name];
-}
-
-Level* LevelManager::getDevLevelByName(std::string name) {
-	return devLevelLookup[name];
+	return levelLookup["vanilla"][name];
 }
 
 std::string LevelManager::getLevelName(int index) {
-	return levelNameList[index];
+	return levelNameList["vanilla"][index];
 }
 
 int LevelManager::getNumLevelTypes() {
-	return levelNameList.size();
+	return levelNameList["vanilla"].size();
+}
+
+void LevelManager::addSpecialLevelToHashmap(std::string type, Level* l) {
+	if (levelLookup.find(type) == levelLookup.end()) {
+		levelLookup.insert({ type, std::unordered_map<std::string, Level*>() });
+	}
+
+	levelNameList[type].push_back(l->getName());
+	levelList[type].push_back(l);
+	levelLookup[type].insert({ l->getName(), l });
+}
+
+Level* LevelManager::getSpecialLevelByName(std::string type, std::string name) {
+	if (levelLookup.find(type) == levelLookup.end()) {
+		throw std::domain_error("level type \"" + type + "\" unknown!");
+	}
+	return levelLookup[type][name];
+}
+
+std::string LevelManager::getSpecialLevelName(std::string type, int index) {
+	if (levelLookup.find(type) == levelLookup.end()) {
+		throw std::domain_error("level type \"" + type + "\" unknown!");
+	}
+	return levelNameList[type][index];
+}
+
+int LevelManager::getNumSpecialLevelTypes(std::string type) {
+	if (levelLookup.find(type) == levelLookup.end()) {
+		throw std::domain_error("level type \"" + type + "\" unknown!");
+	}
+	return levelNameList[type].size();
 }

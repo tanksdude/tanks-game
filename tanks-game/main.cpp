@@ -51,7 +51,7 @@
 #include "emptylevel.h"
 #include "corridorlevel.h"
 #include "bigfunlevel.h"
-//dev levels
+//dev levels:
 #include "developerlevel0.h"
 #include "developerlevel1.h"
 
@@ -61,8 +61,6 @@
 #include "lava.h"
 
 //powers:
-#include "inheritedpowercommon.h"
-#include "powersquare.h"
 #include "speedpower.h"
 #include "wallhackpower.h"
 #include "multishotpower.h"
@@ -228,6 +226,7 @@ void tick(int physicsUPS) {
 	Diagnostics::endTiming();
 
 	//collide tanks with walls:
+	//this comes before powerCalculate stuff in JS Tanks; TODO: should this be changed?
 	Diagnostics::startTiming("tank to walls");
 	tankToWall();
 	Diagnostics::endTiming();
@@ -1154,8 +1153,8 @@ int main(int argc, char** argv) {
 	LevelManager::addLevelToHashmap(new CorridorLevel());
 	LevelManager::addLevelToHashmap(new BigFunLevel());
 
-	LevelManager::addDevLevelToHashmap(new DeveloperLevel0());
-	LevelManager::addDevLevelToHashmap(new DeveloperLevel1());
+	LevelManager::addSpecialLevelToHashmap("dev", new DeveloperLevel0());
+	LevelManager::addSpecialLevelToHashmap("dev", new DeveloperLevel1());
 
 	HazardManager::addCircleHazardFactory(StationaryTurret::factory);
 	HazardManager::addRectHazardFactory(HorizontalLightning::factory);
@@ -1183,7 +1182,7 @@ int main(int argc, char** argv) {
 	TankManager::pushTank(new Tank(20, 160, 0, 0, "WASD", { false, 'w' }, { false, 'a' }, { false, 'd' }, { false, 's' }));
 	TankManager::pushTank(new Tank(620, 160, PI, 1, "Arrow Keys", { true, GLUT_KEY_UP }, { true, GLUT_KEY_LEFT }, { true, GLUT_KEY_RIGHT }, { true, GLUT_KEY_DOWN }));
 #if _DEBUG
-	LevelManager::getDevLevelByName("dev1")->initialize();
+	LevelManager::getSpecialLevelByName("dev", "dev1")->initialize();
 #else
 	LevelManager::getLevelByName("default random")->initialize();
 #endif
