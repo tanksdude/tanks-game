@@ -11,9 +11,9 @@ class PowerupManager { //technically "PowerSquareManager"
 private:
 	static std::vector<PowerSquare*> powerups; //active powersquares
 
-	static std::unordered_map<std::string, PowerFunction> powerLookup;
-	static std::vector<PowerFunction> powerList;
-	static std::vector<std::string> powerNameList;
+	static std::unordered_map<std::string, std::unordered_map<std::string, PowerFunction>> powerLookup;
+	static std::unordered_map<std::string, std::vector<PowerFunction>> powerList;
+	static std::unordered_map<std::string, std::vector<std::string>> powerNameList;
 public:
 	static void initialize();
 	static PowerSquare* const getPowerup(int index);
@@ -26,4 +26,9 @@ public:
 	static PowerFunction getPowerFactory(std::string name);
 	static std::string getPowerName(int index);
 	static int getNumPowerTypes();
+
+	static void addSpecialPowerFactory(std::string type, PowerFunction);
+	static PowerFunction getSpecialPowerFactory(std::string type, std::string name);
+	static std::string getSpecialPowerName(std::string type, int index);
+	static int getNumSpecialPowerTypes(std::string type);
 };
