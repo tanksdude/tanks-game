@@ -48,7 +48,7 @@ void DeveloperManager::mouseClickFunc(int button, int state, int x, int y) {
 		} else { //button == GLUT_MIDDLE_BUTTON
 			double true_x = (real_x / double(Renderer::gamewindow_width)) * GAME_WIDTH;
 			double true_y = (1 - real_y / double(Renderer::gamewindow_height)) * GAME_HEIGHT;
-			PowerupManager::pushPowerup(new PowerSquare(true_x, true_y, "megadeath")); //change to godmode when it exists
+			PowerupManager::pushPowerup(new PowerSquare(true_x, true_y, "dev", "longinvincible")); //change to godmode when it exists?
 		}
 	} else {
 		if (button == GLUT_LEFT_BUTTON) {

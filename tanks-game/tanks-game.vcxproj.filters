@@ -255,6 +255,15 @@
     <ClCompile Include="priorityhandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="devlonginvinciblenamedbulletpower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="devlonginvinciblenamedpower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="devlonginvinciblenamedtankpower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -528,6 +537,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="priorityhandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="devlonginvinciblenamedbulletpower.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="devlonginvinciblenamedpower.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="devlonginvinciblenamedtankpower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

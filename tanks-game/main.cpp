@@ -73,6 +73,8 @@
 #include "grenadepower.h"
 #include "firenamedpower.h"
 #include "blastpower.h"
+//dev powers:
+#include "devlonginvinciblenamedpower.h" //invincible but lasts a long time
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
@@ -1147,6 +1149,8 @@ int main(int argc, char** argv) {
 	PowerupManager::addPowerFactory(GrenadePower::factory);
 	PowerupManager::addPowerFactory(FireNamedPower::factory);
 	PowerupManager::addPowerFactory(BlastPower::factory);
+
+	PowerupManager::addSpecialPowerFactory("dev", DevLongInvincibleNamedPower::factory);
 
 	LevelManager::addLevelToHashmap(new DefaultRandomLevel());
 	LevelManager::addLevelToHashmap(new EmptyLevel());
