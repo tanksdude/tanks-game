@@ -45,6 +45,20 @@ PowerSquare::PowerSquare(double x_, double y_, std::string* names, int num) : Po
 	}
 }
 
+PowerSquare::PowerSquare(double x_, double y_, std::string type, std::string name) : PowerSquare(x_, y_) {
+	numOfPowers = 1;
+	heldPower = new Power*[1];
+	heldPower[0] = PowerupManager::getSpecialPowerFactory(type, name)();
+}
+
+PowerSquare::PowerSquare(double x_, double y_, std::string* types, std::string* names, int num) : PowerSquare(x_, y_) {
+	numOfPowers = num;
+	heldPower = new Power*[num];
+	for (int i = 0; i < num; i++) {
+		heldPower[i] = PowerupManager::getSpecialPowerFactory(types[i], names[i])();
+	}
+}
+
 PowerSquare::~PowerSquare() {
 	for (int i = 0; i < numOfPowers; i++) {
 		delete heldPower[i];

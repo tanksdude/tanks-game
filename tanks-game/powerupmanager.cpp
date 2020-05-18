@@ -16,8 +16,8 @@ PowerSquare* const PowerupManager::getPowerup(int index) {
 	return powerups[index];
 }
 
-void PowerupManager::pushPowerup(PowerSquare* b) {
-	powerups.push_back(b);
+void PowerupManager::pushPowerup(PowerSquare* p) {
+	powerups.push_back(p);
 }
 
 void PowerupManager::deletePowerup(int index) {
