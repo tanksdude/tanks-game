@@ -31,12 +31,15 @@ Bullet::Bullet(double x_, double y_, double r_, double a, double vel, double acc
 	initializeGPU();
 }
 
-Bullet::Bullet(double x_, double y_, double r_, double a, double vel, double acc, char id_, std::vector<BulletPower*> bp) : Bullet(x_,y_,r_,a,vel,acc,id_) {
-	bulletPowers = bp;
-
+Bullet::Bullet(double x_, double y_, double r_, double a, double vel, double acc, char id_, std::vector<BulletPower*>* bp) : Bullet(x_,y_,r_,a,vel,acc,id_) {
+	bulletPowers.reserve(bp->size());
+	for (int i = 0; i < bp->size(); i++) {
+		bulletPowers.push_back(bp->at(i));
+	}
 	for (int i = 0; i < bulletPowers.size(); i++) {
 		bulletPowers[i]->initialize(this);
 	}
+	//bp not deleted
 }
 
 Bullet::~Bullet() {

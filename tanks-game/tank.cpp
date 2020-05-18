@@ -220,11 +220,11 @@ void Tank::makeBullet(double x, double y, double angle, double radius, double sp
 		bp->push_back(tankPowers[k]->makeBulletPower());
 	}
 
-	Bullet* temp = new Bullet(x, y, radius, angle, speed, acc, id, *bp);
+	Bullet* temp = new Bullet(x, y, radius, angle, speed, acc, id, bp);
 	BulletManager::pushBullet(temp);
 
 	delete bp;
-	//don't delete bp! it's being used! //(doesn't bp need to be deleted though?) (yes because copy constructor is called, which I'll fix later)
+	//bp can be deleted here or in the Bullet constructor, since every bullet should get a different bulletpower vector
 }
 
 inline void Tank::defaultMakeBullet(double x, double y, double angle) {

@@ -56,7 +56,7 @@ public:
 	
 public:
 	Bullet(double x_, double y_, double r_, double a, double vel, double acc, char id_);
-	Bullet(double x_, double y_, double r_, double a, double vel, double acc, char id_, std::vector<BulletPower*>);
+	Bullet(double x_, double y_, double r_, double a, double vel, double acc, char id_, std::vector<BulletPower*>* bp);
 	void move();
 	void draw();
 	void draw(double, double);
