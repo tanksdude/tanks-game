@@ -185,19 +185,7 @@ void HorizontalLightning::tick() {
 	}
 }
 
-void HorizontalLightning::modifiedTankCollision(Tank* t) {
-	//if bolts are being randomized, clear them, and mark that they've been cleared
-	if (!boltsNeeded) {
-		clearBolts();
-	}
-	boltsNeeded = true;
-
-	if (std::find(targetedTanks.begin(), targetedTanks.end(), t) == targetedTanks.end()) {
-		targetedTanks.push_back(t);
-	} else {
-		return;
-	}
-
+void HorizontalLightning::modifiedCircleCollision(Circle* c) {
 	/* Lightning zone/region layout:
 	 *
 	 *       6aL      |  3aL  |               2a             |  3aR  |       6aR
@@ -212,202 +200,202 @@ void HorizontalLightning::modifiedTankCollision(Tank* t) {
 	 *
 	 *
 	 *                ^       ^                              ^       ^
-	 *                x     x + t->r                     x+w - t->r  x+w
+	 *                x     x + c->r                     x+w - c->r  x+w
 	 *
 	 * 0 = leftStart/rightStart
-	 * zone/region 7: circle radius t->r around 0
-	 * determined by tank center
+	 * zone/region 7: circle radius c->r around 0
+	 * determined by circle center
 	 */
 
 	//TODO: confirm everything is good
 	double intersectionXL, intersectionXR, intersectionYL, intersectionYR;
 	int boltPointsL = -1, boltPointsR = -1;
-	//determine region the tank is in
-	if (t->x-t->r >= x && t->x+t->r <= x+w) {
-		if (t->y >= y && t->y <= y+h) {
-			intersectionXL = t->x - t->r;
-			intersectionXR = t->x + t->r;
-			intersectionYL = t->y;
-			intersectionYR = t->y;
+	//determine region the circle is in
+	if (c->x-c->r >= x && c->x+c->r <= x+w) {
+		if (c->y >= y && c->y <= y+h) {
+			intersectionXL = c->x - c->r;
+			intersectionXR = c->x + c->r;
+			intersectionYL = c->y;
+			intersectionYR = c->y;
 			//std::cout << "case 1" << std::endl;
 		} else {
-			if (t->y > y+h) {
+			if (c->y > y+h) {
 				intersectionYL = y + h;
 				intersectionYR = y + h;
 				//std::cout << "case 2a" << std::endl;
-			} else { //t->y < y
+			} else { //c->y < y
 				intersectionYL = y;
 				intersectionYR = y;
 				//std::cout << "case 2b" << std::endl;
 			}
-			intersectionXL = t->x - sqrt(pow(t->r, 2) - pow(intersectionYL - t->y, 2));
+			intersectionXL = c->x - sqrt(pow(c->r, 2) - pow(intersectionYL - c->y, 2));
 			//intersectionXL = (intersectionXL < x ? x : intersectionXL);
-			intersectionXR = t->x + sqrt(pow(t->r, 2) - pow(intersectionYR - t->y, 2));
+			intersectionXR = c->x + sqrt(pow(c->r, 2) - pow(intersectionYR - c->y, 2));
 			//intersectionXR = (intersectionXR > x+w ? x+w : intersectionXR);
 		}
 	} else {
 		//I think case 4 and 5 are the same
-		if (t->x-t->r < x) {
+		if (c->x-c->r < x) {
 			//left
 
-			if (CollisionHandler::fullyCollided(leftSide, t)) {
-				intersectionXL = t->x;
-				intersectionYL = t->y;
+			if (CollisionHandler::fullyCollided(leftSide, c)) {
+				intersectionXL = c->x;
+				intersectionYL = c->y;
 				boltPointsL = 2;
-				if (t->y > y+h) {
-					intersectionXR = t->x + sqrt(pow(t->r, 2) - pow(t->y - (y+h), 2));
+				if (c->y > y+h) {
+					intersectionXR = c->x + sqrt(pow(c->r, 2) - pow(c->y - (y+h), 2));
 					intersectionYR = y + h;
-				} else if(t->y < y) {
-					intersectionXR = t->x + sqrt(pow(t->r, 2) - pow(t->y - y, 2));
+				} else if(c->y < y) {
+					intersectionXR = c->x + sqrt(pow(c->r, 2) - pow(c->y - y, 2));
 					intersectionYR = y;
 				} else {
-					intersectionXR = t->x + t->r;
-					intersectionYR = t->y;
+					intersectionXR = c->x + c->r;
+					intersectionYR = c->y;
 				}
 				//std::cout << "case 7L_L" << std::endl;
 			} else {
-				//check whether the tank is really far to the left, or just barely out of range of leftSide
+				//check whether the circle is really far to the left, or just barely out of range of leftSide
 				//difference between 6aL and 3aL: intersectionXL
-				if (t->x <= x) {
-					if (t->y > y+h) {
+				if (c->x <= x) {
+					if (c->y > y+h) {
 						intersectionXL = x;
-						intersectionYL = t->y - sqrt(pow(t->r, 2) - pow(t->x - x, 2));
-						intersectionXR = t->x + sqrt(pow(t->r, 2) - pow(t->y - (y+h), 2));
+						intersectionYL = c->y - sqrt(pow(c->r, 2) - pow(c->x - x, 2));
+						intersectionXR = c->x + sqrt(pow(c->r, 2) - pow(c->y - (y+h), 2));
 						intersectionYR = y + h;
 						//std::cout << "case 6aL ";
 						//std::cout << "xL:" << (intersectionXL - x) << " xR:" << (intersectionXR - x) << " yL:" << (intersectionYL - y) << " yR:" << (intersectionYR - y) << std::endl;
-					} else if(t->y < y) {
+					} else if(c->y < y) {
 						intersectionXL = x;
-						intersectionYL = t->y + sqrt(pow(t->r, 2) - pow(t->x - x, 2));
-						intersectionXR = t->x + sqrt(pow(t->r, 2) - pow(t->y - y, 2));
+						intersectionYL = c->y + sqrt(pow(c->r, 2) - pow(c->x - x, 2));
+						intersectionXR = c->x + sqrt(pow(c->r, 2) - pow(c->y - y, 2));
 						intersectionYR = y;
 						//std::cout << "case 6bL ";
 						//std::cout << "xL:" << (intersectionXL - x) << " xR:" << (intersectionXR - x) << " yL:" << (intersectionYL - y) << " yR:" << (intersectionYR - y) << std::endl;
 					} else {
 						intersectionXL = x;
-						if (t->y > y + h/2) {
-							intersectionYL = t->y - sqrt(pow(t->r, 2) - pow(t->x - x, 2));
+						if (c->y > y + h/2) {
+							intersectionYL = c->y - sqrt(pow(c->r, 2) - pow(c->x - x, 2));
 						} else {
-							intersectionYL = t->y + sqrt(pow(t->r, 2) - pow(t->x - x, 2));
+							intersectionYL = c->y + sqrt(pow(c->r, 2) - pow(c->x - x, 2));
 						}
-						intersectionXR = t->x + t->r;
-						intersectionYR = t->y;
+						intersectionXR = c->x + c->r;
+						intersectionYR = c->y;
 						//std::cout << "case 5L ";
 						//std::cout << "xL:" << (intersectionXL - x) << " xR:" << (intersectionXR - x) << " yL:" << (intersectionYL - y) << " yR:" << (intersectionYR - y) << std::endl;
 					}
 				} else {
-					if (t->y > y+h) {
-						intersectionXL = t->x - sqrt(pow(t->r, 2) - pow(t->y - (y+h), 2));
+					if (c->y > y+h) {
+						intersectionXL = c->x - sqrt(pow(c->r, 2) - pow(c->y - (y+h), 2));
 						intersectionXL = (intersectionXL < x ? x : intersectionXL);
-						intersectionYL = t->y - sqrt(pow(t->r, 2) - pow(t->x - x, 2));
+						intersectionYL = c->y - sqrt(pow(c->r, 2) - pow(c->x - x, 2));
 						intersectionYL = (intersectionYL > y+h ? y+h : intersectionYL);
-						intersectionXR = t->x + sqrt(pow(t->r, 2) - pow(t->y - (y+h), 2));
+						intersectionXR = c->x + sqrt(pow(c->r, 2) - pow(c->y - (y+h), 2));
 						intersectionYR = y + h;
 						//std::cout << "case 3aL ";
 						//std::cout << "xL:" << (intersectionXL - x) << " xR:" << (intersectionXR - x) << " yL:" << (intersectionYL - y) << " yR:" << (intersectionYR - y) << std::endl;
-					} else if(t->y < y) {
-						intersectionXL = t->x - sqrt(pow(t->r, 2) - pow(t->y - y, 2));
+					} else if(c->y < y) {
+						intersectionXL = c->x - sqrt(pow(c->r, 2) - pow(c->y - y, 2));
 						intersectionXL = (intersectionXL < x ? x : intersectionXL);
-						intersectionYL = t->y + sqrt(pow(t->r, 2) - pow(t->x - x, 2));
+						intersectionYL = c->y + sqrt(pow(c->r, 2) - pow(c->x - x, 2));
 						intersectionYL = (intersectionYL < y ? y : intersectionYL);
-						intersectionXR = t->x + sqrt(pow(t->r, 2) - pow(t->y - y, 2));
+						intersectionXR = c->x + sqrt(pow(c->r, 2) - pow(c->y - y, 2));
 						intersectionYR = y;
 						//std::cout << "case 3bL ";
 						//std::cout << "xL:" << (intersectionXL - x) << " xR:" << (intersectionXR - x) << " yL:" << (intersectionYL - y) << " yR:" << (intersectionYR - y) << std::endl;
 					} else {
 						intersectionXL = x;
-						if (t->y > y + h/2) {
-							intersectionYL = t->y - sqrt(pow(t->r, 2) - pow(t->x - x, 2));
+						if (c->y > y + h/2) {
+							intersectionYL = c->y - sqrt(pow(c->r, 2) - pow(c->x - x, 2));
 						} else {
-							intersectionYL = t->y + sqrt(pow(t->r, 2) - pow(t->x - x, 2));
+							intersectionYL = c->y + sqrt(pow(c->r, 2) - pow(c->x - x, 2));
 						}
-						intersectionXR = t->x + t->r;
-						intersectionYR = t->y;
+						intersectionXR = c->x + c->r;
+						intersectionYR = c->y;
 						//std::cout << "case 4L ";
 						//std::cout << "xL:" << (intersectionXL - x) << " xR:" << (intersectionXR - x) << " yL:" << (intersectionYL - y) << " yR:" << (intersectionYR - y) << std::endl;
 					}
 				}
 			}
 
-			if (CollisionHandler::fullyCollided(rightSide, t)) { //this should be very rare (only happens for small lightnings)
-				intersectionXR = t->x;
-				intersectionYR = t->y;
+			if (CollisionHandler::fullyCollided(rightSide, c)) { //this should be very rare (only happens for small lightnings)
+				intersectionXR = c->x;
+				intersectionYR = c->y;
 				boltPointsR = 2;
 				//std::cout << "case 7R_L" << std::endl;
 			}
-		} else { //t->x+t->r > x+w
+		} else { //c->x+c->r > x+w
 			//right
 
-			if (CollisionHandler::fullyCollided(rightSide, t)) {
-				intersectionXR = t->x;
-				intersectionYR = t->y;
+			if (CollisionHandler::fullyCollided(rightSide, c)) {
+				intersectionXR = c->x;
+				intersectionYR = c->y;
 				boltPointsR = 2;
-				if (t->y > y+h) {
-					intersectionXL = t->x - sqrt(pow(t->r, 2) - pow(t->y - (y+h), 2));
+				if (c->y > y+h) {
+					intersectionXL = c->x - sqrt(pow(c->r, 2) - pow(c->y - (y+h), 2));
 					intersectionYL = y + h;
-				} else if(t->y < y) {
-					intersectionXL = t->x - sqrt(pow(t->r, 2) - pow(t->y - y, 2));
+				} else if(c->y < y) {
+					intersectionXL = c->x - sqrt(pow(c->r, 2) - pow(c->y - y, 2));
 					intersectionYL = y;
 				} else {
-					intersectionXL = t->x - t->r;
-					intersectionYL = t->y;
+					intersectionXL = c->x - c->r;
+					intersectionYL = c->y;
 				}
 				//std::cout << "case 7R_R" << std::endl;
 			} else {
-				if (t->x >= x+w) {
-					if (t->y > y+h) {
-						intersectionXL = t->x - sqrt(pow(t->r, 2) - pow(t->y - (y+h), 2));
+				if (c->x >= x+w) {
+					if (c->y > y+h) {
+						intersectionXL = c->x - sqrt(pow(c->r, 2) - pow(c->y - (y+h), 2));
 						intersectionYL = y + h;
 						intersectionXR = x + w;
-						intersectionYR = t->y - sqrt(pow(t->r, 2) - pow(t->x - (x+w), 2));
+						intersectionYR = c->y - sqrt(pow(c->r, 2) - pow(c->x - (x+w), 2));
 						//std::cout << "case 6aR ";
 						//std::cout << "xL:" << (intersectionXL - x) << " xR:" << (intersectionXR - x) << " yL:" << (intersectionYL - y) << " yR:" << (intersectionYR - y) << std::endl;
-					} else if(t->y < y) {
-						intersectionXL = t->x - sqrt(pow(t->r, 2) - pow(t->y - y, 2));
+					} else if(c->y < y) {
+						intersectionXL = c->x - sqrt(pow(c->r, 2) - pow(c->y - y, 2));
 						intersectionYL = y;
 						intersectionXR = x + w;
-						intersectionYR = t->y + sqrt(pow(t->r, 2) - pow(t->x - (x+w), 2));
+						intersectionYR = c->y + sqrt(pow(c->r, 2) - pow(c->x - (x+w), 2));
 						//std::cout << "case 6bR ";
 						//std::cout << "xL:" << (intersectionXL - x) << " xR:" << (intersectionXR - x) << " yL:" << (intersectionYL - y) << " yR:" << (intersectionYR - y) << std::endl;
 					} else {
-						intersectionXL = t->x - t->r;
-						intersectionYL = t->y;
+						intersectionXL = c->x - c->r;
+						intersectionYL = c->y;
 						intersectionXR = x + w;
-						if (t->y > y + h/2) {
-							intersectionYR = t->y - sqrt(pow(t->r, 2) - pow(t->x - (x+w), 2));
+						if (c->y > y + h/2) {
+							intersectionYR = c->y - sqrt(pow(c->r, 2) - pow(c->x - (x+w), 2));
 						} else {
-							intersectionYR = t->y + sqrt(pow(t->r, 2) - pow(t->x - (x+w), 2));
+							intersectionYR = c->y + sqrt(pow(c->r, 2) - pow(c->x - (x+w), 2));
 						}
 						//std::cout << "case 5R ";
 						//std::cout << "xL:" << (intersectionXL - x) << " xR:" << (intersectionXR - x) << " yL:" << (intersectionYL - y) << " yR:" << (intersectionYR - y) << std::endl;
 					}
 				} else {
-					if (t->y > y+h) {
-						intersectionXL = t->x - sqrt(pow(t->r, 2) - pow(t->y - (y+h), 2));
+					if (c->y > y+h) {
+						intersectionXL = c->x - sqrt(pow(c->r, 2) - pow(c->y - (y+h), 2));
 						intersectionYL = y + h;
-						intersectionXR = t->x + sqrt(pow(t->r, 2) - pow(t->y - (y+h), 2));
+						intersectionXR = c->x + sqrt(pow(c->r, 2) - pow(c->y - (y+h), 2));
 						intersectionXR = (intersectionXR > x+w ? x+w : intersectionXR);
-						intersectionYR = t->y - sqrt(pow(t->r, 2) - pow(t->x - (x+w), 2));
+						intersectionYR = c->y - sqrt(pow(c->r, 2) - pow(c->x - (x+w), 2));
 						intersectionYR = (intersectionYR > y+h ? y+h : intersectionYR);
 						//std::cout << "case 3aR ";
 						//std::cout << "xL:" << (intersectionXL - x) << " xR:" << (intersectionXR - x) << " yL:" << (intersectionYL - y) << " yR:" << (intersectionYR - y) << std::endl;
-					} else if(t->y < y) {
-						intersectionXL = t->x - sqrt(pow(t->r, 2) - pow(t->y - y, 2));
+					} else if(c->y < y) {
+						intersectionXL = c->x - sqrt(pow(c->r, 2) - pow(c->y - y, 2));
 						intersectionYL = y;
-						intersectionXR = t->x + sqrt(pow(t->r, 2) - pow(t->y - y, 2));
+						intersectionXR = c->x + sqrt(pow(c->r, 2) - pow(c->y - y, 2));
 						intersectionXR = (intersectionXR > x+w ? x+w : intersectionXR);
-						intersectionYR = t->y + sqrt(pow(t->r, 2) - pow(t->x - (x+w), 2));
+						intersectionYR = c->y + sqrt(pow(c->r, 2) - pow(c->x - (x+w), 2));
 						intersectionYR = (intersectionYR < y ? y : intersectionYR);
 						//std::cout << "case 3bR ";
 						//std::cout << "xL:" << (intersectionXL - x) << " xR:" << (intersectionXR - x) << " yL:" << (intersectionYL - y) << " yR:" << (intersectionYR - y) << std::endl;
 					} else {
-						intersectionXL = t->x - t->r;
-						intersectionYL = t->y;
+						intersectionXL = c->x - c->r;
+						intersectionYL = c->y;
 						intersectionXR = x + w;
-						if (t->y > y + h/2) {
-							intersectionYR = t->y - sqrt(pow(t->r, 2) - pow(t->x - (x+w), 2));
+						if (c->y > y + h/2) {
+							intersectionYR = c->y - sqrt(pow(c->r, 2) - pow(c->x - (x+w), 2));
 						} else {
-							intersectionYR = t->y + sqrt(pow(t->r, 2) - pow(t->x - (x+w), 2));
+							intersectionYR = c->y + sqrt(pow(c->r, 2) - pow(c->x - (x+w), 2));
 						}
 						//std::cout << "case 4R ";
 						//std::cout << "xL:" << (intersectionXL - x) << " xR:" << (intersectionXR - x) << " yL:" << (intersectionYL - y) << " yR:" << (intersectionYR - y) << std::endl;
@@ -415,9 +403,9 @@ void HorizontalLightning::modifiedTankCollision(Tank* t) {
 				}
 			}
 
-			if (CollisionHandler::fullyCollided(leftSide, t)) { //this should be very rare (only happens for small lightnings)
-				intersectionXL = t->x;
-				intersectionYL = t->y;
+			if (CollisionHandler::fullyCollided(leftSide, c)) { //this should be very rare (only happens for small lightnings)
+				intersectionXL = c->x;
+				intersectionYL = c->y;
 				boltPointsL = 2;
 				//std::cout << "case 7L_R" << std::endl;
 			}
@@ -442,9 +430,35 @@ void HorizontalLightning::modifiedTankCollision(Tank* t) {
 	//TODO: is this complete?
 }
 
+void HorizontalLightning::modifiedTankCollision(Tank* t) {
+	//if bolts are being randomized, clear them, and mark that they've been cleared
+	if (!boltsNeeded) {
+		clearBolts();
+	}
+	boltsNeeded = true;
+
+	if (std::find(targetedTanks.begin(), targetedTanks.end(), t) == targetedTanks.end()) {
+		targetedTanks.push_back(t);
+	} else {
+		return;
+	}
+
+	modifiedCircleCollision(t);
+}
+
 void HorizontalLightning::modifiedBulletCollision(Bullet* b) {
-	//TODO: add lightning bolts to the location
-	return;
+	if (!boltsNeeded) {
+		clearBolts();
+	}
+	boltsNeeded = true;
+
+	if (std::find(targetedBullets.begin(), targetedBullets.end(), b) == targetedBullets.end()) {
+		targetedBullets.push_back(b);
+	} else {
+		return;
+	}
+
+	modifiedCircleCollision(b);
 }
 
 bool HorizontalLightning::validLocation() {

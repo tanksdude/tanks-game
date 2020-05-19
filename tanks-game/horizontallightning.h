@@ -76,7 +76,10 @@ public:
 	//bool modifiesBulletCollision = true;
 	virtual bool actuallyCollided(Bullet*) { return currentlyActive; }
 	virtual void modifiedBulletCollision(Bullet*);
+protected:
+	virtual void modifiedCircleCollision(Circle*); //tanks and bullets are both circles, so calculating the bolt positions would be the same
 
+public:
 	virtual ColorValueHolder getBackgroundColor();
 	virtual ColorValueHolder getBoltColor();
 	virtual std::string getName() { return getClassName(); };
