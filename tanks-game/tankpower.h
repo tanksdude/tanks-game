@@ -28,7 +28,10 @@ public:
 		timeLeft--;
 	}
 	virtual bool isDone() {
-		return timeLeft <= 0;
+		if (maxTime < 0) {
+			return false;
+		}
+		return (timeLeft <= 0);
 	}
 	virtual ColorValueHolder getColor() = 0;
 

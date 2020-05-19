@@ -28,7 +28,12 @@ public:
 
 	virtual void tick() = 0; //most will be doing a lot, though they shouldn't need this, but just in case
 	virtual void powerTick(Bullet*) { return; }
-	virtual bool isDone() { return false; }
+	virtual bool isDone() { //typically, this will always be false
+		if (maxTime < 0) {
+			return false;
+		}
+		return (timeLeft <= 0);
+	}
 	virtual ColorValueHolder getColor() = 0;
 
 	virtual TankPower* makeTankPower() = 0;

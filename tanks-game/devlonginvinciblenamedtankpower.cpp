@@ -15,6 +15,6 @@ BulletPower* DevLongInvincibleNamedTankPower::makeBulletPower() {
 }
 
 DevLongInvincibleNamedTankPower::DevLongInvincibleNamedTankPower() {
-	maxTime = 50000;
-	timeLeft = 50000;
+	maxTime = -1;
+	timeLeft = 0;
 }
