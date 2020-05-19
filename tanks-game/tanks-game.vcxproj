@@ -237,6 +237,7 @@
     <ClInclude Include="devlonginvinciblenamedbulletpower.h" />
     <ClInclude Include="devlonginvinciblenamedpower.h" />
     <ClInclude Include="devlonginvinciblenamedtankpower.h" />
+    <ClInclude Include="point.h" />
     <ClInclude Include="priorityhandler.h" />
     <ClInclude Include="cannonpoint.h" />
     <ClInclude Include="circle.h" />
