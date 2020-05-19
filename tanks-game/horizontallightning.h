@@ -3,12 +3,22 @@
 #include <vector>
 
 struct LightningBolt {
-	std::vector<float> positions; //positions is array of (x,y) points in range [0,1]
+	std::vector<float> positions; //positions is array of (x,y) points in range [0,1] (this is for easy vertex streaming)
 	int length; //positions.size()/2, unless it's uninitialized
 	LightningBolt() { length = 0; } //don't use
-	LightningBolt(int l) {
+	LightningBolt(int l) { //try not to use
 		length = l;
 		positions.reserve(l*2);
+	}
+	LightningBolt(float startX, float startY, float endX, float endY, int l) {
+		length = l;
+		positions.reserve(l*2);
+		positions.push_back(startX); positions.push_back(startY);
+		for (int i = 1; i < l-1; i++) {
+			positions.push_back(startX + (endX-startX) * float(i)/(l-1));
+			positions.push_back(startY + (endY-startY) * float(i)/(l-1));
+		}
+		positions.push_back(endX); positions.push_back(endY);
 	}
 };
 
@@ -18,15 +28,25 @@ protected:
 	double tickCount = 0;
 	double tickCycle;
 	bool currentlyActive;
-	double* stateMultiplier; //length = 2 because bool bolt action
+	double stateMultiplier[2]; //length = 2 because bool bolt action
 	//bool flexible; //worry about later
 
-	const unsigned int maxBolts = 2; //this is maximum amount of normal bolts; the lightning can still make more bolts when it has to destroy a lot of bullets
+	Circle* leftSide; //for checks when a bullet/tank collides
+	Circle* rightSide;
+
+	const unsigned int maxBolts = 2; //this is maximum amount of normal bolts; the lightning can make any number of bolts when it has to destroy a bullet or tank
 	double lengthOfBolt = 4;
 	std::vector<LightningBolt*> bolts; //is a vector of pointers instead of objects so resizes take less time
 	double boltTick = 0;
 	double boltCycle = 4; //how often bolts get refreshed
-	virtual void refreshBolts(); //how often bolts get refreshed
+	bool boltsNeeded = false; //if the lightning hits something, this is changed, and no random bolts will be made; reset every boltCycle ticks
+	virtual void refreshBolts(); //redraw the bolts
+	virtual void refreshBolt(int num); //redraw a bolt
+	virtual void simpleRefreshBolt(int num); //fast path for refreshing a bolt that goes from beginning to end
+	virtual int getDefaultNumBoltPoints(double horzDist); //number of points that make up a bolt
+	virtual void clearBolts(); //the vector holds pointers, so memory has to be freed
+	std::vector<Bullet*> targetedBullets;
+	std::vector<Tank*> targetedTanks; //Circle* would be enough...
 
 private:
 	static VertexArray* background_va;
