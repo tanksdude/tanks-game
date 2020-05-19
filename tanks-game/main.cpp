@@ -473,6 +473,9 @@ void tankToHazard() {
 							if (result <= -2) {
 								bool firstDies = rand()%2;
 								if (firstDies) {
+									if (ch->hasSpecialEffectTankCollision) {
+										ch->specialEffectTankCollision(t);
+									}
 									shouldBeKilled = true;
 								} else {
 									killCircleHazard = true;
@@ -482,12 +485,21 @@ void tankToHazard() {
 								killCircleHazard = true;
 							} else if (result >= 2) { //it's a draw, so neither dies
 								if (ch->modifiesTankCollision) {
+									if (ch->hasSpecialEffectTankCollision) {
+										ch->specialEffectTankCollision(t);
+									}
 									ch->modifiedTankCollision(t);
 								} else {
+									if (ch->hasSpecialEffectTankCollision) {
+										ch->specialEffectTankCollision(t);
+									}
 									CollisionHandler::pushMovableAwayFromImmovable(t, ch);
 								}
 							} else {
 								if (result == 0) {
+									if (ch->hasSpecialEffectTankCollision) {
+										ch->specialEffectTankCollision(t);
+									}
 									shouldBeKilled = true;
 								} else {
 									killCircleHazard = true;
@@ -552,6 +564,9 @@ void tankToHazard() {
 							if (result <= -2) {
 								bool firstDies = rand()%2;
 								if (firstDies) {
+									if (rh->hasSpecialEffectTankCollision) {
+										rh->specialEffectTankCollision(t);
+									}
 									shouldBeKilled = true;
 								} else {
 									killRectHazard = true;
@@ -561,12 +576,21 @@ void tankToHazard() {
 								killRectHazard = true;
 							} else if (result >= 2) { //it's a draw, so neither dies
 								if (rh->modifiesTankCollision) {
+									if (rh->hasSpecialEffectTankCollision) {
+										rh->specialEffectTankCollision(t);
+									}
 									rh->modifiedTankCollision(t);
 								} else {
+									if (rh->hasSpecialEffectTankCollision) {
+										rh->specialEffectTankCollision(t);
+									}
 									CollisionHandler::pushMovableAwayFromImmovable(t, rh);
 								}
 							} else {
 								if (result == 0) {
+									if (rh->hasSpecialEffectTankCollision) {
+										rh->specialEffectTankCollision(t);
+									}
 									shouldBeKilled = true;
 								} else {
 									killRectHazard = true;
@@ -873,6 +897,9 @@ void bulletToHazard() {
 							if (result <= -2) {
 								bool firstDies = rand()%2;
 								if (firstDies) {
+									if (ch->hasSpecialEffectBulletCollision) {
+										ch->specialEffectBulletCollision(b);
+									}
 									shouldBeKilled = true;
 								} else {
 									killCircleHazard = true;
@@ -882,12 +909,21 @@ void bulletToHazard() {
 								killCircleHazard = true;
 							} else if (result >= 2) { //it's a draw, so neither dies
 								if (ch->modifiesBulletCollision) {
+									if (ch->hasSpecialEffectBulletCollision) {
+										ch->specialEffectBulletCollision(b);
+									}
 									ch->modifiedBulletCollision(b);
 								} else {
+									if (ch->hasSpecialEffectBulletCollision) {
+										ch->specialEffectBulletCollision(b);
+									}
 									CollisionHandler::pushMovableAwayFromImmovable(b, ch);
 								}
 							} else {
 								if (result == 0) {
+									if (ch->hasSpecialEffectBulletCollision) {
+										ch->specialEffectBulletCollision(b);
+									}
 									shouldBeKilled = true;
 								} else {
 									killCircleHazard = true;
@@ -952,6 +988,9 @@ void bulletToHazard() {
 							if (result <= -2) {
 								bool firstDies = rand()%2;
 								if (firstDies) {
+									if (rh->hasSpecialEffectBulletCollision) {
+										rh->specialEffectBulletCollision(b);
+									}
 									shouldBeKilled = true;
 								} else {
 									killRectHazard = true;
@@ -961,12 +1000,21 @@ void bulletToHazard() {
 								killRectHazard = true;
 							} else if (result >= 2) { //it's a draw, so neither dies
 								if (rh->modifiesBulletCollision) {
+									if (rh->hasSpecialEffectBulletCollision) {
+										rh->specialEffectBulletCollision(b);
+									}
 									rh->modifiedBulletCollision(b);
 								} else {
+									if (rh->hasSpecialEffectBulletCollision) {
+										rh->specialEffectBulletCollision(b);
+									}
 									CollisionHandler::pushMovableAwayFromImmovable(b, rh);
 								}
 							} else {
 								if (result == 0) {
+									if (rh->hasSpecialEffectBulletCollision) {
+										rh->specialEffectBulletCollision(b);
+									}
 									shouldBeKilled = true;
 								} else {
 									killRectHazard = true;

@@ -71,13 +71,17 @@ public:
 
 	//bool modifiesTankCollision = true;
 	virtual bool actuallyCollided(Tank*) { return currentlyActive; }
-	virtual void modifiedTankCollision(Tank*);
+	virtual void modifiedTankCollision(Tank*) { return; }
+	//bool hasSpecialEffectTankCollision = true;
+	virtual void specialEffectTankCollision(Tank*);
 
 	//bool modifiesBulletCollision = true;
 	virtual bool actuallyCollided(Bullet*) { return currentlyActive; }
-	virtual void modifiedBulletCollision(Bullet*);
+	virtual void modifiedBulletCollision(Bullet*) { return; }
+	//bool hasSpecialEffectBulletCollision = true;
+	virtual void specialEffectBulletCollision(Bullet*);
 protected:
-	virtual void modifiedCircleCollision(Circle*); //tanks and bullets are both circles, so calculating the bolt positions would be the same
+	virtual void specialEffectCircleCollision(Circle*); //tanks and bullets are both circles, so calculating the bolt positions would be the same
 
 public:
 	virtual ColorValueHolder getBackgroundColor();

@@ -42,7 +42,9 @@ HorizontalLightning::HorizontalLightning(double xpos, double ypos, double width,
 	canAcceptPowers = false;
 
 	modifiesTankCollision = true;
+	hasSpecialEffectTankCollision = true;
 	modifiesBulletCollision = true;
+	hasSpecialEffectBulletCollision = true;
 
 	local_initializeGPU();
 	initializeGPU();
@@ -185,7 +187,7 @@ void HorizontalLightning::tick() {
 	}
 }
 
-void HorizontalLightning::modifiedCircleCollision(Circle* c) {
+void HorizontalLightning::specialEffectCircleCollision(Circle* c) {
 	/* Lightning zone/region layout:
 	 *
 	 *       6aL      |  3aL  |               2a             |  3aR  |       6aR
@@ -430,7 +432,7 @@ void HorizontalLightning::modifiedCircleCollision(Circle* c) {
 	//TODO: is this complete?
 }
 
-void HorizontalLightning::modifiedTankCollision(Tank* t) {
+void HorizontalLightning::specialEffectTankCollision(Tank* t) {
 	//if bolts are being randomized, clear them, and mark that they've been cleared
 	if (!boltsNeeded) {
 		clearBolts();
@@ -443,10 +445,10 @@ void HorizontalLightning::modifiedTankCollision(Tank* t) {
 		return;
 	}
 
-	modifiedCircleCollision(t);
+	specialEffectCircleCollision(t);
 }
 
-void HorizontalLightning::modifiedBulletCollision(Bullet* b) {
+void HorizontalLightning::specialEffectBulletCollision(Bullet* b) {
 	if (!boltsNeeded) {
 		clearBolts();
 	}
@@ -458,7 +460,7 @@ void HorizontalLightning::modifiedBulletCollision(Bullet* b) {
 		return;
 	}
 
-	modifiedCircleCollision(b);
+	specialEffectCircleCollision(b);
 }
 
 bool HorizontalLightning::validLocation() {
