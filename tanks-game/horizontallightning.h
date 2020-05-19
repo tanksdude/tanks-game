@@ -55,6 +55,8 @@ private:
 	VertexArray* bolt_va;
 	VertexBuffer* bolt_vb;
 	//the bolt is just lines so only the length is needed when drawing (meaning no IndexBuffer needed)
+	int bolt_vb_length;
+	void local_reinitializeGPU(int length);
 	static bool initialized_GPU;
 	virtual void streamBoltVertices(unsigned int boltNum); //(stream to bolt_vb)
 public:

@@ -23,7 +23,8 @@ HorizontalLightning::HorizontalLightning(double xpos, double ypos, double width,
 	h = height;
 
 	tickCycle = 100; //100 is JS default (because of power speed)
-	stateMultiplier[0] = 2, stateMultiplier[1] = 2; //don't forget about std::copy
+	double temp[2] = { 2, 2 };
+	std::copy(temp, temp+2, stateMultiplier);
 	currentlyActive = false;
 	//flexible = false;
 
@@ -53,7 +54,6 @@ int HorizontalLightning::getDefaultNumBoltPoints(double horzDist) {
 }
 
 HorizontalLightning::~HorizontalLightning() {
-	delete[] stateMultiplier;
 	delete leftSide, rightSide;
 
 	local_uninitializeGPU();
@@ -92,8 +92,23 @@ void HorizontalLightning::local_initializeGPU() {
 		positions[i*2]   = bolts[0]->positions[i*2];
 		positions[i*2+1] = bolts[0]->positions[i*2+1];
 	}
+	bolt_vb_length = bolts[0]->length;
 	
 	bolt_vb = new VertexBuffer(positions, bolts[0]->length*2 * sizeof(float), GL_STREAM_DRAW);
+	VertexBufferLayout layout(2);
+	bolt_va = new VertexArray(*bolt_vb, layout);
+
+	delete[] positions;
+}
+
+void HorizontalLightning::local_reinitializeGPU(int length) { //does not seed the VertexBuffer with values
+	delete bolt_va;
+	delete bolt_vb;
+
+	float* positions = new float[length*2];
+	bolt_vb_length = length;
+	
+	bolt_vb = new VertexBuffer(positions, length*2 * sizeof(float), GL_STREAM_DRAW);
 	VertexBufferLayout layout(2);
 	bolt_va = new VertexArray(*bolt_vb, layout);
 
@@ -416,6 +431,9 @@ void HorizontalLightning::modifiedTankCollision(Tank* t) {
 	bolts.push_back(new LightningBolt((intersectionXL-x)/w, (intersectionYL-y)/h, (intersectionXR-x)/w, (intersectionYR-y)/h, 2));
 	bolts.push_back(new LightningBolt((intersectionXR-x)/w, (intersectionYR-y)/h, 1, .5, boltPointsR));
 	//simpleRefreshBolt(bolts.size()-2); simpleRefreshBolt(bolts.size()-1);
+	if (boltPointsL > bolt_vb_length || boltPointsR > bolt_vb_length) {
+		local_reinitializeGPU(std::max(boltPointsL, boltPointsR));
+	}
 
 	//compared to JS Tanks, this intersection logic is much more complex
 	//however, refreshing the bolts doesn't consider the horizontal edges (because this is a "horizontal lightning", so there's usually no need)
@@ -516,6 +534,12 @@ void HorizontalLightning::draw() {
 	//shader->setUniformMat4f("u_MVP", MVPM);
 
 	for (int i = 0; i < bolts.size(); i++) {
+		//I think the VertexBuffer resizing should happen here, but there would probably be less strain if it happens only when a bullet/tank collides
+		/*
+		if (bolts[i]->length > bolt_vb_length) {
+			local_reinitializeGPU(bolts[i]->length);
+		}
+		*/
 		streamBoltVertices(i);
 		Renderer::Draw(*bolt_va, *shader, GL_LINE_STRIP, 0, bolts[i]->length);
 	}
