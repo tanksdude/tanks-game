@@ -4,7 +4,7 @@
 class Hazard {
 protected:
 	friend class ResetThings;
-	char id;
+	char id = -1;
 	bool canAcceptPowers;
 	//std::vector<HazardPower*> hazardPowers;
 
