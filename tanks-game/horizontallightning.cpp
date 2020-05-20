@@ -420,7 +420,6 @@ void HorizontalLightning::specialEffectCircleCollision(Circle* c) {
 	bolts.push_back(new LightningBolt(0, .5, (intersectionXL-x)/w, (intersectionYL-y)/h, boltPointsL));
 	bolts.push_back(new LightningBolt((intersectionXL-x)/w, (intersectionYL-y)/h, (intersectionXR-x)/w, (intersectionYR-y)/h, 2));
 	bolts.push_back(new LightningBolt((intersectionXR-x)/w, (intersectionYR-y)/h, 1, .5, boltPointsR));
-	//simpleRefreshBolt(bolts.size()-2); simpleRefreshBolt(bolts.size()-1);
 	if (boltPointsL > bolt_vb_length || boltPointsR > bolt_vb_length) {
 		local_reinitializeGPU(std::max(boltPointsL, boltPointsR));
 	}
@@ -486,11 +485,65 @@ bool HorizontalLightning::validLocation() {
 }
 
 void HorizontalLightning::simpleRefreshBolt(int num) {
-	//double maxVarience = 4*h/w;
-	double maxVarience = h/4;
+	double maxVariance = 1.0/4.0;
+	/* lightning bolts are allowed to be in an area that looks like this:
+	 * 
+	 * +   --------------   +        <- 1.0
+	 * |  /              \  |
+	 * | /                \ |
+	 * |<       HERE       >|
+	 * | \                / |
+	 * |  \              /  |
+	 * +   --------------   +        <- 0.0
+	 * 
+	 * ^                    ^
+	 * 0.0                  1.0
+	 * 
+	 * the region is 1/4 triangle, 1/2 rectangle, then 1/4 triangle
+	 */
+
+	//old method:
+	/*
 	for (int j = 1; j < bolts[num]->length-1; j++) {
 		//bolts[num]->positions[j*2]   = float(j)/(bolts[num]->length - 1);
-		bolts[num]->positions[j*2+1] = rand()/double(RAND_MAX);
+		//bolts[num]->positions[j*2+1] = rand()/double(RAND_MAX);
+		double testPoint; //y-position of the new point
+		if(j < bolts[num]->length / 4){ //first quarter
+			do{
+				testPoint = bolts[num]->positions[j*2 - 1] + (rand()/double(RAND_MAX)*2-1) * maxVariance;
+			}while(testPoint <= -2 * (double(j) / bolts[num]->length) + .5 || //"below" the triangle (just in slope-intercept form, nothing special)
+			       testPoint >=  2 * (double(j) / bolts[num]->length) + .5);  //"above" the triangle
+		}else if(j < bolts[num]->length * 3.0/4.0){ //middle half
+			do{
+				testPoint = bolts[num]->positions[j*2 - 1] + (rand()/double(RAND_MAX)*2-1) * maxVariance;
+			}while(testPoint >= 1 || testPoint <= 0);
+		}else{ //last quarter
+			do{
+				testPoint = bolts[num]->positions[j*2 - 1] + (rand()/double(RAND_MAX)*2-1) * maxVariance;
+			}while(testPoint <=  2 * (double(j) / bolts[num]->length - 3.0/4.0) + 0 ||
+			       testPoint >= -2 * (double(j) / bolts[num]->length - 3.0/4.0) + 1);
+		}
+		bolts[num]->positions[j*2+1] = testPoint;
+	}
+	*/
+
+	for (int j = 1; j < bolts[num]->length-1; j++) {
+		double yRangeLower = bolts[num]->positions[j*2 - 1] - maxVariance;
+		double yRangeUpper = bolts[num]->positions[j*2 - 1] + maxVariance;
+		double yMin, yMax;
+		if(j < bolts[num]->length / 4){ //first quarter
+			yMin = -2 * (double(j) / bolts[num]->length) + .5;
+			yMax =  2 * (double(j) / bolts[num]->length) + .5;
+		}else if(j < bolts[num]->length * 3.0/4.0){ //middle half
+			yMin = 0;
+			yMax = 1;
+		}else{ //last quarter
+			yMin =  2 * (double(j) / bolts[num]->length - 3.0/4.0) + 0;
+			yMax = -2 * (double(j) / bolts[num]->length - 3.0/4.0) + 1;
+		}
+		yRangeLower = (yRangeLower < yMin ? yMin : yRangeLower);
+		yRangeUpper = (yRangeUpper > yMax ? yMax : yRangeUpper);
+		bolts[num]->positions[j*2+1] = yRangeLower + (yRangeUpper - yRangeLower) * (rand()/double(RAND_MAX));
 	}
 }
 
@@ -501,8 +554,8 @@ void HorizontalLightning::refreshBolts() {
 }
 
 void HorizontalLightning::refreshBolt(int num) {
-	//double maxVarience = 4*h/w;
-	double maxVarience = h/4;
+	//double maxVariance = 4*h/w;
+	double maxVariance = h/4;
 	for (int j = 1; j < bolts[num]->length-1; j++) {
 		bolts[num]->positions[j*2]   = float(j)/(bolts[num]->length - 1);
 		bolts[num]->positions[j*2+1] = rand()/double(RAND_MAX);
