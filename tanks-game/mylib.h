@@ -16,6 +16,10 @@ double constrain_d(double value, double min, double max);
 bool XOR(bool, bool);
 double randFunc(); //[0,1)
 
+//algorithm from https://wrf.ecse.rpi.edu/Research/Short_Notes/pnpoly.html
+bool pointInPolygon(int vertNum, double* vertX, double* vertY, double testX, double testY);
+bool pointInPolygon(int vertNum, float* vertX, float* vertY, float testX, float testY);
+
 template<typename T>
 bool isInArray(T find, T* arr, int length) {
 	for (int i = 0; i < length; i++) {
