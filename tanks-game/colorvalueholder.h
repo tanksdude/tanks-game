@@ -13,8 +13,8 @@ public:
 	ColorValueHolder(float, float, float, float);
 	ColorValueHolder() { R = 0; G = 0; B = 0; A = 1; }
 
-	float getRf(){return R;}
-	float getGf(){return G;}
-	float getBf(){return B;}
-	float getAf(){return A;} //no real point
+	float getRf() const { return R; }
+	float getGf() const { return G; }
+	float getBf() const { return B; }
+	float getAf() const { return A; } //no real point
 };
