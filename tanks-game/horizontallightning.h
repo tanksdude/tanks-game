@@ -69,14 +69,14 @@ public:
 	virtual double getDefaultOffense() { return .5; } //1.5?
 	virtual double getDefaultDefense() { return 999; }
 
-	//bool modifiesTankCollision = true;
 	virtual bool actuallyCollided(Tank*) { return currentlyActive; }
+	//bool modifiesTankCollision = true;
 	virtual void modifiedTankCollision(Tank*) { return; }
 	//bool hasSpecialEffectTankCollision = true;
 	virtual void specialEffectTankCollision(Tank*);
 
-	//bool modifiesBulletCollision = true;
 	virtual bool actuallyCollided(Bullet*) { return currentlyActive; }
+	//bool modifiesBulletCollision = true;
 	virtual void modifiedBulletCollision(Bullet*) { return; }
 	//bool hasSpecialEffectBulletCollision = true;
 	virtual void specialEffectBulletCollision(Bullet*);

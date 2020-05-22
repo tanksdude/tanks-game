@@ -24,12 +24,12 @@ public:
 	virtual double getDefaultOffense() { return .5; }
 	virtual double getDefaultDefense() { return 999; }
 
+	//virtual bool actuallyCollided(Tank*) { return true; }
 	//bool modifiesTankCollision = true;
-	virtual bool actuallyCollided(Tank*) { return true; }
 	virtual void modifiedTankCollision(Tank*) { return; }
 	
-	//bool modifiesBulletCollision = true;
 	virtual bool actuallyCollided(Bullet* b) { return (b->velocity == 0); }
+	//bool modifiesBulletCollision = true;
 	virtual void modifiedBulletCollision(Bullet*) { return; }
 
 	virtual std::string getName() { return getClassName(); }

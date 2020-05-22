@@ -26,14 +26,14 @@ public:
 	virtual double getDefaultOffense() = 0;
 	virtual double getDefaultDefense() = 0;
 
-	bool modifiesTankCollision = false;
 	virtual bool actuallyCollided(Tank*) { return true; } //precondition: currently and partially collided with tank
+	bool modifiesTankCollision = false;
 	virtual void modifiedTankCollision(Tank*);
 	bool hasSpecialEffectTankCollision = false;
 	virtual void specialEffectTankCollision(Tank*) { return; } //always activated before modifiedTankCollision
 
-	bool modifiesBulletCollision = false;
 	virtual bool actuallyCollided(Bullet*) { return true; } //precondition: currently and partially collided with bullet
+	bool modifiesBulletCollision = false;
 	virtual void modifiedBulletCollision(Bullet*);
 	bool hasSpecialEffectBulletCollision = false;
 	virtual void specialEffectBulletCollision(Bullet*) { return; } //always activated before modifiedBulletCollision
