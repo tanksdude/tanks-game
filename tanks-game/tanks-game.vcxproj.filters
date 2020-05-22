@@ -246,9 +246,6 @@
     <ClCompile Include="developerlevel1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lava.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="priorityhandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -268,6 +265,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="generalizedlava.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rectangularlava.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -536,9 +536,6 @@
     <ClInclude Include="developerlevel1.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="lava.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="priorityhandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -564,6 +561,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="generalizedlava.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rectangularlava.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -59,7 +59,7 @@
 //hazards:
 #include "stationaryturret.h"
 #include "horizontallightning.h"
-#include "lava.h"
+#include "rectangularlava.h"
 #include "circularlava.h"
 
 //powers:
@@ -1214,7 +1214,7 @@ int main(int argc, char** argv) {
 
 	HazardManager::addCircleHazardFactory(StationaryTurret::factory);
 	HazardManager::addRectHazardFactory(HorizontalLightning::factory);
-	HazardManager::addRectHazardFactory(Lava::factory);
+	HazardManager::addRectHazardFactory(RectangularLava::factory);
 	HazardManager::addCircleHazardFactory(CircularLava::factory);
 
 	//initialize managers:

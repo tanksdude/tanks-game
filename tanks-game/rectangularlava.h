@@ -3,7 +3,7 @@
 #include "generalizedlava.h"
 #include <vector>
 
-class Lava : public RectHazard, public GeneralizedLava {
+class RectangularLava : public RectHazard, public GeneralizedLava {
 protected:
 	virtual void pushNewBubble(double radius);
 
@@ -39,7 +39,7 @@ public:
 	virtual void draw();
 	virtual void drawCPU();
 
-	Lava(double xpos, double ypos, double width, double height);
-	~Lava();
+	RectangularLava(double xpos, double ypos, double width, double height);
+	~RectangularLava();
 	static RectHazard* factory(int, std::string*);
 };

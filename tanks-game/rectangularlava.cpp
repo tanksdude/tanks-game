@@ -1,5 +1,5 @@
 #pragma once
-#include "lava.h"
+#include "rectangularlava.h"
 #include "gamemanager.h"
 #include "renderer.h"
 #include "backgroundrect.h"
@@ -9,15 +9,15 @@
 #include "mylib.h"
 #include <iostream>
 
-VertexArray* Lava::background_va;
-VertexBuffer* Lava::background_vb;
-IndexBuffer* Lava::background_ib;
-VertexArray* Lava::bubble_va;
-VertexBuffer* Lava::bubble_vb;
-IndexBuffer* Lava::bubble_ib;
-bool Lava::initialized_GPU = false;
+VertexArray* RectangularLava::background_va;
+VertexBuffer* RectangularLava::background_vb;
+IndexBuffer* RectangularLava::background_ib;
+VertexArray* RectangularLava::bubble_va;
+VertexBuffer* RectangularLava::bubble_vb;
+IndexBuffer* RectangularLava::bubble_ib;
+bool RectangularLava::initialized_GPU = false;
 
-Lava::Lava(double xpos, double ypos, double width, double height) {
+RectangularLava::RectangularLava(double xpos, double ypos, double width, double height) {
 	x = xpos;
 	y = ypos;
 	w = width;
@@ -38,11 +38,11 @@ Lava::Lava(double xpos, double ypos, double width, double height) {
 	initializeGPU();
 }
 
-Lava::~Lava() {
+RectangularLava::~RectangularLava() {
 	//uninitializeGPU();
 }
 
-bool Lava::initializeGPU() {
+bool RectangularLava::initializeGPU() {
 	if (initialized_GPU) {
 		return false;
 	}
@@ -91,7 +91,7 @@ bool Lava::initializeGPU() {
 	return true;
 }
 
-bool Lava::uninitializeGPU() {
+bool RectangularLava::uninitializeGPU() {
 	if (!initialized_GPU) {
 		return false;
 	}
@@ -107,22 +107,22 @@ bool Lava::uninitializeGPU() {
 	return true;
 }
 
-RectHazard* Lava::factory(int argc, std::string* argv) {
+RectHazard* RectangularLava::factory(int argc, std::string* argv) {
 	if (argc >= 4) {
 		double x = std::stod(argv[0]);
 		double y = std::stod(argv[1]);
 		double w = std::stod(argv[2]);
 		double h = std::stod(argv[3]);
-		return new Lava(x, y, w, h);
+		return new RectangularLava(x, y, w, h);
 	}
-	return new Lava(0, 0, 0, 0);
+	return new RectangularLava(0, 0, 0, 0);
 }
 
-void Lava::tick() {
+void RectangularLava::tick() {
 	GeneralizedLava::tick();
 }
 
-void Lava::pushNewBubble(double radius) {
+void RectangularLava::pushNewBubble(double radius) {
 	float x0, y0, x1, y1;
 	int attempts = 0;
 		
@@ -140,7 +140,7 @@ void Lava::pushNewBubble(double radius) {
 	}
 }
 
-void Lava::draw() {
+void RectangularLava::draw() {
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 MVPM = Renderer::GenerateMatrix(w, h, 0, x, y);
 	
@@ -185,7 +185,7 @@ void Lava::draw() {
 	}
 }
 
-void Lava::drawCPU() {
+void RectangularLava::drawCPU() {
 	//background:
 
 	//bubbles:
