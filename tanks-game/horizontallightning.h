@@ -46,8 +46,7 @@ protected:
 	virtual int getDefaultNumBoltPoints(double horzDist); //number of points that make up a bolt
 	virtual void pushBolt(LightningBolt*, bool simpleRefresh);
 	virtual void clearBolts(); //the vector holds pointers, so memory has to be freed
-	std::vector<Bullet*> targetedBullets;
-	std::vector<Tank*> targetedTanks; //Circle* would be enough...
+	std::vector<long> targetedObjects;
 
 private:
 	static VertexArray* background_va;

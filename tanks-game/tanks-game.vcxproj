@@ -151,6 +151,7 @@
     <ClCompile Include="devlonginvinciblenamedbulletpower.cpp" />
     <ClCompile Include="devlonginvinciblenamedpower.cpp" />
     <ClCompile Include="devlonginvinciblenamedtankpower.cpp" />
+    <ClCompile Include="gamemanager.cpp" />
     <ClCompile Include="priorityhandler.cpp" />
     <ClCompile Include="cannonpoint.cpp" />
     <ClCompile Include="circlehazard.cpp" />
@@ -237,6 +238,8 @@
     <ClInclude Include="devlonginvinciblenamedbulletpower.h" />
     <ClInclude Include="devlonginvinciblenamedpower.h" />
     <ClInclude Include="devlonginvinciblenamedtankpower.h" />
+    <ClInclude Include="gamemanager.h" />
+    <ClInclude Include="gamething.h" />
     <ClInclude Include="point.h" />
     <ClInclude Include="priorityhandler.h" />
     <ClInclude Include="cannonpoint.h" />

@@ -9,8 +9,8 @@
 #include "hazardmanager.h"
 
 void ResetThings::reset(int) {
-	TankManager::tanks[0]->resetThings(20, GAME_HEIGHT/2, 0, TankManager::tanks[0]->getID(), TankManager::tanks[0]->getName());
-	TankManager::tanks[1]->resetThings(GAME_WIDTH - 20, GAME_HEIGHT/2, PI, TankManager::tanks[1]->getID(), TankManager::tanks[1]->getName());
+	TankManager::tanks[0]->resetThings(20, GAME_HEIGHT/2, 0, TankManager::tanks[0]->getTeamID(), TankManager::tanks[0]->getName());
+	TankManager::tanks[1]->resetThings(GAME_WIDTH - 20, GAME_HEIGHT/2, PI, TankManager::tanks[1]->getTeamID(), TankManager::tanks[1]->getName());
 
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		delete WallManager::walls[i];

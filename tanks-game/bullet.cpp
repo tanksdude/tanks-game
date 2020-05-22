@@ -1,12 +1,12 @@
 #pragma once
 #include "bullet.h"
+#include "gamemanager.h"
 #include "constants.h"
 #include "mylib.h"
 #include <math.h>
 #include "circle.h"
 #include "colormixer.h"
 #include "renderer.h"
-#include <glm.hpp>
 #include <iostream>
 
 #include <GL/glew.h>
@@ -25,7 +25,8 @@ Bullet::Bullet(double x_, double y_, double r_, double a, double vel, double acc
 	this->angle = a;
 	this->velocity = vel;
 	this->acceleration = acc;
-	this->id = id_;
+	this->gameID = GameManager::getNextID();
+	this->teamID = id_;
 	this->alpha = 100;
 
 	initializeGPU();

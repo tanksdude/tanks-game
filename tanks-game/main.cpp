@@ -31,6 +31,7 @@
 //managers:
 #include "openglinitializer.h"
 #include "developermanager.h"
+#include "gamemanager.h"
 #include "keypressmanager.h"
 #include "tankmanager.h"
 #include "bulletmanager.h"
@@ -84,6 +85,12 @@
 using namespace std;
 
 int tank_dead = 0;
+//tank team rules:
+//0  = no team or default team
+//-1 = hazard team (hazards can be split up into multiple teams, but by default there's only one)
+//1  = default teamID of tank #1 ("WASD")
+//2  = default teamID of tank #2 ("Arrow Keys")
+//tank teams always > 0
 
 long frameCount = 0; //doesn't need a long for how it's interpreted...
 long ticksUntilFrame = 1; //whatever again
@@ -430,7 +437,7 @@ void tankToHazard() {
 		Tank* t = TankManager::getTank(i);
 
 		//circles:
-		for (int j = 0; j < HazardManager::getNumCircleHazards(); j++) {
+		for (int j = HazardManager::getNumCircleHazards() - 1; j >= 0; j--) {
 			bool modifiedCircleHazardCollision = false;
 			bool overridedCircleHazardCollision = false;
 			bool noMoreCircleHazardCollisionSpecials = false;
@@ -512,7 +519,6 @@ void tankToHazard() {
 
 			if (killCircleHazard) {
 				HazardManager::deleteCircleHazard(j);
-				j--;
 			}
 		}
 
@@ -603,7 +609,6 @@ void tankToHazard() {
 
 			if (killRectHazard) {
 				HazardManager::deleteRectHazard(j);
-				j--;
 			}
 		}
 
@@ -652,7 +657,7 @@ void tankToTank() {
 							shouldBeKilled = true;
 						}
 						if (check_temp.otherShouldDie) {
-							if (t1->getID() != t2->getID()) {
+							if (t1->getTeamID() != t2->getTeamID()) {
 								killOtherTank = true;
 							}
 						}
@@ -855,7 +860,7 @@ void bulletToHazard() {
 		Bullet* b = BulletManager::getBullet(i);
 
 		//circles:
-		for (int j = 0; j < HazardManager::getNumCircleHazards(); j++) {
+		for (int j = HazardManager::getNumCircleHazards() - 1; j >= 0; j--) {
 			bool modifiedCircleHazardCollision = false;
 			bool overridedCircleHazardCollision = false;
 			bool noMoreCircleHazardCollisionSpecials = false;
@@ -936,7 +941,6 @@ void bulletToHazard() {
 
 			if (killCircleHazard) {
 				HazardManager::deleteCircleHazard(j);
-				j--;
 			}
 		}
 
@@ -1027,7 +1031,6 @@ void bulletToHazard() {
 
 			if (killRectHazard) {
 				HazardManager::deleteRectHazard(j);
-				j--;
 			}
 		}
 
@@ -1045,7 +1048,7 @@ void bulletToBullet() {
 		for (int j = BulletManager::getNumBullets() - 1; j >= 0; j--) { //could start at i-1? //fix: find out
 			Bullet* b_inner = BulletManager::getBullet(j);
 
-			if (b_outer->getID() == b_inner->getID()) {
+			if (b_outer->getTeamID() == b_inner->getTeamID()) {
 				continue;
 			}
 			if (CollisionHandler::partiallyCollided(b_outer, b_inner)) {
@@ -1099,7 +1102,7 @@ void bulletToTank() {
 		for (int j = 0; j < BulletManager::getNumBullets(); j++) {
 			Bullet* b = BulletManager::getBullet(j);
 
-			if (b->getID() == t->getID()) {
+			if (b->getTeamID() == t->getTeamID()) {
 				continue;
 			}
 			if (CollisionHandler::partiallyCollided(t, b)) {
@@ -1213,6 +1216,7 @@ int main(int argc, char** argv) {
 	HazardManager::addRectHazardFactory(Lava::factory);
 
 	//initialize managers:
+	GameManager::initialize();
 	KeypressManager::initialize();
 	BulletManager::initialize();
 	PowerupManager::initialize();

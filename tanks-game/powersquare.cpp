@@ -1,10 +1,11 @@
 #pragma once
 #include "powersquare.h"
+#include "gamemanager.h"
+#include "constants.h"
 #include <string>
 #include "backgroundrect.h"
 #include "colormixer.h"
 #include "renderer.h"
-#include <glm.hpp>
 #include "powerupmanager.h"
 #include <iostream>
 
@@ -27,6 +28,8 @@ PowerSquare::PowerSquare(double x_, double y_) {
 	y = y_ - PowerSquare::POWER_HEIGHT/2;
 	w = PowerSquare::POWER_WIDTH;
 	h = PowerSquare::POWER_HEIGHT;
+	gameID = GameManager::getNextID();
+	teamID = DEFAULT_TEAM; //not used
 
 	initializeGPU();
 }

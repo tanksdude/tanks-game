@@ -1,15 +1,15 @@
 #pragma once
 #include "tank.h"
+#include "gamemanager.h"
 #include "constants.h"
 #include "colormixer.h"
 #include <math.h>
 #include <string>
-#include <iostream>
 #include "mylib.h"
 #include "renderer.h"
-#include <glm.hpp>
 #include "keypressmanager.h"
 #include "bulletmanager.h"
+#include <iostream>
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
@@ -41,7 +41,8 @@ Tank::Tank(double x_, double y_, double a, char id_, std::string name_, TankInpu
 	x = x_;
 	y = y_;
 	angle = a;
-	id = id_;
+	gameID = GameManager::getNextID();
+	teamID = id_;
 	r = TANK_RADIUS;
 	name = name_;
 
@@ -220,7 +221,7 @@ void Tank::makeBullet(double x, double y, double angle, double radius, double sp
 		bp->push_back(tankPowers[k]->makeBulletPower());
 	}
 
-	Bullet* temp = new Bullet(x, y, radius, angle, speed, acc, id, bp);
+	Bullet* temp = new Bullet(x, y, radius, angle, speed, acc, teamID, bp);
 	BulletManager::pushBullet(temp);
 
 	delete bp;
@@ -783,11 +784,12 @@ void Tank::drawNameCPU(double xpos, double ypos) {
 
 }
 
-void Tank::resetThings(double x, double y, double a, char id, std::string name) { //TODO: finish?
+void Tank::resetThings(double x, double y, double a, char teamID, std::string name) { //TODO: finish?
 	this->x = x;
 	this->y = y;
 	this->angle = a;
-	this->id = id;
+	this->gameID = GameManager::getNextID(); //should this be updated?
+	this->teamID = teamID;
 	//this->r = TANK_RADIUS;
 	this->name = name;
 	shootCount = 0;
@@ -884,4 +886,3 @@ bool Tank::isPartiallyOutOfBounds() {
 bool Tank::isFullyOutOfBounds() {
 	return ((x - r > GAME_WIDTH) || (x + r < 0) || (y - r > GAME_HEIGHT) || (y + r < 0));
 }
-

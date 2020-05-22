@@ -264,6 +264,9 @@
     <ClCompile Include="devlonginvinciblenamedtankpower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="gamemanager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -549,6 +552,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="point.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="gamemanager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="gamething.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

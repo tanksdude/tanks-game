@@ -1,16 +1,18 @@
 #pragma once
 #include "horizontallightning.h"
+#include "gamemanager.h"
 #include "renderer.h"
 #include "backgroundrect.h"
 #include "colormixer.h"
 #include "mylib.h"
+#include "constants.h"
 #include <math.h>
 #include <stdexcept>
 #include <algorithm>
-#include <iostream>
 #include "point.h"
 #include "collisionhandler.h"
 #include "wallmanager.h"
+#include <iostream>
 
 VertexArray* HorizontalLightning::background_va;
 VertexBuffer* HorizontalLightning::background_vb;
@@ -22,6 +24,8 @@ HorizontalLightning::HorizontalLightning(double xpos, double ypos, double width,
 	y = ypos;
 	w = width;
 	h = height;
+	gameID = GameManager::getNextID();
+	teamID = HAZARD_TEAM;
 
 	tickCycle = 100; //100 is JS default (because of power speed)
 	double temp[2] = { 2, 2 };
@@ -171,8 +175,7 @@ void HorizontalLightning::tick() {
 	if (currentlyActive) {
 		if (boltTick >= boltCycle) {
 			//hazard tick comes before collision, therefore there will be more bolt refreshes after this if a bullet/tank collides
-			targetedTanks.clear();
-			targetedBullets.clear();
+			targetedObjects.clear();
 			boltsNeeded = false;
 			clearBolts();
 			int boltPoints = getDefaultNumBoltPoints(w);
@@ -435,8 +438,8 @@ void HorizontalLightning::specialEffectTankCollision(Tank* t) {
 	}
 	boltsNeeded = true;
 
-	if (std::find(targetedTanks.begin(), targetedTanks.end(), t) == targetedTanks.end()) {
-		targetedTanks.push_back(t);
+	if (std::find(targetedObjects.begin(), targetedObjects.end(), t->getGameID()) == targetedObjects.end()) {
+		targetedObjects.push_back(t->getGameID());
 	} else {
 		return;
 	}
@@ -450,8 +453,8 @@ void HorizontalLightning::specialEffectBulletCollision(Bullet* b) {
 	}
 	boltsNeeded = true;
 
-	if (std::find(targetedBullets.begin(), targetedBullets.end(), b) == targetedBullets.end()) {
-		targetedBullets.push_back(b);
+	if (std::find(targetedObjects.begin(), targetedObjects.end(), b->getGameID()) == targetedObjects.end()) {
+		targetedObjects.push_back(b->getGameID());
 	} else {
 		return;
 	}

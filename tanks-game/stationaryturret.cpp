@@ -1,5 +1,6 @@
 #pragma once
 #include "stationaryturret.h"
+#include "gamemanager.h"
 #include "renderer.h"
 #include "colormixer.h"
 #include "constants.h"
@@ -19,6 +20,8 @@ StationaryTurret::StationaryTurret(double xpos, double ypos, double angle) {
 	y = ypos;
 	this->angle = angle;
 	r = TANK_RADIUS / 4;
+	gameID = GameManager::getNextID();
+	teamID = HAZARD_TEAM;
 
 	tickCycle = 100; //100 is JS default (because of shooting speed) and 200 just looks weird
 	maxState = 3;

@@ -1,5 +1,6 @@
 #pragma once
 #include "lava.h"
+#include "gamemanager.h"
 #include "renderer.h"
 #include "backgroundrect.h"
 #include "colormixer.h"
@@ -21,6 +22,8 @@ Lava::Lava(double xpos, double ypos, double width, double height) {
 	y = ypos;
 	w = width;
 	h = height;
+	gameID = GameManager::getNextID();
+	teamID = HAZARD_TEAM;
 
 	//tickCount = 0;
 	tickCycle = 2400;

@@ -9,3 +9,6 @@ const double GAME_HEIGHT = 320;
 const double TANK_RADIUS = 16;
 
 const double DESTRUCTION_TIER = 2;
+
+const char DEFAULT_TEAM = 0;
+const char HAZARD_TEAM = -1;

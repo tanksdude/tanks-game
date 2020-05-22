@@ -1,6 +1,7 @@
 #pragma once
 class Wall;
 
+#include "gamething.h"
 #include "rect.h"
 #include "colorvalueholder.h"
 #include "resetthings.h"
@@ -10,11 +11,11 @@ class Wall;
 #include "vertexbuffer.h"
 #include "indexbuffer.h"
 
-class Wall : public Rect{
+class Wall : public Rect, public GameThing {
 	friend class ResetThings; //not really needed
 	friend class PowerFunctionHelper;
+protected:
 	ColorValueHolder color;
-	short id = -1;
 
 private:
 	static VertexArray* va;
@@ -27,11 +28,8 @@ public:
 
 public:
 	Wall(double x, double y, double w, double h, ColorValueHolder);
-	Wall(double x, double y, double w, double h, ColorValueHolder c, short id);
+	Wall(double x, double y, double w, double h, ColorValueHolder c, char teamID);
 
-	short getID() {
-		return id;
-	}
 	void draw();
 	void drawCPU();
 

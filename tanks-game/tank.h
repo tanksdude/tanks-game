@@ -1,9 +1,10 @@
 #pragma once
 class Tank;
 
+#include "gamething.h"
+#include "circle.h"
 #include <string>
 #include <vector>
-#include "circle.h"
 #include "colorvalueholder.h"
 #include "cannonpoint.h"
 #include "resetthings.h"
@@ -24,14 +25,12 @@ struct TankInputChar {
 	TankInputChar();
 };
 
-class Tank : public Circle {
-public:
+class Tank : public Circle, public GameThing {
 	friend class ResetThings;
 	friend class Level; //might remove
 	friend class PowerFunctionHelper;
-	char id;
+public:
 	std::string name;
-
 	int wins = 0;
 
 	double maxSpeed = 1;
@@ -87,7 +86,7 @@ private:
 	ColorValueHolder defaultNameFill = ColorValueHolder(1.0f, 1.0f, 1.0f);
 	ColorValueHolder defaultNameStroke = ColorValueHolder(0, 0, 0);
 
-	void resetThings(double x, double y, double a, char id, std::string name);
+	void resetThings(double x, double y, double a, char teamID, std::string name);
 
 	double shootCount;
 	double maxShootCount;
@@ -125,7 +124,6 @@ public:
 	void drawCPU(double, double);
 	void drawNameCPU();
 	void drawNameCPU(double xpos, double ypos);
-	char getID() { return id; }
 	std::string getName() { return name; }
 	
 	~Tank();

@@ -1,6 +1,7 @@
 #pragma once
 class Bullet;
 
+#include "gamething.h"
 #include "circle.h"
 #include "colorvalueholder.h"
 #include "bulletpower.h"
@@ -10,7 +11,7 @@ class Bullet;
 #include "vertexbuffer.h"
 #include "indexbuffer.h"
 
-class Bullet : public Circle {
+class Bullet : public Circle, public GameThing {
 	friend class ResetThings;
 	friend class BulletPriorityHandler;
 	friend class PowerFunctionHelper;
@@ -18,7 +19,6 @@ public: //hopefully temporary
 	double angle;
 	double velocity;
 	double acceleration;
-	char id;
 	ColorValueHolder defaultColor = ColorValueHolder(.5f, .5f, .5f);
 	//ColorValueHolder* explosionColor; //needed?
 	double getAngle();
@@ -62,7 +62,6 @@ public:
 	void draw(double, double);
 	void drawCPU();
 	void drawCPU(double, double);
-	char getID() { return id; }
 	short determineDamage(); //TODO: wait, what is this supposed to do again? (isn't everything supposed to have 1 health? so there's no point for this)
 
 	void powerCalculate();

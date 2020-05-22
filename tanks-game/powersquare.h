@@ -1,21 +1,20 @@
 #pragma once
 class PowerSquare;
 
+#include "gamething.h"
+#include "rect.h"
 #include "colorvalueholder.h"
 #include <string>
 #include "power.h"
-#include "rect.h"
 
 #include "vertexarray.h"
 #include "vertexbuffer.h"
 #include "indexbuffer.h"
 
-class PowerSquare : public Rect {
+class PowerSquare : public Rect, public GameThing {
 public:
 	Power** heldPower; //array of pointers (can do a vector for simplicity but I don't foresee a powersquare getting more powers)
 	short numOfPowers;
-	//double w = POWER_WIDTH;
-	//double h = POWER_HEIGHT;
 
 public:
 	static const double POWER_WIDTH;
