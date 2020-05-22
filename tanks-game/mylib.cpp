@@ -90,6 +90,26 @@ int constrain_i(int value, int min, int max) {
 	return value;
 }
 
+long constrain_l(long value, long min, long max) {
+	if (value < min) {
+		return min;
+	}
+	if (value > max) {
+		return max;
+	}
+	return value;
+}
+
+float constrain_f(float value, float min, float max) {
+	if (value < min) {
+		return min;
+	}
+	if (value > max) {
+		return max;
+	}
+	return value;
+}
+
 double constrain_d(double value, double min, double max) {
 	if (value < min) {
 		return min;
