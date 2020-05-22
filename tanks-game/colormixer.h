@@ -8,6 +8,7 @@
 class ColorMixer {
 public:
 	static ColorValueHolder mix(ColorValueHolder, ColorValueHolder);
+	static ColorValueHolder mix(ColorValueHolder, ColorValueHolder, float amt);
 	static ColorValueHolder mix(ColorValueHolder, ColorValueHolder, double amt);
 	static ColorValueHolder mix(ColorValueHolder*, int num);
 	static ColorValueHolder mix(Power**, int num);
