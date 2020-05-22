@@ -44,6 +44,7 @@ protected:
 	virtual void refreshBolt(int num); //redraw a bolt
 	virtual void simpleRefreshBolt(int num); //fast path for refreshing a bolt that goes from beginning to end
 	virtual int getDefaultNumBoltPoints(double horzDist); //number of points that make up a bolt
+	virtual void pushBolt(LightningBolt*, bool simpleRefresh);
 	virtual void clearBolts(); //the vector holds pointers, so memory has to be freed
 	std::vector<Bullet*> targetedBullets;
 	std::vector<Tank*> targetedTanks; //Circle* would be enough...

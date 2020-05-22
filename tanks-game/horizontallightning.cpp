@@ -10,6 +10,7 @@
 #include <iostream>
 #include "point.h"
 #include "collisionhandler.h"
+#include "wallmanager.h"
 
 VertexArray* HorizontalLightning::background_va;
 VertexBuffer* HorizontalLightning::background_vb;
@@ -35,8 +36,7 @@ HorizontalLightning::HorizontalLightning(double xpos, double ypos, double width,
 	bolts.reserve(maxBolts);
 	int boltPoints = getDefaultNumBoltPoints(w);
 	for (int i = 0; i < maxBolts; i++) {
-		bolts.push_back(new LightningBolt(0, .5, 1, .5, boltPoints));
-		simpleRefreshBolt(i);
+		pushBolt(new LightningBolt(0, .5, 1, .5, boltPoints), true);
 	}
 
 	canAcceptPowers = false;
@@ -170,15 +170,14 @@ void HorizontalLightning::tick() {
 	
 	if (currentlyActive) {
 		if (boltTick >= boltCycle) {
-			//hazard tick comes before collision, therefore there will be another bolt refresh after this if a bullet/tank collides
+			//hazard tick comes before collision, therefore there will be more bolt refreshes after this if a bullet/tank collides
 			targetedTanks.clear();
 			targetedBullets.clear();
 			boltsNeeded = false;
 			clearBolts();
 			int boltPoints = getDefaultNumBoltPoints(w);
 			for (int i = 0; i < maxBolts; i++) {
-				bolts.push_back(new LightningBolt(0, .5, 1, .5, boltPoints));
-				simpleRefreshBolt(i);
+				pushBolt(new LightningBolt(0, .5, 1, .5, boltPoints), true);
 			}
 			boltTick = 0;
 		}
@@ -418,19 +417,15 @@ void HorizontalLightning::specialEffectCircleCollision(Circle* c) {
 	double distR = sqrt(pow((x + w) - intersectionXR, 2) + pow((y + h/2) - intersectionYR, 2));
 	boltPointsL = (boltPointsL < 2 ? getDefaultNumBoltPoints(distL) : boltPointsL);
 	boltPointsR = (boltPointsR < 2 ? getDefaultNumBoltPoints(distR) : boltPointsR);
-	bolts.push_back(new LightningBolt(0, .5, (intersectionXL-x)/w, (intersectionYL-y)/h, boltPointsL));
-	bolts.push_back(new LightningBolt((intersectionXL-x)/w, (intersectionYL-y)/h, (intersectionXR-x)/w, (intersectionYR-y)/h, 2));
-	bolts.push_back(new LightningBolt((intersectionXR-x)/w, (intersectionYR-y)/h, 1, .5, boltPointsR));
-	if (boltPointsL > bolt_vb_length || boltPointsR > bolt_vb_length) {
-		local_reinitializeGPU(std::max(boltPointsL, boltPointsR));
-	}
-	refreshBolt(bolts.size() - 1); refreshBolt(bolts.size() - 3);
+	pushBolt(new LightningBolt(0, .5, (intersectionXL-x)/w, (intersectionYL-y)/h, boltPointsL), false);
+	pushBolt(new LightningBolt((intersectionXL-x)/w, (intersectionYL-y)/h, (intersectionXR-x)/w, (intersectionYR-y)/h, 2), false);
+	pushBolt(new LightningBolt((intersectionXR-x)/w, (intersectionYR-y)/h, 1, .5, boltPointsR), false);
 
 	//compared to JS Tanks, this intersection logic is much more complex
-	//however, refreshing the bolts doesn't consider the horizontal edges (because this is a "horizontal lightning", so there's usually no need)
-	//which means the performance hit isn't awful
+	//that's okay because wallhacking into a lightning will look less weird
 
 	//TODO: is this complete?
+	//probably, but still needs a refactor
 }
 
 void HorizontalLightning::specialEffectTankCollision(Tank* t) {
@@ -464,26 +459,35 @@ void HorizontalLightning::specialEffectBulletCollision(Bullet* b) {
 	specialEffectCircleCollision(b);
 }
 
-bool HorizontalLightning::validLocation() {
-	//TODO: finish
-	return true;
+void HorizontalLightning::pushBolt(LightningBolt* l, bool simpleRefresh) {
+	if (l->length > bolt_vb_length) {
+		local_reinitializeGPU(l->length);
+	}
+	bolts.push_back(l);
+	if (simpleRefresh) {
+		simpleRefreshBolt(bolts.size() - 1);
+	} else {
+		refreshBolt(bolts.size() - 1);
+	}
+}
 
-	/*
-	var wallOnLeft=false, wallOnRight=false, wallInMiddle=false;
-	for(var i=0; i<walls.length; i++){
-		if(!(wallOnLeft && wallOnRight) && walls[i].ypos<=this.ypos && walls[i].ypos+walls[i].height>=this.ypos+this.height){
-			if(!wallOnLeft && this.xpos==walls[i].xpos+walls[i].width)
-				wallOnLeft=true;
-			else if(!wallOnRight && this.xpos+this.width==walls[i].xpos)
-				wallOnRight=true;
+bool HorizontalLightning::validLocation() {
+	bool wallOnLeft = false, wallOnRight = false, wallInMiddle = false;
+	for(int i = 0; i < WallManager::getNumWalls(); i++){
+		Wall* wa = WallManager::getWall(i);
+		if(!(wallOnLeft && wallOnRight) && (wa->y <= y) && (wa->y + wa->h >= y + h)) {
+			if(!wallOnLeft && (x == wa->x + wa->w)) {
+				wallOnLeft = true;
+			} else if(!wallOnRight && (x + w == wa->x)) {
+				wallOnRight = true;
+			}
 		}
-		if(this.xpos+this.width>walls[i].xpos && this.xpos<walls[i].xpos+walls[i].width && this.ypos+this.height>walls[i].ypos && this.ypos<walls[i].ypos+walls[i].height){
-			wallInMiddle=true;
+		if (CollisionHandler::partiallyCollidedIgnoreEdge(wa, this)) {
+			wallInMiddle = true;
 			break;
 		}
 	}
 	return (wallOnLeft && wallOnRight && !wallInMiddle);
-	*/
 }
 
 void HorizontalLightning::simpleRefreshBolt(int num) {
@@ -560,6 +564,7 @@ void HorizontalLightning::refreshBolt(int num) {
 		return;
 	}
 
+	//change of basis is required to not do this step; will update this function later
 	for (int i = 0; i < bolts[num]->length; i++) {
 		bolts[num]->positions[i*2]   = bolts[num]->positions[i*2]   * w;
 		bolts[num]->positions[i*2+1] = bolts[num]->positions[i*2+1] * h;
