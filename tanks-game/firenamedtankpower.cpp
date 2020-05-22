@@ -3,6 +3,7 @@
 #include "firenamedbulletpower.h"
 #include "firenamedpower.h"
 #include "constants.h"
+#include "mylib.h"
 #include <math.h>
 
 const double FireNamedTankPower::bulletAngleDeviation = PI/4;
@@ -19,9 +20,8 @@ void FireNamedTankPower::removeEffects(Tank* parent) {
 
 void FireNamedTankPower::additionalShooting(Tank* t, CannonPoint c) {
 	for (int i = 0; i < bulletAmount; i++) {
-		//fmod(rand(), 2) only outputs whole numbers as doubles due to rand() being a whole number in [0, 32768), so classic rand()/RAND_MAX is what I need
-		double tempAngle = (double(rand()) / RAND_MAX * 2 - 1) * bulletAngleDeviation; //[-1,1] * deviation
-		double tempAcc = (double(rand()) / RAND_MAX) * -(maxBulletAcceleration - minBulletAcceleration) - minBulletAcceleration; //[0,1] * accDiff + min
+		double tempAngle = (randFunc2()*2 - 1) * bulletAngleDeviation; //[-1,1] * deviation
+		double tempAcc = randFunc2() * -(maxBulletAcceleration - minBulletAcceleration) - minBulletAcceleration; //[0,1] * accDiff + min
 		t->makeBullet(t->x + t->r*cos(c.angle + t->angle + tempAngle), t->y + t->r*sin(c.angle + t->angle + tempAngle), c.angle + t->angle + tempAngle, t->r * t->getBulletRadiusMultiplier(), t->maxSpeed * t->getBulletSpeedMultiplier(), tempAcc);
 	}
 }

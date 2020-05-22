@@ -128,6 +128,10 @@ double randFunc() {
 	return double(rand()) / double(RAND_MAX+1);
 }
 
+double randFunc2() {
+	return double(rand()) / double(RAND_MAX);
+}
+
 //algorithm from https://wrf.ecse.rpi.edu/Research/Short_Notes/pnpoly.html
 /*
 Copyright (c) 1970-2003, Wm. Randolph Franklin
