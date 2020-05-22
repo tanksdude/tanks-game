@@ -158,6 +158,9 @@ RectHazard* HorizontalLightning::factory(int argc, std::string* argv) {
 void HorizontalLightning::tick() {
 	if (!validLocation()) {
 		tickCount = 0;
+		currentlyActive = false;
+		targetedObjects.clear();
+		clearBolts();
 		return;
 	}
 
