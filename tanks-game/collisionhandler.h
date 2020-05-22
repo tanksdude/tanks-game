@@ -5,6 +5,7 @@
 class CollisionHandler {
 private:
 	static bool cornerCollided(Circle*, double x, double y);
+	static bool cornerCollidedIgnoreEdge(Circle*, double x, double y);
 	static void cornerPushMovableAwayFromImmovable(Circle* movable, double x, double y);
 	static void cornerPushMovableAwayFromMovable(Circle* movable1, Rect* movable2, double x, double y);
 	static void cornerPushMovableAwayFromImmovable(Rect* movable, Circle*, double x, double y);
@@ -19,6 +20,13 @@ public:
 		return CollisionHandler::partiallyCollided(r, c);
 	}
 	static bool partiallyCollided(Circle*, Circle*);
+
+	static bool partiallyCollidedIgnoreEdge(Rect*, Rect*);
+	static bool partiallyCollidedIgnoreEdge(Rect*, Circle*);
+	static bool partiallyCollidedIgnoreEdge(Circle* c, Rect* r) {
+		return CollisionHandler::partiallyCollidedIgnoreEdge(r, c);
+	}
+	static bool partiallyCollidedIgnoreEdge(Circle*, Circle*);
 
 	static bool fullyCollided(Rect*, Rect*);
 	static bool fullyCollided(Rect*, Circle*);

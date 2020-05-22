@@ -7,7 +7,7 @@
 #include <iostream>
 
 bool CollisionHandler::partiallyCollided(Rect* a, Rect* b) {
-	return ((a->x + a->w >= b->x) && (a->x- a->w <= b->x + b->w) && (a->y+ a->h >= b->y) && (a->y - a->h <= b->y + b->h));
+	return ((a->x + a->w >= b->x) && (a->x <= b->x + b->w) && (a->y + a->h >= b->y) && (a->y <= b->y + b->h));
 }
 
 bool CollisionHandler::partiallyCollided(Rect* a, Circle* b) {
@@ -36,6 +36,41 @@ bool CollisionHandler::cornerCollided(Circle* a, double x, double y) { //effecti
 	if ((abs(x - a->x) <= a->r) && (abs(y - a->y) <= a->r)) {
 		double d = sqrt(pow(x - a->x, 2) + pow(y - a->y, 2));
 		return (d <= a->r);
+	}
+	return false;
+}
+
+//IgnoreEdge variant: code is near-identical to non IgnoreEdge version
+bool CollisionHandler::partiallyCollidedIgnoreEdge(Rect* a, Rect* b) {
+	return ((a->x + a->w > b->x) && (a->x < b->x + b->w) && (a->y + a->h > b->y) && (a->y < b->y + b->h));
+}
+
+bool CollisionHandler::partiallyCollidedIgnoreEdge(Rect* a, Circle* b) {
+	if ((b->x < a->x) && (b->y < a->y)) { //bottom left
+		return cornerCollided(b, a->x, a->y);
+	} else if ((b->x > (a->x + a->w)) && (b->y < a->y)) { //bottom right
+		return cornerCollided(b, (a->x + a->w), a->y);
+	} else if ((b->x < a->x) && (b->y > (a->y + a->h))) { //top left
+		return cornerCollided(b, a->x, (a->y + a->h));
+	} else if ((b->x > (a->x + a->w)) && (b->y > (a->y + a->h))) { //top right
+		return cornerCollided(b, (a->x + a->w), (a->y + a->h));
+	} else {
+		return (((b->x + b->r) > a->x) && ((b->x - b->r) < (a->x + a->w)) && ((b->y + b->r) > a->y) && ((b->y - b->r) < (a->y + a->h)));
+	}
+}
+//bool CollisionHandler::partiallyCollidedIgnoreEdge(Circle* a, Rect* b);
+
+bool CollisionHandler::partiallyCollidedIgnoreEdge(Circle* a, Circle* b) {
+	if ((abs(a->x - b->x) < a->r + b->r) && (abs(a->y - b->y) < a->r + b->r)) {
+		return (sqrt(pow(a->x - b->x, 2) + pow(a->y - b->y, 2)) < a->r + b->r);
+	}
+	return false;
+}
+
+bool CollisionHandler::cornerCollidedIgnoreEdge(Circle* a, double x, double y) {
+	if ((abs(x - a->x) < a->r) && (abs(y - a->y) < a->r)) {
+		double d = sqrt(pow(x - a->x, 2) + pow(y - a->y, 2));
+		return (d < a->r);
 	}
 	return false;
 }
