@@ -1,10 +1,10 @@
 #pragma once
-#include <iostream>
 #include "colormixer.h"
 #include "colorvalueholder.h"
 #include "power.h"
 #include "bulletpower.h"
 #include "tankpower.h"
+#include <iostream>
 
 //TODO: account for colors to contain alpha
 
@@ -45,31 +45,31 @@ ColorValueHolder ColorMixer::mix(Power** p, int num) {
 	return mixed;
 }
 
-ColorValueHolder ColorMixer::mix(std::vector<TankPower*> p) {
+ColorValueHolder ColorMixer::mix(std::vector<TankPower*>* p) {
 	float* colors = new float[3]{ 0,0,0 };
-	for (int i = 0; i < p.size(); i++) {
-		ColorValueHolder a = p[i]->getColor();
+	for (int i = 0; i < p->size(); i++) {
+		ColorValueHolder a = p->at(i)->getColor();
 		colors[0] += a.getRf();
 		colors[1] += a.getGf();
 		colors[2] += a.getBf();
 	}
 
-	ColorValueHolder mixed = ColorValueHolder(colors[0]/p.size(), colors[1]/p.size(), colors[2]/p.size());
+	ColorValueHolder mixed = ColorValueHolder(colors[0]/p->size(), colors[1]/p->size(), colors[2]/p->size());
 	delete[] colors;
 
 	return mixed;
 }
 
-ColorValueHolder ColorMixer::mix(std::vector<BulletPower*> p) {
+ColorValueHolder ColorMixer::mix(std::vector<BulletPower*>* p) {
 	float* colors = new float[3]{ 0,0,0 };
-	for (int i = 0; i < p.size(); i++) {
-		ColorValueHolder a = p[i]->getColor();
+	for (int i = 0; i < p->size(); i++) {
+		ColorValueHolder a = p->at(i)->getColor();
 		colors[0] += a.getRf();
 		colors[1] += a.getGf();
 		colors[2] += a.getBf();
 	}
 
-	ColorValueHolder mixed = ColorValueHolder(colors[0]/p.size(), colors[1]/p.size(), colors[2]/p.size());
+	ColorValueHolder mixed = ColorValueHolder(colors[0]/p->size(), colors[1]/p->size(), colors[2]/p->size());
 	delete[] colors;
 
 	return mixed;

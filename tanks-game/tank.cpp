@@ -501,7 +501,7 @@ ColorValueHolder Tank::getBodyColor() {
 	if (tankPowers.size() == 0) {
 		return defaultColor;
 	} else {
-		return ColorMixer::mix(tankPowers);
+		return ColorMixer::mix(&tankPowers);
 	}
 }
 

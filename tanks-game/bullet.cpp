@@ -155,7 +155,7 @@ ColorValueHolder Bullet::getColor() {
 	if (bulletPowers.size() == 0) {
 		return defaultColor;
 	} else {
-		return ColorMixer::mix(bulletPowers);
+		return ColorMixer::mix(&bulletPowers);
 	}
 }
 
