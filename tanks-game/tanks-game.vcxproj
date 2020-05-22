@@ -148,6 +148,7 @@
     <ClCompile Include="bouncetankpower.cpp" />
     <ClCompile Include="bullet.cpp" />
     <ClCompile Include="bulletmanager.cpp" />
+    <ClCompile Include="circularlava.cpp" />
     <ClCompile Include="devlonginvinciblenamedbulletpower.cpp" />
     <ClCompile Include="devlonginvinciblenamedpower.cpp" />
     <ClCompile Include="devlonginvinciblenamedtankpower.cpp" />
@@ -235,6 +236,7 @@
     <ClInclude Include="bullet.h" />
     <ClInclude Include="bulletmanager.h" />
     <ClInclude Include="bulletpower.h" />
+    <ClInclude Include="circularlava.h" />
     <ClInclude Include="devlonginvinciblenamedbulletpower.h" />
     <ClInclude Include="devlonginvinciblenamedpower.h" />
     <ClInclude Include="devlonginvinciblenamedtankpower.h" />

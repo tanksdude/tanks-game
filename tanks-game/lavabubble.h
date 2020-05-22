@@ -3,6 +3,7 @@
 struct LavaBubble {
 	//idea: extends Circle so some collision can be done with it, though I have no idea why it would be needed
 	friend class Lava;
+	friend class CircularLava;
 private:
 	//floats, not doubles, since it's not like you can see the difference anyway (also less implicit casting)
 	float r;

@@ -267,6 +267,9 @@
     <ClCompile Include="gamemanager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="circularlava.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -558,6 +561,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="gamething.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="circularlava.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

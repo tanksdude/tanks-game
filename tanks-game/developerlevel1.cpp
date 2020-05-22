@@ -22,6 +22,9 @@ void DeveloperLevel1::initialize() {
 	paras = new std::string[4]{std::to_string(GAME_WIDTH/2 - 80 + 20), std::to_string(GAME_HEIGHT/2), std::to_string((80-20)*2), std::to_string(20*2)};
 	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("lava")(4, paras));
 	delete[] paras;
+	paras = new std::string[3]{std::to_string(GAME_WIDTH/2), std::to_string(GAME_HEIGHT/2 + 100), std::to_string(40)};
+	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("circular lava")(3, paras));
+	delete[] paras;
 
 	//assumption: TANK_RADIUS=16 (why it would ever be changed is beyond me)
 	PowerupManager::pushPowerup(new PowerSquare(20, 20, "speed"));
