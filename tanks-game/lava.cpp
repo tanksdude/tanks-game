@@ -28,6 +28,7 @@ Lava::Lava(double xpos, double ypos, double width, double height) {
 	//tickCount = 0;
 	tickCycle = 2400;
 	bubbles.reserve(maxBubbles);
+	bubbleChance = 1.0/400;
 	
 	canAcceptPowers = false;
 
@@ -118,23 +119,7 @@ RectHazard* Lava::factory(int argc, std::string* argv) {
 }
 
 void Lava::tick() {
-	//tickCount = fmod(tickCount, tickCycle);
-	if (++tickCount >= tickCycle) {
-		tickCount -= tickCycle;
-	}
-
-	if ((bubbles.size() < maxBubbles) && (randFunc() < bubbleChance)) {
-		pushNewBubble(4); //possible radius: sqrt(w * h * 2) / 50
-	}
-
-	for (int i = bubbles.size()-1; i >= 0; i--) {
-		//do stuff
-		bubbles[i]->tick();
-		if (bubbles[i]->isDead()) {
-			delete bubbles[i];
-			bubbles.erase(bubbles.begin() + i);
-		}
-	}
+	GeneralizedLava::tick();
 }
 
 void Lava::pushNewBubble(double radius) {
@@ -153,16 +138,6 @@ void Lava::pushNewBubble(double radius) {
 		double maxTick = floor(randFunc()*101) + 200;
 		bubbles.push_back(new LavaBubble(radius, x0/w, y0/h, x1/w, y1/h, maxTick));
 	}
-}
-
-ColorValueHolder Lava::getBackgroundColor() {
-	//colors: red (#FF0000) and orange-red (#FFAA00) mixed
-	return ColorMixer::mix(ColorValueHolder(1.0f, 0.0f, 0.0f), ColorValueHolder(1.0f, .875f, 0.0f), .625 + sin(2*PI * tickCount/tickCycle)/8 + cos(2*PI * tickCount/tickCycle * 8)/8);
-}
-
-ColorValueHolder Lava::getBubbleColor(LavaBubble* bubble) {
-	//a bubble's natural color is white, but with an alpha of .5, but blending is expensive so it's just mixed with the lava background
-	return ColorMixer::mix(ColorValueHolder(1.0f, 1.0f, 1.0f), getBackgroundColor(), 1 - bubble->getAlpha());
 }
 
 void Lava::draw() {
@@ -201,7 +176,7 @@ void Lava::draw() {
 	//second, draw the bubbles (this makes the bubbles less weird-looking when drawn over each other)
 	for (int i = 0; i < sortedBubbles.size(); i++) {
 		color = getBubbleColor(sortedBubbles[i]);
-		MVPM = Renderer::GenerateMatrix(sortedBubbles[i]->r, sortedBubbles[i]->r, 0, sortedBubbles[i]->getX()*w + x, sortedBubbles[i]->getY()*h + y);
+		MVPM = Renderer::GenerateMatrix(sortedBubbles[i]->getR(), sortedBubbles[i]->getR(), 0, sortedBubbles[i]->getX()*w + x, sortedBubbles[i]->getY()*h + y);
 
 		shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 		shader->setUniformMat4f("u_MVP", MVPM);

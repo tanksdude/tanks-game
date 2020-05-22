@@ -153,6 +153,7 @@
     <ClCompile Include="devlonginvinciblenamedpower.cpp" />
     <ClCompile Include="devlonginvinciblenamedtankpower.cpp" />
     <ClCompile Include="gamemanager.cpp" />
+    <ClCompile Include="generalizedlava.cpp" />
     <ClCompile Include="priorityhandler.cpp" />
     <ClCompile Include="cannonpoint.cpp" />
     <ClCompile Include="circlehazard.cpp" />
@@ -183,7 +184,6 @@
     <ClCompile Include="invinciblenamedtankpower.cpp" />
     <ClCompile Include="keypressmanager.cpp" />
     <ClCompile Include="lava.cpp" />
-    <ClCompile Include="lavabubble.cpp" />
     <ClCompile Include="leveleffect.cpp" />
     <ClCompile Include="levelmanager.cpp" />
     <ClCompile Include="main.cpp" />
@@ -242,6 +242,7 @@
     <ClInclude Include="devlonginvinciblenamedtankpower.h" />
     <ClInclude Include="gamemanager.h" />
     <ClInclude Include="gamething.h" />
+    <ClInclude Include="generalizedlava.h" />
     <ClInclude Include="point.h" />
     <ClInclude Include="priorityhandler.h" />
     <ClInclude Include="cannonpoint.h" />
@@ -276,7 +277,6 @@
     <ClInclude Include="invinciblenamedtankpower.h" />
     <ClInclude Include="keypressmanager.h" />
     <ClInclude Include="lava.h" />
-    <ClInclude Include="lavabubble.h" />
     <ClInclude Include="level.h" />
     <ClInclude Include="leveleffect.h" />
     <ClInclude Include="levelmanager.h" />

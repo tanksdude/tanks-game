@@ -249,9 +249,6 @@
     <ClCompile Include="lava.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lavabubble.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="priorityhandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -268,6 +265,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="circularlava.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="generalizedlava.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -539,9 +539,6 @@
     <ClInclude Include="lava.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="lavabubble.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="priorityhandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -564,6 +561,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="circularlava.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="generalizedlava.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -27,6 +27,7 @@ CircularLava::CircularLava(double xpos, double ypos, double radius) {
 	//tickCount = 0;
 	tickCycle = 2400;
 	bubbles.reserve(maxBubbles);
+	bubbleChance = 1.0/400;
 	
 	canAcceptPowers = false;
 
@@ -120,23 +121,7 @@ CircleHazard* CircularLava::factory(int argc, std::string* argv) {
 }
 
 void CircularLava::tick() {
-	//tickCount = fmod(tickCount, tickCycle);
-	if (++tickCount >= tickCycle) {
-		tickCount -= tickCycle;
-	}
-
-	if ((bubbles.size() < maxBubbles) && (randFunc() < .125)) {
-		pushNewBubble(4); //possible radius: sqrt(r * r * 2) / 50
-	}
-
-	for (int i = bubbles.size()-1; i >= 0; i--) {
-		//do stuff
-		bubbles[i]->tick();
-		if (bubbles[i]->isDead()) {
-			delete bubbles[i];
-			bubbles.erase(bubbles.begin() + i);
-		}
-	}
+	GeneralizedLava::tick();
 }
 
 void CircularLava::pushNewBubble(double radius) {
@@ -160,14 +145,6 @@ void CircularLava::pushNewBubble(double radius) {
 		double maxTick = floor(randFunc()*101) + 200;
 		bubbles.push_back(new LavaBubble(radius, x0/r, y0/r, x1/r, y1/r, maxTick));
 	}
-}
-
-ColorValueHolder CircularLava::getBackgroundColor() {
-	return ColorMixer::mix(ColorValueHolder(1.0f, 0.0f, 0.0f), ColorValueHolder(1.0f, .875f, 0.0f), .625 + sin(2*PI * tickCount/tickCycle)/8 + cos(2*PI * tickCount/tickCycle * 8)/8);
-}
-
-ColorValueHolder CircularLava::getBubbleColor(LavaBubble* bubble) {
-	return ColorMixer::mix(ColorValueHolder(1.0f, 1.0f, 1.0f), getBackgroundColor(), 1 - bubble->getAlpha());
 }
 
 void CircularLava::draw() {
@@ -205,7 +182,7 @@ void CircularLava::draw() {
 	//second, draw the bubbles (this makes the bubbles less weird-looking when drawn over each other)
 	for (int i = 0; i < sortedBubbles.size(); i++) {
 		color = getBubbleColor(sortedBubbles[i]);
-		MVPM = Renderer::GenerateMatrix(sortedBubbles[i]->r, sortedBubbles[i]->r, 0, sortedBubbles[i]->getX()*r + x, sortedBubbles[i]->getY()*r + y);
+		MVPM = Renderer::GenerateMatrix(sortedBubbles[i]->getR(), sortedBubbles[i]->getR(), 0, sortedBubbles[i]->getX()*r + x, sortedBubbles[i]->getY()*r + y);
 
 		shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 		shader->setUniformMat4f("u_MVP", MVPM);
