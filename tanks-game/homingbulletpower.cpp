@@ -35,5 +35,5 @@ HomingBulletPower::HomingBulletPower(){
 	maxTime = -1;
 
 	modifiesMovement = true;
-	modifiesCollisionWithEdge = true;
+	modifiesEdgeCollision = true;
 }
