@@ -235,8 +235,24 @@ inline void Tank::defaultMakeBullet(double x, double y, double angle) {
 void Tank::determineShootingAngles() {
 	shootingPoints->clear();
 	shootingPoints->push_back(CannonPoint(0));
+
+	bool modifiedAdditionalShooting = false;
+	bool noMoreAdditionalShootingSpecials = false;
+
 	for (int i = 0; i < tankPowers.size(); i++) {
 		if (tankPowers[i]->addsShootingPoints) {
+			if (tankPowers[i]->addShootingPointsCanOnlyWorkIndividually && modifiedAdditionalShooting) {
+				continue;
+			}
+			if (noMoreAdditionalShootingSpecials) {
+				continue;
+			}
+
+			modifiedAdditionalShooting = true;
+			if (!tankPowers[i]->additionalShootingCanWorkWithOthers) {
+				noMoreAdditionalShootingSpecials = true;
+			}
+
 			tankPowers[i]->addShootingPoints(this, shootingPoints);
 		}
 	}

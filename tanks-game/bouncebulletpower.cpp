@@ -20,6 +20,7 @@ PowerInteractionBoolHolder BounceBulletPower::modifiedCollisionWithWall(Bullet* 
 
 	if (bouncesLeft <= 0) {
 		modifiesCollisionWithWall = false;
+		modifiesEdgeCollision = false;
 	}
 
 	return { this->bouncesLeft < 0, false };
@@ -41,7 +42,8 @@ PowerInteractionBoolHolder BounceBulletPower::modifiedEdgeCollision(Bullet* b) {
 	}
 
 	if (bouncesLeft <= 0) {
-		modifiesCollisionWithEdge = false;
+		modifiesEdgeCollision = false;
+		modifiesCollisionWithWall = false;
 		return { b->isFullyOutOfBounds() };
 	}
 
@@ -54,7 +56,8 @@ PowerInteractionBoolHolder BounceBulletPower::modifiedEdgeCollision(Bullet* b) {
 	}
 
 	if (bouncesLeft <= 0) {
-		modifiesCollisionWithEdge = false;
+		modifiesEdgeCollision = false;
+		modifiesCollisionWithWall = false;
 		return { b->isFullyOutOfBounds() };
 	}
 
@@ -66,7 +69,8 @@ PowerInteractionBoolHolder BounceBulletPower::modifiedEdgeCollision(Bullet* b) {
 	}
 
 	if (bouncesLeft <= 0) {
-		modifiesCollisionWithEdge = false;
+		modifiesEdgeCollision = false;
+		modifiesCollisionWithWall = false;
 	}
 
 	return { b->isFullyOutOfBounds() };
@@ -91,5 +95,5 @@ BounceBulletPower::BounceBulletPower(){
 	bouncesLeft = BounceBulletPower::maxBounces;
 	modifiesCollisionWithWall = true;
 	//modifiedCollisionWithWallCanWorkWithOthers = false;
-	modifiesCollisionWithEdge = true;
+	modifiesEdgeCollision = true;
 }

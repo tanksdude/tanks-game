@@ -212,6 +212,7 @@ void tick(int physicsUPS) {
 	//while (currentlyDrawing) {}
 
 	auto start = Diagnostics::getTime();
+	doThing();
 
 	//move tanks:
 	moveTanks();
@@ -715,7 +716,7 @@ void tankToEdge() {
 
 		if (t->isPartiallyOutOfBounds()) {
 			for (int k = 0; k < t->tankPowers.size(); k++) {
-				if (t->tankPowers[k]->modifiesCollisionWithEdge) {
+				if (t->tankPowers[k]->modifiesEdgeCollision) {
 					if (t->tankPowers[k]->modifiedEdgeCollisionCanOnlyWorkIndividually && modifiedEdgeCollision) {
 						continue;
 					}
@@ -759,7 +760,7 @@ void bulletToEdge() {
 
 		if (b->isPartiallyOutOfBounds()) {
 			for (int k = 0; k < b->bulletPowers.size(); k++) {
-				if (b->bulletPowers[k]->modifiesCollisionWithEdge) {
+				if (b->bulletPowers[k]->modifiesEdgeCollision) {
 					if (b->bulletPowers[k]->modifiedEdgeCollisionCanOnlyWorkIndividually && modifiedEdgeCollision) {
 						continue;
 					}

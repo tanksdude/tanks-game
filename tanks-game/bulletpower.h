@@ -46,7 +46,7 @@ public:
 	bool modifiedMovementCanOnlyWorkIndividually = false; //true means that if another power was used previously, this power can't activate
 	//fix: have super override value? so the power can ensure that it and only it will activate (I don't think a power should have this kind of authority, but it might be needed)
 
-	bool modifiesCollisionWithEdge = false;
+	bool modifiesEdgeCollision = false;
 	virtual PowerInteractionBoolHolder modifiedEdgeCollision(Bullet*) { return { false, false }; }
 	//precondition: was out-of-bounds, is not necessarily out-of-bounds
 	bool overridesEdgeCollision = true;

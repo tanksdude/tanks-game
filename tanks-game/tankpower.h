@@ -44,7 +44,7 @@ public:
 	bool modifiedMovementCanWorkWithOthers = true; //stops later powerups in list from activating
 	bool modifiedMovementCanOnlyWorkIndividually = false; //if another power was used previously, this power can't activate
 
-	bool modifiesCollisionWithEdge = false;
+	bool modifiesEdgeCollision = false;
 	virtual PowerInteractionBoolHolder modifiedEdgeCollision(Tank*) { return { false, false }; }
 	//precondition: was out-of-bounds, is not necessarily out-of-bounds
 	bool overridesEdgeCollision = true;
@@ -100,7 +100,7 @@ public:
 
 	bool addsShootingPoints = false;
 	virtual void addShootingPoints(Tank*, std::vector<CannonPoint>*) { return; } //shouldn't need the Tank*
-	bool overridesAddShootingPoints = false; //should only be false
+	//bool overridesAddShootingPoints = false; //makes no sense to be true
 	bool addShootingPointsCanWorkWithOthers = true; //should only be true
 	bool addShootingPointsCanOnlyWorkIndividually = false;
 	
