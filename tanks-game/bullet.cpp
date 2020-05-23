@@ -136,7 +136,7 @@ void Bullet::move() {
 
 void Bullet::powerCalculate() {
 	for (int i = bulletPowers.size() - 1; i >= 0; i--) {
-		bulletPowers[i]->tick(); //I don't think any power will use this, but whatever
+		bulletPowers[i]->tick(this); //I don't think any power will use this, but whatever
 		if (bulletPowers[i]->isDone()) {
 			removePower(i);
 		} else { //to make each power last its full length, not n-1 length

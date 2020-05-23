@@ -490,7 +490,7 @@ void Tank::updateRadius() {
 
 void Tank::powerCalculate() {
 	for (int i = tankPowers.size() - 1; i >= 0; i--) {
-		tankPowers[i]->tick(); //I don't think any power will use this, but whatever
+		tankPowers[i]->tick(this); //I don't think any power will use this, but whatever
 		if (tankPowers[i]->isDone()) {
 			removePower(i);
 		} else { //to make each power last its full length, not n-1 length

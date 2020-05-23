@@ -20,7 +20,7 @@ public:
 	virtual void initialize(Tank* parent) = 0;
 	virtual void removeEffects(Tank* parent) = 0;
 
-	virtual void tick() {
+	virtual void tick(Tank*) {
 		//most shouldn't be doing anything
 		return;
 	}

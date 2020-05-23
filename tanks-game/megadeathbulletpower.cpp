@@ -8,7 +8,7 @@
 const double MegaDeathBulletPower::destroyWallTier = DESTRUCTION_TIER;
 const double MegaDeathBulletPower::bulletSizeMultiplierPerTick = 65.0/64.0;
 
-void MegaDeathBulletPower::powerTick(Bullet* b) {
+void MegaDeathBulletPower::tick(Bullet* b) {
 	if (getOffenseTier(b) >= destroyWallTier) {
 		modifiedCollisionWithWallCanWorkWithOthers = false;
 	}
