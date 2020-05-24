@@ -479,12 +479,13 @@ void HorizontalLightning::pushBolt(LightningBolt* l, bool simpleRefresh) {
 
 bool HorizontalLightning::validLocation() {
 	bool wallOnLeft = false, wallOnRight = false, wallInMiddle = false;
-	for(int i = 0; i < WallManager::getNumWalls(); i++){
+	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		Wall* wa = WallManager::getWall(i);
-		if(!(wallOnLeft && wallOnRight) && (wa->y <= y) && (wa->y + wa->h >= y + h)) {
-			if(!wallOnLeft && (x == wa->x + wa->w)) {
+		//I'm not sure numerical comparisons are "costly" to the point where short circuiting is needed
+		if (!(wallOnLeft && wallOnRight) && (wa->y <= y) && (wa->y + wa->h >= y + h)) {
+			if (!wallOnLeft && (x == wa->x + wa->w)) {
 				wallOnLeft = true;
-			} else if(!wallOnRight && (x + w == wa->x)) {
+			} else if (!wallOnRight && (x + w == wa->x)) {
 				wallOnRight = true;
 			}
 		}
@@ -493,7 +494,37 @@ bool HorizontalLightning::validLocation() {
 			break;
 		}
 	}
+	if (!wallOnLeft && (x == 0)) {
+		wallOnLeft = true;
+	}
+	if (!wallOnRight && (x + w == GAME_WIDTH)) {
+		wallOnRight = true;
+	}
 	return (wallOnLeft && wallOnRight && !wallInMiddle);
+}
+
+bool HorizontalLightning::reasonableLocation() {
+	bool wallOnTop = false, wallOnBottom = false;
+	for (int i = 0; i < WallManager::getNumWalls(); i++) {
+		Wall* wa = WallManager::getWall(i);
+		if ((wa->x <= x) && (wa->x + wa->w >= x + w)) {
+			if (!wallOnBottom && (y == wa->y + wa->h)) {
+				wallOnBottom = true;
+			} else if (!wallOnTop && (y + h == wa->y)) {
+				wallOnTop = true;
+			}
+		}
+		if (wallOnTop && wallOnBottom) {
+			break;
+		}
+	}
+	if (!wallOnBottom && (y <= 0)) { //should this be ==? //also, should this function return false if the lightning is out of bounds?
+		wallOnBottom = true;
+	}
+	if (!wallOnTop && (y + h >= GAME_HEIGHT)) {
+		wallOnTop = true;
+	}
+	return (!(wallOnTop && wallOnBottom) && validLocation());
 }
 
 void HorizontalLightning::simpleRefreshBolt(int num) {

@@ -7,7 +7,8 @@
 #include "constants.h"
 #include <math.h>
 #include "mylib.h"
-#include <iostream>
+#include "wallmanager.h"
+#include "collisionhandler.h"
 
 VertexArray* RectangularLava::background_va;
 VertexBuffer* RectangularLava::background_vb;
@@ -138,6 +139,15 @@ void RectangularLava::pushNewBubble(double radius) {
 		double maxTick = floor(randFunc()*101) + 200;
 		bubbles.push_back(new LavaBubble(radius, x0/w, y0/h, x1/w, y1/h, maxTick));
 	}
+}
+
+bool RectangularLava::reasonableLocation() {
+	for (int i = 0; i < WallManager::getNumWalls(); i++) {
+		if (CollisionHandler::partiallyCollided(this, WallManager::getWall(i))) {
+			return false;
+		}
+	}
+	return true;
 }
 
 void RectangularLava::draw() {

@@ -7,6 +7,8 @@
 #include "constants.h"
 #include <math.h>
 #include "mylib.h"
+#include "wallmanager.h"
+#include "collisionhandler.h"
 #include <iostream>
 
 VertexArray* CircularLava::background_va;
@@ -145,6 +147,15 @@ void CircularLava::pushNewBubble(double radius) {
 		double maxTick = floor(randFunc()*101) + 200;
 		bubbles.push_back(new LavaBubble(radius, x0/r, y0/r, x1/r, y1/r, maxTick));
 	}
+}
+
+bool CircularLava::reasonableLocation() {
+	for (int i = 0; i < WallManager::getNumWalls(); i++) {
+		if (CollisionHandler::partiallyCollided(this, WallManager::getWall(i))) {
+			return false;
+		}
+	}
+	return true;
 }
 
 void CircularLava::draw() {

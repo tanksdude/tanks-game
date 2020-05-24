@@ -9,9 +9,22 @@ class RectHazard;
 #include "tank.h"
 #include "bullet.h"
 
-#include "vertexarray.h"
-#include "vertexbuffer.h"
-#include "indexbuffer.h"
+struct RectFactoryInformation {
+	bool requiresWallOnLeft;
+	bool requiresWallOnRight;
+	bool requiresWallOnTop;
+	bool requiresWallOnBottom;
+	bool wallRequirementCanBeAnEdge;
+	RectFactoryInformation(bool wallLeft, bool wallRight, bool wallTop, bool wallBottom, bool edgeEqualsWall) {
+		requiresWallOnLeft = wallLeft;
+		requiresWallOnRight = wallRight;
+		requiresWallOnTop = wallTop;
+		requiresWallOnBottom = wallBottom;
+		wallRequirementCanBeAnEdge = edgeEqualsWall;
+	}
+	RectFactoryInformation(bool wallLeft, bool wallRight, bool wallTop, bool wallBottom)
+	: RectFactoryInformation(wallLeft, wallRight, wallTop, wallBottom, true) {}
+};
 
 class RectHazard : public Hazard, public Rect {
 public: //protected?
@@ -38,10 +51,16 @@ public:
 	bool hasSpecialEffectBulletCollision = false;
 	virtual void specialEffectBulletCollision(Bullet*) { return; } //always activated before modifiedBulletCollision
 
+	//virtual bool validLocation() { return true; }
+	//virtual bool reasonableLocation() = 0;
+
 	virtual std::string getName() = 0;
 	static std::string getClassName();
 	//virtual bool initializeGPU() = 0;
 	virtual void draw() = 0;
 
 	static RectHazard* factory(int argc, std::string* argv); //strings so any data type can be used (theoretically; structs can't, ya know)
+	virtual RectFactoryInformation getFactoryInformation() {
+		return { false, false, false, false, false };
+	}
 };

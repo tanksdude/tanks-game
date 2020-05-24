@@ -1,7 +1,10 @@
 #pragma once
 #include "recthazard.h"
 #include "generalizedlava.h"
-#include <vector>
+
+#include "vertexarray.h"
+#include "vertexbuffer.h"
+#include "indexbuffer.h"
 
 class RectangularLava : public RectHazard, public GeneralizedLava {
 protected:
@@ -31,6 +34,9 @@ public:
 	virtual bool actuallyCollided(Bullet* b) { return (b->velocity == 0); }
 	//bool modifiesBulletCollision = true;
 	virtual void modifiedBulletCollision(Bullet*) { return; }
+
+	//virtual bool validLocation() { return true; }
+	virtual bool reasonableLocation();
 
 	virtual std::string getName() { return getClassName(); }
 	static std::string getClassName() { return "rectangular lava"; }

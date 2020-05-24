@@ -1,7 +1,10 @@
 #pragma once
 #include "circlehazard.h"
 #include "generalizedlava.h"
-#include <vector>
+
+#include "vertexarray.h"
+#include "vertexbuffer.h"
+#include "indexbuffer.h"
 
 class CircularLava : public CircleHazard, public GeneralizedLava {
 protected:
@@ -32,8 +35,11 @@ public:
 	//bool modifiesBulletCollision = true;
 	virtual void modifiedBulletCollision(Bullet*) { return; }
 
-	virtual std::string getName() { return getClassName(); };
-	static std::string getClassName() { return "circular lava"; };
+	//virtual bool validLocation() { return true; }
+	virtual bool reasonableLocation();
+
+	virtual std::string getName() { return getClassName(); }
+	static std::string getClassName() { return "circular lava"; }
 
 	virtual void tick();
 	virtual void draw();

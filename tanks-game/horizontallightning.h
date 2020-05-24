@@ -2,6 +2,10 @@
 #include "recthazard.h"
 #include <vector>
 
+#include "vertexarray.h"
+#include "vertexbuffer.h"
+#include "indexbuffer.h"
+
 struct LightningBolt {
 	std::vector<float> positions; //positions is array of (x,y) points in range [0,1] (this is for easy vertex streaming)
 	int length; //positions.size()/2, unless it's uninitialized
@@ -86,17 +90,21 @@ protected:
 public:
 	virtual ColorValueHolder getBackgroundColor();
 	virtual ColorValueHolder getBoltColor();
-	virtual std::string getName() { return getClassName(); };
-	static std::string getClassName() { return "horizontal lightning"; };
+	virtual std::string getName() { return getClassName(); }
+	static std::string getClassName() { return "horizontal lightning"; }
 
-	bool validLocation();
+	virtual bool validLocation();
+	virtual bool reasonableLocation();
 
-	void tick();
-	void draw();
-	void drawCPU();
+	virtual void tick();
+	virtual void draw();
+	virtual void drawCPU();
 
 	HorizontalLightning(double xpos, double ypos, double width, double height);
 	//HorizontalLightning(double xpos, double ypos, double width, double height, bool flexible);
 	~HorizontalLightning();
 	static RectHazard* factory(int, std::string*);
+	virtual RectFactoryInformation getFactoryInformation() {
+		return { true, true, false, false, true };
+	}
 };

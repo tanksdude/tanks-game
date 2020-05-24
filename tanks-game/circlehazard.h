@@ -9,10 +9,6 @@ class CircleHazard;
 #include "tank.h"
 #include "bullet.h"
 
-#include "vertexarray.h"
-#include "vertexbuffer.h"
-#include "indexbuffer.h"
-
 class CircleHazard : public Hazard, public Circle {
 public: //protected?
 	//std::vector<CircleHazardPower*> hazardPowers;
@@ -37,6 +33,9 @@ public:
 	virtual void modifiedBulletCollision(Bullet*);
 	bool hasSpecialEffectBulletCollision = false;
 	virtual void specialEffectBulletCollision(Bullet*) { return; } //always activated before modifiedBulletCollision
+
+	//virtual bool validLocation() { return true; }
+	//virtual bool reasonableLocation() = 0;
 
 	virtual std::string getName() = 0;
 	static std::string getClassName();
