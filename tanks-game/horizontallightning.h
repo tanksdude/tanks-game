@@ -7,7 +7,7 @@
 #include "indexbuffer.h"
 
 struct LightningBolt {
-	std::vector<float> positions; //positions is array of (x,y) points in range [0,1] (this is for easy vertex streaming)
+	std::vector<float> positions; //positions is array of (x,y) points (for easy vertex streaming)
 	int length; //positions.size()/2, unless it's uninitialized
 	LightningBolt() { length = 0; } //don't use
 	LightningBolt(int l) { //try not to use

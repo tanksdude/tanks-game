@@ -40,7 +40,7 @@ HorizontalLightning::HorizontalLightning(double xpos, double ypos, double width,
 	bolts.reserve(maxBolts);
 	int boltPoints = getDefaultNumBoltPoints(w);
 	for (int i = 0; i < maxBolts; i++) {
-		pushBolt(new LightningBolt(0, .5, 1, .5, boltPoints), true);
+		pushBolt(new LightningBolt(0, h/2, w, h/2, boltPoints), true);
 	}
 
 	canAcceptPowers = false;
@@ -183,7 +183,7 @@ void HorizontalLightning::tick() {
 			clearBolts();
 			int boltPoints = getDefaultNumBoltPoints(w);
 			for (int i = 0; i < maxBolts; i++) {
-				pushBolt(new LightningBolt(0, .5, 1, .5, boltPoints), true);
+				pushBolt(new LightningBolt(0, h/2, w, h/2, boltPoints), true);
 			}
 			boltTick = 0;
 		}
@@ -423,9 +423,9 @@ void HorizontalLightning::specialEffectCircleCollision(Circle* c) {
 	double distR = sqrt(pow((x + w) - intersectionXR, 2) + pow((y + h/2) - intersectionYR, 2));
 	boltPointsL = (boltPointsL < 2 ? getDefaultNumBoltPoints(distL) : boltPointsL);
 	boltPointsR = (boltPointsR < 2 ? getDefaultNumBoltPoints(distR) : boltPointsR);
-	pushBolt(new LightningBolt(0, .5, (intersectionXL-x)/w, (intersectionYL-y)/h, boltPointsL), false);
-	pushBolt(new LightningBolt((intersectionXL-x)/w, (intersectionYL-y)/h, (intersectionXR-x)/w, (intersectionYR-y)/h, 2), false);
-	pushBolt(new LightningBolt((intersectionXR-x)/w, (intersectionYR-y)/h, 1, .5, boltPointsR), false);
+	pushBolt(new LightningBolt(0, h/2, intersectionXL-x, intersectionYL-y, boltPointsL), false);
+	pushBolt(new LightningBolt(intersectionXL-x, intersectionYL-y, intersectionXR-x, intersectionYR-y, 2), false);
+	pushBolt(new LightningBolt(intersectionXR-x, intersectionYR-y, w, h/2, boltPointsR), false);
 
 	//compared to JS Tanks, this intersection logic is much more complex
 	//that's okay because wallhacking into a lightning will look less weird
@@ -528,7 +528,7 @@ bool HorizontalLightning::reasonableLocation() {
 }
 
 void HorizontalLightning::simpleRefreshBolt(int num) {
-	double maxVariance = 1.0/4.0;
+	double maxVariance = h/4;
 	/* lightning bolts are allowed to be in an area that looks like this:
 	 * 
 	 * +   --------------   +        <- 1.0
@@ -547,6 +547,7 @@ void HorizontalLightning::simpleRefreshBolt(int num) {
 
 	//old method:
 	/*
+	//old method note: x and y coordinates in range [0,1], maxVariance = 1.0/4.0
 	for (int j = 1; j < bolts[num]->length-1; j++) {
 		//bolts[num]->positions[j*2]   = float(j)/(bolts[num]->length - 1);
 		//bolts[num]->positions[j*2+1] = randFunc2();
@@ -570,19 +571,20 @@ void HorizontalLightning::simpleRefreshBolt(int num) {
 	}
 	*/
 
+	double deltaX = (bolts[num]->positions[bolts[num]->length*2-2] - bolts[num]->positions[0]) / (bolts[num]->length - 1);
 	for (int j = 1; j < bolts[num]->length-1; j++) {
 		double yRangeLower = bolts[num]->positions[j*2 - 1] - maxVariance;
 		double yRangeUpper = bolts[num]->positions[j*2 - 1] + maxVariance;
 		double yMin, yMax;
 		if(j < bolts[num]->length / 4){ //first quarter
-			yMin = -2 * (double(j) / bolts[num]->length) + .5;
-			yMax =  2 * (double(j) / bolts[num]->length) + .5;
+			yMin = -2*h/w * (deltaX * j) + h/2;
+			yMax =  2*h/w * (deltaX * j) + h/2;
 		}else if(j < bolts[num]->length * 3.0/4.0){ //middle half
 			yMin = 0;
-			yMax = 1;
+			yMax = h;
 		}else{ //last quarter
-			yMin =  2 * (double(j) / bolts[num]->length - 3.0/4.0) + 0;
-			yMax = -2 * (double(j) / bolts[num]->length - 3.0/4.0) + 1;
+			yMin =  2*h/w * (deltaX * (j - bolts[num]->length*3.0/4.0)) + 0;
+			yMax = -2*h/w * (deltaX * (j - bolts[num]->length*3.0/4.0)) + h;
 		}
 		yRangeLower = (yRangeLower < yMin ? yMin : yRangeLower);
 		yRangeUpper = (yRangeUpper > yMax ? yMax : yRangeUpper);
@@ -599,12 +601,6 @@ void HorizontalLightning::refreshBolts() {
 void HorizontalLightning::refreshBolt(int num) {
 	if (bolts[num]->length <= 2) {
 		return;
-	}
-
-	//change of basis is required to not do this step; will update this function later
-	for (int i = 0; i < bolts[num]->length; i++) {
-		bolts[num]->positions[i*2]   = bolts[num]->positions[i*2]   * w;
-		bolts[num]->positions[i*2+1] = bolts[num]->positions[i*2+1] * h;
 	}
 
 	float deltaX = bolts[num]->positions[bolts[num]->length*2-2] - bolts[num]->positions[0];
@@ -656,11 +652,6 @@ void HorizontalLightning::refreshBolt(int num) {
 		bolts[num]->positions[j*2]   = testX;
 		bolts[num]->positions[j*2+1] = testY;
 	}
-	
-	for (int i = 0; i < bolts[num]->length; i++) {
-		bolts[num]->positions[i*2]   = bolts[num]->positions[i*2]   / w;
-		bolts[num]->positions[i*2+1] = bolts[num]->positions[i*2+1] / h;
-	}
 }
 
 void HorizontalLightning::clearBolts() {
@@ -701,7 +692,8 @@ void HorizontalLightning::draw() {
 	glLineWidth(2.0f);
 	color = getBoltColor();
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-	//shader->setUniformMat4f("u_MVP", MVPM);
+	MVPM = Renderer::GenerateMatrix(1, 1, 0, x, y);
+	shader->setUniformMat4f("u_MVP", MVPM);
 
 	for (int i = 0; i < bolts.size(); i++) {
 		//I think the VertexBuffer resizing should happen here, but there would probably be less strain if it happens only when a bullet/tank collides
