@@ -38,11 +38,17 @@ void DeveloperManager::mouseDragFunc(int x, int y) {
 }
 
 void DeveloperManager::mouseClickFunc(int button, int state, int x, int y) {
+	int real_x = x;
+	int real_y = y - (Renderer::window_height - Renderer::gamewindow_height);
 	if (state == GLUT_DOWN) {
 		if (button == GLUT_LEFT_BUTTON) {
 			leftMouse = true;
 		} else if (button == GLUT_RIGHT_BUTTON) {
 			rightMouse = !rightMouse;
+		} else { //button == GLUT_MIDDLE_BUTTON
+			double true_x = (real_x / double(Renderer::gamewindow_width)) * GAME_WIDTH;
+			double true_y = (1 - real_y / double(Renderer::gamewindow_height)) * GAME_HEIGHT;
+			PowerupManager::pushPowerup(new PowerSquare(true_x, true_y, "dev", "longinvincible")); //change to godmode when it exists?
 		}
 	} else {
 		if (button == GLUT_LEFT_BUTTON) {
@@ -52,7 +58,7 @@ void DeveloperManager::mouseClickFunc(int button, int state, int x, int y) {
 }
 
 void DeveloperManager::mouseWheelFunc(int wheel, int dir, int x, int y) {
-	// in the future, the wheel should change the index of some list of stuffs as a dev menu to insert said stuffs
+	// in the future, the wheel should change the index of some list of stuffs as a dev menu to insert said stuffs (and middle mouse inserts the thing)
 	int real_x = (x / double(Renderer::window_width)) * GAME_WIDTH;
 	int real_y = (1 - y / double(Renderer::window_height)) * GAME_HEIGHT;
 

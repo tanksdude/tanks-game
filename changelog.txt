@@ -1,9 +1,20 @@
-0.2.2 (obviously not here)
-lightning hazards
-lava hazard
+0.2.3 (obviously definitely not here)
 banana power
-fire and blast draw the region they shoot in?
-some sort of "game manager" for initialization code instead of leaving it in main.cpp?
+hazard randomization
+other lightning hazards?
+
+0.2.2.1 (obviously not here)
+cleanup
+
+0.2.2
+horizontal lightning hazard
+* other lightning hazards will come later
+rectangular and circular lava hazards
+complete priority handling overhaul
+minor things:
+* levels and powerups can be grouped
+* a start towards a "game manager"
+* misc cleanup
 
 0.2.1
 switched back to static vertex buffers

@@ -1,15 +1,15 @@
 #pragma once
 #include "tank.h"
+#include "gamemanager.h"
 #include "constants.h"
 #include "colormixer.h"
 #include <math.h>
 #include <string>
-#include <iostream>
 #include "mylib.h"
 #include "renderer.h"
-#include <glm.hpp>
 #include "keypressmanager.h"
 #include "bulletmanager.h"
+#include <iostream>
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
@@ -41,7 +41,8 @@ Tank::Tank(double x_, double y_, double a, char id_, std::string name_, TankInpu
 	x = x_;
 	y = y_;
 	angle = a;
-	id = id_;
+	gameID = GameManager::getNextID();
+	teamID = id_;
 	r = TANK_RADIUS;
 	name = name_;
 
@@ -220,11 +221,11 @@ void Tank::makeBullet(double x, double y, double angle, double radius, double sp
 		bp->push_back(tankPowers[k]->makeBulletPower());
 	}
 
-	Bullet* temp = new Bullet(x, y, radius, angle, speed, acc, id, *bp);
+	Bullet* temp = new Bullet(x, y, radius, angle, speed, acc, teamID, bp);
 	BulletManager::pushBullet(temp);
 
 	delete bp;
-	//don't delete bp! it's being used! //(doesn't bp need to be deleted though?) (yes because copy constructor is called, which I'll fix later)
+	//bp can be deleted here or in the Bullet constructor, since every bullet should get a different bulletpower vector
 }
 
 inline void Tank::defaultMakeBullet(double x, double y, double angle) {
@@ -234,8 +235,24 @@ inline void Tank::defaultMakeBullet(double x, double y, double angle) {
 void Tank::determineShootingAngles() {
 	shootingPoints->clear();
 	shootingPoints->push_back(CannonPoint(0));
+
+	bool modifiedAdditionalShooting = false;
+	bool noMoreAdditionalShootingSpecials = false;
+
 	for (int i = 0; i < tankPowers.size(); i++) {
 		if (tankPowers[i]->addsShootingPoints) {
+			if (tankPowers[i]->addShootingPointsCanOnlyWorkIndividually && modifiedAdditionalShooting) {
+				continue;
+			}
+			if (noMoreAdditionalShootingSpecials) {
+				continue;
+			}
+
+			modifiedAdditionalShooting = true;
+			if (!tankPowers[i]->additionalShootingCanWorkWithOthers) {
+				noMoreAdditionalShootingSpecials = true;
+			}
+
 			tankPowers[i]->addShootingPoints(this, shootingPoints);
 		}
 	}
@@ -473,7 +490,7 @@ void Tank::updateRadius() {
 
 void Tank::powerCalculate() {
 	for (int i = tankPowers.size() - 1; i >= 0; i--) {
-		tankPowers[i]->tick(); //I don't think any power will use this, but whatever
+		tankPowers[i]->tick(this); //I don't think any power will use this, but whatever
 		if (tankPowers[i]->isDone()) {
 			removePower(i);
 		} else { //to make each power last its full length, not n-1 length
@@ -500,7 +517,7 @@ ColorValueHolder Tank::getBodyColor() {
 	if (tankPowers.size() == 0) {
 		return defaultColor;
 	} else {
-		return ColorMixer::mix(tankPowers);
+		return ColorMixer::mix(&tankPowers);
 	}
 }
 
@@ -783,11 +800,12 @@ void Tank::drawNameCPU(double xpos, double ypos) {
 
 }
 
-void Tank::resetThings(double x, double y, double a, char id, std::string name) { //TODO: finish?
+void Tank::resetThings(double x, double y, double a, char teamID, std::string name) { //TODO: finish?
 	this->x = x;
 	this->y = y;
 	this->angle = a;
-	this->id = id;
+	this->gameID = GameManager::getNextID(); //should this be updated?
+	this->teamID = teamID;
 	//this->r = TANK_RADIUS;
 	this->name = name;
 	shootCount = 0;
@@ -884,4 +902,3 @@ bool Tank::isPartiallyOutOfBounds() {
 bool Tank::isFullyOutOfBounds() {
 	return ((x - r > GAME_WIDTH) || (x + r < 0) || (y - r > GAME_HEIGHT) || (y + r < 0));
 }
-

@@ -8,11 +8,9 @@
 const double MegaDeathBulletPower::destroyWallTier = DESTRUCTION_TIER;
 const double MegaDeathBulletPower::bulletSizeMultiplierPerTick = 65.0/64.0;
 
-void MegaDeathBulletPower::powerTick(Bullet* b) {
+void MegaDeathBulletPower::tick(Bullet* b) {
 	if (getOffenseTier(b) >= destroyWallTier) {
 		modifiedCollisionWithWallCanWorkWithOthers = false;
-		modifiedCollisionWithCircleHazardCanWorkWithOthers = false;
-		modifiedCollisionWithRectHazardCanWorkWithOthers = false;
 	}
 }
 
@@ -21,22 +19,6 @@ PowerInteractionBoolHolder MegaDeathBulletPower::modifiedCollisionWithWall(Bulle
 		return { false, true };
 	} else {
 		return { CollisionHandler::partiallyCollided(b, w), false };
-	}
-}
-
-PowerInteractionBoolHolder MegaDeathBulletPower::modifiedCollisionWithCircleHazard(Bullet* b, CircleHazard* ch) {
-	if (getOffenseTier(b) >= destroyWallTier) {
-		return { false, true };
-	} else {
-		return { CollisionHandler::partiallyCollided(b, ch), false };
-	}
-}
-
-PowerInteractionBoolHolder MegaDeathBulletPower::modifiedCollisionWithRectHazard(Bullet* b, RectHazard* rh) {
-	if (getOffenseTier(b) >= destroyWallTier) {
-		return { false, true };
-	} else {
-		return { CollisionHandler::partiallyCollided(b, rh), false };
 	}
 }
 
@@ -75,8 +57,4 @@ MegaDeathBulletPower::MegaDeathBulletPower(){
 	modifiesMovement = true;
 	modifiesCollisionWithWall = true;
 	//modifiedCollisionWithWallCanWorkWithOthers = false;
-	modifiesCollisionWithCircleHazard = true;
-	//modifiedCollisionWithCircleHazardCanWorkWithOthers = false;
-	modifiesCollisionWithRectHazard = true;
-	//modifiedCollisionWithRectHazardCanWorkWithOthers = false;
 }

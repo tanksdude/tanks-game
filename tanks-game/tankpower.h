@@ -6,7 +6,10 @@ class TankPower;
 #include "cannonpoint.h"
 #include "bullet.h"
 #include "wall.h"
+#include "circlehazard.h"
+#include "recthazard.h"
 #include "inheritedpowercommon.h"
+#include "bulletpower.h"
 
 class TankPower : public InheritedPowerCommon {
 protected:
@@ -17,7 +20,7 @@ public:
 	virtual void initialize(Tank* parent) = 0;
 	virtual void removeEffects(Tank* parent) = 0;
 
-	virtual void tick() {
+	virtual void tick(Tank*) {
 		//most shouldn't be doing anything
 		return;
 	}
@@ -25,7 +28,10 @@ public:
 		timeLeft--;
 	}
 	virtual bool isDone() {
-		return timeLeft <= 0;
+		if (maxTime < 0) {
+			return false;
+		}
+		return (timeLeft <= 0);
 	}
 	virtual ColorValueHolder getColor() = 0;
 
@@ -38,7 +44,7 @@ public:
 	bool modifiedMovementCanWorkWithOthers = true; //stops later powerups in list from activating
 	bool modifiedMovementCanOnlyWorkIndividually = false; //if another power was used previously, this power can't activate
 
-	bool modifiesCollisionWithEdge = false;
+	bool modifiesEdgeCollision = false;
 	virtual PowerInteractionBoolHolder modifiedEdgeCollision(Tank*) { return { false, false }; }
 	//precondition: was out-of-bounds, is not necessarily out-of-bounds
 	bool overridesEdgeCollision = true;
@@ -65,8 +71,19 @@ public:
 	//bool modifiesCollisionWithBullet = false;
 	//virtual void modifiedCollisionWithBullet(Tank*, Bullet*) { return; } //probably shouldn't be used
 
-	//bool modifiesCollisionWithHazard = false;
-	//virtual void modifiedCollisionWithHazard(Tank*, Hazard*) { return; }
+	bool modifiesCollisionWithCircleHazard = false;
+	virtual PowerInteractionBoolHolder modifiedCollisionWithCircleHazard(Tank*, CircleHazard*) { return { false, false }; }
+	//precondition: hit circlehazard, is not necessarily inside circlehazard
+	bool overridesCollisionWithCircleHazard = true; //false means also use the default, which means destroy the bullet if it collides
+	bool modifiedCollisionWithCircleHazardCanWorkWithOthers = true;
+	bool modifiedCollisionWithCircleHazardCanOnlyWorkIndividually = false;
+
+	bool modifiesCollisionWithRectHazard = false;
+	virtual PowerInteractionBoolHolder modifiedCollisionWithRectHazard(Tank*, RectHazard*) { return { false, false }; }
+	//precondition: hit recthazard, is not necessarily inside recthazard
+	bool overridesCollisionWithRectHazard = true; //false means also use the default, which means destroy the bullet if it collides
+	bool modifiedCollisionWithRectHazardCanWorkWithOthers = true;
+	bool modifiedCollisionWithRectHazardCanOnlyWorkIndividually = false;
 
 	bool modifiesShooting = false;
 	virtual void modifiedShooting(Tank* parent) { return; } //for melee-class powerups
@@ -83,7 +100,7 @@ public:
 
 	bool addsShootingPoints = false;
 	virtual void addShootingPoints(Tank*, std::vector<CannonPoint>*) { return; } //shouldn't need the Tank*
-	bool overridesAddShootingPoints = false; //should only be false
+	//bool overridesAddShootingPoints = false; //makes no sense to be true
 	bool addShootingPointsCanWorkWithOthers = true; //should only be true
 	bool addShootingPointsCanOnlyWorkIndividually = false;
 	

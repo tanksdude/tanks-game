@@ -20,15 +20,22 @@ class BulletPower : public InheritedPowerCommon{
 protected:
 public:
 	//double timeLeft = 0;
-	//double maxTime = -1; //bullet powers typically last forever, so they should default to -1 (or 0, you know; it shouldn't make much difference)
+	//double maxTime = -1; //bullet powers typically last forever; setting this to -1 treats it as lasting forever
 
 public:
 	virtual void initialize(Bullet* parent) = 0; //unlikely to be used
 	virtual void removeEffects(Bullet* parent) = 0; //not really needed
 
-	virtual void tick() = 0; //most will be doing a lot, though they shouldn't need this, but just in case
-	virtual void powerTick(Bullet*) { return; }
-	virtual bool isDone() { return false; }
+	virtual void tick(Bullet*) { return; } //most will be doing a lot, though they shouldn't need this, but just in case
+	virtual void powerTick(Bullet*) {
+		timeLeft--; //not like any bulletpower is limited, though
+	}
+	virtual bool isDone() { //typically, this will always be false
+		if (maxTime < 0) {
+			return false;
+		}
+		return (timeLeft <= 0);
+	}
 	virtual ColorValueHolder getColor() = 0;
 
 	virtual TankPower* makeTankPower() = 0;
@@ -41,7 +48,7 @@ public:
 	bool modifiedMovementCanOnlyWorkIndividually = false; //true means that if another power was used previously, this power can't activate
 	//fix: have super override value? so the power can ensure that it and only it will activate (I don't think a power should have this kind of authority, but it might be needed)
 
-	bool modifiesCollisionWithEdge = false;
+	bool modifiesEdgeCollision = false;
 	virtual PowerInteractionBoolHolder modifiedEdgeCollision(Bullet*) { return { false, false }; }
 	//precondition: was out-of-bounds, is not necessarily out-of-bounds
 	bool overridesEdgeCollision = true;

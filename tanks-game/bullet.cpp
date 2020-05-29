@@ -1,12 +1,12 @@
 #pragma once
 #include "bullet.h"
+#include "gamemanager.h"
 #include "constants.h"
 #include "mylib.h"
 #include <math.h>
 #include "circle.h"
 #include "colormixer.h"
 #include "renderer.h"
-#include <glm.hpp>
 #include <iostream>
 
 #include <GL/glew.h>
@@ -25,18 +25,22 @@ Bullet::Bullet(double x_, double y_, double r_, double a, double vel, double acc
 	this->angle = a;
 	this->velocity = vel;
 	this->acceleration = acc;
-	this->id = id_;
+	this->gameID = GameManager::getNextID();
+	this->teamID = id_;
 	this->alpha = 100;
 
 	initializeGPU();
 }
 
-Bullet::Bullet(double x_, double y_, double r_, double a, double vel, double acc, char id_, std::vector<BulletPower*> bp) : Bullet(x_,y_,r_,a,vel,acc,id_) {
-	bulletPowers = bp;
-
+Bullet::Bullet(double x_, double y_, double r_, double a, double vel, double acc, char id_, std::vector<BulletPower*>* bp) : Bullet(x_,y_,r_,a,vel,acc,id_) {
+	bulletPowers.reserve(bp->size());
+	for (int i = 0; i < bp->size(); i++) {
+		bulletPowers.push_back(bp->at(i));
+	}
 	for (int i = 0; i < bulletPowers.size(); i++) {
 		bulletPowers[i]->initialize(this);
 	}
+	//bp not deleted
 }
 
 Bullet::~Bullet() {
@@ -132,7 +136,7 @@ void Bullet::move() {
 
 void Bullet::powerCalculate() {
 	for (int i = bulletPowers.size() - 1; i >= 0; i--) {
-		bulletPowers[i]->tick(); //I don't think any power will use this, but whatever
+		bulletPowers[i]->tick(this); //I don't think any power will use this, but whatever
 		if (bulletPowers[i]->isDone()) {
 			removePower(i);
 		} else { //to make each power last its full length, not n-1 length
@@ -151,7 +155,7 @@ ColorValueHolder Bullet::getColor() {
 	if (bulletPowers.size() == 0) {
 		return defaultColor;
 	} else {
-		return ColorMixer::mix(bulletPowers);
+		return ColorMixer::mix(&bulletPowers);
 	}
 }
 

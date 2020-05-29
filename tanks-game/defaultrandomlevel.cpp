@@ -21,7 +21,7 @@ void DefaultRandomLevel::initialize() { //still needs a lot of work
 		WallManager::pushWall(RandomLevel::makeNewWall(TANK_RADIUS*2.5*2, TANK_RADIUS*2, GAME_WIDTH - 2*(TANK_RADIUS*2.5*2), GAME_HEIGHT - 2*(TANK_RADIUS*2), randColor));
 	}
 
-	std::string* paras = new std::string[3]{std::to_string(GAME_WIDTH/2), std::to_string(GAME_HEIGHT/2), std::to_string(double(rand())/double(RAND_MAX+1) * 2*PI)};
+	std::string* paras = new std::string[3]{std::to_string(GAME_WIDTH/2), std::to_string(GAME_HEIGHT/2), std::to_string(randFunc() * 2*PI)};
 	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("stationary turret")(3, paras));
 	delete[] paras;
 

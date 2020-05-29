@@ -1,8 +1,8 @@
 #pragma once
 #include "wall.h"
+#include "gamemanager.h"
 #include "constants.h"
 #include "renderer.h"
-#include <glm.hpp>
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
@@ -17,12 +17,15 @@ Wall::Wall(double x_, double y_, double w_, double h_, ColorValueHolder c) {
 	this->y = y_;
 	this->w = w_;
 	this->h = h_;
+	this->gameID = GameManager::getNextID();
+	this->teamID = DEFAULT_TEAM;
 	color = c;
 
 	initializeGPU();
 }
-Wall::Wall(double x_, double y_, double w_, double h_, ColorValueHolder c, short id_) : Wall(x_, y_, w_, h_, c){
-	this->id = id_;
+
+Wall::Wall(double x_, double y_, double w_, double h_, ColorValueHolder c, char teamID_) : Wall(x_, y_, w_, h_, c){
+	this->teamID = teamID_;
 }
 
 Wall::~Wall() {

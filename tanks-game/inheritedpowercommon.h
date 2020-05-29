@@ -2,8 +2,8 @@
 class InheritedPowerCommon;
 
 #include "colorvalueholder.h"
-#include "tank.h"
-#include "wall.h"
+//#include "tank.h"
+//#include "wall.h"
 //#include "power.h"
 //#include "bullet.h"
 
@@ -33,8 +33,8 @@ public:
 	//virtual void initialize(Tank* parent);
 	//virtual void removePower(Tank* parent);
 
-	virtual void tick() = 0;
-	//virtual void powerTick() = 0; //now it takes a parent
+	//virtual void tick() = 0; //now it takes a parent
+	//virtual void powerTick() = 0; //also takes a parent
 
 	virtual ColorValueHolder getColor() = 0;
 

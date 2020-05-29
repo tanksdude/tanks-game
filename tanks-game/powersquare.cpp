@@ -1,10 +1,11 @@
 #pragma once
 #include "powersquare.h"
+#include "gamemanager.h"
+#include "constants.h"
 #include <string>
 #include "backgroundrect.h"
 #include "colormixer.h"
 #include "renderer.h"
-#include <glm.hpp>
 #include "powerupmanager.h"
 #include <iostream>
 
@@ -27,6 +28,8 @@ PowerSquare::PowerSquare(double x_, double y_) {
 	y = y_ - PowerSquare::POWER_HEIGHT/2;
 	w = PowerSquare::POWER_WIDTH;
 	h = PowerSquare::POWER_HEIGHT;
+	gameID = GameManager::getNextID();
+	teamID = DEFAULT_TEAM; //not used
 
 	initializeGPU();
 }
@@ -42,6 +45,20 @@ PowerSquare::PowerSquare(double x_, double y_, std::string* names, int num) : Po
 	heldPower = new Power*[num];
 	for (int i = 0; i < num; i++) {
 		heldPower[i] = PowerupManager::getPowerFactory(names[i])();
+	}
+}
+
+PowerSquare::PowerSquare(double x_, double y_, std::string type, std::string name) : PowerSquare(x_, y_) {
+	numOfPowers = 1;
+	heldPower = new Power*[1];
+	heldPower[0] = PowerupManager::getSpecialPowerFactory(type, name)();
+}
+
+PowerSquare::PowerSquare(double x_, double y_, std::string* types, std::string* names, int num) : PowerSquare(x_, y_) {
+	numOfPowers = num;
+	heldPower = new Power*[num];
+	for (int i = 0; i < num; i++) {
+		heldPower[i] = PowerupManager::getSpecialPowerFactory(types[i], names[i])();
 	}
 }
 

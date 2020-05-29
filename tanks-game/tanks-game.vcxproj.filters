@@ -21,9 +21,6 @@
     <ClCompile Include="bullet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="bulletpriorityhandler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="collisionhandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -243,15 +240,42 @@
     <ClCompile Include="openglinitializer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="horizontallightning.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="developerlevel1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="priorityhandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="devlonginvinciblenamedbulletpower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="devlonginvinciblenamedpower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="devlonginvinciblenamedtankpower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gamemanager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="circularlava.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="generalizedlava.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rectangularlava.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="bulletpower.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="bulletpriorityhandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="circle.h">
@@ -504,6 +528,42 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="openglinitializer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="horizontallightning.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="developerlevel1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="priorityhandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="devlonginvinciblenamedbulletpower.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="devlonginvinciblenamedpower.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="devlonginvinciblenamedtankpower.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="point.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="gamemanager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="gamething.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="circularlava.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="generalizedlava.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rectangularlava.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -14,9 +14,8 @@ public:
 	virtual void initialize(Bullet* parent);
 	virtual void removeEffects(Bullet* parent);
 
-	virtual void powerTick(Bullet* b); //for updating wall collision bools based on size
+	virtual void tick(Bullet* b); //for updating wall collision bools based on size
 
-	virtual void tick() { return; }
 	virtual ColorValueHolder getColor() {
 		return MegaDeathPower::getClassColor();
 	}
@@ -35,14 +34,16 @@ public:
 	//bool modifiedCollisionWithWallCanWorkWithOthers = true;
 	//bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;
 
+	//bullet-hazard collision now uses priority, making the below modification functions obsolete
+
 	//bool modifiesCollisionWithCircleHazard = true;
-	virtual PowerInteractionBoolHolder modifiedCollisionWithCircleHazard(Bullet*, CircleHazard*);
+	//virtual PowerInteractionBoolHolder modifiedCollisionWithCircleHazard(Bullet*, CircleHazard*);
 	//bool overridesCollisionWithCircleHazard = true;
 	//bool modifiedCollisionWithCircleHazardCanWorkWithOthers = true;
 	//bool modifiedCollisionWithCircleHazardCanOnlyWorkIndividually = false;
 
 	//bool modifiesCollisionWithRectHazard = true;
-	virtual PowerInteractionBoolHolder modifiedCollisionWithRectHazard(Bullet*, RectHazard*);
+	//virtual PowerInteractionBoolHolder modifiedCollisionWithRectHazard(Bullet*, RectHazard*);
 	//bool overridesCollisionWithRectHazard = true;
 	//bool modifiedCollisionWithRectHazardCanWorkWithOthers = true;
 	//bool modifiedCollisionWithRectHazardCanOnlyWorkIndividually = false;

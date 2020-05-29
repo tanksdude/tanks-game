@@ -1,6 +1,86 @@
 #pragma once
 #include "recthazard.h"
-#include "renderer.h"
+#include "collisionhandler.h"
+
+void RectHazard::modifiedTankCollision(Tank* t) {
+	CollisionHandler::pushMovableAwayFromImmovable(t, this);
+}
+
+void RectHazard::modifiedBulletCollision(Bullet* b) {
+	CollisionHandler::pushMovableAwayFromImmovable(b, this);
+}
+
+double RectHazard::getHighestOffenseImportance() {
+	double highest = -1; //anything below -1 is really, really unimportant; so much so that it doesn't matter
+	/*
+	for (int i = 0; i < hazardPowers.size(); i++) {
+		if (hazardPowers[i]->getOffenseImportance() > highest) {
+			highest = hazardPowers[i]->getOffenseImportance();
+		}
+	}
+	*/
+	return highest;
+}
+
+double RectHazard::getHighestOffenseTier(double importance) {
+	double highest = -999;
+	/*
+	for (int i = 0; i < hazardPowers.size(); i++) {
+		if (hazardPowers[i]->getOffenseImportance() == importance) {
+			if (hazardPowers[i]->getOffenseTier(this) > highest) {
+				highest = hazardPowers[i]->getOffenseTier(this);
+			}
+		}
+	}
+	if (hazardPowers.size() == 0) {
+		return 0;
+	}
+	*/
+	if (importance <= 0) {
+		return (highest > getDefaultOffense() ? highest : getDefaultOffense());
+	}
+	return highest;
+}
+
+double RectHazard::getOffenseTier() {
+	return getHighestOffenseTier(getHighestOffenseImportance());
+}
+
+double RectHazard::getHighestDefenseImportance() {
+	double highest = -1; //anything below -1 is really, really unimportant; so much so that it doesn't matter
+	/*
+	for (int i = 0; i < hazardPowers.size(); i++) {
+		if (hazardPowers[i]->getDefenseImportance() > highest) {
+			highest = hazardPowers[i]->getDefenseImportance();
+		}
+	}
+	*/
+	return highest;
+}
+
+double RectHazard::getHighestDefenseTier(double importance) {
+	double highest = -999; //TODO: define these constants somewhere
+	/*
+	for (int i = 0; i < hazardPowers.size(); i++) {
+		if (hazardPowers[i]->getDefenseImportance() == importance) {
+			if (hazardPowers[i]->getDefenseTier(this) > highest) {
+				highest = hazardPowers[i]->getDefenseTier(this);
+			}
+		}
+	}
+	if (hazardPowers.size() == 0) {
+		return 0;
+	}
+	*/
+	if (importance <= 0) {
+		return (highest > getDefaultDefense() ? highest : getDefaultDefense());
+	}
+	return highest;
+}
+
+double RectHazard::getDefenseTier() {
+	return getHighestDefenseTier(getHighestDefenseImportance());
+}
 
 /*
 void RectHazard::initializeGPU() {

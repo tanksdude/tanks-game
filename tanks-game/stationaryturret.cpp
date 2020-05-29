@@ -1,11 +1,14 @@
 #pragma once
 #include "stationaryturret.h"
+#include "gamemanager.h"
 #include "renderer.h"
 #include "colormixer.h"
 #include "constants.h"
 #include <math.h>
 #include "tank.h"
 #include "bulletmanager.h"
+#include "wallmanager.h"
+#include "collisionhandler.h"
 
 VertexArray* StationaryTurret::va;
 VertexBuffer* StationaryTurret::vb;
@@ -19,10 +22,12 @@ StationaryTurret::StationaryTurret(double xpos, double ypos, double angle) {
 	y = ypos;
 	this->angle = angle;
 	r = TANK_RADIUS / 4;
+	gameID = GameManager::getNextID();
+	teamID = HAZARD_TEAM;
 
 	tickCycle = 100; //100 is JS default (because of shooting speed) and 200 just looks weird
 	maxState = 3;
-	stateMultiplier = new short[maxState] {2, 1, 2};
+	stateMultiplier = new double[maxState] {2, 1, 2};
 	stateColors = new ColorValueHolder[maxState] { {.5f, .5f, .5f}, {1.0f, 0x22/255.0, 0x11/255.0}, {0, 0.5f, 1.0f} };
 
 	canAcceptPowers = false;
@@ -96,6 +101,10 @@ CircleHazard* StationaryTurret::factory(int argc, std::string* argv) {
 		double x = std::stod(argv[0]);
 		double y = std::stod(argv[1]);
 		double a = std::stod(argv[2]);
+		if (argc >= 4) {
+			double r = std::stod(argv[3]);
+			return new StationaryTurret(x, y, a, r);
+		}
 		return new StationaryTurret(x, y, a);
 	}
 	return new StationaryTurret(0, 0, 0);
@@ -121,6 +130,15 @@ void StationaryTurret::tick() {
 	if (mustShoot) {
 		BulletManager::pushBullet(new Bullet(x + r*cos(angle), y + r*sin(angle), r/2, angle, 4, 0, -1)); //TODO: make default speed dependent on a constant that Tank uses for its default speed
 	}
+}
+
+bool StationaryTurret::reasonableLocation() {
+	for (int i = 0; i < WallManager::getNumWalls(); i++) {
+		if (CollisionHandler::partiallyCollided(this, WallManager::getWall(i))) {
+			return false;
+		}
+	}
+	return true;
 }
 
 ColorValueHolder StationaryTurret::getColor() {

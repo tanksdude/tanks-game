@@ -1,17 +1,18 @@
 #pragma once
+#include "gamething.h"
 #include "colorvalueholder.h"
 
-class Hazard {
-protected:
+class Hazard : public GameThing {
 	friend class ResetThings;
-	char id;
+protected:
 	bool canAcceptPowers;
 	//std::vector<HazardPower*> hazardPowers;
 
 public:
 	//virtual ColorValueHolder getColor();
-	virtual char getID() { return id; }
 	//virtual bool getCanAcceptPowers();
+	virtual bool validLocation() { return true; } //false if unable to operate properly where it is; "operate properly" is a little vague
+	virtual bool reasonableLocation() = 0;
 
 	virtual void tick() = 0;
 	virtual void draw() = 0;

@@ -11,7 +11,6 @@ public:
 	virtual void initialize(Bullet* parent);
 	virtual void removeEffects(Bullet* parent);
 
-	virtual void tick() { return; }
 	virtual ColorValueHolder getColor() {
 		return TriplePower::getClassColor();
 	}
