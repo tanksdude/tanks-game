@@ -1,6 +1,6 @@
 #pragma once
 #include "generalizedlava.h"
-#include <limits> //for std::numeric_limits<double>::max();
+#include <limits> //for std::numeric_limits<float>::infinity();
 #include <algorithm> //for std::copy
 #include "constants.h"
 #include "mylib.h"
@@ -18,7 +18,7 @@ GeneralizedLava::LavaBubble::LavaBubble(float radius, float x0, float y0, float 
 	tickMax = tickStart;
 	state = 0;
 
-	double temp[] = { 1, 1, 1, std::numeric_limits<double>::max() };
+	float temp[] = { 1, 1, 1, std::numeric_limits<float>::infinity() }; //maybe use std::numeric_limits<float>::quiet_NaN()
 	std::copy(temp, temp+4, stateMultiplier); //screw you, C++
 }
 
