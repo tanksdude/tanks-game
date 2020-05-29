@@ -104,6 +104,8 @@ public:
 	//HorizontalLightning(double xpos, double ypos, double width, double height, bool flexible);
 	~HorizontalLightning();
 	static RectHazard* factory(int, std::string*);
+	static int getFactoryArgumentCount() { return 4; }
+	//static RectHazardConstructionTypes getConstructionType() { return RectHazardConstructionTypes::standardConstruction; }
 	virtual RectFactoryInformation getFactoryInformation() {
 		return { true, true, false, false, true };
 	}

@@ -48,4 +48,6 @@ public:
 	RectangularLava(double xpos, double ypos, double width, double height);
 	~RectangularLava();
 	static RectHazard* factory(int, std::string*);
+	static int getFactoryArgumentCount() { return 4; }
+	//static RectHazardConstructionTypes getConstructionType() { return RectHazardConstructionTypes::standardConstruction; }
 };

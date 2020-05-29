@@ -51,4 +51,6 @@ public:
 	StationaryTurret(double xpos, double ypos, double angle, double radius);
 	~StationaryTurret();
 	static CircleHazard* factory(int, std::string*);
+	static int getFactoryArgumentCount() { return 3; }
+	//static CircleHazardConstructionTypes getConstructionType() { return CircleHazardConstructionTypes::angleRequired; }
 };

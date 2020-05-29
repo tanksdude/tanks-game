@@ -9,6 +9,7 @@ class RectHazard;
 #include "tank.h"
 #include "bullet.h"
 
+//this is basically so lightning can get randomized (currently unused)
 struct RectFactoryInformation {
 	bool requiresWallOnLeft;
 	bool requiresWallOnRight;
@@ -26,9 +27,17 @@ struct RectFactoryInformation {
 	: RectFactoryInformation(wallLeft, wallRight, wallTop, wallBottom, true) {}
 };
 
+//this is intended for hazard randomization; if the actual hazard type is known, then the constructor will be known
+enum class RectHazardConstructionTypes /*: unsigned char */ {
+	constructionIsTooComplex, //I'm thinking pipes would have this
+	simpleConstruction, //only x and y required (what would use this? fake powerups?)
+	standardConstruction //x, y, w, and h required
+};
+
 class RectHazard : public Hazard, public Rect {
 public: //protected?
 	//std::vector<RectHazardPower*> hazardPowers;
+public:
 	double getHighestOffenseImportance();
 	double getHighestOffenseTier(double importance);
 	double getHighestDefenseImportance();
@@ -59,7 +68,9 @@ public:
 	//virtual bool initializeGPU() = 0;
 	virtual void draw() = 0;
 
-	static RectHazard* factory(int argc, std::string* argv); //strings so any data type can be used (theoretically; structs can't, ya know)
+	static RectHazard* factory(int argc, std::string* argv);
+	static int getFactoryArgumentCount();
+	//static RectHazardConstructionTypes getConstructionType();
 	virtual RectFactoryInformation getFactoryInformation() {
 		return { false, false, false, false, false };
 	}

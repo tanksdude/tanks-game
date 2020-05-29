@@ -48,4 +48,6 @@ public:
 	CircularLava(double xpos, double ypos, double radius);
 	~CircularLava();
 	static CircleHazard* factory(int, std::string*);
+	static int getFactoryArgumentCount() { return 3; }
+	//static CircleHazardConstructionTypes getConstructionType() { return CircleHazardConstructionTypes::radiusRequired; }
 };

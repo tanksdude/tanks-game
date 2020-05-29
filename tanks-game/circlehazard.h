@@ -9,9 +9,19 @@ class CircleHazard;
 #include "tank.h"
 #include "bullet.h"
 
+//this is intended for hazard randomization; if the actual hazard type is known, then the constructor will be known
+enum class CircleHazardConstructionTypes /*: unsigned char */ {
+	constructionIsTooComplex, //I'm thinking patrolling turret would have this
+	simpleConstruction, //only x and y required (no r or angle)
+	angleRequired,
+	radiusRequired,
+	radiusAndAngleRequired
+};
+
 class CircleHazard : public Hazard, public Circle {
 public: //protected?
 	//std::vector<CircleHazardPower*> hazardPowers;
+public:
 	double getHighestOffenseImportance();
 	double getHighestOffenseTier(double importance);
 	double getHighestDefenseImportance();
@@ -42,5 +52,7 @@ public:
 	//virtual bool initializeGPU() = 0;
 	virtual void draw() = 0;
 
-	static CircleHazard* factory(int argc, std::string* argv); //strings so any data type can be used (theoretically; structs can't, ya know)
+	static CircleHazard* factory(int argc, std::string* argv);
+	static int getFactoryArgumentCount();
+	//static CircleHazardConstructionTypes getConstructionType();
 };
