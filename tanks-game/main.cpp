@@ -380,7 +380,7 @@ void tankToWall() {
 		bool shouldBeKilled = false; //maybe the walls are poison with a certain powerup? I dunno, but gotta have it as an option
 		Tank* t = TankManager::getTank(i);
 
-		for (int j = 0; j < WallManager::getNumWalls(); j++) {
+		for (int j = WallManager::getNumWalls() - 1; j >= 0; j--) {
 			bool modifiedWallCollision = false;
 			bool overridedWallCollision = false;
 			bool noMoreWallCollisionSpecials = false;
@@ -422,7 +422,6 @@ void tankToWall() {
 
 			if (killWall) {
 				WallManager::deleteWall(j);
-				j--;
 			}
 		}
 
@@ -1153,7 +1152,7 @@ int main(int argc, char** argv) {
 	srand(time(NULL));
 
 	try {
-		OpenGLInitializer::Initialize(&argc, argv, "Tanks Test v0.2.2 NOT FINAL"); //this is not guaranteed to be correct every commit but likely will be
+		OpenGLInitializer::Initialize(&argc, argv, "Tanks Test v0.2.2"); //this is not guaranteed to be correct every commit but likely will be
 	}
 	catch (exception& e) {
 		cout << e.what() << endl;
@@ -1271,7 +1270,7 @@ int main(int argc, char** argv) {
  * * gotta learn how to do batching
  * * make things more efficient (way easier said than done, I suppose)
  * 90% theoretical foundation: no hazard powers, no level... anything
- * 80% actual foundation: not every "modification function" actually does something in the main
+ * 85?% actual foundation: not every "modification function" actually does something
  * 30% game code:
  * * first off, don't know what will be final beyond the ideas located in power.h and elsewhere
  * * second, it's a complete estimate (obviously) and this is a restatement of the first
