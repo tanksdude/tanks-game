@@ -142,7 +142,7 @@ void PowerFunctionHelper::equallySpacedCannonPoints(Tank*, std::vector<CannonPoi
 
 bool PowerFunctionHelper::homingGeneric(Bullet* b, double maxAngleMove, bool moveByAngle) { //moveByAngle = target based on angle differences, not distance
 	//TODO: when team mode is a thing (or single-player campaign?), this will need an update
-	char targetTank = DEFAULT_TEAM;
+	char targetTank;
 	
 	if (moveByAngle) {
 		double* angleDiffs = new double[TankManager::getNumTanks()];
@@ -155,8 +155,8 @@ bool PowerFunctionHelper::homingGeneric(Bullet* b, double maxAngleMove, bool mov
 			angleDiffs[i] = abs(atan2(b->y - t->y, b->x - t->x));
 		}
 		targetTank = findMinIndex(angleDiffs, TankManager::getNumTanks());
-		if (targetTank == b->getTeamID()) {
-			targetTank = -1;
+		if (TankManager::getTank(targetTank)->getTeamID() == b->getTeamID()) {
+			targetTank = DEFAULT_TEAM;
 		}
 		delete[] angleDiffs;
 	} else { //moveByDistance
@@ -170,13 +170,13 @@ bool PowerFunctionHelper::homingGeneric(Bullet* b, double maxAngleMove, bool mov
 			distDiffs[i] = sqrt(pow(b->x - t->x, 2) + pow(b->y - t->y, 2)); //TODO: this an issue?
 		}
 		targetTank = findMinIndex(distDiffs, TankManager::getNumTanks());
-		if (targetTank == b->getTeamID()) {
-			targetTank = -1;
+		if (TankManager::getTank(targetTank)->getTeamID() == b->getTeamID()) {
+			targetTank = DEFAULT_TEAM;
 		}
 		delete[] distDiffs;
 	}
 
-	if (targetTank == -1) {
+	if (targetTank == DEFAULT_TEAM) {
 		return false; //means there was nothing to target; realistically, shouldn't be happening, unless 1-tank mode is a thing
 	}
 	Tank* t = TankManager::getTank(targetTank);
