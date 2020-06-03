@@ -25,5 +25,3 @@ WallhackTankPower::WallhackTankPower() {
 	modifiesCollisionWithWall = true;
 	modifiedCollisionWithWallCanWorkWithOthers = false;
 }
-
-

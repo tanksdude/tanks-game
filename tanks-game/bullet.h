@@ -48,7 +48,7 @@ private:
 	static IndexBuffer* ib;
 	static bool initialized_GPU;
 public:
-	static bool initializeGPU(); //returns whether it successful
+	static bool initializeGPU(); //returns whether it successfully initialized (false if it was already initialized)
 	static bool uninitializeGPU();
 
 	void drawBody(double, double);

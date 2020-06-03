@@ -24,4 +24,3 @@ SpeedTankPower::SpeedTankPower() {
 
 	tankMaxSpeedStacks = true;
 }
-
