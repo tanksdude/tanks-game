@@ -1,9 +1,5 @@
-#pragma once
-class BounceTankPower;
-
 #include "bouncetankpower.h"
 #include "bouncebulletpower.h"
-#include "bouncepower.h"
 
 //not reducing size on the bullet or tank this time because I only did that originally to make it different from others
 //(I think that was literally the only reason)

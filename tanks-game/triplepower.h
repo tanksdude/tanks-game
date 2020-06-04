@@ -6,8 +6,6 @@
 class TriplePower : public Power{
 protected:
 	//static ColorValueHolder classColor;
-public:
-	static const double angleDiff;
 
 public:
 	const static bool canBeInARandomLevel;

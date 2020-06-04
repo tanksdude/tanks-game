@@ -1,8 +1,5 @@
-#pragma once
 #include "firenamedbulletpower.h"
 #include "firenamedtankpower.h"
-#include "powerfunctionhelper.h"
-#include "collisionhandler.h"
 
 const double FireNamedBulletPower::degradeAmount = .5;
 const double FireNamedBulletPower::growAmount = 1.5/32.0; //TODO: need way to pass parameters into bulletpower constructor

@@ -1,9 +1,6 @@
-#pragma once
 #include "mylib.h"
+#include <sstream> //stringstream for hex conversion
 #include <iostream>
-#include <string>
-#include <vector>
-#include <sstream>
 
 std::string numToHex(unsigned char x) {
 	std::stringstream stream;

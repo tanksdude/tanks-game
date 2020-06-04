@@ -1,6 +1,5 @@
 #pragma once
 #include "level.h"
-#include "wall.h"
 
 class EmptyLevel : public Level {
 public:

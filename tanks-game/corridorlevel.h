@@ -1,6 +1,5 @@
 #pragma once
 #include "level.h"
-#include "colorvalueholder.h"
 
 class CorridorLevel : public Level {
 	//referred to as "evened corridors" in JS Tanks

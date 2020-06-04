@@ -1,4 +1,3 @@
-#pragma once
 #include "cannonpoint.h"
 
 CannonPoint::CannonPoint(double a) {

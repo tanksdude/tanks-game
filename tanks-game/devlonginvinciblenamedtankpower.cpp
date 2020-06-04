@@ -1,7 +1,5 @@
-#pragma once
 #include "devlonginvinciblenamedtankpower.h"
 #include "devlonginvinciblenamedbulletpower.h"
-#include "devlonginvinciblenamedpower.h"
 
 void DevLongInvincibleNamedTankPower::initialize(Tank* parent) {
 	return;

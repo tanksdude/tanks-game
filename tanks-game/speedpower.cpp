@@ -1,4 +1,3 @@
-#pragma once
 #include "speedpower.h"
 #include "speedtankpower.h"
 #include "speedbulletpower.h"

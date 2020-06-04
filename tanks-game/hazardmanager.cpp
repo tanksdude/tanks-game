@@ -1,4 +1,3 @@
-#pragma once
 #include "hazardmanager.h"
 
 std::vector<CircleHazard*> HazardManager::circleHazards;

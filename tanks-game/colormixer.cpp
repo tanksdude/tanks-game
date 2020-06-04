@@ -1,9 +1,4 @@
-#pragma once
 #include "colormixer.h"
-#include "colorvalueholder.h"
-#include "power.h"
-#include "bulletpower.h"
-#include "tankpower.h"
 #include <iostream>
 
 //TODO: account for colors to contain alpha

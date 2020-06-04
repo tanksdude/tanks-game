@@ -1,11 +1,7 @@
-#pragma once
 #include "wall.h"
 #include "gamemanager.h"
 #include "constants.h"
 #include "renderer.h"
-
-#include <GL/glew.h>
-#include <GL/freeglut.h>
 
 VertexArray* Wall::va;
 VertexBuffer* Wall::vb;

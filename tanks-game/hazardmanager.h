@@ -1,5 +1,4 @@
 #pragma once
-#include "hazard.h"
 #include "circlehazard.h"
 #include "recthazard.h"
 #include <vector>

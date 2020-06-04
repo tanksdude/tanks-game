@@ -1,8 +1,5 @@
-#pragma once
 #include "grenadebulletpower.h"
 #include "grenadetankpower.h"
-#include "powerfunctionhelper.h"
-#include "collisionhandler.h"
 
 const double GrenadeBulletPower::degradeAmount = .875;
 

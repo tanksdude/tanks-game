@@ -1,7 +1,6 @@
 #pragma once
 class HomingBulletPower;
 
-#include "power.h"
 #include "bulletpower.h"
 #include "homingpower.h"
 

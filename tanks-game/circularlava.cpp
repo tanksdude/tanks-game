@@ -1,15 +1,11 @@
-#pragma once
 #include "circularlava.h"
 #include "gamemanager.h"
 #include "renderer.h"
-#include "backgroundrect.h"
-#include "colormixer.h"
 #include "constants.h"
 #include <math.h>
 #include "mylib.h"
 #include "wallmanager.h"
 #include "collisionhandler.h"
-#include <iostream>
 
 VertexArray* CircularLava::background_va;
 VertexBuffer* CircularLava::background_vb;

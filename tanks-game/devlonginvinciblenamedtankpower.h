@@ -1,9 +1,7 @@
 #pragma once
 class DevLongInvincibleNamedTankPower;
 
-#include "power.h"
 #include "tankpower.h"
-#include "bulletpower.h"
 #include "devlonginvinciblenamedpower.h"
 
 class DevLongInvincibleNamedTankPower : public TankPower {

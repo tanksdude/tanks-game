@@ -1,6 +1,4 @@
-#pragma once
 #include "keypressmanager.h"
-
 #include <GL/freeglut.h>
 
 std::unordered_map<unsigned char, bool> KeypressManager::normalKeyStates;

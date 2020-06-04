@@ -1,7 +1,5 @@
-#pragma once
 #include "bignamedtankpower.h"
 #include "bignamedbulletpower.h"
-#include "bignamedpower.h"
 
 void BigNamedTankPower::initialize(Tank* parent) {
 	//nothing

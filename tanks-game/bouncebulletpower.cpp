@@ -1,7 +1,5 @@
-#pragma once
 #include "bouncebulletpower.h"
 #include "bouncetankpower.h"
-#include "bouncepower.h"
 #include "powerfunctionhelper.h"
 
 const short BounceBulletPower::maxBounces = 16;
@@ -25,7 +23,7 @@ PowerInteractionBoolHolder BounceBulletPower::modifiedCollisionWithWall(Bullet* 
 
 	return { this->bouncesLeft < 0, false };
 }
-//TODO: need ability to delete just the bulletpower (needed? wanted?)
+//TODO: need ability to delete just the bulletpower (needed? wanted? no because bounces should be reset for banana)
 
 PowerInteractionBoolHolder BounceBulletPower::modifiedEdgeCollision(Bullet* b) {
 	//the bullet can bounce off of edges twice in a single tick

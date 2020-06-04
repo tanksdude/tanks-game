@@ -1,7 +1,6 @@
 #pragma once
 class TripleBulletPower;
 
-#include "power.h"
 #include "bulletpower.h"
 #include "triplepower.h"
 

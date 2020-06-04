@@ -1,10 +1,4 @@
-#pragma once
 #include "corridorlevel.h"
-#include "constants.h"
-#include "powersquare.h"
-#include "wall.h"
-#include <math.h>
-#include <string>
 #include "tankmanager.h"
 #include "powerupmanager.h"
 #include "wallmanager.h"

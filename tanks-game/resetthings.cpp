@@ -1,4 +1,3 @@
-#pragma once
 #include "resetthings.h"
 #include "constants.h"
 #include "tankmanager.h"

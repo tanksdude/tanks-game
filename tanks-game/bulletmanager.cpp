@@ -1,4 +1,3 @@
-#pragma once
 #include "bulletmanager.h"
 
 std::vector<Bullet*> BulletManager::bullets;

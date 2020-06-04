@@ -1,4 +1,3 @@
-#pragma once
 #include "horizontallightning.h"
 #include "gamemanager.h"
 #include "renderer.h"
@@ -8,7 +7,7 @@
 #include "constants.h"
 #include <math.h>
 #include <stdexcept>
-#include <algorithm>
+#include <algorithm> //std::copy
 #include "point.h"
 #include "collisionhandler.h"
 #include "wallmanager.h"
@@ -697,6 +696,7 @@ void HorizontalLightning::draw() {
 
 	for (int i = 0; i < bolts.size(); i++) {
 		//I think the VertexBuffer resizing should happen here, but there would probably be less strain if it happens only when a bullet/tank collides
+		//TODO: that ^ should be the preferred way, since only draw() (and initializeGPU()) should do GPU stuff
 		/*
 		if (bolts[i]->length > bolt_vb_length) {
 			local_reinitializeGPU(bolts[i]->length);

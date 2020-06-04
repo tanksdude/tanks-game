@@ -1,8 +1,7 @@
-#pragma once
 #include "openglinitializer.h"
-#include "renderer.h"
+#include "renderer.h" //just for window_width and window_height
 #include <GL/glew.h>
-#include <GL/glut.h>
+#include <GL/freeglut.h>
 
 void OpenGLInitializer::Initialize(int* argc, char** argv, std::string windowName) {
 	OpenGLInitializer::Initialize(argc, argv, windowName, 60, 60);
@@ -12,7 +11,7 @@ void OpenGLInitializer::Initialize(int* argc, char** argv, std::string windowNam
 	// Initialize GLUT
 	glutInit(argc, argv);
 	glutInitDisplayMode(GLUT_SINGLE | GLUT_DEPTH);
-	//thanks to https://community.khronos.org/t/wglmakecurrent-issues/62656/3 for solving why a draw call would take ~15ms for no reason
+	//thanks to https://community.khronos.org/t/wglmakecurrent-issues/62656/3 for solving why a draw call would take ~15ms for no reason (it's just the V-sync time)
 
 	// Setup window position, size, and title
 	glutInitWindowPosition(startX, startY);

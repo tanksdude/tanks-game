@@ -1,5 +1,3 @@
-#pragma once
-
 #include "indexbuffer.h"
 #include <GL/glew.h>
 

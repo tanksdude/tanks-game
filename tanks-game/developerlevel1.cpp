@@ -1,7 +1,5 @@
-#pragma once
 #include "developerlevel1.h"
 #include "constants.h"
-#include <math.h>
 #include "tankmanager.h"
 #include "powerupmanager.h"
 #include "wallmanager.h"

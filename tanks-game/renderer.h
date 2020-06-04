@@ -1,12 +1,11 @@
 #pragma once
-
 #include <string>
 #include <unordered_map>
 #include "vertexarray.h"
 #include "indexbuffer.h"
 #include "shader.h"
-#include <GL/glew.h>
 #include <glm.hpp>
+#include <GL/glew.h>
 
 class Renderer {
 	friend class DeveloperManager;

@@ -1,4 +1,3 @@
-#pragma once
 #include "gamemanager.h"
 
 long GameManager::nextID = -1;

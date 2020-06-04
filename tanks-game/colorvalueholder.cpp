@@ -1,4 +1,3 @@
-#pragma once
 #include "colorvalueholder.h"
 #include "mylib.h"
 

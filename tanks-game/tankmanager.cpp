@@ -1,4 +1,3 @@
-#pragma once
 #include "tankmanager.h"
 
 std::vector<Tank*> TankManager::tanks;

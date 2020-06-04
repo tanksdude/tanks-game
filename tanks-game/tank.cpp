@@ -1,18 +1,13 @@
-#pragma once
 #include "tank.h"
 #include "gamemanager.h"
 #include "constants.h"
-#include "colormixer.h"
 #include <math.h>
-#include <string>
 #include "mylib.h"
+#include "colormixer.h"
 #include "renderer.h"
 #include "keypressmanager.h"
 #include "bulletmanager.h"
 #include <iostream>
-
-#include <GL/glew.h>
-#include <GL/freeglut.h>
 
 TankInputChar::TankInputChar(bool special, int c) {
 	isSpecial = special;
@@ -746,6 +741,7 @@ void Tank::drawNameCPU() {
 void Tank::drawNameCPU(double xpos, double ypos) {
 	//this cannot be done on the GPU easily; will find a library for it eventually
 
+	/*
 	if (name.size() == 0)
 		return;
 
@@ -797,7 +793,7 @@ void Tank::drawNameCPU(double xpos, double ypos) {
 	delete[] widths;
 
 	glPopMatrix();
-
+	*/
 }
 
 void Tank::resetThings(double x, double y, double a, char teamID, std::string name) { //TODO: finish?
@@ -812,7 +808,7 @@ void Tank::resetThings(double x, double y, double a, char teamID, std::string na
 	//don't update maxShootCount
 	velocity = 0;
 
-	if (rand() % 4096 == 0) {
+	if (randFunc() < 1.0/4096) {
 		//shiny tank (yes, 1/8192 is the chance before Sword/Shield)
 		defaultColor = ColorValueHolder(.75f, .75f, .75f);
 	} else {

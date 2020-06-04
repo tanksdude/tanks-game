@@ -1,13 +1,9 @@
-#pragma once
 #include "powerfunctionhelper.h"
-#include "tank.h"
-#include "bullet.h"
-#include "wall.h"
 #include "collisionhandler.h"
 #include "constants.h"
+#include <math.h>
 #include "mylib.h"
 #include "tankmanager.h"
-#include <math.h>
 #include <iostream>
 
 bool PowerFunctionHelper::bounceGeneric(Bullet* b, Wall* w) {

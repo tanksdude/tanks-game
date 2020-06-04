@@ -1,7 +1,5 @@
-#pragma once
 #include "wallhacktankpower.h"
 #include "wallhackbulletpower.h"
-#include "wallhackpower.h"
 
 void WallhackTankPower::initialize(Tank* parent) {
 	//nothing

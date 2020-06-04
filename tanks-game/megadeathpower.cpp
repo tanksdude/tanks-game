@@ -1,4 +1,3 @@
-#pragma once
 #include "megadeathpower.h"
 #include "megadeathtankpower.h"
 #include "megadeathbulletpower.h"

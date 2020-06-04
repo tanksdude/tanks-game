@@ -4,7 +4,6 @@ class CircleHazard;
 #include "hazard.h"
 #include "circle.h"
 #include <string>
-
 //#include "circlehazardpower.h"
 #include "tank.h"
 #include "bullet.h"

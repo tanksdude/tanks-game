@@ -1,4 +1,3 @@
-#pragma once
 #include "levelmanager.h"
 #include <stdexcept>
 

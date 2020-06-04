@@ -2,13 +2,13 @@
 class BulletPower;
 //beginning to realize how much a template would help
 
+#include "inheritedpowercommon.h"
 #include "colorvalueholder.h"
 #include "tank.h"
 #include "bullet.h"
 #include "wall.h"
 #include "circlehazard.h"
 #include "recthazard.h"
-#include "inheritedpowercommon.h"
 #include "tankpower.h"
 
 //TODO long-term: look into std::shared_ptr<BulletPower> for stronger memory management

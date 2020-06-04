@@ -1,11 +1,8 @@
 #pragma once
 class MultishotTankPower;
 
-#include "power.h"
 #include "tankpower.h"
-#include "bulletpower.h"
 #include "multishotpower.h"
-#include "cannonpoint.h"
 
 class MultishotTankPower : public TankPower {
 public:

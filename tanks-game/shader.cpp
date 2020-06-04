@@ -1,10 +1,6 @@
-#pragma once
-
 #include "shader.h"
-#include <string>
 #include <fstream>
 #include <iostream>
-#include <unordered_map>
 
 Shader::Shader(const std::string& vert_filepath, const std::string& frag_filepath) {
 	//uniformLocationCache; //I don't know if it needs to be initialized

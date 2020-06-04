@@ -1,6 +1,7 @@
 #pragma once
 class TankPower;
 
+#include "inheritedpowercommon.h"
 #include "colorvalueholder.h"
 #include "tank.h"
 #include "cannonpoint.h"
@@ -8,7 +9,6 @@ class TankPower;
 #include "wall.h"
 #include "circlehazard.h"
 #include "recthazard.h"
-#include "inheritedpowercommon.h"
 #include "bulletpower.h"
 
 class TankPower : public InheritedPowerCommon {

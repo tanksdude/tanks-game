@@ -1,10 +1,5 @@
-#pragma once
 #include "bigfunlevel.h"
 #include "constants.h"
-#include "powersquare.h"
-#include "wall.h"
-#include <math.h>
-#include <string>
 #include "randomlevel.h"
 #include "tankmanager.h"
 #include "powerupmanager.h"

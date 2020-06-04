@@ -4,8 +4,6 @@ class Wall;
 #include "gamething.h"
 #include "rect.h"
 #include "colorvalueholder.h"
-#include "resetthings.h"
-#include "powerfunctionhelper.h"
 
 #include "vertexarray.h"
 #include "vertexbuffer.h"

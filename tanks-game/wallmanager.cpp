@@ -1,4 +1,3 @@
-#pragma once
 #include "wallmanager.h"
 
 std::vector<Wall*> WallManager::walls;

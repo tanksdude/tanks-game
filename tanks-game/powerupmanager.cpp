@@ -1,4 +1,3 @@
-#pragma once
 #include "powerupmanager.h"
 #include <stdexcept>
 

@@ -1,4 +1,3 @@
-#pragma once
 #include "bouncepower.h"
 #include "bouncetankpower.h"
 #include "bouncebulletpower.h"

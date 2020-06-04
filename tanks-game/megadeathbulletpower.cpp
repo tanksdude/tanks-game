@@ -1,25 +1,23 @@
-#pragma once
 #include "megadeathbulletpower.h"
 #include "megadeathtankpower.h"
-#include "powerfunctionhelper.h"
 #include "constants.h"
-#include "collisionhandler.h"
 
 const double MegaDeathBulletPower::destroyWallTier = DESTRUCTION_TIER;
 const double MegaDeathBulletPower::bulletSizeMultiplierPerTick = 65.0/64.0;
 
 void MegaDeathBulletPower::tick(Bullet* b) {
 	if (getOffenseTier(b) >= destroyWallTier) {
+		modifiesCollisionWithWall = true;
 		modifiedCollisionWithWallCanWorkWithOthers = false;
+	} else { //the size could have decreased
+		modifiesCollisionWithWall = false;
+		modifiedCollisionWithWallCanWorkWithOthers = true;
 	}
 }
 
 PowerInteractionBoolHolder MegaDeathBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
-	if (getOffenseTier(b) >= destroyWallTier) {
-		return { false, true };
-	} else {
-		return { CollisionHandler::partiallyCollided(b, w), false };
-	}
+	//tick() happens before this, so modifiesCollisionWithWall will only be set to true if the bullet can destroy walls
+	return { false, true };
 }
 
 void MegaDeathBulletPower::modifiedMovement(Bullet* b) {
@@ -55,6 +53,6 @@ MegaDeathBulletPower::MegaDeathBulletPower(){
 	maxTime = -1;
 
 	modifiesMovement = true;
-	modifiesCollisionWithWall = true;
+	//modifiesCollisionWithWall = true;
 	//modifiedCollisionWithWallCanWorkWithOthers = false;
 }

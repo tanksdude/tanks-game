@@ -1,5 +1,3 @@
-#pragma once
-
 #include "vertexbuffer.h"
 #include <GL/glew.h>
 

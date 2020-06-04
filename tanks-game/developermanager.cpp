@@ -1,12 +1,10 @@
-#pragma once
 #include "developermanager.h"
 #include "tankmanager.h"
 #include "renderer.h"
 #include "constants.h"
 #include "powerupmanager.h"
 #include "hazardmanager.h"
-#include <string>
-#include <GL/glut.h>
+#include <GL/freeglut.h>
 #include <iostream>
 
 bool DeveloperManager::leftMouse = false;

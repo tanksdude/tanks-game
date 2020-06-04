@@ -1,9 +1,5 @@
-#pragma once
 #include "bignamedbulletpower.h"
 #include "bignamedtankpower.h"
-#include "powerfunctionhelper.h"
-#include "constants.h"
-#include "collisionhandler.h"
 
 PowerInteractionBoolHolder BigNamedBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
 	return { false, true };

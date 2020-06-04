@@ -1,9 +1,5 @@
-#pragma once
 #include "collisionhandler.h"
-#include "circle.h"
-#include "rect.h"
 #include <math.h>
-#include "constants.h"
 #include <iostream>
 
 bool CollisionHandler::partiallyCollided(Rect* a, Rect* b) {

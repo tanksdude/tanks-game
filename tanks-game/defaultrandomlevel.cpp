@@ -1,10 +1,7 @@
-#pragma once
 #include "defaultrandomlevel.h"
 #include "constants.h"
-#include "tank.h"
 #include "mylib.h"
 #include "randomlevel.h"
-#include <math.h>
 #include "tankmanager.h"
 #include "powerupmanager.h"
 #include "wallmanager.h"
@@ -15,7 +12,7 @@ void DefaultRandomLevel::initialize() { //still needs a lot of work
 	TankManager::getTank(0)->y = randPos*64 + 32;
 	TankManager::getTank(1)->y = (4-randPos)*64 + 32;
 
-	ColorValueHolder randColor((rand()%256)/255.0, (rand()%256)/255.0, (rand()%256)/255.0);
+	ColorValueHolder randColor(randFunc2(), randFunc2(), randFunc2());
 	
 	for (int i = 0; i < 16; i++) {
 		WallManager::pushWall(RandomLevel::makeNewWall(TANK_RADIUS*2.5*2, TANK_RADIUS*2, GAME_WIDTH - 2*(TANK_RADIUS*2.5*2), GAME_HEIGHT - 2*(TANK_RADIUS*2), randColor));

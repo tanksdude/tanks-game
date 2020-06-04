@@ -1,7 +1,6 @@
 #pragma once
 class BigNamedBulletPower;
 
-#include "power.h"
 #include "bulletpower.h"
 #include "bignamedpower.h"
 #include "constants.h"

@@ -1,7 +1,5 @@
-#pragma once
 #include "triplebulletpower.h"
 #include "tripletankpower.h"
-#include "triplepower.h"
 
 void TripleBulletPower::initialize(Bullet* b) {
 	//nothing

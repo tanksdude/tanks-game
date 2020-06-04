@@ -1,12 +1,6 @@
-#pragma once
-
 #include "backgroundrect.h"
 #include "renderer.h"
-#include <glm.hpp>
 #include "constants.h"
-
-#include <GL/glew.h>
-#include <GL/freeglut.h>
 
 ColorValueHolder BackgroundRect::backColor = ColorValueHolder(0xDD/255.0, 0xDD/255.0, 0xDD/255.0);
 ColorValueHolder BackgroundRect::getBackColor() {

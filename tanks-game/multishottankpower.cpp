@@ -1,10 +1,5 @@
-#pragma once
-#include "constants.h"
-#include <vector>
 #include "multishottankpower.h"
 #include "multishotbulletpower.h"
-#include "multishotpower.h"
-#include "cannonpoint.h"
 #include "powerfunctionhelper.h"
 
 void MultishotTankPower::initialize(Tank* parent) {

@@ -1,4 +1,3 @@
-#pragma once
 #include "homingpower.h"
 #include "homingtankpower.h"
 #include "homingbulletpower.h"

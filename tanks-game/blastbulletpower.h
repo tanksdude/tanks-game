@@ -1,7 +1,6 @@
 #pragma once
 class BlastBulletPower;
 
-#include "power.h"
 #include "bulletpower.h"
 #include "blastpower.h"
 

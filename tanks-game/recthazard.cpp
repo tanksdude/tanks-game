@@ -1,4 +1,3 @@
-#pragma once
 #include "recthazard.h"
 #include "collisionhandler.h"
 

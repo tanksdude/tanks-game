@@ -1,13 +1,11 @@
-#pragma once
 #include "randomlevel.h"
 #include "mylib.h"
 
 Wall* RandomLevel::makeNewWall(double x_beginning, double y_beginning, double width_ofArea, double height_ofArea, ColorValueHolder c, double minW, double minH, double maxW, double maxH) {
-	//fix: not sure if rand() needs to be cast to a double, but worry about that later
-	double w = fmod((double)rand(), (maxW - minW)) + minW;
-	double h = fmod((double)rand(), (maxH - minH)) + minH;
+	double w = randFunc2() * (maxW - minW) + minW;
+	double h = randFunc2() * (maxH - minH) + minH;
 
-	return new Wall(x_beginning + fmod((double)rand(), (width_ofArea - w)), y_beginning + fmod((double)rand(), (height_ofArea - h)), w, h, c);
+	return new Wall(x_beginning + randFunc2() * (width_ofArea - w), y_beginning + randFunc2() * (height_ofArea - h), w, h, c);
 }
 
 std::string* RandomLevel::getRandomPowers(int count, bool replacement, int nameCount, std::string* names) {
@@ -29,7 +27,7 @@ std::string* RandomLevel::getRandomPowers(int count, bool replacement, int nameC
 				//there are values that can get chosen
 				int index;
 				do {
-					index = rand() % nameCount;
+					index = randFunc() * nameCount;
 				} while (isInArray<int>(index, used, i+1));
 				used[i] = index;
 			} else {
@@ -38,7 +36,7 @@ std::string* RandomLevel::getRandomPowers(int count, bool replacement, int nameC
 			}
 		}
 		if(replacement) {
-			int index = rand() % nameCount;
+			int index = randFunc() * nameCount;
 			used[i] = index;
 		}
 	}

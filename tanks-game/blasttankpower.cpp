@@ -1,9 +1,7 @@
-#pragma once
 #include "blasttankpower.h"
 #include "blastbulletpower.h"
-#include "blastpower.h"
-#include "constants.h"
 #include "mylib.h"
+#include "constants.h"
 #include <math.h>
 
 const double BlastTankPower::bulletAngleDeviation = PI/3;

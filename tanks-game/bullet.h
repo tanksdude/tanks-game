@@ -5,7 +5,6 @@ class Bullet;
 #include "circle.h"
 #include "colorvalueholder.h"
 #include "bulletpower.h"
-#include "powerfunctionhelper.h"
 
 #include "vertexarray.h"
 #include "vertexbuffer.h"

@@ -1,7 +1,5 @@
 #pragma once
 #include "level.h"
-#include "wall.h"
-#include "colorvalueholder.h"
 
 class DeveloperLevel1 : public Level {
 public:

@@ -1,4 +1,3 @@
-#pragma once
 #include "emptylevel.h"
 
 void EmptyLevel::initialize() {

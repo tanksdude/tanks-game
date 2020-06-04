@@ -1,5 +1,3 @@
-#pragma once
-
 #include "vertexarray.h"
 #include <GL/glew.h>
 

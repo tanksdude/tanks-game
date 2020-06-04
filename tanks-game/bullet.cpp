@@ -1,16 +1,11 @@
-#pragma once
 #include "bullet.h"
 #include "gamemanager.h"
-#include "constants.h"
 #include "mylib.h"
+#include "constants.h"
 #include <math.h>
-#include "circle.h"
 #include "colormixer.h"
 #include "renderer.h"
 #include <iostream>
-
-#include <GL/glew.h>
-#include <GL/freeglut.h>
 
 VertexArray* Bullet::va;
 VertexBuffer* Bullet::vb;

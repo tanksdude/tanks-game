@@ -1,6 +1,5 @@
 #pragma once
 #include "circlehazard.h"
-#include <math.h>
 #include "constants.h"
 
 #include "vertexarray.h"
@@ -36,7 +35,7 @@ public:
 	//virtual bool validLocation() { return true; }
 	virtual bool reasonableLocation();
 
-	double getAngle() { return fmod(fmod(angle, 2*PI) + 2*PI, 2*PI); }
+	double getAngle();
 	virtual ColorValueHolder getColor();
 	virtual ColorValueHolder getColor(short state);
 

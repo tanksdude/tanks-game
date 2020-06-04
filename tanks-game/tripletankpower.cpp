@@ -1,13 +1,13 @@
-#pragma once
 #include "tripletankpower.h"
 #include "triplebulletpower.h"
-#include "triplepower.h"
-#include <math.h>
 #include "constants.h"
+#include <math.h>
+
+const double TripleTankPower::angleDiff = PI/16;
 
 void TripleTankPower::additionalShooting(Tank* parent, CannonPoint c) {
-	parent->defaultMakeBullet(parent->x + parent->r*cos(parent->angle + c.angle + TriplePower::angleDiff), parent->y + parent->r*sin(parent->angle + c.angle + TriplePower::angleDiff), parent->angle + c.angle);
-	parent->defaultMakeBullet(parent->x + parent->r*cos(parent->angle + c.angle - TriplePower::angleDiff), parent->y + parent->r*sin(parent->angle + c.angle - TriplePower::angleDiff), parent->angle + c.angle);
+	parent->defaultMakeBullet(parent->x + parent->r*cos(parent->angle + c.angle + angleDiff), parent->y + parent->r*sin(parent->angle + c.angle + angleDiff), parent->angle + c.angle);
+	parent->defaultMakeBullet(parent->x + parent->r*cos(parent->angle + c.angle - angleDiff), parent->y + parent->r*sin(parent->angle + c.angle - angleDiff), parent->angle + c.angle);
 }
 
 void TripleTankPower::initialize(Tank* parent) {

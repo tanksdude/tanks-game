@@ -1,9 +1,8 @@
-#pragma once
 #include "stationaryturret.h"
 #include "gamemanager.h"
 #include "renderer.h"
 #include "colormixer.h"
-#include "constants.h"
+//#include "constants.h"
 #include <math.h>
 #include "tank.h"
 #include "bulletmanager.h"
@@ -108,6 +107,10 @@ CircleHazard* StationaryTurret::factory(int argc, std::string* argv) {
 		return new StationaryTurret(x, y, a);
 	}
 	return new StationaryTurret(0, 0, 0);
+}
+
+double StationaryTurret::getAngle() {
+	return fmod(fmod(angle, 2*PI) + 2*PI, 2*PI);
 }
 
 void StationaryTurret::tick() {
