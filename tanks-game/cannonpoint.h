@@ -5,6 +5,8 @@ struct CannonPoint {
 	friend class Tank; //only if, by chance, something makes the other stuff private (which might be me in the future)
 
 	double angle;
-	CannonPoint(double angle);
-	CannonPoint();
+	CannonPoint(double angle) {
+		this->angle = angle;
+	}
+	CannonPoint() { this->angle = 0; }
 };
