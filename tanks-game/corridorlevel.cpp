@@ -1,4 +1,5 @@
 #include "corridorlevel.h"
+#include "randomlevel.h"
 #include "tankmanager.h"
 #include "powerupmanager.h"
 #include "wallmanager.h"
@@ -24,11 +25,11 @@ void CorridorLevel::initialize() {
 
 	int tempRand = rand() % 2;
 	for (int i = 0; i < 4; i++)
-		PowerupManager::pushPowerup(new PowerSquare(320 + (i % 2 * 2 - 1) * 190, 160 + ((i / 2) * 2 - 1) * 142, Level::powerAlternate(i, tempRand, "invincible", "wallhack")));
+		PowerupManager::pushPowerup(new PowerSquare(320 + (i % 2 * 2 - 1) * 190, 160 + ((i / 2) * 2 - 1) * 142, RandomLevel::powerAlternate(i, tempRand, "invincible", "wallhack")));
 
 	tempRand = rand() % 2;
 	for (int i = 0; i < 4; i++)
-		PowerupManager::pushPowerup(new PowerSquare(320 + (i % 2 * 2 - 1) * 190, 160 + ((i / 2) * 2 - 1) * 90, Level::powerAlternate(i, tempRand, "speed", "big"))); //big=life here
+		PowerupManager::pushPowerup(new PowerSquare(320 + (i % 2 * 2 - 1) * 190, 160 + ((i / 2) * 2 - 1) * 90, RandomLevel::powerAlternate(i, tempRand, "speed", "big"))); //big=life here
 }
 
 CorridorLevel::CorridorLevel() { return; }

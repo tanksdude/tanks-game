@@ -6,7 +6,5 @@ class BigFunLevel : public Level {
 public:
 	std::string getName() { return "bigfun"; }
 	void initialize();
-	void tick() { return; }
-	void draw() { return; }
 	BigFunLevel();
 };

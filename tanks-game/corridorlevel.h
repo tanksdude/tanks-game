@@ -6,7 +6,5 @@ class CorridorLevel : public Level {
 public:
 	std::string getName() { return "corridor"; }
 	void initialize();
-	void tick() { return; }
-	void draw() { return; }
 	CorridorLevel();
 };

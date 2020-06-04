@@ -5,26 +5,14 @@
 
 class Level {
 	friend class LevelManager; //actually needs this unlike the other managers because the manager has more control
-private:
+protected:
 	std::vector<LevelEffect*> effects;
 	int getNumEffects() { return effects.size(); } //kinda pointless but "clean code"
 public:
 	virtual std::string getName() = 0;
 	virtual void initialize() = 0;
-	virtual void tick() = 0;
-	virtual void draw() = 0;
-	static std::string powerAlternate(int position, int rand, std::string p1, std::string p2) {
-		return ( (int)ceil(( (float)((position * 2) % 3)) / 3) + rand) % 2 == 0 ? p1 : p2;
-		/*
-		{0,   1,   2,  3} // start
-		{0,   2,   4,  6} // *2
-		{0,   2,   1,  0} // %3, then cast to float
-		{0,  .6,  .3,  0} // /3, then add rand
-		{0,  .6,  .3,  0} (rand=0) -> ceil -> {0, 1, 1, 0}
-		{1, 1.6, 1.3,  1} (rand=1) -> ceil -> {1, 2, 2, 1}
-		{0, 1, 1, 0} OR	{1, 0, 0, 1} // %2
-		*/
-	}
+	virtual void tick() { return; }
+	virtual void draw() { return; }
 };
 
 /*
