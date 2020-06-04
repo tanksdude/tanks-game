@@ -202,7 +202,7 @@ void Bullet::drawBody(double xpos, double ypos) {
 		shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), this->alpha/100);
 	} else {
 		if(alpha < 100) {
-			double deathPercent = constrain_d(alpha/100, 0, 1);
+			double deathPercent = constrain<double>(alpha/100, 0, 1);
 			unsigned int deathVertices = Circle::numOfSides * deathPercent;
 
 			if (deathVertices > 0) {

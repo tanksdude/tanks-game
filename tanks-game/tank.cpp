@@ -642,7 +642,7 @@ void Tank::draw(double xpos, double ypos) {
 	if (maxShootCount*getShootingSpeedMultiplier() <= 0 || maxShootCount <= 0) {
 		shootingOutlinePercent = 0;
 	} else {
-		shootingOutlinePercent = constrain_d(shootCount/(maxShootCount*getShootingSpeedMultiplier()), 0, 1);
+		shootingOutlinePercent = constrain<double>(shootCount/(maxShootCount*getShootingSpeedMultiplier()), 0, 1);
 	}
 	unsigned int shootingOutlineVertices = Circle::numOfSides * shootingOutlinePercent;
 
@@ -677,7 +677,7 @@ void Tank::draw(double xpos, double ypos) {
 		if (sortedTankPowers[i]->maxTime <= 0) {
 			powerOutlinePercent = 0;
 		} else {
-			powerOutlinePercent = constrain_d(sortedTankPowers[i]->timeLeft/sortedTankPowers[i]->maxTime, 0, 1);
+			powerOutlinePercent = constrain<double>(sortedTankPowers[i]->timeLeft/sortedTankPowers[i]->maxTime, 0, 1);
 		}
 		unsigned int powerOutlineVertices = Circle::numOfSides * powerOutlinePercent;
 

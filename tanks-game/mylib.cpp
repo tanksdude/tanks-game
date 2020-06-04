@@ -77,7 +77,8 @@ int findMinIndex(double* arr, int len) { //precondition: length of array > 0
 	return index;
 }
 
-int constrain_i(int value, int min, int max) {
+template<typename T>
+T constrain(T value, T min, T max) {
 	if (value < min) {
 		return min;
 	}
@@ -86,36 +87,12 @@ int constrain_i(int value, int min, int max) {
 	}
 	return value;
 }
-
-long constrain_l(long value, long min, long max) {
-	if (value < min) {
-		return min;
-	}
-	if (value > max) {
-		return max;
-	}
-	return value;
-}
-
-float constrain_f(float value, float min, float max) {
-	if (value < min) {
-		return min;
-	}
-	if (value > max) {
-		return max;
-	}
-	return value;
-}
-
-double constrain_d(double value, double min, double max) {
-	if (value < min) {
-		return min;
-	}
-	if (value > max) {
-		return max;
-	}
-	return value;
-}
+template int constrain<int>(int, int, int);
+template long constrain<long>(long, long, long);
+template float constrain<float>(float, float, float);
+template double constrain<double>(double, double, double);
+//normally, these template specializations should go in the header, but for some reason they're allowed here
+//(behind the scenes, I understand what's happening, mostly, but it's still moderately cool)
 
 bool XOR(bool a, bool b) {
 	return ((a || b) && !(a && b));
@@ -172,3 +149,15 @@ bool pointInPolygon(int vertNum, float* vertX, float* vertY, float testX, float 
 	}
 	return c;
 }
+
+template<typename T>
+bool isInArray(T find, T* arr, int length) {
+	for (int i = 0; i < length; i++) {
+		if (arr[i] == find) {
+			return true;
+		}
+	}
+	return false;
+}
+template bool isInArray<double>(double, double*, int); //I don't think this one is used
+template bool isInArray<int>(int, int*, int);
