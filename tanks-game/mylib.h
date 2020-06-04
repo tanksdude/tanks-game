@@ -9,6 +9,7 @@ double findMax(double*, int len);
 double findMin(double*, int len);
 int findMaxIndex(double*, int len);
 int findMinIndex(double*, int len);
+//std::max_element and std::min_element exist
 
 template<typename T>
 T constrain(T value, T min, T max);
