@@ -4,6 +4,7 @@
 #include "colormixer.h"
 //#include "constants.h"
 #include <math.h>
+#include "mylib.h"
 #include "tank.h"
 #include "bulletmanager.h"
 #include "wallmanager.h"
@@ -145,7 +146,7 @@ bool StationaryTurret::reasonableLocation() {
 }
 
 ColorValueHolder StationaryTurret::getColor() {
-	return ColorMixer::mix(stateColors[currentState], stateColors[(currentState+1)%maxState], tickCount/(tickCycle*stateMultiplier[currentState]));
+	return ColorMixer::mix(stateColors[currentState], stateColors[(currentState+1)%maxState], constrain<double>(tickCount/(tickCycle*stateMultiplier[currentState]), 0, 1));
 }
 
 ColorValueHolder StationaryTurret::getColor(short state) {
