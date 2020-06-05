@@ -10,7 +10,7 @@ class CircleHazard;
 
 //this is intended for hazard randomization; if the actual hazard type is known, then the constructor will be known
 enum class CircleHazardConstructionTypes /*: unsigned char */ {
-	constructionIsTooComplex, //I'm thinking patrolling turret would have this
+	constructionIsTooComplex, //I'm thinking patrolling turret would have this (add a "path required" parameter?)
 	simpleConstruction, //only x and y required (no r or angle)
 	angleRequired,
 	radiusRequired,

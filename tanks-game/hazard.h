@@ -6,7 +6,6 @@ class Hazard : public GameThing {
 	friend class ResetThings;
 protected:
 	bool canAcceptPowers;
-	//std::vector<HazardPower*> hazardPowers;
 
 public:
 	//virtual ColorValueHolder getColor();
@@ -18,33 +17,28 @@ public:
 	virtual void draw() = 0;
 	//virtual void drawCPU();
 };
+//should each hazard have a function that adds X amount of itself randomly to the level?)
 
 /*
 some hazards aren't bad
 
 list of (eventual) hazards:
-stationary turret
+|stationary turret
 turret
 patrolling turret
-lightning (abstract class: generalized lightning, has point to point lightning bolt)
+generalized lightning (has point to point bolt; in order for it to work for circular lightning, a function would have to be passed in (function checks whether point is in the lightning))
+|horizontal lightning
 vertical lightning
-lightning square (really a rectangle)
+lightning zone (rectangle)
 lightning circle
-lava
+|rectangular lava
+|circular lava
 no bullet zone
 teleport zone
-
+pipes
 
 
 list of possible hazards, joke or not:
 the reflecktor (bounces/reflects tanks when they hit it)
-
-
-things the hazards need to access, override, and/or deal with (of bullets and tanks, and hazards?):
-...all good? probably just need x and y (and r)
-
-
-
-
 
 */

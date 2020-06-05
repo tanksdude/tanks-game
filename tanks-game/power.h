@@ -27,7 +27,6 @@ public:
 	static Power* factory();
 };
 
-
 /*
 list of (eventual) powers:
 |speed
@@ -40,17 +39,18 @@ list of (eventual) powers:
 |big (tier 2)
 |mega-death (variable big)
 the super (tier 3) (name WIP) (come on, of course the name isn't going to be temporary!) (save for later because there's little point in including it as of now)
-grenade?
-fire?
+|grenade?
+|fire?
 banana (will be tough unless I did everything correctly)
 godmode
 barrier (if hit, provides one extra hitpoint (basically life, but might add some differences))
 super life/shield/barrier (barrier health dependent on time left on power)
 swarm (check notes if you forgot, me) (modifiedMovementCanOnlyWorkIndividually = true?)
 
+
 powers that are rare because the level wants them, not because they're good:
 mines
-blast
+|blast
 tracking?
 
 
@@ -69,7 +69,7 @@ weak invincibility: tank/hazard: tier 1 defense (importance 0), tier 0 offense (
 
 
 other ideas, some of which are jokes, some of which are lesser jokes:
-nukes (???) (the only thing I remember about its conception is that it would act like Snake's final smash in Brawl)
+nukes (???) (the only thing I remember about its conception is that it would act like Snake's Final Smash in Brawl)
 sword (melee power) (heck yeah, but would have to let Tank hold an object; shouldn't be too hard?)
 ghost (color would be partially transparent)
 the ID changer
@@ -83,7 +83,7 @@ trickster (moves in circles around its path; imagine MewTwo's shadow ball)
 
 things the powers need to access, override, and/or deal with (of bullets and tanks, probably hazards too):
 color (needs a default in case it doesn't want to override the tank's color or mistakenly add to the color mix)
-movement (wall collision n' stuff, 
+movement (wall collision n' stuff, ... and stuff)
 shootcounts
 shooting, obviously
 state changes on a tank/hazard: ability to add random thing to tank/hazard (sword, for instance)
@@ -95,12 +95,6 @@ ability to be permanently applied
 ability to override duration
 give tank a time limit before it can fire the new power, but must be overridable and dependent on default shooting speed
 can leave out-of-bounds, both real and fake (fake in the case of a portal level situation: center can leave out-of-bounds, edges might, dividing walls can't)
-
-
-
-
-
-
 
 
 if you don't know where I got these names: that's okay, I do (more or less)

@@ -4,7 +4,6 @@ class RectHazard;
 #include "hazard.h"
 #include "rect.h"
 #include <string>
-
 //#include "recthazardpower.h"
 #include "tank.h"
 #include "bullet.h"
