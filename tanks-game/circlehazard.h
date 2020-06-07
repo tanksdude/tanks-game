@@ -8,6 +8,24 @@ class CircleHazard;
 #include "tank.h"
 #include "bullet.h"
 
+//I strongly doubt anything will use this; the only thing I can think of is like a sentry gun, so I'm probably going to get rid of this
+struct CircleFactoryInformation {
+	bool requiresWallOnLeft;
+	bool requiresWallOnRight;
+	bool requiresWallOnTop;
+	bool requiresWallOnBottom;
+	bool wallRequirementCanBeAnEdge;
+	CircleFactoryInformation(bool wallLeft, bool wallRight, bool wallTop, bool wallBottom, bool edgeEqualsWall) {
+		requiresWallOnLeft = wallLeft;
+		requiresWallOnRight = wallRight;
+		requiresWallOnTop = wallTop;
+		requiresWallOnBottom = wallBottom;
+		wallRequirementCanBeAnEdge = edgeEqualsWall;
+	}
+	CircleFactoryInformation(bool wallLeft, bool wallRight, bool wallTop, bool wallBottom)
+	: CircleFactoryInformation(wallLeft, wallRight, wallTop, wallBottom, true) {}
+};
+
 //this is intended for hazard randomization; if the actual hazard type is known, then the constructor will be known
 enum class CircleHazardConstructionTypes /*: unsigned char */ {
 	constructionIsTooComplex, //I'm thinking patrolling turret would have this (add a "path required" parameter?)
@@ -54,4 +72,7 @@ public:
 	static CircleHazard* factory(int argc, std::string* argv);
 	static int getFactoryArgumentCount();
 	//static CircleHazardConstructionTypes getConstructionType();
+	virtual CircleFactoryInformation getFactoryInformation() {
+		return { false, false, false, false, false };
+	}
 };
