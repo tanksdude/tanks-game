@@ -1,6 +1,65 @@
 #include "collisionhandler.h"
+#include "constants.h"
 #include <math.h>
 #include <iostream>
+
+bool CollisionHandler::partiallyOutOfBounds(Rect* r) {
+	return ((r->x + r->w >= GAME_WIDTH) || (r->x <= 0) || (r->y + r->h >= GAME_HEIGHT) || (r->y <= 0));
+}
+
+bool CollisionHandler::partiallyOutOfBoundsIgnoreEdge(Rect* r) {
+	return ((r->x + r->w > GAME_WIDTH) || (r->x < 0) || (r->y + r->h > GAME_HEIGHT) || (r->y < 0));
+}
+
+bool CollisionHandler::fullyOutOfBounds(Rect* r) {
+	return ((r->x >= GAME_WIDTH) || (r->x + r->w <= 0) || (r->y >= GAME_HEIGHT) || (r->y + r->h <= 0));
+}
+
+bool CollisionHandler::fullyOutOfBoundsIgnoreEdge(Rect* r) {
+	return ((r->x > GAME_WIDTH) || (r->x + r->w < 0) || (r->y > GAME_HEIGHT) || (r->y + r->h < 0));
+}
+
+bool CollisionHandler::partiallyOutOfBounds(Circle* c) {
+	return ((c->x + c->r >= GAME_WIDTH) || (c->x - c->r <= 0) || (c->y + c->r >= GAME_HEIGHT) || (c->y - c->r <= 0));
+}
+
+bool CollisionHandler::partiallyOutOfBoundsIgnoreEdge(Circle* c) {
+	return ((c->x + c->r > GAME_WIDTH) || (c->x - c->r < 0) || (c->y + c->r > GAME_HEIGHT) || (c->y - c->r < 0));
+}
+
+bool CollisionHandler::fullyOutOfBounds(Circle* c) {
+	return ((c->x - c->r >= GAME_WIDTH) || (c->x + c->r <= 0) || (c->y - c->r >= GAME_HEIGHT) || (c->y + c->r <= 0));
+}
+
+bool CollisionHandler::fullyOutOfBoundsIgnoreEdge(Circle* c) {
+	return ((c->x - c->r > GAME_WIDTH) || (c->x + c->r < 0) || (c->y - c->r > GAME_HEIGHT) || (c->y + c->r < 0));
+}
+
+void CollisionHandler::edgeConstrain(Rect* r) {
+	if (r->x + r->w > GAME_WIDTH) {
+		r->x = GAME_WIDTH - r->w;
+	} else if (r->x < 0) {
+		r->x = 0;
+	}
+	if (r->y + r->h > GAME_HEIGHT) {
+		r->y = GAME_HEIGHT - r->h;
+	} else if (r->y < 0) {
+		r->y = 0;
+	}
+}
+
+void CollisionHandler::edgeConstrain(Circle* c) {
+	if (c->x + c->r > GAME_WIDTH) {
+		c->x = GAME_WIDTH - c->r;
+	} else if (c->x - c->r < 0) {
+		c->x = c->r;
+	}
+	if (c->y + c->r > GAME_HEIGHT) {
+		c->y = GAME_HEIGHT - c->r;
+	} else if (c->y - c->r < 0) {
+		c->y = c->r;
+	}
+}
 
 bool CollisionHandler::partiallyCollided(Rect* a, Rect* b) {
 	return ((a->x + a->w >= b->x) && (a->x <= b->x + b->w) && (a->y + a->h >= b->y) && (a->y <= b->y + b->h));

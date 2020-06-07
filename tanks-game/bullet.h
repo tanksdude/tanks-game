@@ -61,14 +61,14 @@ public:
 	void draw(double, double);
 	void drawCPU();
 	void drawCPU(double, double);
-	short determineDamage(); //TODO: wait, what is this supposed to do again? (isn't everything supposed to have 1 health? so there's no point for this)
+	//short determineDamage(); //maybe for another day
 
 	void powerCalculate();
 	void removePower(int index);
 
 	bool isFullyOutOfBounds();
 	bool isPartiallyOutOfBounds();
-	//void edgeConstrain(); //probably never going to be needed
+	//void edgeConstrain(); //should never be needed
 
 	~Bullet();
 };

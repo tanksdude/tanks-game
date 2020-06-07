@@ -7,6 +7,7 @@
 #include "renderer.h"
 #include "keypressmanager.h"
 #include "bulletmanager.h"
+#include "collisionhandler.h"
 #include <iostream>
 
 //for CPU drawing, in case other #includes go wrong:
@@ -824,17 +825,7 @@ void Tank::resetThings(double x, double y, double a, char teamID, std::string na
 }
 
 void Tank::edgeConstrain() {
-	if (x + r > GAME_WIDTH) {
-		x = GAME_WIDTH - r;
-	} else if (x - r < 0) {
-		x = r;
-	}
-	if (y + r > GAME_HEIGHT) {
-		y = GAME_HEIGHT - r;
-	} else if (y - r < 0) {
-		y = r;
-	}
-	//technically, checking down before up (and left before right) would probably have a slight efficiency increase, but it would be extremely (negligibly) small
+	CollisionHandler::edgeConstrain(this);
 }
 
 double Tank::getHighestOffenseImportance() {
@@ -896,9 +887,9 @@ double Tank::getDefenseTier() {
 }
 
 bool Tank::isPartiallyOutOfBounds() {
-	return ((x + r > GAME_WIDTH) || (x - r < 0) || (y + r > GAME_HEIGHT) || (y - r < 0));
+	return CollisionHandler::partiallyOutOfBoundsIgnoreEdge(this);
 } //doesn't care if touching edge
 
 bool Tank::isFullyOutOfBounds() {
-	return ((x - r > GAME_WIDTH) || (x + r < 0) || (y - r > GAME_HEIGHT) || (y + r < 0));
+	return CollisionHandler::fullyOutOfBoundsIgnoreEdge(this);
 }

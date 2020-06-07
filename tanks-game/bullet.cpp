@@ -5,6 +5,7 @@
 #include <math.h>
 #include "colormixer.h"
 #include "renderer.h"
+#include "collisionhandler.h"
 #include <iostream>
 
 //for CPU drawing, in case other #includes go wrong:
@@ -244,10 +245,6 @@ void Bullet::drawOutline(double xpos, double ypos) {
 	//drawing an outline: use a geometry shader (ugh) or another VAO+IBO (lesser ugh), the CPU (big ugh), or glDrawArrays with GL_LINE_LOOP (yay!)
 }
 
-short Bullet::determineDamage() { //TODO: finish once powers start existing
-	return 1;
-}
-
 double Bullet::getHighestOffenseImportance() {
 	double highest = -1; //anything below -1 is really, really unimportant; so much so that it doesn't matter
 	for (int i = 0; i < bulletPowers.size(); i++) {
@@ -307,9 +304,9 @@ double Bullet::getDefenseTier() {
 }
 
 bool Bullet::isPartiallyOutOfBounds() {
-	return ((x + r > GAME_WIDTH) || (x - r < 0) || (y + r > GAME_HEIGHT) || (y - r < 0));
+	return CollisionHandler::partiallyOutOfBoundsIgnoreEdge(this);
 } //care about equals edge?
 
 bool Bullet::isFullyOutOfBounds() {
-	return ((x - r >= GAME_WIDTH) || (x + r <= 0) || (y - r >= GAME_HEIGHT) || (y + r <= 0));
+	return CollisionHandler::fullyOutOfBounds(this);
 }
