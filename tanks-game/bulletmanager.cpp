@@ -20,3 +20,10 @@ void BulletManager::deleteBullet(int index) {
 	delete bullets[index];
 	bullets.erase(bullets.begin() + index);
 }
+
+void BulletManager::clearBullets() {
+	for (int i = 0; i < bullets.size(); i++) {
+		delete bullets[i];
+	}
+	bullets.clear();
+}

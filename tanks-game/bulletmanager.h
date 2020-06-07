@@ -7,6 +7,7 @@ class BulletManager {
 private:
 	static std::vector<Bullet*> bullets;
 	static int maxBullets; //currently not used
+	static void clearBullets(); //for ResetThings
 public:
 	static void initialize();
 	static Bullet* const getBullet(int index);

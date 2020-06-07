@@ -17,3 +17,10 @@ void WallManager::deleteWall(int index) {
 	delete walls[index];
 	walls.erase(walls.begin() + index);
 }
+
+void WallManager::clearWalls() {
+	for (int i = 0; i < walls.size(); i++) {
+		delete walls[i];
+	}
+	walls.clear();
+}

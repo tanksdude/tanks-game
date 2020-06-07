@@ -17,7 +17,6 @@ void HazardManager::initialize() {
 CircleHazard* const HazardManager::getCircleHazard(int index) {
 	return circleHazards[index];
 }
-
 RectHazard* const HazardManager::getRectHazard(int index) {
 	return rectHazards[index];
 }
@@ -25,7 +24,6 @@ RectHazard* const HazardManager::getRectHazard(int index) {
 void HazardManager::pushCircleHazard(CircleHazard* ch) {
 	circleHazards.push_back(ch);
 }
-
 void HazardManager::pushRectHazard(RectHazard* rh) {
 	rectHazards.push_back(rh);
 }
@@ -34,10 +32,22 @@ void HazardManager::deleteCircleHazard(int index) {
 	delete circleHazards[index];
 	circleHazards.erase(circleHazards.begin() + index);
 }
-
 void HazardManager::deleteRectHazard(int index) {
 	delete rectHazards[index];
 	rectHazards.erase(rectHazards.begin() + index);
+}
+
+void HazardManager::clearCircleHazards() {
+	for (int i = 0; i < circleHazards.size(); i++) {
+		delete circleHazards[i];
+	}
+	circleHazards.clear();
+}
+void HazardManager::clearRectHazards() {
+	for (int i = 0; i < rectHazards.size(); i++) {
+		delete rectHazards[i];
+	}
+	rectHazards.clear();
 }
 
 

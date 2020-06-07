@@ -12,6 +12,8 @@ class HazardManager {
 private:
 	static std::vector<CircleHazard*> circleHazards;
 	static std::vector<RectHazard*> rectHazards;
+	static void clearCircleHazards();
+	static void clearRectHazards(); //only ResetThings is supposed to be using these, so no real point in splitting them
 
 	static std::unordered_map<std::string, CircleHazardFunction> circleHazardLookup;
 	static std::unordered_map<std::string, RectHazardFunction> rectHazardLookup;

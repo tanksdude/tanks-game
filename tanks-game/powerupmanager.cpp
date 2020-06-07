@@ -24,6 +24,13 @@ void PowerupManager::deletePowerup(int index) {
 	powerups.erase(powerups.begin() + index);
 }
 
+void PowerupManager::clearPowerups() {
+	for (int i = 0; i < powerups.size(); i++) {
+		delete powerups[i];
+	}
+	powerups.clear();
+}
+
 
 void PowerupManager::addPowerFactory(PowerFunction factory) {
 	powerList["vanilla"].push_back(factory);

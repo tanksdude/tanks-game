@@ -19,3 +19,12 @@ void TankManager::deleteTank(int index) {
 	tanks.erase(tanks.begin() + index);
 }
 */
+
+/*
+void TankManager::clearTanks() {
+	for (int i = 0; i < tanks.size(); i++) {
+		delete tanks[i];
+	}
+	tanks.clear();
+}
+*/

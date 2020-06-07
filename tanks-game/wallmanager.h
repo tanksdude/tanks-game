@@ -6,6 +6,7 @@ class WallManager {
 	friend class ResetThings;
 private:
 	static std::vector<Wall*> walls;
+	static void clearWalls(); //for ResetThings
 public:
 	static void initialize();
 	static Wall* const getWall(int index);
