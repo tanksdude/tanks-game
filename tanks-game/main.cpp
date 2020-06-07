@@ -1100,7 +1100,7 @@ void bulletToTank() {
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
 		Tank* t = TankManager::getTank(i);
 
-		for (int j = 0; j < BulletManager::getNumBullets(); j++) {
+		for (int j = BulletManager::getNumBullets() - 1; j >= 0; j--) {
 			Bullet* b = BulletManager::getBullet(j);
 
 			if (b->getTeamID() == t->getTeamID()) {
@@ -1115,24 +1115,19 @@ void bulletToTank() {
 						continue;
 					} else {
 						BulletManager::deleteBullet(j);
-						j--;
 						continue; //fix: is this supposed to be break?
 					}
 				} else if (result == -1) { //both die
 					tank_dead = 1;
 
-					/*
-					BulletManager::deleteBullet(j);
-					j--;
-					*/
-
+					//BulletManager::deleteBullet(j);
+					
 					continue;
 				} else if (result >= 2) { //it's a draw, so neither dies (probably not going to happen)
 					//continue;
 				} else {
 					if (result == 0) {
 						BulletManager::deleteBullet(j);
-						j--;
 						continue; //not needed //fix: should it be break?
 					} else {
 						tank_dead = 1;

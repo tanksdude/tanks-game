@@ -7,6 +7,10 @@
 #include "renderer.h"
 #include <iostream>
 
+//for CPU drawing, in case other #includes go wrong:
+#include <GL/glew.h>
+#include <GL/freeglut.h>
+
 VertexArray* Bullet::va;
 VertexBuffer* Bullet::vb;
 IndexBuffer* Bullet::ib;

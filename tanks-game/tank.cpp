@@ -9,6 +9,10 @@
 #include "bulletmanager.h"
 #include <iostream>
 
+//for CPU drawing, in case other #includes go wrong:
+#include <GL/glew.h>
+#include <GL/freeglut.h>
+
 TankInputChar::TankInputChar(bool special, int c) {
 	isSpecial = special;
 	character = c;

@@ -1,4 +1,5 @@
 #include "keypressmanager.h"
+#include <GL/glew.h> //to avoid potential freeglut before glew issues
 #include <GL/freeglut.h>
 
 std::unordered_map<unsigned char, bool> KeypressManager::normalKeyStates;

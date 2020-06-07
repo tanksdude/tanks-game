@@ -4,6 +4,7 @@
 #include "constants.h"
 #include "powerupmanager.h"
 #include "hazardmanager.h"
+#include <GL/glew.h> //to avoid potential freeglut before glew issues
 #include <GL/freeglut.h>
 #include <iostream>
 
