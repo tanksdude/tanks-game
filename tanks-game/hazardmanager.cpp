@@ -53,14 +53,14 @@ void HazardManager::clearRectHazards() {
 
 void HazardManager::addCircleHazardFactory(CircleHazardFunction factory) {
 	circleHazardList.push_back(factory);
-	CircleHazard* ch = factory(0,nullptr);
+	CircleHazard* ch = factory(0, nullptr);
 	circleHazardLookup.insert({ ch->getName(), factory });
 	circleHazardNameList.push_back(ch->getName());
 	delete ch;
 }
 void HazardManager::addRectHazardFactory(RectHazardFunction factory) {
 	rectHazardList.push_back(factory);
-	RectHazard* rh = factory(0,nullptr);
+	RectHazard* rh = factory(0, nullptr);
 	rectHazardLookup.insert({ rh->getName(), factory });
 	rectHazardNameList.push_back(rh->getName());
 	delete rh;
