@@ -1,6 +1,7 @@
 #include "tankmanager.h"
 
 std::vector<Tank*> TankManager::tanks;
+
 void TankManager::initialize() {
 	return;
 }

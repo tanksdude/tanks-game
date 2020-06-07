@@ -2,24 +2,20 @@
 #include "constants.h"
 #include "tankmanager.h"
 #include "bulletmanager.h"
-#include "powerupmanager.h"
 #include "wallmanager.h"
-#include "levelmanager.h"
+#include "powerupmanager.h"
 #include "hazardmanager.h"
+#include "levelmanager.h"
 
 void ResetThings::reset(int) {
 	TankManager::tanks[0]->resetThings(20, GAME_HEIGHT/2, 0, TankManager::tanks[0]->getTeamID(), TankManager::tanks[0]->getName());
 	TankManager::tanks[1]->resetThings(GAME_WIDTH - 20, GAME_HEIGHT/2, PI, TankManager::tanks[1]->getTeamID(), TankManager::tanks[1]->getName());
 
-	WallManager::clearWalls();
-
 	BulletManager::clearBullets();
-
+	WallManager::clearWalls();
 	PowerupManager::clearPowerups();
-
 	HazardManager::clearCircleHazards();
 	HazardManager::clearRectHazards();
-
 	LevelManager::clearLevels();
 
 #if _DEBUG

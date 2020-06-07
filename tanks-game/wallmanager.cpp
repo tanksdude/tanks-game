@@ -1,6 +1,7 @@
 #include "wallmanager.h"
 
 std::vector<Wall*> WallManager::walls;
+
 void WallManager::initialize() {
 	return;
 }

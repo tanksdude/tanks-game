@@ -28,12 +28,9 @@ void LevelManager::pushSpecialLevel(std::string type, std::string name) {
 }
 
 /*
-int LevelManager::getNumLevelEffects() {
-	int total = 0;
-	for (int i = 0; i < levels.size(); i++) {
-		total += LevelManager::getLevel_numEffects(i);
-	}
-	return total;
+void LevelManager::deleteLevel(int index) {
+	delete levels[index];
+	levels.erase(levels.begin() + index);
 }
 */
 
@@ -44,13 +41,6 @@ void LevelManager::clearLevels() {
 	}
 	levels.clear();
 }
-
-/*
-void LevelManager::deleteLevel(int index) {
-	delete levels[index];
-	levels.erase(levels.begin() + index);
-}
-*/
 
 
 void LevelManager::addLevelFactory(LevelFunction factory) {

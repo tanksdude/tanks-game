@@ -10,6 +10,7 @@ class LevelManager {
 	friend class ResetThings;
 private:
 	static std::vector<Level*> levels; //active levels
+	static void clearLevels(); //for ResetThings
 
 	static std::unordered_map<std::string, std::unordered_map<std::string, LevelFunction>> levelLookup;
 	static std::unordered_map<std::string, std::vector<LevelFunction>> levelList;
@@ -17,7 +18,6 @@ private:
 	//static std::unordered_map<std::string, std::unordered_map<std::string, LevelEffectFunction>> levelEffectLookup;
 	//static std::unordered_map<std::string, std::vector<LevelEffectFunction>> levelEffectList;
 	//static std::unordered_map<std::string, std::vector<std::string>> levelEffectNameList;
-	static void clearLevels(); //for ResetThings
 public:
 	static void initialize();
 	static Level* const getLevel(int index); //why would this be needed
@@ -27,6 +27,7 @@ public:
 	static void pushSpecialLevel(std::string type, std::string name);
 	static int getNumLevels() { return levels.size(); }
 	//static int getLevel_numEffects(int index) { return levels[index]->effects.size(); }
+	//static void deleteLevel(int index);
 
 	static void addLevelFactory(LevelFunction);
 	static LevelFunction getLevelFactory(std::string name);
