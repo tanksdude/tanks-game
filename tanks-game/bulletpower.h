@@ -49,7 +49,7 @@ public:
 	//fix: have super override value? so the power can ensure that it and only it will activate (I don't think a power should have this kind of authority, but it might be needed)
 
 	bool modifiesEdgeCollision = false;
-	virtual PowerInteractionBoolHolder modifiedEdgeCollision(Bullet*) { return { false, false }; }
+	virtual PowerInteractionBoolHolder modifiedEdgeCollision(Bullet*) { return { false }; } //only the first false means something
 	//precondition: was out-of-bounds, is not necessarily out-of-bounds
 	bool overridesEdgeCollision = true;
 	bool modifiedEdgeCollisionCanWorkWithOthers = false; //options: either it bounces or temporarily stays outside, so it has no need to work with others; that makes the promise of powerup mixing kinda depressing
@@ -70,7 +70,7 @@ public:
 	bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;
 
 	//bool modifiesCollisionWithPower = false;
-	//virtual void modifiedCollisionWithPower(Bullet*, Power*) { return; } //probably shouldn't be used
+	//virtual void modifiedCollisionWithPowerSquare(Bullet*, PowerSquare*) { return; } //probably shouldn't be used
 
 	//bool modifiesCollisionWithBullet = false;
 	//virtual void modifiedCollisionWithBullet(Bullet* parent, Bullet* other) { return; } //probably shouldn't be used

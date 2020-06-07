@@ -7,7 +7,7 @@ const double FireNamedBulletPower::growAmount = 1.5/32.0; //TODO: need way to pa
 PowerInteractionBoolHolder FireNamedBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
 	if (b->velocity <= 0) {
 		b->alpha -= degradeAmount;
-		return { (b->alpha <= 0), false };
+		return { b->isDead(), false };
 	} else {
 		if (b->acceleration < 0) {
 			b->velocity += b->acceleration;
