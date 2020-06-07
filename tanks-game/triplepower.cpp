@@ -1,11 +1,9 @@
-#pragma once
 #include "triplepower.h"
 #include "tripletankpower.h"
 #include "triplebulletpower.h"
 #include "constants.h"
 
 const bool TriplePower::canBeInARandomLevel = true;
-const double TriplePower::angleDiff = PI/16;
 
 TankPower* TriplePower::makeTankPower() {
 	return new TripleTankPower();

@@ -1,10 +1,10 @@
-#pragma once
 #include "stationaryturret.h"
 #include "gamemanager.h"
 #include "renderer.h"
 #include "colormixer.h"
-#include "constants.h"
+//#include "constants.h"
 #include <math.h>
+#include "mylib.h"
 #include "tank.h"
 #include "bulletmanager.h"
 #include "wallmanager.h"
@@ -110,6 +110,10 @@ CircleHazard* StationaryTurret::factory(int argc, std::string* argv) {
 	return new StationaryTurret(0, 0, 0);
 }
 
+double StationaryTurret::getAngle() {
+	return fmod(fmod(angle, 2*PI) + 2*PI, 2*PI);
+}
+
 void StationaryTurret::tick() {
 	tickCount++;
 	bool mustShoot = false; //in case two state cycles happen at once (this will have annoying unit tests)
@@ -142,7 +146,7 @@ bool StationaryTurret::reasonableLocation() {
 }
 
 ColorValueHolder StationaryTurret::getColor() {
-	return ColorMixer::mix(stateColors[currentState], stateColors[(currentState+1)%maxState], tickCount/(tickCycle*stateMultiplier[currentState]));
+	return ColorMixer::mix(stateColors[currentState], stateColors[(currentState+1)%maxState], constrain<double>(tickCount/(tickCycle*stateMultiplier[currentState]), 0, 1));
 }
 
 ColorValueHolder StationaryTurret::getColor(short state) {

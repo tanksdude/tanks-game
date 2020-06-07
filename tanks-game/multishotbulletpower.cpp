@@ -1,7 +1,5 @@
-#pragma once
 #include "multishotbulletpower.h"
 #include "multishottankpower.h"
-#include "multishotpower.h"
 
 void MultishotBulletPower::initialize(Bullet*) { return; }
 void MultishotBulletPower::removeEffects(Bullet*) { return; }

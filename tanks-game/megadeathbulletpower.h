@@ -1,7 +1,6 @@
 #pragma once
 class MegaDeathBulletPower;
 
-#include "power.h"
 #include "bulletpower.h"
 #include "megadeathpower.h"
 

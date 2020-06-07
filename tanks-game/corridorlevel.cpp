@@ -1,18 +1,14 @@
-#pragma once
 #include "corridorlevel.h"
-#include "constants.h"
-#include "powersquare.h"
-#include "wall.h"
-#include <math.h>
-#include <string>
+#include "randomlevel.h"
 #include "tankmanager.h"
 #include "powerupmanager.h"
 #include "wallmanager.h"
+#include "mylib.h"
+#include "resetthings.h"
 
 void CorridorLevel::initialize() {
-	int randPos = rand() % 5;
-	TankManager::getTank(0)->y = randPos * 64 + 32;
-	TankManager::getTank(1)->y = (4 - randPos) * 64 + 32;
+	int randPos = randFunc() * 5;
+	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), randPos);
 
 	ColorValueHolder color = ColorValueHolder(0x22/255.0, 0.5, 1.0);
 
@@ -28,13 +24,17 @@ void CorridorLevel::initialize() {
 
 	PowerupManager::pushPowerup(new PowerSquare(320, 160, "bounce"));
 
-	int tempRand = rand() % 2;
+	int tempRand = randFunc() * 2;
 	for (int i = 0; i < 4; i++)
-		PowerupManager::pushPowerup(new PowerSquare(320 + (i % 2 * 2 - 1) * 190, 160 + ((i / 2) * 2 - 1) * 142, Level::powerAlternate(i, tempRand, "invincible", "wallhack")));
+		PowerupManager::pushPowerup(new PowerSquare(320 + (i % 2 * 2 - 1) * 190, 160 + ((i / 2) * 2 - 1) * 142, RandomLevel::powerAlternate(i, tempRand, "invincible", "wallhack")));
 
-	tempRand = rand() % 2;
+	tempRand = randFunc() * 2;
 	for (int i = 0; i < 4; i++)
-		PowerupManager::pushPowerup(new PowerSquare(320 + (i % 2 * 2 - 1) * 190, 160 + ((i / 2) * 2 - 1) * 90, Level::powerAlternate(i, tempRand, "speed", "big"))); //big=life here
+		PowerupManager::pushPowerup(new PowerSquare(320 + (i % 2 * 2 - 1) * 190, 160 + ((i / 2) * 2 - 1) * 90, RandomLevel::powerAlternate(i, tempRand, "speed", "big"))); //big=life here
+}
+
+Level* CorridorLevel::factory() {
+	return new CorridorLevel();
 }
 
 CorridorLevel::CorridorLevel() { return; }

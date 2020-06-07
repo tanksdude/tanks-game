@@ -1,14 +1,12 @@
-#pragma once
 #include "powersquare.h"
 #include "gamemanager.h"
 #include "constants.h"
-#include <string>
 #include "backgroundrect.h"
 #include "colormixer.h"
 #include "renderer.h"
 #include "powerupmanager.h"
-#include <iostream>
 
+//for CPU drawing, in case other #includes go wrong:
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 
@@ -167,7 +165,6 @@ ColorValueHolder PowerSquare::getColor() {
 void PowerSquare::givePower(Tank* t) {
 	for (int i = 0; i < numOfPowers; i++) {
 		t->tankPowers.push_back(heldPower[i]->makeTankPower());
-
 		t->tankPowers[t->tankPowers.size()-1]->initialize(t);
 	}
 	t->determineShootingAngles();

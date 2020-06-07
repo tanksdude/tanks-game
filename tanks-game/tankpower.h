@@ -1,6 +1,7 @@
 #pragma once
 class TankPower;
 
+#include "inheritedpowercommon.h"
 #include "colorvalueholder.h"
 #include "tank.h"
 #include "cannonpoint.h"
@@ -8,7 +9,6 @@ class TankPower;
 #include "wall.h"
 #include "circlehazard.h"
 #include "recthazard.h"
-#include "inheritedpowercommon.h"
 #include "bulletpower.h"
 
 class TankPower : public InheritedPowerCommon {
@@ -45,7 +45,7 @@ public:
 	bool modifiedMovementCanOnlyWorkIndividually = false; //if another power was used previously, this power can't activate
 
 	bool modifiesEdgeCollision = false;
-	virtual PowerInteractionBoolHolder modifiedEdgeCollision(Tank*) { return { false, false }; }
+	virtual PowerInteractionBoolHolder modifiedEdgeCollision(Tank*) { return { false }; } //only the first false means something
 	//precondition: was out-of-bounds, is not necessarily out-of-bounds
 	bool overridesEdgeCollision = true;
 	bool modifiedEdgeCollisionCanWorkWithOthers = true;
@@ -66,7 +66,7 @@ public:
 	bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;
 
 	//bool modifiesCollisionWithPower = false;
-	//virtual void modifiedCollisionWithPower(Tank*, Power*) { return; } //probably not going to be used
+	//virtual void modifiedCollisionWithPowerSquare(Tank*, PowerSquare*) { return; } //probably not going to be used
 
 	//bool modifiesCollisionWithBullet = false;
 	//virtual void modifiedCollisionWithBullet(Tank*, Bullet*) { return; } //probably shouldn't be used

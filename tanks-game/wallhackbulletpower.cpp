@@ -1,7 +1,5 @@
-#pragma once
 #include "wallhackbulletpower.h"
 #include "wallhacktankpower.h"
-#include "wallhackpower.h"
 
 void WallhackBulletPower::initialize(Bullet*) { return; }
 void WallhackBulletPower::removeEffects(Bullet*) { return; }

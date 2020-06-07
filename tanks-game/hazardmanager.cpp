@@ -1,4 +1,3 @@
-#pragma once
 #include "hazardmanager.h"
 
 std::vector<CircleHazard*> HazardManager::circleHazards;
@@ -15,18 +14,16 @@ void HazardManager::initialize() {
 	return;
 }
 
-CircleHazard* const HazardManager::getCircleHazard(int index) {
+CircleHazard* HazardManager::getCircleHazard(int index) {
 	return circleHazards[index];
 }
-
-RectHazard* const HazardManager::getRectHazard(int index) {
+RectHazard* HazardManager::getRectHazard(int index) {
 	return rectHazards[index];
 }
 
 void HazardManager::pushCircleHazard(CircleHazard* ch) {
 	circleHazards.push_back(ch);
 }
-
 void HazardManager::pushRectHazard(RectHazard* rh) {
 	rectHazards.push_back(rh);
 }
@@ -35,23 +32,35 @@ void HazardManager::deleteCircleHazard(int index) {
 	delete circleHazards[index];
 	circleHazards.erase(circleHazards.begin() + index);
 }
-
 void HazardManager::deleteRectHazard(int index) {
 	delete rectHazards[index];
 	rectHazards.erase(rectHazards.begin() + index);
 }
 
+void HazardManager::clearCircleHazards() {
+	for (int i = 0; i < circleHazards.size(); i++) {
+		delete circleHazards[i];
+	}
+	circleHazards.clear();
+}
+void HazardManager::clearRectHazards() {
+	for (int i = 0; i < rectHazards.size(); i++) {
+		delete rectHazards[i];
+	}
+	rectHazards.clear();
+}
+
 
 void HazardManager::addCircleHazardFactory(CircleHazardFunction factory) {
 	circleHazardList.push_back(factory);
-	CircleHazard* ch = factory(0,nullptr);
+	CircleHazard* ch = factory(0, nullptr);
 	circleHazardLookup.insert({ ch->getName(), factory });
 	circleHazardNameList.push_back(ch->getName());
 	delete ch;
 }
 void HazardManager::addRectHazardFactory(RectHazardFunction factory) {
 	rectHazardList.push_back(factory);
-	RectHazard* rh = factory(0,nullptr);
+	RectHazard* rh = factory(0, nullptr);
 	rectHazardLookup.insert({ rh->getName(), factory });
 	rectHazardNameList.push_back(rh->getName());
 	delete rh;

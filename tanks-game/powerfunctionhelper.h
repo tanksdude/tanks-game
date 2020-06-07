@@ -1,8 +1,6 @@
 #pragma once
-class PowerFunctionHelper;
-
-#include <vector>
 #include "tank.h"
+#include <vector>
 #include "cannonpoint.h"
 #include "bullet.h"
 #include "wall.h"

@@ -1,4 +1,3 @@
-#pragma once
 #include "invinciblenamedpower.h"
 #include "invinciblenamedtankpower.h"
 #include "invinciblenamedbulletpower.h"

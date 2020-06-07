@@ -13,6 +13,21 @@ private:
 		CollisionHandler::cornerPushMovableAwayFromMovable(movable2, movable1, x, y);
 	}
 
+public: //for tanks and bullets and stuff (things that move around)
+	static bool partiallyOutOfBounds(Rect*);
+	static bool partiallyOutOfBoundsIgnoreEdge(Rect*);
+	static bool fullyOutOfBounds(Rect*);
+	static bool fullyOutOfBoundsIgnoreEdge(Rect*);
+
+	//below: only does simple check, treating the circle like a square
+	static bool partiallyOutOfBounds(Circle*);
+	static bool partiallyOutOfBoundsIgnoreEdge(Circle*);
+	static bool fullyOutOfBounds(Circle*);
+	static bool fullyOutOfBoundsIgnoreEdge(Circle*);
+
+	static void edgeConstrain(Rect*);
+	static void edgeConstrain(Circle*);
+
 public:
 	static bool partiallyCollided(Rect*, Rect*);
 	static bool partiallyCollided(Rect*, Circle*);

@@ -1,7 +1,5 @@
-#pragma once
 #include "developerlevel1.h"
 #include "constants.h"
-#include <math.h>
 #include "tankmanager.h"
 #include "powerupmanager.h"
 #include "wallmanager.h"
@@ -42,6 +40,10 @@ void DeveloperLevel1::initialize() {
 	names[0] = "bounce", names[1] = "homing";
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH-60, GAME_HEIGHT-20, names, 2));
 	delete[] names;
+}
+
+Level* DeveloperLevel1::factory() {
+	return new DeveloperLevel1();
 }
 
 DeveloperLevel1::DeveloperLevel1() { return; }

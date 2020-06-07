@@ -1,14 +1,14 @@
-#pragma once
 #include "bullet.h"
 #include "gamemanager.h"
-#include "constants.h"
 #include "mylib.h"
+#include "constants.h"
 #include <math.h>
-#include "circle.h"
 #include "colormixer.h"
 #include "renderer.h"
+#include "collisionhandler.h"
 #include <iostream>
 
+//for CPU drawing, in case other #includes go wrong:
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 
@@ -207,7 +207,7 @@ void Bullet::drawBody(double xpos, double ypos) {
 		shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), this->alpha/100);
 	} else {
 		if(alpha < 100) {
-			double deathPercent = constrain_d(alpha/100, 0, 1);
+			double deathPercent = constrain<double>(alpha/100, 0, 1);
 			unsigned int deathVertices = Circle::numOfSides * deathPercent;
 
 			if (deathVertices > 0) {
@@ -243,10 +243,6 @@ void Bullet::drawOutline(double xpos, double ypos) {
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	//drawing an outline: use a geometry shader (ugh) or another VAO+IBO (lesser ugh), the CPU (big ugh), or glDrawArrays with GL_LINE_LOOP (yay!)
-}
-
-short Bullet::determineDamage() { //TODO: finish once powers start existing
-	return 1;
 }
 
 double Bullet::getHighestOffenseImportance() {
@@ -308,9 +304,9 @@ double Bullet::getDefenseTier() {
 }
 
 bool Bullet::isPartiallyOutOfBounds() {
-	return ((x + r > GAME_WIDTH) || (x - r < 0) || (y + r > GAME_HEIGHT) || (y - r < 0));
+	return CollisionHandler::partiallyOutOfBoundsIgnoreEdge(this);
 } //care about equals edge?
 
 bool Bullet::isFullyOutOfBounds() {
-	return ((x - r >= GAME_WIDTH) || (x + r <= 0) || (y - r >= GAME_HEIGHT) || (y + r <= 0));
+	return CollisionHandler::fullyOutOfBounds(this);
 }

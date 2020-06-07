@@ -1,13 +1,11 @@
-#pragma once
 #include "randomlevel.h"
 #include "mylib.h"
 
 Wall* RandomLevel::makeNewWall(double x_beginning, double y_beginning, double width_ofArea, double height_ofArea, ColorValueHolder c, double minW, double minH, double maxW, double maxH) {
-	//fix: not sure if rand() needs to be cast to a double, but worry about that later
-	double w = fmod((double)rand(), (maxW - minW)) + minW;
-	double h = fmod((double)rand(), (maxH - minH)) + minH;
+	double w = randFunc2() * (maxW - minW) + minW;
+	double h = randFunc2() * (maxH - minH) + minH;
 
-	return new Wall(x_beginning + fmod((double)rand(), (width_ofArea - w)), y_beginning + fmod((double)rand(), (height_ofArea - h)), w, h, c);
+	return new Wall(x_beginning + randFunc2() * (width_ofArea - w), y_beginning + randFunc2() * (height_ofArea - h), w, h, c);
 }
 
 std::string* RandomLevel::getRandomPowers(int count, bool replacement, int nameCount, std::string* names) {
@@ -29,7 +27,7 @@ std::string* RandomLevel::getRandomPowers(int count, bool replacement, int nameC
 				//there are values that can get chosen
 				int index;
 				do {
-					index = rand() % nameCount;
+					index = randFunc() * nameCount;
 				} while (isInArray<int>(index, used, i+1));
 				used[i] = index;
 			} else {
@@ -38,7 +36,7 @@ std::string* RandomLevel::getRandomPowers(int count, bool replacement, int nameC
 			}
 		}
 		if(replacement) {
-			int index = rand() % nameCount;
+			int index = randFunc() * nameCount;
 			used[i] = index;
 		}
 	}
@@ -49,4 +47,17 @@ std::string* RandomLevel::getRandomPowers(int count, bool replacement, int nameC
 
 	delete[] used;
 	return n;
+}
+
+std::string RandomLevel::powerAlternate(int position, int rand, std::string p1, std::string p2) {
+	return (((int)ceil( float((position*2)%3) / 3) + rand) % 2 == 0 ? p1 : p2);
+	/*
+	{0,   1,   2,  3} // start
+	{0,   2,   4,  6} // *2
+	{0,   2,   1,  0} // %3, then cast to float
+	{0,  .6,  .3,  0} // /3, then add rand
+	{0,  .6,  .3,  0} (rand=0) -> ceil -> {0, 1, 1, 0}
+	{1, 1.6, 1.3,  1} (rand=1) -> ceil -> {1, 2, 2, 1}
+	{0, 1, 1, 0} OR	{1, 0, 0, 1} // %2
+	*/
 }

@@ -1,7 +1,6 @@
 #pragma once
 class BounceBulletPower;
 
-#include "power.h"
 #include "bulletpower.h"
 #include "bouncepower.h"
 

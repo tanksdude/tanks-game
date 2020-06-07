@@ -1,5 +1,3 @@
-#pragma once
-
 #include "indexbuffer.h"
 #include <GL/glew.h>
 
@@ -22,4 +20,3 @@ void IndexBuffer::Bind() const {
 void IndexBuffer::Unbind() const {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
-

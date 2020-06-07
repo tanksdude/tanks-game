@@ -72,9 +72,6 @@
     <ClCompile Include="wallhacktankpower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="cannonpoint.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="multishotbulletpower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

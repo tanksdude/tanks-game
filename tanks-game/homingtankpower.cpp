@@ -1,7 +1,5 @@
-#pragma once
 #include "homingtankpower.h"
 #include "homingbulletpower.h"
-#include "homingpower.h"
 
 void HomingTankPower::initialize(Tank* parent) {
 	//nothing

@@ -1,4 +1,3 @@
-#pragma once
 #include "grenadepower.h"
 #include "grenadetankpower.h"
 #include "grenadebulletpower.h"

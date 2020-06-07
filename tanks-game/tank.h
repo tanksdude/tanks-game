@@ -7,11 +7,7 @@ class Tank;
 #include <vector>
 #include "colorvalueholder.h"
 #include "cannonpoint.h"
-#include "resetthings.h"
-#include "powerfunctionhelper.h"
 #include "tankpower.h"
-#include "bulletpower.h"
-//include hazardpower?
 
 #include "vertexarray.h"
 #include "vertexbuffer.h"

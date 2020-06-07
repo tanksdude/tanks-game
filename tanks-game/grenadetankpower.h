@@ -1,9 +1,7 @@
 #pragma once
 class GrenadeTankPower;
 
-#include "power.h"
 #include "tankpower.h"
-#include "bulletpower.h"
 #include "grenadepower.h"
 
 class GrenadeTankPower : public TankPower {

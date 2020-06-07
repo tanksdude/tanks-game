@@ -1,9 +1,7 @@
-#pragma once
 #include "firenamedtankpower.h"
 #include "firenamedbulletpower.h"
-#include "firenamedpower.h"
-#include "constants.h"
 #include "mylib.h"
+#include "constants.h"
 #include <math.h>
 
 const double FireNamedTankPower::bulletAngleDeviation = PI/4;

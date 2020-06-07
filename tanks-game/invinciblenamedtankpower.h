@@ -1,9 +1,7 @@
 #pragma once
 class InvincibleNamedTankPower;
 
-#include "power.h"
 #include "tankpower.h"
-#include "bulletpower.h"
 #include "invinciblenamedpower.h"
 
 class InvincibleNamedTankPower : public TankPower {

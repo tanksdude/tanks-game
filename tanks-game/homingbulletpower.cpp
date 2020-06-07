@@ -1,7 +1,5 @@
-#pragma once
 #include "homingbulletpower.h"
 #include "homingtankpower.h"
-#include "homingpower.h"
 #include "powerfunctionhelper.h"
 #include "constants.h"
 

@@ -1,7 +1,6 @@
 #pragma once
 class DevLongInvincibleNamedBulletPower;
 
-#include "power.h"
 #include "bulletpower.h"
 #include "devlonginvinciblenamedpower.h"
 

@@ -1,7 +1,5 @@
-#pragma once
 #include "grenadetankpower.h"
 #include "grenadebulletpower.h"
-#include "grenadepower.h"
 
 void GrenadeTankPower::initialize(Tank* parent) {
 	//nothing

@@ -1,7 +1,5 @@
-#pragma once
 #include "speedbulletpower.h"
 #include "speedtankpower.h"
-#include "speedpower.h"
 
 void SpeedBulletPower::initialize(Bullet*) { return; }
 void SpeedBulletPower::removeEffects(Bullet*) { return; }

@@ -1,7 +1,5 @@
-#pragma once
-
 #include "renderer.h"
-#include <glm.hpp>
+//#include <glm.hpp>
 #include <gtx/transform.hpp>
 #include <gtc/matrix_transform.hpp>
 #include "constants.h"

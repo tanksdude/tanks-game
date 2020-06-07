@@ -1,13 +1,12 @@
 #pragma once
 class TripleTankPower;
 
-#include "power.h"
 #include "tankpower.h"
-#include "bulletpower.h"
 #include "triplepower.h"
-#include "cannonpoint.h"
 
 class TripleTankPower : public TankPower {
+protected:
+	static const double angleDiff;
 
 public:
 	void initialize(Tank* parent);

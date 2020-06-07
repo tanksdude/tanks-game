@@ -1,8 +1,8 @@
-#pragma once
 #include "generalizedlava.h"
 #include <limits> //for std::numeric_limits<float>::infinity();
 #include <algorithm> //for std::copy
 #include "constants.h"
+#include <math.h>
 #include "mylib.h"
 #include "colormixer.h"
 

@@ -1,7 +1,6 @@
 #pragma once
 class WallhackBulletPower;
 
-#include "power.h"
 #include "bulletpower.h"
 #include "wallhackpower.h"
 

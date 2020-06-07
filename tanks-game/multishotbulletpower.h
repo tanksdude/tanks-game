@@ -1,5 +1,4 @@
 #pragma once
-#include "power.h"
 #include "bulletpower.h"
 #include "multishotpower.h"
 

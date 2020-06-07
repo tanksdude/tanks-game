@@ -1,12 +1,11 @@
-#pragma once
 #include "developermanager.h"
 #include "tankmanager.h"
 #include "renderer.h"
 #include "constants.h"
 #include "powerupmanager.h"
 #include "hazardmanager.h"
-#include <string>
-#include <GL/glut.h>
+#include <GL/glew.h> //to avoid potential freeglut before glew issues
+#include <GL/freeglut.h>
 #include <iostream>
 
 bool DeveloperManager::leftMouse = false;
@@ -63,14 +62,12 @@ void DeveloperManager::mouseWheelFunc(int wheel, int dir, int x, int y) {
 	int real_y = (1 - y / double(Renderer::window_height)) * GAME_HEIGHT;
 
 	if (dir == 1) { //scroll up
-		std::string* powers = new std::string[2]{ "homing", "bounce" };
+		std::string powers[2] = { "homing", "bounce" };
 		PowerupManager::pushPowerup(new PowerSquare(real_x, real_y, powers, 2));
-		delete[] powers;
 	}
 	else { //scroll down
-		std::string* paras = new std::string[3]{ std::to_string(real_x), std::to_string(real_y), std::to_string(0) };
+		std::string paras[3] = { std::to_string(real_x), std::to_string(real_y), std::to_string(0) };
 		HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("stationary turret")(3, paras));
-		delete[] paras;
 	}
 
 	//std::cout << "wheel:" << wheel << ", dir:" << dir << std::endl;

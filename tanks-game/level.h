@@ -5,41 +5,28 @@
 
 class Level {
 	friend class LevelManager; //actually needs this unlike the other managers because the manager has more control
-private:
+protected:
 	std::vector<LevelEffect*> effects;
 	int getNumEffects() { return effects.size(); } //kinda pointless but "clean code"
 public:
 	virtual std::string getName() = 0;
 	virtual void initialize() = 0;
-	virtual void tick() = 0;
-	virtual void draw() = 0;
-	static std::string powerAlternate(int position, int rand, std::string p1, std::string p2) {
-		return ( (int)ceil(( (float)((position * 2) % 3)) / 3) + rand) % 2 == 0 ? p1 : p2;
-		/*
-		{0,   1,   2,  3} // start
-		{0,   2,   4,  6} // *2
-		{0,   2,   1,  0} // %3, then cast to float
-		{0,  .6,  .3,  0} // /3, then add rand
-		{0,  .6,  .3,  0} (rand=0) -> ceil -> {0, 1, 1, 0}
-		{1, 1.6, 1.3,  1} (rand=1) -> ceil -> {1, 2, 2, 1}
-		{0, 1, 1, 0} OR	{1, 0, 0, 1} // %2
-		*/
-	}
+	virtual void tick() { return; }
+	virtual void draw() { return; }
+
+	static Level* factory();
 };
 
 /*
-TODO: separate levels from level effects?
-
+TODO: separate levels from level effects? (... is this not the case?)
 
 list of (eventual) levels or level effects, I dunno:
-random (just need to flesh it out once powers and hazards exist)
-empty
+|random (just need to flesh it out once powers and hazards exist)
+|empty
 invisibility? (no one appreciates it though)
 wind
-ice
+ice (no one really likes it, as expected)
 mines
-
-
 
 
 list of potential levels:
@@ -47,9 +34,9 @@ portal? (shouldn't be that hard if I do it correctly this time, right?)
 maze
 
 
-boring levels (it's a class (not literal C++ class... except maybe)/designation of levels):
+boring levels:
 hiding places (has mines?)
-evened corridors
+|evened corridors
 few obstacles (homing level)
 turret level (kinda boring)
 concealed powers (needs some spice to become good)
@@ -66,18 +53,7 @@ one room with each level effect ('cuz why not at this point)
 turret room: two turrets; one has distance-based targeting (just selection), one has angle-based targeting (just selection)
 
 
-
-
 "other":
 team mode! (for two tanks...)
-
-
-
-
-
-things the levels need to access, override, and/or deal with:
-
-
-
 
 */

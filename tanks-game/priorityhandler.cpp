@@ -1,4 +1,3 @@
-#pragma once
 #include "priorityhandler.h"
 
 char PriorityHandler::determinePriority(Bullet* a, Bullet* b) {

@@ -1,9 +1,9 @@
-#pragma once
 #include "wall.h"
 #include "gamemanager.h"
 #include "constants.h"
 #include "renderer.h"
 
+//for CPU drawing, in case other #includes go wrong:
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 

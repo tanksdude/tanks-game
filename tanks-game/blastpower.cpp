@@ -1,4 +1,3 @@
-#pragma once
 #include "blastpower.h"
 #include "blasttankpower.h"
 #include "blastbulletpower.h"

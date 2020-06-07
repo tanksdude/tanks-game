@@ -1,16 +1,16 @@
-#pragma once
 #include "tank.h"
 #include "gamemanager.h"
 #include "constants.h"
-#include "colormixer.h"
 #include <math.h>
-#include <string>
 #include "mylib.h"
+#include "colormixer.h"
 #include "renderer.h"
 #include "keypressmanager.h"
 #include "bulletmanager.h"
+#include "collisionhandler.h"
 #include <iostream>
 
+//for CPU drawing, in case other #includes go wrong:
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 
@@ -647,7 +647,7 @@ void Tank::draw(double xpos, double ypos) {
 	if (maxShootCount*getShootingSpeedMultiplier() <= 0 || maxShootCount <= 0) {
 		shootingOutlinePercent = 0;
 	} else {
-		shootingOutlinePercent = constrain_d(shootCount/(maxShootCount*getShootingSpeedMultiplier()), 0, 1);
+		shootingOutlinePercent = constrain<double>(shootCount/(maxShootCount*getShootingSpeedMultiplier()), 0, 1);
 	}
 	unsigned int shootingOutlineVertices = Circle::numOfSides * shootingOutlinePercent;
 
@@ -682,7 +682,7 @@ void Tank::draw(double xpos, double ypos) {
 		if (sortedTankPowers[i]->maxTime <= 0) {
 			powerOutlinePercent = 0;
 		} else {
-			powerOutlinePercent = constrain_d(sortedTankPowers[i]->timeLeft/sortedTankPowers[i]->maxTime, 0, 1);
+			powerOutlinePercent = constrain<double>(sortedTankPowers[i]->timeLeft/sortedTankPowers[i]->maxTime, 0, 1);
 		}
 		unsigned int powerOutlineVertices = Circle::numOfSides * powerOutlinePercent;
 
@@ -746,6 +746,7 @@ void Tank::drawNameCPU() {
 void Tank::drawNameCPU(double xpos, double ypos) {
 	//this cannot be done on the GPU easily; will find a library for it eventually
 
+	/*
 	if (name.size() == 0)
 		return;
 
@@ -797,7 +798,7 @@ void Tank::drawNameCPU(double xpos, double ypos) {
 	delete[] widths;
 
 	glPopMatrix();
-
+	*/
 }
 
 void Tank::resetThings(double x, double y, double a, char teamID, std::string name) { //TODO: finish?
@@ -812,7 +813,7 @@ void Tank::resetThings(double x, double y, double a, char teamID, std::string na
 	//don't update maxShootCount
 	velocity = 0;
 
-	if (rand() % 4096 == 0) {
+	if (randFunc() < 1.0/4096) {
 		//shiny tank (yes, 1/8192 is the chance before Sword/Shield)
 		defaultColor = ColorValueHolder(.75f, .75f, .75f);
 	} else {
@@ -824,17 +825,7 @@ void Tank::resetThings(double x, double y, double a, char teamID, std::string na
 }
 
 void Tank::edgeConstrain() {
-	if (x + r > GAME_WIDTH) {
-		x = GAME_WIDTH - r;
-	} else if (x - r < 0) {
-		x = r;
-	}
-	if (y + r > GAME_HEIGHT) {
-		y = GAME_HEIGHT - r;
-	} else if (y - r < 0) {
-		y = r;
-	}
-	//technically, checking down before up (and left before right) would probably have a slight efficiency increase, but it would be extremely (negligibly) small
+	CollisionHandler::edgeConstrain(this);
 }
 
 double Tank::getHighestOffenseImportance() {
@@ -896,9 +887,9 @@ double Tank::getDefenseTier() {
 }
 
 bool Tank::isPartiallyOutOfBounds() {
-	return ((x + r > GAME_WIDTH) || (x - r < 0) || (y + r > GAME_HEIGHT) || (y - r < 0));
+	return CollisionHandler::partiallyOutOfBoundsIgnoreEdge(this);
 } //doesn't care if touching edge
 
 bool Tank::isFullyOutOfBounds() {
-	return ((x - r > GAME_WIDTH) || (x + r < 0) || (y - r > GAME_HEIGHT) || (y + r < 0));
+	return CollisionHandler::fullyOutOfBoundsIgnoreEdge(this);
 }

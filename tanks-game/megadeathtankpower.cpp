@@ -1,7 +1,5 @@
-#pragma once
 #include "megadeathtankpower.h"
 #include "megadeathbulletpower.h"
-#include "megadeathpower.h"
 
 void MegaDeathTankPower::initialize(Tank* parent) {
 	//nothing

@@ -6,10 +6,10 @@ class TankManager { //pretty much no point in having a manager for the tanks (un
 	friend class ResetThings;
 private:
 	static std::vector<Tank*> tanks;
+	//static void clearTanks(); //for ResetThings (shouldn't be used, though (at least for now))
 public:
 	static void initialize();
-	static Tank* const getTank(int index);
-	//see BulletManager explanation
+	static Tank* getTank(int index);
 	static void pushTank(Tank*);
 	static int getNumTanks() { return tanks.size(); }
 	//static void deleteTank(int index);

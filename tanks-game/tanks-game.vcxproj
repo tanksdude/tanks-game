@@ -155,7 +155,6 @@
     <ClCompile Include="gamemanager.cpp" />
     <ClCompile Include="generalizedlava.cpp" />
     <ClCompile Include="priorityhandler.cpp" />
-    <ClCompile Include="cannonpoint.cpp" />
     <ClCompile Include="circlehazard.cpp" />
     <ClCompile Include="collisionhandler.cpp" />
     <ClCompile Include="colormixer.cpp" />

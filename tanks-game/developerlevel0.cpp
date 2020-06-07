@@ -1,30 +1,25 @@
-#pragma once
 #include "developerlevel0.h"
 #include "constants.h"
-#include "tank.h"
 #include "mylib.h"
 #include "randomlevel.h"
-#include <math.h>
 #include "tankmanager.h"
 #include "powerupmanager.h"
 #include "wallmanager.h"
 #include "hazardmanager.h"
+#include "resetthings.h"
 
 void DeveloperLevel0::initialize() {
-	int randPos = rand() % 5;
-	TankManager::getTank(0)->y = randPos*64 + 32;
-	TankManager::getTank(1)->y = (4-randPos)*64 + 32;
-	//reset power and shooting
+	int randPos = randFunc() * 5;
+	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), randPos);
 
-	ColorValueHolder randColor((rand()%256)/255.0, (rand()%256)/255.0, (rand()%256)/255.0);
+	ColorValueHolder randColor(randFunc2(), randFunc2(), randFunc2());
 
 	for (int i = 0; i < 16; i++) {
 		WallManager::pushWall(RandomLevel::makeNewWall(TANK_RADIUS*2.5, TANK_RADIUS*2, GAME_WIDTH - 2*(TANK_RADIUS*2.5), GAME_HEIGHT - 2*(TANK_RADIUS*2), randColor));
 	}
 
-	std::string* paras = new std::string[3]{std::to_string(GAME_WIDTH/2), std::to_string(GAME_HEIGHT/2), std::to_string(randFunc() * 2*PI)};
+	std::string paras[3] = {std::to_string(GAME_WIDTH/2), std::to_string(GAME_HEIGHT/2), std::to_string(randFunc() * 2*PI)};
 	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("stationary turret")(3, paras));
-	delete[] paras;
 
 	//assumption: TANK_RADIUS=16 (why it would ever be changed is beyond me)
 	PowerupManager::pushPowerup(new PowerSquare(20, 20, "speed"));
@@ -52,6 +47,10 @@ void DeveloperLevel0::initialize() {
 	names[0] = "wallhack", names[1] = "grenade";
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH-100, GAME_HEIGHT-20, names, 2));
 	delete[] names;
+}
+
+Level* DeveloperLevel0::factory() {
+	return new DeveloperLevel0();
 }
 
 DeveloperLevel0::DeveloperLevel0() { return; }

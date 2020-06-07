@@ -1,4 +1,3 @@
-#pragma once
 #include "multishotpower.h"
 #include "multishottankpower.h"
 #include "multishotbulletpower.h"

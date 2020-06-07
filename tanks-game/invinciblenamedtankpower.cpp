@@ -1,7 +1,5 @@
-#pragma once
 #include "invinciblenamedtankpower.h"
 #include "invinciblenamedbulletpower.h"
-#include "invinciblenamedpower.h"
 
 void InvincibleNamedTankPower::initialize(Tank* parent) {
 	//nothing

@@ -1,4 +1,3 @@
-#pragma once
 #include "powerupmanager.h"
 #include <stdexcept>
 
@@ -12,7 +11,7 @@ void PowerupManager::initialize() {
 	powerLookup.insert({ "dev", std::unordered_map<std::string, PowerFunction>() });
 }
 
-PowerSquare* const PowerupManager::getPowerup(int index) {
+PowerSquare* PowerupManager::getPowerup(int index) {
 	return powerups[index];
 }
 
@@ -23,6 +22,13 @@ void PowerupManager::pushPowerup(PowerSquare* p) {
 void PowerupManager::deletePowerup(int index) {
 	delete powerups[index];
 	powerups.erase(powerups.begin() + index);
+}
+
+void PowerupManager::clearPowerups() {
+	for (int i = 0; i < powerups.size(); i++) {
+		delete powerups[i];
+	}
+	powerups.clear();
 }
 
 

@@ -10,14 +10,14 @@ class PowerupManager { //technically "PowerSquareManager"
 	friend class ResetThings;
 private:
 	static std::vector<PowerSquare*> powerups; //active powersquares
+	static void clearPowerups(); //for ResetThings
 
 	static std::unordered_map<std::string, std::unordered_map<std::string, PowerFunction>> powerLookup;
 	static std::unordered_map<std::string, std::vector<PowerFunction>> powerList;
 	static std::unordered_map<std::string, std::vector<std::string>> powerNameList;
 public:
 	static void initialize();
-	static PowerSquare* const getPowerup(int index);
-	//see BulletManager explanation
+	static PowerSquare* getPowerup(int index);
 	static void pushPowerup(PowerSquare*);
 	static int getNumPowerups() { return powerups.size(); }
 	static void deletePowerup(int index);

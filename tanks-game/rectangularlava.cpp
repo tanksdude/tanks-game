@@ -1,9 +1,6 @@
-#pragma once
 #include "rectangularlava.h"
 #include "gamemanager.h"
 #include "renderer.h"
-#include "backgroundrect.h"
-#include "colormixer.h"
 #include "constants.h"
 #include <math.h>
 #include "mylib.h"

@@ -6,27 +6,24 @@ The C++ upgrade of my JS game
 
 I don't really know what you need to get it running, so stay tuned
 
-I'm pretty sure you just need a computer that can run Visual Studio (2019) and clone this project
-
 ### Prerequisites
 
-* Your computer must support Visual Studio (2019) and some OpenGL 3.3+ (I'm not actually sure)
-
-* I don't know how to make software rendering an option yet so you need a graphics card (or use a branch before v0.1.0, such as v0.0.7.1)
-
-* Single-core CPU is enough (for now) (no multithreading)
-
-* RAM requirements unknown, but at least 100MB, possibly more
-
-* No audio needed (for now) (and probably forever)
-
-* Currently Windows-only (probably) and 32-bit-only (honestly an easy fix but whatever)
+* If compiling from source, you'll want Visual Studio (2019)
+    * pre-compiled executables will come soon if that's not an option for you
+* Graphics card probably required
+* OpenGL 3.3 or later
+    * 3.2 or earlier might work if you update the shaders, but don't count on it
+* 3GHz+ CPU recommended (2GHz is probably fine)
+    * Single-core CPU is enough (because there's no multithreading)
+* RAM requirements unknown, but at least 100MB
+* No audio needed (unlikely to change in the future)
+* Currently Windows-only (as far as I know) and 32-bit-only (64-bit Windows can run 32-bit programs)
 
 ### Installing
 
 Install Visual Studio (2019) and the GitHub extension (I don't know if that's needed), then clone this project and run x86 Release (or Debug if you want to) (also make sure you're on the solution, not project)
 
-One day I plan to provide pre-compiled executables
+I will provide pre-compiled executables soon
 
 ## Running the tests
 
@@ -36,7 +33,7 @@ Will need them eventually, though
 
 ## Built With
 
-* [Visual Studio](https://visualstudio.microsoft.com/) - it's VS, come on
+* [Visual Studio](https://visualstudio.microsoft.com/) - C++ IDE from Microsoft
 * [FreeGLUT](http://freeglut.sourceforge.net/) - OpenGL Utility Toolkit; an updated version of the original GLUT
 * [GLEW](http://glew.sourceforge.net/) - OpenGL Extension Wrangler Library; for getting the latest OpenGL commands on Windows
 * [OpenGL Mathematics (GLM)](https://github.com/g-truc/glm) - OpenGL-happy matrix and vector math library

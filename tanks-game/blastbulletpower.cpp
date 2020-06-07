@@ -1,15 +1,13 @@
-#pragma once
 #include "blastbulletpower.h"
 #include "blasttankpower.h"
-#include "powerfunctionhelper.h"
 #include "collisionhandler.h"
 
 const double BlastBulletPower::degradeAmount = .25;
 
 PowerInteractionBoolHolder BlastBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
-	if (b->velocity <= 0) {
+	if (b->velocity == 0) {
 		b->alpha -= degradeAmount;
-		return { (b->alpha <= 0), false };
+		return { b->isDead(), false };
 	} else {
 		if (CollisionHandler::partiallyCollided(b, w)) {
 			CollisionHandler::pushMovableAwayFromImmovable(b, w);

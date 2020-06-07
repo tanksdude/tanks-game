@@ -1,5 +1,3 @@
-#pragma once
-
 #include "diagnostics.h"
 #include <iostream>
 
@@ -15,9 +13,10 @@ long double Diagnostics::getDiff(std::chrono::time_point<std::chrono::steady_clo
 	return std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() / 1000.0; //milliseconds
 }
 
-void Diagnostics::startTiming() {
+void Diagnostics::startTiming(std::string s) {
 	if (!currentlyTiming) {
 		times.push_back(std::chrono::steady_clock::now());
+		timeNames.push_back(s);
 	}
 	currentlyTiming = true;
 }
@@ -27,15 +26,6 @@ void Diagnostics::endTiming() {
 		times.push_back(std::chrono::steady_clock::now());
 	}
 	currentlyTiming = false;
-}
-
-void Diagnostics::addName(std::string s) {
-	timeNames.push_back(s);
-}
-
-void Diagnostics::startTiming(std::string s) {
-	startTiming();
-	addName(s);
 }
 
 void Diagnostics::clearTimes() {

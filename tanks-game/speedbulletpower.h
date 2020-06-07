@@ -1,7 +1,6 @@
 #pragma once
 class SpeedBulletPower;
 
-#include "power.h"
 #include "bulletpower.h"
 #include "speedpower.h"
 

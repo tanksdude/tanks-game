@@ -1,15 +1,12 @@
-#pragma once
 #include "grenadebulletpower.h"
 #include "grenadetankpower.h"
-#include "powerfunctionhelper.h"
-#include "collisionhandler.h"
 
 const double GrenadeBulletPower::degradeAmount = .875;
 
 PowerInteractionBoolHolder GrenadeBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
 	if (b->velocity <= 0) {
 		b->alpha -= degradeAmount;
-		return { (b->alpha <= 0), false };
+		return { b->isDead(), false };
 	} else {
 		if (b->acceleration < 0) {
 			b->velocity += b->acceleration;

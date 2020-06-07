@@ -1,7 +1,5 @@
-#pragma once
 #include "speedtankpower.h"
 #include "speedbulletpower.h"
-#include "speedpower.h"
 
 void SpeedTankPower::initialize(Tank* parent) {
 	//parent->giveMaxSpeed() *= 2;
@@ -24,4 +22,3 @@ SpeedTankPower::SpeedTankPower() {
 
 	tankMaxSpeedStacks = true;
 }
-

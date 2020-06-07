@@ -3,7 +3,7 @@
 #include <vector>
 #include <time.h>
 #include <unordered_map>
-#include <exception>
+#include <stdexcept>
 
 //GPU rendering:
 #include "vertexbuffer.h"
@@ -1100,7 +1100,7 @@ void bulletToTank() {
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
 		Tank* t = TankManager::getTank(i);
 
-		for (int j = 0; j < BulletManager::getNumBullets(); j++) {
+		for (int j = BulletManager::getNumBullets() - 1; j >= 0; j--) {
 			Bullet* b = BulletManager::getBullet(j);
 
 			if (b->getTeamID() == t->getTeamID()) {
@@ -1115,24 +1115,19 @@ void bulletToTank() {
 						continue;
 					} else {
 						BulletManager::deleteBullet(j);
-						j--;
 						continue; //fix: is this supposed to be break?
 					}
 				} else if (result == -1) { //both die
 					tank_dead = 1;
 
-					/*
-					BulletManager::deleteBullet(j);
-					j--;
-					*/
-
+					//BulletManager::deleteBullet(j);
+					
 					continue;
 				} else if (result >= 2) { //it's a draw, so neither dies (probably not going to happen)
 					//continue;
 				} else {
 					if (result == 0) {
 						BulletManager::deleteBullet(j);
-						j--;
 						continue; //not needed //fix: should it be break?
 					} else {
 						tank_dead = 1;
@@ -1152,7 +1147,7 @@ int main(int argc, char** argv) {
 	srand(time(NULL));
 
 	try {
-		OpenGLInitializer::Initialize(&argc, argv, "Tanks Test v0.2.2"); //this is not guaranteed to be correct every commit but likely will be
+		OpenGLInitializer::Initialize(&argc, argv, "Tanks Test v0.2.2.1"); //this is not guaranteed to be correct every commit but likely will be
 	}
 	catch (exception& e) {
 		cout << e.what() << endl;
@@ -1204,13 +1199,13 @@ int main(int argc, char** argv) {
 
 	PowerupManager::addSpecialPowerFactory("dev", DevLongInvincibleNamedPower::factory);
 
-	LevelManager::addLevelToHashmap(new DefaultRandomLevel());
-	LevelManager::addLevelToHashmap(new EmptyLevel());
-	LevelManager::addLevelToHashmap(new CorridorLevel());
-	LevelManager::addLevelToHashmap(new BigFunLevel());
+	LevelManager::addLevelFactory(DefaultRandomLevel::factory);
+	LevelManager::addLevelFactory(EmptyLevel::factory);
+	LevelManager::addLevelFactory(CorridorLevel::factory);
+	LevelManager::addLevelFactory(BigFunLevel::factory);
 
-	LevelManager::addSpecialLevelToHashmap("dev", new DeveloperLevel0());
-	LevelManager::addSpecialLevelToHashmap("dev", new DeveloperLevel1());
+	LevelManager::addSpecialLevelFactory("dev", DeveloperLevel0::factory);
+	LevelManager::addSpecialLevelFactory("dev", DeveloperLevel1::factory);
 
 	HazardManager::addCircleHazardFactory(StationaryTurret::factory);
 	HazardManager::addRectHazardFactory(HorizontalLightning::factory);
@@ -1240,10 +1235,11 @@ int main(int argc, char** argv) {
 	TankManager::pushTank(new Tank(20, 160, 0, 1, "WASD", { false, 'w' }, { false, 'a' }, { false, 'd' }, { false, 's' }));
 	TankManager::pushTank(new Tank(620, 160, PI, 2, "Arrow Keys", { true, GLUT_KEY_UP }, { true, GLUT_KEY_LEFT }, { true, GLUT_KEY_RIGHT }, { true, GLUT_KEY_DOWN }));
 #if _DEBUG
-	LevelManager::getSpecialLevelByName("dev", "dev1")->initialize();
+	LevelManager::pushSpecialLevel("dev", "dev1");
 #else
-	LevelManager::getLevelByName("default random")->initialize();
+	LevelManager::pushLevel("default random");
 #endif
+	ResetThings::firstReset();
 	/*
 	for (int i = 0; i < 4; i++) {
 		walls.push_back(new Wall(320 - 240*(((3-i)/2) * 2 - 1) - 32*((((3-i)/2) + 1) % 2), i%2 * (320-128), 32, 128, ColorValueHolder(255,0,255)));

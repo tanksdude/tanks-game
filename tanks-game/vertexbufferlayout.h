@@ -1,5 +1,4 @@
 #pragma once
-
 #include <GL/glew.h>
 
 struct VertexBufferElement {
@@ -42,6 +41,6 @@ public:
 		stride = 3 * sizeof(float);
 	}
 
-	inline const VertexBufferElement& getElement() const { return elements; }
-	inline unsigned int getStride() const { return stride; }
+	const VertexBufferElement& getElement() const { return elements; }
+	unsigned int getStride() const { return stride; }
 };

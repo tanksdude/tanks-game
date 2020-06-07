@@ -5,7 +5,6 @@ class Bullet;
 #include "circle.h"
 #include "colorvalueholder.h"
 #include "bulletpower.h"
-#include "powerfunctionhelper.h"
 
 #include "vertexarray.h"
 #include "vertexbuffer.h"
@@ -48,7 +47,7 @@ private:
 	static IndexBuffer* ib;
 	static bool initialized_GPU;
 public:
-	static bool initializeGPU(); //returns whether it successful
+	static bool initializeGPU(); //returns whether it successfully initialized (false if it was already initialized)
 	static bool uninitializeGPU();
 
 	void drawBody(double, double);
@@ -62,14 +61,14 @@ public:
 	void draw(double, double);
 	void drawCPU();
 	void drawCPU(double, double);
-	short determineDamage(); //TODO: wait, what is this supposed to do again? (isn't everything supposed to have 1 health? so there's no point for this)
+	//short determineDamage(); //maybe for another day
 
 	void powerCalculate();
 	void removePower(int index);
 
 	bool isFullyOutOfBounds();
 	bool isPartiallyOutOfBounds();
-	//void edgeConstrain(); //probably never going to be needed
+	//void edgeConstrain(); //should never be needed
 
 	~Bullet();
 };
