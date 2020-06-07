@@ -4,13 +4,12 @@
 #include "tankmanager.h"
 #include "powerupmanager.h"
 #include "wallmanager.h"
+#include "mylib.h"
+#include "resetthings.h"
 
 void BigFunLevel::initialize() {
-	int randPos = rand() % 5;
-	TankManager::getTank(0)->y = randPos * 64 + 32;
-	TankManager::getTank(1)->y = (4 - randPos) * 64 + 32;
-	TankManager::getTank(0)->x = 40;
-	TankManager::getTank(1)->x = GAME_WIDTH - 40;
+	int randPos = randFunc() * 5;
+	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40, randPos);
 	//classic
 
 	ColorValueHolder color = ColorValueHolder(.75f, 0.25f, 0.5f);
@@ -27,7 +26,7 @@ void BigFunLevel::initialize() {
 	//include invincible?
 	//life and shotgun may have existed around this time but not only are they not in yet I think the craziness would lower
 	for (int i = 0; i < 4; i++) {
-		int count = rand() % 3 + 1; //{1, 2, 3}
+		int count = randFunc()*3 + 1; //{1, 2, 3}
 		std::string* randPowers = RandomLevel::getRandomPowers(count, true, 6, possiblePowers);
 		PowerupManager::pushPowerup(new PowerSquare(320 - (320-128) * ((i%2)*2-1), 160 - (160-16) * ((i/2)*2-1), randPowers, count));
 		delete[] randPowers;

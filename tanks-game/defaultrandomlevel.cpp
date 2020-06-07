@@ -6,11 +6,11 @@
 #include "powerupmanager.h"
 #include "wallmanager.h"
 #include "hazardmanager.h"
+#include "resetthings.h"
 
 void DefaultRandomLevel::initialize() { //still needs a lot of work
-	int randPos = rand() % 5;
-	TankManager::getTank(0)->y = randPos*64 + 32;
-	TankManager::getTank(1)->y = (4-randPos)*64 + 32;
+	int randPos = randFunc() * 5;
+	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), randPos);
 
 	ColorValueHolder randColor(randFunc2(), randFunc2(), randFunc2());
 	
@@ -23,7 +23,7 @@ void DefaultRandomLevel::initialize() { //still needs a lot of work
 
 	std::string possiblePowers[] = { "speed", "wallhack", "bounce", "multishot", "triple", "homing", "invincible", "big", "megadeath", "grenade" }; //10
 	for (int i = 0; i < 4; i++) {
-		int count = rand() % 2 + 1; //{1, 2}
+		int count = randFunc()*2 + 1; //{1, 2}
 		std::string* randPowers = RandomLevel::getRandomPowers(count, true, 10, possiblePowers);
 		PowerupManager::pushPowerup(new PowerSquare(320 - (320-60) * ((i%2)*2-1), 160 - (160-16) * ((i/2)*2-1), randPowers, count));
 		delete[] randPowers;
