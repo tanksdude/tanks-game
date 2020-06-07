@@ -35,22 +35,10 @@ void ResetThings::reset(int) {
 	HazardManager::circleHazards.clear();
 	HazardManager::rectHazards.clear();
 
-	//below code is just LevelManager::clearLevels(), but it's not being called in case it needs to be modified later
-	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
-		delete LevelManager::levels[i];
-	}
-	LevelManager::levels.clear();
-
-	//initialize levels from LevelManager level list
-	/*
-	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
-		LevelManager::levels[i]->initialize();
-	}
-	*/
-	//not being used now
+	LevelManager::clearLevels();
 
 #if _DEBUG
-	LevelManager::getSpecialLevelByName("dev", "dev0")->initialize();
+	LevelManager::pushSpecialLevel("dev", "dev0");
 #else
 	int randLevel = rand() % LevelManager::getNumLevelTypes();
 	std::string levelName = LevelManager::getLevelName(randLevel);
@@ -62,6 +50,15 @@ void ResetThings::reset(int) {
 			std::string levelName = LevelManager::getLevelName(randLevel);
 		}
 	}
-	LevelManager::getLevelByName(levelName)->initialize();
+	LevelManager::pushLevel(levelName);
 #endif
+
+	//initialize levels from LevelManager level list
+	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
+		LevelManager::levels[i]->initialize();
+	}
+}
+
+void ResetThings::firstReset() {
+	LevelManager::levels[0]->initialize();
 }

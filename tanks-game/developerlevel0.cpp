@@ -50,4 +50,8 @@ void DeveloperLevel0::initialize() {
 	delete[] names;
 }
 
+Level* DeveloperLevel0::factory() {
+	return new DeveloperLevel0();
+}
+
 DeveloperLevel0::DeveloperLevel0() { return; }

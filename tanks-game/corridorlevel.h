@@ -6,5 +6,7 @@ class CorridorLevel : public Level {
 public:
 	std::string getName() { return "corridor"; }
 	void initialize();
+
 	CorridorLevel();
+	static Level* factory();
 };

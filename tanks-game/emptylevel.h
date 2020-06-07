@@ -5,5 +5,7 @@ class EmptyLevel : public Level {
 public:
 	std::string getName() { return "empty"; }
 	void initialize();
+	
 	EmptyLevel();
+	static Level* factory();
 };

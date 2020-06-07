@@ -6,5 +6,7 @@ class BigFunLevel : public Level {
 public:
 	std::string getName() { return "bigfun"; }
 	void initialize();
+
 	BigFunLevel();
+	static Level* factory();
 };

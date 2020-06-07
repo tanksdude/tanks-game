@@ -30,4 +30,8 @@ void DefaultRandomLevel::initialize() { //still needs a lot of work
 	}
 }
 
+Level* DefaultRandomLevel::factory() {
+	return new DefaultRandomLevel();
+}
+
 DefaultRandomLevel::DefaultRandomLevel() { return; }

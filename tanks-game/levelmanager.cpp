@@ -2,13 +2,13 @@
 #include <stdexcept>
 
 std::vector<Level*> LevelManager::levels;
-std::unordered_map<std::string, std::unordered_map<std::string, Level*>> LevelManager::levelLookup;
-std::unordered_map<std::string, std::vector<Level*>> LevelManager::levelList;
+std::unordered_map<std::string, std::unordered_map<std::string, LevelFunction>> LevelManager::levelLookup;
+std::unordered_map<std::string, std::vector<LevelFunction>> LevelManager::levelList;
 std::unordered_map<std::string, std::vector<std::string>> LevelManager::levelNameList;
 
 void LevelManager::initialize() {
-	levelLookup.insert({ "vanilla", std::unordered_map<std::string, Level*>() });
-	levelLookup.insert({ "dev", std::unordered_map<std::string, Level*>() });
+	levelLookup.insert({ "vanilla", std::unordered_map<std::string, LevelFunction>() });
+	levelLookup.insert({ "dev", std::unordered_map<std::string, LevelFunction>() });
 }
 
 Level* const LevelManager::getLevel(int index) {
@@ -19,8 +19,12 @@ LevelEffect* const LevelManager::getLevelEffect(int level_index, int index) {
 	return levels[level_index]->effects[index];
 }
 
-void LevelManager::pushLevel(Level* l) {
-	levels.push_back(l);
+void LevelManager::pushLevel(std::string name) {
+	levels.push_back(LevelManager::getLevelFactory(name)());
+}
+
+void LevelManager::pushSpecialLevel(std::string type, std::string name) {
+	levels.push_back(LevelManager::getSpecialLevelFactory(type, name)());
 }
 
 /*
@@ -34,6 +38,7 @@ int LevelManager::getNumLevelEffects() {
 */
 
 void LevelManager::clearLevels() {
+	//levels are not singletons because they may have some variables that get reset, so they need to be deleted
 	for (int i = 0; i < levels.size(); i++) {
 		delete levels[i];
 	}
@@ -48,13 +53,15 @@ void LevelManager::deleteLevel(int index) {
 */
 
 
-void LevelManager::addLevelToHashmap(Level* l) {
+void LevelManager::addLevelFactory(LevelFunction factory) {
+	levelList["vanilla"].push_back(factory);
+	Level* l = factory();
+	levelLookup["vanilla"].insert({ l->getName(), factory });
 	levelNameList["vanilla"].push_back(l->getName());
-	levelList["vanilla"].push_back(l);
-	levelLookup["vanilla"].insert({ l->getName(), l });
+	delete l;
 }
 
-Level* LevelManager::getLevelByName(std::string name) {
+LevelFunction LevelManager::getLevelFactory(std::string name) {
 	return levelLookup["vanilla"][name];
 }
 
@@ -66,17 +73,19 @@ int LevelManager::getNumLevelTypes() {
 	return levelNameList["vanilla"].size();
 }
 
-void LevelManager::addSpecialLevelToHashmap(std::string type, Level* l) {
+void LevelManager::addSpecialLevelFactory(std::string type, LevelFunction factory) {
 	if (levelLookup.find(type) == levelLookup.end()) {
-		levelLookup.insert({ type, std::unordered_map<std::string, Level*>() });
+		levelLookup.insert({ type, std::unordered_map<std::string, LevelFunction>() });
 	}
-
+	
+	levelList[type].push_back(factory);
+	Level* l = factory();
+	levelLookup[type].insert({ l->getName(), factory });
 	levelNameList[type].push_back(l->getName());
-	levelList[type].push_back(l);
-	levelLookup[type].insert({ l->getName(), l });
+	delete l;
 }
 
-Level* LevelManager::getSpecialLevelByName(std::string type, std::string name) {
+LevelFunction LevelManager::getSpecialLevelFactory(std::string type, std::string name) {
 	if (levelLookup.find(type) == levelLookup.end()) {
 		throw std::domain_error("level type \"" + type + "\" unknown!");
 	}

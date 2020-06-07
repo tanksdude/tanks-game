@@ -32,4 +32,8 @@ void CorridorLevel::initialize() {
 		PowerupManager::pushPowerup(new PowerSquare(320 + (i % 2 * 2 - 1) * 190, 160 + ((i / 2) * 2 - 1) * 90, RandomLevel::powerAlternate(i, tempRand, "speed", "big"))); //big=life here
 }
 
+Level* CorridorLevel::factory() {
+	return new CorridorLevel();
+}
+
 CorridorLevel::CorridorLevel() { return; }

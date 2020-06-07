@@ -13,6 +13,8 @@ public:
 	virtual void initialize() = 0;
 	virtual void tick() { return; }
 	virtual void draw() { return; }
+
+	static Level* factory();
 };
 
 /*

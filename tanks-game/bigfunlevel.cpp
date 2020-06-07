@@ -34,4 +34,8 @@ void BigFunLevel::initialize() {
 	}
 }
 
+Level* BigFunLevel::factory() {
+	return new BigFunLevel();
+}
+
 BigFunLevel::BigFunLevel() { return; }
