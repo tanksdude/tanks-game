@@ -11,11 +11,11 @@ void LevelManager::initialize() {
 	levelLookup.insert({ "dev", std::unordered_map<std::string, LevelFunction>() });
 }
 
-Level* const LevelManager::getLevel(int index) {
+Level* LevelManager::getLevel(int index) {
 	return levels[index];
 }
 
-LevelEffect* const LevelManager::getLevelEffect(int level_index, int index) {
+LevelEffect* LevelManager::getLevelEffect(int level_index, int index) {
 	return levels[level_index]->effects[index];
 }
 

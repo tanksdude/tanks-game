@@ -23,9 +23,8 @@ private:
 	static std::vector<std::string> rectHazardNameList;
 public:
 	static void initialize();
-	static CircleHazard* const getCircleHazard(int index);
-	static RectHazard* const getRectHazard(int index);
-	//see BulletManager explanation
+	static CircleHazard* getCircleHazard(int index);
+	static RectHazard* getRectHazard(int index);
 	static void pushCircleHazard(CircleHazard*);
 	static void pushRectHazard(RectHazard*);
 	static int getNumCircleHazards() { return circleHazards.size(); }

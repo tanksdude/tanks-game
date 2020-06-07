@@ -20,9 +20,8 @@ private:
 	//static std::unordered_map<std::string, std::vector<std::string>> levelEffectNameList;
 public:
 	static void initialize();
-	static Level* const getLevel(int index); //why would this be needed
-	static LevelEffect* const getLevelEffect(int level_index, int index); //why would this be needed, like, ever?
-	//see BulletManager explanation
+	static Level* getLevel(int index); //why would this be needed
+	static LevelEffect* getLevelEffect(int level_index, int index); //why would this be needed, like, ever?
 	static void pushLevel(std::string name);
 	static void pushSpecialLevel(std::string type, std::string name);
 	static int getNumLevels() { return levels.size(); }

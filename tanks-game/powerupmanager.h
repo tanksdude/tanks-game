@@ -17,8 +17,7 @@ private:
 	static std::unordered_map<std::string, std::vector<std::string>> powerNameList;
 public:
 	static void initialize();
-	static PowerSquare* const getPowerup(int index);
-	//see BulletManager explanation
+	static PowerSquare* getPowerup(int index);
 	static void pushPowerup(PowerSquare*);
 	static int getNumPowerups() { return powerups.size(); }
 	static void deletePowerup(int index);

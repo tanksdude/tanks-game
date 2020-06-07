@@ -6,7 +6,7 @@ void WallManager::initialize() {
 	return;
 }
 
-Wall* const WallManager::getWall(int index) {
+Wall* WallManager::getWall(int index) {
 	return walls[index];
 }
 

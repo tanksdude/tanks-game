@@ -8,7 +8,7 @@ void BulletManager::initialize() {
 	//512 is the max I expect to be fired at once (3 multishots); 2048 might get reached, so 4096 should be way more than enough
 }
 
-Bullet* const BulletManager::getBullet(int index) {
+Bullet* BulletManager::getBullet(int index) {
 	return bullets[index];
 }
 

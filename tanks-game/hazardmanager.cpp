@@ -14,10 +14,10 @@ void HazardManager::initialize() {
 	return;
 }
 
-CircleHazard* const HazardManager::getCircleHazard(int index) {
+CircleHazard* HazardManager::getCircleHazard(int index) {
 	return circleHazards[index];
 }
-RectHazard* const HazardManager::getRectHazard(int index) {
+RectHazard* HazardManager::getRectHazard(int index) {
 	return rectHazards[index];
 }
 

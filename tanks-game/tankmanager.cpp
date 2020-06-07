@@ -6,7 +6,7 @@ void TankManager::initialize() {
 	return;
 }
 
-Tank* const TankManager::getTank(int index) {
+Tank* TankManager::getTank(int index) {
 	return tanks[index];
 }
 

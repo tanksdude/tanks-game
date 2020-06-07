@@ -11,7 +11,7 @@ void PowerupManager::initialize() {
 	powerLookup.insert({ "dev", std::unordered_map<std::string, PowerFunction>() });
 }
 
-PowerSquare* const PowerupManager::getPowerup(int index) {
+PowerSquare* PowerupManager::getPowerup(int index) {
 	return powerups[index];
 }
 
