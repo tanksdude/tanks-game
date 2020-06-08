@@ -17,7 +17,7 @@ public:
 	virtual void draw() = 0;
 	//virtual void drawCPU();
 };
-//should each hazard have a function that adds X amount of itself randomly to the level?)
+//should each hazard have a function that adds X amount of itself randomly to the level?
 
 /*
 some hazards aren't bad
