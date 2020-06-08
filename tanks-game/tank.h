@@ -71,8 +71,8 @@ public:
 	//TankInputChar backwards; //not the point of the game
 
 	void makeBullet(double x, double y, double angle, double radius, double speed, double acc); //move to private eventually, just public for emergency testing
-	void defaultMakeBullet(double x, double y, double angle);
-	//next up: make cannon points a thing; function should get list of cannon points (probably make a struct to hold x, y, angle) (for multishot), shoot function does the shooting (possibly modified uwu (for triple/shotgun))
+	void defaultMakeBullet(double angle); //simple shoot: bullet points away from tank center at a given angle
+	void regularMakeBullet(double x, double y, double angle); //make bullet x and y dist from tank, moving with angle
 	void determineShootingAngles();
 
 private:
