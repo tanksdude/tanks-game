@@ -152,6 +152,7 @@
     <ClCompile Include="devlonginvinciblenamedbulletpower.cpp" />
     <ClCompile Include="devlonginvinciblenamedpower.cpp" />
     <ClCompile Include="devlonginvinciblenamedtankpower.cpp" />
+    <ClCompile Include="fewobstacleslevel.cpp" />
     <ClCompile Include="gamemanager.cpp" />
     <ClCompile Include="generalizedlava.cpp" />
     <ClCompile Include="priorityhandler.cpp" />
@@ -239,6 +240,7 @@
     <ClInclude Include="devlonginvinciblenamedbulletpower.h" />
     <ClInclude Include="devlonginvinciblenamedpower.h" />
     <ClInclude Include="devlonginvinciblenamedtankpower.h" />
+    <ClInclude Include="fewobstacleslevel.h" />
     <ClInclude Include="gamemanager.h" />
     <ClInclude Include="gamething.h" />
     <ClInclude Include="generalizedlava.h" />

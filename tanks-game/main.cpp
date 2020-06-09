@@ -52,6 +52,7 @@
 #include "emptylevel.h"
 #include "corridorlevel.h"
 #include "bigfunlevel.h"
+#include "fewobstacleslevel.h"
 //dev levels:
 #include "developerlevel0.h"
 #include "developerlevel1.h"
@@ -1203,6 +1204,7 @@ int main(int argc, char** argv) {
 	LevelManager::addLevelFactory(EmptyLevel::factory);
 	LevelManager::addLevelFactory(CorridorLevel::factory);
 	LevelManager::addLevelFactory(BigFunLevel::factory);
+	LevelManager::addLevelFactory(FewObstaclesLevel::factory);
 
 	LevelManager::addSpecialLevelFactory("dev", DeveloperLevel0::factory);
 	LevelManager::addSpecialLevelFactory("dev", DeveloperLevel1::factory);

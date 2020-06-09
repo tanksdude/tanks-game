@@ -267,6 +267,9 @@
     <ClCompile Include="rectangularlava.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="fewobstacleslevel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -561,6 +564,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="rectangularlava.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="fewobstacleslevel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
