@@ -1,4 +1,5 @@
 #include "corridorlevel.h"
+#include "constants.h"
 #include "randomlevel.h"
 #include "tankmanager.h"
 #include "powerupmanager.h"
@@ -8,29 +9,38 @@
 
 void CorridorLevel::initialize() {
 	int randPos = randFunc() * 5;
-	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), randPos);
+	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40, randPos);
 
-	ColorValueHolder color = ColorValueHolder(0x22/255.0, 0.5, 1.0);
+	ColorValueHolder color = ColorValueHolder(0x22/255.0, 0.5f, 1.0f);
 
 	for (int i = 0; i < 4; i++) {
-		WallManager::pushWall(new Wall(320 - 240*(((3-i)/2) * 2 - 1) - 32*((((3-i)/2) + 1) % 2), i%2 * (320-128), 32, 128, color));
+		PositionHolder pos = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 240-32, GAME_HEIGHT/2-128, 32, 128);
+		WallManager::pushWall(new Wall(pos.x, pos.y, 32, 128, color));
 	}
 	
-	WallManager::pushWall(new Wall(320 - 90, 90, 20, 320 - 180, color));
-	WallManager::pushWall(new Wall(320 + 70, 90, 20, 320 - 180, color));
+	PositionHolder pos = RandomLevel::getSymmetricWallPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 70, 20, 140);
+	WallManager::pushWall(new Wall(pos.x, pos.y, 20, 140, color));
+	pos = RandomLevel::getSymmetricWallPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 70, 20, 140);
+	WallManager::pushWall(new Wall(pos.x, pos.y, 20, 140, color));
 
-	for (int i = 0; i < 4; i++)
-		WallManager::pushWall(new Wall(112 + i % 2 * (320 + 18 - 112), 36 + (i / 2) * 230, 320 - 112 - 18, 18, color));
+	for (int i = 0; i < 4; i++) {
+		PositionHolder pos = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 18, GAME_HEIGHT/2-(36+18), GAME_WIDTH/2-(80+32)-18, 18);
+		WallManager::pushWall(new Wall(pos.x, pos.y, GAME_WIDTH/2-(80+32)-18, 18, color));
+	}
 
-	PowerupManager::pushPowerup(new PowerSquare(320, 160, "bounce"));
+	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "bounce"));
 
 	int tempRand = randFunc() * 2;
-	for (int i = 0; i < 4; i++)
-		PowerupManager::pushPowerup(new PowerSquare(320 + (i % 2 * 2 - 1) * 190, 160 + ((i / 2) * 2 - 1) * 142, RandomLevel::powerAlternate(i, tempRand, "invincible", "wallhack")));
+	for (int i = 0; i < 4; i++) {
+		PositionHolder pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-(80+32)-18, GAME_HEIGHT/2-18);
+		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, RandomLevel::powerAlternate(i, tempRand, "invincible", "wallhack")));
+	}
 
 	tempRand = randFunc() * 2;
-	for (int i = 0; i < 4; i++)
-		PowerupManager::pushPowerup(new PowerSquare(320 + (i % 2 * 2 - 1) * 190, 160 + ((i / 2) * 2 - 1) * 90, RandomLevel::powerAlternate(i, tempRand, "speed", "big"))); //big=life here
+	for (int i = 0; i < 4; i++) {
+		PositionHolder pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-(80+32)-18, GAME_HEIGHT/2-(140/2));
+		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, RandomLevel::powerAlternate(i, tempRand, "speed", "big"))); //big=life here
+	}
 }
 
 Level* CorridorLevel::factory() {

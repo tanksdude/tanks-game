@@ -12,14 +12,15 @@ void BigFunLevel::initialize() {
 	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40, randPos);
 	//classic
 
-	ColorValueHolder color = ColorValueHolder(.75f, 0.25f, 0.5f);
+	ColorValueHolder color = ColorValueHolder(0.75f, 0.25f, 0.5f);
 
 	for (int i = 0; i < 4; i++) {
-		WallManager::pushWall(new Wall(320 - 240*(((3-i)/2) * 2 - 1) - 32*((((3-i)/2) + 1) % 2), i%2 * (320-128), 32, 128, color));
+		PositionHolder pos = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 240-32, GAME_HEIGHT/2-128, 32, 128);
+		WallManager::pushWall(new Wall(pos.x, pos.y, 32, 128, color));
 	}
 
 	for (int i = 0; i < 16; i++) {
-		WallManager::pushWall(RandomLevel::makeNewWall(80+32+40, 40, GAME_WIDTH - 2*(80+32+40), GAME_HEIGHT - 2*40, color));
+		WallManager::pushWall(RandomLevel::makeNewRandomWall(80+32+40, 40, GAME_WIDTH - 2*(80+32+40), GAME_HEIGHT - 2*40, color));
 	}
 	
 	std::string possiblePowers[] = { "speed", "invincible", "wallhack", "bounce", "big", "multishot" }; //6
@@ -28,7 +29,8 @@ void BigFunLevel::initialize() {
 	for (int i = 0; i < 4; i++) {
 		int count = randFunc()*3 + 1; //{1, 2, 3}
 		std::string* randPowers = RandomLevel::getRandomPowers(count, true, 6, possiblePowers);
-		PowerupManager::pushPowerup(new PowerSquare(320 - (320-128) * ((i%2)*2-1), 160 - (160-16) * ((i/2)*2-1), randPowers, count));
+		PositionHolder pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-(80+32+16), GAME_HEIGHT/2-16);
+		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, randPowers, count));
 		delete[] randPowers;
 	}
 }

@@ -4,6 +4,8 @@
 #include "powerupmanager.h"
 #include "wallmanager.h"
 #include "hazardmanager.h"
+#include "randomlevel.h" //not really necessary
+//#include <iostream>
 
 void DeveloperLevel1::initialize() {
 	TankManager::getTank(0)->y = GAME_HEIGHT/2;
@@ -11,13 +13,15 @@ void DeveloperLevel1::initialize() {
 
 	ColorValueHolder wallColor(.25f, .25f, .25f);
 
-	WallManager::pushWall(new Wall(GAME_WIDTH/2 - 80, GAME_HEIGHT/2 - 40, 20, 80, wallColor));
-	WallManager::pushWall(new Wall(GAME_WIDTH/2 + 80 - 20, GAME_HEIGHT/2 - 40, 20, 80, wallColor));
+	PositionHolder pos = RandomLevel::getSymmetricWallPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 20, 80);
+	WallManager::pushWall(new Wall(pos.x, pos.y, 20, 80, wallColor));
+	pos = RandomLevel::getSymmetricWallPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 20, 80);
+	WallManager::pushWall(new Wall(pos.x, pos.y, 20, 80, wallColor));
 
-	std::string* paras = new std::string[4]{std::to_string(GAME_WIDTH/2 - 80 + 20), std::to_string(GAME_HEIGHT/2 - 40), std::to_string((80-20)*2), std::to_string(20*2)};
+	std::string* paras = new std::string[4]{std::to_string(GAME_WIDTH/2 - 80 + 20), std::to_string(GAME_HEIGHT/2 - 40), std::to_string(60*2), std::to_string(20*2)};
 	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("horizontal lightning")(4, paras));
 	delete[] paras;
-	paras = new std::string[4]{std::to_string(GAME_WIDTH/2 - 80 + 20), std::to_string(GAME_HEIGHT/2), std::to_string((80-20)*2), std::to_string(20*2)};
+	paras = new std::string[4]{std::to_string(GAME_WIDTH/2 - 80 + 20), std::to_string(GAME_HEIGHT/2), std::to_string(60*2), std::to_string(20*2)};
 	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("rectangular lava")(4, paras));
 	delete[] paras;
 	paras = new std::string[3]{std::to_string(GAME_WIDTH/2), std::to_string(GAME_HEIGHT/2 + 100), std::to_string(40)};
@@ -40,6 +44,15 @@ void DeveloperLevel1::initialize() {
 	names[0] = "bounce", names[1] = "homing";
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH-60, GAME_HEIGHT-20, names, 2));
 	delete[] names;
+
+	/*
+	for (int i = 0; i < WallManager::getNumWalls(); i++) {
+		std::cout << "wall" << i << ": " << WallManager::getWall(i)->x << ", " << WallManager::getWall(i)->y << ", " << WallManager::getWall(i)->w << ", " << WallManager::getWall(i)->h << std::endl;
+	}
+	for (int i = 0; i < PowerupManager::getNumPowerups(); i++) {
+		std::cout << "powerup" << i << ": " << PowerupManager::getPowerup(i)->x << ", " << PowerupManager::getPowerup(i)->y << std::endl;
+	}
+	*/
 }
 
 Level* DeveloperLevel1::factory() {

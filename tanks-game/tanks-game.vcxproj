@@ -245,6 +245,7 @@
     <ClInclude Include="gamething.h" />
     <ClInclude Include="generalizedlava.h" />
     <ClInclude Include="point.h" />
+    <ClInclude Include="positionholder.h" />
     <ClInclude Include="priorityhandler.h" />
     <ClInclude Include="cannonpoint.h" />
     <ClInclude Include="circle.h" />
