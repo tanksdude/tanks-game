@@ -8,6 +8,8 @@ std::unordered_map<std::string, std::vector<std::string>> LevelManager::levelNam
 
 void LevelManager::initialize() {
 	levelLookup.insert({ "vanilla", std::unordered_map<std::string, LevelFunction>() });
+	levelLookup.insert({ "vanilla-extra", std::unordered_map<std::string, LevelFunction>() });
+	levelLookup.insert({ "random", std::unordered_map<std::string, LevelFunction>() });
 	levelLookup.insert({ "dev", std::unordered_map<std::string, LevelFunction>() });
 }
 

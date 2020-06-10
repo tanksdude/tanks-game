@@ -15,7 +15,7 @@ void DefaultRandomLevel::initialize() { //still needs a lot of work
 	ColorValueHolder randColor(randFunc2(), randFunc2(), randFunc2());
 	
 	for (int i = 0; i < 16; i++) {
-		WallManager::pushWall(RandomLevel::makeNewWall(TANK_RADIUS*2.5*2, TANK_RADIUS*2, GAME_WIDTH - 2*(TANK_RADIUS*2.5*2), GAME_HEIGHT - 2*(TANK_RADIUS*2), randColor));
+		WallManager::pushWall(RandomLevel::makeNewRandomWall(TANK_RADIUS*2.5*2, TANK_RADIUS*2, GAME_WIDTH - 2*(TANK_RADIUS*2.5*2), GAME_HEIGHT - 2*(TANK_RADIUS*2), randColor));
 	}
 
 	std::string paras[3] = {std::to_string(GAME_WIDTH/2), std::to_string(GAME_HEIGHT/2), std::to_string(randFunc() * 2*PI)};
@@ -25,7 +25,8 @@ void DefaultRandomLevel::initialize() { //still needs a lot of work
 	for (int i = 0; i < 4; i++) {
 		int count = randFunc()*2 + 1; //{1, 2}
 		std::string* randPowers = RandomLevel::getRandomPowers(count, true, 10, possiblePowers);
-		PowerupManager::pushPowerup(new PowerSquare(320 - (320-60) * ((i%2)*2-1), 160 - (160-16) * ((i/2)*2-1), randPowers, count));
+		PositionHolder pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-60, GAME_HEIGHT/2-16);
+		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, randPowers, count));
 		delete[] randPowers;
 	}
 }

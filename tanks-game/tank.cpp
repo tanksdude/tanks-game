@@ -179,33 +179,34 @@ void Tank::shoot() {
 
 	if(shooting.getKeyState() && shootCount <= 0){
 		determineShootingAngles();
+		bool modifiedAdditionalShooting = false;
+		bool overridedShooting = false;
+		bool noMoreOtherAdditionalShooting = false;
 
-		for (int i = 0; i < shootingPoints->size(); i++) {
-			bool modifiedAdditionalShooting = false;
-			bool overridedShooting = false;
-			bool noMoreOtherAdditionalShooting = false;
-
-			for (int j = 0; j < tankPowers.size(); j++) {
-				if (tankPowers[j]->modifiesAdditionalShooting) {
-					if (tankPowers[j]->additionalShootingCanOnlyWorkIndividually && modifiedAdditionalShooting) {
-						continue;
-					}
-					if (noMoreOtherAdditionalShooting) {
-						continue;
-					}
-					modifiedAdditionalShooting = true;
-					if (tankPowers[j]->overridesAdditionalShooting) {
-						overridedShooting = true;
-					}
-					if (!tankPowers[j]->additionalShootingCanWorkWithOthers) {
-						noMoreOtherAdditionalShooting = true;
-					}
+		for (int j = 0; j < tankPowers.size(); j++) {
+			if (tankPowers[j]->modifiesAdditionalShooting) {
+				if (tankPowers[j]->additionalShootingCanOnlyWorkIndividually && modifiedAdditionalShooting) {
+					continue;
+				}
+				if (noMoreOtherAdditionalShooting) {
+					continue;
+				}
+				modifiedAdditionalShooting = true;
+				if (tankPowers[j]->overridesAdditionalShooting) {
+					overridedShooting = true;
+				}
+				if (!tankPowers[j]->additionalShootingCanWorkWithOthers) {
+					noMoreOtherAdditionalShooting = true;
+				}
+				for (int i = 0; i < shootingPoints->size(); i++) {
 					tankPowers[j]->additionalShooting(this, shootingPoints->at(i));
 				}
 			}
+		}
 
-			if (!overridedShooting){
-				defaultMakeBullet(x + r*cos(shootingPoints->at(i).angle + angle), y + r*sin(shootingPoints->at(i).angle + angle), shootingPoints->at(i).angle + angle);
+		if (!overridedShooting){
+			for (int i = 0; i < shootingPoints->size(); i++) {
+				defaultMakeBullet(shootingPoints->at(i).angle + angle);
 			}
 		}
 		//makeBullet(x + r*cos(angle), y + r*sin(angle), angle, r/4, maxSpeed*2, bp); //should be maxSpeed*4 //this is old, don't look at for too long
@@ -221,15 +222,19 @@ void Tank::makeBullet(double x, double y, double angle, double radius, double sp
 		bp->push_back(tankPowers[k]->makeBulletPower());
 	}
 
-	Bullet* temp = new Bullet(x, y, radius, angle, speed, acc, teamID, bp);
+	Bullet* temp = new Bullet(x, y, radius, angle, speed, acc, getTeamID(), bp);
 	BulletManager::pushBullet(temp);
 
 	delete bp;
 	//bp can be deleted here or in the Bullet constructor, since every bullet should get a different bulletpower vector
 }
 
-inline void Tank::defaultMakeBullet(double x, double y, double angle) {
-	makeBullet(x, y, angle, r*getBulletRadiusMultiplier(), maxSpeed*getBulletSpeedMultiplier(), getBulletAcceleration());
+void Tank::defaultMakeBullet(double angle) {
+	makeBullet(x + r*cos(angle), y + r*sin(angle), angle, r*getBulletRadiusMultiplier(), maxSpeed*getBulletSpeedMultiplier(), getBulletAcceleration());
+}
+
+void Tank::regularMakeBullet(double x, double y, double angle) {
+	makeBullet(this->x + x, this->y + y, angle, r*getBulletRadiusMultiplier(), maxSpeed*getBulletSpeedMultiplier(), getBulletAcceleration());
 }
 
 void Tank::determineShootingAngles() {
