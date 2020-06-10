@@ -25,7 +25,7 @@ void BigFunLevel::initialize() {
 	
 	std::string possiblePowers[] = { "speed", "invincible", "wallhack", "bounce", "big", "multishot" }; //6
 	//include invincible?
-	//life and shotgun may have existed around this time but not only are they not in yet I think the craziness would lower
+	//life and shotgun may have existed around this time but not only are they not in yet I think the craziness (fun factor) would lower
 	for (int i = 0; i < 4; i++) {
 		int count = randFunc()*3 + 1; //{1, 2, 3}
 		std::string* randPowers = RandomLevel::getRandomPowers(count, true, 6, possiblePowers);
