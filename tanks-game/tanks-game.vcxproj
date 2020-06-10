@@ -149,6 +149,7 @@
     <ClCompile Include="bullet.cpp" />
     <ClCompile Include="bulletmanager.cpp" />
     <ClCompile Include="circularlava.cpp" />
+    <ClCompile Include="concealedpowerupslevel.cpp" />
     <ClCompile Include="devlonginvinciblenamedbulletpower.cpp" />
     <ClCompile Include="devlonginvinciblenamedpower.cpp" />
     <ClCompile Include="devlonginvinciblenamedtankpower.cpp" />
@@ -237,6 +238,7 @@
     <ClInclude Include="bulletmanager.h" />
     <ClInclude Include="bulletpower.h" />
     <ClInclude Include="circularlava.h" />
+    <ClInclude Include="concealedpowerupslevel.h" />
     <ClInclude Include="devlonginvinciblenamedbulletpower.h" />
     <ClInclude Include="devlonginvinciblenamedpower.h" />
     <ClInclude Include="devlonginvinciblenamedtankpower.h" />
