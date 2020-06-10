@@ -1,23 +1,25 @@
-0.2.4 (obviously super definitely not here)
+0.2.4 (obviously definitely not here)
 * abstracted the renderer somewhat
     * it's still not very efficient but it gets the job done
-* ability to weight levels when selecting them randomly
-* level effects (wind, ice, mines)
+* more levels
 
-0.2.3 (obviously definitely not here)
+0.2.3 (obviously not here)
 * banana power
 * godmode?
 * hazard randomization
 * other lightning hazards
 * turret?
-* more levels
+* ability to weight levels when selecting them randomly
+* level effects (wind, ice, mines)
 
-0.2.2.2 (obviously not here)
-* another level (to flesh out the non-testing parts of the game)
+0.2.2.2
+* two more levels to make the game less empty
+    * I'm not very original, so they're from JS Tanks...
+* adding walls and powerups symmetrically to a level is now much easier
 
 0.2.2.1
 * cleanup
-    * made levels function more like powerups
+    * made levels function more like powerups (to a developer)
 * homing power stopped working last version... it works now... whoops...
 
 0.2.2
