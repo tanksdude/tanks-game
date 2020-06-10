@@ -61,6 +61,10 @@ std::string RandomLevel::powerAlternate(int position, int rand, std::string p1, 
 	*/
 }
 
+std::string RandomLevel::simplePowerAlternate(int position, int rand, std::string p1, std::string p2) {
+	return ((position + rand) % 2 == 0 ? p1 : p2);
+}
+
 PositionHolder RandomLevel::getSymmetricPowerupPositions_LR(int position, double x_center, double y_center, double x_offset) {
 	return { x_center + ((position%2)*2-1) * x_offset, y_center };
 	//note: has not been tested

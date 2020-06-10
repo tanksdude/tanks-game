@@ -12,6 +12,7 @@ public:
 	}
 	static std::string* getRandomPowers(int count, bool replacement, int nameCount, std::string* names);
 	static std::string powerAlternate(int position, int rand, std::string p1, std::string p2); //position: {0,1,2,3}, rand: {0,1}
+	static std::string simplePowerAlternate(int position, int rand, std::string p1, std::string p2); //position: {0,1}, rand: {0,1}
 
 	static PositionHolder getSymmetricPowerupPositions_LR(int position, double x_center, double y_center, double x_offset); //position: {0,1}
 	static PositionHolder getSymmetricPowerupPositions_UD(int position, double x_center, double y_center, double y_offset); //position: {0,1}
