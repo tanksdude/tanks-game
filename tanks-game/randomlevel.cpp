@@ -67,12 +67,10 @@ std::string RandomLevel::simplePowerAlternate(int position, int rand, std::strin
 
 PositionHolder RandomLevel::getSymmetricPowerupPositions_LR(int position, double x_center, double y_center, double x_offset) {
 	return { x_center + ((position%2)*2-1) * x_offset, y_center };
-	//note: has not been tested
 }
 
 PositionHolder RandomLevel::getSymmetricPowerupPositions_UD(int position, double x_center, double y_center, double y_offset) {
 	return { x_center, y_center + ((position%2)*2-1) * y_offset };
-	//note: has not been tested
 }
 
 PositionHolder RandomLevel::getSymmetricPowerupPositions_Corners(int position, double x_center, double y_center, double x_offset, double y_offset) {
@@ -107,7 +105,6 @@ PositionHolder RandomLevel::getSymmetricWallPositions_LR(int position, double x_
 
 PositionHolder RandomLevel::getSymmetricWallPositions_UD(int position, double x_center, double y_center, double y_offset, double wallWidth, double wallHeight) {
 	return { x_center - wallWidth/2, y_center + ((position%2)*2-1) * y_offset - (position%2) * wallHeight };
-	//note: has not been tested
 }
 
 PositionHolder RandomLevel::getSymmetricWallPositions_Corners(int position, double x_center, double y_center, double x_offset, double y_offset, double wallWidth, double wallHeight) {
