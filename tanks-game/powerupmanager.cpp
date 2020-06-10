@@ -8,6 +8,8 @@ std::unordered_map<std::string, std::vector<std::string>> PowerupManager::powerN
 
 void PowerupManager::initialize() {
 	powerLookup.insert({ "vanilla", std::unordered_map<std::string, PowerFunction>() });
+	powerLookup.insert({ "vanilla-extra", std::unordered_map<std::string, PowerFunction>() });
+	powerLookup.insert({ "random", std::unordered_map<std::string, PowerFunction>() });
 	powerLookup.insert({ "dev", std::unordered_map<std::string, PowerFunction>() });
 }
 
