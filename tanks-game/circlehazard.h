@@ -75,4 +75,5 @@ public:
 	virtual CircleFactoryInformation getFactoryInformation() {
 		return { false, false, false, false, false };
 	}
+	virtual ~CircleHazard() { return; }
 };

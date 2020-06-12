@@ -1149,7 +1149,7 @@ int main(int argc, char** argv) {
 	srand(time(NULL));
 
 	try {
-		OpenGLInitializer::Initialize(&argc, argv, "Tanks Test v0.2.2.2"); //this is not guaranteed to be correct every commit but likely will be
+		OpenGLInitializer::Initialize(&argc, argv, "Tanks Test v0.2.3 NOT FINAL"); //this is not guaranteed to be correct every commit but likely will be
 	}
 	catch (exception& e) {
 		cout << e.what() << endl;

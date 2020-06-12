@@ -73,4 +73,5 @@ public:
 	virtual RectFactoryInformation getFactoryInformation() {
 		return { false, false, false, false, false };
 	}
+	virtual ~RectHazard() { return; }
 };
