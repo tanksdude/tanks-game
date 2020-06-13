@@ -1,7 +1,10 @@
 #include "blastbulletpower.h"
 #include "blasttankpower.h"
 #include "collisionhandler.h"
+#include "mylib.h"
 
+const double BlastBulletPower::maxBulletAcceleration = 3/16.0;
+const double BlastBulletPower::minBulletAcceleration = 1/16.0;
 const double BlastBulletPower::degradeAmount = .25;
 
 PowerInteractionBoolHolder BlastBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
@@ -27,6 +30,10 @@ void BlastBulletPower::modifiedMovement(Bullet* b) {
 		b->velocity = 0;
 		b->acceleration = 0;
 	}
+}
+
+double BlastBulletPower::getBulletAcceleration() {
+	return -1 * ((randFunc2()+randFunc2())/2 * (maxBulletAcceleration - minBulletAcceleration) + minBulletAcceleration); //[0,1] * accDiff + min
 }
 
 void BlastBulletPower::initialize(Bullet* b) {

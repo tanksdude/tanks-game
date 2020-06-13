@@ -6,6 +6,8 @@ class BlastBulletPower;
 
 class BlastBulletPower : public BulletPower {
 protected:
+	static const double maxBulletAcceleration;
+	static const double minBulletAcceleration;
 	static const double degradeAmount;
 
 public:
@@ -31,7 +33,7 @@ public:
 	//bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;
 
 	virtual double getBulletRadiusMultiplier() { return .25; }
-	//virtual double getBulletAcceleration() { return -1.0/16; }
+	virtual double getBulletAcceleration();
 
 	BlastBulletPower();
 };

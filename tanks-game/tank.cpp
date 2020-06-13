@@ -237,10 +237,6 @@ void Tank::regularMakeBullet(double x, double y, double angle) {
 	makeBullet(this->x + x, this->y + y, angle, r*BULLET_TO_TANK_RADIUS_RATIO, maxSpeed*BULLET_TO_TANK_SPEED_RATIO, 0);
 }
 
-void Tank::complexMakeBullet(double x, double y, double angle, double radiusMultiplier, double speedMultiplier, double acceleration) {
-	makeBullet(this->x + x, this->y + y, angle, radiusMultiplier * r * BULLET_TO_TANK_RADIUS_RATIO, speedMultiplier * maxSpeed * BULLET_TO_TANK_SPEED_RATIO, acceleration);
-}
-
 void Tank::determineShootingAngles() {
 	shootingPoints->clear();
 	shootingPoints->push_back(CannonPoint(0));

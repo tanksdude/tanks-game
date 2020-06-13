@@ -6,6 +6,8 @@ class FireNamedBulletPower;
 
 class FireNamedBulletPower : public BulletPower {
 protected:
+	static const double maxBulletAcceleration;
+	static const double minBulletAcceleration;
 	static const double degradeAmount;
 	static const double growAmount;
 
@@ -31,8 +33,8 @@ public:
 	//bool modifiedCollisionWithWallCanWorkWithOthers = true;
 	//bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;
 
-	//virtual double getBulletAcceleration() { return -1.0/16; }
 	virtual double getBulletSpeedMultiplier() { return .5; }
+	virtual double getBulletAcceleration();
 
 	FireNamedBulletPower();
 };

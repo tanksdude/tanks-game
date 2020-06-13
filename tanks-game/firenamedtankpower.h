@@ -7,8 +7,6 @@ class FireNamedTankPower;
 class FireNamedTankPower : public TankPower {
 protected:
 	static const double bulletAngleDeviation;
-	static const double maxBulletAcceleration;
-	static const double minBulletAcceleration;
 	static const int bulletAmount;
 
 public:
@@ -26,6 +24,8 @@ public:
 	//bool overridesAdditionalShooting = false;
 	//bool additionalShootingCanWorkWithOthers = true;
 	//bool additionalShootingCanOnlyWorkIndividually = false;
+
+	virtual double getFiringRateMultiplier() { return .5; }
 
 	FireNamedTankPower();
 };

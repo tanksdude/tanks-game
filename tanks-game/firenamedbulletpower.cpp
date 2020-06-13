@@ -1,6 +1,9 @@
 #include "firenamedbulletpower.h"
 #include "firenamedtankpower.h"
+#include "mylib.h"
 
+const double FireNamedBulletPower::maxBulletAcceleration = 3/32.0;
+const double FireNamedBulletPower::minBulletAcceleration = 1/32.0;
 const double FireNamedBulletPower::degradeAmount = .5;
 const double FireNamedBulletPower::growAmount = 1.5/32.0; //TODO: need way to pass parameters into bulletpower constructor
 
@@ -30,6 +33,10 @@ void FireNamedBulletPower::modifiedMovement(Bullet* b) {
 		b->velocity = 0;
 		b->acceleration = 0;
 	}
+}
+
+double FireNamedBulletPower::getBulletAcceleration() {
+	return -1 * ((randFunc2()+randFunc2())/2 * (maxBulletAcceleration - minBulletAcceleration) + minBulletAcceleration); //[0,1] * accDiff + min
 }
 
 void FireNamedBulletPower::initialize(Bullet* b) {
