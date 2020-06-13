@@ -132,7 +132,7 @@ void StationaryTurret::tick() {
 		}
 	}
 	if (mustShoot) {
-		BulletManager::pushBullet(new Bullet(x + r*cos(angle), y + r*sin(angle), r/2, angle, 4, 0, -1)); //TODO: make default speed dependent on a constant that Tank uses for its default speed
+		BulletManager::pushBullet(new Bullet(x + r*cos(angle), y + r*sin(angle), r*BULLET_TO_TANK_RADIUS_RATIO*2, angle, 1*BULLET_TO_TANK_SPEED_RATIO, this->getTeamID())); //TODO: make default speed dependent on a constant that Tank uses for its default speed
 	}
 }
 

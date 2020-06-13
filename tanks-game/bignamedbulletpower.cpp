@@ -23,4 +23,6 @@ BigNamedBulletPower::BigNamedBulletPower(){
 
 	modifiesCollisionWithWall = true;
 	modifiedCollisionWithWallCanWorkWithOthers = false;
+
+	bulletRadiusStacks = true;
 }

@@ -16,7 +16,5 @@ public:
 
 	virtual BulletPower* makeBulletPower();
 
-	virtual double getBulletAcceleration() { return -1.0/16; }
-
 	GrenadeTankPower();
 };

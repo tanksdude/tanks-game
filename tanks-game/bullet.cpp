@@ -18,21 +18,24 @@ IndexBuffer* Bullet::ib;
 bool Bullet::initialized_GPU = false;
 
 const double Bullet::default_radius = 4;
-Bullet::Bullet(double x_, double y_, double r_, double a, double vel, double acc, char id_) { //TODO: make private?
+Bullet::Bullet(double x_, double y_, double a, char id_) { //every bullet constructor does this stuff
 	this->x = x_;
 	this->y = y_;
-	this->r = r_;
 	this->angle = a;
-	this->velocity = vel;
-	this->acceleration = acc;
 	this->gameID = GameManager::getNextID();
 	this->teamID = id_;
 	this->alpha = 100;
+}
+
+Bullet::Bullet(double x_, double y_, double r_, double a, double vel, double acc, char id_, bool) : Bullet(x_,y_,a,id_) { //TODO: make private?
+	this->r = r_;
+	this->velocity = vel;
+	this->acceleration = acc;
 
 	initializeGPU();
 }
 
-Bullet::Bullet(double x_, double y_, double r_, double a, double vel, double acc, char id_, std::vector<BulletPower*>* bp) : Bullet(x_,y_,r_,a,vel,acc,id_) {
+Bullet::Bullet(double x_, double y_, double r_, double a, double vel, double acc, char id_, std::vector<BulletPower*>* bp, bool) : Bullet(x_,y_,r_,a,vel,acc,id_,true) {
 	bulletPowers.reserve(bp->size());
 	for (int i = 0; i < bp->size(); i++) {
 		bulletPowers.push_back(bp->at(i));
@@ -41,6 +44,33 @@ Bullet::Bullet(double x_, double y_, double r_, double a, double vel, double acc
 		bulletPowers[i]->initialize(this);
 	}
 	//bp not deleted
+	this->r = r_ * getBulletRadiusMultiplier();
+	this->velocity = vel * getBulletSpeedMultiplier();
+	this->acceleration = getBulletAcceleration(); //TODO: this is the problem for fire and blast! fix!
+}
+
+//this was copy-and-pasted because the version with manual acceleration control might get deleted later
+Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_) : Bullet(x_,y_,a,id_) {
+	this->r = r_;
+	this->velocity = vel;
+	this->acceleration = 0;
+
+	initializeGPU();
+}
+
+//this was copy-and-pasted because the version with manual acceleration control might get deleted later
+Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_, std::vector<BulletPower*>* bp) : Bullet(x_,y_,r_,a,vel,id_) {
+	bulletPowers.reserve(bp->size());
+	for (int i = 0; i < bp->size(); i++) {
+		bulletPowers.push_back(bp->at(i));
+	}
+	for (int i = 0; i < bulletPowers.size(); i++) {
+		bulletPowers[i]->initialize(this);
+	}
+	//bp not deleted
+	this->r = r_ * getBulletRadiusMultiplier();
+	this->velocity = vel * getBulletSpeedMultiplier();
+	this->acceleration = getBulletAcceleration();
 }
 
 Bullet::~Bullet() {
@@ -132,6 +162,78 @@ void Bullet::move() {
 		x += velocity * cos(angle);
 		y += velocity * sin(angle);
 	}
+}
+
+double Bullet::getBulletSpeedMultiplier() {
+	//look at Tank::getFiringRateMultiplier()
+
+	double highest = 1;
+	double lowest = 1;
+	std::vector<double> stackList;
+
+	for (int i = 0; i < bulletPowers.size(); i++) {
+		double value = bulletPowers[i]->getBulletSpeedMultiplier();
+		if (bulletPowers[i]->bulletSpeedStacks) {
+			stackList.push_back(value);
+		} else {
+			if (value < 1 && value < lowest) {
+				lowest = value;
+			} else if (value > 1 && value > highest) {
+				highest = value;
+			}
+		}
+	}
+
+	double value = 1;
+	for (int i = 0; i < stackList.size(); i++) {
+		value *= stackList[i];
+	}
+
+	return highest * lowest * value;
+}
+
+double Bullet::getBulletRadiusMultiplier() {
+	//look at Tank::getFiringRateMultiplier()
+
+	double highest = 1;
+	double lowest = 1;
+	std::vector<double> stackList;
+
+	for (int i = 0; i < bulletPowers.size(); i++) {
+		double value = bulletPowers[i]->getBulletRadiusMultiplier();
+		if (bulletPowers[i]->bulletRadiusStacks) {
+			stackList.push_back(value);
+		} else {
+			if (value < 1 && value < lowest) {
+				lowest = value;
+			} else if (value > 1 && value > highest) {
+				highest = value;
+			}
+		}
+	}
+
+	double value = 1;
+	for (int i = 0; i < stackList.size(); i++) {
+		value *= stackList[i];
+	}
+	return highest * lowest * value;
+}
+
+double Bullet::getBulletAcceleration() {
+	//look at Tank::getFiringRateMultiplier()
+
+	double highest = 0;
+	double lowest = 0;
+	for (int i = 0; i < bulletPowers.size(); i++) {
+		double value = bulletPowers[i]->getBulletAcceleration();
+		if (value < 0 && value < lowest) {
+			lowest = value;
+		} else if (value > 0 && value > highest) {
+			highest = value;
+		}
+	}
+	return highest + lowest;
+	//return (abs(highest) > abs(lowest) ? highest : lowest);
 }
 
 void Bullet::powerCalculate() {

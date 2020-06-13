@@ -21,7 +21,7 @@ public:
 	//bool addShootingPointsCanWorkWithOthers = true;
 	//bool addShootingPointsCanOnlyWorkIndividually = false;
 
-	virtual double getShootingMultiplier() { return .5; }
+	virtual double getFiringRateMultiplier() { return .5; }
 
 	MultishotTankPower();
 };

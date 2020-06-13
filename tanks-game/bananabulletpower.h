@@ -24,5 +24,7 @@ public:
 	//bool modifiedMovementCanWorkWithOthers = true;
 	//bool modifiedMovementCanOnlyWorkIndividually = false;
 
+	virtual double getBulletAcceleration() { return -1.0/8; }
+
 	BananaBulletPower();
 };

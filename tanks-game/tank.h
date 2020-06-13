@@ -54,10 +54,6 @@ public:
 	double getShootingSpeedMultiplier();
 	//double powerMultiplier; //would be used for an ini
 
-	double getBulletSpeedMultiplier(); //BIG TODO: this isn't going to work if a bullet picks up a power; solution: worry about it later
-	double getBulletRadiusMultiplier();
-	double getBulletAcceleration();
-
 	void updateAllValues(); //this is supposed to update all values that can get affected by powers, such as maxSpeed and acceleration
 	void updateMaxSpeed();
 	void updateAcceleration();
@@ -72,7 +68,8 @@ public:
 
 	void makeBullet(double x, double y, double angle, double radius, double speed, double acc); //move to private eventually, just public for emergency testing
 	void defaultMakeBullet(double angle); //simple shoot: bullet points away from tank center at a given angle
-	void regularMakeBullet(double x, double y, double angle); //make bullet x and y dist from tank, moving with angle
+	void regularMakeBullet(double x_offset, double y_offset, double angle); //make bullet x and y dist from tank, moving with angle
+	void complexMakeBullet(double x_offset, double y_offset, double angle, double radiusMultiplier, double speedMultiplier, double acceleration);
 	void determineShootingAngles();
 
 private:

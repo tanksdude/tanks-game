@@ -21,15 +21,11 @@ public:
 
 	virtual BulletPower* makeBulletPower();
 
-	virtual double getBulletRadiusMultiplier() { return .25; }
-
 	//bool modifiesAdditionalShooting = false;
 	virtual void additionalShooting(Tank* parent, CannonPoint);
 	//bool overridesAdditionalShooting = false;
 	//bool additionalShootingCanWorkWithOthers = true;
 	//bool additionalShootingCanOnlyWorkIndividually = false;
-
-	//virtual double getBulletAcceleration() { return -1.0/16; }
 
 	BlastTankPower();
 };

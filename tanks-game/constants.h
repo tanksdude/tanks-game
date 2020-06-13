@@ -6,6 +6,8 @@ extern const double GAME_HEIGHT;
 extern const double TANK_RADIUS;
 
 extern const double DESTRUCTION_TIER; //offense tier for destorying walls and turrets & stuff
+extern const double BULLET_TO_TANK_RADIUS_RATIO;
+extern const double BULLET_TO_TANK_SPEED_RATIO;
 
 extern const char DEFAULT_TEAM; //walls and friends are this team
 extern const char HAZARD_TEAM;  //default team of hazards

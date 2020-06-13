@@ -39,6 +39,10 @@ public:
 	//bool modifiedCollisionWithRectHazardCanWorkWithOthers = true;
 	//bool modifiedCollisionWithRectHazardCanOnlyWorkIndividually = false;
 
+	virtual double getBulletSpeedMultiplier() { return .25; }
+	virtual double getBulletRadiusMultiplier() { return 4; }
+	//bool bulletRadiusStacks = true;
+
 	virtual double getOffenseImportance() { return 0; }
 	virtual double getOffenseTier(Bullet*) { return DESTRUCTION_TIER; }
 	virtual double getDefenseImportance() { return 0; }

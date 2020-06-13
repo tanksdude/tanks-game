@@ -18,9 +18,10 @@ void BlastTankPower::removeEffects(Tank* parent) {
 
 void BlastTankPower::additionalShooting(Tank* t, CannonPoint c) {
 	for (int i = 0; i < bulletAmount; i++) {
+		//TODO: this power wasn't JS-ified; look into whether it's now possible
 		double tempAngle = (randFunc2()*2 - 1) * bulletAngleDeviation; //[-1,1] * deviation
 		double tempAcc = randFunc2() * -(maxBulletAcceleration - minBulletAcceleration) - minBulletAcceleration; //[0,1] * accDiff + min
-		t->makeBullet(t->x + t->r*cos(c.angle + t->angle + tempAngle), t->y + t->r*sin(c.angle + t->angle + tempAngle), c.angle + t->angle + tempAngle, t->r * t->getBulletRadiusMultiplier(), t->maxSpeed * t->getBulletSpeedMultiplier(), tempAcc);
+		t->complexMakeBullet(t->r * cos(c.angle + t->angle + tempAngle), t->r * sin(c.angle + t->angle + tempAngle), c.angle + t->angle + tempAngle, 1, 1, tempAcc);
 	}
 }
 

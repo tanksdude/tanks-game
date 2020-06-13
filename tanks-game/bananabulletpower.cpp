@@ -8,11 +8,11 @@
 const int BananaBulletPower::bananaCount = 8;
 
 void BananaBulletPower::modifiedMovement(Bullet* b) {
-	//TODO: not done in the slightest
+	//TODO: somewhat done
 	if (b->velocity <= 0) {
 		b->alpha = 0;
 		for (int i = 0; i < bananaCount; i++) {
-			BulletManager::pushBullet(new Bullet(b->x, b->y, b->r/2, randFunc() * 2*PI, 2, 0, b->getTeamID()));
+			BulletManager::pushBullet(new Bullet(b->x, b->y, b->r/2, randFunc() * 2*PI, 2, b->getTeamID()));
 		}
 	}
 }

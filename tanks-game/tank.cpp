@@ -222,7 +222,7 @@ void Tank::makeBullet(double x, double y, double angle, double radius, double sp
 		bp->push_back(tankPowers[k]->makeBulletPower());
 	}
 
-	Bullet* temp = new Bullet(x, y, radius, angle, speed, acc, getTeamID(), bp);
+	Bullet* temp = new Bullet(x, y, radius, angle, speed, acc, getTeamID(), bp, true);
 	BulletManager::pushBullet(temp);
 
 	delete bp;
@@ -230,11 +230,15 @@ void Tank::makeBullet(double x, double y, double angle, double radius, double sp
 }
 
 void Tank::defaultMakeBullet(double angle) {
-	makeBullet(x + r*cos(angle), y + r*sin(angle), angle, r*getBulletRadiusMultiplier(), maxSpeed*getBulletSpeedMultiplier(), getBulletAcceleration());
+	makeBullet(x + r*cos(angle), y + r*sin(angle), angle, r*BULLET_TO_TANK_RADIUS_RATIO, maxSpeed*BULLET_TO_TANK_SPEED_RATIO, 0);
 }
 
 void Tank::regularMakeBullet(double x, double y, double angle) {
-	makeBullet(this->x + x, this->y + y, angle, r*getBulletRadiusMultiplier(), maxSpeed*getBulletSpeedMultiplier(), getBulletAcceleration());
+	makeBullet(this->x + x, this->y + y, angle, r*BULLET_TO_TANK_RADIUS_RATIO, maxSpeed*BULLET_TO_TANK_SPEED_RATIO, 0);
+}
+
+void Tank::complexMakeBullet(double x, double y, double angle, double radiusMultiplier, double speedMultiplier, double acceleration) {
+	makeBullet(this->x + x, this->y + y, angle, radiusMultiplier * r * BULLET_TO_TANK_RADIUS_RATIO, speedMultiplier * maxSpeed * BULLET_TO_TANK_SPEED_RATIO, acceleration);
 }
 
 void Tank::determineShootingAngles() {
@@ -264,7 +268,7 @@ void Tank::determineShootingAngles() {
 }
 
 double Tank::getShootingSpeedMultiplier() {
-	//so this function will look at the shooting speed multipliers provided by the tankpowers
+	//so this function will look at the firing rate multipliers provided by the tankpowers
 	//(0-1] range: use lowest; (1-inf) range: use highest
 	//if there are values in each range, then there are three options:
 	//1. return either lowest or highest; 2. return average of lowest and highest; 3. return lowest * highest
@@ -275,8 +279,8 @@ double Tank::getShootingSpeedMultiplier() {
 	std::vector<double> stackList; //only now have I realized this isn't a great name; no, it's not a data structure known as a stack
 
 	for (int i = 0; i < tankPowers.size(); i++) {
-		double value = tankPowers[i]->getShootingMultiplier();
-		if (tankPowers[i]->bulletSpeedStacks) {
+		double value = tankPowers[i]->getFiringRateMultiplier();
+		if (tankPowers[i]->firingRateStacks) {
 			stackList.push_back(value);
 		} else {
 			if (value < 1 && value < lowest) {
@@ -294,78 +298,6 @@ double Tank::getShootingSpeedMultiplier() {
 	}
 
 	return highest * lowest * value; //unintentionally works out cleanly
-}
-
-double Tank::getBulletSpeedMultiplier() {
-	//look at getShootingSpeedMultiplier()
-
-	double highest = 1;
-	double lowest = 1;
-	std::vector<double> stackList;
-
-	for (int i = 0; i < tankPowers.size(); i++) {
-		double value = tankPowers[i]->getBulletSpeedMultiplier();
-		if (tankPowers[i]->bulletSpeedStacks) {
-			stackList.push_back(value);
-		} else {
-			if (value < 1 && value < lowest) {
-				lowest = value;
-			} else if (value > 1 && value > highest) {
-				highest = value;
-			}
-		}
-	}
-
-	double value = 1;
-	for (int i = 0; i < stackList.size(); i++) {
-		value *= stackList[i];
-	}
-
-	return highest * lowest * value * 4; //based off of maxSpeed, so *4 //honestly, while *4 is the JS speed that makes the game faster and more fun, *2 is all right
-}
-
-double Tank::getBulletRadiusMultiplier() {
-	//look at getShootingSpeedMultiplier()
-
-	double highest = 1;
-	double lowest = 1;
-	std::vector<double> stackList;
-
-	for (int i = 0; i < tankPowers.size(); i++) {
-		double value = tankPowers[i]->getBulletRadiusMultiplier();
-		if (tankPowers[i]->bulletRadiusStacks) {
-			stackList.push_back(value);
-		} else {
-			if (value < 1 && value < lowest) {
-				lowest = value;
-			} else if (value > 1 && value > highest) {
-				highest = value;
-			}
-		}
-	}
-
-	double value = 1;
-	for (int i = 0; i < stackList.size(); i++) {
-		value *= stackList[i];
-	}
-	return highest * lowest * value / 4.0; //based off of r, so /4
-}
-
-double Tank::getBulletAcceleration() {
-	//look at getShootingSpeedMultiplier()
-
-	double highest = 0;
-	double lowest = 0;
-	for (int i = 0; i < tankPowers.size(); i++) {
-		double value = tankPowers[i]->getBulletAcceleration();
-		if (value < 0 && value < lowest) {
-			lowest = value;
-		} else if (value > 0 && value > highest) {
-			highest = value;
-		}
-	}
-	return highest + lowest;
-	//return (abs(highest) > abs(lowest) ? highest : lowest);
 }
 
 void Tank::updateAllValues() {

@@ -32,5 +32,8 @@ public:
 	//bool modifiedEdgeCollisionCanWorkWithOthers = false;
 	//bool modifiedEdgeCollisionCanOnlyWorkIndividually = false;
 
+	virtual double getBulletSpeedMultiplier() { return .5; }
+	//virtual double getBulletRadiusMultiplier() { return .5; } //set back to 1 if parent's radius doesn't decrease
+
 	BounceBulletPower();
 };

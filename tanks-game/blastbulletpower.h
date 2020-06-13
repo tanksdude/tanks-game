@@ -30,5 +30,8 @@ public:
 	//bool modifiedCollisionWithWallCanWorkWithOthers = true;
 	//bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;
 
+	virtual double getBulletRadiusMultiplier() { return .25; }
+	//virtual double getBulletAcceleration() { return -1.0/16; }
+
 	BlastBulletPower();
 };

@@ -27,8 +27,5 @@ public:
 	//bool additionalShootingCanWorkWithOthers = true;
 	//bool additionalShootingCanOnlyWorkIndividually = false;
 
-	//virtual double getBulletAcceleration() { return -1.0/16; }
-	virtual double getBulletSpeedMultiplier() { return .5; }
-
 	FireNamedTankPower();
 };

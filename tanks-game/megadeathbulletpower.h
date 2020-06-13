@@ -47,6 +47,12 @@ public:
 	//bool modifiedCollisionWithRectHazardCanWorkWithOthers = true;
 	//bool modifiedCollisionWithRectHazardCanOnlyWorkIndividually = false;
 
+	virtual double getBulletSpeedMultiplier() { return 1.0/4; }
+	//with bulletSizeMultiplierPerTick = 257.0/256.0, 1.0/128 or 1.0/64 might be closer to what I originally thought of
+	//virtual double getBulletRadiusMultiplier() { return 1; }
+	virtual double getBulletAcceleration() { return 1.0/64; }
+	//with bulletSizeMultiplierPerTick = 257.0/256.0, 1.0/512 or 1.0/1024 (with a smaller radius multiplier per tick) might be closer to what I orignially thought of
+
 	virtual double getOffenseImportance() { return 0; }
 	virtual double getOffenseTier(Bullet*);
 	virtual double getDefenseImportance() { return 0; }

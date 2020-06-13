@@ -35,6 +35,11 @@ private:
 	double getHighestDefenseTier(double importance);
 
 public:
+	double getBulletSpeedMultiplier();
+	double getBulletRadiusMultiplier();
+	double getBulletAcceleration();
+
+public:
 	//helper functions:
 	ColorValueHolder getColor();
 
@@ -53,9 +58,14 @@ public:
 	void drawBody(double, double);
 	void drawOutline(double, double);
 	
+private:
+	Bullet(double x_, double y_, double a, char id); //every bullet uses this
 public:
-	Bullet(double x_, double y_, double r_, double a, double vel, double acc, char id_);
-	Bullet(double x_, double y_, double r_, double a, double vel, double acc, char id_, std::vector<BulletPower*>* bp);
+	Bullet(double x_, double y_, double r_, double a, double vel, double acc, char id_, bool serious); //avoid using
+	Bullet(double x_, double y_, double r_, double a, double vel, double acc, char id_, std::vector<BulletPower*>* bp, bool serious); //avoid using
+public:
+	Bullet(double x_, double y_, double r_, double a, double vel, char id_);
+	Bullet(double x_, double y_, double r_, double a, double vel, char id_, std::vector<BulletPower*>* bp);
 	void move();
 	void draw();
 	void draw(double, double);

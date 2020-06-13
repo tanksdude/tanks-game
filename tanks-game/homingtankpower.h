@@ -16,7 +16,5 @@ public:
 
 	virtual BulletPower* makeBulletPower();
 
-	virtual double getBulletSpeedMultiplier() { return .5; }
-
 	HomingTankPower();
 };

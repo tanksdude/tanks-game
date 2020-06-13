@@ -95,6 +95,12 @@ public:
 	bool modifiedBulletDrawingsCanWorkWithOthers = true;
 	bool modifiedBulletDrawingsCanOnlyWorkIndividually = false;
 
+	virtual double getBulletSpeedMultiplier() { return 1; }
+	bool bulletSpeedStacks = false;
+	virtual double getBulletRadiusMultiplier() { return 1; }
+	bool bulletRadiusStacks = false;
+	virtual double getBulletAcceleration() { return 0; }
+
 	virtual double getOffenseImportance() { return 0; } //"importance" = "override" value (when dealing with other powers)
 	virtual double getOffenseTier(Bullet*) { return 0; }
 	virtual double getDefenseImportance() { return 0; }

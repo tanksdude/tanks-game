@@ -11,9 +11,6 @@ void BounceTankPower::removeEffects(Tank* parent) {
 	//parent->r *= 2;
 }
 
-double BounceTankPower::getBulletSpeedMultiplier() { return .5; }
-//double BounceTankPower::getBulletRadiusMultiplier() { return .5; } //set back to 1 if parent's radius doesn't decrease
-
 BulletPower* BounceTankPower::makeBulletPower() {
 	return new BounceBulletPower();
 }

@@ -31,5 +31,7 @@ public:
 	//bool modifiedEdgeCollisionCanWorkWithOthers = false;
 	//bool modifiedEdgeCollisionCanOnlyWorkIndividually = false;
 
+	virtual double getBulletSpeedMultiplier() { return .5; }
+
 	HomingBulletPower();
 };

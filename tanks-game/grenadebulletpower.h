@@ -30,5 +30,7 @@ public:
 	//bool modifiedCollisionWithWallCanWorkWithOthers = true;
 	//bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;
 
+	virtual double getBulletAcceleration() { return -1.0/16; }
+
 	GrenadeBulletPower();
 };

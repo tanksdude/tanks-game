@@ -31,5 +31,8 @@ public:
 	//bool modifiedCollisionWithWallCanWorkWithOthers = true;
 	//bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;
 
+	//virtual double getBulletAcceleration() { return -1.0/16; }
+	virtual double getBulletSpeedMultiplier() { return .5; }
+
 	FireNamedBulletPower();
 };
