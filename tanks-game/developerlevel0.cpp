@@ -32,6 +32,7 @@ void DeveloperLevel0::initialize() {
 	PowerupManager::pushPowerup(new PowerSquare(160, 20, "grenade"));
 	PowerupManager::pushPowerup(new PowerSquare(180, 20, "fire"));
 	PowerupManager::pushPowerup(new PowerSquare(200, 20, "blast"));
+	PowerupManager::pushPowerup(new PowerSquare(220, 20, "banana"));
 
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2 + 20, "big"));
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2 - 20, "megadeath"));

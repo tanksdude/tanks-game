@@ -273,6 +273,15 @@
     <ClCompile Include="concealedpowerupslevel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="bananabulletpower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="bananapower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="bananatankpower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -576,6 +585,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="concealedpowerupslevel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="bananabulletpower.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="bananapower.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="bananatankpower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -136,6 +136,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="backgroundrect.cpp" />
+    <ClCompile Include="bananabulletpower.cpp" />
+    <ClCompile Include="bananapower.cpp" />
+    <ClCompile Include="bananatankpower.cpp" />
     <ClCompile Include="bigfunlevel.cpp" />
     <ClCompile Include="bignamedbulletpower.cpp" />
     <ClCompile Include="bignamedpower.cpp" />
@@ -224,6 +227,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="backgroundrect.h" />
+    <ClInclude Include="bananabulletpower.h" />
+    <ClInclude Include="bananapower.h" />
+    <ClInclude Include="bananatankpower.h" />
     <ClInclude Include="bigfunlevel.h" />
     <ClInclude Include="bignamedbulletpower.h" />
     <ClInclude Include="bignamedpower.h" />

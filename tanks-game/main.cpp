@@ -77,6 +77,7 @@
 #include "grenadepower.h"
 #include "firenamedpower.h"
 #include "blastpower.h"
+#include "bananapower.h"
 //dev powers:
 #include "devlonginvinciblenamedpower.h" //invincible but lasts a long time
 
@@ -1198,6 +1199,7 @@ int main(int argc, char** argv) {
 	PowerupManager::addPowerFactory(GrenadePower::factory);
 	PowerupManager::addPowerFactory(FireNamedPower::factory);
 	PowerupManager::addPowerFactory(BlastPower::factory);
+	PowerupManager::addPowerFactory(BananaPower::factory);
 
 	PowerupManager::addSpecialPowerFactory("dev", DevLongInvincibleNamedPower::factory);
 
@@ -1239,7 +1241,7 @@ int main(int argc, char** argv) {
 	TankManager::pushTank(new Tank(20, 160, 0, 1, "WASD", { false, 'w' }, { false, 'a' }, { false, 'd' }, { false, 's' }));
 	TankManager::pushTank(new Tank(620, 160, PI, 2, "Arrow Keys", { true, GLUT_KEY_UP }, { true, GLUT_KEY_LEFT }, { true, GLUT_KEY_RIGHT }, { true, GLUT_KEY_DOWN }));
 #if _DEBUG
-	LevelManager::pushSpecialLevel("dev", "dev1");
+	LevelManager::pushSpecialLevel("dev", "dev0");
 #else
 	LevelManager::pushLevel("default random");
 #endif
