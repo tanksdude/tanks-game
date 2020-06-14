@@ -7,6 +7,8 @@ class BananaBulletPower;
 class BananaBulletPower : public BulletPower {
 protected:
 	static const int bananaCount;
+	static const double maxNewBulletVelocity;
+	static const double minNewBulletVelocity;
 
 public:
 	virtual void initialize(Bullet* parent);

@@ -7,6 +7,8 @@
 #include <vector>
 
 const int BananaBulletPower::bananaCount = 8;
+const double BananaBulletPower::maxNewBulletVelocity = 5.0/4.0;
+const double BananaBulletPower::minNewBulletVelocity = 1.0/2.0;
 
 PowerInteractionBoolHolder BananaBulletPower::modifiedMovement(Bullet* b) {
 	if (b->velocity <= 0) {
@@ -18,7 +20,8 @@ PowerInteractionBoolHolder BananaBulletPower::modifiedMovement(Bullet* b) {
 					bp->push_back(b->bulletPowers[i]->makeDuplicate());
 				}
 			}
-			BulletManager::pushBullet(new Bullet(b->x, b->y, b->r/2, randFunc() * 2*PI, b->getInitialVelocity(), b->getTeamID(), bp, true));
+			double newVelocity = b->getInitialVelocity() * ((randFunc2()+randFunc2())/2 * (maxNewBulletVelocity - minNewBulletVelocity) + minNewBulletVelocity);
+			BulletManager::pushBullet(new Bullet(b->x, b->y, b->r/2, randFunc() * 2*PI, newVelocity, b->getTeamID(), bp, true));
 			delete bp;
 		}
 		return { true };
