@@ -65,6 +65,7 @@ public:
 	TankInputChar turnR;
 	TankInputChar shooting;
 	//TankInputChar backwards; //not the point of the game
+	TankInputChar specialKey;
 
 	void makeBulletCommon(double x, double y, double angle, double radius, double speed); //move to private eventually
 	void makeBullet(double x, double y, double angle, double radius, double speed, double acc); //move to private eventually (does not use makeBulletCommon) (avoid using)
@@ -100,7 +101,7 @@ public: //TODO: protected?
 	static bool uninitializeGPU();
 
 public:
-	Tank(double x, double y, double a, char id, std::string name, TankInputChar forward, TankInputChar left, TankInputChar right, TankInputChar shoot);
+	Tank(double x, double y, double a, char id, std::string name, TankInputChar forward, TankInputChar left, TankInputChar right, TankInputChar shoot, TankInputChar special);
 
 	void move();
 	void terminalVelocity(); //move to protected

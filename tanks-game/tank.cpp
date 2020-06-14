@@ -37,7 +37,7 @@ VertexArray* Tank::cannon_va;
 VertexBuffer* Tank::cannon_vb;
 bool Tank::initialized_GPU = 0;
 
-Tank::Tank(double x_, double y_, double a, char id_, std::string name_, TankInputChar forward, TankInputChar left, TankInputChar right, TankInputChar shoot) {
+Tank::Tank(double x_, double y_, double a, char id_, std::string name_, TankInputChar forward, TankInputChar left, TankInputChar right, TankInputChar shoot, TankInputChar special) {
 	x = x_;
 	y = y_;
 	angle = a;
@@ -53,6 +53,7 @@ Tank::Tank(double x_, double y_, double a, char id_, std::string name_, TankInpu
 	this->turnL = left;
 	this->turnR = right;
 	this->shooting = shoot;
+	this->specialKey = special;
 
 	shootingPoints = new std::vector<CannonPoint>;
 	determineShootingAngles();
