@@ -20,7 +20,7 @@ public:
 		return FireNamedPower::getClassColor();
 	}
 
-	virtual BulletPower* makeDuplicate() { return new FireNamedBulletPower(); }
+	virtual BulletPower* makeDuplicate();
 	virtual TankPower* makeTankPower();
 
 	//bool modifiesMovement = true;
@@ -39,4 +39,5 @@ public:
 	virtual double getBulletAcceleration();
 
 	FireNamedBulletPower();
+	FireNamedBulletPower(double acceleration); //protected?
 };

@@ -19,7 +19,7 @@ public:
 		return BlastPower::getClassColor();
 	}
 
-	virtual BulletPower* makeDuplicate() { return new BlastBulletPower(); }
+	virtual BulletPower* makeDuplicate();
 	virtual TankPower* makeTankPower();
 
 	//bool modifiesMovement = true;
@@ -38,4 +38,5 @@ public:
 	virtual double getBulletAcceleration();
 
 	BlastBulletPower();
+	BlastBulletPower(double acceleration); //protected?
 };

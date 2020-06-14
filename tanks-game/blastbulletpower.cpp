@@ -45,6 +45,10 @@ void BlastBulletPower::removeEffects(Bullet* b) {
 	//nothing
 }
 
+BulletPower* BlastBulletPower::makeDuplicate() {
+	return new BlastBulletPower(this->accelerationAmount);
+}
+
 TankPower* BlastBulletPower::makeTankPower() {
 	return new BlastTankPower();
 }
@@ -54,6 +58,18 @@ BlastBulletPower::BlastBulletPower(){
 	maxTime = -1;
 
 	accelerationAmount = -1 * ((randFunc2()+randFunc2())/2 * (maxBulletAcceleration - minBulletAcceleration) + minBulletAcceleration); //[0,1] * accDiff + min
+
+	modifiesMovement = true;
+	modifiesCollisionWithWall = true;
+	overridesCollisionWithWall = true;
+}
+
+//is there a way to avoid the copy-and-paste? yes. will I do it? no.
+BlastBulletPower::BlastBulletPower(double acceleration) {
+	timeLeft = 0;
+	maxTime = -1;
+
+	accelerationAmount = acceleration;
 
 	modifiesMovement = true;
 	modifiesCollisionWithWall = true;
