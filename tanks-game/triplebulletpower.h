@@ -14,6 +14,7 @@ public:
 		return TriplePower::getClassColor();
 	}
 
+	virtual BulletPower* makeDuplicate() { return new TripleBulletPower(); }
 	virtual TankPower* makeTankPower();
 
 	TripleBulletPower();

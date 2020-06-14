@@ -15,6 +15,7 @@ public:
 		return InvincibleNamedPower::getClassColor();
 	}
 
+	virtual BulletPower* makeDuplicate() { return new InvincibleNamedBulletPower(); }
 	virtual TankPower* makeTankPower();
 
 	virtual double getOffenseImportance() { return 0; }

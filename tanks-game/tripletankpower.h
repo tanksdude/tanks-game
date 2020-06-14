@@ -16,6 +16,7 @@ public:
 		return TriplePower::getClassColor();
 	}
 
+	virtual TankPower* makeDuplicate() { return new TripleTankPower(); }
 	virtual BulletPower* makeBulletPower();
 
 	//bool modifiesAdditionalShooting = true;

@@ -13,6 +13,7 @@ public:
 		return MultishotPower::getClassColor();
 	}
 
+	virtual TankPower* makeDuplicate() { return new MultishotTankPower(); }
 	virtual BulletPower* makeBulletPower();
 
 	//bool addsShootingPoints = true;

@@ -18,7 +18,7 @@ PowerInteractionBoolHolder GrenadeBulletPower::modifiedCollisionWithWall(Bullet*
 	}
 }
 
-void GrenadeBulletPower::modifiedMovement(Bullet* b) {
+PowerInteractionBoolHolder GrenadeBulletPower::modifiedMovement(Bullet* b) {
 	if (b->velocity == 0) {
 		b->alpha -= degradeAmount;
 		b->r *= 65/64.0;
@@ -27,6 +27,7 @@ void GrenadeBulletPower::modifiedMovement(Bullet* b) {
 		b->velocity = 0;
 		b->acceleration = 0;
 	}
+	return { false };
 }
 
 void GrenadeBulletPower::initialize(Bullet* b) {

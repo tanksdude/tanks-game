@@ -19,10 +19,11 @@ public:
 		return FireNamedPower::getClassColor();
 	}
 
+	virtual BulletPower* makeDuplicate() { return new FireNamedBulletPower(); }
 	virtual TankPower* makeTankPower();
 
 	//bool modifiesMovement = true;
-	virtual void modifiedMovement(Bullet*);
+	virtual PowerInteractionBoolHolder modifiedMovement(Bullet*);
 	//bool overridesMovement = false;
 	//bool modifiedMovementCanWorkWithOthers = true;
 	//bool modifiedMovementCanOnlyWorkIndividually = false;

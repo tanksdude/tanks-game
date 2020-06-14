@@ -14,6 +14,7 @@ public:
 		return HomingPower::getClassColor();
 	}
 
+	virtual TankPower* makeDuplicate() { return new HomingTankPower(); }
 	virtual BulletPower* makeBulletPower();
 
 	HomingTankPower();

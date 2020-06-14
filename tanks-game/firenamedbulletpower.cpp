@@ -22,7 +22,7 @@ PowerInteractionBoolHolder FireNamedBulletPower::modifiedCollisionWithWall(Bulle
 	}
 }
 
-void FireNamedBulletPower::modifiedMovement(Bullet* b) {
+PowerInteractionBoolHolder FireNamedBulletPower::modifiedMovement(Bullet* b) {
 	if (b->velocity > 0) {
 		b->r += growAmount;
 	}
@@ -33,6 +33,7 @@ void FireNamedBulletPower::modifiedMovement(Bullet* b) {
 		b->velocity = 0;
 		b->acceleration = 0;
 	}
+	return { false };
 }
 
 double FireNamedBulletPower::getBulletAcceleration() {

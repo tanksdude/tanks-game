@@ -14,6 +14,7 @@ public:
 		return DevLongInvincibleNamedPower::getClassColor();
 	}
 
+	virtual TankPower* makeDuplicate() { return new DevLongInvincibleNamedTankPower(); }
 	virtual BulletPower* makeBulletPower();
 
 	virtual double getTankMaxSpeedMultiplier() { return .5; }

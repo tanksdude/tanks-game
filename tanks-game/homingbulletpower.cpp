@@ -5,11 +5,12 @@
 
 const double HomingBulletPower::homingStrength = 2*PI / 256;
 
-void HomingBulletPower::modifiedMovement(Bullet* b) {
+PowerInteractionBoolHolder HomingBulletPower::modifiedMovement(Bullet* b) {
 	if (PowerFunctionHelper::homingGeneric(b, HomingBulletPower::homingStrength, true)) {
 		//do another targeting round, but on hazards/"targetables" instead
 		//this will only occur for some sort of "team mode" or single-player campaign
 	}
+	return { false };
 }
 
 PowerInteractionBoolHolder HomingBulletPower::modifiedEdgeCollision(Bullet* b) {

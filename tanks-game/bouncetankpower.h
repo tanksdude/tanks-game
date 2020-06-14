@@ -14,6 +14,7 @@ public:
 		return BouncePower::getClassColor();
 	}
 
+	virtual TankPower* makeDuplicate() { return new BounceTankPower(); }
 	virtual BulletPower* makeBulletPower();
 
 	//virtual double getTankRadiusMultiplier() { return .5; }

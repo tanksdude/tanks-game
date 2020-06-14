@@ -14,6 +14,7 @@ public:
 		return BananaPower::getClassColor();
 	}
 
+	virtual TankPower* makeDuplicate() { return new BananaTankPower(); }
 	virtual BulletPower* makeBulletPower();
 
 	BananaTankPower();

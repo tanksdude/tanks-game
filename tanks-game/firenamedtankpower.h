@@ -17,6 +17,7 @@ public:
 		return FireNamedPower::getClassColor();
 	}
 
+	virtual TankPower* makeDuplicate() { return new FireNamedTankPower(); }
 	virtual BulletPower* makeBulletPower();
 
 	//bool modifiesAdditionalShooting = false;

@@ -17,10 +17,12 @@ class Bullet : public Circle, public GameThing {
 public: //hopefully temporary
 	double angle;
 	double velocity;
+	double initial_velocity;
 	double acceleration;
 	ColorValueHolder defaultColor = ColorValueHolder(.5f, .5f, .5f);
 	//ColorValueHolder* explosionColor; //needed?
 	double getAngle();
+	double getInitialVelocity() { return initial_velocity; }
 	double alpha; //[0,100] to avoid minor float imprecision
 	bool isDead();
 

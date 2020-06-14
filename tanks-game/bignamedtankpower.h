@@ -14,6 +14,7 @@ public:
 		return BigNamedPower::getClassColor();
 	}
 
+	virtual TankPower* makeDuplicate() { return new BigNamedTankPower(); }
 	virtual BulletPower* makeBulletPower();
 
 	virtual double getTankMaxSpeedMultiplier() { return .5; }

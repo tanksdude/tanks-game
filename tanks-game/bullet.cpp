@@ -30,6 +30,7 @@ Bullet::Bullet(double x_, double y_, double a, char id_) { //every bullet constr
 Bullet::Bullet(double x_, double y_, double r_, double a, double vel, double acc, char id_, bool) : Bullet(x_,y_,a,id_) { //TODO: make private?
 	this->r = r_;
 	this->velocity = vel;
+	this->initial_velocity = vel;
 	this->acceleration = acc;
 
 	initializeGPU();
@@ -46,6 +47,7 @@ Bullet::Bullet(double x_, double y_, double r_, double a, double vel, double acc
 	//bp not deleted
 	this->r = r_ * getBulletRadiusMultiplier();
 	this->velocity = vel * getBulletSpeedMultiplier();
+	this->initial_velocity = this->velocity;
 	this->acceleration = getBulletAcceleration(); //TODO: this is the problem for fire and blast! fix!
 }
 
@@ -53,6 +55,7 @@ Bullet::Bullet(double x_, double y_, double r_, double a, double vel, double acc
 Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_) : Bullet(x_,y_,a,id_) {
 	this->r = r_;
 	this->velocity = vel;
+	this->initial_velocity = vel;
 	this->acceleration = 0;
 
 	initializeGPU();
@@ -70,6 +73,7 @@ Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_, 
 	//bp not deleted
 	this->r = r_ * getBulletRadiusMultiplier();
 	this->velocity = vel * getBulletSpeedMultiplier();
+	this->initial_velocity = this->velocity;
 	this->acceleration = getBulletAcceleration();
 }
 
@@ -134,34 +138,9 @@ double Bullet::getAngle() {
 }
 
 void Bullet::move() {
-	bool modifiedMovement = false;
-	bool overridedMovement = false;
-	bool noMoreMovement = false;
-
-	for (int i = 0; i < bulletPowers.size(); i++) {
-		if (bulletPowers[i]->modifiesMovement) {
-			if (bulletPowers[i]->modifiedMovementCanOnlyWorkIndividually && modifiedMovement) {
-				continue;
-			}
-			if (noMoreMovement) {
-				continue;
-			}
-			modifiedMovement = true;
-			if (bulletPowers[i]->overridesMovement) {
-				overridedMovement = true;
-			}
-			if (!bulletPowers[i]->modifiedMovementCanWorkWithOthers) {
-				noMoreMovement = true;
-			}
-			bulletPowers[i]->modifiedMovement(this);
-		}
-	}
-
-	if (!overridedMovement) {
-		velocity += acceleration;
-		x += velocity * cos(angle);
-		y += velocity * sin(angle);
-	}
+	velocity += acceleration;
+	x += velocity * cos(angle);
+	y += velocity * sin(angle);
 }
 
 double Bullet::getBulletSpeedMultiplier() {

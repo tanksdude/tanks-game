@@ -16,6 +16,7 @@ public:
 		return BigNamedPower::getClassColor();
 	}
 
+	virtual BulletPower* makeDuplicate() { return new BigNamedBulletPower(); }
 	virtual TankPower* makeTankPower();
 
 	//bool modifiesCollisionWithWall = true;

@@ -349,8 +349,47 @@ void tickHazards() {
 }
 
 void moveBullets() {
-	for (int i = 0; i < BulletManager::getNumBullets(); i++) {
-		BulletManager::getBullet(i)->move();
+	for (int i = BulletManager::getNumBullets() - 1; i >= 0; i--) {
+		bool modifiedMovement = false;
+		bool overridedMovement = false;
+		bool noMoreMovementSpecials = false;
+		bool shouldBeKilled = false;
+		Bullet* b = BulletManager::getBullet(i);
+
+		for (int k = 0; k < b->bulletPowers.size(); k++) {
+			if (b->bulletPowers[k]->modifiesMovement) {
+				if (b->bulletPowers[k]->modifiedMovementCanOnlyWorkIndividually && modifiedMovement) {
+					continue;
+				}
+				if (noMoreMovementSpecials) {
+					continue;
+				}
+
+				modifiedMovement = true;
+				if (b->bulletPowers[k]->overridesMovement) {
+					overridedMovement = true;
+				}
+				if (!b->bulletPowers[k]->modifiedMovementCanWorkWithOthers) {
+					noMoreMovementSpecials = true;
+				}
+
+				PowerInteractionBoolHolder check_temp = b->bulletPowers[k]->modifiedMovement(b);
+				if (check_temp.shouldDie) {
+					shouldBeKilled = true;
+					overridedMovement = true;
+					break;
+				}
+			}
+		}
+
+		if (!overridedMovement) {
+			b->move();
+		}
+
+		if (shouldBeKilled) {
+			BulletManager::deleteBullet(i);
+			continue;
+		}
 	}
 }
 

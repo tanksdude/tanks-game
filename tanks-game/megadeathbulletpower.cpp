@@ -20,8 +20,9 @@ PowerInteractionBoolHolder MegaDeathBulletPower::modifiedCollisionWithWall(Bulle
 	return { false, true };
 }
 
-void MegaDeathBulletPower::modifiedMovement(Bullet* b) {
+PowerInteractionBoolHolder MegaDeathBulletPower::modifiedMovement(Bullet* b) {
 	b->r *= bulletSizeMultiplierPerTick;
+	return { false };
 }
 
 double MegaDeathBulletPower::getOffenseTier(Bullet* b) {

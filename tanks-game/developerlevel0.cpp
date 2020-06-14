@@ -47,6 +47,8 @@ void DeveloperLevel0::initialize() {
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH-80, GAME_HEIGHT-20, names, 2));
 	names[0] = "wallhack", names[1] = "grenade";
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH-100, GAME_HEIGHT-20, names, 2));
+	names[0] = "banana", names[1] = "banana";
+	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH-120, GAME_HEIGHT-20, names, 2));
 	delete[] names;
 }
 

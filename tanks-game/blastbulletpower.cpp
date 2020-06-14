@@ -22,7 +22,7 @@ PowerInteractionBoolHolder BlastBulletPower::modifiedCollisionWithWall(Bullet* b
 	}
 }
 
-void BlastBulletPower::modifiedMovement(Bullet* b) {
+PowerInteractionBoolHolder BlastBulletPower::modifiedMovement(Bullet* b) {
 	if (b->velocity == 0) {
 		b->alpha -= degradeAmount;
 	}
@@ -30,6 +30,7 @@ void BlastBulletPower::modifiedMovement(Bullet* b) {
 		b->velocity = 0;
 		b->acceleration = 0;
 	}
+	return { false };
 }
 
 double BlastBulletPower::getBulletAcceleration() {

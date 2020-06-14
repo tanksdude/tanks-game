@@ -16,10 +16,11 @@ public:
 		return BananaPower::getClassColor();
 	}
 
+	virtual BulletPower* makeDuplicate() { return new BananaBulletPower(); }
 	virtual TankPower* makeTankPower();
 
 	//bool modifiesMovement = true;
-	virtual void modifiedMovement(Bullet*);
+	virtual PowerInteractionBoolHolder modifiedMovement(Bullet*);
 	//bool overridesMovement = false;
 	//bool modifiedMovementCanWorkWithOthers = true;
 	//bool modifiedMovementCanOnlyWorkIndividually = false;

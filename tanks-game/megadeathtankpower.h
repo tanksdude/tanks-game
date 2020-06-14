@@ -14,9 +14,10 @@ public:
 		return MegaDeathPower::getClassColor();
 	}
 
-	virtual double getFiringRateMultiplier() { return 4; }
-
+	virtual TankPower* makeDuplicate() { return new MegaDeathTankPower(); }
 	virtual BulletPower* makeBulletPower();
+
+	virtual double getFiringRateMultiplier() { return 4; }
 
 	MegaDeathTankPower();
 };

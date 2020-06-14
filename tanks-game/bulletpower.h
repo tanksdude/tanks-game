@@ -38,10 +38,11 @@ public:
 	}
 	virtual ColorValueHolder getColor() = 0;
 
+	virtual BulletPower* makeDuplicate() = 0;
 	virtual TankPower* makeTankPower() = 0;
 
 	bool modifiesMovement = false; //true if it, you know, modifies the movement
-	virtual void modifiedMovement(Bullet*) { return; } //default does nothing, obviously
+	virtual PowerInteractionBoolHolder modifiedMovement(Bullet*) { return { false }; } //default does nothing, obviously
 	//precondition: nothing
 	bool overridesMovement = false; //true if the power completely changes how it moves; regular powers slightly modify movement (think homing) and still want basic bullet move
 	bool modifiedMovementCanWorkWithOthers = true; //false stops later powerups in list from activating

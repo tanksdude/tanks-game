@@ -14,6 +14,7 @@ public:
 		return SpeedPower::getClassColor();
 	}
 
+	virtual BulletPower* makeDuplicate() { return new SpeedBulletPower(); }
 	virtual TankPower* makeTankPower();
 
 	SpeedBulletPower();

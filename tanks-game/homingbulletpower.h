@@ -17,10 +17,11 @@ public:
 		return HomingPower::getClassColor();
 	}
 
+	virtual BulletPower* makeDuplicate() { return new HomingBulletPower(); }
 	virtual TankPower* makeTankPower();
 
 	//bool modifiesMovement = false;
-	virtual void modifiedMovement(Bullet*);
+	virtual PowerInteractionBoolHolder modifiedMovement(Bullet*);
 	//bool overridesMovement = false;
 	//bool modifiedMovementCanWorkWithOthers = true;
 	//bool modifiedMovementCanOnlyWorkIndividually = false;

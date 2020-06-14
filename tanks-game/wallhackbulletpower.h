@@ -14,6 +14,7 @@ public:
 		return WallhackPower::getClassColor();
 	}
 
+	virtual BulletPower* makeDuplicate() { return new WallhackBulletPower(); }
 	virtual TankPower* makeTankPower();
 	
 	//bool modifiesCollisionWithWall = true;

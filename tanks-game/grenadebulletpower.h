@@ -16,10 +16,11 @@ public:
 		return GrenadePower::getClassColor();
 	}
 
+	virtual BulletPower* makeDuplicate() { return new GrenadeBulletPower(); }
 	virtual TankPower* makeTankPower();
 
 	//bool modifiesMovement = true;
-	virtual void modifiedMovement(Bullet*);
+	virtual PowerInteractionBoolHolder modifiedMovement(Bullet*);
 	//bool overridesMovement = false;
 	//bool modifiedMovementCanWorkWithOthers = true;
 	//bool modifiedMovementCanOnlyWorkIndividually = false;
