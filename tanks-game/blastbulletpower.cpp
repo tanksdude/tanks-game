@@ -34,7 +34,7 @@ PowerInteractionBoolHolder BlastBulletPower::modifiedMovement(Bullet* b) {
 }
 
 double BlastBulletPower::getBulletAcceleration() {
-	return -1 * ((randFunc2()+randFunc2())/2 * (maxBulletAcceleration - minBulletAcceleration) + minBulletAcceleration); //[0,1] * accDiff + min
+	return accelerationAmount;
 }
 
 void BlastBulletPower::initialize(Bullet* b) {
@@ -52,6 +52,8 @@ TankPower* BlastBulletPower::makeTankPower() {
 BlastBulletPower::BlastBulletPower(){
 	timeLeft = 0;
 	maxTime = -1;
+
+	accelerationAmount = -1 * ((randFunc2()+randFunc2())/2 * (maxBulletAcceleration - minBulletAcceleration) + minBulletAcceleration); //[0,1] * accDiff + min
 
 	modifiesMovement = true;
 	modifiesCollisionWithWall = true;

@@ -37,7 +37,7 @@ PowerInteractionBoolHolder FireNamedBulletPower::modifiedMovement(Bullet* b) {
 }
 
 double FireNamedBulletPower::getBulletAcceleration() {
-	return -1 * ((randFunc2()+randFunc2())/2 * (maxBulletAcceleration - minBulletAcceleration) + minBulletAcceleration); //[0,1] * accDiff + min
+	return accelerationAmount;
 }
 
 void FireNamedBulletPower::initialize(Bullet* b) {
@@ -55,6 +55,8 @@ TankPower* FireNamedBulletPower::makeTankPower() {
 FireNamedBulletPower::FireNamedBulletPower(){
 	timeLeft = 0;
 	maxTime = -1;
+
+	accelerationAmount = -1 * ((randFunc2()+randFunc2())/2 * (maxBulletAcceleration - minBulletAcceleration) + minBulletAcceleration); //[0,1] * accDiff + min
 
 	modifiesMovement = true;
 	modifiesCollisionWithWall = true;

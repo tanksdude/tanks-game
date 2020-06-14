@@ -10,6 +10,7 @@ protected:
 	static const double minBulletAcceleration;
 	static const double degradeAmount;
 	static const double growAmount;
+	double accelerationAmount;
 
 public:
 	virtual void initialize(Bullet* parent);
