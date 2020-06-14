@@ -19,6 +19,7 @@ bool Bullet::initialized_GPU = false;
 
 const double Bullet::default_radius = 4;
 Bullet::Bullet(double x_, double y_, double a, char id_) { //every bullet constructor does this stuff
+	initializeGPU();
 	this->x = x_;
 	this->y = y_;
 	this->angle = a;
@@ -27,16 +28,7 @@ Bullet::Bullet(double x_, double y_, double a, char id_) { //every bullet constr
 	this->alpha = 100;
 }
 
-Bullet::Bullet(double x_, double y_, double r_, double a, double vel, double acc, char id_, bool) : Bullet(x_,y_,a,id_) { //TODO: make private?
-	this->r = r_;
-	this->velocity = vel;
-	this->initial_velocity = vel;
-	this->acceleration = acc;
-
-	initializeGPU();
-}
-
-Bullet::Bullet(double x_, double y_, double r_, double a, double vel, double acc, char id_, std::vector<BulletPower*>* bp, bool) : Bullet(x_,y_,r_,a,vel,acc,id_,true) {
+Bullet::Bullet(double x_, double y_, double a, char id_, std::vector<BulletPower*>* bp) : Bullet(x_,y_,a,id_) {
 	bulletPowers.reserve(bp->size());
 	for (int i = 0; i < bp->size(); i++) {
 		bulletPowers.push_back(bp->at(i));
@@ -45,32 +37,37 @@ Bullet::Bullet(double x_, double y_, double r_, double a, double vel, double acc
 		bulletPowers[i]->initialize(this);
 	}
 	//bp not deleted
+}
+
+//probably just for banana bullet creation:
+Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_, std::vector<BulletPower*>* bp, bool) : Bullet(x_,y_,a,id_,bp) {
+	this->r = r_;
+
+	this->velocity = vel * getBulletSpeedMultiplier(); //TODO: not sure this is wanted
+	this->initial_velocity = this->velocity;
+	this->acceleration = getBulletAcceleration();
+}
+
+//avoid using:
+Bullet::Bullet(double x_, double y_, double r_, double a, double vel, double acc, char id_, std::vector<BulletPower*>* bp, bool) : Bullet(x_,y_,a,id_,bp) {
+	this->r = r_;
+
 	this->r = r_ * getBulletRadiusMultiplier();
 	this->velocity = vel * getBulletSpeedMultiplier();
 	this->initial_velocity = this->velocity;
-	this->acceleration = getBulletAcceleration(); //TODO: this is the problem for fire and blast! fix!
+	this->acceleration = getBulletAcceleration();
 }
 
-//this was copy-and-pasted because the version with manual acceleration control might get deleted later
+//regular 1:
 Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_) : Bullet(x_,y_,a,id_) {
 	this->r = r_;
 	this->velocity = vel;
 	this->initial_velocity = vel;
 	this->acceleration = 0;
-
-	initializeGPU();
 }
 
-//this was copy-and-pasted because the version with manual acceleration control might get deleted later
-Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_, std::vector<BulletPower*>* bp) : Bullet(x_,y_,r_,a,vel,id_) {
-	bulletPowers.reserve(bp->size());
-	for (int i = 0; i < bp->size(); i++) {
-		bulletPowers.push_back(bp->at(i));
-	}
-	for (int i = 0; i < bulletPowers.size(); i++) {
-		bulletPowers[i]->initialize(this);
-	}
-	//bp not deleted
+//regular 2:
+Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_, std::vector<BulletPower*>* bp) : Bullet(x_,y_,a,id_,bp) {
 	this->r = r_ * getBulletRadiusMultiplier();
 	this->velocity = vel * getBulletSpeedMultiplier();
 	this->initial_velocity = this->velocity;

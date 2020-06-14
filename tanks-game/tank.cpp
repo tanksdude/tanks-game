@@ -215,6 +215,19 @@ void Tank::shoot() {
 	}
 }
 
+void Tank::makeBulletCommon(double x, double y, double angle, double radius, double speed) {
+	std::vector<BulletPower*>* bp = new std::vector<BulletPower*>;
+	bp->reserve(tankPowers.size());
+	for (int k = 0; k < tankPowers.size(); k++) {
+		bp->push_back(tankPowers[k]->makeBulletPower());
+	}
+
+	Bullet* temp = new Bullet(x, y, radius, angle, speed, getTeamID(), bp);
+	BulletManager::pushBullet(temp);
+
+	delete bp;
+}
+
 void Tank::makeBullet(double x, double y, double angle, double radius, double speed, double acc) {
 	std::vector<BulletPower*>* bp = new std::vector<BulletPower*>;
 	bp->reserve(tankPowers.size());
@@ -230,11 +243,11 @@ void Tank::makeBullet(double x, double y, double angle, double radius, double sp
 }
 
 void Tank::defaultMakeBullet(double angle) {
-	makeBullet(x + r*cos(angle), y + r*sin(angle), angle, r*BULLET_TO_TANK_RADIUS_RATIO, maxSpeed*BULLET_TO_TANK_SPEED_RATIO, 0);
+	makeBulletCommon(x + r*cos(angle), y + r*sin(angle), angle, r*BULLET_TO_TANK_RADIUS_RATIO, maxSpeed*BULLET_TO_TANK_SPEED_RATIO);
 }
 
 void Tank::regularMakeBullet(double x, double y, double angle) {
-	makeBullet(this->x + x, this->y + y, angle, r*BULLET_TO_TANK_RADIUS_RATIO, maxSpeed*BULLET_TO_TANK_SPEED_RATIO, 0);
+	makeBulletCommon(this->x + x, this->y + y, angle, r*BULLET_TO_TANK_RADIUS_RATIO, maxSpeed*BULLET_TO_TANK_SPEED_RATIO);
 }
 
 void Tank::determineShootingAngles() {

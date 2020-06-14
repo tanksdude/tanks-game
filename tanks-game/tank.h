@@ -66,7 +66,8 @@ public:
 	TankInputChar shooting;
 	//TankInputChar backwards; //not the point of the game
 
-	void makeBullet(double x, double y, double angle, double radius, double speed, double acc); //move to private eventually, just public for emergency testing
+	void makeBulletCommon(double x, double y, double angle, double radius, double speed); //move to private eventually
+	void makeBullet(double x, double y, double angle, double radius, double speed, double acc); //move to private eventually (does not use makeBulletCommon) (avoid using)
 	void defaultMakeBullet(double angle); //simple shoot: bullet points away from tank center at a given angle
 	void regularMakeBullet(double x_offset, double y_offset, double angle); //make bullet x and y dist from tank, moving with angle
 	void determineShootingAngles();

@@ -62,9 +62,10 @@ public:
 	
 private:
 	Bullet(double x_, double y_, double a, char id); //every bullet uses this
+	Bullet(double x_, double y_, double a, char id, std::vector<BulletPower*>* bp); //most bullets use this
 public:
-	Bullet(double x_, double y_, double r_, double a, double vel, double acc, char id_, bool serious); //avoid using
-	Bullet(double x_, double y_, double r_, double a, double vel, double acc, char id_, std::vector<BulletPower*>* bp, bool serious); //avoid using
+	Bullet(double x_, double y_, double r_, double a, double vel, char id_, std::vector<BulletPower*>* bp, bool lessOverriding); //basically just for banana
+	Bullet(double x_, double y_, double r_, double a, double vel, double acc, char id_, std::vector<BulletPower*>* bp, bool manualAcceleration); //avoid using
 public:
 	Bullet(double x_, double y_, double r_, double a, double vel, char id_);
 	Bullet(double x_, double y_, double r_, double a, double vel, char id_, std::vector<BulletPower*>* bp);

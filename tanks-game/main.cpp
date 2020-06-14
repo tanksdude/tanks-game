@@ -57,6 +57,7 @@
 //dev levels:
 #include "developerlevel0.h"
 #include "developerlevel1.h"
+#include "developerlevel2.h"
 
 //hazards:
 #include "stationaryturret.h"
@@ -400,12 +401,11 @@ void tankPowerCalculate() {
 }
 
 void bulletPowerCalculate() {
-	for (int i = 0; i < BulletManager::getNumBullets(); i++) {
+	for (int i = BulletManager::getNumBullets() - 1; i >= 0; i--) {
 		Bullet* b = BulletManager::getBullet(i);
 		b->powerCalculate();
 		if (b->isDead()) {
 			BulletManager::deleteBullet(i);
-			i--;
 			continue;
 		}
 	}
@@ -1251,6 +1251,7 @@ int main(int argc, char** argv) {
 
 	LevelManager::addSpecialLevelFactory("dev", DeveloperLevel0::factory);
 	LevelManager::addSpecialLevelFactory("dev", DeveloperLevel1::factory);
+	LevelManager::addSpecialLevelFactory("dev", DeveloperLevel2::factory);
 
 	HazardManager::addCircleHazardFactory(StationaryTurret::factory);
 	HazardManager::addRectHazardFactory(HorizontalLightning::factory);
@@ -1280,7 +1281,7 @@ int main(int argc, char** argv) {
 	TankManager::pushTank(new Tank(20, 160, 0, 1, "WASD", { false, 'w' }, { false, 'a' }, { false, 'd' }, { false, 's' }));
 	TankManager::pushTank(new Tank(620, 160, PI, 2, "Arrow Keys", { true, GLUT_KEY_UP }, { true, GLUT_KEY_LEFT }, { true, GLUT_KEY_RIGHT }, { true, GLUT_KEY_DOWN }));
 #if _DEBUG
-	LevelManager::pushSpecialLevel("dev", "dev0");
+	LevelManager::pushSpecialLevel("dev", "dev2");
 #else
 	LevelManager::pushLevel("default random");
 #endif
