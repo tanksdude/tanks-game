@@ -160,6 +160,7 @@
     <ClCompile Include="fewobstacleslevel.cpp" />
     <ClCompile Include="gamemanager.cpp" />
     <ClCompile Include="generalizedlava.cpp" />
+    <ClCompile Include="level.cpp" />
     <ClCompile Include="oldemptylevel.cpp" />
     <ClCompile Include="priorityhandler.cpp" />
     <ClCompile Include="circlehazard.cpp" />

@@ -8,6 +8,13 @@
 #include "hazardmanager.h"
 #include "resetthings.h"
 
+std::unordered_map<std::string, double> DefaultRandomLevel::getWeights() {
+	std::unordered_map<std::string, double> weights;
+	weights.insert({ "vanilla", 1 });
+	weights.insert({ "random", 1 });
+	return weights;
+}
+
 void DefaultRandomLevel::initialize() { //still needs a lot of work
 	int randPos = randFunc() * 5;
 	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), randPos);

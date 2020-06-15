@@ -8,6 +8,12 @@ public:
 		std::vector<std::string> types = std::vector<std::string>{ "dev", "random-dev" };
 		return types;
 	}
+	std::unordered_map<std::string, double> getWeights() {
+		std::unordered_map<std::string, double> weights;
+		weights.insert({ "dev", .5 });
+		weights.insert({ "random-dev", .5 });
+		return weights;
+	}
 	void initialize();
 	
 	DeveloperLevel1();

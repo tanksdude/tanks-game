@@ -7,6 +7,7 @@
 #include "hazardmanager.h"
 #include "levelmanager.h"
 #include "mylib.h"
+#include <iostream>
 
 void ResetThings::reset(int) {
 	TankManager::tanks[0]->resetThings(20, GAME_HEIGHT/2, 0, TankManager::tanks[0]->getTeamID(), TankManager::tanks[0]->getName());
@@ -22,17 +23,24 @@ void ResetThings::reset(int) {
 #if _DEBUG
 	LevelManager::pushSpecialLevel("dev", "dev0");
 #else
-	int randLevel = randFunc() * LevelManager::getNumLevelTypes();
-	std::string levelName = LevelManager::getLevelName(randLevel);
-	if (levelName != "default random" || levelName == "empty") {
-		randLevel = randFunc() * LevelManager::getNumLevelTypes();
-		std::string levelName = LevelManager::getLevelName(randLevel);
-		if (levelName == "empty") {
-			randLevel = randFunc() * LevelManager::getNumLevelTypes();
-			std::string levelName = LevelManager::getLevelName(randLevel);
-		}
+	std::vector<double> levelWeights;
+	levelWeights.reserve(LevelManager::getNumLevelTypes());
+	for (int i = 0; i < LevelManager::getNumLevelTypes(); i++) {
+		std::string n = LevelManager::getLevelName(i);
+		Level* l = LevelManager::getLevelFactory(n)();
+		levelWeights.push_back(l->getWeights()["vanilla"]);
+		delete l;
 	}
+	int levelIndex = weightedSelect(levelWeights.data(), levelWeights.size());
+	std::string levelName = LevelManager::getLevelName(levelIndex);
 	LevelManager::pushLevel(levelName);
+
+	/*
+	for (int i = 0; i < levelWeights.size(); i++) {
+		std::cout << levelWeights[i] << ", ";
+	}
+	std::cout << levelIndex << ", " << levelName << std::endl;
+	*/
 #endif
 
 	//initialize levels from LevelManager level list

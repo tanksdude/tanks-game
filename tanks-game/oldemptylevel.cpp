@@ -5,6 +5,13 @@
 #include "wallmanager.h"
 #include "resetthings.h"
 
+std::unordered_map<std::string, double> OldEmptyLevel::getWeights() {
+	std::unordered_map<std::string, double> weights;
+	weights.insert({ "old", .125 });
+	weights.insert({ "random-old", .125 });
+	return weights;
+}
+
 void OldEmptyLevel::initialize() {
 	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40, GAME_HEIGHT/2, true);
 

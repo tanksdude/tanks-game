@@ -7,7 +7,7 @@ std::unordered_map<std::string, std::vector<LevelFunction>> LevelManager::levelL
 std::unordered_map<std::string, std::vector<std::string>> LevelManager::levelNameList;
 
 void LevelManager::initialize() {
-	levelLookup.insert({ "vanilla", std::unordered_map<std::string, LevelFunction>() });
+	levelLookup.insert({ "vanilla", std::unordered_map<std::string, LevelFunction>() }); //what's the difference between random and vanilla?
 	levelLookup.insert({ "vanilla-extra", std::unordered_map<std::string, LevelFunction>() });
 	levelLookup.insert({ "random", std::unordered_map<std::string, LevelFunction>() }); //all/general random
 	levelLookup.insert({ "old", std::unordered_map<std::string, LevelFunction>() });

@@ -10,6 +10,7 @@ public:
 		//it's not really an old level (missing the original walls) but whatever
 		return types;
 	}
+	std::unordered_map<std::string, double> getWeights();
 	void initialize();
 
 	FewObstaclesLevel();

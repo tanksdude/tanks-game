@@ -2,6 +2,7 @@
 #include "leveleffect.h"
 #include <vector>
 #include <string>
+#include <unordered_map>
 
 class Level {
 	friend class LevelManager; //actually needs this unlike the other managers because the manager has more control
@@ -14,6 +15,7 @@ public:
 		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random" };
 		return types;
 	}
+	virtual std::unordered_map<std::string, double> getWeights(); //intended range: [0,1]
 	virtual void initialize() = 0;
 	virtual void tick() { return; }
 	virtual void draw() { return; }
@@ -42,9 +44,9 @@ maze
 boring levels:
 hiding places (has mines?)
 |evened corridors
-few obstacles (homing level)
+|few obstacles (homing level)
 turret level (kinda boring)
-concealed powers (needs some spice to become good)
+|concealed powers (needs some spice to become good)
 many hazards
 lightning corners (needs spice, but is a kinda fun level)
 
