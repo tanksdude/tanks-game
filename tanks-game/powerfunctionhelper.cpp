@@ -146,13 +146,13 @@ bool PowerFunctionHelper::homingGeneric(Bullet* b, double maxAngleMove, bool mov
 			Tank* t = TankManager::getTank(i);
 			if (t->getTeamID() == b->getTeamID()) {
 				angleDiffs[i] = 2*PI * 2; //is way more than enough
-				continue;
+			} else {
+				angleDiffs[i] = abs(atan2(b->y - t->y, b->x - t->x));
 			}
-			angleDiffs[i] = abs(atan2(b->y - t->y, b->x - t->x));
 		}
 		targetTank = findMinIndex(angleDiffs, TankManager::getNumTanks());
 		if (TankManager::getTank(targetTank)->getTeamID() == b->getTeamID()) {
-			targetTank = DEFAULT_TEAM;
+			targetTank = -1;
 		}
 		delete[] angleDiffs;
 	} else { //moveByDistance
@@ -161,18 +161,18 @@ bool PowerFunctionHelper::homingGeneric(Bullet* b, double maxAngleMove, bool mov
 			Tank* t = TankManager::getTank(i);
 			if (t->getTeamID() == b->getTeamID()) {
 				distDiffs[i] = GAME_WIDTH * GAME_HEIGHT; //should be enough
-				continue;
+			} else {
+				distDiffs[i] = sqrt(pow(b->x - t->x, 2) + pow(b->y - t->y, 2)); //TODO: this an issue?
 			}
-			distDiffs[i] = sqrt(pow(b->x - t->x, 2) + pow(b->y - t->y, 2)); //TODO: this an issue?
 		}
 		targetTank = findMinIndex(distDiffs, TankManager::getNumTanks());
 		if (TankManager::getTank(targetTank)->getTeamID() == b->getTeamID()) {
-			targetTank = DEFAULT_TEAM;
+			targetTank = -1;
 		}
 		delete[] distDiffs;
 	}
 
-	if (targetTank == DEFAULT_TEAM) {
+	if (targetTank == -1) {
 		return false; //means there was nothing to target; realistically, shouldn't be happening, unless 1-tank mode is a thing
 	}
 	Tank* t = TankManager::getTank(targetTank);
