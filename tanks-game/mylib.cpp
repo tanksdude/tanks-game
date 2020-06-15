@@ -161,3 +161,20 @@ bool isInArray(T find, T* arr, int length) {
 }
 template bool isInArray<double>(double, double*, int); //I don't think this one is used
 template bool isInArray<int>(int, int*, int);
+
+//algorithm from https://forum.unity.com/threads/weighted-random-selection.221890/ and https://forum.unity.com/threads/randomising-shuffling-library.29977/
+int weightedSelect(const double* weights, int num) {
+	//TODO: unit tests
+	double weightTotal = 0;
+	for (int i = 0; i < num; i++) {
+		weightTotal += weights[i];
+	}
+	double targetWeight = randFunc() * weightTotal;
+	double newWeight = 0;
+	int newIndex = 0;
+	while (targetWeight >= newWeight) {
+		newWeight += weights[newIndex];
+		newIndex++;
+	}
+	return newIndex-1;
+}

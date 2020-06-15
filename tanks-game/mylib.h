@@ -27,3 +27,5 @@ bool pointInPolygon(int vertNum, float* vertX, float* vertY, float testX, float 
 template<typename T>
 bool isInArray(T find, T* arr, int length);
 //it's just a linear search, which could be accomplished by std::find
+
+int weightedSelect(const double* weights, int num);
