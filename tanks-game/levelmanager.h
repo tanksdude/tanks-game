@@ -22,18 +22,13 @@ public:
 	static void initialize();
 	static Level* getLevel(int index); //why would this be needed
 	static LevelEffect* getLevelEffect(int level_index, int index); //why would this be needed, like, ever?
-	static void pushLevel(std::string name);
-	static void pushSpecialLevel(std::string type, std::string name);
+	static void pushLevel(std::string type, std::string name);
 	static int getNumLevels() { return levels.size(); }
 	//static int getLevel_numEffects(int index) { return levels[index]->effects.size(); }
 	//static void deleteLevel(int index);
 
 	static void addLevelFactory(LevelFunction); //gets the types from the level
-	static LevelFunction getLevelFactory(std::string name);
-	static std::string getLevelName(int index);
-	static int getNumLevelTypes();
-
-	static LevelFunction getSpecialLevelFactory(std::string type, std::string name);
-	static std::string getSpecialLevelName(std::string type, int index);
-	static int getNumSpecialLevelTypes(std::string type);
+	static LevelFunction getLevelFactory(std::string type, std::string name);
+	static std::string getLevelName(std::string type, int index);
+	static int getNumLevelTypes(std::string type);
 };

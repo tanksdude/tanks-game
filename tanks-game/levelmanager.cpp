@@ -25,12 +25,8 @@ LevelEffect* LevelManager::getLevelEffect(int level_index, int index) {
 	return levels[level_index]->effects[index];
 }
 
-void LevelManager::pushLevel(std::string name) {
-	levels.push_back(LevelManager::getLevelFactory(name)());
-}
-
-void LevelManager::pushSpecialLevel(std::string type, std::string name) {
-	levels.push_back(LevelManager::getSpecialLevelFactory(type, name)());
+void LevelManager::pushLevel(std::string type, std::string name) {
+	levels.push_back(LevelManager::getLevelFactory(type, name)());
 }
 
 /*
@@ -66,33 +62,21 @@ void LevelManager::addLevelFactory(LevelFunction factory) {
 	delete l;
 }
 
-LevelFunction LevelManager::getLevelFactory(std::string name) {
-	return levelLookup["vanilla"][name];
-}
-
-std::string LevelManager::getLevelName(int index) {
-	return levelNameList["vanilla"][index];
-}
-
-int LevelManager::getNumLevelTypes() {
-	return levelNameList["vanilla"].size();
-}
-
-LevelFunction LevelManager::getSpecialLevelFactory(std::string type, std::string name) {
+LevelFunction LevelManager::getLevelFactory(std::string type, std::string name) {
 	if (levelLookup.find(type) == levelLookup.end()) {
 		throw std::domain_error("level type \"" + type + "\" unknown!");
 	}
 	return levelLookup[type][name];
 }
 
-std::string LevelManager::getSpecialLevelName(std::string type, int index) {
+std::string LevelManager::getLevelName(std::string type, int index) {
 	if (levelLookup.find(type) == levelLookup.end()) {
 		throw std::domain_error("level type \"" + type + "\" unknown!");
 	}
 	return levelNameList[type][index];
 }
 
-int LevelManager::getNumSpecialLevelTypes(std::string type) {
+int LevelManager::getNumLevelTypes(std::string type) {
 	if (levelLookup.find(type) == levelLookup.end()) {
 		throw std::domain_error("level type \"" + type + "\" unknown!");
 	}
