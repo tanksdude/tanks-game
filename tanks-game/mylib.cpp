@@ -179,5 +179,5 @@ int weightedSelect(const T* weights, int num) {
 	}
 	return newIndex-1;
 }
-template int weightedSelect(const double*, int);
-template int weightedSelect(const float*, int);
+template int weightedSelect<double>(const double*, int);
+template int weightedSelect<float>(const float*, int);
