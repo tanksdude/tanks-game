@@ -9,8 +9,11 @@ std::unordered_map<std::string, std::vector<std::string>> LevelManager::levelNam
 void LevelManager::initialize() {
 	levelLookup.insert({ "vanilla", std::unordered_map<std::string, LevelFunction>() });
 	levelLookup.insert({ "vanilla-extra", std::unordered_map<std::string, LevelFunction>() });
-	levelLookup.insert({ "random", std::unordered_map<std::string, LevelFunction>() });
+	levelLookup.insert({ "random", std::unordered_map<std::string, LevelFunction>() }); //all/general random
+	levelLookup.insert({ "old", std::unordered_map<std::string, LevelFunction>() });
+	levelLookup.insert({ "random-old", std::unordered_map<std::string, LevelFunction>() });
 	levelLookup.insert({ "dev", std::unordered_map<std::string, LevelFunction>() });
+	levelLookup.insert({ "random-dev", std::unordered_map<std::string, LevelFunction>() }); //would be used?
 }
 
 Level* LevelManager::getLevel(int index) {
@@ -46,10 +49,19 @@ void LevelManager::clearLevels() {
 
 
 void LevelManager::addLevelFactory(LevelFunction factory) {
-	levelList["vanilla"].push_back(factory);
 	Level* l = factory();
-	levelLookup["vanilla"].insert({ l->getName(), factory });
-	levelNameList["vanilla"].push_back(l->getName());
+	std::vector<std::string> types = l->getLevelTypes();
+	for (int i = 0; i < types.size(); i++) {
+		/*
+		//is this necessary?
+		if (levelLookup.find(types[i]) == levelLookup.end()) {
+			levelLookup.insert({ types[i], std::unordered_map<std::string, LevelFunction>() });
+		}
+		*/
+		levelList[types[i]].push_back(factory);
+		levelLookup[types[i]].insert({ l->getName(), factory });
+		levelNameList[types[i]].push_back(l->getName());
+	}
 	delete l;
 }
 
@@ -63,18 +75,6 @@ std::string LevelManager::getLevelName(int index) {
 
 int LevelManager::getNumLevelTypes() {
 	return levelNameList["vanilla"].size();
-}
-
-void LevelManager::addSpecialLevelFactory(std::string type, LevelFunction factory) {
-	if (levelLookup.find(type) == levelLookup.end()) {
-		levelLookup.insert({ type, std::unordered_map<std::string, LevelFunction>() });
-	}
-	
-	levelList[type].push_back(factory);
-	Level* l = factory();
-	levelLookup[type].insert({ l->getName(), factory });
-	levelNameList[type].push_back(l->getName());
-	delete l;
 }
 
 LevelFunction LevelManager::getSpecialLevelFactory(std::string type, std::string name) {

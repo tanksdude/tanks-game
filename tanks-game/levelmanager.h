@@ -28,12 +28,11 @@ public:
 	//static int getLevel_numEffects(int index) { return levels[index]->effects.size(); }
 	//static void deleteLevel(int index);
 
-	static void addLevelFactory(LevelFunction);
+	static void addLevelFactory(LevelFunction); //gets the types from the level
 	static LevelFunction getLevelFactory(std::string name);
 	static std::string getLevelName(int index);
 	static int getNumLevelTypes();
 
-	static void addSpecialLevelFactory(std::string type, LevelFunction);
 	static LevelFunction getSpecialLevelFactory(std::string type, std::string name);
 	static std::string getSpecialLevelName(std::string type, int index);
 	static int getNumSpecialLevelTypes(std::string type);

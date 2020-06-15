@@ -58,6 +58,8 @@
 #include "developerlevel0.h"
 #include "developerlevel1.h"
 #include "developerlevel2.h"
+//old levels:
+#include "oldemptylevel.h"
 
 //hazards:
 #include "stationaryturret.h"
@@ -1242,6 +1244,7 @@ int main(int argc, char** argv) {
 
 	PowerupManager::addSpecialPowerFactory("dev", DevLongInvincibleNamedPower::factory);
 
+	//vanilla (some are also "old"):
 	LevelManager::addLevelFactory(DefaultRandomLevel::factory);
 	LevelManager::addLevelFactory(EmptyLevel::factory);
 	LevelManager::addLevelFactory(CorridorLevel::factory);
@@ -1249,9 +1252,13 @@ int main(int argc, char** argv) {
 	LevelManager::addLevelFactory(FewObstaclesLevel::factory);
 	LevelManager::addLevelFactory(ConcealedPowerupsLevel::factory);
 
-	LevelManager::addSpecialLevelFactory("dev", DeveloperLevel0::factory);
-	LevelManager::addSpecialLevelFactory("dev", DeveloperLevel1::factory);
-	LevelManager::addSpecialLevelFactory("dev", DeveloperLevel2::factory);
+	//dev:
+	LevelManager::addLevelFactory(DeveloperLevel0::factory);
+	LevelManager::addLevelFactory(DeveloperLevel1::factory);
+	LevelManager::addLevelFactory(DeveloperLevel2::factory);
+	
+	//old:
+	LevelManager::addLevelFactory(OldEmptyLevel::factory);
 
 	HazardManager::addCircleHazardFactory(StationaryTurret::factory);
 	HazardManager::addRectHazardFactory(HorizontalLightning::factory);
