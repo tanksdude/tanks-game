@@ -15,7 +15,7 @@ public:
 		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "random" };
 		return types;
 	}
-	virtual std::unordered_map<std::string, double> getWeights(); //intended range: (0,1]
+	virtual std::unordered_map<std::string, float> getWeights(); //intended range: (0,1]
 	virtual void initialize() = 0;
 	virtual void tick() { return; }
 	virtual void draw() { return; }

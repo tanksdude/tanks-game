@@ -8,10 +8,10 @@ std::vector<std::string> Level::getLevelTypes() {
 }
 */
 
-std::unordered_map<std::string, double> Level::getWeights() {
-	std::unordered_map<std::string, double> weights;
-	weights.insert({ "vanilla", .5 });
-	weights.insert({ "random-vanilla", .5 });
-	weights.insert({ "random", .5 });
+std::unordered_map<std::string, float> Level::getWeights() {
+	std::unordered_map<std::string, float> weights;
+	weights.insert({ "vanilla", .5f });
+	weights.insert({ "random-vanilla", .5f });
+	weights.insert({ "random", .5f });
 	return weights;
 }

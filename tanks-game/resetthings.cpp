@@ -23,7 +23,7 @@ void ResetThings::reset(int) {
 #if _DEBUG
 	LevelManager::pushSpecialLevel("dev", "dev0");
 #else
-	std::vector<double> levelWeights;
+	std::vector<float> levelWeights;
 	levelWeights.reserve(LevelManager::getNumLevelTypes());
 	for (int i = 0; i < LevelManager::getNumLevelTypes(); i++) {
 		std::string n = LevelManager::getLevelName(i);
@@ -31,7 +31,7 @@ void ResetThings::reset(int) {
 		levelWeights.push_back(l->getWeights()["vanilla"]);
 		delete l;
 	}
-	int levelIndex = weightedSelect(levelWeights.data(), levelWeights.size());
+	int levelIndex = weightedSelect<float>(levelWeights.data(), levelWeights.size());
 	std::string levelName = LevelManager::getLevelName(levelIndex);
 	LevelManager::pushLevel(levelName);
 

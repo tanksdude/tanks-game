@@ -8,7 +8,7 @@ public:
 		std::vector<std::string> types = std::vector<std::string>{ "old", "random-old" };
 		return types;
 	}
-	std::unordered_map<std::string, double> getWeights();
+	std::unordered_map<std::string, float> getWeights();
 	void initialize();
 	
 	OldEmptyLevel();

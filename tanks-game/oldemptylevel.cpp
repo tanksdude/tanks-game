@@ -5,10 +5,10 @@
 #include "wallmanager.h"
 #include "resetthings.h"
 
-std::unordered_map<std::string, double> OldEmptyLevel::getWeights() {
-	std::unordered_map<std::string, double> weights;
-	weights.insert({ "old", .125 });
-	weights.insert({ "random-old", .125 });
+std::unordered_map<std::string, float> OldEmptyLevel::getWeights() {
+	std::unordered_map<std::string, float> weights;
+	weights.insert({ "old", .125f });
+	weights.insert({ "random-old", .125f });
 	return weights;
 }
 

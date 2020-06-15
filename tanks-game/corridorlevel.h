@@ -9,7 +9,7 @@ public:
 		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "old", "random-old", "random" };
 		return types;
 	}
-	std::unordered_map<std::string, double> getWeights();
+	std::unordered_map<std::string, float> getWeights();
 	void initialize();
 
 	CorridorLevel();

@@ -8,10 +8,10 @@ public:
 		std::vector<std::string> types = std::vector<std::string>{ "dev", "random-dev" };
 		return types;
 	}
-	std::unordered_map<std::string, double> getWeights() {
-		std::unordered_map<std::string, double> weights;
-		weights.insert({ "dev", .5 });
-		weights.insert({ "random-dev", .5 });
+	std::unordered_map<std::string, float> getWeights() {
+		std::unordered_map<std::string, float> weights;
+		weights.insert({ "dev", .5f });
+		weights.insert({ "random-dev", .5f });
 		return weights;
 	}
 	void initialize();

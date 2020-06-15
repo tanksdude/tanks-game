@@ -7,13 +7,13 @@
 #include "mylib.h"
 #include "resetthings.h"
 
-std::unordered_map<std::string, double> CorridorLevel::getWeights() {
-	std::unordered_map<std::string, double> weights;
-	weights.insert({ "vanilla", .5 });
-	weights.insert({ "random-vanilla", .5 });
-	weights.insert({ "old", .5 });
-	weights.insert({ "random-old", .5 });
-	weights.insert({ "random", .5 });
+std::unordered_map<std::string, float> CorridorLevel::getWeights() {
+	std::unordered_map<std::string, float> weights;
+	weights.insert({ "vanilla", .5f });
+	weights.insert({ "random-vanilla", .5f });
+	weights.insert({ "old", .5f });
+	weights.insert({ "random-old", .5f });
+	weights.insert({ "random", .5f });
 	return weights;
 }
 

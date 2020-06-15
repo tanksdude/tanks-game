@@ -8,11 +8,11 @@
 #include "hazardmanager.h"
 #include "resetthings.h"
 
-std::unordered_map<std::string, double> DefaultRandomLevel::getWeights() {
-	std::unordered_map<std::string, double> weights;
-	weights.insert({ "vanilla", 2 });
-	weights.insert({ "random-vanilla", 2 });
-	weights.insert({ "random", 1 });
+std::unordered_map<std::string, float> DefaultRandomLevel::getWeights() {
+	std::unordered_map<std::string, float> weights;
+	weights.insert({ "vanilla", 2.0f });
+	weights.insert({ "random-vanilla", 2.0f });
+	weights.insert({ "random", 1.0f });
 	return weights;
 }
 

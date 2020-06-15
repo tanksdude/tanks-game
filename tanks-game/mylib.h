@@ -28,4 +28,5 @@ template<typename T>
 bool isInArray(T find, T* arr, int length);
 //it's just a linear search, which could be accomplished by std::find
 
-int weightedSelect(const double* weights, int num);
+template<typename T = double>
+int weightedSelect(const T* weights, int num);
