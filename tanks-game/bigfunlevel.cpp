@@ -10,9 +10,10 @@
 std::unordered_map<std::string, double> BigFunLevel::getWeights() {
 	std::unordered_map<std::string, double> weights;
 	weights.insert({ "vanilla", .5 });
-	weights.insert({ "random", .5 });
+	weights.insert({ "random-vanilla", .5 });
 	weights.insert({ "old", .5 });
 	weights.insert({ "random-old", .5 });
+	weights.insert({ "random", .5 });
 	return weights;
 }
 

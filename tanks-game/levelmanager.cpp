@@ -7,13 +7,14 @@ std::unordered_map<std::string, std::vector<LevelFunction>> LevelManager::levelL
 std::unordered_map<std::string, std::vector<std::string>> LevelManager::levelNameList;
 
 void LevelManager::initialize() {
-	levelLookup.insert({ "vanilla", std::unordered_map<std::string, LevelFunction>() }); //what's the difference between random and vanilla?
+	levelLookup.insert({ "vanilla", std::unordered_map<std::string, LevelFunction>() });
 	levelLookup.insert({ "vanilla-extra", std::unordered_map<std::string, LevelFunction>() });
-	levelLookup.insert({ "random", std::unordered_map<std::string, LevelFunction>() }); //all/general random
+	levelLookup.insert({ "random-vanilla", std::unordered_map<std::string, LevelFunction>() }); //can include vanilla-extra but probably won't
+	levelLookup.insert({ "random", std::unordered_map<std::string, LevelFunction>() }); //general random (requires the level to manually insert itself here)
 	levelLookup.insert({ "old", std::unordered_map<std::string, LevelFunction>() });
 	levelLookup.insert({ "random-old", std::unordered_map<std::string, LevelFunction>() });
 	levelLookup.insert({ "dev", std::unordered_map<std::string, LevelFunction>() });
-	levelLookup.insert({ "random-dev", std::unordered_map<std::string, LevelFunction>() }); //would be used?
+	levelLookup.insert({ "random-dev", std::unordered_map<std::string, LevelFunction>() }); //would this be used?
 }
 
 Level* LevelManager::getLevel(int index) {

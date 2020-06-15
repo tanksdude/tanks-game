@@ -6,7 +6,7 @@ class BigFunLevel : public Level {
 public:
 	std::string getName() { return "bigfun"; }
 	std::vector<std::string> getLevelTypes() {
-		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random", "old", "random-old" };
+		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "old", "random-old", "random" };
 		return types;
 	}
 	std::unordered_map<std::string, double> getWeights();

@@ -10,9 +10,10 @@
 std::unordered_map<std::string, double> FewObstaclesLevel::getWeights() {
 	std::unordered_map<std::string, double> weights;
 	weights.insert({ "vanilla", .5 });
-	weights.insert({ "random", .5 });
+	weights.insert({ "random-vanilla", .5 });
 	weights.insert({ "old", .5 });
 	weights.insert({ "random-old", .5 });
+	weights.insert({ "random", .5 });
 	return weights;
 }
 
@@ -50,7 +51,7 @@ void FewObstaclesLevel::initialize() {
 	//PowerupManager::pushPowerup(new PowerSquare(320, 320-64-16, 3));
 	//traps aren't powerups because that's just stupid
 
-	//PowerupManager::pushPowerup(new PowerSquare(320, 160, "banana"));
+	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "banana"));
 }
 
 Level* FewObstaclesLevel::factory() {

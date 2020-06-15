@@ -10,7 +10,8 @@
 
 std::unordered_map<std::string, double> DefaultRandomLevel::getWeights() {
 	std::unordered_map<std::string, double> weights;
-	weights.insert({ "vanilla", 1 });
+	weights.insert({ "vanilla", 2 });
+	weights.insert({ "random-vanilla", 2 });
 	weights.insert({ "random", 1 });
 	return weights;
 }
