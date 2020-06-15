@@ -178,7 +178,7 @@ void CircularLava::draw() {
 		//insertion sort because laziness
 		sortedBubbles.push_back(bubbles[i]);
 		for (int j = sortedBubbles.size()-1; j >= 1; j--) {
-			if (sortedBubbles[j]->getAlpha() < sortedBubbles[j-1]->getAlpha()){
+			if (sortedBubbles[j]->getAlpha() < sortedBubbles[j-1]->getAlpha()) {
 				std::swap(sortedBubbles[j], sortedBubbles[j-1]);
 			} else {
 				break;

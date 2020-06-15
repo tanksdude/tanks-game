@@ -49,7 +49,7 @@ TankPower* MegaDeathBulletPower::makeTankPower() {
 	return new MegaDeathTankPower();
 }
 
-MegaDeathBulletPower::MegaDeathBulletPower(){
+MegaDeathBulletPower::MegaDeathBulletPower() {
 	timeLeft = 0;
 	maxTime = -1;
 

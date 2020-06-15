@@ -24,7 +24,7 @@ Wall::Wall(double x_, double y_, double w_, double h_, ColorValueHolder c) {
 	initializeGPU();
 }
 
-Wall::Wall(double x_, double y_, double w_, double h_, ColorValueHolder c, char teamID_) : Wall(x_, y_, w_, h_, c){
+Wall::Wall(double x_, double y_, double w_, double h_, ColorValueHolder c, char teamID_) : Wall(x_, y_, w_, h_, c) {
 	this->teamID = teamID_;
 }
 

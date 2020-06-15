@@ -13,7 +13,7 @@ TankPower* InvincibleNamedBulletPower::makeTankPower() {
 	return new InvincibleNamedTankPower();
 }
 
-InvincibleNamedBulletPower::InvincibleNamedBulletPower(){
+InvincibleNamedBulletPower::InvincibleNamedBulletPower() {
 	timeLeft = 0;
 	maxTime = -1;
 }

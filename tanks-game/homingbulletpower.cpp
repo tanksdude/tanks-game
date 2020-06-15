@@ -29,7 +29,7 @@ TankPower* HomingBulletPower::makeTankPower() {
 	return new HomingTankPower();
 }
 
-HomingBulletPower::HomingBulletPower(){
+HomingBulletPower::HomingBulletPower() {
 	timeLeft = 0;
 	maxTime = -1;
 

@@ -41,7 +41,7 @@ TankPower* BananaBulletPower::makeTankPower() {
 	return new BananaTankPower();
 }
 
-BananaBulletPower::BananaBulletPower(){
+BananaBulletPower::BananaBulletPower() {
 	timeLeft = 0;
 	maxTime = -1;
 

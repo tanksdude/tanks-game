@@ -17,7 +17,7 @@ TankPower* BigNamedBulletPower::makeTankPower() {
 	return new BigNamedTankPower();
 }
 
-BigNamedBulletPower::BigNamedBulletPower(){
+BigNamedBulletPower::BigNamedBulletPower() {
 	timeLeft = 0;
 	maxTime = -1;
 

@@ -13,7 +13,7 @@ TankPower* DevLongInvincibleNamedBulletPower::makeTankPower() {
 	return new DevLongInvincibleNamedTankPower();
 }
 
-DevLongInvincibleNamedBulletPower::DevLongInvincibleNamedBulletPower(){
+DevLongInvincibleNamedBulletPower::DevLongInvincibleNamedBulletPower() {
 	timeLeft = 0;
 	maxTime = -1;
 }

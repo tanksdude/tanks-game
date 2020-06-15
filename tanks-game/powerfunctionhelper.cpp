@@ -105,7 +105,7 @@ bool PowerFunctionHelper::bounceEdgeGenericX(Bullet* b) {
 		b->x -= (b->x + b->r - GAME_WIDTH) * 2;
 		b->angle = PI - b->angle;
 		bounced = true;
-	} else if (b->x - b->r < 0){ //left edge
+	} else if (b->x - b->r < 0) { //left edge
 		b->x += -(b->x - b->r) * 2;
 		b->angle = PI - b->angle;
 		bounced = true;

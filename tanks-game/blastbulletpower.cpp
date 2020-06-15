@@ -53,7 +53,7 @@ TankPower* BlastBulletPower::makeTankPower() {
 	return new BlastTankPower();
 }
 
-BlastBulletPower::BlastBulletPower(){
+BlastBulletPower::BlastBulletPower() {
 	timeLeft = 0;
 	maxTime = -1;
 

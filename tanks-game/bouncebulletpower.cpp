@@ -59,7 +59,7 @@ PowerInteractionBoolHolder BounceBulletPower::modifiedEdgeCollision(Bullet* b) {
 		return { b->isFullyOutOfBounds() };
 	}
 
-	if(!bouncedY && b->isPartiallyOutOfBounds()) {
+	if (!bouncedY && b->isPartiallyOutOfBounds()) {
 		if (PowerFunctionHelper::bounceEdgeGenericY(b)) {
 			bouncesLeft--;
 			//bouncedY = true;
@@ -86,7 +86,7 @@ TankPower* BounceBulletPower::makeTankPower() {
 	return new BounceTankPower();
 }
 
-BounceBulletPower::BounceBulletPower(){
+BounceBulletPower::BounceBulletPower() {
 	timeLeft = 0;
 	maxTime = -1;
 

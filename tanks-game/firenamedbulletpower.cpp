@@ -56,7 +56,7 @@ TankPower* FireNamedBulletPower::makeTankPower() {
 	return new FireNamedTankPower();
 }
 
-FireNamedBulletPower::FireNamedBulletPower(){
+FireNamedBulletPower::FireNamedBulletPower() {
 	timeLeft = 0;
 	maxTime = -1;
 

@@ -8,7 +8,7 @@ TankPower* SpeedBulletPower::makeTankPower() {
 	return new SpeedTankPower();
 }
 
-SpeedBulletPower::SpeedBulletPower(){
+SpeedBulletPower::SpeedBulletPower() {
 	timeLeft = 0;
 	maxTime = -1;
 }

@@ -205,7 +205,7 @@ void Tank::shoot() {
 			}
 		}
 
-		if (!overridedShooting){
+		if (!overridedShooting) {
 			for (int i = 0; i < shootingPoints->size(); i++) {
 				defaultMakeBullet(shootingPoints->at(i).angle + angle);
 			}
@@ -508,7 +508,7 @@ void Tank::drawCPU(double xpos, double ypos) {
 		//insertion sort has best case O(n) when the list is mostly/entirely sorted, which is possible to get but I don't because it's reversed (easy fix, do later)
 		sortedTankPowers.push_back(tankPowers[i]);
 		for (int j = sortedTankPowers.size() - 1; j >= 1; j--) {
-			if (sortedTankPowers[j]->timeLeft/sortedTankPowers[j]->maxTime > sortedTankPowers[j-1]->timeLeft/sortedTankPowers[j-1]->maxTime){
+			if (sortedTankPowers[j]->timeLeft/sortedTankPowers[j]->maxTime > sortedTankPowers[j-1]->timeLeft/sortedTankPowers[j-1]->maxTime) {
 				std::swap(sortedTankPowers[j], sortedTankPowers[j-1]);
 			} else {
 				break;
@@ -598,7 +598,7 @@ void Tank::draw(double xpos, double ypos) {
 	}
 	unsigned int shootingOutlineVertices = Circle::numOfSides * shootingOutlinePercent;
 
-	if(shootingOutlineVertices > 0) {
+	if (shootingOutlineVertices > 0) {
 		glm::mat4 MVPM_shootingOutline = Renderer::GenerateMatrix(r * 5.0/4.0, r * 5.0/4.0, getAngle(), xpos, ypos);
 		
 		shader->setUniform4f("u_color", 1.0f, 1.0f, 1.0f, 1.0f);
@@ -616,7 +616,7 @@ void Tank::draw(double xpos, double ypos) {
 		//insertion sort has best case O(n) when the list is mostly/entirely sorted, which is possible to obtain but that doesn't happen because it's reversed (easy fix, do later)
 		sortedTankPowers.push_back(tankPowers[i]);
 		for (int j = sortedTankPowers.size() - 1; j >= 1; j--) {
-			if (sortedTankPowers[j]->timeLeft/sortedTankPowers[j]->maxTime > sortedTankPowers[j-1]->timeLeft/sortedTankPowers[j-1]->maxTime){
+			if (sortedTankPowers[j]->timeLeft/sortedTankPowers[j]->maxTime > sortedTankPowers[j-1]->timeLeft/sortedTankPowers[j-1]->maxTime) {
 				std::swap(sortedTankPowers[j], sortedTankPowers[j-1]);
 			} else {
 				break;

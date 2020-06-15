@@ -42,7 +42,7 @@ TankPower* GrenadeBulletPower::makeTankPower() {
 	return new GrenadeTankPower();
 }
 
-GrenadeBulletPower::GrenadeBulletPower(){
+GrenadeBulletPower::GrenadeBulletPower() {
 	timeLeft = 0;
 	maxTime = -1;
 

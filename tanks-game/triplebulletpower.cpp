@@ -13,7 +13,7 @@ TankPower* TripleBulletPower::makeTankPower() {
 	return new TripleTankPower();
 }
 
-TripleBulletPower::TripleBulletPower(){
+TripleBulletPower::TripleBulletPower() {
 	timeLeft = 0;
 	maxTime = -1;
 }

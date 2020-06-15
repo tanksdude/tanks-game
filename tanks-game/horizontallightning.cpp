@@ -252,7 +252,7 @@ void HorizontalLightning::specialEffectCircleCollision(Circle* c) {
 				if (c->y > y+h) {
 					intersectionXR = c->x + sqrt(pow(c->r, 2) - pow(c->y - (y+h), 2));
 					intersectionYR = y + h;
-				} else if(c->y < y) {
+				} else if (c->y < y) {
 					intersectionXR = c->x + sqrt(pow(c->r, 2) - pow(c->y - y, 2));
 					intersectionYR = y;
 				} else {
@@ -271,7 +271,7 @@ void HorizontalLightning::specialEffectCircleCollision(Circle* c) {
 						intersectionYR = y + h;
 						//std::cout << "case 6aL ";
 						//std::cout << "xL:" << (intersectionXL - x) << " xR:" << (intersectionXR - x) << " yL:" << (intersectionYL - y) << " yR:" << (intersectionYR - y) << std::endl;
-					} else if(c->y < y) {
+					} else if (c->y < y) {
 						intersectionXL = x;
 						intersectionYL = c->y + sqrt(pow(c->r, 2) - pow(c->x - x, 2));
 						intersectionXR = c->x + sqrt(pow(c->r, 2) - pow(c->y - y, 2));
@@ -300,7 +300,7 @@ void HorizontalLightning::specialEffectCircleCollision(Circle* c) {
 						intersectionYR = y + h;
 						//std::cout << "case 3aL ";
 						//std::cout << "xL:" << (intersectionXL - x) << " xR:" << (intersectionXR - x) << " yL:" << (intersectionYL - y) << " yR:" << (intersectionYR - y) << std::endl;
-					} else if(c->y < y) {
+					} else if (c->y < y) {
 						intersectionXL = c->x - sqrt(pow(c->r, 2) - pow(c->y - y, 2));
 						intersectionXL = (intersectionXL < x ? x : intersectionXL);
 						intersectionYL = c->y + sqrt(pow(c->r, 2) - pow(c->x - x, 2));
@@ -340,7 +340,7 @@ void HorizontalLightning::specialEffectCircleCollision(Circle* c) {
 				if (c->y > y+h) {
 					intersectionXL = c->x - sqrt(pow(c->r, 2) - pow(c->y - (y+h), 2));
 					intersectionYL = y + h;
-				} else if(c->y < y) {
+				} else if (c->y < y) {
 					intersectionXL = c->x - sqrt(pow(c->r, 2) - pow(c->y - y, 2));
 					intersectionYL = y;
 				} else {
@@ -357,7 +357,7 @@ void HorizontalLightning::specialEffectCircleCollision(Circle* c) {
 						intersectionYR = c->y - sqrt(pow(c->r, 2) - pow(c->x - (x+w), 2));
 						//std::cout << "case 6aR ";
 						//std::cout << "xL:" << (intersectionXL - x) << " xR:" << (intersectionXR - x) << " yL:" << (intersectionYL - y) << " yR:" << (intersectionYR - y) << std::endl;
-					} else if(c->y < y) {
+					} else if (c->y < y) {
 						intersectionXL = c->x - sqrt(pow(c->r, 2) - pow(c->y - y, 2));
 						intersectionYL = y;
 						intersectionXR = x + w;
@@ -386,7 +386,7 @@ void HorizontalLightning::specialEffectCircleCollision(Circle* c) {
 						intersectionYR = (intersectionYR > y+h ? y+h : intersectionYR);
 						//std::cout << "case 3aR ";
 						//std::cout << "xL:" << (intersectionXL - x) << " xR:" << (intersectionXR - x) << " yL:" << (intersectionYL - y) << " yR:" << (intersectionYR - y) << std::endl;
-					} else if(c->y < y) {
+					} else if (c->y < y) {
 						intersectionXL = c->x - sqrt(pow(c->r, 2) - pow(c->y - y, 2));
 						intersectionYL = y;
 						intersectionXR = c->x + sqrt(pow(c->r, 2) - pow(c->y - y, 2));
@@ -575,13 +575,13 @@ void HorizontalLightning::simpleRefreshBolt(int num) {
 		double yRangeLower = bolts[num]->positions[j*2 - 1] - maxVariance;
 		double yRangeUpper = bolts[num]->positions[j*2 - 1] + maxVariance;
 		double yMin, yMax;
-		if(j < bolts[num]->length / 4){ //first quarter
+		if (j < bolts[num]->length/4) { //first quarter
 			yMin = -2*h/w * (deltaX * j) + h/2;
 			yMax =  2*h/w * (deltaX * j) + h/2;
-		}else if(j < bolts[num]->length * 3.0/4.0){ //middle half
+		} else if (j < bolts[num]->length * 3.0/4.0) { //middle half
 			yMin = 0;
 			yMax = h;
-		}else{ //last quarter
+		} else { //last quarter
 			yMin =  2*h/w * (deltaX * (j - bolts[num]->length*3.0/4.0)) + 0;
 			yMax = -2*h/w * (deltaX * (j - bolts[num]->length*3.0/4.0)) + h;
 		}

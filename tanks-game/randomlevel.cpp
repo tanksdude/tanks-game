@@ -35,7 +35,7 @@ std::string* RandomLevel::getRandomPowers(int count, bool replacement, int nameC
 				replacement = true; //instead of getting stuck or throwing an error, just put duplicates in (change eventually)
 			}
 		}
-		if(replacement) {
+		if (replacement) {
 			int index = randFunc() * nameCount;
 			used[i] = index;
 		}
