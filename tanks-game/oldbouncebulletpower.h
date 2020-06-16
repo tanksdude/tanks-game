@@ -18,7 +18,7 @@ public:
 		return OldBouncePower::getClassColor();
 	}
 
-	virtual BulletPower* makeDuplicate() { return new OldBounceBulletPower(); }
+	virtual BulletPower* makeDuplicate() { return new OldBounceBulletPower(); } //I don't think bounces were passed on in JS
 	virtual TankPower* makeTankPower();
 	
 	//bool modifiesCollisionWithWall = true;

@@ -4,10 +4,6 @@
 
 const short BounceBulletPower::maxBounces = 16;
 
-BulletPower* BounceBulletPower::makeDuplicate() {
-	return new BounceBulletPower(this->bouncesLeft);
-}
-
 PowerInteractionBoolHolder BounceBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
 	if (abs(b->velocity) * Bullet::default_radius/b->r <= .5) {
 		if (PowerFunctionHelper::bounceGenericWithCorners(b, w)) {
@@ -27,7 +23,7 @@ PowerInteractionBoolHolder BounceBulletPower::modifiedCollisionWithWall(Bullet* 
 
 	return { this->bouncesLeft < 0, false };
 }
-//TODO: need ability to delete just the bulletpower (needed? wanted? no because bounces should be reset for banana)
+//TODO: need ability to delete just the bulletpower (needed? wanted? no because bounces should be reset for banana (should it?))
 
 PowerInteractionBoolHolder BounceBulletPower::modifiedEdgeCollision(Bullet* b) {
 	//the bullet can bounce off of edges twice in a single tick
@@ -84,6 +80,10 @@ void BounceBulletPower::initialize(Bullet* b) {
 
 void BounceBulletPower::removeEffects(Bullet * b) {
 	//b->velocity *= 2;
+}
+
+BulletPower* BounceBulletPower::makeDuplicate() {
+	return new BounceBulletPower(this->bouncesLeft);
 }
 
 TankPower* BounceBulletPower::makeTankPower() {

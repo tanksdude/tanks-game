@@ -16,7 +16,7 @@ public:
 		return GrenadePower::getClassColor();
 	}
 
-	virtual BulletPower* makeDuplicate() { return new GrenadeBulletPower(); }
+	virtual BulletPower* makeDuplicate() { return new GrenadeBulletPower(); } //should current size be passed on?
 	virtual TankPower* makeTankPower();
 
 	//bool modifiesMovement = true;

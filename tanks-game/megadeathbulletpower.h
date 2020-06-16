@@ -19,7 +19,7 @@ public:
 		return MegaDeathPower::getClassColor();
 	}
 
-	virtual BulletPower* makeDuplicate() { return new MegaDeathBulletPower(); }
+	virtual BulletPower* makeDuplicate() { return new MegaDeathBulletPower(); } //should current size be passed?
 	virtual TankPower* makeTankPower();
 
 	//bool modifiesMovement = true;
