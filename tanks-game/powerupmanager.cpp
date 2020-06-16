@@ -55,33 +55,21 @@ void PowerupManager::addPowerFactory(PowerFunction factory) {
 	delete p;
 }
 
-PowerFunction PowerupManager::getPowerFactory(std::string name) {
-	return powerLookup["vanilla"][name];
-}
-
-std::string PowerupManager::getPowerName(int index) {
-	return powerNameList["vanilla"][index];
-}
-
-int PowerupManager::getNumPowerTypes() {
-	return powerNameList["vanilla"].size();
-}
-
-PowerFunction PowerupManager::getSpecialPowerFactory(std::string type, std::string name) {
+PowerFunction PowerupManager::getPowerFactory(std::string type, std::string name) {
 	if (powerLookup.find(type) == powerLookup.end()) {
 		throw std::domain_error("power type \"" + type + "\" unknown!");
 	}
 	return powerLookup[type][name];
 }
 
-std::string PowerupManager::getSpecialPowerName(std::string type, int index) {
+std::string PowerupManager::getPowerName(std::string type, int index) {
 	if (powerLookup.find(type) == powerLookup.end()) {
 		throw std::domain_error("power type \"" + type + "\" unknown!");
 	}
 	return powerNameList[type][index];
 }
 
-int PowerupManager::getNumSpecialPowerTypes(std::string type) {
+int PowerupManager::getNumPowerTypes(std::string type) {
 	if (powerLookup.find(type) == powerLookup.end()) {
 		throw std::domain_error("power type \"" + type + "\" unknown!");
 	}

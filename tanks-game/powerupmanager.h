@@ -23,11 +23,7 @@ public:
 	static void deletePowerup(int index);
 
 	static void addPowerFactory(PowerFunction);
-	static PowerFunction getPowerFactory(std::string name);
-	static std::string getPowerName(int index);
-	static int getNumPowerTypes();
-
-	static PowerFunction getSpecialPowerFactory(std::string type, std::string name);
-	static std::string getSpecialPowerName(std::string type, int index);
-	static int getNumSpecialPowerTypes(std::string type);
+	static PowerFunction getPowerFactory(std::string type, std::string name);
+	static std::string getPowerName(std::string type, int index);
+	static int getNumPowerTypes(std::string type);
 };
