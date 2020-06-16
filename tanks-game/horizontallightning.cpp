@@ -140,7 +140,7 @@ void HorizontalLightning::local_uninitializeGPU() {
 }
 
 void HorizontalLightning::streamBoltVertices(unsigned int boltNum) {
-	bolt_vb->modifyData(&bolts[boltNum]->positions[0], bolts[boltNum]->length*2 * sizeof(float));
+	bolt_vb->modifyData(bolts[boltNum]->positions.data(), bolts[boltNum]->length*2 * sizeof(float));
 }
 
 RectHazard* HorizontalLightning::factory(int argc, std::string* argv) {
