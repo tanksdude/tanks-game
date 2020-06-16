@@ -21,7 +21,7 @@ PowerInteractionBoolHolder BananaBulletPower::modifiedMovement(Bullet* b) {
 				}
 			}
 			double newVelocity = b->getInitialVelocity() * ((randFunc2()+randFunc2())/2 * (maxNewBulletVelocity - minNewBulletVelocity) + minNewBulletVelocity);
-			BulletManager::pushBullet(new Bullet(b->x, b->y, b->r/2, randFunc() * 2*PI, newVelocity, b->getTeamID(), bp, true));
+			BulletManager::pushBullet(new Bullet(b->x, b->y, b->r/2, randFunc() * 2*PI, newVelocity, b->getTeamID(), b->getParentID(), bp, true));
 			delete bp;
 		}
 		return { true };

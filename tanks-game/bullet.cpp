@@ -18,17 +18,18 @@ IndexBuffer* Bullet::ib;
 bool Bullet::initialized_GPU = false;
 
 const double Bullet::default_radius = 4;
-Bullet::Bullet(double x_, double y_, double a, char id_) { //every bullet constructor does this stuff
+Bullet::Bullet(double x_, double y_, double a, char id_, long parentID) { //every bullet constructor does this stuff
 	initializeGPU();
 	this->x = x_;
 	this->y = y_;
 	this->angle = a;
 	this->gameID = GameManager::getNextID();
 	this->teamID = id_;
+	this->parentID = parentID;
 	this->alpha = 100;
 }
 
-Bullet::Bullet(double x_, double y_, double a, char id_, std::vector<BulletPower*>* bp) : Bullet(x_,y_,a,id_) {
+Bullet::Bullet(double x_, double y_, double a, char id_, long parentID, std::vector<BulletPower*>* bp) : Bullet(x_,y_,a,id_,parentID) {
 	bulletPowers.reserve(bp->size());
 	for (int i = 0; i < bp->size(); i++) {
 		bulletPowers.push_back(bp->at(i));
@@ -40,7 +41,7 @@ Bullet::Bullet(double x_, double y_, double a, char id_, std::vector<BulletPower
 }
 
 //probably just for banana bullet creation:
-Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_, std::vector<BulletPower*>* bp, bool) : Bullet(x_,y_,a,id_,bp) {
+Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_, long parentID, std::vector<BulletPower*>* bp, bool) : Bullet(x_,y_,a,id_,parentID,bp) {
 	this->r = r_;
 
 	this->velocity = vel * getBulletSpeedMultiplier(); //TODO: not sure this is wanted
@@ -49,7 +50,7 @@ Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_, 
 }
 
 //avoid using:
-Bullet::Bullet(double x_, double y_, double r_, double a, double vel, double acc, char id_, std::vector<BulletPower*>* bp, bool) : Bullet(x_,y_,a,id_,bp) {
+Bullet::Bullet(double x_, double y_, double r_, double a, double vel, double acc, char id_, long parentID, std::vector<BulletPower*>* bp, bool) : Bullet(x_,y_,a,id_,parentID,bp) {
 	this->r = r_;
 
 	this->r = r_ * getBulletRadiusMultiplier();
@@ -59,7 +60,7 @@ Bullet::Bullet(double x_, double y_, double r_, double a, double vel, double acc
 }
 
 //regular 1:
-Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_) : Bullet(x_,y_,a,id_) {
+Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_, long parentID) : Bullet(x_,y_,a,id_,parentID) {
 	this->r = r_;
 	this->velocity = vel;
 	this->initial_velocity = vel;
@@ -67,7 +68,7 @@ Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_) 
 }
 
 //regular 2:
-Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_, std::vector<BulletPower*>* bp) : Bullet(x_,y_,a,id_,bp) {
+Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_, long parentID, std::vector<BulletPower*>* bp) : Bullet(x_,y_,a,id_,parentID,bp) {
 	this->r = r_ * getBulletRadiusMultiplier();
 	this->velocity = vel * getBulletSpeedMultiplier();
 	this->initial_velocity = this->velocity;

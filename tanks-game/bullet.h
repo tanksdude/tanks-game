@@ -19,6 +19,8 @@ public: //hopefully temporary
 	double velocity;
 	double initial_velocity;
 	double acceleration;
+	long parentID;
+	long getParentID() { return parentID; }
 	ColorValueHolder defaultColor = ColorValueHolder(.5f, .5f, .5f);
 	//ColorValueHolder* explosionColor; //needed?
 	double getAngle();
@@ -61,14 +63,14 @@ public:
 	void drawOutline(double, double);
 	
 private:
-	Bullet(double x_, double y_, double a, char id); //every bullet uses this
-	Bullet(double x_, double y_, double a, char id, std::vector<BulletPower*>* bp); //most bullets use this
+	Bullet(double x_, double y_, double a, char id, long parentID); //every bullet uses this
+	Bullet(double x_, double y_, double a, char id, long parentID, std::vector<BulletPower*>* bp); //most bullets use this
 public:
-	Bullet(double x_, double y_, double r_, double a, double vel, char id_, std::vector<BulletPower*>* bp, bool lessOverriding); //basically just for banana
-	Bullet(double x_, double y_, double r_, double a, double vel, double acc, char id_, std::vector<BulletPower*>* bp, bool manualAcceleration); //avoid using
+	Bullet(double x_, double y_, double r_, double a, double vel, char id_, long parentID, std::vector<BulletPower*>* bp, bool lessOverriding); //basically just for banana
+	Bullet(double x_, double y_, double r_, double a, double vel, double acc, char id_, long parentID, std::vector<BulletPower*>* bp, bool manualAcceleration); //avoid using
 public:
-	Bullet(double x_, double y_, double r_, double a, double vel, char id_);
-	Bullet(double x_, double y_, double r_, double a, double vel, char id_, std::vector<BulletPower*>* bp);
+	Bullet(double x_, double y_, double r_, double a, double vel, char id_, long parentID);
+	Bullet(double x_, double y_, double r_, double a, double vel, char id_, long parentID, std::vector<BulletPower*>* bp);
 	void move();
 	void draw();
 	void draw(double, double);

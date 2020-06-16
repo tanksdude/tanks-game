@@ -223,7 +223,7 @@ void Tank::makeBulletCommon(double x, double y, double angle, double radius, dou
 		bp->push_back(tankPowers[k]->makeBulletPower());
 	}
 
-	Bullet* temp = new Bullet(x, y, radius, angle, speed, getTeamID(), bp);
+	Bullet* temp = new Bullet(x, y, radius, angle, speed, getTeamID(), getGameID(), bp);
 	BulletManager::pushBullet(temp);
 
 	delete bp;
