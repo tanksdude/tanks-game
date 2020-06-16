@@ -24,16 +24,16 @@ void ResetThings::reset(int) {
 	LevelManager::pushLevel("dev", "dev0");
 #else
 	std::vector<float> levelWeights;
-	levelWeights.reserve(LevelManager::getNumLevelTypes("vanilla"));
-	for (int i = 0; i < LevelManager::getNumLevelTypes("vanilla"); i++) {
-		std::string n = LevelManager::getLevelName("vanilla", i);
-		Level* l = LevelManager::getLevelFactory("vanilla", n)();
-		levelWeights.push_back(l->getWeights()["vanilla"]);
+	levelWeights.reserve(LevelManager::getNumLevelTypes("random-vanilla"));
+	for (int i = 0; i < LevelManager::getNumLevelTypes("random-vanilla"); i++) {
+		std::string n = LevelManager::getLevelName("random-vanilla", i);
+		Level* l = LevelManager::getLevelFactory("random-vanilla", n)();
+		levelWeights.push_back(l->getWeights()["random-vanilla"]);
 		delete l;
 	}
 	int levelIndex = weightedSelect<float>(levelWeights.data(), levelWeights.size());
-	std::string levelName = LevelManager::getLevelName("vanilla", levelIndex);
-	LevelManager::pushLevel("vanilla", levelName);
+	std::string levelName = LevelManager::getLevelName("random-vanilla", levelIndex);
+	LevelManager::pushLevel("random-vanilla", levelName);
 
 	/*
 	for (int i = 0; i < levelWeights.size(); i++) {
