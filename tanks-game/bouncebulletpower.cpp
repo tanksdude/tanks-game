@@ -4,6 +4,10 @@
 
 const short BounceBulletPower::maxBounces = 16;
 
+BulletPower* BounceBulletPower::makeDuplicate() {
+	return new BounceBulletPower(this->bouncesLeft);
+}
+
 PowerInteractionBoolHolder BounceBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
 	if (abs(b->velocity) * Bullet::default_radius/b->r <= .5) {
 		if (PowerFunctionHelper::bounceGenericWithCorners(b, w)) {
@@ -91,6 +95,16 @@ BounceBulletPower::BounceBulletPower() {
 	maxTime = -1;
 
 	bouncesLeft = BounceBulletPower::maxBounces;
+	modifiesCollisionWithWall = true;
+	//modifiedCollisionWithWallCanWorkWithOthers = false;
+	modifiesEdgeCollision = true;
+}
+
+BounceBulletPower::BounceBulletPower(short bounces) {
+	timeLeft = 0;
+	maxTime = -1;
+
+	this->bouncesLeft = bounces;
 	modifiesCollisionWithWall = true;
 	//modifiedCollisionWithWallCanWorkWithOthers = false;
 	modifiesEdgeCollision = true;

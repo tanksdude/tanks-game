@@ -18,7 +18,7 @@ public:
 		return BouncePower::getClassColor();
 	}
 
-	virtual BulletPower* makeDuplicate() { return new BounceBulletPower(); }
+	virtual BulletPower* makeDuplicate();
 	virtual TankPower* makeTankPower();
 	
 	//bool modifiesCollisionWithWall = true;
@@ -36,4 +36,5 @@ public:
 	virtual double getBulletSpeedMultiplier() { return .5; }
 
 	BounceBulletPower();
+	BounceBulletPower(short bounces);
 };
