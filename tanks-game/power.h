@@ -2,6 +2,8 @@
 class Power;
 
 #include <string>
+#include <vector>
+#include <unordered_map>
 #include "colorvalueholder.h"
 #include "tankpower.h"
 #include "bulletpower.h"
@@ -12,8 +14,12 @@ protected:
 	//static ColorValueHolder classColor;
 
 public:
-	const static bool canBeInARandomLevel;
+	const static bool canBeInARandomLevel; //TODO: remove (goes in getPowerTypes)
 	virtual bool getCanBeMixed() { return true; }
+
+	virtual std::vector<std::string> getPowerTypes(); //defined in source file in case I change some values
+	virtual std::unordered_map<std::string, float> getWeights(); //intended range: (0,1]
+	virtual std::vector<std::string> getPowerAttributes(); //stuff like "can stack", "can mix" ("can X" is only a suggestion)
 
 	virtual std::string getName() = 0;
 	static std::string getClassName();
@@ -24,6 +30,7 @@ public:
 	virtual BulletPower* makeBulletPower() = 0;
 	//virtual HazardPower* makeHazardPower() = 0;
 
+	virtual ~Power() { return; }
 	static Power* factory();
 };
 
@@ -41,7 +48,7 @@ list of (eventual) powers:
 the super (tier 3) (name WIP) (come on, of course the name isn't going to be temporary!) (save for later because there's little point in including it as of now)
 |grenade?
 |fire?
-banana (will be tough unless I did everything correctly)
+|banana
 godmode
 barrier (if hit, provides one extra hitpoint (basically life, but might add some differences))
 super life/shield/barrier (barrier health dependent on time left on power)

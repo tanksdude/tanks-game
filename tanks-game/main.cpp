@@ -83,6 +83,8 @@
 #include "bananapower.h"
 //dev powers:
 #include "devlonginvinciblenamedpower.h" //invincible but lasts a long time
+//old powers:
+#include "oldbouncepower.h" //identical to bounce except it makes the tank smaller
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
@@ -1228,6 +1230,7 @@ int main(int argc, char** argv) {
 	// Set callback for the idle function
 	//glutIdleFunc(draw);
 	
+	//vanilla (should some be "old"?):
 	PowerupManager::addPowerFactory(SpeedPower::factory);
 	PowerupManager::addPowerFactory(WallhackPower::factory);
 	PowerupManager::addPowerFactory(BouncePower::factory);
@@ -1242,7 +1245,11 @@ int main(int argc, char** argv) {
 	PowerupManager::addPowerFactory(BlastPower::factory);
 	PowerupManager::addPowerFactory(BananaPower::factory);
 
-	PowerupManager::addSpecialPowerFactory("dev", DevLongInvincibleNamedPower::factory);
+	//dev:
+	PowerupManager::addPowerFactory(DevLongInvincibleNamedPower::factory);
+
+	//old:
+	PowerupManager::addPowerFactory(OldBouncePower::factory);
 
 	//vanilla (some are also "old"):
 	LevelManager::addLevelFactory(DefaultRandomLevel::factory);

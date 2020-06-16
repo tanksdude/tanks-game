@@ -291,6 +291,18 @@
     <ClCompile Include="level.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="power.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="oldbouncebulletpower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="oldbouncetankpower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="oldbouncepower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -609,6 +621,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="oldemptylevel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="oldbouncebulletpower.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="oldbouncetankpower.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="oldbouncepower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

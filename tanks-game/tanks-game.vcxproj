@@ -161,7 +161,11 @@
     <ClCompile Include="gamemanager.cpp" />
     <ClCompile Include="generalizedlava.cpp" />
     <ClCompile Include="level.cpp" />
+    <ClCompile Include="oldbouncebulletpower.cpp" />
+    <ClCompile Include="oldbouncepower.cpp" />
+    <ClCompile Include="oldbouncetankpower.cpp" />
     <ClCompile Include="oldemptylevel.cpp" />
+    <ClCompile Include="power.cpp" />
     <ClCompile Include="priorityhandler.cpp" />
     <ClCompile Include="circlehazard.cpp" />
     <ClCompile Include="collisionhandler.cpp" />
@@ -256,6 +260,9 @@
     <ClInclude Include="gamemanager.h" />
     <ClInclude Include="gamething.h" />
     <ClInclude Include="generalizedlava.h" />
+    <ClInclude Include="oldbouncebulletpower.h" />
+    <ClInclude Include="oldbouncepower.h" />
+    <ClInclude Include="oldbouncetankpower.h" />
     <ClInclude Include="oldemptylevel.h" />
     <ClInclude Include="point.h" />
     <ClInclude Include="positionholder.h" />

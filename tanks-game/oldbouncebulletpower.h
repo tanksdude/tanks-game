@@ -1,10 +1,10 @@
 #pragma once
-class BounceBulletPower;
+class OldBounceBulletPower;
 
 #include "bulletpower.h"
-#include "bouncepower.h"
+#include "oldbouncepower.h"
 
-class BounceBulletPower : public BulletPower {
+class OldBounceBulletPower : public BulletPower {
 protected:
 public:
 	static const short maxBounces;
@@ -15,10 +15,10 @@ public:
 	virtual void removeEffects(Bullet* parent);
 
 	virtual ColorValueHolder getColor() {
-		return BouncePower::getClassColor();
+		return OldBouncePower::getClassColor();
 	}
 
-	virtual BulletPower* makeDuplicate() { return new BounceBulletPower(); }
+	virtual BulletPower* makeDuplicate() { return new OldBounceBulletPower(); }
 	virtual TankPower* makeTankPower();
 	
 	//bool modifiesCollisionWithWall = true;
@@ -33,7 +33,7 @@ public:
 	//bool modifiedEdgeCollisionCanWorkWithOthers = false;
 	//bool modifiedEdgeCollisionCanOnlyWorkIndividually = false;
 
-	virtual double getBulletSpeedMultiplier() { return .5; }
+	virtual double getBulletSpeedMultiplier() { return .25; }
 
-	BounceBulletPower();
+	OldBounceBulletPower();
 };

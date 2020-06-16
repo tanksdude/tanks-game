@@ -3,7 +3,7 @@
 #include "tankpower.h"
 #include "bulletpower.h"
 
-class DevLongInvincibleNamedPower : public Power{
+class OldBouncePower : public Power{
 protected:
 	//static ColorValueHolder classColor;
 
@@ -12,29 +12,31 @@ public:
 	//bool getCanBeMixed() { return true; }
 
 	virtual std::vector<std::string> getPowerTypes() {
-		std::vector<std::string> types = std::vector<std::string>{ "dev" }; //no random-dev
+		std::vector<std::string> types = std::vector<std::string>{ "old", "random-old" };
 		return types;
 	}
 	virtual std::unordered_map<std::string, float> getWeights() {
 		std::unordered_map<std::string, float> weights;
-		weights.insert({ "dev", 0.0f }); //this should not appear, like, ever
+		weights.insert({ "old", .5f });
+		weights.insert({ "random-old", .5f });
 		return weights;
 	}
 	virtual std::vector<std::string> getPowerAttributes() {
+		//match with BouncePower
 		std::vector<std::string> attributes = std::vector<std::string>{ "mix" };
 		return attributes;
 	}
 
-	virtual std::string getName() { return DevLongInvincibleNamedPower::getClassName(); }
-	static std::string getClassName() { return "longinvincible"; }
-	virtual ColorValueHolder getColor() { return DevLongInvincibleNamedPower::getClassColor(); }
-	static ColorValueHolder getClassColor() { return ColorValueHolder(1.0f, 1.0f, 1.0f); } //white
+	virtual std::string getName() { return OldBouncePower::getClassName(); }
+	static std::string getClassName() { return "oldbounce"; }
+	virtual ColorValueHolder getColor() { return OldBouncePower::getClassColor(); }
+	static ColorValueHolder getClassColor() { return ColorValueHolder(1.0f, 0.0f, 0xCC/255.0); } //pink
 
 	virtual TankPower* makeTankPower();
 	virtual BulletPower* makeBulletPower();
 	//virtual HazardPower* makeHazardPower();
 
-	DevLongInvincibleNamedPower();
-	~DevLongInvincibleNamedPower();
+	OldBouncePower();
+	~OldBouncePower();
 	static Power* factory();
 };

@@ -11,6 +11,12 @@ public:
 	const static bool canBeInARandomLevel;
 	//bool getCanBeMixed() { return true; }
 
+	virtual std::vector<std::string> getPowerAttributes() {
+		//might want to change how this power works (need to adjust cannonpoints)
+		std::vector<std::string> attributes = std::vector<std::string>{ "mix" };
+		return attributes;
+	}
+
 	virtual std::string getName() { return TriplePower::getClassName(); }
 	static std::string getClassName() { return "triple"; }
 	virtual ColorValueHolder getColor() { return TriplePower::getClassColor(); }

@@ -11,6 +11,11 @@ public:
 	const static bool canBeInARandomLevel;
 	//bool getCanBeMixed() { return true; }
 
+	virtual std::vector<std::string> getPowerAttributes() {
+		std::vector<std::string> attributes = std::vector<std::string>{ "mix" };
+		return attributes;
+	}
+
 	virtual std::string getName() { return MegaDeathPower::getClassName(); }
 	static std::string getClassName() { return "megadeath"; }
 	virtual ColorValueHolder getColor() { return MegaDeathPower::getClassColor(); }

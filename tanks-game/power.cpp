@@ -1,15 +1,19 @@
-#include "level.h"
+#include "power.h"
 
-//this shouldn't really need to be changed, but I'll leave it here
-std::vector<std::string> Level::getLevelTypes() {
+std::vector<std::string> Power::getPowerTypes() {
 	std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "random" };
 	return types;
 }
 
-std::unordered_map<std::string, float> Level::getWeights() {
+std::unordered_map<std::string, float> Power::getWeights() {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", .5f });
 	weights.insert({ "random-vanilla", .5f });
 	weights.insert({ "random", .5f });
 	return weights;
+}
+
+std::vector<std::string> Power::getPowerAttributes() {
+	std::vector<std::string> attributes = std::vector<std::string>{ "stack", "mix" };
+	return attributes;
 }

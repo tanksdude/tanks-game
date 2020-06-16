@@ -27,7 +27,6 @@ public:
 	static std::string getPowerName(int index);
 	static int getNumPowerTypes();
 
-	static void addSpecialPowerFactory(std::string type, PowerFunction);
 	static PowerFunction getSpecialPowerFactory(std::string type, std::string name);
 	static std::string getSpecialPowerName(std::string type, int index);
 	static int getNumSpecialPowerTypes(std::string type);
