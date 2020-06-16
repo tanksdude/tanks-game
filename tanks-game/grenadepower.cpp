@@ -2,8 +2,6 @@
 #include "grenadetankpower.h"
 #include "grenadebulletpower.h"
 
-const bool GrenadePower::canBeInARandomLevel = true;
-
 TankPower* GrenadePower::makeTankPower() {
 	return new GrenadeTankPower();
 }
@@ -23,9 +21,5 @@ Power* GrenadePower::factory() {
 }
 
 GrenadePower::GrenadePower() {
-	//nope
-}
-
-GrenadePower::~GrenadePower() {
-	//unlikely to ever need these
+	return;
 }

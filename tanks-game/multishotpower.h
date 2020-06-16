@@ -1,7 +1,5 @@
 #pragma once
 #include "power.h"
-#include "tankpower.h"
-#include "bulletpower.h"
 
 class MultishotPower : public Power {
 	friend class MultishotTankPower;
@@ -9,9 +7,6 @@ protected:
 	static const short bulletConstant = 8;
 
 public:
-	const static bool canBeInARandomLevel;
-	//bool getCanBeMixed() { return true; }
-
 	virtual std::string getName() { return MultishotPower::getClassName(); }
 	static std::string getClassName() { return "multishot"; }
 	virtual ColorValueHolder getColor() { return MultishotPower::getClassColor(); }
@@ -22,6 +17,5 @@ public:
 	//virtual HazardPower* makeHazardPower();
 
 	MultishotPower();
-	~MultishotPower();
 	static Power* factory();
 };

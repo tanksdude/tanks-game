@@ -2,8 +2,6 @@
 #include "invinciblenamedtankpower.h"
 #include "invinciblenamedbulletpower.h"
 
-const bool InvincibleNamedPower::canBeInARandomLevel = true;
-
 TankPower* InvincibleNamedPower::makeTankPower() {
 	return new InvincibleNamedTankPower();
 }
@@ -23,9 +21,5 @@ Power* InvincibleNamedPower::factory() {
 }
 
 InvincibleNamedPower::InvincibleNamedPower() {
-	//nope
-}
-
-InvincibleNamedPower::~InvincibleNamedPower() {
-	//unlikely to ever need these
+	return;
 }

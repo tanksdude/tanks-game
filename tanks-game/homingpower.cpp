@@ -2,8 +2,6 @@
 #include "homingtankpower.h"
 #include "homingbulletpower.h"
 
-const bool HomingPower::canBeInARandomLevel = true;
-
 TankPower* HomingPower::makeTankPower() {
 	return new HomingTankPower();
 }
@@ -23,9 +21,5 @@ Power* HomingPower::factory() {
 }
 
 HomingPower::HomingPower() {
-	//nope
-}
-
-HomingPower::~HomingPower() {
-	//unlikely to ever need these
+	return;
 }

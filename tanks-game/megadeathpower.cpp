@@ -2,8 +2,6 @@
 #include "megadeathtankpower.h"
 #include "megadeathbulletpower.h"
 
-const bool MegaDeathPower::canBeInARandomLevel = true;
-
 TankPower* MegaDeathPower::makeTankPower() {
 	return new MegaDeathTankPower();
 }
@@ -23,9 +21,5 @@ Power* MegaDeathPower::factory() {
 }
 
 MegaDeathPower::MegaDeathPower() {
-	//nope
-}
-
-MegaDeathPower::~MegaDeathPower() {
-	//unlikely to ever need these
+	return;
 }

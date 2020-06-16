@@ -2,8 +2,6 @@
 #include "bouncetankpower.h"
 #include "bouncebulletpower.h"
 
-const bool BouncePower::canBeInARandomLevel = true;
-
 TankPower* BouncePower::makeTankPower() {
 	return new BounceTankPower();
 }
@@ -23,9 +21,5 @@ Power* BouncePower::factory() {
 }
 
 BouncePower::BouncePower() {
-	//nope
-}
-
-BouncePower::~BouncePower() {
-	//unlikely to ever need these
+	return;
 }

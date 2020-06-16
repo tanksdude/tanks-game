@@ -1,16 +1,8 @@
 #pragma once
 #include "power.h"
-#include "tankpower.h"
-#include "bulletpower.h"
 
 class BlastPower : public Power{
-protected:
-	//static ColorValueHolder classColor;
-
 public:
-	const static bool canBeInARandomLevel;
-	//bool getCanBeMixed() { return true; }
-
 	virtual std::vector<std::string> getPowerAttributes() {
 		std::vector<std::string> attributes = std::vector<std::string>{ "mix" };
 		return attributes;
@@ -26,6 +18,5 @@ public:
 	//virtual HazardPower* makeHazardPower();
 
 	BlastPower();
-	~BlastPower();
 	static Power* factory();
 };

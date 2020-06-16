@@ -2,8 +2,6 @@
 #include "bananatankpower.h"
 #include "bananabulletpower.h"
 
-const bool BananaPower::canBeInARandomLevel = true;
-
 TankPower* BananaPower::makeTankPower() {
 	return new BananaTankPower();
 }
@@ -23,9 +21,5 @@ Power* BananaPower::factory() {
 }
 
 BananaPower::BananaPower() {
-	//nope
-}
-
-BananaPower::~BananaPower() {
-	//unlikely to ever need these
+	return;
 }

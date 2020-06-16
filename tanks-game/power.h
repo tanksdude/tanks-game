@@ -9,22 +9,15 @@ class Power;
 #include "bulletpower.h"
 
 class Power {
-protected:
-	//anything needed here?
-	//static ColorValueHolder classColor;
-
 public:
-	const static bool canBeInARandomLevel; //TODO: remove (goes in getPowerTypes)
-	virtual bool getCanBeMixed() { return true; }
-
 	virtual std::vector<std::string> getPowerTypes(); //defined in source file in case I change some values
 	virtual std::unordered_map<std::string, float> getWeights(); //intended range: (0,1]
 	virtual std::vector<std::string> getPowerAttributes(); //stuff like "can stack", "can mix" ("can X" is only a suggestion)
 
 	virtual std::string getName() = 0;
-	static std::string getClassName();
+	//static std::string getClassName(); //tankpowers and bulletpowers use this (so they can have the same color), so make sure to define it!
 	virtual ColorValueHolder getColor() = 0;
-	static ColorValueHolder getClassColor();
+	//static ColorValueHolder getClassColor();
 
 	virtual TankPower* makeTankPower() = 0;
 	virtual BulletPower* makeBulletPower() = 0;

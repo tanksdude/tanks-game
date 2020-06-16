@@ -2,8 +2,6 @@
 #include "bignamedtankpower.h"
 #include "bignamedbulletpower.h"
 
-const bool BigNamedPower::canBeInARandomLevel = true;
-
 TankPower* BigNamedPower::makeTankPower() {
 	return new BigNamedTankPower();
 }
@@ -23,9 +21,5 @@ Power* BigNamedPower::factory() {
 }
 
 BigNamedPower::BigNamedPower() {
-	//nope
-}
-
-BigNamedPower::~BigNamedPower() {
-	//unlikely to ever need these
+	return;
 }
