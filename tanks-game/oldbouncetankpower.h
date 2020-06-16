@@ -18,7 +18,7 @@ public:
 	virtual BulletPower* makeBulletPower();
 
 	virtual double getTankAccelerationMultiplier() { return .5; }
-	virtual double getTankRadiusMultiplier() { return .5; }
+	virtual double getTankRadiusMultiplier() { return .5; } //should this stack?
 	virtual double getFiringRateMultiplier() { return .5; }
 
 	OldBounceTankPower();

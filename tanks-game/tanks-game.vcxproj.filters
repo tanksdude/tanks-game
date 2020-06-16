@@ -303,6 +303,15 @@
     <ClCompile Include="oldbouncepower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="oldbignamedbulletpower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="oldbignamedpower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="oldbignamedtankpower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -630,6 +639,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="oldbouncepower.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="oldbignamedbulletpower.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="oldbignamedpower.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="oldbignamedtankpower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -85,6 +85,7 @@
 #include "devlonginvinciblenamedpower.h" //invincible but lasts a long time
 //old powers:
 #include "oldbouncepower.h" //identical to bounce except it makes the tank smaller
+#include "oldbignamedpower.h" //big but moves at half speed (not quarter) and the speed stacks
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
@@ -1250,6 +1251,7 @@ int main(int argc, char** argv) {
 
 	//old:
 	PowerupManager::addPowerFactory(OldBouncePower::factory);
+	PowerupManager::addPowerFactory(OldBigNamedPower::factory);
 
 	//vanilla (some are also "old"):
 	LevelManager::addLevelFactory(DefaultRandomLevel::factory);
