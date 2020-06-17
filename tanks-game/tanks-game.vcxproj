@@ -215,6 +215,7 @@
     <ClCompile Include="powerupmanager.cpp" />
     <ClCompile Include="developerlevel0.cpp" />
     <ClCompile Include="randomlevel.cpp" />
+    <ClCompile Include="rectangularlightning.cpp" />
     <ClCompile Include="recthazard.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="resetthings.cpp" />
@@ -325,6 +326,7 @@
     <ClInclude Include="developerlevel0.h" />
     <ClInclude Include="randomlevel.h" />
     <ClInclude Include="rect.h" />
+    <ClInclude Include="rectangularlightning.h" />
     <ClInclude Include="recthazard.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="resetthings.h" />

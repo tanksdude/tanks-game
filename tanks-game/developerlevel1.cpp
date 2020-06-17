@@ -21,6 +21,9 @@ void DeveloperLevel1::initialize() {
 	std::string* paras = new std::string[4]{std::to_string(GAME_WIDTH/2 - 80 + 20), std::to_string(GAME_HEIGHT/2 - 40), std::to_string(60*2), std::to_string(20*2)};
 	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("horizontal lightning")(4, paras));
 	delete[] paras;
+	paras = new std::string[4]{std::to_string(GAME_WIDTH/2 - 50 + 20), std::to_string(GAME_HEIGHT/2 - 120), std::to_string(30*2), std::to_string(30*2)};
+	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("rectangular lightning")(4, paras));
+	delete[] paras;
 	paras = new std::string[4]{std::to_string(GAME_WIDTH/2 - 80 + 20), std::to_string(GAME_HEIGHT/2), std::to_string(60*2), std::to_string(20*2)};
 	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("rectangular lava")(4, paras));
 	delete[] paras;
@@ -36,6 +39,7 @@ void DeveloperLevel1::initialize() {
 	PowerupManager::pushPowerup(new PowerSquare(100, 20, "big"));
 	PowerupManager::pushPowerup(new PowerSquare(120, 20, "homing"));
 	PowerupManager::pushPowerup(new PowerSquare(140, 20, "grenade"));
+	PowerupManager::pushPowerup(new PowerSquare(160, 20, "banana"));
 
 	std::string* names = new std::string[3]{ "multishot", "multishot", "invincible" };
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH-20, GAME_HEIGHT-20, names, 3));

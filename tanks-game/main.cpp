@@ -63,6 +63,7 @@
 
 //hazards:
 #include "stationaryturret.h"
+#include "rectangularlightning.h"
 #include "horizontallightning.h"
 #include "rectangularlava.h"
 #include "circularlava.h"
@@ -1270,6 +1271,7 @@ int main(int argc, char** argv) {
 	LevelManager::addLevelFactory(OldEmptyLevel::factory);
 
 	HazardManager::addCircleHazardFactory(StationaryTurret::factory);
+	HazardManager::addRectHazardFactory(RectangularLightning::factory);
 	HazardManager::addRectHazardFactory(HorizontalLightning::factory);
 	HazardManager::addRectHazardFactory(RectangularLava::factory);
 	HazardManager::addCircleHazardFactory(CircularLava::factory);
@@ -1297,7 +1299,7 @@ int main(int argc, char** argv) {
 	TankManager::pushTank(new Tank(20, 160, 0, 1, "WASD", { false, 'w' }, { false, 'a' }, { false, 'd' }, { false, 's' }, { false, 'e' }));
 	TankManager::pushTank(new Tank(620, 160, PI, 2, "Arrow Keys", { true, GLUT_KEY_UP }, { true, GLUT_KEY_LEFT }, { true, GLUT_KEY_RIGHT }, { true, GLUT_KEY_DOWN }, { false, '/' }));
 #if _DEBUG
-	LevelManager::pushLevel("dev", "dev0");
+	LevelManager::pushLevel("dev", "dev1");
 #else
 	LevelManager::pushLevel("vanilla", "default random");
 #endif

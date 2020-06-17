@@ -31,9 +31,6 @@ HorizontalLightning::HorizontalLightning(double xpos, double ypos, double width,
 	std::copy(temp, temp+2, stateMultiplier);
 	currentlyActive = false;
 	//flexible = false;
-
-	leftPoint  = new Point(x,     y + h/2);
-	rightPoint = new Point(x + w, y + h/2);
 	
 	lengthOfBolt = 4; //TODO: figure out logic for constraining this to make it look pretty
 	bolts.reserve(maxBolts);
@@ -58,9 +55,16 @@ int HorizontalLightning::getDefaultNumBoltPoints(double horzDist) {
 	return (boltPoints < 2 ? 2 : boltPoints);
 }
 
+Circle* HorizontalLightning::getLeftPoint() {
+	return new Point(x, y + h/2);
+}
+
+Circle* HorizontalLightning::getRightPoint() {
+	return new Point(x + w, y + h/2);
+}
+
 HorizontalLightning::~HorizontalLightning() {
 	clearBolts();
-	delete leftPoint, rightPoint;
 
 	local_uninitializeGPU();
 	//uninitializeGPU();
@@ -215,6 +219,8 @@ void HorizontalLightning::specialEffectCircleCollision(Circle* c) {
 	 */
 
 	//TODO: confirm everything is good
+	Circle* leftPoint = getLeftPoint();
+	Circle* rightPoint = getRightPoint();
 	double intersectionXL, intersectionXR, intersectionYL, intersectionYR;
 	int boltPointsL = -1, boltPointsR = -1;
 	//determine region the circle is in
@@ -425,6 +431,7 @@ void HorizontalLightning::specialEffectCircleCollision(Circle* c) {
 	pushBolt(new LightningBolt(0, h/2, intersectionXL-x, intersectionYL-y, boltPointsL), false);
 	pushBolt(new LightningBolt(intersectionXL-x, intersectionYL-y, intersectionXR-x, intersectionYR-y, 2), false);
 	pushBolt(new LightningBolt(intersectionXR-x, intersectionYR-y, w, h/2, boltPointsR), false);
+	delete leftPoint, rightPoint;
 
 	//compared to JS Tanks, this intersection logic is much more complex
 	//that's okay because wallhacking into a lightning will look less weird

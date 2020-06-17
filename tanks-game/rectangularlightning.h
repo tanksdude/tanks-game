@@ -7,19 +7,18 @@
 #include "vertexbuffer.h"
 #include "indexbuffer.h"
 
-class HorizontalLightning : public RectHazard {
-	//just called Lightning in JS Tanks
+class RectangularLightning : public RectHazard {
+	//called LightningZone in JS Tanks
 protected:
 	double tickCount = 0;
 	double tickCycle;
 	bool currentlyActive;
 	double stateMultiplier[2]; //length = 2 because bool bolt action
-	//bool flexible; //worry about later
+	//bool flexible; //how would this work?
 
-	Circle* getLeftPoint(); //for checks when a bullet/tank collides
-	Circle* getRightPoint();
+	Circle* getCenterPoint(); //for checks when a bullet/tank collides (needs to be a function in case the lightning changes size or position)
 
-	const unsigned int maxBolts = 2; //this is maximum amount of normal bolts; the lightning can make any number of bolts when it has to destroy a bullet or tank
+	const unsigned int maxBolts = 1; //this is maximum amount of normal bolts; the lightning can make any number of bolts when it has to destroy a bullet or tank
 	double lengthOfBolt;
 	std::vector<LightningBolt*> bolts; //is a vector of pointers instead of objects so resizes take less time
 	virtual void clearBolts(); //the vector holds pointers, so memory has to be freed
@@ -28,9 +27,9 @@ protected:
 	bool boltsNeeded = false; //if the lightning hits something, this is changed, and no random bolts will be made; reset every boltCycle ticks
 	virtual void refreshBolts(); //redraw the bolts
 	virtual void refreshBolt(int num); //redraw a bolt
-	virtual void simpleRefreshBolt(int num); //fast path for refreshing a bolt that goes from beginning to end
 	virtual int getDefaultNumBoltPoints(double horzDist); //number of points that make up a bolt
-	virtual void pushBolt(LightningBolt*, bool simpleRefresh);
+	virtual void pushBolt(LightningBolt*);
+	virtual void pushDefaultBolt(int num, bool randomize); //randomize should be false all of the time
 	std::vector<long> targetedObjects;
 
 private:
@@ -72,7 +71,7 @@ public:
 	virtual ColorValueHolder getBackgroundColor();
 	virtual ColorValueHolder getBoltColor();
 	virtual std::string getName() { return getClassName(); }
-	static std::string getClassName() { return "horizontal lightning"; }
+	static std::string getClassName() { return "rectangular lightning"; }
 
 	virtual bool validLocation();
 	virtual bool reasonableLocation();
@@ -81,13 +80,10 @@ public:
 	virtual void draw();
 	virtual void drawCPU();
 
-	HorizontalLightning(double xpos, double ypos, double width, double height);
-	//HorizontalLightning(double xpos, double ypos, double width, double height, bool flexible);
-	~HorizontalLightning();
+	RectangularLightning(double xpos, double ypos, double width, double height);
+	//RectangularLightning(double xpos, double ypos, double width, double height, bool flexible); //wanted?
+	~RectangularLightning();
 	static RectHazard* factory(int, std::string*);
 	static int getFactoryArgumentCount() { return 4; }
 	//static RectHazardConstructionTypes getConstructionType() { return RectHazardConstructionTypes::standardConstruction; }
-	virtual RectFactoryInformation getFactoryInformation() {
-		return { true, true, false, false, true };
-	}
 };
