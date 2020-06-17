@@ -18,7 +18,7 @@ VertexBuffer* RectangularLightning::background_vb;
 IndexBuffer* RectangularLightning::background_ib;
 bool RectangularLightning::initialized_GPU = false;
 
-RectangularLightning::RectangularLightning(double xpos, double ypos, double width, double height) {
+RectangularLightning::RectangularLightning(double xpos, double ypos, double width, double height, bool) {
 	x = xpos;
 	y = ypos;
 	w = width;
@@ -26,15 +26,19 @@ RectangularLightning::RectangularLightning(double xpos, double ypos, double widt
 	gameID = GameManager::getNextID();
 	teamID = HAZARD_TEAM;
 
+	//tickCount = 0;
 	tickCycle = 100; //100 is JS default (because of power speed)
 	double temp[2] = { 2, 2 };
 	std::copy(temp, temp+2, stateMultiplier);
 	currentlyActive = false;
 	//flexible = false;
 	
+	maxBolts = 1;
 	lengthOfBolt = 4; //TODO: figure out logic for constraining this to make it look pretty
 	bolts.reserve(maxBolts);
-	pushDefaultBolt(maxBolts, true); //there isn't really a default bolt...
+	//boltTick = 0;
+	//boltCycle = 4;
+	//boltsNeeded = false;
 
 	canAcceptPowers = false;
 
@@ -42,6 +46,11 @@ RectangularLightning::RectangularLightning(double xpos, double ypos, double widt
 	hasSpecialEffectTankCollision = true;
 	modifiesBulletCollision = true;
 	hasSpecialEffectBulletCollision = true;
+}
+
+RectangularLightning::RectangularLightning(double xpos, double ypos, double width, double height)
+: RectangularLightning(xpos, ypos, width, height, true) {
+	pushDefaultBolt(maxBolts, true); //there isn't really a default bolt...
 
 	local_initializeGPU();
 	initializeGPU();
@@ -89,6 +98,7 @@ bool RectangularLightning::initializeGPU() {
 	return true;
 }
 
+//requires a bolt to initialize:
 void RectangularLightning::local_initializeGPU() {
 	float* positions = new float[bolts[0]->length*2];
 	for (int i = 0; i < bolts[0]->length; i++) {
@@ -187,7 +197,7 @@ void RectangularLightning::tick() {
 }
 
 void RectangularLightning::specialEffectCircleCollision(Circle* c) {
-	//TODO: finish
+	//TODO: is this done?
 	Circle* centerPoint = getCenterPoint();
 	double intersectionX, intersectionY;
 	int boltPoints = -1;

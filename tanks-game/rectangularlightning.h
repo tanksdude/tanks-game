@@ -18,18 +18,18 @@ protected:
 
 	Circle* getCenterPoint(); //for checks when a bullet/tank collides (needs to be a function in case the lightning changes size or position)
 
-	const unsigned int maxBolts = 1; //this is maximum amount of normal bolts; the lightning can make any number of bolts when it has to destroy a bullet or tank
+	unsigned int maxBolts; // = 1; //this is maximum amount of normal bolts; the lightning can make any number of bolts when it has to destroy a bullet or tank
 	double lengthOfBolt;
 	std::vector<LightningBolt*> bolts; //is a vector of pointers instead of objects so resizes take less time
 	virtual void clearBolts(); //the vector holds pointers, so memory has to be freed
 	double boltTick = 0;
 	double boltCycle = 4; //how often bolts get refreshed
-	bool boltsNeeded = false; //if the lightning hits something, this is changed, and no random bolts will be made; reset every boltCycle ticks
+	bool boltsNeeded = false; //if the lightning hits something, this is changed, and no random bolts will be made; resets every boltCycle ticks
 	virtual void refreshBolts(); //redraw the bolts
 	virtual void refreshBolt(int num); //redraw a bolt
 	virtual int getDefaultNumBoltPoints(double horzDist); //number of points that make up a bolt
 	virtual void pushBolt(LightningBolt*);
-	virtual void pushDefaultBolt(int num, bool randomize); //randomize should be false all of the time
+	virtual void pushDefaultBolt(int num, bool randomize); //randomize should be true all of the time
 	std::vector<long> targetedObjects;
 
 private:
@@ -40,10 +40,10 @@ private:
 	VertexBuffer* bolt_vb;
 	//the bolt is just lines so only the length is needed when drawing (meaning no IndexBuffer needed)
 	int bolt_vb_length;
-	void local_reinitializeGPU(int length);
 	static bool initialized_GPU;
-	virtual void streamBoltVertices(unsigned int boltNum); //(stream to bolt_vb)
-public:
+	void local_reinitializeGPU(int length);
+	void streamBoltVertices(unsigned int boltNum); //(stream to bolt_vb)
+
 	static bool initializeGPU();
 	void local_initializeGPU();
 	static bool uninitializeGPU();
@@ -80,6 +80,9 @@ public:
 	virtual void draw();
 	virtual void drawCPU();
 
+protected:
+	RectangularLightning(double xpos, double ypos, double width, double height, bool base); //doesn't initialize GPU
+public:
 	RectangularLightning(double xpos, double ypos, double width, double height);
 	//RectangularLightning(double xpos, double ypos, double width, double height, bool flexible); //wanted?
 	~RectangularLightning();

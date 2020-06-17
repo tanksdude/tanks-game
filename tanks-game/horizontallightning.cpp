@@ -18,33 +18,22 @@ VertexBuffer* HorizontalLightning::background_vb;
 IndexBuffer* HorizontalLightning::background_ib;
 bool HorizontalLightning::initialized_GPU = false;
 
-HorizontalLightning::HorizontalLightning(double xpos, double ypos, double width, double height) {
-	x = xpos;
-	y = ypos;
-	w = width;
-	h = height;
-	gameID = GameManager::getNextID();
-	teamID = HAZARD_TEAM;
-
-	tickCycle = 100; //100 is JS default (because of power speed)
-	double temp[2] = { 2, 2 };
-	std::copy(temp, temp+2, stateMultiplier);
-	currentlyActive = false;
+HorizontalLightning::HorizontalLightning(double xpos, double ypos, double width, double height) : RectangularLightning(xpos,ypos,width,height,true) {
+	//double temp[2] = { 2, 2 };
+	//std::copy(temp, temp+2, stateMultiplier);
 	//flexible = false;
 	
-	lengthOfBolt = 4; //TODO: figure out logic for constraining this to make it look pretty
+	maxBolts = 2;
+	lengthOfBolt = 4;
 	bolts.reserve(maxBolts);
-	int boltPoints = getDefaultNumBoltPoints(w);
-	for (int i = 0; i < maxBolts; i++) {
-		pushBolt(new LightningBolt(0, h/2, w, h/2, boltPoints), true);
-	}
+	pushDefaultBolt(maxBolts, true);
 
-	canAcceptPowers = false;
+	//canAcceptPowers = false;
 
-	modifiesTankCollision = true;
-	hasSpecialEffectTankCollision = true;
-	modifiesBulletCollision = true;
-	hasSpecialEffectBulletCollision = true;
+	//modifiesTankCollision = true;
+	//hasSpecialEffectTankCollision = true;
+	//modifiesBulletCollision = true;
+	//hasSpecialEffectBulletCollision = true;
 
 	local_initializeGPU();
 	initializeGPU();
@@ -64,9 +53,10 @@ Circle* HorizontalLightning::getRightPoint() {
 }
 
 HorizontalLightning::~HorizontalLightning() {
-	clearBolts();
+	//calls ~RectangularLightning(), so this doesn't need to do anything extra
+	//clearBolts();
 
-	local_uninitializeGPU();
+	local_uninitializeGPU(); //I don't know if this is okay, but there isn't an error...
 	//uninitializeGPU();
 }
 
@@ -96,6 +86,7 @@ bool HorizontalLightning::initializeGPU() {
 	return true;
 }
 
+//requires a bolt to initialize:
 void HorizontalLightning::local_initializeGPU() {
 	float* positions = new float[bolts[0]->length*2];
 	for (int i = 0; i < bolts[0]->length; i++) {
@@ -156,44 +147,6 @@ RectHazard* HorizontalLightning::factory(int argc, std::string* argv) {
 		return new HorizontalLightning(x, y, w, h);
 	}
 	return new HorizontalLightning(0, 0, 0, 0);
-}
-
-void HorizontalLightning::tick() {
-	if (!validLocation()) {
-		tickCount = 0;
-		currentlyActive = false;
-		targetedObjects.clear();
-		clearBolts();
-		return;
-	}
-
-	tickCount++;
-	if (tickCount >= tickCycle * stateMultiplier[currentlyActive]) {
-		if (tickCycle * stateMultiplier[currentlyActive] <= 0) {
-			tickCount = 0;
-			currentlyActive = true;
-		} else {
-			tickCount -= tickCycle * stateMultiplier[currentlyActive];
-			currentlyActive = !currentlyActive;
-		}
-	}
-	
-	if (currentlyActive) {
-		if (boltTick >= boltCycle) {
-			//hazard tick comes before collision, therefore there will be more bolt refreshes after this if a bullet/tank collides
-			targetedObjects.clear();
-			boltsNeeded = false;
-			clearBolts();
-			int boltPoints = getDefaultNumBoltPoints(w);
-			for (int i = 0; i < maxBolts; i++) {
-				pushBolt(new LightningBolt(0, h/2, w, h/2, boltPoints), true);
-			}
-			boltTick = 0;
-		}
-		boltTick++;
-	} else {
-		boltTick = boltCycle; //start at boltCycle to force a refresh as soon as possible
-	}
 }
 
 void HorizontalLightning::specialEffectCircleCollision(Circle* c) {
@@ -440,37 +393,6 @@ void HorizontalLightning::specialEffectCircleCollision(Circle* c) {
 	//probably, but still needs a refactor
 }
 
-void HorizontalLightning::specialEffectTankCollision(Tank* t) {
-	//if bolts are being randomized, clear them, and mark that they've been cleared
-	if (!boltsNeeded) {
-		clearBolts();
-	}
-	boltsNeeded = true;
-
-	if (std::find(targetedObjects.begin(), targetedObjects.end(), t->getGameID()) == targetedObjects.end()) {
-		targetedObjects.push_back(t->getGameID());
-	} else {
-		return;
-	}
-
-	specialEffectCircleCollision(t);
-}
-
-void HorizontalLightning::specialEffectBulletCollision(Bullet* b) {
-	if (!boltsNeeded) {
-		clearBolts();
-	}
-	boltsNeeded = true;
-
-	if (std::find(targetedObjects.begin(), targetedObjects.end(), b->getGameID()) == targetedObjects.end()) {
-		targetedObjects.push_back(b->getGameID());
-	} else {
-		return;
-	}
-
-	specialEffectCircleCollision(b);
-}
-
 void HorizontalLightning::pushBolt(LightningBolt* l, bool simpleRefresh) {
 	if (l->length > bolt_vb_length) {
 		local_reinitializeGPU(l->length);
@@ -480,6 +402,20 @@ void HorizontalLightning::pushBolt(LightningBolt* l, bool simpleRefresh) {
 		simpleRefreshBolt(bolts.size() - 1);
 	} else {
 		refreshBolt(bolts.size() - 1);
+	}
+}
+
+void HorizontalLightning::pushDefaultBolt(int num, bool randomize) {
+	for (int i = 0; i < num; i++) {
+		LightningBolt* l = new LightningBolt(0, h/2, w, h/2, getDefaultNumBoltPoints(w));
+		if (randomize) {
+			pushBolt(l, true);
+		} else {
+			if (l->length > bolt_vb_length) {
+				local_reinitializeGPU(l->length);
+			}
+			bolts.push_back(l);
+		}
 	}
 }
 
@@ -658,24 +594,6 @@ void HorizontalLightning::refreshBolt(int num) {
 		bolts[num]->positions[j*2]   = testX;
 		bolts[num]->positions[j*2+1] = testY;
 	}
-}
-
-void HorizontalLightning::clearBolts() {
-	for (int i = 0; i < bolts.size(); i++) {
-		delete bolts[i];
-	}
-	bolts.clear();
-}
-
-ColorValueHolder HorizontalLightning::getBackgroundColor() {
-	if (currentlyActive) {
-		return ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(.75f, .75f, .75f), .25);
-	}
-	return ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(.75f, .75f, .75f), .25*constrain<double>(tickCount/(tickCycle*stateMultiplier[currentlyActive]), 0, 1));
-}
-
-ColorValueHolder HorizontalLightning::getBoltColor() {
-	return ColorValueHolder(0xBB/255.0, 1.0f, 1.0f);
 }
 
 void HorizontalLightning::draw() {
