@@ -1,30 +1,11 @@
 #pragma once
 #include "recthazard.h"
 #include <vector>
+#include "lightningcommon.h"
 
 #include "vertexarray.h"
 #include "vertexbuffer.h"
 #include "indexbuffer.h"
-
-struct LightningBolt {
-	std::vector<float> positions; //positions is array of (x,y) points (for easy vertex streaming)
-	int length; //positions.size()/2, unless it's uninitialized
-	LightningBolt() { length = 0; } //don't use
-	LightningBolt(int l) { //try not to use
-		length = l;
-		positions.reserve(l*2);
-	}
-	LightningBolt(float startX, float startY, float endX, float endY, int l) {
-		length = l;
-		positions.reserve(l*2);
-		positions.push_back(startX); positions.push_back(startY);
-		for (int i = 1; i < l-1; i++) {
-			positions.push_back(startX + (endX-startX) * float(i)/(l-1));
-			positions.push_back(startY + (endY-startY) * float(i)/(l-1));
-		}
-		positions.push_back(endX); positions.push_back(endY);
-	}
-};
 
 class HorizontalLightning : public RectHazard {
 	//just called Lightning in JS Tanks
@@ -35,8 +16,8 @@ protected:
 	double stateMultiplier[2]; //length = 2 because bool bolt action
 	//bool flexible; //worry about later
 
-	Circle* leftSide; //for checks when a bullet/tank collides
-	Circle* rightSide;
+	Circle* leftPoint; //for checks when a bullet/tank collides
+	Circle* rightPoint;
 
 	const unsigned int maxBolts = 2; //this is maximum amount of normal bolts; the lightning can make any number of bolts when it has to destroy a bullet or tank
 	double lengthOfBolt;

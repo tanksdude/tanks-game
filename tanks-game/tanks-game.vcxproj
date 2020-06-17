@@ -161,6 +161,7 @@
     <ClCompile Include="gamemanager.cpp" />
     <ClCompile Include="generalizedlava.cpp" />
     <ClCompile Include="level.cpp" />
+    <ClCompile Include="lightningcommon.cpp" />
     <ClCompile Include="oldbignamedbulletpower.cpp" />
     <ClCompile Include="oldbignamedpower.cpp" />
     <ClCompile Include="oldbignamedtankpower.cpp" />
@@ -263,6 +264,7 @@
     <ClInclude Include="gamemanager.h" />
     <ClInclude Include="gamething.h" />
     <ClInclude Include="generalizedlava.h" />
+    <ClInclude Include="lightningcommon.h" />
     <ClInclude Include="oldbignamedbulletpower.h" />
     <ClInclude Include="oldbignamedpower.h" />
     <ClInclude Include="oldbignamedtankpower.h" />

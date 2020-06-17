@@ -312,6 +312,9 @@
     <ClCompile Include="oldbignamedtankpower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="lightningcommon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -648,6 +651,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="oldbignamedtankpower.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lightningcommon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -32,8 +32,8 @@ HorizontalLightning::HorizontalLightning(double xpos, double ypos, double width,
 	currentlyActive = false;
 	//flexible = false;
 
-	leftSide  = new Point(x,     y + h/2);
-	rightSide = new Point(x + w, y + h/2);
+	leftPoint  = new Point(x,     y + h/2);
+	rightPoint = new Point(x + w, y + h/2);
 	
 	lengthOfBolt = 4; //TODO: figure out logic for constraining this to make it look pretty
 	bolts.reserve(maxBolts);
@@ -60,7 +60,7 @@ int HorizontalLightning::getDefaultNumBoltPoints(double horzDist) {
 
 HorizontalLightning::~HorizontalLightning() {
 	clearBolts();
-	delete leftSide, rightSide;
+	delete leftPoint, rightPoint;
 
 	local_uninitializeGPU();
 	//uninitializeGPU();
@@ -245,7 +245,7 @@ void HorizontalLightning::specialEffectCircleCollision(Circle* c) {
 		if (c->x-c->r < x) {
 			//left
 
-			if (CollisionHandler::fullyCollided(leftSide, c)) {
+			if (CollisionHandler::fullyCollided(leftPoint, c)) {
 				intersectionXL = c->x;
 				intersectionYL = c->y;
 				boltPointsL = 2;
@@ -324,7 +324,7 @@ void HorizontalLightning::specialEffectCircleCollision(Circle* c) {
 				}
 			}
 
-			if (CollisionHandler::fullyCollided(rightSide, c)) { //this should be very rare (only happens for small lightnings)
+			if (CollisionHandler::fullyCollided(rightPoint, c)) { //this should be very rare (only happens for small lightnings)
 				intersectionXR = c->x;
 				intersectionYR = c->y;
 				boltPointsR = 2;
@@ -333,7 +333,7 @@ void HorizontalLightning::specialEffectCircleCollision(Circle* c) {
 		} else { //c->x+c->r > x+w
 			//right
 
-			if (CollisionHandler::fullyCollided(rightSide, c)) {
+			if (CollisionHandler::fullyCollided(rightPoint, c)) {
 				intersectionXR = c->x;
 				intersectionYR = c->y;
 				boltPointsR = 2;
@@ -410,7 +410,7 @@ void HorizontalLightning::specialEffectCircleCollision(Circle* c) {
 				}
 			}
 
-			if (CollisionHandler::fullyCollided(leftSide, c)) { //this should be very rare (only happens for small lightnings)
+			if (CollisionHandler::fullyCollided(leftPoint, c)) { //this should be very rare (only happens for small lightnings)
 				intersectionXL = c->x;
 				intersectionYL = c->y;
 				boltPointsL = 2;
