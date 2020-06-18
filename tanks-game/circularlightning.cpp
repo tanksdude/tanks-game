@@ -1,4 +1,4 @@
-#include "rectangularlightning.h"
+#include "circularlightning.h"
 #include "gamemanager.h"
 #include "renderer.h"
 #include "backgroundrect.h"
@@ -13,16 +13,15 @@
 #include "wallmanager.h"
 #include <iostream>
 
-VertexArray* RectangularLightning::background_va;
-VertexBuffer* RectangularLightning::background_vb;
-IndexBuffer* RectangularLightning::background_ib;
-bool RectangularLightning::initialized_GPU = false;
+VertexArray* CircularLightning::background_va;
+VertexBuffer* CircularLightning::background_vb;
+IndexBuffer* CircularLightning::background_ib;
+bool CircularLightning::initialized_GPU = false;
 
-RectangularLightning::RectangularLightning(double xpos, double ypos, double width, double height, bool) {
+CircularLightning::CircularLightning(double xpos, double ypos, double radius) {
 	x = xpos;
 	y = ypos;
-	w = width;
-	h = height;
+	r = radius;
 	gameID = GameManager::getNextID();
 	teamID = HAZARD_TEAM;
 
@@ -34,8 +33,9 @@ RectangularLightning::RectangularLightning(double xpos, double ypos, double widt
 	//flexible = false;
 	
 	maxBolts = 1;
-	lengthOfBolt = 4; //TODO: figure out logic for constraining this to make it look pretty
+	lengthOfBolt = 4;
 	bolts.reserve(maxBolts);
+	pushDefaultBolt(maxBolts, true); //there isn't really a default bolt...
 	//boltTick = 0;
 	//boltCycle = 4;
 	//boltsNeeded = false;
@@ -46,60 +46,59 @@ RectangularLightning::RectangularLightning(double xpos, double ypos, double widt
 	hasSpecialEffectTankCollision = true;
 	modifiesBulletCollision = true;
 	hasSpecialEffectBulletCollision = true;
-}
-
-RectangularLightning::RectangularLightning(double xpos, double ypos, double width, double height)
-: RectangularLightning(xpos, ypos, width, height, true) {
-	pushDefaultBolt(maxBolts, true); //there isn't really a default bolt...
 
 	local_initializeGPU();
 	initializeGPU();
 }
 
-int RectangularLightning::getDefaultNumBoltPoints(double horzDist) {
+int CircularLightning::getDefaultNumBoltPoints(double horzDist) {
 	int boltPoints = ceil(horzDist / lengthOfBolt); //not floor because the last point is the edge of the lightning area
 	return (boltPoints < 2 ? 2 : boltPoints);
 }
 
-Circle* RectangularLightning::getCenterPoint() {
-	return new Point(x + w/2, y + h/2);
+Circle* CircularLightning::getCenterPoint() {
+	return new Point(x, y);
 }
 
-RectangularLightning::~RectangularLightning() {
+CircularLightning::~CircularLightning() {
 	clearBolts();
 
 	local_uninitializeGPU();
 	//uninitializeGPU();
 }
 
-bool RectangularLightning::initializeGPU() {
+bool CircularLightning::initializeGPU() {
 	if (initialized_GPU) {
 		return false;
 	}
 
-	float positions[] = {
-		0, 0,
-		1, 0,
-		1, 1,
-		0, 1
-	};
-	unsigned int indices[] = {
-		0, 1, 2,
-		2, 3, 0
-	};
+	float positions[(Circle::numOfSides+1)*2];
+	positions[0] = 0;
+	positions[1] = 0;
+	for (int i = 1; i < Circle::numOfSides+1; i++) {
+		positions[i*2]   = cos((i-1) * 2*PI / Circle::numOfSides);
+		positions[i*2+1] = sin((i-1) * 2*PI / Circle::numOfSides);
+	}
 
-	background_vb = new VertexBuffer(positions, 4*2 * sizeof(float), GL_DYNAMIC_DRAW);
+	unsigned int indices[Circle::numOfSides*3];
+	for (int i = 0; i < Circle::numOfSides; i++) {
+		indices[i*3]   = 0;
+		indices[i*3+1] = i+1;
+		indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
+	}
+
+	background_vb = new VertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float), GL_DYNAMIC_DRAW);
 	VertexBufferLayout layout(2);
 	background_va = new VertexArray(*background_vb, layout);
 
-	background_ib = new IndexBuffer(indices, 6);
+	background_ib = new IndexBuffer(indices, Circle::numOfSides*3);
 
 	initialized_GPU = true;
 	return true;
 }
 
 //requires a bolt to initialize:
-void RectangularLightning::local_initializeGPU() {
+void CircularLightning::local_initializeGPU() {
 	float* positions = new float[bolts[0]->length*2];
 	for (int i = 0; i < bolts[0]->length; i++) {
 		positions[i*2]   = bolts[0]->positions[i*2];
@@ -114,7 +113,7 @@ void RectangularLightning::local_initializeGPU() {
 	delete[] positions;
 }
 
-void RectangularLightning::local_reinitializeGPU(int length) { //does not seed the VertexBuffer with values
+void CircularLightning::local_reinitializeGPU(int length) { //does not seed the VertexBuffer with values
 	delete bolt_va;
 	delete bolt_vb;
 
@@ -128,7 +127,7 @@ void RectangularLightning::local_reinitializeGPU(int length) { //does not seed t
 	delete[] positions;
 }
 
-bool RectangularLightning::uninitializeGPU() {
+bool CircularLightning::uninitializeGPU() {
 	if (!initialized_GPU) {
 		return false;
 	}
@@ -141,27 +140,27 @@ bool RectangularLightning::uninitializeGPU() {
 	return true;
 }
 
-void RectangularLightning::local_uninitializeGPU() {
+void CircularLightning::local_uninitializeGPU() {
 	delete bolt_va;
 	delete bolt_vb;
 }
 
-void RectangularLightning::streamBoltVertices(unsigned int boltNum) {
+void CircularLightning::streamBoltVertices(unsigned int boltNum) {
 	bolt_vb->modifyData(bolts[boltNum]->positions.data(), bolts[boltNum]->length*2 * sizeof(float));
 }
 
-RectHazard* RectangularLightning::factory(int argc, std::string* argv) {
-	if (argc >= 4) {
+CircleHazard* CircularLightning::factory(int argc, std::string* argv) {
+	if (argc >= 3) {
 		double x = std::stod(argv[0]);
 		double y = std::stod(argv[1]);
-		double w = std::stod(argv[2]);
-		double h = std::stod(argv[3]);
-		return new RectangularLightning(x, y, w, h);
+		double r = std::stod(argv[2]);
+		return new CircularLightning(x, y, r);
 	}
-	return new RectangularLightning(0, 0, 0, 0);
+	return new CircularLightning(0, 0, 0);
 }
 
-void RectangularLightning::tick() {
+void CircularLightning::tick() {
+	//identical to RectangularLightning; will be replaced by GeneralizedLightning
 	if (!validLocation()) {
 		tickCount = 0;
 		currentlyActive = false;
@@ -196,8 +195,8 @@ void RectangularLightning::tick() {
 	}
 }
 
-void RectangularLightning::specialEffectCircleCollision(Circle* c) {
-	//TODO: is this done?
+void CircularLightning::specialEffectCircleCollision(Circle* c) {
+	//it's so nice how simple this is
 	Circle* centerPoint = getCenterPoint();
 	double intersectionX, intersectionY;
 	int boltPoints = -1;
@@ -206,89 +205,26 @@ void RectangularLightning::specialEffectCircleCollision(Circle* c) {
 		intersectionY = c->y;
 		boltPoints = 2;
 	} else {
-		//if the circle's center isn't fully in the rectangle area, then the endpoint may not be inside the rectangle
-		Circle* circleCenter = new Point(c->x, c->y);
-		if (CollisionHandler::fullyCollided(circleCenter, this)) {
-			//circle center inside rectangle area
-			//find angle from center to circle's center
-			double angle = atan2(c->y - centerPoint->y, c->x - centerPoint->x);
-			//find distance from center to center, minus circle's radius
-			double d = sqrt(pow(centerPoint->x - c->x, 2) + pow(centerPoint->y - c->y, 2)) - c->r;
-			if (d < 0) {
-				throw std::domain_error("ERROR: distance on rectangular lightning is wrong!");
-				//is is really a "domain error?"
-			}
-			intersectionX = centerPoint->x + cos(angle) * d;
-			intersectionY = centerPoint->y + sin(angle) * d;
-			boltPoints = getDefaultNumBoltPoints(d);
-		} else {
-			//circle center outside rectangle area
-			double xpos, ypos;
-			if (c->x < x) {
-				xpos = x; //circle too far to the left
-			} else if (c->x > x+w) {
-				xpos = x+w; //circle too far to the right
-			} else {
-				xpos = c->x; //circle's x-position is fine
-			}
-			if (c->y < y) {
-				ypos = y; //circle too low
-			} else if (c->y > y+h) {
-				ypos = y+h; //circle too high
-			} else {
-				ypos = c->y; //circle's y-position is fine
-			}
-			//std::cout << "xpos: " << (xpos-c->x) << ", ypos: " << (ypos-c->y) << std::endl;
-			//circle-line intersection: https://mathworld.wolfram.com/Circle-LineIntersection.html
-			//normally I always use pow(x,2) for clarity, but it's getting repetitive, and also x*x is faster
-			double x1 = xpos - c->x, x2 = centerPoint->x - c->x;
-			double y1 = ypos - c->y, y2 = centerPoint->y - c->y;
-			double dx = x2-x1, dy = y2-y1;
-			double dr = sqrt(pow(dx,2) + pow(dy,2));
-			double D = x1*y2 - x2*y1; //I spent about an hour debugging this, only to find out I did x1*y2 - x1*y1. Don't make the same mistake.
-			double intersectionX1 = (D*dy - (dy<0 ? -1 : 1) * dx * sqrt(c->r*c->r * dr*dr - D*D)) / (dr*dr);
-			double intersectionX2 = (D*dy + (dy<0 ? -1 : 1) * dx * sqrt(c->r*c->r * dr*dr - D*D)) / (dr*dr);
-			double intersectionY1 = (-D*dx - abs(dy) * sqrt(c->r*c->r * dr*dr - D*D)) / (dr*dr);
-			double intersectionY2 = (-D*dx + abs(dy) * sqrt(c->r*c->r * dr*dr - D*D)) / (dr*dr);
-			//std::cout << "x1: " << intersectionX1 << ", ";
-			//std::cout << "x2: " << intersectionX2 << ", ";
-			//std::cout << "y1: " << intersectionY1 << ", ";
-			//std::cout << "y2: " << intersectionY2 << std::endl;
-			
-			if (c->x < x + w/2) {
-				intersectionX = std::max(intersectionX1, intersectionX2) + c->x;
-			} else {
-				intersectionX = std::min(intersectionX1, intersectionX2) + c->x;
-			}
-			if (c->y < y + h/2) {
-				intersectionY = std::max(intersectionY1, intersectionY2) + c->y;
-			} else {
-				intersectionY = std::min(intersectionY1, intersectionY2) + c->y;
-			}
-			if (intersectionX < x || intersectionX > x+w) {
-				std::cerr << "WARNING: rectangular lightning endpoint X out of range!" << std::endl;
-				intersectionX = constrain<double>(intersectionX, x, x+w);
-			}
-			if (intersectionY < y || intersectionY > y+h) {
-				std::cerr << "WARNING: rectangular lightning endpoint Y out of range!" << std::endl;
-				intersectionY = constrain<double>(intersectionY, y, y+h);
-			}
-			boltPoints = getDefaultNumBoltPoints(sqrt(pow(intersectionX - centerPoint->x, 2) + pow(intersectionY - centerPoint->y, 2)));
-			//pushBolt(new LightningBolt(w/2, h/2, intersectionX1 + c->x - x, intersectionY1 + c->y - y, 2)); //debugging
-			//pushBolt(new LightningBolt(w/2, h/2, intersectionX1 + c->x - x, intersectionY2 + c->y - y, 2));
-			//pushBolt(new LightningBolt(w/2, h/2, intersectionX2 + c->x - x, intersectionY1 + c->y - y, 2));
-			//pushBolt(new LightningBolt(w/2, h/2, intersectionX2 + c->x - x, intersectionY2 + c->y - y, 2));
+		//find angle from center to circle's center
+		double angle = atan2(c->y - centerPoint->y, c->x - centerPoint->x);
+		//find distance from center to center, minus circle's radius
+		double d = sqrt(pow(c->x - centerPoint->x, 2) + pow(c->y - centerPoint->y, 2)) - c->r;
+		if (d < 0) {
+			throw std::domain_error("ERROR: distance on circular lightning is wrong!");
+			//is is really a "domain error?"
 		}
-		delete circleCenter;
+		intersectionX = centerPoint->x + cos(angle) * d;
+		intersectionY = centerPoint->y + sin(angle) * d;
+		boltPoints = getDefaultNumBoltPoints(d);
 	}
 	//double dist = sqrt(pow(intersectionX - centerPoint->x, 2) + pow(intersectionY - centerPoint->y, 2));
 	//std::cout << dist << std::endl;
 	//boltPoints = (boltPoints < 2 ? getDefaultNumBoltPoints(dist) : boltPoints); //no need
-	pushBolt(new LightningBolt(w/2, h/2, intersectionX - x, intersectionY - y, boltPoints)); //TODO: is this right? (I think so)
+	pushBolt(new LightningBolt(0, 0, intersectionX - x, intersectionY - y, boltPoints)); //TODO: is this right? (probably)
 	delete centerPoint;
 }
 
-void RectangularLightning::specialEffectTankCollision(Tank* t) {
+void CircularLightning::specialEffectTankCollision(Tank* t) {
 	//if bolts are being randomized, clear them, and mark that they've been cleared
 	if (!boltsNeeded) {
 		clearBolts();
@@ -304,7 +240,7 @@ void RectangularLightning::specialEffectTankCollision(Tank* t) {
 	specialEffectCircleCollision(t);
 }
 
-void RectangularLightning::specialEffectBulletCollision(Bullet* b) {
+void CircularLightning::specialEffectBulletCollision(Bullet* b) {
 	if (!boltsNeeded) {
 		clearBolts();
 	}
@@ -319,7 +255,7 @@ void RectangularLightning::specialEffectBulletCollision(Bullet* b) {
 	specialEffectCircleCollision(b);
 }
 
-void RectangularLightning::pushBolt(LightningBolt* l) {
+void CircularLightning::pushBolt(LightningBolt* l) {
 	if (l->length > bolt_vb_length) {
 		local_reinitializeGPU(l->length);
 	}
@@ -327,11 +263,12 @@ void RectangularLightning::pushBolt(LightningBolt* l) {
 	refreshBolt(bolts.size() - 1);
 }
 
-void RectangularLightning::pushDefaultBolt(int num, bool randomize) {
+void CircularLightning::pushDefaultBolt(int num, bool randomize) {
 	//the default bolt is from center to a random point
-	double xEnd = w*randFunc2(), yEnd = h*randFunc2();
+	double randR = r*randFunc2(), randAngle = 2*PI*randFunc();
+	double xEnd = randR*cos(randAngle), yEnd = randR*sin(randAngle);
 	for (int i = 0; i < num; i++) {
-		LightningBolt* l = new LightningBolt(w/2, h/2, xEnd, yEnd, getDefaultNumBoltPoints(sqrt(pow(xEnd - w/2, 2) + pow(yEnd - h/2, 2))));
+		LightningBolt* l = new LightningBolt(0, 0, xEnd, yEnd, getDefaultNumBoltPoints(sqrt(pow(xEnd - 0, 2) + pow(yEnd - 0, 2))));
 		if (randomize) {
 			pushBolt(l);
 		} else {
@@ -343,7 +280,7 @@ void RectangularLightning::pushDefaultBolt(int num, bool randomize) {
 	}
 }
 
-bool RectangularLightning::validLocation() {
+bool CircularLightning::validLocation() {
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		Wall* wa = WallManager::getWall(i);
 		if (CollisionHandler::partiallyCollidedIgnoreEdge(wa, this)) {
@@ -353,31 +290,30 @@ bool RectangularLightning::validLocation() {
 	return true;
 }
 
-bool RectangularLightning::reasonableLocation() {
+bool CircularLightning::reasonableLocation() {
 	return validLocation();
 }
 
-void RectangularLightning::refreshBolts() {
+void CircularLightning::refreshBolts() {
 	for (int i = 0; i < bolts.size(); i++) {
 		refreshBolt(i);
 	}
 }
 
-void RectangularLightning::refreshBolt(int num) {
-	//TODO: this needs more testing
+void CircularLightning::refreshBolt(int num) {
+	//TODO: more testing
 	if (bolts[num]->length <= 2) {
 		return;
 	}
 
-	double smaller = std::min(h, w), larger = std::max(h, w);
 	float deltaX = bolts[num]->positions[bolts[num]->length*2-2] - bolts[num]->positions[0];
 	float deltaY = bolts[num]->positions[bolts[num]->length*2-1] - bolts[num]->positions[1];
 	double dist = sqrt(pow(deltaX, 2) + pow(deltaY, 2));
 	double rotationAngle = atan2(deltaY, deltaX);
 	double angleSin = sin(rotationAngle);
 	double angleCos = cos(rotationAngle);
-	double newH = dist * smaller/larger;
-	double maxVariance = 1.0/4.0 * dist * smaller/larger;
+	double newH = dist * 1; //maybe *.5, I dunno
+	double maxVariance = 1.0/4.0 * dist * 1; //(same here)
 
 	float polygonX[6] = {
 		bolts[num]->positions[0],
@@ -415,33 +351,34 @@ void RectangularLightning::refreshBolt(int num) {
 			testY = bolts[num]->positions[j*2 - 1] + (deltaY/(bolts[num]->length-1)) + randTemp * angleCos;
 			testX = bolts[num]->positions[j*2 - 2] + (deltaX/(bolts[num]->length-1)) - randTemp * angleSin;
 			//std::cout << testX << " " << testY << std::endl;
-		} while (testY < 0 || testY > h || testX < 0 || testX > w || !pointInPolygon(6, polygonX, polygonY, testX, testY));
+		} while (sqrt(pow(testY,2) + pow(testX,2)) > r || !pointInPolygon(6, polygonX, polygonY, testX, testY));
+		//I'm not sure the first case can happen
 		bolts[num]->positions[j*2]   = testX;
 		bolts[num]->positions[j*2+1] = testY;
 	}
 }
 
-void RectangularLightning::clearBolts() {
+void CircularLightning::clearBolts() {
 	for (int i = 0; i < bolts.size(); i++) {
 		delete bolts[i];
 	}
 	bolts.clear();
 }
 
-ColorValueHolder RectangularLightning::getBackgroundColor() {
+ColorValueHolder CircularLightning::getBackgroundColor() {
 	if (currentlyActive) {
 		return ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(.75f, .75f, .75f), .25);
 	}
 	return ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(.75f, .75f, .75f), .25*constrain<double>(tickCount/(tickCycle*stateMultiplier[currentlyActive]), 0, 1));
 }
 
-ColorValueHolder RectangularLightning::getBoltColor() {
+ColorValueHolder CircularLightning::getBoltColor() {
 	return ColorValueHolder(0xBB/255.0, 1.0f, 1.0f);
 }
 
-void RectangularLightning::draw() {
+void CircularLightning::draw() {
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM = Renderer::GenerateMatrix(w, h, 0, x, y);
+	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, 0, x, y);
 	
 	//background:
 	//TODO: make drawUnder() a thing
@@ -475,7 +412,7 @@ void RectangularLightning::draw() {
 	}
 }
 
-void RectangularLightning::drawCPU() {
+void CircularLightning::drawCPU() {
 	//background:
 
 	//bolts:

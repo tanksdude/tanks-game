@@ -21,8 +21,11 @@ void DeveloperLevel1::initialize() {
 	std::string* paras = new std::string[4]{std::to_string(GAME_WIDTH/2 - 80 + 20), std::to_string(GAME_HEIGHT/2 - 40), std::to_string(60*2), std::to_string(20*2)};
 	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("horizontal lightning")(4, paras));
 	delete[] paras;
-	paras = new std::string[4]{std::to_string(GAME_WIDTH/2 - 50 + 20), std::to_string(GAME_HEIGHT/2 - 120), std::to_string(30*2), std::to_string(30*2)};
+	paras = new std::string[4]{std::to_string(GAME_WIDTH/2 - 80 + 20), std::to_string(GAME_HEIGHT/2 - 120), std::to_string(30*2), std::to_string(30*2)};
 	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("rectangular lightning")(4, paras));
+	delete[] paras;
+	paras = new std::string[3]{std::to_string(GAME_WIDTH/2 + 30), std::to_string(GAME_HEIGHT/2 - 90), std::to_string(30)};
+	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("circular lightning")(3, paras));
 	delete[] paras;
 	paras = new std::string[4]{std::to_string(GAME_WIDTH/2 - 80 + 20), std::to_string(GAME_HEIGHT/2), std::to_string(60*2), std::to_string(20*2)};
 	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("rectangular lava")(4, paras));
