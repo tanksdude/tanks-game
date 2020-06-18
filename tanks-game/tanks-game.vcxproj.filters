@@ -312,9 +312,6 @@
     <ClCompile Include="oldbignamedtankpower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lightningcommon.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="rectangularlightning.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

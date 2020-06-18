@@ -163,7 +163,6 @@
     <ClCompile Include="generalizedlava.cpp" />
     <ClCompile Include="generalizedlightning.cpp" />
     <ClCompile Include="level.cpp" />
-    <ClCompile Include="lightningcommon.cpp" />
     <ClCompile Include="oldbignamedbulletpower.cpp" />
     <ClCompile Include="oldbignamedpower.cpp" />
     <ClCompile Include="oldbignamedtankpower.cpp" />
