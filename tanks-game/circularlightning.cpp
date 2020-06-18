@@ -51,17 +51,12 @@ CircularLightning::CircularLightning(double xpos, double ypos, double radius) {
 	initializeGPU();
 }
 
-int CircularLightning::getDefaultNumBoltPoints(double horzDist) {
-	int boltPoints = ceil(horzDist / lengthOfBolt); //not floor because the last point is the edge of the lightning area
-	return (boltPoints < 2 ? 2 : boltPoints);
-}
-
 Circle* CircularLightning::getCenterPoint() {
 	return new Point(x, y);
 }
 
 CircularLightning::~CircularLightning() {
-	clearBolts();
+	//clearBolts();
 
 	local_uninitializeGPU();
 	//uninitializeGPU();
@@ -157,42 +152,6 @@ CircleHazard* CircularLightning::factory(int argc, std::string* argv) {
 		return new CircularLightning(x, y, r);
 	}
 	return new CircularLightning(0, 0, 0);
-}
-
-void CircularLightning::tick() {
-	//identical to RectangularLightning; will be replaced by GeneralizedLightning
-	if (!validLocation()) {
-		tickCount = 0;
-		currentlyActive = false;
-		targetedObjects.clear();
-		clearBolts();
-		return;
-	}
-
-	tickCount++;
-	if (tickCount >= tickCycle * stateMultiplier[currentlyActive]) {
-		if (tickCycle * stateMultiplier[currentlyActive] <= 0) {
-			tickCount = 0;
-			currentlyActive = true;
-		} else {
-			tickCount -= tickCycle * stateMultiplier[currentlyActive];
-			currentlyActive = !currentlyActive;
-		}
-	}
-	
-	if (currentlyActive) {
-		if (boltTick >= boltCycle) {
-			//hazard tick comes before collision, therefore there will be more bolt refreshes after this if a bullet/tank collides
-			targetedObjects.clear();
-			boltsNeeded = false;
-			clearBolts();
-			pushDefaultBolt(maxBolts, true);
-			boltTick = 0;
-		}
-		boltTick++;
-	} else {
-		boltTick = boltCycle; //start at boltCycle to force a refresh as soon as possible
-	}
 }
 
 void CircularLightning::specialEffectCircleCollision(Circle* c) {
@@ -346,7 +305,7 @@ void CircularLightning::refreshBolt(int num) {
 			testX = bolts[num]->positions[j*2 - 2] + (deltaX/(bolts[num]->length-1)) - randTemp * angleSin;
 			//std::cout << testX << " " << testY << std::endl;
 		} while (sqrt(pow(testY,2) + pow(testX,2)) > r || !pointInPolygon(6, polygonX, polygonY, testX, testY));
-		//I'm not sure the first case can happen
+		//the first case is rare, but I'm fairly certain it's a useless check if pointInPolygon is checked first
 		bolts[num]->positions[j*2]   = testX;
 		bolts[num]->positions[j*2+1] = testY;
 	}

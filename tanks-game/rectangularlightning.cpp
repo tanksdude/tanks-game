@@ -56,17 +56,12 @@ RectangularLightning::RectangularLightning(double xpos, double ypos, double widt
 	initializeGPU();
 }
 
-int RectangularLightning::getDefaultNumBoltPoints(double horzDist) {
-	int boltPoints = ceil(horzDist / lengthOfBolt); //not floor because the last point is the edge of the lightning area
-	return (boltPoints < 2 ? 2 : boltPoints);
-}
-
 Circle* RectangularLightning::getCenterPoint() {
 	return new Point(x + w/2, y + h/2);
 }
 
 RectangularLightning::~RectangularLightning() {
-	clearBolts();
+	//clearBolts();
 
 	local_uninitializeGPU();
 	//uninitializeGPU();
@@ -159,41 +154,6 @@ RectHazard* RectangularLightning::factory(int argc, std::string* argv) {
 		return new RectangularLightning(x, y, w, h);
 	}
 	return new RectangularLightning(0, 0, 0, 0);
-}
-
-void RectangularLightning::tick() {
-	if (!validLocation()) {
-		tickCount = 0;
-		currentlyActive = false;
-		targetedObjects.clear();
-		clearBolts();
-		return;
-	}
-
-	tickCount++;
-	if (tickCount >= tickCycle * stateMultiplier[currentlyActive]) {
-		if (tickCycle * stateMultiplier[currentlyActive] <= 0) {
-			tickCount = 0;
-			currentlyActive = true;
-		} else {
-			tickCount -= tickCycle * stateMultiplier[currentlyActive];
-			currentlyActive = !currentlyActive;
-		}
-	}
-	
-	if (currentlyActive) {
-		if (boltTick >= boltCycle) {
-			//hazard tick comes before collision, therefore there will be more bolt refreshes after this if a bullet/tank collides
-			targetedObjects.clear();
-			boltsNeeded = false;
-			clearBolts();
-			pushDefaultBolt(maxBolts, true);
-			boltTick = 0;
-		}
-		boltTick++;
-	} else {
-		boltTick = boltCycle; //start at boltCycle to force a refresh as soon as possible
-	}
 }
 
 void RectangularLightning::specialEffectCircleCollision(Circle* c) {

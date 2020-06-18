@@ -19,12 +19,10 @@ IndexBuffer* HorizontalLightning::background_ib;
 bool HorizontalLightning::initialized_GPU = false;
 
 HorizontalLightning::HorizontalLightning(double xpos, double ypos, double width, double height) : RectangularLightning(xpos,ypos,width,height,true) {
-	//double temp[2] = { 2, 2 };
-	//std::copy(temp, temp+2, stateMultiplier);
 	//flexible = false;
 	
 	maxBolts = 2;
-	lengthOfBolt = 4;
+	//lengthOfBolt = 4;
 	bolts.reserve(maxBolts);
 	pushDefaultBolt(maxBolts, true);
 
@@ -37,11 +35,6 @@ HorizontalLightning::HorizontalLightning(double xpos, double ypos, double width,
 
 	local_initializeGPU();
 	initializeGPU();
-}
-
-int HorizontalLightning::getDefaultNumBoltPoints(double horzDist) {
-	int boltPoints = ceil(horzDist / lengthOfBolt); //not floor because the last point is the edge of the lightning area
-	return (boltPoints < 2 ? 2 : boltPoints);
 }
 
 Circle* HorizontalLightning::getLeftPoint() {
@@ -531,12 +524,6 @@ void HorizontalLightning::simpleRefreshBolt(int num) {
 		yRangeLower = (yRangeLower < yMin ? yMin : yRangeLower);
 		yRangeUpper = (yRangeUpper > yMax ? yMax : yRangeUpper);
 		bolts[num]->positions[j*2+1] = yRangeLower + (yRangeUpper - yRangeLower) * randFunc2();
-	}
-}
-
-void HorizontalLightning::refreshBolts() {
-	for (int i = 0; i < bolts.size(); i++) {
-		refreshBolt(i);
 	}
 }
 
