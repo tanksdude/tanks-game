@@ -1,36 +1,34 @@
 #pragma once
 #include "recthazard.h"
-#include <vector>
-#include "lightningcommon.h"
+#include "generalizedlightning.h"
 
 #include "vertexarray.h"
 #include "vertexbuffer.h"
 #include "indexbuffer.h"
 
-class RectangularLightning : public RectHazard {
+class RectangularLightning : public RectHazard, public GeneralizedLightning {
 	//called LightningZone in JS Tanks
 protected:
-	double tickCount = 0;
-	double tickCycle;
-	bool currentlyActive;
-	double stateMultiplier[2]; //length = 2 because bool bolt action
+	//double tickCount = 0;
+	//double tickCycle;
+	//bool currentlyActive;
+	//double stateMultiplier[2]; //length = 2 because bool bolt action
 	//bool flexible; //how would this work?
 
 	Circle* getCenterPoint(); //for checks when a bullet/tank collides (needs to be a function in case the lightning changes size or position)
 
-	unsigned int maxBolts; // = 1; //this is maximum amount of normal bolts; the lightning can make any number of bolts when it has to destroy a bullet or tank
-	double lengthOfBolt;
-	std::vector<LightningBolt*> bolts; //is a vector of pointers instead of objects so resizes take less time
-	virtual void clearBolts(); //the vector holds pointers, so memory has to be freed
-	double boltTick = 0;
-	double boltCycle = 4; //how often bolts get refreshed
-	bool boltsNeeded = false; //if the lightning hits something, this is changed, and no random bolts will be made; resets every boltCycle ticks
-	virtual void refreshBolts(); //redraw the bolts
-	virtual void refreshBolt(int num); //redraw a bolt
+	//unsigned int maxBolts; // = 1; //this is maximum amount of normal bolts; the lightning can make any number of bolts when it has to destroy a bullet or tank
+	//double lengthOfBolt;
+	//std::vector<LightningBolt*> bolts; //is a vector of pointers instead of objects so resizes take less time
+	//virtual void clearBolts(); //the vector holds pointers, so memory has to be freed
+	//double boltTick = 0;
+	//double boltCycle = 4; //how often bolts get refreshed
+	//bool boltsNeeded = false; //if the lightning hits something, this is changed, and no random bolts will be made; resets every boltCycle ticks
+	virtual void refreshBolt(int num); //"redraw" a bolt
 	virtual int getDefaultNumBoltPoints(double horzDist); //number of points that make up a bolt
 	virtual void pushBolt(LightningBolt*);
 	virtual void pushDefaultBolt(int num, bool randomize); //randomize should be true all of the time
-	std::vector<long> targetedObjects;
+	//std::vector<long> targetedObjects;
 
 private:
 	static VertexArray* background_va;
@@ -68,8 +66,8 @@ protected:
 	virtual void specialEffectCircleCollision(Circle*); //tanks and bullets are both circles, so calculating the bolt positions would be the same
 
 public:
-	virtual ColorValueHolder getBackgroundColor();
-	virtual ColorValueHolder getBoltColor();
+	//virtual ColorValueHolder getBackgroundColor();
+	//virtual ColorValueHolder getBoltColor();
 	virtual std::string getName() { return getClassName(); }
 	static std::string getClassName() { return "rectangular lightning"; }
 

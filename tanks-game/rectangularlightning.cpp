@@ -357,12 +357,6 @@ bool RectangularLightning::reasonableLocation() {
 	return validLocation();
 }
 
-void RectangularLightning::refreshBolts() {
-	for (int i = 0; i < bolts.size(); i++) {
-		refreshBolt(i);
-	}
-}
-
 void RectangularLightning::refreshBolt(int num) {
 	//TODO: this needs more testing
 	if (bolts[num]->length <= 2) {
@@ -419,24 +413,6 @@ void RectangularLightning::refreshBolt(int num) {
 		bolts[num]->positions[j*2]   = testX;
 		bolts[num]->positions[j*2+1] = testY;
 	}
-}
-
-void RectangularLightning::clearBolts() {
-	for (int i = 0; i < bolts.size(); i++) {
-		delete bolts[i];
-	}
-	bolts.clear();
-}
-
-ColorValueHolder RectangularLightning::getBackgroundColor() {
-	if (currentlyActive) {
-		return ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(.75f, .75f, .75f), .25);
-	}
-	return ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(.75f, .75f, .75f), .25*constrain<double>(tickCount/(tickCycle*stateMultiplier[currentlyActive]), 0, 1));
-}
-
-ColorValueHolder RectangularLightning::getBoltColor() {
-	return ColorValueHolder(0xBB/255.0, 1.0f, 1.0f);
 }
 
 void RectangularLightning::draw() {

@@ -294,12 +294,6 @@ bool CircularLightning::reasonableLocation() {
 	return validLocation();
 }
 
-void CircularLightning::refreshBolts() {
-	for (int i = 0; i < bolts.size(); i++) {
-		refreshBolt(i);
-	}
-}
-
 void CircularLightning::refreshBolt(int num) {
 	//TODO: more testing
 	if (bolts[num]->length <= 2) {
@@ -356,24 +350,6 @@ void CircularLightning::refreshBolt(int num) {
 		bolts[num]->positions[j*2]   = testX;
 		bolts[num]->positions[j*2+1] = testY;
 	}
-}
-
-void CircularLightning::clearBolts() {
-	for (int i = 0; i < bolts.size(); i++) {
-		delete bolts[i];
-	}
-	bolts.clear();
-}
-
-ColorValueHolder CircularLightning::getBackgroundColor() {
-	if (currentlyActive) {
-		return ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(.75f, .75f, .75f), .25);
-	}
-	return ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(.75f, .75f, .75f), .25*constrain<double>(tickCount/(tickCycle*stateMultiplier[currentlyActive]), 0, 1));
-}
-
-ColorValueHolder CircularLightning::getBoltColor() {
-	return ColorValueHolder(0xBB/255.0, 1.0f, 1.0f);
 }
 
 void CircularLightning::draw() {

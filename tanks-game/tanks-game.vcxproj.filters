@@ -321,6 +321,9 @@
     <ClCompile Include="circularlightning.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="generalizedlightning.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -659,13 +662,13 @@
     <ClInclude Include="oldbignamedtankpower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="lightningcommon.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="rectangularlightning.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="circularlightning.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="generalizedlightning.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
