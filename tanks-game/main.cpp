@@ -86,6 +86,7 @@
 #include "bananapower.h"
 //dev powers:
 #include "devlonginvinciblenamedpower.h" //invincible but lasts a long time
+#include "inversionpower.h" //flips left and right turning
 //old powers:
 #include "oldbouncepower.h" //identical to bounce except it makes the tank smaller
 #include "oldbignamedpower.h" //big but moves at half speed (not quarter) and the speed stacks
@@ -1251,6 +1252,7 @@ int main(int argc, char** argv) {
 
 	//dev:
 	PowerupManager::addPowerFactory(DevLongInvincibleNamedPower::factory);
+	PowerupManager::addPowerFactory(InversionPower::factory);
 
 	//old:
 	PowerupManager::addPowerFactory(OldBouncePower::factory);
@@ -1303,7 +1305,7 @@ int main(int argc, char** argv) {
 	TankManager::pushTank(new Tank(20, 160, 0, 1, "WASD", { false, 'w' }, { false, 'a' }, { false, 'd' }, { false, 's' }, { false, 'e' }));
 	TankManager::pushTank(new Tank(620, 160, PI, 2, "Arrow Keys", { true, GLUT_KEY_UP }, { true, GLUT_KEY_LEFT }, { true, GLUT_KEY_RIGHT }, { true, GLUT_KEY_DOWN }, { false, '/' }));
 #if _DEBUG
-	LevelManager::pushLevel("dev", "dev1");
+	LevelManager::pushLevel("dev", "dev2");
 #else
 	LevelManager::pushLevel("vanilla", "default random");
 #endif

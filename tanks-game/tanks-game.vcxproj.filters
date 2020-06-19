@@ -324,6 +324,15 @@
     <ClCompile Include="verticallightning.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="inversionbulletpower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="inversionpower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="inversiontankpower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -672,6 +681,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="verticallightning.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inversionbulletpower.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inversionpower.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inversiontankpower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

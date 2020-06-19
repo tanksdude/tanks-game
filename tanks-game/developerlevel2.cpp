@@ -28,6 +28,7 @@ void DeveloperLevel2::initialize() {
 	PowerupManager::pushPowerup(new PowerSquare(20, GAME_HEIGHT-20, "speed"));
 	PowerupManager::pushPowerup(new PowerSquare(40, GAME_HEIGHT-20, "speed"));
 	PowerupManager::pushPowerup(new PowerSquare(80, GAME_HEIGHT-20, "speed"));
+	PowerupManager::pushPowerup(new PowerSquare(120, GAME_HEIGHT-20, "dev", "inversion"));
 
 	std::string* names = new std::string[2]{ "multishot", "multishot" };
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH-20, GAME_HEIGHT-20, names, 2));
