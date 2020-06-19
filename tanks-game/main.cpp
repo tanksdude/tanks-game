@@ -65,6 +65,7 @@
 #include "stationaryturret.h"
 #include "rectangularlightning.h"
 #include "horizontallightning.h"
+#include "verticallightning.h"
 #include "circularlightning.h"
 #include "rectangularlava.h"
 #include "circularlava.h"
@@ -1274,6 +1275,7 @@ int main(int argc, char** argv) {
 	HazardManager::addCircleHazardFactory(StationaryTurret::factory);
 	HazardManager::addRectHazardFactory(RectangularLightning::factory);
 	HazardManager::addRectHazardFactory(HorizontalLightning::factory);
+	HazardManager::addRectHazardFactory(VerticalLightning::factory);
 	HazardManager::addCircleHazardFactory(CircularLightning::factory);
 	HazardManager::addRectHazardFactory(RectangularLava::factory);
 	HazardManager::addCircleHazardFactory(CircularLava::factory);

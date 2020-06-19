@@ -232,6 +232,7 @@
     <ClCompile Include="tripletankpower.cpp" />
     <ClCompile Include="vertexarray.cpp" />
     <ClCompile Include="vertexbuffer.cpp" />
+    <ClCompile Include="verticallightning.cpp" />
     <ClCompile Include="wall.cpp" />
     <ClCompile Include="wallhackbulletpower.cpp" />
     <ClCompile Include="wallhackpower.cpp" />
@@ -349,6 +350,7 @@
     <ClInclude Include="vertexarray.h" />
     <ClInclude Include="vertexbuffer.h" />
     <ClInclude Include="vertexbufferlayout.h" />
+    <ClInclude Include="verticallightning.h" />
     <ClInclude Include="wall.h" />
     <ClInclude Include="wallhackbulletpower.h" />
     <ClInclude Include="wallhackpower.h" />

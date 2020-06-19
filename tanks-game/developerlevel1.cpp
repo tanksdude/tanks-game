@@ -4,12 +4,12 @@
 #include "powerupmanager.h"
 #include "wallmanager.h"
 #include "hazardmanager.h"
-#include "randomlevel.h" //not really necessary
+#include "randomlevel.h"
+#include "resetthings.h"
 //#include <iostream>
 
 void DeveloperLevel1::initialize() {
-	TankManager::getTank(0)->y = GAME_HEIGHT/2;
-	TankManager::getTank(1)->y = GAME_HEIGHT/2;
+	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 20, GAME_HEIGHT/2, true);
 
 	ColorValueHolder wallColor(.25f, .25f, .25f);
 
@@ -17,8 +17,12 @@ void DeveloperLevel1::initialize() {
 	WallManager::pushWall(new Wall(pos.x, pos.y, 20, 80, wallColor));
 	pos = RandomLevel::getSymmetricWallPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 20, 80);
 	WallManager::pushWall(new Wall(pos.x, pos.y, 20, 80, wallColor));
+	WallManager::pushWall(new Wall(pos.x, GAME_HEIGHT-20, 20, 20, wallColor));
 
-	std::string* paras = new std::string[4]{std::to_string(GAME_WIDTH/2 - 80 + 20), std::to_string(GAME_HEIGHT/2 - 40), std::to_string(60*2), std::to_string(20*2)};
+	std::string* paras = new std::string[4]{std::to_string(pos.x), std::to_string(pos.y+80), std::to_string(20), std::to_string((GAME_HEIGHT-20)-(pos.y+80))};
+	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vertical lightning")(4, paras));
+	delete[] paras;
+	paras = new std::string[4]{std::to_string(GAME_WIDTH/2 - 80 + 20), std::to_string(GAME_HEIGHT/2 - 40), std::to_string(60*2), std::to_string(20*2)};
 	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("horizontal lightning")(4, paras));
 	delete[] paras;
 	paras = new std::string[4]{std::to_string(GAME_WIDTH/2 - 80 + 20), std::to_string(GAME_HEIGHT/2 - 120), std::to_string(30*2), std::to_string(30*2)};

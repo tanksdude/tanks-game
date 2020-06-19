@@ -321,6 +321,9 @@
     <ClCompile Include="generalizedlightning.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="verticallightning.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -666,6 +669,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="generalizedlightning.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="verticallightning.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
