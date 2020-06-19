@@ -21,7 +21,7 @@ PowerInteractionBoolHolder BounceBulletPower::modifiedCollisionWithWall(Bullet* 
 		modifiesEdgeCollision = false;
 	}
 
-	return { this->bouncesLeft < 0, false };
+	return { (bouncesLeft < 0), false };
 }
 //TODO: need ability to delete just the bulletpower (needed? wanted? no because bounces should be reset for banana (should it?))
 
@@ -90,22 +90,16 @@ TankPower* BounceBulletPower::makeTankPower() {
 	return new BounceTankPower();
 }
 
-BounceBulletPower::BounceBulletPower() {
-	timeLeft = 0;
-	maxTime = -1;
-
-	bouncesLeft = BounceBulletPower::maxBounces;
-	modifiesCollisionWithWall = true;
-	//modifiedCollisionWithWallCanWorkWithOthers = false;
-	modifiesEdgeCollision = true;
-}
+BounceBulletPower::BounceBulletPower() : BounceBulletPower(BounceBulletPower::maxBounces) {}
 
 BounceBulletPower::BounceBulletPower(short bounces) {
 	timeLeft = 0;
 	maxTime = -1;
 
 	this->bouncesLeft = bounces;
-	modifiesCollisionWithWall = true;
-	//modifiedCollisionWithWallCanWorkWithOthers = false;
-	modifiesEdgeCollision = true;
+	if (bounces > 0) {
+		modifiesCollisionWithWall = true;
+		//modifiedCollisionWithWallCanWorkWithOthers = false;
+		modifiesEdgeCollision = true;
+	}
 }

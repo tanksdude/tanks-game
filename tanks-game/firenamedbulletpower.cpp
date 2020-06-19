@@ -56,18 +56,10 @@ TankPower* FireNamedBulletPower::makeTankPower() {
 	return new FireNamedTankPower();
 }
 
-FireNamedBulletPower::FireNamedBulletPower() {
-	timeLeft = 0;
-	maxTime = -1;
+FireNamedBulletPower::FireNamedBulletPower()
+: FireNamedBulletPower(-1 * ((randFunc2()+randFunc2())/2 * (maxBulletAcceleration - minBulletAcceleration) + minBulletAcceleration)) {}
+//accleration: [0,1] * accDiff + min
 
-	accelerationAmount = -1 * ((randFunc2()+randFunc2())/2 * (maxBulletAcceleration - minBulletAcceleration) + minBulletAcceleration); //[0,1] * accDiff + min
-
-	modifiesMovement = true;
-	modifiesCollisionWithWall = true;
-	overridesCollisionWithWall = true;
-}
-
-//is there a way to avoid the copy-and-paste? yes. will I do it? no.
 FireNamedBulletPower::FireNamedBulletPower(double acceleration) {
 	timeLeft = 0;
 	maxTime = -1;

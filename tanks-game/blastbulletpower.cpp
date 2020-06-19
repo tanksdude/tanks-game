@@ -53,18 +53,10 @@ TankPower* BlastBulletPower::makeTankPower() {
 	return new BlastTankPower();
 }
 
-BlastBulletPower::BlastBulletPower() {
-	timeLeft = 0;
-	maxTime = -1;
+BlastBulletPower::BlastBulletPower()
+: BlastBulletPower(-1 * ((randFunc2()+randFunc2())/2 * (maxBulletAcceleration - minBulletAcceleration) + minBulletAcceleration)) {}
+//acceleration: [0,1] * accDiff + min
 
-	accelerationAmount = -1 * ((randFunc2()+randFunc2())/2 * (maxBulletAcceleration - minBulletAcceleration) + minBulletAcceleration); //[0,1] * accDiff + min
-
-	modifiesMovement = true;
-	modifiesCollisionWithWall = true;
-	overridesCollisionWithWall = true;
-}
-
-//is there a way to avoid the copy-and-paste? yes. will I do it? no.
 BlastBulletPower::BlastBulletPower(double acceleration) {
 	timeLeft = 0;
 	maxTime = -1;
