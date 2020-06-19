@@ -52,6 +52,14 @@ PowerSquare::PowerSquare(double x_, double y_, std::string type, std::string nam
 	heldPower[0] = PowerupManager::getPowerFactory(type, name)();
 }
 
+PowerSquare::PowerSquare(double x_, double y_, std::string type, std::string* names, int num) : PowerSquare(x_, y_) {
+	numOfPowers = num;
+	heldPower = new Power*[num];
+	for (int i = 0; i < num; i++) {
+		heldPower[i] = PowerupManager::getPowerFactory(type, names[i])();
+	}
+}
+
 PowerSquare::PowerSquare(double x_, double y_, std::string* types, std::string* names, int num) : PowerSquare(x_, y_) {
 	numOfPowers = num;
 	heldPower = new Power*[num];

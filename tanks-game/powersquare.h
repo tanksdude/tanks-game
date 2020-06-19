@@ -38,6 +38,7 @@ public:
 	PowerSquare(double x, double y, std::string name);
 	PowerSquare(double x, double y, std::string* names, int num);
 	PowerSquare(double x, double y, std::string type, std::string name);
+	PowerSquare(double x, double y, std::string type, std::string* names, int num);
 	PowerSquare(double x, double y, std::string* types, std::string* names, int num);
 
 	ColorValueHolder getColor();
