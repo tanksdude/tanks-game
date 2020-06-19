@@ -1,8 +1,5 @@
 #include "bananatankpower.h"
 #include "bananabulletpower.h"
-#include "mylib.h"
-#include "constants.h"
-#include <math.h>
 
 void BananaTankPower::initialize(Tank* parent) {
 	//nothing
