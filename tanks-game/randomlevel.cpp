@@ -8,42 +8,6 @@ Wall* RandomLevel::makeNewRandomWall(double x_beginning, double y_beginning, dou
 	return new Wall(x_beginning + randFunc2() * (width_ofArea - w), y_beginning + randFunc2() * (height_ofArea - h), w, h, c);
 }
 
-std::string* RandomLevel::getRandomPowers(int count, bool* powersCanStack, std::string* names, int nameCount) {
-	std::string* n = new std::string[count];
-	int* used = new int[count];
-
-	for (int i = 0; i < count; i++) {
-		//first verify if a new name can be chosen:
-		bool leftoverPowersCanStack = true;
-		for (int j = 0; j < i; j++) {
-			if (!powersCanStack[used[j]]) {
-				leftoverPowersCanStack = false;
-				break;
-			}
-		}
-		//then add name based on result
-		int index;
-		if (!leftoverPowersCanStack) {
-			//there are values that can get chosen
-			do {
-				index = randFunc() * nameCount; //TODO: weighted selection
-			} while (!powersCanStack[index] && isInArray<int>(index, used, i+1));
-		} else {
-			//there aren't values that can get chosen or no stacking problems yet
-			index = randFunc() * nameCount;
-		}
-		//not sure if the comments are right, but the results are (empirically determined)
-		used[i] = index;
-	}
-
-	for (int i = 0; i < count; i++) {
-		n[i] = names[used[i]];
-	}
-
-	delete[] used;
-	return n;
-}
-
 std::string* RandomLevel::getRandomPowersOld(int count, bool replacement, std::string* names, int nameCount) {
 	std::string* n = new std::string[count];
 	int* used = new int[count];
@@ -75,6 +39,79 @@ std::string* RandomLevel::getRandomPowersOld(int count, bool replacement, std::s
 			int index = randFunc() * nameCount;
 			used[i] = index;
 		}
+	}
+
+	for (int i = 0; i < count; i++) {
+		n[i] = names[used[i]];
+	}
+
+	delete[] used;
+	return n;
+}
+
+std::string* RandomLevel::getRandomPowers(int count, bool* powersCanStack, std::string* names, int nameCount) {
+	std::string* n = new std::string[count];
+	int* used = new int[count];
+
+	for (int i = 0; i < count; i++) {
+		//first verify if a new name can be chosen:
+		bool leftoverPowersCanStack = true;
+		for (int j = 0; j < i; j++) {
+			if (!powersCanStack[used[j]]) {
+				leftoverPowersCanStack = false;
+				break;
+			}
+		}
+		//then add name based on result
+		int index;
+		if (!leftoverPowersCanStack) {
+			//there are values that can get chosen
+			do {
+				index = randFunc() * nameCount;
+			} while (!powersCanStack[index] && isInArray<int>(index, used, i+1));
+		} else {
+			//there aren't values that can get chosen or no stacking problems yet
+			index = randFunc() * nameCount;
+		}
+		//not sure if the comments are right, but the results are (empirically determined)
+		used[i] = index;
+	}
+
+	for (int i = 0; i < count; i++) {
+		n[i] = names[used[i]];
+	}
+
+	delete[] used;
+	return n;
+}
+
+//this function could become an endless loop if the only stacking power left has a weight of 0
+std::string* RandomLevel::getRandomPowers(int count, bool* powersCanStack, std::string* names, float* weights, int powerCount) {
+	std::string* n = new std::string[count];
+	int* used = new int[count];
+
+	for (int i = 0; i < count; i++) {
+		//first verify if a new name can be chosen:
+		bool leftoverPowersCanStack = true;
+		for (int j = 0; j < i; j++) {
+			if (!powersCanStack[used[j]]) {
+				leftoverPowersCanStack = false;
+				break;
+			}
+		}
+		//then add name based on result
+		int index;
+		if (!leftoverPowersCanStack) {
+			//there are values that can get chosen
+			do {
+				index = weightedSelect<float>(weights, powerCount);
+			} while (!powersCanStack[index] && isInArray<int>(index, used, i+1));
+		} else {
+			//there aren't values that can get chosen or no stacking problems yet
+			index = weightedSelect<float>(weights, powerCount);
+		}
+		//not sure if the comments are right, but the results are (empirically determined)
+		used[i] = index;
 	}
 
 	for (int i = 0; i < count; i++) {

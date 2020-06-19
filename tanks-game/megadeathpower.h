@@ -7,6 +7,7 @@ public:
 		std::vector<std::string> attributes = std::vector<std::string>{ "mix" };
 		return attributes;
 	}
+	virtual std::unordered_map<std::string, float> getWeights();
 
 	virtual std::string getName() { return MegaDeathPower::getClassName(); }
 	static std::string getClassName() { return "megadeath"; }

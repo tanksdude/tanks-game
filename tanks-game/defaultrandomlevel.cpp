@@ -7,6 +7,7 @@
 #include "wallmanager.h"
 #include "hazardmanager.h"
 #include "resetthings.h"
+#include <iostream>
 
 std::unordered_map<std::string, float> DefaultRandomLevel::getWeights() {
 	std::unordered_map<std::string, float> weights;
@@ -35,19 +36,21 @@ void DefaultRandomLevel::initialize() { //still needs a lot of work
 		possiblePowers[i] = PowerupManager::getPowerName("random-vanilla", i);
 	}
 
-	//get stacking status of the powers
+	//get stacking status and weight of the powers
 	bool* canStack = new bool[powerNum];
+	float* powerWeights = new float[powerNum];
 	for (int i = 0; i < powerNum; i++) {
 		Power* p = PowerupManager::getPowerFactory("random-vanilla", possiblePowers[i])();
 		std::vector<std::string> attributes = p->getPowerAttributes();
 		canStack[i] = (std::find(attributes.begin(), attributes.end(), "stack") != attributes.end());
+		powerWeights[i] = p->getWeights()["random-vanilla"];
 		delete p;
 	}
 
 	float weights[] = { 1.0f, 1.0f, .25f };
 	for (int i = 0; i < 4; i++) {
 		int count = weightedSelect<float>(weights, 3) + 1; //{1, 2, 3}
-		std::string* randPowers = RandomLevel::getRandomPowers(count, canStack, possiblePowers, powerNum);
+		std::string* randPowers = RandomLevel::getRandomPowers(count, canStack, possiblePowers, powerWeights, powerNum);
 		PositionHolder pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-60, GAME_HEIGHT/2-16);
 		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "random-vanilla", randPowers, count));
 		delete[] randPowers;
@@ -55,6 +58,7 @@ void DefaultRandomLevel::initialize() { //still needs a lot of work
 
 	delete[] possiblePowers;
 	delete[] canStack;
+	delete[] powerWeights;
 }
 
 Level* DefaultRandomLevel::factory() {

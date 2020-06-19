@@ -10,8 +10,9 @@ public:
 	static inline Wall* makeNewRandomWall(double x_beginning, double y_beginning, double width_ofArea, double height_ofArea, ColorValueHolder c) {
 		return RandomLevel::makeNewRandomWall(x_beginning, y_beginning, width_ofArea, height_ofArea, c, 12, 8, 64, 96);
 	}
-	static std::string* getRandomPowers(int count, bool* powersCanStack, std::string* names, int nameCount);
-	static std::string* getRandomPowersOld(int count, bool replacement, std::string* names, int nameCount); //equal weight, no checks
+	static std::string* getRandomPowersOld(int count, bool replacement, std::string* names, int nameCount); //equal weight, replacement is an option
+	static std::string* getRandomPowers(int count, bool* powersCanStack, std::string* names, int nameCount); //equal weight, replaces the non-stacking names
+	static std::string* getRandomPowers(int count, bool* powersCanStack, std::string* names, float* weights, int powerCount); //nonequal weight, replaces the non-stacking names
 	static std::string powerAlternate(int position, int rand, std::string p1, std::string p2); //position: {0,1,2,3}, rand: {0,1}
 	static std::string simplePowerAlternate(int position, int rand, std::string p1, std::string p2); //position: {0,1}, rand: {0,1}
 
