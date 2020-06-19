@@ -199,31 +199,17 @@ void RectangularLightning::specialEffectCircleCollision(Circle* c) {
 				ypos = c->y; //circle's y-position is fine
 			}
 			//std::cout << "xpos: " << (xpos-c->x) << ", ypos: " << (ypos-c->y) << std::endl;
-			//circle-line intersection: https://mathworld.wolfram.com/Circle-LineIntersection.html
-			//normally I always use pow(x,2) for clarity, but it's getting repetitive, and also x*x is faster
-			double x1 = xpos - c->x, x2 = centerPoint->x - c->x;
-			double y1 = ypos - c->y, y2 = centerPoint->y - c->y;
-			double dx = x2-x1, dy = y2-y1;
-			double dr = sqrt(pow(dx,2) + pow(dy,2));
-			double D = x1*y2 - x2*y1; //I spent about an hour debugging this, only to find out I did x1*y2 - x1*y1. Don't make the same mistake.
-			double intersectionX1 = (D*dy - (dy<0 ? -1 : 1) * dx * sqrt(c->r*c->r * dr*dr - D*D)) / (dr*dr);
-			double intersectionX2 = (D*dy + (dy<0 ? -1 : 1) * dx * sqrt(c->r*c->r * dr*dr - D*D)) / (dr*dr);
-			double intersectionY1 = (-D*dx - abs(dy) * sqrt(c->r*c->r * dr*dr - D*D)) / (dr*dr);
-			double intersectionY2 = (-D*dx + abs(dy) * sqrt(c->r*c->r * dr*dr - D*D)) / (dr*dr);
-			//std::cout << "x1: " << intersectionX1 << ", ";
-			//std::cout << "x2: " << intersectionX2 << ", ";
-			//std::cout << "y1: " << intersectionY1 << ", ";
-			//std::cout << "y2: " << intersectionY2 << std::endl;
 			
+			DoublePositionHolder intersections = CollisionHandler::circleLineIntersection(c, xpos, ypos, centerPoint->x, centerPoint->y);
 			if (c->x < x + w/2) {
-				intersectionX = std::max(intersectionX1, intersectionX2) + c->x;
+				intersectionX = std::max(intersections.x1, intersections.x2);
 			} else {
-				intersectionX = std::min(intersectionX1, intersectionX2) + c->x;
+				intersectionX = std::min(intersections.x1, intersections.x2);
 			}
 			if (c->y < y + h/2) {
-				intersectionY = std::max(intersectionY1, intersectionY2) + c->y;
+				intersectionY = std::max(intersections.y1, intersections.y2);
 			} else {
-				intersectionY = std::min(intersectionY1, intersectionY2) + c->y;
+				intersectionY = std::min(intersections.y1, intersections.y2);
 			}
 			if (intersectionX < x || intersectionX > x+w) {
 				std::cerr << "WARNING: rectangular lightning endpoint X out of range!" << std::endl;
@@ -234,10 +220,10 @@ void RectangularLightning::specialEffectCircleCollision(Circle* c) {
 				intersectionY = constrain<double>(intersectionY, y, y+h);
 			}
 			boltPoints = getDefaultNumBoltPoints(sqrt(pow(intersectionX - centerPoint->x, 2) + pow(intersectionY - centerPoint->y, 2)));
-			//pushBolt(new LightningBolt(w/2, h/2, intersectionX1 + c->x - x, intersectionY1 + c->y - y, 2)); //debugging
-			//pushBolt(new LightningBolt(w/2, h/2, intersectionX1 + c->x - x, intersectionY2 + c->y - y, 2));
-			//pushBolt(new LightningBolt(w/2, h/2, intersectionX2 + c->x - x, intersectionY1 + c->y - y, 2));
-			//pushBolt(new LightningBolt(w/2, h/2, intersectionX2 + c->x - x, intersectionY2 + c->y - y, 2));
+			//pushBolt(new LightningBolt(w/2, h/2, intersections.x1 - x, intersections.y1 - y, 2)); //debugging
+			//pushBolt(new LightningBolt(w/2, h/2, intersections.x1 - x, intersections.y2 - y, 2));
+			//pushBolt(new LightningBolt(w/2, h/2, intersections.x2 - x, intersections.y1 - y, 2));
+			//pushBolt(new LightningBolt(w/2, h/2, intersections.x2 - x, intersections.y2 - y, 2));
 		}
 		delete circleCenter;
 	}

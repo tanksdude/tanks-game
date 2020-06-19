@@ -1,6 +1,7 @@
 #pragma once
 #include "circle.h"
 #include "rect.h"
+#include "doublepositionholder.h"
 
 class CollisionHandler {
 private:
@@ -28,7 +29,7 @@ public: //for tanks and bullets and stuff (things that move around)
 	static void edgeConstrain(Rect*);
 	static void edgeConstrain(Circle*);
 
-public:
+public: //collision detection and handling (just moving)
 	static bool partiallyCollided(Rect*, Rect*);
 	static bool partiallyCollided(Rect*, Circle*);
 	static bool partiallyCollided(Circle* c, Rect* r) {
@@ -81,4 +82,7 @@ public:
 	static void pullMovableIntoMovable(Circle* movable1, Circle* movable2);
 	static void pullMovableNearImmovable(Circle* movable, Circle* immovable); //like a reverse pull (but not a push because one has to stay inside the other)
 	*/
+
+public: //stuff that gives a location of intersection (only use if collision is guranteed) (this should be expanded)
+	static DoublePositionHolder circleLineIntersection(Circle*, double lineX1, double lineY1, double lineX2, double lineY2);
 };

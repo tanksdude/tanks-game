@@ -1,6 +1,7 @@
 #include "collisionhandler.h"
 #include "constants.h"
 #include <math.h>
+#include <stdexcept>
 #include <iostream>
 
 bool CollisionHandler::partiallyOutOfBounds(Rect* r) {
@@ -475,7 +476,33 @@ void CollisionHandler::cornerPushMovableAwayFromImmovable(Rect* movable, Circle*
 }
 //void CollisionHandler::cornerPushMovableAwayFromMovable(Rect* movable1, Circle* movable2, double x, double y);
 
+DoublePositionHolder CollisionHandler::circleLineIntersection(Circle* c, double lineX1, double lineY1, double lineX2, double lineY2) {
+	//circle-line intersection: https://mathworld.wolfram.com/Circle-LineIntersection.html
+	//normally I always use pow(x,2) for clarity, but it's getting repetitive, and also x*x is faster
+	double x1 = lineX1 - c->x, x2 = lineX2 - c->x;
+	double y1 = lineY1 - c->y, y2 = lineY2 - c->y;
+	double dx = x2-x1, dy = y2-y1;
+	double dr = sqrt(pow(dx,2) + pow(dy,2));
+	double D = x1*y2 - x2*y1; //I spent about an hour debugging this, only to find out I did x1*y2 - x1*y1. Don't make the same mistake.
 
+	//check if the user used this incorrectly:
+	double discriminant = c->r*c->r * dr*dr - D*D;
+	if (discriminant < 0) {
+		throw std::logic_error("CollisionHandler::circleLineIntersection was not given an intersecting circle and line!");
+		//invalid_argument instead?
+	}
+	
+	double intersectionX1 = (D*dy - (dy<0 ? -1 : 1) * dx * sqrt(c->r*c->r * dr*dr - D*D)) / (dr*dr);
+	double intersectionX2 = (D*dy + (dy<0 ? -1 : 1) * dx * sqrt(c->r*c->r * dr*dr - D*D)) / (dr*dr);
+	double intersectionY1 = (-D*dx - abs(dy) * sqrt(c->r*c->r * dr*dr - D*D)) / (dr*dr);
+	double intersectionY2 = (-D*dx + abs(dy) * sqrt(c->r*c->r * dr*dr - D*D)) / (dr*dr);
+	//std::cout << "x1: " << intersectionX1 << ", ";
+	//std::cout << "x2: " << intersectionX2 << ", ";
+	//std::cout << "y1: " << intersectionY1 << ", ";
+	//std::cout << "y2: " << intersectionY2 << std::endl;
+
+	return DoublePositionHolder(intersectionX1 + c->x, intersectionX2 + c->x, intersectionY1 + c->y, intersectionY2 + c->y);
+}
 
 
 

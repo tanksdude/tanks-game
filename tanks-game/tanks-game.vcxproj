@@ -267,6 +267,7 @@
     <ClInclude Include="devlonginvinciblenamedbulletpower.h" />
     <ClInclude Include="devlonginvinciblenamedpower.h" />
     <ClInclude Include="devlonginvinciblenamedtankpower.h" />
+    <ClInclude Include="doublepositionholder.h" />
     <ClInclude Include="fewobstacleslevel.h" />
     <ClInclude Include="gamemanager.h" />
     <ClInclude Include="gamething.h" />
