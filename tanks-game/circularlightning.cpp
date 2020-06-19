@@ -255,6 +255,7 @@ bool CircularLightning::reasonableLocation() {
 
 void CircularLightning::refreshBolt(int num) {
 	//TODO: more testing
+	//see RectangularLightning
 	if (bolts[num]->length <= 2) {
 		return;
 	}
@@ -287,7 +288,7 @@ void CircularLightning::refreshBolt(int num) {
 
 	//std::cout << "deltaX: " << deltaX << std::endl;
 	//std::cout << "deltaY: " << deltaY << std::endl;
-	//std::cout << "deltaY adj: " << (deltaY * h/w) << std::endl;
+	//std::cout << "deltaY adj: " << (deltaY * 1/1) << std::endl;
 	//std::cout << "dist: " << dist << std::endl;
 	//std::cout << "angle: " << (rotationAngle * 180/3.1415926535897) << std::endl;
 	//std::cout << "cos(angle): " << angleCos << std::endl;

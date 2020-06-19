@@ -318,12 +318,15 @@ bool RectangularLightning::reasonableLocation() {
 }
 
 void RectangularLightning::refreshBolt(int num) {
+	refreshBolt(num, std::min(h, w), std::max(h, w));
+}
+
+void RectangularLightning::refreshBolt(int num, double smaller, double larger) {
 	//TODO: this needs more testing
 	if (bolts[num]->length <= 2) {
 		return;
 	}
 
-	double smaller = std::min(h, w), larger = std::max(h, w);
 	float deltaX = bolts[num]->positions[bolts[num]->length*2-2] - bolts[num]->positions[0];
 	float deltaY = bolts[num]->positions[bolts[num]->length*2-1] - bolts[num]->positions[1];
 	double dist = sqrt(pow(deltaX, 2) + pow(deltaY, 2));
@@ -352,7 +355,7 @@ void RectangularLightning::refreshBolt(int num) {
 
 	//std::cout << "deltaX: " << deltaX << std::endl;
 	//std::cout << "deltaY: " << deltaY << std::endl;
-	//std::cout << "deltaY adj: " << (deltaY * h/w) << std::endl;
+	//std::cout << "deltaY adj: " << (deltaY * smaller/larger) << std::endl;
 	//std::cout << "dist: " << dist << std::endl;
 	//std::cout << "angle: " << (rotationAngle * 180/3.1415926535897) << std::endl;
 	//std::cout << "cos(angle): " << angleCos << std::endl;

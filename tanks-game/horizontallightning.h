@@ -14,7 +14,7 @@ protected:
 	Circle* getRightPoint();
 
 	//unsigned int maxBolts; // = 2;
-	virtual void refreshBolt(int num);
+	virtual void refreshBolt(int num); //uses RectangularLightning::refreshBolt
 	virtual void simpleRefreshBolt(int num); //fast path for refreshing a bolt that goes from beginning to end
 	//virtual int getDefaultNumBoltPoints(double horzDist);
 	virtual void pushBolt(LightningBolt* l) { pushBolt(l, false); }

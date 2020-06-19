@@ -15,6 +15,7 @@ protected:
 
 	//unsigned int maxBolts; // = 1;
 	virtual void refreshBolt(int num);
+	virtual void refreshBolt(int num, double smaller, double larger);
 	//virtual int getDefaultNumBoltPoints(double horzDist);
 	virtual void pushBolt(LightningBolt*);
 	virtual void pushDefaultBolt(int num, bool randomize); //randomize should be true all of the time

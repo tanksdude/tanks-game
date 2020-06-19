@@ -528,59 +528,7 @@ void HorizontalLightning::simpleRefreshBolt(int num) {
 }
 
 void HorizontalLightning::refreshBolt(int num) {
-	if (bolts[num]->length <= 2) {
-		return;
-	}
-
-	float deltaX = bolts[num]->positions[bolts[num]->length*2-2] - bolts[num]->positions[0];
-	float deltaY = bolts[num]->positions[bolts[num]->length*2-1] - bolts[num]->positions[1];
-	double dist = sqrt(pow(deltaX, 2) + pow(deltaY, 2));
-	double rotationAngle = atan2(deltaY, deltaX);
-	double angleSin = sin(rotationAngle);
-	double angleCos = cos(rotationAngle);
-	double newH = dist * h/w;
-	double maxVariance = 1.0/4.0 * dist * h/w;
-
-	float polygonX[6] = {
-		bolts[num]->positions[0],
-		bolts[num]->positions[0] + deltaX * 1.0/4.0 - angleSin * newH * .5,
-		bolts[num]->positions[0] + deltaX * 3.0/4.0 - angleSin * newH * .5,
-		bolts[num]->positions[0] + deltaX,
-		bolts[num]->positions[0] + deltaX * 3.0/4.0 + angleSin * newH * .5,
-		bolts[num]->positions[0] + deltaX * 1.0/4.0 + angleSin * newH * .5
-	};
-	float polygonY[6] = {
-		bolts[num]->positions[1],
-		bolts[num]->positions[1] + deltaY * 1.0/4.0 + angleCos * newH * .5,
-		bolts[num]->positions[1] + deltaY * 3.0/4.0 + angleCos * newH * .5,
-		bolts[num]->positions[1] + deltaY,
-		bolts[num]->positions[1] + deltaY * 3.0/4.0 - angleCos * newH * .5,
-		bolts[num]->positions[1] + deltaY * 1.0/4.0 - angleCos * newH * .5
-	};
-
-	//std::cout << "deltaX: " << deltaX << std::endl;
-	//std::cout << "deltaY: " << deltaY << std::endl;
-	//std::cout << "deltaY adj: " << (deltaY * h/w) << std::endl;
-	//std::cout << "dist: " << dist << std::endl;
-	//std::cout << "angle: " << (rotationAngle * 180/3.1415926535897) << std::endl;
-	//std::cout << "cos(angle): " << angleCos << std::endl;
-	//std::cout << "sin(angle): " << angleSin << std::endl;
-	for (int i = 0; i < 6; i++) {
-		//std::cout << i << ": " << polygonX[i] << " " << polygonY[i] << std::endl;
-	}
-
-	for (int j = 1; j < bolts[num]->length-1; j++) {
-		double randTemp;
-		float testY, testX;
-		do {
-			randTemp = (randFunc2()*2-1)*maxVariance;
-			testY = bolts[num]->positions[j*2 - 1] + (deltaY/(bolts[num]->length-1)) + randTemp * angleCos;
-			testX = bolts[num]->positions[j*2 - 2] + (deltaX/(bolts[num]->length-1)) - randTemp * angleSin;
-			//std::cout << testX << " " << testY << std::endl;
-		} while (testY < 0 || testY > h || testX < 0 || testX > w || !pointInPolygon(6, polygonX, polygonY, testX, testY));
-		bolts[num]->positions[j*2]   = testX;
-		bolts[num]->positions[j*2+1] = testY;
-	}
+	RectangularLightning::refreshBolt(num, h, w);
 }
 
 void HorizontalLightning::draw() {
