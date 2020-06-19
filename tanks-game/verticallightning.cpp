@@ -426,14 +426,14 @@ bool VerticalLightning::validLocation() {
 		Wall* wa = WallManager::getWall(i);
 		//I'm not sure numerical comparisons are "costly" to the point where short circuiting is needed
 		if (!(wallOnTop && wallOnBottom) && (wa->x <= x) && (wa->x + wa->w >= x + w)) {
-			if (!wallOnTop && (y == wa->y + wa->h)) {
+			if (!wallOnTop && (y + h == wa->y)) {
 				wallOnTop = true;
-			} else if (!wallOnBottom && (y + h == wa->y)) {
+			} else if (!wallOnBottom && (y == wa->y + wa->h)) {
 				wallOnBottom = true;
 			}
 		}
 		if (CollisionHandler::partiallyCollidedIgnoreEdge(wa, this)) {
-			wallInMiddle=true;
+			wallInMiddle = true;
 			break;
 		}
 	}

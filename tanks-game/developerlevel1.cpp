@@ -13,13 +13,16 @@ void DeveloperLevel1::initialize() {
 
 	ColorValueHolder wallColor(.25f, .25f, .25f);
 
-	PositionHolder pos = RandomLevel::getSymmetricWallPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 20, 80);
-	WallManager::pushWall(new Wall(pos.x, pos.y, 20, 80, wallColor));
-	pos = RandomLevel::getSymmetricWallPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 20, 80);
-	WallManager::pushWall(new Wall(pos.x, pos.y, 20, 80, wallColor));
-	WallManager::pushWall(new Wall(pos.x, GAME_HEIGHT-20, 20, 20, wallColor));
+	PositionHolder wallPos1 = RandomLevel::getSymmetricWallPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 20, 80);
+	WallManager::pushWall(new Wall(wallPos1.x, wallPos1.y, 20, 80, wallColor));
+	PositionHolder wallPos2 = RandomLevel::getSymmetricWallPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 20, 80);
+	WallManager::pushWall(new Wall(wallPos2.x, wallPos2.y, 20, 80, wallColor));
+	WallManager::pushWall(new Wall(wallPos2.x, GAME_HEIGHT-20, 20, 20, wallColor));
 
-	std::string* paras = new std::string[4]{std::to_string(pos.x), std::to_string(pos.y+80), std::to_string(20), std::to_string((GAME_HEIGHT-20)-(pos.y+80))};
+	std::string* paras = new std::string[4]{std::to_string(wallPos2.x), std::to_string(wallPos2.y+80), std::to_string(20), std::to_string((GAME_HEIGHT-20)-(wallPos2.y+80))};
+	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vertical lightning")(4, paras));
+	delete[] paras;
+	paras = new std::string[4]{std::to_string(wallPos1.x), std::to_string(wallPos1.y+80), std::to_string(20), std::to_string(GAME_HEIGHT-(wallPos1.y+80))};
 	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vertical lightning")(4, paras));
 	delete[] paras;
 	paras = new std::string[4]{std::to_string(GAME_WIDTH/2 - 80 + 20), std::to_string(GAME_HEIGHT/2 - 40), std::to_string(60*2), std::to_string(20*2)};
