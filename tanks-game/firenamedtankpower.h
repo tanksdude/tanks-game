@@ -26,7 +26,7 @@ public:
 	//bool additionalShootingCanWorkWithOthers = true;
 	//bool additionalShootingCanOnlyWorkIndividually = false;
 
-	virtual double getFiringRateMultiplier() { return .5; }
+	virtual double getTankFiringRateMultiplier() { return .5; }
 
 	FireNamedTankPower();
 };

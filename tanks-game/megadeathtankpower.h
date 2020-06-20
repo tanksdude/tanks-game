@@ -17,7 +17,7 @@ public:
 	virtual TankPower* makeDuplicate() { return new MegaDeathTankPower(); }
 	virtual BulletPower* makeBulletPower();
 
-	virtual double getFiringRateMultiplier() { return 4; }
+	virtual double getTankFiringRateMultiplier() { return 4; }
 
 	MegaDeathTankPower();
 };

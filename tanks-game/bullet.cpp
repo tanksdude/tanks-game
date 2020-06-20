@@ -142,7 +142,7 @@ void Bullet::move() {
 }
 
 double Bullet::getBulletSpeedMultiplier() {
-	//look at Tank::getFiringRateMultiplier()
+	//look at Tank::getTankFiringRateMultiplier()
 
 	double highest = 1;
 	double lowest = 1;
@@ -170,7 +170,7 @@ double Bullet::getBulletSpeedMultiplier() {
 }
 
 double Bullet::getBulletRadiusMultiplier() {
-	//look at Tank::getFiringRateMultiplier()
+	//look at Tank::getTankFiringRateMultiplier()
 
 	double highest = 1;
 	double lowest = 1;
@@ -197,7 +197,7 @@ double Bullet::getBulletRadiusMultiplier() {
 }
 
 double Bullet::getBulletAcceleration() {
-	//look at Tank::getFiringRateMultiplier()
+	//look at Tank::getTankFiringRateMultiplier()
 
 	double highest = 0;
 	double lowest = 0;

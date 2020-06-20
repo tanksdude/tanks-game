@@ -12,7 +12,6 @@ class Bullet;
 
 class Bullet : public Circle, public GameThing {
 	friend class ResetThings;
-	friend class BulletPriorityHandler;
 	friend class PowerFunctionHelper;
 public: //hopefully temporary
 	double angle;

@@ -117,8 +117,10 @@ public:
 	bool tankAccelerationStacks = false;
 	virtual double getTankRadiusMultiplier() { return 1; }
 	bool tankRadiusStacks = false;
-	virtual double getFiringRateMultiplier() { return 1; }
-	bool firingRateStacks = false;
+	virtual double getTankFiringRateMultiplier() { return 1; }
+	bool tankFiringRateStacks = false;
+	virtual double getTankTurningIncrementMultiplier() { return 1; }
+	bool tankTurningIncrementStacks = false;
 
 	virtual double getOffenseImportance() { return 0; } //"importance" = "override" value (when dealing with other powers)
 	virtual double getOffenseTier(Tank*) { return 0; }

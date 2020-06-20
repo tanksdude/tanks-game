@@ -35,8 +35,11 @@ VertexBuffer* Tank::vb;
 IndexBuffer* Tank::ib;
 VertexArray* Tank::cannon_va;
 VertexBuffer* Tank::cannon_vb;
-bool Tank::initialized_GPU = 0;
+bool Tank::initialized_GPU = false;
 
+const double Tank::default_maxSpeed = 1;
+const double Tank::default_acceleration = 1.0/16;
+const double Tank::default_turningIncrement = 64;
 Tank::Tank(double x_, double y_, double a, char id_, std::string name_, TankInputChar forward, TankInputChar left, TankInputChar right, TankInputChar shoot, TankInputChar special) {
 	x = x_;
 	y = y_;
@@ -45,6 +48,10 @@ Tank::Tank(double x_, double y_, double a, char id_, std::string name_, TankInpu
 	teamID = id_;
 	r = TANK_RADIUS;
 	name = name_;
+
+	maxSpeed = default_maxSpeed;
+	acceleration = default_acceleration;
+	turningIncrement = default_turningIncrement;
 
 	shootCount = 0;
 	maxShootCount = 100; //will change whenever while I'm testing
@@ -289,8 +296,8 @@ double Tank::getShootingSpeedMultiplier() {
 	std::vector<double> stackList; //only now have I realized this isn't a great name; no, it's not a data structure known as a stack
 
 	for (int i = 0; i < tankPowers.size(); i++) {
-		double value = tankPowers[i]->getFiringRateMultiplier();
-		if (tankPowers[i]->firingRateStacks) {
+		double value = tankPowers[i]->getTankFiringRateMultiplier();
+		if (tankPowers[i]->tankFiringRateStacks) {
 			stackList.push_back(value);
 		} else {
 			if (value < 1 && value < lowest) {
@@ -314,6 +321,7 @@ void Tank::updateAllValues() {
 	updateMaxSpeed();
 	updateAcceleration();
 	updateRadius();
+	updateTurningIncrement();
 }
 
 /*
@@ -376,7 +384,7 @@ void Tank::updateMaxSpeed() {
 		value *= stackList[i];
 	}
 
-	maxSpeed = highest * lowest * value;
+	maxSpeed = highest * lowest * value * default_maxSpeed;
 }
 
 void Tank::updateAcceleration() {
@@ -404,7 +412,7 @@ void Tank::updateAcceleration() {
 		value *= stackList[i];
 	}
 
-	acceleration = highest * lowest * value * 1.0/16;
+	acceleration = highest * lowest * value * default_acceleration;
 }
 
 void Tank::updateRadius() {
@@ -433,6 +441,39 @@ void Tank::updateRadius() {
 	}
 
 	r = highest * lowest * value * TANK_RADIUS;
+}
+
+void Tank::updateTurningIncrement() {
+	//look at getShootingSpeedMultiplier()
+
+	double highest = 1;
+	double lowest = 1;
+	std::vector<double> stackList;
+	int negativeCount = 0;
+
+	for (int i = 0; i < tankPowers.size(); i++) {
+		double value = tankPowers[i]->getTankTurningIncrementMultiplier();
+		if (value < 0) {
+			negativeCount++;
+			value = value * -1;
+		}
+		if (tankPowers[i]->tankTurningIncrementStacks) {
+			stackList.push_back(value);
+		} else {
+			if (value < 1 && value < lowest) {
+				lowest = value;
+			} else if (value > 1 && value > highest) {
+				highest = value;
+			}
+		}
+	}
+
+	double value = 1;
+	for (int i = 0; i < stackList.size(); i++) {
+		value *= stackList[i];
+	}
+
+	turningIncrement = highest * lowest * value * default_turningIncrement * (negativeCount%2 == 0 ? 1 : -1);
 }
 
 void Tank::powerCalculate() {

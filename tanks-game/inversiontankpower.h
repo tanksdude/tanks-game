@@ -17,15 +17,15 @@ public:
 	virtual TankPower* makeDuplicate() { return new InversionTankPower(); }
 	virtual BulletPower* makeBulletPower();
 
-	//probably shouldn't use this:
+	//maybe use this?:
 	//bool modifiesMovement = true;
 	//virtual PowerInteractionBoolHolder modifiedMovement(Tank*);
 	//bool overridesMovement = false;
 	//bool modifiedMovementCanWorkWithOthers = true;
 	//bool modifiedMovementCanOnlyWorkIndividually = false;
 
-	//need something like this:
-	//virtual double getTankTurningMultiplier() { return -1; }
+	virtual double getTankTurningIncrementMultiplier() { return -1; }
+	//bool tankTurningIncrementStacks = true;
 
 	InversionTankPower();
 };

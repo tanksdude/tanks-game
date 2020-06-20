@@ -23,17 +23,16 @@ struct TankInputChar {
 
 class Tank : public Circle, public GameThing {
 	friend class ResetThings;
-	friend class Level; //might remove
 	friend class PowerFunctionHelper;
 public:
 	std::string name;
 	int wins = 0;
 
-	double maxSpeed = 1;
-	double acceleration = 1.0/16; //intentional acceleration, not total
+	double maxSpeed; // = 1;
+	double acceleration; // = 1.0/16; //intentional acceleration, not total
 	double velocity = 0; //intentional velocity, not total
 	//TODO: system that can apply forces
-	double turningIncrement = 64;
+	double turningIncrement; // = 64;
 	double angle;
 	double getAngle();
 	double getCannonAngle(int index);
@@ -58,6 +57,7 @@ public:
 	void updateMaxSpeed();
 	void updateAcceleration();
 	void updateRadius();
+	void updateTurningIncrement();
 
 public:
 	TankInputChar forward;
@@ -88,6 +88,10 @@ private:
 public:
 	//helper stuff:
 	ColorValueHolder getBodyColor();
+
+	static const double default_maxSpeed;
+	static const double default_acceleration;
+	static const double default_turningIncrement;
 
 private:
 	static VertexArray* va;

@@ -19,7 +19,7 @@ public:
 
 	virtual double getTankMaxSpeedMultiplier() { return .5; }
 	virtual double getTankAccelerationMultiplier() { return .5; }
-	virtual double getFiringRateMultiplier() { return 4; } //stacked in JS, not sure if it should stack here
+	virtual double getTankFiringRateMultiplier() { return 4; } //stacked in JS, not sure if it should stack here
 
 	OldBigNamedTankPower();
 };
