@@ -1,12 +1,12 @@
 #include "devlonginvinciblenamedbulletpower.h"
 #include "devlonginvinciblenamedtankpower.h"
 
-void DevLongInvincibleNamedBulletPower::initialize(Bullet* b) {
-	return;
+void DevLongInvincibleNamedBulletPower::initialize(Bullet* parent) {
+	//nothing
 }
 
-void DevLongInvincibleNamedBulletPower::removeEffects(Bullet * b) {
-	return;
+void DevLongInvincibleNamedBulletPower::removeEffects(Bullet* parent) {
+	//nothing
 }
 
 TankPower* DevLongInvincibleNamedBulletPower::makeTankPower() {

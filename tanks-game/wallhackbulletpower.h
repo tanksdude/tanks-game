@@ -5,7 +5,6 @@ class WallhackBulletPower;
 #include "wallhackpower.h"
 
 class WallhackBulletPower : public BulletPower {
-
 public:
 	virtual void initialize(Bullet* parent);
 	virtual void removeEffects(Bullet* parent);

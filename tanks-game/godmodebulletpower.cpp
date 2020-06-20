@@ -1,11 +1,11 @@
 #include "godmodebulletpower.h"
 #include "godmodetankpower.h"
 
-void GodmodeBulletPower::initialize(Bullet* b) {
+void GodmodeBulletPower::initialize(Bullet* parent) {
 	//nothing
 }
 
-void GodmodeBulletPower::removeEffects(Bullet* b) {
+void GodmodeBulletPower::removeEffects(Bullet* parent) {
 	//nothing
 }
 

@@ -5,7 +5,6 @@ class SpeedBulletPower;
 #include "speedpower.h"
 
 class SpeedBulletPower : public BulletPower {
-
 public:
 	virtual void initialize(Bullet* parent);
 	virtual void removeEffects(Bullet* parent);

@@ -6,7 +6,6 @@ class BounceBulletPower;
 
 class BounceBulletPower : public BulletPower {
 protected:
-public:
 	static const short maxBounces;
 	short bouncesLeft;
 

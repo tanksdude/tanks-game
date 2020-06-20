@@ -1,9 +1,10 @@
 #pragma once
+class MultishotBulletPower;
+
 #include "bulletpower.h"
 #include "multishotpower.h"
 
 class MultishotBulletPower : public BulletPower {
-
 public:
 	virtual void initialize(Bullet* parent);
 	virtual void removeEffects(Bullet* parent);

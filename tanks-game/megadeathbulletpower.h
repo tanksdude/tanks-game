@@ -5,7 +5,7 @@ class MegaDeathBulletPower;
 #include "megadeathpower.h"
 
 class MegaDeathBulletPower : public BulletPower {
-public:
+protected: //public?
 	static const double destroyWallTier; //(and destroyHazardTier)
 	static const double bulletSizeMultiplierPerTick;
 
@@ -19,7 +19,7 @@ public:
 		return MegaDeathPower::getClassColor();
 	}
 
-	virtual BulletPower* makeDuplicate() { return new MegaDeathBulletPower(); } //should current size be passed?
+	virtual BulletPower* makeDuplicate() { return new MegaDeathBulletPower(); } //should current size be passed on?
 	virtual TankPower* makeTankPower();
 
 	//bool modifiesMovement = true;
@@ -33,20 +33,6 @@ public:
 	//bool overridesCollisionWithWall = true;
 	//bool modifiedCollisionWithWallCanWorkWithOthers = true;
 	//bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;
-
-	//bullet-hazard collision now uses priority, making the below modification functions obsolete
-
-	//bool modifiesCollisionWithCircleHazard = true;
-	//virtual PowerInteractionBoolHolder modifiedCollisionWithCircleHazard(Bullet*, CircleHazard*);
-	//bool overridesCollisionWithCircleHazard = true;
-	//bool modifiedCollisionWithCircleHazardCanWorkWithOthers = true;
-	//bool modifiedCollisionWithCircleHazardCanOnlyWorkIndividually = false;
-
-	//bool modifiesCollisionWithRectHazard = true;
-	//virtual PowerInteractionBoolHolder modifiedCollisionWithRectHazard(Bullet*, RectHazard*);
-	//bool overridesCollisionWithRectHazard = true;
-	//bool modifiedCollisionWithRectHazardCanWorkWithOthers = true;
-	//bool modifiedCollisionWithRectHazardCanOnlyWorkIndividually = false;
 
 	virtual double getBulletSpeedMultiplier() { return 1.0/4; }
 	//with bulletSizeMultiplierPerTick = 257.0/256.0, 1.0/128 or 1.0/64 might be closer to what I originally thought of

@@ -5,10 +5,9 @@ class InversionTankPower;
 #include "inversionpower.h"
 
 class InversionTankPower : public TankPower {
-
 public:
-	void initialize(Tank* parent);
-	void removeEffects(Tank* parent);
+	virtual void initialize(Tank* parent);
+	virtual void removeEffects(Tank* parent);
 
 	virtual ColorValueHolder getColor() {
 		return InversionPower::getClassColor();
@@ -20,7 +19,7 @@ public:
 	//maybe use this?:
 	//bool modifiesMovement = true;
 	//virtual PowerInteractionBoolHolder modifiedMovement(Tank*);
-	//bool overridesMovement = false;
+	//bool overridesMovement = true;
 	//bool modifiedMovementCanWorkWithOthers = true;
 	//bool modifiedMovementCanOnlyWorkIndividually = false;
 

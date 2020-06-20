@@ -40,11 +40,11 @@ double FireNamedBulletPower::getBulletAcceleration() {
 	return accelerationAmount;
 }
 
-void FireNamedBulletPower::initialize(Bullet* b) {
+void FireNamedBulletPower::initialize(Bullet* parent) {
 	//nothing
 }
 
-void FireNamedBulletPower::removeEffects(Bullet* b) {
+void FireNamedBulletPower::removeEffects(Bullet* parent) {
 	//nothing
 }
 

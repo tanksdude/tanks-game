@@ -5,11 +5,11 @@ PowerInteractionBoolHolder OldBigNamedBulletPower::modifiedCollisionWithWall(Bul
 	return { false, true };
 }
 
-void OldBigNamedBulletPower::initialize(Bullet* b) {
+void OldBigNamedBulletPower::initialize(Bullet* parent) {
 	//nothing
 }
 
-void OldBigNamedBulletPower::removeEffects(Bullet * b) {
+void OldBigNamedBulletPower::removeEffects(Bullet* parent) {
 	//nothing
 }
 

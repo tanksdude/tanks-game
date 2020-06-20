@@ -6,8 +6,6 @@ class OldBigNamedBulletPower;
 #include "constants.h"
 
 class OldBigNamedBulletPower : public BulletPower {
-protected:
-
 public:
 	virtual void initialize(Bullet* parent);
 	virtual void removeEffects(Bullet* parent);

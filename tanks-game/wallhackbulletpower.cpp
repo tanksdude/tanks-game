@@ -1,8 +1,13 @@
 #include "wallhackbulletpower.h"
 #include "wallhacktankpower.h"
 
-void WallhackBulletPower::initialize(Bullet*) { return; }
-void WallhackBulletPower::removeEffects(Bullet*) { return; }
+void WallhackBulletPower::initialize(Bullet* parent) {
+	//nothing
+}
+
+void WallhackBulletPower::removeEffects(Bullet* parent) {
+	//nothing
+}
 
 TankPower* WallhackBulletPower::makeTankPower() {
 	return new WallhackTankPower();

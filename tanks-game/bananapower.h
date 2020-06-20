@@ -1,7 +1,7 @@
 #pragma once
 #include "power.h"
 
-class BananaPower : public Power{
+class BananaPower : public Power {
 public:
 	virtual std::string getName() { return BananaPower::getClassName(); }
 	static std::string getClassName() { return "banana"; }

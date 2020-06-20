@@ -5,10 +5,9 @@ class SpeedTankPower;
 #include "speedpower.h"
 
 class SpeedTankPower : public TankPower {
-
 public:
-	void initialize(Tank* parent);
-	void removeEffects(Tank* parent);
+	virtual void initialize(Tank* parent);
+	virtual void removeEffects(Tank* parent);
 
 	virtual ColorValueHolder getColor() {
 		return SpeedPower::getClassColor();

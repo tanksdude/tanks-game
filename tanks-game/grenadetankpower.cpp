@@ -4,6 +4,7 @@
 void GrenadeTankPower::initialize(Tank* parent) {
 	//nothing
 }
+
 void GrenadeTankPower::removeEffects(Tank* parent) {
 	//nothing
 }

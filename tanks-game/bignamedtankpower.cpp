@@ -4,6 +4,7 @@
 void BigNamedTankPower::initialize(Tank* parent) {
 	//nothing
 }
+
 void BigNamedTankPower::removeEffects(Tank* parent) {
 	//nothing
 }

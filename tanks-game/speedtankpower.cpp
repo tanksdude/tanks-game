@@ -2,10 +2,11 @@
 #include "speedbulletpower.h"
 
 void SpeedTankPower::initialize(Tank* parent) {
-	//parent->giveMaxSpeed() *= 2;
+	//nothing
 }
+
 void SpeedTankPower::removeEffects(Tank* parent) {
-	//parent->giveMaxSpeed() /= 2;
+	//nothing
 }
 
 double SpeedTankPower::getTankMaxSpeedMultiplier() {

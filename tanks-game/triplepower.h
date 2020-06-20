@@ -1,7 +1,7 @@
 #pragma once
 #include "power.h"
 
-class TriplePower : public Power{
+class TriplePower : public Power {
 public:
 	virtual std::vector<std::string> getPowerAttributes() {
 		//might want to change how this power works (need to adjust cannonpoints)

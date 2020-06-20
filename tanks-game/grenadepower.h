@@ -1,7 +1,7 @@
 #pragma once
 #include "power.h"
 
-class GrenadePower : public Power{
+class GrenadePower : public Power {
 public:
 	virtual std::vector<std::string> getPowerAttributes() {
 		std::vector<std::string> attributes = std::vector<std::string>{ "mix" };

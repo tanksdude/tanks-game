@@ -1,11 +1,11 @@
 #include "inversionbulletpower.h"
 #include "inversiontankpower.h"
 
-void InversionBulletPower::initialize(Bullet* b) {
+void InversionBulletPower::initialize(Bullet* parent) {
 	//nothing
 }
 
-void InversionBulletPower::removeEffects(Bullet* b) {
+void InversionBulletPower::removeEffects(Bullet* parent) {
 	//nothing
 }
 

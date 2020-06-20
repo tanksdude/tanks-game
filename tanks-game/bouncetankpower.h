@@ -5,10 +5,9 @@ class BounceTankPower;
 #include "bouncepower.h"
 
 class BounceTankPower : public TankPower {
-
 public:
-	void initialize(Tank* parent);
-	void removeEffects(Tank* parent);
+	virtual void initialize(Tank* parent);
+	virtual void removeEffects(Tank* parent);
 
 	virtual ColorValueHolder getColor() {
 		return BouncePower::getClassColor();
@@ -16,8 +15,6 @@ public:
 
 	virtual TankPower* makeDuplicate() { return new BounceTankPower(); }
 	virtual BulletPower* makeBulletPower();
-
-	//virtual double getTankRadiusMultiplier() { return .5; }
 
 	BounceTankPower();
 };

@@ -5,8 +5,6 @@ class DevLongInvincibleNamedBulletPower;
 #include "devlonginvinciblenamedpower.h"
 
 class DevLongInvincibleNamedBulletPower : public BulletPower {
-protected:
-
 public:
 	virtual void initialize(Bullet* parent);
 	virtual void removeEffects(Bullet* parent);

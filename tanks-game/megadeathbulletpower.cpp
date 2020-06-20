@@ -37,11 +37,11 @@ double MegaDeathBulletPower::getDefenseTier(Bullet* b) {
 	return value;
 }
 
-void MegaDeathBulletPower::initialize(Bullet* b) {
+void MegaDeathBulletPower::initialize(Bullet* parent) {
 	//nothing
 }
 
-void MegaDeathBulletPower::removeEffects(Bullet* b) {
+void MegaDeathBulletPower::removeEffects(Bullet* parent) {
 	//nothing
 }
 

@@ -2,11 +2,11 @@
 #include "oldbouncebulletpower.h"
 
 void OldBounceTankPower::initialize(Tank* parent) {
-	//parent->r /= 2;
-	//no need!
+	//nothing
 }
+
 void OldBounceTankPower::removeEffects(Tank* parent) {
-	//parent->r *= 2;
+	//nothing
 }
 
 BulletPower* OldBounceTankPower::makeBulletPower() {

@@ -4,6 +4,7 @@
 void BananaTankPower::initialize(Tank* parent) {
 	//nothing
 }
+
 void BananaTankPower::removeEffects(Tank* parent) {
 	//nothing
 }

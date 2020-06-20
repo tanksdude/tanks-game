@@ -4,6 +4,7 @@
 void InversionTankPower::initialize(Tank* parent) {
 	//parent->turningIncrement *= -1;
 }
+
 void InversionTankPower::removeEffects(Tank* parent) {
 	//parent->turningIncrement /= -1;
 }

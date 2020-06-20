@@ -5,10 +5,9 @@ class MegaDeathTankPower;
 #include "megadeathpower.h"
 
 class MegaDeathTankPower : public TankPower {
-
 public:
-	void initialize(Tank* parent);
-	void removeEffects(Tank* parent);
+	virtual void initialize(Tank* parent);
+	virtual void removeEffects(Tank* parent);
 
 	virtual ColorValueHolder getColor() {
 		return MegaDeathPower::getClassColor();

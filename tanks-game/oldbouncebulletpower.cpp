@@ -9,8 +9,7 @@ PowerInteractionBoolHolder OldBounceBulletPower::modifiedCollisionWithWall(Bulle
 		if (PowerFunctionHelper::bounceGenericWithCorners(b, w)) {
 			bouncesLeft--;
 		}
-	}
-	else {
+	} else {
 		if (PowerFunctionHelper::bounceGeneric(b, w)) {
 			bouncesLeft--;
 		}
@@ -74,12 +73,12 @@ PowerInteractionBoolHolder OldBounceBulletPower::modifiedEdgeCollision(Bullet* b
 	return { b->isFullyOutOfBounds() };
 }
 
-void OldBounceBulletPower::initialize(Bullet* b) {
-	//b->velocity /= 2; //no longer needs this
+void OldBounceBulletPower::initialize(Bullet* parent) {
+	//nothing
 }
 
-void OldBounceBulletPower::removeEffects(Bullet * b) {
-	//b->velocity *= 2;
+void OldBounceBulletPower::removeEffects(Bullet* parent) {
+	//nothing
 }
 
 TankPower* OldBounceBulletPower::makeTankPower() {

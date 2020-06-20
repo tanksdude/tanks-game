@@ -30,11 +30,11 @@ PowerInteractionBoolHolder GrenadeBulletPower::modifiedMovement(Bullet* b) {
 	return { false };
 }
 
-void GrenadeBulletPower::initialize(Bullet* b) {
+void GrenadeBulletPower::initialize(Bullet* parent) {
 	//nothing
 }
 
-void GrenadeBulletPower::removeEffects(Bullet* b) {
+void GrenadeBulletPower::removeEffects(Bullet* parent) {
 	//nothing
 }
 

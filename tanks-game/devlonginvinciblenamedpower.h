@@ -1,7 +1,7 @@
 #pragma once
 #include "power.h"
 
-class DevLongInvincibleNamedPower : public Power{
+class DevLongInvincibleNamedPower : public Power {
 public:
 	virtual std::vector<std::string> getPowerTypes() {
 		std::vector<std::string> types = std::vector<std::string>{ "dev" }; //no random-dev

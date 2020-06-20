@@ -5,8 +5,6 @@ class InvincibleNamedBulletPower;
 #include "invinciblenamedpower.h"
 
 class InvincibleNamedBulletPower : public BulletPower {
-protected:
-
 public:
 	virtual void initialize(Bullet* parent);
 	virtual void removeEffects(Bullet* parent);

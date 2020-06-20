@@ -1,7 +1,7 @@
 #pragma once
 #include "power.h"
 
-class OldBigNamedPower : public Power{
+class OldBigNamedPower : public Power {
 public:
 	virtual std::vector<std::string> getPowerTypes() {
 		std::vector<std::string> types = std::vector<std::string>{ "old", "random-old" };

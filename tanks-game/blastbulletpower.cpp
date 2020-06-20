@@ -37,11 +37,11 @@ double BlastBulletPower::getBulletAcceleration() {
 	return accelerationAmount;
 }
 
-void BlastBulletPower::initialize(Bullet* b) {
+void BlastBulletPower::initialize(Bullet* parent) {
 	//nothing
 }
 
-void BlastBulletPower::removeEffects(Bullet* b) {
+void BlastBulletPower::removeEffects(Bullet* parent) {
 	//nothing
 }
 

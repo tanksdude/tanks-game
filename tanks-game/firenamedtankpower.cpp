@@ -10,6 +10,7 @@ const int FireNamedTankPower::bulletAmount = 4;
 void FireNamedTankPower::initialize(Tank* parent) {
 	//nothing
 }
+
 void FireNamedTankPower::removeEffects(Tank* parent) {
 	//nothing
 }

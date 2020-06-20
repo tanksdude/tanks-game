@@ -5,7 +5,6 @@ class TripleBulletPower;
 #include "triplepower.h"
 
 class TripleBulletPower : public BulletPower {
-
 public:
 	virtual void initialize(Bullet* parent);
 	virtual void removeEffects(Bullet* parent);

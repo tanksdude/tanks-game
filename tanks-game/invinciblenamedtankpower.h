@@ -5,10 +5,9 @@ class InvincibleNamedTankPower;
 #include "invinciblenamedpower.h"
 
 class InvincibleNamedTankPower : public TankPower {
-
 public:
-	void initialize(Tank* parent);
-	void removeEffects(Tank* parent);
+	virtual void initialize(Tank* parent);
+	virtual void removeEffects(Tank* parent);
 
 	virtual ColorValueHolder getColor() {
 		return InvincibleNamedPower::getClassColor();

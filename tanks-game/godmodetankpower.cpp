@@ -14,6 +14,7 @@ void GodmodeTankPower::initialize(Tank* parent) {
 	parent->determineShootingAngles();
 	parent->updateAllValues();
 }
+
 void GodmodeTankPower::removeEffects(Tank* parent) {
 	//nothing
 }

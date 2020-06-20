@@ -5,8 +5,7 @@ class HomingBulletPower;
 #include "homingpower.h"
 
 class HomingBulletPower : public BulletPower {
-protected:
-public:
+protected: //public?
 	static const double homingStrength;
 
 public:

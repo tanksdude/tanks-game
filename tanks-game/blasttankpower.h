@@ -10,8 +10,8 @@ protected:
 	static const int bulletAmount;
 
 public:
-	void initialize(Tank* parent);
-	void removeEffects(Tank* parent);
+	virtual void initialize(Tank* parent);
+	virtual void removeEffects(Tank* parent);
 
 	virtual ColorValueHolder getColor() {
 		return BlastPower::getClassColor();

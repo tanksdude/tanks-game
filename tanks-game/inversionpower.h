@@ -1,7 +1,7 @@
 #pragma once
 #include "power.h"
 
-class InversionPower : public Power{
+class InversionPower : public Power {
 public:
 	virtual std::vector<std::string> getPowerTypes() {
 		std::vector<std::string> types = std::vector<std::string>{ "dev", "random-dev" };

@@ -4,6 +4,7 @@
 void WallhackTankPower::initialize(Tank* parent) {
 	//nothing
 }
+
 void WallhackTankPower::removeEffects(Tank* parent) {
 	//nothing
 }

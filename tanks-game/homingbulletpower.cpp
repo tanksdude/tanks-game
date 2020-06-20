@@ -17,11 +17,11 @@ PowerInteractionBoolHolder HomingBulletPower::modifiedEdgeCollision(Bullet* b) {
 	return { b->x - b->r <= 0 || b->x + b->r >= GAME_WIDTH };
 }
 
-void HomingBulletPower::initialize(Bullet* b) {
+void HomingBulletPower::initialize(Bullet* parent) {
 	//nothing
 }
 
-void HomingBulletPower::removeEffects(Bullet * b) {
+void HomingBulletPower::removeEffects(Bullet* parent) {
 	//nothing
 }
 

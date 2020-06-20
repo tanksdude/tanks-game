@@ -10,6 +10,7 @@ const int BlastTankPower::bulletAmount = 16;
 void BlastTankPower::initialize(Tank* parent) {
 	//nothing
 }
+
 void BlastTankPower::removeEffects(Tank* parent) {
 	//nothing
 }

@@ -29,11 +29,11 @@ PowerInteractionBoolHolder BananaBulletPower::modifiedMovement(Bullet* b) {
 	return { false };
 }
 
-void BananaBulletPower::initialize(Bullet* b) {
+void BananaBulletPower::initialize(Bullet* parent) {
 	//nothing
 }
 
-void BananaBulletPower::removeEffects(Bullet* b) {
+void BananaBulletPower::removeEffects(Bullet* parent) {
 	//nothing
 }
 
