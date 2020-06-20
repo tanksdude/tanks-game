@@ -12,8 +12,8 @@ protected:
 	double accelerationAmount;
 
 public:
-	virtual void initialize(Bullet* parent);
-	virtual void removeEffects(Bullet* parent);
+	virtual void initialize(Bullet* parent) override;
+	virtual void removeEffects(Bullet* parent) override;
 
 	virtual ColorValueHolder getColor() {
 		return BlastPower::getClassColor();
@@ -23,19 +23,19 @@ public:
 	virtual TankPower* makeTankPower();
 
 	//bool modifiesMovement = true;
-	virtual PowerInteractionBoolHolder modifiedMovement(Bullet*);
+	virtual PowerInteractionBoolHolder modifiedMovement(Bullet*) override;
 	//bool overridesMovement = false;
 	//bool modifiedMovementCanWorkWithOthers = true;
 	//bool modifiedMovementCanOnlyWorkIndividually = false;
 
 	//bool modifiesCollisionWithWall = true;
-	virtual PowerInteractionBoolHolder modifiedCollisionWithWall(Bullet*, Wall*);
+	virtual PowerInteractionBoolHolder modifiedCollisionWithWall(Bullet*, Wall*) override;
 	//bool overridesCollisionWithWall = true;
 	//bool modifiedCollisionWithWallCanWorkWithOthers = true;
 	//bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;
 
-	virtual double getBulletRadiusMultiplier() { return .25; }
-	virtual double getBulletAcceleration();
+	virtual double getBulletRadiusMultiplier() override { return .25; }
+	virtual double getBulletAcceleration() override;
 
 	BlastBulletPower();
 	BlastBulletPower(double acceleration); //protected?

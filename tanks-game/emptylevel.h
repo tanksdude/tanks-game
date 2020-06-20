@@ -4,7 +4,7 @@
 class EmptyLevel : public Level {
 public:
 	std::string getName() { return "empty"; }
-	std::unordered_map<std::string, float> getWeights();
+	std::unordered_map<std::string, float> getWeights() override;
 	void initialize();
 	
 	EmptyLevel();

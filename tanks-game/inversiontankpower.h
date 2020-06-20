@@ -6,8 +6,8 @@ class InversionTankPower;
 
 class InversionTankPower : public TankPower {
 public:
-	virtual void initialize(Tank* parent);
-	virtual void removeEffects(Tank* parent);
+	virtual void initialize(Tank* parent) override;
+	virtual void removeEffects(Tank* parent) override;
 
 	virtual ColorValueHolder getColor() {
 		return InversionPower::getClassColor();
@@ -18,12 +18,12 @@ public:
 
 	//maybe use this?:
 	//bool modifiesMovement = true;
-	//virtual PowerInteractionBoolHolder modifiedMovement(Tank*);
+	//virtual PowerInteractionBoolHolder modifiedMovement(Tank*) override;
 	//bool overridesMovement = true;
 	//bool modifiedMovementCanWorkWithOthers = true;
 	//bool modifiedMovementCanOnlyWorkIndividually = false;
 
-	virtual double getTankTurningIncrementMultiplier() { return -1; }
+	virtual double getTankTurningIncrementMultiplier() override { return -1; }
 	//bool tankTurningIncrementStacks = true;
 
 	InversionTankPower();

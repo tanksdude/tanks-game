@@ -10,8 +10,8 @@ protected:
 	static const int bulletAmount;
 
 public:
-	virtual void initialize(Tank* parent);
-	virtual void removeEffects(Tank* parent);
+	virtual void initialize(Tank* parent) override;
+	virtual void removeEffects(Tank* parent) override;
 
 	virtual ColorValueHolder getColor() {
 		return FireNamedPower::getClassColor();
@@ -21,12 +21,12 @@ public:
 	virtual BulletPower* makeBulletPower();
 
 	//bool modifiesAdditionalShooting = false;
-	virtual void additionalShooting(Tank* parent, CannonPoint);
+	virtual void additionalShooting(Tank* parent, CannonPoint) override;
 	//bool overridesAdditionalShooting = false;
 	//bool additionalShootingCanWorkWithOthers = true;
 	//bool additionalShootingCanOnlyWorkIndividually = false;
 
-	virtual double getTankFiringRateMultiplier() { return .5; }
+	virtual double getTankFiringRateMultiplier() override { return .5; }
 
 	FireNamedTankPower();
 };

@@ -45,8 +45,8 @@ public:
 	virtual std::string getName() { return getClassName(); }
 	static std::string getClassName() { return "vertical lightning"; }
 
-	virtual bool validLocation();
-	virtual bool reasonableLocation();
+	virtual bool validLocation() override;
+	virtual bool reasonableLocation() override;
 
 	//virtual void tick();
 	virtual void draw();

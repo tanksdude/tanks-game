@@ -10,8 +10,8 @@ protected:
 	static const int bulletAmount;
 
 public:
-	virtual void initialize(Tank* parent);
-	virtual void removeEffects(Tank* parent);
+	virtual void initialize(Tank* parent) override;
+	virtual void removeEffects(Tank* parent) override;
 
 	virtual ColorValueHolder getColor() {
 		return BlastPower::getClassColor();
@@ -21,13 +21,13 @@ public:
 	virtual BulletPower* makeBulletPower();
 
 	//bool modifiesAdditionalShooting = false;
-	virtual void additionalShooting(Tank* parent, CannonPoint);
+	virtual void additionalShooting(Tank* parent, CannonPoint) override;
 	//bool overridesAdditionalShooting = false;
 	//bool additionalShootingCanWorkWithOthers = true;
 	//bool additionalShootingCanOnlyWorkIndividually = false;
 
-	virtual double getTankMaxSpeedMultiplier() { return .5; }
-	virtual double getTankAccelerationMultiplier() { return .5; }
+	virtual double getTankMaxSpeedMultiplier() override { return .5; }
+	virtual double getTankAccelerationMultiplier() override { return .5; }
 
 	BlastTankPower();
 };

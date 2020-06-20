@@ -10,8 +10,8 @@ protected:
 	short bouncesLeft;
 
 public:
-	virtual void initialize(Bullet* parent);
-	virtual void removeEffects(Bullet* parent);
+	virtual void initialize(Bullet* parent) override;
+	virtual void removeEffects(Bullet* parent) override;
 
 	virtual ColorValueHolder getColor() {
 		return OldBouncePower::getClassColor();
@@ -21,18 +21,18 @@ public:
 	virtual TankPower* makeTankPower();
 	
 	//bool modifiesCollisionWithWall = true;
-	virtual PowerInteractionBoolHolder modifiedCollisionWithWall(Bullet*, Wall*);
+	virtual PowerInteractionBoolHolder modifiedCollisionWithWall(Bullet*, Wall*) override;
 	//bool overridesCollisionWithWall = true;
 	//bool modifiedCollisionWithWallCanWorkWithOthers = true;
 	//bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;
 
 	//bool modifiesCollisionWithEdge = true;
-	virtual PowerInteractionBoolHolder modifiedEdgeCollision(Bullet*);
+	virtual PowerInteractionBoolHolder modifiedEdgeCollision(Bullet*) override;
 	//bool overridesEdgeCollision = true;
 	//bool modifiedEdgeCollisionCanWorkWithOthers = false;
 	//bool modifiedEdgeCollisionCanOnlyWorkIndividually = false;
 
-	virtual double getBulletSpeedMultiplier() { return .25; }
+	virtual double getBulletSpeedMultiplier() override { return .25; }
 
 	OldBounceBulletPower();
 };

@@ -34,20 +34,20 @@ private:
 	void local_uninitializeGPU();
 
 public:
-	virtual double getDefaultOffense() { return .5; } //1.5?
-	virtual double getDefaultDefense() { return 999; }
+	virtual double getDefaultOffense() override { return .5; } //1.5?
+	virtual double getDefaultDefense() override { return 999; }
 
-	virtual bool actuallyCollided(Tank*) { return currentlyActive; }
+	virtual bool actuallyCollided(Tank*) override { return currentlyActive; }
 	//bool modifiesTankCollision = true;
-	virtual void modifiedTankCollision(Tank*) { return; }
+	virtual void modifiedTankCollision(Tank*) override { return; }
 	//bool hasSpecialEffectTankCollision = true;
-	virtual void specialEffectTankCollision(Tank*);
+	virtual void specialEffectTankCollision(Tank*) override;
 
-	virtual bool actuallyCollided(Bullet*) { return currentlyActive; }
+	virtual bool actuallyCollided(Bullet*) override { return currentlyActive; }
 	//bool modifiesBulletCollision = true;
-	virtual void modifiedBulletCollision(Bullet*) { return; }
+	virtual void modifiedBulletCollision(Bullet*) override { return; }
 	//bool hasSpecialEffectBulletCollision = true;
-	virtual void specialEffectBulletCollision(Bullet*);
+	virtual void specialEffectBulletCollision(Bullet*) override;
 protected:
 	virtual void specialEffectCircleCollision(Circle*); //tanks and bullets are both circles, so calculating the bolt positions would be the same
 
@@ -55,8 +55,8 @@ public:
 	virtual std::string getName() { return getClassName(); }
 	static std::string getClassName() { return "circular lightning"; }
 
-	virtual bool validLocation();
-	virtual bool reasonableLocation();
+	virtual bool validLocation() override;
+	virtual bool reasonableLocation() override;
 
 	virtual void tick() { GeneralizedLightning::tick(); }
 	virtual void draw();

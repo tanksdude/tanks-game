@@ -6,8 +6,8 @@ class SpeedTankPower;
 
 class SpeedTankPower : public TankPower {
 public:
-	virtual void initialize(Tank* parent);
-	virtual void removeEffects(Tank* parent);
+	virtual void initialize(Tank* parent) override;
+	virtual void removeEffects(Tank* parent) override;
 
 	virtual ColorValueHolder getColor() {
 		return SpeedPower::getClassColor();
@@ -16,7 +16,7 @@ public:
 	virtual TankPower* makeDuplicate() { return new SpeedTankPower(); }
 	virtual BulletPower* makeBulletPower();
 
-	virtual double getTankMaxSpeedMultiplier();
+	virtual double getTankMaxSpeedMultiplier() override;
 	//bool tankMaxSpeedStacks = true;
 
 	SpeedTankPower();

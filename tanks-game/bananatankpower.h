@@ -6,8 +6,8 @@ class BananaTankPower;
 
 class BananaTankPower : public TankPower {
 public:
-	virtual void initialize(Tank* parent);
-	virtual void removeEffects(Tank* parent);
+	virtual void initialize(Tank* parent) override;
+	virtual void removeEffects(Tank* parent) override;
 
 	virtual ColorValueHolder getColor() {
 		return BananaPower::getClassColor();

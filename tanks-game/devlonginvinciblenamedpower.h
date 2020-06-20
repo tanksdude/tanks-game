@@ -3,16 +3,16 @@
 
 class DevLongInvincibleNamedPower : public Power {
 public:
-	virtual std::vector<std::string> getPowerTypes() {
+	virtual std::vector<std::string> getPowerTypes() override {
 		std::vector<std::string> types = std::vector<std::string>{ "dev" }; //no random-dev
 		return types;
 	}
-	virtual std::unordered_map<std::string, float> getWeights() {
+	virtual std::unordered_map<std::string, float> getWeights() override {
 		std::unordered_map<std::string, float> weights;
 		weights.insert({ "dev", 0.0f }); //this should not appear, like, ever
 		return weights;
 	}
-	virtual std::vector<std::string> getPowerAttributes() {
+	virtual std::vector<std::string> getPowerAttributes() override {
 		std::vector<std::string> attributes = std::vector<std::string>{ "mix" };
 		return attributes;
 	}

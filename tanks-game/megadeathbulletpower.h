@@ -10,10 +10,10 @@ protected: //public?
 	static const double bulletSizeMultiplierPerTick;
 
 public:
-	virtual void initialize(Bullet* parent);
-	virtual void removeEffects(Bullet* parent);
+	virtual void initialize(Bullet* parent) override;
+	virtual void removeEffects(Bullet* parent) override;
 
-	virtual void tick(Bullet* b); //for updating wall collision bools based on size
+	virtual void tick(Bullet* b) override; //for updating wall collision bools based on size //(override in case the Bullet* argument changes)
 
 	virtual ColorValueHolder getColor() {
 		return MegaDeathPower::getClassColor();
@@ -23,27 +23,27 @@ public:
 	virtual TankPower* makeTankPower();
 
 	//bool modifiesMovement = true;
-	virtual PowerInteractionBoolHolder modifiedMovement(Bullet*);
+	virtual PowerInteractionBoolHolder modifiedMovement(Bullet*) override;
 	//bool overridesMovement = false;
 	//bool modifiedMovementCanWorkWithOthers = true;
 	//bool modifiedMovementCanOnlyWorkIndividually = false;
 
 	//bool modifiesCollisionWithWall = true;
-	virtual PowerInteractionBoolHolder modifiedCollisionWithWall(Bullet*, Wall*);
+	virtual PowerInteractionBoolHolder modifiedCollisionWithWall(Bullet*, Wall*) override;
 	//bool overridesCollisionWithWall = true;
 	//bool modifiedCollisionWithWallCanWorkWithOthers = true;
 	//bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;
 
-	virtual double getBulletSpeedMultiplier() { return 1.0/4; }
+	virtual double getBulletSpeedMultiplier() override { return 1.0/4; }
 	//with bulletSizeMultiplierPerTick = 257.0/256.0, 1.0/128 or 1.0/64 might be closer to what I originally thought of
-	//virtual double getBulletRadiusMultiplier() { return 1; }
-	virtual double getBulletAcceleration() { return 1.0/64; }
+	//virtual double getBulletRadiusMultiplier() override { return 1; }
+	virtual double getBulletAcceleration() override { return 1.0/64; }
 	//with bulletSizeMultiplierPerTick = 257.0/256.0, 1.0/512 or 1.0/1024 (with a smaller radius multiplier per tick) might be closer to what I orignially thought of
 
-	virtual double getOffenseImportance() { return 0; }
-	virtual double getOffenseTier(Bullet*);
-	virtual double getDefenseImportance() { return 0; }
-	virtual double getDefenseTier(Bullet*);
+	virtual double getOffenseImportance() override { return 0; }
+	virtual double getOffenseTier(Bullet*) override;
+	virtual double getDefenseImportance() override { return 0; }
+	virtual double getDefenseTier(Bullet*) override;
 
 	MegaDeathBulletPower();
 };

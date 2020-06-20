@@ -28,12 +28,12 @@ private:
 	static bool uninitializeGPU();
 
 public:
-	virtual double getDefaultOffense() { return 0; }
-	virtual double getDefaultDefense() { return DESTRUCTION_TIER; }
+	virtual double getDefaultOffense() override { return 0; }
+	virtual double getDefaultDefense() override { return DESTRUCTION_TIER; }
 	//needs some sort of "overriding priority" function to destroy bullets with offense less than this defense
 
-	//virtual bool validLocation() { return true; }
-	virtual bool reasonableLocation();
+	//virtual bool validLocation() override { return true; }
+	virtual bool reasonableLocation() override;
 
 	double getAngle();
 	virtual ColorValueHolder getColor();

@@ -9,8 +9,8 @@ protected: //public?
 	static const double homingStrength;
 
 public:
-	virtual void initialize(Bullet* parent);
-	virtual void removeEffects(Bullet* parent);
+	virtual void initialize(Bullet* parent) override;
+	virtual void removeEffects(Bullet* parent) override;
 
 	virtual ColorValueHolder getColor() {
 		return HomingPower::getClassColor();
@@ -20,18 +20,18 @@ public:
 	virtual TankPower* makeTankPower();
 
 	//bool modifiesMovement = false;
-	virtual PowerInteractionBoolHolder modifiedMovement(Bullet*);
+	virtual PowerInteractionBoolHolder modifiedMovement(Bullet*) override;
 	//bool overridesMovement = false;
 	//bool modifiedMovementCanWorkWithOthers = true;
 	//bool modifiedMovementCanOnlyWorkIndividually = false;
 
 	//bool modifiesCollisionWithEdge = true;
-	virtual PowerInteractionBoolHolder modifiedEdgeCollision(Bullet*);
+	virtual PowerInteractionBoolHolder modifiedEdgeCollision(Bullet*) override;
 	//bool overridesEdgeCollision = true;
 	//bool modifiedEdgeCollisionCanWorkWithOthers = false;
 	//bool modifiedEdgeCollisionCanOnlyWorkIndividually = false;
 
-	virtual double getBulletSpeedMultiplier() { return .5; }
+	virtual double getBulletSpeedMultiplier() override { return .5; }
 
 	HomingBulletPower();
 };

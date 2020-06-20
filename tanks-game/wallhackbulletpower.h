@@ -6,8 +6,8 @@ class WallhackBulletPower;
 
 class WallhackBulletPower : public BulletPower {
 public:
-	virtual void initialize(Bullet* parent);
-	virtual void removeEffects(Bullet* parent);
+	virtual void initialize(Bullet* parent) override;
+	virtual void removeEffects(Bullet* parent) override;
 
 	virtual ColorValueHolder getColor() {
 		return WallhackPower::getClassColor();
@@ -17,7 +17,7 @@ public:
 	virtual TankPower* makeTankPower();
 	
 	//bool modifiesCollisionWithWall = true;
-	virtual PowerInteractionBoolHolder modifiedCollisionWithWall(Bullet*, Wall*);
+	virtual PowerInteractionBoolHolder modifiedCollisionWithWall(Bullet*, Wall*) override;
 	//bool overridesCollisionWithWall = true; //false means also use the default
 	//bool modifiedCollisionWithWallCanWorkWithOthers = false;
 	//bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;

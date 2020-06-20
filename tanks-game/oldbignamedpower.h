@@ -3,11 +3,11 @@
 
 class OldBigNamedPower : public Power {
 public:
-	virtual std::vector<std::string> getPowerTypes() {
+	virtual std::vector<std::string> getPowerTypes() override {
 		std::vector<std::string> types = std::vector<std::string>{ "old", "random-old" };
 		return types;
 	}
-	virtual std::unordered_map<std::string, float> getWeights() {
+	virtual std::unordered_map<std::string, float> getWeights() override {
 		std::unordered_map<std::string, float> weights;
 		weights.insert({ "old", .5f });
 		weights.insert({ "random-old", .5f });

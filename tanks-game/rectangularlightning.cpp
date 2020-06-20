@@ -31,7 +31,6 @@ RectangularLightning::RectangularLightning(double xpos, double ypos, double widt
 	double temp[2] = { 2, 2 };
 	std::copy(temp, temp+2, stateMultiplier);
 	currentlyActive = false;
-	//flexible = false;
 	
 	maxBolts = 1;
 	lengthOfBolt = 4; //TODO: figure out logic for constraining this to make it look pretty

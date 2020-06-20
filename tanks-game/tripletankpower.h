@@ -9,8 +9,8 @@ protected:
 	static const double angleDiff;
 
 public:
-	virtual void initialize(Tank* parent);
-	virtual void removeEffects(Tank* parent);
+	virtual void initialize(Tank* parent) override;
+	virtual void removeEffects(Tank* parent) override;
 
 	virtual ColorValueHolder getColor() {
 		return TriplePower::getClassColor();
@@ -20,7 +20,7 @@ public:
 	virtual BulletPower* makeBulletPower();
 
 	//bool modifiesAdditionalShooting = true;
-	virtual void additionalShooting(Tank* parent, CannonPoint);
+	virtual void additionalShooting(Tank* parent, CannonPoint) override;
 	//bool overridesAdditionalShooting = false;
 	//bool additionalShootingCanWorkWithOthers = true;
 	//bool additionalShootingCanOnlyWorkIndividually = false;

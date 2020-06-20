@@ -6,8 +6,8 @@ class OldBigNamedTankPower;
 
 class OldBigNamedTankPower : public TankPower {
 public:
-	virtual void initialize(Tank* parent);
-	virtual void removeEffects(Tank* parent);
+	virtual void initialize(Tank* parent) override;
+	virtual void removeEffects(Tank* parent) override;
 
 	virtual ColorValueHolder getColor() {
 		return OldBigNamedPower::getClassColor();
@@ -16,9 +16,9 @@ public:
 	virtual TankPower* makeDuplicate() { return new OldBigNamedTankPower(); }
 	virtual BulletPower* makeBulletPower();
 
-	virtual double getTankMaxSpeedMultiplier() { return .5; }
-	virtual double getTankAccelerationMultiplier() { return .5; }
-	virtual double getTankFiringRateMultiplier() { return 4; } //stacked in JS, not sure if it should stack here
+	virtual double getTankMaxSpeedMultiplier() override { return .5; }
+	virtual double getTankAccelerationMultiplier() override { return .5; }
+	virtual double getTankFiringRateMultiplier() override { return 4; } //stacked in JS, not sure if it should stack here
 
 	OldBigNamedTankPower();
 };

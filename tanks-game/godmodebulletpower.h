@@ -6,13 +6,13 @@ class GodmodeBulletPower;
 
 class GodmodeBulletPower : public BulletPower {
 public:
-	virtual void initialize(Bullet* parent);
-	virtual void removeEffects(Bullet* parent);
+	virtual void initialize(Bullet* parent) override;
+	virtual void removeEffects(Bullet* parent) override;
 
 	virtual ColorValueHolder getColor() {
 		return GodmodePower::getClassColor();
 	}
-	virtual double getColorImportance() {
+	virtual double getColorImportance() override {
 		return GodmodePower::getClassColorImportance();
 	}
 

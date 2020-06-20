@@ -5,12 +5,12 @@ class FewObstaclesLevel : public Level {
 	//really needs a better name
 public:
 	std::string getName() { return "few obstacles"; }
-	std::vector<std::string> getLevelTypes() {
+	std::vector<std::string> getLevelTypes() override {
 		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "old", "random-old", "random" };
 		//it's not really an old level (missing the original walls) but whatever
 		return types;
 	}
-	std::unordered_map<std::string, float> getWeights();
+	std::unordered_map<std::string, float> getWeights() override;
 	void initialize();
 
 	FewObstaclesLevel();

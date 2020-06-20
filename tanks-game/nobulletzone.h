@@ -17,19 +17,19 @@ private:
 	static bool uninitializeGPU();
 
 public:
-	virtual double getDefaultOffense() { return 999; }
-	virtual double getDefaultDefense() { return 999; }
+	virtual double getDefaultOffense() override { return 999; }
+	virtual double getDefaultDefense() override { return 999; }
 
-	virtual bool actuallyCollided(Tank*) { return false; }
+	virtual bool actuallyCollided(Tank*) override { return false; }
 	//bool modifiesTankCollision = true;
-	virtual void modifiedTankCollision(Tank*) { return; }
+	virtual void modifiedTankCollision(Tank*) override { return; }
 	
-	virtual bool actuallyCollided(Bullet*) { return true; }
+	virtual bool actuallyCollided(Bullet*) override { return true; }
 	//bool modifiesBulletCollision = true;
-	virtual void modifiedBulletCollision(Bullet*) { return; } //TODO: should the bullet be destroyed here?
+	virtual void modifiedBulletCollision(Bullet*) override { return; } //TODO: should the bullet be destroyed here?
 
-	//virtual bool validLocation() { return true; }
-	virtual bool reasonableLocation();
+	//virtual bool validLocation() override { return true; }
+	virtual bool reasonableLocation() override;
 
 	ColorValueHolder getColor();
 

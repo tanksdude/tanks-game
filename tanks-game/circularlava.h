@@ -23,19 +23,19 @@ private:
 	static bool uninitializeGPU();
 
 public:
-	virtual double getDefaultOffense() { return .5; }
-	virtual double getDefaultDefense() { return 999; }
+	virtual double getDefaultOffense() override { return .5; }
+	virtual double getDefaultDefense() override { return 999; }
 
-	//virtual bool actuallyCollided(Tank*) { return true; }
+	//virtual bool actuallyCollided(Tank*) override { return true; }
 	//bool modifiesTankCollision = true;
-	virtual void modifiedTankCollision(Tank*) { return; }
+	virtual void modifiedTankCollision(Tank*) override { return; }
 	
-	virtual bool actuallyCollided(Bullet* b) { return (b->velocity == 0); }
+	virtual bool actuallyCollided(Bullet* b) override { return (b->velocity == 0); }
 	//bool modifiesBulletCollision = true;
-	virtual void modifiedBulletCollision(Bullet*) { return; }
+	virtual void modifiedBulletCollision(Bullet*) override { return; }
 
-	//virtual bool validLocation() { return true; }
-	virtual bool reasonableLocation();
+	//virtual bool validLocation() override { return true; }
+	virtual bool reasonableLocation() override;
 
 	virtual std::string getName() { return getClassName(); }
 	static std::string getClassName() { return "circular lava"; }
