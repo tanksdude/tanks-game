@@ -1,20 +1,37 @@
 0.2.4 (obviously definitely not here)
 * abstracted the renderer somewhat
     * it's still not very efficient but it gets the job done
+* level effects (wind, ice, mines)
 * more levels
 
-0.2.3 (obviously not here)
-* banana power
-* godmode?
-* hazard randomization
-* other lightning hazards
-* turret?
-* ability to weight levels when selecting them randomly
-* level effects (wind, ice, mines)
+0.2.3 "features" (obviously not here)
+* powerups:
+    * banana power!
+    * godmode (still needs some work)
+    * [dev power] "inversion": switches turning direction of tank
+* hazards:
+    * hazard randomization
+    * other lightning hazards
+        * vertical lightning
+        * lightning rectangle
+        * lightning circle
+        * lightning bolt hit detection updated: all lightning bolts choose points closest to the tank/bullet
+    * no bullet zone
+    * turret?
+* level: "many hazards" (from JS Tanks)
+* ability to weight levels and powers when selecting them randomly
+* minor things:
+    * tankpower bullet attribute changes moved to bulletpowers (a moderate rewrite was needed)
+    * a "special key" for tanks (does nothing right now)
+    * minimal drawing layers: "under", regular, "effects", debug
+    * more cleanup
+    * GPU stuff: encourage all objects towards making their own vertices, privately
+    * actually fixed homing power... whoops...
 
 0.2.2.2
 * two more levels to make the game less empty
     * I'm not very original, so they're from JS Tanks...
+    * "few obstacles" and "concealed powerups"
 * adding walls and powerups symmetrically to a level is now much easier
 
 0.2.2.1
@@ -87,9 +104,9 @@
 * stuff. primarily the framework and some powers to test the framework. (look at commit history)
 
 future notes:
-0.2.A: redo tank/bullet initialization(?) (is this so fire/blast can take a parameter?)
-0.2.A+1: bulletpower shooting dependencies removed from tankpowers (so a bulletpower doesn't need a tankpower on a tank to exist; bulletpower can tell tank what things need to change (tanks don't hold bulletpowers which is why this is merely a future note and not an already-merged commit))
 0.3.0: an ini file
+0.4.0: mods? hazardpowers?
+0.5.0: priorities for the power modification functions?
 0.A.B: graphs for diagnostics
 0.X.0: big change in levels or powers or something else, like bulletpower memory management (std::shared_ptr)
 0.A.0: batching
