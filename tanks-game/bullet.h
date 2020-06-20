@@ -54,10 +54,11 @@ private:
 	static VertexBuffer* vb;
 	static IndexBuffer* ib;
 	static bool initialized_GPU;
-public:
+
 	static bool initializeGPU(); //returns whether it successfully initialized (false if it was already initialized)
 	static bool uninitializeGPU();
 
+public:
 	void drawBody(double, double);
 	void drawOutline(double, double);
 	

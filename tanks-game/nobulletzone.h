@@ -11,8 +11,8 @@ private:
 	static VertexArray* va;
 	static VertexBuffer* vb;
 	static IndexBuffer* ib;
-	
 	static bool initialized_GPU;
+	
 	static bool initializeGPU();
 	static bool uninitializeGPU();
 

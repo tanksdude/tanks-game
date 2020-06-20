@@ -28,7 +28,7 @@ private:
 	static IndexBuffer* ib_main; //the main thing
 	static IndexBuffer* ib_outline; //the extra bit when numOfPowers >= 2
 	static bool initialized_GPU;
-public:
+
 	static bool initializeGPU();
 	static bool uninitializeGPU();
 

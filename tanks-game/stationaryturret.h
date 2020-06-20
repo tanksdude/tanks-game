@@ -23,7 +23,7 @@ private:
 	static VertexArray* cannon_va;
 	static VertexBuffer* cannon_vb;
 	static bool initialized_GPU;
-public:
+
 	static bool initializeGPU();
 	static bool uninitializeGPU();
 

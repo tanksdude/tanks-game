@@ -1286,7 +1286,7 @@ int main(int argc, char** argv) {
 	HazardManager::addCircleHazardFactory(CircularLava::factory);
 	HazardManager::addRectHazardFactory(NoBulletZone::factory);
 
-	//initialize managers:
+	//initialize managers and stuff:
 	GameManager::initialize();
 	KeypressManager::initialize();
 	BulletManager::initialize();
@@ -1294,31 +1294,18 @@ int main(int argc, char** argv) {
 	WallManager::initialize();
 	LevelManager::initialize();
 	HazardManager::initialize();
-	
-	//static VAO, VBO, and IBO has better performance
-	Renderer::Initialize();
+	Renderer::Initialize(); //static VAO, VBO, and IBO has better performance
 	BackgroundRect::initializeGPU();
-	//Tank::initializeGPU();
-	//Bullet::initializeGPU();
-	//PowerSquare::initializeGPU();
-	//Wall::initializeGPU();
-	//RectHazard::initializeGPU();
-	//CircleHazard::initializeGPU();
 
 	//main game code initialization stuff:
-	TankManager::pushTank(new Tank(20, 160, 0, 1, "WASD", { false, 'w' }, { false, 'a' }, { false, 'd' }, { false, 's' }, { false, 'e' }));
-	TankManager::pushTank(new Tank(620, 160, PI, 2, "Arrow Keys", { true, GLUT_KEY_UP }, { true, GLUT_KEY_LEFT }, { true, GLUT_KEY_RIGHT }, { true, GLUT_KEY_DOWN }, { false, '/' }));
+	TankManager::pushTank(new Tank(20, GAME_HEIGHT/2, 0, 1, "WASD", { false, 'w' }, { false, 'a' }, { false, 'd' }, { false, 's' }, { false, 'e' }));
+	TankManager::pushTank(new Tank(GAME_WIDTH-20, GAME_HEIGHT/2, PI, 2, "Arrow Keys", { true, GLUT_KEY_UP }, { true, GLUT_KEY_LEFT }, { true, GLUT_KEY_RIGHT }, { true, GLUT_KEY_DOWN }, { false, '/' }));
 #if _DEBUG
 	LevelManager::pushLevel("dev", "dev2");
 #else
 	LevelManager::pushLevel("vanilla", "default random");
 #endif
 	ResetThings::firstReset();
-	/*
-	for (int i = 0; i < 4; i++) {
-		walls.push_back(new Wall(320 - 240*(((3-i)/2) * 2 - 1) - 32*((((3-i)/2) + 1) % 2), i%2 * (320-128), 32, 128, ColorValueHolder(255,0,255)));
-	}
-	*/
 
 	cout << "OpenGL renderer: " << glGetString(GL_RENDERER) << endl;
 	cout << "OpenGL vendor: " << glGetString(GL_VENDOR) << endl;
@@ -1339,15 +1326,13 @@ int main(int argc, char** argv) {
  * * add a gradient shader
  * * gotta learn how to do batching
  * * make things more efficient (way easier said than done, I suppose)
- * 90% theoretical foundation: no hazard powers, no level... anything
- * 85?% actual foundation: not every "modification function" actually does something
- * 35?% game code:
- * * first off, don't know what will be final beyond the ideas located in power.h and elsewhere
- * * second, it's a complete estimate (obviously) and this is a restatement of the first
- * * third, 100% probably won't be "finished" on this scale (restatement of the second?)
- * * fourth, percentage is horribly imprecise because, like most people, I think about completion percentages on personal projects in 5% increments (restatement of third)
- * * fifth, here's what's next:
- * * * new powerups
- * * * new levels
- * * * more hazards
+ * 92.5?% theoretical foundation: no hazard powers, no level... anything
+ * * hazard powers: ~50%
+ * * levels: ~75%; no level effects
+ * 90% actual foundation: not every "modification function" actually does something
+ * * almost everything needed is somewhere, so copy-and-paste will be the solution (unless I can figure out member function pointers)
+ * ~40% game code:
+ * * I don't know what will be final beyond the ideas located in power.h and elsewhere
+ * * it's just an estimate
+ * * 100% probably won't be "finished" on this scale (it could jump from 80% to 100%)
  */
