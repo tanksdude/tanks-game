@@ -69,6 +69,7 @@
 #include "circularlightning.h"
 #include "rectangularlava.h"
 #include "circularlava.h"
+#include "nobulletzone.h"
 
 //powers:
 #include "speedpower.h"
@@ -1283,6 +1284,7 @@ int main(int argc, char** argv) {
 	HazardManager::addCircleHazardFactory(CircularLightning::factory);
 	HazardManager::addRectHazardFactory(RectangularLava::factory);
 	HazardManager::addCircleHazardFactory(CircularLava::factory);
+	HazardManager::addRectHazardFactory(NoBulletZone::factory);
 
 	//initialize managers:
 	GameManager::initialize();

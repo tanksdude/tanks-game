@@ -26,14 +26,13 @@ list of (eventual) hazards:
 |stationary turret
 turret
 patrolling turret
-generalized lightning (has point to point bolt; in order for it to work for circular lightning, a function would have to be passed in (function checks whether point is in the lightning))
 |horizontal lightning
-vertical lightning
-lightning zone (rectangle)
-lightning circle
+|vertical lightning
+|lightning zone (rectangle)
+|lightning circle
 |rectangular lava
 |circular lava
-no bullet zone
+|no bullet zone
 teleport zone
 pipes
 

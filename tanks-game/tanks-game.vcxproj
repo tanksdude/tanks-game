@@ -169,6 +169,7 @@
     <ClCompile Include="inversionpower.cpp" />
     <ClCompile Include="inversiontankpower.cpp" />
     <ClCompile Include="level.cpp" />
+    <ClCompile Include="nobulletzone.cpp" />
     <ClCompile Include="oldbignamedbulletpower.cpp" />
     <ClCompile Include="oldbignamedpower.cpp" />
     <ClCompile Include="oldbignamedtankpower.cpp" />
@@ -282,6 +283,7 @@
     <ClInclude Include="inversionbulletpower.h" />
     <ClInclude Include="inversionpower.h" />
     <ClInclude Include="inversiontankpower.h" />
+    <ClInclude Include="nobulletzone.h" />
     <ClInclude Include="oldbignamedbulletpower.h" />
     <ClInclude Include="oldbignamedpower.h" />
     <ClInclude Include="oldbignamedtankpower.h" />
