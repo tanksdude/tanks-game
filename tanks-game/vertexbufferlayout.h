@@ -22,7 +22,7 @@ private:
 	unsigned int stride;
 
 public:
-	VertexBufferLayout(unsigned int floatCount) {
+	explicit VertexBufferLayout(unsigned int floatCount) {
 		elements = { GL_FLOAT, floatCount, GL_FALSE };
 		stride = floatCount * sizeof(float);
 	}

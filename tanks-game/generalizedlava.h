@@ -56,5 +56,5 @@ public:
 	virtual void draw() = 0;
 	//virtual void drawCPU() = 0;
 
-	~GeneralizedLava();
+	virtual ~GeneralizedLava();
 };

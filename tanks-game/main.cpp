@@ -835,11 +835,10 @@ void bulletToEdge() {
 				}
 			}
 
-			if (overridedEdgeCollision) {
-				continue;
-			}
-			if (b->isFullyOutOfBounds()) {
-				shouldBeKilled = true;
+			if (!overridedEdgeCollision) {
+				if (b->isFullyOutOfBounds()) {
+					shouldBeKilled = true;
+				}
 			}
 		}
 

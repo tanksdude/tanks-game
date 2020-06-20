@@ -3,7 +3,7 @@
 #include "powerfunctionhelper.h"
 #include "constants.h"
 
-const double HomingBulletPower::homingStrength = 2*PI / 256;
+const double HomingBulletPower::homingStrength = 2*PI / 256; //JS Tanks used 2*PI / 512
 
 PowerInteractionBoolHolder HomingBulletPower::modifiedMovement(Bullet* b) {
 	if (PowerFunctionHelper::homingGeneric(b, HomingBulletPower::homingStrength, true)) {
@@ -14,7 +14,7 @@ PowerInteractionBoolHolder HomingBulletPower::modifiedMovement(Bullet* b) {
 }
 
 PowerInteractionBoolHolder HomingBulletPower::modifiedEdgeCollision(Bullet* b) {
-	return { b->x - b->r <= 0 || b->x + b->r >= GAME_WIDTH };
+	return { ((b->x - b->r <= 0) || (b->x + b->r >= GAME_WIDTH)) }; //TODO: wanted?
 }
 
 void HomingBulletPower::initialize(Bullet* parent) {
