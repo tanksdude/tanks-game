@@ -1,4 +1,5 @@
 #include "resetthings.h"
+#include "gamemanager.h"
 #include "constants.h"
 #include "tankmanager.h"
 #include "bulletmanager.h"
@@ -47,6 +48,8 @@ void ResetThings::reset(int) {
 	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
 		LevelManager::levels[i]->initialize();
 	}
+
+	GameManager::reset();
 }
 
 void ResetThings::firstReset() {

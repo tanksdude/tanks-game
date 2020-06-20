@@ -24,3 +24,26 @@ ColorValueHolder ColorMixer::mix(ColorValueHolder* c, int num) {
 
 	return mixed;
 }
+
+ColorValueHolder ColorMixer::HSVtoRGB(float hue, float saturation, float value) {
+	//got this from https://en.wikipedia.org/wiki/HSL_and_HSV#HSV_to_RGB
+	float c = saturation * value;
+	float hPrime = hue / 60;
+	float x = c * (1 - abs(fmod(hPrime,2) - 1));
+	float R, G, B;
+	if (hPrime <= 1) {
+		R=c, G=x, B=0;
+	} else if (hPrime < 2) {
+		R=x, G=c, B=0;
+	} else if (hPrime < 3) {
+		R=0, G=c, B=x;
+	} else if (hPrime < 4) {
+		R=0, G=x, B=c;
+	} else if (hPrime < 5) {
+		R=x, G=0, B=c;
+	} else {
+		R=c, G=0, B=x;
+	}
+	float m = value - c;
+	return ColorValueHolder(R+m, G+m, B+m);
+}

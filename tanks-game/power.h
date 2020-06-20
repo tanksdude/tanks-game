@@ -19,6 +19,7 @@ public:
 	virtual ColorValueHolder getColor() = 0;
 	//static ColorValueHolder getClassColor();
 	virtual double getColorImportance() { return 0; }
+	//static double getClassColorImportance();
 
 	virtual TankPower* makeTankPower() = 0;
 	virtual BulletPower* makeBulletPower() = 0;
@@ -43,7 +44,7 @@ the super (tier 3) (name WIP) (come on, of course the name isn't going to be tem
 |grenade?
 |fire?
 |banana
-godmode
+|godmode
 barrier (if hit, provides one extra hitpoint (basically life, but might add some differences))
 super life/shield/barrier (barrier health dependent on time left on power)
 swarm (check notes if you forgot, me) (modifiedMovementCanOnlyWorkIndividually = true?)

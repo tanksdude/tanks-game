@@ -162,6 +162,9 @@
     <ClCompile Include="gamemanager.cpp" />
     <ClCompile Include="generalizedlava.cpp" />
     <ClCompile Include="generalizedlightning.cpp" />
+    <ClCompile Include="godmodebulletpower.cpp" />
+    <ClCompile Include="godmodepower.cpp" />
+    <ClCompile Include="godmodetankpower.cpp" />
     <ClCompile Include="inversionbulletpower.cpp" />
     <ClCompile Include="inversionpower.cpp" />
     <ClCompile Include="inversiontankpower.cpp" />
@@ -273,6 +276,9 @@
     <ClInclude Include="gamething.h" />
     <ClInclude Include="generalizedlava.h" />
     <ClInclude Include="generalizedlightning.h" />
+    <ClInclude Include="godmodebulletpower.h" />
+    <ClInclude Include="godmodepower.h" />
+    <ClInclude Include="godmodetankpower.h" />
     <ClInclude Include="inversionbulletpower.h" />
     <ClInclude Include="inversionpower.h" />
     <ClInclude Include="inversiontankpower.h" />

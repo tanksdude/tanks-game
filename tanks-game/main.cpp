@@ -84,6 +84,7 @@
 #include "firenamedpower.h"
 #include "blastpower.h"
 #include "bananapower.h"
+#include "godmodepower.h"
 //dev powers:
 #include "devlonginvinciblenamedpower.h" //invincible but lasts a long time
 #include "inversionpower.h" //flips left and right turning
@@ -108,7 +109,6 @@ int tank_dead = 0;
 
 long frameCount = 0; //doesn't need a long for how it's interpreted...
 long ticksUntilFrame = 1; //whatever again
-long trueFrameCount = 0;
 int physicsRate = 100; //(in Hz)
 bool currentlyDrawing = false; //look into std::mutex
 
@@ -304,6 +304,9 @@ void tick(int physicsUPS) {
 	tankToEdge();
 	*/
 
+	//finish up by incrementing the tick count
+	GameManager::tick();
+
 	auto end = Diagnostics::getTime();
 
 	//Diagnostics::printPreciseTimings();
@@ -311,7 +314,6 @@ void tick(int physicsUPS) {
 
 	//std::cout << "tick: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << "ms" << endl << endl;
 
-	trueFrameCount++;
 	if (tank_dead == 0) {
 		glutTimerFunc(1000/physicsUPS, tick, physicsUPS);
 		if (frameCount == 0) {
@@ -1249,6 +1251,7 @@ int main(int argc, char** argv) {
 	PowerupManager::addPowerFactory(FireNamedPower::factory);
 	PowerupManager::addPowerFactory(BlastPower::factory);
 	PowerupManager::addPowerFactory(BananaPower::factory);
+	PowerupManager::addPowerFactory(GodmodePower::factory);
 
 	//dev:
 	PowerupManager::addPowerFactory(DevLongInvincibleNamedPower::factory);

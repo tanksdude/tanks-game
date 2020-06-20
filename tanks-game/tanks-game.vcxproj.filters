@@ -333,6 +333,15 @@
     <ClCompile Include="inversiontankpower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="godmodebulletpower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="godmodepower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="godmodetankpower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -693,6 +702,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="doublepositionholder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="godmodebulletpower.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="godmodepower.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="godmodetankpower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

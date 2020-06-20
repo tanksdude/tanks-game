@@ -1,13 +1,15 @@
 #include "power.h"
 
 std::vector<std::string> Power::getPowerTypes() {
-	std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "random" };
+	std::vector<std::string> types = std::vector<std::string>{ "vanilla", "supermix-vanilla", "supermix", "random-vanilla", "random" };
 	return types;
 }
 
 std::unordered_map<std::string, float> Power::getWeights() {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", .5f });
+	weights.insert({ "supermix-vanilla", .5f });
+	weights.insert({ "supermix", .5f });
 	weights.insert({ "random-vanilla", .5f });
 	weights.insert({ "random", .5f });
 	return weights;

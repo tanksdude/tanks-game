@@ -25,6 +25,8 @@ void DeveloperLevel2::initialize() {
 	PowerupManager::pushPowerup(new PowerSquare(240, 20, "big"));
 	PowerupManager::pushPowerup(new PowerSquare(260, 20, "megadeath"));
 
+	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "godmode"));
+
 	PowerupManager::pushPowerup(new PowerSquare(20, GAME_HEIGHT-20, "speed"));
 	PowerupManager::pushPowerup(new PowerSquare(40, GAME_HEIGHT-20, "speed"));
 	PowerupManager::pushPowerup(new PowerSquare(80, GAME_HEIGHT-20, "speed"));
