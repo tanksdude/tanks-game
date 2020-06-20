@@ -345,6 +345,9 @@
     <ClCompile Include="nobulletzone.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="hazard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">

@@ -18,26 +18,3 @@ public:
 	//virtual void drawCPU();
 };
 //should each hazard have a function that adds X amount of itself randomly to the level?
-
-/*
-some hazards aren't bad
-
-list of (eventual) hazards:
-|stationary turret
-turret
-patrolling turret
-|horizontal lightning
-|vertical lightning
-|lightning zone (rectangle)
-|lightning circle
-|rectangular lava
-|circular lava
-|no bullet zone
-teleport zone
-pipes
-
-
-list of possible hazards, joke or not:
-the reflecktor (bounces/reflects tanks when they hit it)
-
-*/
