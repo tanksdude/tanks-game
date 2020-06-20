@@ -8,6 +8,7 @@
 #include "tank.h"
 #include "bulletmanager.h"
 #include "wallmanager.h"
+#include "hazardmanager.h"
 #include "collisionhandler.h"
 
 VertexArray* StationaryTurret::va;
@@ -132,7 +133,7 @@ void StationaryTurret::tick() {
 		}
 	}
 	if (mustShoot) {
-		BulletManager::pushBullet(new Bullet(x + r*cos(angle), y + r*sin(angle), r*BULLET_TO_TANK_RADIUS_RATIO*2, angle, 1*BULLET_TO_TANK_SPEED_RATIO, this->getTeamID(), this->getGameID())); //TODO: make default speed dependent on a constant that Tank uses for its default speed
+		BulletManager::pushBullet(new Bullet(x + r*cos(angle), y + r*sin(angle), r*(BULLET_TO_TANK_RADIUS_RATIO*2), angle, Tank::default_maxSpeed*BULLET_TO_TANK_SPEED_RATIO, this->getTeamID(), this->getGameID()));
 	}
 }
 
@@ -142,6 +143,19 @@ bool StationaryTurret::reasonableLocation() {
 			return false;
 		}
 	}
+
+	for (int i = 0; i < HazardManager::getNumCircleHazards(); i++) {
+		CircleHazard* ch = HazardManager::getCircleHazard(i);
+		if ((ch->getGameID() != this->getGameID()) && CollisionHandler::partiallyCollided(this, ch)) {
+			return false;
+		}
+	}
+	for (int i = 0; i < HazardManager::getNumRectHazards(); i++) {
+		if (CollisionHandler::partiallyCollided(this, HazardManager::getRectHazard(i))) {
+			return false;
+		}
+	}
+
 	return true;
 }
 
