@@ -13,7 +13,7 @@ class PowerSquare;
 
 class PowerSquare : public Rect, public GameThing {
 public:
-	Power** heldPower; //array of pointers (can do a vector for simplicity but I don't foresee a powersquare getting more powers)
+	Power** heldPowers; //array of pointers (can do a vector for simplicity but I don't foresee a powersquare getting more powers)
 	short numOfPowers;
 
 public:

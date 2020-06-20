@@ -234,7 +234,19 @@ ColorValueHolder Bullet::getColor() {
 	if (bulletPowers.size() == 0) {
 		return defaultColor;
 	} else {
-		return ColorMixer::mix(&bulletPowers);
+		double highest = -1;
+		for (int i = 0; i < bulletPowers.size(); i++) {
+			if (bulletPowers[i]->getColorImportance() > highest) {
+				highest = bulletPowers[i]->getColorImportance();
+			}
+		}
+		std::vector<ColorValueHolder> mixingColors;
+		for (int i = 0; i < bulletPowers.size(); i++) {
+			if (bulletPowers[i]->getColorImportance() == highest) {
+				mixingColors.push_back(bulletPowers[i]->getColor());
+			}
+		}
+		return ColorMixer::mix(mixingColors.data(), mixingColors.size());
 	}
 }
 

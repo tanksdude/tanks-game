@@ -18,6 +18,7 @@ public:
 	//static std::string getClassName(); //tankpowers and bulletpowers use this (so they can have the same color), so make sure to define it!
 	virtual ColorValueHolder getColor() = 0;
 	//static ColorValueHolder getClassColor();
+	virtual double getColorImportance() { return 0; }
 
 	virtual TankPower* makeTankPower() = 0;
 	virtual BulletPower* makeBulletPower() = 0;

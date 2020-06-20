@@ -15,6 +15,8 @@ void PowerupManager::initialize() {
 	powerLookup.insert({ "random-old", std::unordered_map<std::string, PowerFunction>() });
 	powerLookup.insert({ "dev", std::unordered_map<std::string, PowerFunction>() });
 	powerLookup.insert({ "random-dev", std::unordered_map<std::string, PowerFunction>() }); //would this be used?
+	powerLookup.insert({ "supermix", std::unordered_map<std::string, PowerFunction>() }); //these powerups are for godmode
+	powerLookup.insert({ "supermix-vanilla", std::unordered_map<std::string, PowerFunction>() }); //(godmode actually uses this one)
 }
 
 PowerSquare* PowerupManager::getPowerup(int index) {

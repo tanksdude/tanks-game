@@ -505,7 +505,19 @@ ColorValueHolder Tank::getBodyColor() {
 	if (tankPowers.size() == 0) {
 		return defaultColor;
 	} else {
-		return ColorMixer::mix(&tankPowers);
+		double highest = -1;
+		for (int i = 0; i < tankPowers.size(); i++) {
+			if (tankPowers[i]->getColorImportance() > highest) {
+				highest = tankPowers[i]->getColorImportance();
+			}
+		}
+		std::vector<ColorValueHolder> mixingColors;
+		for (int i = 0; i < tankPowers.size(); i++) {
+			if (tankPowers[i]->getColorImportance() == highest) {
+				mixingColors.push_back(tankPowers[i]->getColor());
+			}
+		}
+		return ColorMixer::mix(mixingColors.data(), mixingColors.size());
 	}
 }
 

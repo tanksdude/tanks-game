@@ -37,6 +37,7 @@ public:
 		return (timeLeft <= 0);
 	}
 	virtual ColorValueHolder getColor() = 0;
+	virtual double getColorImportance() { return 0; }
 
 	virtual BulletPower* makeDuplicate() = 0;
 	virtual TankPower* makeTankPower() = 0;
