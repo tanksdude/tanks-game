@@ -19,12 +19,10 @@
 #include "colorvalueholder.h"
 #include "backgroundrect.h"
 #include "tank.h"
-#include "cannonpoint.h"
 #include "wall.h"
 #include "bullet.h"
 #include "powersquare.h"
 #include "level.h"
-#include "hazard.h"
 #include "circlehazard.h"
 #include "recthazard.h"
 
@@ -46,6 +44,7 @@
 #include "priorityhandler.h"
 #include "colormixer.h"
 #include "powerfunctionhelper.h"
+#include "endgamehandler.h"
 
 //levels:
 #include "defaultrandomlevel.h"
@@ -363,11 +362,11 @@ void tickHazards() {
 
 void moveBullets() {
 	for (int i = BulletManager::getNumBullets() - 1; i >= 0; i--) {
+		Bullet* b = BulletManager::getBullet(i);
+		bool shouldBeKilled = false;
 		bool modifiedMovement = false;
 		bool overridedMovement = false;
 		bool noMoreMovementSpecials = false;
-		bool shouldBeKilled = false;
-		Bullet* b = BulletManager::getBullet(i);
 
 		for (int k = 0; k < b->bulletPowers.size(); k++) {
 			if (b->bulletPowers[k]->modifiesMovement) {
@@ -431,15 +430,15 @@ void tankShoot() {
 
 void tankToWall() {
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
-		bool shouldBeKilled = false; //maybe the walls are poison with a certain powerup? I dunno, but gotta have it as an option
 		Tank* t = TankManager::getTank(i);
+		bool shouldBeKilled = false; //maybe the walls are poison with a certain powerup? I dunno, but gotta have it as an option
 
 		for (int j = WallManager::getNumWalls() - 1; j >= 0; j--) {
+			Wall* w = WallManager::getWall(j);
+			bool killWall = false;
 			bool modifiedWallCollision = false;
 			bool overridedWallCollision = false;
 			bool noMoreWallCollisionSpecials = false;
-			bool killWall = false;
-			Wall* w = WallManager::getWall(j);
 
 			if (CollisionHandler::partiallyCollided(t, w)) {
 				for (int k = 0; k < t->tankPowers.size(); k++) {
@@ -488,16 +487,16 @@ void tankToWall() {
 
 void tankToHazard() {
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
-		bool shouldBeKilled = false;
 		Tank* t = TankManager::getTank(i);
+		bool shouldBeKilled = false;
 
 		//circles:
 		for (int j = HazardManager::getNumCircleHazards() - 1; j >= 0; j--) {
+			CircleHazard* ch = HazardManager::getCircleHazard(j);
+			bool killCircleHazard = false;
 			bool modifiedCircleHazardCollision = false;
 			bool overridedCircleHazardCollision = false;
 			bool noMoreCircleHazardCollisionSpecials = false;
-			bool killCircleHazard = false;
-			CircleHazard* ch = HazardManager::getCircleHazard(j);
 
 			if (CollisionHandler::partiallyCollided(t, ch)) {
 				//tankpower decides whether to use the partial collision or the true collision
@@ -531,42 +530,9 @@ void tankToHazard() {
 				if (!overridedCircleHazardCollision) {
 					if (CollisionHandler::partiallyCollided(t, ch)) {
 						if (ch->actuallyCollided(t)) {
-							char result = PriorityHandler::determinePriority(t, ch);
-							if (result <= -2) {
-								bool firstDies = rand()%2;
-								if (firstDies) {
-									if (ch->hasSpecialEffectTankCollision) {
-										ch->specialEffectTankCollision(t);
-									}
-									shouldBeKilled = true;
-								} else {
-									killCircleHazard = true;
-								}
-							} else if (result == -1) { //both die
-								shouldBeKilled = true;
-								killCircleHazard = true;
-							} else if (result >= 2) { //it's a draw, so neither dies
-								if (ch->modifiesTankCollision) {
-									if (ch->hasSpecialEffectTankCollision) {
-										ch->specialEffectTankCollision(t);
-									}
-									ch->modifiedTankCollision(t);
-								} else {
-									if (ch->hasSpecialEffectTankCollision) {
-										ch->specialEffectTankCollision(t);
-									}
-									CollisionHandler::pushMovableAwayFromImmovable(t, ch);
-								}
-							} else {
-								if (result == 0) {
-									if (ch->hasSpecialEffectTankCollision) {
-										ch->specialEffectTankCollision(t);
-									}
-									shouldBeKilled = true;
-								} else {
-									killCircleHazard = true;
-								}
-							}
+							PowerInteractionBoolHolder result = EndGameHandler::determineWinner(t, ch);
+							shouldBeKilled = result.shouldDie;
+							killCircleHazard = result.otherShouldDie;
 						}
 					}
 				}
@@ -621,42 +587,9 @@ void tankToHazard() {
 				if (!overridedRectHazardCollision) {
 					if (CollisionHandler::partiallyCollided(t, rh)) {
 						if (rh->actuallyCollided(t)) {
-							char result = PriorityHandler::determinePriority(t, rh);
-							if (result <= -2) {
-								bool firstDies = rand()%2;
-								if (firstDies) {
-									if (rh->hasSpecialEffectTankCollision) {
-										rh->specialEffectTankCollision(t);
-									}
-									shouldBeKilled = true;
-								} else {
-									killRectHazard = true;
-								}
-							} else if (result == -1) { //both die
-								shouldBeKilled = true;
-								killRectHazard = true;
-							} else if (result >= 2) { //it's a draw, so neither dies
-								if (rh->modifiesTankCollision) {
-									if (rh->hasSpecialEffectTankCollision) {
-										rh->specialEffectTankCollision(t);
-									}
-									rh->modifiedTankCollision(t);
-								} else {
-									if (rh->hasSpecialEffectTankCollision) {
-										rh->specialEffectTankCollision(t);
-									}
-									CollisionHandler::pushMovableAwayFromImmovable(t, rh);
-								}
-							} else {
-								if (result == 0) {
-									if (rh->hasSpecialEffectTankCollision) {
-										rh->specialEffectTankCollision(t);
-									}
-									shouldBeKilled = true;
-								} else {
-									killRectHazard = true;
-								}
-							}
+							PowerInteractionBoolHolder result = EndGameHandler::determineWinner(t, rh);
+							shouldBeKilled = result.shouldDie;
+							killRectHazard = result.otherShouldDie;
 						}
 					}
 				}
@@ -675,24 +608,24 @@ void tankToHazard() {
 
 void tankToTank() {
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
-		bool shouldBeKilled = false;
-		Tank* t1 = TankManager::getTank(i);
+		Tank* t_outer = TankManager::getTank(i);
+		bool t_outerShouldDie = false;
 
 		for (int j = 0; j < TankManager::getNumTanks(); j++) {
 			if (i == j) {
 				continue;
 			}
 
+			Tank* t_inner = TankManager::getTank(j);
+			bool t_innerShouldDie = false;
 			bool modifiedTankCollision = false;
 			bool overridedTankCollision = false;
 			bool noMoreTankCollisionSpecials = false;
-			bool killOtherTank = false;
-			Tank* t2 = TankManager::getTank(j);
 
-			if (CollisionHandler::partiallyCollided(t1, t2)) {
-				for (int k = 0; k < t1->tankPowers.size(); k++) {
-					if (t1->tankPowers[k]->modifiesCollisionWithWall) {
-						if (t1->tankPowers[k]->modifiedCollisionWithTankCanOnlyWorkIndividually && modifiedTankCollision) {
+			if (CollisionHandler::partiallyCollided(t_outer, t_inner)) {
+				for (int k = 0; k < t_outer->tankPowers.size(); k++) {
+					if (t_outer->tankPowers[k]->modifiesCollisionWithWall) {
+						if (t_outer->tankPowers[k]->modifiedCollisionWithTankCanOnlyWorkIndividually && modifiedTankCollision) {
 							continue;
 						}
 						if (noMoreTankCollisionSpecials) {
@@ -700,59 +633,38 @@ void tankToTank() {
 						}
 
 						modifiedTankCollision = true;
-						if (t1->tankPowers[k]->overridesCollisionWithTank) {
+						if (t_outer->tankPowers[k]->overridesCollisionWithTank) {
 							overridedTankCollision = true;
 						}
-						if (!t1->tankPowers[k]->modifiedCollisionWithTankCanWorkWithOthers) {
+						if (!t_outer->tankPowers[k]->modifiedCollisionWithTankCanWorkWithOthers) {
 							noMoreTankCollisionSpecials = true;
 						}
 
-						PowerInteractionBoolHolder check_temp = t1->tankPowers[k]->modifiedCollisionWithTank(t1, t2);
+						PowerInteractionBoolHolder check_temp = t_outer->tankPowers[k]->modifiedCollisionWithTank(t_outer, t_inner);
 						if (check_temp.shouldDie) {
-							shouldBeKilled = true;
+							t_outerShouldDie = true;
 						}
 						if (check_temp.otherShouldDie) {
-							if (t1->getTeamID() != t2->getTeamID()) {
-								killOtherTank = true;
+							if (t_outer->getTeamID() != t_inner->getTeamID()) {
+								t_innerShouldDie = true;
 							}
 						}
 					}
 				}
 
 				if (!overridedTankCollision) {
-					char result = PriorityHandler::determinePriority(t1, t2);
-					if (result <= -2) {
-						bool firstDies = rand()%2;
-						if (firstDies) {
-							tank_dead = 1;
-							//continue;
-						} else {
-							tank_dead = 1;
-							//continue; //TODO: figure out what this is supposed to be
-						}
-					} else if (result == -1) { //both die
-						tank_dead = 1;
-						//continue;
-					} else if (result >= 2) { //it's a draw, so neither dies (normal result)
-						CollisionHandler::pushMovableAwayFromMovable(t1, t2);
-					} else {
-						if (result == 0) {
-							tank_dead = 1;
-							//continue;
-						} else {
-							tank_dead = 1;
-							//continue;
-						}
-					}
+					PowerInteractionBoolHolder result = EndGameHandler::determineWinner(t_outer, t_inner);
+					t_outerShouldDie = result.shouldDie;
+					t_innerShouldDie = result.otherShouldDie;
 				}
 			}
 
-			if (killOtherTank) {
+			if (t_innerShouldDie) {
 				tank_dead = 1;
 			}
 		}
 
-		if (shouldBeKilled) {
+		if (t_outerShouldDie) {
 			tank_dead = 1;
 		}
 	}
@@ -760,12 +672,11 @@ void tankToTank() {
 
 void tankToEdge() {
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
+		Tank* t = TankManager::getTank(i);
 		bool shouldBeKilled = false;
-
 		bool modifiedEdgeCollision = false;
 		bool overridedEdgeCollision = false;
 		bool noMoreEdgeCollisionSpecials = false;
-		Tank* t = TankManager::getTank(i);
 
 		if (t->isPartiallyOutOfBounds()) {
 			for (int k = 0; k < t->tankPowers.size(); k++) {
@@ -805,11 +716,11 @@ void tankToEdge() {
 
 void bulletToEdge() {
 	for (int i = BulletManager::getNumBullets() - 1; i >= 0; i--) {
+		Bullet* b = BulletManager::getBullet(i);
+		bool shouldBeKilled = false;
 		bool modifiedEdgeCollision = false;
 		bool overridedEdgeCollision = false;
 		bool noMoreEdgeCollisionSpecials = false;
-		bool shouldBeKilled = false;
-		Bullet* b = BulletManager::getBullet(i);
 
 		if (b->isPartiallyOutOfBounds()) {
 			for (int k = 0; k < b->bulletPowers.size(); k++) {
@@ -852,15 +763,15 @@ void bulletToEdge() {
 
 void bulletToWall() {
 	for (int i = BulletManager::getNumBullets() - 1; i >= 0; i--) {
-		bool shouldBeKilled = false;
 		Bullet* b = BulletManager::getBullet(i);
+		bool shouldBeKilled = false;
 
 		for (int j = WallManager::getNumWalls() - 1; j >= 0; j--) {
+			Wall* w = WallManager::getWall(j);
+			bool killWall = false;
 			bool modifiedWallCollision = false;
 			bool overridedWallCollision = false;
 			bool noMoreWallCollisionSpecials = false;
-			bool killWall = false;
-			Wall* w = WallManager::getWall(j);
 
 			if (CollisionHandler::partiallyCollided(b, w)) {
 				for (int k = 0; k < b->bulletPowers.size(); k++) {
@@ -910,16 +821,16 @@ void bulletToWall() {
 
 void bulletToHazard() {
 	for (int i = BulletManager::getNumBullets() - 1; i >= 0; i--) {
-		bool shouldBeKilled = false;
 		Bullet* b = BulletManager::getBullet(i);
+		bool shouldBeKilled = false;
 
 		//circles:
 		for (int j = HazardManager::getNumCircleHazards() - 1; j >= 0; j--) {
+			CircleHazard* ch = HazardManager::getCircleHazard(j);
+			bool killCircleHazard = false;
 			bool modifiedCircleHazardCollision = false;
 			bool overridedCircleHazardCollision = false;
 			bool noMoreCircleHazardCollisionSpecials = false;
-			bool killCircleHazard = false;
-			CircleHazard* ch = HazardManager::getCircleHazard(j);
 
 			if (CollisionHandler::partiallyCollided(b, ch)) {
 				for (int k = 0; k < b->bulletPowers.size(); k++) {
@@ -952,42 +863,9 @@ void bulletToHazard() {
 				if (!overridedCircleHazardCollision) {
 					if (CollisionHandler::partiallyCollided(b, ch)) {
 						if (ch->actuallyCollided(b)) {
-							char result = PriorityHandler::determinePriority(b, ch);
-							if (result <= -2) {
-								bool firstDies = rand()%2;
-								if (firstDies) {
-									if (ch->hasSpecialEffectBulletCollision) {
-										ch->specialEffectBulletCollision(b);
-									}
-									shouldBeKilled = true;
-								} else {
-									killCircleHazard = true;
-								}
-							} else if (result == -1) { //both die
-								shouldBeKilled = true;
-								killCircleHazard = true;
-							} else if (result >= 2) { //it's a draw, so neither dies
-								if (ch->modifiesBulletCollision) {
-									if (ch->hasSpecialEffectBulletCollision) {
-										ch->specialEffectBulletCollision(b);
-									}
-									ch->modifiedBulletCollision(b);
-								} else {
-									if (ch->hasSpecialEffectBulletCollision) {
-										ch->specialEffectBulletCollision(b);
-									}
-									CollisionHandler::pushMovableAwayFromImmovable(b, ch);
-								}
-							} else {
-								if (result == 0) {
-									if (ch->hasSpecialEffectBulletCollision) {
-										ch->specialEffectBulletCollision(b);
-									}
-									shouldBeKilled = true;
-								} else {
-									killCircleHazard = true;
-								}
-							}
+							PowerInteractionBoolHolder result = EndGameHandler::determineWinner(b, ch);
+							shouldBeKilled = result.shouldDie;
+							killCircleHazard = result.otherShouldDie;
 						}
 					}
 				}
@@ -1005,11 +883,11 @@ void bulletToHazard() {
 		
 		//rectangles:
 		for (int j = 0; j < HazardManager::getNumRectHazards(); j++) {
+			RectHazard* rh = HazardManager::getRectHazard(j);
+			bool killRectHazard = false;
 			bool modifiedRectHazardCollision = false;
 			bool overridedRectHazardCollision = false;
 			bool noMoreRectHazardCollisionSpecials = false;
-			bool killRectHazard = false;
-			RectHazard* rh = HazardManager::getRectHazard(j);
 
 			if (CollisionHandler::partiallyCollided(b, rh)) {
 				for (int k = 0; k < b->bulletPowers.size(); k++) {
@@ -1042,42 +920,9 @@ void bulletToHazard() {
 				if (!overridedRectHazardCollision) {
 					if (CollisionHandler::partiallyCollided(b, rh)) {
 						if (rh->actuallyCollided(b)) {
-							char result = PriorityHandler::determinePriority(b, rh);
-							if (result <= -2) {
-								bool firstDies = rand()%2;
-								if (firstDies) {
-									if (rh->hasSpecialEffectBulletCollision) {
-										rh->specialEffectBulletCollision(b);
-									}
-									shouldBeKilled = true;
-								} else {
-									killRectHazard = true;
-								}
-							} else if (result == -1) { //both die
-								shouldBeKilled = true;
-								killRectHazard = true;
-							} else if (result >= 2) { //it's a draw, so neither dies
-								if (rh->modifiesBulletCollision) {
-									if (rh->hasSpecialEffectBulletCollision) {
-										rh->specialEffectBulletCollision(b);
-									}
-									rh->modifiedBulletCollision(b);
-								} else {
-									if (rh->hasSpecialEffectBulletCollision) {
-										rh->specialEffectBulletCollision(b);
-									}
-									CollisionHandler::pushMovableAwayFromImmovable(b, rh);
-								}
-							} else {
-								if (result == 0) {
-									if (rh->hasSpecialEffectBulletCollision) {
-										rh->specialEffectBulletCollision(b);
-									}
-									shouldBeKilled = true;
-								} else {
-									killRectHazard = true;
-								}
-							}
+							PowerInteractionBoolHolder result = EndGameHandler::determineWinner(b, rh);
+							shouldBeKilled = result.shouldDie;
+							killRectHazard = result.otherShouldDie;
 						}
 					}
 				}
@@ -1098,52 +943,31 @@ void bulletToBullet() {
 	//TODO: modernize (add default vs custom collision stuff)
 	for (int i = BulletManager::getNumBullets() - 1; i >= 0; i--) {
 		Bullet* b_outer = BulletManager::getBullet(i);
+		bool b_outerShouldDie = false;
 
 		for (int j = BulletManager::getNumBullets() - 1; j >= 0; j--) { //could start at i-1? //fix: find out
 			Bullet* b_inner = BulletManager::getBullet(j);
+			bool b_innerShouldDie = false;
 
 			if (b_outer->getTeamID() == b_inner->getTeamID()) {
 				continue;
 			}
 			if (CollisionHandler::partiallyCollided(b_outer, b_inner)) {
-				char result = PriorityHandler::determinePriority(b_outer, b_inner);
-				if (result <= -2) {
-					bool firstDies = rand()%2;
-					if (firstDies) {
-						BulletManager::deleteBullet(i);
-						break;
-					} else {
-						BulletManager::deleteBullet(j);
-						continue; //fix: is this supposed to be break?
-					}
-				} else if (result == -1) { //both die
-					if (i > j) {
-						BulletManager::deleteBullet(i);
-						BulletManager::deleteBullet(j);
-						i--;
-					} else {
-						BulletManager::deleteBullet(j);
-						BulletManager::deleteBullet(i);
-					}
-					break;
-				} else if (result >= 2) { //it's a draw, so neither dies
-					//continue;
-				} else {
-					if (result == 0) {
-						BulletManager::deleteBullet(i);
-						i--;
-						break;
-					} else {
-						BulletManager::deleteBullet(j);
-						if (i > j) {
-							i--;
-						}
-						continue; //not needed //shouldn't be break because a single bullet may be capable of destroying multiple other bullets (invincibility stuff)
-					}
-				}
-
-				//break;
+				PowerInteractionBoolHolder result = EndGameHandler::determineWinner(b_outer, b_inner);
+				b_outerShouldDie = result.shouldDie;
+				b_innerShouldDie = result.otherShouldDie;
 			}
+
+			if (b_innerShouldDie) {
+				BulletManager::deleteBullet(j);
+				if (i > j) {
+					i--;
+				}
+			}
+		}
+
+		if (b_outerShouldDie) {
+			BulletManager::deleteBullet(i);
 		}
 	}
 }
@@ -1152,44 +976,28 @@ void bulletToTank() {
 	//TODO: modernize (add default vs custom collision stuff)
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
 		Tank* t = TankManager::getTank(i);
+		bool shouldBeKilled = false;
 
 		for (int j = BulletManager::getNumBullets() - 1; j >= 0; j--) {
 			Bullet* b = BulletManager::getBullet(j);
+			bool killBullet = false;
 
 			if (b->getTeamID() == t->getTeamID()) {
 				continue;
 			}
 			if (CollisionHandler::partiallyCollided(t, b)) {
-				char result = PriorityHandler::determinePriority(b, t);
-				if (result <= -2) {
-					bool firstDies = rand()%2;
-					if (firstDies) {
-						tank_dead = 1;
-						continue;
-					} else {
-						BulletManager::deleteBullet(j);
-						continue; //fix: is this supposed to be break?
-					}
-				} else if (result == -1) { //both die
-					tank_dead = 1;
-
-					//BulletManager::deleteBullet(j);
-					
-					continue;
-				} else if (result >= 2) { //it's a draw, so neither dies (probably not going to happen)
-					//continue;
-				} else {
-					if (result == 0) {
-						BulletManager::deleteBullet(j);
-						continue; //not needed //fix: should it be break?
-					} else {
-						tank_dead = 1;
-						continue;
-					}
-				}
-
-				//break;
+				PowerInteractionBoolHolder result = EndGameHandler::determineWinner(t, b);
+				shouldBeKilled = result.shouldDie;
+				killBullet = result.otherShouldDie;
 			}
+
+			if (killBullet) {
+				BulletManager::deleteBullet(j);
+			}
+		}
+
+		if (shouldBeKilled) {
+			tank_dead = 1;
 		}
 	}
 }
@@ -1301,7 +1109,7 @@ int main(int argc, char** argv) {
 	TankManager::pushTank(new Tank(20, GAME_HEIGHT/2, 0, 1, "WASD", { false, 'w' }, { false, 'a' }, { false, 'd' }, { false, 's' }, { false, 'e' }));
 	TankManager::pushTank(new Tank(GAME_WIDTH-20, GAME_HEIGHT/2, PI, 2, "Arrow Keys", { true, GLUT_KEY_UP }, { true, GLUT_KEY_LEFT }, { true, GLUT_KEY_RIGHT }, { true, GLUT_KEY_DOWN }, { false, '/' }));
 #if _DEBUG
-	LevelManager::pushLevel("dev", "dev2");
+	LevelManager::pushLevel("dev", "dev1");
 #else
 	LevelManager::pushLevel("vanilla", "default random");
 #endif

@@ -24,6 +24,7 @@ struct TankInputChar {
 class Tank : public Circle, public GameThing {
 	friend class ResetThings;
 	friend class PowerFunctionHelper;
+	friend class EndGameHandler; //sets the "dead" bool
 public:
 	std::string name;
 	int wins = 0;

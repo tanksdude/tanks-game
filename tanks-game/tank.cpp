@@ -642,6 +642,26 @@ void Tank::draw(double xpos, double ypos) {
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 MVPM;
 
+	if (dead) {
+		//TODO: gradient shader
+		//main body:
+		MVPM = Renderer::GenerateMatrix(r, r, getAngle(), xpos, ypos);
+
+		shader->setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 0.5f); //alpha isn't interpreted
+		shader->setUniformMat4f("u_MVP", MVPM);
+
+		Renderer::Draw(*va, *ib, *shader);
+
+		//outline:
+		MVPM = Renderer::GenerateMatrix(r, r, 0, xpos, ypos);
+		shader->setUniform4f("u_color", 1.0f, 1.0f, 1.0f, 1.0f);
+		shader->setUniformMat4f("u_MVP", MVPM);
+
+		Renderer::Draw(*va, *shader, GL_LINE_LOOP, 1, Circle::numOfSides);
+
+		return;
+	}
+
 	//shooting cooldown outline:
 	double shootingOutlinePercent;
 	if (maxShootCount*getShootingSpeedMultiplier() <= 0 || maxShootCount <= 0) {
@@ -802,6 +822,7 @@ void Tank::drawNameCPU(double xpos, double ypos) {
 }
 
 void Tank::resetThings(double x, double y, double a, char teamID, std::string name) { //TODO: finish?
+	this->dead = false;
 	this->x = x;
 	this->y = y;
 	this->angle = a;

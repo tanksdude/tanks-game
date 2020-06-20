@@ -23,6 +23,7 @@
 * minor things:
     * tankpower bullet attribute changes moved to bulletpowers (a moderate rewrite was needed)
     * a "special key" for tanks (does nothing right now)
+    * visual cue for tank death, refactored handling of tank death
     * minimal drawing layers: "under", regular, "effects", debug
     * more cleanup
     * GPU stuff: encourage all objects towards making their own vertices, privately

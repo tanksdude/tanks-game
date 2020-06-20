@@ -1,5 +1,6 @@
 #include "resetthings.h"
 #include "gamemanager.h"
+#include "endgamehandler.h"
 #include "constants.h"
 #include "tankmanager.h"
 #include "bulletmanager.h"
@@ -11,6 +12,8 @@
 #include <iostream>
 
 void ResetThings::reset(int) {
+	EndGameHandler::finalizeScores();
+
 	TankManager::tanks[0]->resetThings(20, GAME_HEIGHT/2, 0, TankManager::tanks[0]->getTeamID(), TankManager::tanks[0]->getName());
 	TankManager::tanks[1]->resetThings(GAME_WIDTH - 20, GAME_HEIGHT/2, PI, TankManager::tanks[1]->getTeamID(), TankManager::tanks[1]->getName());
 

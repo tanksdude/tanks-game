@@ -348,6 +348,9 @@
     <ClCompile Include="hazard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="endgamehandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -720,6 +723,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="nobulletzone.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="endgamehandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
