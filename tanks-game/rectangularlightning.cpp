@@ -172,7 +172,7 @@ void RectangularLightning::specialEffectCircleCollision(Circle* c) {
 			//circle center inside rectangle area
 			//find angle from center to circle's center
 			double angle = atan2(c->y - centerPoint->y, c->x - centerPoint->x);
-			//find distance from center to center, minus circle's radius
+			//find distance from center to circle's center, minus circle's radius
 			double d = sqrt(pow(centerPoint->x - c->x, 2) + pow(centerPoint->y - c->y, 2)) - c->r;
 			if (d < 0) {
 				throw std::domain_error("ERROR: distance on rectangular lightning is wrong!");
@@ -211,6 +211,7 @@ void RectangularLightning::specialEffectCircleCollision(Circle* c) {
 			} else {
 				intersectionY = std::min(intersections.y1, intersections.y2);
 			}
+
 			if (intersectionX < x || intersectionX > x+w) {
 				std::cerr << "WARNING: rectangular lightning endpoint X out of range!" << std::endl;
 				intersectionX = constrain<double>(intersectionX, x, x+w);
@@ -220,6 +221,7 @@ void RectangularLightning::specialEffectCircleCollision(Circle* c) {
 				intersectionY = constrain<double>(intersectionY, y, y+h);
 			}
 			boltPoints = getDefaultNumBoltPoints(sqrt(pow(intersectionX - centerPoint->x, 2) + pow(intersectionY - centerPoint->y, 2)));
+
 			//pushBolt(new LightningBolt(w/2, h/2, intersections.x1 - x, intersections.y1 - y, 2)); //debugging
 			//pushBolt(new LightningBolt(w/2, h/2, intersections.x1 - x, intersections.y2 - y, 2));
 			//pushBolt(new LightningBolt(w/2, h/2, intersections.x2 - x, intersections.y1 - y, 2));

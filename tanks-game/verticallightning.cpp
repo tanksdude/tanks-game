@@ -143,255 +143,105 @@ RectHazard* VerticalLightning::factory(int argc, std::string* argv) {
 }
 
 void VerticalLightning::specialEffectCircleCollision(Circle* c) {
-	/* Lightning zone/region layout:
-	 *
-	 *    6LU   |    5U   |   6RU
-	 *          |         |
-	 *----------+----0----+----------      <- y+h
-	 *          |         |
-	 *    3LU   |    4U   |   3RU
-	 *----------+---------+----------      <- y+h - c->r
-	 *          |         |
-	 *          |         |
-	 *          |         |
-	 *          |         |
-	 *    2L    |    1    |   2R
-	 *          |         |
-	 *          |         |
-	 *          |         |
-	 *          |         |
-	 *----------+---------+----------      <- y + c->r
-	 *    3LD   |    4D   |   3RD
-	 *          |         |
-	 *----------+----0----+----------      <- y
-	 *          |         |
-	 *    6LD   |    5D   |   6RD
-	 *
-	 *
-	 *          ^         ^
-	 *          x         x+w
-	 *
-	 * 0 = topPoint/bottomPoint
-	 * zone/region 7: circle radius c->r around 0
-	 * determined by circle center
-	 */
-
 	//TODO: confirm everything is good
 	Circle* bottomPoint = getBottomPoint();
 	Circle* topPoint = getTopPoint();
+	Circle* circleCenter = new Point(c->x, c->y);
 	double intersectionXD, intersectionXU, intersectionYD, intersectionYU;
 	int boltPointsD = -1, boltPointsU = -1;
-	//determine region the circle is in
-	if (c->y-c->r >= y && c->y+c->r <= y+h) {
-		if (c->x >= x && c->x <= x+w) {
-			intersectionXD = c->x;
-			intersectionXU = c->x;
-			intersectionYD = c->y - c->r;
-			intersectionYU = c->y + c->r;
-			//std::cout << "case 1" << std::endl;
-		} else {
-			if (c->x > x+w) {
-				intersectionXD = x + w;
-				intersectionXU = x + w;
-				//std::cout << "case 2R" << std::endl;
-			} else { //c->x < x
-				intersectionXD = x;
-				intersectionXU = x;
-				//std::cout << "case 2L" << std::endl;
-			}
-			intersectionYD = c->y - sqrt(pow(c->r, 2) - pow(intersectionXD - c->x, 2));
-			//intersectionYD = (intersectionYD < y ? y : intersectionYD);
-			intersectionYU = c->y + sqrt(pow(c->r, 2) - pow(intersectionXU - c->x, 2));
-			//intersectionYU = (intersectionYU > y+h ? y+h : intersectionYU);
-		}
+
+	double xpos, ypos; //circle adjusted x and y
+
+	if (CollisionHandler::fullyCollided(circleCenter, this)) {
+		//circle center inside rectangle area
+		xpos = c->x;
+		ypos = c->y;
 	} else {
-		//I think case 4 and 5 are the same
-		if (c->y-c->r < y) {
-			//bottom
-
-			if (CollisionHandler::fullyCollided(bottomPoint, c)) {
-				intersectionXD = c->x;
-				intersectionYD = c->y;
-				boltPointsD = 2;
-				if (c->x > x+w) {
-					intersectionXU = x + w;
-					intersectionYU = c->y + sqrt(pow(c->r, 2) - pow(c->x - (x+w), 2));
-				} else if (c->x < x) {
-					intersectionXU = x;
-					intersectionYU = c->y + sqrt(pow(c->r, 2) - pow(c->x - x, 2));
-				} else {
-					intersectionXU = c->x;
-					intersectionYU = c->y + c->r;
-				}
-				//std::cout << "case 7D_D" << std::endl;
-			} else {
-				//check whether the circle is really far down, or just barely out of range of bottomPoint
-				//difference between 6RD and 3RD: intersectionXD
-				if (c->y <= y) {
-					if (c->x > x+w) {
-						intersectionXD = c->x - sqrt(pow(c->r, 2) - pow(c->y - y, 2));
-						intersectionYD = y;
-						intersectionXU = x + w;
-						intersectionYU = c->y + sqrt(pow(c->r, 2) - pow(c->x - (x+w), 2));
-						//std::cout << "case 6RD ";
-						//std::cout << "xD:" << (intersectionXD - x) << " xU:" << (intersectionXU - x) << " yD:" << (intersectionYD - y) << " yU:" << (intersectionYU - y) << std::endl;
-					} else if (c->x < x) {
-						intersectionXD = c->x + sqrt(pow(c->r, 2) - pow(c->y - y, 2));
-						intersectionYD = y;
-						intersectionXU = x;
-						intersectionYU = c->y + sqrt(pow(c->r, 2) - pow(c->x - x, 2));
-						//std::cout << "case 6LD ";
-						//std::cout << "xD:" << (intersectionXD - x) << " xU:" << (intersectionXU - x) << " yD:" << (intersectionYD - y) << " yU:" << (intersectionYU - y) << std::endl;
-					} else {
-						intersectionYD = y;
-						if (c->x > x + w/2) {
-							intersectionXD = c->x - sqrt(pow(c->r, 2) - pow(c->y - y, 2));
-						} else {
-							intersectionXD = c->x + sqrt(pow(c->r, 2) - pow(c->y - y, 2));
-						}
-						intersectionYU = c->y + c->r;
-						intersectionXU = c->x;
-						//std::cout << "case 5D ";
-						//std::cout << "xD:" << (intersectionXD - x) << " xU:" << (intersectionXU - x) << " yD:" << (intersectionYD - y) << " yU:" << (intersectionYU - y) << std::endl;
-					}
-				} else {
-					if (c->x > x+w) {
-						intersectionXD = c->x - sqrt(pow(c->r, 2) - pow(c->y - y, 2));
-						intersectionXD = (intersectionXD > x+w ? x+w : intersectionXD);
-						intersectionYD = c->y - sqrt(pow(c->r, 2) - pow(c->x - (x+w), 2));
-						intersectionYD = (intersectionYD < y ? y : intersectionYD);
-						intersectionXU = x + w;
-						intersectionYU = c->y + sqrt(pow(c->r, 2) - pow(c->x - (x+w), 2));
-						//std::cout << "case 3RD ";
-						//std::cout << "xD:" << (intersectionXD - x) << " xU:" << (intersectionXU - x) << " yD:" << (intersectionYD - y) << " yU:" << (intersectionYU - y) << std::endl;
-					} else if (c->x < x) {
-						intersectionXD = c->x + sqrt(pow(c->r, 2) - pow(c->y - y, 2));
-						intersectionXD = (intersectionXD < x ? x : intersectionXD);
-						intersectionYD = c->y - sqrt(pow(c->r, 2) - pow(c->x - x, 2));
-						intersectionYD = (intersectionYD < y ? y : intersectionYD);
-						intersectionXU = x;
-						intersectionYU = c->y + sqrt(pow(c->r, 2) - pow(c->x - x, 2));
-						//std::cout << "case 3LD ";
-						//std::cout << "xD:" << (intersectionXD - x) << " xU:" << (intersectionXU - x) << " yD:" << (intersectionYD - y) << " yU:" << (intersectionYU - y) << std::endl;
-					} else {
-						intersectionYD = y;
-						if (c->x > x + w/2) {
-							intersectionXD = c->x - sqrt(pow(c->r, 2) - pow(c->y - y, 2));
-						} else {
-							intersectionXD = c->x + sqrt(pow(c->r, 2) - pow(c->y - y, 2));
-						}
-						intersectionXU = c->x;
-						intersectionYU = c->y + c->r;
-						//std::cout << "case 4D ";
-						//std::cout << "xD:" << (intersectionXD - x) << " xU:" << (intersectionXU - x) << " yD:" << (intersectionYD - y) << " yU:" << (intersectionYU - y) << std::endl;
-					}
-				}
-			}
-
-			if (CollisionHandler::fullyCollided(topPoint, c)) { //this should be very rare (only happens for small lightnings)
-				intersectionXU = c->x;
-				intersectionYU = c->y;
-				boltPointsU = 2;
-				//std::cout << "case 7U_D" << std::endl;
-			}
-		} else { //c->y+c->r > y+h
-			//top
-
-			if (CollisionHandler::fullyCollided(topPoint, c)) {
-				intersectionXU = c->x;
-				intersectionYU = c->y;
-				boltPointsU = 2;
-				if (c->x > x+w) {
-					intersectionXD = x + w;
-					intersectionYD = c->y - sqrt(pow(c->r, 2) - pow(c->x - (x+w), 2));
-				} else if (c->x < x) {
-					intersectionXD = x;
-					intersectionYD = c->y - sqrt(pow(c->r, 2) - pow(c->x - x, 2));
-				} else {
-					intersectionXD = c->x;
-					intersectionYD = c->y - c->r;
-				}
-				//std::cout << "case 7U_U" << std::endl;
-			} else {
-				if (c->y >= y+h) {
-					if (c->x > x+w) {
-						intersectionXD = x + w;
-						intersectionYD = c->y - sqrt(pow(c->r, 2) - pow(c->x - (x+w), 2));
-						intersectionXU = c->x - sqrt(pow(c->r, 2) - pow(c->y - (y+h), 2));
-						intersectionYU = y + h;
-						//std::cout << "case 6RU ";
-						//std::cout << "xD:" << (intersectionXD - x) << " xU:" << (intersectionXU - x) << " yD:" << (intersectionYD - y) << " yU:" << (intersectionYU - y) << std::endl;
-					} else if (c->x < x) {
-						intersectionXD = x;
-						intersectionYD = c->y - sqrt(pow(c->r, 2) - pow(c->x - x, 2));
-						intersectionXU = c->x + sqrt(pow(c->r, 2) - pow(c->y - (y+h), 2));
-						intersectionYU = y + h;
-						//std::cout << "case 6LU ";
-						//std::cout << "xD:" << (intersectionXD - x) << " xU:" << (intersectionXU - x) << " yD:" << (intersectionYD - y) << " yU:" << (intersectionYU - y) << std::endl;
-					} else {
-						intersectionXD = c->x;
-						intersectionYD = c->y - c->r;
-						intersectionYU = y + h;
-						if (c->x > x + w/2) {
-							intersectionXU = c->x - sqrt(pow(c->r, 2) - pow(c->y - (y+h), 2));
-						} else {
-							intersectionXU = c->x + sqrt(pow(c->r, 2) - pow(c->y - (y+h), 2));
-						}
-						//std::cout << "case 5U ";
-						//std::cout << "xD:" << (intersectionXD - x) << " xU:" << (intersectionXU - x) << " yD:" << (intersectionYD - y) << " yU:" << (intersectionYU - y) << std::endl;
-					}
-				} else {
-					if (c->x > x+w) {
-						intersectionXD = x + w;
-						intersectionYD = c->y - sqrt(pow(c->r, 2) - pow(c->x - (x+w), 2));
-						intersectionXU = c->x - sqrt(pow(c->r, 2) - pow(c->y - (y+h), 2));
-						intersectionXU = (intersectionXU > x+w ? x+w : intersectionXU);
-						intersectionYU = c->y + sqrt(pow(c->r, 2) - pow(c->x - (x+w), 2));
-						intersectionYU = (intersectionYU > y+h ? y+h : intersectionYU);
-						//std::cout << "case 3RU ";
-						//std::cout << "xD:" << (intersectionXD - x) << " xU:" << (intersectionXU - x) << " yD:" << (intersectionYD - y) << " yU:" << (intersectionYU - y) << std::endl;
-					} else if (c->x < x) {
-						intersectionXD = x;
-						intersectionYD = c->y - sqrt(pow(c->r, 2) - pow(c->x - x, 2));
-						intersectionXU = c->x + sqrt(pow(c->r, 2) - pow(c->y - (y+h), 2));
-						intersectionXU = (intersectionXU < x ? x : intersectionXU);
-						intersectionYU = c->y + sqrt(pow(c->r, 2) - pow(c->x - x, 2));
-						intersectionYU = (intersectionYU > y+h ? y+h : intersectionYU);
-						//std::cout << "case 3LU ";
-						//std::cout << "xD:" << (intersectionXD - x) << " xU:" << (intersectionXU - x) << " yD:" << (intersectionYD - y) << " yU:" << (intersectionYU - y) << std::endl;
-					} else {
-						intersectionXD = c->x;
-						intersectionYD = c->y - c->r;
-						intersectionYU = y + h;
-						if (c->x > x + w/2) {
-							intersectionXU = c->x - sqrt(pow(c->r, 2) - pow(c->y - (y+h), 2));
-						} else {
-							intersectionXU = c->x + sqrt(pow(c->r, 2) - pow(c->y - (y+h), 2));
-						}
-						//std::cout << "case 4U ";
-						//std::cout << "xD:" << (intersectionXD - x) << " xU:" << (intersectionXU - x) << " yD:" << (intersectionYD - y) << " yU:" << (intersectionYU - y) << std::endl;
-					}
-				}
-			}
-
-			if (CollisionHandler::fullyCollided(bottomPoint, c)) { //this should be very rare (only happens for small lightnings)
-				intersectionXD = c->x;
-				intersectionYD = c->y;
-				boltPointsD = 2;
-				//std::cout << "case 7D_U" << std::endl;
-			}
+		//circle center outside rectangle area
+		if (c->x < x) {
+			xpos = x; //circle too far to the left
+		} else if (c->x > x+w) {
+			xpos = x+w; //circle too far to the right
+		} else {
+			xpos = c->x; //circle's x-position is fine
 		}
+		if (c->y < y) {
+			ypos = y; //circle too low
+		} else if (c->y > y+h) {
+			ypos = y+h; //circle too high
+		} else {
+			ypos = c->y; //circle's y-position is fine
+		}
+		//std::cout << "xpos: " << (xpos-c->x) << ", ypos: " << (ypos-c->y) << std::endl;
 	}
-	double distL = sqrt(pow(intersectionXD - (x + w/2), 2) + pow(intersectionYD - y, 2));
-	double distR = sqrt(pow((x + w/2) - intersectionXU, 2) + pow((y + h) - intersectionYU, 2));
-	boltPointsD = (boltPointsD < 2 ? getDefaultNumBoltPoints(distL) : boltPointsD);
-	boltPointsU = (boltPointsU < 2 ? getDefaultNumBoltPoints(distR) : boltPointsU);
+	if (CollisionHandler::fullyCollided(bottomPoint, c)) {
+		intersectionXD = c->x;
+		intersectionYD = c->y;
+		boltPointsD = 2;
+	} else {
+		DoublePositionHolder intersections = CollisionHandler::circleLineIntersection(c, xpos, ypos, bottomPoint->x, bottomPoint->y);
+		if (c->x < x + w/2) {
+			intersectionXD = std::max(intersections.x1, intersections.x2);
+		} else {
+			intersectionXD = std::min(intersections.x1, intersections.x2);
+		}
+		intersectionYD = std::min(intersections.y1, intersections.y2);
+
+		if (intersectionXD < x || intersectionXD > x+w) {
+			std::cerr << "WARNING: vertical lightning endpoint X (bottom half) out of range!" << std::endl;
+			intersectionXD = constrain<double>(intersectionXD, x, x+w);
+		}
+		if (intersectionYD < y || intersectionYD > y+h) {
+			std::cerr << "WARNING: vertical lightning endpoint Y (bottom half) out of range!" << std::endl;
+			intersectionYD = constrain<double>(intersectionYD, y, y+h);
+		}
+		boltPointsD = getDefaultNumBoltPoints(sqrt(pow(intersectionXD - bottomPoint->x, 2) + pow(intersectionYD - bottomPoint->y, 2)));
+
+		//pushBolt(new LightningBolt(w/2, 0, intersections.x1 - x, intersections.y1 - y, 2)); //debugging
+		//pushBolt(new LightningBolt(w/2, 0, intersections.x1 - x, intersections.y2 - y, 2));
+		//pushBolt(new LightningBolt(w/2, 0, intersections.x2 - x, intersections.y1 - y, 2));
+		//pushBolt(new LightningBolt(w/2, 0, intersections.x2 - x, intersections.y2 - y, 2));
+	}
+
+	if (CollisionHandler::fullyCollided(topPoint, c)) {
+		intersectionXU = c->x;
+		intersectionYU = c->y;
+		boltPointsU = 2;
+	} else {
+		DoublePositionHolder intersections = CollisionHandler::circleLineIntersection(c, xpos, ypos, topPoint->x, topPoint->y);
+		if (c->x < x + w/2) {
+			intersectionXU = std::max(intersections.x1, intersections.x2);
+		} else {
+			intersectionXU = std::min(intersections.x1, intersections.x2);
+		}
+		intersectionYU = std::max(intersections.y1, intersections.y2);
+
+		if (intersectionXU < x || intersectionXU > x+w) {
+			std::cerr << "WARNING: vertical lightning endpoint X (top half) out of range!" << std::endl;
+			intersectionXU = constrain<double>(intersectionXU, x, x+w);
+		}
+		if (intersectionYU < y || intersectionYU > y+h) {
+			std::cerr << "WARNING: vertical lightning endpoint Y (top half) out of range!" << std::endl;
+			intersectionYU = constrain<double>(intersectionYU, y, y+h);
+		}
+		boltPointsU = getDefaultNumBoltPoints(sqrt(pow(intersectionXU - topPoint->x, 2) + pow(intersectionYU - topPoint->y, 2)));
+
+		//pushBolt(new LightningBolt(intersections.x1 - x, intersections.y1 - y, w/2, h, 2)); //debugging
+		//pushBolt(new LightningBolt(intersections.x1 - x, intersections.y2 - y, w/2, h, 2));
+		//pushBolt(new LightningBolt(intersections.x2 - x, intersections.y1 - y, w/2, h, 2));
+		//pushBolt(new LightningBolt(intersections.x2 - x, intersections.y2 - y, w/2, h, 2));
+	}
+
+	//double distL = sqrt(pow(intersectionXD - (x + w/2), 2) + pow(intersectionYD - y, 2));
+	//double distR = sqrt(pow((x + w/2) - intersectionXU, 2) + pow((y + h) - intersectionYU, 2));
+	//boltPointsD = (boltPointsD < 2 ? getDefaultNumBoltPoints(distL) : boltPointsD);
+	//boltPointsU = (boltPointsU < 2 ? getDefaultNumBoltPoints(distR) : boltPointsU);
 	pushBolt(new LightningBolt(w/2, 0, intersectionXD-x, intersectionYD-y, boltPointsD), false);
 	pushBolt(new LightningBolt(intersectionXD-x, intersectionYD-y, intersectionXU-x, intersectionYU-y, 2), false);
 	pushBolt(new LightningBolt(intersectionXU-x, intersectionYU-y, w/2, h, boltPointsU), false);
-	delete topPoint, bottomPoint;
+	delete bottomPoint, topPoint, circleCenter;
 
-	//TODO: refactor
+	//TODO: refactor? (it's done, right?)
 }
 
 void VerticalLightning::pushBolt(LightningBolt* l, bool simpleRefresh) {
