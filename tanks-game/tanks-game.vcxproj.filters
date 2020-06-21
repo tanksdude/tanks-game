@@ -357,6 +357,9 @@
     <ClCompile Include="rectangularnobulletzone.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="manyhazardslevel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -738,6 +741,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="rectangularnobulletzone.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="manyhazardslevel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

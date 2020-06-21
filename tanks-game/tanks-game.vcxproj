@@ -173,6 +173,7 @@
     <ClCompile Include="inversionpower.cpp" />
     <ClCompile Include="inversiontankpower.cpp" />
     <ClCompile Include="level.cpp" />
+    <ClCompile Include="manyhazardslevel.cpp" />
     <ClCompile Include="rectangularnobulletzone.cpp" />
     <ClCompile Include="oldbignamedbulletpower.cpp" />
     <ClCompile Include="oldbignamedpower.cpp" />
@@ -290,6 +291,7 @@
     <ClInclude Include="inversionbulletpower.h" />
     <ClInclude Include="inversionpower.h" />
     <ClInclude Include="inversiontankpower.h" />
+    <ClInclude Include="manyhazardslevel.h" />
     <ClInclude Include="rectangularnobulletzone.h" />
     <ClInclude Include="oldbignamedbulletpower.h" />
     <ClInclude Include="oldbignamedpower.h" />

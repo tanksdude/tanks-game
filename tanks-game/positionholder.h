@@ -7,4 +7,5 @@ struct PositionHolder {
 		x = x_;
 		y = y_;
 	}
+	PositionHolder() { x = y = 0; }
 };
