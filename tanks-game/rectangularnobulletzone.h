@@ -1,11 +1,12 @@
 #pragma once
 #include "recthazard.h"
+#include "generalizednobulletzone.h"
 
 #include "vertexarray.h"
 #include "vertexbuffer.h"
 #include "indexbuffer.h"
 
-class NoBulletZone : public RectHazard {
+class RectangularNoBulletZone : public RectHazard, public GeneralizedNoBulletZone {
 	//called NoShotZone in JS Tanks (because bullets were called "shots")
 private:
 	static VertexArray* va;
@@ -31,7 +32,7 @@ public:
 	//virtual bool validLocation() override { return true; }
 	virtual bool reasonableLocation() override;
 
-	ColorValueHolder getColor();
+	//ColorValueHolder getColor(); //in GeneralizedNoBulletZone
 
 	virtual std::string getName() { return getClassName(); }
 	static std::string getClassName() { return "no bullet zone"; }
@@ -40,8 +41,8 @@ public:
 	virtual void draw();
 	virtual void drawCPU();
 
-	NoBulletZone(double xpos, double ypos, double width, double height);
-	~NoBulletZone();
+	RectangularNoBulletZone(double xpos, double ypos, double width, double height);
+	~RectangularNoBulletZone();
 	static RectHazard* factory(int, std::string*);
 	static RectHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv);
 	virtual int getFactoryArgumentCount() override { return 4; }

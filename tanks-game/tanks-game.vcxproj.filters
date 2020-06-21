@@ -342,9 +342,6 @@
     <ClCompile Include="godmodetankpower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="nobulletzone.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="hazard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -352,6 +349,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="circularnobulletzone.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="generalizednobulletzone.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rectangularnobulletzone.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -725,13 +728,16 @@
     <ClInclude Include="godmodetankpower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="nobulletzone.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="endgamehandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="circularnobulletzone.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="generalizednobulletzone.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rectangularnobulletzone.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,21 +1,19 @@
-#include "nobulletzone.h"
+#include "rectangularnobulletzone.h"
 #include "gamemanager.h"
 #include "renderer.h"
 #include "constants.h"
 #include <math.h>
 #include "mylib.h"
-#include "backgroundrect.h"
-#include "colormixer.h"
 #include "wallmanager.h"
 #include "hazardmanager.h"
 #include "collisionhandler.h"
 
-VertexArray* NoBulletZone::va;
-VertexBuffer* NoBulletZone::vb;
-IndexBuffer* NoBulletZone::ib;
-bool NoBulletZone::initialized_GPU = false;
+VertexArray* RectangularNoBulletZone::va;
+VertexBuffer* RectangularNoBulletZone::vb;
+IndexBuffer* RectangularNoBulletZone::ib;
+bool RectangularNoBulletZone::initialized_GPU = false;
 
-NoBulletZone::NoBulletZone(double xpos, double ypos, double width, double height) {
+RectangularNoBulletZone::RectangularNoBulletZone(double xpos, double ypos, double width, double height) {
 	x = xpos;
 	y = ypos;
 	w = width;
@@ -31,11 +29,11 @@ NoBulletZone::NoBulletZone(double xpos, double ypos, double width, double height
 	initializeGPU();
 }
 
-NoBulletZone::~NoBulletZone() {
+RectangularNoBulletZone::~RectangularNoBulletZone() {
 	//uninitializeGPU();
 }
 
-bool NoBulletZone::initializeGPU() {
+bool RectangularNoBulletZone::initializeGPU() {
 	if (initialized_GPU) {
 		return false;
 	}
@@ -62,7 +60,7 @@ bool NoBulletZone::initializeGPU() {
 	return true;
 }
 
-bool NoBulletZone::uninitializeGPU() {
+bool RectangularNoBulletZone::uninitializeGPU() {
 	if (!initialized_GPU) {
 		return false;
 	}
@@ -75,26 +73,22 @@ bool NoBulletZone::uninitializeGPU() {
 	return true;
 }
 
-RectHazard* NoBulletZone::factory(int argc, std::string* argv) {
+RectHazard* RectangularNoBulletZone::factory(int argc, std::string* argv) {
 	if (argc >= 4) {
 		double x = std::stod(argv[0]);
 		double y = std::stod(argv[1]);
 		double w = std::stod(argv[2]);
 		double h = std::stod(argv[3]);
-		return new NoBulletZone(x, y, w, h);
+		return new RectangularNoBulletZone(x, y, w, h);
 	}
-	return new NoBulletZone(0, 0, 0, 0);
+	return new RectangularNoBulletZone(0, 0, 0, 0);
 }
 
-void NoBulletZone::tick() {
-	return;
+void RectangularNoBulletZone::tick() {
+	GeneralizedNoBulletZone::tick();
 }
 
-ColorValueHolder NoBulletZone::getColor() {
-	return ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(.5f, .5f, .5f), .125);
-}
-
-bool NoBulletZone::reasonableLocation() {
+bool RectangularNoBulletZone::reasonableLocation() {
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		if (CollisionHandler::fullyCollided(this, WallManager::getWall(i))) {
 			return false;
@@ -118,23 +112,23 @@ bool NoBulletZone::reasonableLocation() {
 	return validLocation();
 }
 
-void NoBulletZone::draw() {
+void RectangularNoBulletZone::draw() {
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 MVPM = Renderer::GenerateMatrix(w, h, 0, x, y);
 	
 	//TODO: make drawUnder() a thing
-	ColorValueHolder color = getColor();
+	ColorValueHolder color = GeneralizedNoBulletZone::getColor();
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*va, *ib, *shader);
 }
 
-void NoBulletZone::drawCPU() {
+void RectangularNoBulletZone::drawCPU() {
 	
 }
 
-RectHazard* NoBulletZone::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {
+RectHazard* RectangularNoBulletZone::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {
 	int attempts = 0;
 	RectHazard* randomized = nullptr;
 	double xpos, ypos, width, height;
@@ -148,12 +142,12 @@ RectHazard* NoBulletZone::randomizingFactory(double x_start, double y_start, dou
 		}
 		xpos = randFunc2() * (area_width - 2*width) + (x_start + width);
 		ypos = randFunc2() * (area_height - 2*height) + (y_start + height);
-		RectHazard* testNoBulletZone = new NoBulletZone(xpos, ypos, width, height);
-		if (testNoBulletZone->reasonableLocation()) {
-			randomized = testNoBulletZone;
+		RectHazard* testRectangularNoBulletZone = new RectangularNoBulletZone(xpos, ypos, width, height);
+		if (testRectangularNoBulletZone->reasonableLocation()) {
+			randomized = testRectangularNoBulletZone;
 			break;
 		} else {
-			delete testNoBulletZone;
+			delete testRectangularNoBulletZone;
 		}
 		attempts++;
 	} while (attempts < 64);

@@ -38,7 +38,7 @@ public:
 	virtual bool reasonableLocation() override;
 
 	virtual std::string getName() { return getClassName(); }
-	static std::string getClassName() { return "rectangular lava"; }
+	static std::string getClassName() { return "lava"; }
 
 	virtual void tick();
 	virtual void draw();

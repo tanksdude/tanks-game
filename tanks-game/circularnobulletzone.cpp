@@ -4,8 +4,6 @@
 #include "constants.h"
 #include <math.h>
 #include "mylib.h"
-#include "backgroundrect.h"
-#include "colormixer.h"
 #include "wallmanager.h"
 #include "hazardmanager.h"
 #include "collisionhandler.h"
@@ -88,11 +86,7 @@ CircleHazard* CircularNoBulletZone::factory(int argc, std::string* argv) {
 }
 
 void CircularNoBulletZone::tick() {
-	return;
-}
-
-ColorValueHolder CircularNoBulletZone::getColor() {
-	return ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(.5f, .5f, .5f), .125);
+	GeneralizedNoBulletZone::tick();
 }
 
 bool CircularNoBulletZone::reasonableLocation() {
@@ -105,7 +99,6 @@ bool CircularNoBulletZone::reasonableLocation() {
 	for (int i = 0; i < HazardManager::getNumCircleHazards(); i++) {
 		CircleHazard* ch = HazardManager::getCircleHazard(i);
 		if ((ch->getGameID() != this->getGameID()) && (ch->getName() != this->getName())) {
-			//TODO: should rectangular and circular version of the same hazard have the same name? (they're still separated by circle/rectangle)
 			if (CollisionHandler::partiallyCollided(this, ch)) {
 				return false;
 			}

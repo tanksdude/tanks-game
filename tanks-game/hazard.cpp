@@ -14,7 +14,8 @@ patrolling turret
 |lightning circle
 |rectangular lava
 |circular lava
-|no bullet zone
+|rectangular no bullet zone
+|circular no bullet zone
 teleport zone
 pipes
 

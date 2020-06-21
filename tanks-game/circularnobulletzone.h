@@ -1,11 +1,12 @@
 #pragma once
 #include "circlehazard.h"
+#include "generalizednobulletzone.h"
 
 #include "vertexarray.h"
 #include "vertexbuffer.h"
 #include "indexbuffer.h"
 
-class CircularNoBulletZone : public CircleHazard {
+class CircularNoBulletZone : public CircleHazard, public GeneralizedNoBulletZone {
 private:
 	static VertexArray* va;
 	static VertexBuffer* vb;
@@ -30,10 +31,10 @@ public:
 	//virtual bool validLocation() override { return true; }
 	virtual bool reasonableLocation() override;
 
-	ColorValueHolder getColor();
+	//ColorValueHolder getColor(); //in GeneralizedNoBulletZone
 
 	virtual std::string getName() { return getClassName(); }
-	static std::string getClassName() { return "circular no bullet zone"; }
+	static std::string getClassName() { return "no bullet zone"; }
 
 	virtual void tick();
 	virtual void draw();

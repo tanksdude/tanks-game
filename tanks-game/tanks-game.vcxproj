@@ -164,6 +164,7 @@
     <ClCompile Include="gamemanager.cpp" />
     <ClCompile Include="generalizedlava.cpp" />
     <ClCompile Include="generalizedlightning.cpp" />
+    <ClCompile Include="generalizednobulletzone.cpp" />
     <ClCompile Include="godmodebulletpower.cpp" />
     <ClCompile Include="godmodepower.cpp" />
     <ClCompile Include="godmodetankpower.cpp" />
@@ -172,7 +173,7 @@
     <ClCompile Include="inversionpower.cpp" />
     <ClCompile Include="inversiontankpower.cpp" />
     <ClCompile Include="level.cpp" />
-    <ClCompile Include="nobulletzone.cpp" />
+    <ClCompile Include="rectangularnobulletzone.cpp" />
     <ClCompile Include="oldbignamedbulletpower.cpp" />
     <ClCompile Include="oldbignamedpower.cpp" />
     <ClCompile Include="oldbignamedtankpower.cpp" />
@@ -282,13 +283,14 @@
     <ClInclude Include="gamething.h" />
     <ClInclude Include="generalizedlava.h" />
     <ClInclude Include="generalizedlightning.h" />
+    <ClInclude Include="generalizednobulletzone.h" />
     <ClInclude Include="godmodebulletpower.h" />
     <ClInclude Include="godmodepower.h" />
     <ClInclude Include="godmodetankpower.h" />
     <ClInclude Include="inversionbulletpower.h" />
     <ClInclude Include="inversionpower.h" />
     <ClInclude Include="inversiontankpower.h" />
-    <ClInclude Include="nobulletzone.h" />
+    <ClInclude Include="rectangularnobulletzone.h" />
     <ClInclude Include="oldbignamedbulletpower.h" />
     <ClInclude Include="oldbignamedpower.h" />
     <ClInclude Include="oldbignamedtankpower.h" />

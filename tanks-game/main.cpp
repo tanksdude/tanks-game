@@ -68,7 +68,7 @@
 #include "circularlightning.h"
 #include "rectangularlava.h"
 #include "circularlava.h"
-#include "nobulletzone.h"
+#include "rectangularnobulletzone.h"
 #include "circularnobulletzone.h"
 
 //powers:
@@ -1093,7 +1093,7 @@ int main(int argc, char** argv) {
 	HazardManager::addCircleHazardFactory(CircularLightning::factory, CircularLightning::randomizingFactory);
 	HazardManager::addRectHazardFactory(RectangularLava::factory, RectangularLava::randomizingFactory);
 	HazardManager::addCircleHazardFactory(CircularLava::factory, CircularLava::randomizingFactory);
-	HazardManager::addRectHazardFactory(NoBulletZone::factory, NoBulletZone::randomizingFactory);
+	HazardManager::addRectHazardFactory(RectangularNoBulletZone::factory, RectangularNoBulletZone::randomizingFactory);
 	HazardManager::addCircleHazardFactory(CircularNoBulletZone::factory, CircularNoBulletZone::randomizingFactory);
 
 	//initialize managers and stuff:
