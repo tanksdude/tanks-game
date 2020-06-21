@@ -1,6 +1,20 @@
 #include "circlehazard.h"
 #include "collisionhandler.h"
 
+std::vector<std::string> CircleHazard::getHazardTypes() {
+	std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "random" };
+	return types;
+}
+
+std::unordered_map<std::string, float> CircleHazard::getWeights() {
+	//not really sure what the weights mean yet
+	std::unordered_map<std::string, float> weights;
+	weights.insert({ "vanilla", .5f });
+	weights.insert({ "random-vanilla", .5f });
+	weights.insert({ "random", .5f });
+	return weights;
+}
+
 void CircleHazard::modifiedTankCollision(Tank* t) {
 	CollisionHandler::pushMovableAwayFromImmovable(t, this);
 }

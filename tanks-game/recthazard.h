@@ -4,6 +4,7 @@ class RectHazard;
 #include "hazard.h"
 #include "rect.h"
 #include <string>
+#include <unordered_map>
 //#include "recthazardpower.h"
 #include "tank.h"
 #include "bullet.h"
@@ -44,6 +45,9 @@ public:
 	double getHighestDefenseImportance();
 	double getHighestDefenseTier(double importance);
 public:
+	virtual std::vector<std::string> getHazardTypes();
+	virtual std::unordered_map<std::string, float> getWeights(); //intended range: (0,1]
+
 	double getOffenseTier();
 	double getDefenseTier();
 	virtual double getDefaultOffense() = 0;

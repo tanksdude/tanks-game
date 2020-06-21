@@ -83,12 +83,12 @@ private:
 	static void clearCircleHazards();
 	static void clearRectHazards(); //only ResetThings is supposed to be using these, so no real point in splitting them
 
-	static std::unordered_map<std::string, CircleHazardFactoryGroup> circleHazardLookup;
-	static std::unordered_map<std::string, RectHazardFactoryGroup> rectHazardLookup;
-	static std::vector<CircleHazardFunction> circleHazardList;
-	static std::vector<RectHazardFunction> rectHazardList;
-	static std::vector<std::string> circleHazardNameList;
-	static std::vector<std::string> rectHazardNameList;
+	static std::unordered_map<std::string, std::unordered_map<std::string, CircleHazardFactoryGroup>> circleHazardLookup;
+	static std::unordered_map<std::string, std::unordered_map<std::string, RectHazardFactoryGroup>> rectHazardLookup;
+	static std::unordered_map<std::string, std::vector<CircleHazardFunction>> circleHazardList;
+	static std::unordered_map<std::string, std::vector<RectHazardFunction>> rectHazardList;
+	static std::unordered_map<std::string, std::vector<std::string>> circleHazardNameList;
+	static std::unordered_map<std::string, std::vector<std::string>> rectHazardNameList;
 public:
 	static void initialize();
 	static CircleHazard* getCircleHazard(int index);
@@ -102,14 +102,14 @@ public:
 
 	static void addCircleHazardFactory(CircleHazardFunction, CircleHazardRandomizationFunction);
 	static void addRectHazardFactory(RectHazardFunction, RectHazardRandomizationFunction);
-	static CircleHazardFunction getCircleHazardFactory(std::string name);
-	static RectHazardFunction getRectHazardFactory(std::string name);
-	static CircleHazardFactoryGroup getCircleHazardFactoryGroup(std::string name); //might not get used
-	static RectHazardFactoryGroup getRectHazardFactoryGroup(std::string name); //might not get used
-	static CircleHazardRandomizationFunction getCircleHazardRandomizationFunction(std::string name);
-	static RectHazardRandomizationFunction getRectHazardRandomizationFunction(std::string name);
-	static std::string getCircleHazardName(int index);
-	static std::string getRectHazardName(int index);
-	static int getNumCircleHazardTypes();
-	static int getNumRectHazardTypes();
+	static CircleHazardFunction getCircleHazardFactory(std::string type, std::string name);
+	static RectHazardFunction getRectHazardFactory(std::string type, std::string name);
+	static CircleHazardFactoryGroup getCircleHazardFactoryGroup(std::string type, std::string name); //might not get used
+	static RectHazardFactoryGroup getRectHazardFactoryGroup(std::string type, std::string name); //might not get used
+	static CircleHazardRandomizationFunction getCircleHazardRandomizationFunction(std::string type, std::string name);
+	static RectHazardRandomizationFunction getRectHazardRandomizationFunction(std::string type, std::string name);
+	static std::string getCircleHazardName(std::string type, int index);
+	static std::string getRectHazardName(std::string type, int index);
+	static int getNumCircleHazardTypes(std::string type);
+	static int getNumRectHazardTypes(std::string type);
 };

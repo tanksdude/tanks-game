@@ -3,15 +3,31 @@
 std::vector<CircleHazard*> HazardManager::circleHazards;
 std::vector<RectHazard*> HazardManager::rectHazards;
 
-std::unordered_map<std::string, CircleHazardFactoryGroup> HazardManager::circleHazardLookup;
-std::unordered_map<std::string, RectHazardFactoryGroup> HazardManager::rectHazardLookup;
-std::vector<CircleHazardFunction> HazardManager::circleHazardList;
-std::vector<RectHazardFunction> HazardManager::rectHazardList;
-std::vector<std::string> HazardManager::circleHazardNameList;
-std::vector<std::string> HazardManager::rectHazardNameList;
+std::unordered_map<std::string, std::unordered_map<std::string, CircleHazardFactoryGroup>> HazardManager::circleHazardLookup;
+std::unordered_map<std::string, std::unordered_map<std::string, RectHazardFactoryGroup>> HazardManager::rectHazardLookup;
+std::unordered_map<std::string, std::vector<CircleHazardFunction>> HazardManager::circleHazardList;
+std::unordered_map<std::string, std::vector<RectHazardFunction>> HazardManager::rectHazardList;
+std::unordered_map<std::string, std::vector<std::string>> HazardManager::circleHazardNameList;
+std::unordered_map<std::string, std::vector<std::string>> HazardManager::rectHazardNameList;
 
 void HazardManager::initialize() {
-	return;
+	circleHazardLookup.insert({ "vanilla", std::unordered_map<std::string, CircleHazardFactoryGroup>() });
+	circleHazardLookup.insert({ "vanilla-extra", std::unordered_map<std::string, CircleHazardFactoryGroup>() }); //what would this include? no bullet zone?
+	circleHazardLookup.insert({ "random-vanilla", std::unordered_map<std::string, CircleHazardFactoryGroup>() }); //can include vanilla-extra but probably won't
+	circleHazardLookup.insert({ "random", std::unordered_map<std::string, CircleHazardFactoryGroup>() }); //general random
+	circleHazardLookup.insert({ "old", std::unordered_map<std::string, CircleHazardFactoryGroup>() }); //will probably be deleted
+	circleHazardLookup.insert({ "random-old", std::unordered_map<std::string, CircleHazardFactoryGroup>() });
+	circleHazardLookup.insert({ "dev", std::unordered_map<std::string, CircleHazardFactoryGroup>() }); //anything?
+	circleHazardLookup.insert({ "random-dev", std::unordered_map<std::string, CircleHazardFactoryGroup>() }); //would this be used?
+
+	rectHazardLookup.insert({ "vanilla", std::unordered_map<std::string, RectHazardFactoryGroup>() });
+	rectHazardLookup.insert({ "vanilla-extra", std::unordered_map<std::string, RectHazardFactoryGroup>() });
+	rectHazardLookup.insert({ "random-vanilla", std::unordered_map<std::string, RectHazardFactoryGroup>() });
+	rectHazardLookup.insert({ "random", std::unordered_map<std::string, RectHazardFactoryGroup>() });
+	rectHazardLookup.insert({ "old", std::unordered_map<std::string, RectHazardFactoryGroup>() });
+	rectHazardLookup.insert({ "random-old", std::unordered_map<std::string, RectHazardFactoryGroup>() });
+	rectHazardLookup.insert({ "dev", std::unordered_map<std::string, RectHazardFactoryGroup>() });
+	rectHazardLookup.insert({ "random-dev", std::unordered_map<std::string, RectHazardFactoryGroup>() });
 }
 
 CircleHazard* HazardManager::getCircleHazard(int index) {
@@ -53,50 +69,56 @@ void HazardManager::clearRectHazards() {
 
 void HazardManager::addCircleHazardFactory(CircleHazardFunction factory, CircleHazardRandomizationFunction randFactory) {
 	CircleHazard* ch = factory(0, nullptr);
-	circleHazardList.push_back(factory);
-	circleHazardLookup.insert({ ch->getName(), { factory, ch->getFactoryArgumentCount(), ch->getConstructionType(), ch->getFactoryInformation(), randFactory } });
-	circleHazardNameList.push_back(ch->getName());
+	std::vector<std::string> types = ch->getHazardTypes();
+	for (int i = 0; i < types.size(); i++) {
+		circleHazardList[types[i]].push_back(factory);
+		circleHazardLookup[types[i]].insert({ ch->getName(), { factory, ch->getFactoryArgumentCount(), ch->getConstructionType(), ch->getFactoryInformation(), randFactory } });
+		circleHazardNameList[types[i]].push_back(ch->getName());
+	}
 	delete ch;
 }
 void HazardManager::addRectHazardFactory(RectHazardFunction factory, RectHazardRandomizationFunction randFactory) {
 	RectHazard* rh = factory(0, nullptr);
-	rectHazardList.push_back(factory);
-	rectHazardLookup.insert({ rh->getName(), { factory, rh->getFactoryArgumentCount(), rh->getConstructionType(), rh->getFactoryInformation(), randFactory } });
-	rectHazardNameList.push_back(rh->getName());
+	std::vector<std::string> types = rh->getHazardTypes();
+	for (int i = 0; i < types.size(); i++) {
+		rectHazardList[types[i]].push_back(factory);
+		rectHazardLookup[types[i]].insert({ rh->getName(), { factory, rh->getFactoryArgumentCount(), rh->getConstructionType(), rh->getFactoryInformation(), randFactory } });
+		rectHazardNameList[types[i]].push_back(rh->getName());
+	}
 	delete rh;
 }
 
-CircleHazardFunction HazardManager::getCircleHazardFactory(std::string name) {
-	return circleHazardLookup[name].getFactory();
+CircleHazardFunction HazardManager::getCircleHazardFactory(std::string type, std::string name) {
+	return circleHazardLookup[type][name].getFactory();
 }
-RectHazardFunction HazardManager::getRectHazardFactory(std::string name) {
-	return rectHazardLookup[name].getFactory();
-}
-
-CircleHazardRandomizationFunction HazardManager::getCircleHazardRandomizationFunction(std::string name) {
-	return circleHazardLookup[name].getRandomizationFunction();
-}
-RectHazardRandomizationFunction HazardManager::getRectHazardRandomizationFunction(std::string name) {
-	return rectHazardLookup[name].getRandomizationFunction();
+RectHazardFunction HazardManager::getRectHazardFactory(std::string type, std::string name) {
+	return rectHazardLookup[type][name].getFactory();
 }
 
-CircleHazardFactoryGroup HazardManager::getCircleHazardFactoryGroup(std::string name) {
-	return circleHazardLookup[name];
+CircleHazardRandomizationFunction HazardManager::getCircleHazardRandomizationFunction(std::string type, std::string name) {
+	return circleHazardLookup[type][name].getRandomizationFunction();
 }
-RectHazardFactoryGroup HazardManager::getRectHazardFactoryGroup(std::string name) {
-	return rectHazardLookup[name];
-}
-
-std::string HazardManager::getCircleHazardName(int index) {
-	return circleHazardNameList[index];
-}
-std::string HazardManager::getRectHazardName(int index) {
-	return rectHazardNameList[index];
+RectHazardRandomizationFunction HazardManager::getRectHazardRandomizationFunction(std::string type, std::string name) {
+	return rectHazardLookup[type][name].getRandomizationFunction();
 }
 
-int HazardManager::getNumCircleHazardTypes() {
-	return circleHazardNameList.size();
+CircleHazardFactoryGroup HazardManager::getCircleHazardFactoryGroup(std::string type, std::string name) {
+	return circleHazardLookup[type][name];
 }
-int HazardManager::getNumRectHazardTypes() {
-	return rectHazardNameList.size();
+RectHazardFactoryGroup HazardManager::getRectHazardFactoryGroup(std::string type, std::string name) {
+	return rectHazardLookup[type][name];
+}
+
+std::string HazardManager::getCircleHazardName(std::string type, int index) {
+	return circleHazardNameList[type][index];
+}
+std::string HazardManager::getRectHazardName(std::string type, int index) {
+	return rectHazardNameList[type][index];
+}
+
+int HazardManager::getNumCircleHazardTypes(std::string type) {
+	return circleHazardNameList[type].size();
+}
+int HazardManager::getNumRectHazardTypes(std::string type) {
+	return rectHazardNameList[type].size();
 }
