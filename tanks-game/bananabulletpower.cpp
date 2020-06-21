@@ -20,7 +20,11 @@ PowerInteractionBoolHolder BananaBulletPower::modifiedMovement(Bullet* b) {
 					bp->push_back(b->bulletPowers[i]->makeDuplicate());
 				}
 			}
-			double newVelocity = b->getInitialVelocity() * ((randFunc2()+randFunc2())/2 * (maxNewBulletVelocity - minNewBulletVelocity) + minNewBulletVelocity);
+			double newVelocity = b->getInitialVelocity();
+			if (newVelocity == 0) {
+				newVelocity = Tank::default_maxSpeed*BULLET_TO_TANK_SPEED_RATIO; //if bullet's initial speed is zero, it should still explode (TODO: what should the initial speed be?)
+			}
+			newVelocity = newVelocity * ((randFunc2()+randFunc2())/2 * (maxNewBulletVelocity - minNewBulletVelocity) + minNewBulletVelocity);
 			BulletManager::pushBullet(new Bullet(b->x, b->y, b->r/2, randFunc() * 2*PI, newVelocity, b->getTeamID(), b->getParentID(), bp, true));
 			delete bp;
 		}
