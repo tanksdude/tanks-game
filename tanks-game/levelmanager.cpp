@@ -3,7 +3,6 @@
 
 std::vector<Level*> LevelManager::levels;
 std::unordered_map<std::string, std::unordered_map<std::string, LevelFunction>> LevelManager::levelLookup;
-std::unordered_map<std::string, std::vector<LevelFunction>> LevelManager::levelList;
 std::unordered_map<std::string, std::vector<std::string>> LevelManager::levelNameList;
 
 void LevelManager::initialize() {
@@ -55,7 +54,6 @@ void LevelManager::addLevelFactory(LevelFunction factory) {
 			levelLookup.insert({ types[i], std::unordered_map<std::string, LevelFunction>() });
 		}
 		*/
-		levelList[types[i]].push_back(factory);
 		levelLookup[types[i]].insert({ l->getName(), factory });
 		levelNameList[types[i]].push_back(l->getName());
 	}

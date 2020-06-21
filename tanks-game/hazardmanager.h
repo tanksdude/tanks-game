@@ -85,8 +85,6 @@ private:
 
 	static std::unordered_map<std::string, std::unordered_map<std::string, CircleHazardFactoryGroup>> circleHazardLookup;
 	static std::unordered_map<std::string, std::unordered_map<std::string, RectHazardFactoryGroup>> rectHazardLookup;
-	static std::unordered_map<std::string, std::vector<CircleHazardFunction>> circleHazardList;
-	static std::unordered_map<std::string, std::vector<RectHazardFunction>> rectHazardList;
 	static std::unordered_map<std::string, std::vector<std::string>> circleHazardNameList;
 	static std::unordered_map<std::string, std::vector<std::string>> rectHazardNameList;
 public:

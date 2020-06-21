@@ -5,8 +5,6 @@ std::vector<RectHazard*> HazardManager::rectHazards;
 
 std::unordered_map<std::string, std::unordered_map<std::string, CircleHazardFactoryGroup>> HazardManager::circleHazardLookup;
 std::unordered_map<std::string, std::unordered_map<std::string, RectHazardFactoryGroup>> HazardManager::rectHazardLookup;
-std::unordered_map<std::string, std::vector<CircleHazardFunction>> HazardManager::circleHazardList;
-std::unordered_map<std::string, std::vector<RectHazardFunction>> HazardManager::rectHazardList;
 std::unordered_map<std::string, std::vector<std::string>> HazardManager::circleHazardNameList;
 std::unordered_map<std::string, std::vector<std::string>> HazardManager::rectHazardNameList;
 
@@ -71,7 +69,6 @@ void HazardManager::addCircleHazardFactory(CircleHazardFunction factory, CircleH
 	CircleHazard* ch = factory(0, nullptr);
 	std::vector<std::string> types = ch->getHazardTypes();
 	for (int i = 0; i < types.size(); i++) {
-		circleHazardList[types[i]].push_back(factory);
 		circleHazardLookup[types[i]].insert({ ch->getName(), { factory, ch->getFactoryArgumentCount(), ch->getConstructionType(), ch->getFactoryInformation(), randFactory } });
 		circleHazardNameList[types[i]].push_back(ch->getName());
 	}
@@ -81,7 +78,6 @@ void HazardManager::addRectHazardFactory(RectHazardFunction factory, RectHazardR
 	RectHazard* rh = factory(0, nullptr);
 	std::vector<std::string> types = rh->getHazardTypes();
 	for (int i = 0; i < types.size(); i++) {
-		rectHazardList[types[i]].push_back(factory);
 		rectHazardLookup[types[i]].insert({ rh->getName(), { factory, rh->getFactoryArgumentCount(), rh->getConstructionType(), rh->getFactoryInformation(), randFactory } });
 		rectHazardNameList[types[i]].push_back(rh->getName());
 	}

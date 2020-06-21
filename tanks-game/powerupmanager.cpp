@@ -3,7 +3,6 @@
 
 std::vector<PowerSquare*> PowerupManager::powerups; //active powersquares
 std::unordered_map<std::string, std::unordered_map<std::string, PowerFunction>> PowerupManager::powerLookup;
-std::unordered_map<std::string, std::vector<PowerFunction>> PowerupManager::powerList;
 std::unordered_map<std::string, std::vector<std::string>> PowerupManager::powerNameList;
 
 void PowerupManager::initialize() {
@@ -50,7 +49,6 @@ void PowerupManager::addPowerFactory(PowerFunction factory) {
 			powerLookup.insert({ types[i], std::unordered_map<std::string, PowerFunction>() });
 		}
 		*/
-		powerList[types[i]].push_back(factory);
 		powerLookup[types[i]].insert({ p->getName(), factory });
 		powerNameList[types[i]].push_back(p->getName());
 	}

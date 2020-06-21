@@ -13,7 +13,6 @@ private:
 	static void clearLevels(); //for ResetThings
 
 	static std::unordered_map<std::string, std::unordered_map<std::string, LevelFunction>> levelLookup;
-	static std::unordered_map<std::string, std::vector<LevelFunction>> levelList;
 	static std::unordered_map<std::string, std::vector<std::string>> levelNameList;
 	//static std::unordered_map<std::string, std::unordered_map<std::string, LevelEffectFunction>> levelEffectLookup;
 	//static std::unordered_map<std::string, std::vector<LevelEffectFunction>> levelEffectList;
