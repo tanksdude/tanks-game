@@ -69,6 +69,7 @@
 #include "rectangularlava.h"
 #include "circularlava.h"
 #include "nobulletzone.h"
+#include "circularnobulletzone.h"
 
 //powers:
 #include "speedpower.h"
@@ -1093,6 +1094,7 @@ int main(int argc, char** argv) {
 	HazardManager::addRectHazardFactory(RectangularLava::factory, RectangularLava::randomizingFactory);
 	HazardManager::addCircleHazardFactory(CircularLava::factory, CircularLava::randomizingFactory);
 	HazardManager::addRectHazardFactory(NoBulletZone::factory, NoBulletZone::randomizingFactory);
+	HazardManager::addCircleHazardFactory(CircularNoBulletZone::factory, CircularNoBulletZone::randomizingFactory);
 
 	//initialize managers and stuff:
 	GameManager::initialize();

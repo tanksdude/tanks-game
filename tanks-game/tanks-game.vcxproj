@@ -153,6 +153,7 @@
     <ClCompile Include="bulletmanager.cpp" />
     <ClCompile Include="circularlava.cpp" />
     <ClCompile Include="circularlightning.cpp" />
+    <ClCompile Include="circularnobulletzone.cpp" />
     <ClCompile Include="concealedpowerupslevel.cpp" />
     <ClCompile Include="developerlevel2.cpp" />
     <ClCompile Include="devlonginvinciblenamedbulletpower.cpp" />
@@ -268,6 +269,7 @@
     <ClInclude Include="bulletpower.h" />
     <ClInclude Include="circularlava.h" />
     <ClInclude Include="circularlightning.h" />
+    <ClInclude Include="circularnobulletzone.h" />
     <ClInclude Include="concealedpowerupslevel.h" />
     <ClInclude Include="developerlevel2.h" />
     <ClInclude Include="devlonginvinciblenamedbulletpower.h" />

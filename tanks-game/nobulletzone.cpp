@@ -96,7 +96,7 @@ ColorValueHolder NoBulletZone::getColor() {
 
 bool NoBulletZone::reasonableLocation() {
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
-		if (CollisionHandler::partiallyCollided(this, WallManager::getWall(i))) {
+		if (CollisionHandler::fullyCollided(this, WallManager::getWall(i))) {
 			return false;
 		}
 	}
