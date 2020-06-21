@@ -70,6 +70,7 @@ public:
 	virtual void draw() = 0;
 
 	static RectHazard* factory(int argc, std::string* argv);
+	static RectHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv);
 	virtual int getFactoryArgumentCount() = 0;
 	virtual RectHazardConstructionTypes getConstructionType() = 0;
 	virtual RectFactoryInformation getFactoryInformation() = 0;

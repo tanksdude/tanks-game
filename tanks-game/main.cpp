@@ -1085,14 +1085,14 @@ int main(int argc, char** argv) {
 	//old:
 	LevelManager::addLevelFactory(OldEmptyLevel::factory);
 
-	HazardManager::addCircleHazardFactory(StationaryTurret::factory);
-	HazardManager::addRectHazardFactory(RectangularLightning::factory);
-	HazardManager::addRectHazardFactory(HorizontalLightning::factory);
-	HazardManager::addRectHazardFactory(VerticalLightning::factory);
-	HazardManager::addCircleHazardFactory(CircularLightning::factory);
-	HazardManager::addRectHazardFactory(RectangularLava::factory);
-	HazardManager::addCircleHazardFactory(CircularLava::factory);
-	HazardManager::addRectHazardFactory(NoBulletZone::factory);
+	HazardManager::addCircleHazardFactory(StationaryTurret::factory, StationaryTurret::randomizingFactory);
+	HazardManager::addRectHazardFactory(RectangularLightning::factory, RectangularLightning::randomizingFactory);
+	HazardManager::addRectHazardFactory(HorizontalLightning::factory, HorizontalLightning::randomizingFactory);
+	HazardManager::addRectHazardFactory(VerticalLightning::factory, VerticalLightning::randomizingFactory);
+	HazardManager::addCircleHazardFactory(CircularLightning::factory, CircularLightning::randomizingFactory);
+	HazardManager::addRectHazardFactory(RectangularLava::factory, RectangularLava::randomizingFactory);
+	HazardManager::addCircleHazardFactory(CircularLava::factory, CircularLava::randomizingFactory);
+	HazardManager::addRectHazardFactory(NoBulletZone::factory, NoBulletZone::randomizingFactory);
 
 	//initialize managers and stuff:
 	GameManager::initialize();

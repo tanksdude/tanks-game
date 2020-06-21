@@ -9,8 +9,9 @@
 #include <stdexcept>
 #include <algorithm> //std::copy
 #include "point.h"
-#include "collisionhandler.h"
 #include "wallmanager.h"
+#include "hazardmanager.h"
+#include "collisionhandler.h"
 #include <iostream>
 
 VertexArray* HorizontalLightning::background_va;
@@ -317,6 +318,22 @@ bool HorizontalLightning::reasonableLocation() {
 	if (!wallOnTop && (y + h >= GAME_HEIGHT)) {
 		wallOnTop = true;
 	}
+
+	for (int i = 0; i < HazardManager::getNumCircleHazards(); i++) {
+		if (CollisionHandler::partiallyCollided(this, HazardManager::getCircleHazard(i))) {
+			return false;
+		}
+	}
+	for (int i = 0; i < HazardManager::getNumRectHazards(); i++) {
+		RectHazard* rh = HazardManager::getRectHazard(i);
+		if (rh->getGameID() != this->getGameID()) {
+			//TODO: does this care if it's colliding with another version of itself?
+			if (CollisionHandler::partiallyCollided(this, rh)) {
+				return false;
+			}
+		}
+	}
+
 	return (!(wallOnTop && wallOnBottom) && validLocation());
 }
 
@@ -430,4 +447,46 @@ void HorizontalLightning::drawCPU() {
 
 	//bolts:
 
+}
+
+RectHazard* HorizontalLightning::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {
+	//minimum/maximum width and height not in argv
+	if (WallManager::getNumWalls() == 0) {
+		return nullptr; //don't bother trying to see if a horizontal lightning could go from edge to edge
+	}
+	int attempts = 0;
+	RectHazard* randomized = nullptr;
+	double xpos, ypos, width, height;
+	double minWidth = 40, maxWidth = 160;
+	do {
+		height = randFunc2() * (24 - 12) + 12;
+		for (int i = 0; i < WallManager::getNumWalls(); i++) {
+			Wall* wa = WallManager::getWall(i);
+			xpos = wa->x + wa->w;
+			ypos = wa->y + randFunc2() * constrain<double>(wa->h - height, 0, wa->h);
+			int j, wallAttempts = 0;
+			do {
+				j = randFunc() * WallManager::getNumWalls();
+				wallAttempts++;
+			} while ((wallAttempts < 8) && (j == i));
+			if (j != i) {
+				Wall* otherWall = WallManager::getWall(j);
+				width = otherWall->x - xpos;
+			} else {
+				width = randFunc2() * (maxWidth - minWidth) + minWidth;
+			}
+		}
+		if ((xpos >= x_start) && (xpos + width <= x_start + area_width) && (ypos >= y_start) && (ypos + height <= y_start + area_height) && (width <= maxWidth) && (width >= minWidth)) {
+			RectHazard* testHorizontalLightning = new HorizontalLightning(xpos, ypos, width, height);
+			if (testHorizontalLightning->reasonableLocation()) {
+				randomized = testHorizontalLightning;
+				break;
+			} else {
+				delete testHorizontalLightning;
+			}
+		}
+		attempts++;
+	} while (attempts < 32);
+
+	return randomized;
 }

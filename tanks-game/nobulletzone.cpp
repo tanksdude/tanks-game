@@ -7,6 +7,7 @@
 #include "backgroundrect.h"
 #include "colormixer.h"
 #include "wallmanager.h"
+#include "hazardmanager.h"
 #include "collisionhandler.h"
 
 VertexArray* NoBulletZone::va;
@@ -99,7 +100,22 @@ bool NoBulletZone::reasonableLocation() {
 			return false;
 		}
 	}
-	return true;
+
+	for (int i = 0; i < HazardManager::getNumCircleHazards(); i++) {
+		if (CollisionHandler::partiallyCollided(this, HazardManager::getCircleHazard(i))) {
+			return false;
+		}
+	}
+	for (int i = 0; i < HazardManager::getNumRectHazards(); i++) {
+		RectHazard* rh = HazardManager::getRectHazard(i);
+		if ((rh->getGameID() != this->getGameID()) && (rh->getName() != this->getName())) {
+			if (CollisionHandler::partiallyCollided(this, rh)) {
+				return false;
+			}
+		}
+	}
+
+	return validLocation();
 }
 
 void NoBulletZone::draw() {
@@ -116,4 +132,31 @@ void NoBulletZone::draw() {
 
 void NoBulletZone::drawCPU() {
 	
+}
+
+RectHazard* NoBulletZone::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {
+	int attempts = 0;
+	RectHazard* randomized = nullptr;
+	double xpos, ypos, width, height;
+	do {
+		if (argc >= 2) {
+			width = std::stod(argv[0]);
+			height = std::stod(argv[1]);
+		} else {
+			width = randFunc2() * (40 - 20) + 20; //TODO: where should these constants be?
+			height = randFunc2() * (50 - 20) + 20; //TODO: where should these constants be?
+		}
+		xpos = randFunc2() * (area_width - 2*width) + (x_start + width);
+		ypos = randFunc2() * (area_height - 2*height) + (y_start + height);
+		RectHazard* testNoBulletZone = new NoBulletZone(xpos, ypos, width, height);
+		if (testNoBulletZone->reasonableLocation()) {
+			randomized = testNoBulletZone;
+			break;
+		} else {
+			delete testNoBulletZone;
+		}
+		attempts++;
+	} while (attempts < 64);
+
+	return randomized;
 }

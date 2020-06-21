@@ -47,6 +47,7 @@ public:
 	RectangularLava(double xpos, double ypos, double width, double height);
 	~RectangularLava();
 	static RectHazard* factory(int, std::string*);
+	static RectHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv);
 	virtual int getFactoryArgumentCount() override { return 4; }
 	virtual RectHazardConstructionTypes getConstructionType() override { return RectHazardConstructionTypes::standardConstruction; }
 	virtual RectFactoryInformation getFactoryInformation() override { return { false, false, false, false, false }; }

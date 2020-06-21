@@ -51,17 +51,17 @@ void HazardManager::clearRectHazards() {
 }
 
 
-void HazardManager::addCircleHazardFactory(CircleHazardFunction factory) {
+void HazardManager::addCircleHazardFactory(CircleHazardFunction factory, CircleHazardRandomizationFunction randFactory) {
 	CircleHazard* ch = factory(0, nullptr);
 	circleHazardList.push_back(factory);
-	circleHazardLookup.insert({ ch->getName(), { factory, ch->getFactoryArgumentCount(), ch->getConstructionType(), ch->getFactoryInformation() } });
+	circleHazardLookup.insert({ ch->getName(), { factory, ch->getFactoryArgumentCount(), ch->getConstructionType(), ch->getFactoryInformation(), randFactory } });
 	circleHazardNameList.push_back(ch->getName());
 	delete ch;
 }
-void HazardManager::addRectHazardFactory(RectHazardFunction factory) {
+void HazardManager::addRectHazardFactory(RectHazardFunction factory, RectHazardRandomizationFunction randFactory) {
 	RectHazard* rh = factory(0, nullptr);
 	rectHazardList.push_back(factory);
-	rectHazardLookup.insert({ rh->getName(), { factory, rh->getFactoryArgumentCount(), rh->getConstructionType(), rh->getFactoryInformation() } });
+	rectHazardLookup.insert({ rh->getName(), { factory, rh->getFactoryArgumentCount(), rh->getConstructionType(), rh->getFactoryInformation(), randFactory } });
 	rectHazardNameList.push_back(rh->getName());
 	delete rh;
 }
@@ -71,6 +71,13 @@ CircleHazardFunction HazardManager::getCircleHazardFactory(std::string name) {
 }
 RectHazardFunction HazardManager::getRectHazardFactory(std::string name) {
 	return rectHazardLookup[name].getFactory();
+}
+
+CircleHazardRandomizationFunction HazardManager::getCircleHazardRandomizationFunction(std::string name) {
+	return circleHazardLookup[name].getRandomizationFunction();
+}
+RectHazardRandomizationFunction HazardManager::getRectHazardRandomizationFunction(std::string name) {
+	return rectHazardLookup[name].getRandomizationFunction();
 }
 
 CircleHazardFactoryGroup HazardManager::getCircleHazardFactoryGroup(std::string name) {

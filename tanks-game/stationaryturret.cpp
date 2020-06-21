@@ -138,6 +138,8 @@ void StationaryTurret::tick() {
 }
 
 bool StationaryTurret::reasonableLocation() {
+	//TODO: needs to check if it can see the tank
+
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		if (CollisionHandler::partiallyCollided(this, WallManager::getWall(i))) {
 			return false;
@@ -146,8 +148,10 @@ bool StationaryTurret::reasonableLocation() {
 
 	for (int i = 0; i < HazardManager::getNumCircleHazards(); i++) {
 		CircleHazard* ch = HazardManager::getCircleHazard(i);
-		if ((ch->getGameID() != this->getGameID()) && CollisionHandler::partiallyCollided(this, ch)) {
-			return false;
+		if (ch->getGameID() != this->getGameID()) {
+			if (CollisionHandler::partiallyCollided(this, ch)) {
+				return false;
+			}
 		}
 	}
 	for (int i = 0; i < HazardManager::getNumRectHazards(); i++) {
@@ -156,7 +160,7 @@ bool StationaryTurret::reasonableLocation() {
 		}
 	}
 
-	return true;
+	return validLocation();
 }
 
 ColorValueHolder StationaryTurret::getColor() {
@@ -234,4 +238,29 @@ void StationaryTurret::drawCPU() {
 	glVertex2f(x + r*cos(angle), y + r*sin(angle));
 
 	glEnd();
+}
+
+CircleHazard* StationaryTurret::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {
+	int attempts = 0;
+	CircleHazard* randomized = nullptr;
+	double xpos, ypos, angle;
+	if (argc >= 1) {
+		angle = std::stod(argv[0]);
+	} else {
+		angle = randFunc() * 2*PI;
+	}
+	do {
+		xpos = randFunc2() * (area_width - 2*TANK_RADIUS/4) + (x_start + TANK_RADIUS/4);
+		ypos = randFunc2() * (area_height - 2*TANK_RADIUS/4) + (y_start + TANK_RADIUS/4);
+		CircleHazard* testStationaryTurret = new StationaryTurret(xpos, ypos, angle);
+		if (testStationaryTurret->reasonableLocation()) {
+			randomized = testStationaryTurret;
+			break;
+		} else {
+			delete testStationaryTurret;
+		}
+		attempts++;
+	} while (attempts < 128);
+
+	return randomized;
 }

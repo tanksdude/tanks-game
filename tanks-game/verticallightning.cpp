@@ -9,8 +9,9 @@
 #include <stdexcept>
 #include <algorithm> //std::copy
 #include "point.h"
-#include "collisionhandler.h"
 #include "wallmanager.h"
+#include "hazardmanager.h"
+#include "collisionhandler.h"
 #include <iostream>
 
 VertexArray* VerticalLightning::background_va;
@@ -317,6 +318,22 @@ bool VerticalLightning::reasonableLocation() {
 	if (!wallOnRight && (x + w >= GAME_WIDTH)) {
 		wallOnRight = true;
 	}
+
+	for (int i = 0; i < HazardManager::getNumCircleHazards(); i++) {
+		if (CollisionHandler::partiallyCollided(this, HazardManager::getCircleHazard(i))) {
+			return false;
+		}
+	}
+	for (int i = 0; i < HazardManager::getNumRectHazards(); i++) {
+		RectHazard* rh = HazardManager::getRectHazard(i);
+		if (rh->getGameID() != this->getGameID()) {
+			//TODO: does this care if it's colliding with another version of itself?
+			if (CollisionHandler::partiallyCollided(this, rh)) {
+				return false;
+			}
+		}
+	}
+
 	return (!(wallOnLeft && wallOnRight) && validLocation());
 }
 
@@ -412,4 +429,47 @@ void VerticalLightning::drawCPU() {
 
 	//bolts:
 
+}
+
+RectHazard* VerticalLightning::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {
+	//minimum/maximum width and height not in argv
+	if (WallManager::getNumWalls() == 0) {
+		return nullptr; //don't bother trying to see if a vertical lightning could go from edge to edge
+	}
+	int attempts = 0;
+	RectHazard* randomized = nullptr;
+	double xpos, ypos, width, height;
+	double minHeight = 40, maxHeight = 160;
+	do {
+		width = randFunc2() * (24 - 12) + 12;
+		//TODO: ability to use an edge
+		for (int i = 0; i < WallManager::getNumWalls(); i++) {
+			Wall* wa = WallManager::getWall(i);
+			xpos = wa->x + randFunc2() * constrain<double>(wa->w - width, 0, wa->w);
+			ypos = wa->y + wa->h;
+			int j, wallAttempts = 0;
+			do {
+				j = randFunc() * WallManager::getNumWalls();
+				wallAttempts++;
+			} while ((wallAttempts < 8) && (j == i));
+			if (j != i) {
+				Wall* otherWall = WallManager::getWall(j);
+				height = otherWall->y - ypos;
+			} else {
+				height = randFunc2() * (maxHeight - minHeight) + minHeight;
+			}
+		}
+		if ((xpos >= x_start) && (xpos + width <= x_start + area_width) && (ypos >= y_start) && (ypos + height <= y_start + area_height) && (height <= maxHeight) && (height >= minHeight)) {
+			RectHazard* testVerticalLightning = new VerticalLightning(xpos, ypos, width, height);
+			if (testVerticalLightning->reasonableLocation()) {
+				randomized = testVerticalLightning;
+				break;
+			} else {
+				delete testVerticalLightning;
+			}
+		}
+		attempts++;
+	} while (attempts < 32);
+
+	return randomized;
 }

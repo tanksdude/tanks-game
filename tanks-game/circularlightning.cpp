@@ -9,8 +9,9 @@
 #include <stdexcept>
 #include <algorithm> //std::copy
 #include "point.h"
-#include "collisionhandler.h"
 #include "wallmanager.h"
+#include "hazardmanager.h"
+#include "collisionhandler.h"
 #include <iostream>
 
 VertexArray* CircularLightning::background_va;
@@ -250,6 +251,21 @@ bool CircularLightning::validLocation() {
 }
 
 bool CircularLightning::reasonableLocation() {
+	for (int i = 0; i < HazardManager::getNumCircleHazards(); i++) {
+		CircleHazard* ch = HazardManager::getCircleHazard(i);
+		if (ch->getGameID() != this->getGameID()) {
+			//TODO: does this care if it's colliding with another version of itself?
+			if (CollisionHandler::partiallyCollided(this, ch)) {
+				return false;
+			}
+		}
+	}
+	for (int i = 0; i < HazardManager::getNumRectHazards(); i++) {
+		if (CollisionHandler::partiallyCollided(this, HazardManager::getRectHazard(i))) {
+			return false;
+		}
+	}
+
 	return validLocation();
 }
 
@@ -353,4 +369,29 @@ void CircularLightning::drawCPU() {
 
 	//bolts:
 
+}
+
+CircleHazard* CircularLightning::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {
+	int attempts = 0;
+	CircleHazard* randomized = nullptr;
+	double xpos, ypos, radius;
+	do {
+		if (argc >= 1) {
+			radius = std::stod(argv[0]);
+		} else {
+			radius = randFunc2() * (60 - 30) + 30; //TODO: where should these constants be?
+		}
+		xpos = randFunc2() * (area_width - 2*radius) + (x_start + radius);
+		ypos = randFunc2() * (area_height - 2*radius) + (y_start + radius);
+		CircleHazard* testCircularLightning = new CircularLightning(xpos, ypos, radius);
+		if (testCircularLightning->reasonableLocation()) {
+			randomized = testCircularLightning;
+			break;
+		} else {
+			delete testCircularLightning;
+		}
+		attempts++;
+	} while (attempts < 32);
+
+	return randomized;
 }

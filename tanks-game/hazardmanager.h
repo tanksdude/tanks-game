@@ -5,7 +5,9 @@
 #include <unordered_map>
 
 typedef CircleHazard* (*CircleHazardFunction)(int, std::string*);
+typedef CircleHazard* (*CircleHazardRandomizationFunction)(double, double, double, double, int, std::string*);
 typedef RectHazard* (*RectHazardFunction)(int, std::string*);
+typedef RectHazard* (*RectHazardRandomizationFunction)(double, double, double, double, int, std::string*);
 
 struct CircleHazardFactoryGroup {
 protected:
@@ -13,6 +15,7 @@ protected:
 	int argCount;
 	CircleHazardConstructionTypes constructionType;
 	CircleFactoryInformation factoryInformation;
+	CircleHazardRandomizationFunction randomizationFunction;
 public:
 	CircleHazardFunction getFactory() {
 		return circleFactory;
@@ -26,13 +29,17 @@ public:
 	CircleFactoryInformation getFactoryInformation() {
 		return factoryInformation;
 	}
-	CircleHazardFactoryGroup(CircleHazardFunction cf, int ac, CircleHazardConstructionTypes ct, CircleFactoryInformation fi) {
+	CircleHazardRandomizationFunction getRandomizationFunction() {
+		return randomizationFunction;
+	}
+	CircleHazardFactoryGroup(CircleHazardFunction cf, int ac, CircleHazardConstructionTypes ct, CircleFactoryInformation fi, CircleHazardRandomizationFunction random) {
 		circleFactory = cf;
 		argCount = ac;
 		constructionType = ct;
 		factoryInformation = fi;
+		randomizationFunction = random;
 	}
-	CircleHazardFactoryGroup() { circleFactory = nullptr, argCount = 0, constructionType = CircleHazardConstructionTypes::constructionIsTooComplex, factoryInformation = {}; }
+	CircleHazardFactoryGroup() { circleFactory = nullptr, argCount = 0, constructionType = CircleHazardConstructionTypes::constructionIsTooComplex, factoryInformation = {}, randomizationFunction = nullptr; }
 };
 
 struct RectHazardFactoryGroup {
@@ -41,6 +48,7 @@ protected:
 	int argCount;
 	RectHazardConstructionTypes constructionType;
 	RectFactoryInformation factoryInformation;
+	RectHazardRandomizationFunction randomizationFunction;
 public:
 	RectHazardFunction getFactory() {
 		return rectFactory;
@@ -54,13 +62,17 @@ public:
 	RectFactoryInformation getFactoryInformation() {
 		return factoryInformation;
 	}
-	RectHazardFactoryGroup(RectHazardFunction rf, int ac, RectHazardConstructionTypes ct, RectFactoryInformation fi) {
+	RectHazardRandomizationFunction getRandomizationFunction() {
+		return randomizationFunction;
+	}
+	RectHazardFactoryGroup(RectHazardFunction rf, int ac, RectHazardConstructionTypes ct, RectFactoryInformation fi, RectHazardRandomizationFunction random) {
 		rectFactory = rf;
 		argCount = ac;
 		constructionType = ct;
 		factoryInformation = fi;
+		randomizationFunction = random;
 	}
-	RectHazardFactoryGroup() { rectFactory = nullptr, argCount = 0, constructionType = RectHazardConstructionTypes::constructionIsTooComplex, factoryInformation = {}; }
+	RectHazardFactoryGroup() { rectFactory = nullptr, argCount = 0, constructionType = RectHazardConstructionTypes::constructionIsTooComplex, factoryInformation = {}, randomizationFunction = nullptr; }
 };
 
 class HazardManager {
@@ -88,12 +100,14 @@ public:
 	static void deleteCircleHazard(int index);
 	static void deleteRectHazard(int index);
 
-	static void addCircleHazardFactory(CircleHazardFunction);
-	static void addRectHazardFactory(RectHazardFunction);
+	static void addCircleHazardFactory(CircleHazardFunction, CircleHazardRandomizationFunction);
+	static void addRectHazardFactory(RectHazardFunction, RectHazardRandomizationFunction);
 	static CircleHazardFunction getCircleHazardFactory(std::string name);
 	static RectHazardFunction getRectHazardFactory(std::string name);
-	static CircleHazardFactoryGroup getCircleHazardFactoryGroup(std::string name);
-	static RectHazardFactoryGroup getRectHazardFactoryGroup(std::string name);
+	static CircleHazardFactoryGroup getCircleHazardFactoryGroup(std::string name); //might not get used
+	static RectHazardFactoryGroup getRectHazardFactoryGroup(std::string name); //might not get used
+	static CircleHazardRandomizationFunction getCircleHazardRandomizationFunction(std::string name);
+	static RectHazardRandomizationFunction getRectHazardRandomizationFunction(std::string name);
 	static std::string getCircleHazardName(int index);
 	static std::string getRectHazardName(int index);
 	static int getNumCircleHazardTypes();

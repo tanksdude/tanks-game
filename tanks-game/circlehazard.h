@@ -72,6 +72,7 @@ public:
 	virtual void draw() = 0;
 
 	static CircleHazard* factory(int argc, std::string* argv);
+	static CircleHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv);
 	virtual int getFactoryArgumentCount() = 0;
 	virtual CircleHazardConstructionTypes getConstructionType() = 0;
 	virtual CircleFactoryInformation getFactoryInformation() = 0;

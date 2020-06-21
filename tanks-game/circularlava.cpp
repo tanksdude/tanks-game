@@ -5,6 +5,7 @@
 #include <math.h>
 #include "mylib.h"
 #include "wallmanager.h"
+#include "hazardmanager.h"
 #include "collisionhandler.h"
 
 VertexArray* CircularLava::background_va;
@@ -151,7 +152,23 @@ bool CircularLava::reasonableLocation() {
 			return false;
 		}
 	}
-	return true;
+
+	for (int i = 0; i < HazardManager::getNumCircleHazards(); i++) {
+		CircleHazard* ch = HazardManager::getCircleHazard(i);
+		if ((ch->getGameID() != this->getGameID()) && (ch->getName() != this->getName())) {
+			//TODO: does this care if it's colliding with another version of itself?
+			if (CollisionHandler::partiallyCollided(this, ch)) {
+				return false;
+			}
+		}
+	}
+	for (int i = 0; i < HazardManager::getNumRectHazards(); i++) {
+		if (CollisionHandler::partiallyCollided(this, HazardManager::getRectHazard(i))) {
+			return false;
+		}
+	}
+
+	return validLocation();
 }
 
 void CircularLava::draw() {
@@ -203,4 +220,29 @@ void CircularLava::drawCPU() {
 
 	//bubbles:
 
+}
+
+CircleHazard* CircularLava::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {
+	int attempts = 0;
+	CircleHazard* randomized = nullptr;
+	double xpos, ypos, radius;
+	do {
+		if (argc >= 1) {
+			radius = std::stod(argv[0]);
+		} else {
+			radius = randFunc2() * (40 - 20) + 20; //TODO: where should these constants be?
+		}
+		xpos = randFunc2() * (area_width - 2*radius) + (x_start + radius);
+		ypos = randFunc2() * (area_height - 2*radius) + (y_start + radius);
+		CircleHazard* testCircularLava = new CircularLava(xpos, ypos, radius);
+		if (testCircularLava->reasonableLocation()) {
+			randomized = testCircularLava;
+			break;
+		} else {
+			delete testCircularLava;
+		}
+		attempts++;
+	} while (attempts < 64);
+
+	return randomized;
 }

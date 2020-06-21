@@ -9,8 +9,9 @@
 #include <stdexcept>
 #include <algorithm> //std::copy
 #include "point.h"
-#include "collisionhandler.h"
 #include "wallmanager.h"
+#include "hazardmanager.h"
+#include "collisionhandler.h"
 #include <iostream>
 
 VertexArray* RectangularLightning::background_va;
@@ -301,6 +302,21 @@ bool RectangularLightning::validLocation() {
 }
 
 bool RectangularLightning::reasonableLocation() {
+	for (int i = 0; i < HazardManager::getNumCircleHazards(); i++) {
+		if (CollisionHandler::partiallyCollided(this, HazardManager::getCircleHazard(i))) {
+			return false;
+		}
+	}
+	for (int i = 0; i < HazardManager::getNumRectHazards(); i++) {
+		RectHazard* rh = HazardManager::getRectHazard(i);
+		if (rh->getGameID() != this->getGameID()) {
+			//TODO: does this care if it's colliding with another version of itself?
+			if (CollisionHandler::partiallyCollided(this, rh)) {
+				return false;
+			}
+		}
+	}
+
 	return validLocation();
 }
 
@@ -406,4 +422,31 @@ void RectangularLightning::drawCPU() {
 
 	//bolts:
 
+}
+
+RectHazard* RectangularLightning::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {
+	int attempts = 0;
+	RectHazard* randomized = nullptr;
+	double xpos, ypos, width, height;
+	do {
+		if (argc >= 2) {
+			width = std::stod(argv[0]);
+			height = std::stod(argv[1]);
+		} else {
+			width = randFunc2() * (80 - 30) + 30; //TODO: where should these constants be?
+			height = randFunc2() * (80 - 30) + 30; //TODO: where should these constants be?
+		}
+		xpos = randFunc2() * (area_width - 2*width) + (x_start + width);
+		ypos = randFunc2() * (area_height - 2*height) + (y_start + height);
+		RectHazard* testRectangularLightning = new RectangularLightning(xpos, ypos, width, height);
+		if (testRectangularLightning->reasonableLocation()) {
+			randomized = testRectangularLightning;
+			break;
+		} else {
+			delete testRectangularLightning;
+		}
+		attempts++;
+	} while (attempts < 32);
+
+	return randomized;
 }

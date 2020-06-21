@@ -7,6 +7,7 @@
 #include "indexbuffer.h"
 
 class StationaryTurret : public CircleHazard {
+	//just called Stationary in JS Tanks
 protected:
 	double angle;
 	double tickCount = 0;
@@ -50,6 +51,7 @@ public:
 	StationaryTurret(double xpos, double ypos, double angle, double radius);
 	~StationaryTurret();
 	static CircleHazard* factory(int, std::string*);
+	static CircleHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv);
 	virtual int getFactoryArgumentCount() override { return 3; }
 	virtual CircleHazardConstructionTypes getConstructionType() override { return CircleHazardConstructionTypes::angleRequired; }
 	virtual CircleFactoryInformation getFactoryInformation() override { return { false, false, false, false, false }; }
