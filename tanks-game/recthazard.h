@@ -24,6 +24,8 @@ struct RectFactoryInformation {
 	}
 	RectFactoryInformation(bool wallLeft, bool wallRight, bool wallTop, bool wallBottom)
 	: RectFactoryInformation(wallLeft, wallRight, wallTop, wallBottom, true) {}
+	RectFactoryInformation()
+	: RectFactoryInformation(false, false, false, false) {}
 };
 
 //this is intended for hazard randomization; if the actual hazard type is known, then the constructor will be known
@@ -63,15 +65,13 @@ public:
 	//virtual bool reasonableLocation() = 0;
 
 	virtual std::string getName() = 0;
-	static std::string getClassName();
+	//static std::string getClassName();
 	//virtual bool initializeGPU() = 0;
 	virtual void draw() = 0;
 
 	static RectHazard* factory(int argc, std::string* argv);
-	static int getFactoryArgumentCount();
-	//static RectHazardConstructionTypes getConstructionType();
-	virtual RectFactoryInformation getFactoryInformation() {
-		return { false, false, false, false, false };
-	}
+	virtual int getFactoryArgumentCount() = 0;
+	virtual RectHazardConstructionTypes getConstructionType() = 0;
+	virtual RectFactoryInformation getFactoryInformation() = 0;
 	virtual ~RectHazard() { return; }
 };

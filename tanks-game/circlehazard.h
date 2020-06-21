@@ -24,6 +24,8 @@ struct CircleFactoryInformation {
 	}
 	CircleFactoryInformation(bool wallLeft, bool wallRight, bool wallTop, bool wallBottom)
 	: CircleFactoryInformation(wallLeft, wallRight, wallTop, wallBottom, true) {}
+	CircleFactoryInformation()
+	: CircleFactoryInformation(false, false, false, false) {}
 };
 
 //this is intended for hazard randomization; if the actual hazard type is known, then the constructor will be known
@@ -65,15 +67,13 @@ public:
 	//virtual bool reasonableLocation() = 0;
 
 	virtual std::string getName() = 0;
-	static std::string getClassName();
+	//static std::string getClassName();
 	//virtual bool initializeGPU() = 0;
 	virtual void draw() = 0;
 
 	static CircleHazard* factory(int argc, std::string* argv);
-	static int getFactoryArgumentCount();
-	//static CircleHazardConstructionTypes getConstructionType();
-	virtual CircleFactoryInformation getFactoryInformation() {
-		return { false, false, false, false, false };
-	}
+	virtual int getFactoryArgumentCount() = 0;
+	virtual CircleHazardConstructionTypes getConstructionType() = 0;
+	virtual CircleFactoryInformation getFactoryInformation() = 0;
 	virtual ~CircleHazard() { return; }
 };

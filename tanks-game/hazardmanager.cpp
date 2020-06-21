@@ -3,8 +3,8 @@
 std::vector<CircleHazard*> HazardManager::circleHazards;
 std::vector<RectHazard*> HazardManager::rectHazards;
 
-std::unordered_map<std::string, CircleHazardFunction> HazardManager::circleHazardLookup;
-std::unordered_map<std::string, RectHazardFunction> HazardManager::rectHazardLookup;
+std::unordered_map<std::string, CircleHazardFactoryGroup> HazardManager::circleHazardLookup;
+std::unordered_map<std::string, RectHazardFactoryGroup> HazardManager::rectHazardLookup;
 std::vector<CircleHazardFunction> HazardManager::circleHazardList;
 std::vector<RectHazardFunction> HazardManager::rectHazardList;
 std::vector<std::string> HazardManager::circleHazardNameList;
@@ -52,24 +52,31 @@ void HazardManager::clearRectHazards() {
 
 
 void HazardManager::addCircleHazardFactory(CircleHazardFunction factory) {
-	circleHazardList.push_back(factory);
 	CircleHazard* ch = factory(0, nullptr);
-	circleHazardLookup.insert({ ch->getName(), factory });
+	circleHazardList.push_back(factory);
+	circleHazardLookup.insert({ ch->getName(), { factory, ch->getFactoryArgumentCount(), ch->getConstructionType(), ch->getFactoryInformation() } });
 	circleHazardNameList.push_back(ch->getName());
 	delete ch;
 }
 void HazardManager::addRectHazardFactory(RectHazardFunction factory) {
-	rectHazardList.push_back(factory);
 	RectHazard* rh = factory(0, nullptr);
-	rectHazardLookup.insert({ rh->getName(), factory });
+	rectHazardList.push_back(factory);
+	rectHazardLookup.insert({ rh->getName(), { factory, rh->getFactoryArgumentCount(), rh->getConstructionType(), rh->getFactoryInformation() } });
 	rectHazardNameList.push_back(rh->getName());
 	delete rh;
 }
 
 CircleHazardFunction HazardManager::getCircleHazardFactory(std::string name) {
-	return circleHazardLookup[name];
+	return circleHazardLookup[name].getFactory();
 }
 RectHazardFunction HazardManager::getRectHazardFactory(std::string name) {
+	return rectHazardLookup[name].getFactory();
+}
+
+CircleHazardFactoryGroup HazardManager::getCircleHazardFactoryGroup(std::string name) {
+	return circleHazardLookup[name];
+}
+RectHazardFactoryGroup HazardManager::getRectHazardFactoryGroup(std::string name) {
 	return rectHazardLookup[name];
 }
 

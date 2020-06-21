@@ -56,9 +56,7 @@ public:
 	//VerticalLightning(double xpos, double ypos, double width, double height, bool flexible);
 	~VerticalLightning();
 	static RectHazard* factory(int, std::string*);
-	static int getFactoryArgumentCount() { return 4; }
-	//static RectHazardConstructionTypes getConstructionType() { return RectHazardConstructionTypes::standardConstruction; }
-	virtual RectFactoryInformation getFactoryInformation() {
-		return { false, false, true, true, true };
-	}
+	virtual int getFactoryArgumentCount() override { return 4; }
+	virtual RectHazardConstructionTypes getConstructionType() override { return RectHazardConstructionTypes::standardConstruction; }
+	virtual RectFactoryInformation getFactoryInformation() override { return { false, false, true, true, true }; }
 };
