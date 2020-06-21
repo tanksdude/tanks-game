@@ -29,11 +29,11 @@ void ConcealedPowerupsLevel::initialize() {
 		WallManager::pushWall(new Wall(pos.x, pos.y, 32, 128, color));
 	}
 	
-	PositionHolder pos = RandomLevel::getSymmetricWallPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, 90, 160, 20);
+	PositionHolder pos = RandomLevel::getSymmetricWallPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, 70, 160, 20);
 	std::string* paras = new std::string[4]{std::to_string(pos.x), std::to_string(pos.y), std::to_string(160), std::to_string(20)};
 	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "horizontal lightning")(4, paras));
 	delete[] paras;
-	pos = RandomLevel::getSymmetricWallPositions_UD(1, GAME_WIDTH/2, GAME_HEIGHT/2, 90, 160, 20);
+	pos = RandomLevel::getSymmetricWallPositions_UD(1, GAME_WIDTH/2, GAME_HEIGHT/2, 70, 160, 20);
 	paras = new std::string[4]{std::to_string(pos.x), std::to_string(pos.y), std::to_string(160), std::to_string(20)};
 	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "horizontal lightning")(4, paras));
 	delete[] paras;

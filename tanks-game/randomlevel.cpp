@@ -177,7 +177,7 @@ PositionHolder RandomLevel::getSymmetricWallPositions_LR(int position, double x_
 }
 
 PositionHolder RandomLevel::getSymmetricWallPositions_UD(int position, double x_center, double y_center, double y_offset, double wallWidth, double wallHeight) {
-	return { x_center - wallWidth/2, y_center + ((position%2)*2-1) * y_offset - (position%2) * wallHeight };
+	return { x_center - wallWidth/2, y_center + ((position%2)*2-1) * y_offset - ((position+1)%2) * wallHeight };
 }
 
 PositionHolder RandomLevel::getSymmetricWallPositions_Corners(int position, double x_center, double y_center, double x_offset, double y_offset, double wallWidth, double wallHeight) {
