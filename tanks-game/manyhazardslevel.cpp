@@ -50,14 +50,12 @@ void ManyHazardsLevel::initialize() {
 		delete[] paras;
 	}
 
-	/*
 	for (int i = 0; i < 4; i++) {
-		PositionHolder pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, (wallArray[3].x - (wallArray[0].x+32) - (TANK_RADIUS/2 * 2)), 32 * 1.25);
-		std::string* paras = new std::string[3]{std::to_string(pos.x), std::to_string(pos.y), std::to_string(PI/2 * (i%2 * 2 - 1))};
-		HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "turret")(3, paras));
+		PositionHolder pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2 - ((wallArray[0].x+32) + (TANK_RADIUS/2 * 1.5)), 32 + 20 + (TANK_RADIUS/2 * 2.5));
+		std::string* paras = new std::string[3]{std::to_string(pos.x), std::to_string(pos.y), std::to_string(PI * (i%2))};
+		HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "targeting turret")(3, paras));
 		delete[] paras;
 	}
-	*/
 
 	PositionHolder wallPos1 = RandomLevel::getSymmetricWallPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, (GAME_HEIGHT - 128*2)/2, 160, 20);
 	WallManager::pushWall(new Wall(wallPos1.x, wallPos1.y, 160, 20, color));
