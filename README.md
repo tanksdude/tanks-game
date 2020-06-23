@@ -1,6 +1,6 @@
 # Tanks: Battle of the Circles
 
-The C++ upgrade of my JS game
+The C++ upgrade of my [JS game](https://uncreativeusername.neocities.org/tanks.html)
 
 ## Getting Started
 

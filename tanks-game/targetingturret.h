@@ -6,7 +6,7 @@
 #include "indexbuffer.h"
 
 class TargetingTurret : public StationaryTurret {
-	//called Turret in JS Tanks
+	//just called Turret in JS Tanks
 protected:
 	//double angle;
 	//double tickCount = 0;

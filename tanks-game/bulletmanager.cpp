@@ -1,7 +1,7 @@
 #include "bulletmanager.h"
 
 std::vector<Bullet*> BulletManager::bullets;
-int BulletManager::maxBullets = 800;
+int BulletManager::maxBullets = 2048;
 
 void BulletManager::initialize() {
 	bullets.reserve(4096);

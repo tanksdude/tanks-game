@@ -1146,7 +1146,7 @@ int main(int argc, char** argv) {
  * 90% actual foundation: not every "modification function" actually does something
  * * almost everything needed is somewhere, so copy-and-paste will be the solution (unless I can figure out member function pointers)
  * ~40% game code:
- * * I don't know what will be final beyond the ideas located in power.h and elsewhere
+ * * I don't know what will be final beyond the ideas located in power.cpp, hazard.cpp, level.cpp, and elsewhere
  * * it's just an estimate
  * * 100% probably won't be "finished" on this scale (it could jump from 80% to 100%)
  */
