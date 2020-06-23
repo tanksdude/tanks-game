@@ -504,6 +504,20 @@ DoublePositionHolder CollisionHandler::circleLineIntersection(Circle* c, double 
 	return DoublePositionHolder(intersectionX1 + c->x, intersectionX2 + c->x, intersectionY1 + c->y, intersectionY2 + c->y);
 }
 
+bool CollisionHandler::lineLineCollision(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4) {
+	//line-line intersection: http://jeffreythompson.org/collision-detection/line-line.php
+	double uA = ((x4-x3)*(y1-y3) - (y4-y3)*(x1-x3)) / ((y4-y3)*(x2-x1) - (x4-x3)*(y2-y1));
+	double uB = ((x2-x1)*(y1-y3) - (y2-y1)*(x1-x3)) / ((y4-y3)*(x2-x1) - (x4-x3)*(y2-y1));
+	return (uA >= 0 && uA <= 1 && uB >= 0 && uB <= 1);
+}
+
+bool CollisionHandler::lineRectCollision(double line1X, double line1Y, double line2X, double line2Y, Rect* r) {
+	return (lineLineCollision(line1X, line1Y, line2X, line2Y, r->x, r->y, r->x + r->w, r->y) || //bottom left to bottom right
+	        lineLineCollision(line1X, line1Y, line2X, line2Y, r->x, r->y, r->x, r->y + r->h) || //bottom left to top left
+	        lineLineCollision(line1X, line1Y, line2X, line2Y, r->x + r->w, r->y, r->x + r->w, r->y + r->h) || //bottom right to top right
+	        lineLineCollision(line1X, line1Y, line2X, line2Y, r->x, r->y + r->h, r->x + r->w, r->y + r->h)); //top left to top right
+}
+
 
 
 
