@@ -5,8 +5,8 @@
 #include "vertexbuffer.h"
 #include "indexbuffer.h"
 
-class Turret : public StationaryTurret {
-	//should it be called "regular turret" or something? "targeting turret"?
+class TargetingTurret : public StationaryTurret {
+	//called Turret in JS Tanks
 protected:
 	//double angle;
 	//double tickCount = 0;
@@ -22,7 +22,6 @@ protected:
 	ColorValueHolder reticuleColors[2];
 	double targetingCount = 0;
 	long trackingID; //if ==this->getGameID(), then it's not tracking
-	//TODO: rest of stuff
 
 private:
 	static VertexArray* va;
@@ -49,18 +48,18 @@ public:
 	virtual ColorValueHolder getReticuleColor();
 
 	virtual std::string getName() { return getClassName(); }
-	static std::string getClassName() { return "turret"; }
+	static std::string getClassName() { return "targeting turret"; }
 
 	virtual void tick();
 	virtual void draw();
 	virtual void drawCPU();
 
 protected:
-	Turret(double xpos, double ypos, double angle, bool noGPU);
+	TargetingTurret(double xpos, double ypos, double angle, bool noGPU);
 public:
-	Turret(double xpos, double ypos, double angle);
-	Turret(double xpos, double ypos, double angle, double radius);
-	virtual ~Turret();
+	TargetingTurret(double xpos, double ypos, double angle);
+	TargetingTurret(double xpos, double ypos, double angle, double radius);
+	virtual ~TargetingTurret();
 	static CircleHazard* factory(int, std::string*);
 	static CircleHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv);
 	//virtual int getFactoryArgumentCount() override { return 3; }

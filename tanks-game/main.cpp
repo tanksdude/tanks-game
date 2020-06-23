@@ -63,7 +63,7 @@
 
 //hazards:
 #include "stationaryturret.h"
-#include "turret.h"
+#include "targetingturret.h"
 #include "rectangularlightning.h"
 #include "horizontallightning.h"
 #include "verticallightning.h"
@@ -1090,7 +1090,7 @@ int main(int argc, char** argv) {
 	LevelManager::addLevelFactory(OldEmptyLevel::factory);
 
 	HazardManager::addCircleHazardFactory(StationaryTurret::factory, StationaryTurret::randomizingFactory);
-	HazardManager::addCircleHazardFactory(Turret::factory, Turret::randomizingFactory);
+	HazardManager::addCircleHazardFactory(TargetingTurret::factory, TargetingTurret::randomizingFactory);
 	HazardManager::addRectHazardFactory(RectangularLightning::factory, RectangularLightning::randomizingFactory);
 	HazardManager::addRectHazardFactory(HorizontalLightning::factory, HorizontalLightning::randomizingFactory);
 	HazardManager::addRectHazardFactory(VerticalLightning::factory, VerticalLightning::randomizingFactory);

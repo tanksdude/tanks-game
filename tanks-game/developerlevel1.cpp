@@ -41,7 +41,7 @@ void DeveloperLevel1::initialize() {
 	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "lava")(3, paras));
 	delete[] paras;
 	paras = new std::string[3]{std::to_string(GAME_WIDTH/2), std::to_string(GAME_HEIGHT/2), std::to_string(PI/2)};
-	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "turret")(3, paras));
+	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "targeting turret")(3, paras));
 	delete[] paras;
 
 	//assumption: TANK_RADIUS=16 (why it would ever be changed is beyond me)

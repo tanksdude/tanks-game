@@ -360,7 +360,7 @@
     <ClCompile Include="manyhazardslevel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="turret.cpp">
+    <ClCompile Include="targetingturret.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -749,7 +749,7 @@
     <ClInclude Include="manyhazardslevel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="turret.h">
+    <ClInclude Include="targetingturret.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

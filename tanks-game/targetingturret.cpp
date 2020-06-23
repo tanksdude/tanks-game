@@ -1,4 +1,4 @@
-#include "turret.h"
+#include "targetingturret.h"
 #include "gamemanager.h"
 #include "renderer.h"
 #include "colormixer.h"
@@ -14,16 +14,16 @@
 #include "collisionhandler.h"
 #include <iostream>
 
-VertexArray* Turret::va;
-VertexBuffer* Turret::vb;
-IndexBuffer* Turret::ib;
-VertexArray* Turret::cannon_va;
-VertexBuffer* Turret::cannon_vb;
-VertexArray* Turret::reticule_va;
-VertexBuffer* Turret::reticule_vb;
-bool Turret::initialized_GPU = false;
+VertexArray* TargetingTurret::va;
+VertexBuffer* TargetingTurret::vb;
+IndexBuffer* TargetingTurret::ib;
+VertexArray* TargetingTurret::cannon_va;
+VertexBuffer* TargetingTurret::cannon_vb;
+VertexArray* TargetingTurret::reticule_va;
+VertexBuffer* TargetingTurret::reticule_vb;
+bool TargetingTurret::initialized_GPU = false;
 
-Turret::Turret(double xpos, double ypos, double angle, bool) : StationaryTurret(xpos, ypos, angle, true) {
+TargetingTurret::TargetingTurret(double xpos, double ypos, double angle, bool) : StationaryTurret(xpos, ypos, angle, true) {
 	//x = xpos;
 	//y = ypos;
 	//this->angle = angle;
@@ -39,22 +39,22 @@ Turret::Turret(double xpos, double ypos, double angle, bool) : StationaryTurret(
 	initializeGPU();
 }
 
-Turret::Turret(double xpos, double ypos, double angle) : Turret(xpos, ypos, angle, true) {
+TargetingTurret::TargetingTurret(double xpos, double ypos, double angle) : TargetingTurret(xpos, ypos, angle, true) {
 	initializeGPU();
 }
 
-Turret::Turret(double xpos, double ypos, double angle, double radius) : Turret(xpos, ypos, angle) {
+TargetingTurret::TargetingTurret(double xpos, double ypos, double angle, double radius) : TargetingTurret(xpos, ypos, angle) {
 	r = radius;
 }
 
-Turret::~Turret() {
+TargetingTurret::~TargetingTurret() {
 	//delete[] stateMultiplier;
 	//delete[] stateColors;
 
 	//uninitializeGPU();
 }
 
-bool Turret::initializeGPU() {
+bool TargetingTurret::initializeGPU() {
 	if (initialized_GPU) {
 		return false;
 	}
@@ -103,7 +103,7 @@ bool Turret::initializeGPU() {
 	return true;
 }
 
-bool Turret::uninitializeGPU() {
+bool TargetingTurret::uninitializeGPU() {
 	if (!initialized_GPU) {
 		return false;
 	}
@@ -120,21 +120,21 @@ bool Turret::uninitializeGPU() {
 	return true;
 }
 
-CircleHazard* Turret::factory(int argc, std::string* argv) {
+CircleHazard* TargetingTurret::factory(int argc, std::string* argv) {
 	if (argc >= 3) {
 		double x = std::stod(argv[0]);
 		double y = std::stod(argv[1]);
 		double a = std::stod(argv[2]);
 		if (argc >= 4) {
 			double r = std::stod(argv[3]);
-			return new Turret(x, y, a, r);
+			return new TargetingTurret(x, y, a, r);
 		}
-		return new Turret(x, y, a);
+		return new TargetingTurret(x, y, a);
 	}
-	return new Turret(0, 0, 0);
+	return new TargetingTurret(0, 0, 0);
 }
 
-void Turret::tick() {
+void TargetingTurret::tick() {
 	//tickCount is unused... maybe targetingCount should replace it...
 	if (currentState == 0) { //either tracking a tank or doing nothing
 		//should this be else?
@@ -235,7 +235,7 @@ void Turret::tick() {
 	//maxState is 3; not using else in case tickCycle is zero
 }
 
-bool Turret::canSeeTank(Tank* t) {
+bool TargetingTurret::canSeeTank(Tank* t) {
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		Wall* wa = WallManager::getWall(i);
 		if (CollisionHandler::lineRectCollision(x, y, t->x, t->y, wa)) {
@@ -245,7 +245,7 @@ bool Turret::canSeeTank(Tank* t) {
 	return true;
 }
 
-void Turret::turnTowardsTank(Tank* t) {
+void TargetingTurret::turnTowardsTank(Tank* t) {
 	//see PowerFunctionHelper::homingGeneric
 	double targetAngle = atan2(t->y - y, t->x - x);
 	double turretAngle = (StationaryTurret::getAngle() > PI ? StationaryTurret::getAngle() - 2*PI : StationaryTurret::getAngle());
@@ -268,11 +268,11 @@ void Turret::turnTowardsTank(Tank* t) {
 	}
 }
 
-bool Turret::isPointedAt(Tank* t) {
+bool TargetingTurret::isPointedAt(Tank* t) {
 	return (abs(fmod(atan2(t->y - y, t->x - x) + 2*PI, 2*PI) - fmod(fmod(angle, 2*PI) + 2*PI, 2*PI)) < PI/turningIncrement);
 }
 
-bool Turret::reasonableLocation() {
+bool TargetingTurret::reasonableLocation() {
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
 		if (canSeeTank(TankManager::getTank(i))) {
 			return false;
@@ -302,18 +302,18 @@ bool Turret::reasonableLocation() {
 	return validLocation();
 }
 
-ColorValueHolder Turret::getColor() {
+ColorValueHolder TargetingTurret::getColor() {
 	return ColorMixer::mix(stateColors[currentState], stateColors[(currentState+1)%maxState], constrain<double>(targetingCount/(tickCycle*stateMultiplier[currentState]), 0, 1));
 }
 
-ColorValueHolder Turret::getColor(short state) {
+ColorValueHolder TargetingTurret::getColor(short state) {
 	if (state < 0) {
 		return stateColors[0];
 	}
 	return stateColors[state % maxState];
 }
 
-ColorValueHolder Turret::getReticuleColor() {
+ColorValueHolder TargetingTurret::getReticuleColor() {
 	if (currentState == 0) {
 		return reticuleColors[0];
 	}
@@ -323,7 +323,7 @@ ColorValueHolder Turret::getReticuleColor() {
 	return ColorValueHolder(0, 0, 0); //shouldn't be drawn
 }
 
-void Turret::draw() {
+void TargetingTurret::draw() {
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, angle, x, y);
 	
@@ -364,11 +364,11 @@ void Turret::draw() {
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
-void Turret::drawCPU() {
+void TargetingTurret::drawCPU() {
 	//nah
 }
 
-CircleHazard* Turret::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {
+CircleHazard* TargetingTurret::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {
 	int attempts = 0;
 	CircleHazard* randomized = nullptr;
 	double xpos, ypos, angle;
@@ -380,12 +380,12 @@ CircleHazard* Turret::randomizingFactory(double x_start, double y_start, double 
 	do {
 		xpos = randFunc2() * (area_width - 2*TANK_RADIUS/2) + (x_start + TANK_RADIUS/2);
 		ypos = randFunc2() * (area_height - 2*TANK_RADIUS/2) + (y_start + TANK_RADIUS/2);
-		CircleHazard* testTurret = new Turret(xpos, ypos, angle);
-		if (testTurret->reasonableLocation()) {
-			randomized = testTurret;
+		CircleHazard* testTargetingTurret = new TargetingTurret(xpos, ypos, angle);
+		if (testTargetingTurret->reasonableLocation()) {
+			randomized = testTargetingTurret;
 			break;
 		} else {
-			delete testTurret;
+			delete testTargetingTurret;
 		}
 		attempts++;
 	} while (attempts < 128);
