@@ -15,7 +15,7 @@ public:
 		return weights;
 	}
 	virtual std::vector<std::string> getPowerAttributes() override {
-		std::vector<std::string> attributes = std::vector<std::string>{ "mix" };
+		std::vector<std::string> attributes; //not supposed to mix with other powers
 		return attributes;
 	}
 

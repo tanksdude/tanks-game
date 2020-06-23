@@ -26,7 +26,9 @@ public:
 	//bool additionalShootingCanWorkWithOthers = true;
 	//bool additionalShootingCanOnlyWorkIndividually = false;
 
+	//virtual double getTankMaxSpeedMultiplier() override { return .75; }
 	virtual double getTankFiringRateMultiplier() override { return .5; }
+	virtual double getTankTurningIncrementMultiplier() override { return 2; }
 
 	FireNamedTankPower();
 };
