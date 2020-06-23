@@ -1,8 +1,10 @@
 0.2.4 (obviously definitely not here)
 * abstracted the renderer somewhat
     * it's still not very efficient but it gets the job done
+* minimal drawing layers: "under", regular, "effects", debug
 * level effects (wind, ice, mines)
 * more levels
+* more powers
 
 0.2.3 "features" (obviously not here)
 * powerups:
@@ -13,20 +15,17 @@
     * hazard randomization
     * other lightning hazards
         * vertical lightning
-        * lightning rectangle
-        * lightning circle
+        * lightning rectangle and circle
         * lightning bolt hit detection updated: all lightning bolts choose points closest to the tank/bullet
-    * no bullet zone
-    * turret?
+    * no bullet zone (rectangular and circular)
+    * targeting turret
 * level: "many hazards" (from JS Tanks)
-* ability to weight levels and powers when selecting them randomly
+* ability to weight levels, powers, and hazards when selecting them randomly
 * minor things:
     * tankpower bullet attribute changes moved to bulletpowers (a moderate rewrite was needed)
     * a "special key" for tanks (does nothing right now)
-    * visual cue for tank death, refactored handling of tank death
-    * minimal drawing layers: "under", regular, "effects", debug
+    * visual cue for tank death, refactored handling of tank (and other) death
     * more cleanup
-    * GPU stuff: encourage all objects towards making their own vertices, privately
     * actually fixed homing power... whoops...
 
 0.2.2.2
