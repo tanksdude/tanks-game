@@ -13,7 +13,7 @@ TankPower* WallhackBulletPower::makeTankPower() {
 	return new WallhackTankPower();
 }
 
-PowerInteractionBoolHolder WallhackBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
+InteractionBoolHolder WallhackBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
 	return { false, false };
 }
 

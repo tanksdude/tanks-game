@@ -1,7 +1,7 @@
 #include "bignamedbulletpower.h"
 #include "bignamedtankpower.h"
 
-PowerInteractionBoolHolder BigNamedBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
+InteractionBoolHolder BigNamedBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
 	return { false, true };
 }
 

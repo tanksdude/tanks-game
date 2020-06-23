@@ -18,7 +18,7 @@ public:
 
 	//maybe use this?:
 	//bool modifiesMovement = true;
-	//virtual PowerInteractionBoolHolder modifiedMovement(Tank*) override;
+	//virtual InteractionBoolHolder modifiedMovement(Tank*) override;
 	//bool overridesMovement = true;
 	//bool modifiedMovementCanWorkWithOthers = true;
 	//bool modifiedMovementCanOnlyWorkIndividually = false;

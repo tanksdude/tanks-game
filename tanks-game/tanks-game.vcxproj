@@ -289,6 +289,7 @@
     <ClInclude Include="godmodebulletpower.h" />
     <ClInclude Include="godmodepower.h" />
     <ClInclude Include="godmodetankpower.h" />
+    <ClInclude Include="interactionboolholder.h" />
     <ClInclude Include="inversionbulletpower.h" />
     <ClInclude Include="inversionpower.h" />
     <ClInclude Include="inversiontankpower.h" />

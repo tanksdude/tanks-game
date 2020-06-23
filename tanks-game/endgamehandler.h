@@ -1,5 +1,5 @@
 #pragma once
-#include "inheritedpowercommon.h" //maybe the struct should be somewhere else, or called something else
+#include "interactionboolholder.h"
 #include "tank.h"
 #include "bullet.h"
 #include "circlehazard.h"
@@ -11,11 +11,11 @@ class EndGameHandler {
 private:
 	static void finalizeScores(); //ResetThings calls this
 public:
-	static PowerInteractionBoolHolder determineWinner(Tank*, Bullet*); //note: modifies the tank's value of "dead"
-	static PowerInteractionBoolHolder determineWinner(Tank*, Tank*); //note: modifies the tanks' values of "dead"
-	static PowerInteractionBoolHolder determineWinner(Bullet*, Bullet*);
-	static PowerInteractionBoolHolder determineWinner(Tank*, CircleHazard*); //note: modifies the tank's value of "dead"
-	static PowerInteractionBoolHolder determineWinner(Tank*, RectHazard*); //note: modifies the tank's value of "dead"
-	static PowerInteractionBoolHolder determineWinner(Bullet*, CircleHazard*);
-	static PowerInteractionBoolHolder determineWinner(Bullet*, RectHazard*);
+	static InteractionBoolHolder determineWinner(Tank*, Bullet*); //note: modifies the tank's value of "dead"
+	static InteractionBoolHolder determineWinner(Tank*, Tank*); //note: modifies the tanks' values of "dead"
+	static InteractionBoolHolder determineWinner(Bullet*, Bullet*);
+	static InteractionBoolHolder determineWinner(Tank*, CircleHazard*); //note: modifies the tank's value of "dead"
+	static InteractionBoolHolder determineWinner(Tank*, RectHazard*); //note: modifies the tank's value of "dead"
+	static InteractionBoolHolder determineWinner(Bullet*, CircleHazard*);
+	static InteractionBoolHolder determineWinner(Bullet*, RectHazard*);
 };

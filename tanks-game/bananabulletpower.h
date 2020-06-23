@@ -22,7 +22,7 @@ public:
 	virtual TankPower* makeTankPower();
 
 	//bool modifiesMovement = true;
-	virtual PowerInteractionBoolHolder modifiedMovement(Bullet*) override;
+	virtual InteractionBoolHolder modifiedMovement(Bullet*) override;
 	//bool overridesMovement = false;
 	//bool modifiedMovementCanWorkWithOthers = true;
 	//bool modifiedMovementCanOnlyWorkIndividually = false;

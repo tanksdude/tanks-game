@@ -24,13 +24,13 @@ public:
 	virtual TankPower* makeTankPower();
 
 	//bool modifiesMovement = true;
-	virtual PowerInteractionBoolHolder modifiedMovement(Bullet*) override;
+	virtual InteractionBoolHolder modifiedMovement(Bullet*) override;
 	//bool overridesMovement = false;
 	//bool modifiedMovementCanWorkWithOthers = true;
 	//bool modifiedMovementCanOnlyWorkIndividually = false;
 
 	//bool modifiesCollisionWithWall = true;
-	virtual PowerInteractionBoolHolder modifiedCollisionWithWall(Bullet*, Wall*) override;
+	virtual InteractionBoolHolder modifiedCollisionWithWall(Bullet*, Wall*) override;
 	//bool overridesCollisionWithWall = true;
 	//bool modifiedCollisionWithWallCanWorkWithOthers = true;
 	//bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;

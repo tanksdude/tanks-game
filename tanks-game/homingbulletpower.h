@@ -20,13 +20,13 @@ public:
 	virtual TankPower* makeTankPower();
 
 	//bool modifiesMovement = false;
-	virtual PowerInteractionBoolHolder modifiedMovement(Bullet*) override;
+	virtual InteractionBoolHolder modifiedMovement(Bullet*) override;
 	//bool overridesMovement = false;
 	//bool modifiedMovementCanWorkWithOthers = true;
 	//bool modifiedMovementCanOnlyWorkIndividually = false;
 
 	//bool modifiesCollisionWithEdge = true;
-	virtual PowerInteractionBoolHolder modifiedEdgeCollision(Bullet*) override;
+	virtual InteractionBoolHolder modifiedEdgeCollision(Bullet*) override;
 	//bool overridesEdgeCollision = true;
 	//bool modifiedEdgeCollisionCanWorkWithOthers = false;
 	//bool modifiedEdgeCollisionCanOnlyWorkIndividually = false;

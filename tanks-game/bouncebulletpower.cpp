@@ -4,7 +4,7 @@
 
 const short BounceBulletPower::maxBounces = 16;
 
-PowerInteractionBoolHolder BounceBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
+InteractionBoolHolder BounceBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
 	if (abs(b->velocity) * Bullet::default_radius/b->r <= .5) {
 		if (PowerFunctionHelper::bounceGenericWithCorners(b, w)) {
 			bouncesLeft--;
@@ -24,7 +24,7 @@ PowerInteractionBoolHolder BounceBulletPower::modifiedCollisionWithWall(Bullet* 
 }
 //TODO: need ability to delete just the bulletpower (needed? wanted? no because bounces should be reset for banana (should it?))
 
-PowerInteractionBoolHolder BounceBulletPower::modifiedEdgeCollision(Bullet* b) {
+InteractionBoolHolder BounceBulletPower::modifiedEdgeCollision(Bullet* b) {
 	//the bullet can bounce off of edges twice in a single tick
 	//therefore, it can lose 2 bounces at once
 	//shouldn't ever have negative bounces, so need to check Y, then X, then Y if Y wasn't already checked, and check bouncesLeft after each edge bounce

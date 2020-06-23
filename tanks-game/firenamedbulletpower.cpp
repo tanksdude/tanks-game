@@ -7,7 +7,7 @@ const double FireNamedBulletPower::minBulletAcceleration = 1/32.0;
 const double FireNamedBulletPower::degradeAmount = .5;
 const double FireNamedBulletPower::growAmount = 1.5/32.0; //TODO: need way to pass parameters into bulletpower constructor
 
-PowerInteractionBoolHolder FireNamedBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
+InteractionBoolHolder FireNamedBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
 	if (b->velocity <= 0) {
 		b->alpha -= degradeAmount;
 		return { b->isDead(), false };
@@ -22,7 +22,7 @@ PowerInteractionBoolHolder FireNamedBulletPower::modifiedCollisionWithWall(Bulle
 	}
 }
 
-PowerInteractionBoolHolder FireNamedBulletPower::modifiedMovement(Bullet* b) {
+InteractionBoolHolder FireNamedBulletPower::modifiedMovement(Bullet* b) {
 	if (b->velocity > 0) {
 		b->r += growAmount;
 	}

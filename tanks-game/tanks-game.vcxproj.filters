@@ -752,6 +752,9 @@
     <ClInclude Include="targetingturret.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="interactionboolholder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="freeglut.dll" />

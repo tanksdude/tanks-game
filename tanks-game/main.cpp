@@ -388,7 +388,7 @@ void moveBullets() {
 					noMoreMovementSpecials = true;
 				}
 
-				PowerInteractionBoolHolder check_temp = b->bulletPowers[k]->modifiedMovement(b);
+				InteractionBoolHolder check_temp = b->bulletPowers[k]->modifiedMovement(b);
 				if (check_temp.shouldDie) {
 					shouldBeKilled = true;
 					overridedMovement = true;
@@ -461,7 +461,7 @@ void tankToWall() {
 							noMoreWallCollisionSpecials = true;
 						}
 
-						PowerInteractionBoolHolder check_temp = t->tankPowers[k]->modifiedCollisionWithWall(t, w);
+						InteractionBoolHolder check_temp = t->tankPowers[k]->modifiedCollisionWithWall(t, w);
 						if (check_temp.shouldDie) {
 							shouldBeKilled = true;
 						}
@@ -520,7 +520,7 @@ void tankToHazard() {
 							noMoreCircleHazardCollisionSpecials = true;
 						}
 
-						PowerInteractionBoolHolder check_temp = t->tankPowers[k]->modifiedCollisionWithCircleHazard(t, ch);
+						InteractionBoolHolder check_temp = t->tankPowers[k]->modifiedCollisionWithCircleHazard(t, ch);
 						if (check_temp.shouldDie) {
 							shouldBeKilled = true;
 						}
@@ -533,7 +533,7 @@ void tankToHazard() {
 				if (!overridedCircleHazardCollision) {
 					if (CollisionHandler::partiallyCollided(t, ch)) {
 						if (ch->actuallyCollided(t)) {
-							PowerInteractionBoolHolder result = EndGameHandler::determineWinner(t, ch);
+							InteractionBoolHolder result = EndGameHandler::determineWinner(t, ch);
 							shouldBeKilled = result.shouldDie;
 							killCircleHazard = result.otherShouldDie;
 						}
@@ -577,7 +577,7 @@ void tankToHazard() {
 							noMoreRectHazardCollisionSpecials = true;
 						}
 
-						PowerInteractionBoolHolder check_temp = t->tankPowers[k]->modifiedCollisionWithRectHazard(t, rh);
+						InteractionBoolHolder check_temp = t->tankPowers[k]->modifiedCollisionWithRectHazard(t, rh);
 						if (check_temp.shouldDie) {
 							shouldBeKilled = true;
 						}
@@ -590,7 +590,7 @@ void tankToHazard() {
 				if (!overridedRectHazardCollision) {
 					if (CollisionHandler::partiallyCollided(t, rh)) {
 						if (rh->actuallyCollided(t)) {
-							PowerInteractionBoolHolder result = EndGameHandler::determineWinner(t, rh);
+							InteractionBoolHolder result = EndGameHandler::determineWinner(t, rh);
 							shouldBeKilled = result.shouldDie;
 							killRectHazard = result.otherShouldDie;
 						}
@@ -643,7 +643,7 @@ void tankToTank() {
 							noMoreTankCollisionSpecials = true;
 						}
 
-						PowerInteractionBoolHolder check_temp = t_outer->tankPowers[k]->modifiedCollisionWithTank(t_outer, t_inner);
+						InteractionBoolHolder check_temp = t_outer->tankPowers[k]->modifiedCollisionWithTank(t_outer, t_inner);
 						if (check_temp.shouldDie) {
 							t_outerShouldDie = true;
 						}
@@ -656,7 +656,7 @@ void tankToTank() {
 				}
 
 				if (!overridedTankCollision) {
-					PowerInteractionBoolHolder result = EndGameHandler::determineWinner(t_outer, t_inner);
+					InteractionBoolHolder result = EndGameHandler::determineWinner(t_outer, t_inner);
 					t_outerShouldDie = result.shouldDie;
 					t_innerShouldDie = result.otherShouldDie;
 				}
@@ -699,7 +699,7 @@ void tankToEdge() {
 						noMoreEdgeCollisionSpecials = true;
 					}
 
-					PowerInteractionBoolHolder check_temp = t->tankPowers[k]->modifiedEdgeCollision(t);
+					InteractionBoolHolder check_temp = t->tankPowers[k]->modifiedEdgeCollision(t);
 					if (check_temp.shouldDie) {
 						shouldBeKilled = true;
 					}
@@ -743,7 +743,7 @@ void bulletToEdge() {
 						noMoreEdgeCollisionSpecials = true;
 					}
 
-					PowerInteractionBoolHolder check_temp = b->bulletPowers[k]->modifiedEdgeCollision(b);
+					InteractionBoolHolder check_temp = b->bulletPowers[k]->modifiedEdgeCollision(b);
 					if (check_temp.shouldDie) {
 						shouldBeKilled = true;
 					}
@@ -794,7 +794,7 @@ void bulletToWall() {
 							noMoreWallCollisionSpecials = true;
 						}
 
-						PowerInteractionBoolHolder check_temp = b->bulletPowers[k]->modifiedCollisionWithWall(b, w);
+						InteractionBoolHolder check_temp = b->bulletPowers[k]->modifiedCollisionWithWall(b, w);
 						if (check_temp.shouldDie) {
 							shouldBeKilled = true;
 						}
@@ -853,7 +853,7 @@ void bulletToHazard() {
 							noMoreCircleHazardCollisionSpecials = true;
 						}
 
-						PowerInteractionBoolHolder check_temp = b->bulletPowers[k]->modifiedCollisionWithCircleHazard(b, ch);
+						InteractionBoolHolder check_temp = b->bulletPowers[k]->modifiedCollisionWithCircleHazard(b, ch);
 						if (check_temp.shouldDie) {
 							shouldBeKilled = true;
 						}
@@ -866,7 +866,7 @@ void bulletToHazard() {
 				if (!overridedCircleHazardCollision) {
 					if (CollisionHandler::partiallyCollided(b, ch)) {
 						if (ch->actuallyCollided(b)) {
-							PowerInteractionBoolHolder result = EndGameHandler::determineWinner(b, ch);
+							InteractionBoolHolder result = EndGameHandler::determineWinner(b, ch);
 							shouldBeKilled = result.shouldDie;
 							killCircleHazard = result.otherShouldDie;
 						}
@@ -910,7 +910,7 @@ void bulletToHazard() {
 							noMoreRectHazardCollisionSpecials = true;
 						}
 
-						PowerInteractionBoolHolder check_temp = b->bulletPowers[k]->modifiedCollisionWithRectHazard(b, rh);
+						InteractionBoolHolder check_temp = b->bulletPowers[k]->modifiedCollisionWithRectHazard(b, rh);
 						if (check_temp.shouldDie) {
 							shouldBeKilled = true;
 						}
@@ -923,7 +923,7 @@ void bulletToHazard() {
 				if (!overridedRectHazardCollision) {
 					if (CollisionHandler::partiallyCollided(b, rh)) {
 						if (rh->actuallyCollided(b)) {
-							PowerInteractionBoolHolder result = EndGameHandler::determineWinner(b, rh);
+							InteractionBoolHolder result = EndGameHandler::determineWinner(b, rh);
 							shouldBeKilled = result.shouldDie;
 							killRectHazard = result.otherShouldDie;
 						}
@@ -956,7 +956,7 @@ void bulletToBullet() {
 				continue;
 			}
 			if (CollisionHandler::partiallyCollided(b_outer, b_inner)) {
-				PowerInteractionBoolHolder result = EndGameHandler::determineWinner(b_outer, b_inner);
+				InteractionBoolHolder result = EndGameHandler::determineWinner(b_outer, b_inner);
 				b_outerShouldDie = result.shouldDie;
 				b_innerShouldDie = result.otherShouldDie;
 			}
@@ -989,7 +989,7 @@ void bulletToTank() {
 				continue;
 			}
 			if (CollisionHandler::partiallyCollided(t, b)) {
-				PowerInteractionBoolHolder result = EndGameHandler::determineWinner(t, b);
+				InteractionBoolHolder result = EndGameHandler::determineWinner(t, b);
 				shouldBeKilled = result.shouldDie;
 				killBullet = result.otherShouldDie;
 			}

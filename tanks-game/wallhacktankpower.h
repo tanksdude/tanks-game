@@ -17,7 +17,7 @@ public:
 	virtual BulletPower* makeBulletPower();
 
 	//bool modifiesCollisionWithWall = true;
-	virtual PowerInteractionBoolHolder modifiedCollisionWithWall(Tank*, Wall*) override;
+	virtual InteractionBoolHolder modifiedCollisionWithWall(Tank*, Wall*) override;
 	//bool overridesCollisionWithWall = true;
 	//bool modifiedCollisionWithWallCanWorkWithOthers = false;
 	//bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;

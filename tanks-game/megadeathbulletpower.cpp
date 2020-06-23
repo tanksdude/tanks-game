@@ -15,12 +15,12 @@ void MegaDeathBulletPower::tick(Bullet* b) {
 	}
 }
 
-PowerInteractionBoolHolder MegaDeathBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
+InteractionBoolHolder MegaDeathBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
 	//tick() happens before this, so modifiesCollisionWithWall will only be set to true if the bullet can destroy walls
 	return { false, true };
 }
 
-PowerInteractionBoolHolder MegaDeathBulletPower::modifiedMovement(Bullet* b) {
+InteractionBoolHolder MegaDeathBulletPower::modifiedMovement(Bullet* b) {
 	b->r *= bulletSizeMultiplierPerTick;
 	return { false };
 }

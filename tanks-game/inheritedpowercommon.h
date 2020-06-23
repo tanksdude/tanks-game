@@ -2,24 +2,11 @@
 class InheritedPowerCommon;
 
 #include "colorvalueholder.h"
+#include "interactionboolholder.h"
 //#include "tank.h"
 //#include "wall.h"
 //#include "power.h"
 //#include "bullet.h"
-
-struct PowerInteractionBoolHolder {
-	bool shouldDie;
-	bool otherShouldDie;
-	PowerInteractionBoolHolder() : PowerInteractionBoolHolder(false, false) {}
-	PowerInteractionBoolHolder(bool a, bool b) {
-		shouldDie = a;
-		otherShouldDie = b;
-	}
-	PowerInteractionBoolHolder(bool a) {
-		shouldDie = a;
-		otherShouldDie = false;
-	}
-};
 
 class InheritedPowerCommon {
 protected:

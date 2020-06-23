@@ -3,7 +3,7 @@
 
 const double GrenadeBulletPower::degradeAmount = .875;
 
-PowerInteractionBoolHolder GrenadeBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
+InteractionBoolHolder GrenadeBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
 	if (b->velocity <= 0) {
 		b->alpha -= degradeAmount;
 		return { b->isDead(), false };
@@ -18,7 +18,7 @@ PowerInteractionBoolHolder GrenadeBulletPower::modifiedCollisionWithWall(Bullet*
 	}
 }
 
-PowerInteractionBoolHolder GrenadeBulletPower::modifiedMovement(Bullet* b) {
+InteractionBoolHolder GrenadeBulletPower::modifiedMovement(Bullet* b) {
 	if (b->velocity == 0) {
 		b->alpha -= degradeAmount;
 		b->r *= 65/64.0;

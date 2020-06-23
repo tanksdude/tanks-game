@@ -31,7 +31,7 @@ void EndGameHandler::finalizeScores() {
 	}
 }
 
-PowerInteractionBoolHolder EndGameHandler::determineWinner(Tank* t, Bullet* b) {
+InteractionBoolHolder EndGameHandler::determineWinner(Tank* t, Bullet* b) {
 	char result = PriorityHandler::determinePriority(t, b);
 	bool tankDies = false, bulletDies = false;
 	if (result <= -2) {
@@ -59,7 +59,7 @@ PowerInteractionBoolHolder EndGameHandler::determineWinner(Tank* t, Bullet* b) {
 	return { tankDies, bulletDies };
 }
 
-PowerInteractionBoolHolder EndGameHandler::determineWinner(Tank* t1, Tank* t2) {
+InteractionBoolHolder EndGameHandler::determineWinner(Tank* t1, Tank* t2) {
 	char result = PriorityHandler::determinePriority(t1, t2);
 	bool firstTankDies = false, secondTankDies = false;
 	if (result <= -2) {
@@ -90,7 +90,7 @@ PowerInteractionBoolHolder EndGameHandler::determineWinner(Tank* t1, Tank* t2) {
 	return { firstTankDies, secondTankDies };
 }
 
-PowerInteractionBoolHolder EndGameHandler::determineWinner(Bullet* b1, Bullet* b2) {
+InteractionBoolHolder EndGameHandler::determineWinner(Bullet* b1, Bullet* b2) {
 	char result = PriorityHandler::determinePriority(b1, b2);
 	bool firstBulletDies = false, secondBulletDies = false;
 	if (result <= -2) {
@@ -115,7 +115,7 @@ PowerInteractionBoolHolder EndGameHandler::determineWinner(Bullet* b1, Bullet* b
 	return { firstBulletDies, secondBulletDies };
 }
 
-PowerInteractionBoolHolder EndGameHandler::determineWinner(Tank* t, CircleHazard* ch) {
+InteractionBoolHolder EndGameHandler::determineWinner(Tank* t, CircleHazard* ch) {
 	char result = PriorityHandler::determinePriority(t, ch);
 	bool tankDies = false, circleHazardDies = false;
 	if (result <= -2) {
@@ -159,7 +159,7 @@ PowerInteractionBoolHolder EndGameHandler::determineWinner(Tank* t, CircleHazard
 	return { tankDies, circleHazardDies };
 }
 
-PowerInteractionBoolHolder EndGameHandler::determineWinner(Tank* t, RectHazard* rh) {
+InteractionBoolHolder EndGameHandler::determineWinner(Tank* t, RectHazard* rh) {
 	char result = PriorityHandler::determinePriority(t, rh);
 	bool tankDies = false, rectHazardDies = false;
 	if (result <= -2) {
@@ -203,7 +203,7 @@ PowerInteractionBoolHolder EndGameHandler::determineWinner(Tank* t, RectHazard* 
 	return { tankDies, rectHazardDies };
 }
 
-PowerInteractionBoolHolder EndGameHandler::determineWinner(Bullet* b, CircleHazard* ch) {
+InteractionBoolHolder EndGameHandler::determineWinner(Bullet* b, CircleHazard* ch) {
 	char result = PriorityHandler::determinePriority(b, ch);
 	bool bulletDies = false, circleHazardDies = false;
 	if (result <= -2) {
@@ -244,7 +244,7 @@ PowerInteractionBoolHolder EndGameHandler::determineWinner(Bullet* b, CircleHaza
 	return { bulletDies, circleHazardDies };
 }
 
-PowerInteractionBoolHolder EndGameHandler::determineWinner(Bullet* b, RectHazard* rh) {
+InteractionBoolHolder EndGameHandler::determineWinner(Bullet* b, RectHazard* rh) {
 	char result = PriorityHandler::determinePriority(b, rh);
 	bool bulletDies = false, rectHazardDies = false;
 	if (result <= -2) {
