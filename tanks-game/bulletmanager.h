@@ -6,7 +6,8 @@ class BulletManager {
 	friend class ResetThings;
 private:
 	static std::vector<Bullet*> bullets;
-	static int maxBullets; //currently not used
+	static int maxBullets;
+	static bool limitBullets;
 	static void clearBullets(); //for ResetThings
 public:
 	static void initialize();
