@@ -6,10 +6,10 @@ class GameManager {
 private:
 	static long nextID;
 	static double tickCount; //double in case physics happens at a variable rate
-	static void reset();
+	static void Reset();
 public:
-	static void tick();
+	static void Tick();
 	static double getTickCount();
 	static long getNextID();
-	static void initialize();
+	static void Initialize();
 };

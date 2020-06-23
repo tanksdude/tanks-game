@@ -308,7 +308,7 @@ void tick(int physicsUPS) {
 	*/
 
 	//finish up by incrementing the tick count
-	GameManager::tick();
+	GameManager::Tick();
 
 	auto end = Diagnostics::getTime();
 
@@ -1101,8 +1101,8 @@ int main(int argc, char** argv) {
 	HazardManager::addCircleHazardFactory(CircularNoBulletZone::factory, CircularNoBulletZone::randomizingFactory);
 
 	//initialize managers and stuff:
-	GameManager::initialize();
-	KeypressManager::initialize();
+	GameManager::Initialize();
+	KeypressManager::Initialize();
 	BulletManager::initialize();
 	PowerupManager::initialize();
 	WallManager::initialize();

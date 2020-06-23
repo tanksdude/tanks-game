@@ -15,5 +15,5 @@ public:
 	static void setSpecialKey(int key, int x, int y);
 	static void unsetSpecialKey(int key, int x, int y);
 
-	static void initialize();
+	static void Initialize();
 };

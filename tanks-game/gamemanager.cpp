@@ -3,16 +3,16 @@
 long GameManager::nextID = -1;
 double GameManager::tickCount = 0;
 
-void GameManager::initialize() {
+void GameManager::Initialize() {
 	//nothing
 }
 
-void GameManager::tick() {
+void GameManager::Tick() {
 	tickCount++;
 	//this is probably all it's ever going to do
 }
 
-void GameManager::reset() {
+void GameManager::Reset() {
 	tickCount = 0;
 }
 

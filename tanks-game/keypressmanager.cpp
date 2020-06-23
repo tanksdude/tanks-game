@@ -13,7 +13,7 @@ bool KeypressManager::getSpecialKey(int key) {
 	return specialKeyStates[key];
 }
 
-void KeypressManager::initialize() {
+void KeypressManager::Initialize() {
 	//regular normal keys 
 	for (int i = 0; i < 26; i++) {
 		normalKeyStates.insert({ 'a'+i, false });

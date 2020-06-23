@@ -52,7 +52,7 @@ void ResetThings::reset(int) {
 		LevelManager::levels[i]->initialize();
 	}
 
-	GameManager::reset();
+	GameManager::Reset();
 }
 
 void ResetThings::firstReset() {
