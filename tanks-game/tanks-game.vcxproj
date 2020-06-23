@@ -242,6 +242,7 @@
     <ClCompile Include="triplebulletpower.cpp" />
     <ClCompile Include="triplepower.cpp" />
     <ClCompile Include="tripletankpower.cpp" />
+    <ClCompile Include="turret.cpp" />
     <ClCompile Include="vertexarray.cpp" />
     <ClCompile Include="vertexbuffer.cpp" />
     <ClCompile Include="verticallightning.cpp" />
@@ -371,6 +372,7 @@
     <ClInclude Include="triplebulletpower.h" />
     <ClInclude Include="triplepower.h" />
     <ClInclude Include="tripletankpower.h" />
+    <ClInclude Include="turret.h" />
     <ClInclude Include="vertexarray.h" />
     <ClInclude Include="vertexbuffer.h" />
     <ClInclude Include="vertexbufferlayout.h" />
