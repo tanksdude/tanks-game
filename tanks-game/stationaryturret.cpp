@@ -5,7 +5,9 @@
 //#include "constants.h"
 #include <math.h>
 #include "mylib.h"
+#include "point.h"
 #include "tank.h"
+#include "tankmanager.h"
 #include "bulletmanager.h"
 #include "wallmanager.h"
 #include "hazardmanager.h"
@@ -18,7 +20,7 @@ VertexArray* StationaryTurret::cannon_va;
 VertexBuffer* StationaryTurret::cannon_vb;
 bool StationaryTurret::initialized_GPU = false;
 
-StationaryTurret::StationaryTurret(double xpos, double ypos, double angle) {
+StationaryTurret::StationaryTurret(double xpos, double ypos, double angle, bool) {
 	x = xpos;
 	y = ypos;
 	this->angle = angle;
@@ -28,11 +30,14 @@ StationaryTurret::StationaryTurret(double xpos, double ypos, double angle) {
 
 	tickCycle = 100; //100 is JS default (because of shooting speed) and 200 just looks weird
 	maxState = 3;
-	stateMultiplier = new double[maxState] {2, 1, 2};
-	stateColors = new ColorValueHolder[maxState] { {.5f, .5f, .5f}, {1.0f, 0x22/255.0, 0x11/255.0}, {0, 0.5f, 1.0f} };
+	stateMultiplier = new double[maxState]{2, 1, 2};
+	stateColors = new ColorValueHolder[maxState]{ {.5f, .5f, .5f}, {1.0f, 0x22/255.0, 0x11/255.0}, {0, 0.5f, 1.0f} };
 
 	canAcceptPowers = false;
+}
 
+StationaryTurret::StationaryTurret(double xpos, double ypos, double angle)
+: StationaryTurret(xpos, ypos, angle, true) {
 	initializeGPU();
 }
 
@@ -137,8 +142,32 @@ void StationaryTurret::tick() {
 	}
 }
 
+bool StationaryTurret::canSeeTank(Tank* t) {
+	double dist = sqrt(pow(x - t->x, 2) + (y - t->y, 2)); //dist to tank
+	double angle = atan2(y - t->y, x - t->x); //angle to tank
+	Circle* p = new Point(x + dist*cos(angle), y + dist*sin(angle));
+	if (!CollisionHandler::fullyCollided(p, t)) {
+		delete p;
+		return false; //not pointing at tank (it's an approximation but it's good enough)
+	}
+	//check walls
+	for (int i = 0; i < WallManager::getNumWalls(); i++) {
+		Wall* wa = WallManager::getWall(i);
+		if (CollisionHandler::lineRectCollision(x, y, p->x, p->y, wa)) {
+			delete p;
+			return true;
+		}
+	}
+	delete p;
+	return false;
+}
+
 bool StationaryTurret::reasonableLocation() {
-	//TODO: needs to check if it can see the tank
+	for (int i = 0; i < TankManager::getNumTanks(); i++) {
+		if (canSeeTank(TankManager::getTank(i))) {
+			return false;
+		}
+	}
 
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		if (CollisionHandler::partiallyCollided(this, WallManager::getWall(i))) {

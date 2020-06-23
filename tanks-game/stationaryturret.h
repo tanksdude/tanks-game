@@ -37,7 +37,8 @@ public:
 	virtual bool reasonableLocation() override;
 
 	double getAngle();
-	virtual ColorValueHolder getColor();
+	virtual bool canSeeTank(Tank*); //true if pointing at tank with no wall obstructions
+	virtual ColorValueHolder getColor(); //needed because turret doesn't use tickCount, instead using targetingCount (should change this)
 	virtual ColorValueHolder getColor(short state);
 
 	virtual std::string getName() { return getClassName(); }
@@ -47,9 +48,12 @@ public:
 	virtual void draw();
 	virtual void drawCPU();
 
+protected:
+	StationaryTurret(double xpos, double ypos, double angle, bool noGPU); //doesn't initialize GPU
+public:
 	StationaryTurret(double xpos, double ypos, double angle);
 	StationaryTurret(double xpos, double ypos, double angle, double radius);
-	~StationaryTurret();
+	virtual ~StationaryTurret();
 	static CircleHazard* factory(int, std::string*);
 	static CircleHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv);
 	virtual int getFactoryArgumentCount() override { return 3; }
