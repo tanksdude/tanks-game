@@ -836,6 +836,9 @@ void bulletToHazard() {
 			bool overridedCircleHazardCollision = false;
 			bool noMoreCircleHazardCollisionSpecials = false;
 
+			if (b->getTeamID() == ch->getTeamID()) {
+				continue;
+			}
 			if (CollisionHandler::partiallyCollided(b, ch)) {
 				for (int k = 0; k < b->bulletPowers.size(); k++) {
 					if (b->bulletPowers[k]->modifiesCollisionWithCircleHazard) {
@@ -893,6 +896,9 @@ void bulletToHazard() {
 			bool overridedRectHazardCollision = false;
 			bool noMoreRectHazardCollisionSpecials = false;
 
+			if (b->getTeamID() == rh->getTeamID()) {
+				continue;
+			}
 			if (CollisionHandler::partiallyCollided(b, rh)) {
 				for (int k = 0; k < b->bulletPowers.size(); k++) {
 					if (b->bulletPowers[k]->modifiesCollisionWithRectHazard) {
@@ -1149,5 +1155,5 @@ int main(int argc, char** argv) {
  * ~40% game code:
  * * I don't know what will be final beyond the ideas located in power.cpp, hazard.cpp, level.cpp, and elsewhere
  * * it's just an estimate
- * * 100% probably won't be "finished" on this scale (it could jump from 80% to 100%)
+ * * 100% probably won't be "finished" on this scale (it could jump from 60% to 100%)
  */
