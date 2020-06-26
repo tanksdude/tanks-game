@@ -6,7 +6,7 @@ some hazards aren't bad
 
 list of (eventual) hazards:
 |stationary turret
-turret
+|targeting turret
 patrolling turret
 |lightning rectangle
 |horizontal lightning

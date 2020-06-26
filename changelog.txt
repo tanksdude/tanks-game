@@ -1,12 +1,13 @@
-0.2.4 (obviously definitely not here)
+0.2.4 (obviously not here)
+* switch to 64-bit? (probably; no modern computer should be 32-bit, but it'd really suck if there's a performance issue or something else)
 * abstracted the renderer somewhat
     * it's still not very efficient but it gets the job done
 * minimal drawing layers: "under", regular, "effects", debug
 * level effects (wind, ice, mines)
-* more levels
-* more powers
+* more powers (all JS powers in)
+* more levels (all JS levels in?)
 
-0.2.3 "features" (obviously not here)
+0.2.3 "features"
 * powerups:
     * banana power!
     * godmode (still needs some work)
@@ -16,7 +17,6 @@
     * other lightning hazards
         * vertical lightning
         * lightning rectangle and circle
-        * lightning bolt hit detection updated: all lightning bolts choose points closest to the tank/bullet
     * no bullet zone (rectangular and circular)
     * targeting turret
 * level: "many hazards" (from JS Tanks)
@@ -26,6 +26,7 @@
     * a "special key" for tanks (does nothing right now)
     * visual cue for tank death, refactored handling of tank (and other) death
     * more cleanup
+    * fullscreen toggle (press F1) (it's technically borderless fullscreen)
     * actually fixed homing power... whoops...
 
 0.2.2.2
