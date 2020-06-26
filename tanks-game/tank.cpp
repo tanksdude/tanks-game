@@ -69,7 +69,6 @@ Tank::Tank(double x_, double y_, double a, char id_, std::string name_, TankInpu
 }
 
 Tank::~Tank() {
-	//delete explosionColor;
 	for (int i = 0; i < tankPowers.size(); i++) {
 		delete tankPowers[i];
 	}
@@ -819,6 +818,13 @@ void Tank::drawNameCPU(double xpos, double ypos) {
 
 	glPopMatrix();
 	*/
+}
+
+bool Tank::kill() {
+	//TODO: allow tankpowers to override this (this way life and barrier* can exist) (*the barrier that can be hit multiple times)
+	//TODO other: should bullets also get this? (I'm thinking yes, at least because of life)
+	this->dead = true;
+	return this->dead;
 }
 
 void Tank::resetThings(double x, double y, double a, char teamID, std::string name) { //TODO: finish?

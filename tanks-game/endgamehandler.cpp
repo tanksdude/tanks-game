@@ -8,17 +8,14 @@
 void EndGameHandler::finalizeScores() {
 	//TODO: GameManager holds information about objects and their IDs (and what teamIDs are being used)
 	//TODO: this logic isn't done
+	//notes: in the determineWinner functions that involve a tank: add killer (and killee) to list; when finalizing scores, add wins as needed (to GameManager, because that's supposed to hold the team wins)
 
 	bool* deadStatus = new bool[TankManager::getNumTanks()];
-	for (int i = 0; i < TankManager::getNumTanks(); i++) {
-		deadStatus[i] = (TankManager::getTank(i)->dead);
-	}
-
 	bool everyTankIsDead = true;
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
+		deadStatus[i] = (TankManager::getTank(i)->dead);
 		if (!deadStatus[i]) {
 			everyTankIsDead = false;
-			break;
 		}
 	}
 
@@ -54,7 +51,7 @@ InteractionBoolHolder EndGameHandler::determineWinner(Tank* t, Bullet* b) {
 		}
 	}
 	if (tankDies) {
-		t->dead = true;
+		tankDies = t->kill();
 	}
 	return { tankDies, bulletDies };
 }
@@ -82,10 +79,10 @@ InteractionBoolHolder EndGameHandler::determineWinner(Tank* t1, Tank* t2) {
 		}
 	}
 	if (firstTankDies) {
-		t1->dead = true;
+		firstTankDies = t1->kill();
 	}
 	if (secondTankDies) {
-		t2->dead = true;
+		secondTankDies = t2->kill();
 	}
 	return { firstTankDies, secondTankDies };
 }
@@ -154,7 +151,7 @@ InteractionBoolHolder EndGameHandler::determineWinner(Tank* t, CircleHazard* ch)
 		}
 	}
 	if (tankDies) {
-		t->dead = true;
+		tankDies = t->kill();
 	}
 	return { tankDies, circleHazardDies };
 }
@@ -198,7 +195,7 @@ InteractionBoolHolder EndGameHandler::determineWinner(Tank* t, RectHazard* rh) {
 		}
 	}
 	if (tankDies) {
-		t->dead = true;
+		tankDies = t->kill();
 	}
 	return { tankDies, rectHazardDies };
 }

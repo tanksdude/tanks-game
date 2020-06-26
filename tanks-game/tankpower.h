@@ -87,6 +87,12 @@ public:
 	bool modifiedCollisionWithRectHazardCanWorkWithOthers = true;
 	bool modifiedCollisionWithRectHazardCanOnlyWorkIndividually = false;
 
+	bool modifiesDeathHandling = false;
+	virtual InteractionBoolHolder modifiedDeathHandling(Tank* parent) { return { false, false }; } //first is tank, second is tankpower
+	bool overridesDeathHandling = false; //true?
+	bool modifiedDeathHandlingCanWorkWithOthers = false;
+	bool modifiedDeathHandlingCanOnlyWorkIndividually = false;
+
 	bool modifiesShooting = false;
 	virtual void modifiedShooting(Tank* parent) { return; } //for melee-class powerups
 	bool overridesShooting = true; //false? dunno

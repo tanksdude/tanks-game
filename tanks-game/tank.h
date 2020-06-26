@@ -24,7 +24,7 @@ struct TankInputChar {
 class Tank : public Circle, public GameThing {
 	friend class ResetThings;
 	friend class PowerFunctionHelper;
-	friend class EndGameHandler; //sets the "dead" bool
+	friend class EndGameHandler; //calls this->kill()
 public:
 	std::string name;
 	int wins = 0;
@@ -76,8 +76,8 @@ public:
 
 private:
 	ColorValueHolder defaultColor = ColorValueHolder(.5f, .5f, .5f);
-	bool dead = false;
-	ColorValueHolder* explosionColor;
+	bool dead = false; //only kill() should modify this
+	bool kill();
 	ColorValueHolder defaultNameFill = ColorValueHolder(1.0f, 1.0f, 1.0f);
 	ColorValueHolder defaultNameStroke = ColorValueHolder(0, 0, 0);
 
