@@ -19,7 +19,7 @@ void DeveloperLevel0::initialize() {
 	}
 
 	std::string paras[3] = {std::to_string(GAME_WIDTH/2), std::to_string(GAME_HEIGHT/2), std::to_string(randFunc() * 2*PI)};
-	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("stationary turret")(3, paras));
+	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary turret")(3, paras));
 
 	//assumption: TANK_RADIUS=16 (why it would ever be changed is beyond me)
 	PowerupManager::pushPowerup(new PowerSquare(20, 20, "speed"));
@@ -32,6 +32,7 @@ void DeveloperLevel0::initialize() {
 	PowerupManager::pushPowerup(new PowerSquare(160, 20, "grenade"));
 	PowerupManager::pushPowerup(new PowerSquare(180, 20, "fire"));
 	PowerupManager::pushPowerup(new PowerSquare(200, 20, "blast"));
+	PowerupManager::pushPowerup(new PowerSquare(220, 20, "banana"));
 
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2 + 20, "big"));
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2 - 20, "megadeath"));
@@ -46,6 +47,8 @@ void DeveloperLevel0::initialize() {
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH-80, GAME_HEIGHT-20, names, 2));
 	names[0] = "wallhack", names[1] = "grenade";
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH-100, GAME_HEIGHT-20, names, 2));
+	names[0] = "banana", names[1] = "banana";
+	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH-120, GAME_HEIGHT-20, names, 2));
 	delete[] names;
 }
 

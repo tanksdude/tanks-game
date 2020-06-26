@@ -18,21 +18,18 @@ IndexBuffer* Bullet::ib;
 bool Bullet::initialized_GPU = false;
 
 const double Bullet::default_radius = 4;
-Bullet::Bullet(double x_, double y_, double r_, double a, double vel, double acc, char id_) { //TODO: make private?
+Bullet::Bullet(double x_, double y_, double a, char id_, long parentID) { //every bullet constructor does this stuff
+	initializeGPU();
 	this->x = x_;
 	this->y = y_;
-	this->r = r_;
 	this->angle = a;
-	this->velocity = vel;
-	this->acceleration = acc;
 	this->gameID = GameManager::getNextID();
 	this->teamID = id_;
+	this->parentID = parentID;
 	this->alpha = 100;
-
-	initializeGPU();
 }
 
-Bullet::Bullet(double x_, double y_, double r_, double a, double vel, double acc, char id_, std::vector<BulletPower*>* bp) : Bullet(x_,y_,r_,a,vel,acc,id_) {
+Bullet::Bullet(double x_, double y_, double a, char id_, long parentID, std::vector<BulletPower*>* bp) : Bullet(x_,y_,a,id_,parentID) {
 	bulletPowers.reserve(bp->size());
 	for (int i = 0; i < bp->size(); i++) {
 		bulletPowers.push_back(bp->at(i));
@@ -41,6 +38,41 @@ Bullet::Bullet(double x_, double y_, double r_, double a, double vel, double acc
 		bulletPowers[i]->initialize(this);
 	}
 	//bp not deleted
+}
+
+//probably just for banana bullet creation:
+Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_, long parentID, std::vector<BulletPower*>* bp, bool) : Bullet(x_,y_,a,id_,parentID,bp) {
+	this->r = r_;
+
+	this->velocity = vel * getBulletSpeedMultiplier(); //TODO: not sure this is wanted
+	this->initial_velocity = this->velocity;
+	this->acceleration = getBulletAcceleration();
+}
+
+//avoid using:
+Bullet::Bullet(double x_, double y_, double r_, double a, double vel, double acc, char id_, long parentID, std::vector<BulletPower*>* bp, bool) : Bullet(x_,y_,a,id_,parentID,bp) {
+	this->r = r_;
+
+	this->r = r_ * getBulletRadiusMultiplier();
+	this->velocity = vel * getBulletSpeedMultiplier();
+	this->initial_velocity = this->velocity;
+	this->acceleration = getBulletAcceleration();
+}
+
+//regular 1:
+Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_, long parentID) : Bullet(x_,y_,a,id_,parentID) {
+	this->r = r_;
+	this->velocity = vel;
+	this->initial_velocity = vel;
+	this->acceleration = 0;
+}
+
+//regular 2:
+Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_, long parentID, std::vector<BulletPower*>* bp) : Bullet(x_,y_,a,id_,parentID,bp) {
+	this->r = r_ * getBulletRadiusMultiplier();
+	this->velocity = vel * getBulletSpeedMultiplier();
+	this->initial_velocity = this->velocity;
+	this->acceleration = getBulletAcceleration();
 }
 
 Bullet::~Bullet() {
@@ -104,34 +136,81 @@ double Bullet::getAngle() {
 }
 
 void Bullet::move() {
-	bool modifiedMovement = false;
-	bool overridedMovement = false;
-	bool noMoreMovement = false;
+	velocity += acceleration;
+	x += velocity * cos(angle);
+	y += velocity * sin(angle);
+}
+
+double Bullet::getBulletSpeedMultiplier() {
+	//look at Tank::getTankFiringRateMultiplier()
+
+	double highest = 1;
+	double lowest = 1;
+	std::vector<double> stackList;
 
 	for (int i = 0; i < bulletPowers.size(); i++) {
-		if (bulletPowers[i]->modifiesMovement) {
-			if (bulletPowers[i]->modifiedMovementCanOnlyWorkIndividually && modifiedMovement) {
-				continue;
+		double value = bulletPowers[i]->getBulletSpeedMultiplier();
+		if (bulletPowers[i]->bulletSpeedStacks) {
+			stackList.push_back(value);
+		} else {
+			if (value < 1 && value < lowest) {
+				lowest = value;
+			} else if (value > 1 && value > highest) {
+				highest = value;
 			}
-			if (noMoreMovement) {
-				continue;
-			}
-			modifiedMovement = true;
-			if (bulletPowers[i]->overridesMovement) {
-				overridedMovement = true;
-			}
-			if (!bulletPowers[i]->modifiedMovementCanWorkWithOthers) {
-				noMoreMovement = true;
-			}
-			bulletPowers[i]->modifiedMovement(this);
 		}
 	}
 
-	if (!overridedMovement) {
-		velocity += acceleration;
-		x += velocity * cos(angle);
-		y += velocity * sin(angle);
+	double value = 1;
+	for (int i = 0; i < stackList.size(); i++) {
+		value *= stackList[i];
 	}
+
+	return highest * lowest * value;
+}
+
+double Bullet::getBulletRadiusMultiplier() {
+	//look at Tank::getTankFiringRateMultiplier()
+
+	double highest = 1;
+	double lowest = 1;
+	std::vector<double> stackList;
+
+	for (int i = 0; i < bulletPowers.size(); i++) {
+		double value = bulletPowers[i]->getBulletRadiusMultiplier();
+		if (bulletPowers[i]->bulletRadiusStacks) {
+			stackList.push_back(value);
+		} else {
+			if (value < 1 && value < lowest) {
+				lowest = value;
+			} else if (value > 1 && value > highest) {
+				highest = value;
+			}
+		}
+	}
+
+	double value = 1;
+	for (int i = 0; i < stackList.size(); i++) {
+		value *= stackList[i];
+	}
+	return highest * lowest * value;
+}
+
+double Bullet::getBulletAcceleration() {
+	//look at Tank::getTankFiringRateMultiplier()
+
+	double highest = 0;
+	double lowest = 0;
+	for (int i = 0; i < bulletPowers.size(); i++) {
+		double value = bulletPowers[i]->getBulletAcceleration();
+		if (value < 0 && value < lowest) {
+			lowest = value;
+		} else if (value > 0 && value > highest) {
+			highest = value;
+		}
+	}
+	return highest + lowest;
+	//return (abs(highest) > abs(lowest) ? highest : lowest);
 }
 
 void Bullet::powerCalculate() {
@@ -155,7 +234,19 @@ ColorValueHolder Bullet::getColor() {
 	if (bulletPowers.size() == 0) {
 		return defaultColor;
 	} else {
-		return ColorMixer::mix(&bulletPowers);
+		double highest = -1;
+		for (int i = 0; i < bulletPowers.size(); i++) {
+			if (bulletPowers[i]->getColorImportance() > highest) {
+				highest = bulletPowers[i]->getColorImportance();
+			}
+		}
+		std::vector<ColorValueHolder> mixingColors;
+		for (int i = 0; i < bulletPowers.size(); i++) {
+			if (bulletPowers[i]->getColorImportance() == highest) {
+				mixingColors.push_back(bulletPowers[i]->getColor());
+			}
+		}
+		return ColorMixer::mix(mixingColors.data(), mixingColors.size());
 	}
 }
 
@@ -206,7 +297,7 @@ void Bullet::drawBody(double xpos, double ypos) {
 	if (glIsEnabled(GL_BLEND)) {
 		shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), this->alpha/100);
 	} else {
-		if(alpha < 100) {
+		if (alpha < 100) {
 			double deathPercent = constrain<double>(alpha/100, 0, 1);
 			unsigned int deathVertices = Circle::numOfSides * deathPercent;
 

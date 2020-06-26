@@ -1,14 +1,19 @@
 #include "speedbulletpower.h"
 #include "speedtankpower.h"
 
-void SpeedBulletPower::initialize(Bullet*) { return; }
-void SpeedBulletPower::removeEffects(Bullet*) { return; }
+void SpeedBulletPower::initialize(Bullet* parent) {
+	//nothing
+}
+
+void SpeedBulletPower::removeEffects(Bullet* parent) {
+	//nothing
+}
 
 TankPower* SpeedBulletPower::makeTankPower() {
 	return new SpeedTankPower();
 }
 
-SpeedBulletPower::SpeedBulletPower(){
+SpeedBulletPower::SpeedBulletPower() {
 	timeLeft = 0;
 	maxTime = -1;
 }

@@ -1,11 +1,11 @@
 #include "invinciblenamedbulletpower.h"
 #include "invinciblenamedtankpower.h"
 
-void InvincibleNamedBulletPower::initialize(Bullet* b) {
+void InvincibleNamedBulletPower::initialize(Bullet* parent) {
 	//nothing
 }
 
-void InvincibleNamedBulletPower::removeEffects(Bullet * b) {
+void InvincibleNamedBulletPower::removeEffects(Bullet* parent) {
 	//nothing
 }
 
@@ -13,7 +13,7 @@ TankPower* InvincibleNamedBulletPower::makeTankPower() {
 	return new InvincibleNamedTankPower();
 }
 
-InvincibleNamedBulletPower::InvincibleNamedBulletPower(){
+InvincibleNamedBulletPower::InvincibleNamedBulletPower() {
 	timeLeft = 0;
 	maxTime = -1;
 }

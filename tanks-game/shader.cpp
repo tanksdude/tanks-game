@@ -21,7 +21,7 @@ void Shader::read_shader_src(const char* fname, std::vector<char>& buffer) {
 	std::ifstream in;
 	in.open(fname, std::ios::binary);
 
-	if(in.is_open()) {
+	if (in.is_open()) {
 		// Get the number of bytes stored in this file
 		in.seekg(0, std::ios::end);
 		size_t length = (size_t)in.tellg();

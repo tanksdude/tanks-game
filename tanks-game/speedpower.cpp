@@ -2,8 +2,6 @@
 #include "speedtankpower.h"
 #include "speedbulletpower.h"
 
-const bool SpeedPower::canBeInARandomLevel = true;
-
 TankPower* SpeedPower::makeTankPower() {
 	return new SpeedTankPower();
 }
@@ -24,8 +22,4 @@ Power* SpeedPower::factory() {
 
 SpeedPower::SpeedPower() {
 	//does nothing
-}
-
-SpeedPower::~SpeedPower() {
-	//no need
 }

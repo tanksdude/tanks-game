@@ -15,10 +15,9 @@ class BulletPower;
 //(note to self: a bulletpower would need to make a "child" of itself in the case of banana (delete a banana from list of bulletpowers), in order to have super strong memory management)
 //that would probably be really complex to fully implement (but simple enough to think about? maybe it is simple to implement) so that will wait
 
-class BulletPower : public InheritedPowerCommon{
+class BulletPower : public InheritedPowerCommon {
 	friend class PowerFunctionHelper;
 protected:
-public:
 	//double timeLeft = 0;
 	//double maxTime = -1; //bullet powers typically last forever; setting this to -1 treats it as lasting forever
 
@@ -37,11 +36,13 @@ public:
 		return (timeLeft <= 0);
 	}
 	virtual ColorValueHolder getColor() = 0;
+	virtual double getColorImportance() { return 0; }
 
+	virtual BulletPower* makeDuplicate() = 0;
 	virtual TankPower* makeTankPower() = 0;
 
 	bool modifiesMovement = false; //true if it, you know, modifies the movement
-	virtual void modifiedMovement(Bullet*) { return; } //default does nothing, obviously
+	virtual InteractionBoolHolder modifiedMovement(Bullet*) { return { false }; } //default does nothing, obviously
 	//precondition: nothing
 	bool overridesMovement = false; //true if the power completely changes how it moves; regular powers slightly modify movement (think homing) and still want basic bullet move
 	bool modifiedMovementCanWorkWithOthers = true; //false stops later powerups in list from activating
@@ -49,21 +50,21 @@ public:
 	//fix: have super override value? so the power can ensure that it and only it will activate (I don't think a power should have this kind of authority, but it might be needed)
 
 	bool modifiesEdgeCollision = false;
-	virtual PowerInteractionBoolHolder modifiedEdgeCollision(Bullet*) { return { false }; } //only the first false means something
+	virtual InteractionBoolHolder modifiedEdgeCollision(Bullet*) { return { false }; } //only the first false means something
 	//precondition: was out-of-bounds, is not necessarily out-of-bounds
 	bool overridesEdgeCollision = true;
 	bool modifiedEdgeCollisionCanWorkWithOthers = false; //options: either it bounces or temporarily stays outside, so it has no need to work with others; that makes the promise of powerup mixing kinda depressing
 	bool modifiedEdgeCollisionCanOnlyWorkIndividually = false;
 
 	bool modifiesCollisionWithTank = false;
-	virtual PowerInteractionBoolHolder modifiedCollisionWithTank(Bullet*, Tank*) { return { false, false }; }
+	virtual InteractionBoolHolder modifiedCollisionWithTank(Bullet*, Tank*) { return { false, false }; }
 	//precondition: hit tank, is not necessarily inside tank
 	bool overridesCollisionWithTank = true;
 	bool modifiedCollisionWithTankCanWorkWithOthers = true;
 	bool modifiedCollisionWithTankCanOnlyWorkIndividually = false;
 
 	bool modifiesCollisionWithWall = false;
-	virtual PowerInteractionBoolHolder modifiedCollisionWithWall(Bullet*, Wall*) { return { false, false }; }
+	virtual InteractionBoolHolder modifiedCollisionWithWall(Bullet*, Wall*) { return { false, false }; }
 	//precondition: hit wall, is not necessarily inside wall
 	bool overridesCollisionWithWall = true; //false means also use the default, which is just destroy the bullet if it collides
 	bool modifiedCollisionWithWallCanWorkWithOthers = true;
@@ -76,14 +77,14 @@ public:
 	//virtual void modifiedCollisionWithBullet(Bullet* parent, Bullet* other) { return; } //probably shouldn't be used
 
 	bool modifiesCollisionWithCircleHazard = false;
-	virtual PowerInteractionBoolHolder modifiedCollisionWithCircleHazard(Bullet*, CircleHazard*) { return { false, false }; }
+	virtual InteractionBoolHolder modifiedCollisionWithCircleHazard(Bullet*, CircleHazard*) { return { false, false }; }
 	//precondition: hit circlehazard, is not necessarily inside circlehazard
 	bool overridesCollisionWithCircleHazard = true; //false means also use the default, which means destroy the bullet if it collides
 	bool modifiedCollisionWithCircleHazardCanWorkWithOthers = true;
 	bool modifiedCollisionWithCircleHazardCanOnlyWorkIndividually = false;
 
 	bool modifiesCollisionWithRectHazard = false;
-	virtual PowerInteractionBoolHolder modifiedCollisionWithRectHazard(Bullet*, RectHazard*) { return { false, false }; }
+	virtual InteractionBoolHolder modifiedCollisionWithRectHazard(Bullet*, RectHazard*) { return { false, false }; }
 	//precondition: hit recthazard, is not necessarily inside recthazard
 	bool overridesCollisionWithRectHazard = true; //false means also use the default, which means destroy the bullet if it collides
 	bool modifiedCollisionWithRectHazardCanWorkWithOthers = true;
@@ -94,6 +95,12 @@ public:
 	bool overridesBulletDrawings = false;
 	bool modifiedBulletDrawingsCanWorkWithOthers = true;
 	bool modifiedBulletDrawingsCanOnlyWorkIndividually = false;
+
+	virtual double getBulletSpeedMultiplier() { return 1; }
+	bool bulletSpeedStacks = false;
+	virtual double getBulletRadiusMultiplier() { return 1; }
+	bool bulletRadiusStacks = false;
+	virtual double getBulletAcceleration() { return 0; }
 
 	virtual double getOffenseImportance() { return 0; } //"importance" = "override" value (when dealing with other powers)
 	virtual double getOffenseTier(Bullet*) { return 0; }

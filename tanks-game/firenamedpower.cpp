@@ -2,8 +2,6 @@
 #include "firenamedtankpower.h"
 #include "firenamedbulletpower.h"
 
-const bool FireNamedPower::canBeInARandomLevel = true;
-
 TankPower* FireNamedPower::makeTankPower() {
 	return new FireNamedTankPower();
 }
@@ -23,9 +21,5 @@ Power* FireNamedPower::factory() {
 }
 
 FireNamedPower::FireNamedPower() {
-	//nope
-}
-
-FireNamedPower::~FireNamedPower() {
-	//unlikely to ever need these
+	return;
 }

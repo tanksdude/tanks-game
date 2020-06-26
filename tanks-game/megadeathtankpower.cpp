@@ -4,6 +4,7 @@
 void MegaDeathTankPower::initialize(Tank* parent) {
 	//nothing
 }
+
 void MegaDeathTankPower::removeEffects(Tank* parent) {
 	//nothing
 }

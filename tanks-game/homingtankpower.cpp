@@ -4,6 +4,7 @@
 void HomingTankPower::initialize(Tank* parent) {
 	//nothing
 }
+
 void HomingTankPower::removeEffects(Tank* parent) {
 	//nothing
 }

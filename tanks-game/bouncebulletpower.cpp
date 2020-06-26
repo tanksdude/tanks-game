@@ -4,13 +4,12 @@
 
 const short BounceBulletPower::maxBounces = 16;
 
-PowerInteractionBoolHolder BounceBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
+InteractionBoolHolder BounceBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
 	if (abs(b->velocity) * Bullet::default_radius/b->r <= .5) {
 		if (PowerFunctionHelper::bounceGenericWithCorners(b, w)) {
 			bouncesLeft--;
 		}
-	}
-	else {
+	} else {
 		if (PowerFunctionHelper::bounceGeneric(b, w)) {
 			bouncesLeft--;
 		}
@@ -21,11 +20,11 @@ PowerInteractionBoolHolder BounceBulletPower::modifiedCollisionWithWall(Bullet* 
 		modifiesEdgeCollision = false;
 	}
 
-	return { this->bouncesLeft < 0, false };
+	return { (bouncesLeft < 0), false };
 }
-//TODO: need ability to delete just the bulletpower (needed? wanted? no because bounces should be reset for banana)
+//TODO: need ability to delete just the bulletpower (needed? wanted? no because bounces should be reset for banana (should it?))
 
-PowerInteractionBoolHolder BounceBulletPower::modifiedEdgeCollision(Bullet* b) {
+InteractionBoolHolder BounceBulletPower::modifiedEdgeCollision(Bullet* b) {
 	//the bullet can bounce off of edges twice in a single tick
 	//therefore, it can lose 2 bounces at once
 	//shouldn't ever have negative bounces, so need to check Y, then X, then Y if Y wasn't already checked, and check bouncesLeft after each edge bounce
@@ -59,7 +58,7 @@ PowerInteractionBoolHolder BounceBulletPower::modifiedEdgeCollision(Bullet* b) {
 		return { b->isFullyOutOfBounds() };
 	}
 
-	if(!bouncedY && b->isPartiallyOutOfBounds()) {
+	if (!bouncedY && b->isPartiallyOutOfBounds()) {
 		if (PowerFunctionHelper::bounceEdgeGenericY(b)) {
 			bouncesLeft--;
 			//bouncedY = true;
@@ -74,24 +73,32 @@ PowerInteractionBoolHolder BounceBulletPower::modifiedEdgeCollision(Bullet* b) {
 	return { b->isFullyOutOfBounds() };
 }
 
-void BounceBulletPower::initialize(Bullet* b) {
-	//b->velocity /= 2; //no longer needs this
+void BounceBulletPower::initialize(Bullet* parent) {
+	//nothing
 }
 
-void BounceBulletPower::removeEffects(Bullet * b) {
-	//b->velocity *= 2;
+void BounceBulletPower::removeEffects(Bullet* parent) {
+	//nothing
+}
+
+BulletPower* BounceBulletPower::makeDuplicate() {
+	return new BounceBulletPower(this->bouncesLeft);
 }
 
 TankPower* BounceBulletPower::makeTankPower() {
 	return new BounceTankPower();
 }
 
-BounceBulletPower::BounceBulletPower(){
+BounceBulletPower::BounceBulletPower() : BounceBulletPower(BounceBulletPower::maxBounces) {}
+
+BounceBulletPower::BounceBulletPower(short bounces) {
 	timeLeft = 0;
 	maxTime = -1;
 
-	bouncesLeft = BounceBulletPower::maxBounces;
-	modifiesCollisionWithWall = true;
-	//modifiedCollisionWithWallCanWorkWithOthers = false;
-	modifiesEdgeCollision = true;
+	this->bouncesLeft = bounces;
+	if (bounces > 0) {
+		modifiesCollisionWithWall = true;
+		//modifiedCollisionWithWallCanWorkWithOthers = false;
+		modifiesEdgeCollision = true;
+	}
 }

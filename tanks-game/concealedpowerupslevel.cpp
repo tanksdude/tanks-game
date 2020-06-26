@@ -8,6 +8,16 @@
 #include "mylib.h"
 #include "resetthings.h"
 
+std::unordered_map<std::string, float> ConcealedPowerupsLevel::getWeights() {
+	std::unordered_map<std::string, float> weights;
+	weights.insert({ "vanilla", .5f });
+	weights.insert({ "random-vanilla", .5f });
+	weights.insert({ "old", .5f });
+	weights.insert({ "random-old", .5f });
+	weights.insert({ "random", .5f });
+	return weights;
+}
+
 void ConcealedPowerupsLevel::initialize() {
 	int randPos = randFunc() * 5;
 	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40, randPos);
@@ -19,13 +29,13 @@ void ConcealedPowerupsLevel::initialize() {
 		WallManager::pushWall(new Wall(pos.x, pos.y, 32, 128, color));
 	}
 	
-	PositionHolder pos = RandomLevel::getSymmetricWallPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, 90, 160, 20);
+	PositionHolder pos = RandomLevel::getSymmetricWallPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, 70, 160, 20);
 	std::string* paras = new std::string[4]{std::to_string(pos.x), std::to_string(pos.y), std::to_string(160), std::to_string(20)};
-	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("horizontal lightning")(4, paras));
+	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "horizontal lightning")(4, paras));
 	delete[] paras;
-	pos = RandomLevel::getSymmetricWallPositions_UD(1, GAME_WIDTH/2, GAME_HEIGHT/2, 90, 160, 20);
+	pos = RandomLevel::getSymmetricWallPositions_UD(1, GAME_WIDTH/2, GAME_HEIGHT/2, 70, 160, 20);
 	paras = new std::string[4]{std::to_string(pos.x), std::to_string(pos.y), std::to_string(160), std::to_string(20)};
-	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("horizontal lightning")(4, paras));
+	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "horizontal lightning")(4, paras));
 	delete[] paras;
 
 	pos = RandomLevel::getSymmetricWallPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 80, 20, GAME_HEIGHT-70*2);

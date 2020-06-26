@@ -4,6 +4,7 @@ class RectHazard;
 #include "hazard.h"
 #include "rect.h"
 #include <string>
+#include <unordered_map>
 //#include "recthazardpower.h"
 #include "tank.h"
 #include "bullet.h"
@@ -24,6 +25,8 @@ struct RectFactoryInformation {
 	}
 	RectFactoryInformation(bool wallLeft, bool wallRight, bool wallTop, bool wallBottom)
 	: RectFactoryInformation(wallLeft, wallRight, wallTop, wallBottom, true) {}
+	RectFactoryInformation()
+	: RectFactoryInformation(false, false, false, false) {}
 };
 
 //this is intended for hazard randomization; if the actual hazard type is known, then the constructor will be known
@@ -42,6 +45,9 @@ public:
 	double getHighestDefenseImportance();
 	double getHighestDefenseTier(double importance);
 public:
+	virtual std::vector<std::string> getHazardTypes();
+	virtual std::unordered_map<std::string, float> getWeights(); //intended range: (0,1]
+
 	double getOffenseTier();
 	double getDefenseTier();
 	virtual double getDefaultOffense() = 0;
@@ -63,14 +69,14 @@ public:
 	//virtual bool reasonableLocation() = 0;
 
 	virtual std::string getName() = 0;
-	static std::string getClassName();
+	//static std::string getClassName();
 	//virtual bool initializeGPU() = 0;
 	virtual void draw() = 0;
 
 	static RectHazard* factory(int argc, std::string* argv);
-	static int getFactoryArgumentCount();
-	//static RectHazardConstructionTypes getConstructionType();
-	virtual RectFactoryInformation getFactoryInformation() {
-		return { false, false, false, false, false };
-	}
+	static RectHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv);
+	virtual int getFactoryArgumentCount() = 0;
+	virtual RectHazardConstructionTypes getConstructionType() = 0;
+	virtual RectFactoryInformation getFactoryInformation() = 0;
+	virtual ~RectHazard() { return; }
 };

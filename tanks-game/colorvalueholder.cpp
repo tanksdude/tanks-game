@@ -8,6 +8,6 @@ ColorValueHolder::ColorValueHolder(float r, float g, float b) {
 	A = 1;
 }
 
-ColorValueHolder::ColorValueHolder(float r, float g, float b, float a) : ColorValueHolder(r, g, b){
+ColorValueHolder::ColorValueHolder(float r, float g, float b, float a) : ColorValueHolder(r, g, b) {
 	A = constrain<float>(a, 0.0, 1.0); //small inefficiency because A is defined twice but what can I do other than copying code
 }

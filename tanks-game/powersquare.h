@@ -13,7 +13,7 @@ class PowerSquare;
 
 class PowerSquare : public Rect, public GameThing {
 public:
-	Power** heldPower; //array of pointers (can do a vector for simplicity but I don't foresee a powersquare getting more powers)
+	Power** heldPowers; //array of pointers (can do a vector for simplicity but I don't foresee a powersquare getting more powers)
 	short numOfPowers;
 
 public:
@@ -28,7 +28,7 @@ private:
 	static IndexBuffer* ib_main; //the main thing
 	static IndexBuffer* ib_outline; //the extra bit when numOfPowers >= 2
 	static bool initialized_GPU;
-public:
+
 	static bool initializeGPU();
 	static bool uninitializeGPU();
 
@@ -38,6 +38,7 @@ public:
 	PowerSquare(double x, double y, std::string name);
 	PowerSquare(double x, double y, std::string* names, int num);
 	PowerSquare(double x, double y, std::string type, std::string name);
+	PowerSquare(double x, double y, std::string type, std::string* names, int num);
 	PowerSquare(double x, double y, std::string* types, std::string* names, int num);
 
 	ColorValueHolder getColor();

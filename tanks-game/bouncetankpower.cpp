@@ -1,18 +1,16 @@
 #include "bouncetankpower.h"
 #include "bouncebulletpower.h"
 
-//not reducing size on the bullet or tank this time because I only did that originally to make it different from others
+//not reducing size on the bullet or tank in this version because I originally only did that to make it different from others
 //(I think that was literally the only reason)
 
 void BounceTankPower::initialize(Tank* parent) {
-	//parent->r /= 2;
-}
-void BounceTankPower::removeEffects(Tank* parent) {
-	//parent->r *= 2;
+	//nothing
 }
 
-double BounceTankPower::getBulletSpeedMultiplier() { return .5; }
-//double BounceTankPower::getBulletRadiusMultiplier() { return .5; } //set back to 1 if parent's radius doesn't decrease
+void BounceTankPower::removeEffects(Tank* parent) {
+	//nothing
+}
 
 BulletPower* BounceTankPower::makeBulletPower() {
 	return new BounceBulletPower();

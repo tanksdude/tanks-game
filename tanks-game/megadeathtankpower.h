@@ -5,23 +5,18 @@ class MegaDeathTankPower;
 #include "megadeathpower.h"
 
 class MegaDeathTankPower : public TankPower {
-
 public:
-	void initialize(Tank* parent);
-	void removeEffects(Tank* parent);
+	virtual void initialize(Tank* parent) override;
+	virtual void removeEffects(Tank* parent) override;
 
 	virtual ColorValueHolder getColor() {
 		return MegaDeathPower::getClassColor();
 	}
 
+	virtual TankPower* makeDuplicate() { return new MegaDeathTankPower(); }
 	virtual BulletPower* makeBulletPower();
 
-	virtual double getShootingMultiplier() { return 4; }
-	virtual double getBulletSpeedMultiplier() { return 1.0/4; }
-	//with bulletSizeMultiplierPerTick = 257.0/256.0, 1.0/128 or 1.0/64 might be closer to what I originally thought of
-	//virtual double getBulletRadiusMultiplier() { return 1; }
-	virtual double getBulletAcceleration() { return 1.0/64; }
-	//with bulletSizeMultiplierPerTick = 257.0/256.0, 1.0/512 or 1.0/1024 (with a smaller radius multiplier per tick) might be closer to what I orignially thought of
+	virtual double getTankFiringRateMultiplier() override { return 4; }
 
 	MegaDeathTankPower();
 };

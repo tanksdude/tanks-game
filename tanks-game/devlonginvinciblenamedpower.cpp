@@ -2,8 +2,6 @@
 #include "devlonginvinciblenamedtankpower.h"
 #include "devlonginvinciblenamedbulletpower.h"
 
-const bool DevLongInvincibleNamedPower::canBeInARandomLevel = false;
-
 TankPower* DevLongInvincibleNamedPower::makeTankPower() {
 	return new DevLongInvincibleNamedTankPower();
 }
@@ -23,9 +21,5 @@ Power* DevLongInvincibleNamedPower::factory() {
 }
 
 DevLongInvincibleNamedPower::DevLongInvincibleNamedPower() {
-	return;
-}
-
-DevLongInvincibleNamedPower::~DevLongInvincibleNamedPower() {
 	return;
 }

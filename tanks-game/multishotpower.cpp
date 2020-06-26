@@ -2,8 +2,6 @@
 #include "multishottankpower.h"
 #include "multishotbulletpower.h"
 
-const bool MultishotPower::canBeInARandomLevel = true;
-
 TankPower* MultishotPower::makeTankPower() {
 	return new MultishotTankPower();
 }
@@ -23,9 +21,5 @@ Power* MultishotPower::factory() {
 }
 
 MultishotPower::MultishotPower() {
-	//does nothing
-}
-
-MultishotPower::~MultishotPower() {
-	//no need
+	return;
 }

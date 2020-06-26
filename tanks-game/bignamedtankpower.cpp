@@ -4,6 +4,7 @@
 void BigNamedTankPower::initialize(Tank* parent) {
 	//nothing
 }
+
 void BigNamedTankPower::removeEffects(Tank* parent) {
 	//nothing
 }
@@ -15,6 +16,4 @@ BulletPower* BigNamedTankPower::makeBulletPower() {
 BigNamedTankPower::BigNamedTankPower() {
 	maxTime = 500;
 	timeLeft = 500;
-
-	bulletRadiusStacks = true;
 }

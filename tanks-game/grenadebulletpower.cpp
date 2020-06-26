@@ -3,7 +3,7 @@
 
 const double GrenadeBulletPower::degradeAmount = .875;
 
-PowerInteractionBoolHolder GrenadeBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
+InteractionBoolHolder GrenadeBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
 	if (b->velocity <= 0) {
 		b->alpha -= degradeAmount;
 		return { b->isDead(), false };
@@ -18,7 +18,7 @@ PowerInteractionBoolHolder GrenadeBulletPower::modifiedCollisionWithWall(Bullet*
 	}
 }
 
-void GrenadeBulletPower::modifiedMovement(Bullet* b) {
+InteractionBoolHolder GrenadeBulletPower::modifiedMovement(Bullet* b) {
 	if (b->velocity == 0) {
 		b->alpha -= degradeAmount;
 		b->r *= 65/64.0;
@@ -27,13 +27,14 @@ void GrenadeBulletPower::modifiedMovement(Bullet* b) {
 		b->velocity = 0;
 		b->acceleration = 0;
 	}
+	return { false };
 }
 
-void GrenadeBulletPower::initialize(Bullet* b) {
+void GrenadeBulletPower::initialize(Bullet* parent) {
 	//nothing
 }
 
-void GrenadeBulletPower::removeEffects(Bullet* b) {
+void GrenadeBulletPower::removeEffects(Bullet* parent) {
 	//nothing
 }
 
@@ -41,7 +42,7 @@ TankPower* GrenadeBulletPower::makeTankPower() {
 	return new GrenadeTankPower();
 }
 
-GrenadeBulletPower::GrenadeBulletPower(){
+GrenadeBulletPower::GrenadeBulletPower() {
 	timeLeft = 0;
 	maxTime = -1;
 

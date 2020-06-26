@@ -1,15 +1,23 @@
 #pragma once
 #include "power.h"
-#include "tankpower.h"
-#include "bulletpower.h"
 
-class BlastPower : public Power{
-protected:
-	//static ColorValueHolder classColor;
-
+class BlastPower : public Power {
 public:
-	const static bool canBeInARandomLevel;
-	//bool getCanBeMixed() { return true; }
+	virtual std::vector<std::string> getPowerTypes() override {
+		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "random" };
+		return types;
+	}
+	virtual std::unordered_map<std::string, float> getWeights() override {
+		std::unordered_map<std::string, float> weights;
+		weights.insert({ "vanilla", .5f });
+		weights.insert({ "random-vanilla", .5f });
+		weights.insert({ "random", .5f });
+		return weights;
+	}
+	virtual std::vector<std::string> getPowerAttributes() override {
+		std::vector<std::string> attributes = std::vector<std::string>{ "mix" };
+		return attributes;
+	}
 
 	virtual std::string getName() { return BlastPower::getClassName(); }
 	static std::string getClassName() { return "blast"; }
@@ -21,6 +29,5 @@ public:
 	//virtual HazardPower* makeHazardPower();
 
 	BlastPower();
-	~BlastPower();
 	static Power* factory();
 };

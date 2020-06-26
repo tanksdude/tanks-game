@@ -2,8 +2,6 @@
 #include "blasttankpower.h"
 #include "blastbulletpower.h"
 
-const bool BlastPower::canBeInARandomLevel = true;
-
 TankPower* BlastPower::makeTankPower() {
 	return new BlastTankPower();
 }
@@ -23,9 +21,5 @@ Power* BlastPower::factory() {
 }
 
 BlastPower::BlastPower() {
-	//nope
-}
-
-BlastPower::~BlastPower() {
-	//unlikely to ever need these
+	return;
 }

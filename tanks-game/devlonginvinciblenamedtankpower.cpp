@@ -2,10 +2,11 @@
 #include "devlonginvinciblenamedbulletpower.h"
 
 void DevLongInvincibleNamedTankPower::initialize(Tank* parent) {
-	return;
+	//nothing
 }
+
 void DevLongInvincibleNamedTankPower::removeEffects(Tank* parent) {
-	return;
+	//nothing
 }
 
 BulletPower* DevLongInvincibleNamedTankPower::makeBulletPower() {

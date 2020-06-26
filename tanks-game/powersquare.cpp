@@ -32,39 +32,47 @@ PowerSquare::PowerSquare(double x_, double y_) {
 	initializeGPU();
 }
 
-PowerSquare::PowerSquare(double x_, double y_, std::string name) : PowerSquare(x_, y_){
+PowerSquare::PowerSquare(double x_, double y_, std::string name) : PowerSquare(x_, y_) {
 	numOfPowers = 1;
-	heldPower = new Power*[1];
-	heldPower[0] = PowerupManager::getPowerFactory(name)();
+	heldPowers = new Power*[1];
+	heldPowers[0] = PowerupManager::getPowerFactory("vanilla", name)();
 }
 
-PowerSquare::PowerSquare(double x_, double y_, std::string* names, int num) : PowerSquare(x_, y_){
+PowerSquare::PowerSquare(double x_, double y_, std::string* names, int num) : PowerSquare(x_, y_) {
 	numOfPowers = num;
-	heldPower = new Power*[num];
+	heldPowers = new Power*[num];
 	for (int i = 0; i < num; i++) {
-		heldPower[i] = PowerupManager::getPowerFactory(names[i])();
+		heldPowers[i] = PowerupManager::getPowerFactory("vanilla", names[i])();
 	}
 }
 
 PowerSquare::PowerSquare(double x_, double y_, std::string type, std::string name) : PowerSquare(x_, y_) {
 	numOfPowers = 1;
-	heldPower = new Power*[1];
-	heldPower[0] = PowerupManager::getSpecialPowerFactory(type, name)();
+	heldPowers = new Power*[1];
+	heldPowers[0] = PowerupManager::getPowerFactory(type, name)();
+}
+
+PowerSquare::PowerSquare(double x_, double y_, std::string type, std::string* names, int num) : PowerSquare(x_, y_) {
+	numOfPowers = num;
+	heldPowers = new Power*[num];
+	for (int i = 0; i < num; i++) {
+		heldPowers[i] = PowerupManager::getPowerFactory(type, names[i])();
+	}
 }
 
 PowerSquare::PowerSquare(double x_, double y_, std::string* types, std::string* names, int num) : PowerSquare(x_, y_) {
 	numOfPowers = num;
-	heldPower = new Power*[num];
+	heldPowers = new Power*[num];
 	for (int i = 0; i < num; i++) {
-		heldPower[i] = PowerupManager::getSpecialPowerFactory(types[i], names[i])();
+		heldPowers[i] = PowerupManager::getPowerFactory(types[i], names[i])();
 	}
 }
 
 PowerSquare::~PowerSquare() {
 	for (int i = 0; i < numOfPowers; i++) {
-		delete heldPower[i];
+		delete heldPowers[i];
 	}
-	delete[] heldPower;
+	delete[] heldPowers;
 
 	//uninitializeGPU();
 }
@@ -157,14 +165,27 @@ bool PowerSquare::uninitializeGPU() {
 
 ColorValueHolder PowerSquare::getColor() {
 	if (numOfPowers == 1) {
-		return heldPower[0]->getColor();
+		return heldPowers[0]->getColor();
+	} else {
+		double highest = -1;
+		for (int i = 0; i < numOfPowers; i++) {
+			if (heldPowers[i]->getColorImportance() > highest) {
+				highest = heldPowers[i]->getColorImportance();
+			}
+		}
+		std::vector<ColorValueHolder> mixingColors;
+		for (int i = 0; i < numOfPowers; i++) {
+			if (heldPowers[i]->getColorImportance() == highest) {
+				mixingColors.push_back(heldPowers[i]->getColor());
+			}
+		}
+		return ColorMixer::mix(mixingColors.data(), mixingColors.size());
 	}
-	return ColorMixer::mix(heldPower, numOfPowers);
 }
 
 void PowerSquare::givePower(Tank* t) {
 	for (int i = 0; i < numOfPowers; i++) {
-		t->tankPowers.push_back(heldPower[i]->makeTankPower());
+		t->tankPowers.push_back(heldPowers[i]->makeTankPower());
 		t->tankPowers[t->tankPowers.size()-1]->initialize(t);
 	}
 	t->determineShootingAngles();

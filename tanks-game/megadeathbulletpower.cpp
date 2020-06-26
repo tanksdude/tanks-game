@@ -15,13 +15,14 @@ void MegaDeathBulletPower::tick(Bullet* b) {
 	}
 }
 
-PowerInteractionBoolHolder MegaDeathBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
+InteractionBoolHolder MegaDeathBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
 	//tick() happens before this, so modifiesCollisionWithWall will only be set to true if the bullet can destroy walls
 	return { false, true };
 }
 
-void MegaDeathBulletPower::modifiedMovement(Bullet* b) {
+InteractionBoolHolder MegaDeathBulletPower::modifiedMovement(Bullet* b) {
 	b->r *= bulletSizeMultiplierPerTick;
+	return { false };
 }
 
 double MegaDeathBulletPower::getOffenseTier(Bullet* b) {
@@ -36,11 +37,11 @@ double MegaDeathBulletPower::getDefenseTier(Bullet* b) {
 	return value;
 }
 
-void MegaDeathBulletPower::initialize(Bullet* b) {
+void MegaDeathBulletPower::initialize(Bullet* parent) {
 	//nothing
 }
 
-void MegaDeathBulletPower::removeEffects(Bullet* b) {
+void MegaDeathBulletPower::removeEffects(Bullet* parent) {
 	//nothing
 }
 
@@ -48,7 +49,7 @@ TankPower* MegaDeathBulletPower::makeTankPower() {
 	return new MegaDeathTankPower();
 }
 
-MegaDeathBulletPower::MegaDeathBulletPower(){
+MegaDeathBulletPower::MegaDeathBulletPower() {
 	timeLeft = 0;
 	maxTime = -1;
 

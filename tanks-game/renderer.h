@@ -34,6 +34,7 @@ private:
 
 public:
 	static Shader* getShader(std::string);
+	static void BeginningStuff();
 	static void Clear();
 	static void Clear(int bits);
 	static void Initialize();

@@ -5,18 +5,16 @@ class HomingTankPower;
 #include "homingpower.h"
 
 class HomingTankPower : public TankPower {
-
 public:
-	void initialize(Tank* parent);
-	void removeEffects(Tank* parent);
+	virtual void initialize(Tank* parent) override;
+	virtual void removeEffects(Tank* parent) override;
 
 	virtual ColorValueHolder getColor() {
 		return HomingPower::getClassColor();
 	}
 
+	virtual TankPower* makeDuplicate() { return new HomingTankPower(); }
 	virtual BulletPower* makeBulletPower();
-
-	virtual double getBulletSpeedMultiplier() { return .5; }
 
 	HomingTankPower();
 };

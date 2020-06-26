@@ -1,15 +1,21 @@
 #pragma once
 #include "power.h"
-#include "tankpower.h"
-#include "bulletpower.h"
 
-class DevLongInvincibleNamedPower : public Power{
-protected:
-	//static ColorValueHolder classColor;
-
+class DevLongInvincibleNamedPower : public Power {
 public:
-	const static bool canBeInARandomLevel;
-	//bool getCanBeMixed() { return true; }
+	virtual std::vector<std::string> getPowerTypes() override {
+		std::vector<std::string> types = std::vector<std::string>{ "dev" }; //no random-dev
+		return types;
+	}
+	virtual std::unordered_map<std::string, float> getWeights() override {
+		std::unordered_map<std::string, float> weights;
+		weights.insert({ "dev", 0.0f }); //this should not appear, like, ever
+		return weights;
+	}
+	virtual std::vector<std::string> getPowerAttributes() override {
+		std::vector<std::string> attributes = std::vector<std::string>{ "mix" };
+		return attributes;
+	}
 
 	virtual std::string getName() { return DevLongInvincibleNamedPower::getClassName(); }
 	static std::string getClassName() { return "longinvincible"; }
@@ -21,6 +27,5 @@ public:
 	//virtual HazardPower* makeHazardPower();
 
 	DevLongInvincibleNamedPower();
-	~DevLongInvincibleNamedPower();
 	static Power* factory();
 };

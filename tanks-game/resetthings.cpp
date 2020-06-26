@@ -1,4 +1,6 @@
 #include "resetthings.h"
+#include "gamemanager.h"
+#include "endgamehandler.h"
 #include "constants.h"
 #include "tankmanager.h"
 #include "bulletmanager.h"
@@ -7,8 +9,11 @@
 #include "hazardmanager.h"
 #include "levelmanager.h"
 #include "mylib.h"
+#include <iostream>
 
 void ResetThings::reset(int) {
+	EndGameHandler::finalizeScores();
+
 	TankManager::tanks[0]->resetThings(20, GAME_HEIGHT/2, 0, TankManager::tanks[0]->getTeamID(), TankManager::tanks[0]->getName());
 	TankManager::tanks[1]->resetThings(GAME_WIDTH - 20, GAME_HEIGHT/2, PI, TankManager::tanks[1]->getTeamID(), TankManager::tanks[1]->getName());
 
@@ -20,25 +25,34 @@ void ResetThings::reset(int) {
 	LevelManager::clearLevels();
 
 #if _DEBUG
-	LevelManager::pushSpecialLevel("dev", "dev0");
+	LevelManager::pushLevel("dev", "dev0");
 #else
-	int randLevel = randFunc() * LevelManager::getNumLevelTypes();
-	std::string levelName = LevelManager::getLevelName(randLevel);
-	if (levelName != "default random" || levelName == "empty") {
-		randLevel = randFunc() * LevelManager::getNumLevelTypes();
-		std::string levelName = LevelManager::getLevelName(randLevel);
-		if (levelName == "empty") {
-			randLevel = randFunc() * LevelManager::getNumLevelTypes();
-			std::string levelName = LevelManager::getLevelName(randLevel);
-		}
+	std::vector<float> levelWeights;
+	levelWeights.reserve(LevelManager::getNumLevelTypes("random-vanilla"));
+	for (int i = 0; i < LevelManager::getNumLevelTypes("random-vanilla"); i++) {
+		std::string n = LevelManager::getLevelName("random-vanilla", i);
+		Level* l = LevelManager::getLevelFactory("random-vanilla", n)();
+		levelWeights.push_back(l->getWeights()["random-vanilla"]);
+		delete l;
 	}
-	LevelManager::pushLevel(levelName);
+	int levelIndex = weightedSelect<float>(levelWeights.data(), levelWeights.size());
+	std::string levelName = LevelManager::getLevelName("random-vanilla", levelIndex);
+	LevelManager::pushLevel("random-vanilla", levelName);
+
+	/*
+	for (int i = 0; i < levelWeights.size(); i++) {
+		std::cout << levelWeights[i] << ", ";
+	}
+	std::cout << levelIndex << ", " << levelName << std::endl;
+	*/
 #endif
 
 	//initialize levels from LevelManager level list
 	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
 		LevelManager::levels[i]->initialize();
 	}
+
+	GameManager::Reset();
 }
 
 void ResetThings::firstReset() {

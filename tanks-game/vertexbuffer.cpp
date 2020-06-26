@@ -1,7 +1,7 @@
 #include "vertexbuffer.h"
 #include <GL/glew.h>
 
-VertexBuffer::VertexBuffer(const void* data, unsigned int size) : VertexBuffer(data, size, GL_DYNAMIC_DRAW){
+VertexBuffer::VertexBuffer(const void* data, unsigned int size) : VertexBuffer(data, size, GL_DYNAMIC_DRAW) {
 	//nothing
 }
 

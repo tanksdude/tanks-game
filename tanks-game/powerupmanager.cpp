@@ -3,14 +3,19 @@
 
 std::vector<PowerSquare*> PowerupManager::powerups; //active powersquares
 std::unordered_map<std::string, std::unordered_map<std::string, PowerFunction>> PowerupManager::powerLookup;
-std::unordered_map<std::string, std::vector<PowerFunction>> PowerupManager::powerList;
 std::unordered_map<std::string, std::vector<std::string>> PowerupManager::powerNameList;
 
 void PowerupManager::initialize() {
 	powerLookup.insert({ "vanilla", std::unordered_map<std::string, PowerFunction>() });
-	powerLookup.insert({ "vanilla-extra", std::unordered_map<std::string, PowerFunction>() });
-	powerLookup.insert({ "random", std::unordered_map<std::string, PowerFunction>() });
+	powerLookup.insert({ "vanilla-extra", std::unordered_map<std::string, PowerFunction>() }); //shotgun, mines, tracking, fire?, life?
+	powerLookup.insert({ "random-vanilla", std::unordered_map<std::string, PowerFunction>() });
+	powerLookup.insert({ "random", std::unordered_map<std::string, PowerFunction>() }); //general random (requires the power to manually insert itself here)
+	powerLookup.insert({ "old", std::unordered_map<std::string, PowerFunction>() }); //probably just includes the versions of the powers from JS
+	powerLookup.insert({ "random-old", std::unordered_map<std::string, PowerFunction>() });
 	powerLookup.insert({ "dev", std::unordered_map<std::string, PowerFunction>() });
+	powerLookup.insert({ "random-dev", std::unordered_map<std::string, PowerFunction>() }); //would this be used?
+	powerLookup.insert({ "supermix", std::unordered_map<std::string, PowerFunction>() }); //these powerups are for godmode
+	powerLookup.insert({ "supermix-vanilla", std::unordered_map<std::string, PowerFunction>() }); //(godmode actually uses this one)
 }
 
 PowerSquare* PowerupManager::getPowerup(int index) {
@@ -35,52 +40,36 @@ void PowerupManager::clearPowerups() {
 
 
 void PowerupManager::addPowerFactory(PowerFunction factory) {
-	powerList["vanilla"].push_back(factory);
 	Power* p = factory();
-	powerLookup["vanilla"].insert({ p->getName(), factory });
-	powerNameList["vanilla"].push_back(p->getName());
-	delete p;
-}
-
-PowerFunction PowerupManager::getPowerFactory(std::string name) {
-	return powerLookup["vanilla"][name];
-}
-
-std::string PowerupManager::getPowerName(int index) {
-	return powerNameList["vanilla"][index];
-}
-
-int PowerupManager::getNumPowerTypes() {
-	return powerNameList["vanilla"].size();
-}
-
-void PowerupManager::addSpecialPowerFactory(std::string type, PowerFunction factory) {
-	if (powerLookup.find(type) == powerLookup.end()) {
-		powerLookup.insert({ type, std::unordered_map<std::string, PowerFunction>() });
+	std::vector<std::string> types = p->getPowerTypes();
+	for (int i = 0; i < types.size(); i++) {
+		/*
+		//is this necessary?
+		if (powerLookup.find(types[i]) == powerLookup.end()) {
+			powerLookup.insert({ types[i], std::unordered_map<std::string, PowerFunction>() });
+		}
+		*/
+		powerLookup[types[i]].insert({ p->getName(), factory });
+		powerNameList[types[i]].push_back(p->getName());
 	}
-
-	powerList[type].push_back(factory);
-	Power* p = factory();
-	powerLookup[type].insert({ p->getName(), factory });
-	powerNameList[type].push_back(p->getName());
 	delete p;
 }
 
-PowerFunction PowerupManager::getSpecialPowerFactory(std::string type, std::string name) {
+PowerFunction PowerupManager::getPowerFactory(std::string type, std::string name) {
 	if (powerLookup.find(type) == powerLookup.end()) {
 		throw std::domain_error("power type \"" + type + "\" unknown!");
 	}
 	return powerLookup[type][name];
 }
 
-std::string PowerupManager::getSpecialPowerName(std::string type, int index) {
+std::string PowerupManager::getPowerName(std::string type, int index) {
 	if (powerLookup.find(type) == powerLookup.end()) {
 		throw std::domain_error("power type \"" + type + "\" unknown!");
 	}
 	return powerNameList[type][index];
 }
 
-int PowerupManager::getNumSpecialPowerTypes(std::string type) {
+int PowerupManager::getNumPowerTypes(std::string type) {
 	if (powerLookup.find(type) == powerLookup.end()) {
 		throw std::domain_error("power type \"" + type + "\" unknown!");
 	}

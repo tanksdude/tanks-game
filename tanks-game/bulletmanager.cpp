@@ -1,7 +1,8 @@
 #include "bulletmanager.h"
 
 std::vector<Bullet*> BulletManager::bullets;
-int BulletManager::maxBullets = 800;
+int BulletManager::maxBullets = 2048;
+bool BulletManager::limitBullets = false;
 
 void BulletManager::initialize() {
 	bullets.reserve(4096);
@@ -14,6 +15,11 @@ Bullet* BulletManager::getBullet(int index) {
 
 void BulletManager::pushBullet(Bullet* b) {
 	bullets.push_back(b);
+	if (limitBullets) {
+		while (bullets.size() > maxBullets) {
+			bullets.erase(bullets.begin() + 0);
+		}
+	}
 }
 
 void BulletManager::deleteBullet(int index) {

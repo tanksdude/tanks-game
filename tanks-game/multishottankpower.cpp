@@ -5,6 +5,7 @@
 void MultishotTankPower::initialize(Tank* parent) {
 	//deals with cannon points; nothing to initialize
 }
+
 void MultishotTankPower::removeEffects(Tank* parent) {
 	//regenerate cannon points?
 }

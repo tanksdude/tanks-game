@@ -5,9 +5,12 @@
 //#include "constants.h"
 #include <math.h>
 #include "mylib.h"
+#include "point.h"
 #include "tank.h"
+#include "tankmanager.h"
 #include "bulletmanager.h"
 #include "wallmanager.h"
+#include "hazardmanager.h"
 #include "collisionhandler.h"
 
 VertexArray* StationaryTurret::va;
@@ -17,7 +20,7 @@ VertexArray* StationaryTurret::cannon_va;
 VertexBuffer* StationaryTurret::cannon_vb;
 bool StationaryTurret::initialized_GPU = false;
 
-StationaryTurret::StationaryTurret(double xpos, double ypos, double angle) {
+StationaryTurret::StationaryTurret(double xpos, double ypos, double angle, bool) {
 	x = xpos;
 	y = ypos;
 	this->angle = angle;
@@ -27,11 +30,14 @@ StationaryTurret::StationaryTurret(double xpos, double ypos, double angle) {
 
 	tickCycle = 100; //100 is JS default (because of shooting speed) and 200 just looks weird
 	maxState = 3;
-	stateMultiplier = new double[maxState] {2, 1, 2};
-	stateColors = new ColorValueHolder[maxState] { {.5f, .5f, .5f}, {1.0f, 0x22/255.0, 0x11/255.0}, {0, 0.5f, 1.0f} };
+	stateMultiplier = new double[maxState]{2, 1, 2};
+	stateColors = new ColorValueHolder[maxState]{ {.5f, .5f, .5f}, {1.0f, 0x22/255.0, 0x11/255.0}, {0, 0.5f, 1.0f} };
 
 	canAcceptPowers = false;
+}
 
+StationaryTurret::StationaryTurret(double xpos, double ypos, double angle)
+: StationaryTurret(xpos, ypos, angle, true) {
 	initializeGPU();
 }
 
@@ -132,17 +138,58 @@ void StationaryTurret::tick() {
 		}
 	}
 	if (mustShoot) {
-		BulletManager::pushBullet(new Bullet(x + r*cos(angle), y + r*sin(angle), r/2, angle, 4, 0, -1)); //TODO: make default speed dependent on a constant that Tank uses for its default speed
+		BulletManager::pushBullet(new Bullet(x + r*cos(angle), y + r*sin(angle), r*(BULLET_TO_TANK_RADIUS_RATIO*2), angle, Tank::default_maxSpeed*BULLET_TO_TANK_SPEED_RATIO, this->getTeamID(), this->getGameID()));
 	}
 }
 
+bool StationaryTurret::canSeeTank(Tank* t) {
+	double dist = sqrt(pow(x - t->x, 2) + (y - t->y, 2)); //dist to tank
+	double angle = atan2(y - t->y, x - t->x); //angle to tank
+	Circle* p = new Point(x + dist*cos(angle), y + dist*sin(angle));
+	if (!CollisionHandler::fullyCollided(p, t)) {
+		delete p;
+		return false; //not pointing at tank (it's an approximation but it's good enough)
+	}
+	//check walls
+	for (int i = 0; i < WallManager::getNumWalls(); i++) {
+		Wall* wa = WallManager::getWall(i);
+		if (CollisionHandler::lineRectCollision(x, y, p->x, p->y, wa)) {
+			delete p;
+			return true;
+		}
+	}
+	delete p;
+	return false;
+}
+
 bool StationaryTurret::reasonableLocation() {
+	for (int i = 0; i < TankManager::getNumTanks(); i++) {
+		if (canSeeTank(TankManager::getTank(i))) {
+			return false;
+		}
+	}
+
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		if (CollisionHandler::partiallyCollided(this, WallManager::getWall(i))) {
 			return false;
 		}
 	}
-	return true;
+
+	for (int i = 0; i < HazardManager::getNumCircleHazards(); i++) {
+		CircleHazard* ch = HazardManager::getCircleHazard(i);
+		if (ch->getGameID() != this->getGameID()) {
+			if (CollisionHandler::partiallyCollided(this, ch)) {
+				return false;
+			}
+		}
+	}
+	for (int i = 0; i < HazardManager::getNumRectHazards(); i++) {
+		if (CollisionHandler::partiallyCollided(this, HazardManager::getRectHazard(i))) {
+			return false;
+		}
+	}
+
+	return validLocation();
 }
 
 ColorValueHolder StationaryTurret::getColor() {
@@ -220,4 +267,29 @@ void StationaryTurret::drawCPU() {
 	glVertex2f(x + r*cos(angle), y + r*sin(angle));
 
 	glEnd();
+}
+
+CircleHazard* StationaryTurret::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {
+	int attempts = 0;
+	CircleHazard* randomized = nullptr;
+	double xpos, ypos, angle;
+	if (argc >= 1) {
+		angle = std::stod(argv[0]);
+	} else {
+		angle = randFunc() * 2*PI;
+	}
+	do {
+		xpos = randFunc2() * (area_width - 2*TANK_RADIUS/4) + (x_start + TANK_RADIUS/4);
+		ypos = randFunc2() * (area_height - 2*TANK_RADIUS/4) + (y_start + TANK_RADIUS/4);
+		CircleHazard* testStationaryTurret = new StationaryTurret(xpos, ypos, angle);
+		if (testStationaryTurret->reasonableLocation()) {
+			randomized = testStationaryTurret;
+			break;
+		} else {
+			delete testStationaryTurret;
+		}
+		attempts++;
+	} while (attempts < 128);
+
+	return randomized;
 }

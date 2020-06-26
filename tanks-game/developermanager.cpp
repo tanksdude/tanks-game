@@ -62,12 +62,12 @@ void DeveloperManager::mouseWheelFunc(int wheel, int dir, int x, int y) {
 	int real_y = (1 - y / double(Renderer::window_height)) * GAME_HEIGHT;
 
 	if (dir == 1) { //scroll up
-		std::string powers[2] = { "homing", "bounce" };
-		PowerupManager::pushPowerup(new PowerSquare(real_x, real_y, powers, 2));
+		std::string powers[1] = { "big" };
+		PowerupManager::pushPowerup(new PowerSquare(real_x, real_y, powers, 1));
 	}
 	else { //scroll down
-		std::string paras[3] = { std::to_string(real_x), std::to_string(real_y), std::to_string(0) };
-		HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("stationary turret")(3, paras));
+		std::string powers[1] = { "banana" };
+		PowerupManager::pushPowerup(new PowerSquare(real_x, real_y, powers, 1));
 	}
 
 	//std::cout << "wheel:" << wheel << ", dir:" << dir << std::endl;

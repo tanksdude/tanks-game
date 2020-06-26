@@ -23,17 +23,17 @@ struct TankInputChar {
 
 class Tank : public Circle, public GameThing {
 	friend class ResetThings;
-	friend class Level; //might remove
 	friend class PowerFunctionHelper;
+	friend class EndGameHandler; //calls this->kill()
 public:
 	std::string name;
 	int wins = 0;
 
-	double maxSpeed = 1;
-	double acceleration = 1.0/16; //intentional acceleration, not total
+	double maxSpeed; // = 1;
+	double acceleration; // = 1.0/16; //intentional acceleration, not total
 	double velocity = 0; //intentional velocity, not total
 	//TODO: system that can apply forces
-	double turningIncrement = 64;
+	double turningIncrement; // = 64;
 	double angle;
 	double getAngle();
 	double getCannonAngle(int index);
@@ -54,14 +54,11 @@ public:
 	double getShootingSpeedMultiplier();
 	//double powerMultiplier; //would be used for an ini
 
-	double getBulletSpeedMultiplier(); //BIG TODO: this isn't going to work if a bullet picks up a power; solution: worry about it later
-	double getBulletRadiusMultiplier();
-	double getBulletAcceleration();
-
 	void updateAllValues(); //this is supposed to update all values that can get affected by powers, such as maxSpeed and acceleration
 	void updateMaxSpeed();
 	void updateAcceleration();
 	void updateRadius();
+	void updateTurningIncrement();
 
 public:
 	TankInputChar forward;
@@ -69,16 +66,18 @@ public:
 	TankInputChar turnR;
 	TankInputChar shooting;
 	//TankInputChar backwards; //not the point of the game
+	TankInputChar specialKey;
 
-	void makeBullet(double x, double y, double angle, double radius, double speed, double acc); //move to private eventually, just public for emergency testing
+	void makeBulletCommon(double x, double y, double angle, double radius, double speed); //move to private eventually
+	void makeBullet(double x, double y, double angle, double radius, double speed, double acc); //move to private eventually (does not use makeBulletCommon) (avoid using)
 	void defaultMakeBullet(double angle); //simple shoot: bullet points away from tank center at a given angle
-	void regularMakeBullet(double x, double y, double angle); //make bullet x and y dist from tank, moving with angle
+	void regularMakeBullet(double x_offset, double y_offset, double angle); //make bullet x and y dist from tank, moving with angle
 	void determineShootingAngles();
 
 private:
 	ColorValueHolder defaultColor = ColorValueHolder(.5f, .5f, .5f);
-	bool dead = false;
-	ColorValueHolder* explosionColor;
+	bool dead = false; //only kill() should modify this
+	bool kill();
 	ColorValueHolder defaultNameFill = ColorValueHolder(1.0f, 1.0f, 1.0f);
 	ColorValueHolder defaultNameStroke = ColorValueHolder(0, 0, 0);
 
@@ -91,6 +90,10 @@ public:
 	//helper stuff:
 	ColorValueHolder getBodyColor();
 
+	static const double default_maxSpeed;
+	static const double default_acceleration;
+	static const double default_turningIncrement;
+
 private:
 	static VertexArray* va;
 	static VertexBuffer* vb;
@@ -98,12 +101,12 @@ private:
 	static VertexArray* cannon_va;
 	static VertexBuffer* cannon_vb;
 	static bool initialized_GPU;
-public: //TODO: protected?
+
 	static bool initializeGPU();
 	static bool uninitializeGPU();
 
 public:
-	Tank(double x, double y, double a, char id, std::string name, TankInputChar forward, TankInputChar left, TankInputChar right, TankInputChar shoot);
+	Tank(double x, double y, double a, char id, std::string name, TankInputChar forward, TankInputChar left, TankInputChar right, TankInputChar shoot, TankInputChar special);
 
 	void move();
 	void terminalVelocity(); //move to protected
@@ -118,8 +121,6 @@ public:
 	void draw(double xpos, double ypos);
 	void drawCPU();
 	void drawCPU(double, double);
-	void drawNameCPU();
-	void drawNameCPU(double xpos, double ypos);
 	std::string getName() { return name; }
 	
 	~Tank();

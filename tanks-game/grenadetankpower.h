@@ -5,18 +5,16 @@ class GrenadeTankPower;
 #include "grenadepower.h"
 
 class GrenadeTankPower : public TankPower {
-
 public:
-	void initialize(Tank* parent);
-	void removeEffects(Tank* parent);
+	virtual void initialize(Tank* parent) override;
+	virtual void removeEffects(Tank* parent) override;
 
 	virtual ColorValueHolder getColor() {
 		return GrenadePower::getClassColor();
 	}
 
+	virtual TankPower* makeDuplicate() { return new GrenadeTankPower(); }
 	virtual BulletPower* makeBulletPower();
-
-	virtual double getBulletAcceleration() { return -1.0/16; }
 
 	GrenadeTankPower();
 };

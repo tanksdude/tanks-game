@@ -2,8 +2,6 @@
 #include "wallhacktankpower.h"
 #include "wallhackbulletpower.h"
 
-const bool WallhackPower::canBeInARandomLevel = true;
-
 TankPower* WallhackPower::makeTankPower() {
 	return new WallhackTankPower();
 }
@@ -23,9 +21,5 @@ Power* WallhackPower::factory() {
 }
 
 WallhackPower::WallhackPower() {
-	//does nothing
-}
-
-WallhackPower::~WallhackPower() {
-	//no need
+	return;
 }

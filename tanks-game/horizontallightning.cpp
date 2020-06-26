@@ -9,8 +9,9 @@
 #include <stdexcept>
 #include <algorithm> //std::copy
 #include "point.h"
-#include "collisionhandler.h"
 #include "wallmanager.h"
+#include "hazardmanager.h"
+#include "collisionhandler.h"
 #include <iostream>
 
 VertexArray* HorizontalLightning::background_va;
@@ -18,51 +19,38 @@ VertexBuffer* HorizontalLightning::background_vb;
 IndexBuffer* HorizontalLightning::background_ib;
 bool HorizontalLightning::initialized_GPU = false;
 
-HorizontalLightning::HorizontalLightning(double xpos, double ypos, double width, double height) {
-	x = xpos;
-	y = ypos;
-	w = width;
-	h = height;
-	gameID = GameManager::getNextID();
-	teamID = HAZARD_TEAM;
-
-	tickCycle = 100; //100 is JS default (because of power speed)
-	double temp[2] = { 2, 2 };
-	std::copy(temp, temp+2, stateMultiplier);
-	currentlyActive = false;
+HorizontalLightning::HorizontalLightning(double xpos, double ypos, double width, double height) : RectangularLightning(xpos,ypos,width,height,true) {
 	//flexible = false;
-
-	leftSide  = new Point(x,     y + h/2);
-	rightSide = new Point(x + w, y + h/2);
 	
-	lengthOfBolt = 4; //TODO: figure out logic for constraining this to make it look pretty
+	maxBolts = 2;
+	//lengthOfBolt = 4;
 	bolts.reserve(maxBolts);
-	int boltPoints = getDefaultNumBoltPoints(w);
-	for (int i = 0; i < maxBolts; i++) {
-		pushBolt(new LightningBolt(0, h/2, w, h/2, boltPoints), true);
-	}
+	pushDefaultBolt(maxBolts, true);
 
-	canAcceptPowers = false;
+	//canAcceptPowers = false;
 
-	modifiesTankCollision = true;
-	hasSpecialEffectTankCollision = true;
-	modifiesBulletCollision = true;
-	hasSpecialEffectBulletCollision = true;
+	//modifiesTankCollision = true;
+	//hasSpecialEffectTankCollision = true;
+	//modifiesBulletCollision = true;
+	//hasSpecialEffectBulletCollision = true;
 
 	local_initializeGPU();
 	initializeGPU();
 }
 
-int HorizontalLightning::getDefaultNumBoltPoints(double horzDist) {
-	int boltPoints = ceil(horzDist / lengthOfBolt); //not floor because the last point is the edge of the lightning area
-	return (boltPoints < 2 ? 2 : boltPoints);
+Circle* HorizontalLightning::getLeftPoint() {
+	return new Point(x, y + h/2);
+}
+
+Circle* HorizontalLightning::getRightPoint() {
+	return new Point(x + w, y + h/2);
 }
 
 HorizontalLightning::~HorizontalLightning() {
-	clearBolts();
-	delete leftSide, rightSide;
+	//calls ~RectangularLightning(), so this doesn't need to do anything extra
+	//clearBolts();
 
-	local_uninitializeGPU();
+	local_uninitializeGPU(); //I don't know if this is okay, but there isn't an error...
 	//uninitializeGPU();
 }
 
@@ -92,6 +80,7 @@ bool HorizontalLightning::initializeGPU() {
 	return true;
 }
 
+//requires a bolt to initialize:
 void HorizontalLightning::local_initializeGPU() {
 	float* positions = new float[bolts[0]->length*2];
 	for (int i = 0; i < bolts[0]->length; i++) {
@@ -140,7 +129,7 @@ void HorizontalLightning::local_uninitializeGPU() {
 }
 
 void HorizontalLightning::streamBoltVertices(unsigned int boltNum) {
-	bolt_vb->modifyData(&bolts[boltNum]->positions[0], bolts[boltNum]->length*2 * sizeof(float));
+	bolt_vb->modifyData(bolts[boltNum]->positions.data(), bolts[boltNum]->length*2 * sizeof(float));
 }
 
 RectHazard* HorizontalLightning::factory(int argc, std::string* argv) {
@@ -154,314 +143,106 @@ RectHazard* HorizontalLightning::factory(int argc, std::string* argv) {
 	return new HorizontalLightning(0, 0, 0, 0);
 }
 
-void HorizontalLightning::tick() {
-	if (!validLocation()) {
-		tickCount = 0;
-		currentlyActive = false;
-		targetedObjects.clear();
-		clearBolts();
-		return;
-	}
-
-	tickCount++;
-	if (tickCount >= tickCycle * stateMultiplier[currentlyActive]) {
-		if (tickCycle * stateMultiplier[currentlyActive] <= 0) {
-			tickCount = 0;
-			currentlyActive = true;
-		} else {
-			tickCount -= tickCycle * stateMultiplier[currentlyActive];
-			currentlyActive = !currentlyActive;
-		}
-	}
-	
-	if (currentlyActive) {
-		if (boltTick >= boltCycle) {
-			//hazard tick comes before collision, therefore there will be more bolt refreshes after this if a bullet/tank collides
-			targetedObjects.clear();
-			boltsNeeded = false;
-			clearBolts();
-			int boltPoints = getDefaultNumBoltPoints(w);
-			for (int i = 0; i < maxBolts; i++) {
-				pushBolt(new LightningBolt(0, h/2, w, h/2, boltPoints), true);
-			}
-			boltTick = 0;
-		}
-		boltTick++;
-	} else {
-		boltTick = boltCycle; //start at boltCycle to force a refresh as soon as possible
-	}
-}
-
 void HorizontalLightning::specialEffectCircleCollision(Circle* c) {
-	/* Lightning zone/region layout:
-	 *
-	 *       6aL      |  3aL  |               2a             |  3aR  |       6aR
-	 *                |       |                              |       |
-	 *----------------+-------+------------------------------+-------+-----------------      <- y+h
-	 *                |       |                              |       |
-	 *       5L       0  4L   |               1              |  4R   0       5R
-	 *                |       |                              |       |
-	 *----------------+-------+------------------------------+-------+-----------------      <- y
-	 *                |       |                              |       |
-	 *       6bL      |  3bL  |               2b             |  3bR  |       6bR
-	 *
-	 *
-	 *                ^       ^                              ^       ^
-	 *                x     x + c->r                     x+w - c->r  x+w
-	 *
-	 * 0 = leftStart/rightStart
-	 * zone/region 7: circle radius c->r around 0
-	 * determined by circle center
-	 */
-
 	//TODO: confirm everything is good
+	Circle* leftPoint = getLeftPoint();
+	Circle* rightPoint = getRightPoint();
+	Circle* circleCenter = new Point(c->x, c->y);
 	double intersectionXL, intersectionXR, intersectionYL, intersectionYR;
 	int boltPointsL = -1, boltPointsR = -1;
-	//determine region the circle is in
-	if (c->x-c->r >= x && c->x+c->r <= x+w) {
-		if (c->y >= y && c->y <= y+h) {
-			intersectionXL = c->x - c->r;
-			intersectionXR = c->x + c->r;
-			intersectionYL = c->y;
-			intersectionYR = c->y;
-			//std::cout << "case 1" << std::endl;
-		} else {
-			if (c->y > y+h) {
-				intersectionYL = y + h;
-				intersectionYR = y + h;
-				//std::cout << "case 2a" << std::endl;
-			} else { //c->y < y
-				intersectionYL = y;
-				intersectionYR = y;
-				//std::cout << "case 2b" << std::endl;
-			}
-			intersectionXL = c->x - sqrt(pow(c->r, 2) - pow(intersectionYL - c->y, 2));
-			//intersectionXL = (intersectionXL < x ? x : intersectionXL);
-			intersectionXR = c->x + sqrt(pow(c->r, 2) - pow(intersectionYR - c->y, 2));
-			//intersectionXR = (intersectionXR > x+w ? x+w : intersectionXR);
-		}
+
+	double xpos, ypos; //circle adjusted x and y
+
+	if (CollisionHandler::fullyCollided(circleCenter, this)) {
+		//circle center inside rectangle area
+		xpos = c->x;
+		ypos = c->y;
 	} else {
-		//I think case 4 and 5 are the same
-		if (c->x-c->r < x) {
-			//left
-
-			if (CollisionHandler::fullyCollided(leftSide, c)) {
-				intersectionXL = c->x;
-				intersectionYL = c->y;
-				boltPointsL = 2;
-				if (c->y > y+h) {
-					intersectionXR = c->x + sqrt(pow(c->r, 2) - pow(c->y - (y+h), 2));
-					intersectionYR = y + h;
-				} else if(c->y < y) {
-					intersectionXR = c->x + sqrt(pow(c->r, 2) - pow(c->y - y, 2));
-					intersectionYR = y;
-				} else {
-					intersectionXR = c->x + c->r;
-					intersectionYR = c->y;
-				}
-				//std::cout << "case 7L_L" << std::endl;
-			} else {
-				//check whether the circle is really far to the left, or just barely out of range of leftSide
-				//difference between 6aL and 3aL: intersectionXL
-				if (c->x <= x) {
-					if (c->y > y+h) {
-						intersectionXL = x;
-						intersectionYL = c->y - sqrt(pow(c->r, 2) - pow(c->x - x, 2));
-						intersectionXR = c->x + sqrt(pow(c->r, 2) - pow(c->y - (y+h), 2));
-						intersectionYR = y + h;
-						//std::cout << "case 6aL ";
-						//std::cout << "xL:" << (intersectionXL - x) << " xR:" << (intersectionXR - x) << " yL:" << (intersectionYL - y) << " yR:" << (intersectionYR - y) << std::endl;
-					} else if(c->y < y) {
-						intersectionXL = x;
-						intersectionYL = c->y + sqrt(pow(c->r, 2) - pow(c->x - x, 2));
-						intersectionXR = c->x + sqrt(pow(c->r, 2) - pow(c->y - y, 2));
-						intersectionYR = y;
-						//std::cout << "case 6bL ";
-						//std::cout << "xL:" << (intersectionXL - x) << " xR:" << (intersectionXR - x) << " yL:" << (intersectionYL - y) << " yR:" << (intersectionYR - y) << std::endl;
-					} else {
-						intersectionXL = x;
-						if (c->y > y + h/2) {
-							intersectionYL = c->y - sqrt(pow(c->r, 2) - pow(c->x - x, 2));
-						} else {
-							intersectionYL = c->y + sqrt(pow(c->r, 2) - pow(c->x - x, 2));
-						}
-						intersectionXR = c->x + c->r;
-						intersectionYR = c->y;
-						//std::cout << "case 5L ";
-						//std::cout << "xL:" << (intersectionXL - x) << " xR:" << (intersectionXR - x) << " yL:" << (intersectionYL - y) << " yR:" << (intersectionYR - y) << std::endl;
-					}
-				} else {
-					if (c->y > y+h) {
-						intersectionXL = c->x - sqrt(pow(c->r, 2) - pow(c->y - (y+h), 2));
-						intersectionXL = (intersectionXL < x ? x : intersectionXL);
-						intersectionYL = c->y - sqrt(pow(c->r, 2) - pow(c->x - x, 2));
-						intersectionYL = (intersectionYL > y+h ? y+h : intersectionYL);
-						intersectionXR = c->x + sqrt(pow(c->r, 2) - pow(c->y - (y+h), 2));
-						intersectionYR = y + h;
-						//std::cout << "case 3aL ";
-						//std::cout << "xL:" << (intersectionXL - x) << " xR:" << (intersectionXR - x) << " yL:" << (intersectionYL - y) << " yR:" << (intersectionYR - y) << std::endl;
-					} else if(c->y < y) {
-						intersectionXL = c->x - sqrt(pow(c->r, 2) - pow(c->y - y, 2));
-						intersectionXL = (intersectionXL < x ? x : intersectionXL);
-						intersectionYL = c->y + sqrt(pow(c->r, 2) - pow(c->x - x, 2));
-						intersectionYL = (intersectionYL < y ? y : intersectionYL);
-						intersectionXR = c->x + sqrt(pow(c->r, 2) - pow(c->y - y, 2));
-						intersectionYR = y;
-						//std::cout << "case 3bL ";
-						//std::cout << "xL:" << (intersectionXL - x) << " xR:" << (intersectionXR - x) << " yL:" << (intersectionYL - y) << " yR:" << (intersectionYR - y) << std::endl;
-					} else {
-						intersectionXL = x;
-						if (c->y > y + h/2) {
-							intersectionYL = c->y - sqrt(pow(c->r, 2) - pow(c->x - x, 2));
-						} else {
-							intersectionYL = c->y + sqrt(pow(c->r, 2) - pow(c->x - x, 2));
-						}
-						intersectionXR = c->x + c->r;
-						intersectionYR = c->y;
-						//std::cout << "case 4L ";
-						//std::cout << "xL:" << (intersectionXL - x) << " xR:" << (intersectionXR - x) << " yL:" << (intersectionYL - y) << " yR:" << (intersectionYR - y) << std::endl;
-					}
-				}
-			}
-
-			if (CollisionHandler::fullyCollided(rightSide, c)) { //this should be very rare (only happens for small lightnings)
-				intersectionXR = c->x;
-				intersectionYR = c->y;
-				boltPointsR = 2;
-				//std::cout << "case 7R_L" << std::endl;
-			}
-		} else { //c->x+c->r > x+w
-			//right
-
-			if (CollisionHandler::fullyCollided(rightSide, c)) {
-				intersectionXR = c->x;
-				intersectionYR = c->y;
-				boltPointsR = 2;
-				if (c->y > y+h) {
-					intersectionXL = c->x - sqrt(pow(c->r, 2) - pow(c->y - (y+h), 2));
-					intersectionYL = y + h;
-				} else if(c->y < y) {
-					intersectionXL = c->x - sqrt(pow(c->r, 2) - pow(c->y - y, 2));
-					intersectionYL = y;
-				} else {
-					intersectionXL = c->x - c->r;
-					intersectionYL = c->y;
-				}
-				//std::cout << "case 7R_R" << std::endl;
-			} else {
-				if (c->x >= x+w) {
-					if (c->y > y+h) {
-						intersectionXL = c->x - sqrt(pow(c->r, 2) - pow(c->y - (y+h), 2));
-						intersectionYL = y + h;
-						intersectionXR = x + w;
-						intersectionYR = c->y - sqrt(pow(c->r, 2) - pow(c->x - (x+w), 2));
-						//std::cout << "case 6aR ";
-						//std::cout << "xL:" << (intersectionXL - x) << " xR:" << (intersectionXR - x) << " yL:" << (intersectionYL - y) << " yR:" << (intersectionYR - y) << std::endl;
-					} else if(c->y < y) {
-						intersectionXL = c->x - sqrt(pow(c->r, 2) - pow(c->y - y, 2));
-						intersectionYL = y;
-						intersectionXR = x + w;
-						intersectionYR = c->y + sqrt(pow(c->r, 2) - pow(c->x - (x+w), 2));
-						//std::cout << "case 6bR ";
-						//std::cout << "xL:" << (intersectionXL - x) << " xR:" << (intersectionXR - x) << " yL:" << (intersectionYL - y) << " yR:" << (intersectionYR - y) << std::endl;
-					} else {
-						intersectionXL = c->x - c->r;
-						intersectionYL = c->y;
-						intersectionXR = x + w;
-						if (c->y > y + h/2) {
-							intersectionYR = c->y - sqrt(pow(c->r, 2) - pow(c->x - (x+w), 2));
-						} else {
-							intersectionYR = c->y + sqrt(pow(c->r, 2) - pow(c->x - (x+w), 2));
-						}
-						//std::cout << "case 5R ";
-						//std::cout << "xL:" << (intersectionXL - x) << " xR:" << (intersectionXR - x) << " yL:" << (intersectionYL - y) << " yR:" << (intersectionYR - y) << std::endl;
-					}
-				} else {
-					if (c->y > y+h) {
-						intersectionXL = c->x - sqrt(pow(c->r, 2) - pow(c->y - (y+h), 2));
-						intersectionYL = y + h;
-						intersectionXR = c->x + sqrt(pow(c->r, 2) - pow(c->y - (y+h), 2));
-						intersectionXR = (intersectionXR > x+w ? x+w : intersectionXR);
-						intersectionYR = c->y - sqrt(pow(c->r, 2) - pow(c->x - (x+w), 2));
-						intersectionYR = (intersectionYR > y+h ? y+h : intersectionYR);
-						//std::cout << "case 3aR ";
-						//std::cout << "xL:" << (intersectionXL - x) << " xR:" << (intersectionXR - x) << " yL:" << (intersectionYL - y) << " yR:" << (intersectionYR - y) << std::endl;
-					} else if(c->y < y) {
-						intersectionXL = c->x - sqrt(pow(c->r, 2) - pow(c->y - y, 2));
-						intersectionYL = y;
-						intersectionXR = c->x + sqrt(pow(c->r, 2) - pow(c->y - y, 2));
-						intersectionXR = (intersectionXR > x+w ? x+w : intersectionXR);
-						intersectionYR = c->y + sqrt(pow(c->r, 2) - pow(c->x - (x+w), 2));
-						intersectionYR = (intersectionYR < y ? y : intersectionYR);
-						//std::cout << "case 3bR ";
-						//std::cout << "xL:" << (intersectionXL - x) << " xR:" << (intersectionXR - x) << " yL:" << (intersectionYL - y) << " yR:" << (intersectionYR - y) << std::endl;
-					} else {
-						intersectionXL = c->x - c->r;
-						intersectionYL = c->y;
-						intersectionXR = x + w;
-						if (c->y > y + h/2) {
-							intersectionYR = c->y - sqrt(pow(c->r, 2) - pow(c->x - (x+w), 2));
-						} else {
-							intersectionYR = c->y + sqrt(pow(c->r, 2) - pow(c->x - (x+w), 2));
-						}
-						//std::cout << "case 4R ";
-						//std::cout << "xL:" << (intersectionXL - x) << " xR:" << (intersectionXR - x) << " yL:" << (intersectionYL - y) << " yR:" << (intersectionYR - y) << std::endl;
-					}
-				}
-			}
-
-			if (CollisionHandler::fullyCollided(leftSide, c)) { //this should be very rare (only happens for small lightnings)
-				intersectionXL = c->x;
-				intersectionYL = c->y;
-				boltPointsL = 2;
-				//std::cout << "case 7L_R" << std::endl;
-			}
+		//circle center outside rectangle area
+		if (c->x < x) {
+			xpos = x; //circle too far to the left
+		} else if (c->x > x+w) {
+			xpos = x+w; //circle too far to the right
+		} else {
+			xpos = c->x; //circle's x-position is fine
 		}
+		if (c->y < y) {
+			ypos = y; //circle too low
+		} else if (c->y > y+h) {
+			ypos = y+h; //circle too high
+		} else {
+			ypos = c->y; //circle's y-position is fine
+		}
+		//std::cout << "xpos: " << (xpos-c->x) << ", ypos: " << (ypos-c->y) << std::endl;
 	}
-	double distL = sqrt(pow(intersectionXL - x, 2) + pow(intersectionYL - (y + h/2), 2));
-	double distR = sqrt(pow((x + w) - intersectionXR, 2) + pow((y + h/2) - intersectionYR, 2));
-	boltPointsL = (boltPointsL < 2 ? getDefaultNumBoltPoints(distL) : boltPointsL);
-	boltPointsR = (boltPointsR < 2 ? getDefaultNumBoltPoints(distR) : boltPointsR);
+	if (CollisionHandler::fullyCollided(leftPoint, c)) {
+		intersectionXL = c->x;
+		intersectionYL = c->y;
+		boltPointsL = 2;
+	} else {
+		DoublePositionHolder intersections = CollisionHandler::circleLineIntersection(c, xpos, ypos, leftPoint->x, leftPoint->y);
+		intersectionXL = std::min(intersections.x1, intersections.x2);
+		if (c->y < y + h/2) {
+			intersectionYL = std::max(intersections.y1, intersections.y2);
+		} else {
+			intersectionYL = std::min(intersections.y1, intersections.y2);
+		}
+
+		if (intersectionXL < x || intersectionXL > x+w) {
+			std::cerr << "WARNING: horizontal lightning endpoint X (left half) out of range!" << std::endl;
+			intersectionXL = constrain<double>(intersectionXL, x, x+w);
+		}
+		if (intersectionYL < y || intersectionYL > y+h) {
+			std::cerr << "WARNING: horizontal lightning endpoint Y (left half) out of range!" << std::endl;
+			intersectionYL = constrain<double>(intersectionYL, y, y+h);
+		}
+		boltPointsL = getDefaultNumBoltPoints(sqrt(pow(intersectionXL - leftPoint->x, 2) + pow(intersectionYL - leftPoint->y, 2)));
+
+		//pushBolt(new LightningBolt(0, h/2, intersections.x1 - x, intersections.y1 - y, 2)); //debugging
+		//pushBolt(new LightningBolt(0, h/2, intersections.x1 - x, intersections.y2 - y, 2));
+		//pushBolt(new LightningBolt(0, h/2, intersections.x2 - x, intersections.y1 - y, 2));
+		//pushBolt(new LightningBolt(0, h/2, intersections.x2 - x, intersections.y2 - y, 2));
+	}
+
+	if (CollisionHandler::fullyCollided(rightPoint, c)) {
+		intersectionXR = c->x;
+		intersectionYR = c->y;
+		boltPointsR = 2;
+	} else {
+		DoublePositionHolder intersections = CollisionHandler::circleLineIntersection(c, xpos, ypos, rightPoint->x, rightPoint->y);
+		intersectionXR = std::max(intersections.x1, intersections.x2);
+		if (c->y < y + h/2) {
+			intersectionYR = std::max(intersections.y1, intersections.y2);
+		} else {
+			intersectionYR = std::min(intersections.y1, intersections.y2);
+		}
+
+		if (intersectionXR < x || intersectionXR > x+w) {
+			std::cerr << "WARNING: horizontal lightning endpoint X (right half) out of range!" << std::endl;
+			intersectionXR = constrain<double>(intersectionXR, x, x+w);
+		}
+		if (intersectionYR < y || intersectionYR > y+h) {
+			std::cerr << "WARNING: horizontal lightning endpoint Y (right half) out of range!" << std::endl;
+			intersectionYR = constrain<double>(intersectionYR, y, y+h);
+		}
+		boltPointsR = getDefaultNumBoltPoints(sqrt(pow(intersectionXR - rightPoint->x, 2) + pow(intersectionYR - rightPoint->y, 2)));
+
+		//pushBolt(new LightningBolt(intersections.x1 - x, intersections.y1 - y, w, h/2, 2)); //debugging
+		//pushBolt(new LightningBolt(intersections.x1 - x, intersections.y2 - y, w, h/2, 2));
+		//pushBolt(new LightningBolt(intersections.x2 - x, intersections.y1 - y, w, h/2, 2));
+		//pushBolt(new LightningBolt(intersections.x2 - x, intersections.y2 - y, w, h/2, 2));
+	}
+
+	//double distL = sqrt(pow(intersectionXL - x, 2) + pow(intersectionYL - (y + h/2), 2));
+	//double distR = sqrt(pow((x + w) - intersectionXR, 2) + pow((y + h/2) - intersectionYR, 2));
+	//boltPointsL = (boltPointsL < 2 ? getDefaultNumBoltPoints(distL) : boltPointsL);
+	//boltPointsR = (boltPointsR < 2 ? getDefaultNumBoltPoints(distR) : boltPointsR);
 	pushBolt(new LightningBolt(0, h/2, intersectionXL-x, intersectionYL-y, boltPointsL), false);
 	pushBolt(new LightningBolt(intersectionXL-x, intersectionYL-y, intersectionXR-x, intersectionYR-y, 2), false);
 	pushBolt(new LightningBolt(intersectionXR-x, intersectionYR-y, w, h/2, boltPointsR), false);
+	delete leftPoint, rightPoint, circleCenter;
 
-	//compared to JS Tanks, this intersection logic is much more complex
-	//that's okay because wallhacking into a lightning will look less weird
-
-	//TODO: is this complete?
-	//probably, but still needs a refactor
-}
-
-void HorizontalLightning::specialEffectTankCollision(Tank* t) {
-	//if bolts are being randomized, clear them, and mark that they've been cleared
-	if (!boltsNeeded) {
-		clearBolts();
-	}
-	boltsNeeded = true;
-
-	if (std::find(targetedObjects.begin(), targetedObjects.end(), t->getGameID()) == targetedObjects.end()) {
-		targetedObjects.push_back(t->getGameID());
-	} else {
-		return;
-	}
-
-	specialEffectCircleCollision(t);
-}
-
-void HorizontalLightning::specialEffectBulletCollision(Bullet* b) {
-	if (!boltsNeeded) {
-		clearBolts();
-	}
-	boltsNeeded = true;
-
-	if (std::find(targetedObjects.begin(), targetedObjects.end(), b->getGameID()) == targetedObjects.end()) {
-		targetedObjects.push_back(b->getGameID());
-	} else {
-		return;
-	}
-
-	specialEffectCircleCollision(b);
+	//TODO: refactor? (it's done, right?)
 }
 
 void HorizontalLightning::pushBolt(LightningBolt* l, bool simpleRefresh) {
@@ -473,6 +254,20 @@ void HorizontalLightning::pushBolt(LightningBolt* l, bool simpleRefresh) {
 		simpleRefreshBolt(bolts.size() - 1);
 	} else {
 		refreshBolt(bolts.size() - 1);
+	}
+}
+
+void HorizontalLightning::pushDefaultBolt(int num, bool randomize) {
+	for (int i = 0; i < num; i++) {
+		LightningBolt* l = new LightningBolt(0, h/2, w, h/2, getDefaultNumBoltPoints(w));
+		if (randomize) {
+			pushBolt(l, true);
+		} else {
+			if (l->length > bolt_vb_length) {
+				local_reinitializeGPU(l->length);
+			}
+			bolts.push_back(l);
+		}
 	}
 }
 
@@ -523,6 +318,22 @@ bool HorizontalLightning::reasonableLocation() {
 	if (!wallOnTop && (y + h >= GAME_HEIGHT)) {
 		wallOnTop = true;
 	}
+
+	for (int i = 0; i < HazardManager::getNumCircleHazards(); i++) {
+		if (CollisionHandler::partiallyCollided(this, HazardManager::getCircleHazard(i))) {
+			return false;
+		}
+	}
+	for (int i = 0; i < HazardManager::getNumRectHazards(); i++) {
+		RectHazard* rh = HazardManager::getRectHazard(i);
+		if (rh->getGameID() != this->getGameID()) {
+			//TODO: does this care if it's colliding with another version of itself?
+			if (CollisionHandler::partiallyCollided(this, rh)) {
+				return false;
+			}
+		}
+	}
+
 	return (!(wallOnTop && wallOnBottom) && validLocation());
 }
 
@@ -530,16 +341,16 @@ void HorizontalLightning::simpleRefreshBolt(int num) {
 	double maxVariance = h/4;
 	/* lightning bolts are allowed to be in an area that looks like this:
 	 * 
-	 * +   --------------   +        <- 1.0
+	 * +   --------------   +        <- h
 	 * |  /              \  |
 	 * | /                \ |
 	 * |<       HERE       >|
 	 * | \                / |
 	 * |  \              /  |
-	 * +   --------------   +        <- 0.0
+	 * +   --------------   +        <- 0
 	 * 
 	 * ^                    ^
-	 * 0.0                  1.0
+	 * 0                    w
 	 * 
 	 * the region is 1/4 triangle, 1/2 rectangle, then 1/4 triangle
 	 */
@@ -575,13 +386,13 @@ void HorizontalLightning::simpleRefreshBolt(int num) {
 		double yRangeLower = bolts[num]->positions[j*2 - 1] - maxVariance;
 		double yRangeUpper = bolts[num]->positions[j*2 - 1] + maxVariance;
 		double yMin, yMax;
-		if(j < bolts[num]->length / 4){ //first quarter
+		if (j < bolts[num]->length/4) { //first quarter
 			yMin = -2*h/w * (deltaX * j) + h/2;
 			yMax =  2*h/w * (deltaX * j) + h/2;
-		}else if(j < bolts[num]->length * 3.0/4.0){ //middle half
+		} else if (j < bolts[num]->length * 3.0/4.0) { //middle half
 			yMin = 0;
 			yMax = h;
-		}else{ //last quarter
+		} else { //last quarter
 			yMin =  2*h/w * (deltaX * (j - bolts[num]->length*3.0/4.0)) + 0;
 			yMax = -2*h/w * (deltaX * (j - bolts[num]->length*3.0/4.0)) + h;
 		}
@@ -591,84 +402,8 @@ void HorizontalLightning::simpleRefreshBolt(int num) {
 	}
 }
 
-void HorizontalLightning::refreshBolts() {
-	for (int i = 0; i < bolts.size(); i++) {
-		refreshBolt(i);
-	}
-}
-
 void HorizontalLightning::refreshBolt(int num) {
-	if (bolts[num]->length <= 2) {
-		return;
-	}
-
-	float deltaX = bolts[num]->positions[bolts[num]->length*2-2] - bolts[num]->positions[0];
-	float deltaY = bolts[num]->positions[bolts[num]->length*2-1] - bolts[num]->positions[1];
-	double dist = sqrt(pow(deltaX, 2) + pow(deltaY, 2));
-	double rotationAngle = atan2(deltaY, deltaX);
-	double angleSin = sin(rotationAngle);
-	double angleCos = cos(rotationAngle);
-	double newH = dist * h/w;
-	double maxVariance = 1.0/4.0 * dist * h/w;
-
-	float polygonX[6] = {
-		bolts[num]->positions[0],
-		bolts[num]->positions[0] + deltaX * 1.0/4.0 - angleSin * newH * .5,
-		bolts[num]->positions[0] + deltaX * 3.0/4.0 - angleSin * newH * .5,
-		bolts[num]->positions[0] + deltaX,
-		bolts[num]->positions[0] + deltaX * 3.0/4.0 + angleSin * newH * .5,
-		bolts[num]->positions[0] + deltaX * 1.0/4.0 + angleSin * newH * .5
-	};
-	float polygonY[6] = {
-		bolts[num]->positions[1],
-		bolts[num]->positions[1] + deltaY * 1.0/4.0 + angleCos * newH * .5,
-		bolts[num]->positions[1] + deltaY * 3.0/4.0 + angleCos * newH * .5,
-		bolts[num]->positions[1] + deltaY,
-		bolts[num]->positions[1] + deltaY * 3.0/4.0 - angleCos * newH * .5,
-		bolts[num]->positions[1] + deltaY * 1.0/4.0 - angleCos * newH * .5
-	};
-
-	//std::cout << "deltaX: " << deltaX << std::endl;
-	//std::cout << "deltaY: " << deltaY << std::endl;
-	//std::cout << "deltaY adj: " << (deltaY * h/w) << std::endl;
-	//std::cout << "dist: " << dist << std::endl;
-	//std::cout << "angle: " << (rotationAngle * 180/3.1415926535897) << std::endl;
-	//std::cout << "cos(angle): " << angleCos << std::endl;
-	//std::cout << "sin(angle): " << angleSin << std::endl;
-	for (int i = 0; i < 6; i++) {
-		//std::cout << i << ": " << polygonX[i] << " " << polygonY[i] << std::endl;
-	}
-
-	for (int j = 1; j < bolts[num]->length-1; j++) {
-		double randTemp;
-		float testY, testX;
-		do {
-			randTemp = (randFunc2()*2-1)*maxVariance;
-			testY = bolts[num]->positions[j*2 - 1] + (deltaY/(bolts[num]->length-1)) + randTemp * angleCos;
-			testX = bolts[num]->positions[j*2 - 2] + (deltaX/(bolts[num]->length-1)) - randTemp * angleSin;
-			//std::cout << testX << " " << testY << std::endl;
-		} while (testY < 0 || testY > h || testX < 0 || testX > w || !pointInPolygon(6, polygonX, polygonY, testX, testY));
-		bolts[num]->positions[j*2]   = testX;
-		bolts[num]->positions[j*2+1] = testY;
-	}
-}
-
-void HorizontalLightning::clearBolts() {
-	for (int i = 0; i < bolts.size(); i++) {
-		delete bolts[i];
-	}
-	bolts.clear();
-}
-
-ColorValueHolder HorizontalLightning::getBackgroundColor() {
-	if (currentlyActive) {
-		return ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(.75f, .75f, .75f), .25);
-	}
-	return ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(.75f, .75f, .75f), .25*constrain<double>(tickCount/(tickCycle*stateMultiplier[currentlyActive]), 0, 1));
-}
-
-ColorValueHolder HorizontalLightning::getBoltColor() {
-	return ColorValueHolder(0xBB/255.0, 1.0f, 1.0f);
+	RectangularLightning::refreshBolt(num, h, w);
 }
 
 void HorizontalLightning::draw() {
@@ -712,4 +447,46 @@ void HorizontalLightning::drawCPU() {
 
 	//bolts:
 
+}
+
+RectHazard* HorizontalLightning::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {
+	//minimum/maximum width and height not in argv
+	if (WallManager::getNumWalls() == 0) {
+		return nullptr; //don't bother trying to see if a horizontal lightning could go from edge to edge
+	}
+	int attempts = 0;
+	RectHazard* randomized = nullptr;
+	double xpos, ypos, width, height;
+	double minWidth = 40, maxWidth = 160;
+	do {
+		height = randFunc2() * (24 - 12) + 12;
+		for (int i = 0; i < WallManager::getNumWalls(); i++) {
+			Wall* wa = WallManager::getWall(i);
+			xpos = wa->x + wa->w;
+			ypos = wa->y + randFunc2() * constrain<double>(wa->h - height, 0, wa->h);
+			int j, wallAttempts = 0;
+			do {
+				j = randFunc() * WallManager::getNumWalls();
+				wallAttempts++;
+			} while ((wallAttempts < 8) && (j == i));
+			if (j != i) {
+				Wall* otherWall = WallManager::getWall(j);
+				width = otherWall->x - xpos;
+			} else {
+				width = randFunc2() * (maxWidth - minWidth) + minWidth;
+			}
+		}
+		if ((xpos >= x_start) && (xpos + width <= x_start + area_width) && (ypos >= y_start) && (ypos + height <= y_start + area_height) && (width <= maxWidth) && (width >= minWidth)) {
+			RectHazard* testHorizontalLightning = new HorizontalLightning(xpos, ypos, width, height);
+			if (testHorizontalLightning->reasonableLocation()) {
+				randomized = testHorizontalLightning;
+				break;
+			} else {
+				delete testHorizontalLightning;
+			}
+		}
+		attempts++;
+	} while (attempts < 32);
+
+	return randomized;
 }

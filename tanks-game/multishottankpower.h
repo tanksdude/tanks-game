@@ -6,22 +6,23 @@ class MultishotTankPower;
 
 class MultishotTankPower : public TankPower {
 public:
-	void initialize(Tank* parent);
-	void removeEffects(Tank* parent);
+	virtual void initialize(Tank* parent) override;
+	virtual void removeEffects(Tank* parent) override;
 
 	virtual ColorValueHolder getColor() {
 		return MultishotPower::getClassColor();
 	}
 
+	virtual TankPower* makeDuplicate() { return new MultishotTankPower(); }
 	virtual BulletPower* makeBulletPower();
 
 	//bool addsShootingPoints = true;
-	virtual void addShootingPoints(Tank*, std::vector<CannonPoint>*);
+	virtual void addShootingPoints(Tank*, std::vector<CannonPoint>*) override;
 	//bool overridesAddShootingPoints = false;
 	//bool addShootingPointsCanWorkWithOthers = true;
 	//bool addShootingPointsCanOnlyWorkIndividually = false;
 
-	virtual double getShootingMultiplier() { return .5; }
+	virtual double getTankFiringRateMultiplier() override { return .5; }
 
 	MultishotTankPower();
 };

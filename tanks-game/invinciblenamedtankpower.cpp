@@ -3,8 +3,8 @@
 
 void InvincibleNamedTankPower::initialize(Tank* parent) {
 	//nothing
-	//are these ever going to get used?
 }
+
 void InvincibleNamedTankPower::removeEffects(Tank* parent) {
 	//nothing
 }

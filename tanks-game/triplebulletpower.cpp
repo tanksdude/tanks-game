@@ -1,11 +1,11 @@
 #include "triplebulletpower.h"
 #include "tripletankpower.h"
 
-void TripleBulletPower::initialize(Bullet* b) {
+void TripleBulletPower::initialize(Bullet* parent) {
 	//nothing
 }
 
-void TripleBulletPower::removeEffects(Bullet * b) {
+void TripleBulletPower::removeEffects(Bullet* parent) {
 	//nothing
 }
 
@@ -13,7 +13,7 @@ TankPower* TripleBulletPower::makeTankPower() {
 	return new TripleTankPower();
 }
 
-TripleBulletPower::TripleBulletPower(){
+TripleBulletPower::TripleBulletPower() {
 	timeLeft = 0;
 	maxTime = -1;
 }

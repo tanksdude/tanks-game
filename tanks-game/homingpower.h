@@ -1,15 +1,12 @@
 #pragma once
 #include "power.h"
-#include "tankpower.h"
-#include "bulletpower.h"
 
-class HomingPower : public Power{
-protected:
-	//static ColorValueHolder classColor;
-
+class HomingPower : public Power {
 public:
-	const static bool canBeInARandomLevel;
-	//bool getCanBeMixed() { return true; }
+	virtual std::vector<std::string> getPowerAttributes() {
+		std::vector<std::string> attributes = std::vector<std::string>{ "mix" };
+		return attributes;
+	}
 
 	virtual std::string getName() { return HomingPower::getClassName(); }
 	static std::string getClassName() { return "homing"; }
@@ -21,6 +18,5 @@ public:
 	//virtual HazardPower* makeHazardPower();
 
 	HomingPower();
-	~HomingPower();
 	static Power* factory();
 };

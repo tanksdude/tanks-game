@@ -3,14 +3,17 @@
 
 std::vector<Level*> LevelManager::levels;
 std::unordered_map<std::string, std::unordered_map<std::string, LevelFunction>> LevelManager::levelLookup;
-std::unordered_map<std::string, std::vector<LevelFunction>> LevelManager::levelList;
 std::unordered_map<std::string, std::vector<std::string>> LevelManager::levelNameList;
 
 void LevelManager::initialize() {
 	levelLookup.insert({ "vanilla", std::unordered_map<std::string, LevelFunction>() });
-	levelLookup.insert({ "vanilla-extra", std::unordered_map<std::string, LevelFunction>() });
-	levelLookup.insert({ "random", std::unordered_map<std::string, LevelFunction>() });
+	levelLookup.insert({ "vanilla-extra", std::unordered_map<std::string, LevelFunction>() }); //... what does this include?
+	levelLookup.insert({ "random-vanilla", std::unordered_map<std::string, LevelFunction>() }); //can include vanilla-extra but probably won't
+	levelLookup.insert({ "random", std::unordered_map<std::string, LevelFunction>() }); //general random (requires the level to manually insert itself here)
+	levelLookup.insert({ "old", std::unordered_map<std::string, LevelFunction>() });
+	levelLookup.insert({ "random-old", std::unordered_map<std::string, LevelFunction>() });
 	levelLookup.insert({ "dev", std::unordered_map<std::string, LevelFunction>() });
+	levelLookup.insert({ "random-dev", std::unordered_map<std::string, LevelFunction>() }); //would this be used?
 }
 
 Level* LevelManager::getLevel(int index) {
@@ -21,12 +24,8 @@ LevelEffect* LevelManager::getLevelEffect(int level_index, int index) {
 	return levels[level_index]->effects[index];
 }
 
-void LevelManager::pushLevel(std::string name) {
-	levels.push_back(LevelManager::getLevelFactory(name)());
-}
-
-void LevelManager::pushSpecialLevel(std::string type, std::string name) {
-	levels.push_back(LevelManager::getSpecialLevelFactory(type, name)());
+void LevelManager::pushLevel(std::string type, std::string name) {
+	levels.push_back(LevelManager::getLevelFactory(type, name)());
 }
 
 /*
@@ -46,52 +45,36 @@ void LevelManager::clearLevels() {
 
 
 void LevelManager::addLevelFactory(LevelFunction factory) {
-	levelList["vanilla"].push_back(factory);
 	Level* l = factory();
-	levelLookup["vanilla"].insert({ l->getName(), factory });
-	levelNameList["vanilla"].push_back(l->getName());
-	delete l;
-}
-
-LevelFunction LevelManager::getLevelFactory(std::string name) {
-	return levelLookup["vanilla"][name];
-}
-
-std::string LevelManager::getLevelName(int index) {
-	return levelNameList["vanilla"][index];
-}
-
-int LevelManager::getNumLevelTypes() {
-	return levelNameList["vanilla"].size();
-}
-
-void LevelManager::addSpecialLevelFactory(std::string type, LevelFunction factory) {
-	if (levelLookup.find(type) == levelLookup.end()) {
-		levelLookup.insert({ type, std::unordered_map<std::string, LevelFunction>() });
+	std::vector<std::string> types = l->getLevelTypes();
+	for (int i = 0; i < types.size(); i++) {
+		/*
+		//is this necessary?
+		if (levelLookup.find(types[i]) == levelLookup.end()) {
+			levelLookup.insert({ types[i], std::unordered_map<std::string, LevelFunction>() });
+		}
+		*/
+		levelLookup[types[i]].insert({ l->getName(), factory });
+		levelNameList[types[i]].push_back(l->getName());
 	}
-	
-	levelList[type].push_back(factory);
-	Level* l = factory();
-	levelLookup[type].insert({ l->getName(), factory });
-	levelNameList[type].push_back(l->getName());
 	delete l;
 }
 
-LevelFunction LevelManager::getSpecialLevelFactory(std::string type, std::string name) {
+LevelFunction LevelManager::getLevelFactory(std::string type, std::string name) {
 	if (levelLookup.find(type) == levelLookup.end()) {
 		throw std::domain_error("level type \"" + type + "\" unknown!");
 	}
 	return levelLookup[type][name];
 }
 
-std::string LevelManager::getSpecialLevelName(std::string type, int index) {
+std::string LevelManager::getLevelName(std::string type, int index) {
 	if (levelLookup.find(type) == levelLookup.end()) {
 		throw std::domain_error("level type \"" + type + "\" unknown!");
 	}
 	return levelNameList[type][index];
 }
 
-int LevelManager::getNumSpecialLevelTypes(std::string type) {
+int LevelManager::getNumLevelTypes(std::string type) {
 	if (levelLookup.find(type) == levelLookup.end()) {
 		throw std::domain_error("level type \"" + type + "\" unknown!");
 	}

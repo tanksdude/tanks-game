@@ -3,6 +3,9 @@
 #include <gtx/transform.hpp>
 #include <gtc/matrix_transform.hpp>
 #include "constants.h"
+#include "keypressmanager.h"
+#include <GL/glew.h>
+#include <GL/freeglut.h>
 #include <iostream>
 
 glm::mat4 Renderer::proj = glm::ortho(0.0f, (float)GAME_WIDTH, 0.0f, (float)GAME_HEIGHT);
@@ -72,6 +75,13 @@ std::unordered_map<std::string, Shader*> Renderer::shaderCache;
 unsigned int Renderer::currentShader = -1;
 unsigned int Renderer::currentVertexArray = -1;
 unsigned int Renderer::currentIndexBuffer = -1;
+
+void Renderer::BeginningStuff() {
+	if (KeypressManager::getSpecialKey(GLUT_KEY_F1)) {
+		glutFullScreenToggle();
+		KeypressManager::unsetSpecialKey(GLUT_KEY_F1, 0, 0);
+	}
+}
 
 void Renderer::Initialize() {
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);

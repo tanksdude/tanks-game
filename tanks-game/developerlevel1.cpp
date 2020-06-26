@@ -4,28 +4,44 @@
 #include "powerupmanager.h"
 #include "wallmanager.h"
 #include "hazardmanager.h"
-#include "randomlevel.h" //not really necessary
+#include "randomlevel.h"
+#include "resetthings.h"
 //#include <iostream>
 
 void DeveloperLevel1::initialize() {
-	TankManager::getTank(0)->y = GAME_HEIGHT/2;
-	TankManager::getTank(1)->y = GAME_HEIGHT/2;
+	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 20, GAME_HEIGHT/2, true);
 
 	ColorValueHolder wallColor(.25f, .25f, .25f);
 
-	PositionHolder pos = RandomLevel::getSymmetricWallPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 20, 80);
-	WallManager::pushWall(new Wall(pos.x, pos.y, 20, 80, wallColor));
-	pos = RandomLevel::getSymmetricWallPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 20, 80);
-	WallManager::pushWall(new Wall(pos.x, pos.y, 20, 80, wallColor));
+	PositionHolder wallPos1 = RandomLevel::getSymmetricWallPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 20, 80);
+	WallManager::pushWall(new Wall(wallPos1.x, wallPos1.y, 20, 80, wallColor));
+	PositionHolder wallPos2 = RandomLevel::getSymmetricWallPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 20, 80);
+	WallManager::pushWall(new Wall(wallPos2.x, wallPos2.y, 20, 80, wallColor));
+	WallManager::pushWall(new Wall(wallPos2.x, GAME_HEIGHT-20, 20, 20, wallColor));
 
-	std::string* paras = new std::string[4]{std::to_string(GAME_WIDTH/2 - 80 + 20), std::to_string(GAME_HEIGHT/2 - 40), std::to_string(60*2), std::to_string(20*2)};
-	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("horizontal lightning")(4, paras));
+	std::string* paras = new std::string[4]{std::to_string(wallPos2.x), std::to_string(wallPos2.y+80), std::to_string(20), std::to_string((GAME_HEIGHT-20)-(wallPos2.y+80))};
+	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "vertical lightning")(4, paras));
 	delete[] paras;
-	paras = new std::string[4]{std::to_string(GAME_WIDTH/2 - 80 + 20), std::to_string(GAME_HEIGHT/2), std::to_string(60*2), std::to_string(20*2)};
-	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("rectangular lava")(4, paras));
+	paras = new std::string[4]{std::to_string(wallPos1.x), std::to_string(wallPos1.y+80), std::to_string(20), std::to_string(GAME_HEIGHT-(wallPos1.y+80))};
+	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "vertical lightning")(4, paras));
+	delete[] paras;
+	paras = new std::string[4]{std::to_string(GAME_WIDTH/2 - 80 + 20), std::to_string(GAME_HEIGHT/2 - 40), std::to_string(60*2), std::to_string(20*2 - 10)};
+	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "horizontal lightning")(4, paras));
+	delete[] paras;
+	paras = new std::string[4]{std::to_string(GAME_WIDTH/2 - 80 + 20), std::to_string(GAME_HEIGHT/2 - 120), std::to_string(30*2), std::to_string(30*2)};
+	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "rectangular lightning")(4, paras));
+	delete[] paras;
+	paras = new std::string[3]{std::to_string(GAME_WIDTH/2 + 30), std::to_string(GAME_HEIGHT/2 - 90), std::to_string(30)};
+	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "circular lightning")(3, paras));
+	delete[] paras;
+	paras = new std::string[4]{std::to_string(GAME_WIDTH/2 - 80 + 20), std::to_string(GAME_HEIGHT/2 + 10), std::to_string(60*2), std::to_string(20*2 - 10)};
+	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "lava")(4, paras));
 	delete[] paras;
 	paras = new std::string[3]{std::to_string(GAME_WIDTH/2), std::to_string(GAME_HEIGHT/2 + 100), std::to_string(40)};
-	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("circular lava")(3, paras));
+	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "lava")(3, paras));
+	delete[] paras;
+	paras = new std::string[3]{std::to_string(GAME_WIDTH/2), std::to_string(GAME_HEIGHT/2), std::to_string(PI/2)};
+	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "targeting turret")(3, paras));
 	delete[] paras;
 
 	//assumption: TANK_RADIUS=16 (why it would ever be changed is beyond me)
@@ -36,6 +52,7 @@ void DeveloperLevel1::initialize() {
 	PowerupManager::pushPowerup(new PowerSquare(100, 20, "big"));
 	PowerupManager::pushPowerup(new PowerSquare(120, 20, "homing"));
 	PowerupManager::pushPowerup(new PowerSquare(140, 20, "grenade"));
+	PowerupManager::pushPowerup(new PowerSquare(160, 20, "banana"));
 
 	std::string* names = new std::string[3]{ "multishot", "multishot", "invincible" };
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH-20, GAME_HEIGHT-20, names, 3));

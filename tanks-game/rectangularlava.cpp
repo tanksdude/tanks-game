@@ -5,6 +5,7 @@
 #include <math.h>
 #include "mylib.h"
 #include "wallmanager.h"
+#include "hazardmanager.h"
 #include "collisionhandler.h"
 
 VertexArray* RectangularLava::background_va;
@@ -144,7 +145,22 @@ bool RectangularLava::reasonableLocation() {
 			return false;
 		}
 	}
-	return true;
+
+	for (int i = 0; i < HazardManager::getNumCircleHazards(); i++) {
+		if (CollisionHandler::partiallyCollided(this, HazardManager::getCircleHazard(i))) {
+			return false;
+		}
+	}
+	for (int i = 0; i < HazardManager::getNumRectHazards(); i++) {
+		RectHazard* rh = HazardManager::getRectHazard(i);
+		if ((rh->getGameID() != this->getGameID()) && (rh->getName() != this->getName())) {
+			if (CollisionHandler::partiallyCollided(this, rh)) {
+				return false;
+			}
+		}
+	}
+
+	return validLocation();
 }
 
 void RectangularLava::draw() {
@@ -172,7 +188,7 @@ void RectangularLava::draw() {
 		//insertion sort because laziness
 		sortedBubbles.push_back(bubbles[i]);
 		for (int j = sortedBubbles.size()-1; j >= 1; j--) {
-			if (sortedBubbles[j]->getAlpha() < sortedBubbles[j-1]->getAlpha()){
+			if (sortedBubbles[j]->getAlpha() < sortedBubbles[j-1]->getAlpha()) {
 				std::swap(sortedBubbles[j], sortedBubbles[j-1]);
 			} else {
 				break;
@@ -197,4 +213,31 @@ void RectangularLava::drawCPU() {
 
 	//bubbles:
 
+}
+
+RectHazard* RectangularLava::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {
+	int attempts = 0;
+	RectHazard* randomized = nullptr;
+	double xpos, ypos, width, height;
+	do {
+		if (argc >= 2) {
+			width = std::stod(argv[0]);
+			height = std::stod(argv[1]);
+		} else {
+			width = randFunc2() * (120 - 30) + 30; //TODO: where should these constants be?
+			height = randFunc2() * (80 - 20) + 20; //TODO: where should these constants be?
+		}
+		xpos = randFunc2() * (area_width - 2*width) + (x_start + width);
+		ypos = randFunc2() * (area_height - 2*height) + (y_start + height);
+		RectHazard* testRectangularLava = new RectangularLava(xpos, ypos, width, height);
+		if (testRectangularLava->reasonableLocation()) {
+			randomized = testRectangularLava;
+			break;
+		} else {
+			delete testRectangularLava;
+		}
+		attempts++;
+	} while (attempts < 64);
+
+	return randomized;
 }

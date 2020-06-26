@@ -13,6 +13,7 @@ void TripleTankPower::additionalShooting(Tank* parent, CannonPoint c) {
 void TripleTankPower::initialize(Tank* parent) {
 	//nothing
 }
+
 void TripleTankPower::removeEffects(Tank* parent) {
 	//nothing
 }

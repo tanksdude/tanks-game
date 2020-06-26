@@ -1,9 +1,6 @@
 #include "triplepower.h"
 #include "tripletankpower.h"
 #include "triplebulletpower.h"
-#include "constants.h"
-
-const bool TriplePower::canBeInARandomLevel = true;
 
 TankPower* TriplePower::makeTankPower() {
 	return new TripleTankPower();
@@ -24,9 +21,5 @@ Power* TriplePower::factory() {
 }
 
 TriplePower::TriplePower() {
-	//nothing
-}
-
-TriplePower::~TriplePower() {
-	//unlikely to ever need these
+	return;
 }

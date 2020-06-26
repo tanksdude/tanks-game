@@ -7,29 +7,27 @@ class BlastTankPower;
 class BlastTankPower : public TankPower {
 protected:
 	static const double bulletAngleDeviation;
-	static const double maxBulletAcceleration;
-	static const double minBulletAcceleration;
 	static const int bulletAmount;
 
 public:
-	void initialize(Tank* parent);
-	void removeEffects(Tank* parent);
+	virtual void initialize(Tank* parent) override;
+	virtual void removeEffects(Tank* parent) override;
 
 	virtual ColorValueHolder getColor() {
 		return BlastPower::getClassColor();
 	}
 
+	virtual TankPower* makeDuplicate() { return new BlastTankPower(); }
 	virtual BulletPower* makeBulletPower();
 
-	virtual double getBulletRadiusMultiplier() { return .25; }
-
 	//bool modifiesAdditionalShooting = false;
-	virtual void additionalShooting(Tank* parent, CannonPoint);
+	virtual void additionalShooting(Tank* parent, CannonPoint) override;
 	//bool overridesAdditionalShooting = false;
 	//bool additionalShootingCanWorkWithOthers = true;
 	//bool additionalShootingCanOnlyWorkIndividually = false;
 
-	//virtual double getBulletAcceleration() { return -1.0/16; }
+	virtual double getTankMaxSpeedMultiplier() override { return .5; }
+	virtual double getTankAccelerationMultiplier() override { return .5; }
 
 	BlastTankPower();
 };

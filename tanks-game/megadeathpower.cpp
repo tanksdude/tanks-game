@@ -2,7 +2,13 @@
 #include "megadeathtankpower.h"
 #include "megadeathbulletpower.h"
 
-const bool MegaDeathPower::canBeInARandomLevel = true;
+std::unordered_map<std::string, float> MegaDeathPower::getWeights() {
+	std::unordered_map<std::string, float> weights;
+	weights.insert({ "vanilla", .25f });
+	weights.insert({ "random-vanilla", .25f });
+	weights.insert({ "random", .25f });
+	return weights;
+}
 
 TankPower* MegaDeathPower::makeTankPower() {
 	return new MegaDeathTankPower();
@@ -23,9 +29,5 @@ Power* MegaDeathPower::factory() {
 }
 
 MegaDeathPower::MegaDeathPower() {
-	//nope
-}
-
-MegaDeathPower::~MegaDeathPower() {
-	//unlikely to ever need these
+	return;
 }

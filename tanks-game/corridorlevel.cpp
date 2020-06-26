@@ -7,6 +7,16 @@
 #include "mylib.h"
 #include "resetthings.h"
 
+std::unordered_map<std::string, float> CorridorLevel::getWeights() {
+	std::unordered_map<std::string, float> weights;
+	weights.insert({ "vanilla", .5f });
+	weights.insert({ "random-vanilla", .5f });
+	weights.insert({ "old", .5f });
+	weights.insert({ "random-old", .5f });
+	weights.insert({ "random", .5f });
+	return weights;
+}
+
 void CorridorLevel::initialize() {
 	int randPos = randFunc() * 5;
 	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40, randPos);

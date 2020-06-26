@@ -54,7 +54,7 @@ public:
 
 	virtual void tick();
 	virtual void draw() = 0;
-	virtual void drawCPU() = 0;
+	//virtual void drawCPU() = 0;
 
-	~GeneralizedLava();
+	virtual ~GeneralizedLava();
 };

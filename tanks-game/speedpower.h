@@ -1,15 +1,8 @@
 #pragma once
 #include "power.h"
-#include "tankpower.h"
-#include "bulletpower.h"
 
-class SpeedPower : public Power{
-protected:
-
+class SpeedPower : public Power {
 public:
-	const static bool canBeInARandomLevel;
-	//bool getCanBeMixed() { return true; }
-
 	virtual std::string getName() { return SpeedPower::getClassName(); }
 	static std::string getClassName() { return "speed"; }
 	virtual ColorValueHolder getColor() { return SpeedPower::getClassColor(); }
@@ -20,6 +13,5 @@ public:
 	//virtual HazardPower* makeHazardPower();
 
 	SpeedPower();
-	~SpeedPower();
 	static Power* factory();
 };

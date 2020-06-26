@@ -35,9 +35,12 @@ VertexBuffer* Tank::vb;
 IndexBuffer* Tank::ib;
 VertexArray* Tank::cannon_va;
 VertexBuffer* Tank::cannon_vb;
-bool Tank::initialized_GPU = 0;
+bool Tank::initialized_GPU = false;
 
-Tank::Tank(double x_, double y_, double a, char id_, std::string name_, TankInputChar forward, TankInputChar left, TankInputChar right, TankInputChar shoot) {
+const double Tank::default_maxSpeed = 1;
+const double Tank::default_acceleration = 1.0/16;
+const double Tank::default_turningIncrement = 64;
+Tank::Tank(double x_, double y_, double a, char id_, std::string name_, TankInputChar forward, TankInputChar left, TankInputChar right, TankInputChar shoot, TankInputChar special) {
 	x = x_;
 	y = y_;
 	angle = a;
@@ -46,6 +49,10 @@ Tank::Tank(double x_, double y_, double a, char id_, std::string name_, TankInpu
 	r = TANK_RADIUS;
 	name = name_;
 
+	maxSpeed = default_maxSpeed;
+	acceleration = default_acceleration;
+	turningIncrement = default_turningIncrement;
+
 	shootCount = 0;
 	maxShootCount = 100; //will change whenever while I'm testing
 
@@ -53,6 +60,7 @@ Tank::Tank(double x_, double y_, double a, char id_, std::string name_, TankInpu
 	this->turnL = left;
 	this->turnR = right;
 	this->shooting = shoot;
+	this->specialKey = special;
 
 	shootingPoints = new std::vector<CannonPoint>;
 	determineShootingAngles();
@@ -61,7 +69,6 @@ Tank::Tank(double x_, double y_, double a, char id_, std::string name_, TankInpu
 }
 
 Tank::~Tank() {
-	//delete explosionColor;
 	for (int i = 0; i < tankPowers.size(); i++) {
 		delete tankPowers[i];
 	}
@@ -204,7 +211,7 @@ void Tank::shoot() {
 			}
 		}
 
-		if (!overridedShooting){
+		if (!overridedShooting) {
 			for (int i = 0; i < shootingPoints->size(); i++) {
 				defaultMakeBullet(shootingPoints->at(i).angle + angle);
 			}
@@ -215,6 +222,19 @@ void Tank::shoot() {
 	}
 }
 
+void Tank::makeBulletCommon(double x, double y, double angle, double radius, double speed) {
+	std::vector<BulletPower*>* bp = new std::vector<BulletPower*>;
+	bp->reserve(tankPowers.size());
+	for (int k = 0; k < tankPowers.size(); k++) {
+		bp->push_back(tankPowers[k]->makeBulletPower());
+	}
+
+	Bullet* temp = new Bullet(x, y, radius, angle, speed, getTeamID(), getGameID(), bp);
+	BulletManager::pushBullet(temp);
+
+	delete bp;
+}
+
 void Tank::makeBullet(double x, double y, double angle, double radius, double speed, double acc) {
 	std::vector<BulletPower*>* bp = new std::vector<BulletPower*>;
 	bp->reserve(tankPowers.size());
@@ -222,7 +242,7 @@ void Tank::makeBullet(double x, double y, double angle, double radius, double sp
 		bp->push_back(tankPowers[k]->makeBulletPower());
 	}
 
-	Bullet* temp = new Bullet(x, y, radius, angle, speed, acc, getTeamID(), bp);
+	Bullet* temp = new Bullet(x, y, radius, angle, speed, acc, getTeamID(), bp, true);
 	BulletManager::pushBullet(temp);
 
 	delete bp;
@@ -230,11 +250,11 @@ void Tank::makeBullet(double x, double y, double angle, double radius, double sp
 }
 
 void Tank::defaultMakeBullet(double angle) {
-	makeBullet(x + r*cos(angle), y + r*sin(angle), angle, r*getBulletRadiusMultiplier(), maxSpeed*getBulletSpeedMultiplier(), getBulletAcceleration());
+	makeBulletCommon(x + r*cos(angle), y + r*sin(angle), angle, r*BULLET_TO_TANK_RADIUS_RATIO, maxSpeed*BULLET_TO_TANK_SPEED_RATIO);
 }
 
 void Tank::regularMakeBullet(double x, double y, double angle) {
-	makeBullet(this->x + x, this->y + y, angle, r*getBulletRadiusMultiplier(), maxSpeed*getBulletSpeedMultiplier(), getBulletAcceleration());
+	makeBulletCommon(this->x + x, this->y + y, angle, r*BULLET_TO_TANK_RADIUS_RATIO, maxSpeed*BULLET_TO_TANK_SPEED_RATIO);
 }
 
 void Tank::determineShootingAngles() {
@@ -264,7 +284,7 @@ void Tank::determineShootingAngles() {
 }
 
 double Tank::getShootingSpeedMultiplier() {
-	//so this function will look at the shooting speed multipliers provided by the tankpowers
+	//so this function will look at the firing rate multipliers provided by the tankpowers
 	//(0-1] range: use lowest; (1-inf) range: use highest
 	//if there are values in each range, then there are three options:
 	//1. return either lowest or highest; 2. return average of lowest and highest; 3. return lowest * highest
@@ -275,8 +295,8 @@ double Tank::getShootingSpeedMultiplier() {
 	std::vector<double> stackList; //only now have I realized this isn't a great name; no, it's not a data structure known as a stack
 
 	for (int i = 0; i < tankPowers.size(); i++) {
-		double value = tankPowers[i]->getShootingMultiplier();
-		if (tankPowers[i]->bulletSpeedStacks) {
+		double value = tankPowers[i]->getTankFiringRateMultiplier();
+		if (tankPowers[i]->tankFiringRateStacks) {
 			stackList.push_back(value);
 		} else {
 			if (value < 1 && value < lowest) {
@@ -296,82 +316,11 @@ double Tank::getShootingSpeedMultiplier() {
 	return highest * lowest * value; //unintentionally works out cleanly
 }
 
-double Tank::getBulletSpeedMultiplier() {
-	//look at getShootingSpeedMultiplier()
-
-	double highest = 1;
-	double lowest = 1;
-	std::vector<double> stackList;
-
-	for (int i = 0; i < tankPowers.size(); i++) {
-		double value = tankPowers[i]->getBulletSpeedMultiplier();
-		if (tankPowers[i]->bulletSpeedStacks) {
-			stackList.push_back(value);
-		} else {
-			if (value < 1 && value < lowest) {
-				lowest = value;
-			} else if (value > 1 && value > highest) {
-				highest = value;
-			}
-		}
-	}
-
-	double value = 1;
-	for (int i = 0; i < stackList.size(); i++) {
-		value *= stackList[i];
-	}
-
-	return highest * lowest * value * 4; //based off of maxSpeed, so *4 //honestly, while *4 is the JS speed that makes the game faster and more fun, *2 is all right
-}
-
-double Tank::getBulletRadiusMultiplier() {
-	//look at getShootingSpeedMultiplier()
-
-	double highest = 1;
-	double lowest = 1;
-	std::vector<double> stackList;
-
-	for (int i = 0; i < tankPowers.size(); i++) {
-		double value = tankPowers[i]->getBulletRadiusMultiplier();
-		if (tankPowers[i]->bulletRadiusStacks) {
-			stackList.push_back(value);
-		} else {
-			if (value < 1 && value < lowest) {
-				lowest = value;
-			} else if (value > 1 && value > highest) {
-				highest = value;
-			}
-		}
-	}
-
-	double value = 1;
-	for (int i = 0; i < stackList.size(); i++) {
-		value *= stackList[i];
-	}
-	return highest * lowest * value / 4.0; //based off of r, so /4
-}
-
-double Tank::getBulletAcceleration() {
-	//look at getShootingSpeedMultiplier()
-
-	double highest = 0;
-	double lowest = 0;
-	for (int i = 0; i < tankPowers.size(); i++) {
-		double value = tankPowers[i]->getBulletAcceleration();
-		if (value < 0 && value < lowest) {
-			lowest = value;
-		} else if (value > 0 && value > highest) {
-			highest = value;
-		}
-	}
-	return highest + lowest;
-	//return (abs(highest) > abs(lowest) ? highest : lowest);
-}
-
 void Tank::updateAllValues() {
 	updateMaxSpeed();
 	updateAcceleration();
 	updateRadius();
+	updateTurningIncrement();
 }
 
 /*
@@ -434,7 +383,7 @@ void Tank::updateMaxSpeed() {
 		value *= stackList[i];
 	}
 
-	maxSpeed = highest * lowest * value;
+	maxSpeed = highest * lowest * value * default_maxSpeed;
 }
 
 void Tank::updateAcceleration() {
@@ -462,7 +411,7 @@ void Tank::updateAcceleration() {
 		value *= stackList[i];
 	}
 
-	acceleration = highest * lowest * value * 1.0/16;
+	acceleration = highest * lowest * value * default_acceleration;
 }
 
 void Tank::updateRadius() {
@@ -491,6 +440,39 @@ void Tank::updateRadius() {
 	}
 
 	r = highest * lowest * value * TANK_RADIUS;
+}
+
+void Tank::updateTurningIncrement() {
+	//look at getShootingSpeedMultiplier()
+
+	double highest = 1;
+	double lowest = 1;
+	std::vector<double> stackList;
+	int negativeCount = 0;
+
+	for (int i = 0; i < tankPowers.size(); i++) {
+		double value = tankPowers[i]->getTankTurningIncrementMultiplier();
+		if (value < 0) {
+			negativeCount++;
+			value = value * -1;
+		}
+		if (tankPowers[i]->tankTurningIncrementStacks) {
+			stackList.push_back(value);
+		} else {
+			if (value < 1 && value < lowest) {
+				lowest = value;
+			} else if (value > 1 && value > highest) {
+				highest = value;
+			}
+		}
+	}
+
+	double value = 1;
+	for (int i = 0; i < stackList.size(); i++) {
+		value *= stackList[i];
+	}
+
+	turningIncrement = highest * lowest * value * default_turningIncrement * (negativeCount%2 == 0 ? 1 : -1);
 }
 
 void Tank::powerCalculate() {
@@ -522,7 +504,19 @@ ColorValueHolder Tank::getBodyColor() {
 	if (tankPowers.size() == 0) {
 		return defaultColor;
 	} else {
-		return ColorMixer::mix(&tankPowers);
+		double highest = -1;
+		for (int i = 0; i < tankPowers.size(); i++) {
+			if (tankPowers[i]->getColorImportance() > highest) {
+				highest = tankPowers[i]->getColorImportance();
+			}
+		}
+		std::vector<ColorValueHolder> mixingColors;
+		for (int i = 0; i < tankPowers.size(); i++) {
+			if (tankPowers[i]->getColorImportance() == highest) {
+				mixingColors.push_back(tankPowers[i]->getColor());
+			}
+		}
+		return ColorMixer::mix(mixingColors.data(), mixingColors.size());
 	}
 }
 
@@ -566,7 +560,7 @@ void Tank::drawCPU(double xpos, double ypos) {
 		//insertion sort has best case O(n) when the list is mostly/entirely sorted, which is possible to get but I don't because it's reversed (easy fix, do later)
 		sortedTankPowers.push_back(tankPowers[i]);
 		for (int j = sortedTankPowers.size() - 1; j >= 1; j--) {
-			if (sortedTankPowers[j]->timeLeft/sortedTankPowers[j]->maxTime > sortedTankPowers[j-1]->timeLeft/sortedTankPowers[j-1]->maxTime){
+			if (sortedTankPowers[j]->timeLeft/sortedTankPowers[j]->maxTime > sortedTankPowers[j-1]->timeLeft/sortedTankPowers[j-1]->maxTime) {
 				std::swap(sortedTankPowers[j], sortedTankPowers[j-1]);
 			} else {
 				break;
@@ -647,6 +641,26 @@ void Tank::draw(double xpos, double ypos) {
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 MVPM;
 
+	if (dead) {
+		//TODO: gradient shader
+		//main body:
+		MVPM = Renderer::GenerateMatrix(r, r, getAngle(), xpos, ypos);
+
+		shader->setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 0.5f); //alpha isn't interpreted
+		shader->setUniformMat4f("u_MVP", MVPM);
+
+		Renderer::Draw(*va, *ib, *shader);
+
+		//outline:
+		MVPM = Renderer::GenerateMatrix(r, r, 0, xpos, ypos);
+		shader->setUniform4f("u_color", 1.0f, 1.0f, 1.0f, 1.0f);
+		shader->setUniformMat4f("u_MVP", MVPM);
+
+		Renderer::Draw(*va, *shader, GL_LINE_LOOP, 1, Circle::numOfSides);
+
+		return;
+	}
+
 	//shooting cooldown outline:
 	double shootingOutlinePercent;
 	if (maxShootCount*getShootingSpeedMultiplier() <= 0 || maxShootCount <= 0) {
@@ -656,7 +670,7 @@ void Tank::draw(double xpos, double ypos) {
 	}
 	unsigned int shootingOutlineVertices = Circle::numOfSides * shootingOutlinePercent;
 
-	if(shootingOutlineVertices > 0) {
+	if (shootingOutlineVertices > 0) {
 		glm::mat4 MVPM_shootingOutline = Renderer::GenerateMatrix(r * 5.0/4.0, r * 5.0/4.0, getAngle(), xpos, ypos);
 		
 		shader->setUniform4f("u_color", 1.0f, 1.0f, 1.0f, 1.0f);
@@ -674,7 +688,7 @@ void Tank::draw(double xpos, double ypos) {
 		//insertion sort has best case O(n) when the list is mostly/entirely sorted, which is possible to obtain but that doesn't happen because it's reversed (easy fix, do later)
 		sortedTankPowers.push_back(tankPowers[i]);
 		for (int j = sortedTankPowers.size() - 1; j >= 1; j--) {
-			if (sortedTankPowers[j]->timeLeft/sortedTankPowers[j]->maxTime > sortedTankPowers[j-1]->timeLeft/sortedTankPowers[j-1]->maxTime){
+			if (sortedTankPowers[j]->timeLeft/sortedTankPowers[j]->maxTime > sortedTankPowers[j-1]->timeLeft/sortedTankPowers[j-1]->maxTime) {
 				std::swap(sortedTankPowers[j], sortedTankPowers[j-1]);
 			} else {
 				break;
@@ -744,69 +758,15 @@ void Tank::draw(double xpos, double ypos) {
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
-void Tank::drawNameCPU() {
-	drawNameCPU(x, y);
-}
-
-void Tank::drawNameCPU(double xpos, double ypos) {
-	//this cannot be done on the GPU easily; will find a library for it eventually
-
-	/*
-	if (name.size() == 0)
-		return;
-
-	const double scaleFactor = 6;
-
-	glPushMatrix();
-
-	double totalWidth = 0;
-	double* widths = new double[name.size()];
-	double fillWidth;
-	for (int i = 0; i < name.size(); i++) {
-		totalWidth += glutStrokeWidth(GLUT_STROKE_ROMAN, name[i]);
-		widths[i] = glutStrokeWidth(GLUT_STROKE_ROMAN, name[i]);
-	}
-	fillWidth = totalWidth/scaleFactor;
-
-	double height = glutStrokeHeight(GLUT_STROKE_ROMAN);
-
-	double center;
-	if(xpos - fillWidth/2 < 0){
-		center = fillWidth/2;
-	}else if(xpos + fillWidth/2 > GAME_WIDTH){
-		center = GAME_WIDTH - fillWidth/2;
-	}else{
-		center = xpos;
-	}
-
-	//TODO: add ability for drawName to just draw the name, no adjustment based on y-pos (probably just need a boolean in the parameters)
-	double centerY;
-	if(ypos + r + 8 + height/scaleFactor > GAME_HEIGHT){
-		centerY = ypos - r - 8 - height/scaleFactor;
-	} else {
-		centerY = ypos + r + 8;
-	}
-	glTranslatef(center - fillWidth/2, centerY, 0);
-	glScalef(1.0/scaleFactor, 1.0/scaleFactor, 1.0/scaleFactor);
-	for (int i = 0; i < name.size(); i++) {
-		glColor3f(defaultNameStroke.getRf(), defaultNameStroke.getGf(), defaultNameStroke.getBf());
-		glLineWidth(8);
-		glutStrokeCharacter(GLUT_STROKE_ROMAN, name[i]);
-
-		glTranslatef(-widths[i], 0, 0);
-
-		glColor3f(defaultNameFill.getRf(), defaultNameFill.getGf(), defaultNameFill.getBf());
-		glLineWidth(2);
-		glutStrokeCharacter(GLUT_STROKE_ROMAN, name[i]);
-	}
-
-	delete[] widths;
-
-	glPopMatrix();
-	*/
+bool Tank::kill() {
+	//TODO: allow tankpowers to override this (this way life and barrier* can exist) (*the barrier that can be hit multiple times)
+	//TODO other: should bullets also get this? (I'm thinking yes, at least because of life)
+	this->dead = true;
+	return this->dead;
 }
 
 void Tank::resetThings(double x, double y, double a, char teamID, std::string name) { //TODO: finish?
+	this->dead = false;
 	this->x = x;
 	this->y = y;
 	this->angle = a;
