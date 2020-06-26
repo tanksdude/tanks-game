@@ -758,68 +758,6 @@ void Tank::draw(double xpos, double ypos) {
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
-void Tank::drawNameCPU() {
-	drawNameCPU(x, y);
-}
-
-void Tank::drawNameCPU(double xpos, double ypos) {
-	//this cannot be done on the GPU easily; will find a library for it eventually
-
-	/*
-	if (name.size() == 0)
-		return;
-
-	const double scaleFactor = 6;
-
-	glPushMatrix();
-
-	double totalWidth = 0;
-	double* widths = new double[name.size()];
-	double fillWidth;
-	for (int i = 0; i < name.size(); i++) {
-		totalWidth += glutStrokeWidth(GLUT_STROKE_ROMAN, name[i]);
-		widths[i] = glutStrokeWidth(GLUT_STROKE_ROMAN, name[i]);
-	}
-	fillWidth = totalWidth/scaleFactor;
-
-	double height = glutStrokeHeight(GLUT_STROKE_ROMAN);
-
-	double center;
-	if(xpos - fillWidth/2 < 0){
-		center = fillWidth/2;
-	}else if(xpos + fillWidth/2 > GAME_WIDTH){
-		center = GAME_WIDTH - fillWidth/2;
-	}else{
-		center = xpos;
-	}
-
-	//TODO: add ability for drawName to just draw the name, no adjustment based on y-pos (probably just need a boolean in the parameters)
-	double centerY;
-	if(ypos + r + 8 + height/scaleFactor > GAME_HEIGHT){
-		centerY = ypos - r - 8 - height/scaleFactor;
-	} else {
-		centerY = ypos + r + 8;
-	}
-	glTranslatef(center - fillWidth/2, centerY, 0);
-	glScalef(1.0/scaleFactor, 1.0/scaleFactor, 1.0/scaleFactor);
-	for (int i = 0; i < name.size(); i++) {
-		glColor3f(defaultNameStroke.getRf(), defaultNameStroke.getGf(), defaultNameStroke.getBf());
-		glLineWidth(8);
-		glutStrokeCharacter(GLUT_STROKE_ROMAN, name[i]);
-
-		glTranslatef(-widths[i], 0, 0);
-
-		glColor3f(defaultNameFill.getRf(), defaultNameFill.getGf(), defaultNameFill.getBf());
-		glLineWidth(2);
-		glutStrokeCharacter(GLUT_STROKE_ROMAN, name[i]);
-	}
-
-	delete[] widths;
-
-	glPopMatrix();
-	*/
-}
-
 bool Tank::kill() {
 	//TODO: allow tankpowers to override this (this way life and barrier* can exist) (*the barrier that can be hit multiple times)
 	//TODO other: should bullets also get this? (I'm thinking yes, at least because of life)

@@ -121,8 +121,6 @@ public:
 	void draw(double xpos, double ypos);
 	void drawCPU();
 	void drawCPU(double, double);
-	void drawNameCPU();
-	void drawNameCPU(double xpos, double ypos);
 	std::string getName() { return name; }
 	
 	~Tank();
