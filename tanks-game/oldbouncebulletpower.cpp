@@ -20,9 +20,8 @@ InteractionBoolHolder OldBounceBulletPower::modifiedCollisionWithWall(Bullet* b,
 		modifiesEdgeCollision = false;
 	}
 
-	return { this->bouncesLeft < 0, false };
+	return { (bouncesLeft < 0), false };
 }
-//TODO: need ability to delete just the bulletpower (needed? wanted? no because bounces should be reset for banana)
 
 InteractionBoolHolder OldBounceBulletPower::modifiedEdgeCollision(Bullet* b) {
 	//the bullet can bounce off of edges twice in a single tick

@@ -134,4 +134,5 @@ public:
 	virtual double getDefenseImportance() { return 0; }
 	virtual double getDefenseTier(Tank*) { return 0; }
 
+	virtual ~TankPower() { return; }
 };

@@ -107,5 +107,6 @@ public:
 	virtual double getDefenseImportance() { return 0; }
 	virtual double getDefenseTier(Bullet*) { return 0; }
 
+	virtual ~BulletPower() { return; }
 	//need separate offense stuff for different situations: tank vs bullet offense could be different (would it be more effective to have that stuff in modifiedTankCollision?)
 };

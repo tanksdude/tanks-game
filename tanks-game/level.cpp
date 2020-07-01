@@ -37,7 +37,7 @@ hiding places (has mines?)
 |few obstacles (homing level)
 turret level (kinda boring)
 |concealed powers (needs some spice to become good)
-many hazards
+|many hazards
 lightning corners (needs spice, but is a kinda fun level)
 
 
