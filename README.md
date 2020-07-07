@@ -15,11 +15,11 @@ The C++ upgrade of my [JS game](https://uncreativeusername.neocities.org/tanks.h
     * Single-core CPU is enough (because there's no multithreading)
 * RAM requirements unknown, but 100MB is good
 * No audio needed (unlikely to change in the future)
-* **Currently Windows-only** (as far as I know) and 32-bit-only (64-bit Windows can run 32-bit programs)
+* **Currently Windows-only** (as far as I know) and 64-bit-only
 
 ### Installing
 
-Install Visual Studio (2019) and the GitHub extension (I don't know if that's needed), then clone this project and run x86 Release (or Debug if you want to) (also make sure you're on the solution, not project)
+Install Visual Studio (2019) and the GitHub extension (I don't know if that's needed), then clone this project and run x64 Release (or Debug if you want to) (also make sure you're on the solution, not project)
 
 Pre-compiled executables are available under "Releases" in the GitHub repository.
 
