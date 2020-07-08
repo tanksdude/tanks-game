@@ -43,20 +43,17 @@ Bullet::Bullet(double x_, double y_, double a, char id_, long parentID, std::vec
 //probably just for banana bullet creation:
 Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_, long parentID, std::vector<BulletPower*>* bp, bool) : Bullet(x_,y_,a,id_,parentID,bp) {
 	this->r = r_;
-
-	this->velocity = vel * getBulletSpeedMultiplier(); //TODO: not sure this is wanted
+	this->velocity = vel; // * getBulletSpeedMultiplier(); //not wanted
 	this->initial_velocity = this->velocity;
 	this->acceleration = getBulletAcceleration();
 }
 
 //avoid using:
 Bullet::Bullet(double x_, double y_, double r_, double a, double vel, double acc, char id_, long parentID, std::vector<BulletPower*>* bp, bool) : Bullet(x_,y_,a,id_,parentID,bp) {
-	this->r = r_;
-
 	this->r = r_ * getBulletRadiusMultiplier();
 	this->velocity = vel * getBulletSpeedMultiplier();
 	this->initial_velocity = this->velocity;
-	this->acceleration = getBulletAcceleration();
+	this->acceleration = acc;
 }
 
 //regular 1:
