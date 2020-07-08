@@ -363,6 +363,15 @@
     <ClCompile Include="targetingturret.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="minesbulletpower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="minespower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="minestankpower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -753,6 +762,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="interactionboolholder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="minesbulletpower.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="minespower.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="minestankpower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

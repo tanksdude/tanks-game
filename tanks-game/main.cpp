@@ -88,6 +88,7 @@
 #include "blastpower.h"
 #include "bananapower.h"
 #include "godmodepower.h"
+#include "minespower.h"
 //dev powers:
 #include "devlonginvinciblenamedpower.h" //invincible but lasts a long time
 #include "inversionpower.h" //flips left and right turning
@@ -1070,6 +1071,7 @@ int main(int argc, char** argv) {
 	PowerupManager::addPowerFactory(BlastPower::factory);
 	PowerupManager::addPowerFactory(BananaPower::factory);
 	PowerupManager::addPowerFactory(GodmodePower::factory);
+	PowerupManager::addPowerFactory(MinesPower::factory);
 
 	//dev:
 	PowerupManager::addPowerFactory(DevLongInvincibleNamedPower::factory);
@@ -1122,7 +1124,7 @@ int main(int argc, char** argv) {
 	TankManager::pushTank(new Tank(20, GAME_HEIGHT/2, 0, 1, "WASD", { false, 'w' }, { false, 'a' }, { false, 'd' }, { false, 's' }, { false, 'e' }));
 	TankManager::pushTank(new Tank(GAME_WIDTH-20, GAME_HEIGHT/2, PI, 2, "Arrow Keys", { true, GLUT_KEY_UP }, { true, GLUT_KEY_LEFT }, { true, GLUT_KEY_RIGHT }, { true, GLUT_KEY_DOWN }, { false, '/' }));
 #if _DEBUG
-	LevelManager::pushLevel("dev", "dev1");
+	LevelManager::pushLevel("dev", "dev2");
 #else
 	LevelManager::pushLevel("vanilla", "default random");
 #endif

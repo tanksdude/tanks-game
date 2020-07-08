@@ -43,7 +43,7 @@ swarm (check notes if you forgot, me) (modifiedMovementCanOnlyWorkIndividually =
 
 
 powers that are rare because the level wants them, not because they're good:
-mines
+|mines
 |blast
 tracking?
 

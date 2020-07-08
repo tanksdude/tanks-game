@@ -62,8 +62,8 @@ void DeveloperManager::mouseWheelFunc(int wheel, int dir, int x, int y) {
 	int real_y = (1 - y / double(Renderer::window_height)) * GAME_HEIGHT;
 
 	if (dir == 1) { //scroll up
-		std::string powers[1] = { "big" };
-		PowerupManager::pushPowerup(new PowerSquare(real_x, real_y, powers, 1));
+		std::string powers[1] = { "mines" };
+		PowerupManager::pushPowerup(new PowerSquare(real_x, real_y, "vanilla-extra", powers, 1));
 	}
 	else { //scroll down
 		std::string powers[1] = { "banana" };
