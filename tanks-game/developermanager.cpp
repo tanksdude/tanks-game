@@ -10,6 +10,8 @@
 
 bool DeveloperManager::leftMouse = false;
 bool DeveloperManager::rightMouse = false;
+int DeveloperManager::insertIndex = 0;
+std::vector<std::string> DeveloperManager::insertListIdentifiers = { "longinvincible", "banana", "mines", "godmode", "inversion", "stationary turret" };
 
 double DeveloperManager::getX(Circle* c) { return c->x; }
 double DeveloperManager::getY(Circle* c) { return c->y; }
@@ -47,7 +49,7 @@ void DeveloperManager::mouseClickFunc(int button, int state, int x, int y) {
 		} else { //button == GLUT_MIDDLE_BUTTON
 			double true_x = (real_x / double(Renderer::gamewindow_width)) * GAME_WIDTH;
 			double true_y = (1 - real_y / double(Renderer::gamewindow_height)) * GAME_HEIGHT;
-			PowerupManager::pushPowerup(new PowerSquare(true_x, true_y, "dev", "longinvincible")); //change to godmode when it exists?
+			devInsert(true_x, true_y);
 		}
 	} else {
 		if (button == GLUT_LEFT_BUTTON) {
@@ -57,18 +59,51 @@ void DeveloperManager::mouseClickFunc(int button, int state, int x, int y) {
 }
 
 void DeveloperManager::mouseWheelFunc(int wheel, int dir, int x, int y) {
-	// in the future, the wheel should change the index of some list of stuffs as a dev menu to insert said stuffs (and middle mouse inserts the thing)
 	int real_x = (x / double(Renderer::window_width)) * GAME_WIDTH;
 	int real_y = (1 - y / double(Renderer::window_height)) * GAME_HEIGHT;
 
+	int insertIndexMax = insertListIdentifiers.size();
 	if (dir == 1) { //scroll up
-		std::string powers[1] = { "mines" };
-		PowerupManager::pushPowerup(new PowerSquare(real_x, real_y, "vanilla-extra", powers, 1));
+		if (insertIndexMax > 0) {
+			insertIndex = ((insertIndex % insertIndexMax) + 1) % insertIndexMax;
+		} else {
+			insertIndex = 0;
+		}
 	}
 	else { //scroll down
-		std::string powers[1] = { "banana" };
-		PowerupManager::pushPowerup(new PowerSquare(real_x, real_y, powers, 1));
+		if (insertIndexMax > 0) {
+			insertIndex = ((insertIndex % insertIndexMax) - 1 + insertIndexMax) % insertIndexMax;
+		} else {
+			insertIndex = 0;
+		}
 	}
-
+	//accounting for potential mistakes is annoying
 	//std::cout << "wheel:" << wheel << ", dir:" << dir << std::endl;
+
+	std::cout << "DeveloperManager insertIdentifier: " << insertListIdentifiers[insertIndex] << std::endl;
+}
+
+void DeveloperManager::devInsert(int x, int y) {
+	switch (insertIndex) {
+		case 0:
+			PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "longinvincible"));
+			return;
+		case 1:
+			PowerupManager::pushPowerup(new PowerSquare(x, y, "banana"));
+			return;
+		case 2:
+			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla-extra", "mines"));
+			return;
+		case 3:
+			PowerupManager::pushPowerup(new PowerSquare(x, y, "godmode"));
+			return;
+		case 4:
+			PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "inversion"));
+			return;
+		case 5:
+			std::string paras[3] = { std::to_string(x), std::to_string(y), std::to_string(0) };
+			HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary turret")(3, paras));
+			return;
+	}
+	//no default
 }
