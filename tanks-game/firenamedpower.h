@@ -3,7 +3,7 @@
 
 class FireNamedPower : public Power {
 public:
-	virtual std::vector<std::string> getPowerAttributes() {
+	virtual std::vector<std::string> getPowerAttributes() override {
 		std::vector<std::string> attributes = std::vector<std::string>{ "mix" };
 		return attributes;
 	}

@@ -3,7 +3,7 @@
 
 class TriplePower : public Power {
 public:
-	virtual std::vector<std::string> getPowerAttributes() {
+	virtual std::vector<std::string> getPowerAttributes() override {
 		//might want to change how this power works (need to adjust cannonpoints)
 		std::vector<std::string> attributes = std::vector<std::string>{ "mix" };
 		return attributes;
