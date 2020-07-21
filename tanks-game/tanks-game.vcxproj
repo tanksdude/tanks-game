@@ -236,6 +236,9 @@
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="resetthings.cpp" />
     <ClCompile Include="shader.cpp" />
+    <ClCompile Include="shotgunbulletpower.cpp" />
+    <ClCompile Include="shotgunpower.cpp" />
+    <ClCompile Include="shotguntankpower.cpp" />
     <ClCompile Include="speedbulletpower.cpp" />
     <ClCompile Include="speedpower.cpp" />
     <ClCompile Include="speedtankpower.cpp" />
@@ -369,6 +372,9 @@
     <ClInclude Include="res\vendor\glm\gtc\matrix_transform.hpp" />
     <ClInclude Include="res\vendor\glm\gtx\transform.hpp" />
     <ClInclude Include="shader.h" />
+    <ClInclude Include="shotgunbulletpower.h" />
+    <ClInclude Include="shotgunpower.h" />
+    <ClInclude Include="shotguntankpower.h" />
     <ClInclude Include="speedbulletpower.h" />
     <ClInclude Include="speedpower.h" />
     <ClInclude Include="speedtankpower.h" />

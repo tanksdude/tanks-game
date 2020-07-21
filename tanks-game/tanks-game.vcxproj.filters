@@ -372,6 +372,15 @@
     <ClCompile Include="minestankpower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="shotgunbulletpower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="shotgunpower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="shotguntankpower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -771,6 +780,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="minestankpower.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="shotgunbulletpower.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="shotgunpower.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="shotguntankpower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
