@@ -2,7 +2,9 @@
 #include "power.h"
 
 class BlastPower : public Power {
+	//called mega-blast in JS Tanks
 public:
+	//TODO: move to vanilla-extra?
 	virtual std::vector<std::string> getPowerTypes() override {
 		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "random" };
 		return types;
@@ -10,8 +12,8 @@ public:
 	virtual std::unordered_map<std::string, float> getWeights() override {
 		std::unordered_map<std::string, float> weights;
 		weights.insert({ "vanilla", .5f });
-		weights.insert({ "random-vanilla", .5f });
-		weights.insert({ "random", .5f });
+		weights.insert({ "random-vanilla", .25f });
+		weights.insert({ "random", .25f });
 		return weights;
 	}
 	virtual std::vector<std::string> getPowerAttributes() override {
