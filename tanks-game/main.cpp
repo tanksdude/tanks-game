@@ -1125,6 +1125,10 @@ int main(int argc, char** argv) {
 	//main game code initialization stuff:
 	TankManager::pushTank(new Tank(20, GAME_HEIGHT/2, 0, 1, "WASD", { false, 'w' }, { false, 'a' }, { false, 'd' }, { false, 's' }, { false, 'e' }));
 	TankManager::pushTank(new Tank(GAME_WIDTH-20, GAME_HEIGHT/2, PI, 2, "Arrow Keys", { true, GLUT_KEY_UP }, { true, GLUT_KEY_LEFT }, { true, GLUT_KEY_RIGHT }, { true, GLUT_KEY_DOWN }, { false, '/' }));
+	EndGameHandler::addTeamToWatch(1, "\"WASD 4 Life\"");
+	EndGameHandler::addTeamToWatch(2, "\"Arrow Keys R WINZ\"");
+	//these are just the kind of names that will make me cringe in a month
+	EndGameHandler::addTeamToWatch(HAZARD_TEAM, "HAZARDS");
 #if _DEBUG
 	LevelManager::pushLevel("dev", "dev2");
 #else

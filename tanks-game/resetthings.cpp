@@ -13,8 +13,16 @@
 
 void ResetThings::reset(int) {
 	EndGameHandler::finalizeScores();
-	std::cout << TankManager::tanks[0]->getName() << " score: " << TankManager::tanks[0]->wins << " | ";
-	std::cout << TankManager::tanks[1]->getName() << " score: " << TankManager::tanks[1]->wins << std::endl;
+	//TODO: this good?
+	for (int i = 0; i < EndGameHandler::teamsParticipating.size(); i++) {
+		std::cout << EndGameHandler::teamsParticipating[i].teamName << " score: " << EndGameHandler::teamWins[EndGameHandler::teamsParticipating[i].teamID];
+
+		if (i != EndGameHandler::teamsParticipating.size()-1) {
+			std::cout << " | ";
+		} else {
+			std::cout << std::endl;
+		}
+	}
 
 	TankManager::tanks[0]->resetThings(20, GAME_HEIGHT/2, 0, TankManager::tanks[0]->getTeamID(), TankManager::tanks[0]->getName());
 	TankManager::tanks[1]->resetThings(GAME_WIDTH - 20, GAME_HEIGHT/2, PI, TankManager::tanks[1]->getTeamID(), TankManager::tanks[1]->getName());

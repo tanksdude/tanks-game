@@ -27,7 +27,6 @@ class Tank : public Circle, public GameThing {
 	friend class EndGameHandler; //calls this->kill()
 public:
 	std::string name;
-	int wins = 0;
 
 	double maxSpeed; // = 1;
 	double acceleration; // = 1.0/16; //intentional acceleration, not total

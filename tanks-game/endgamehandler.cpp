@@ -2,30 +2,64 @@
 #include "priorityhandler.h"
 #include "collisionhandler.h"
 #include "tankmanager.h"
+#include "constants.h"
+#include <iostream>
 
 //TODO?: CircleHazard and RectHazard use CollisionHandler for their modified tank/bullet collision by default
 
-void EndGameHandler::finalizeScores() {
-	//TODO: GameManager holds information about objects and their IDs (and what teamIDs are being used)
-	//TODO: this logic isn't done
-	//notes: in the determineWinner functions that involve a tank: add killer (and killee) to list; when finalizing scores, add wins as needed (to GameManager, because that's supposed to hold the team wins)
+std::unordered_map<char, int> EndGameHandler::teamWins;
+std::vector<EndGameHandler::CharAndString> EndGameHandler::teamsParticipating;
+std::vector<EndGameHandler::DoubleChar> EndGameHandler::killEvents;
 
-	bool* deadStatus = new bool[TankManager::getNumTanks()];
-	bool everyTankIsDead = true;
-	for (int i = 0; i < TankManager::getNumTanks(); i++) {
-		deadStatus[i] = (TankManager::getTank(i)->dead);
-		if (!deadStatus[i]) {
-			everyTankIsDead = false;
-		}
+void EndGameHandler::addTeamToWatch(char teamID, std::string teamName) {
+	if (teamID == DEFAULT_TEAM) {
+		std::cerr << "WARNING: DEFAULT_TEAM is not allowed to have a score" << std::endl;
+	} else {
+		teamsParticipating.push_back({ teamID, teamName });
+		teamWins.insert({ teamID, 0 });
 	}
+}
 
-	if (!everyTankIsDead) {
-		for (int i = 0; i < TankManager::getNumTanks(); i++) {
-			if (!deadStatus[i]) {
-				TankManager::getTank(i)->wins++;
+void EndGameHandler::clearWatchingTeams() {
+	for (int i = 0; i < teamsParticipating.size(); i++) {
+		teamWins.erase(teamsParticipating[i].teamID);
+	}
+	teamsParticipating.clear();
+	killEvents.clear(); //just in case
+}
+
+void EndGameHandler::finalizeScores() {
+	//TODO: GameManager holds information about objects and their IDs (and what teamIDs are being used?)
+	//TODO: is this done? (will definitely update when multi-tank mode becomes a thing)
+
+	//process kill events
+	std::vector<EndGameHandler::DoubleChar> pastEvents; //in case tank dies from multiple bullets at the same time
+	for (int i = 0; i < killEvents.size(); i++) {
+		bool previouslyHappened = false;
+		for (int j = 0; j < pastEvents.size(); j++) {
+			if ((killEvents[i].killer == pastEvents[j].killer) && (killEvents[i].killee == pastEvents[j].killee)) {
+				previouslyHappened = true;
+				break;
 			}
 		}
+		if (!previouslyHappened) {
+			if (killEvents[i].killer != killEvents[i].killee) { //friendly fire score increase prevention
+				teamWins[killEvents[i].killer]++;
+				pastEvents.push_back(killEvents[i]);
+			}
+			/*
+			//... maybe
+			else {
+				teamWins[killEvents[i].killer]--;
+			}
+			*/
+		}
 	}
+	killEvents.clear();
+
+	//TODO: if two tanks kill each other at the same time, then they'll both get a point; might change it so that can't happen, though I think the logic will be complicated when num of tanks > 2
+	//other note: if hazard and tank kill other tank at same time, they both get a point; this is the intended behavior
+	//quick note: there can be many hazards in the level, so the hazard team can get multiple points in one round (TODO: the logic can't deal with team mode, so fix that)
 }
 
 InteractionBoolHolder EndGameHandler::determineWinner(Tank* t, Bullet* b) {
@@ -52,6 +86,9 @@ InteractionBoolHolder EndGameHandler::determineWinner(Tank* t, Bullet* b) {
 	}
 	if (tankDies) {
 		tankDies = t->kill();
+		if (tankDies) {
+			killEvents.push_back({ b->getTeamID(), t->getTeamID() });
+		}
 	}
 	return { tankDies, bulletDies };
 }
@@ -80,9 +117,15 @@ InteractionBoolHolder EndGameHandler::determineWinner(Tank* t1, Tank* t2) {
 	}
 	if (firstTankDies) {
 		firstTankDies = t1->kill();
+		if (firstTankDies) {
+			killEvents.push_back({ t2->getTeamID(), t1->getTeamID() });
+		}
 	}
 	if (secondTankDies) {
 		secondTankDies = t2->kill();
+		if (secondTankDies) {
+			killEvents.push_back({ t1->getTeamID(), t2->getTeamID() });
+		}
 	}
 	return { firstTankDies, secondTankDies };
 }
@@ -152,6 +195,9 @@ InteractionBoolHolder EndGameHandler::determineWinner(Tank* t, CircleHazard* ch)
 	}
 	if (tankDies) {
 		tankDies = t->kill();
+		if (tankDies) {
+			killEvents.push_back({ ch->getTeamID(), t->getTeamID() });
+		}
 	}
 	return { tankDies, circleHazardDies };
 }
@@ -196,6 +242,9 @@ InteractionBoolHolder EndGameHandler::determineWinner(Tank* t, RectHazard* rh) {
 	}
 	if (tankDies) {
 		tankDies = t->kill();
+		if (tankDies) {
+			killEvents.push_back({ rh->getTeamID(), t->getTeamID() });
+		}
 	}
 	return { tankDies, rectHazardDies };
 }
