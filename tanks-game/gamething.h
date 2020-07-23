@@ -6,6 +6,6 @@ protected:
 	long gameID;
 	char teamID;
 public:
-	long getGameID() { return gameID; }
-	char getTeamID() { return teamID; }
+	long getGameID() const { return gameID; }
+	char getTeamID() const { return teamID; }
 };
