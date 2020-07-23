@@ -14,7 +14,7 @@ InteractionBoolHolder HomingBulletPower::modifiedMovement(Bullet* b) {
 }
 
 InteractionBoolHolder HomingBulletPower::modifiedEdgeCollision(Bullet* b) {
-	return { ((b->x - b->r <= 0) || (b->x + b->r >= GAME_WIDTH)) }; //TODO: wanted?
+	return { ((b->x + b->r <= 0) || (b->x - b->r >= GAME_WIDTH)) }; //TODO: wanted?
 }
 
 void HomingBulletPower::initialize(Bullet* parent) {
