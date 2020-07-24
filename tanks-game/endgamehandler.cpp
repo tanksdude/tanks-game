@@ -62,6 +62,17 @@ void EndGameHandler::finalizeScores() {
 	//quick note: there can be many hazards in the level, so the hazard team can get multiple points in one round (TODO: the logic can't deal with team mode, so fix that)
 }
 
+bool EndGameHandler::shouldGameEnd() {
+	//TODO: account for two tanks on the same team (probably need to make GameManager keep track of stuff)
+	int numOfAliveTanks = 0;
+	for (int i = 0; i < TankManager::getNumTanks(); i++) {
+		if (!TankManager::getTank(i)->dead) {
+			numOfAliveTanks++;
+		}
+	}
+	return (numOfAliveTanks <= 1);
+}
+
 InteractionBoolHolder EndGameHandler::determineWinner(Tank* t, Bullet* b) {
 	char result = PriorityHandler::determinePriority(t, b);
 	bool tankDies = false, bulletDies = false;

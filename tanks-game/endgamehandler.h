@@ -39,6 +39,8 @@ public:
 	static InteractionBoolHolder determineWinner(Bullet*, CircleHazard*);
 	static InteractionBoolHolder determineWinner(Bullet*, RectHazard*);
 
+	static bool shouldGameEnd();
+
 	static void addTeamToWatch(char teamID, std::string teamName);
 	static void clearWatchingTeams();
 };

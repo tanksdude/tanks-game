@@ -104,7 +104,6 @@
 
 using namespace std;
 
-int tank_dead = 0;
 //tank team rules:
 //0  = no team or default team
 //-1 = hazard team (hazards can be split up into multiple teams, but by default there's only one)
@@ -320,14 +319,13 @@ void tick(int physicsUPS) {
 
 	//std::cout << "tick: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << "ms" << endl << endl;
 
-	if (tank_dead == 0) {
+	if (!EndGameHandler::shouldGameEnd()) {
 		glutTimerFunc(1000/physicsUPS, tick, physicsUPS);
 		if (frameCount == 0) {
 			glutPostRedisplay();
 		}
 		++frameCount %= ticksUntilFrame;
 	} else {
-		tank_dead = 0;
 		glutPostRedisplay();
 		glutTimerFunc(1000, ResetThings::reset, 0);
 		glutTimerFunc(1000 + 1000/physicsUPS, tick, physicsUPS);
@@ -485,7 +483,7 @@ void tankToWall() {
 		}
 
 		if (shouldBeKilled) {
-			tank_dead = 1; //TODO: proper implementation
+			//TODO: proper implementation?
 		}
 
 	}
@@ -550,7 +548,7 @@ void tankToHazard() {
 		}
 
 		if (shouldBeKilled) {
-			tank_dead = 1; //TODO: proper implementation
+			//TODO: proper implementation?
 			//continue;
 		}
 		
@@ -607,7 +605,7 @@ void tankToHazard() {
 		}
 
 		if (shouldBeKilled) {
-			tank_dead = 1;
+			//TODO: proper implementation?
 		}
 	}
 }
@@ -666,12 +664,12 @@ void tankToTank() {
 			}
 
 			if (t_innerShouldDie) {
-				tank_dead = 1;
+				//TODO: proper implementation?
 			}
 		}
 
 		if (t_outerShouldDie) {
-			tank_dead = 1;
+			//TODO: proper implementation?
 		}
 	}
 }
@@ -715,7 +713,7 @@ void tankToEdge() {
 		}
 
 		if (shouldBeKilled) {
-			tank_dead = 1;
+			//TODO: proper implementation?
 		}
 	}
 }
@@ -1009,7 +1007,7 @@ void bulletToTank() {
 		}
 
 		if (shouldBeKilled) {
-			tank_dead = 1;
+			//TODO: proper implementation?
 		}
 	}
 }
