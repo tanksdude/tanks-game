@@ -64,7 +64,7 @@ void DeveloperManager::mouseWheelFunc(int wheel, int dir, int x, int y) {
 	int insertIndexMax = insertListIdentifiers.size();
 	if (dir == 1) { //scroll up
 		if (insertIndexMax > 0) {
-			insertIndex = ((insertIndex % insertIndexMax) + 1) % insertIndexMax; //accounting for potential mistakes/trolls
+			insertIndex = ((insertIndex % insertIndexMax) + 1 + insertIndexMax) % insertIndexMax; //accounting for potential mistakes/trolls
 		} else {
 			insertIndex = 0;
 		}
