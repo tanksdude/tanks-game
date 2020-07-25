@@ -12,6 +12,9 @@ public:
 	virtual void initialize(Tank* parent) override;
 	virtual void removeEffects(Tank* parent) override;
 
+	virtual void tick(Tank* t) override; //for updating modifiesAdditionalShooting based on whether there are any other powers that modify additionalShooting
+	//might need a secondary tick for this; one tick to do stuff, another tick to update interaction bools
+
 	virtual ColorValueHolder getColor() {
 		return MinesPower::getClassColor();
 	}
@@ -23,7 +26,7 @@ public:
 	virtual BulletPower* makeBulletPower();
 
 	//bool modifiesAdditionalShooting = false;
-	virtual void additionalShooting(Tank* parent, CannonPoint);
+	virtual void additionalShooting(Tank* parent, CannonPoint) override;
 	//bool overridesAdditionalShooting = false;
 	//bool additionalShootingCanWorkWithOthers = true;
 	//bool additionalShootingCanOnlyWorkIndividually = false;
