@@ -62,6 +62,7 @@ Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_, 
 	this->velocity = vel;
 	this->initial_velocity = vel;
 	this->acceleration = 0;
+	//TODO: add "cannot interact with" type; for tanks, it's the teamID; for hazards, it's the gameID; for something else, it might be nothing, or hazard type (name)
 }
 
 //regular 2:
@@ -195,15 +196,30 @@ double Bullet::getBulletRadiusMultiplier() {
 
 double Bullet::getBulletAcceleration() {
 	//look at Tank::getTankFiringRateMultiplier()
+	//(this has importance though)
+
+	if (bulletPowers.size() == 0) {
+		return 0;
+	}
+
+	double importance = -1;
+	for (int i = 0; i < bulletPowers.size(); i++) {
+		double value = bulletPowers[i]->getBulletAccelerationImportance();
+		if (value > importance) {
+			importance = value;
+		}
+	}
 
 	double highest = 0;
 	double lowest = 0;
 	for (int i = 0; i < bulletPowers.size(); i++) {
-		double value = bulletPowers[i]->getBulletAcceleration();
-		if (value < 0 && value < lowest) {
-			lowest = value;
-		} else if (value > 0 && value > highest) {
-			highest = value;
+		if (bulletPowers[i]->getBulletAccelerationImportance() == importance) {
+			double value = bulletPowers[i]->getBulletAcceleration();
+			if (value < 0 && value < lowest) {
+				lowest = value;
+			} else if (value > 0 && value > highest) {
+				highest = value;
+			}
 		}
 	}
 	return highest + lowest;

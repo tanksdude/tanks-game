@@ -101,6 +101,7 @@ public:
 	virtual double getBulletRadiusMultiplier() const { return 1; }
 	bool bulletRadiusStacks = false;
 	virtual double getBulletAcceleration() const { return 0; }
+	virtual double getBulletAccelerationImportance() const { return 0; } //I don't think other functions should get importance values
 
 	virtual double getOffenseImportance() const { return 0; } //"importance" = "override" value (when dealing with other powers)
 	virtual double getOffenseTier(Bullet*) const { return 0; }

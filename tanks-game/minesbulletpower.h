@@ -21,7 +21,8 @@ public:
 
 	virtual double getBulletSpeedMultiplier() const override { return 0; }
 	//bool bulletSpeedStacks = false; //true?
-	virtual double getBulletAcceleration() const override { return 0; } //TODO: probably need importance values on all of these
+	virtual double getBulletAcceleration() const override { return 0; }
+	virtual double getBulletAccelerationImportance() const override { return .5; }
 
 	MinesBulletPower();
 };
