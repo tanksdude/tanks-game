@@ -9,16 +9,16 @@ public:
 	virtual void initialize(Tank* parent) override;
 	virtual void removeEffects(Tank* parent) override;
 
-	virtual ColorValueHolder getColor() {
+	virtual ColorValueHolder getColor() const override {
 		return BigNamedPower::getClassColor();
 	}
 
-	virtual TankPower* makeDuplicate() { return new BigNamedTankPower(); }
-	virtual BulletPower* makeBulletPower();
+	virtual TankPower* makeDuplicate() const override { return new BigNamedTankPower(); }
+	virtual BulletPower* makeBulletPower() const override;
 
-	virtual double getTankMaxSpeedMultiplier() override { return .5; }
-	virtual double getTankAccelerationMultiplier() override { return .5; }
-	virtual double getTankFiringRateMultiplier() override { return 4; } //maybe *2?
+	virtual double getTankMaxSpeedMultiplier() const override { return .5; }
+	virtual double getTankAccelerationMultiplier() const override { return .5; }
+	virtual double getTankFiringRateMultiplier() const override { return 4; } //maybe *2?
 
 	BigNamedTankPower();
 };

@@ -2,7 +2,7 @@
 #include "megadeathtankpower.h"
 #include "megadeathbulletpower.h"
 
-std::unordered_map<std::string, float> MegaDeathPower::getWeights() {
+std::unordered_map<std::string, float> MegaDeathPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", .25f });
 	weights.insert({ "random-vanilla", .25f });
@@ -10,16 +10,16 @@ std::unordered_map<std::string, float> MegaDeathPower::getWeights() {
 	return weights;
 }
 
-TankPower* MegaDeathPower::makeTankPower() {
+TankPower* MegaDeathPower::makeTankPower() const {
 	return new MegaDeathTankPower();
 }
 
-BulletPower* MegaDeathPower::makeBulletPower() {
+BulletPower* MegaDeathPower::makeBulletPower() const {
 	return new MegaDeathBulletPower();
 }
 
 /*
-HazardPower* MegaDeathPower::makeHazardPower(){
+HazardPower* MegaDeathPower::makeHazardPower() const {
 	return new MegaDeathHazardPower();
 }
 */

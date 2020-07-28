@@ -22,7 +22,7 @@ void FireNamedTankPower::additionalShooting(Tank* t, CannonPoint c) {
 	}
 }
 
-BulletPower* FireNamedTankPower::makeBulletPower() {
+BulletPower* FireNamedTankPower::makeBulletPower() const {
 	return new FireNamedBulletPower();
 }
 

@@ -9,7 +9,7 @@ void MegaDeathTankPower::removeEffects(Tank* parent) {
 	//nothing
 }
 
-BulletPower* MegaDeathTankPower::makeBulletPower() {
+BulletPower* MegaDeathTankPower::makeBulletPower() const {
 	return new MegaDeathBulletPower();
 }
 

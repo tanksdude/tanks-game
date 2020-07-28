@@ -8,7 +8,7 @@
 #include "mylib.h"
 #include "resetthings.h"
 
-std::unordered_map<std::string, float> ConcealedPowerupsLevel::getWeights() {
+std::unordered_map<std::string, float> ConcealedPowerupsLevel::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", .5f });
 	weights.insert({ "random-vanilla", .5f });

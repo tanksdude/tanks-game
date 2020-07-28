@@ -81,11 +81,11 @@ void BounceBulletPower::removeEffects(Bullet* parent) {
 	//nothing
 }
 
-BulletPower* BounceBulletPower::makeDuplicate() {
+BulletPower* BounceBulletPower::makeDuplicate() const {
 	return new BounceBulletPower(this->bouncesLeft);
 }
 
-TankPower* BounceBulletPower::makeTankPower() {
+TankPower* BounceBulletPower::makeTankPower() const {
 	return new BounceTankPower();
 }
 

@@ -9,12 +9,12 @@ public:
 	virtual void initialize(Tank* parent) override;
 	virtual void removeEffects(Tank* parent) override;
 
-	virtual ColorValueHolder getColor() {
+	virtual ColorValueHolder getColor() const override {
 		return GrenadePower::getClassColor();
 	}
 
-	virtual TankPower* makeDuplicate() { return new GrenadeTankPower(); }
-	virtual BulletPower* makeBulletPower();
+	virtual TankPower* makeDuplicate() const override { return new GrenadeTankPower(); }
+	virtual BulletPower* makeBulletPower() const override;
 
 	GrenadeTankPower();
 };

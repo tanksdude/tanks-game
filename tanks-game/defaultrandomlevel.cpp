@@ -9,7 +9,7 @@
 #include "resetthings.h"
 #include <iostream>
 
-std::unordered_map<std::string, float> DefaultRandomLevel::getWeights() {
+std::unordered_map<std::string, float> DefaultRandomLevel::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", 2.0f });
 	weights.insert({ "random-vanilla", 2.0f });

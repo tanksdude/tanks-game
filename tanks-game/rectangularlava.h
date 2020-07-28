@@ -37,7 +37,7 @@ public:
 	//virtual bool validLocation() override { return true; }
 	virtual bool reasonableLocation() override;
 
-	virtual std::string getName() { return getClassName(); }
+	virtual std::string getName() const override { return getClassName(); }
 	static std::string getClassName() { return "lava"; }
 
 	virtual void tick();
@@ -48,7 +48,7 @@ public:
 	~RectangularLava();
 	static RectHazard* factory(int, std::string*);
 	static RectHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv);
-	virtual int getFactoryArgumentCount() override { return 4; }
-	virtual RectHazardConstructionTypes getConstructionType() override { return RectHazardConstructionTypes::standardConstruction; }
-	virtual RectFactoryInformation getFactoryInformation() override { return { false, false, false, false, false }; }
+	virtual int getFactoryArgumentCount() const override { return 4; }
+	virtual RectHazardConstructionTypes getConstructionType() const override { return RectHazardConstructionTypes::standardConstruction; }
+	virtual RectFactoryInformation getFactoryInformation() const override { return { false, false, false, false, false }; }
 };

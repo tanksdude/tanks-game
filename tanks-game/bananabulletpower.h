@@ -14,12 +14,12 @@ public:
 	virtual void initialize(Bullet* parent) override;
 	virtual void removeEffects(Bullet* parent) override;
 
-	virtual ColorValueHolder getColor() {
+	virtual ColorValueHolder getColor() const override {
 		return BananaPower::getClassColor();
 	}
 
-	virtual BulletPower* makeDuplicate() { return new BananaBulletPower(); }
-	virtual TankPower* makeTankPower();
+	virtual BulletPower* makeDuplicate() const override { return new BananaBulletPower(); }
+	virtual TankPower* makeTankPower() const override;
 
 	//bool modifiesMovement = true;
 	virtual InteractionBoolHolder modifiedMovement(Bullet*) override;
@@ -27,7 +27,7 @@ public:
 	//bool modifiedMovementCanWorkWithOthers = true;
 	//bool modifiedMovementCanOnlyWorkIndividually = false;
 
-	virtual double getBulletAcceleration() override { return -1.0/8; }
+	virtual double getBulletAcceleration() const override { return -1.0/8; }
 
 	BananaBulletPower();
 };

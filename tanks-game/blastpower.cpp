@@ -2,16 +2,16 @@
 #include "blasttankpower.h"
 #include "blastbulletpower.h"
 
-TankPower* BlastPower::makeTankPower() {
+TankPower* BlastPower::makeTankPower() const {
 	return new BlastTankPower();
 }
 
-BulletPower* BlastPower::makeBulletPower() {
+BulletPower* BlastPower::makeBulletPower() const {
 	return new BlastBulletPower();
 }
 
 /*
-HazardPower* BlastPower::makeHazardPower(){
+HazardPower* BlastPower::makeHazardPower() const {
 	return new BlastHazardPower();
 }
 */

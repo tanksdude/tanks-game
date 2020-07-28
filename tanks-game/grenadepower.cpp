@@ -2,16 +2,16 @@
 #include "grenadetankpower.h"
 #include "grenadebulletpower.h"
 
-TankPower* GrenadePower::makeTankPower() {
+TankPower* GrenadePower::makeTankPower() const {
 	return new GrenadeTankPower();
 }
 
-BulletPower* GrenadePower::makeBulletPower() {
+BulletPower* GrenadePower::makeBulletPower() const {
 	return new GrenadeBulletPower();
 }
 
 /*
-HazardPower* GrenadePower::makeHazardPower(){
+HazardPower* GrenadePower::makeHazardPower() const {
 	return new GrenadeHazardPower();
 }
 */

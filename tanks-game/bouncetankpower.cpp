@@ -12,7 +12,7 @@ void BounceTankPower::removeEffects(Tank* parent) {
 	//nothing
 }
 
-BulletPower* BounceTankPower::makeBulletPower() {
+BulletPower* BounceTankPower::makeBulletPower() const {
 	return new BounceBulletPower();
 }
 

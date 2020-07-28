@@ -27,17 +27,17 @@ public:
 	virtual void powerTick(Tank*) {
 		timeLeft--;
 	}
-	virtual bool isDone() {
+	virtual bool isDone() const {
 		if (maxTime < 0) {
 			return false;
 		}
 		return (timeLeft <= 0);
 	}
-	virtual ColorValueHolder getColor() = 0;
-	virtual double getColorImportance() { return 0; }
+	virtual ColorValueHolder getColor() const = 0;
+	virtual double getColorImportance() const { return 0; }
 
-	virtual TankPower* makeDuplicate() = 0;
-	virtual BulletPower* makeBulletPower() = 0;
+	virtual TankPower* makeDuplicate() const = 0;
+	virtual BulletPower* makeBulletPower() const = 0;
 
 	bool modifiesMovement = false;
 	virtual InteractionBoolHolder modifiedMovement(Tank*) { return { false }; }
@@ -117,21 +117,21 @@ public:
 	bool modifiedTankDrawingsCanWorkWithOthers = true;
 	bool modifiedTankDrawingsCanOnlyWorkIndividually = false;
 
-	virtual double getTankMaxSpeedMultiplier() { return 1; }
+	virtual double getTankMaxSpeedMultiplier() const { return 1; }
 	bool tankMaxSpeedStacks = false;
-	virtual double getTankAccelerationMultiplier() { return 1; }
+	virtual double getTankAccelerationMultiplier() const { return 1; }
 	bool tankAccelerationStacks = false;
-	virtual double getTankRadiusMultiplier() { return 1; }
+	virtual double getTankRadiusMultiplier() const { return 1; }
 	bool tankRadiusStacks = false;
-	virtual double getTankFiringRateMultiplier() { return 1; }
+	virtual double getTankFiringRateMultiplier() const { return 1; }
 	bool tankFiringRateStacks = false;
-	virtual double getTankTurningIncrementMultiplier() { return 1; }
+	virtual double getTankTurningIncrementMultiplier() const { return 1; }
 	bool tankTurningIncrementStacks = false;
 
-	virtual double getOffenseImportance() { return 0; } //"importance" = "override" value (when dealing with other powers)
-	virtual double getOffenseTier(Tank*) { return 0; }
-	virtual double getDefenseImportance() { return 0; }
-	virtual double getDefenseTier(Tank*) { return 0; }
+	virtual double getOffenseImportance() const { return 0; } //"importance" = "override" value (when dealing with other powers)
+	virtual double getOffenseTier(Tank*) const { return 0; }
+	virtual double getDefenseImportance() const { return 0; }
+	virtual double getDefenseTier(Tank*) const { return 0; }
 
 	virtual ~TankPower() { return; }
 };

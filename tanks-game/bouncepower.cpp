@@ -2,16 +2,16 @@
 #include "bouncetankpower.h"
 #include "bouncebulletpower.h"
 
-TankPower* BouncePower::makeTankPower() {
+TankPower* BouncePower::makeTankPower() const {
 	return new BounceTankPower();
 }
 
-BulletPower* BouncePower::makeBulletPower() {
+BulletPower* BouncePower::makeBulletPower() const {
 	return new BounceBulletPower();
 }
 
 /*
-HazardPower* BouncePower::makeHazardPower(){
+HazardPower* BouncePower::makeHazardPower() const {
 	return new BounceHazardPower();
 }
 */

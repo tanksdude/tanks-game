@@ -9,7 +9,7 @@ void WallhackTankPower::removeEffects(Tank* parent) {
 	//nothing
 }
 
-BulletPower* WallhackTankPower::makeBulletPower() {
+BulletPower* WallhackTankPower::makeBulletPower() const {
 	return new WallhackBulletPower();
 }
 

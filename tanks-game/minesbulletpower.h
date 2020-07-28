@@ -9,19 +9,19 @@ public:
 	virtual void initialize(Bullet* parent) override;
 	virtual void removeEffects(Bullet* parent) override;
 
-	virtual ColorValueHolder getColor() {
+	virtual ColorValueHolder getColor() const override {
 		return MinesPower::getClassColor();
 	}
-	virtual double getColorImportance() override {
+	virtual double getColorImportance() const override {
 		return MinesPower::getClassColorImportance();
 	}
 
-	virtual BulletPower* makeDuplicate() { return new MinesBulletPower(); }
-	virtual TankPower* makeTankPower();
+	virtual BulletPower* makeDuplicate() const override { return new MinesBulletPower(); }
+	virtual TankPower* makeTankPower() const override;
 
-	virtual double getBulletSpeedMultiplier() override { return 0; }
+	virtual double getBulletSpeedMultiplier() const override { return 0; }
 	//bool bulletSpeedStacks = false; //true?
-	virtual double getBulletAcceleration() override { return 0; } //TODO: probably need importance values on all of these
+	virtual double getBulletAcceleration() const override { return 0; } //TODO: probably need importance values on all of these
 
 	MinesBulletPower();
 };

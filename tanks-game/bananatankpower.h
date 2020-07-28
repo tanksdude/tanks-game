@@ -9,12 +9,12 @@ public:
 	virtual void initialize(Tank* parent) override;
 	virtual void removeEffects(Tank* parent) override;
 
-	virtual ColorValueHolder getColor() {
+	virtual ColorValueHolder getColor() const override {
 		return BananaPower::getClassColor();
 	}
 
-	virtual TankPower* makeDuplicate() { return new BananaTankPower(); }
-	virtual BulletPower* makeBulletPower();
+	virtual TankPower* makeDuplicate() const override { return new BananaTankPower(); }
+	virtual BulletPower* makeBulletPower() const override;
 
 	BananaTankPower();
 };

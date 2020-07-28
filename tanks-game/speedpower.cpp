@@ -2,16 +2,16 @@
 #include "speedtankpower.h"
 #include "speedbulletpower.h"
 
-TankPower* SpeedPower::makeTankPower() {
+TankPower* SpeedPower::makeTankPower() const {
 	return new SpeedTankPower();
 }
 
-BulletPower* SpeedPower::makeBulletPower() {
+BulletPower* SpeedPower::makeBulletPower() const {
 	return new SpeedBulletPower();
 }
 
 /*
-HazardPower* SpeedPower::makeHazardPower(){
+HazardPower* SpeedPower::makeHazardPower() const {
 	return new SpeedHazardPower();
 }
 */

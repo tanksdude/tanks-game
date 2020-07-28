@@ -2,16 +2,16 @@
 #include "minestankpower.h"
 #include "minesbulletpower.h"
 
-TankPower* MinesPower::makeTankPower() {
+TankPower* MinesPower::makeTankPower() const {
 	return new MinesTankPower();
 }
 
-BulletPower* MinesPower::makeBulletPower() {
+BulletPower* MinesPower::makeBulletPower() const {
 	return new MinesBulletPower();
 }
 
 /*
-HazardPower* MinesPower::makeHazardPower(){
+HazardPower* MinesPower::makeHazardPower() const {
 	return new MinesHazardPower();
 }
 */

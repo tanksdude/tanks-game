@@ -1,11 +1,11 @@
 #include "power.h"
 
-std::vector<std::string> Power::getPowerTypes() {
+std::vector<std::string> Power::getPowerTypes() const {
 	std::vector<std::string> types = std::vector<std::string>{ "vanilla", "supermix-vanilla", "supermix", "random-vanilla", "random" };
 	return types;
 }
 
-std::unordered_map<std::string, float> Power::getWeights() {
+std::unordered_map<std::string, float> Power::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", .5f });
 	weights.insert({ "supermix-vanilla", .5f });
@@ -15,7 +15,7 @@ std::unordered_map<std::string, float> Power::getWeights() {
 	return weights;
 }
 
-std::vector<std::string> Power::getPowerAttributes() {
+std::vector<std::string> Power::getPowerAttributes() const {
 	std::vector<std::string> attributes = std::vector<std::string>{ "stack", "mix" };
 	return attributes;
 }
@@ -27,7 +27,7 @@ list of (eventual) powers:
 |wallhack
 |multishot
 |bounce
-|triple shot (any want for shotgun?)
+|triple shot
 |homing
 |invincibility (tier 1)
 |big (tier 2)
@@ -45,6 +45,7 @@ swarm (check notes if you forgot, me) (modifiedMovementCanOnlyWorkIndividually =
 powers that are rare because the level wants them, not because they're good:
 |mines
 |blast
+|shotgun
 tracking?
 
 

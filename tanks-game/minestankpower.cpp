@@ -30,7 +30,7 @@ void MinesTankPower::removeEffects(Tank* parent) {
 	//nothing
 }
 
-BulletPower* MinesTankPower::makeBulletPower() {
+BulletPower* MinesTankPower::makeBulletPower() const {
 	return new MinesBulletPower();
 }
 

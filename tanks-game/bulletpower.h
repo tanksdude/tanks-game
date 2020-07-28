@@ -29,17 +29,17 @@ public:
 	virtual void powerTick(Bullet*) {
 		timeLeft--; //not like any bulletpower is limited, though
 	}
-	virtual bool isDone() { //typically, this will always be false
+	virtual bool isDone() const { //typically, this will always be false
 		if (maxTime < 0) {
 			return false;
 		}
 		return (timeLeft <= 0);
 	}
-	virtual ColorValueHolder getColor() = 0;
-	virtual double getColorImportance() { return 0; }
+	virtual ColorValueHolder getColor() const = 0;
+	virtual double getColorImportance() const { return 0; }
 
-	virtual BulletPower* makeDuplicate() = 0;
-	virtual TankPower* makeTankPower() = 0;
+	virtual BulletPower* makeDuplicate() const = 0;
+	virtual TankPower* makeTankPower() const = 0;
 
 	bool modifiesMovement = false; //true if it, you know, modifies the movement
 	virtual InteractionBoolHolder modifiedMovement(Bullet*) { return { false }; } //default does nothing, obviously
@@ -96,16 +96,16 @@ public:
 	bool modifiedBulletDrawingsCanWorkWithOthers = true;
 	bool modifiedBulletDrawingsCanOnlyWorkIndividually = false;
 
-	virtual double getBulletSpeedMultiplier() { return 1; }
+	virtual double getBulletSpeedMultiplier() const { return 1; }
 	bool bulletSpeedStacks = false;
-	virtual double getBulletRadiusMultiplier() { return 1; }
+	virtual double getBulletRadiusMultiplier() const { return 1; }
 	bool bulletRadiusStacks = false;
-	virtual double getBulletAcceleration() { return 0; }
+	virtual double getBulletAcceleration() const { return 0; }
 
-	virtual double getOffenseImportance() { return 0; } //"importance" = "override" value (when dealing with other powers)
-	virtual double getOffenseTier(Bullet*) { return 0; }
-	virtual double getDefenseImportance() { return 0; }
-	virtual double getDefenseTier(Bullet*) { return 0; }
+	virtual double getOffenseImportance() const { return 0; } //"importance" = "override" value (when dealing with other powers)
+	virtual double getOffenseTier(Bullet*) const { return 0; }
+	virtual double getDefenseImportance() const { return 0; }
+	virtual double getDefenseTier(Bullet*) const { return 0; }
 
 	virtual ~BulletPower() { return; }
 	//need separate offense stuff for different situations: tank vs bullet offense could be different (would it be more effective to have that stuff in modifiedTankCollision?)

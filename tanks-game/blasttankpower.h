@@ -13,12 +13,12 @@ public:
 	virtual void initialize(Tank* parent) override;
 	virtual void removeEffects(Tank* parent) override;
 
-	virtual ColorValueHolder getColor() {
+	virtual ColorValueHolder getColor() const override {
 		return BlastPower::getClassColor();
 	}
 
-	virtual TankPower* makeDuplicate() { return new BlastTankPower(); }
-	virtual BulletPower* makeBulletPower();
+	virtual TankPower* makeDuplicate() const override { return new BlastTankPower(); }
+	virtual BulletPower* makeBulletPower() const override;
 
 	//bool modifiesAdditionalShooting = false;
 	virtual void additionalShooting(Tank* parent, CannonPoint) override;
@@ -26,8 +26,8 @@ public:
 	//bool additionalShootingCanWorkWithOthers = true;
 	//bool additionalShootingCanOnlyWorkIndividually = false;
 
-	virtual double getTankMaxSpeedMultiplier() override { return .5; }
-	virtual double getTankAccelerationMultiplier() override { return .5; }
+	virtual double getTankMaxSpeedMultiplier() const override { return .5; }
+	virtual double getTankAccelerationMultiplier() const override { return .5; }
 
 	BlastTankPower();
 };

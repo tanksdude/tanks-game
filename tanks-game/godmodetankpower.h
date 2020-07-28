@@ -9,15 +9,15 @@ public:
 	virtual void initialize(Tank* parent) override;
 	virtual void removeEffects(Tank* parent) override;
 
-	virtual ColorValueHolder getColor() {
+	virtual ColorValueHolder getColor() const override {
 		return GodmodePower::getClassColor();
 	}
-	virtual double getColorImportance() override {
+	virtual double getColorImportance() const override {
 		return GodmodePower::getClassColorImportance();
 	}
 
-	virtual TankPower* makeDuplicate() { return new GodmodeTankPower(); }
-	virtual BulletPower* makeBulletPower();
+	virtual TankPower* makeDuplicate() const override { return new GodmodeTankPower(); }
+	virtual BulletPower* makeBulletPower() const override;
 
 	GodmodeTankPower();
 };

@@ -7,14 +7,14 @@ protected:
 	static const short bulletConstant = 8;
 
 public:
-	virtual std::string getName() { return MultishotPower::getClassName(); }
+	virtual std::string getName() const override { return MultishotPower::getClassName(); }
 	static std::string getClassName() { return "multishot"; }
-	virtual ColorValueHolder getColor() { return MultishotPower::getClassColor(); }
+	virtual ColorValueHolder getColor() const override { return MultishotPower::getClassColor(); }
 	static ColorValueHolder getClassColor() { return ColorValueHolder(0.5f, 0.0f, 1.0f); } //purple
 
-	virtual TankPower* makeTankPower();
-	virtual BulletPower* makeBulletPower();
-	//virtual HazardPower* makeHazardPower();
+	virtual TankPower* makeTankPower() const override;
+	virtual BulletPower* makeBulletPower() const override;
+	//virtual HazardPower* makeHazardPower() const override;
 
 	MultishotPower();
 	static Power* factory();

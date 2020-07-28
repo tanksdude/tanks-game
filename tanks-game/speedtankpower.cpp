@@ -9,11 +9,11 @@ void SpeedTankPower::removeEffects(Tank* parent) {
 	//nothing
 }
 
-double SpeedTankPower::getTankMaxSpeedMultiplier() {
+double SpeedTankPower::getTankMaxSpeedMultiplier() const {
 	return 2;
 }
 
-BulletPower* SpeedTankPower::makeBulletPower() {
+BulletPower* SpeedTankPower::makeBulletPower() const {
 	return new SpeedBulletPower();
 }
 

@@ -23,10 +23,10 @@ public:
 	//virtual void tick() = 0; //now it takes a parent
 	//virtual void powerTick() = 0; //also takes a parent
 
-	virtual ColorValueHolder getColor() = 0;
+	virtual ColorValueHolder getColor() const = 0;
 
 	//void (*modifiedMovement)();
-	virtual bool isDone() = 0; //as in, is finished, shouldn't exist anymore
+	virtual bool isDone() const = 0; //as in, is finished, shouldn't exist anymore
 
 	//don't use function pointers; too complicated, don't hold a this (didn't try member function pointers for too long, but probably not worth the effort)
 	//void (*modifiedCollisionWithTank)(Tank*); //something might use it
@@ -37,9 +37,9 @@ public:
 
 	//virtual void modifiedShooting();
 
-	virtual double getOffenseImportance() { return 0; } //"importance" = "override" value (when dealing with other powers)
-	virtual double getOffenseTier() { return 0; }
-	virtual double getDefenseImportance() { return 0; }
-	virtual double getDefenseTier() { return 0; }
+	//virtual double getOffenseImportance() { return 0; } //"importance" = "override" value (when dealing with other powers)
+	//virtual double getOffenseTier() { return 0; }
+	//virtual double getDefenseImportance() { return 0; }
+	//virtual double getDefenseTier() { return 0; }
 	//removed values to the tiers because they probably wouldn't get used
 };

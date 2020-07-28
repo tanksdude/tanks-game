@@ -9,7 +9,7 @@ void OldBounceTankPower::removeEffects(Tank* parent) {
 	//nothing
 }
 
-BulletPower* OldBounceTankPower::makeBulletPower() {
+BulletPower* OldBounceTankPower::makeBulletPower() const {
 	return new OldBounceBulletPower();
 }
 

@@ -9,7 +9,7 @@ void BananaTankPower::removeEffects(Tank* parent) {
 	//nothing
 }
 
-BulletPower* BananaTankPower::makeBulletPower() {
+BulletPower* BananaTankPower::makeBulletPower() const {
 	return new BananaBulletPower();
 }
 

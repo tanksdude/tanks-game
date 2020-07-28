@@ -9,7 +9,7 @@ void MultishotBulletPower::removeEffects(Bullet* parent) {
 	//nothing
 }
 
-TankPower* MultishotBulletPower::makeTankPower() {
+TankPower* MultishotBulletPower::makeTankPower() const {
 	return new MultishotTankPower();
 }
 

@@ -10,7 +10,7 @@ void MultishotTankPower::removeEffects(Tank* parent) {
 	//regenerate cannon points?
 }
 
-BulletPower* MultishotTankPower::makeBulletPower() {
+BulletPower* MultishotTankPower::makeBulletPower() const {
 	return new MultishotBulletPower();
 }
 

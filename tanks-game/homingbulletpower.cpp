@@ -25,7 +25,7 @@ void HomingBulletPower::removeEffects(Bullet* parent) {
 	//nothing
 }
 
-TankPower* HomingBulletPower::makeTankPower() {
+TankPower* HomingBulletPower::makeTankPower() const {
 	return new HomingTankPower();
 }
 

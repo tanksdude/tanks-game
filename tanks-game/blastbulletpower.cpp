@@ -33,7 +33,7 @@ InteractionBoolHolder BlastBulletPower::modifiedMovement(Bullet* b) {
 	return { false };
 }
 
-double BlastBulletPower::getBulletAcceleration() {
+double BlastBulletPower::getBulletAcceleration() const {
 	return accelerationAmount;
 }
 
@@ -45,11 +45,11 @@ void BlastBulletPower::removeEffects(Bullet* parent) {
 	//nothing
 }
 
-BulletPower* BlastBulletPower::makeDuplicate() {
+BulletPower* BlastBulletPower::makeDuplicate() const {
 	return new BlastBulletPower(this->accelerationAmount);
 }
 
-TankPower* BlastBulletPower::makeTankPower() {
+TankPower* BlastBulletPower::makeTankPower() const {
 	return new BlastTankPower();
 }
 

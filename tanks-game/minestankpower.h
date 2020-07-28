@@ -15,15 +15,15 @@ public:
 	virtual void tick(Tank* t) override; //for updating modifiesAdditionalShooting based on whether there are any other powers that modify additionalShooting
 	//might need a secondary tick for this; one tick to do stuff, another tick to update interaction bools
 
-	virtual ColorValueHolder getColor() {
+	virtual ColorValueHolder getColor() const override{
 		return MinesPower::getClassColor();
 	}
-	virtual double getColorImportance() override {
+	virtual double getColorImportance() const override {
 		return MinesPower::getClassColorImportance();
 	}
 
-	virtual TankPower* makeDuplicate() { return new MinesTankPower(); }
-	virtual BulletPower* makeBulletPower();
+	virtual TankPower* makeDuplicate() const override { return new MinesTankPower(); }
+	virtual BulletPower* makeBulletPower() const override;
 
 	//bool modifiesAdditionalShooting = false;
 	virtual void additionalShooting(Tank* parent, CannonPoint) override;
@@ -31,7 +31,7 @@ public:
 	//bool additionalShootingCanWorkWithOthers = true;
 	//bool additionalShootingCanOnlyWorkIndividually = false;
 
-	virtual double getTankFiringRateMultiplier() override { return .25; } //.5?
+	virtual double getTankFiringRateMultiplier() const override { return .25; } //.5?
 	
 	MinesTankPower();
 };

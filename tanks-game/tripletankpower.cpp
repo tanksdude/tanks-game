@@ -18,7 +18,7 @@ void TripleTankPower::removeEffects(Tank* parent) {
 	//nothing
 }
 
-BulletPower* TripleTankPower::makeBulletPower() {
+BulletPower* TripleTankPower::makeBulletPower() const {
 	return new TripleBulletPower();
 }
 

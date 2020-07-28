@@ -21,7 +21,7 @@ void ShotgunTankPower::removeEffects(Tank* parent) {
 	//nothing
 }
 
-BulletPower* ShotgunTankPower::makeBulletPower() {
+BulletPower* ShotgunTankPower::makeBulletPower() const {
 	return new ShotgunBulletPower();
 }
 

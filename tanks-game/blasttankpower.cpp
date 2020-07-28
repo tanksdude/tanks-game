@@ -22,7 +22,7 @@ void BlastTankPower::additionalShooting(Tank* t, CannonPoint c) {
 	}
 }
 
-BulletPower* BlastTankPower::makeBulletPower() {
+BulletPower* BlastTankPower::makeBulletPower() const {
 	return new BlastBulletPower();
 }
 

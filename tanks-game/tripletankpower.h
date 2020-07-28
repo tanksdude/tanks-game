@@ -12,12 +12,12 @@ public:
 	virtual void initialize(Tank* parent) override;
 	virtual void removeEffects(Tank* parent) override;
 
-	virtual ColorValueHolder getColor() {
+	virtual ColorValueHolder getColor() const override {
 		return TriplePower::getClassColor();
 	}
 
-	virtual TankPower* makeDuplicate() { return new TripleTankPower(); }
-	virtual BulletPower* makeBulletPower();
+	virtual TankPower* makeDuplicate() const override { return new TripleTankPower(); }
+	virtual BulletPower* makeBulletPower() const override;
 
 	//bool modifiesAdditionalShooting = true;
 	virtual void additionalShooting(Tank* parent, CannonPoint) override;

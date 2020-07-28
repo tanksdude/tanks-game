@@ -9,7 +9,7 @@ void BigNamedTankPower::removeEffects(Tank* parent) {
 	//nothing
 }
 
-BulletPower* BigNamedTankPower::makeBulletPower() {
+BulletPower* BigNamedTankPower::makeBulletPower() const {
 	return new BigNamedBulletPower();
 }
 

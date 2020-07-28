@@ -36,7 +36,7 @@ InteractionBoolHolder FireNamedBulletPower::modifiedMovement(Bullet* b) {
 	return { false };
 }
 
-double FireNamedBulletPower::getBulletAcceleration() {
+double FireNamedBulletPower::getBulletAcceleration() const {
 	return accelerationAmount;
 }
 
@@ -48,11 +48,11 @@ void FireNamedBulletPower::removeEffects(Bullet* parent) {
 	//nothing
 }
 
-BulletPower* FireNamedBulletPower::makeDuplicate() {
+BulletPower* FireNamedBulletPower::makeDuplicate() const {
 	return new FireNamedBulletPower(this->accelerationAmount);
 }
 
-TankPower* FireNamedBulletPower::makeTankPower() {
+TankPower* FireNamedBulletPower::makeTankPower() const {
 	return new FireNamedTankPower();
 }
 

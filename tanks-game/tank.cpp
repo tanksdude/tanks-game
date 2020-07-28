@@ -473,6 +473,7 @@ void Tank::updateTurningIncrement() {
 	}
 
 	turningIncrement = highest * lowest * value * default_turningIncrement * (negativeCount%2 == 0 ? 1 : -1);
+	angle = round(angle / (PI / turningIncrement)) * (PI / turningIncrement);
 }
 
 void Tank::powerCalculate() {

@@ -9,12 +9,12 @@ public:
 	virtual void initialize(Tank* parent) override;
 	virtual void removeEffects(Tank* parent) override;
 
-	virtual ColorValueHolder getColor() {
+	virtual ColorValueHolder getColor() const override {
 		return WallhackPower::getClassColor();
 	}
 
-	virtual TankPower* makeDuplicate() { return new WallhackTankPower(); }
-	virtual BulletPower* makeBulletPower();
+	virtual TankPower* makeDuplicate() const override { return new WallhackTankPower(); }
+	virtual BulletPower* makeBulletPower() const override;
 
 	//bool modifiesCollisionWithWall = true;
 	virtual InteractionBoolHolder modifiedCollisionWithWall(Tank*, Wall*) override;

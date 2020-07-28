@@ -2,16 +2,16 @@
 #include "inversiontankpower.h"
 #include "inversionbulletpower.h"
 
-TankPower* InversionPower::makeTankPower() {
+TankPower* InversionPower::makeTankPower() const {
 	return new InversionTankPower();
 }
 
-BulletPower* InversionPower::makeBulletPower() {
+BulletPower* InversionPower::makeBulletPower() const {
 	return new InversionBulletPower();
 }
 
 /*
-HazardPower* InversionPower::makeHazardPower(){
+HazardPower* InversionPower::makeHazardPower() const {
 	return new InversionHazardPower();
 }
 */

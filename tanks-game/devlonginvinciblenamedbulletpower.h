@@ -9,17 +9,17 @@ public:
 	virtual void initialize(Bullet* parent) override;
 	virtual void removeEffects(Bullet* parent) override;
 
-	virtual ColorValueHolder getColor() {
+	virtual ColorValueHolder getColor() const override {
 		return DevLongInvincibleNamedPower::getClassColor();
 	}
 
-	virtual BulletPower* makeDuplicate() { return new DevLongInvincibleNamedBulletPower(); }
-	virtual TankPower* makeTankPower();
+	virtual BulletPower* makeDuplicate() const override { return new DevLongInvincibleNamedBulletPower(); }
+	virtual TankPower* makeTankPower() const override;
 
-	virtual double getOffenseImportance() override { return 0; }
-	virtual double getOffenseTier(Bullet*) override { return 1; }
-	virtual double getDefenseImportance() override { return 0; }
-	virtual double getDefenseTier(Bullet*) override { return 1; }
+	virtual double getOffenseImportance() const override { return 0; }
+	virtual double getOffenseTier(Bullet*) const override { return 1; }
+	virtual double getDefenseImportance() const override { return 0; }
+	virtual double getDefenseTier(Bullet*) const override { return 1; }
 
 	DevLongInvincibleNamedBulletPower();
 };

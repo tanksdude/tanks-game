@@ -9,7 +9,7 @@ void HomingTankPower::removeEffects(Tank* parent) {
 	//nothing
 }
 
-BulletPower* HomingTankPower::makeBulletPower() {
+BulletPower* HomingTankPower::makeBulletPower() const {
 	return new HomingBulletPower();
 }
 

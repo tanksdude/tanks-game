@@ -9,7 +9,7 @@ void SpeedBulletPower::removeEffects(Bullet* parent) {
 	//nothing
 }
 
-TankPower* SpeedBulletPower::makeTankPower() {
+TankPower* SpeedBulletPower::makeTankPower() const {
 	return new SpeedTankPower();
 }
 

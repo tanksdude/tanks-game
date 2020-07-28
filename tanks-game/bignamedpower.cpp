@@ -2,16 +2,16 @@
 #include "bignamedtankpower.h"
 #include "bignamedbulletpower.h"
 
-TankPower* BigNamedPower::makeTankPower() {
+TankPower* BigNamedPower::makeTankPower() const {
 	return new BigNamedTankPower();
 }
 
-BulletPower* BigNamedPower::makeBulletPower() {
+BulletPower* BigNamedPower::makeBulletPower() const {
 	return new BigNamedBulletPower();
 }
 
 /*
-HazardPower* BigNamedPower::makeHazardPower(){
+HazardPower* BigNamedPower::makeHazardPower() const {
 	return new BigNamedHazardPower();
 }
 */

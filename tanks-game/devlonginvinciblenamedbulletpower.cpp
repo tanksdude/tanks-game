@@ -9,7 +9,7 @@ void DevLongInvincibleNamedBulletPower::removeEffects(Bullet* parent) {
 	//nothing
 }
 
-TankPower* DevLongInvincibleNamedBulletPower::makeTankPower() {
+TankPower* DevLongInvincibleNamedBulletPower::makeTankPower() const {
 	return new DevLongInvincibleNamedTankPower();
 }
 

@@ -2,16 +2,16 @@
 #include "invinciblenamedtankpower.h"
 #include "invinciblenamedbulletpower.h"
 
-TankPower* InvincibleNamedPower::makeTankPower() {
+TankPower* InvincibleNamedPower::makeTankPower() const {
 	return new InvincibleNamedTankPower();
 }
 
-BulletPower* InvincibleNamedPower::makeBulletPower() {
+BulletPower* InvincibleNamedPower::makeBulletPower() const {
 	return new InvincibleNamedBulletPower();
 }
 
 /*
-HazardPower* InvincibleNamedPower::makeHazardPower(){
+HazardPower* InvincibleNamedPower::makeHazardPower() const {
 	return new InvincibleNamedHazardPower();
 }
 */

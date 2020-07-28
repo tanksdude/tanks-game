@@ -9,14 +9,14 @@ public:
 	virtual void initialize(Bullet* parent) override;
 	virtual void removeEffects(Bullet* parent) override;
 
-	virtual ColorValueHolder getColor() {
+	virtual ColorValueHolder getColor() const override {
 		return ShotgunPower::getClassColor();
 	}
 
-	virtual BulletPower* makeDuplicate() { return new ShotgunBulletPower(); }
-	virtual TankPower* makeTankPower();
+	virtual BulletPower* makeDuplicate() const override { return new ShotgunBulletPower(); }
+	virtual TankPower* makeTankPower() const override;
 
-	virtual double getBulletSpeedMultiplier() override { return .5; }
+	virtual double getBulletSpeedMultiplier() const override { return .5; }
 
 	ShotgunBulletPower();
 };

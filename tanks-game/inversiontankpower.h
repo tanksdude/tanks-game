@@ -9,12 +9,12 @@ public:
 	virtual void initialize(Tank* parent) override;
 	virtual void removeEffects(Tank* parent) override;
 
-	virtual ColorValueHolder getColor() {
+	virtual ColorValueHolder getColor() const override {
 		return InversionPower::getClassColor();
 	}
 
-	virtual TankPower* makeDuplicate() { return new InversionTankPower(); }
-	virtual BulletPower* makeBulletPower();
+	virtual TankPower* makeDuplicate() const override { return new InversionTankPower(); }
+	virtual BulletPower* makeBulletPower() const override;
 
 	//maybe use this?:
 	//bool modifiesMovement = true;
@@ -23,7 +23,7 @@ public:
 	//bool modifiedMovementCanWorkWithOthers = true;
 	//bool modifiedMovementCanOnlyWorkIndividually = false;
 
-	virtual double getTankTurningIncrementMultiplier() override { return -1; }
+	virtual double getTankTurningIncrementMultiplier() const override { return -1; }
 	//bool tankTurningIncrementStacks = true;
 
 	InversionTankPower();

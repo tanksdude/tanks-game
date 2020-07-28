@@ -47,7 +47,7 @@ public:
 	virtual ColorValueHolder getColor(short state) override;
 	virtual ColorValueHolder getReticuleColor();
 
-	virtual std::string getName() { return getClassName(); }
+	virtual std::string getName() const override { return getClassName(); }
 	static std::string getClassName() { return "targeting turret"; }
 
 	virtual void tick();
@@ -62,7 +62,7 @@ public:
 	virtual ~TargetingTurret();
 	static CircleHazard* factory(int, std::string*);
 	static CircleHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv);
-	//virtual int getFactoryArgumentCount() override { return 3; }
-	//virtual CircleHazardConstructionTypes getConstructionType() override { return CircleHazardConstructionTypes::angleRequired; }
-	//virtual CircleFactoryInformation getFactoryInformation() override { return { false, false, false, false, false }; }
+	//virtual int getFactoryArgumentCount() const override { return 3; }
+	//virtual CircleHazardConstructionTypes getConstructionType() const override { return CircleHazardConstructionTypes::angleRequired; }
+	//virtual CircleFactoryInformation getFactoryInformation() const override { return { false, false, false, false, false }; }
 };

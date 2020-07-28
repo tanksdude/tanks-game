@@ -9,7 +9,7 @@ void GodmodeBulletPower::removeEffects(Bullet* parent) {
 	//nothing
 }
 
-TankPower* GodmodeBulletPower::makeTankPower() {
+TankPower* GodmodeBulletPower::makeTankPower() const {
 	return new GodmodeTankPower();
 }
 

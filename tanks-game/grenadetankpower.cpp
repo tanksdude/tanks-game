@@ -9,7 +9,7 @@ void GrenadeTankPower::removeEffects(Tank* parent) {
 	//nothing
 }
 
-BulletPower* GrenadeTankPower::makeBulletPower() {
+BulletPower* GrenadeTankPower::makeBulletPower() const {
 	return new GrenadeBulletPower();
 }
 

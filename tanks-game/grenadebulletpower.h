@@ -12,12 +12,12 @@ public:
 	virtual void initialize(Bullet* parent) override;
 	virtual void removeEffects(Bullet* parent) override;
 
-	virtual ColorValueHolder getColor() {
+	virtual ColorValueHolder getColor() const override {
 		return GrenadePower::getClassColor();
 	}
 
-	virtual BulletPower* makeDuplicate() { return new GrenadeBulletPower(); } //should current size be passed on?
-	virtual TankPower* makeTankPower();
+	virtual BulletPower* makeDuplicate() const override { return new GrenadeBulletPower(); } //should current size be passed on?
+	virtual TankPower* makeTankPower() const override;
 
 	//bool modifiesMovement = true;
 	virtual InteractionBoolHolder modifiedMovement(Bullet*) override;
@@ -31,7 +31,7 @@ public:
 	//bool modifiedCollisionWithWallCanWorkWithOthers = true;
 	//bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;
 
-	virtual double getBulletAcceleration() override { return -1.0/16; }
+	virtual double getBulletAcceleration() const override { return -1.0/16; }
 
 	GrenadeBulletPower();
 };

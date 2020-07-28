@@ -47,12 +47,12 @@ public:
 	double getHighestDefenseImportance();
 	double getHighestDefenseTier(double importance);
 public:
-	virtual std::vector<std::string> getHazardTypes();
-	virtual std::unordered_map<std::string, float> getWeights(); //intended range: (0,1]
+	virtual std::vector<std::string> getHazardTypes() const;
+	virtual std::unordered_map<std::string, float> getWeights() const; //intended range: (0,1]
 
 	double getOffenseTier();
 	double getDefenseTier();
-	virtual double getDefaultOffense() = 0;
+	virtual double getDefaultOffense() = 0; //const?
 	virtual double getDefaultDefense() = 0;
 
 	virtual bool actuallyCollided(Tank*) { return true; } //precondition: currently and partially collided with tank
@@ -70,15 +70,15 @@ public:
 	//virtual bool validLocation() { return true; }
 	//virtual bool reasonableLocation() = 0;
 
-	virtual std::string getName() = 0;
+	virtual std::string getName() const = 0;
 	//static std::string getClassName();
 	//virtual bool initializeGPU() = 0;
 	virtual void draw() = 0;
 
 	static CircleHazard* factory(int argc, std::string* argv);
 	static CircleHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv);
-	virtual int getFactoryArgumentCount() = 0;
-	virtual CircleHazardConstructionTypes getConstructionType() = 0;
-	virtual CircleFactoryInformation getFactoryInformation() = 0;
+	virtual int getFactoryArgumentCount() const = 0;
+	virtual CircleHazardConstructionTypes getConstructionType() const = 0;
+	virtual CircleFactoryInformation getFactoryInformation() const = 0;
 	virtual ~CircleHazard() { return; }
 };

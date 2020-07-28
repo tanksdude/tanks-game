@@ -9,12 +9,12 @@ public:
 	virtual void initialize(Bullet* parent) override;
 	virtual void removeEffects(Bullet* parent) override;
 
-	virtual ColorValueHolder getColor() {
+	virtual ColorValueHolder getColor() const override {
 		return InversionPower::getClassColor();
 	}
 
-	virtual BulletPower* makeDuplicate() { return new InversionBulletPower(); }
-	virtual TankPower* makeTankPower();
+	virtual BulletPower* makeDuplicate() const override { return new InversionBulletPower(); }
+	virtual TankPower* makeTankPower() const override;
 
 	InversionBulletPower();
 };

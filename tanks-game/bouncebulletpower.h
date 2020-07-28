@@ -13,12 +13,12 @@ public:
 	virtual void initialize(Bullet* parent) override;
 	virtual void removeEffects(Bullet* parent) override;
 
-	virtual ColorValueHolder getColor() {
+	virtual ColorValueHolder getColor() const override {
 		return BouncePower::getClassColor();
 	}
 
-	virtual BulletPower* makeDuplicate();
-	virtual TankPower* makeTankPower();
+	virtual BulletPower* makeDuplicate() const override;
+	virtual TankPower* makeTankPower() const override;
 	
 	//bool modifiesCollisionWithWall = true;
 	virtual InteractionBoolHolder modifiedCollisionWithWall(Bullet*, Wall*) override;
@@ -32,7 +32,7 @@ public:
 	//bool modifiedEdgeCollisionCanWorkWithOthers = false;
 	//bool modifiedEdgeCollisionCanOnlyWorkIndividually = false;
 
-	virtual double getBulletSpeedMultiplier() override { return .5; }
+	virtual double getBulletSpeedMultiplier() const override { return .5; }
 
 	BounceBulletPower();
 	BounceBulletPower(short bounces);

@@ -9,7 +9,7 @@ void InversionTankPower::removeEffects(Tank* parent) {
 	//parent->turningIncrement /= -1;
 }
 
-BulletPower* InversionTankPower::makeBulletPower() {
+BulletPower* InversionTankPower::makeBulletPower() const {
 	return new InversionBulletPower();
 }
 

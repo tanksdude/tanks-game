@@ -2,16 +2,16 @@
 #include "homingtankpower.h"
 #include "homingbulletpower.h"
 
-TankPower* HomingPower::makeTankPower() {
+TankPower* HomingPower::makeTankPower() const {
 	return new HomingTankPower();
 }
 
-BulletPower* HomingPower::makeBulletPower() {
+BulletPower* HomingPower::makeBulletPower() const {
 	return new HomingBulletPower();
 }
 
 /*
-HazardPower* HomingPower::makeHazardPower(){
+HazardPower* HomingPower::makeHazardPower() const {
 	return new HomingHazardPower();
 }
 */

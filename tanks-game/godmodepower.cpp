@@ -8,16 +8,16 @@ ColorValueHolder GodmodePower::getClassColor() {
 	return ColorMixer::HSVtoRGB(fmod(GameManager::getTickCount(), 360), .75, .75);
 }
 
-TankPower* GodmodePower::makeTankPower() {
+TankPower* GodmodePower::makeTankPower() const {
 	return new GodmodeTankPower();
 }
 
-BulletPower* GodmodePower::makeBulletPower() {
+BulletPower* GodmodePower::makeBulletPower() const {
 	return new GodmodeBulletPower();
 }
 
 /*
-HazardPower* GodmodePower::makeHazardPower(){
+HazardPower* GodmodePower::makeHazardPower() const {
 	return new GodmodeHazardPower();
 }
 */

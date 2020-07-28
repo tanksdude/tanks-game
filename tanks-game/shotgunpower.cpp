@@ -2,16 +2,16 @@
 #include "shotguntankpower.h"
 #include "shotgunbulletpower.h"
 
-TankPower* ShotgunPower::makeTankPower() {
+TankPower* ShotgunPower::makeTankPower() const {
 	return new ShotgunTankPower();
 }
 
-BulletPower* ShotgunPower::makeBulletPower() {
+BulletPower* ShotgunPower::makeBulletPower() const {
 	return new ShotgunBulletPower();
 }
 
 /*
-HazardPower* ShotgunPower::makeHazardPower(){
+HazardPower* ShotgunPower::makeHazardPower() const {
 	return new ShotgunHazardPower();
 }
 */

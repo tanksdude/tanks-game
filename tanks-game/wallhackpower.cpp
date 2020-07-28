@@ -2,16 +2,16 @@
 #include "wallhacktankpower.h"
 #include "wallhackbulletpower.h"
 
-TankPower* WallhackPower::makeTankPower() {
+TankPower* WallhackPower::makeTankPower() const {
 	return new WallhackTankPower();
 }
 
-BulletPower* WallhackPower::makeBulletPower() {
+BulletPower* WallhackPower::makeBulletPower() const {
 	return new WallhackBulletPower();
 }
 
 /*
-HazardPower* WallhackPower::makeHazardPower(){
+HazardPower* WallhackPower::makeHazardPower() const {
 	return new WallhackHazardPower();
 }
 */
