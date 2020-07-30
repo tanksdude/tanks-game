@@ -138,7 +138,7 @@ void CircularLava::pushNewBubble(double radius) {
 		x1 = r1 * cos(a1);
 		y1 = r1 * sin(a1);
 		attempts++;
-	} while((attempts < 8) && (abs(x0-x1) < r/16 || abs(y0-y1) < r/16));
+	} while ((attempts < 8) && (abs(x0-x1) < r/16 || abs(y0-y1) < r/16));
 
 	if (attempts < 8) {
 		double maxTick = floor(randFunc()*101) + 200;

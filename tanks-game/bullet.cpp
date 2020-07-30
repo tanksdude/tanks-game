@@ -18,18 +18,19 @@ IndexBuffer* Bullet::ib;
 bool Bullet::initialized_GPU = false;
 
 const double Bullet::default_radius = 4;
-Bullet::Bullet(double x_, double y_, double a, char id_, long parentID) { //every bullet constructor does this stuff
+Bullet::Bullet(double x_, double y_, double a, char teamID, BulletParentType parentType, long parentID) { //every bullet constructor does this stuff
 	initializeGPU();
 	this->x = x_;
 	this->y = y_;
 	this->angle = a;
 	this->gameID = GameManager::getNextID();
-	this->teamID = id_;
+	this->teamID = teamID;
+	this->parentType = parentType;
 	this->parentID = parentID;
 	this->alpha = 100;
 }
 
-Bullet::Bullet(double x_, double y_, double a, char id_, long parentID, std::vector<BulletPower*>* bp) : Bullet(x_,y_,a,id_,parentID) {
+Bullet::Bullet(double x_, double y_, double a, char teamID, BulletParentType parentType, long parentID, std::vector<BulletPower*>* bp) : Bullet(x_,y_,a,teamID,parentType,parentID) {
 	bulletPowers.reserve(bp->size());
 	for (int i = 0; i < bp->size(); i++) {
 		bulletPowers.push_back(bp->at(i));
@@ -41,7 +42,7 @@ Bullet::Bullet(double x_, double y_, double a, char id_, long parentID, std::vec
 }
 
 //probably just for banana bullet creation:
-Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_, long parentID, std::vector<BulletPower*>* bp, bool) : Bullet(x_,y_,a,id_,parentID,bp) {
+Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char teamID, BulletParentType parentType, long parentID, std::vector<BulletPower*>* bp, bool) : Bullet(x_,y_,a,teamID,parentType,parentID,bp) {
 	this->r = r_;
 	this->velocity = vel; // * getBulletSpeedMultiplier(); //not wanted
 	this->initial_velocity = this->velocity;
@@ -49,7 +50,7 @@ Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_, 
 }
 
 //avoid using:
-Bullet::Bullet(double x_, double y_, double r_, double a, double vel, double acc, char id_, long parentID, std::vector<BulletPower*>* bp, bool) : Bullet(x_,y_,a,id_,parentID,bp) {
+Bullet::Bullet(double x_, double y_, double r_, double a, double vel, double acc, char teamID, BulletParentType parentType, long parentID, std::vector<BulletPower*>* bp, bool) : Bullet(x_,y_,a,teamID,parentType,parentID,bp) {
 	this->r = r_ * getBulletRadiusMultiplier();
 	this->velocity = vel * getBulletSpeedMultiplier();
 	this->initial_velocity = this->velocity;
@@ -57,16 +58,15 @@ Bullet::Bullet(double x_, double y_, double r_, double a, double vel, double acc
 }
 
 //regular 1:
-Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_, long parentID) : Bullet(x_,y_,a,id_,parentID) {
+Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char teamID, BulletParentType parentType, long parentID) : Bullet(x_,y_,a,teamID,parentType,parentID) {
 	this->r = r_;
 	this->velocity = vel;
 	this->initial_velocity = vel;
 	this->acceleration = 0;
-	//TODO: add "cannot interact with" type; for tanks, it's the teamID; for hazards, it's the gameID; for something else, it might be nothing, or hazard type (name)
 }
 
 //regular 2:
-Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_, long parentID, std::vector<BulletPower*>* bp) : Bullet(x_,y_,a,id_,parentID,bp) {
+Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char teamID, BulletParentType parentType, long parentID, std::vector<BulletPower*>* bp) : Bullet(x_,y_,a,teamID,parentType,parentID,bp) {
 	this->r = r_ * getBulletRadiusMultiplier();
 	this->velocity = vel * getBulletSpeedMultiplier();
 	this->initial_velocity = this->velocity;
@@ -82,7 +82,7 @@ Bullet::~Bullet() {
 	//uninitializeGPU();
 }
 
-bool Bullet::isDead() {
+bool Bullet::isDead() const {
 	return (alpha <= 0);
 }
 
@@ -129,7 +129,22 @@ bool Bullet::uninitializeGPU() {
 	return true;
 }
 
-double Bullet::getAngle() {
+bool Bullet::canCollideWith(GameThing* thing) const {
+	if (this->parentType == BulletParentType::team) {
+		return (this->getTeamID() != thing->getTeamID());
+	}
+	if (this->parentType == BulletParentType::individual) {
+		return (parentID != thing->getGameID());
+	}
+	/*
+	if (this->parentType == BulletParentType::name) {
+		//TODO
+	}
+	*/
+	return true;
+}
+
+double Bullet::getAngle() const {
 	return fmod(fmod(angle, 2*PI) + 2*PI, 2*PI);
 }
 
@@ -243,7 +258,7 @@ void Bullet::removePower(int i) {
 	bulletPowers.erase(bulletPowers.begin() + i);
 }
 
-ColorValueHolder Bullet::getColor() {
+ColorValueHolder Bullet::getColor() const {
 	if (bulletPowers.size() == 0) {
 		return defaultColor;
 	} else {

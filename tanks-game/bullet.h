@@ -10,6 +10,13 @@ class Bullet;
 #include "vertexbuffer.h"
 #include "indexbuffer.h"
 
+enum class BulletParentType {
+	team, //tanks
+	individual, //hazards
+	name, //certain hazards?
+	none //anything?
+};
+
 class Bullet : public Circle, public GameThing {
 	friend class ResetThings;
 	friend class PowerFunctionHelper;
@@ -18,14 +25,18 @@ public: //hopefully temporary
 	double velocity;
 	double initial_velocity;
 	double acceleration;
-	long parentID;
-	long getParentID() { return parentID; }
+	long parentID; //may not be used, depends on parentType
+	long getParentID() const { return parentID; }
+	BulletParentType parentType;
+	BulletParentType getParentIDType() const { return parentType; }
+	bool canCollideWith(GameThing*) const;
+
 	ColorValueHolder defaultColor = ColorValueHolder(.5f, .5f, .5f);
 	//ColorValueHolder* explosionColor; //needed?
-	double getAngle();
-	double getInitialVelocity() { return initial_velocity; }
+	double getAngle() const;
+	double getInitialVelocity() const { return initial_velocity; }
 	double alpha; //[0,100] to avoid minor float imprecision
-	bool isDead();
+	bool isDead() const;
 
 public:
 	std::vector<BulletPower*> bulletPowers; //change eventually?
@@ -44,7 +55,7 @@ public:
 
 public:
 	//helper functions:
-	ColorValueHolder getColor();
+	ColorValueHolder getColor() const;
 
 	static const double default_radius;
 
@@ -63,14 +74,14 @@ public:
 	void drawOutline(double, double);
 	
 private:
-	Bullet(double x_, double y_, double a, char id, long parentID); //every bullet uses this
-	Bullet(double x_, double y_, double a, char id, long parentID, std::vector<BulletPower*>* bp); //most bullets use this
+	Bullet(double x, double y, double a, char teamID, BulletParentType parentType, long parentID); //every bullet uses this
+	Bullet(double x, double y, double a, char teamID, BulletParentType parentType, long parentID, std::vector<BulletPower*>* bp); //most bullets use this
 public:
-	Bullet(double x_, double y_, double r_, double a, double vel, char id_, long parentID, std::vector<BulletPower*>* bp, bool lessOverriding); //basically just for banana
-	Bullet(double x_, double y_, double r_, double a, double vel, double acc, char id_, long parentID, std::vector<BulletPower*>* bp, bool manualAcceleration); //avoid using
+	Bullet(double x, double y, double r, double a, double vel, char teamID, BulletParentType parentType, long parentID, std::vector<BulletPower*>* bp, bool lessOverriding); //basically just for banana
+	Bullet(double x, double y, double r, double a, double vel, double acc, char teamID, BulletParentType parentType, long parentID, std::vector<BulletPower*>* bp, bool manualAcceleration); //avoid using
 public:
-	Bullet(double x_, double y_, double r_, double a, double vel, char id_, long parentID);
-	Bullet(double x_, double y_, double r_, double a, double vel, char id_, long parentID, std::vector<BulletPower*>* bp);
+	Bullet(double x, double y, double r, double a, double vel, char teamID, BulletParentType parentType, long parentID);
+	Bullet(double x, double y, double r, double a, double vel, char teamID, BulletParentType parentType, long parentID, std::vector<BulletPower*>* bp);
 	void move();
 	void draw();
 	void draw(double, double);

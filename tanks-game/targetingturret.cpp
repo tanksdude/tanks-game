@@ -219,7 +219,7 @@ void TargetingTurret::tick() {
 	if (currentState == 1) {
 		targetingCount++;
 		if (targetingCount >= stateMultiplier[1] * tickCycle) {
-			BulletManager::pushBullet(new Bullet(x + r*cos(angle), y + r*sin(angle), r*BULLET_TO_TANK_RADIUS_RATIO, angle, Tank::default_maxSpeed*BULLET_TO_TANK_SPEED_RATIO, this->getTeamID(), this->getGameID()));
+			BulletManager::pushBullet(new Bullet(x + r*cos(angle), y + r*sin(angle), r*BULLET_TO_TANK_RADIUS_RATIO, angle, Tank::default_maxSpeed*BULLET_TO_TANK_SPEED_RATIO, this->getTeamID(), BulletParentType::individual, this->getGameID()));
 			currentState = 2;
 			targetingCount = 0;
 			targeting = false;

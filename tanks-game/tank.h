@@ -34,9 +34,9 @@ public:
 	//TODO: system that can apply forces
 	double turningIncrement; // = 64;
 	double angle;
-	double getAngle();
-	double getCannonAngle(int index);
-	double getRealCannonAngle(int index);
+	double getAngle() const;
+	double getCannonAngle(int index) const;
+	double getRealCannonAngle(int index) const;
 	std::vector<CannonPoint>* shootingPoints;
 
 	std::vector<TankPower*> tankPowers;
@@ -50,7 +50,7 @@ private:
 
 public:
 	//double shootingSpeedMultiplier = 1;
-	double getShootingSpeedMultiplier();
+	double getShootingSpeedMultiplier() const;
 	//double powerMultiplier; //would be used for an ini
 
 	void updateAllValues(); //this is supposed to update all values that can get affected by powers, such as maxSpeed and acceleration

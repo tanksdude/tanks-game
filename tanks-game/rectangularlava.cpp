@@ -131,7 +131,7 @@ void RectangularLava::pushNewBubble(double radius) {
 		x1 = randFunc() * (w - radius*2) + radius;
 		y1 = randFunc() * (h - radius*2) + radius;
 		attempts++;
-	} while((attempts < 8) && (abs(x0-x1) < w/16 || abs(y0-y1) < h/16)); //JS Tanks used w/8 and h/8
+	} while ((attempts < 8) && (abs(x0-x1) < w/16 || abs(y0-y1) < h/16)); //JS Tanks used w/8 and h/8
 
 	if (attempts < 8) {
 		double maxTick = floor(randFunc()*101) + 200;

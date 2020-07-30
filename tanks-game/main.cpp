@@ -836,7 +836,7 @@ void bulletToHazard() {
 			bool overridedCircleHazardCollision = false;
 			bool noMoreCircleHazardCollisionSpecials = false;
 
-			if (b->getTeamID() == ch->getTeamID()) {
+			if (!b->canCollideWith(ch)) {
 				continue;
 			}
 			if (CollisionHandler::partiallyCollided(b, ch)) {
@@ -896,7 +896,7 @@ void bulletToHazard() {
 			bool overridedRectHazardCollision = false;
 			bool noMoreRectHazardCollisionSpecials = false;
 
-			if (b->getTeamID() == rh->getTeamID()) {
+			if (!b->canCollideWith(rh)) {
 				continue;
 			}
 			if (CollisionHandler::partiallyCollided(b, rh)) {
@@ -959,7 +959,10 @@ void bulletToBullet() {
 			Bullet* b_inner = BulletManager::getBullet(j);
 			bool b_innerShouldDie = false;
 
-			if (b_outer->getTeamID() == b_inner->getTeamID()) {
+			if (b_outer == b_inner) {
+				continue;
+			}
+			if (!b_outer->canCollideWith(b_inner)) {
 				continue;
 			}
 			if (CollisionHandler::partiallyCollided(b_outer, b_inner)) {
@@ -992,7 +995,7 @@ void bulletToTank() {
 			Bullet* b = BulletManager::getBullet(j);
 			bool killBullet = false;
 
-			if (b->getTeamID() == t->getTeamID()) {
+			if (!b->canCollideWith(t)) {
 				continue;
 			}
 			if (CollisionHandler::partiallyCollided(t, b)) {

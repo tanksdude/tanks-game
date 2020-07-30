@@ -229,7 +229,7 @@ void Tank::makeBulletCommon(double x, double y, double angle, double radius, dou
 		bp->push_back(tankPowers[k]->makeBulletPower());
 	}
 
-	Bullet* temp = new Bullet(x, y, radius, angle, speed, getTeamID(), getGameID(), bp);
+	Bullet* temp = new Bullet(x, y, radius, angle, speed, getTeamID(), BulletParentType::team, getGameID(), bp);
 	BulletManager::pushBullet(temp);
 
 	delete bp;
@@ -242,7 +242,7 @@ void Tank::makeBullet(double x, double y, double angle, double radius, double sp
 		bp->push_back(tankPowers[k]->makeBulletPower());
 	}
 
-	Bullet* temp = new Bullet(x, y, radius, angle, speed, acc, getTeamID(), bp, true);
+	Bullet* temp = new Bullet(x, y, radius, angle, speed, acc, getTeamID(), BulletParentType::team, getGameID(), bp, true);
 	BulletManager::pushBullet(temp);
 
 	delete bp;
@@ -283,7 +283,7 @@ void Tank::determineShootingAngles() {
 	}
 }
 
-double Tank::getShootingSpeedMultiplier() {
+double Tank::getShootingSpeedMultiplier() const {
 	//so this function will look at the firing rate multipliers provided by the tankpowers
 	//(0-1] range: use lowest; (1-inf) range: use highest
 	//if there are values in each range, then there are three options:
@@ -521,15 +521,15 @@ ColorValueHolder Tank::getBodyColor() {
 	}
 }
 
-double Tank::getAngle() {
+double Tank::getAngle() const {
 	return fmod(fmod(angle, 2*PI) + 2*PI, 2*PI);
 }
 
-double Tank::getCannonAngle(int i) {
+double Tank::getCannonAngle(int i) const {
 	return fmod(fmod(shootingPoints->at(i).angle, 2*PI) + 2*PI, 2*PI);
 }
 
-double Tank::getRealCannonAngle(int i) {
+double Tank::getRealCannonAngle(int i) const {
 	return fmod(fmod(shootingPoints->at(i).angle + angle, 2*PI) + 2*PI, 2*PI);
 }
 

@@ -138,7 +138,7 @@ void StationaryTurret::tick() {
 		}
 	}
 	if (mustShoot) {
-		BulletManager::pushBullet(new Bullet(x + r*cos(angle), y + r*sin(angle), r*(BULLET_TO_TANK_RADIUS_RATIO*2), angle, Tank::default_maxSpeed*BULLET_TO_TANK_SPEED_RATIO, this->getTeamID(), this->getGameID()));
+		BulletManager::pushBullet(new Bullet(x + r*cos(angle), y + r*sin(angle), r*(BULLET_TO_TANK_RADIUS_RATIO*2), angle, Tank::default_maxSpeed*BULLET_TO_TANK_SPEED_RATIO, this->getTeamID(), BulletParentType::individual, this->getGameID()));
 	}
 }
 
