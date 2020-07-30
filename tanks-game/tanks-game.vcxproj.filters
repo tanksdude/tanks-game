@@ -381,6 +381,15 @@
     <ClCompile Include="shotguntankpower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="trackingbulletpower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="trackingpower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="trackingtankpower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -789,6 +798,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="shotguntankpower.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="trackingbulletpower.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="trackingpower.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="trackingtankpower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -88,8 +88,10 @@
 #include "blastpower.h"
 #include "bananapower.h"
 #include "godmodepower.h"
+//"extra":
 #include "minespower.h"
 #include "shotgunpower.h"
+#include "trackingpower.h"
 //dev powers:
 #include "devlonginvinciblenamedpower.h" //invincible but lasts a long time
 #include "inversionpower.h" //flips left and right turning
@@ -1073,8 +1075,10 @@ int main(int argc, char** argv) {
 	PowerupManager::addPowerFactory(BlastPower::factory);
 	PowerupManager::addPowerFactory(BananaPower::factory);
 	PowerupManager::addPowerFactory(GodmodePower::factory);
+	//"extra":
 	PowerupManager::addPowerFactory(MinesPower::factory);
 	PowerupManager::addPowerFactory(ShotgunPower::factory);
+	PowerupManager::addPowerFactory(TrackingPower::factory);
 
 	//dev:
 	PowerupManager::addPowerFactory(DevLongInvincibleNamedPower::factory);

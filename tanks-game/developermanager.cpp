@@ -88,7 +88,7 @@ void DeveloperManager::devInsert(int x, int y) {
 			PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "longinvincible"));
 			return;
 		case 1:
-			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla-extra", "shotgun"));
+			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla-extra", "tracking"));
 			return;
 		case 2:
 			PowerupManager::pushPowerup(new PowerSquare(x, y, "banana"));

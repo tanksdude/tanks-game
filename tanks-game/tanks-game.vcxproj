@@ -245,6 +245,9 @@
     <ClCompile Include="stationaryturret.cpp" />
     <ClCompile Include="tank.cpp" />
     <ClCompile Include="tankmanager.cpp" />
+    <ClCompile Include="trackingbulletpower.cpp" />
+    <ClCompile Include="trackingpower.cpp" />
+    <ClCompile Include="trackingtankpower.cpp" />
     <ClCompile Include="triplebulletpower.cpp" />
     <ClCompile Include="triplepower.cpp" />
     <ClCompile Include="tripletankpower.cpp" />
@@ -382,6 +385,9 @@
     <ClInclude Include="tank.h" />
     <ClInclude Include="tankmanager.h" />
     <ClInclude Include="tankpower.h" />
+    <ClInclude Include="trackingbulletpower.h" />
+    <ClInclude Include="trackingpower.h" />
+    <ClInclude Include="trackingtankpower.h" />
     <ClInclude Include="triplebulletpower.h" />
     <ClInclude Include="triplepower.h" />
     <ClInclude Include="tripletankpower.h" />
