@@ -144,6 +144,13 @@ bool Bullet::canCollideWith(GameThing* thing) const {
 	return true;
 }
 
+bool Bullet::canCollideWith(Bullet* b_other) const {
+	if (this->parentType == BulletParentType::individual) {
+		return ((parentID != b_other->getGameID()) && (parentID != b_other->getParentID()));
+	}
+	return canCollideWith((GameThing*)b_other);
+}
+
 double Bullet::getAngle() const {
 	return fmod(fmod(angle, 2*PI) + 2*PI, 2*PI);
 }

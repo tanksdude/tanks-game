@@ -30,6 +30,7 @@ public: //hopefully temporary
 	BulletParentType parentType;
 	BulletParentType getParentIDType() const { return parentType; }
 	bool canCollideWith(GameThing*) const;
+	bool canCollideWith(Bullet*) const;
 
 	ColorValueHolder defaultColor = ColorValueHolder(.5f, .5f, .5f);
 	//ColorValueHolder* explosionColor; //needed?
