@@ -160,7 +160,7 @@ bool PowerFunctionHelper::homingGeneric(Bullet* b, double maxAngleMove, bool mov
 		for (int i = 0; i < TankManager::getNumTanks(); i++) {
 			Tank* t = TankManager::getTank(i);
 			if (t->getTeamID() == b->getTeamID()) {
-				distDiffs[i] = GAME_WIDTH * GAME_HEIGHT; //should be enough
+				distDiffs[i] = GAME_WIDTH*2 + GAME_HEIGHT*2; //should be enough
 			} else {
 				distDiffs[i] = sqrt(pow(b->x - t->x, 2) + pow(b->y - t->y, 2)); //TODO: this an issue?
 			}

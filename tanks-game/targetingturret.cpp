@@ -184,11 +184,11 @@ void TargetingTurret::tick() {
 				if (tankVisibility.at(i)) {
 					distancesToTank.push_back(sqrt(pow(x - t->x, 2) + pow(y - t->y, 2)));
 				} else {
-					distancesToTank.push_back(GAME_WIDTH * GAME_HEIGHT);
+					distancesToTank.push_back(GAME_WIDTH*2 + GAME_HEIGHT*2);
 				}
 			}
 
-			double minDist = GAME_WIDTH * GAME_HEIGHT;
+			double minDist = GAME_WIDTH*2 + GAME_HEIGHT*2;
 			std::vector<int> tankIndices; tankIndices.reserve(TankManager::getNumTanks()); //multiple tanks can have same distance
 			for (int i = 0; i < TankManager::getNumTanks(); i++) {
 				if (distancesToTank[i] == minDist) {
