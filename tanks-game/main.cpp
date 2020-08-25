@@ -411,6 +411,7 @@ void moveBullets() {
 			continue;
 		}
 	}
+	BulletManager::forceLimitBullets();
 }
 
 void tankPowerCalculate() {

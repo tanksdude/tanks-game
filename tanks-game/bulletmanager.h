@@ -8,6 +8,7 @@ private:
 	static std::vector<Bullet*> bullets;
 	static int maxBullets;
 	static bool limitBullets;
+	static bool autoLimitBullets; //limit bullets when they're first added
 	static void clearBullets(); //for ResetThings
 public:
 	static void initialize();
@@ -15,4 +16,5 @@ public:
 	static void pushBullet(Bullet*);
 	static int getNumBullets() { return bullets.size(); }
 	static void deleteBullet(int index);
+	static void forceLimitBullets();
 };

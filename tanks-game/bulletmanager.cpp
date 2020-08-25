@@ -2,7 +2,12 @@
 
 std::vector<Bullet*> BulletManager::bullets;
 int BulletManager::maxBullets = 2048;
+#if _DEBUG
 bool BulletManager::limitBullets = false;
+#else
+bool BulletManager::limitBullets = true;
+#endif
+bool BulletManager::autoLimitBullets = false;
 
 void BulletManager::initialize() {
 	bullets.reserve(4096);
@@ -15,9 +20,17 @@ Bullet* BulletManager::getBullet(int index) {
 
 void BulletManager::pushBullet(Bullet* b) {
 	bullets.push_back(b);
+	if (autoLimitBullets && limitBullets) {
+		while (bullets.size() > maxBullets) {
+			deleteBullet(0);
+		}
+	}
+}
+
+void BulletManager::forceLimitBullets() {
 	if (limitBullets) {
 		while (bullets.size() > maxBullets) {
-			bullets.erase(bullets.begin() + 0);
+			deleteBullet(0);
 		}
 	}
 }
