@@ -1,11 +1,21 @@
 0.2.4 (obviously not here)
-* switch to 64-bit? (probably; no modern computer should be 32-bit, but it'd really suck if there's a performance issue or something else)
+* changed name from "Tanks" to "PowerTanks" so this game might actually become discoverable
+* switch to 64-bit because no modern computer should be 32-bit
 * abstracted the renderer somewhat
     * it's still not very efficient but it gets the job done
 * minimal drawing layers: "under", regular, "effects", debug
-* level effects (wind, ice, mines)
-* more powers (all JS powers in)
-* more levels (all JS levels in?)
+* level effects (wind, ice, mines, gravity)
+* powers:
+    * all JS powers in
+        * mines, shotgun, tracking
+        * barrier (previously called life)
+* levels:
+    * all JS levels in?
+        * "hiding places"
+* minor things:
+    * minor overhaul (oxymoron?) of end game and score handling
+    * inserting stuff through the dev menu is easier
+    * cleanup like usual
 
 0.2.3 "features"
 * powerups:
@@ -107,7 +117,8 @@
 future notes:
 0.3.0: an ini file
 0.4.0: mods? hazardpowers?
-0.5.0: priorities for the power modification functions?
+0.4.A: priorities for the power modification functions?
+0.5.0: hazardpowers can special-case some additional functionality to hazards (like turrets knowing about bouncing bullets, or wallhack (this is for AI))?
 0.A.B: graphs for diagnostics
 0.X.0: big change in levels or powers or something else, like bulletpower memory management (std::shared_ptr)
 0.A.0: batching

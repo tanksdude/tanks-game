@@ -1,4 +1,4 @@
-# Tanks: Battle of the Circles
+# PowerTanks Battle
 
 The C++ upgrade of my [JS game](https://uncreativeusername.neocities.org/tanks.html)
 
