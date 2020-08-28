@@ -406,9 +406,13 @@ void HorizontalLightning::refreshBolt(int num) {
 	RectangularLightning::refreshBolt(num, h, w);
 }
 
-void HorizontalLightning::draw() {
+void HorizontalLightning::draw() const {
+	draw(x, y);
+}
+
+void HorizontalLightning::draw(double xpos, double ypos) const {
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM = Renderer::GenerateMatrix(w, h, 0, x, y);
+	glm::mat4 MVPM = Renderer::GenerateMatrix(w, h, 0, xpos, ypos);
 	
 	//background:
 	//TODO: make drawUnder() a thing
@@ -426,7 +430,7 @@ void HorizontalLightning::draw() {
 	glLineWidth(2.0f);
 	color = getBoltColor();
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-	MVPM = Renderer::GenerateMatrix(1, 1, 0, x, y);
+	MVPM = Renderer::GenerateMatrix(1, 1, 0, xpos, ypos);
 	shader->setUniformMat4f("u_MVP", MVPM);
 
 	for (int i = 0; i < bolts.size(); i++) {
@@ -437,16 +441,14 @@ void HorizontalLightning::draw() {
 			local_reinitializeGPU(bolts[i]->length);
 		}
 		*/
-		streamBoltVertices(i);
+		//streamBoltVertices(i); //TODO: fix
 		Renderer::Draw(*bolt_va, *shader, GL_LINE_STRIP, 0, bolts[i]->length);
 	}
 }
 
-void HorizontalLightning::drawCPU() {
-	//background:
-
-	//bolts:
-
+void HorizontalLightning::poseDraw() const {
+	//TODO
+	return;
 }
 
 RectHazard* HorizontalLightning::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {

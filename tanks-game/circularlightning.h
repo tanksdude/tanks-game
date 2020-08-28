@@ -11,10 +11,10 @@ protected:
 	Circle* getCenterPoint(); //for checks when a bullet/tank collides (needs to be a function in case the lightning changes size or position)
 
 	//unsigned int maxBolts; // = 1;
-	virtual void refreshBolt(int num);
+	virtual void refreshBolt(int num) override;
 	//virtual int getDefaultNumBoltPoints(double horzDist);
-	virtual void pushBolt(LightningBolt*);
-	virtual void pushDefaultBolt(int num, bool randomize); //randomize should be true all of the time
+	virtual void pushBolt(LightningBolt*) override;
+	virtual void pushDefaultBolt(int num, bool randomize) override; //randomize should be true all of the time
 
 private:
 	static VertexArray* background_va;
@@ -59,8 +59,9 @@ public:
 	virtual bool reasonableLocation() override;
 
 	virtual void tick() { GeneralizedLightning::tick(); }
-	virtual void draw();
-	virtual void drawCPU();
+	virtual void draw() const override;
+	virtual void draw(double xpos, double ypos) const override;
+	virtual void poseDraw() const override;
 
 public:
 	CircularLightning(double xpos, double ypos, double radius);

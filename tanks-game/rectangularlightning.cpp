@@ -381,9 +381,13 @@ void RectangularLightning::refreshBolt(int num, double smaller, double larger) {
 	}
 }
 
-void RectangularLightning::draw() {
+void RectangularLightning::draw() const {
+	draw(x, y);
+}
+
+void RectangularLightning::draw(double xpos, double ypos) const {
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM = Renderer::GenerateMatrix(w, h, 0, x, y);
+	glm::mat4 MVPM = Renderer::GenerateMatrix(w, h, 0, xpos, ypos);
 	
 	//background:
 	//TODO: make drawUnder() a thing
@@ -401,7 +405,7 @@ void RectangularLightning::draw() {
 	glLineWidth(2.0f);
 	color = getBoltColor();
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-	MVPM = Renderer::GenerateMatrix(1, 1, 0, x, y);
+	MVPM = Renderer::GenerateMatrix(1, 1, 0, xpos, ypos);
 	shader->setUniformMat4f("u_MVP", MVPM);
 
 	for (int i = 0; i < bolts.size(); i++) {
@@ -412,16 +416,14 @@ void RectangularLightning::draw() {
 			local_reinitializeGPU(bolts[i]->length);
 		}
 		*/
-		streamBoltVertices(i);
+		//streamBoltVertices(i); //TODO: fix (but better)
 		Renderer::Draw(*bolt_va, *shader, GL_LINE_STRIP, 0, bolts[i]->length);
 	}
 }
 
-void RectangularLightning::drawCPU() {
-	//background:
-
-	//bolts:
-
+void RectangularLightning::poseDraw() const {
+	//TODO
+	return;
 }
 
 RectHazard* RectangularLightning::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {

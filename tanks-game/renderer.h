@@ -4,6 +4,8 @@
 #include "vertexarray.h"
 #include "indexbuffer.h"
 #include "shader.h"
+#include "drawablething.h"
+#include "renderingobject.h"
 #include <glm.hpp>
 #include <GL/glew.h>
 
@@ -19,6 +21,8 @@ public:
 	static int gamewindow_width; //width of game inside window
 	static int gamewindow_height;
 	static void windowResizeFunc(int w, int h);
+
+	static void Draw(RenderingObject*) { return; }
 
 private:
 	static std::unordered_map<std::string, Shader*> shaderCache;
@@ -37,6 +41,8 @@ public:
 	static void BeginningStuff();
 	static void Clear();
 	static void Clear(int bits);
+	static void PreInitialize(int* argc, char** argv, std::string windowName); //initialize freeglut and GLEW
+	static void PreInitialize(int* argc, char** argv, std::string windowName, int startX, int startY);
 	static void Initialize();
 	static void Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader);
 	static void Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader, unsigned int count);

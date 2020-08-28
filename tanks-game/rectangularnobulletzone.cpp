@@ -84,10 +84,6 @@ RectHazard* RectangularNoBulletZone::factory(int argc, std::string* argv) {
 	return new RectangularNoBulletZone(0, 0, 0, 0);
 }
 
-void RectangularNoBulletZone::tick() {
-	GeneralizedNoBulletZone::tick();
-}
-
 bool RectangularNoBulletZone::reasonableLocation() {
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		if (CollisionHandler::fullyCollided(this, WallManager::getWall(i))) {
@@ -112,9 +108,13 @@ bool RectangularNoBulletZone::reasonableLocation() {
 	return validLocation();
 }
 
-void RectangularNoBulletZone::draw() {
+void RectangularNoBulletZone::draw() const {
+	draw(x, y);
+}
+
+void RectangularNoBulletZone::draw(double xpos, double ypos) const {
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM = Renderer::GenerateMatrix(w, h, 0, x, y);
+	glm::mat4 MVPM = Renderer::GenerateMatrix(w, h, 0, xpos, ypos);
 	
 	//TODO: make drawUnder() a thing
 	ColorValueHolder color = GeneralizedNoBulletZone::getColor();
@@ -124,8 +124,9 @@ void RectangularNoBulletZone::draw() {
 	Renderer::Draw(*va, *ib, *shader);
 }
 
-void RectangularNoBulletZone::drawCPU() {
-	
+void RectangularNoBulletZone::poseDraw() const {
+	//TODO?
+	return;
 }
 
 RectHazard* RectangularNoBulletZone::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {

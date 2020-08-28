@@ -2,6 +2,7 @@
 class Tank;
 
 #include "gamething.h"
+#include "drawablething.h"
 #include "circle.h"
 #include <string>
 #include <vector>
@@ -21,7 +22,7 @@ struct TankInputChar {
 	TankInputChar();
 };
 
-class Tank : public Circle, public GameThing {
+class Tank : public Circle, public GameThing, public DrawableThing {
 	friend class ResetThings;
 	friend class PowerFunctionHelper;
 	friend class EndGameHandler; //calls this->kill()
@@ -87,7 +88,7 @@ private:
 
 public:
 	//helper stuff:
-	ColorValueHolder getBodyColor();
+	ColorValueHolder getBodyColor() const;
 
 	static const double default_maxSpeed;
 	static const double default_acceleration;
@@ -116,8 +117,9 @@ public:
 	void powerCalculate();
 	void removePower(int index);
 	void powerReset();
-	void draw();
-	void draw(double xpos, double ypos);
+	void draw() const override;
+	void draw(double xpos, double ypos) const override;
+	void poseDraw() const override;
 	void drawCPU();
 	void drawCPU(double, double);
 	std::string getName() { return name; }

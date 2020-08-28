@@ -163,7 +163,7 @@ bool PowerSquare::uninitializeGPU() {
 	return true;
 }
 
-ColorValueHolder PowerSquare::getColor() {
+ColorValueHolder PowerSquare::getColor() const {
 	if (numOfPowers == 1) {
 		return heldPowers[0]->getColor();
 	} else {
@@ -196,9 +196,13 @@ void PowerSquare::givePower(Tank* t) {
 void PowerSquare::givePower(Bullet*) { return; } //don't think about it now, possibly ever; it's weird
 //void givePower(Hazard*);
 
-void PowerSquare::draw() {
+void PowerSquare::draw() const {
+	draw(x, y);
+}
+
+void PowerSquare::draw(double xpos, double ypos) const {
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM = Renderer::GenerateMatrix(w, h, 0, x, y);
+	glm::mat4 MVPM = Renderer::GenerateMatrix(w, h, 0, xpos, ypos);
 	ColorValueHolder color = getColor();
 
 	if (numOfPowers > 1) { //move to drawUnder()
@@ -213,6 +217,11 @@ void PowerSquare::draw() {
 	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*va, *ib_main, *shader);
+}
+
+void PowerSquare::poseDraw() const {
+	//TODO
+	return;
 }
 
 void PowerSquare::drawCPU() {

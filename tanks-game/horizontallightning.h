@@ -14,12 +14,12 @@ protected:
 	Circle* getRightPoint();
 
 	//unsigned int maxBolts; // = 2;
-	virtual void refreshBolt(int num); //uses RectangularLightning::refreshBolt
+	virtual void refreshBolt(int num) override; //uses RectangularLightning::refreshBolt
 	virtual void simpleRefreshBolt(int num); //fast path for refreshing a bolt that goes from beginning to end
 	//virtual int getDefaultNumBoltPoints(double horzDist);
-	virtual void pushBolt(LightningBolt* l) { pushBolt(l, false); }
+	virtual void pushBolt(LightningBolt* l) override { pushBolt(l, false); }
 	virtual void pushBolt(LightningBolt*, bool simpleRefresh);
-	virtual void pushDefaultBolt(int num, bool randomize);
+	virtual void pushDefaultBolt(int num, bool randomize) override;
 
 private:
 	static VertexArray* background_va;
@@ -49,8 +49,9 @@ public:
 	virtual bool reasonableLocation() override;
 
 	//virtual void tick();
-	virtual void draw();
-	virtual void drawCPU();
+	virtual void draw() const override;
+	virtual void draw(double xpos, double ypos) const override;
+	virtual void poseDraw() const override;
 
 	HorizontalLightning(double xpos, double ypos, double width, double height);
 	//HorizontalLightning(double xpos, double ypos, double width, double height, bool flexible);

@@ -116,7 +116,7 @@ CircleHazard* StationaryTurret::factory(int argc, std::string* argv) {
 	return new StationaryTurret(0, 0, 0);
 }
 
-double StationaryTurret::getAngle() {
+double StationaryTurret::getAngle() const {
 	return fmod(fmod(angle, 2*PI) + 2*PI, 2*PI);
 }
 
@@ -142,7 +142,7 @@ void StationaryTurret::tick() {
 	}
 }
 
-bool StationaryTurret::canSeeTank(Tank* t) {
+bool StationaryTurret::canSeeTank(Tank* t) const {
 	double dist = sqrt(pow(x - t->x, 2) + (y - t->y, 2)); //dist to tank
 	double angle = atan2(y - t->y, x - t->x); //angle to tank
 	Circle* p = new Point(x + dist*cos(angle), y + dist*sin(angle));
@@ -192,20 +192,24 @@ bool StationaryTurret::reasonableLocation() {
 	return validLocation();
 }
 
-ColorValueHolder StationaryTurret::getColor() {
+ColorValueHolder StationaryTurret::getColor() const {
 	return ColorMixer::mix(stateColors[currentState], stateColors[(currentState+1)%maxState], constrain<double>(tickCount/(tickCycle*stateMultiplier[currentState]), 0, 1));
 }
 
-ColorValueHolder StationaryTurret::getColor(short state) {
+ColorValueHolder StationaryTurret::getColor(short state) const {
 	if (state < 0) {
 		return stateColors[0];
 	}
 	return stateColors[state % maxState];
 }
 
-void StationaryTurret::draw() {
+void StationaryTurret::draw() const {
+	draw(x, y);
+}
+
+void StationaryTurret::draw(double xpos, double ypos) const {
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, angle, x, y);
+	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, angle, xpos, ypos);
 	
 	//main body:
 	ColorValueHolder color = getColor();
@@ -223,13 +227,18 @@ void StationaryTurret::draw() {
 	//barrel:
 	glLineWidth(2.0f);
 	shader->setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 1.0f);
-	MVPM = Renderer::GenerateMatrix(r, 1, angle, x, y);
+	MVPM = Renderer::GenerateMatrix(r, 1, angle, xpos, ypos);
 	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*cannon_va, *shader, GL_LINES, 0, 2);
 
 	//cleanup
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
+
+void StationaryTurret::poseDraw() const {
+	//TODO: just body, outline, and barrel
+	return;
 }
 
 void StationaryTurret::drawCPU() {

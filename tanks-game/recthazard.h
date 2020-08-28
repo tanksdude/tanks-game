@@ -2,6 +2,7 @@
 class RectHazard;
 
 #include "hazard.h"
+#include "drawablething.h"
 #include "rect.h"
 #include <string>
 #include <unordered_map>
@@ -36,7 +37,7 @@ enum class RectHazardConstructionTypes /*: unsigned char */ {
 	standardConstruction //x, y, w, and h required
 };
 
-class RectHazard : public Hazard, public Rect {
+class RectHazard : public Hazard, public Rect, public DrawableThing {
 public: //protected?
 	//std::vector<RectHazardPower*> hazardPowers;
 public:
@@ -71,7 +72,9 @@ public:
 	virtual std::string getName() const = 0;
 	//static std::string getClassName();
 	//virtual bool initializeGPU() = 0;
-	virtual void draw() = 0;
+	virtual void draw() const override = 0;
+	virtual void draw(double xpos, double ypos) const override = 0;
+	virtual void poseDraw() const override = 0;
 
 	static RectHazard* factory(int argc, std::string* argv);
 	static RectHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv);

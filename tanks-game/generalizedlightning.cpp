@@ -8,7 +8,7 @@
 #include <algorithm> //std::copy
 #include <iostream>
 
-int GeneralizedLightning::getDefaultNumBoltPoints(double horzDist) {
+int GeneralizedLightning::getDefaultNumBoltPoints(double horzDist) const {
 	int boltPoints = ceil(horzDist / lengthOfBolt); //not floor because the last point is the edge of the lightning area
 	return (boltPoints < 2 ? 2 : boltPoints);
 }
@@ -59,13 +59,13 @@ void GeneralizedLightning::clearBolts() {
 	bolts.clear();
 }
 
-ColorValueHolder GeneralizedLightning::getBackgroundColor() {
+ColorValueHolder GeneralizedLightning::getBackgroundColor() const {
 	if (currentlyActive) {
 		return ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(.75f, .75f, .75f), .25);
 	}
 	return ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(.75f, .75f, .75f), .25*constrain<double>(tickCount/(tickCycle*stateMultiplier[currentlyActive]), 0, 1));
 }
 
-ColorValueHolder GeneralizedLightning::getBoltColor() {
+ColorValueHolder GeneralizedLightning::getBoltColor() const {
 	return ColorValueHolder(0xBB/255.0, 1.0f, 1.0f);
 }

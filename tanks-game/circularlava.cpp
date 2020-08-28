@@ -119,10 +119,6 @@ CircleHazard* CircularLava::factory(int argc, std::string* argv) {
 	return new CircularLava(0, 0, 0);
 }
 
-void CircularLava::tick() {
-	GeneralizedLava::tick();
-}
-
 void CircularLava::pushNewBubble(double radius) {
 	float x0, y0, x1, y1;
 	int attempts = 0;
@@ -171,9 +167,13 @@ bool CircularLava::reasonableLocation() {
 	return validLocation();
 }
 
-void CircularLava::draw() {
+void CircularLava::draw() const {
+	draw(x, y);
+}
+
+void CircularLava::draw(double xpos, double ypos) const {
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, 0, x, y);
+	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, 0, xpos, ypos);
 	
 	//background:
 	ColorValueHolder color = getBackgroundColor();
@@ -206,7 +206,7 @@ void CircularLava::draw() {
 	//second, draw the bubbles (this makes the bubbles less weird-looking when drawn over each other)
 	for (int i = 0; i < sortedBubbles.size(); i++) {
 		color = getBubbleColor(sortedBubbles[i]);
-		MVPM = Renderer::GenerateMatrix(sortedBubbles[i]->getR(), sortedBubbles[i]->getR(), 0, sortedBubbles[i]->getX()*r + x, sortedBubbles[i]->getY()*r + y);
+		MVPM = Renderer::GenerateMatrix(sortedBubbles[i]->getR(), sortedBubbles[i]->getR(), 0, sortedBubbles[i]->getX()*r + xpos, sortedBubbles[i]->getY()*r + ypos);
 
 		shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 		shader->setUniformMat4f("u_MVP", MVPM);
@@ -215,11 +215,9 @@ void CircularLava::draw() {
 	}
 }
 
-void CircularLava::drawCPU() {
-	//background:
-
-	//bubbles:
-
+void CircularLava::poseDraw() const {
+	//TODO
+	return;
 }
 
 CircleHazard* CircularLava::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {

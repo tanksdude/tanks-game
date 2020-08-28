@@ -315,16 +315,21 @@ void Bullet::drawCPU(double xpos, double ypos) {
 	glEnd();
 }
 
-void Bullet::draw() {
+void Bullet::draw() const {
 	draw(x, y);
 }
 
-void Bullet::draw(double xpos, double ypos) {
+void Bullet::draw(double xpos, double ypos) const {
 	drawBody(xpos, ypos);
 	drawOutline(xpos, ypos);
 }
 
-void Bullet::drawBody(double xpos, double ypos) {
+void Bullet::poseDraw() const {
+	//TODO: just body and outline
+	return;
+}
+
+void Bullet::drawBody(double xpos, double ypos) const {
 	ColorValueHolder color = getColor();
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, 0, xpos, ypos);
@@ -353,7 +358,7 @@ void Bullet::drawBody(double xpos, double ypos) {
 	Renderer::Draw(*va, *ib, *shader);
 }
 
-void Bullet::drawOutline(double xpos, double ypos) {
+void Bullet::drawOutline(double xpos, double ypos) const {
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, 0, xpos, ypos);
 

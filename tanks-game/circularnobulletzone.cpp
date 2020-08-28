@@ -85,10 +85,6 @@ CircleHazard* CircularNoBulletZone::factory(int argc, std::string* argv) {
 	return new CircularNoBulletZone(0, 0, 0);
 }
 
-void CircularNoBulletZone::tick() {
-	GeneralizedNoBulletZone::tick();
-}
-
 bool CircularNoBulletZone::reasonableLocation() {
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		if (CollisionHandler::fullyCollided(this, WallManager::getWall(i))) {
@@ -113,9 +109,13 @@ bool CircularNoBulletZone::reasonableLocation() {
 	return validLocation();
 }
 
-void CircularNoBulletZone::draw() {
+void CircularNoBulletZone::draw() const {
+	draw(x, y);
+}
+
+void CircularNoBulletZone::draw(double xpos, double ypos) const {
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, 0, x, y);
+	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, 0, xpos, ypos);
 	
 	//TODO: make drawUnder() a thing
 	ColorValueHolder color = getColor();
@@ -125,8 +125,9 @@ void CircularNoBulletZone::draw() {
 	Renderer::Draw(*va, *ib, *shader);
 }
 
-void CircularNoBulletZone::drawCPU() {
-	
+void CircularNoBulletZone::poseDraw() const {
+	//TODO?
+	return;
 }
 
 CircleHazard* CircularNoBulletZone::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {

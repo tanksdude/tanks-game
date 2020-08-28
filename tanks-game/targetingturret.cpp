@@ -302,18 +302,18 @@ bool TargetingTurret::reasonableLocation() {
 	return validLocation();
 }
 
-ColorValueHolder TargetingTurret::getColor() {
+ColorValueHolder TargetingTurret::getColor() const {
 	return ColorMixer::mix(stateColors[currentState], stateColors[(currentState+1)%maxState], constrain<double>(targetingCount/(tickCycle*stateMultiplier[currentState]), 0, 1));
 }
 
-ColorValueHolder TargetingTurret::getColor(short state) {
+ColorValueHolder TargetingTurret::getColor(short state) const {
 	if (state < 0) {
 		return stateColors[0];
 	}
 	return stateColors[state % maxState];
 }
 
-ColorValueHolder TargetingTurret::getReticuleColor() {
+ColorValueHolder TargetingTurret::getReticuleColor() const {
 	if (currentState == 0) {
 		return reticuleColors[0];
 	}
@@ -323,9 +323,13 @@ ColorValueHolder TargetingTurret::getReticuleColor() {
 	return ColorValueHolder(0, 0, 0); //shouldn't be drawn
 }
 
-void TargetingTurret::draw() {
+void TargetingTurret::draw() const {
+	draw(x, y);
+}
+
+void TargetingTurret::draw(double xpos, double ypos) const {
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, angle, x, y);
+	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, angle, xpos, ypos);
 	
 	//main body:
 	ColorValueHolder color = getColor();
@@ -343,7 +347,7 @@ void TargetingTurret::draw() {
 	//barrel:
 	glLineWidth(2.0f);
 	shader->setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 1.0f);
-	MVPM = Renderer::GenerateMatrix(r, 1, angle, x, y);
+	MVPM = Renderer::GenerateMatrix(r, 1, angle, xpos, ypos);
 	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*cannon_va, *shader, GL_LINES, 0, 2);
@@ -362,6 +366,11 @@ void TargetingTurret::draw() {
 
 	//cleanup
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
+
+void TargetingTurret::poseDraw() const {
+	//TODO
+	return;
 }
 
 void TargetingTurret::drawCPU() {

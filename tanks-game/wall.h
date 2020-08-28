@@ -2,6 +2,7 @@
 class Wall;
 
 #include "gamething.h"
+#include "drawablething.h"
 #include "rect.h"
 #include "colorvalueholder.h"
 
@@ -9,7 +10,7 @@ class Wall;
 #include "vertexbuffer.h"
 #include "indexbuffer.h"
 
-class Wall : public Rect, public GameThing {
+class Wall : public Rect, public GameThing, public DrawableThing {
 	friend class ResetThings; //not really needed
 	friend class PowerFunctionHelper;
 protected:
@@ -28,7 +29,9 @@ public:
 	Wall(double x, double y, double w, double h, ColorValueHolder);
 	Wall(double x, double y, double w, double h, ColorValueHolder c, char teamID);
 
-	void draw();
+	void draw() const override;
+	void draw(double xpos, double ypos) const override;
+	void poseDraw() const override;
 	void drawCPU();
 
 	~Wall();

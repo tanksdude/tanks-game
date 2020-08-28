@@ -328,9 +328,13 @@ void CircularLightning::refreshBolt(int num) {
 	}
 }
 
-void CircularLightning::draw() {
+void CircularLightning::draw() const {
+	draw(x, y);
+}
+
+void CircularLightning::draw(double xpos, double ypos) const {
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, 0, x, y);
+	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, 0, xpos, ypos);
 	
 	//background:
 	//TODO: make drawUnder() a thing
@@ -348,7 +352,7 @@ void CircularLightning::draw() {
 	glLineWidth(2.0f);
 	color = getBoltColor();
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-	MVPM = Renderer::GenerateMatrix(1, 1, 0, x, y);
+	MVPM = Renderer::GenerateMatrix(1, 1, 0, xpos, ypos);
 	shader->setUniformMat4f("u_MVP", MVPM);
 
 	for (int i = 0; i < bolts.size(); i++) {
@@ -359,16 +363,14 @@ void CircularLightning::draw() {
 			local_reinitializeGPU(bolts[i]->length);
 		}
 		*/
-		streamBoltVertices(i);
+		//streamBoltVertices(i); //TODO: fix
 		Renderer::Draw(*bolt_va, *shader, GL_LINE_STRIP, 0, bolts[i]->length);
 	}
 }
 
-void CircularLightning::drawCPU() {
-	//background:
-
-	//bolts:
-
+void CircularLightning::poseDraw() const {
+	//TODO
+	return;
 }
 
 CircleHazard* CircularLightning::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {

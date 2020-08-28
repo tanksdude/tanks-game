@@ -71,14 +71,23 @@ bool Wall::uninitializeGPU() {
 	return true;
 }
 
-void Wall::draw() {
+void Wall::draw() const {
+	draw(x, y);
+}
+
+void Wall::draw(double xpos, double ypos) const {
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM = Renderer::GenerateMatrix(w, h, 0, x, y);
+	glm::mat4 MVPM = Renderer::GenerateMatrix(w, h, 0, xpos, ypos);
 
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*va, *ib, *shader);
+}
+
+void Wall::poseDraw() const {
+	//TODO: just body, outline, and barrel
+	return;
 }
 
 void Wall::drawCPU() {

@@ -8,7 +8,7 @@
 
 class CircularLava : public CircleHazard, public GeneralizedLava {
 protected:
-	virtual void pushNewBubble(double radius);
+	virtual void pushNewBubble(double radius) override;
 
 private:
 	static VertexArray* background_va;
@@ -40,9 +40,10 @@ public:
 	virtual std::string getName() const override { return getClassName(); }
 	static std::string getClassName() { return "lava"; }
 
-	virtual void tick();
-	virtual void draw();
-	virtual void drawCPU();
+	virtual void tick() { GeneralizedLava::tick(); }
+	virtual void draw() const override;
+	virtual void draw(double xpos, double ypos) const override;
+	virtual void poseDraw() const override;
 
 	CircularLava(double xpos, double ypos, double radius);
 	~CircularLava();

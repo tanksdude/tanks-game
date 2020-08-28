@@ -43,15 +43,17 @@ public:
 	virtual bool canSeeTank(Tank*); //true if no walls obstruct any line of sight to tank
 	virtual void turnTowardsTank(Tank*);
 	virtual bool isPointedAt(Tank*);
-	virtual ColorValueHolder getColor() override;
-	virtual ColorValueHolder getColor(short state) override;
-	virtual ColorValueHolder getReticuleColor();
+	virtual ColorValueHolder getColor() const override;
+	virtual ColorValueHolder getColor(short state) const override;
+	virtual ColorValueHolder getReticuleColor() const;
 
 	virtual std::string getName() const override { return getClassName(); }
 	static std::string getClassName() { return "targeting turret"; }
 
 	virtual void tick();
-	virtual void draw();
+	virtual void draw() const override;
+	virtual void draw(double xpos, double ypos) const override;
+	virtual void poseDraw() const override;
 	virtual void drawCPU();
 
 protected:

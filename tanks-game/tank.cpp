@@ -501,7 +501,7 @@ void Tank::powerReset() {
 	}
 }
 
-ColorValueHolder Tank::getBodyColor() {
+ColorValueHolder Tank::getBodyColor() const {
 	if (tankPowers.size() == 0) {
 		return defaultColor;
 	} else {
@@ -633,11 +633,11 @@ void Tank::drawCPU(double xpos, double ypos) {
 	glEnd();
 }
 
-void Tank::draw() {
+void Tank::draw() const {
 	draw(x, y);
 }
 
-void Tank::draw(double xpos, double ypos) {
+void Tank::draw(double xpos, double ypos) const {
 	//stuff that will be used:
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 MVPM;
@@ -757,6 +757,11 @@ void Tank::draw(double xpos, double ypos) {
 	
 	//cleanup
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
+
+void Tank::poseDraw() const {
+	//TODO: just body, outline, and barrel
+	return;
 }
 
 bool Tank::kill() {

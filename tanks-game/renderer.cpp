@@ -83,6 +83,38 @@ void Renderer::BeginningStuff() {
 	}
 }
 
+void Renderer::PreInitialize(int* argc, char** argv, std::string windowName) {
+	Renderer::PreInitialize(argc, argv, windowName, 60, 60);
+}
+
+void Renderer::PreInitialize(int* argc, char** argv, std::string windowName, int startX, int startY) {
+	// Initialize GLUT
+	glutInit(argc, argv);
+	glutInitDisplayMode(GLUT_SINGLE | GLUT_DEPTH);
+	//thanks to https://community.khronos.org/t/wglmakecurrent-issues/62656/3 for solving why a draw call would take ~15ms for no reason (it's just the V-sync time)
+
+	// Setup window position, size, and title
+	glutInitWindowPosition(startX, startY);
+	glutInitWindowSize(Renderer::window_width, Renderer::window_height);
+	glutCreateWindow(windowName.c_str());
+
+	// Setup some OpenGL options
+	glPointSize(2);
+	glEnable(GL_POINT_SMOOTH);
+	glEnable(GL_LINE_SMOOTH);
+	glDisable(GL_DEPTH_TEST);
+	//glEnable(GL_BLEND);
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	//initialize glew
+	glewExperimental = GL_TRUE;
+	GLenum res = glewInit();
+	if (res != GLEW_OK) {
+		fprintf(stderr, "Error: '%s'\n", glewGetErrorString(res));
+		throw "glew failed";
+	}
+}
+
 void Renderer::Initialize() {
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 

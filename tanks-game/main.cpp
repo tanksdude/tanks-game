@@ -27,7 +27,6 @@
 #include "recthazard.h"
 
 //managers:
-#include "openglinitializer.h"
 #include "developermanager.h"
 #include "gamemanager.h"
 #include "keypressmanager.h"
@@ -1026,7 +1025,7 @@ int main(int argc, char** argv) {
 	srand(time(NULL));
 
 	try {
-		OpenGLInitializer::Initialize(&argc, argv, "PowerTanks Battle v0.2.4 NOT FINAL"); //this is not guaranteed to be correct every commit but likely will be
+		Renderer::PreInitialize(&argc, argv, "PowerTanks Battle v0.2.4 NOT FINAL"); //this is not guaranteed to be correct every commit but likely will be
 	}
 	catch (exception& e) {
 		cout << e.what() << endl;

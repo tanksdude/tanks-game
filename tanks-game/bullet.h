@@ -2,6 +2,7 @@
 class Bullet;
 
 #include "gamething.h"
+#include "drawablething.h"
 #include "circle.h"
 #include "colorvalueholder.h"
 #include "bulletpower.h"
@@ -17,7 +18,7 @@ enum class BulletParentType {
 	none //anything?
 };
 
-class Bullet : public Circle, public GameThing {
+class Bullet : public Circle, public GameThing, public DrawableThing {
 	friend class ResetThings;
 	friend class PowerFunctionHelper;
 public: //hopefully temporary
@@ -69,10 +70,6 @@ private:
 
 	static bool initializeGPU(); //returns whether it successfully initialized (false if it was already initialized)
 	static bool uninitializeGPU();
-
-public:
-	void drawBody(double, double);
-	void drawOutline(double, double);
 	
 private:
 	Bullet(double x, double y, double a, char teamID, BulletParentType parentType, long parentID); //every bullet uses this
@@ -84,10 +81,16 @@ public:
 	Bullet(double x, double y, double r, double a, double vel, char teamID, BulletParentType parentType, long parentID);
 	Bullet(double x, double y, double r, double a, double vel, char teamID, BulletParentType parentType, long parentID, std::vector<BulletPower*>* bp);
 	void move();
-	void draw();
-	void draw(double, double);
+	void draw() const override;
+	void draw(double xpos, double ypos) const override;
+	void poseDraw() const override;
 	void drawCPU();
 	void drawCPU(double, double);
+
+public:
+	void drawBody(double, double) const;
+	void drawOutline(double, double) const;
+
 	//short determineDamage(); //maybe for another day
 
 	void powerCalculate();

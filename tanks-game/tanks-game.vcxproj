@@ -226,7 +226,6 @@
     <ClCompile Include="multishotpower.cpp" />
     <ClCompile Include="multishottankpower.cpp" />
     <ClCompile Include="mylib.cpp" />
-    <ClCompile Include="openglinitializer.cpp" />
     <ClCompile Include="powerfunctionhelper.cpp" />
     <ClCompile Include="powersquare.cpp" />
     <ClCompile Include="powerupmanager.cpp" />
@@ -235,6 +234,7 @@
     <ClCompile Include="rectangularlightning.cpp" />
     <ClCompile Include="recthazard.cpp" />
     <ClCompile Include="renderer.cpp" />
+    <ClCompile Include="renderingobject.cpp" />
     <ClCompile Include="resetthings.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="shotgunbulletpower.cpp" />
@@ -361,7 +361,6 @@
     <ClInclude Include="multishotpower.h" />
     <ClInclude Include="multishottankpower.h" />
     <ClInclude Include="mylib.h" />
-    <ClInclude Include="openglinitializer.h" />
     <ClInclude Include="power.h" />
     <ClInclude Include="powerfunctionhelper.h" />
     <ClInclude Include="powersquare.h" />
@@ -371,7 +370,9 @@
     <ClInclude Include="rect.h" />
     <ClInclude Include="rectangularlightning.h" />
     <ClInclude Include="recthazard.h" />
+    <ClInclude Include="drawablething.h" />
     <ClInclude Include="renderer.h" />
+    <ClInclude Include="renderingobject.h" />
     <ClInclude Include="resetthings.h" />
     <ClInclude Include="res\vendor\glm\glm.hpp" />
     <ClInclude Include="res\vendor\glm\gtc\matrix_transform.hpp" />

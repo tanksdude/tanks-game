@@ -12,7 +12,7 @@ private:
 	static VertexBuffer* vb;
 	static IndexBuffer* ib;
 	static bool initialized_GPU;
-	
+
 	static bool initializeGPU();
 	static bool uninitializeGPU();
 
@@ -23,7 +23,7 @@ public:
 	virtual bool actuallyCollided(Tank*) override { return false; }
 	//bool modifiesTankCollision = true;
 	virtual void modifiedTankCollision(Tank*) override { return; }
-	
+
 	virtual bool actuallyCollided(Bullet*) override { return true; }
 	//bool modifiesBulletCollision = true;
 	virtual void modifiedBulletCollision(Bullet*) override { return; } //TODO: should the bullet be destroyed here?
@@ -36,9 +36,10 @@ public:
 	virtual std::string getName() const override { return getClassName(); }
 	static std::string getClassName() { return "no bullet zone"; }
 
-	virtual void tick();
-	virtual void draw();
-	virtual void drawCPU();
+	virtual void tick() { GeneralizedNoBulletZone::tick(); }
+	virtual void draw() const override;
+	virtual void draw(double xpos, double ypos) const override;
+	virtual void poseDraw() const override;
 
 	CircularNoBulletZone(double xpos, double ypos, double radius);
 	~CircularNoBulletZone();

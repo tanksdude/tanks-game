@@ -234,9 +234,6 @@
     <ClCompile Include="developermanager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="openglinitializer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="horizontallightning.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -391,6 +388,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="hidingplaceslevel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="renderingobject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -650,9 +650,6 @@
     <ClInclude Include="developermanager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="openglinitializer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="horizontallightning.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -813,6 +810,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="hidingplaceslevel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="drawablething.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="renderingobject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

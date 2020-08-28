@@ -117,10 +117,6 @@ RectHazard* RectangularLava::factory(int argc, std::string* argv) {
 	return new RectangularLava(0, 0, 0, 0);
 }
 
-void RectangularLava::tick() {
-	GeneralizedLava::tick();
-}
-
 void RectangularLava::pushNewBubble(double radius) {
 	float x0, y0, x1, y1;
 	int attempts = 0;
@@ -163,9 +159,13 @@ bool RectangularLava::reasonableLocation() {
 	return validLocation();
 }
 
-void RectangularLava::draw() {
+void RectangularLava::draw() const {
+	draw(x, y);
+}
+
+void RectangularLava::draw(double xpos, double ypos) const {
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM = Renderer::GenerateMatrix(w, h, 0, x, y);
+	glm::mat4 MVPM = Renderer::GenerateMatrix(w, h, 0, xpos, ypos);
 	
 	//background:
 	//TODO: make drawUnder() a thing
@@ -199,7 +199,7 @@ void RectangularLava::draw() {
 	//second, draw the bubbles (this makes the bubbles less weird-looking when drawn over each other)
 	for (int i = 0; i < sortedBubbles.size(); i++) {
 		color = getBubbleColor(sortedBubbles[i]);
-		MVPM = Renderer::GenerateMatrix(sortedBubbles[i]->getR(), sortedBubbles[i]->getR(), 0, sortedBubbles[i]->getX()*w + x, sortedBubbles[i]->getY()*h + y);
+		MVPM = Renderer::GenerateMatrix(sortedBubbles[i]->getR(), sortedBubbles[i]->getR(), 0, sortedBubbles[i]->getX()*w + xpos, sortedBubbles[i]->getY()*h + ypos);
 
 		shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 		shader->setUniformMat4f("u_MVP", MVPM);
@@ -208,11 +208,9 @@ void RectangularLava::draw() {
 	}
 }
 
-void RectangularLava::drawCPU() {
-	//background:
-
-	//bubbles:
-
+void RectangularLava::poseDraw() const {
+	//TODO
+	return;
 }
 
 RectHazard* RectangularLava::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {
