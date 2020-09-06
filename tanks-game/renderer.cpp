@@ -88,12 +88,32 @@ void Renderer::BeginningStuff() {
 }
 
 void Renderer::SetContext(AvailableRenderingContexts API) {
-	//switch case doesn't support strings
-	if (API == AvailableRenderingContexts::OpenGL) {
+	if (renderingMethod != nullptr) {
+		throw std::logic_error("ERROR: Cannot change rendering context!");
+	}
+
+	switch(API) {
+		case AvailableRenderingContexts::OpenGL:
+			renderingMethod = new OpenGLRenderingContext();
+			return;
+		case AvailableRenderingContexts::software:
+			renderingMethod = new SoftwareRenderingContext();
+			return;
+		case AvailableRenderingContexts::null_rendering:
+			renderingMethod = new NullRenderingContext();
+			return;
+		default:
+			std::cerr << "Rendering context unknown! Defaulting to OpenGL..." << std::endl;
+			renderingMethod = new OpenGLRenderingContext();
+	}
+}
+
+void Renderer::SetContext(std::string API) {
+	if (API == "OpenGL") {
 		renderingMethod = new OpenGLRenderingContext();
-	} else if (API == AvailableRenderingContexts::software) {
+	} else if (API == "software") {
 		renderingMethod = new SoftwareRenderingContext();
-	} else if (API == AvailableRenderingContexts::null_rendering) {
+	} else if (API == "null" || API == "NULL") {
 		renderingMethod = new NullRenderingContext();
 	} else {
 		std::cerr << "Rendering context unknown! Defaulting to OpenGL..." << std::endl;

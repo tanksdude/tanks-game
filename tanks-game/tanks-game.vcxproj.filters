@@ -390,9 +390,6 @@
     <ClCompile Include="hidingplaceslevel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="renderingobject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="openglrenderingcontext.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -818,9 +815,6 @@
     <ClInclude Include="drawablething.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="renderingobject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="renderingcontext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -831,9 +825,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="nullrenderingcontext.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="abstractrenderableobject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

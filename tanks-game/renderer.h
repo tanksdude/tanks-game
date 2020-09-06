@@ -6,7 +6,6 @@
 #include "indexbuffer.h"
 #include "shader.h"
 #include "drawablething.h"
-#include "renderingobject.h"
 #include "colorvalueholder.h"
 #include <glm.hpp>
 #include <GL/glew.h>
@@ -15,6 +14,14 @@ enum class AvailableRenderingContexts {
 	OpenGL,
 	software,
 	null_rendering
+};
+
+enum class RenderingDrawTypes {
+	triangles, //main
+	line_loop,
+	line_strip,
+	lines,
+	points //unused
 };
 
 class Renderer {
@@ -32,8 +39,9 @@ public:
 
 	static RenderingContext* renderingMethod;
 
-	static void Draw(RenderingObject*, glm::mat4 matrix, ColorValueHolder) { return; } //main
-	static void Draw(RenderingObject*, int count, glm::mat4 matrix, ColorValueHolder) { return; } //cooldowns and stuff
+	static void Draw(RenderingDrawTypes, VertexArray*, IndexBuffer*, glm::mat4 matrix, ColorValueHolder) { return; } //main
+	static void Draw(RenderingDrawTypes, VertexArray*, int count, glm::mat4 matrix, ColorValueHolder) { return; } //cooldowns and stuff
+	static void Draw(RenderingDrawTypes, VertexArray*, IndexBuffer*, int count, glm::mat4 matrix, ColorValueHolder) { return; } //cooldowns and stuff
 
 private:
 	static std::unordered_map<std::string, Shader*> shaderCache;
@@ -53,6 +61,7 @@ public:
 	static void Clear();
 	static void Clear(int bits);
 	static void SetContext(AvailableRenderingContexts);
+	static void SetContext(std::string);
 	static void PreInitialize(int* argc, char** argv, std::string windowName); //initialize freeglut and GLEW
 	static void PreInitialize(int* argc, char** argv, std::string windowName, int startX, int startY);
 	static void Initialize();

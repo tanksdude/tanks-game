@@ -235,7 +235,6 @@
     <ClCompile Include="rectangularlightning.cpp" />
     <ClCompile Include="recthazard.cpp" />
     <ClCompile Include="renderer.cpp" />
-    <ClCompile Include="renderingobject.cpp" />
     <ClCompile Include="resetthings.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="shotgunbulletpower.cpp" />
@@ -264,7 +263,6 @@
     <ClCompile Include="wallmanager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="abstractrenderableobject.h" />
     <ClInclude Include="backgroundrect.h" />
     <ClInclude Include="bananabulletpower.h" />
     <ClInclude Include="bananapower.h" />
@@ -377,7 +375,6 @@
     <ClInclude Include="drawablething.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="renderingcontext.h" />
-    <ClInclude Include="renderingobject.h" />
     <ClInclude Include="resetthings.h" />
     <ClInclude Include="res\vendor\glm\glm.hpp" />
     <ClInclude Include="res\vendor\glm\gtc\matrix_transform.hpp" />

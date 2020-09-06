@@ -9,7 +9,10 @@ class Tank;
 #include "colorvalueholder.h"
 #include "cannonpoint.h"
 #include "tankpower.h"
-#include "renderingobject.h"
+#include "vertexarray.h"
+#include "vertexbuffer.h"
+#include "indexbuffer.h"
+#include "shader.h"
 
 struct TankInputChar {
 	bool isSpecial;
@@ -40,7 +43,7 @@ public:
 	std::vector<TankPower*> tankPowers;
 	double getOffenseTier();
 	double getDefenseTier();
-private:
+protected:
 	double getHighestOffenseImportance();
 	double getHighestOffenseTier(double importance);
 	double getHighestDefenseImportance();
@@ -71,7 +74,7 @@ public:
 	void regularMakeBullet(double x_offset, double y_offset, double angle); //make bullet x and y dist from tank, moving with angle
 	void determineShootingAngles();
 
-private:
+protected:
 	ColorValueHolder defaultColor = ColorValueHolder(.5f, .5f, .5f);
 	bool dead = false; //only kill() should modify this
 	bool kill();
@@ -92,11 +95,6 @@ public:
 	static const double default_turningIncrement;
 
 private:
-	static RenderingObject* body;
-	static RenderingObject* outline;
-	static RenderingObject* cooldowns;
-	static RenderingObject* barrels;
-
 	static VertexArray* va;
 	static VertexBuffer* vb;
 	static IndexBuffer* ib;
