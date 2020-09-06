@@ -61,7 +61,7 @@ bool CircularLava::initializeGPU() {
 		background_indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
 	}
 
-	background_vb = new VertexBuffer(background_positions, (Circle::numOfSides+1)*2 * sizeof(float), GL_STATIC_DRAW);
+	background_vb = VertexBuffer::MakeVertexBuffer(background_positions, (Circle::numOfSides+1)*2 * sizeof(float), RenderingHints::static_draw);
 	VertexBufferLayout background_layout(2);
 	background_va = new VertexArray(*background_vb, background_layout);
 
@@ -83,7 +83,7 @@ bool CircularLava::initializeGPU() {
 		bubble_indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
 	}
 
-	bubble_vb = new VertexBuffer(bubble_positions, (Circle::numOfSides+1)*2 * sizeof(float), GL_DYNAMIC_DRAW);
+	bubble_vb = VertexBuffer::MakeVertexBuffer(bubble_positions, (Circle::numOfSides+1)*2 * sizeof(float), RenderingHints::dynamic_draw);
 	VertexBufferLayout bubble_layout(2);
 	bubble_va = new VertexArray(*bubble_vb, bubble_layout);
 	

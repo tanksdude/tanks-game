@@ -50,7 +50,7 @@ bool RectangularNoBulletZone::initializeGPU() {
 		2, 3, 0
 	};
 
-	vb = new VertexBuffer(positions, 4*2 * sizeof(float), GL_DYNAMIC_DRAW);
+	vb = VertexBuffer::MakeVertexBuffer(positions, 4*2 * sizeof(float), RenderingHints::static_draw);
 	VertexBufferLayout layout(2);
 	va = new VertexArray(*vb, layout);
 

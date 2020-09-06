@@ -1,29 +1,22 @@
 #include "vertexbuffer.h"
-#include <GL/glew.h>
+#include "renderer.h"
+#include <stdexcept>
+#include "openglvertexbuffer.h"
 
-VertexBuffer::VertexBuffer(const void* data, unsigned int size) : VertexBuffer(data, size, GL_DYNAMIC_DRAW) {
-	//nothing
+VertexBuffer* VertexBuffer::MakeVertexBuffer(const void* data, unsigned int size) {
+	return MakeVertexBuffer(data, size, RenderingHints::dynamic_draw);
 }
 
-VertexBuffer::VertexBuffer(const void* data, unsigned int size, GLenum hint) {
-	glGenBuffers(1, &rendererID);
-	glBindBuffer(GL_ARRAY_BUFFER, rendererID);
-	glBufferData(GL_ARRAY_BUFFER, size, data, hint);
-}
-
-VertexBuffer::~VertexBuffer() {
-	glDeleteBuffers(1, &rendererID);
-}
-
-void VertexBuffer::modifyData(const void* data, int offset, unsigned int size) {
-	glBindBuffer(GL_ARRAY_BUFFER, rendererID);
-	glBufferSubData(GL_ARRAY_BUFFER, offset, size, data);
-}
-
-void VertexBuffer::Bind() const {
-	glBindBuffer(GL_ARRAY_BUFFER, rendererID);
-}
-
-void VertexBuffer::Unbind() const {
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+VertexBuffer* VertexBuffer::MakeVertexBuffer(const void* data, unsigned int size, RenderingHints hint) {
+	AvailableRenderingContexts API = Renderer::GetContext();
+	switch (API) {
+		case AvailableRenderingContexts::OpenGL:
+			return new OpenGLVertexBuffer(data, size);
+		case AvailableRenderingContexts::software:
+			//return new SoftwareVertexBuffer(data, size);
+		case AvailableRenderingContexts::null_rendering:
+			//return new NullVertexBuffer(data, size);
+		default:
+			throw std::invalid_argument("ERROR: Unknown rendering API!");
+	}
 }

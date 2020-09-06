@@ -37,6 +37,7 @@ public:
 	static int gamewindow_height;
 	static void windowResizeFunc(int w, int h);
 
+	static AvailableRenderingContexts renderingMethodType;
 	static RenderingContext* renderingMethod;
 
 	static void Draw(RenderingDrawTypes, VertexArray*, IndexBuffer*, glm::mat4 matrix, ColorValueHolder) { return; } //main
@@ -62,6 +63,7 @@ public:
 	static void Clear(int bits);
 	static void SetContext(AvailableRenderingContexts);
 	static void SetContext(std::string);
+	static AvailableRenderingContexts GetContext() { return renderingMethodType; }
 	static void PreInitialize(int* argc, char** argv, std::string windowName); //initialize freeglut and GLEW
 	static void PreInitialize(int* argc, char** argv, std::string windowName, int startX, int startY);
 	static void Initialize();

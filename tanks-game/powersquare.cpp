@@ -138,7 +138,7 @@ bool PowerSquare::initializeGPU() {
 		11, 10, 6
 	};
 
-	vb = new VertexBuffer(positions, 12*2 * sizeof(float), GL_DYNAMIC_DRAW);
+	vb = VertexBuffer::MakeVertexBuffer(positions, 12*2 * sizeof(float), RenderingHints::dynamic_draw);
 	VertexBufferLayout layout(2);
 	va = new VertexArray(*vb, layout);
 

@@ -18,6 +18,7 @@ int Renderer::window_height = GAME_HEIGHT*2 * 1.25;
 int Renderer::gamewindow_width = Renderer::window_width;
 int Renderer::gamewindow_height = Renderer::window_height;
 RenderingContext* Renderer::renderingMethod = nullptr;
+AvailableRenderingContexts Renderer::renderingMethodType;
 
 // Handles window resizing (FreeGLUT event function)
 void Renderer::windowResizeFunc(int w, int h) {
@@ -95,29 +96,37 @@ void Renderer::SetContext(AvailableRenderingContexts API) {
 	switch(API) {
 		case AvailableRenderingContexts::OpenGL:
 			renderingMethod = new OpenGLRenderingContext();
+			renderingMethodType = AvailableRenderingContexts::OpenGL;
 			return;
 		case AvailableRenderingContexts::software:
 			renderingMethod = new SoftwareRenderingContext();
+			renderingMethodType = AvailableRenderingContexts::software;
 			return;
 		case AvailableRenderingContexts::null_rendering:
 			renderingMethod = new NullRenderingContext();
+			renderingMethodType = AvailableRenderingContexts::null_rendering;
 			return;
 		default:
 			std::cerr << "Rendering context unknown! Defaulting to OpenGL..." << std::endl;
 			renderingMethod = new OpenGLRenderingContext();
+			renderingMethodType = AvailableRenderingContexts::OpenGL;
 	}
 }
 
 void Renderer::SetContext(std::string API) {
 	if (API == "OpenGL") {
 		renderingMethod = new OpenGLRenderingContext();
+		renderingMethodType = AvailableRenderingContexts::OpenGL;
 	} else if (API == "software") {
 		renderingMethod = new SoftwareRenderingContext();
+		renderingMethodType = AvailableRenderingContexts::software;
 	} else if (API == "null" || API == "NULL") {
 		renderingMethod = new NullRenderingContext();
+		renderingMethodType = AvailableRenderingContexts::null_rendering;
 	} else {
 		std::cerr << "Rendering context unknown! Defaulting to OpenGL..." << std::endl;
 		renderingMethod = new OpenGLRenderingContext();
+		renderingMethodType = AvailableRenderingContexts::OpenGL;
 	}
 }
 
