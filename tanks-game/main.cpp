@@ -1024,6 +1024,7 @@ void bulletToTank() {
 int main(int argc, char** argv) {
 	srand(time(NULL));
 
+	Renderer::SetContext("OpenGL");
 	try {
 		Renderer::PreInitialize(&argc, argv, "PowerTanks Battle v0.2.4 NOT FINAL"); //this is not guaranteed to be correct every commit but likely will be
 	}

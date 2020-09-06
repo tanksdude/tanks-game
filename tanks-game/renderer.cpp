@@ -4,6 +4,9 @@
 #include <gtc/matrix_transform.hpp>
 #include "constants.h"
 #include "keypressmanager.h"
+#include "openglrenderingcontext.h"
+#include "softwarerenderingcontext.h"
+#include "nullrenderingcontext.h"
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 #include <iostream>
@@ -14,6 +17,7 @@ int Renderer::window_width = GAME_WIDTH*2 * 1.25;
 int Renderer::window_height = GAME_HEIGHT*2 * 1.25;
 int Renderer::gamewindow_width = Renderer::window_width;
 int Renderer::gamewindow_height = Renderer::window_height;
+RenderingContext* Renderer::renderingMethod = nullptr;
 
 // Handles window resizing (FreeGLUT event function)
 void Renderer::windowResizeFunc(int w, int h) {
@@ -80,6 +84,20 @@ void Renderer::BeginningStuff() {
 	if (KeypressManager::getSpecialKey(GLUT_KEY_F1)) {
 		glutFullScreenToggle();
 		KeypressManager::unsetSpecialKey(GLUT_KEY_F1, 0, 0);
+	}
+}
+
+void Renderer::SetContext(AvailableRenderingContexts API) {
+	//switch case doesn't support strings
+	if (API == AvailableRenderingContexts::OpenGL) {
+		renderingMethod = new OpenGLRenderingContext();
+	} else if (API == AvailableRenderingContexts::software) {
+		renderingMethod = new SoftwareRenderingContext();
+	} else if (API == AvailableRenderingContexts::null_rendering) {
+		renderingMethod = new NullRenderingContext();
+	} else {
+		std::cerr << "Rendering context unknown! Defaulting to OpenGL..." << std::endl;
+		renderingMethod = new OpenGLRenderingContext();
 	}
 }
 

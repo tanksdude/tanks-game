@@ -638,6 +638,11 @@ void Tank::draw() const {
 }
 
 void Tank::draw(double xpos, double ypos) const {
+	//Renderer::Draw(body, matrix, color);
+	//Renderer::Draw(outline, matrix, color);
+	//Renderer::Draw(barrel, matrix, color);
+
+
 	//stuff that will be used:
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 MVPM;

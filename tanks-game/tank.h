@@ -9,10 +9,7 @@ class Tank;
 #include "colorvalueholder.h"
 #include "cannonpoint.h"
 #include "tankpower.h"
-
-#include "vertexarray.h"
-#include "vertexbuffer.h"
-#include "indexbuffer.h"
+#include "renderingobject.h"
 
 struct TankInputChar {
 	bool isSpecial;
@@ -95,6 +92,11 @@ public:
 	static const double default_turningIncrement;
 
 private:
+	static RenderingObject* body;
+	static RenderingObject* outline;
+	static RenderingObject* cooldowns;
+	static RenderingObject* barrels;
+
 	static VertexArray* va;
 	static VertexBuffer* vb;
 	static IndexBuffer* ib;
