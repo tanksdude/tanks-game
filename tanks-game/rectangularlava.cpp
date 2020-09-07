@@ -62,7 +62,7 @@ bool RectangularLava::initializeGPU() {
 	VertexBufferLayout background_layout(2);
 	background_va = VertexArray::MakeVertexArray(*background_vb, background_layout);
 
-	background_ib = new IndexBuffer(background_indices, 6);
+	background_ib = IndexBuffer::MakeIndexBuffer(background_indices, 6);
 
 	//bubble:
 	float bubble_positions[(Circle::numOfSides+1)*2];
@@ -84,7 +84,7 @@ bool RectangularLava::initializeGPU() {
 	VertexBufferLayout bubble_layout(2);
 	bubble_va = VertexArray::MakeVertexArray(*bubble_vb, bubble_layout);
 	
-	bubble_ib = new IndexBuffer(bubble_indices, Circle::numOfSides*3);
+	bubble_ib = IndexBuffer::MakeIndexBuffer(bubble_indices, Circle::numOfSides*3);
 
 	initialized_GPU = true;
 	return true;

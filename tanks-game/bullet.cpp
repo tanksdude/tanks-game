@@ -110,7 +110,7 @@ bool Bullet::initializeGPU() {
 	VertexBufferLayout layout(2);
 	va = VertexArray::MakeVertexArray(*vb, layout);
 	
-	ib = new IndexBuffer(indices, Circle::numOfSides*3);
+	ib = IndexBuffer::MakeIndexBuffer(indices, Circle::numOfSides*3);
 
 	initialized_GPU = true;
 	return true;

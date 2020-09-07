@@ -399,6 +399,9 @@
     <ClCompile Include="openglvertexarray.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="openglindexbuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -837,6 +840,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="openglvertexarray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="openglindexbuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

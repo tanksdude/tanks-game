@@ -79,7 +79,7 @@ bool TargetingTurret::initializeGPU() {
 	VertexBufferLayout layout(2);
 	va = VertexArray::MakeVertexArray(*vb, layout);
 
-	ib = new IndexBuffer(indices, Circle::numOfSides*3);
+	ib = IndexBuffer::MakeIndexBuffer(indices, Circle::numOfSides*3);
 
 	//cannon:
 	float cannon_positions[4] = { 0.0f, 0.0f, 1.0f, 0.0f };

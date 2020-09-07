@@ -87,7 +87,7 @@ bool RectangularLightning::initializeGPU() {
 	VertexBufferLayout layout(2);
 	background_va = VertexArray::MakeVertexArray(*background_vb, layout);
 
-	background_ib = new IndexBuffer(indices, 6);
+	background_ib = IndexBuffer::MakeIndexBuffer(indices, 6);
 
 	initialized_GPU = true;
 	return true;

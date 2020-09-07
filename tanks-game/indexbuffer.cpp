@@ -1,22 +1,18 @@
 #include "indexbuffer.h"
-#include <GL/glew.h>
+#include "renderer.h"
+#include <stdexcept>
+#include "openglindexbuffer.h"
 
-IndexBuffer::IndexBuffer(const unsigned int* data, unsigned int count) {
-	this->count = count;
-
-	glGenBuffers(1, &rendererID);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, rendererID);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, count*sizeof(unsigned int), data, GL_STATIC_DRAW);
-}
-
-IndexBuffer::~IndexBuffer() {
-	glDeleteBuffers(1, &rendererID);
-}
-
-void IndexBuffer::Bind() const {
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, rendererID);
-}
-
-void IndexBuffer::Unbind() const {
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+IndexBuffer* IndexBuffer::MakeIndexBuffer(const unsigned int* data, unsigned int count) {
+	AvailableRenderingContexts API = Renderer::GetContext();
+	switch (API) {
+		case AvailableRenderingContexts::OpenGL:
+			return new OpenGLIndexBuffer(data, count);
+		case AvailableRenderingContexts::software:
+			//return new SoftwareIndexBuffer(data, count);
+		case AvailableRenderingContexts::null_rendering:
+			//return new NullIndexBuffer(data, count);
+		default:
+			throw std::invalid_argument("ERROR: Unknown rendering API!");
+	}
 }

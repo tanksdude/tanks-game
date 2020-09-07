@@ -178,6 +178,7 @@
     <ClCompile Include="minesbulletpower.cpp" />
     <ClCompile Include="minespower.cpp" />
     <ClCompile Include="minestankpower.cpp" />
+    <ClCompile Include="openglindexbuffer.cpp" />
     <ClCompile Include="openglrenderingcontext.cpp" />
     <ClCompile Include="openglvertexarray.cpp" />
     <ClCompile Include="openglvertexbuffer.cpp" />
@@ -311,6 +312,7 @@
     <ClInclude Include="minespower.h" />
     <ClInclude Include="minestankpower.h" />
     <ClInclude Include="nullrenderingcontext.h" />
+    <ClInclude Include="openglindexbuffer.h" />
     <ClInclude Include="openglrenderingcontext.h" />
     <ClInclude Include="openglvertexarray.h" />
     <ClInclude Include="openglvertexbuffer.h" />

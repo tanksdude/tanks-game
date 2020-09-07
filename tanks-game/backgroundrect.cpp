@@ -32,7 +32,7 @@ bool BackgroundRect::initializeGPU() {
 	VertexBufferLayout layout(2);
 	va = VertexArray::MakeVertexArray(*vb, layout);
 
-	ib = new IndexBuffer(background_indices, 6);
+	ib = IndexBuffer::MakeIndexBuffer(background_indices, 6);
 
 	initialized_GPU = true;
 	return true;

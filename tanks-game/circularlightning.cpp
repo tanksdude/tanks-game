@@ -87,7 +87,7 @@ bool CircularLightning::initializeGPU() {
 	VertexBufferLayout layout(2);
 	background_va = VertexArray::MakeVertexArray(*background_vb, layout);
 
-	background_ib = new IndexBuffer(indices, Circle::numOfSides*3);
+	background_ib = IndexBuffer::MakeIndexBuffer(indices, Circle::numOfSides*3);
 
 	initialized_GPU = true;
 	return true;

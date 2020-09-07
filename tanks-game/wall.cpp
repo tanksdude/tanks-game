@@ -52,7 +52,7 @@ bool Wall::initializeGPU() {
 	VertexBufferLayout layout(2);
 	va = VertexArray::MakeVertexArray(*vb, layout);
 
-	ib = new IndexBuffer(indices, 6);
+	ib = IndexBuffer::MakeIndexBuffer(indices, 6);
 
 	initialized_GPU = true;
 	return true;
