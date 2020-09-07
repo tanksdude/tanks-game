@@ -50,7 +50,7 @@ bool Wall::initializeGPU() {
 
 	vb = VertexBuffer::MakeVertexBuffer(positions, 4*2 * sizeof(float), RenderingHints::dynamic_draw);
 	VertexBufferLayout layout(2);
-	va = new VertexArray(*vb, layout);
+	va = VertexArray::MakeVertexArray(*vb, layout);
 
 	ib = new IndexBuffer(indices, 6);
 

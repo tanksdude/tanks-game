@@ -108,7 +108,7 @@ bool Bullet::initializeGPU() {
 
 	vb = VertexBuffer::MakeVertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float), RenderingHints::dynamic_draw);
 	VertexBufferLayout layout(2);
-	va = new VertexArray(*vb, layout);
+	va = VertexArray::MakeVertexArray(*vb, layout);
 	
 	ib = new IndexBuffer(indices, Circle::numOfSides*3);
 

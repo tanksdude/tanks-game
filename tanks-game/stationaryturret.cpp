@@ -74,14 +74,14 @@ bool StationaryTurret::initializeGPU() {
 
 	vb = VertexBuffer::MakeVertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float), RenderingHints::dynamic_draw);
 	VertexBufferLayout layout(2);
-	va = new VertexArray(*vb, layout);
+	va = VertexArray::MakeVertexArray(*vb, layout);
 
 	ib = new IndexBuffer(indices, Circle::numOfSides*3);
 
 	float cannon_positions[4] = { 0.0f, 0.0f, 1.0f, 0.0f };
 	cannon_vb = VertexBuffer::MakeVertexBuffer(cannon_positions, 2*2 * sizeof(float));
 	VertexBufferLayout cannon_layout(2);
-	cannon_va = new VertexArray(*cannon_vb, cannon_layout);
+	cannon_va = VertexArray::MakeVertexArray(*cannon_vb, cannon_layout);
 
 	initialized_GPU = true;
 	return true;

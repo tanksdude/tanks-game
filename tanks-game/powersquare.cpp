@@ -140,7 +140,7 @@ bool PowerSquare::initializeGPU() {
 
 	vb = VertexBuffer::MakeVertexBuffer(positions, 12*2 * sizeof(float), RenderingHints::dynamic_draw);
 	VertexBufferLayout layout(2);
-	va = new VertexArray(*vb, layout);
+	va = VertexArray::MakeVertexArray(*vb, layout);
 
 	ib_main = new IndexBuffer(main_indices, 6*4);
 	ib_outline = new IndexBuffer(outline_indices, 6*4);

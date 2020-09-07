@@ -72,7 +72,7 @@ bool HorizontalLightning::initializeGPU() {
 
 	background_vb = VertexBuffer::MakeVertexBuffer(positions, 4*2 * sizeof(float), RenderingHints::dynamic_draw);
 	VertexBufferLayout layout(2);
-	background_va = new VertexArray(*background_vb, layout);
+	background_va = VertexArray::MakeVertexArray(*background_vb, layout);
 
 	background_ib = new IndexBuffer(indices, 6);
 
@@ -91,7 +91,7 @@ void HorizontalLightning::local_initializeGPU() {
 	
 	bolt_vb = VertexBuffer::MakeVertexBuffer(positions, bolts[0]->length*2 * sizeof(float), RenderingHints::stream_draw);
 	VertexBufferLayout layout(2);
-	bolt_va = new VertexArray(*bolt_vb, layout);
+	bolt_va = VertexArray::MakeVertexArray(*bolt_vb, layout);
 
 	delete[] positions;
 }
@@ -105,7 +105,7 @@ void HorizontalLightning::local_reinitializeGPU(int length) { //does not seed th
 	
 	bolt_vb = VertexBuffer::MakeVertexBuffer(positions, length*2 * sizeof(float), RenderingHints::stream_draw);
 	VertexBufferLayout layout(2);
-	bolt_va = new VertexArray(*bolt_vb, layout);
+	bolt_va = VertexArray::MakeVertexArray(*bolt_vb, layout);
 
 	delete[] positions;
 }
