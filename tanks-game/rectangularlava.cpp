@@ -7,6 +7,7 @@
 #include "wallmanager.h"
 #include "hazardmanager.h"
 #include "collisionhandler.h"
+#include "rng.h"
 
 VertexArray* RectangularLava::background_va;
 VertexBuffer* RectangularLava::background_vb;
@@ -121,16 +122,16 @@ void RectangularLava::pushNewBubble(double radius) {
 	float x0, y0, x1, y1;
 	int attempts = 0;
 		
-	x0 = randFunc() * (w - radius*2) + radius;
-	y0 = randFunc() * (h - radius*2) + radius;
+	x0 = RNG::randFunc() * (w - radius*2) + radius;
+	y0 = RNG::randFunc() * (h - radius*2) + radius;
 	do {
-		x1 = randFunc() * (w - radius*2) + radius;
-		y1 = randFunc() * (h - radius*2) + radius;
+		x1 = RNG::randFunc() * (w - radius*2) + radius;
+		y1 = RNG::randFunc() * (h - radius*2) + radius;
 		attempts++;
 	} while ((attempts < 8) && (abs(x0-x1) < w/16 || abs(y0-y1) < h/16)); //JS Tanks used w/8 and h/8
 
 	if (attempts < 8) {
-		double maxTick = floor(randFunc()*101) + 200;
+		double maxTick = floor(RNG::randFunc()*101) + 200;
 		bubbles.push_back(new LavaBubble(radius, x0/w, y0/h, x1/w, y1/h, maxTick));
 	}
 }
@@ -222,11 +223,11 @@ RectHazard* RectangularLava::randomizingFactory(double x_start, double y_start, 
 			width = std::stod(argv[0]);
 			height = std::stod(argv[1]);
 		} else {
-			width = randFunc2() * (120 - 30) + 30; //TODO: where should these constants be?
-			height = randFunc2() * (80 - 20) + 20; //TODO: where should these constants be?
+			width = RNG::randFunc2() * (120 - 30) + 30; //TODO: where should these constants be?
+			height = RNG::randFunc2() * (80 - 20) + 20; //TODO: where should these constants be?
 		}
-		xpos = randFunc2() * (area_width - 2*width) + (x_start + width);
-		ypos = randFunc2() * (area_height - 2*height) + (y_start + height);
+		xpos = RNG::randFunc2() * (area_width - 2*width) + (x_start + width);
+		ypos = RNG::randFunc2() * (area_height - 2*height) + (y_start + height);
 		RectHazard* testRectangularLava = new RectangularLava(xpos, ypos, width, height);
 		if (testRectangularLava->reasonableLocation()) {
 			randomized = testRectangularLava;

@@ -16,6 +16,7 @@
 #include <gtx/transform.hpp>
 
 //important stuff:
+#include "rng.h"
 #include "colorvalueholder.h"
 #include "backgroundrect.h"
 #include "tank.h"
@@ -1022,7 +1023,8 @@ void bulletToTank() {
 
 
 int main(int argc, char** argv) {
-	srand(time(NULL));
+	srand(time(NULL)); //no longer needed
+	RNG::Initialize(time(NULL));
 
 	Renderer::SetContext("OpenGL");
 	try {

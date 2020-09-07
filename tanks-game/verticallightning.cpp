@@ -12,6 +12,7 @@
 #include "wallmanager.h"
 #include "hazardmanager.h"
 #include "collisionhandler.h"
+#include "rng.h"
 #include <iostream>
 
 VertexArray* VerticalLightning::background_va;
@@ -380,7 +381,7 @@ void VerticalLightning::simpleRefreshBolt(int num) {
 		}
 		xRangeLower = (xRangeLower < xMin ? xMin : xRangeLower);
 		xRangeUpper = (xRangeUpper > xMax ? xMax : xRangeUpper);
-		bolts[num]->positions[j*2+0] = xRangeLower + (xRangeUpper - xRangeLower) * randFunc2();
+		bolts[num]->positions[j*2+0] = xRangeLower + (xRangeUpper - xRangeLower) * RNG::randFunc2();
 	}
 }
 
@@ -443,22 +444,22 @@ RectHazard* VerticalLightning::randomizingFactory(double x_start, double y_start
 	double xpos, ypos, width, height;
 	double minHeight = 40, maxHeight = 160;
 	do {
-		width = randFunc2() * (24 - 12) + 12;
+		width = RNG::randFunc2() * (24 - 12) + 12;
 		//TODO: ability to use an edge
 		for (int i = 0; i < WallManager::getNumWalls(); i++) {
 			Wall* wa = WallManager::getWall(i);
-			xpos = wa->x + randFunc2() * constrain<double>(wa->w - width, 0, wa->w);
+			xpos = wa->x + RNG::randFunc2() * constrain<double>(wa->w - width, 0, wa->w);
 			ypos = wa->y + wa->h;
 			int j, wallAttempts = 0;
 			do {
-				j = randFunc() * WallManager::getNumWalls();
+				j = RNG::randFunc() * WallManager::getNumWalls();
 				wallAttempts++;
 			} while ((wallAttempts < 8) && (j == i));
 			if (j != i) {
 				Wall* otherWall = WallManager::getWall(j);
 				height = otherWall->y - ypos;
 			} else {
-				height = randFunc2() * (maxHeight - minHeight) + minHeight;
+				height = RNG::randFunc2() * (maxHeight - minHeight) + minHeight;
 			}
 		}
 		if ((xpos >= x_start) && (xpos + width <= x_start + area_width) && (ypos >= y_start) && (ypos + height <= y_start + area_height) && (height <= maxHeight) && (height >= minHeight)) {

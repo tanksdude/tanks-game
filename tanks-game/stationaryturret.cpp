@@ -12,6 +12,7 @@
 #include "wallmanager.h"
 #include "hazardmanager.h"
 #include "collisionhandler.h"
+#include "rng.h"
 
 VertexArray* StationaryTurret::va;
 VertexBuffer* StationaryTurret::vb;
@@ -285,11 +286,11 @@ CircleHazard* StationaryTurret::randomizingFactory(double x_start, double y_star
 	if (argc >= 1) {
 		angle = std::stod(argv[0]);
 	} else {
-		angle = randFunc() * 2*PI;
+		angle = RNG::randFunc() * 2*PI;
 	}
 	do {
-		xpos = randFunc2() * (area_width - 2*TANK_RADIUS/4) + (x_start + TANK_RADIUS/4);
-		ypos = randFunc2() * (area_height - 2*TANK_RADIUS/4) + (y_start + TANK_RADIUS/4);
+		xpos = RNG::randFunc2() * (area_width - 2*TANK_RADIUS/4) + (x_start + TANK_RADIUS/4);
+		ypos = RNG::randFunc2() * (area_height - 2*TANK_RADIUS/4) + (y_start + TANK_RADIUS/4);
 		CircleHazard* testStationaryTurret = new StationaryTurret(xpos, ypos, angle);
 		if (testStationaryTurret->reasonableLocation()) {
 			randomized = testStationaryTurret;

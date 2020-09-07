@@ -1,6 +1,7 @@
 #include "firenamedbulletpower.h"
 #include "firenamedtankpower.h"
 #include "mylib.h"
+#include "rng.h"
 
 const double FireNamedBulletPower::maxBulletAcceleration = 3/32.0;
 const double FireNamedBulletPower::minBulletAcceleration = 1/32.0;
@@ -57,7 +58,7 @@ TankPower* FireNamedBulletPower::makeTankPower() const {
 }
 
 FireNamedBulletPower::FireNamedBulletPower()
-: FireNamedBulletPower(-1 * ((randFunc2()+randFunc2())/2 * (maxBulletAcceleration - minBulletAcceleration) + minBulletAcceleration)) {}
+: FireNamedBulletPower(-1 * ((RNG::randFunc2()+RNG::randFunc2())/2 * (maxBulletAcceleration - minBulletAcceleration) + minBulletAcceleration)) {}
 //accleration: [0,1] * accDiff + min
 
 FireNamedBulletPower::FireNamedBulletPower(double acceleration) {

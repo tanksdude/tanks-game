@@ -3,6 +3,7 @@
 #include "mylib.h"
 #include "constants.h"
 #include <math.h>
+#include "rng.h"
 
 const double FireNamedTankPower::bulletAngleDeviation = PI/4;
 const int FireNamedTankPower::bulletAmount = 4;
@@ -17,7 +18,7 @@ void FireNamedTankPower::removeEffects(Tank* parent) {
 
 void FireNamedTankPower::additionalShooting(Tank* t, CannonPoint c) {
 	for (int i = 0; i < bulletAmount; i++) {
-		double tempAngle = (randFunc2()+randFunc2() - 1) * bulletAngleDeviation; //[-1,1] * deviation
+		double tempAngle = (RNG::randFunc2()+RNG::randFunc2() - 1) * bulletAngleDeviation; //[-1,1] * deviation
 		t->regularMakeBullet(t->r * cos(c.angle + t->angle + tempAngle), t->r * sin(c.angle + t->angle + tempAngle), c.angle + t->angle + tempAngle);
 	}
 }

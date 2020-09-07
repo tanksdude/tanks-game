@@ -2,6 +2,7 @@
 #include "blasttankpower.h"
 #include "collisionhandler.h"
 #include "mylib.h"
+#include "rng.h"
 
 const double BlastBulletPower::maxBulletAcceleration = 3/16.0;
 const double BlastBulletPower::minBulletAcceleration = 1/16.0;
@@ -54,7 +55,7 @@ TankPower* BlastBulletPower::makeTankPower() const {
 }
 
 BlastBulletPower::BlastBulletPower()
-: BlastBulletPower(-1 * ((randFunc2()+randFunc2())/2 * (maxBulletAcceleration - minBulletAcceleration) + minBulletAcceleration)) {}
+: BlastBulletPower(-1 * ((RNG::randFunc2()+RNG::randFunc2())/2 * (maxBulletAcceleration - minBulletAcceleration) + minBulletAcceleration)) {}
 //acceleration: [0,1] * accDiff + min
 
 BlastBulletPower::BlastBulletPower(double acceleration) {

@@ -1,6 +1,7 @@
 #include "mylib.h"
 #include <sstream> //stringstream for hex conversion
 #include <iostream>
+#include "rng.h"
 
 std::string numToHex(unsigned char x) {
 	std::stringstream stream;
@@ -98,14 +99,6 @@ bool XOR(bool a, bool b) {
 	return ((a || b) && !(a && b));
 }
 
-double randFunc() {
-	return double(rand()) / double(RAND_MAX+1);
-}
-
-double randFunc2() {
-	return double(rand()) / double(RAND_MAX);
-}
-
 //algorithm from https://wrf.ecse.rpi.edu/Research/Short_Notes/pnpoly.html
 /*
 Copyright (c) 1970-2003, Wm. Randolph Franklin
@@ -170,7 +163,7 @@ int weightedSelect(const T* weights, int num) {
 	for (int i = 0; i < num; i++) {
 		weightTotal += weights[i];
 	}
-	T targetWeight = randFunc() * weightTotal;
+	T targetWeight = RNG::randFunc() * weightTotal;
 	T newWeight = 0;
 	int newIndex = 0;
 	while (targetWeight >= newWeight) {

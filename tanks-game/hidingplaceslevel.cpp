@@ -6,10 +6,11 @@
 #include "wallmanager.h"
 #include "mylib.h"
 #include "resetthings.h"
+#include "rng.h"
 #include <iostream>
 
 void HidingPlacesLevel::initialize() {
-	int randPos = randFunc() * 5;
+	int randPos = RNG::randFunc() * 5;
 	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40, randPos);
 
 	ColorValueHolder color = ColorValueHolder(0.375f, 0.75f, 0.125f);
@@ -41,14 +42,14 @@ void HidingPlacesLevel::initialize() {
 	pos = RandomLevel::getSymmetricPowerupPositions_UD(1, GAME_WIDTH/2, GAME_HEIGHT/2, 40);
 	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "vanilla-extra", "mines"));
 
-	int tempRand = randFunc() * 2;
+	int tempRand = RNG::randFunc() * 2;
 	pos = RandomLevel::getSymmetricPowerupPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_HEIGHT/2-40);
 	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, RandomLevel::simplePowerAlternate(0, tempRand, "vanilla-extra", "vanilla"), RandomLevel::simplePowerAlternate(0, tempRand, "shotgun", "multishot")));
 	pos = RandomLevel::getSymmetricPowerupPositions_UD(1, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_HEIGHT/2-40);
 	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, RandomLevel::simplePowerAlternate(1, tempRand, "vanilla-extra", "vanilla"), RandomLevel::simplePowerAlternate(1, tempRand, "shotgun", "multishot")));
 	//TODO: better way to randomize power positions when they're in different groups
 
-	tempRand = randFunc() * 2;
+	tempRand = RNG::randFunc() * 2;
 	for (int i = 0; i < 4; i++) {
 		PositionHolder pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 80);
 		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, RandomLevel::powerAlternate(i, tempRand, "bounce", "speed"))); //speed=life here

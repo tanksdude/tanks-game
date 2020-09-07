@@ -12,6 +12,7 @@
 #include "wallmanager.h"
 #include "hazardmanager.h"
 #include "collisionhandler.h"
+#include "rng.h"
 #include <iostream>
 
 VertexArray* CircularLightning::background_va;
@@ -225,7 +226,7 @@ void CircularLightning::pushBolt(LightningBolt* l) {
 
 void CircularLightning::pushDefaultBolt(int num, bool randomize) {
 	//the default bolt is from center to a random point
-	double randR = r*randFunc2(), randAngle = 2*PI*randFunc();
+	double randR = r*RNG::randFunc2(), randAngle = 2*PI*RNG::randFunc();
 	double xEnd = randR*cos(randAngle), yEnd = randR*sin(randAngle);
 	for (int i = 0; i < num; i++) {
 		LightningBolt* l = new LightningBolt(0, 0, xEnd, yEnd, getDefaultNumBoltPoints(sqrt(pow(xEnd - 0, 2) + pow(yEnd - 0, 2))));
@@ -317,7 +318,7 @@ void CircularLightning::refreshBolt(int num) {
 		double randTemp;
 		float testY, testX;
 		do {
-			randTemp = (randFunc2()*2-1)*maxVariance;
+			randTemp = (RNG::randFunc2()*2-1)*maxVariance;
 			testY = bolts[num]->positions[j*2 - 1] + (deltaY/(bolts[num]->length-1)) + randTemp * angleCos;
 			testX = bolts[num]->positions[j*2 - 2] + (deltaX/(bolts[num]->length-1)) - randTemp * angleSin;
 			//std::cout << testX << " " << testY << std::endl;
@@ -381,10 +382,10 @@ CircleHazard* CircularLightning::randomizingFactory(double x_start, double y_sta
 		if (argc >= 1) {
 			radius = std::stod(argv[0]);
 		} else {
-			radius = randFunc2() * (60 - 30) + 30; //TODO: where should these constants be?
+			radius = RNG::randFunc2() * (60 - 30) + 30; //TODO: where should these constants be?
 		}
-		xpos = randFunc2() * (area_width - 2*radius) + (x_start + radius);
-		ypos = randFunc2() * (area_height - 2*radius) + (y_start + radius);
+		xpos = RNG::randFunc2() * (area_width - 2*radius) + (x_start + radius);
+		ypos = RNG::randFunc2() * (area_height - 2*radius) + (y_start + radius);
 		CircleHazard* testCircularLightning = new CircularLightning(xpos, ypos, radius);
 		if (testCircularLightning->reasonableLocation()) {
 			randomized = testCircularLightning;

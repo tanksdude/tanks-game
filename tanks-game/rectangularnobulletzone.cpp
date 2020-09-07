@@ -7,6 +7,7 @@
 #include "wallmanager.h"
 #include "hazardmanager.h"
 #include "collisionhandler.h"
+#include "rng.h"
 
 VertexArray* RectangularNoBulletZone::va;
 VertexBuffer* RectangularNoBulletZone::vb;
@@ -138,11 +139,11 @@ RectHazard* RectangularNoBulletZone::randomizingFactory(double x_start, double y
 			width = std::stod(argv[0]);
 			height = std::stod(argv[1]);
 		} else {
-			width = randFunc2() * (40 - 20) + 20; //TODO: where should these constants be?
-			height = randFunc2() * (50 - 20) + 20; //TODO: where should these constants be?
+			width = RNG::randFunc2() * (40 - 20) + 20; //TODO: where should these constants be?
+			height = RNG::randFunc2() * (50 - 20) + 20; //TODO: where should these constants be?
 		}
-		xpos = randFunc2() * (area_width - 2*width) + (x_start + width);
-		ypos = randFunc2() * (area_height - 2*height) + (y_start + height);
+		xpos = RNG::randFunc2() * (area_width - 2*width) + (x_start + width);
+		ypos = RNG::randFunc2() * (area_height - 2*height) + (y_start + height);
 		RectHazard* testRectangularNoBulletZone = new RectangularNoBulletZone(xpos, ypos, width, height);
 		if (testRectangularNoBulletZone->reasonableLocation()) {
 			randomized = testRectangularNoBulletZone;

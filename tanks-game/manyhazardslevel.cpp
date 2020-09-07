@@ -7,6 +7,7 @@
 #include "hazardmanager.h"
 #include "mylib.h"
 #include "resetthings.h"
+#include "rng.h"
 #include <iostream>
 
 std::unordered_map<std::string, float> ManyHazardsLevel::getWeights() const {
@@ -20,7 +21,7 @@ std::unordered_map<std::string, float> ManyHazardsLevel::getWeights() const {
 }
 
 void ManyHazardsLevel::initialize() {
-	int randPos = randFunc() * 5;
+	int randPos = RNG::randFunc() * 5;
 	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40, randPos);
 
 	ColorValueHolder color = ColorValueHolder(0xDD/255.0, .5f, .25f);

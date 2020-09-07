@@ -7,18 +7,19 @@
 #include "wallmanager.h"
 #include "hazardmanager.h"
 #include "resetthings.h"
+#include "rng.h"
 
 void DeveloperLevel0::initialize() {
-	int randPos = randFunc() * 5;
+	int randPos = RNG::randFunc() * 5;
 	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), randPos);
 
-	ColorValueHolder randColor(randFunc2(), randFunc2(), randFunc2());
+	ColorValueHolder randColor(RNG::randFunc2(), RNG::randFunc2(), RNG::randFunc2());
 
 	for (int i = 0; i < 16; i++) {
 		WallManager::pushWall(RandomLevel::makeNewRandomWall(TANK_RADIUS*2.5, TANK_RADIUS*2, GAME_WIDTH - 2*(TANK_RADIUS*2.5), GAME_HEIGHT - 2*(TANK_RADIUS*2), randColor));
 	}
 
-	std::string paras[3] = {std::to_string(GAME_WIDTH/2), std::to_string(GAME_HEIGHT/2), std::to_string(randFunc() * 2*PI)};
+	std::string paras[3] = {std::to_string(GAME_WIDTH/2), std::to_string(GAME_HEIGHT/2), std::to_string(RNG::randFunc() * 2*PI)};
 	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary turret")(3, paras));
 
 	//assumption: TANK_RADIUS=16 (why it would ever be changed is beyond me)

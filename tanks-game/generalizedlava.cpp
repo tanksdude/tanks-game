@@ -5,6 +5,7 @@
 #include <math.h>
 #include "mylib.h"
 #include "colormixer.h"
+#include "rng.h"
 
 //yes, the syntax is a little weird
 GeneralizedLava::LavaBubble::LavaBubble(float radius, float x0, float y0, float x1, float y1, float tickStart) {
@@ -88,7 +89,7 @@ void GeneralizedLava::tick() {
 		tickCount = 0;
 	}
 
-	if ((bubbles.size() < maxBubbles) && (randFunc() < bubbleChance)) {
+	if ((bubbles.size() < maxBubbles) && (RNG::randFunc() < bubbleChance)) {
 		pushNewBubble(4); //possible radius: sqrt(w * h * 2)/50 or sqrt(r * r * 2)/50
 	}
 

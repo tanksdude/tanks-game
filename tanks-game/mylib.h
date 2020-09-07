@@ -17,8 +17,6 @@ T constrain(T value, T min, T max);
 //however, I don't know how to change the C++ version in Visual Studio, if it's even possible, and also it's not vital to the project
 
 bool XOR(bool, bool);
-double randFunc(); //[0,1)
-double randFunc2(); //[0,1]
 
 //algorithm from https://wrf.ecse.rpi.edu/Research/Short_Notes/pnpoly.html
 bool pointInPolygon(int vertNum, double* vertX, double* vertY, double testX, double testY);

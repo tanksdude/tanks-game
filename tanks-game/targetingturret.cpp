@@ -12,6 +12,7 @@
 #include "wallmanager.h"
 #include "hazardmanager.h"
 #include "collisionhandler.h"
+#include "rng.h"
 #include <iostream>
 
 VertexArray* TargetingTurret::va;
@@ -203,7 +204,7 @@ void TargetingTurret::tick() {
 			if (tankIndices.size() == 1) {
 				indexOfTargetedTank = tankIndices[0];
 			} else {
-				indexOfTargetedTank = tankIndices[int(randFunc() * tankIndices.size())];
+				indexOfTargetedTank = tankIndices[int(RNG::randFunc() * tankIndices.size())];
 			}
 			
 			if (tankVisibility[indexOfTargetedTank]) {
@@ -384,11 +385,11 @@ CircleHazard* TargetingTurret::randomizingFactory(double x_start, double y_start
 	if (argc >= 1) {
 		angle = std::stod(argv[0]);
 	} else {
-		angle = randFunc() * 2*PI;
+		angle = RNG::randFunc() * 2*PI;
 	}
 	do {
-		xpos = randFunc2() * (area_width - 2*TANK_RADIUS/2) + (x_start + TANK_RADIUS/2);
-		ypos = randFunc2() * (area_height - 2*TANK_RADIUS/2) + (y_start + TANK_RADIUS/2);
+		xpos = RNG::randFunc2() * (area_width - 2*TANK_RADIUS/2) + (x_start + TANK_RADIUS/2);
+		ypos = RNG::randFunc2() * (area_height - 2*TANK_RADIUS/2) + (y_start + TANK_RADIUS/2);
 		CircleHazard* testTargetingTurret = new TargetingTurret(xpos, ypos, angle);
 		if (testTargetingTurret->reasonableLocation()) {
 			randomized = testTargetingTurret;

@@ -7,6 +7,7 @@
 #include "wallmanager.h"
 #include "hazardmanager.h"
 #include "collisionhandler.h"
+#include "rng.h"
 
 VertexArray* CircularNoBulletZone::va;
 VertexBuffer* CircularNoBulletZone::vb;
@@ -138,10 +139,10 @@ CircleHazard* CircularNoBulletZone::randomizingFactory(double x_start, double y_
 		if (argc >= 1) {
 			radius = std::stod(argv[0]);
 		} else {
-			radius = randFunc2() * (20 - 10) + 10; //TODO: where should these constants be?
+			radius = RNG::randFunc2() * (20 - 10) + 10; //TODO: where should these constants be?
 		}
-		xpos = randFunc2() * (area_width - 2*radius) + (x_start + radius);
-		ypos = randFunc2() * (area_height - 2*radius) + (y_start + radius);
+		xpos = RNG::randFunc2() * (area_width - 2*radius) + (x_start + radius);
+		ypos = RNG::randFunc2() * (area_height - 2*radius) + (y_start + radius);
 		CircleHazard* testCircularNoBulletZone = new CircularNoBulletZone(xpos, ypos, radius);
 		if (testCircularNoBulletZone->reasonableLocation()) {
 			randomized = testCircularNoBulletZone;

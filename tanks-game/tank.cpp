@@ -8,6 +8,7 @@
 #include "keypressmanager.h"
 #include "bulletmanager.h"
 #include "collisionhandler.h"
+#include "rng.h"
 #include <iostream>
 
 //for CPU drawing, in case other #includes go wrong:
@@ -784,7 +785,7 @@ void Tank::resetThings(double x, double y, double a, char teamID, std::string na
 	//don't update maxShootCount
 	velocity = 0;
 
-	if (randFunc() < 1.0/4096) {
+	if (RNG::randFunc() < 1.0/4096) {
 		//shiny tank (yes, 1/8192 is the chance before Sword/Shield)
 		defaultColor = ColorValueHolder(.75f, .75f, .75f);
 	} else {

@@ -7,6 +7,7 @@
 #include "wallmanager.h"
 #include "hazardmanager.h"
 #include "collisionhandler.h"
+#include "rng.h"
 
 VertexArray* CircularLava::background_va;
 VertexBuffer* CircularLava::background_vb;
@@ -124,20 +125,20 @@ void CircularLava::pushNewBubble(double radius) {
 	int attempts = 0;
 	
 	float r0, a0, r1, a1;
-	r0 = randFunc() * (r - radius);
-	a0 = randFunc() * (2*PI);
+	r0 = RNG::randFunc() * (r - radius);
+	a0 = RNG::randFunc() * (2*PI);
 	x0 = r0 * cos(a0);
 	y0 = r0 * sin(a0);
 	do {
-		r1 = randFunc() * (r - radius);
-		a1 = randFunc() * (2 * PI);
+		r1 = RNG::randFunc() * (r - radius);
+		a1 = RNG::randFunc() * (2 * PI);
 		x1 = r1 * cos(a1);
 		y1 = r1 * sin(a1);
 		attempts++;
 	} while ((attempts < 8) && (abs(x0-x1) < r/16 || abs(y0-y1) < r/16));
 
 	if (attempts < 8) {
-		double maxTick = floor(randFunc()*101) + 200;
+		double maxTick = floor(RNG::randFunc()*101) + 200;
 		bubbles.push_back(new LavaBubble(radius, x0/r, y0/r, x1/r, y1/r, maxTick));
 	}
 }
@@ -228,10 +229,10 @@ CircleHazard* CircularLava::randomizingFactory(double x_start, double y_start, d
 		if (argc >= 1) {
 			radius = std::stod(argv[0]);
 		} else {
-			radius = randFunc2() * (40 - 20) + 20; //TODO: where should these constants be?
+			radius = RNG::randFunc2() * (40 - 20) + 20; //TODO: where should these constants be?
 		}
-		xpos = randFunc2() * (area_width - 2*radius) + (x_start + radius);
-		ypos = randFunc2() * (area_height - 2*radius) + (y_start + radius);
+		xpos = RNG::randFunc2() * (area_width - 2*radius) + (x_start + radius);
+		ypos = RNG::randFunc2() * (area_height - 2*radius) + (y_start + radius);
 		CircleHazard* testCircularLava = new CircularLava(xpos, ypos, radius);
 		if (testCircularLava->reasonableLocation()) {
 			randomized = testCircularLava;

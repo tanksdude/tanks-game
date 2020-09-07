@@ -12,6 +12,7 @@
 #include "wallmanager.h"
 #include "hazardmanager.h"
 #include "collisionhandler.h"
+#include "rng.h"
 #include <iostream>
 
 VertexArray* RectangularLightning::background_va;
@@ -277,7 +278,7 @@ void RectangularLightning::pushBolt(LightningBolt* l) {
 
 void RectangularLightning::pushDefaultBolt(int num, bool randomize) {
 	//the default bolt is from center to a random point
-	double xEnd = w*randFunc2(), yEnd = h*randFunc2();
+	double xEnd = w*RNG::randFunc2(), yEnd = h*RNG::randFunc2();
 	for (int i = 0; i < num; i++) {
 		LightningBolt* l = new LightningBolt(w/2, h/2, xEnd, yEnd, getDefaultNumBoltPoints(sqrt(pow(xEnd - w/2, 2) + pow(yEnd - h/2, 2))));
 		if (randomize) {
@@ -371,7 +372,7 @@ void RectangularLightning::refreshBolt(int num, double smaller, double larger) {
 		double randTemp;
 		float testY, testX;
 		do {
-			randTemp = (randFunc2()*2-1)*maxVariance;
+			randTemp = (RNG::randFunc2()*2-1)*maxVariance;
 			testY = bolts[num]->positions[j*2 - 1] + (deltaY/(bolts[num]->length-1)) + randTemp * angleCos;
 			testX = bolts[num]->positions[j*2 - 2] + (deltaX/(bolts[num]->length-1)) - randTemp * angleSin;
 			//std::cout << testX << " " << testY << std::endl;
@@ -435,11 +436,11 @@ RectHazard* RectangularLightning::randomizingFactory(double x_start, double y_st
 			width = std::stod(argv[0]);
 			height = std::stod(argv[1]);
 		} else {
-			width = randFunc2() * (80 - 30) + 30; //TODO: where should these constants be?
-			height = randFunc2() * (80 - 30) + 30; //TODO: where should these constants be?
+			width = RNG::randFunc2() * (80 - 30) + 30; //TODO: where should these constants be?
+			height = RNG::randFunc2() * (80 - 30) + 30; //TODO: where should these constants be?
 		}
-		xpos = randFunc2() * (area_width - 2*width) + (x_start + width);
-		ypos = randFunc2() * (area_height - 2*height) + (y_start + height);
+		xpos = RNG::randFunc2() * (area_width - 2*width) + (x_start + width);
+		ypos = RNG::randFunc2() * (area_height - 2*height) + (y_start + height);
 		RectHazard* testRectangularLightning = new RectangularLightning(xpos, ypos, width, height);
 		if (testRectangularLightning->reasonableLocation()) {
 			randomized = testRectangularLightning;
