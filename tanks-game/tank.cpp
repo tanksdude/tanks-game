@@ -772,7 +772,7 @@ bool Tank::kill() {
 	return this->dead;
 }
 
-void Tank::resetThings(double x, double y, double a, char teamID, std::string name) { //TODO: finish?
+void Tank::resetThings(double x, double y, double a, char teamID) {
 	this->dead = false;
 	this->x = x;
 	this->y = y;
@@ -780,7 +780,6 @@ void Tank::resetThings(double x, double y, double a, char teamID, std::string na
 	this->gameID = GameManager::getNextID(); //should this be updated?
 	this->teamID = teamID;
 	//this->r = TANK_RADIUS;
-	this->name = name;
 	shootCount = 0;
 	//don't update maxShootCount
 	velocity = 0;

@@ -81,7 +81,7 @@ protected:
 	ColorValueHolder defaultNameFill = ColorValueHolder(1.0f, 1.0f, 1.0f);
 	ColorValueHolder defaultNameStroke = ColorValueHolder(0, 0, 0);
 
-	void resetThings(double x, double y, double a, char teamID, std::string name);
+	void resetThings(double x, double y, double a, char teamID);
 
 	double shootCount;
 	double maxShootCount;
