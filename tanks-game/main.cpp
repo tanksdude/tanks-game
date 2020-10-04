@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <time.h>
+#include <chrono>
 #include <unordered_map>
 #include <stdexcept>
 
@@ -1023,8 +1024,7 @@ void bulletToTank() {
 
 
 int main(int argc, char** argv) {
-	srand(time(NULL)); //no longer needed
-	RNG::Initialize(time(NULL));
+	RNG::Initialize(std::chrono::high_resolution_clock::now().time_since_epoch().count());
 
 	Renderer::SetContext("OpenGL");
 	try {
