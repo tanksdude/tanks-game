@@ -9,6 +9,7 @@ protected:
 	static const int bananaCount;
 	static const double maxNewBulletVelocity;
 	static const double minNewBulletVelocity;
+	bool wasStationary; //must have velocity of zero for one tick before banana-ing
 
 public:
 	virtual void initialize(Bullet* parent) override;

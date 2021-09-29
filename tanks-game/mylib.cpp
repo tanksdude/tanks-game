@@ -96,7 +96,8 @@ template double constrain<double>(double, double, double);
 //(behind the scenes, I understand what's happening, mostly, but it's still moderately cool)
 
 bool XOR(bool a, bool b) {
-	return ((a || b) && !(a && b));
+	return (a != b);
+	//return ((a || b) && !(a && b));
 }
 
 //algorithm from https://wrf.ecse.rpi.edu/Research/Short_Notes/pnpoly.html
