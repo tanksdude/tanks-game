@@ -28,7 +28,7 @@ private:
 	int bolt_vb_length;
 	static bool initialized_GPU;
 	void local_reinitializeGPU(int length);
-	void streamBoltVertices(unsigned int boltNum); //(stream to bolt_vb)
+	void streamBoltVertices(unsigned int boltNum) const; //(stream to bolt_vb)
 
 	static bool initializeGPU();
 	void local_initializeGPU();

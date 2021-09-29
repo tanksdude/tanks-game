@@ -129,7 +129,7 @@ void VerticalLightning::local_uninitializeGPU() {
 	delete bolt_vb;
 }
 
-void VerticalLightning::streamBoltVertices(unsigned int boltNum) {
+void VerticalLightning::streamBoltVertices(unsigned int boltNum) const {
 	bolt_vb->modifyData(bolts[boltNum]->positions.data(), bolts[boltNum]->length*2 * sizeof(float));
 }
 
@@ -424,7 +424,7 @@ void VerticalLightning::draw(double xpos, double ypos) const {
 			local_reinitializeGPU(bolts[i]->length);
 		}
 		*/
-		//streamBoltVertices(i); //TODO: fix
+		streamBoltVertices(i); //TODO: fix
 		Renderer::Draw(*bolt_va, *shader, GL_LINE_STRIP, 0, bolts[i]->length);
 	}
 }
