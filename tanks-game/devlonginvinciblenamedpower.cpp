@@ -1,6 +1,4 @@
 #include "devlonginvinciblenamedpower.h"
-#include "devlonginvinciblenamedtankpower.h"
-#include "devlonginvinciblenamedbulletpower.h"
 
 TankPower* DevLongInvincibleNamedPower::makeTankPower() const {
 	return new DevLongInvincibleNamedTankPower();
@@ -22,4 +20,42 @@ Power* DevLongInvincibleNamedPower::factory() {
 
 DevLongInvincibleNamedPower::DevLongInvincibleNamedPower() {
 	return;
+}
+
+
+
+void DevLongInvincibleNamedTankPower::initialize(Tank* parent) {
+	//nothing
+}
+
+void DevLongInvincibleNamedTankPower::removeEffects(Tank* parent) {
+	//nothing
+}
+
+BulletPower* DevLongInvincibleNamedTankPower::makeBulletPower() const {
+	return new DevLongInvincibleNamedBulletPower();
+}
+
+DevLongInvincibleNamedTankPower::DevLongInvincibleNamedTankPower() {
+	maxTime = -1;
+	timeLeft = 0;
+}
+
+
+
+void DevLongInvincibleNamedBulletPower::initialize(Bullet* parent) {
+	//nothing
+}
+
+void DevLongInvincibleNamedBulletPower::removeEffects(Bullet* parent) {
+	//nothing
+}
+
+TankPower* DevLongInvincibleNamedBulletPower::makeTankPower() const {
+	return new DevLongInvincibleNamedTankPower();
+}
+
+DevLongInvincibleNamedBulletPower::DevLongInvincibleNamedBulletPower() {
+	timeLeft = 0;
+	maxTime = -1;
 }

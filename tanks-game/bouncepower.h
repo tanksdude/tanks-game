@@ -34,3 +34,56 @@ public:
 	BouncePower();
 	static Power* factory();
 };
+
+
+
+class BounceTankPower : public TankPower {
+public:
+	virtual void initialize(Tank* parent) override;
+	virtual void removeEffects(Tank* parent) override;
+
+	virtual ColorValueHolder getColor() const override {
+		return BouncePower::getClassColor();
+	}
+
+	virtual TankPower* makeDuplicate() const override { return new BounceTankPower(); }
+	virtual BulletPower* makeBulletPower() const override;
+
+	BounceTankPower();
+};
+
+
+
+class BounceBulletPower : public BulletPower {
+protected:
+	static const short maxBounces;
+	short bouncesLeft;
+
+public:
+	virtual void initialize(Bullet* parent) override;
+	virtual void removeEffects(Bullet* parent) override;
+
+	virtual ColorValueHolder getColor() const override {
+		return BouncePower::getClassColor();
+	}
+
+	virtual BulletPower* makeDuplicate() const override;
+	virtual TankPower* makeTankPower() const override;
+	
+	//bool modifiesCollisionWithWall = true;
+	virtual InteractionBoolHolder modifiedCollisionWithWall(Bullet*, Wall*) override;
+	//bool overridesCollisionWithWall = true;
+	//bool modifiedCollisionWithWallCanWorkWithOthers = true;
+	//bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;
+
+	//bool modifiesCollisionWithEdge = true;
+	virtual InteractionBoolHolder modifiedEdgeCollision(Bullet*) override;
+	//bool overridesEdgeCollision = true;
+	//bool modifiedEdgeCollisionCanWorkWithOthers = false;
+	//bool modifiedEdgeCollisionCanOnlyWorkIndividually = false;
+
+	virtual double getBulletSpeedMultiplier() const override { return .5; }
+
+	BounceBulletPower();
+	BounceBulletPower(short bounces);
+};

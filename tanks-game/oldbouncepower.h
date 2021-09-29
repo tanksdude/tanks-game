@@ -31,3 +31,59 @@ public:
 	OldBouncePower();
 	static Power* factory();
 };
+
+
+
+class OldBounceTankPower : public TankPower {
+public:
+	virtual void initialize(Tank* parent) override;
+	virtual void removeEffects(Tank* parent) override;
+
+	virtual ColorValueHolder getColor() const override {
+		return OldBouncePower::getClassColor();
+	}
+
+	virtual TankPower* makeDuplicate() const override { return new OldBounceTankPower(); }
+	virtual BulletPower* makeBulletPower() const override;
+
+	virtual double getTankAccelerationMultiplier() const override { return .5; }
+	virtual double getTankRadiusMultiplier() const override { return .5; } //should this stack?
+	virtual double getTankFiringRateMultiplier() const override { return .5; }
+
+	OldBounceTankPower();
+};
+
+
+
+class OldBounceBulletPower : public BulletPower {
+protected:
+	static const short maxBounces;
+	short bouncesLeft;
+
+public:
+	virtual void initialize(Bullet* parent) override;
+	virtual void removeEffects(Bullet* parent) override;
+
+	virtual ColorValueHolder getColor() const override {
+		return OldBouncePower::getClassColor();
+	}
+
+	virtual BulletPower* makeDuplicate() const override { return new OldBounceBulletPower(); } //I don't think bounces were passed on in JS
+	virtual TankPower* makeTankPower() const override;
+	
+	//bool modifiesCollisionWithWall = true;
+	virtual InteractionBoolHolder modifiedCollisionWithWall(Bullet*, Wall*) override;
+	//bool overridesCollisionWithWall = true;
+	//bool modifiedCollisionWithWallCanWorkWithOthers = true;
+	//bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;
+
+	//bool modifiesCollisionWithEdge = true;
+	virtual InteractionBoolHolder modifiedEdgeCollision(Bullet*) override;
+	//bool overridesEdgeCollision = true;
+	//bool modifiedEdgeCollisionCanWorkWithOthers = false;
+	//bool modifiedEdgeCollisionCanOnlyWorkIndividually = false;
+
+	virtual double getBulletSpeedMultiplier() const override { return .25; }
+
+	OldBounceBulletPower();
+};

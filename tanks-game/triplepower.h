@@ -21,3 +21,46 @@ public:
 	TriplePower();
 	static Power* factory();
 };
+
+
+
+class TripleTankPower : public TankPower {
+protected:
+	static const double angleDiff;
+
+public:
+	virtual void initialize(Tank* parent) override;
+	virtual void removeEffects(Tank* parent) override;
+
+	virtual ColorValueHolder getColor() const override {
+		return TriplePower::getClassColor();
+	}
+
+	virtual TankPower* makeDuplicate() const override { return new TripleTankPower(); }
+	virtual BulletPower* makeBulletPower() const override;
+
+	//bool modifiesAdditionalShooting = true;
+	virtual void additionalShooting(Tank* parent, CannonPoint) override;
+	//bool overridesAdditionalShooting = false;
+	//bool additionalShootingCanWorkWithOthers = true;
+	//bool additionalShootingCanOnlyWorkIndividually = false;
+
+	TripleTankPower();
+};
+
+
+
+class TripleBulletPower : public BulletPower {
+public:
+	virtual void initialize(Bullet* parent) override;
+	virtual void removeEffects(Bullet* parent) override;
+
+	virtual ColorValueHolder getColor() const override {
+		return TriplePower::getClassColor();
+	}
+
+	virtual BulletPower* makeDuplicate() const override { return new TripleBulletPower(); }
+	virtual TankPower* makeTankPower() const override;
+
+	TripleBulletPower();
+};
