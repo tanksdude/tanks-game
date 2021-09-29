@@ -9,7 +9,7 @@ const double BlastBulletPower::minBulletAcceleration = 1/16.0;
 const double BlastBulletPower::degradeAmount = .25;
 
 InteractionBoolHolder BlastBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
-	if (b->velocity == 0) {
+	if (b->velocity.getMagnitude() == 0) {
 		b->alpha -= degradeAmount;
 		return { b->isDead(), false };
 	} else {
@@ -17,20 +17,19 @@ InteractionBoolHolder BlastBulletPower::modifiedCollisionWithWall(Bullet* b, Wal
 			CollisionHandler::pushMovableAwayFromImmovable(b, w);
 
 			b->acceleration = 0;
-			b->velocity = 0;
+			b->velocity.setMagnitude(0);
 		}
 		return { false, false };
 	}
 }
 
 InteractionBoolHolder BlastBulletPower::modifiedMovement(Bullet* b) {
-	if (b->velocity == 0) {
+	if (b->velocity.getMagnitude() <= 0) {
 		b->alpha -= degradeAmount;
-	}
-	else if (b->velocity < 0) {
-		b->velocity = 0;
+	} /*else if (b->velocity < 0) {
+		b->velocity.setMagnitude(0);
 		b->acceleration = 0;
-	}
+	}*/
 	return { false };
 }
 

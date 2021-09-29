@@ -244,6 +244,7 @@
     <ClCompile Include="shotgunbulletpower.cpp" />
     <ClCompile Include="shotgunpower.cpp" />
     <ClCompile Include="shotguntankpower.cpp" />
+    <ClCompile Include="simplevector2d.cpp" />
     <ClCompile Include="speedbulletpower.cpp" />
     <ClCompile Include="speedpower.cpp" />
     <ClCompile Include="speedtankpower.cpp" />
@@ -391,6 +392,7 @@
     <ClInclude Include="shotgunbulletpower.h" />
     <ClInclude Include="shotgunpower.h" />
     <ClInclude Include="shotguntankpower.h" />
+    <ClInclude Include="simplevector2d.h" />
     <ClInclude Include="softwarerenderingcontext.h" />
     <ClInclude Include="speedbulletpower.h" />
     <ClInclude Include="speedpower.h" />

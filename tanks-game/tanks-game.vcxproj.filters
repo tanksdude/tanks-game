@@ -405,6 +405,9 @@
     <ClCompile Include="rng.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="simplevector2d.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -849,6 +852,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="rng.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="simplevector2d.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

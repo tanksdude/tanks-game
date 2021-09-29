@@ -6,8 +6,8 @@
 const double TripleTankPower::angleDiff = PI/16;
 
 void TripleTankPower::additionalShooting(Tank* parent, CannonPoint c) {
-	parent->regularMakeBullet(parent->r * cos(parent->angle + c.angle + angleDiff), parent->r * sin(parent->angle + c.angle + angleDiff), parent->angle + c.angle);
-	parent->regularMakeBullet(parent->r * cos(parent->angle + c.angle - angleDiff), parent->r * sin(parent->angle + c.angle - angleDiff), parent->angle + c.angle);
+	parent->regularMakeBullet(parent->r * cos(parent->velocity.getAngle() + c.angle + angleDiff), parent->r * sin(parent->velocity.getAngle() + c.angle + angleDiff), parent->velocity.getAngle() + c.angle);
+	parent->regularMakeBullet(parent->r * cos(parent->velocity.getAngle() + c.angle - angleDiff), parent->r * sin(parent->velocity.getAngle() + c.angle - angleDiff), parent->velocity.getAngle() + c.angle);
 }
 
 void TripleTankPower::initialize(Tank* parent) {

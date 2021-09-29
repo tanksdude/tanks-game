@@ -107,7 +107,7 @@
 
 #include "diagnostics.h"
 
-using namespace std;
+//using namespace std; //I just use it for cout and endl...
 
 //tank team rules:
 //0  = no team or default team
@@ -1030,8 +1030,8 @@ int main(int argc, char** argv) {
 	try {
 		Renderer::PreInitialize(&argc, argv, "PowerTanks Battle v0.2.4 NOT FINAL"); //this is not guaranteed to be correct every commit but likely will be
 	}
-	catch (exception& e) {
-		cout << e.what() << endl;
+	catch (std::exception& e) {
+		std::cout << e.what() << std::endl;
 		return 1;
 	}
 	
@@ -1148,9 +1148,9 @@ int main(int argc, char** argv) {
 #endif
 	ResetThings::firstReset();
 
-	cout << "OpenGL renderer: " << glGetString(GL_RENDERER) << endl;
-	cout << "OpenGL vendor: " << glGetString(GL_VENDOR) << endl;
-	cout << "OpenGL version: " << glGetString(GL_VERSION) << endl;
+	std::cout << "OpenGL renderer: " << glGetString(GL_RENDERER) << std::endl;
+	std::cout << "OpenGL vendor: " << glGetString(GL_VENDOR) << std::endl;
+	std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
 
 	//framelimiter
 	glutTimerFunc(1000/physicsRate, tick, physicsRate);

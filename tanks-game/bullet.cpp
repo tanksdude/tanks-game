@@ -22,7 +22,7 @@ Bullet::Bullet(double x_, double y_, double a, char teamID, BulletParentType par
 	initializeGPU();
 	this->x = x_;
 	this->y = y_;
-	this->angle = a;
+	this->velocity = SimpleVector2D(a, 0, true);
 	this->gameID = GameManager::getNextID();
 	this->teamID = teamID;
 	this->parentType = parentType;
@@ -44,32 +44,32 @@ Bullet::Bullet(double x_, double y_, double a, char teamID, BulletParentType par
 //probably just for banana bullet creation:
 Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char teamID, BulletParentType parentType, long parentID, std::vector<BulletPower*>* bp, bool) : Bullet(x_,y_,a,teamID,parentType,parentID,bp) {
 	this->r = r_;
-	this->velocity = vel; // * getBulletSpeedMultiplier(); //not wanted
-	this->initial_velocity = this->velocity;
+	this->velocity.setMagnitude(vel); // * getBulletSpeedMultiplier(); //not wanted
+	this->initial_velocity = velocity.getMagnitude();
 	this->acceleration = getBulletAcceleration();
 }
 
 //avoid using:
 Bullet::Bullet(double x_, double y_, double r_, double a, double vel, double acc, char teamID, BulletParentType parentType, long parentID, std::vector<BulletPower*>* bp, bool) : Bullet(x_,y_,a,teamID,parentType,parentID,bp) {
 	this->r = r_ * getBulletRadiusMultiplier();
-	this->velocity = vel * getBulletSpeedMultiplier();
-	this->initial_velocity = this->velocity;
+	this->velocity.setMagnitude(vel * getBulletSpeedMultiplier());
+	this->initial_velocity = this->velocity.getMagnitude();
 	this->acceleration = acc;
 }
 
 //regular 1:
 Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char teamID, BulletParentType parentType, long parentID) : Bullet(x_,y_,a,teamID,parentType,parentID) {
 	this->r = r_;
-	this->velocity = vel;
-	this->initial_velocity = vel;
+	this->velocity.setMagnitude(vel);
+	this->initial_velocity = this->velocity.getMagnitude();
 	this->acceleration = 0;
 }
 
 //regular 2:
 Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char teamID, BulletParentType parentType, long parentID, std::vector<BulletPower*>* bp) : Bullet(x_,y_,a,teamID,parentType,parentID,bp) {
 	this->r = r_ * getBulletRadiusMultiplier();
-	this->velocity = vel * getBulletSpeedMultiplier();
-	this->initial_velocity = this->velocity;
+	this->velocity.setMagnitude(vel * getBulletSpeedMultiplier());
+	this->initial_velocity = this->velocity.getMagnitude();
 	this->acceleration = getBulletAcceleration();
 }
 
@@ -152,13 +152,13 @@ bool Bullet::canCollideWith(Bullet* b_other) const {
 }
 
 double Bullet::getAngle() const {
-	return fmod(fmod(angle, 2*PI) + 2*PI, 2*PI);
+	return fmod(fmod(velocity.getAngle(), 2*PI) + 2*PI, 2*PI);
 }
 
 void Bullet::move() {
-	velocity += acceleration;
-	x += velocity * cos(angle);
-	y += velocity * sin(angle);
+	velocity.changeMagnitude(acceleration);
+	x += velocity.getXComp();
+	y += velocity.getYComp();
 }
 
 double Bullet::getBulletSpeedMultiplier() {

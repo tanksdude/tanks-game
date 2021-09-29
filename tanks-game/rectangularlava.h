@@ -30,7 +30,7 @@ public:
 	//bool modifiesTankCollision = true;
 	virtual void modifiedTankCollision(Tank*) override { return; }
 	
-	virtual bool actuallyCollided(Bullet* b) override { return (b->velocity == 0); }
+	virtual bool actuallyCollided(Bullet* b) override { return (b->velocity.getMagnitude() == 0); }
 	//bool modifiesBulletCollision = true;
 	virtual void modifiedBulletCollision(Bullet*) override { return; }
 

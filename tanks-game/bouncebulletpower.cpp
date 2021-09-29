@@ -5,7 +5,8 @@
 const short BounceBulletPower::maxBounces = 16;
 
 InteractionBoolHolder BounceBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
-	if (abs(b->velocity) * Bullet::default_radius/b->r <= .5) {
+	if (abs(b->velocity.getMagnitude()) * Bullet::default_radius/b->r <= .5) {
+		//should abs() be used? it's not needed...
 		if (PowerFunctionHelper::bounceGenericWithCorners(b, w)) {
 			bouncesLeft--;
 		}

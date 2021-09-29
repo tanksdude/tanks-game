@@ -44,7 +44,7 @@ const double Tank::default_turningIncrement = 64;
 Tank::Tank(double x_, double y_, double a, char id_, std::string name_, TankInputChar forward, TankInputChar left, TankInputChar right, TankInputChar shoot, TankInputChar special) {
 	x = x_;
 	y = y_;
-	angle = a;
+	velocity = SimpleVector2D(a, 0, true);
 	gameID = GameManager::getNextID();
 	teamID = id_;
 	r = TANK_RADIUS;
@@ -144,17 +144,18 @@ void Tank::move() {
 
 	//if (!forward || !document.getElementById("moveturn").checked) { //change && to || and remove second ! to flip playstyle
 		if (turnL.getKeyState()) {
-			angle += PI / turningIncrement;
+			velocity.changeAngle(PI / turningIncrement);
 		}
 		if (turnR.getKeyState()) {
-			angle -= PI / turningIncrement;
+			velocity.changeAngle(-PI / turningIncrement);
 		}
 	//}
 	//if (!document.getElementById("acceleration").checked) {
-		if (forward.getKeyState())
-			velocity += acceleration;
-		else
-			velocity -= acceleration; //can result in negative velocities, but that's okay, altered in terminalVelocity()
+		if (forward.getKeyState()) {
+			velocity.changeMagnitude(acceleration);
+		} else {
+			velocity.changeMagnitude(-acceleration); //can result in negative velocities, fixed by SimpleVector2D just not allowing that
+		}
 		terminalVelocity();
 	//}
 	/*else {
@@ -164,28 +165,31 @@ void Tank::move() {
 			velocity = 0;
 	}*/
 
-	x += cos(angle) * velocity;
-	y += sin(angle) * velocity;
+	x += velocity.getXComp();
+	y += velocity.getYComp();
 }
 
 void Tank::terminalVelocity() {
-	if (velocity > maxSpeed + acceleration) {
-		velocity -= acceleration;
-		if (forward.getKeyState() && velocity > maxSpeed) //so the tank doesn't stay at a high velocity if it loses its ability to go as fast as it previously could
-			velocity -= acceleration;
-	}
-	else if (velocity > maxSpeed)
-		velocity = maxSpeed;
-	else if (velocity < 0)
-		velocity = 0;
+	if (velocity.getMagnitude() > maxSpeed + acceleration) {
+		velocity.changeMagnitude(-acceleration);
+		if (forward.getKeyState() && velocity.getMagnitude() > maxSpeed) {
+			//so the tank doesn't stay at a high velocity if it loses its ability to go as fast as it previously could (maybe change?)
+			velocity.changeMagnitude(-acceleration);
+		}
+	} else if (velocity.getMagnitude() > maxSpeed) {
+		velocity.setMagnitude(maxSpeed);
+	} /*else if (velocity.getMagnitude() < 0) {
+		velocity.setMagnitude(0);
+	}*/
 }
 
 void Tank::shoot() {
 	//TODO: allow it to handle multiple shooting cooldowns? (not the point of the game (if it was, shooting cooldown color = mix(white, power color)))
-	if(shootCount > 0) //check isn't really needed, but it also doesn't decrease performance by a real amount
+	if (shootCount > 0) { //check isn't really needed, but it also doesn't decrease performance by a real amount
 		shootCount--;
+	}
 
-	if(shooting.getKeyState() && shootCount <= 0){
+	if (shooting.getKeyState() && shootCount <= 0) {
 		determineShootingAngles();
 		bool modifiedAdditionalShooting = false;
 		bool overridedShooting = false;
@@ -214,7 +218,7 @@ void Tank::shoot() {
 
 		if (!overridedShooting) {
 			for (int i = 0; i < shootingPoints->size(); i++) {
-				defaultMakeBullet(shootingPoints->at(i).angle + angle);
+				defaultMakeBullet(shootingPoints->at(i).angle + velocity.getAngle());
 			}
 		}
 		//makeBullet(x + r*cos(angle), y + r*sin(angle), angle, r/4, maxSpeed*2, bp); //should be maxSpeed*4 //this is old, don't look at for too long
@@ -474,7 +478,7 @@ void Tank::updateTurningIncrement() {
 	}
 
 	turningIncrement = highest * lowest * value * default_turningIncrement * (negativeCount%2 == 0 ? 1 : -1);
-	angle = round(angle / (PI / turningIncrement)) * (PI / turningIncrement);
+	velocity.setAngle(round(velocity.getAngle() / (PI / turningIncrement)) * (PI / turningIncrement));
 }
 
 void Tank::powerCalculate() {
@@ -523,7 +527,7 @@ ColorValueHolder Tank::getBodyColor() const {
 }
 
 double Tank::getAngle() const {
-	return fmod(fmod(angle, 2*PI) + 2*PI, 2*PI);
+	return fmod(fmod(velocity.getAngle(), 2*PI) + 2*PI, 2*PI);
 }
 
 double Tank::getCannonAngle(int i) const {
@@ -531,7 +535,7 @@ double Tank::getCannonAngle(int i) const {
 }
 
 double Tank::getRealCannonAngle(int i) const {
-	return fmod(fmod(shootingPoints->at(i).angle + angle, 2*PI) + 2*PI, 2*PI);
+	return fmod(fmod(shootingPoints->at(i).angle + velocity.getAngle(), 2*PI) + 2*PI, 2*PI);
 }
 
 void Tank::drawCPU() {
@@ -547,7 +551,7 @@ void Tank::drawCPU(double xpos, double ypos) {
 
 	glVertex3f(xpos, ypos, 0);
 	for (int i = 0; i < Circle::numOfSides, (double)i / Circle::numOfSides < shootCount/(maxShootCount*getShootingSpeedMultiplier()); i++) {
-		glVertex3f(xpos + r*cos(i * 2*PI / Circle::numOfSides + angle) * 5/4, ypos + r*sin(i * 2*PI / Circle::numOfSides + angle) * 5/4, 0);
+		glVertex3f(xpos + r*cos(i * 2*PI / Circle::numOfSides + velocity.getAngle()) * 5/4, ypos + r*sin(i * 2*PI / Circle::numOfSides + velocity.getAngle()) * 5/4, 0);
 	}
 	glVertex3f(xpos, ypos, 0);
 
@@ -578,7 +582,7 @@ void Tank::drawCPU(double xpos, double ypos) {
 
 		glVertex3f(xpos, ypos, 0);
 		for (int j = 0; j < Circle::numOfSides, (double)j / Circle::numOfSides < sortedTankPowers[i]->timeLeft/sortedTankPowers[i]->maxTime; j++) {
-			glVertex3f(xpos + r*cos(j * 2*PI / Circle::numOfSides + angle) * 9/8, ypos + r*sin(j * 2*PI / Circle::numOfSides + angle) * 9/8, 0);
+			glVertex3f(xpos + r*cos(j * 2*PI / Circle::numOfSides + velocity.getAngle()) * 9/8, ypos + r*sin(j * 2*PI / Circle::numOfSides + velocity.getAngle()) * 9/8, 0);
 		}
 		glVertex3f(xpos, ypos, 0);
 
@@ -605,7 +609,7 @@ void Tank::drawCPU(double xpos, double ypos) {
 
 	for (int i = 1; i < shootingPoints->size(); i++) {
 		glVertex2f(x, y);
-		glVertex2f(x + r*cos(angle + shootingPoints->at(i).angle), y + r*sin(angle + shootingPoints->at(i).angle));
+		glVertex2f(x + r*cos(velocity.getAngle() + shootingPoints->at(i).angle), y + r*sin(velocity.getAngle() + shootingPoints->at(i).angle));
 	}
 
 	glEnd();
@@ -629,7 +633,7 @@ void Tank::drawCPU(double xpos, double ypos) {
 	glBegin(GL_LINES);
 
 	glVertex2f(x, y);
-	glVertex2f(x + r*cos(angle), y + r*sin(angle));
+	glVertex2f(x + r*cos(velocity.getAngle()), y + r*sin(velocity.getAngle()));
 
 	glEnd();
 }
@@ -644,7 +648,6 @@ void Tank::draw(double xpos, double ypos) const {
 	glm::mat4 MVPM;
 
 	if (dead) {
-		//TODO: gradient shader
 		//main body:
 		MVPM = Renderer::GenerateMatrix(r, r, getAngle(), xpos, ypos);
 
@@ -776,13 +779,12 @@ void Tank::resetThings(double x, double y, double a, char teamID) {
 	this->dead = false;
 	this->x = x;
 	this->y = y;
-	this->angle = a;
+	this->velocity = SimpleVector2D(a, 0, true);
 	this->gameID = GameManager::getNextID(); //should this be updated?
 	this->teamID = teamID;
 	//this->r = TANK_RADIUS;
 	shootCount = 0;
 	//don't update maxShootCount
-	velocity = 0;
 
 	if (RNG::randFunc() < 1.0/4096) {
 		//shiny tank (yes, 1/8192 is the chance before Sword/Shield)

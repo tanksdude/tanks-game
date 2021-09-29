@@ -19,7 +19,7 @@ void MinesTankPower::tick(Tank* t) {
 }
 
 void MinesTankPower::additionalShooting(Tank* t, CannonPoint c) {
-	t->regularMakeBullet(t->r * cos(t->angle + c.angle) * bulletDistance, t->r * sin(t->angle + c.angle) * bulletDistance, c.angle + t->angle);
+	t->regularMakeBullet(t->r * cos(t->velocity.getAngle() + c.angle) * bulletDistance, t->r * sin(t->velocity.getAngle() + c.angle) * bulletDistance, c.angle + t->velocity.getAngle());
 }
 
 void MinesTankPower::initialize(Tank* parent) {

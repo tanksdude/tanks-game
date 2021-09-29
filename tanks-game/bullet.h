@@ -6,6 +6,7 @@ class Bullet;
 #include "circle.h"
 #include "colorvalueholder.h"
 #include "bulletpower.h"
+#include "simplevector2d.h"
 
 #include "vertexarray.h"
 #include "vertexbuffer.h"
@@ -22,8 +23,7 @@ class Bullet : public Circle, public GameThing, public DrawableThing {
 	friend class ResetThings;
 	friend class PowerFunctionHelper;
 public: //hopefully temporary
-	double angle;
-	double velocity;
+	SimpleVector2D velocity;
 	double initial_velocity;
 	double acceleration;
 	long parentID; //may not be used, depends on parentType

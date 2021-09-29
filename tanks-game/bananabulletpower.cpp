@@ -12,7 +12,7 @@ const double BananaBulletPower::maxNewBulletVelocity = 5.0/4.0;
 const double BananaBulletPower::minNewBulletVelocity = 1.0/2.0;
 
 InteractionBoolHolder BananaBulletPower::modifiedMovement(Bullet* b) {
-	if (b->velocity <= 0) {
+	if (b->velocity.getMagnitude() <= 0) {
 		for (int i = 0; i < bananaCount; i++) {
 			std::vector<BulletPower*>* bp = new std::vector<BulletPower*>;
 			bp->reserve(b->bulletPowers.size()-1);
