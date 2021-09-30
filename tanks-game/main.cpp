@@ -825,7 +825,10 @@ void bulletToWall() {
 		}
 
 		if (shouldBeKilled) {
-			BulletManager::deleteBullet(i);
+			//shouldBeKilled = b->kill();
+			//if (shouldBeKilled) {
+				BulletManager::deleteBullet(i);
+			//}
 		}
 	}
 }
@@ -891,8 +894,11 @@ void bulletToHazard() {
 		}
 
 		if (shouldBeKilled) {
-			BulletManager::deleteBullet(i);
-			continue; //bullet died, can't do any more collision with it
+			//shouldBeKilled = b->kill();
+			//if (shouldBeKilled) {
+				BulletManager::deleteBullet(i);
+				continue; //bullet died, can't do any more collision with it
+			//}
 		}
 		
 		//rectangles:
@@ -951,7 +957,10 @@ void bulletToHazard() {
 		}
 
 		if (shouldBeKilled) {
-			BulletManager::deleteBullet(i);
+			//shouldBeKilled = b->kill();
+			//if (shouldBeKilled) {
+				BulletManager::deleteBullet(i);
+			//}
 		}
 	}
 }
@@ -979,15 +988,21 @@ void bulletToBullet() {
 			}
 
 			if (b_innerShouldDie) {
-				BulletManager::deleteBullet(j);
-				if (i > j) {
-					i--;
+				b_innerShouldDie = b_inner->kill();
+				if (b_innerShouldDie) {
+					BulletManager::deleteBullet(j);
+					if (i > j) {
+						i--;
+					}
 				}
 			}
 		}
 
 		if (b_outerShouldDie) {
-			BulletManager::deleteBullet(i);
+			b_outerShouldDie = b_outer->kill();
+			if (b_outerShouldDie) {
+				BulletManager::deleteBullet(i);
+			}
 		}
 	}
 }
@@ -1012,7 +1027,10 @@ void bulletToTank() {
 			}
 
 			if (killBullet) {
-				BulletManager::deleteBullet(j);
+				killBullet = b->kill();
+				if (killBullet) {
+					BulletManager::deleteBullet(j);
+				}
 			}
 		}
 
