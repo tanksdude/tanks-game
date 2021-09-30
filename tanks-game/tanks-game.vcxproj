@@ -152,6 +152,7 @@
     <ClCompile Include="devlonginvinciblenamedpower.cpp" />
     <ClCompile Include="endgamehandler.cpp" />
     <ClCompile Include="fewobstacleslevel.cpp" />
+    <ClCompile Include="gamemainloop.cpp" />
     <ClCompile Include="gamemanager.cpp" />
     <ClCompile Include="generalizedlava.cpp" />
     <ClCompile Include="generalizedlightning.cpp" />
@@ -246,6 +247,7 @@
     <ClInclude Include="doublepositionholder.h" />
     <ClInclude Include="endgamehandler.h" />
     <ClInclude Include="fewobstacleslevel.h" />
+    <ClInclude Include="gamemainloop.h" />
     <ClInclude Include="gamemanager.h" />
     <ClInclude Include="gamething.h" />
     <ClInclude Include="generalizedlava.h" />
