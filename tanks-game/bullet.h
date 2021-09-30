@@ -34,7 +34,9 @@ public: //hopefully temporary
 	bool canCollideWith(Bullet*) const;
 
 	ColorValueHolder defaultColor = ColorValueHolder(.5f, .5f, .5f);
-	//ColorValueHolder* explosionColor; //needed?
+
+	bool kill(); //allows for custom death (aka something saving the bullet from death)
+	
 	double getAngle() const;
 	double getInitialVelocity() const { return initial_velocity; }
 	double alpha; //[0,100] to avoid minor float imprecision
@@ -96,8 +98,8 @@ public:
 	void powerCalculate();
 	void removePower(int index);
 
-	bool isFullyOutOfBounds();
-	bool isPartiallyOutOfBounds();
+	//bool isFullyOutOfBounds();
+	//bool isPartiallyOutOfBounds();
 	//void edgeConstrain(); //should never be needed
 
 	~Bullet();

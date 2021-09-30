@@ -176,7 +176,7 @@ void CollisionHandler::pushMovableAwayFromImmovable(Rect* movable, Rect* immovab
 	if (movable->x <= immovable->x) {
 		movable->x = immovable->x - movable->w;
 	}
-	else if((movable->x + movable->w) >= (immovable->x + immovable->w)){
+	else if((movable->x + movable->w) >= (immovable->x + immovable->w)) {
 		movable->x = immovable->x + immovable->w;
 	}
 	else { //movable is inside immovable

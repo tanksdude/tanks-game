@@ -139,7 +139,7 @@ void TargetingTurret::tick() {
 	//tickCount is unused... maybe targetingCount should replace it...
 	if (currentState == 0) { //either tracking a tank or doing nothing
 		//should this be else?
-		if(targeting) { //tracking tank
+		if (targeting) { //tracking tank
 			bool tankIsVisible = false; //singular
 			for (int i = 0; i < TankManager::getNumTanks(); i++) {
 				//check if 1. tank with gameID of trackingID exists, 2. no walls blocking line of sight to tank
@@ -194,7 +194,7 @@ void TargetingTurret::tick() {
 			for (int i = 0; i < TankManager::getNumTanks(); i++) {
 				if (distancesToTank[i] == minDist) {
 					tankIndices.push_back(i);
-				} else if(distancesToTank[i] < minDist) {
+				} else if (distancesToTank[i] < minDist) {
 					tankIndices.clear();
 					tankIndices.push_back(i);
 				}
@@ -318,7 +318,7 @@ ColorValueHolder TargetingTurret::getReticuleColor() const {
 	if (currentState == 0) {
 		return reticuleColors[0];
 	}
-	if(currentState == 1){
+	if (currentState == 1) {
 		return reticuleColors[1];
 	}
 	return ColorValueHolder(0, 0, 0); //shouldn't be drawn

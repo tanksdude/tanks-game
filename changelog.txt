@@ -4,18 +4,19 @@
     * it's not good enough for a game engine but that's fine
 * more levels
 * more powers?
+    * ... sword???
 * ini file?
 
 0.2.4 (obviously not here)
 * changed name from "Tanks" to "PowerTanks" so this game might actually become discoverable
 * switch to 64-bit because no modern computer should be 32-bit
 * made some changes to the renderer
-	* will be better next version
+    * will be better next version
 * changed file structure somewhat
     * I kinda know what I'm doing now
-	* normal C++ class and function stuff
+    * normal C++ class and function stuff
 * replace x-comp, y-comp, angle variables with singular vector variable
-	* this slightly reduces performance, but it's way cleaner
+    * this slightly reduces performance, but it's way cleaner
 * minimal drawing layers: "under", regular, "effects", debug
 * level effects (wind, ice, mines, gravity)
 * powers:

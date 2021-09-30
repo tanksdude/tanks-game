@@ -75,12 +75,14 @@ public:
 
 protected:
 	ColorValueHolder defaultColor = ColorValueHolder(.5f, .5f, .5f);
-	bool dead = false; //only kill() should modify this
-	bool kill();
 	ColorValueHolder defaultNameFill = ColorValueHolder(1.0f, 1.0f, 1.0f);
 	ColorValueHolder defaultNameStroke = ColorValueHolder(0, 0, 0);
 
+	bool dead = false; //only kill() should modify this
+	bool kill(); //allows for custom death (aka something saving the tank from death)
+
 	void resetThings(double x, double y, double a, char teamID);
+	void terminalVelocity();
 
 	double shootCount;
 	double maxShootCount;
@@ -108,10 +110,9 @@ public:
 	Tank(double x, double y, double a, char id, std::string name, TankInputChar forward, TankInputChar left, TankInputChar right, TankInputChar shoot, TankInputChar special);
 
 	void move();
-	void terminalVelocity(); //move to protected
-	void edgeConstrain();
-	bool isPartiallyOutOfBounds();
-	bool isFullyOutOfBounds();
+	//void edgeConstrain();
+	//bool isPartiallyOutOfBounds();
+	//bool isFullyOutOfBounds();
 	void shoot();
 	void powerCalculate();
 	void removePower(int index);

@@ -376,6 +376,37 @@ void Bullet::drawOutline(double xpos, double ypos) const {
 	//drawing an outline: use a geometry shader (ugh) or another VAO+IBO (lesser ugh), the CPU (big ugh), or glDrawArrays with GL_LINE_LOOP (yay!)
 }
 
+bool Bullet::kill() {
+	//see Tank::kill()
+
+	bool shouldBeKilled = true;
+
+	for (int i = 0; i < bulletPowers.size(); i++) {
+		bool killBulletPower = false;
+		
+		if (bulletPowers[i]->modifiesDeathHandling) {
+			InteractionBoolHolder check_temp = bulletPowers[i]->modifiedDeathHandling(this);
+			if (!check_temp.shouldDie) {
+				shouldBeKilled = false;
+			}
+			if (check_temp.otherShouldDie) {
+				killBulletPower = true;
+			}
+		}
+	
+		if (killBulletPower) {
+			removePower(i);
+			i--;
+			//continue;
+		}
+		if (!shouldBeKilled) {
+			break;
+		}
+	}
+
+	return shouldBeKilled;
+}
+
 double Bullet::getHighestOffenseImportance() {
 	double highest = -1; //anything below -1 is really, really unimportant; so much so that it doesn't matter
 	for (int i = 0; i < bulletPowers.size(); i++) {
@@ -434,6 +465,7 @@ double Bullet::getDefenseTier() {
 	return getHighestDefenseTier(getHighestDefenseImportance());
 }
 
+/*
 bool Bullet::isPartiallyOutOfBounds() {
 	return CollisionHandler::partiallyOutOfBoundsIgnoreEdge(this);
 } //care about equals edge?
@@ -441,3 +473,4 @@ bool Bullet::isPartiallyOutOfBounds() {
 bool Bullet::isFullyOutOfBounds() {
 	return CollisionHandler::fullyOutOfBounds(this);
 }
+*/

@@ -93,7 +93,7 @@ void Renderer::SetContext(AvailableRenderingContexts API) {
 		throw std::logic_error("ERROR: Cannot change rendering context!");
 	}
 
-	switch(API) {
+	switch (API) {
 		case AvailableRenderingContexts::OpenGL:
 			renderingMethod = new OpenGLRenderingContext();
 			renderingMethodType = AvailableRenderingContexts::OpenGL;

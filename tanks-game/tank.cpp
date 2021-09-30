@@ -769,9 +769,38 @@ void Tank::poseDraw() const {
 }
 
 bool Tank::kill() {
-	//TODO: allow tankpowers to override this (this way life and barrier* can exist) (*the barrier that can be hit multiple times)
-	//TODO other: should bullets also get this? (I'm thinking yes, at least because of life)
-	this->dead = true;
+	//for checking whether to save the tank, it's first come first served, then no one else
+	//if it can save the tank, stop checking, else continue checking
+
+	bool shouldBeKilled = true;
+
+	for (int i = 0; i < tankPowers.size(); i++) {
+		bool killTankPower = false;
+		
+		if (tankPowers[i]->modifiesDeathHandling) {
+			InteractionBoolHolder check_temp = tankPowers[i]->modifiedDeathHandling(this);
+			if (!check_temp.shouldDie) {
+				shouldBeKilled = false;
+			}
+			if (check_temp.otherShouldDie) {
+				killTankPower = true;
+			}
+		}
+	
+		if (killTankPower) {
+			removePower(i);
+			i--;
+			//continue;
+		}
+		if (!shouldBeKilled) {
+			break;
+		}
+	}
+
+	if (shouldBeKilled) {
+		this->dead = shouldBeKilled;
+	}
+
 	return this->dead;
 }
 
@@ -797,9 +826,11 @@ void Tank::resetThings(double x, double y, double a, char teamID) {
 	determineShootingAngles();
 }
 
+/*
 void Tank::edgeConstrain() {
 	CollisionHandler::edgeConstrain(this);
 }
+*/
 
 double Tank::getHighestOffenseImportance() {
 	double highest = -1; //anything below -1 is really, really unimportant; so much so that it doesn't matter
@@ -859,6 +890,7 @@ double Tank::getDefenseTier() {
 	return getHighestDefenseTier(getHighestDefenseImportance());
 }
 
+/*
 bool Tank::isPartiallyOutOfBounds() {
 	return CollisionHandler::partiallyOutOfBoundsIgnoreEdge(this);
 } //doesn't care if touching edge
@@ -866,3 +898,4 @@ bool Tank::isPartiallyOutOfBounds() {
 bool Tank::isFullyOutOfBounds() {
 	return CollisionHandler::fullyOutOfBoundsIgnoreEdge(this);
 }
+*/

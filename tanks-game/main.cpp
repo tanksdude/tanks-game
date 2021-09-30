@@ -95,6 +95,7 @@
 #include "minespower.h"
 #include "shotgunpower.h"
 #include "trackingpower.h"
+#include "barrierpower.h"
 //dev powers:
 #include "devlonginvinciblenamedpower.h" //invincible but lasts a long time
 #include "inversionpower.h" //flips left and right turning
@@ -309,7 +310,7 @@ void tick(int physicsUPS) {
 	Diagnostics::endTiming();
 
 	//edge constrain tanks again in case bullet decided to move tank
-	//don't edge constrain if said tank is dead //fix: implement
+	//don't edge constrain if said tank is dead //TODO: implement
 	/*
 	tankToEdge();
 	*/
@@ -688,7 +689,7 @@ void tankToEdge() {
 		bool overridedEdgeCollision = false;
 		bool noMoreEdgeCollisionSpecials = false;
 
-		if (t->isPartiallyOutOfBounds()) {
+		if (CollisionHandler::partiallyOutOfBounds(t)) {
 			for (int k = 0; k < t->tankPowers.size(); k++) {
 				if (t->tankPowers[k]->modifiesEdgeCollision) {
 					if (t->tankPowers[k]->modifiedEdgeCollisionCanOnlyWorkIndividually && modifiedEdgeCollision) {
@@ -714,7 +715,7 @@ void tankToEdge() {
 			}
 
 			if (!overridedEdgeCollision) {
-				t->edgeConstrain();
+				CollisionHandler::edgeConstrain(t);
 			}
 		}
 
@@ -732,7 +733,7 @@ void bulletToEdge() {
 		bool overridedEdgeCollision = false;
 		bool noMoreEdgeCollisionSpecials = false;
 
-		if (b->isPartiallyOutOfBounds()) {
+		if (CollisionHandler::partiallyOutOfBounds(b)) {
 			for (int k = 0; k < b->bulletPowers.size(); k++) {
 				if (b->bulletPowers[k]->modifiesEdgeCollision) {
 					if (b->bulletPowers[k]->modifiedEdgeCollisionCanOnlyWorkIndividually && modifiedEdgeCollision) {
@@ -758,7 +759,7 @@ void bulletToEdge() {
 			}
 
 			if (!overridedEdgeCollision) {
-				if (b->isFullyOutOfBounds()) {
+				if (CollisionHandler::fullyOutOfBounds(b)) {
 					shouldBeKilled = true;
 				}
 			}
@@ -961,7 +962,7 @@ void bulletToBullet() {
 		Bullet* b_outer = BulletManager::getBullet(i);
 		bool b_outerShouldDie = false;
 
-		for (int j = BulletManager::getNumBullets() - 1; j >= 0; j--) { //could start at i-1? //fix: find out
+		for (int j = BulletManager::getNumBullets() - 1; j >= 0; j--) { //could start at i-1? //TODO: find out
 			Bullet* b_inner = BulletManager::getBullet(j);
 			bool b_innerShouldDie = false;
 
@@ -1084,6 +1085,7 @@ int main(int argc, char** argv) {
 	PowerupManager::addPowerFactory(MinesPower::factory);
 	PowerupManager::addPowerFactory(ShotgunPower::factory);
 	PowerupManager::addPowerFactory(TrackingPower::factory);
+	PowerupManager::addPowerFactory(BarrierPower::factory);
 
 	//dev:
 	PowerupManager::addPowerFactory(DevLongInvincibleNamedPower::factory);

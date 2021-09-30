@@ -44,6 +44,7 @@ OldBounceTankPower::OldBounceTankPower() {
 
 
 #include "powerfunctionhelper.h"
+#include "collisionhandler.h"
 
 const short OldBounceBulletPower::maxBounces = 16;
 
@@ -73,7 +74,7 @@ InteractionBoolHolder OldBounceBulletPower::modifiedEdgeCollision(Bullet* b) {
 	//I could have different checks for partiallyOutOfBounds() to only require one check each but whatever
 
 	bool bouncedY = false;
-	if (b->isPartiallyOutOfBounds()) {
+	if (CollisionHandler::partiallyOutOfBounds(b)) {
 		if (PowerFunctionHelper::bounceEdgeGenericY(b)) {
 			bouncesLeft--;
 			bouncedY = true;
@@ -83,11 +84,11 @@ InteractionBoolHolder OldBounceBulletPower::modifiedEdgeCollision(Bullet* b) {
 	if (bouncesLeft <= 0) {
 		modifiesEdgeCollision = false;
 		modifiesCollisionWithWall = false;
-		return { b->isFullyOutOfBounds() };
+		return { CollisionHandler::fullyOutOfBounds(b) };
 	}
 
 	//bool bouncedX = false;
-	if (b->isPartiallyOutOfBounds()) {
+	if (CollisionHandler::partiallyOutOfBounds(b)) {
 		if (PowerFunctionHelper::bounceEdgeGenericX(b)) {
 			bouncesLeft--;
 			//bouncedX = true;
@@ -97,10 +98,10 @@ InteractionBoolHolder OldBounceBulletPower::modifiedEdgeCollision(Bullet* b) {
 	if (bouncesLeft <= 0) {
 		modifiesEdgeCollision = false;
 		modifiesCollisionWithWall = false;
-		return { b->isFullyOutOfBounds() };
+		return { CollisionHandler::fullyOutOfBounds(b) };
 	}
 
-	if (!bouncedY && b->isPartiallyOutOfBounds()) {
+	if (!bouncedY && CollisionHandler::partiallyOutOfBounds(b)) {
 		if (PowerFunctionHelper::bounceEdgeGenericY(b)) {
 			bouncesLeft--;
 			//bouncedY = true;
@@ -112,7 +113,7 @@ InteractionBoolHolder OldBounceBulletPower::modifiedEdgeCollision(Bullet* b) {
 		modifiesCollisionWithWall = false;
 	}
 
-	return { b->isFullyOutOfBounds() };
+	return { CollisionHandler::fullyOutOfBounds(b) };
 }
 
 void OldBounceBulletPower::initialize(Bullet* parent) {

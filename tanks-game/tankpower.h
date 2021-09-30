@@ -88,10 +88,8 @@ public:
 	bool modifiedCollisionWithRectHazardCanOnlyWorkIndividually = false;
 
 	bool modifiesDeathHandling = false;
-	virtual InteractionBoolHolder modifiedDeathHandling(Tank* parent) { return { false, false }; } //first is tank, second is tankpower
-	bool overridesDeathHandling = false; //true?
-	bool modifiedDeathHandlingCanWorkWithOthers = false;
-	bool modifiedDeathHandlingCanOnlyWorkIndividually = false;
+	virtual InteractionBoolHolder modifiedDeathHandling(Tank* parent) { return { true, false }; } //first is tank, second is tankpower
+	//it's first come, first served
 
 	bool modifiesShooting = false;
 	virtual void modifiedShooting(Tank* parent) { return; } //for melee-class powerups
