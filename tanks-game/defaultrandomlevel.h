@@ -3,7 +3,7 @@
 
 class DefaultRandomLevel : public Level {
 public:
-	std::string getName() const override { return "default random"; }
+	std::string getName() const override { return "default_random"; }
 	std::unordered_map<std::string, float> getWeights() const override;
 	void initialize() override;
 

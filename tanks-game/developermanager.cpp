@@ -80,7 +80,7 @@ void DeveloperManager::mouseWheelFunc(int wheel, int dir, int x, int y) {
 	std::cout << "DeveloperManager insertIdentifier: " << insertListIdentifiers[insertIndex] << std::endl;
 }
 
-std::vector<std::string> DeveloperManager::insertListIdentifiers = { "longinvincible", "temp", "banana", "mines", "godmode", "inversion", "stationary turret" };
+std::vector<std::string> DeveloperManager::insertListIdentifiers = { "longinvincible", "temp", "banana", "mines", "godmode", "inversion", "stationary_turret" };
 void DeveloperManager::devInsert(int x, int y) {
 	switch (insertIndex) {
 		case 0:
@@ -103,7 +103,7 @@ void DeveloperManager::devInsert(int x, int y) {
 			return;
 		case 6:
 			std::string paras[3] = { std::to_string(x), std::to_string(y), std::to_string(0) };
-			HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary turret")(3, paras));
+			HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(3, paras));
 			return;
 	}
 	//no default

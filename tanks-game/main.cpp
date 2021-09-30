@@ -243,7 +243,7 @@ int main(int argc, char** argv) {
 #if _DEBUG
 	LevelManager::pushLevel("dev", "dev2");
 #else
-	LevelManager::pushLevel("vanilla", "default random");
+	LevelManager::pushLevel("vanilla", "default_random");
 #endif
 	ResetThings::firstReset();
 

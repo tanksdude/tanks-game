@@ -55,7 +55,7 @@ protected:
 
 public:
 	virtual std::string getName() const override { return getClassName(); }
-	static std::string getClassName() { return "rectangular lightning"; }
+	static std::string getClassName() { return "lightning"; }
 
 	virtual bool validLocation() override;
 	virtual bool reasonableLocation() override;

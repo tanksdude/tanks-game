@@ -43,7 +43,7 @@ protected:
 
 public:
 	virtual std::string getName() const override { return getClassName(); }
-	static std::string getClassName() { return "vertical lightning"; }
+	static std::string getClassName() { return "vertical_lightning"; }
 
 	virtual bool validLocation() override;
 	virtual bool reasonableLocation() override;

@@ -5,7 +5,7 @@ class ManyHazardsLevel : public Level {
 	//called "hazards everywhere" in JS Tanks
 	//needs a better name
 public:
-	std::string getName() const override { return "many hazards"; }
+	std::string getName() const override { return "many_hazards"; }
 	std::vector<std::string> getLevelTypes() const override {
 		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "old", "random-old", "random" };
 		return types;

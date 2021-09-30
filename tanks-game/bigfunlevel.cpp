@@ -36,7 +36,7 @@ void BigFunLevel::initialize() {
 	
 	std::string possiblePowers[] = { "speed", "invincible", "wallhack", "bounce", "big", "multishot" }; //6
 	//include invincible?
-	//life and shotgun may have existed around this time but not only are they not in yet I think the craziness (fun factor) would lower
+	//barrier and shotgun may have existed around this time but not only are they not in yet I think the craziness (fun factor) would lower
 	
 	//get attributes (actually just whether it can stack) of the powers
 	bool* canStack = new bool[6];

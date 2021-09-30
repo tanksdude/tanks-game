@@ -35,7 +35,7 @@ public:
 	//ColorValueHolder getColor(); //in GeneralizedNoBulletZone
 
 	virtual std::string getName() const override { return getClassName(); }
-	static std::string getClassName() { return "no bullet zone"; }
+	static std::string getClassName() { return "no_bullet_zone"; }
 
 	virtual void tick() { GeneralizedNoBulletZone::tick(); }
 	virtual void draw() const override;

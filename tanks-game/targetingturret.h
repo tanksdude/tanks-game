@@ -48,7 +48,7 @@ public:
 	virtual ColorValueHolder getReticuleColor() const;
 
 	virtual std::string getName() const override { return getClassName(); }
-	static std::string getClassName() { return "targeting turret"; }
+	static std::string getClassName() { return "targeting_turret"; }
 
 	virtual void tick();
 	virtual void draw() const override;

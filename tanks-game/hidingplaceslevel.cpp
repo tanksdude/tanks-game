@@ -52,7 +52,7 @@ void HidingPlacesLevel::initialize() {
 	tempRand = RNG::randFunc() * 2;
 	for (int i = 0; i < 4; i++) {
 		PositionHolder pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 80);
-		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, RandomLevel::powerAlternate(i, tempRand, "bounce", "speed"))); //speed=life here
+		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, RandomLevel::powerAlternate(i, tempRand, "bounce", "speed"))); //speed=barrier here
 	}
 }
 

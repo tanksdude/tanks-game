@@ -7,7 +7,7 @@ std::unordered_map<std::string, std::vector<std::string>> PowerupManager::powerN
 
 void PowerupManager::initialize() {
 	powerLookup.insert({ "vanilla", std::unordered_map<std::string, PowerFunction>() });
-	powerLookup.insert({ "vanilla-extra", std::unordered_map<std::string, PowerFunction>() }); //shotgun, mines, tracking, fire?, life?
+	powerLookup.insert({ "vanilla-extra", std::unordered_map<std::string, PowerFunction>() }); //shotgun, mines, tracking, fire?, barrier?
 	powerLookup.insert({ "random-vanilla", std::unordered_map<std::string, PowerFunction>() });
 	powerLookup.insert({ "random", std::unordered_map<std::string, PowerFunction>() }); //general random (requires the power to manually insert itself here)
 	powerLookup.insert({ "old", std::unordered_map<std::string, PowerFunction>() }); //probably just includes the versions of the powers from JS
