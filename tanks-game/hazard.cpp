@@ -18,6 +18,7 @@ patrolling turret
 |circular no bullet zone
 teleport zone
 pipes
+trap?
 
 
 list of possible hazards, joke or not:

@@ -31,3 +31,49 @@ public:
 	WallhackPower();
 	static Power* factory();
 };
+
+
+
+class WallhackTankPower : public TankPower {
+public:
+	virtual void initialize(Tank* parent) override;
+	virtual void removeEffects(Tank* parent) override;
+
+	virtual ColorValueHolder getColor() const override {
+		return WallhackPower::getClassColor();
+	}
+
+	virtual TankPower* makeDuplicate() const override { return new WallhackTankPower(); }
+	virtual BulletPower* makeBulletPower() const override;
+
+	//bool modifiesCollisionWithWall = true;
+	virtual InteractionBoolHolder modifiedCollisionWithWall(Tank*, Wall*) override;
+	//bool overridesCollisionWithWall = true;
+	//bool modifiedCollisionWithWallCanWorkWithOthers = false;
+	//bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;
+
+	WallhackTankPower();
+};
+
+
+
+class WallhackBulletPower : public BulletPower {
+public:
+	virtual void initialize(Bullet* parent) override;
+	virtual void removeEffects(Bullet* parent) override;
+
+	virtual ColorValueHolder getColor() const override {
+		return WallhackPower::getClassColor();
+	}
+
+	virtual BulletPower* makeDuplicate() const override { return new WallhackBulletPower(); }
+	virtual TankPower* makeTankPower() const override;
+	
+	//bool modifiesCollisionWithWall = true;
+	virtual InteractionBoolHolder modifiedCollisionWithWall(Bullet*, Wall*) override;
+	//bool overridesCollisionWithWall = true; //false means also use the default
+	//bool modifiedCollisionWithWallCanWorkWithOthers = false;
+	//bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;
+
+	WallhackBulletPower();
+};

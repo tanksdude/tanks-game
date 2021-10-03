@@ -2,16 +2,18 @@
 class Tank;
 
 #include "gamething.h"
+#include "drawablething.h"
 #include "circle.h"
 #include <string>
 #include <vector>
 #include "colorvalueholder.h"
 #include "cannonpoint.h"
 #include "tankpower.h"
-
+#include "simplevector2d.h"
 #include "vertexarray.h"
 #include "vertexbuffer.h"
 #include "indexbuffer.h"
+#include "shader.h"
 
 struct TankInputChar {
 	bool isSpecial;
@@ -21,7 +23,7 @@ struct TankInputChar {
 	TankInputChar();
 };
 
-class Tank : public Circle, public GameThing {
+class Tank : public Circle, public GameThing, public DrawableThing {
 	friend class ResetThings;
 	friend class PowerFunctionHelper;
 	friend class EndGameHandler; //calls this->kill()
@@ -30,10 +32,8 @@ public:
 
 	double maxSpeed; // = 1;
 	double acceleration; // = 1.0/16; //intentional acceleration, not total
-	double velocity = 0; //intentional velocity, not total
-	//TODO: system that can apply forces
+	SimpleVector2D velocity;
 	double turningIncrement; // = 64;
-	double angle;
 	double getAngle() const;
 	double getCannonAngle(int index) const;
 	double getRealCannonAngle(int index) const;
@@ -42,7 +42,7 @@ public:
 	std::vector<TankPower*> tankPowers;
 	double getOffenseTier();
 	double getDefenseTier();
-private:
+protected:
 	double getHighestOffenseImportance();
 	double getHighestOffenseTier(double importance);
 	double getHighestDefenseImportance();
@@ -73,21 +73,23 @@ public:
 	void regularMakeBullet(double x_offset, double y_offset, double angle); //make bullet x and y dist from tank, moving with angle
 	void determineShootingAngles();
 
-private:
+protected:
 	ColorValueHolder defaultColor = ColorValueHolder(.5f, .5f, .5f);
-	bool dead = false; //only kill() should modify this
-	bool kill();
 	ColorValueHolder defaultNameFill = ColorValueHolder(1.0f, 1.0f, 1.0f);
 	ColorValueHolder defaultNameStroke = ColorValueHolder(0, 0, 0);
 
-	void resetThings(double x, double y, double a, char teamID, std::string name);
+	bool dead = false; //only kill() should modify this
+	bool kill(); //allows for custom death (aka something saving the tank from death)
+
+	void resetThings(double x, double y, double a, char teamID);
+	void terminalVelocity();
 
 	double shootCount;
 	double maxShootCount;
 
 public:
 	//helper stuff:
-	ColorValueHolder getBodyColor();
+	ColorValueHolder getBodyColor() const;
 
 	static const double default_maxSpeed;
 	static const double default_acceleration;
@@ -108,16 +110,16 @@ public:
 	Tank(double x, double y, double a, char id, std::string name, TankInputChar forward, TankInputChar left, TankInputChar right, TankInputChar shoot, TankInputChar special);
 
 	void move();
-	void terminalVelocity(); //move to protected
-	void edgeConstrain();
-	bool isPartiallyOutOfBounds();
-	bool isFullyOutOfBounds();
+	//void edgeConstrain();
+	//bool isPartiallyOutOfBounds();
+	//bool isFullyOutOfBounds();
 	void shoot();
 	void powerCalculate();
 	void removePower(int index);
 	void powerReset();
-	void draw();
-	void draw(double xpos, double ypos);
+	void draw() const override;
+	void draw(double xpos, double ypos) const override;
+	void poseDraw() const override;
 	void drawCPU();
 	void drawCPU(double, double);
 	std::string getName() { return name; }

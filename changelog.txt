@@ -1,20 +1,36 @@
+0.2.5 (obviously definitely not here)
+* abstracted the renderer
+    * "it's all right" -user; "it's okay" -me; "can I be quoted?" -person who shall not be named
+    * it's not good enough for a game engine but that's fine
+* more levels
+* more powers?
+    * ... sword???
+* ini file?
+
 0.2.4 (obviously not here)
 * changed name from "Tanks" to "PowerTanks" so this game might actually become discoverable
 * switch to 64-bit because no modern computer should be 32-bit
-* abstracted the renderer somewhat
-    * it's still not very efficient but it gets the job done
+* made some changes to the renderer
+    * will be better next version
+* changed file structure somewhat
+    * I kinda know what I'm doing now
+    * normal C++ class and function stuff
+* replace x-comp, y-comp, angle variables with singular vector variable
+    * this slightly reduces performance, but it's way cleaner
 * minimal drawing layers: "under", regular, "effects", debug
 * level effects (wind, ice, mines, gravity)
 * powers:
     * all JS powers in
         * mines, shotgun, tracking
         * barrier (previously called life)
+    * shield
 * levels:
     * all JS levels in?
         * "hiding places"
 * minor things:
     * minor overhaul (oxymoron?) of end game and score handling
     * inserting stuff through the dev menu is easier
+    * slightly adjusted banana
     * cleanup like usual
 
 0.2.3 "features"

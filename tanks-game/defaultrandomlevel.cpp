@@ -7,6 +7,7 @@
 #include "wallmanager.h"
 #include "hazardmanager.h"
 #include "resetthings.h"
+#include "rng.h"
 #include <iostream>
 
 std::unordered_map<std::string, float> DefaultRandomLevel::getWeights() const {
@@ -18,10 +19,10 @@ std::unordered_map<std::string, float> DefaultRandomLevel::getWeights() const {
 }
 
 void DefaultRandomLevel::initialize() { //still needs a lot of work
-	int randPos = randFunc() * 5;
+	int randPos = RNG::randFunc() * 5;
 	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), randPos);
 
-	ColorValueHolder randColor(randFunc2(), randFunc2(), randFunc2());
+	ColorValueHolder randColor(RNG::randFunc2(), RNG::randFunc2(), RNG::randFunc2());
 	
 	//some random walls
 	for (int i = 0; i < 16; i++) {

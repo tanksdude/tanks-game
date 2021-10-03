@@ -30,3 +30,55 @@ public:
 	TrackingPower();
 	static Power* factory();
 };
+
+
+
+class TrackingTankPower : public TankPower {
+public:
+	virtual void initialize(Tank* parent) override;
+	virtual void removeEffects(Tank* parent) override;
+
+	virtual ColorValueHolder getColor() const override {
+		return TrackingPower::getClassColor();
+	}
+
+	virtual TankPower* makeDuplicate() const override { return new TrackingTankPower(); }
+	virtual BulletPower* makeBulletPower() const override;
+
+	virtual double getTankMaxSpeedMultiplier() const override { return .5; }
+	virtual double getTankAccelerationMultiplier() const override { return .5; }
+	virtual double getTankFiringRateMultiplier() const override { return 2; }
+
+	TrackingTankPower();
+};
+
+
+
+class TrackingBulletPower : public BulletPower {
+public:
+	virtual void initialize(Bullet* parent) override;
+	virtual void removeEffects(Bullet* parent) override;
+
+	virtual ColorValueHolder getColor() const override {
+		return TrackingPower::getClassColor();
+	}
+
+	virtual BulletPower* makeDuplicate() const override { return new TrackingBulletPower(); }
+	virtual TankPower* makeTankPower() const override;
+
+	//bool modifiesMovement = false;
+	virtual InteractionBoolHolder modifiedMovement(Bullet*) override;
+	//bool overridesMovement = false;
+	//bool modifiedMovementCanWorkWithOthers = true;
+	//bool modifiedMovementCanOnlyWorkIndividually = false;
+	
+	//bool modifiesCollisionWithWall = true;
+	virtual InteractionBoolHolder modifiedCollisionWithWall(Bullet*, Wall*) override;
+	//bool overridesCollisionWithWall = true; //false means also use the default
+	//bool modifiedCollisionWithWallCanWorkWithOthers = false;
+	//bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;
+
+	virtual double getBulletSpeedMultiplier() const override { return .25; }
+
+	TrackingBulletPower();
+};

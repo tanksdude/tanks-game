@@ -22,7 +22,7 @@ Bullet::Bullet(double x_, double y_, double a, char teamID, BulletParentType par
 	initializeGPU();
 	this->x = x_;
 	this->y = y_;
-	this->angle = a;
+	this->velocity = SimpleVector2D(a, 0, true);
 	this->gameID = GameManager::getNextID();
 	this->teamID = teamID;
 	this->parentType = parentType;
@@ -44,32 +44,32 @@ Bullet::Bullet(double x_, double y_, double a, char teamID, BulletParentType par
 //probably just for banana bullet creation:
 Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char teamID, BulletParentType parentType, long parentID, std::vector<BulletPower*>* bp, bool) : Bullet(x_,y_,a,teamID,parentType,parentID,bp) {
 	this->r = r_;
-	this->velocity = vel; // * getBulletSpeedMultiplier(); //not wanted
-	this->initial_velocity = this->velocity;
+	this->velocity.setMagnitude(vel); // * getBulletSpeedMultiplier(); //not wanted
+	this->initial_velocity = velocity.getMagnitude();
 	this->acceleration = getBulletAcceleration();
 }
 
 //avoid using:
 Bullet::Bullet(double x_, double y_, double r_, double a, double vel, double acc, char teamID, BulletParentType parentType, long parentID, std::vector<BulletPower*>* bp, bool) : Bullet(x_,y_,a,teamID,parentType,parentID,bp) {
 	this->r = r_ * getBulletRadiusMultiplier();
-	this->velocity = vel * getBulletSpeedMultiplier();
-	this->initial_velocity = this->velocity;
+	this->velocity.setMagnitude(vel * getBulletSpeedMultiplier());
+	this->initial_velocity = this->velocity.getMagnitude();
 	this->acceleration = acc;
 }
 
 //regular 1:
 Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char teamID, BulletParentType parentType, long parentID) : Bullet(x_,y_,a,teamID,parentType,parentID) {
 	this->r = r_;
-	this->velocity = vel;
-	this->initial_velocity = vel;
+	this->velocity.setMagnitude(vel);
+	this->initial_velocity = this->velocity.getMagnitude();
 	this->acceleration = 0;
 }
 
 //regular 2:
 Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char teamID, BulletParentType parentType, long parentID, std::vector<BulletPower*>* bp) : Bullet(x_,y_,a,teamID,parentType,parentID,bp) {
 	this->r = r_ * getBulletRadiusMultiplier();
-	this->velocity = vel * getBulletSpeedMultiplier();
-	this->initial_velocity = this->velocity;
+	this->velocity.setMagnitude(vel * getBulletSpeedMultiplier());
+	this->initial_velocity = this->velocity.getMagnitude();
 	this->acceleration = getBulletAcceleration();
 }
 
@@ -106,11 +106,11 @@ bool Bullet::initializeGPU() {
 		indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
 	}
 
-	vb = new VertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float), GL_DYNAMIC_DRAW);
+	vb = VertexBuffer::MakeVertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float), RenderingHints::dynamic_draw);
 	VertexBufferLayout layout(2);
-	va = new VertexArray(*vb, layout);
+	va = VertexArray::MakeVertexArray(*vb, layout);
 	
-	ib = new IndexBuffer(indices, Circle::numOfSides*3);
+	ib = IndexBuffer::MakeIndexBuffer(indices, Circle::numOfSides*3);
 
 	initialized_GPU = true;
 	return true;
@@ -152,13 +152,13 @@ bool Bullet::canCollideWith(Bullet* b_other) const {
 }
 
 double Bullet::getAngle() const {
-	return fmod(fmod(angle, 2*PI) + 2*PI, 2*PI);
+	return fmod(fmod(velocity.getAngle(), 2*PI) + 2*PI, 2*PI);
 }
 
 void Bullet::move() {
-	velocity += acceleration;
-	x += velocity * cos(angle);
-	y += velocity * sin(angle);
+	velocity.changeMagnitude(acceleration);
+	x += velocity.getXComp();
+	y += velocity.getYComp();
 }
 
 double Bullet::getBulletSpeedMultiplier() {
@@ -315,16 +315,21 @@ void Bullet::drawCPU(double xpos, double ypos) {
 	glEnd();
 }
 
-void Bullet::draw() {
+void Bullet::draw() const {
 	draw(x, y);
 }
 
-void Bullet::draw(double xpos, double ypos) {
+void Bullet::draw(double xpos, double ypos) const {
 	drawBody(xpos, ypos);
 	drawOutline(xpos, ypos);
 }
 
-void Bullet::drawBody(double xpos, double ypos) {
+void Bullet::poseDraw() const {
+	//TODO: just body and outline
+	return;
+}
+
+void Bullet::drawBody(double xpos, double ypos) const {
 	ColorValueHolder color = getColor();
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, 0, xpos, ypos);
@@ -353,7 +358,7 @@ void Bullet::drawBody(double xpos, double ypos) {
 	Renderer::Draw(*va, *ib, *shader);
 }
 
-void Bullet::drawOutline(double xpos, double ypos) {
+void Bullet::drawOutline(double xpos, double ypos) const {
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, 0, xpos, ypos);
 
@@ -369,6 +374,37 @@ void Bullet::drawOutline(double xpos, double ypos) {
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	//drawing an outline: use a geometry shader (ugh) or another VAO+IBO (lesser ugh), the CPU (big ugh), or glDrawArrays with GL_LINE_LOOP (yay!)
+}
+
+bool Bullet::kill() {
+	//see Tank::kill()
+
+	bool shouldBeKilled = true;
+
+	for (int i = 0; i < bulletPowers.size(); i++) {
+		bool killBulletPower = false;
+		
+		if (bulletPowers[i]->modifiesDeathHandling) {
+			InteractionBoolHolder check_temp = bulletPowers[i]->modifiedDeathHandling(this);
+			if (!check_temp.shouldDie) {
+				shouldBeKilled = false;
+			}
+			if (check_temp.otherShouldDie) {
+				killBulletPower = true;
+			}
+		}
+	
+		if (killBulletPower) {
+			removePower(i);
+			i--;
+			//continue;
+		}
+		if (!shouldBeKilled) {
+			break;
+		}
+	}
+
+	return shouldBeKilled;
 }
 
 double Bullet::getHighestOffenseImportance() {
@@ -429,6 +465,7 @@ double Bullet::getDefenseTier() {
 	return getHighestDefenseTier(getHighestDefenseImportance());
 }
 
+/*
 bool Bullet::isPartiallyOutOfBounds() {
 	return CollisionHandler::partiallyOutOfBoundsIgnoreEdge(this);
 } //care about equals edge?
@@ -436,3 +473,4 @@ bool Bullet::isPartiallyOutOfBounds() {
 bool Bullet::isFullyOutOfBounds() {
 	return CollisionHandler::fullyOutOfBounds(this);
 }
+*/

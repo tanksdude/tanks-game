@@ -36,16 +36,18 @@ public:
 	//virtual bool validLocation() override { return true; }
 	virtual bool reasonableLocation() override;
 
-	double getAngle();
-	virtual bool canSeeTank(Tank*); //true if pointing at tank with no wall obstructions
-	virtual ColorValueHolder getColor(); //needed because turret doesn't use tickCount, instead using targetingCount (should change this)
-	virtual ColorValueHolder getColor(short state);
+	double getAngle() const;
+	virtual bool canSeeTank(Tank*) const; //true if pointing at tank with no wall obstructions
+	virtual ColorValueHolder getColor() const; //needed because turret doesn't use tickCount, instead using targetingCount (should change this)
+	virtual ColorValueHolder getColor(short state) const;
 
 	virtual std::string getName() const override { return getClassName(); }
-	static std::string getClassName() { return "stationary turret"; }
+	static std::string getClassName() { return "stationary_turret"; }
 
 	virtual void tick();
-	virtual void draw();
+	virtual void draw() const override;
+	virtual void draw(double xpos, double ypos) const override;
+	virtual void poseDraw() const override;
 	virtual void drawCPU();
 
 protected:

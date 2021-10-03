@@ -47,7 +47,7 @@ public:
 	bool overridesMovement = false; //true if the power completely changes how it moves; regular powers slightly modify movement (think homing) and still want basic bullet move
 	bool modifiedMovementCanWorkWithOthers = true; //false stops later powerups in list from activating
 	bool modifiedMovementCanOnlyWorkIndividually = false; //true means that if another power was used previously, this power can't activate
-	//fix: have super override value? so the power can ensure that it and only it will activate (I don't think a power should have this kind of authority, but it might be needed)
+	//TODO: have super override value? so the power can ensure that it and only it will activate (I don't think a power should have this kind of authority, but it might be needed)
 
 	bool modifiesEdgeCollision = false;
 	virtual InteractionBoolHolder modifiedEdgeCollision(Bullet*) { return { false }; } //only the first false means something
@@ -89,6 +89,10 @@ public:
 	bool overridesCollisionWithRectHazard = true; //false means also use the default, which means destroy the bullet if it collides
 	bool modifiedCollisionWithRectHazardCanWorkWithOthers = true;
 	bool modifiedCollisionWithRectHazardCanOnlyWorkIndividually = false;
+
+	bool modifiesDeathHandling = false;
+	virtual InteractionBoolHolder modifiedDeathHandling(Bullet* parent) { return { true, false }; } //first is bullet, second is bulletpower
+	//it's first come, first served
 
 	bool modifiesBulletDrawings = false;
 	virtual void modifiedBulletDrawings(Bullet* parent) { return; } //probably not going to be used

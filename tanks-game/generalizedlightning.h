@@ -38,7 +38,7 @@ protected:
 	double boltCycle = 4; //how often bolts get refreshed
 	bool boltsNeeded = false; //if the lightning hits something, this is changed, and no random bolts will be made; resets every boltCycle ticks
 	virtual void refreshBolt(int num) = 0; //"redraw" a bolt //this is the hardest thing to generalize, so... copy and paste
-	virtual int getDefaultNumBoltPoints(double horzDist); //number of points that make up a bolt
+	virtual int getDefaultNumBoltPoints(double horzDist) const; //number of points that make up a bolt
 	virtual void pushBolt(LightningBolt*) = 0;
 	virtual void pushDefaultBolt(int num, bool randomize) = 0; //randomize should be true all of the time
 	std::vector<long> targetedObjects;
@@ -65,15 +65,12 @@ protected:
 	*/
 
 public:
-	virtual ColorValueHolder getBackgroundColor();
-	virtual ColorValueHolder getBoltColor();
+	virtual ColorValueHolder getBackgroundColor() const;
+	virtual ColorValueHolder getBoltColor() const;
 
 	virtual bool validLocation() = 0;
 
 	virtual void tick();
-	virtual void draw() = 0;
-	//virtual void drawCPU() = 0;
-	//extending hazard requires a redefinition of validLocation, tick, and draw
 
 public:
 	~GeneralizedLightning();

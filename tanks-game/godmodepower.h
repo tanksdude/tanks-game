@@ -33,3 +33,43 @@ public:
 	GodmodePower();
 	static Power* factory();
 };
+
+
+
+class GodmodeTankPower : public TankPower {
+public:
+	virtual void initialize(Tank* parent) override;
+	virtual void removeEffects(Tank* parent) override;
+
+	virtual ColorValueHolder getColor() const override {
+		return GodmodePower::getClassColor();
+	}
+	virtual double getColorImportance() const override {
+		return GodmodePower::getClassColorImportance();
+	}
+
+	virtual TankPower* makeDuplicate() const override { return new GodmodeTankPower(); }
+	virtual BulletPower* makeBulletPower() const override;
+
+	GodmodeTankPower();
+};
+
+
+
+class GodmodeBulletPower : public BulletPower {
+public:
+	virtual void initialize(Bullet* parent) override;
+	virtual void removeEffects(Bullet* parent) override;
+
+	virtual ColorValueHolder getColor() const override {
+		return GodmodePower::getClassColor();
+	}
+	virtual double getColorImportance() const override {
+		return GodmodePower::getClassColorImportance();
+	}
+
+	virtual BulletPower* makeDuplicate() const override { return new GodmodeBulletPower(); }
+	virtual TankPower* makeTankPower() const override;
+
+	GodmodeBulletPower();
+};

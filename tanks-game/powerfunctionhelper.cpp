@@ -14,18 +14,18 @@ bool PowerFunctionHelper::bounceGeneric(Bullet* b, Wall* w) {
 	if (b->y - w->y <= (w->h / w->w) * (b->x - w->x)) { //I think this is bottom right
 		if (b->y - (w->y + w->h) <= (-w->h / w->w) * (b->x - w->x)) { //bottom
 			b->y -= (b->y + b->r - w->y) * 2; //b->y = w->y - b->r
-			b->angle = b->angle * -1;
+			b->velocity.setAngle(b->velocity.getAngle() * -1);
 		} else { //right
 			b->x += (w->x + w->w - (b->x - b->r)) * 2; //b->x = w->x + w->w + w->r
-			b->angle = PI - b->angle;
+			b->velocity.setAngle(PI - b->velocity.getAngle());
 		}
 	} else { //top left?
 		if (b->y - (w->y + w->h) <= (-w->h / w->w) * (b->x - w->x)) { //left
 			b->x -= (b->x + b->r - w->x) * 2; //b->x = w->x - b->r
-			b->angle = PI - b->angle;
+			b->velocity.setAngle(PI - b->velocity.getAngle());
 		} else { //top
 			b->y += (w->y + w->h - (b->y - b->r)) * 2; //b->y = w->y + w->h + b->r
-			b->angle = b->angle * -1;
+			b->velocity.setAngle(b->velocity.getAngle() * -1);
 		}
 	}
 	//TODO: ensure bullet is not actually in wall; move bullet to edge of relevant wall if still colliding
@@ -72,10 +72,10 @@ bool PowerFunctionHelper::bounceGenericWithCornersCornerHandler(Bullet* b, doubl
 			//in effect, rounded rectangle against a point is the same as rectangle against circle
 			//the bullet's angle needs to reflect off of the perpendicular to the tangent, and the tangent goes through the intersection between the bullet's path and the area of influence
 
-			double newAngle = 2*angle - (b->angle - PI);
+			double newAngle = 2*angle - (b->velocity.getAngle() - PI);
 			b->y += sin(newAngle) * (b->r - d);
 			b->x += cos(newAngle) * (b->r - d);
-			b->angle = newAngle;
+			b->velocity.setAngle(newAngle);
 
 			return true;
 		}
@@ -88,11 +88,11 @@ bool PowerFunctionHelper::bounceEdgeGenericY(Bullet* b) {
 	bool bounced = 0;
 	if (b->y + b->r > GAME_HEIGHT) { //top edge
 		b->y -= ((b->y + b->r) - GAME_HEIGHT) * 2;
-		b->angle = b->angle * -1;
+		b->velocity.setAngle(b->velocity.getAngle() * -1);
 		bounced = true;
 	} else if (b->y - b->r < 0) { //bottom edge
 		b->y += -(b->y - b->r) * 2;
-		b->angle = b->angle * -1;
+		b->velocity.setAngle(b->velocity.getAngle() * -1);
 		bounced = true;
 	}
 
@@ -103,11 +103,11 @@ bool PowerFunctionHelper::bounceEdgeGenericX(Bullet* b) {
 	bool bounced = 0;
 	if (b->x + b->r > GAME_WIDTH) { //right edge
 		b->x -= (b->x + b->r - GAME_WIDTH) * 2;
-		b->angle = PI - b->angle;
+		b->velocity.setAngle(PI - b->velocity.getAngle());
 		bounced = true;
 	} else if (b->x - b->r < 0) { //left edge
 		b->x += -(b->x - b->r) * 2;
-		b->angle = PI - b->angle;
+		b->velocity.setAngle(PI - b->velocity.getAngle());
 		bounced = true;
 	}
 
@@ -183,43 +183,21 @@ bool PowerFunctionHelper::homingGeneric(Bullet* b, double maxAngleMove, bool mov
 	//std::cout << targetAngle << " " << bulletAngle << " " << maxAngleMove << std::endl;
 	
 	if ((abs(targetAngle - bulletAngle) <= maxAngleMove) || (abs(fmod(targetAngle + PI, 2*PI) - fmod(bulletAngle + PI, 2*PI)) <= maxAngleMove)) {
-		b->angle = targetAngle;
+		b->velocity.setAngle(targetAngle);
 	} else {
-		//I don't remember why it works, but it does
-		if (b->getAngle() > PI/2 && b->getAngle() <= 3*PI/2) { //<= instead of < because edgecase fix: tank angle = 0, power multishot+bounce+homing (bounce optional but helps); bullet going up wouldn't home on other tank (probably tangent domain error)
-			if (t->y - b->y < tan(b->angle) * (t->x - b->x)) {
-				b->angle += maxAngleMove;
-			} else {
-				b->angle -= maxAngleMove;
-			}
+		SimpleVector2D distToTank = SimpleVector2D(t->getX() - b->x, t->getY() - b->y);
+		float theta = SimpleVector2D::angleBetween(distToTank, b->velocity);
+		if (abs(theta) <= maxAngleMove) {
+			//small angle adjustment needed
+			b->velocity.setAngle(distToTank.getAngle());
 		} else {
-			if (t->y - b->y < tan(b->angle) * (t->x - b->x)) {
-				b->angle -= maxAngleMove;
+			//large angle adjustment needed
+			if (theta < 0) {
+				b->velocity.changeAngle(maxAngleMove);
 			} else {
-				b->angle += maxAngleMove;
+				b->velocity.changeAngle(-maxAngleMove);
 			}
 		}
-		//first if checks whether only positive angles can be used (quadrant II and III edgecase) or positive and negative can be used (quadrant I and IV edgecase) (I think)
-		//second if checks whether tank is above or below bullet (I think)
-
-		//unfinished code that might have looked nicer:
-		/*
-		if (bulletAngle > PI/2 && bulletAngle < 3*PI/2) {
-			if (posTargetAngle > PI/2 && bulletAngle < 3*PI/2) {
-				if (bulletAngle < posTargetAngle) {
-
-				}
-			} else {
-				
-			}
-		} else {
-			if (posTargetAngle > PI/2 && bulletAngle < 3*PI/2) {
-				
-			} else {
-				
-			}
-		}
-		*/
 	}
 	
 	return true; //could target something

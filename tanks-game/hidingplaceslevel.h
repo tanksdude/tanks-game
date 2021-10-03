@@ -4,7 +4,7 @@
 class HidingPlacesLevel : public Level {
 	//I'm awful at naming things
 public:
-	std::string getName() const override { return "hiding places"; }
+	std::string getName() const override { return "hiding_places"; }
 	std::vector<std::string> getLevelTypes() const override {
 		std::vector<std::string> types = std::vector<std::string>{ "vanilla-extra", "random-vanilla" };
 		return types;

@@ -48,11 +48,11 @@ bool Wall::initializeGPU() {
 		2, 3, 0
 	};
 
-	vb = new VertexBuffer(positions, 4*2 * sizeof(float), GL_DYNAMIC_DRAW);
+	vb = VertexBuffer::MakeVertexBuffer(positions, 4*2 * sizeof(float), RenderingHints::dynamic_draw);
 	VertexBufferLayout layout(2);
-	va = new VertexArray(*vb, layout);
+	va = VertexArray::MakeVertexArray(*vb, layout);
 
-	ib = new IndexBuffer(indices, 6);
+	ib = IndexBuffer::MakeIndexBuffer(indices, 6);
 
 	initialized_GPU = true;
 	return true;
@@ -71,14 +71,23 @@ bool Wall::uninitializeGPU() {
 	return true;
 }
 
-void Wall::draw() {
+void Wall::draw() const {
+	draw(x, y);
+}
+
+void Wall::draw(double xpos, double ypos) const {
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM = Renderer::GenerateMatrix(w, h, 0, x, y);
+	glm::mat4 MVPM = Renderer::GenerateMatrix(w, h, 0, xpos, ypos);
 
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*va, *ib, *shader);
+}
+
+void Wall::poseDraw() const {
+	//TODO: just body, outline, and barrel
+	return;
 }
 
 void Wall::drawCPU() {

@@ -49,12 +49,10 @@ protected:
 	virtual void pushNewBubble(double radius) = 0;
 
 public:
-	virtual ColorValueHolder getBackgroundColor();
-	virtual ColorValueHolder getBubbleColor(LavaBubble* bubble);
+	virtual ColorValueHolder getBackgroundColor() const;
+	virtual ColorValueHolder getBubbleColor(LavaBubble* bubble) const;
 
 	virtual void tick();
-	virtual void draw() = 0;
-	//virtual void drawCPU() = 0;
 
 	virtual ~GeneralizedLava();
 };

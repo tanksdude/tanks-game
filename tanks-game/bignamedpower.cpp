@@ -1,6 +1,4 @@
 #include "bignamedpower.h"
-#include "bignamedtankpower.h"
-#include "bignamedbulletpower.h"
 
 TankPower* BigNamedPower::makeTankPower() const {
 	return new BigNamedTankPower();
@@ -22,4 +20,51 @@ Power* BigNamedPower::factory() {
 
 BigNamedPower::BigNamedPower() {
 	return;
+}
+
+
+
+void BigNamedTankPower::initialize(Tank* parent) {
+	//nothing
+}
+
+void BigNamedTankPower::removeEffects(Tank* parent) {
+	//nothing
+}
+
+BulletPower* BigNamedTankPower::makeBulletPower() const {
+	return new BigNamedBulletPower();
+}
+
+BigNamedTankPower::BigNamedTankPower() {
+	maxTime = 500;
+	timeLeft = 500;
+}
+
+
+
+InteractionBoolHolder BigNamedBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
+	return { false, true };
+}
+
+void BigNamedBulletPower::initialize(Bullet* parent) {
+	//nothing
+}
+
+void BigNamedBulletPower::removeEffects(Bullet* parent) {
+	//nothing
+}
+
+TankPower* BigNamedBulletPower::makeTankPower() const {
+	return new BigNamedTankPower();
+}
+
+BigNamedBulletPower::BigNamedBulletPower() {
+	timeLeft = 0;
+	maxTime = -1;
+
+	modifiesCollisionWithWall = true;
+	modifiedCollisionWithWallCanWorkWithOthers = false;
+
+	bulletRadiusStacks = true;
 }

@@ -12,6 +12,7 @@
 #include "wallmanager.h"
 #include "hazardmanager.h"
 #include "collisionhandler.h"
+#include "rng.h"
 #include <iostream>
 
 VertexArray* CircularLightning::background_va;
@@ -83,11 +84,11 @@ bool CircularLightning::initializeGPU() {
 		indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
 	}
 
-	background_vb = new VertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float), GL_DYNAMIC_DRAW);
+	background_vb = VertexBuffer::MakeVertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float), RenderingHints::dynamic_draw);
 	VertexBufferLayout layout(2);
-	background_va = new VertexArray(*background_vb, layout);
+	background_va = VertexArray::MakeVertexArray(*background_vb, layout);
 
-	background_ib = new IndexBuffer(indices, Circle::numOfSides*3);
+	background_ib = IndexBuffer::MakeIndexBuffer(indices, Circle::numOfSides*3);
 
 	initialized_GPU = true;
 	return true;
@@ -102,9 +103,9 @@ void CircularLightning::local_initializeGPU() {
 	}
 	bolt_vb_length = bolts[0]->length;
 	
-	bolt_vb = new VertexBuffer(positions, bolts[0]->length*2 * sizeof(float), GL_STREAM_DRAW);
+	bolt_vb = VertexBuffer::MakeVertexBuffer(positions, bolts[0]->length*2 * sizeof(float), RenderingHints::stream_draw);
 	VertexBufferLayout layout(2);
-	bolt_va = new VertexArray(*bolt_vb, layout);
+	bolt_va = VertexArray::MakeVertexArray(*bolt_vb, layout);
 
 	delete[] positions;
 }
@@ -116,9 +117,9 @@ void CircularLightning::local_reinitializeGPU(int length) { //does not seed the 
 	float* positions = new float[length*2];
 	bolt_vb_length = length;
 	
-	bolt_vb = new VertexBuffer(positions, length*2 * sizeof(float), GL_STREAM_DRAW);
+	bolt_vb = VertexBuffer::MakeVertexBuffer(positions, length*2 * sizeof(float), RenderingHints::stream_draw);
 	VertexBufferLayout layout(2);
-	bolt_va = new VertexArray(*bolt_vb, layout);
+	bolt_va = VertexArray::MakeVertexArray(*bolt_vb, layout);
 
 	delete[] positions;
 }
@@ -141,7 +142,7 @@ void CircularLightning::local_uninitializeGPU() {
 	delete bolt_vb;
 }
 
-void CircularLightning::streamBoltVertices(unsigned int boltNum) {
+void CircularLightning::streamBoltVertices(unsigned int boltNum) const {
 	bolt_vb->modifyData(bolts[boltNum]->positions.data(), bolts[boltNum]->length*2 * sizeof(float));
 }
 
@@ -225,7 +226,7 @@ void CircularLightning::pushBolt(LightningBolt* l) {
 
 void CircularLightning::pushDefaultBolt(int num, bool randomize) {
 	//the default bolt is from center to a random point
-	double randR = r*randFunc2(), randAngle = 2*PI*randFunc();
+	double randR = r*RNG::randFunc2(), randAngle = 2*PI*RNG::randFunc();
 	double xEnd = randR*cos(randAngle), yEnd = randR*sin(randAngle);
 	for (int i = 0; i < num; i++) {
 		LightningBolt* l = new LightningBolt(0, 0, xEnd, yEnd, getDefaultNumBoltPoints(sqrt(pow(xEnd - 0, 2) + pow(yEnd - 0, 2))));
@@ -317,7 +318,7 @@ void CircularLightning::refreshBolt(int num) {
 		double randTemp;
 		float testY, testX;
 		do {
-			randTemp = (randFunc2()*2-1)*maxVariance;
+			randTemp = (RNG::randFunc2()*2-1)*maxVariance;
 			testY = bolts[num]->positions[j*2 - 1] + (deltaY/(bolts[num]->length-1)) + randTemp * angleCos;
 			testX = bolts[num]->positions[j*2 - 2] + (deltaX/(bolts[num]->length-1)) - randTemp * angleSin;
 			//std::cout << testX << " " << testY << std::endl;
@@ -328,9 +329,13 @@ void CircularLightning::refreshBolt(int num) {
 	}
 }
 
-void CircularLightning::draw() {
+void CircularLightning::draw() const {
+	draw(x, y);
+}
+
+void CircularLightning::draw(double xpos, double ypos) const {
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, 0, x, y);
+	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, 0, xpos, ypos);
 	
 	//background:
 	//TODO: make drawUnder() a thing
@@ -348,7 +353,7 @@ void CircularLightning::draw() {
 	glLineWidth(2.0f);
 	color = getBoltColor();
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-	MVPM = Renderer::GenerateMatrix(1, 1, 0, x, y);
+	MVPM = Renderer::GenerateMatrix(1, 1, 0, xpos, ypos);
 	shader->setUniformMat4f("u_MVP", MVPM);
 
 	for (int i = 0; i < bolts.size(); i++) {
@@ -359,16 +364,14 @@ void CircularLightning::draw() {
 			local_reinitializeGPU(bolts[i]->length);
 		}
 		*/
-		streamBoltVertices(i);
+		streamBoltVertices(i); //TODO: fix
 		Renderer::Draw(*bolt_va, *shader, GL_LINE_STRIP, 0, bolts[i]->length);
 	}
 }
 
-void CircularLightning::drawCPU() {
-	//background:
-
-	//bolts:
-
+void CircularLightning::poseDraw() const {
+	//TODO
+	return;
 }
 
 CircleHazard* CircularLightning::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {
@@ -379,10 +382,10 @@ CircleHazard* CircularLightning::randomizingFactory(double x_start, double y_sta
 		if (argc >= 1) {
 			radius = std::stod(argv[0]);
 		} else {
-			radius = randFunc2() * (60 - 30) + 30; //TODO: where should these constants be?
+			radius = RNG::randFunc2() * (60 - 30) + 30; //TODO: where should these constants be?
 		}
-		xpos = randFunc2() * (area_width - 2*radius) + (x_start + radius);
-		ypos = randFunc2() * (area_height - 2*radius) + (y_start + radius);
+		xpos = RNG::randFunc2() * (area_width - 2*radius) + (x_start + radius);
+		ypos = RNG::randFunc2() * (area_height - 2*radius) + (y_start + radius);
 		CircleHazard* testCircularLightning = new CircularLightning(xpos, ypos, radius);
 		if (testCircularLightning->reasonableLocation()) {
 			randomized = testCircularLightning;

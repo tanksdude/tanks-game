@@ -138,12 +138,12 @@ bool PowerSquare::initializeGPU() {
 		11, 10, 6
 	};
 
-	vb = new VertexBuffer(positions, 12*2 * sizeof(float), GL_DYNAMIC_DRAW);
+	vb = VertexBuffer::MakeVertexBuffer(positions, 12*2 * sizeof(float), RenderingHints::dynamic_draw);
 	VertexBufferLayout layout(2);
-	va = new VertexArray(*vb, layout);
+	va = VertexArray::MakeVertexArray(*vb, layout);
 
-	ib_main = new IndexBuffer(main_indices, 6*4);
-	ib_outline = new IndexBuffer(outline_indices, 6*4);
+	ib_main = IndexBuffer::MakeIndexBuffer(main_indices, 6*4);
+	ib_outline = IndexBuffer::MakeIndexBuffer(outline_indices, 6*4);
 
 	initialized_GPU = true;
 	return true;
@@ -163,7 +163,7 @@ bool PowerSquare::uninitializeGPU() {
 	return true;
 }
 
-ColorValueHolder PowerSquare::getColor() {
+ColorValueHolder PowerSquare::getColor() const {
 	if (numOfPowers == 1) {
 		return heldPowers[0]->getColor();
 	} else {
@@ -196,9 +196,13 @@ void PowerSquare::givePower(Tank* t) {
 void PowerSquare::givePower(Bullet*) { return; } //don't think about it now, possibly ever; it's weird
 //void givePower(Hazard*);
 
-void PowerSquare::draw() {
+void PowerSquare::draw() const {
+	draw(x, y);
+}
+
+void PowerSquare::draw(double xpos, double ypos) const {
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM = Renderer::GenerateMatrix(w, h, 0, x, y);
+	glm::mat4 MVPM = Renderer::GenerateMatrix(w, h, 0, xpos, ypos);
 	ColorValueHolder color = getColor();
 
 	if (numOfPowers > 1) { //move to drawUnder()
@@ -213,6 +217,11 @@ void PowerSquare::draw() {
 	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*va, *ib_main, *shader);
+}
+
+void PowerSquare::poseDraw() const {
+	//TODO
+	return;
 }
 
 void PowerSquare::drawCPU() {

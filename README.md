@@ -1,6 +1,6 @@
 # PowerTanks Battle
 
-The C++ upgrade of my [JS game](https://uncreativeusername.neocities.org/tanks.html)
+The C++ upgrade of my [JavaScript game](https://uncreativeusername.neocities.org/tanks.html)
 
 ## Getting Started
 
@@ -12,6 +12,7 @@ The C++ upgrade of my [JS game](https://uncreativeusername.neocities.org/tanks.h
 * OpenGL 3.3 or later
     * 3.2 or earlier might work if you update the shaders, but don't count on it
 * 3GHz+ CPU recommended (2GHz is probably fine)
+	* Faster CPU -> more bullets on screen
     * Single-core CPU is enough (because there's no multithreading)
 * RAM requirements unknown, but 100MB is good
 * No audio needed (unlikely to change in the future)
@@ -21,7 +22,7 @@ The C++ upgrade of my [JS game](https://uncreativeusername.neocities.org/tanks.h
 
 Install Visual Studio (2019) and the GitHub extension (I don't know if that's needed), then clone this project and run x64 Release (or Debug if you want to) (also make sure you're on the solution, not project)
 
-Pre-compiled executables are available under "Releases" in the GitHub repository.
+Pre-compiled executables are available under "Releases" in the [GitHub repository](https://github.com/tanksdude/tanks-game).
 
 ## Running the tests
 

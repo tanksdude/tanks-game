@@ -7,6 +7,7 @@
 #include "wallmanager.h"
 #include "hazardmanager.h"
 #include "collisionhandler.h"
+#include "rng.h"
 
 VertexArray* CircularNoBulletZone::va;
 VertexBuffer* CircularNoBulletZone::vb;
@@ -52,11 +53,11 @@ bool CircularNoBulletZone::initializeGPU() {
 		indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
 	}
 
-	vb = new VertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float), GL_DYNAMIC_DRAW);
+	vb = VertexBuffer::MakeVertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float), RenderingHints::static_draw);
 	VertexBufferLayout layout(2);
-	va = new VertexArray(*vb, layout);
+	va = VertexArray::MakeVertexArray(*vb, layout);
 
-	ib = new IndexBuffer(indices, Circle::numOfSides*3);
+	ib = IndexBuffer::MakeIndexBuffer(indices, Circle::numOfSides*3);
 
 	initialized_GPU = true;
 	return true;
@@ -85,10 +86,6 @@ CircleHazard* CircularNoBulletZone::factory(int argc, std::string* argv) {
 	return new CircularNoBulletZone(0, 0, 0);
 }
 
-void CircularNoBulletZone::tick() {
-	GeneralizedNoBulletZone::tick();
-}
-
 bool CircularNoBulletZone::reasonableLocation() {
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		if (CollisionHandler::fullyCollided(this, WallManager::getWall(i))) {
@@ -113,9 +110,13 @@ bool CircularNoBulletZone::reasonableLocation() {
 	return validLocation();
 }
 
-void CircularNoBulletZone::draw() {
+void CircularNoBulletZone::draw() const {
+	draw(x, y);
+}
+
+void CircularNoBulletZone::draw(double xpos, double ypos) const {
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, 0, x, y);
+	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, 0, xpos, ypos);
 	
 	//TODO: make drawUnder() a thing
 	ColorValueHolder color = getColor();
@@ -125,8 +126,9 @@ void CircularNoBulletZone::draw() {
 	Renderer::Draw(*va, *ib, *shader);
 }
 
-void CircularNoBulletZone::drawCPU() {
-	
+void CircularNoBulletZone::poseDraw() const {
+	//TODO?
+	return;
 }
 
 CircleHazard* CircularNoBulletZone::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {
@@ -137,10 +139,10 @@ CircleHazard* CircularNoBulletZone::randomizingFactory(double x_start, double y_
 		if (argc >= 1) {
 			radius = std::stod(argv[0]);
 		} else {
-			radius = randFunc2() * (20 - 10) + 10; //TODO: where should these constants be?
+			radius = RNG::randFunc2() * (20 - 10) + 10; //TODO: where should these constants be?
 		}
-		xpos = randFunc2() * (area_width - 2*radius) + (x_start + radius);
-		ypos = randFunc2() * (area_height - 2*radius) + (y_start + radius);
+		xpos = RNG::randFunc2() * (area_width - 2*radius) + (x_start + radius);
+		ypos = RNG::randFunc2() * (area_height - 2*radius) + (y_start + radius);
 		CircleHazard* testCircularNoBulletZone = new CircularNoBulletZone(xpos, ypos, radius);
 		if (testCircularNoBulletZone->reasonableLocation()) {
 			randomized = testCircularNoBulletZone;

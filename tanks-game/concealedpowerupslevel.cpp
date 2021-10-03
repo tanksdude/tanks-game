@@ -7,6 +7,7 @@
 #include "hazardmanager.h"
 #include "mylib.h"
 #include "resetthings.h"
+#include "rng.h"
 
 std::unordered_map<std::string, float> ConcealedPowerupsLevel::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -19,7 +20,7 @@ std::unordered_map<std::string, float> ConcealedPowerupsLevel::getWeights() cons
 }
 
 void ConcealedPowerupsLevel::initialize() {
-	int randPos = randFunc() * 5;
+	int randPos = RNG::randFunc() * 5;
 	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40, randPos);
 
 	ColorValueHolder color = ColorValueHolder(0xAA/255.0, 0xBB/255.0, 0x99/255.0);
@@ -31,11 +32,11 @@ void ConcealedPowerupsLevel::initialize() {
 	
 	PositionHolder pos = RandomLevel::getSymmetricWallPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, 70, 160, 20);
 	std::string* paras = new std::string[4]{std::to_string(pos.x), std::to_string(pos.y), std::to_string(160), std::to_string(20)};
-	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "horizontal lightning")(4, paras));
+	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "horizontal_lightning")(4, paras));
 	delete[] paras;
 	pos = RandomLevel::getSymmetricWallPositions_UD(1, GAME_WIDTH/2, GAME_HEIGHT/2, 70, 160, 20);
 	paras = new std::string[4]{std::to_string(pos.x), std::to_string(pos.y), std::to_string(160), std::to_string(20)};
-	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "horizontal lightning")(4, paras));
+	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "horizontal_lightning")(4, paras));
 	delete[] paras;
 
 	pos = RandomLevel::getSymmetricWallPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 80, 20, GAME_HEIGHT-70*2);
@@ -48,13 +49,13 @@ void ConcealedPowerupsLevel::initialize() {
 	//PowerupManager::pushPowerup(new PowerSquare(320+80+20+20,160,3));
 
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "big"));
-	int tempRand = randFunc() * 2;
+	int tempRand = RNG::randFunc() * 2;
 	pos = RandomLevel::getSymmetricPowerupPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, 20);
 	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, RandomLevel::simplePowerAlternate(0, tempRand, "speed", "invincible")));
 	pos = RandomLevel::getSymmetricPowerupPositions_UD(1, GAME_WIDTH/2, GAME_HEIGHT/2, 20);
 	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, RandomLevel::simplePowerAlternate(1, tempRand, "speed", "invincible")));
 
-	tempRand = randFunc() * 2;
+	tempRand = RNG::randFunc() * 2;
 	pos = RandomLevel::getSymmetricPowerupPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 20);
 	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "grenade"));
 	pos = RandomLevel::getSymmetricPowerupPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 20);

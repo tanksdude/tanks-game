@@ -1,6 +1,6 @@
 #include "priorityhandler.h"
 
-char PriorityHandler::determinePriority(Bullet* a, Bullet* b) {
+PriorityResult PriorityHandler::determinePriority(Bullet* a, Bullet* b) {
 	double a_offense = a->getOffenseTier();
 	double a_defense = a->getDefenseTier();
 	double b_offense = b->getOffenseTier();
@@ -16,18 +16,18 @@ char PriorityHandler::determinePriority(Bullet* a, Bullet* b) {
 	}
 
 	if (a_dies && b_dies) {
-		return -1;
+		return PriorityResult::bothDie;
 	}
 	if (a_dies) {
-		return 0;
+		return PriorityResult::firstDies;
 	}
 	if (b_dies) {
-		return 1;
+		return PriorityResult::secondDies;
 	}
-	return 2;
+	return PriorityResult::neitherDie;
 }
 
-char PriorityHandler::determinePriority(Tank* a, Bullet* b) {
+PriorityResult PriorityHandler::determinePriority(Tank* a, Bullet* b) {
 	double a_offense = a->getOffenseTier();
 	double a_defense = a->getDefenseTier();
 	double b_offense = b->getOffenseTier();
@@ -43,18 +43,18 @@ char PriorityHandler::determinePriority(Tank* a, Bullet* b) {
 	}
 
 	if (a_dies && b_dies) {
-		return -1;
+		return PriorityResult::bothDie;
 	}
 	if (a_dies) {
-		return 0;
+		return PriorityResult::firstDies;
 	}
 	if (b_dies) {
-		return 1;
+		return PriorityResult::secondDies;
 	}
-	return 2;
+	return PriorityResult::neitherDie;
 }
 
-char PriorityHandler::determinePriority(Tank* a, Tank* b) {
+PriorityResult PriorityHandler::determinePriority(Tank* a, Tank* b) {
 	double a_offense = a->getOffenseTier();
 	double a_defense = a->getDefenseTier();
 	double b_offense = b->getOffenseTier();
@@ -70,18 +70,18 @@ char PriorityHandler::determinePriority(Tank* a, Tank* b) {
 	}
 
 	if (a_dies && b_dies) {
-		return -1;
+		return PriorityResult::bothDie;
 	}
 	if (a_dies) {
-		return 0;
+		return PriorityResult::firstDies;
 	}
 	if (b_dies) {
-		return 1;
+		return PriorityResult::secondDies;
 	}
-	return 2;
+	return PriorityResult::neitherDie;
 }
 
-char PriorityHandler::determinePriority(Bullet* a, CircleHazard* b) {
+PriorityResult PriorityHandler::determinePriority(Bullet* a, CircleHazard* b) {
 	double a_offense = a->getOffenseTier();
 	double a_defense = a->getDefenseTier();
 	double b_offense = b->getOffenseTier();
@@ -97,18 +97,18 @@ char PriorityHandler::determinePriority(Bullet* a, CircleHazard* b) {
 	}
 
 	if (a_dies && b_dies) {
-		return -1;
+		return PriorityResult::bothDie;
 	}
 	if (a_dies) {
-		return 0;
+		return PriorityResult::firstDies;
 	}
 	if (b_dies) {
-		return 1;
+		return PriorityResult::secondDies;
 	}
-	return 2;
+	return PriorityResult::neitherDie;
 }
 
-char PriorityHandler::determinePriority(Bullet* a, RectHazard* b) {
+PriorityResult PriorityHandler::determinePriority(Bullet* a, RectHazard* b) {
 	double a_offense = a->getOffenseTier();
 	double a_defense = a->getDefenseTier();
 	double b_offense = b->getOffenseTier();
@@ -124,18 +124,18 @@ char PriorityHandler::determinePriority(Bullet* a, RectHazard* b) {
 	}
 
 	if (a_dies && b_dies) {
-		return -1;
+		return PriorityResult::bothDie;
 	}
 	if (a_dies) {
-		return 0;
+		return PriorityResult::firstDies;
 	}
 	if (b_dies) {
-		return 1;
+		return PriorityResult::secondDies;
 	}
-	return 2;
+	return PriorityResult::neitherDie;
 }
 
-char PriorityHandler::determinePriority(Tank* a, CircleHazard* b) {
+PriorityResult PriorityHandler::determinePriority(Tank* a, CircleHazard* b) {
 	double a_offense = a->getOffenseTier();
 	double a_defense = a->getDefenseTier();
 	double b_offense = b->getOffenseTier();
@@ -151,18 +151,18 @@ char PriorityHandler::determinePriority(Tank* a, CircleHazard* b) {
 	}
 
 	if (a_dies && b_dies) {
-		return -1;
+		return PriorityResult::bothDie;
 	}
 	if (a_dies) {
-		return 0;
+		return PriorityResult::firstDies;
 	}
 	if (b_dies) {
-		return 1;
+		return PriorityResult::secondDies;
 	}
-	return 2;
+	return PriorityResult::neitherDie;
 }
 
-char PriorityHandler::determinePriority(Tank* a, RectHazard* b) {
+PriorityResult PriorityHandler::determinePriority(Tank* a, RectHazard* b) {
 	double a_offense = a->getOffenseTier();
 	double a_defense = a->getDefenseTier();
 	double b_offense = b->getOffenseTier();
@@ -178,13 +178,13 @@ char PriorityHandler::determinePriority(Tank* a, RectHazard* b) {
 	}
 
 	if (a_dies && b_dies) {
-		return -1;
+		return PriorityResult::bothDie;
 	}
 	if (a_dies) {
-		return 0;
+		return PriorityResult::firstDies;
 	}
 	if (b_dies) {
-		return 1;
+		return PriorityResult::secondDies;
 	}
-	return 2;
+	return PriorityResult::neitherDie;
 }

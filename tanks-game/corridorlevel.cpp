@@ -6,6 +6,7 @@
 #include "wallmanager.h"
 #include "mylib.h"
 #include "resetthings.h"
+#include "rng.h"
 
 std::unordered_map<std::string, float> CorridorLevel::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -18,7 +19,7 @@ std::unordered_map<std::string, float> CorridorLevel::getWeights() const {
 }
 
 void CorridorLevel::initialize() {
-	int randPos = randFunc() * 5;
+	int randPos = RNG::randFunc() * 5;
 	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40, randPos);
 
 	ColorValueHolder color = ColorValueHolder(0x22/255.0, 0.5f, 1.0f);
@@ -40,16 +41,16 @@ void CorridorLevel::initialize() {
 
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "bounce"));
 
-	int tempRand = randFunc() * 2;
+	int tempRand = RNG::randFunc() * 2;
 	for (int i = 0; i < 4; i++) {
 		PositionHolder pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-(80+32)-18, GAME_HEIGHT/2-18);
 		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, RandomLevel::powerAlternate(i, tempRand, "invincible", "wallhack")));
 	}
 
-	tempRand = randFunc() * 2;
+	tempRand = RNG::randFunc() * 2;
 	for (int i = 0; i < 4; i++) {
 		PositionHolder pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-(80+32)-18, GAME_HEIGHT/2-(140/2));
-		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, RandomLevel::powerAlternate(i, tempRand, "speed", "big"))); //big=life here
+		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, RandomLevel::powerAlternate(i, tempRand, "speed", "big"))); //big=barrier here
 	}
 }
 

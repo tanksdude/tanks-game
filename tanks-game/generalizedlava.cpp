@@ -5,6 +5,7 @@
 #include <math.h>
 #include "mylib.h"
 #include "colormixer.h"
+#include "rng.h"
 
 //yes, the syntax is a little weird
 GeneralizedLava::LavaBubble::LavaBubble(float radius, float x0, float y0, float x1, float y1, float tickStart) {
@@ -72,13 +73,13 @@ float GeneralizedLava::LavaBubble::getY() const {
 
 
 
-ColorValueHolder GeneralizedLava::getBackgroundColor() {
+ColorValueHolder GeneralizedLava::getBackgroundColor() const {
 	//colors: red (#FF0000) and orange-red (#FFAA00) mixed
 	return ColorMixer::mix(ColorValueHolder(1.0f, 0.0f, 0.0f), ColorValueHolder(1.0f, .875f, 0.0f),
 	                       .625 + sin(2*PI * tickCount/tickCycle)/8 + cos(2*PI * tickCount/tickCycle * 8)/8);
 }
 
-ColorValueHolder GeneralizedLava::getBubbleColor(LavaBubble* bubble) {
+ColorValueHolder GeneralizedLava::getBubbleColor(LavaBubble* bubble) const {
 	//a bubble's natural color is white, but with an alpha of .5, but blending is expensive so it's just mixed with the lava background
 	return ColorMixer::mix(ColorValueHolder(1.0f, 1.0f, 1.0f), getBackgroundColor(), 1.0f - bubble->getAlpha());
 }
@@ -88,7 +89,7 @@ void GeneralizedLava::tick() {
 		tickCount = 0;
 	}
 
-	if ((bubbles.size() < maxBubbles) && (randFunc() < bubbleChance)) {
+	if ((bubbles.size() < maxBubbles) && (RNG::randFunc() < bubbleChance)) {
 		pushNewBubble(4); //possible radius: sqrt(w * h * 2)/50 or sqrt(r * r * 2)/50
 	}
 

@@ -7,6 +7,7 @@
 #include "wallmanager.h"
 #include "hazardmanager.h"
 #include "collisionhandler.h"
+#include "rng.h"
 
 VertexArray* RectangularNoBulletZone::va;
 VertexBuffer* RectangularNoBulletZone::vb;
@@ -50,11 +51,11 @@ bool RectangularNoBulletZone::initializeGPU() {
 		2, 3, 0
 	};
 
-	vb = new VertexBuffer(positions, 4*2 * sizeof(float), GL_DYNAMIC_DRAW);
+	vb = VertexBuffer::MakeVertexBuffer(positions, 4*2 * sizeof(float), RenderingHints::static_draw);
 	VertexBufferLayout layout(2);
-	va = new VertexArray(*vb, layout);
+	va = VertexArray::MakeVertexArray(*vb, layout);
 
-	ib = new IndexBuffer(indices, 6);
+	ib = IndexBuffer::MakeIndexBuffer(indices, 6);
 
 	initialized_GPU = true;
 	return true;
@@ -84,10 +85,6 @@ RectHazard* RectangularNoBulletZone::factory(int argc, std::string* argv) {
 	return new RectangularNoBulletZone(0, 0, 0, 0);
 }
 
-void RectangularNoBulletZone::tick() {
-	GeneralizedNoBulletZone::tick();
-}
-
 bool RectangularNoBulletZone::reasonableLocation() {
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		if (CollisionHandler::fullyCollided(this, WallManager::getWall(i))) {
@@ -112,9 +109,13 @@ bool RectangularNoBulletZone::reasonableLocation() {
 	return validLocation();
 }
 
-void RectangularNoBulletZone::draw() {
+void RectangularNoBulletZone::draw() const {
+	draw(x, y);
+}
+
+void RectangularNoBulletZone::draw(double xpos, double ypos) const {
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM = Renderer::GenerateMatrix(w, h, 0, x, y);
+	glm::mat4 MVPM = Renderer::GenerateMatrix(w, h, 0, xpos, ypos);
 	
 	//TODO: make drawUnder() a thing
 	ColorValueHolder color = GeneralizedNoBulletZone::getColor();
@@ -124,8 +125,9 @@ void RectangularNoBulletZone::draw() {
 	Renderer::Draw(*va, *ib, *shader);
 }
 
-void RectangularNoBulletZone::drawCPU() {
-	
+void RectangularNoBulletZone::poseDraw() const {
+	//TODO?
+	return;
 }
 
 RectHazard* RectangularNoBulletZone::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {
@@ -137,11 +139,11 @@ RectHazard* RectangularNoBulletZone::randomizingFactory(double x_start, double y
 			width = std::stod(argv[0]);
 			height = std::stod(argv[1]);
 		} else {
-			width = randFunc2() * (40 - 20) + 20; //TODO: where should these constants be?
-			height = randFunc2() * (50 - 20) + 20; //TODO: where should these constants be?
+			width = RNG::randFunc2() * (40 - 20) + 20; //TODO: where should these constants be?
+			height = RNG::randFunc2() * (50 - 20) + 20; //TODO: where should these constants be?
 		}
-		xpos = randFunc2() * (area_width - 2*width) + (x_start + width);
-		ypos = randFunc2() * (area_height - 2*height) + (y_start + height);
+		xpos = RNG::randFunc2() * (area_width - 2*width) + (x_start + width);
+		ypos = RNG::randFunc2() * (area_height - 2*height) + (y_start + height);
 		RectHazard* testRectangularNoBulletZone = new RectangularNoBulletZone(xpos, ypos, width, height);
 		if (testRectangularNoBulletZone->reasonableLocation()) {
 			randomized = testRectangularNoBulletZone;

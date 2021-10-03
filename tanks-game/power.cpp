@@ -37,7 +37,7 @@ the super (tier 3) (name WIP) (come on, of course the name isn't going to be tem
 |fire?
 |banana
 |godmode
-barrier (if hit, provides one extra hitpoint (basically life, but might add some differences))
+|barrier
 super life/shield/barrier (barrier health dependent on time left on power)
 swarm (check notes if you forgot, me) (modifiedMovementCanOnlyWorkIndividually = true?)
 
@@ -46,7 +46,7 @@ powers that are rare because the level wants them, not because they're good:
 |mines
 |blast
 |shotgun
-tracking?
+|tracking
 
 
 invincibility series notes:

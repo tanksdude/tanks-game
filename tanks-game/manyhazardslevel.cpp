@@ -7,6 +7,7 @@
 #include "hazardmanager.h"
 #include "mylib.h"
 #include "resetthings.h"
+#include "rng.h"
 #include <iostream>
 
 std::unordered_map<std::string, float> ManyHazardsLevel::getWeights() const {
@@ -20,7 +21,7 @@ std::unordered_map<std::string, float> ManyHazardsLevel::getWeights() const {
 }
 
 void ManyHazardsLevel::initialize() {
-	int randPos = randFunc() * 5;
+	int randPos = RNG::randFunc() * 5;
 	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40, randPos);
 
 	ColorValueHolder color = ColorValueHolder(0xDD/255.0, .5f, .25f);
@@ -32,7 +33,7 @@ void ManyHazardsLevel::initialize() {
 	}
 
 	std::string* paras = new std::string[4]{std::to_string(GAME_WIDTH/2 - 10), std::to_string(128), std::to_string(10*2), std::to_string(GAME_HEIGHT - 128*2)};
-	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "no bullet zone")(4, paras));
+	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "no_bullet_zone")(4, paras));
 	delete[] paras;
 	
 	const int TURRET_COUNT = 16; //stationary turret count, not regular turret count
@@ -40,20 +41,21 @@ void ManyHazardsLevel::initialize() {
 	for (int i = 0; i < TURRET_COUNT; i++) {
 		//bottom half
 		std::string* paras = new std::string[3]{std::to_string(wallArray[0].x+32 + turretDistance * (i+1)), std::to_string(16), std::to_string(PI/2)};
-		HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary turret")(3, paras));
+		HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(3, paras));
 		delete[] paras;
 	}
 	for (int i = 0; i < TURRET_COUNT; i++) {
 		//top half
 		std::string* paras = new std::string[3]{std::to_string(wallArray[0].x+32 + turretDistance * (i+1)), std::to_string(GAME_HEIGHT-16), std::to_string(-PI/2)};
-		HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary turret")(3, paras));
+		HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(3, paras));
 		delete[] paras;
 	}
+	//^^^ this does not result in the exact placements from JS; in JS, those values were then manually rounded to a nice integer
 
 	for (int i = 0; i < 4; i++) {
 		PositionHolder pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2 - ((wallArray[0].x+32) + (TANK_RADIUS/2 * 1.5)), 32 + 20 + (TANK_RADIUS/2 * 2.5));
 		std::string* paras = new std::string[3]{std::to_string(pos.x), std::to_string(pos.y), std::to_string(PI * (i%2))};
-		HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "targeting turret")(3, paras));
+		HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "targeting_turret")(3, paras));
 		delete[] paras;
 	}
 
@@ -65,14 +67,14 @@ void ManyHazardsLevel::initialize() {
 	for (int i = 0; i < 4; i++) {
 		PositionHolder pos = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 160/2, (GAME_HEIGHT - 128*2)/2, (GAME_WIDTH/2 - 160/2 - (wallArray[0].x+32)), 20);
 		std::string* paras = new std::string[4]{std::to_string(pos.x), std::to_string(pos.y), std::to_string(GAME_WIDTH/2 - 160/2 - (wallArray[0].x+32)), std::to_string(20)};
-		HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "horizontal lightning")(4, paras));
+		HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "horizontal_lightning")(4, paras));
 		delete[] paras;
 	}
 
 	PositionHolder pos = RandomLevel::getSymmetricPowerupPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 160/4 * 1.5);
-	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "speed")); //speed=life
+	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "vanilla-extra", "barrier")); //replace barrier with speed?
 	pos = RandomLevel::getSymmetricPowerupPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 160/4 * 1.5);
-	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "speed"));
+	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "vanilla-extra", "barrier"));
 
 	pos = RandomLevel::getSymmetricWallPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_HEIGHT/2 - wallPos1.y, 160/2, 50);
 	paras = new std::string[4]{std::to_string(pos.x), std::to_string(pos.y), std::to_string(160/2), std::to_string(50)};
@@ -86,7 +88,7 @@ void ManyHazardsLevel::initialize() {
 	for (int i = 0; i < 4; i++) {
 		PositionHolder pos = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 160/4, GAME_HEIGHT/2 - wallPos1.y, 160/4, 50);
 		std::string* paras = new std::string[4]{std::to_string(pos.x), std::to_string(pos.y), std::to_string(160/4), std::to_string(50)};
-		HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "rectangular lightning")(4, paras));
+		HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "lightning")(4, paras));
 		delete[] paras;
 	}
 

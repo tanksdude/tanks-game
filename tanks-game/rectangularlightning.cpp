@@ -12,6 +12,7 @@
 #include "wallmanager.h"
 #include "hazardmanager.h"
 #include "collisionhandler.h"
+#include "rng.h"
 #include <iostream>
 
 VertexArray* RectangularLightning::background_va;
@@ -83,11 +84,11 @@ bool RectangularLightning::initializeGPU() {
 		2, 3, 0
 	};
 
-	background_vb = new VertexBuffer(positions, 4*2 * sizeof(float), GL_DYNAMIC_DRAW);
+	background_vb = VertexBuffer::MakeVertexBuffer(positions, 4*2 * sizeof(float), RenderingHints::dynamic_draw);
 	VertexBufferLayout layout(2);
-	background_va = new VertexArray(*background_vb, layout);
+	background_va = VertexArray::MakeVertexArray(*background_vb, layout);
 
-	background_ib = new IndexBuffer(indices, 6);
+	background_ib = IndexBuffer::MakeIndexBuffer(indices, 6);
 
 	initialized_GPU = true;
 	return true;
@@ -102,9 +103,9 @@ void RectangularLightning::local_initializeGPU() {
 	}
 	bolt_vb_length = bolts[0]->length;
 	
-	bolt_vb = new VertexBuffer(positions, bolts[0]->length*2 * sizeof(float), GL_STREAM_DRAW);
+	bolt_vb = VertexBuffer::MakeVertexBuffer(positions, bolts[0]->length*2 * sizeof(float), RenderingHints::stream_draw);
 	VertexBufferLayout layout(2);
-	bolt_va = new VertexArray(*bolt_vb, layout);
+	bolt_va = VertexArray::MakeVertexArray(*bolt_vb, layout);
 
 	delete[] positions;
 }
@@ -116,9 +117,9 @@ void RectangularLightning::local_reinitializeGPU(int length) { //does not seed t
 	float* positions = new float[length*2];
 	bolt_vb_length = length;
 	
-	bolt_vb = new VertexBuffer(positions, length*2 * sizeof(float), GL_STREAM_DRAW);
+	bolt_vb = VertexBuffer::MakeVertexBuffer(positions, length*2 * sizeof(float), RenderingHints::stream_draw);
 	VertexBufferLayout layout(2);
-	bolt_va = new VertexArray(*bolt_vb, layout);
+	bolt_va = VertexArray::MakeVertexArray(*bolt_vb, layout);
 
 	delete[] positions;
 }
@@ -141,7 +142,7 @@ void RectangularLightning::local_uninitializeGPU() {
 	delete bolt_vb;
 }
 
-void RectangularLightning::streamBoltVertices(unsigned int boltNum) {
+void RectangularLightning::streamBoltVertices(unsigned int boltNum) const {
 	bolt_vb->modifyData(bolts[boltNum]->positions.data(), bolts[boltNum]->length*2 * sizeof(float));
 }
 
@@ -277,7 +278,7 @@ void RectangularLightning::pushBolt(LightningBolt* l) {
 
 void RectangularLightning::pushDefaultBolt(int num, bool randomize) {
 	//the default bolt is from center to a random point
-	double xEnd = w*randFunc2(), yEnd = h*randFunc2();
+	double xEnd = w*RNG::randFunc2(), yEnd = h*RNG::randFunc2();
 	for (int i = 0; i < num; i++) {
 		LightningBolt* l = new LightningBolt(w/2, h/2, xEnd, yEnd, getDefaultNumBoltPoints(sqrt(pow(xEnd - w/2, 2) + pow(yEnd - h/2, 2))));
 		if (randomize) {
@@ -371,7 +372,7 @@ void RectangularLightning::refreshBolt(int num, double smaller, double larger) {
 		double randTemp;
 		float testY, testX;
 		do {
-			randTemp = (randFunc2()*2-1)*maxVariance;
+			randTemp = (RNG::randFunc2()*2-1)*maxVariance;
 			testY = bolts[num]->positions[j*2 - 1] + (deltaY/(bolts[num]->length-1)) + randTemp * angleCos;
 			testX = bolts[num]->positions[j*2 - 2] + (deltaX/(bolts[num]->length-1)) - randTemp * angleSin;
 			//std::cout << testX << " " << testY << std::endl;
@@ -381,9 +382,13 @@ void RectangularLightning::refreshBolt(int num, double smaller, double larger) {
 	}
 }
 
-void RectangularLightning::draw() {
+void RectangularLightning::draw() const {
+	draw(x, y);
+}
+
+void RectangularLightning::draw(double xpos, double ypos) const {
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM = Renderer::GenerateMatrix(w, h, 0, x, y);
+	glm::mat4 MVPM = Renderer::GenerateMatrix(w, h, 0, xpos, ypos);
 	
 	//background:
 	//TODO: make drawUnder() a thing
@@ -401,7 +406,7 @@ void RectangularLightning::draw() {
 	glLineWidth(2.0f);
 	color = getBoltColor();
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-	MVPM = Renderer::GenerateMatrix(1, 1, 0, x, y);
+	MVPM = Renderer::GenerateMatrix(1, 1, 0, xpos, ypos);
 	shader->setUniformMat4f("u_MVP", MVPM);
 
 	for (int i = 0; i < bolts.size(); i++) {
@@ -412,16 +417,14 @@ void RectangularLightning::draw() {
 			local_reinitializeGPU(bolts[i]->length);
 		}
 		*/
-		streamBoltVertices(i);
+		streamBoltVertices(i); //TODO: fix (but better)
 		Renderer::Draw(*bolt_va, *shader, GL_LINE_STRIP, 0, bolts[i]->length);
 	}
 }
 
-void RectangularLightning::drawCPU() {
-	//background:
-
-	//bolts:
-
+void RectangularLightning::poseDraw() const {
+	//TODO
+	return;
 }
 
 RectHazard* RectangularLightning::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {
@@ -433,11 +436,11 @@ RectHazard* RectangularLightning::randomizingFactory(double x_start, double y_st
 			width = std::stod(argv[0]);
 			height = std::stod(argv[1]);
 		} else {
-			width = randFunc2() * (80 - 30) + 30; //TODO: where should these constants be?
-			height = randFunc2() * (80 - 30) + 30; //TODO: where should these constants be?
+			width = RNG::randFunc2() * (80 - 30) + 30; //TODO: where should these constants be?
+			height = RNG::randFunc2() * (80 - 30) + 30; //TODO: where should these constants be?
 		}
-		xpos = randFunc2() * (area_width - 2*width) + (x_start + width);
-		ypos = randFunc2() * (area_height - 2*height) + (y_start + height);
+		xpos = RNG::randFunc2() * (area_width - 2*width) + (x_start + width);
+		ypos = RNG::randFunc2() * (area_height - 2*height) + (y_start + height);
 		RectHazard* testRectangularLightning = new RectangularLightning(xpos, ypos, width, height);
 		if (testRectangularLightning->reasonableLocation()) {
 			randomized = testRectangularLightning;

@@ -29,8 +29,7 @@ void DeveloperManager::mouseDragFunc(int x, int y) {
 		if (!rightMouse) { //tank 1
 			TankManager::getTank(0)->x = (real_x / double(Renderer::gamewindow_width)) * GAME_WIDTH;
 			TankManager::getTank(0)->y = (1 - real_y / double(Renderer::gamewindow_height)) * GAME_HEIGHT;
-		}
-		else { //tank 2
+		} else { //tank 2
 			TankManager::getTank(1)->x = (real_x / double(Renderer::gamewindow_width)) * GAME_WIDTH;
 			TankManager::getTank(1)->y = (1 - real_y / double(Renderer::gamewindow_height)) * GAME_HEIGHT;
 		}
@@ -81,14 +80,14 @@ void DeveloperManager::mouseWheelFunc(int wheel, int dir, int x, int y) {
 	std::cout << "DeveloperManager insertIdentifier: " << insertListIdentifiers[insertIndex] << std::endl;
 }
 
-std::vector<std::string> DeveloperManager::insertListIdentifiers = { "longinvincible", "temp", "banana", "mines", "godmode", "inversion", "stationary turret" };
+std::vector<std::string> DeveloperManager::insertListIdentifiers = { "longinvincible", "temp", "banana", "mines", "godmode", "inversion", "stationary_turret" };
 void DeveloperManager::devInsert(int x, int y) {
 	switch (insertIndex) {
 		case 0:
 			PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "longinvincible"));
 			return;
 		case 1:
-			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla-extra", "tracking"));
+			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla-extra", "barrier"));
 			return;
 		case 2:
 			PowerupManager::pushPowerup(new PowerSquare(x, y, "banana"));
@@ -104,7 +103,7 @@ void DeveloperManager::devInsert(int x, int y) {
 			return;
 		case 6:
 			std::string paras[3] = { std::to_string(x), std::to_string(y), std::to_string(0) };
-			HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary turret")(3, paras));
+			HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(3, paras));
 			return;
 	}
 	//no default

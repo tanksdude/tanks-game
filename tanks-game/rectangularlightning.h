@@ -12,11 +12,11 @@ protected:
 	Circle* getCenterPoint(); //for checks when a bullet/tank collides (needs to be a function in case the lightning changes size or position)
 
 	//unsigned int maxBolts; // = 1;
-	virtual void refreshBolt(int num);
+	virtual void refreshBolt(int num) override;
 	virtual void refreshBolt(int num, double smaller, double larger);
 	//virtual int getDefaultNumBoltPoints(double horzDist);
-	virtual void pushBolt(LightningBolt*);
-	virtual void pushDefaultBolt(int num, bool randomize); //randomize should be true all of the time
+	virtual void pushBolt(LightningBolt*) override;
+	virtual void pushDefaultBolt(int num, bool randomize) override; //randomize should be true all of the time
 
 private:
 	static VertexArray* background_va;
@@ -28,7 +28,7 @@ private:
 	int bolt_vb_length;
 	static bool initialized_GPU;
 	void local_reinitializeGPU(int length);
-	void streamBoltVertices(unsigned int boltNum); //(stream to bolt_vb)
+	void streamBoltVertices(unsigned int boltNum) const; //(stream to bolt_vb)
 
 	static bool initializeGPU();
 	void local_initializeGPU();
@@ -55,14 +55,15 @@ protected:
 
 public:
 	virtual std::string getName() const override { return getClassName(); }
-	static std::string getClassName() { return "rectangular lightning"; }
+	static std::string getClassName() { return "lightning"; }
 
 	virtual bool validLocation() override;
 	virtual bool reasonableLocation() override;
 
 	virtual void tick() { GeneralizedLightning::tick(); }
-	virtual void draw();
-	virtual void drawCPU();
+	virtual void draw() const override;
+	virtual void draw(double xpos, double ypos) const override;
+	virtual void poseDraw() const override;
 
 protected:
 	RectangularLightning(double xpos, double ypos, double width, double height, bool noGPU); //doesn't initialize GPU

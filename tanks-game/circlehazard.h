@@ -2,6 +2,7 @@
 class CircleHazard;
 
 #include "hazard.h"
+#include "drawablething.h"
 #include "circle.h"
 #include <string>
 #include <unordered_map>
@@ -38,7 +39,7 @@ enum class CircleHazardConstructionTypes /*: unsigned char */ {
 	radiusAndAngleRequired
 };
 
-class CircleHazard : public Hazard, public Circle {
+class CircleHazard : public Hazard, public Circle, public DrawableThing {
 public: //protected?
 	//std::vector<CircleHazardPower*> hazardPowers;
 public:
@@ -73,7 +74,9 @@ public:
 	virtual std::string getName() const = 0;
 	//static std::string getClassName();
 	//virtual bool initializeGPU() = 0;
-	virtual void draw() = 0;
+	virtual void draw() const override = 0;
+	virtual void draw(double xpos, double ypos) const override = 0;
+	virtual void poseDraw() const override = 0;
 
 	static CircleHazard* factory(int argc, std::string* argv);
 	static CircleHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv);

@@ -8,6 +8,7 @@
 #include "keypressmanager.h"
 #include "bulletmanager.h"
 #include "collisionhandler.h"
+#include "rng.h"
 #include <iostream>
 
 //for CPU drawing, in case other #includes go wrong:
@@ -43,7 +44,7 @@ const double Tank::default_turningIncrement = 64;
 Tank::Tank(double x_, double y_, double a, char id_, std::string name_, TankInputChar forward, TankInputChar left, TankInputChar right, TankInputChar shoot, TankInputChar special) {
 	x = x_;
 	y = y_;
-	angle = a;
+	velocity = SimpleVector2D(a, 0, true);
 	gameID = GameManager::getNextID();
 	teamID = id_;
 	r = TANK_RADIUS;
@@ -108,16 +109,16 @@ bool Tank::initializeGPU() {
 	}
 	*/
 
-	vb = new VertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float), GL_DYNAMIC_DRAW);
+	vb = VertexBuffer::MakeVertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float), RenderingHints::dynamic_draw);
 	VertexBufferLayout layout(2);
-	va = new VertexArray(*vb, layout);
+	va = VertexArray::MakeVertexArray(*vb, layout);
 	
-	ib = new IndexBuffer(indices, Circle::numOfSides*3);
+	ib = IndexBuffer::MakeIndexBuffer(indices, Circle::numOfSides*3);
 
 	float cannon_positions[4] = { 0.0f, 0.0f, 1.0f, 0.0f };
-	cannon_vb = new VertexBuffer(cannon_positions, 2*2 * sizeof(float));
+	cannon_vb = VertexBuffer::MakeVertexBuffer(cannon_positions, 2*2 * sizeof(float));
 	VertexBufferLayout cannon_layout(2);
-	cannon_va = new VertexArray(*cannon_vb, cannon_layout);
+	cannon_va = VertexArray::MakeVertexArray(*cannon_vb, cannon_layout);
 
 	initialized_GPU = true;
 	return true;
@@ -143,17 +144,18 @@ void Tank::move() {
 
 	//if (!forward || !document.getElementById("moveturn").checked) { //change && to || and remove second ! to flip playstyle
 		if (turnL.getKeyState()) {
-			angle += PI / turningIncrement;
+			velocity.changeAngle(PI / turningIncrement);
 		}
 		if (turnR.getKeyState()) {
-			angle -= PI / turningIncrement;
+			velocity.changeAngle(-PI / turningIncrement);
 		}
 	//}
 	//if (!document.getElementById("acceleration").checked) {
-		if (forward.getKeyState())
-			velocity += acceleration;
-		else
-			velocity -= acceleration; //can result in negative velocities, but that's okay, altered in terminalVelocity()
+		if (forward.getKeyState()) {
+			velocity.changeMagnitude(acceleration);
+		} else {
+			velocity.changeMagnitude(-acceleration); //can result in negative velocities, fixed by SimpleVector2D just not allowing that
+		}
 		terminalVelocity();
 	//}
 	/*else {
@@ -163,28 +165,31 @@ void Tank::move() {
 			velocity = 0;
 	}*/
 
-	x += cos(angle) * velocity;
-	y += sin(angle) * velocity;
+	x += velocity.getXComp();
+	y += velocity.getYComp();
 }
 
 void Tank::terminalVelocity() {
-	if (velocity > maxSpeed + acceleration) {
-		velocity -= acceleration;
-		if (forward.getKeyState() && velocity > maxSpeed) //so the tank doesn't stay at a high velocity if it loses its ability to go as fast as it previously could
-			velocity -= acceleration;
-	}
-	else if (velocity > maxSpeed)
-		velocity = maxSpeed;
-	else if (velocity < 0)
-		velocity = 0;
+	if (velocity.getMagnitude() > maxSpeed + acceleration) {
+		velocity.changeMagnitude(-acceleration);
+		if (forward.getKeyState() && velocity.getMagnitude() > maxSpeed) {
+			//so the tank doesn't stay at a high velocity if it loses its ability to go as fast as it previously could (maybe change?)
+			velocity.changeMagnitude(-acceleration);
+		}
+	} else if (velocity.getMagnitude() > maxSpeed) {
+		velocity.setMagnitude(maxSpeed);
+	} /*else if (velocity.getMagnitude() < 0) {
+		velocity.setMagnitude(0);
+	}*/
 }
 
 void Tank::shoot() {
 	//TODO: allow it to handle multiple shooting cooldowns? (not the point of the game (if it was, shooting cooldown color = mix(white, power color)))
-	if(shootCount > 0) //check isn't really needed, but it also doesn't decrease performance by a real amount
+	if (shootCount > 0) { //check isn't really needed, but it also doesn't decrease performance by a real amount
 		shootCount--;
+	}
 
-	if(shooting.getKeyState() && shootCount <= 0){
+	if (shooting.getKeyState() && shootCount <= 0) {
 		determineShootingAngles();
 		bool modifiedAdditionalShooting = false;
 		bool overridedShooting = false;
@@ -213,7 +218,7 @@ void Tank::shoot() {
 
 		if (!overridedShooting) {
 			for (int i = 0; i < shootingPoints->size(); i++) {
-				defaultMakeBullet(shootingPoints->at(i).angle + angle);
+				defaultMakeBullet(shootingPoints->at(i).angle + velocity.getAngle());
 			}
 		}
 		//makeBullet(x + r*cos(angle), y + r*sin(angle), angle, r/4, maxSpeed*2, bp); //should be maxSpeed*4 //this is old, don't look at for too long
@@ -473,7 +478,7 @@ void Tank::updateTurningIncrement() {
 	}
 
 	turningIncrement = highest * lowest * value * default_turningIncrement * (negativeCount%2 == 0 ? 1 : -1);
-	angle = round(angle / (PI / turningIncrement)) * (PI / turningIncrement);
+	velocity.setAngle(round(velocity.getAngle() / (PI / turningIncrement)) * (PI / turningIncrement));
 }
 
 void Tank::powerCalculate() {
@@ -501,7 +506,7 @@ void Tank::powerReset() {
 	}
 }
 
-ColorValueHolder Tank::getBodyColor() {
+ColorValueHolder Tank::getBodyColor() const {
 	if (tankPowers.size() == 0) {
 		return defaultColor;
 	} else {
@@ -522,7 +527,7 @@ ColorValueHolder Tank::getBodyColor() {
 }
 
 double Tank::getAngle() const {
-	return fmod(fmod(angle, 2*PI) + 2*PI, 2*PI);
+	return fmod(fmod(velocity.getAngle(), 2*PI) + 2*PI, 2*PI);
 }
 
 double Tank::getCannonAngle(int i) const {
@@ -530,7 +535,7 @@ double Tank::getCannonAngle(int i) const {
 }
 
 double Tank::getRealCannonAngle(int i) const {
-	return fmod(fmod(shootingPoints->at(i).angle + angle, 2*PI) + 2*PI, 2*PI);
+	return fmod(fmod(shootingPoints->at(i).angle + velocity.getAngle(), 2*PI) + 2*PI, 2*PI);
 }
 
 void Tank::drawCPU() {
@@ -546,7 +551,7 @@ void Tank::drawCPU(double xpos, double ypos) {
 
 	glVertex3f(xpos, ypos, 0);
 	for (int i = 0; i < Circle::numOfSides, (double)i / Circle::numOfSides < shootCount/(maxShootCount*getShootingSpeedMultiplier()); i++) {
-		glVertex3f(xpos + r*cos(i * 2*PI / Circle::numOfSides + angle) * 5/4, ypos + r*sin(i * 2*PI / Circle::numOfSides + angle) * 5/4, 0);
+		glVertex3f(xpos + r*cos(i * 2*PI / Circle::numOfSides + velocity.getAngle()) * 5/4, ypos + r*sin(i * 2*PI / Circle::numOfSides + velocity.getAngle()) * 5/4, 0);
 	}
 	glVertex3f(xpos, ypos, 0);
 
@@ -577,7 +582,7 @@ void Tank::drawCPU(double xpos, double ypos) {
 
 		glVertex3f(xpos, ypos, 0);
 		for (int j = 0; j < Circle::numOfSides, (double)j / Circle::numOfSides < sortedTankPowers[i]->timeLeft/sortedTankPowers[i]->maxTime; j++) {
-			glVertex3f(xpos + r*cos(j * 2*PI / Circle::numOfSides + angle) * 9/8, ypos + r*sin(j * 2*PI / Circle::numOfSides + angle) * 9/8, 0);
+			glVertex3f(xpos + r*cos(j * 2*PI / Circle::numOfSides + velocity.getAngle()) * 9/8, ypos + r*sin(j * 2*PI / Circle::numOfSides + velocity.getAngle()) * 9/8, 0);
 		}
 		glVertex3f(xpos, ypos, 0);
 
@@ -604,7 +609,7 @@ void Tank::drawCPU(double xpos, double ypos) {
 
 	for (int i = 1; i < shootingPoints->size(); i++) {
 		glVertex2f(x, y);
-		glVertex2f(x + r*cos(angle + shootingPoints->at(i).angle), y + r*sin(angle + shootingPoints->at(i).angle));
+		glVertex2f(x + r*cos(velocity.getAngle() + shootingPoints->at(i).angle), y + r*sin(velocity.getAngle() + shootingPoints->at(i).angle));
 	}
 
 	glEnd();
@@ -628,22 +633,21 @@ void Tank::drawCPU(double xpos, double ypos) {
 	glBegin(GL_LINES);
 
 	glVertex2f(x, y);
-	glVertex2f(x + r*cos(angle), y + r*sin(angle));
+	glVertex2f(x + r*cos(velocity.getAngle()), y + r*sin(velocity.getAngle()));
 
 	glEnd();
 }
 
-void Tank::draw() {
+void Tank::draw() const {
 	draw(x, y);
 }
 
-void Tank::draw(double xpos, double ypos) {
+void Tank::draw(double xpos, double ypos) const {
 	//stuff that will be used:
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 MVPM;
 
 	if (dead) {
-		//TODO: gradient shader
 		//main body:
 		MVPM = Renderer::GenerateMatrix(r, r, getAngle(), xpos, ypos);
 
@@ -759,27 +763,59 @@ void Tank::draw(double xpos, double ypos) {
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
+void Tank::poseDraw() const {
+	//TODO: just body, outline, and barrel
+	return;
+}
+
 bool Tank::kill() {
-	//TODO: allow tankpowers to override this (this way life and barrier* can exist) (*the barrier that can be hit multiple times)
-	//TODO other: should bullets also get this? (I'm thinking yes, at least because of life)
-	this->dead = true;
+	//for checking whether to save the tank, it's first come first served, then no one else
+	//if it can save the tank, stop checking, else continue checking
+
+	bool shouldBeKilled = true;
+
+	for (int i = 0; i < tankPowers.size(); i++) {
+		bool killTankPower = false;
+		
+		if (tankPowers[i]->modifiesDeathHandling) {
+			InteractionBoolHolder check_temp = tankPowers[i]->modifiedDeathHandling(this);
+			if (!check_temp.shouldDie) {
+				shouldBeKilled = false;
+			}
+			if (check_temp.otherShouldDie) {
+				killTankPower = true;
+			}
+		}
+	
+		if (killTankPower) {
+			removePower(i);
+			i--;
+			//continue;
+		}
+		if (!shouldBeKilled) {
+			break;
+		}
+	}
+
+	if (shouldBeKilled) {
+		this->dead = shouldBeKilled;
+	}
+
 	return this->dead;
 }
 
-void Tank::resetThings(double x, double y, double a, char teamID, std::string name) { //TODO: finish?
+void Tank::resetThings(double x, double y, double a, char teamID) {
 	this->dead = false;
 	this->x = x;
 	this->y = y;
-	this->angle = a;
+	this->velocity = SimpleVector2D(a, 0, true);
 	this->gameID = GameManager::getNextID(); //should this be updated?
 	this->teamID = teamID;
 	//this->r = TANK_RADIUS;
-	this->name = name;
 	shootCount = 0;
 	//don't update maxShootCount
-	velocity = 0;
 
-	if (randFunc() < 1.0/4096) {
+	if (RNG::randFunc() < 1.0/4096) {
 		//shiny tank (yes, 1/8192 is the chance before Sword/Shield)
 		defaultColor = ColorValueHolder(.75f, .75f, .75f);
 	} else {
@@ -790,9 +826,11 @@ void Tank::resetThings(double x, double y, double a, char teamID, std::string na
 	determineShootingAngles();
 }
 
+/*
 void Tank::edgeConstrain() {
 	CollisionHandler::edgeConstrain(this);
 }
+*/
 
 double Tank::getHighestOffenseImportance() {
 	double highest = -1; //anything below -1 is really, really unimportant; so much so that it doesn't matter
@@ -852,6 +890,7 @@ double Tank::getDefenseTier() {
 	return getHighestDefenseTier(getHighestDefenseImportance());
 }
 
+/*
 bool Tank::isPartiallyOutOfBounds() {
 	return CollisionHandler::partiallyOutOfBoundsIgnoreEdge(this);
 } //doesn't care if touching edge
@@ -859,3 +898,4 @@ bool Tank::isPartiallyOutOfBounds() {
 bool Tank::isFullyOutOfBounds() {
 	return CollisionHandler::fullyOutOfBoundsIgnoreEdge(this);
 }
+*/

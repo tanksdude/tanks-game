@@ -6,6 +6,7 @@
 #include "wallmanager.h"
 #include "mylib.h"
 #include "resetthings.h"
+#include "rng.h"
 
 std::unordered_map<std::string, float> BigFunLevel::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -18,7 +19,7 @@ std::unordered_map<std::string, float> BigFunLevel::getWeights() const {
 }
 
 void BigFunLevel::initialize() {
-	int randPos = randFunc() * 5;
+	int randPos = RNG::randFunc() * 5;
 	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40, randPos);
 	//classic
 
@@ -35,7 +36,7 @@ void BigFunLevel::initialize() {
 	
 	std::string possiblePowers[] = { "speed", "invincible", "wallhack", "bounce", "big", "multishot" }; //6
 	//include invincible?
-	//life and shotgun may have existed around this time but not only are they not in yet I think the craziness (fun factor) would lower
+	//barrier and shotgun may have existed around this time but not only are they not in yet I think the craziness (fun factor) would lower
 	
 	//get attributes (actually just whether it can stack) of the powers
 	bool* canStack = new bool[6];

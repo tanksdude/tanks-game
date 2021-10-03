@@ -6,11 +6,11 @@ class VertexArray {
 private:
 	unsigned int rendererID;
 public:
-	VertexArray(const VertexBuffer& vb, const VertexBufferLayout& layout);
-	~VertexArray();
+	virtual void Bind() const = 0;
+	virtual void Unbind() const = 0;
 
-	void Bind() const;
-	void Unbind() const;
+	virtual unsigned int getRendererID() const = 0;
 
-	unsigned int getRendererID() const { return rendererID; }
+	static VertexArray* MakeVertexArray(const VertexBuffer& vb, const VertexBufferLayout& layout);
+	virtual ~VertexArray() { return; }
 };

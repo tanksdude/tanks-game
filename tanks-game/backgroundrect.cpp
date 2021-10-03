@@ -28,11 +28,11 @@ bool BackgroundRect::initializeGPU() {
 		2, 3, 0
 	};
 
-	vb = new VertexBuffer(background_positions, 4*2 * sizeof(float), GL_DYNAMIC_DRAW);
+	vb = VertexBuffer::MakeVertexBuffer(background_positions, 4*2 * sizeof(float), RenderingHints::static_draw);
 	VertexBufferLayout layout(2);
-	va = new VertexArray(*vb, layout);
+	va = VertexArray::MakeVertexArray(*vb, layout);
 
-	ib = new IndexBuffer(background_indices, 6);
+	ib = IndexBuffer::MakeIndexBuffer(background_indices, 6);
 
 	initialized_GPU = true;
 	return true;

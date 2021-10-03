@@ -39,9 +39,6 @@
     <ClCompile Include="resetthings.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="speedtankpower.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="tank.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -57,55 +54,22 @@
     <ClCompile Include="powerfunctionhelper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="speedbulletpower.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="speedpower.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="wallhackbulletpower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="wallhackpower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="wallhacktankpower.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="multishotbulletpower.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="multishotpower.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="multishottankpower.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="bouncebulletpower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="bouncepower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="bouncetankpower.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="homingbulletpower.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="homingpower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="homingtankpower.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="triplebulletpower.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="triplepower.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="tripletankpower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="mylib.cpp">
@@ -132,61 +96,25 @@
     <ClCompile Include="backgroundrect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="invinciblenamedbulletpower.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="invinciblenamedpower.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="invinciblenamedtankpower.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="bignamedbulletpower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="bignamedpower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="bignamedtankpower.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="megadeathbulletpower.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="megadeathpower.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="megadeathtankpower.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="grenadebulletpower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="grenadepower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="grenadetankpower.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="corridorlevel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="firenamedbulletpower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="firenamedpower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="firenamedtankpower.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="blastbulletpower.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="blastpower.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="blasttankpower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="bigfunlevel.cpp">
@@ -234,9 +162,6 @@
     <ClCompile Include="developermanager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="openglinitializer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="horizontallightning.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -246,13 +171,7 @@
     <ClCompile Include="priorityhandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="devlonginvinciblenamedbulletpower.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="devlonginvinciblenamedpower.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="devlonginvinciblenamedtankpower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="gamemanager.cpp">
@@ -273,13 +192,7 @@
     <ClCompile Include="concealedpowerupslevel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="bananabulletpower.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="bananapower.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="bananatankpower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="developerlevel2.cpp">
@@ -294,22 +207,10 @@
     <ClCompile Include="power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="oldbouncebulletpower.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="oldbouncetankpower.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="oldbouncepower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="oldbignamedbulletpower.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="oldbignamedpower.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="oldbignamedtankpower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="rectangularlightning.cpp">
@@ -324,22 +225,10 @@
     <ClCompile Include="verticallightning.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="inversionbulletpower.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="inversionpower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="inversiontankpower.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="godmodebulletpower.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="godmodepower.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="godmodetankpower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="hazard.cpp">
@@ -363,34 +252,40 @@
     <ClCompile Include="targetingturret.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="minesbulletpower.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="minespower.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="minestankpower.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="shotgunbulletpower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="shotgunpower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="shotguntankpower.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="trackingbulletpower.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="trackingpower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="trackingtankpower.cpp">
+    <ClCompile Include="hidingplaceslevel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="hidingplaceslevel.cpp">
+    <ClCompile Include="openglrenderingcontext.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="openglvertexbuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="openglvertexarray.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="openglindexbuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rng.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="simplevector2d.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="barrierpower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gamemainloop.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -443,9 +338,6 @@
     <ClInclude Include="speedpower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="speedtankpower.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="tank.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -461,55 +353,22 @@
     <ClInclude Include="powerfunctionhelper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="speedbulletpower.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="wallhackbulletpower.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="wallhackpower.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="wallhacktankpower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cannonpoint.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="multishotbulletpower.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="multishotpower.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="multishottankpower.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="bouncebulletpower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="bouncepower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="bouncetankpower.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="homingbulletpower.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="homingpower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="homingtankpower.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="triplebulletpower.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="triplepower.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="tripletankpower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mylib.h">
@@ -548,61 +407,25 @@
     <ClInclude Include="res\vendor\glm\gtx\transform.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="invinciblenamedbulletpower.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="invinciblenamedpower.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="invinciblenamedtankpower.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="bignamedbulletpower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="bignamedpower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="bignamedtankpower.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="megadeathbulletpower.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="megadeathpower.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="megadeathtankpower.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="grenadebulletpower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="grenadepower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="grenadetankpower.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="corridorlevel.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="firenamedbulletpower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="firenamedpower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="firenamedtankpower.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="blastbulletpower.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="blastpower.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="blasttankpower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="bigfunlevel.h">
@@ -650,9 +473,6 @@
     <ClInclude Include="developermanager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="openglinitializer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="horizontallightning.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -662,13 +482,7 @@
     <ClInclude Include="priorityhandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="devlonginvinciblenamedbulletpower.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="devlonginvinciblenamedpower.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="devlonginvinciblenamedtankpower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="point.h">
@@ -698,13 +512,7 @@
     <ClInclude Include="concealedpowerupslevel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="bananabulletpower.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="bananapower.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="bananatankpower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="developerlevel2.h">
@@ -713,22 +521,10 @@
     <ClInclude Include="oldemptylevel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="oldbouncebulletpower.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="oldbouncetankpower.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="oldbouncepower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="oldbignamedbulletpower.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="oldbignamedpower.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="oldbignamedtankpower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="rectangularlightning.h">
@@ -743,25 +539,13 @@
     <ClInclude Include="verticallightning.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inversionbulletpower.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="inversionpower.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="inversiontankpower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="doublepositionholder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="godmodebulletpower.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="godmodepower.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="godmodetankpower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="endgamehandler.h">
@@ -785,34 +569,52 @@
     <ClInclude Include="interactionboolholder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="minesbulletpower.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="minespower.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="minestankpower.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="shotgunbulletpower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="shotgunpower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="shotguntankpower.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="trackingbulletpower.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="trackingpower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="trackingtankpower.h">
+    <ClInclude Include="hidingplaceslevel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="hidingplaceslevel.h">
+    <ClInclude Include="drawablething.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="renderingcontext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="openglrenderingcontext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="softwarerenderingcontext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="nullrenderingcontext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="openglvertexbuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="openglvertexarray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="openglindexbuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rng.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="simplevector2d.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="barrierpower.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="gamemainloop.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

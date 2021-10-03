@@ -14,12 +14,12 @@ protected:
 	Circle* getBottomPoint();
 
 	//unsigned int maxBolts; // = 2;
-	virtual void refreshBolt(int num); //uses RectangularLightning::refreshBolt
+	virtual void refreshBolt(int num) override; //uses RectangularLightning::refreshBolt
 	virtual void simpleRefreshBolt(int num); //fast path for refreshing a bolt that goes from beginning to end
 	//virtual int getDefaultNumBoltPoints(double horzDist);
-	virtual void pushBolt(LightningBolt* l) { pushBolt(l, false); }
+	virtual void pushBolt(LightningBolt* l) override { pushBolt(l, false); }
 	virtual void pushBolt(LightningBolt*, bool simpleRefresh);
-	virtual void pushDefaultBolt(int num, bool randomize);
+	virtual void pushDefaultBolt(int num, bool randomize) override;
 
 private:
 	static VertexArray* background_va;
@@ -31,7 +31,7 @@ private:
 	int bolt_vb_length;
 	static bool initialized_GPU;
 	void local_reinitializeGPU(int length);
-	void streamBoltVertices(unsigned int boltNum);
+	void streamBoltVertices(unsigned int boltNum) const;
 
 	static bool initializeGPU();
 	void local_initializeGPU();
@@ -43,14 +43,15 @@ protected:
 
 public:
 	virtual std::string getName() const override { return getClassName(); }
-	static std::string getClassName() { return "vertical lightning"; }
+	static std::string getClassName() { return "vertical_lightning"; }
 
 	virtual bool validLocation() override;
 	virtual bool reasonableLocation() override;
 
 	//virtual void tick();
-	virtual void draw();
-	virtual void drawCPU();
+	virtual void draw() const override;
+	virtual void draw(double xpos, double ypos) const override;
+	virtual void poseDraw() const override;
 
 	VerticalLightning(double xpos, double ypos, double width, double height);
 	//VerticalLightning(double xpos, double ypos, double width, double height, bool flexible);

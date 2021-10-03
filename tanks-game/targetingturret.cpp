@@ -12,6 +12,7 @@
 #include "wallmanager.h"
 #include "hazardmanager.h"
 #include "collisionhandler.h"
+#include "rng.h"
 #include <iostream>
 
 VertexArray* TargetingTurret::va;
@@ -75,17 +76,17 @@ bool TargetingTurret::initializeGPU() {
 		indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
 	}
 
-	vb = new VertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float), GL_STATIC_DRAW);
+	vb = VertexBuffer::MakeVertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float), RenderingHints::dynamic_draw);
 	VertexBufferLayout layout(2);
-	va = new VertexArray(*vb, layout);
+	va = VertexArray::MakeVertexArray(*vb, layout);
 
-	ib = new IndexBuffer(indices, Circle::numOfSides*3);
+	ib = IndexBuffer::MakeIndexBuffer(indices, Circle::numOfSides*3);
 
 	//cannon:
 	float cannon_positions[4] = { 0.0f, 0.0f, 1.0f, 0.0f };
-	cannon_vb = new VertexBuffer(cannon_positions, 2*2 * sizeof(float));
+	cannon_vb = VertexBuffer::MakeVertexBuffer(cannon_positions, 2*2 * sizeof(float), RenderingHints::dynamic_draw);
 	VertexBufferLayout cannon_layout(2);
-	cannon_va = new VertexArray(*cannon_vb, cannon_layout);
+	cannon_va = VertexArray::MakeVertexArray(*cannon_vb, cannon_layout);
 
 	//targeting reticule:
 	//the circle is the same as the body
@@ -95,9 +96,9 @@ bool TargetingTurret::initializeGPU() {
 		-0.75f,  0.0f,  -1.25f,  0.0f,  //left
 		 0.0f,  -0.75f,  0.0f,  -1.25f  //down
 	};
-	reticule_vb = new VertexBuffer(reticule_positions, 16*2 * sizeof(float));
+	reticule_vb = VertexBuffer::MakeVertexBuffer(reticule_positions, 16*2 * sizeof(float));
 	VertexBufferLayout reticule_layout(2);
-	reticule_va = new VertexArray(*reticule_vb, reticule_layout);
+	reticule_va = VertexArray::MakeVertexArray(*reticule_vb, reticule_layout);
 
 	initialized_GPU = true;
 	return true;
@@ -138,7 +139,7 @@ void TargetingTurret::tick() {
 	//tickCount is unused... maybe targetingCount should replace it...
 	if (currentState == 0) { //either tracking a tank or doing nothing
 		//should this be else?
-		if(targeting) { //tracking tank
+		if (targeting) { //tracking tank
 			bool tankIsVisible = false; //singular
 			for (int i = 0; i < TankManager::getNumTanks(); i++) {
 				//check if 1. tank with gameID of trackingID exists, 2. no walls blocking line of sight to tank
@@ -193,7 +194,7 @@ void TargetingTurret::tick() {
 			for (int i = 0; i < TankManager::getNumTanks(); i++) {
 				if (distancesToTank[i] == minDist) {
 					tankIndices.push_back(i);
-				} else if(distancesToTank[i] < minDist) {
+				} else if (distancesToTank[i] < minDist) {
 					tankIndices.clear();
 					tankIndices.push_back(i);
 				}
@@ -203,7 +204,7 @@ void TargetingTurret::tick() {
 			if (tankIndices.size() == 1) {
 				indexOfTargetedTank = tankIndices[0];
 			} else {
-				indexOfTargetedTank = tankIndices[int(randFunc() * tankIndices.size())];
+				indexOfTargetedTank = tankIndices[int(RNG::randFunc() * tankIndices.size())];
 			}
 			
 			if (tankVisibility[indexOfTargetedTank]) {
@@ -302,30 +303,34 @@ bool TargetingTurret::reasonableLocation() {
 	return validLocation();
 }
 
-ColorValueHolder TargetingTurret::getColor() {
+ColorValueHolder TargetingTurret::getColor() const {
 	return ColorMixer::mix(stateColors[currentState], stateColors[(currentState+1)%maxState], constrain<double>(targetingCount/(tickCycle*stateMultiplier[currentState]), 0, 1));
 }
 
-ColorValueHolder TargetingTurret::getColor(short state) {
+ColorValueHolder TargetingTurret::getColor(short state) const {
 	if (state < 0) {
 		return stateColors[0];
 	}
 	return stateColors[state % maxState];
 }
 
-ColorValueHolder TargetingTurret::getReticuleColor() {
+ColorValueHolder TargetingTurret::getReticuleColor() const {
 	if (currentState == 0) {
 		return reticuleColors[0];
 	}
-	if(currentState == 1){
+	if (currentState == 1) {
 		return reticuleColors[1];
 	}
 	return ColorValueHolder(0, 0, 0); //shouldn't be drawn
 }
 
-void TargetingTurret::draw() {
+void TargetingTurret::draw() const {
+	draw(x, y);
+}
+
+void TargetingTurret::draw(double xpos, double ypos) const {
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, angle, x, y);
+	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, angle, xpos, ypos);
 	
 	//main body:
 	ColorValueHolder color = getColor();
@@ -343,7 +348,7 @@ void TargetingTurret::draw() {
 	//barrel:
 	glLineWidth(2.0f);
 	shader->setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 1.0f);
-	MVPM = Renderer::GenerateMatrix(r, 1, angle, x, y);
+	MVPM = Renderer::GenerateMatrix(r, 1, angle, xpos, ypos);
 	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*cannon_va, *shader, GL_LINES, 0, 2);
@@ -364,6 +369,11 @@ void TargetingTurret::draw() {
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
+void TargetingTurret::poseDraw() const {
+	//TODO
+	return;
+}
+
 void TargetingTurret::drawCPU() {
 	//nah
 }
@@ -375,11 +385,11 @@ CircleHazard* TargetingTurret::randomizingFactory(double x_start, double y_start
 	if (argc >= 1) {
 		angle = std::stod(argv[0]);
 	} else {
-		angle = randFunc() * 2*PI;
+		angle = RNG::randFunc() * 2*PI;
 	}
 	do {
-		xpos = randFunc2() * (area_width - 2*TANK_RADIUS/2) + (x_start + TANK_RADIUS/2);
-		ypos = randFunc2() * (area_height - 2*TANK_RADIUS/2) + (y_start + TANK_RADIUS/2);
+		xpos = RNG::randFunc2() * (area_width - 2*TANK_RADIUS/2) + (x_start + TANK_RADIUS/2);
+		ypos = RNG::randFunc2() * (area_height - 2*TANK_RADIUS/2) + (y_start + TANK_RADIUS/2);
 		CircleHazard* testTargetingTurret = new TargetingTurret(xpos, ypos, angle);
 		if (testTargetingTurret->reasonableLocation()) {
 			randomized = testTargetingTurret;

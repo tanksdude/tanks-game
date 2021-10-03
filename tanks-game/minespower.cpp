@@ -1,6 +1,4 @@
 #include "minespower.h"
-#include "minestankpower.h"
-#include "minesbulletpower.h"
 
 TankPower* MinesPower::makeTankPower() const {
 	return new MinesTankPower();
@@ -22,4 +20,67 @@ Power* MinesPower::factory() {
 
 MinesPower::MinesPower() {
 	return;
+}
+
+
+
+//#include "constants.h"
+#include <math.h>
+
+const double MinesTankPower::bulletDistance = 1.0/8;
+
+void MinesTankPower::tick(Tank* t) {
+	for (int i = 0; i < t->tankPowers.size(); i++) {
+		if (t->tankPowers[i] != this) {
+			if (t->tankPowers[i]->modifiesAdditionalShooting) {
+				//might also want to check addsShootingPoints
+				this->modifiesAdditionalShooting = false;
+				return;
+			}
+		}
+	}
+	this->modifiesAdditionalShooting = true;
+}
+
+void MinesTankPower::additionalShooting(Tank* t, CannonPoint c) {
+	t->regularMakeBullet(t->r * cos(t->velocity.getAngle() + c.angle) * bulletDistance, t->r * sin(t->velocity.getAngle() + c.angle) * bulletDistance, c.angle + t->velocity.getAngle());
+}
+
+void MinesTankPower::initialize(Tank* parent) {
+	//nothing
+}
+
+void MinesTankPower::removeEffects(Tank* parent) {
+	//nothing
+}
+
+BulletPower* MinesTankPower::makeBulletPower() const {
+	return new MinesBulletPower();
+}
+
+MinesTankPower::MinesTankPower() {
+	maxTime = 500;
+	timeLeft = 500;
+
+	modifiesAdditionalShooting = true;
+	overridesAdditionalShooting = true;
+}
+
+
+
+void MinesBulletPower::initialize(Bullet* parent) {
+	//nothing
+}
+
+void MinesBulletPower::removeEffects(Bullet* parent) {
+	//nothing
+}
+
+TankPower* MinesBulletPower::makeTankPower() const {
+	return new MinesTankPower();
+}
+
+MinesBulletPower::MinesBulletPower() {
+	timeLeft = 0;
+	maxTime = -1;
 }

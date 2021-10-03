@@ -34,3 +34,62 @@ public:
 	MinesPower();
 	static Power* factory();
 };
+
+
+
+class MinesTankPower : public TankPower {
+protected:
+	static const double bulletDistance; //percentage from center (beginning of cannon) to end of cannon
+
+public:
+	virtual void initialize(Tank* parent) override;
+	virtual void removeEffects(Tank* parent) override;
+
+	virtual void tick(Tank* t) override; //for updating modifiesAdditionalShooting based on whether there are any other powers that modify additionalShooting
+	//might need a secondary tick for this; one tick to do stuff, another tick to update interaction bools
+
+	virtual ColorValueHolder getColor() const override {
+		return MinesPower::getClassColor();
+	}
+	virtual double getColorImportance() const override {
+		return MinesPower::getClassColorImportance();
+	}
+
+	virtual TankPower* makeDuplicate() const override { return new MinesTankPower(); }
+	virtual BulletPower* makeBulletPower() const override;
+
+	//bool modifiesAdditionalShooting = false;
+	virtual void additionalShooting(Tank* parent, CannonPoint) override;
+	//bool overridesAdditionalShooting = false;
+	//bool additionalShootingCanWorkWithOthers = true;
+	//bool additionalShootingCanOnlyWorkIndividually = false;
+
+	virtual double getTankFiringRateMultiplier() const override { return .25; } //.5?
+	
+	MinesTankPower();
+};
+
+
+
+class MinesBulletPower : public BulletPower {
+public:
+	virtual void initialize(Bullet* parent) override;
+	virtual void removeEffects(Bullet* parent) override;
+
+	virtual ColorValueHolder getColor() const override {
+		return MinesPower::getClassColor();
+	}
+	virtual double getColorImportance() const override {
+		return MinesPower::getClassColorImportance();
+	}
+
+	virtual BulletPower* makeDuplicate() const override { return new MinesBulletPower(); }
+	virtual TankPower* makeTankPower() const override;
+
+	virtual double getBulletSpeedMultiplier() const override { return 0; }
+	//bool bulletSpeedStacks = false; //true?
+	virtual double getBulletAcceleration() const override { return 0; }
+	virtual double getBulletAccelerationImportance() const override { return .5; }
+
+	MinesBulletPower();
+};

@@ -1,6 +1,4 @@
 #include "oldbignamedpower.h"
-#include "oldbignamedtankpower.h"
-#include "oldbignamedbulletpower.h"
 
 TankPower* OldBigNamedPower::makeTankPower() const {
 	return new OldBigNamedTankPower();
@@ -22,4 +20,52 @@ Power* OldBigNamedPower::factory() {
 
 OldBigNamedPower::OldBigNamedPower() {
 	return;
+}
+
+
+
+void OldBigNamedTankPower::initialize(Tank* parent) {
+	//nothing
+}
+
+void OldBigNamedTankPower::removeEffects(Tank* parent) {
+	//nothing
+}
+
+BulletPower* OldBigNamedTankPower::makeBulletPower() const {
+	return new OldBigNamedBulletPower();
+}
+
+OldBigNamedTankPower::OldBigNamedTankPower() {
+	maxTime = 500;
+	timeLeft = 500;
+}
+
+
+
+InteractionBoolHolder OldBigNamedBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
+	return { false, true };
+}
+
+void OldBigNamedBulletPower::initialize(Bullet* parent) {
+	//nothing
+}
+
+void OldBigNamedBulletPower::removeEffects(Bullet* parent) {
+	//nothing
+}
+
+TankPower* OldBigNamedBulletPower::makeTankPower() const {
+	return new OldBigNamedTankPower();
+}
+
+OldBigNamedBulletPower::OldBigNamedBulletPower() {
+	timeLeft = 0;
+	maxTime = -1;
+
+	modifiesCollisionWithWall = true;
+	modifiedCollisionWithWallCanWorkWithOthers = false;
+
+	bulletSpeedStacks = true;
+	bulletRadiusStacks = true;
 }
