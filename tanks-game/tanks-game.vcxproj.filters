@@ -288,6 +288,9 @@
     <ClCompile Include="gamemainloop.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="shieldpower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -615,6 +618,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="gamemainloop.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="shieldpower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

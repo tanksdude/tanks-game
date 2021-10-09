@@ -80,31 +80,34 @@ void DeveloperManager::mouseWheelFunc(int wheel, int dir, int x, int y) {
 	std::cout << "DeveloperManager insertIdentifier: " << insertListIdentifiers[insertIndex] << std::endl;
 }
 
-std::vector<std::string> DeveloperManager::insertListIdentifiers = { "longinvincible", "temp", "banana", "mines", "godmode", "inversion", "stationary_turret" };
+std::vector<std::string> DeveloperManager::insertListIdentifiers = { "longinvincible", "temp", "banana", "barrier", "mines", "godmode", "inversion", "stationary_turret" };
 void DeveloperManager::devInsert(int x, int y) {
 	switch (insertIndex) {
 		case 0:
 			PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "longinvincible"));
-			return;
+			break; //return is okay because the power just needs to be added, nothing more, but I don't want to forget that you use break not return
 		case 1:
-			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla-extra", "barrier"));
-			return;
+			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla-extra", "shield"));
+			break;
 		case 2:
 			PowerupManager::pushPowerup(new PowerSquare(x, y, "banana"));
-			return;
+			break;
 		case 3:
-			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla-extra", "mines"));
-			return;
+			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla-extra", "barrier"));
+			break;
 		case 4:
-			PowerupManager::pushPowerup(new PowerSquare(x, y, "godmode"));
-			return;
+			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla-extra", "mines"));
+			break;
 		case 5:
-			PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "inversion"));
-			return;
+			PowerupManager::pushPowerup(new PowerSquare(x, y, "godmode"));
+			break;
 		case 6:
+			PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "inversion"));
+			break;
+		case 7:
 			std::string paras[3] = { std::to_string(x), std::to_string(y), std::to_string(0) };
 			HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(3, paras));
-			return;
+			break;
 	}
 	//no default
 }

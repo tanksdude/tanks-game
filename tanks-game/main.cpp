@@ -97,6 +97,7 @@
 #include "shotgunpower.h"
 #include "trackingpower.h"
 #include "barrierpower.h"
+#include "shieldpower.h"
 //dev powers:
 #include "devlonginvinciblenamedpower.h" //invincible but lasts a long time
 #include "inversionpower.h" //flips left and right turning
@@ -183,6 +184,7 @@ int main(int argc, char** argv) {
 	PowerupManager::addPowerFactory(ShotgunPower::factory);
 	PowerupManager::addPowerFactory(TrackingPower::factory);
 	PowerupManager::addPowerFactory(BarrierPower::factory);
+	PowerupManager::addPowerFactory(ShieldPower::factory);
 
 	//dev:
 	PowerupManager::addPowerFactory(DevLongInvincibleNamedPower::factory);

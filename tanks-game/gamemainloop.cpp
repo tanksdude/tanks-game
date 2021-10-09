@@ -812,16 +812,18 @@ void GameMainLoop::bulletToBullet() {
 			}
 			if (CollisionHandler::partiallyCollided(b_outer, b_inner)) {
 				InteractionBoolHolder result = EndGameHandler::determineWinner(b_outer, b_inner);
-				b_outerShouldDie = result.shouldDie;
+				//if (!b_outerShouldDie) {
+					b_outerShouldDie = result.shouldDie; //TODO: does this need to go in the conditional?
+				//}
 				b_innerShouldDie = result.otherShouldDie;
-			}
 
-			if (b_innerShouldDie) {
-				b_innerShouldDie = b_inner->kill();
 				if (b_innerShouldDie) {
-					BulletManager::deleteBullet(j);
-					if (i > j) {
-						i--;
+					b_innerShouldDie = b_inner->kill();
+					if (b_innerShouldDie) {
+						BulletManager::deleteBullet(j);
+						if (i > j) {
+							i--;
+						}
 					}
 				}
 			}
@@ -853,13 +855,14 @@ void GameMainLoop::bulletToTank() {
 				InteractionBoolHolder result = EndGameHandler::determineWinner(t, b);
 				shouldBeKilled = result.shouldDie;
 				killBullet = result.otherShouldDie;
-			}
 
-			if (killBullet) {
-				killBullet = b->kill();
-				if (killBullet) {
-					BulletManager::deleteBullet(j);
-				}
+				//if (killBullet) {
+					//killBullet = b->kill();
+					//if (killBullet) {
+						BulletManager::deleteBullet(j);
+					//}
+					//the bullet needs to be killed
+				//}
 			}
 		}
 

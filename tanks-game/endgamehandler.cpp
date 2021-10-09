@@ -96,6 +96,9 @@ InteractionBoolHolder EndGameHandler::determineWinner(Tank* t, Bullet* b) {
 			break;
 	}
 	if (tankDies) {
+		//if the bullet wants to kill the tank, the bullet must die
+		bulletDies = true;
+
 		tankDies = t->kill();
 		if (tankDies) {
 			killEvents.push_back({ b->getTeamID(), t->getTeamID() });
