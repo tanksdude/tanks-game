@@ -70,7 +70,7 @@ public:
 
 	virtual BulletPower* makeDuplicate() const override { return new OldBounceBulletPower(); } //I don't think bounces were passed on in JS
 	virtual TankPower* makeTankPower() const override;
-	
+
 	//bool modifiesCollisionWithWall = true;
 	virtual InteractionBoolHolder modifiedCollisionWithWall(Bullet*, Wall*) override;
 	//bool overridesCollisionWithWall = true;

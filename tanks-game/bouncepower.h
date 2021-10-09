@@ -69,7 +69,7 @@ public:
 
 	virtual BulletPower* makeDuplicate() const override;
 	virtual TankPower* makeTankPower() const override;
-	
+
 	//bool modifiesCollisionWithWall = true;
 	virtual InteractionBoolHolder modifiedCollisionWithWall(Bullet*, Wall*) override;
 	//bool overridesCollisionWithWall = true;

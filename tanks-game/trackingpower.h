@@ -71,7 +71,7 @@ public:
 	//bool overridesMovement = false;
 	//bool modifiedMovementCanWorkWithOthers = true;
 	//bool modifiedMovementCanOnlyWorkIndividually = false;
-	
+
 	//bool modifiesCollisionWithWall = true;
 	virtual InteractionBoolHolder modifiedCollisionWithWall(Bullet*, Wall*) override;
 	//bool overridesCollisionWithWall = true; //false means also use the default
