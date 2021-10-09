@@ -83,7 +83,7 @@ void CollisionHandler::edgeConstrain(Circle* c, double distFromEdge) {
 	}
 	if (c->y + c->r > (GAME_HEIGHT - distFromEdge)) {
 		c->y = (GAME_HEIGHT - distFromEdge) - c->r;
-	} else if (c->y - c->r < 0) {
+	} else if (c->y - c->r < distFromEdge) {
 		c->y = c->r + distFromEdge;
 	}
 }

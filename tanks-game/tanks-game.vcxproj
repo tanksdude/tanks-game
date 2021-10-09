@@ -215,6 +215,7 @@
     <ClCompile Include="shieldpower.cpp" />
     <ClCompile Include="shotgunpower.cpp" />
     <ClCompile Include="simplevector2d.cpp" />
+    <ClCompile Include="sneakyrewardlevel.cpp" />
     <ClCompile Include="speedpower.cpp" />
     <ClCompile Include="stationaryturret.cpp" />
     <ClCompile Include="tank.cpp" />
@@ -325,6 +326,7 @@
     <ClInclude Include="shieldpower.h" />
     <ClInclude Include="shotgunpower.h" />
     <ClInclude Include="simplevector2d.h" />
+    <ClInclude Include="sneakyrewardlevel.h" />
     <ClInclude Include="softwarerenderingcontext.h" />
     <ClInclude Include="speedpower.h" />
     <ClInclude Include="stationaryturret.h" />

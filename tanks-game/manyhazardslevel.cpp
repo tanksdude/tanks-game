@@ -103,6 +103,8 @@ void ManyHazardsLevel::initialize() {
 	//PowerupManager::pushPowerup(new PowerSquare(320, 160-50-40-30, 3));
 	//PowerupManager::pushPowerup(new PowerSquare(320, 160+50+40+30, 3));
 	//yes, they were evil
+
+	delete[] wallArray;
 }
 
 Level* ManyHazardsLevel::factory() {

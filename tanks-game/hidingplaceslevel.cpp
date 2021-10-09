@@ -4,6 +4,7 @@
 #include "tankmanager.h"
 #include "powerupmanager.h"
 #include "wallmanager.h"
+#include "hazardmanager.h"
 #include "mylib.h"
 #include "resetthings.h"
 #include "rng.h"
@@ -54,6 +55,11 @@ void HidingPlacesLevel::initialize() {
 		PositionHolder pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 80);
 		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, RandomLevel::powerAlternate(i, tempRand, "bounce", "speed"))); //speed=barrier here
 	}
+
+	//not here in the JS level but I feel it should be here:
+	std::string* paras = new std::string[4]{std::to_string(GAME_WIDTH/2-20/2), std::to_string(GAME_HEIGHT/2-20/2), std::to_string(20), std::to_string(20)};
+	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "no_bullet_zone")(4, paras));
+	delete[] paras;
 }
 
 Level* HidingPlacesLevel::factory() {
