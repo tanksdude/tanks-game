@@ -28,6 +28,8 @@ public: //for tanks and bullets and stuff (things that move around)
 
 	static void edgeConstrain(Rect*);
 	static void edgeConstrain(Circle*);
+	static void edgeConstrain(Rect*, double distFromEdge); //why? at the very least, it's better than powers having to do it themselves, I guess
+	static void edgeConstrain(Circle*, double distFromEdge);
 
 public: //collision detection and handling (just moving)
 	static bool partiallyCollided(const Rect*, const Rect*);

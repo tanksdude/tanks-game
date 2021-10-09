@@ -101,6 +101,7 @@
 //dev powers:
 #include "devlonginvinciblenamedpower.h" //invincible but lasts a long time
 #include "inversionpower.h" //flips left and right turning
+#include "devannoyingpower.h" //bullet doesn't hurt tank, merely pushes away
 //old powers:
 #include "oldbouncepower.h" //identical to bounce except it makes the tank smaller
 #include "oldbignamedpower.h" //big but moves at half speed (not quarter) and the speed stacks
@@ -189,6 +190,7 @@ int main(int argc, char** argv) {
 	//dev:
 	PowerupManager::addPowerFactory(DevLongInvincibleNamedPower::factory);
 	PowerupManager::addPowerFactory(InversionPower::factory);
+	PowerupManager::addPowerFactory(DevAnnoyingPower::factory);
 
 	//old:
 	PowerupManager::addPowerFactory(OldBouncePower::factory);

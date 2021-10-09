@@ -839,35 +839,73 @@ void GameMainLoop::bulletToBullet() {
 }
 
 void GameMainLoop::bulletToTank() {
-	//TODO: modernize (add default vs custom collision stuff)
-	for (int i = 0; i < TankManager::getNumTanks(); i++) {
-		Tank* t = TankManager::getTank(i);
+	//TODO: tanks and bullets both have powers, so which one gets custom collision priority? (tanks, probably)
+	for (int i = BulletManager::getNumBullets() - 1; i >= 0; i--) {
+		Bullet* b = BulletManager::getBullet(i);
 		bool shouldBeKilled = false;
+		bool wasKilled = false;
 
-		for (int j = BulletManager::getNumBullets() - 1; j >= 0; j--) {
-			Bullet* b = BulletManager::getBullet(j);
-			bool killBullet = false;
+		for (int j = 0; j < TankManager::getNumTanks(); j++) {
+			Tank* t = TankManager::getTank(j);
+			bool killTank = false;
+			bool modifiedTankCollision = false;
+			bool overridedTankCollision = false;
+			bool noMoreTankCollisionSpecials = false;
 
-			if (!b->canCollideWith(t)) {
-				continue;
+			if (b->canCollideWith(t)) {
+				for (int k = 0; k < b->bulletPowers.size(); k++) {
+					if (b->bulletPowers[k]->modifiesCollisionWithTank) {
+						if (b->bulletPowers[k]->modifiedCollisionWithTankCanOnlyWorkIndividually && modifiedTankCollision) {
+							continue;
+						}
+						if (noMoreTankCollisionSpecials) {
+							continue;
+						}
+
+						modifiedTankCollision = true;
+						if (b->bulletPowers[k]->overridesCollisionWithTank) {
+							overridedTankCollision = true;
+						}
+						if (!b->bulletPowers[k]->modifiedCollisionWithTankCanWorkWithOthers) {
+							noMoreTankCollisionSpecials = true;
+						}
+
+						InteractionBoolHolder check_temp = b->bulletPowers[k]->modifiedCollisionWithTank(b, t);
+						if (check_temp.shouldDie) {
+							shouldBeKilled = true;
+						}
+						if (check_temp.otherShouldDie) {
+							killTank = true;
+						}
+					}
+				}
+
+				if (!overridedTankCollision) {
+					if (CollisionHandler::partiallyCollided(t, b)) {
+						InteractionBoolHolder result = EndGameHandler::determineWinner(t, b);
+						killTank = result.shouldDie;
+						shouldBeKilled = result.otherShouldDie;
+
+						//if (shouldBeKilled) {
+							//shouldBeKilled = b->kill();
+							//if (shouldBeKilled) {
+								BulletManager::deleteBullet(i);
+								wasKilled = true;
+								break;
+							//}
+							//the bullet needs to be killed
+						//}
+					}
+				}
 			}
-			if (CollisionHandler::partiallyCollided(t, b)) {
-				InteractionBoolHolder result = EndGameHandler::determineWinner(t, b);
-				shouldBeKilled = result.shouldDie;
-				killBullet = result.otherShouldDie;
 
-				//if (killBullet) {
-					//killBullet = b->kill();
-					//if (killBullet) {
-						BulletManager::deleteBullet(j);
-					//}
-					//the bullet needs to be killed
-				//}
+			if (killTank) {
+				//TODO: proper implementation?
 			}
 		}
 
-		if (shouldBeKilled) {
-			//TODO: proper implementation?
+		if (shouldBeKilled && !wasKilled) {
+			BulletManager::deleteBullet(i);
 		}
 	}
 }

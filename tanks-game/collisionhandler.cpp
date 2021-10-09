@@ -62,6 +62,32 @@ void CollisionHandler::edgeConstrain(Circle* c) {
 	}
 }
 
+void CollisionHandler::edgeConstrain(Rect* r, double distFromEdge) {
+	if (r->x + r->w > (GAME_WIDTH - distFromEdge)) {
+		r->x = (GAME_WIDTH - distFromEdge) - r->w;
+	} else if (r->x < distFromEdge) {
+		r->x = distFromEdge;
+	}
+	if (r->y + r->h > (GAME_HEIGHT - distFromEdge)) {
+		r->y = (GAME_HEIGHT - distFromEdge) - r->h;
+	} else if (r->y < distFromEdge) {
+		r->y = distFromEdge;
+	}
+}
+
+void CollisionHandler::edgeConstrain(Circle* c, double distFromEdge) {
+	if (c->x + c->r > (GAME_WIDTH - distFromEdge)) {
+		c->x = (GAME_WIDTH - distFromEdge) - c->r;
+	} else if (c->x - c->r < distFromEdge) {
+		c->x = c->r + distFromEdge;
+	}
+	if (c->y + c->r > (GAME_HEIGHT - distFromEdge)) {
+		c->y = (GAME_HEIGHT - distFromEdge) - c->r;
+	} else if (c->y - c->r < 0) {
+		c->y = c->r + distFromEdge;
+	}
+}
+
 bool CollisionHandler::partiallyCollided(const Rect* a, const Rect* b) {
 	return ((a->x + a->w >= b->x) && (a->x <= b->x + b->w) && (a->y + a->h >= b->y) && (a->y <= b->y + b->h));
 }

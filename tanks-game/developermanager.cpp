@@ -80,14 +80,14 @@ void DeveloperManager::mouseWheelFunc(int wheel, int dir, int x, int y) {
 	std::cout << "DeveloperManager insertIdentifier: " << insertListIdentifiers[insertIndex] << std::endl;
 }
 
-std::vector<std::string> DeveloperManager::insertListIdentifiers = { "longinvincible", "temp", "banana", "barrier", "mines", "godmode", "inversion", "stationary_turret" };
+std::vector<std::string> DeveloperManager::insertListIdentifiers = { "longinvincible", "temp", "banana", "barrier", "shield", "mines", "godmode", "inversion", "stationary_turret" };
 void DeveloperManager::devInsert(int x, int y) {
 	switch (insertIndex) {
 		case 0:
 			PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "longinvincible"));
-			break; //return is okay because the power just needs to be added, nothing more, but I don't want to forget that you use break not return
+			break;
 		case 1:
-			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla-extra", "shield"));
+			PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "annoying"));
 			break;
 		case 2:
 			PowerupManager::pushPowerup(new PowerSquare(x, y, "banana"));
@@ -96,15 +96,18 @@ void DeveloperManager::devInsert(int x, int y) {
 			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla-extra", "barrier"));
 			break;
 		case 4:
-			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla-extra", "mines"));
+			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla-extra", "shield"));
 			break;
 		case 5:
-			PowerupManager::pushPowerup(new PowerSquare(x, y, "godmode"));
+			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla-extra", "mines"));
 			break;
 		case 6:
-			PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "inversion"));
+			PowerupManager::pushPowerup(new PowerSquare(x, y, "godmode"));
 			break;
 		case 7:
+			PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "inversion"));
+			break;
+		case 8:
 			std::string paras[3] = { std::to_string(x), std::to_string(y), std::to_string(0) };
 			HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(3, paras));
 			break;
