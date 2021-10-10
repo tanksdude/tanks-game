@@ -12,7 +12,7 @@
 * switch to 64-bit because no modern computer should be 32-bit
 * made some changes to the renderer
     * will be better next version
-* changed file structure somewhat
+* changed file structure and formatting somewhat
     * I kinda know what I'm doing now
     * normal C++ class and function stuff
 * replace x-comp, y-comp, angle variables with singular vector variable
@@ -23,10 +23,13 @@
     * all JS powers in
         * mines, shotgun, tracking
         * barrier (previously called life)
-    * shield
+    * shield (multi-hit barrier)
+    * [dev] annoying
+        * pushes tank away instead of killing it
 * levels:
     * all JS levels in?
         * "hiding places"
+    * "sneaky reward"
 * minor things:
     * minor overhaul (oxymoron?) of end game and score handling
     * inserting stuff through the dev menu is easier

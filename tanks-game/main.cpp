@@ -59,6 +59,7 @@
 //"extra" (is there even a reason for this?):
 #include "hidingplaceslevel.h"
 #include "sneakyrewardlevel.h"
+#include "lightningcornerslevel.h"
 //dev levels:
 #include "developerlevel0.h"
 #include "developerlevel1.h"
@@ -208,6 +209,7 @@ int main(int argc, char** argv) {
 	//"extra":
 	LevelManager::addLevelFactory(HidingPlacesLevel::factory);
 	LevelManager::addLevelFactory(SneakyRewardLevel::factory);
+	LevelManager::addLevelFactory(LightningCornersLevel::factory);
 
 	//dev:
 	LevelManager::addLevelFactory(DeveloperLevel0::factory);
