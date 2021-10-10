@@ -24,7 +24,10 @@ void ManyHazardsLevel::initialize() {
 	int randPos = RNG::randFunc() * 5;
 	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40, randPos);
 
-	ColorValueHolder color = ColorValueHolder(0xDD/255.0, .5f, .25f);
+	ColorValueHolder color = getDefaultColor();
+	int tempRand;
+	PositionHolder pos;
+	std::string* paras;
 
 	PositionHolder* wallArray = new PositionHolder[4];
 	for (int i = 0; i < 4; i++) {
@@ -32,10 +35,10 @@ void ManyHazardsLevel::initialize() {
 		WallManager::pushWall(new Wall(wallArray[i].x, wallArray[i].y, 32, 128, color));
 	}
 
-	std::string* paras = new std::string[4]{std::to_string(GAME_WIDTH/2 - 10), std::to_string(128), std::to_string(10*2), std::to_string(GAME_HEIGHT - 128*2)};
+	paras = new std::string[4]{std::to_string(GAME_WIDTH/2 - 10), std::to_string(128), std::to_string(10*2), std::to_string(GAME_HEIGHT - 128*2)};
 	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "no_bullet_zone")(4, paras));
 	delete[] paras;
-	
+
 	const int TURRET_COUNT = 16; //stationary turret count, not regular turret count
 	const double turretDistance = (wallArray[3].x - (wallArray[0].x+32)) / (TURRET_COUNT+1);
 	for (int i = 0; i < TURRET_COUNT; i++) {
@@ -53,7 +56,7 @@ void ManyHazardsLevel::initialize() {
 	//^^^ this does not result in the exact placements from JS; in JS, those values were then manually rounded to a nice integer
 
 	for (int i = 0; i < 4; i++) {
-		PositionHolder pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2 - ((wallArray[0].x+32) + (TANK_RADIUS/2 * 1.5)), 32 + 20 + (TANK_RADIUS/2 * 2.5));
+		pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2 - ((wallArray[0].x+32) + (TANK_RADIUS/2 * 1.5)), 32 + 20 + (TANK_RADIUS/2 * 2.5));
 		std::string* paras = new std::string[3]{std::to_string(pos.x), std::to_string(pos.y), std::to_string(PI * (i%2))};
 		HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "targeting_turret")(3, paras));
 		delete[] paras;
@@ -65,13 +68,13 @@ void ManyHazardsLevel::initialize() {
 	WallManager::pushWall(new Wall(wallPos2.x, wallPos2.y, 160, 20, color));
 
 	for (int i = 0; i < 4; i++) {
-		PositionHolder pos = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 160/2, (GAME_HEIGHT - 128*2)/2, (GAME_WIDTH/2 - 160/2 - (wallArray[0].x+32)), 20);
+		pos = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 160/2, (GAME_HEIGHT - 128*2)/2, (GAME_WIDTH/2 - 160/2 - (wallArray[0].x+32)), 20);
 		std::string* paras = new std::string[4]{std::to_string(pos.x), std::to_string(pos.y), std::to_string(GAME_WIDTH/2 - 160/2 - (wallArray[0].x+32)), std::to_string(20)};
 		HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "horizontal_lightning")(4, paras));
 		delete[] paras;
 	}
 
-	PositionHolder pos = RandomLevel::getSymmetricPowerupPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 160/4 * 1.5);
+	pos = RandomLevel::getSymmetricPowerupPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 160/4 * 1.5);
 	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "vanilla-extra", "barrier")); //replace barrier with speed?
 	pos = RandomLevel::getSymmetricPowerupPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 160/4 * 1.5);
 	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "vanilla-extra", "barrier"));
@@ -86,7 +89,7 @@ void ManyHazardsLevel::initialize() {
 	delete[] paras;
 
 	for (int i = 0; i < 4; i++) {
-		PositionHolder pos = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 160/4, GAME_HEIGHT/2 - wallPos1.y, 160/4, 50);
+		pos = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 160/4, GAME_HEIGHT/2 - wallPos1.y, 160/4, 50);
 		std::string* paras = new std::string[4]{std::to_string(pos.x), std::to_string(pos.y), std::to_string(160/4), std::to_string(50)};
 		HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "lightning")(4, paras));
 		delete[] paras;

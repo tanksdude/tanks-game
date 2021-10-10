@@ -6,16 +6,12 @@ class SneakyRewardLevel : public Level {
 	//"annoying reward" is another possibility
 public:
 	std::string getName() const override { return "sneaky_reward"; }
+	ColorValueHolder getDefaultColor() const override;
 	std::vector<std::string> getLevelTypes() const override {
 		std::vector<std::string> types = std::vector<std::string>{ "vanilla-extra", "random-vanilla" };
 		return types;
 	}
-	std::unordered_map<std::string, float> getWeights() const override {
-		std::unordered_map<std::string, float> weights;
-		weights.insert({ "vanilla-extra", .5f });
-		weights.insert({ "random-vanilla", .125f }); //should this even appear?
-		return weights;
-	}
+	std::unordered_map<std::string, float> getWeights() const override;
 	void initialize() override;
 
 	SneakyRewardLevel();

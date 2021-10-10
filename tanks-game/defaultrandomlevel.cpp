@@ -18,12 +18,22 @@ std::unordered_map<std::string, float> DefaultRandomLevel::getWeights() const {
 	return weights;
 }
 
+ColorValueHolder DefaultRandomLevel::getDefaultColor() const {
+	//return ColorValueHolder(RNG::randFunc2(), RNG::randFunc2(), RNG::randFunc2());
+	return currentColor;
+}
+
 void DefaultRandomLevel::initialize() { //still needs a lot of work
 	int randPos = RNG::randFunc() * 5;
 	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), randPos);
 
-	ColorValueHolder randColor(RNG::randFunc2(), RNG::randFunc2(), RNG::randFunc2());
-	
+	//TODO: should this go in the constructor or initialize()?
+	currentColor = ColorValueHolder(RNG::randFunc2(), RNG::randFunc2(), RNG::randFunc2());
+	ColorValueHolder randColor = getDefaultColor();
+	int tempRand;
+	PositionHolder pos;
+	std::string* paras;
+
 	//some random walls
 	for (int i = 0; i < 16; i++) {
 		WallManager::pushWall(RandomLevel::makeNewRandomWall(TANK_RADIUS*2.5*2, TANK_RADIUS*2, GAME_WIDTH - 2*(TANK_RADIUS*2.5*2), GAME_HEIGHT - 2*(TANK_RADIUS*2), randColor));
@@ -70,7 +80,7 @@ void DefaultRandomLevel::initialize() { //still needs a lot of work
 		}
 	}
 	//std::cout << (HazardManager::getNumCircleHazards() + HazardManager::getNumCircleHazards()) << std::endl;
-	
+
 	//randomize powers:
 	int powerNum = PowerupManager::getNumPowerTypes("random-vanilla");
 	std::string* possiblePowers = new std::string[powerNum];
@@ -93,11 +103,13 @@ void DefaultRandomLevel::initialize() { //still needs a lot of work
 	for (int i = 0; i < 4; i++) {
 		int count = weightedSelect<float>(choosingPowerWeights, 3) + 1; //{1, 2, 3}
 		std::string* randPowers = RandomLevel::getRandomPowers(count, canStack, possiblePowers, powerWeights, powerNum);
-		PositionHolder pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-60, GAME_HEIGHT/2-16);
+		pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-60, GAME_HEIGHT/2-16);
 		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "random-vanilla", randPowers, count));
 		delete[] randPowers;
 	}
 
+	delete[] circleHazardWeights;
+	delete[] rectHazardWeights;
 	delete[] possiblePowers;
 	delete[] canStack;
 	delete[] powerWeights;

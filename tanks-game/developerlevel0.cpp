@@ -9,18 +9,36 @@
 #include "resetthings.h"
 #include "rng.h"
 
+ColorValueHolder DeveloperLevel0::getDefaultColor() const {
+	//return ColorValueHolder(RNG::randFunc2(), RNG::randFunc2(), RNG::randFunc2());
+	return currentColor;
+}
+
+std::unordered_map<std::string, float> DeveloperLevel0::getWeights() const {
+	std::unordered_map<std::string, float> weights;
+	weights.insert({ "dev", .5f });
+	weights.insert({ "random-dev", .5f });
+	return weights;
+}
+
 void DeveloperLevel0::initialize() {
 	int randPos = RNG::randFunc() * 5;
 	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), randPos);
 
-	ColorValueHolder randColor(RNG::randFunc2(), RNG::randFunc2(), RNG::randFunc2());
+	//TODO: should this go in the constructor or initialize()?
+	currentColor = ColorValueHolder(RNG::randFunc2(), RNG::randFunc2(), RNG::randFunc2());
+	ColorValueHolder randColor = getDefaultColor();
+	int tempRand;
+	PositionHolder pos;
+	std::string* paras;
 
 	for (int i = 0; i < 16; i++) {
 		WallManager::pushWall(RandomLevel::makeNewRandomWall(TANK_RADIUS*2.5, TANK_RADIUS*2, GAME_WIDTH - 2*(TANK_RADIUS*2.5), GAME_HEIGHT - 2*(TANK_RADIUS*2), randColor));
 	}
 
-	std::string paras[3] = {std::to_string(GAME_WIDTH/2), std::to_string(GAME_HEIGHT/2), std::to_string(RNG::randFunc() * 2*PI)};
+	paras = new std::string[3]{std::to_string(GAME_WIDTH/2), std::to_string(GAME_HEIGHT/2), std::to_string(RNG::randFunc() * 2*PI)};
 	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(3, paras));
+	delete[] paras;
 
 	//assumption: TANK_RADIUS=16 (why it would ever be changed is beyond me)
 	PowerupManager::pushPowerup(new PowerSquare(20, 20, "speed"));

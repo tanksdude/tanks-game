@@ -6,9 +6,25 @@
 #include "powerupmanager.h"
 #include "resetthings.h"
 
+ColorValueHolder DeveloperLevel2::getDefaultColor() const {
+	//there are no walls in this level...
+	return ColorValueHolder(0.25f, 0.25f, 0.25f);
+}
+
+std::unordered_map<std::string, float> DeveloperLevel2::getWeights() const {
+	std::unordered_map<std::string, float> weights;
+	weights.insert({ "dev", .5f });
+	weights.insert({ "random-dev", .5f });
+	return weights;
+}
+
 void DeveloperLevel2::initialize() {
 	//primary purpose: banana testing
 	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 20, GAME_HEIGHT/2, true);
+
+	int tempRand;
+	PositionHolder pos;
+	std::string* paras;
 
 	//assumption: TANK_RADIUS=16 (why it would ever be changed is beyond me)
 	PowerupManager::pushPowerup(new PowerSquare(20, 20, "speed"));

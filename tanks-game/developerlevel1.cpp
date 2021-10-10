@@ -8,10 +8,24 @@
 #include "resetthings.h"
 //#include <iostream>
 
+ColorValueHolder DeveloperLevel1::getDefaultColor() const {
+	return ColorValueHolder(0.25f, 0.25f, 0.25f);
+}
+
+std::unordered_map<std::string, float> DeveloperLevel1::getWeights() const {
+	std::unordered_map<std::string, float> weights;
+	weights.insert({ "dev", .5f });
+	weights.insert({ "random-dev", .5f });
+	return weights;
+}
+
 void DeveloperLevel1::initialize() {
 	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 20, GAME_HEIGHT/2, true);
 
-	ColorValueHolder wallColor(.25f, .25f, .25f);
+	ColorValueHolder wallColor = getDefaultColor();
+	int tempRand;
+	PositionHolder pos;
+	std::string* paras;
 
 	PositionHolder wallPos1 = RandomLevel::getSymmetricWallPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 20, 80);
 	WallManager::pushWall(new Wall(wallPos1.x, wallPos1.y, 20, 80, wallColor));
@@ -19,7 +33,7 @@ void DeveloperLevel1::initialize() {
 	WallManager::pushWall(new Wall(wallPos2.x, wallPos2.y, 20, 80, wallColor));
 	WallManager::pushWall(new Wall(wallPos2.x, GAME_HEIGHT-20, 20, 20, wallColor));
 
-	std::string* paras = new std::string[4]{std::to_string(wallPos2.x), std::to_string(wallPos2.y+80), std::to_string(20), std::to_string((GAME_HEIGHT-20)-(wallPos2.y+80))};
+	paras = new std::string[4]{std::to_string(wallPos2.x), std::to_string(wallPos2.y+80), std::to_string(20), std::to_string((GAME_HEIGHT-20)-(wallPos2.y+80))};
 	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "vertical_lightning")(4, paras));
 	delete[] paras;
 	paras = new std::string[4]{std::to_string(wallPos1.x), std::to_string(wallPos1.y+80), std::to_string(20), std::to_string(GAME_HEIGHT-(wallPos1.y+80))};

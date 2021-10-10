@@ -15,10 +15,13 @@ std::unordered_map<std::string, float> OldEmptyLevel::getWeights() const {
 void OldEmptyLevel::initialize() {
 	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40, GAME_HEIGHT/2, true);
 
-	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
+	ColorValueHolder color = getDefaultColor();
+	int tempRand;
+	PositionHolder pos;
+	std::string* paras;
 
 	for (int i = 0; i < 4; i++) {
-		PositionHolder pos = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 240-32, GAME_HEIGHT/2-128, 32, 128);
+		pos = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 240-32, GAME_HEIGHT/2-128, 32, 128);
 		WallManager::pushWall(new Wall(pos.x, pos.y, 32, 128, color));
 	}
 }
