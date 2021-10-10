@@ -120,9 +120,9 @@ public:
 	void draw() const override;
 	void draw(double xpos, double ypos) const override;
 	void poseDraw() const override;
-	void drawCPU();
-	void drawCPU(double, double);
+	void drawCPU() const;
+	void drawCPU(double, double) const;
 	std::string getName() { return name; }
-	
+
 	~Tank();
 };

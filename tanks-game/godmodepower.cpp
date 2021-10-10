@@ -2,6 +2,14 @@
 #include "colormixer.h"
 #include "gamemanager.h"
 
+std::unordered_map<std::string, float> GodmodePower::getWeights() const {
+	std::unordered_map<std::string, float> weights;
+	weights.insert({ "vanilla", .5f });
+	//weights.insert({ "random-vanilla", .5f });
+	weights.insert({ "random", .5f });
+	return weights;
+}
+
 ColorValueHolder GodmodePower::getClassColor() {
 	return ColorMixer::HSVtoRGB(fmod(GameManager::getTickCount(), 360), .75, .75);
 }

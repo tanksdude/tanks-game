@@ -68,6 +68,14 @@ PowerSquare::PowerSquare(double x_, double y_, std::string* types, std::string* 
 	}
 }
 
+PowerSquare::PowerSquare(const PowerSquare& other) {
+	this->numOfPowers = other.numOfPowers;
+	this->heldPowers = new Power*[numOfPowers];
+	for (int i = 0; i < numOfPowers; i++) {
+		heldPowers[i] = PowerupManager::getPowerFactory(other.heldPowers[i]->getPowerTypes()[0], other.heldPowers[i]->getName())();
+	}
+}
+
 PowerSquare::~PowerSquare() {
 	for (int i = 0; i < numOfPowers; i++) {
 		delete heldPowers[i];

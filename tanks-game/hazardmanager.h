@@ -110,4 +110,8 @@ public:
 	static std::string getRectHazardName(std::string type, int index);
 	static int getNumCircleHazardTypes(std::string type);
 	static int getNumRectHazardTypes(std::string type);
+
+private:
+	HazardManager() {}
+	HazardManager(const HazardManager&) {}
 };

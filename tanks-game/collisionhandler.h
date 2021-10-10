@@ -91,4 +91,8 @@ public: //stuff that gives a location of intersection (only use if collision is 
 public: //other stuff
 	static bool lineLineCollision(double line1X, double line1Y, double line2X, double line2Y, double line3X, double line3Y, double line4X, double line4Y);
 	static bool lineRectCollision(double line1X, double line1Y, double line2X, double line2Y, const Rect* r);
+
+private:
+	CollisionHandler() {}
+	CollisionHandler(const CollisionHandler&) {}
 };

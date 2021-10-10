@@ -54,8 +54,7 @@ void Renderer::windowResizeFunc(int w, int h) {
 		Renderer::proj = glm::ortho(0.0f, float(GAME_WIDTH*scale), 0.0f, (float)GAME_HEIGHT); //GPU
 		Renderer::gamewindow_width = Renderer::window_height * (GAME_WIDTH/GAME_HEIGHT);
 		Renderer::gamewindow_height = Renderer::window_height;
-	}
-	else { //too tall
+	} else { //too tall
 		scale = ((appXmax - appXmin) / w) / ((appYmax - appYmin) / h);
 		center = 0;
 		winYmin = center - (center - appYmin) * scale;
@@ -212,7 +211,7 @@ inline void Renderer::bindIndexBuffer(const IndexBuffer& ib) {
 
 Shader* Renderer::getShader(std::string s) {
 	//return shaderCache[s];
-	
+
 	auto get = shaderCache.find(s);
 	if (get != shaderCache.end()) {
 		Shader* shader = shaderCache[s];
@@ -220,7 +219,7 @@ Shader* Renderer::getShader(std::string s) {
 		return shader;
 	}
 	//else shader wasn't found
-	std::cout << "Could not find '" << s << "' shader!" << std::endl;
+	std::cerr << "Could not find '" << s << "' shader!" << std::endl;
 
 	//return the magenta shader, just so there's something
 	get = shaderCache.find("default");
@@ -230,7 +229,7 @@ Shader* Renderer::getShader(std::string s) {
 		return shader;
 	}
 	//else big uh-oh
-	std::cout << "Could not find the default shader!" << std::endl;
+	std::cerr << "Could not find the default shader!" << std::endl;
 
 	return nullptr; //default magenta shader is missing
 }

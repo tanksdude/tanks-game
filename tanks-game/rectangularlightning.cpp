@@ -33,7 +33,7 @@ RectangularLightning::RectangularLightning(double xpos, double ypos, double widt
 	double temp[2] = { 2, 2 };
 	std::copy(temp, temp+2, stateMultiplier);
 	currentlyActive = false;
-	
+
 	maxBolts = 1;
 	lengthOfBolt = 4; //TODO: figure out logic for constraining this to make it look pretty
 	bolts.reserve(maxBolts);
@@ -102,7 +102,7 @@ void RectangularLightning::local_initializeGPU() {
 		positions[i*2+1] = bolts[0]->positions[i*2+1];
 	}
 	bolt_vb_length = bolts[0]->length;
-	
+
 	bolt_vb = VertexBuffer::MakeVertexBuffer(positions, bolts[0]->length*2 * sizeof(float), RenderingHints::stream_draw);
 	VertexBufferLayout layout(2);
 	bolt_va = VertexArray::MakeVertexArray(*bolt_vb, layout);
@@ -116,7 +116,7 @@ void RectangularLightning::local_reinitializeGPU(int length) { //does not seed t
 
 	float* positions = new float[length*2];
 	bolt_vb_length = length;
-	
+
 	bolt_vb = VertexBuffer::MakeVertexBuffer(positions, length*2 * sizeof(float), RenderingHints::stream_draw);
 	VertexBufferLayout layout(2);
 	bolt_va = VertexArray::MakeVertexArray(*bolt_vb, layout);
@@ -200,7 +200,7 @@ void RectangularLightning::specialEffectCircleCollision(Circle* c) {
 				ypos = c->y; //circle's y-position is fine
 			}
 			//std::cout << "xpos: " << (xpos-c->x) << ", ypos: " << (ypos-c->y) << std::endl;
-			
+
 			DoublePositionHolder intersections = CollisionHandler::circleLineIntersection(c, xpos, ypos, centerPoint->x, centerPoint->y);
 			if (c->x < x + w/2) {
 				intersectionX = std::max(intersections.x1, intersections.x2);
@@ -389,7 +389,7 @@ void RectangularLightning::draw() const {
 void RectangularLightning::draw(double xpos, double ypos) const {
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 MVPM = Renderer::GenerateMatrix(w, h, 0, xpos, ypos);
-	
+
 	//background:
 	//TODO: make drawUnder() a thing
 	ColorValueHolder color = getBackgroundColor();

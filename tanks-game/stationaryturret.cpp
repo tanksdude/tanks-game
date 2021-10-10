@@ -211,7 +211,7 @@ void StationaryTurret::draw() const {
 void StationaryTurret::draw(double xpos, double ypos) const {
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, angle, xpos, ypos);
-	
+
 	//main body:
 	ColorValueHolder color = getColor();
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
@@ -246,7 +246,7 @@ void StationaryTurret::drawCPU() {
 	//main body:
 	ColorValueHolder color = getColor();
 	glColor3f(color.getRf(), color.getGf(), color.getBf());
-	
+
 	glBegin(GL_POLYGON);
 
 	for (int i = 0; i < Circle::numOfSides; i++) {

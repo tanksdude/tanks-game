@@ -33,7 +33,7 @@ CircularLightning::CircularLightning(double xpos, double ypos, double radius) {
 	std::copy(temp, temp+2, stateMultiplier);
 	currentlyActive = false;
 	//flexible = false;
-	
+
 	maxBolts = 1;
 	lengthOfBolt = 4;
 	bolts.reserve(maxBolts);
@@ -102,7 +102,7 @@ void CircularLightning::local_initializeGPU() {
 		positions[i*2+1] = bolts[0]->positions[i*2+1];
 	}
 	bolt_vb_length = bolts[0]->length;
-	
+
 	bolt_vb = VertexBuffer::MakeVertexBuffer(positions, bolts[0]->length*2 * sizeof(float), RenderingHints::stream_draw);
 	VertexBufferLayout layout(2);
 	bolt_va = VertexArray::MakeVertexArray(*bolt_vb, layout);
@@ -116,7 +116,7 @@ void CircularLightning::local_reinitializeGPU(int length) { //does not seed the 
 
 	float* positions = new float[length*2];
 	bolt_vb_length = length;
-	
+
 	bolt_vb = VertexBuffer::MakeVertexBuffer(positions, length*2 * sizeof(float), RenderingHints::stream_draw);
 	VertexBufferLayout layout(2);
 	bolt_va = VertexArray::MakeVertexArray(*bolt_vb, layout);
@@ -336,7 +336,7 @@ void CircularLightning::draw() const {
 void CircularLightning::draw(double xpos, double ypos) const {
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, 0, xpos, ypos);
-	
+
 	//background:
 	//TODO: make drawUnder() a thing
 	ColorValueHolder color = getBackgroundColor();

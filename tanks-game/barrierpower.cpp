@@ -1,5 +1,12 @@
 #include "barrierpower.h"
 
+std::unordered_map<std::string, float> BarrierPower::getWeights() const {
+	std::unordered_map<std::string, float> weights;
+	weights.insert({ "vanilla-extra", .25f });
+	weights.insert({ "supermix", .5f });
+	return weights;
+}
+
 TankPower* BarrierPower::makeTankPower() const {
 	return new BarrierTankPower();
 }

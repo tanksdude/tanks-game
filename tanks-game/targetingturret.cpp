@@ -206,7 +206,7 @@ void TargetingTurret::tick() {
 			} else {
 				indexOfTargetedTank = tankIndices[int(RNG::randFunc() * tankIndices.size())];
 			}
-			
+
 			if (tankVisibility[indexOfTargetedTank]) {
 				Tank* t = TankManager::getTank(indexOfTargetedTank);
 				trackingID = t->getGameID();
@@ -331,7 +331,7 @@ void TargetingTurret::draw() const {
 void TargetingTurret::draw(double xpos, double ypos) const {
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, angle, xpos, ypos);
-	
+
 	//main body:
 	ColorValueHolder color = getColor();
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());

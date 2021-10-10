@@ -24,4 +24,8 @@ public:
 	static PriorityResult determinePriority(Tank* a, RectHazard* b);
 	static PriorityResult determinePriority(Bullet* a, CircleHazard* b);
 	static PriorityResult determinePriority(Bullet* a, RectHazard* b);
+
+private:
+	PriorityHandler() {}
+	PriorityHandler(const PriorityHandler&) {}
 };

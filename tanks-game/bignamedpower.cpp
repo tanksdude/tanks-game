@@ -1,5 +1,13 @@
 #include "bignamedpower.h"
 
+std::unordered_map<std::string, float> BigNamedPower::getWeights() const {
+	std::unordered_map<std::string, float> weights;
+	weights.insert({ "vanilla", .5f });
+	weights.insert({ "random-vanilla", .5f });
+	weights.insert({ "random", .5f });
+	return weights;
+}
+
 TankPower* BigNamedPower::makeTankPower() const {
 	return new BigNamedTankPower();
 }

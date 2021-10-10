@@ -8,11 +8,7 @@ public:
 		std::vector<std::string> types = std::vector<std::string>{ "vanilla-extra" };
 		return types;
 	}
-	virtual std::unordered_map<std::string, float> getWeights() const override {
-		std::unordered_map<std::string, float> weights;
-		weights.insert({ "vanilla-extra", .25f });
-		return weights;
-	}
+	virtual std::unordered_map<std::string, float> getWeights() const override;
 	virtual std::vector<std::string> getPowerAttributes() const override {
 		//conflicted on this one, like bounce, though leaning much more towards "doesn't stack" than "does stack"
 		//also somewhat conflicted on mixing because it just doesn't mix well

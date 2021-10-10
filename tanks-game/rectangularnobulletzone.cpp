@@ -21,7 +21,7 @@ RectangularNoBulletZone::RectangularNoBulletZone(double xpos, double ypos, doubl
 	h = height;
 	gameID = GameManager::getNextID();
 	teamID = HAZARD_TEAM;
-	
+
 	canAcceptPowers = false;
 
 	modifiesTankCollision = true;
@@ -116,7 +116,7 @@ void RectangularNoBulletZone::draw() const {
 void RectangularNoBulletZone::draw(double xpos, double ypos) const {
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 MVPM = Renderer::GenerateMatrix(w, h, 0, xpos, ypos);
-	
+
 	//TODO: make drawUnder() a thing
 	ColorValueHolder color = GeneralizedNoBulletZone::getColor();
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());

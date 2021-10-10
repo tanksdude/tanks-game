@@ -12,4 +12,8 @@ public:
 	static double getTickCount();
 	static long getNextID();
 	static void Initialize();
+
+private:
+	GameManager() {}
+	GameManager(const GameManager&) {}
 };

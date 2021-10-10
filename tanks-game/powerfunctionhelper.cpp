@@ -139,7 +139,7 @@ void PowerFunctionHelper::equallySpacedCannonPoints(Tank*, std::vector<CannonPoi
 bool PowerFunctionHelper::homingGeneric(Bullet* b, double maxAngleMove, bool moveByAngle) { //moveByAngle = target based on angle differences, not distance
 	//TODO: when team mode is a thing (or single-player campaign?), this will need an update
 	char targetTank;
-	
+
 	if (moveByAngle) {
 		double* angleDiffs = new double[TankManager::getNumTanks()];
 		for (int i = 0; i < TankManager::getNumTanks(); i++) {
@@ -181,7 +181,7 @@ bool PowerFunctionHelper::homingGeneric(Bullet* b, double maxAngleMove, bool mov
 	double posTargetAngle = fmod(targetAngle + 2*PI, 2*PI);
 	double bulletAngle = (b->getAngle()>PI ? b->getAngle() - 2*PI : b->getAngle());
 	//std::cout << targetAngle << " " << bulletAngle << " " << maxAngleMove << std::endl;
-	
+
 	if ((abs(targetAngle - bulletAngle) <= maxAngleMove) || (abs(fmod(targetAngle + PI, 2*PI) - fmod(bulletAngle + PI, 2*PI)) <= maxAngleMove)) {
 		b->velocity.setAngle(targetAngle);
 	} else {
@@ -199,6 +199,6 @@ bool PowerFunctionHelper::homingGeneric(Bullet* b, double maxAngleMove, bool mov
 			}
 		}
 	}
-	
+
 	return true; //could target something
 }

@@ -22,7 +22,7 @@ bool VerticalLightning::initialized_GPU = false;
 
 VerticalLightning::VerticalLightning(double xpos, double ypos, double width, double height) : RectangularLightning(xpos,ypos,width,height,true) {
 	//flexible = false;
-	
+
 	maxBolts = 2;
 	//lengthOfBolt = 4;
 	bolts.reserve(maxBolts);
@@ -89,7 +89,7 @@ void VerticalLightning::local_initializeGPU() {
 		positions[i*2+1] = bolts[0]->positions[i*2+1];
 	}
 	bolt_vb_length = bolts[0]->length;
-	
+
 	bolt_vb = VertexBuffer::MakeVertexBuffer(positions, bolts[0]->length*2 * sizeof(float), RenderingHints::stream_draw);
 	VertexBufferLayout layout(2);
 	bolt_va = VertexArray::MakeVertexArray(*bolt_vb, layout);
@@ -103,7 +103,7 @@ void VerticalLightning::local_reinitializeGPU(int length) { //does not seed the 
 
 	float* positions = new float[length*2];
 	bolt_vb_length = length;
-	
+
 	bolt_vb = VertexBuffer::MakeVertexBuffer(positions, length*2 * sizeof(float), RenderingHints::stream_draw);
 	VertexBufferLayout layout(2);
 	bolt_va = VertexArray::MakeVertexArray(*bolt_vb, layout);
@@ -396,7 +396,7 @@ void VerticalLightning::draw() const {
 void VerticalLightning::draw(double xpos, double ypos) const {
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 MVPM = Renderer::GenerateMatrix(w, h, 0, xpos, ypos);
-	
+
 	//background:
 	//TODO: make drawUnder() a thing
 	ColorValueHolder color = getBackgroundColor();

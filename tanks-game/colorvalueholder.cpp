@@ -11,8 +11,8 @@ ColorValueHolder::ColorValueHolder(float r, float g, float b, float a) {
 }
 
 ColorValueHolder::ColorValueHolder(const ColorValueHolder& other) {
-	R = other.R;
-	G = other.G;
-	B = other.B;
-	A = other.A;
+	this->R = other.R;
+	this->G = other.G;
+	this->B = other.B;
+	this->A = other.A;
 }

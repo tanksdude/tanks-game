@@ -36,7 +36,7 @@ void GeneralizedLightning::tick() {
 			currentlyActive = !currentlyActive;
 		}
 	}
-	
+
 	if (currentlyActive) {
 		if (boltTick >= boltCycle) {
 			//hazard tick comes before collision, therefore there will be more bolt refreshes after this if a bullet/tank collides

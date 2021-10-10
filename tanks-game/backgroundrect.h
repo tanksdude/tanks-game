@@ -5,10 +5,10 @@
 #include "vertexbuffer.h"
 #include "indexbuffer.h"
 
-struct BackgroundRect {
+class BackgroundRect {
 private:
 	static ColorValueHolder backColor;
-	
+
 	static VertexArray* va;
 	static VertexBuffer* vb;
 	static IndexBuffer* ib;
@@ -21,4 +21,8 @@ public:
 
 	static void draw();
 	static void drawCPU();
+
+private:
+	BackgroundRect() {}
+	BackgroundRect(const BackgroundRect&) {}
 };

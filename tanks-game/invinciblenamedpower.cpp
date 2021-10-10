@@ -1,5 +1,13 @@
 #include "invinciblenamedpower.h"
 
+std::unordered_map<std::string, float> InvincibleNamedPower::getWeights() const {
+	std::unordered_map<std::string, float> weights;
+	weights.insert({ "vanilla", .5f });
+	weights.insert({ "random-vanilla", .5f });
+	weights.insert({ "random", .5f });
+	return weights;
+}
+
 TankPower* InvincibleNamedPower::makeTankPower() const {
 	return new InvincibleNamedTankPower();
 }

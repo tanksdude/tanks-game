@@ -34,13 +34,15 @@ private:
 	static bool uninitializeGPU();
 
 private:
-	PowerSquare(double x, double y);
+	PowerSquare() {}
+	PowerSquare(double x, double y); //common
 public:
 	PowerSquare(double x, double y, std::string name);
 	PowerSquare(double x, double y, std::string* names, int num);
 	PowerSquare(double x, double y, std::string type, std::string name);
 	PowerSquare(double x, double y, std::string type, std::string* names, int num);
 	PowerSquare(double x, double y, std::string* types, std::string* names, int num);
+	PowerSquare(const PowerSquare&);
 
 	ColorValueHolder getColor() const;
 	void draw() const override; //draws at center

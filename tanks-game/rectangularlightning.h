@@ -60,7 +60,7 @@ public:
 	virtual bool validLocation() override;
 	virtual bool reasonableLocation() override;
 
-	virtual void tick() { GeneralizedLightning::tick(); }
+	virtual void tick() override { GeneralizedLightning::tick(); }
 	virtual void draw() const override;
 	virtual void draw(double xpos, double ypos) const override;
 	virtual void poseDraw() const override;

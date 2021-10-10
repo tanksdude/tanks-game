@@ -36,7 +36,7 @@ bool Wall::initializeGPU() {
 	if (initialized_GPU) {
 		return false;
 	}
-	
+
 	float positions[] = {
 		0, 0,
 		1, 0,

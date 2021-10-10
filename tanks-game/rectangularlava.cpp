@@ -29,7 +29,7 @@ RectangularLava::RectangularLava(double xpos, double ypos, double width, double 
 	tickCycle = 2400;
 	bubbles.reserve(maxBubbles);
 	bubbleChance = 1.0/400;
-	
+
 	canAcceptPowers = false;
 
 	modifiesTankCollision = true;
@@ -84,7 +84,7 @@ bool RectangularLava::initializeGPU() {
 	bubble_vb = VertexBuffer::MakeVertexBuffer(bubble_positions, (Circle::numOfSides+1)*2 * sizeof(float), RenderingHints::dynamic_draw);
 	VertexBufferLayout bubble_layout(2);
 	bubble_va = VertexArray::MakeVertexArray(*bubble_vb, bubble_layout);
-	
+
 	bubble_ib = IndexBuffer::MakeIndexBuffer(bubble_indices, Circle::numOfSides*3);
 
 	initialized_GPU = true;
@@ -121,7 +121,7 @@ RectHazard* RectangularLava::factory(int argc, std::string* argv) {
 void RectangularLava::pushNewBubble(double radius) {
 	float x0, y0, x1, y1;
 	int attempts = 0;
-		
+
 	x0 = RNG::randFunc() * (w - radius*2) + radius;
 	y0 = RNG::randFunc() * (h - radius*2) + radius;
 	do {
@@ -167,7 +167,7 @@ void RectangularLava::draw() const {
 void RectangularLava::draw(double xpos, double ypos) const {
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 MVPM = Renderer::GenerateMatrix(w, h, 0, xpos, ypos);
-	
+
 	//background:
 	//TODO: make drawUnder() a thing
 	ColorValueHolder color = getBackgroundColor();

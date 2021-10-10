@@ -13,4 +13,8 @@ public:
 	static void pushTank(Tank*);
 	static int getNumTanks() { return tanks.size(); }
 	//static void deleteTank(int index);
+
+private:
+	TankManager() {}
+	TankManager(const TankManager&) {}
 };

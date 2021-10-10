@@ -28,6 +28,10 @@ GeneralizedLava::LavaBubble::LavaBubble(float radius, float x0, float y0, float 
 	std::copy(tickMultiplier, tickMultiplier + 3, stateMultiplier); //the last one isn't supposed to be modified (or used)
 }
 
+GeneralizedLava::LavaBubble::~LavaBubble() {
+	//nothing
+}
+
 void GeneralizedLava::LavaBubble::tick() {
 	tickCount++;
 	while (tickCount >= tickMax * stateMultiplier[state] && state < 3) {

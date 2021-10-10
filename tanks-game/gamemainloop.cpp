@@ -76,10 +76,10 @@ void GameMainLoop::Tick(int physicsUPS) {
 	Diagnostics::startTiming("tank to powerups");
 	tankToPowerup();
 	Diagnostics::endTiming();
-	
+
 	//tick hazards:
 	tickHazards();
-	
+
 	//move bullets:
 	moveBullets();
 
@@ -109,7 +109,7 @@ void GameMainLoop::Tick(int physicsUPS) {
 
 	//collide tanks against edges:
 	tankToEdge();
-	
+
 	//collide bullets against edges:
 	Diagnostics::startTiming("bullet-edge");
 	bulletToEdge();
@@ -321,7 +321,6 @@ void GameMainLoop::tankToWall() {
 		if (shouldBeKilled) {
 			//TODO: proper implementation?
 		}
-
 	}
 }
 
@@ -387,7 +386,7 @@ void GameMainLoop::tankToHazard() {
 			//TODO: proper implementation?
 			//continue;
 		}
-		
+
 		//rectangles:
 		for (int j = 0; j < HazardManager::getNumRectHazards(); j++) {
 			bool modifiedRectHazardCollision = false;
@@ -729,7 +728,7 @@ void GameMainLoop::bulletToHazard() {
 				continue; //bullet died, can't do any more collision with it
 			//}
 		}
-		
+
 		//rectangles:
 		for (int j = 0; j < HazardManager::getNumRectHazards(); j++) {
 			RectHazard* rh = HazardManager::getRectHazard(j);
@@ -912,19 +911,19 @@ void GameMainLoop::bulletToTank() {
 
 void GameMainLoop::drawEverything() {
 	GameMainLoop::currentlyDrawing = true;
-	
+
 	auto start = Diagnostics::getTime();
 
 	Diagnostics::startTiming("clear");
 	Renderer::BeginningStuff();
 	Renderer::Clear();
 	Diagnostics::endTiming();
-	
+
 	Diagnostics::startTiming("background rect");
 	BackgroundRect::draw();
 	Renderer::UnbindAll(); //I honestly don't know if this is needed anymore but it doesn't hurt performance too much so it can stay
 	Diagnostics::endTiming();
-	
+
 
 	//is this needed? //ehh it can stay, may be needed for emergency CPU drawings
 	// Set up the transformations stack
@@ -955,7 +954,7 @@ void GameMainLoop::drawEverything() {
 	}
 	Renderer::UnbindAll();
 	Diagnostics::endTiming();
-	
+
 	Diagnostics::startTiming("bullets");
 	for (int i = 0; i < BulletManager::getNumBullets(); i++) {
 		BulletManager::getBullet(i)->draw();

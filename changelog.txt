@@ -29,6 +29,7 @@
 * levels:
     * all JS levels in?
         * "hiding places"
+        * lightning corners (it was cut, but now it's back)
     * "sneaky reward"
 * minor things:
     * minor overhaul (oxymoron?) of end game and score handling

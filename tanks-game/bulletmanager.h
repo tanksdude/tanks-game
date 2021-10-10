@@ -17,4 +17,8 @@ public:
 	static int getNumBullets() { return bullets.size(); }
 	static void deleteBullet(int index);
 	static void forceLimitBullets();
+
+private:
+	BulletManager() {}
+	BulletManager(const BulletManager&) {}
 };

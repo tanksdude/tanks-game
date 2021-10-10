@@ -46,7 +46,7 @@ public:
 
 	virtual double getTankMaxSpeedMultiplier() const override { return .5; }
 	virtual double getTankAccelerationMultiplier() const override { return .5; }
-	
+
 	virtual double getOffenseImportance() const override { return 0; }
 	virtual double getOffenseTier(Tank*) const override { return 0; }
 	virtual double getDefenseImportance() const override { return 0; }

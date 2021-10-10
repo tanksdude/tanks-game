@@ -22,6 +22,9 @@ protected:
 			}
 			positions.push_back(endX); positions.push_back(endY);
 		}
+		//LightningBolt(const LightningBolt&); //no need
+	private:
+		LightningBolt() {}
 	};
 
 protected:
@@ -73,5 +76,5 @@ public:
 	virtual void tick();
 
 public:
-	~GeneralizedLightning();
+	virtual ~GeneralizedLightning();
 };

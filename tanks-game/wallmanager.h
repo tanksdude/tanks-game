@@ -13,4 +13,8 @@ public:
 	static void pushWall(Wall*);
 	static int getNumWalls() { return walls.size(); }
 	static void deleteWall(int index);
+
+private:
+	WallManager() {}
+	WallManager(const WallManager&) {}
 };

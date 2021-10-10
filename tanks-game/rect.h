@@ -1,6 +1,6 @@
 #pragma once
 
-class Rect {
+struct Rect {
 	friend class DeveloperManager;
 	friend class CollisionHandler;
 	friend class PowerFunctionHelper;

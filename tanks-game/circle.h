@@ -1,6 +1,6 @@
 #pragma once
 
-class Circle {
+struct Circle {
 	friend class DeveloperManager;
 	friend class CollisionHandler;
 	friend class PowerFunctionHelper;

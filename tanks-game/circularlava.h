@@ -18,7 +18,7 @@ private:
 	static VertexBuffer* bubble_vb;
 	static IndexBuffer* bubble_ib;
 	static bool initialized_GPU;
-	
+
 	static bool initializeGPU();
 	static bool uninitializeGPU();
 
@@ -29,7 +29,7 @@ public:
 	//virtual bool actuallyCollided(Tank*) override { return true; }
 	//bool modifiesTankCollision = true;
 	virtual void modifiedTankCollision(Tank*) override { return; }
-	
+
 	virtual bool actuallyCollided(Bullet* b) override { return (b->velocity.getMagnitude() == 0); }
 	//bool modifiesBulletCollision = true;
 	virtual void modifiedBulletCollision(Bullet*) override { return; }
@@ -40,7 +40,7 @@ public:
 	virtual std::string getName() const override { return getClassName(); }
 	static std::string getClassName() { return "lava"; }
 
-	virtual void tick() { GeneralizedLava::tick(); }
+	virtual void tick() override { GeneralizedLava::tick(); }
 	virtual void draw() const override;
 	virtual void draw(double xpos, double ypos) const override;
 	virtual void poseDraw() const override;

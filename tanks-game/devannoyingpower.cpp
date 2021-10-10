@@ -1,5 +1,12 @@
 #include "devannoyingpower.h"
 
+std::unordered_map<std::string, float> DevAnnoyingPower::getWeights() const {
+	std::unordered_map<std::string, float> weights;
+	weights.insert({ "dev", 1.0f }); //common since its purpose is to show off game underworkings
+	weights.insert({ "random-dev", 0.5f }); //... it's annoying, don't overuse it
+	return weights;
+}
+
 TankPower* DevAnnoyingPower::makeTankPower() const {
 	return new DevAnnoyingTankPower();
 }

@@ -59,7 +59,7 @@ public:
 	bool overridesCollisionWithTank = true;
 	bool modifiedCollisionWithTankCanWorkWithOthers = true;
 	bool modifiedCollisionWithTankCanOnlyWorkIndividually = false;
-	
+
 	bool modifiesCollisionWithWall = false;
 	virtual InteractionBoolHolder modifiedCollisionWithWall(Tank*, Wall*) { return { false, false }; }
 	//precondition: hit wall, is not necessariliy inside wall
@@ -108,7 +108,7 @@ public:
 	//bool overridesAddShootingPoints = false; //makes no sense to be true
 	bool addShootingPointsCanWorkWithOthers = true; //should only be true
 	bool addShootingPointsCanOnlyWorkIndividually = false;
-	
+
 	bool modifiesTankDrawings = false;
 	virtual void modifiedTankDrawings(Tank* parent) { return; }
 	bool overridesTankDrawings = false;

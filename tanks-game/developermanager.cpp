@@ -67,8 +67,7 @@ void DeveloperManager::mouseWheelFunc(int wheel, int dir, int x, int y) {
 		} else {
 			insertIndex = 0;
 		}
-	}
-	else { //scroll down
+	} else { //scroll down
 		if (insertIndexMax > 0) {
 			insertIndex = ((insertIndex % insertIndexMax) - 1 + insertIndexMax) % insertIndexMax; //accounting for potential mistakes/trolls
 		} else {

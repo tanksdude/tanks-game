@@ -9,13 +9,13 @@ protected:
 	float A;
 
 public:
-	ColorValueHolder(float, float, float);
-	ColorValueHolder(float, float, float, float);
-	ColorValueHolder() { R = 0; G = 0; B = 0; A = 1; }
-	ColorValueHolder(const ColorValueHolder&);
-
 	float getRf() const { return R; }
 	float getGf() const { return G; }
 	float getBf() const { return B; }
 	float getAf() const { return A; } //no real point
+
+	ColorValueHolder(float, float, float);
+	ColorValueHolder(float, float, float, float);
+	ColorValueHolder() { R = 0; G = 0; B = 0; A = 1; }
+	ColorValueHolder(const ColorValueHolder&);
 };

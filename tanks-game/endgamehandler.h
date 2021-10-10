@@ -16,8 +16,8 @@ private:
 	struct DoubleChar {
 		char killer;
 		char killee;
-		DoubleChar(char a, char b) { killer = a, killee = b; }
-		DoubleChar() { killer = DEFAULT_TEAM, killee = DEFAULT_TEAM; }
+		DoubleChar(char a, char b) { killer = a; killee = b; }
+		DoubleChar() { killer = DEFAULT_TEAM; killee = DEFAULT_TEAM; }
 	};
 	struct CharAndString {
 		char teamID;
@@ -43,4 +43,8 @@ public:
 
 	static void addTeamToWatch(char teamID, std::string teamName);
 	static void clearWatchingTeams();
+
+private:
+	EndGameHandler() {}
+	EndGameHandler(const EndGameHandler&) {}
 };

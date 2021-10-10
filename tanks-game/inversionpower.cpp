@@ -1,5 +1,12 @@
 #include "inversionpower.h"
 
+std::unordered_map<std::string, float> InversionPower::getWeights() const {
+	std::unordered_map<std::string, float> weights;
+	weights.insert({ "dev", .5f });
+	weights.insert({ "random-dev", .5f });
+	return weights;
+}
+
 TankPower* InversionPower::makeTankPower() const {
 	return new InversionTankPower();
 }

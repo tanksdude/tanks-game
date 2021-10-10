@@ -17,4 +17,8 @@ public:
 	static void clearTimes(); //(and names)
 	static void printTimings(); //plain milliseconds
 	static void printPreciseTimings(); //microsecond accuracy
+
+private:
+	Diagnostics() {}
+	Diagnostics(const Diagnostics&) {}
 };

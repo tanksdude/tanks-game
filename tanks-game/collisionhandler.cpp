@@ -189,8 +189,7 @@ void CollisionHandler::pushMovableAwayFromImmovable(Rect* movable, Rect* immovab
 		} else { //right
 			movable->x = immovable->x + immovable->w;
 		}
-	}
-	else { //bottom left?
+	} else { //bottom left?
 		if ((movable->y + movable->h / 2) - (immovable->y + immovable->h) <= (-immovable->h / immovable->w) * ((movable->x + movable->w / 2) - immovable->x)) { //left
 			movable->x = immovable->x - movable->w;
 		} else { //bottom
@@ -304,7 +303,7 @@ void CollisionHandler::pushMovableAwayFromMovable(Rect* movable1, Rect* movable2
 
 void CollisionHandler::pushMovableAwayFromImmovable(Circle* movable, Rect* immovable) {
 	//typically Tank-Wall collision
-	
+
 	bool cornerCollided = false;
 	if ((movable->x < immovable->x) && (movable->y < immovable->y)) { //circle in bottom left
 		cornerPushMovableAwayFromImmovable(movable, immovable->x, immovable->y);
@@ -350,7 +349,7 @@ void CollisionHandler::pushMovableAwayFromImmovable(Rect* movable, Circle* immov
 	//first, find if circle is in outer corner (as opposed to near a side)
 	//if on side, R-R stuff
 	//else, C-C stuff (if dist < asdf then move, but don't use else)
-	
+
 	if ((immovable->x < movable->x) && (immovable->y < movable->y)) { //circle in top left
 		cornerPushMovableAwayFromImmovable(movable, immovable, movable->x, movable->y);
 	}
@@ -364,7 +363,7 @@ void CollisionHandler::pushMovableAwayFromImmovable(Rect* movable, Circle* immov
 	if ((immovable->x > (movable->x + movable->w)) && (immovable->y > (movable->y + movable->h))) { //circle in bottom right
 		cornerPushMovableAwayFromImmovable(movable, immovable, (movable->x + movable->w), (movable->y + movable->h));
 	}
-	
+
 	/*
 	if (sqrt(pow(movable->x - immovable->x, 2) + pow(movable->y - immovable->y, 2)) <= immovable->r) { //top left rectangle corner
 		double angle = atan2((movable->y - immovable->y), (movable->x - immovable->x));
@@ -425,7 +424,6 @@ void CollisionHandler::pushMovableAwayFromImmovable(Rect* movable, Circle* immov
 	}
 	//else?
 	*/
-	
 }
 void CollisionHandler::pushMovableAwayFromMovable(Rect* movable1, Circle* movable2) {
 	if ((movable2->x < movable1->x) && (movable2->y < movable1->y)) { //circle in top left
@@ -517,7 +515,7 @@ DoublePositionHolder CollisionHandler::circleLineIntersection(const Circle* c, d
 		throw std::logic_error("CollisionHandler::circleLineIntersection was not given an intersecting circle and line!");
 		//invalid_argument instead?
 	}
-	
+
 	double intersectionX1 = (D*dy - (dy<0 ? -1 : 1) * dx * sqrt(c->r*c->r * dr*dr - D*D)) / (dr*dr);
 	double intersectionX2 = (D*dy + (dy<0 ? -1 : 1) * dx * sqrt(c->r*c->r * dr*dr - D*D)) / (dr*dr);
 	double intersectionY1 = (-D*dx - abs(dy) * sqrt(c->r*c->r * dr*dr - D*D)) / (dr*dr);

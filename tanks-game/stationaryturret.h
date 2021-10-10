@@ -44,7 +44,7 @@ public:
 	virtual std::string getName() const override { return getClassName(); }
 	static std::string getClassName() { return "stationary_turret"; }
 
-	virtual void tick();
+	virtual void tick() override;
 	virtual void draw() const override;
 	virtual void draw(double xpos, double ypos) const override;
 	virtual void poseDraw() const override;

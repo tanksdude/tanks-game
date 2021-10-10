@@ -7,15 +7,10 @@ public:
 		std::vector<std::string> types = std::vector<std::string>{ "old", "random-old" };
 		return types;
 	}
-	virtual std::unordered_map<std::string, float> getWeights() const override {
-		std::unordered_map<std::string, float> weights;
-		weights.insert({ "old", .5f });
-		weights.insert({ "random-old", .5f });
-		return weights;
-	}
+	virtual std::unordered_map<std::string, float> getWeights() const override;
 
 	virtual std::string getName() const override { return OldBigNamedPower::getClassName(); }
-	static std::string getClassName() { return "oldbig"; }
+	static std::string getClassName() { return "old_big"; }
 	virtual ColorValueHolder getColor() const override { return OldBigNamedPower::getClassColor(); }
 	static ColorValueHolder getClassColor() { return ColorValueHolder(1.0f, 0.0f, 0.0f); } //red
 

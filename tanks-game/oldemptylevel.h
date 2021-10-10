@@ -3,7 +3,7 @@
 
 class OldEmptyLevel : public Level {
 public:
-	std::string getName() const override { return "oldempty"; }
+	std::string getName() const override { return "old_empty"; }
 	ColorValueHolder getDefaultColor() const override { return ColorValueHolder(0.0f, 0.0f, 0.0f); }
 	std::vector<std::string> getLevelTypes() const override {
 		std::vector<std::string> types = std::vector<std::string>{ "old", "random-old" };

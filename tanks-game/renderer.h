@@ -79,4 +79,8 @@ public:
 	static void Cleanup();
 
 	static void printGLError();
+
+private:
+	Renderer() {}
+	Renderer(const Renderer&) {}
 };

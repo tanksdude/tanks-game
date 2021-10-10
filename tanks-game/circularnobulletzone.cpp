@@ -20,7 +20,7 @@ CircularNoBulletZone::CircularNoBulletZone(double xpos, double ypos, double radi
 	r = radius;
 	gameID = GameManager::getNextID();
 	teamID = HAZARD_TEAM;
-	
+
 	canAcceptPowers = false;
 
 	modifiesTankCollision = true;
@@ -117,7 +117,7 @@ void CircularNoBulletZone::draw() const {
 void CircularNoBulletZone::draw(double xpos, double ypos) const {
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, 0, xpos, ypos);
-	
+
 	//TODO: make drawUnder() a thing
 	ColorValueHolder color = getColor();
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());

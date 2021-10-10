@@ -12,4 +12,5 @@ struct DoublePositionHolder {
 		this->y1 = y1;
 		this->y2 = y2;
 	}
+	DoublePositionHolder() : DoublePositionHolder(0, 0, 0, 0) {}
 };

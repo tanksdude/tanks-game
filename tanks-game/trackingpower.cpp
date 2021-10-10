@@ -1,5 +1,11 @@
 #include "trackingpower.h"
 
+std::unordered_map<std::string, float> TrackingPower::getWeights() const {
+	std::unordered_map<std::string, float> weights;
+	weights.insert({ "vanilla-extra", .25f });
+	return weights;
+}
+
 TankPower* TrackingPower::makeTankPower() const {
 	return new TrackingTankPower();
 }

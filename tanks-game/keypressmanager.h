@@ -16,4 +16,8 @@ public:
 	static void unsetSpecialKey(int key, int x, int y);
 
 	static void Initialize();
+
+private:
+	KeypressManager() {}
+	KeypressManager(const KeypressManager&) {}
 };

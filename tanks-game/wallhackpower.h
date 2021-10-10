@@ -7,13 +7,7 @@ public:
 		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "random" };
 		return types;
 	}
-	virtual std::unordered_map<std::string, float> getWeights() const override {
-		std::unordered_map<std::string, float> weights;
-		weights.insert({ "vanilla", .5f });
-		weights.insert({ "random-vanilla", .5f });
-		weights.insert({ "random", .5f });
-		return weights;
-	}
+	virtual std::unordered_map<std::string, float> getWeights() const override;
 	virtual std::vector<std::string> getPowerAttributes() const override {
 		std::vector<std::string> attributes = std::vector<std::string>{ "mix" };
 		return attributes;

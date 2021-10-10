@@ -25,4 +25,8 @@ public:
 	static void mouseDragFunc(int x, int y);
 	static void mouseClickFunc(int button, int state, int x, int y);
 	static void mouseWheelFunc(int wheel, int dir, int x, int y);
+
+private:
+	DeveloperManager() {}
+	DeveloperManager(const DeveloperManager&) {}
 };

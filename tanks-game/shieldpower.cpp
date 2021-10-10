@@ -2,6 +2,12 @@
 
 const double ShieldPower::barrierStrength = 50; //TODO: this good?
 
+std::unordered_map<std::string, float> ShieldPower::getWeights() const {
+	std::unordered_map<std::string, float> weights;
+	weights.insert({ "vanilla-extra", .25f });
+	return weights;
+}
+
 //process of narrowing down the specific color:
 /*
 //static ColorValueHolder getClassColor() { return ColorValueHolder(0.625f, 0.75f, 0.9375f); } //very light blue (baby blue?)

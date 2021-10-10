@@ -28,4 +28,8 @@ public:
 	static PositionHolder getSymmetricWallPositions_Corners(int position, double x_center, double y_center, double x_offset, double y_offset, double wallWidth, double wallHeight); //position: {0,1,2,3}
 	static PositionHolder getSymmetricWallPositions_DiagForwardSlash(int position, double x_center, double y_center, double x_offset, double y_offset, double wallWidth, double wallHeight); //position: {0,1}
 	static PositionHolder getSymmetricWallPositions_DiagBackwardSlash(int position, double x_center, double y_center, double x_offset, double y_offset, double wallWidth, double wallHeight); //position: {0,1}
+
+private:
+	RandomLevel() {}
+	RandomLevel(const RandomLevel&) {}
 };

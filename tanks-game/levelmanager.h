@@ -30,4 +30,8 @@ public:
 	static LevelFunction getLevelFactory(std::string type, std::string name);
 	static std::string getLevelName(std::string type, int index);
 	static int getNumLevelTypes(std::string type);
+
+private:
+	LevelManager() {}
+	LevelManager(const LevelManager&) {}
 };

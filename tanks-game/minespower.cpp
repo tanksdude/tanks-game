@@ -1,5 +1,11 @@
 #include "minespower.h"
 
+std::unordered_map<std::string, float> MinesPower::getWeights() const {
+	std::unordered_map<std::string, float> weights;
+	weights.insert({ "vanilla-extra", .25f });
+	return weights;
+}
+
 TankPower* MinesPower::makeTankPower() const {
 	return new MinesTankPower();
 }

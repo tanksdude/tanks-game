@@ -1,5 +1,12 @@
 #include "shotgunpower.h"
 
+std::unordered_map<std::string, float> ShotgunPower::getWeights() const {
+	std::unordered_map<std::string, float> weights;
+	weights.insert({ "vanilla-extra", .5f });
+	weights.insert({ "random", .25f });
+	return weights;
+}
+
 TankPower* ShotgunPower::makeTankPower() const {
 	return new ShotgunTankPower();
 }

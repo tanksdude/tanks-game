@@ -25,4 +25,8 @@ public:
 	static PowerFunction getPowerFactory(std::string type, std::string name);
 	static std::string getPowerName(std::string type, int index);
 	static int getNumPowerTypes(std::string type);
+
+private:
+	PowerupManager() {}
+	PowerupManager(const PowerupManager&) {}
 };

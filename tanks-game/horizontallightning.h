@@ -39,7 +39,7 @@ private:
 	void local_uninitializeGPU();
 
 protected:
-	virtual void specialEffectCircleCollision(Circle*);
+	virtual void specialEffectCircleCollision(Circle*) override;
 
 public:
 	virtual std::string getName() const override { return getClassName(); }
@@ -48,7 +48,7 @@ public:
 	virtual bool validLocation() override;
 	virtual bool reasonableLocation() override;
 
-	//virtual void tick();
+	//virtual void tick() override;
 	virtual void draw() const override;
 	virtual void draw(double xpos, double ypos) const override;
 	virtual void poseDraw() const override;

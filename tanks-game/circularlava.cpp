@@ -28,7 +28,7 @@ CircularLava::CircularLava(double xpos, double ypos, double radius) {
 	tickCycle = 2400;
 	bubbles.reserve(maxBubbles);
 	bubbleChance = 1.0/400;
-	
+
 	canAcceptPowers = false;
 
 	modifiesTankCollision = true;
@@ -87,7 +87,7 @@ bool CircularLava::initializeGPU() {
 	bubble_vb = VertexBuffer::MakeVertexBuffer(bubble_positions, (Circle::numOfSides+1)*2 * sizeof(float), RenderingHints::dynamic_draw);
 	VertexBufferLayout bubble_layout(2);
 	bubble_va = VertexArray::MakeVertexArray(*bubble_vb, bubble_layout);
-	
+
 	bubble_ib = IndexBuffer::MakeIndexBuffer(bubble_indices, Circle::numOfSides*3);
 
 	initialized_GPU = true;
@@ -123,7 +123,7 @@ CircleHazard* CircularLava::factory(int argc, std::string* argv) {
 void CircularLava::pushNewBubble(double radius) {
 	float x0, y0, x1, y1;
 	int attempts = 0;
-	
+
 	float r0, a0, r1, a1;
 	r0 = RNG::randFunc() * (r - radius);
 	a0 = RNG::randFunc() * (2*PI);
@@ -175,7 +175,7 @@ void CircularLava::draw() const {
 void CircularLava::draw(double xpos, double ypos) const {
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, 0, xpos, ypos);
-	
+
 	//background:
 	ColorValueHolder color = getBackgroundColor();
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());

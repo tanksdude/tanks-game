@@ -109,7 +109,7 @@ bool Bullet::initializeGPU() {
 	vb = VertexBuffer::MakeVertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float), RenderingHints::dynamic_draw);
 	VertexBufferLayout layout(2);
 	va = VertexArray::MakeVertexArray(*vb, layout);
-	
+
 	ib = IndexBuffer::MakeIndexBuffer(indices, Circle::numOfSides*3);
 
 	initialized_GPU = true;
@@ -285,11 +285,11 @@ ColorValueHolder Bullet::getColor() const {
 	}
 }
 
-void Bullet::drawCPU() {
+void Bullet::drawCPU() const {
 	drawCPU(x, y);
 }
 
-void Bullet::drawCPU(double xpos, double ypos) {
+void Bullet::drawCPU(double xpos, double ypos) const {
 	//main body:
 	ColorValueHolder color = getColor();
 	glColor3f(color.getRf(), color.getGf(), color.getBf());
@@ -369,7 +369,7 @@ void Bullet::drawOutline(double xpos, double ypos) const {
 	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(GL_LINE_LOOP, 1, Circle::numOfSides);
-	
+
 	//cleanup:
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
@@ -383,7 +383,7 @@ bool Bullet::kill() {
 
 	for (int i = 0; i < bulletPowers.size(); i++) {
 		bool killBulletPower = false;
-		
+
 		if (bulletPowers[i]->modifiesDeathHandling) {
 			InteractionBoolHolder check_temp = bulletPowers[i]->modifiedDeathHandling(this);
 			if (!check_temp.shouldDie) {
@@ -393,7 +393,7 @@ bool Bullet::kill() {
 				killBulletPower = true;
 			}
 		}
-	
+
 		if (killBulletPower) {
 			removePower(i);
 			i--;

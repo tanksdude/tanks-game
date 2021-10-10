@@ -1,5 +1,12 @@
 #include "oldbignamedpower.h"
 
+std::unordered_map<std::string, float> OldBigNamedPower::getWeights() const {
+	std::unordered_map<std::string, float> weights;
+	weights.insert({ "old", .5f });
+	weights.insert({ "random-old", .5f });
+	return weights;
+}
+
 TankPower* OldBigNamedPower::makeTankPower() const {
 	return new OldBigNamedTankPower();
 }

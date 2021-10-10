@@ -30,4 +30,8 @@ public:
 	static void bulletToTank();
 
 	static void drawEverything();
+
+private:
+	GameMainLoop() {}
+	GameMainLoop(const GameMainLoop&) {}
 };

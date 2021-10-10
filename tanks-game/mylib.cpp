@@ -30,8 +30,7 @@ std::string toLowerCase(std::string stuff) {
 	for (int i = 0; i < stuff.size(); i++) {
 		if (stuff[i] >= 65 && stuff[i] <= 90) {
 			letters += (stuff[i] + 32);
-		}
-		else {
+		} else {
 			letters += stuff[i];
 		}
 	}

@@ -1,5 +1,13 @@
 #include "wallhackpower.h"
 
+std::unordered_map<std::string, float> WallhackPower::getWeights() const {
+	std::unordered_map<std::string, float> weights;
+	weights.insert({ "vanilla", .5f });
+	weights.insert({ "random-vanilla", .5f });
+	weights.insert({ "random", .5f });
+	return weights;
+}
+
 TankPower* WallhackPower::makeTankPower() const {
 	return new WallhackTankPower();
 }

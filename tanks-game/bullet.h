@@ -36,7 +36,7 @@ public: //hopefully temporary
 	ColorValueHolder defaultColor = ColorValueHolder(.5f, .5f, .5f);
 
 	bool kill(); //allows for custom death (aka something saving the bullet from death)
-	
+
 	double getAngle() const;
 	double getInitialVelocity() const { return initial_velocity; }
 	double alpha; //[0,100] to avoid minor float imprecision
@@ -72,7 +72,7 @@ private:
 
 	static bool initializeGPU(); //returns whether it successfully initialized (false if it was already initialized)
 	static bool uninitializeGPU();
-	
+
 private:
 	Bullet(double x, double y, double a, char teamID, BulletParentType parentType, long parentID); //every bullet uses this
 	Bullet(double x, double y, double a, char teamID, BulletParentType parentType, long parentID, std::vector<BulletPower*>* bp); //most bullets use this
@@ -86,8 +86,8 @@ public:
 	void draw() const override;
 	void draw(double xpos, double ypos) const override;
 	void poseDraw() const override;
-	void drawCPU();
-	void drawCPU(double, double);
+	void drawCPU() const;
+	void drawCPU(double, double) const;
 
 public:
 	void drawBody(double, double) const;

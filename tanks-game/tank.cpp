@@ -84,7 +84,7 @@ bool Tank::initializeGPU() {
 	if (initialized_GPU) {
 		return false;
 	}
-	
+
 	float positions[(Circle::numOfSides+1)*2];
 	positions[0] = 0;
 	positions[1] = 0;
@@ -112,7 +112,7 @@ bool Tank::initializeGPU() {
 	vb = VertexBuffer::MakeVertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float), RenderingHints::dynamic_draw);
 	VertexBufferLayout layout(2);
 	va = VertexArray::MakeVertexArray(*vb, layout);
-	
+
 	ib = IndexBuffer::MakeIndexBuffer(indices, Circle::numOfSides*3);
 
 	float cannon_positions[4] = { 0.0f, 0.0f, 1.0f, 0.0f };
@@ -538,12 +538,12 @@ double Tank::getRealCannonAngle(int i) const {
 	return fmod(fmod(shootingPoints->at(i).angle + velocity.getAngle(), 2*PI) + 2*PI, 2*PI);
 }
 
-void Tank::drawCPU() {
+void Tank::drawCPU() const {
 	//TODO: need ability for more special drawing
 	drawCPU(x, y);
 }
 
-void Tank::drawCPU(double xpos, double ypos) {
+void Tank::drawCPU(double xpos, double ypos) const {
 
 	//shooting cooldown outline:
 	glColor3f(1.0f, 1.0f, 1.0f);
@@ -592,7 +592,7 @@ void Tank::drawCPU(double xpos, double ypos) {
 	//main body:
 	ColorValueHolder color = getBodyColor();
 	glColor3f(color.getRf(), color.getGf(), color.getBf());
-	
+
 	glBegin(GL_POLYGON);
 
 	for (int i = 0; i < Circle::numOfSides; i++) {
@@ -677,7 +677,7 @@ void Tank::draw(double xpos, double ypos) const {
 
 	if (shootingOutlineVertices > 0) {
 		glm::mat4 MVPM_shootingOutline = Renderer::GenerateMatrix(r * 5.0/4.0, r * 5.0/4.0, getAngle(), xpos, ypos);
-		
+
 		shader->setUniform4f("u_color", 1.0f, 1.0f, 1.0f, 1.0f);
 		shader->setUniformMat4f("u_MVP", MVPM_shootingOutline);
 
@@ -736,7 +736,7 @@ void Tank::draw(double xpos, double ypos) const {
 
 	//shader->setUniform4f("u_color", .5f, .5f, .5f, .25f); //CPU color
 	shader->setUniform4f("u_color", .75f, .75f, .75f, 1.0f);
-	
+
 	for (int i = 1; i < shootingPoints->size(); i++) {
 		MVPM = Renderer::GenerateMatrix(r, 1, getRealCannonAngle(i), xpos, ypos);
 		shader->setUniformMat4f("u_MVP", MVPM);
@@ -758,7 +758,7 @@ void Tank::draw(double xpos, double ypos) const {
 	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*cannon_va, *shader, GL_LINES, 0, 2);
-	
+
 	//cleanup
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
@@ -776,7 +776,7 @@ bool Tank::kill() {
 
 	for (int i = 0; i < tankPowers.size(); i++) {
 		bool killTankPower = false;
-		
+
 		if (tankPowers[i]->modifiesDeathHandling) {
 			InteractionBoolHolder check_temp = tankPowers[i]->modifiedDeathHandling(this);
 			if (!check_temp.shouldDie) {
@@ -786,7 +786,7 @@ bool Tank::kill() {
 				killTankPower = true;
 			}
 		}
-	
+
 		if (killTankPower) {
 			removePower(i);
 			i--;
