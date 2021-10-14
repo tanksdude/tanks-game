@@ -34,7 +34,8 @@ DevAnnoyingPower::DevAnnoyingPower() {
 #include "collisionhandler.h"
 
 void DevAnnoyingTankPower::initialize(Tank* parent) {
-	//nothing
+	parent->velocity.setMagnitude(0);
+	//it's annoying
 }
 
 void DevAnnoyingTankPower::removeEffects(Tank* parent) {
@@ -51,6 +52,11 @@ InteractionBoolHolder DevAnnoyingTankPower::modifiedEdgeCollision(Tank* parent) 
 	CollisionHandler::edgeConstrain(parent, parent->getR() * -2);
 
 	return { false };
+}
+
+double DevAnnoyingTankPower::getTankAccelerationMultiplier() const {
+	//might change this
+	return .5;
 }
 
 DevAnnoyingTankPower::DevAnnoyingTankPower() {
@@ -84,6 +90,8 @@ InteractionBoolHolder DevAnnoyingBulletPower::modifiedCollisionWithTank(Bullet* 
 }
 
 //has very low offense, very high defense; can't kill, can't be killed
+//^^^ cancelled but might reinvestigate in the future (TODO)
+
 double DevAnnoyingBulletPower::getOffenseImportance() const {
 	return .5; //0?
 }

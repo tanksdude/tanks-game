@@ -50,6 +50,8 @@ public:
 	//bool modifiedEdgeCollisionCanWorkWithOthers = true;
 	//bool modifiedEdgeCollisionCanOnlyWorkIndividually = false;
 
+	virtual double getTankAccelerationMultiplier() const override;
+
 	DevAnnoyingTankPower();
 };
 
