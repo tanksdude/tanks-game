@@ -53,7 +53,7 @@ const double BananaBulletPower::maxNewBulletVelocity = 5.0/4.0;
 const double BananaBulletPower::minNewBulletVelocity = 1.0/2.0;
 
 InteractionBoolHolder BananaBulletPower::modifiedMovement(Bullet* b) {
-	if (b->velocity.getMagnitude() <= 0) {
+	if (wasStationary && b->velocity.getMagnitude() <= 0) {
 		for (int i = 0; i < bananaCount; i++) {
 			std::vector<BulletPower*>* bp = new std::vector<BulletPower*>;
 			bp->reserve(b->bulletPowers.size()-1);
@@ -71,6 +71,12 @@ InteractionBoolHolder BananaBulletPower::modifiedMovement(Bullet* b) {
 			delete bp;
 		}
 		return { true };
+	}
+	if (b->velocity.getMagnitude() <= 0) {
+		b->acceleration = 0;
+		wasStationary = true;
+	} else {
+		wasStationary = false; //something else changed the bullet's speed
 	}
 	return { false };
 }
@@ -91,5 +97,6 @@ BananaBulletPower::BananaBulletPower() {
 	timeLeft = 0;
 	maxTime = -1;
 
+	wasStationary = false;
 	modifiesMovement = true;
 }

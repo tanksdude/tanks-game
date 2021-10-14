@@ -34,7 +34,7 @@ private:
 	static bool uninitializeGPU();
 
 private:
-	PowerSquare() {}
+	PowerSquare() {} //don't use
 	PowerSquare(double x, double y); //common
 public:
 	PowerSquare(double x, double y, std::string name);

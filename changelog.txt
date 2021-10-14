@@ -11,44 +11,48 @@
 * changed name from "Tanks" to "PowerTanks" so this game might actually become discoverable
 * switch to 64-bit because no modern computer should be 32-bit
 * made some changes to the renderer
-    * will be better next version
+    * will be better in a later version
 * changed file structure and formatting somewhat
     * I kinda know what I'm doing now
     * normal C++ class and function stuff
 * replace x-comp, y-comp, angle variables with singular vector variable
     * this slightly reduces performance, but it's way cleaner
-* minimal drawing layers: "under", regular, "effects", debug
-* level effects (wind, ice, mines, gravity)
-* powers:
-    * all JS powers in
+* drawing layers: "under", regular, "effects", debug
+* level effects added
+    * wind, ice, mines, gravity
+* powerups:
+    * all JS powers in!
         * mines, shotgun, tracking
         * barrier (previously called life)
     * shield (multi-hit barrier)
     * [dev] annoying
         * pushes tank away instead of killing it
 * levels:
-    * all JS levels in?
-        * "hiding places"
-        * lightning corners (it was cut, but now it's back)
-    * "sneaky reward"
+    * all JS levels in! (except portal)
+        * "hiding places" and "turret level"
+        * "lightning corners" (it was cut, but now it's back)
+        * invisible level ("winning path"), wind level ("tricky maneuvering"), ice and mines level ("mine heaven")
+            * no, these levels didn't actually get names
+    * "sneaky reward" (... this is actually my first true level in this version, wow)
 * minor things:
     * minor overhaul (oxymoron?) of end game and score handling
     * inserting stuff through the dev menu is easier
-    * slightly adjusted banana
-    * cleanup like usual
+    * major cleanup
 
 0.2.3 "features"
+* most things from JS Tanks in!!!
 * powerups:
     * banana power!
     * godmode (still needs some work)
     * [dev power] "inversion": switches turning direction of tank
 * hazards:
+    * all JS hazards in!
+        * other lightning hazards
+            * vertical lightning
+            * lightning rectangle and circle
+        * no bullet zone (rectangular and circular)
+        * targeting turret
     * hazard randomization
-    * other lightning hazards
-        * vertical lightning
-        * lightning rectangle and circle
-    * no bullet zone (rectangular and circular)
-    * targeting turret
 * level: "many hazards" (from JS Tanks)
 * ability to weight levels, powers, and hazards when selecting them randomly
 * minor things:

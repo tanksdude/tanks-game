@@ -10,9 +10,9 @@ protected:
 	float magnitude; //nonnegative
 
 public:
-	SimpleVector2D() : SimpleVector2D(0, 0) {}
 	SimpleVector2D(float xComp, float yComp);
 	SimpleVector2D(float angle, float magnitude, bool angle_magnitude); //bool is just there to differentiate the constructors
+	SimpleVector2D() : SimpleVector2D(0, 0) {}
 	SimpleVector2D(const SimpleVector2D&);
 
 	void setMagnitude(float magnitude);
