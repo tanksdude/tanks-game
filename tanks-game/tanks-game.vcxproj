@@ -164,6 +164,7 @@
     <ClCompile Include="inversionpower.cpp" />
     <ClCompile Include="level.cpp" />
     <ClCompile Include="lightningcornerslevel.cpp" />
+    <ClCompile Include="loneturretlevel.cpp" />
     <ClCompile Include="manyhazardslevel.cpp" />
     <ClCompile Include="minespower.cpp" />
     <ClCompile Include="openglindexbuffer.cpp" />
@@ -263,6 +264,7 @@
     <ClInclude Include="interactionboolholder.h" />
     <ClInclude Include="inversionpower.h" />
     <ClInclude Include="lightningcornerslevel.h" />
+    <ClInclude Include="loneturretlevel.h" />
     <ClInclude Include="manyhazardslevel.h" />
     <ClInclude Include="minespower.h" />
     <ClInclude Include="nullrenderingcontext.h" />

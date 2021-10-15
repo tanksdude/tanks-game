@@ -300,6 +300,9 @@
     <ClCompile Include="lightningcornerslevel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="loneturretlevel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -639,6 +642,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="lightningcornerslevel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="loneturretlevel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
