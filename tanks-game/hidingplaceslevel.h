@@ -5,9 +5,9 @@ class HidingPlacesLevel : public Level {
 	//I'm awful at naming things
 public:
 	std::string getName() const override { return "hiding_places"; }
-	ColorValueHolder getDefaultColor() const override { return ColorValueHolder(0.375f, 0.75f, 0.125f); }
+	ColorValueHolder getDefaultColor() const override { return ColorValueHolder(0.375f, 0.75f, 0.125f); } //JS: #66AA22
 	std::vector<std::string> getLevelTypes() const override {
-		std::vector<std::string> types = std::vector<std::string>{ "vanilla-extra", "random-vanilla" };
+		std::vector<std::string> types = std::vector<std::string>{ "vanilla-extra", "random-vanilla", "old", "random-old" };
 		return types;
 	}
 	std::unordered_map<std::string, float> getWeights() const override;

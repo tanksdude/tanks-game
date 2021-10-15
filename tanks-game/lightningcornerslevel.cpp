@@ -28,7 +28,8 @@ void LightningCornersLevel::initialize() {
 	std::string* paras;
 
 	for (int i = 0; i < 4; i++) {
-		pos = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 240-32, GAME_HEIGHT/2-128, 32, 128);
+		//classic JS walls
+		pos = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-40*2-32, GAME_HEIGHT/2-128, 32, 128);
 		WallManager::pushWall(new Wall(pos.x, pos.y, 32, 128, color));
 	}
 
@@ -65,6 +66,12 @@ void LightningCornersLevel::initialize() {
 	//	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "speed"));
 	//}
 
+	//unused:
+	//for (int i = 0; i < 4; i++) {
+	//	pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 80+20/2, 80+20/2);
+	//	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "banana"));
+	//}
+
 	std::string* names = new std::string[5]{ "speed", "speed", "speed", "big", "big" };
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, names, 5));
 	delete[] names;
@@ -74,12 +81,6 @@ void LightningCornersLevel::initialize() {
 	//for (int i = 0; i < 4; i++) {
 	//	pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 10, 10);
 	//	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "speed"));
-	//}
-
-	//unused:
-	//for (int i = 0; i < 4; i++) {
-	//	pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 80+20/2, 80+20/2);
-	//	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "banana"));
 	//}
 }
 

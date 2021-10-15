@@ -28,7 +28,8 @@ void CorridorLevel::initialize() {
 	std::string* paras;
 
 	for (int i = 0; i < 4; i++) {
-		pos = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 240-32, GAME_HEIGHT/2-128, 32, 128);
+		//classic JS walls
+		pos = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-40*2-32, GAME_HEIGHT/2-128, 32, 128);
 		WallManager::pushWall(new Wall(pos.x, pos.y, 32, 128, color));
 	}
 
@@ -43,6 +44,12 @@ void CorridorLevel::initialize() {
 	}
 
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "bounce"));
+
+	//traps:
+	//for (int i = 0; i < 4; i++) {
+	//	pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 140/2-16, 140/2-16);
+	//	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "speed"));
+	//}
 
 	tempRand = RNG::randFunc() * 2;
 	for (int i = 0; i < 4; i++) {

@@ -14,6 +14,8 @@ std::unordered_map<std::string, float> HidingPlacesLevel::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla-extra", .5f });
 	weights.insert({ "random-vanilla", .25f });
+	weights.insert({ "old", .5f });
+	weights.insert({ "random-old", .25f });
 	return weights;
 }
 
@@ -27,7 +29,8 @@ void HidingPlacesLevel::initialize() {
 	std::string* paras;
 
 	for (int i = 0; i < 4; i++) {
-		pos = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 240-32, GAME_HEIGHT/2-128, 32, 128);
+		//classic JS walls
+		pos = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-40*2-32, GAME_HEIGHT/2-128, 32, 128);
 		WallManager::pushWall(new Wall(pos.x, pos.y, 32, 128, color));
 	}
 
@@ -45,8 +48,10 @@ void HidingPlacesLevel::initialize() {
 	}
 
 	//traps:
-	//PowerupManager::pushPowerup(new PowerSquare(240,160,3));
-	//PowerupManager::pushPowerup(new PowerSquare(640-240,160,3));
+	//pos = RandomLevel::getSymmetricPowerupPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 80);
+	//PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "speed"));
+	//pos = RandomLevel::getSymmetricPowerupPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 80);
+	//PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "speed"));
 
 	pos = RandomLevel::getSymmetricPowerupPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, 40);
 	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "vanilla-extra", "mines"));
@@ -65,6 +70,13 @@ void HidingPlacesLevel::initialize() {
 		pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 80);
 		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, RandomLevel::powerAlternate(i, tempRand, "bounce", "speed"))); //speed=barrier here
 	}
+
+	//alternate powers:
+	//tempRand = RNG::randFunc() * 2;
+	//for (int i = 0; i < 4; i++) {
+	//	pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 80);
+	//	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, RandomLevel::powerAlternate(i, tempRand, "vanilla", "vanilla-extra"), RandomLevel::powerAlternate(i, tempRand, "multishot", "shotgun")));
+	//}
 
 	//not here in the JS level but I feel it should be here:
 	paras = new std::string[4]{std::to_string(GAME_WIDTH/2-20/2), std::to_string(GAME_HEIGHT/2-20/2), std::to_string(20), std::to_string(20)};

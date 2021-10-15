@@ -10,14 +10,12 @@
 #include "rng.h"
 #include <iostream>
 
-ColorValueHolder LoneTurretLevel::getDefaultColor() const {
-	return ColorValueHolder(0xCC/255.0, 0x44/255.0, 0x44/255.0);
-}
-
 std::unordered_map<std::string, float> LoneTurretLevel::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla-extra", .5f });
 	weights.insert({ "random-vanilla", .25f }); //adjust later
+	weights.insert({ "old", .5f });
+	weights.insert({ "random-old", .25f });
 	return weights;
 }
 
@@ -32,7 +30,8 @@ void LoneTurretLevel::initialize() {
 
 	//TODO: should these walls exist?
 	//for (int i = 0; i < 4; i++) {
-	//	pos = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 240-32, GAME_HEIGHT/2-128, 32, 128);
+	//	//classic JS walls
+	//	pos = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-40*2-32, GAME_HEIGHT/2-128, 32, 128);
 	//	WallManager::pushWall(new Wall(pos.x, pos.y, 32, 128, color));
 	//}
 

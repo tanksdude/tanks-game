@@ -23,13 +23,15 @@ void ConcealedPowerupsLevel::initialize() {
 	int randPos = RNG::randFunc() * 5;
 	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40, randPos);
 
+	//in JS, power mixing was turned off
 	ColorValueHolder color = getDefaultColor();
 	int tempRand;
 	PositionHolder pos;
 	std::string* paras;
 
 	for (int i = 0; i < 4; i++) {
-		pos = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 240-32, GAME_HEIGHT/2-128, 32, 128);
+		//classic JS walls
+		pos = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-40*2-32, GAME_HEIGHT/2-128, 32, 128);
 		WallManager::pushWall(new Wall(pos.x, pos.y, 32, 128, color));
 	}
 
@@ -48,10 +50,13 @@ void ConcealedPowerupsLevel::initialize() {
 	WallManager::pushWall(new Wall(pos.x, pos.y, 20, GAME_HEIGHT-70*2, color));
 
 	//traps:
-	//PowerupManager::pushPowerup(new PowerSquare(320-100-20,160,3));
-	//PowerupManager::pushPowerup(new PowerSquare(320+80+20+20,160,3));
+	//pos = RandomLevel::getSymmetricPowerupPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 80+20+20);
+	//PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "speed"));
+	//pos = RandomLevel::getSymmetricPowerupPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 80+20+20);
+	//PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "speed"));
 
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "big"));
+
 	tempRand = RNG::randFunc() * 2;
 	pos = RandomLevel::getSymmetricPowerupPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, 20);
 	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, RandomLevel::simplePowerAlternate(0, tempRand, "speed", "invincible")));
@@ -63,6 +68,7 @@ void ConcealedPowerupsLevel::initialize() {
 	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "grenade"));
 	pos = RandomLevel::getSymmetricPowerupPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 20);
 	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "grenade"));
+
 	for (int i = 0; i < 4; i++) {
 		pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-(80+32+20), GAME_HEIGHT/2-20);
 		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "homing"));

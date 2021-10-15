@@ -29,7 +29,7 @@
         * pushes tank away instead of killing it
 * levels:
     * all JS levels in! (except portal)
-        * "hiding places" and "turret level"
+        * "hiding places" and "lone turret"
         * "lightning corners" (it was cut, but now it's back)
         * invisible level ("winning path"), wind level ("tricky maneuvering"), ice and mines level ("mine heaven")
             * no, these levels didn't actually get names

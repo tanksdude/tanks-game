@@ -27,6 +27,8 @@ void FewObstaclesLevel::initialize() {
 	PositionHolder pos;
 	std::string* paras;
 
+	//classic JS walls removed
+
 	pos = RandomLevel::getSymmetricWallPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-(80+32+40+20), 20, GAME_HEIGHT-128);
 	WallManager::pushWall(new Wall(pos.x, pos.y, 20, 320-128, color));
 	pos = RandomLevel::getSymmetricWallPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-(80+32+40+20), 20, GAME_HEIGHT-128);
@@ -49,11 +51,14 @@ void FewObstaclesLevel::initialize() {
 	}
 
 	//traps:
-	//PowerupManager::pushPowerup(new PowerSquare(80+32+40+20+16, 160, 3));
-	//PowerupManager::pushPowerup(new PowerSquare(528-40-20-16, 160, 3));
-	//PowerupManager::pushPowerup(new PowerSquare(320, 64+16, 3));
-	//PowerupManager::pushPowerup(new PowerSquare(320, 320-64-16, 3));
-	//traps aren't powerups because that's just stupid
+	//pos = RandomLevel::getSymmetricPowerupPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-(80+32+40+20/2)-(16+10));
+	//PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "speed"));
+	//pos = RandomLevel::getSymmetricPowerupPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-(80+32+40+20/2)-(16+10));
+	//PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "speed"));
+	//pos = RandomLevel::getSymmetricPowerupPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, (GAME_HEIGHT-128)/2-20);
+	//PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "speed"));
+	//pos = RandomLevel::getSymmetricPowerupPositions_UD(1, GAME_WIDTH/2, GAME_HEIGHT/2, (GAME_HEIGHT-128)/2-20);
+	//PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "speed"));
 
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "banana"));
 }

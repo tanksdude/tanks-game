@@ -6,7 +6,7 @@ class ManyHazardsLevel : public Level {
 	//needs a better name
 public:
 	std::string getName() const override { return "many_hazards"; }
-	ColorValueHolder getDefaultColor() const override { return ColorValueHolder(0xDD/255.0, .5f, .25f); }
+	ColorValueHolder getDefaultColor() const override { return ColorValueHolder(0xDD/255.0, .5f, .25f); } //JS: #DD8844
 	std::vector<std::string> getLevelTypes() const override {
 		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "old", "random-old", "random" };
 		return types;

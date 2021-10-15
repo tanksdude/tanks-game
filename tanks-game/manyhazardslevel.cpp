@@ -24,6 +24,7 @@ void ManyHazardsLevel::initialize() {
 	int randPos = RNG::randFunc() * 5;
 	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40, randPos);
 
+	//in JS, power mixing was turned off
 	ColorValueHolder color = getDefaultColor();
 	int tempRand;
 	PositionHolder pos;
@@ -31,7 +32,8 @@ void ManyHazardsLevel::initialize() {
 
 	PositionHolder* wallArray = new PositionHolder[4];
 	for (int i = 0; i < 4; i++) {
-		wallArray[i] = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 240-32, GAME_HEIGHT/2-128, 32, 128);
+		//classic JS walls
+		wallArray[i] = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-40*2-32, GAME_HEIGHT/2-128, 32, 128);
 		WallManager::pushWall(new Wall(wallArray[i].x, wallArray[i].y, 32, 128, color));
 	}
 
@@ -40,27 +42,50 @@ void ManyHazardsLevel::initialize() {
 	delete[] paras;
 
 	const int TURRET_COUNT = 16; //stationary turret count, not regular turret count
-	const double turretDistance = (wallArray[3].x - (wallArray[0].x+32)) / (TURRET_COUNT+1);
+	//const double turretDistance = (wallArray[3].x - (wallArray[0].x+32)) / (TURRET_COUNT+1);
+	const double turretDistance = (wallArray[3].x - (wallArray[0].x+32) - 8) / (TURRET_COUNT+1);
 	for (int i = 0; i < TURRET_COUNT; i++) {
 		//bottom half
-		std::string* paras = new std::string[3]{std::to_string(wallArray[0].x+32 + turretDistance * (i+1)), std::to_string(16), std::to_string(PI/2)};
+		//std::string* paras = new std::string[3]{std::to_string(wallArray[0].x+32 + turretDistance * (i+1)), std::to_string(16), std::to_string(PI/2)};
+		std::string* paras = new std::string[3]{std::to_string(wallArray[0].x+32+8/2 + turretDistance * (i+1)), std::to_string(16), std::to_string(PI/2)};
 		HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(3, paras));
 		delete[] paras;
 	}
 	for (int i = 0; i < TURRET_COUNT; i++) {
 		//top half
-		std::string* paras = new std::string[3]{std::to_string(wallArray[0].x+32 + turretDistance * (i+1)), std::to_string(GAME_HEIGHT-16), std::to_string(-PI/2)};
+		//std::string* paras = new std::string[3]{std::to_string(wallArray[0].x+32 + turretDistance * (i+1)), std::to_string(GAME_HEIGHT-16), std::to_string(-PI/2)};
+		std::string* paras = new std::string[3]{std::to_string(wallArray[0].x+32+8/2 + turretDistance * (i+1)), std::to_string(GAME_HEIGHT-16), std::to_string(-PI/2)};
 		HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(3, paras));
 		delete[] paras;
 	}
-	//^^^ this does not result in the exact placements from JS; in JS, those values were then manually rounded to a nice integer
+	//JS x positions: [140, 164, ..., 476, 500]; C++ x positions: [136.471, 160.941, ..., 479.059, 503.529]
+	//positions have been updated to JS version; old version left commented out
+
+	//this is too much:
+	//for (int i = 0; i < TURRET_COUNT-1; i++) {
+	//	std::string* paras = new std::string[3]{std::to_string(wallArray[0].x+32+8/2 + turretDistance * (i+1) + 4+8), std::to_string(16), std::to_string(PI/2)};
+	//	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "targeting_turret")(3, paras));
+	//	delete[] paras;
+	//}
+	//for (int i = 0; i < TURRET_COUNT-1; i++) {
+	//	std::string* paras = new std::string[3]{std::to_string(wallArray[0].x+32+8/2 + turretDistance * (i+1) + 4+8), std::to_string(GAME_HEIGHT-16), std::to_string(-PI/2)};
+	//	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "targeting_turret")(3, paras));
+	//	delete[] paras;
+	//}
 
 	for (int i = 0; i < 4; i++) {
 		pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2 - ((wallArray[0].x+32) + (TANK_RADIUS/2 * 1.5)), 32 + 20 + (TANK_RADIUS/2 * 2.5));
+		//pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2 - ((wallArray[0].x+32) + (TANK_RADIUS/2 * 1.5) + 4), 32 + 20 + (TANK_RADIUS/2 * 2.5));
 		std::string* paras = new std::string[3]{std::to_string(pos.x), std::to_string(pos.y), std::to_string(PI * (i%2))};
 		HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "targeting_turret")(3, paras));
 		delete[] paras;
 	}
+
+	//useless traps:
+	//for (int i = 0; i < 4; i++) {
+	//	pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2 - (wallArray[0].x+32 + 20), GAME_HEIGHT/2 - 48);
+	//	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "speed"));
+	//}
 
 	PositionHolder wallPos1 = RandomLevel::getSymmetricWallPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, (GAME_HEIGHT - 128*2)/2, 160, 20);
 	WallManager::pushWall(new Wall(wallPos1.x, wallPos1.y, 160, 20, color));
@@ -103,8 +128,10 @@ void ManyHazardsLevel::initialize() {
 	}
 
 	//traps:
-	//PowerupManager::pushPowerup(new PowerSquare(320, 160-50-40-30, 3));
-	//PowerupManager::pushPowerup(new PowerSquare(320, 160+50+40+30, 3));
+	//pos = RandomLevel::getSymmetricPowerupPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, (GAME_HEIGHT - 128*2)/2 + 20 + 50 + 21);
+	//PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "speed"));
+	//pos = RandomLevel::getSymmetricPowerupPositions_UD(1, GAME_WIDTH/2, GAME_HEIGHT/2, (GAME_HEIGHT - 128*2)/2 + 20 + 50 + 21);
+	//PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "speed"));
 	//yes, they were evil
 
 	delete[] wallArray;

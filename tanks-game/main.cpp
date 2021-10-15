@@ -137,7 +137,7 @@ int main(int argc, char** argv) {
 		std::cout << e.what() << std::endl;
 		return 1;
 	}
-	
+
 	// Set callback for drawing the scene
 	glutDisplayFunc(GameMainLoop::drawEverything);
 
@@ -167,7 +167,7 @@ int main(int argc, char** argv) {
 
 	// Set callback for the idle function
 	//glutIdleFunc(draw);
-	
+
 	//vanilla (should some be "old"?):
 	PowerupManager::addPowerFactory(SpeedPower::factory);
 	PowerupManager::addPowerFactory(WallhackPower::factory);
@@ -217,7 +217,7 @@ int main(int argc, char** argv) {
 	LevelManager::addLevelFactory(DeveloperLevel0::factory);
 	LevelManager::addLevelFactory(DeveloperLevel1::factory);
 	LevelManager::addLevelFactory(DeveloperLevel2::factory);
-	
+
 	//old:
 	LevelManager::addLevelFactory(OldEmptyLevel::factory);
 
