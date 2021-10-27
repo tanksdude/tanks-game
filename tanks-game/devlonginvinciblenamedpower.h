@@ -44,8 +44,8 @@ public:
 	virtual TankPower* makeDuplicate() const override { return new DevLongInvincibleNamedTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
 
-	virtual double getTankMaxSpeedMultiplier() const override { return .5; }
-	virtual double getTankAccelerationMultiplier() const override { return .5; }
+	//virtual double getTankMaxSpeedMultiplier() const override { return .5; }
+	//virtual double getTankAccelerationMultiplier() const override { return .5; }
 
 	virtual double getOffenseImportance() const override { return 0; }
 	virtual double getOffenseTier(Tank*) const override { return 0; }

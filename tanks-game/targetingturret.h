@@ -9,9 +9,9 @@ class TargetingTurret : public StationaryTurret {
 	//just called Turret in JS Tanks
 protected:
 	//double angle;
-	//double tickCount = 0;
+	//double tickCount;
 	//double tickCycle;
-	//unsigned short currentState = 0;
+	//unsigned short currentState;
 	//unsigned short maxState;
 	//double* stateMultiplier;
 	//ColorValueHolder* stateColors;
@@ -20,7 +20,7 @@ protected:
 	bool targeting;
 	double targetingX, targetingY; //not the x and y of the targeted tank; it's the x and y of the targeting reticule
 	ColorValueHolder reticuleColors[2];
-	double targetingCount = 0;
+	double targetingCount;
 	long trackingID; //if ==this->getGameID(), then it's not tracking
 
 private:

@@ -57,11 +57,11 @@ void LightningCornersLevel::initialize() {
 	delete[] paras;
 
 	//traps:
-	//for(int i=0; i<4; i++){
+	//for (int i = 0; i < 4; i++) {
 	//	pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 80-20/2, 80+20/2);
 	//	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "speed"));
 	//}
-	//for(int i=0; i<4; i++){
+	//for (int i = 0; i < 4; i++) {
 	//	pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 80+20/2, 80-20/2);
 	//	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "speed"));
 	//}

@@ -10,9 +10,9 @@ class StationaryTurret : public CircleHazard {
 	//just called Stationary in JS Tanks
 protected:
 	double angle;
-	double tickCount = 0;
+	double tickCount;
 	double tickCycle;
-	unsigned short currentState = 0; //could use int instead of short because transfering a word is more efficient than a halfword but... eh
+	unsigned short currentState; //could use int instead of short because transfering a word is more efficient than a halfword but... eh
 	unsigned short maxState;
 	double* stateMultiplier;
 	ColorValueHolder* stateColors;

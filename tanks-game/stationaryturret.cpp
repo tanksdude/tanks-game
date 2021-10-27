@@ -21,7 +21,7 @@ VertexArray* StationaryTurret::cannon_va;
 VertexBuffer* StationaryTurret::cannon_vb;
 bool StationaryTurret::initialized_GPU = false;
 
-StationaryTurret::StationaryTurret(double xpos, double ypos, double angle, bool) {
+StationaryTurret::StationaryTurret(double xpos, double ypos, double angle, bool noGPU) {
 	x = xpos;
 	y = ypos;
 	this->angle = angle;
@@ -29,7 +29,9 @@ StationaryTurret::StationaryTurret(double xpos, double ypos, double angle, bool)
 	gameID = GameManager::getNextID();
 	teamID = HAZARD_TEAM;
 
+	tickCount = 0;
 	tickCycle = 100; //100 is JS default (because of shooting speed) and 200 just looks weird
+	currentState = 0;
 	maxState = 3;
 	stateMultiplier = new double[maxState]{2, 1, 2};
 	stateColors = new ColorValueHolder[maxState]{ {.5f, .5f, .5f}, {1.0f, 0x22/255.0, 0x11/255.0}, {0, 0.5f, 1.0f} };

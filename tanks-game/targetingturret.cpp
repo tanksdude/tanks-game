@@ -32,6 +32,9 @@ TargetingTurret::TargetingTurret(double xpos, double ypos, double angle, bool) :
 	//gameID = GameManager::getNextID();
 	//teamID = HAZARD_TEAM;
 
+	targeting = false;
+	targetingCount = 0;
+	trackingID = this->getGameID();
 	ColorValueHolder temp[2] = { {1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f} };
 	std::copy(temp, temp+2, reticuleColors);
 

@@ -37,7 +37,7 @@ public:
 
 class BananaBulletPower : public BulletPower {
 protected:
-	static const int bananaCount;
+	static const int bananaCount; //TODO: ability to change this in constructor
 	static const double maxNewBulletVelocity;
 	static const double minNewBulletVelocity;
 	bool wasStationary; //must have velocity of zero for one tick before banana-ing
