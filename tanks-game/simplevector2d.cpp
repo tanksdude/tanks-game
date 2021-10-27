@@ -104,8 +104,15 @@ float SimpleVector2D::crossProduct(const SimpleVector2D& v1, const SimpleVector2
 //finds the angle between the two vectors by the dot product and the cross product
 //uses cross product for sign and dot product for angle
 float SimpleVector2D::angleBetween(const SimpleVector2D& v1, const SimpleVector2D& v2) {
+	/*
 	float magnitudes = v1.getMagnitude() * v2.getMagnitude();
 	float crossAngle = asin(SimpleVector2D::crossProduct(v1, v2) / magnitudes);
 	float dotAngle = acos(SimpleVector2D::dotProduct(v1, v2) / magnitudes);
+	*/
+	//to account for the fact some vectors have zero magnitude, set magnitude to 1:
+	SimpleVector2D adjusted_v1(v1), adjusted_v2(v2);
+	adjusted_v1.setMagnitude(1); adjusted_v2.setMagnitude(1);
+	float crossAngle = asin(SimpleVector2D::crossProduct(adjusted_v1, adjusted_v2));
+	float dotAngle = acos(SimpleVector2D::dotProduct(adjusted_v1, adjusted_v2));
 	return copysign(dotAngle, crossAngle); //this function is surprisingly useful!
 }

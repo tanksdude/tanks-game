@@ -200,6 +200,7 @@ void TargetingTurret::tick() {
 				} else if (distancesToTank[i] < minDist) {
 					tankIndices.clear();
 					tankIndices.push_back(i);
+					minDist = distancesToTank[i];
 				}
 			}
 
@@ -252,22 +253,16 @@ bool TargetingTurret::canSeeTank(Tank* t) {
 void TargetingTurret::turnTowardsTank(Tank* t) {
 	//see PowerFunctionHelper::homingGeneric
 	double targetAngle = atan2(t->y - y, t->x - x);
-	double turretAngle = (StationaryTurret::getAngle() > PI ? StationaryTurret::getAngle() - 2*PI : StationaryTurret::getAngle());
-	if ((abs(targetAngle - turretAngle) <= PI/turningIncrement) || (abs(fmod(targetAngle + PI, 2*PI) - fmod(turretAngle + PI, 2*PI)) <= PI/turningIncrement)) {
-		return;
+	SimpleVector2D distToTank = SimpleVector2D(t->getX() - this->x, t->getY() - this->y);
+	float theta = SimpleVector2D::angleBetween(distToTank, SimpleVector2D(getAngle(), 0, true));
+	if (abs(theta) < PI/turningIncrement) {
+		//too small to adjust angle
 	} else {
-		if (StationaryTurret::getAngle() > PI/2 && StationaryTurret::getAngle() <= 3*PI/2) {
-			if (t->y - y < tan(this->angle) * (t->x - x)) {
-				this->angle += PI/turningIncrement;
-			} else {
-				this->angle -= PI/turningIncrement;
-			}
+		//large angle adjustment needed
+		if (theta < 0) {
+			this->angle += PI/turningIncrement;
 		} else {
-			if (t->y - y < tan(this->angle) * (t->x - x)) {
-				this->angle -= PI/turningIncrement;
-			} else {
-				this->angle += PI/turningIncrement;
-			}
+			this->angle -= PI/turningIncrement;
 		}
 	}
 }
