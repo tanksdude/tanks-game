@@ -303,6 +303,12 @@
     <ClCompile Include="loneturretlevel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="windleveleffect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="trickymaneuveringlevel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -645,6 +651,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="loneturretlevel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="windleveleffect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="trickymaneuveringlevel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

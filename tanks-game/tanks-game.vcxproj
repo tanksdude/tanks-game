@@ -223,6 +223,7 @@
     <ClCompile Include="tank.cpp" />
     <ClCompile Include="tankmanager.cpp" />
     <ClCompile Include="trackingpower.cpp" />
+    <ClCompile Include="trickymaneuveringlevel.cpp" />
     <ClCompile Include="triplepower.cpp" />
     <ClCompile Include="targetingturret.cpp" />
     <ClCompile Include="vertexarray.cpp" />
@@ -231,6 +232,7 @@
     <ClCompile Include="wall.cpp" />
     <ClCompile Include="wallhackpower.cpp" />
     <ClCompile Include="wallmanager.cpp" />
+    <ClCompile Include="windleveleffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="backgroundrect.h" />
@@ -338,6 +340,7 @@
     <ClInclude Include="tankmanager.h" />
     <ClInclude Include="tankpower.h" />
     <ClInclude Include="trackingpower.h" />
+    <ClInclude Include="trickymaneuveringlevel.h" />
     <ClInclude Include="triplepower.h" />
     <ClInclude Include="targetingturret.h" />
     <ClInclude Include="vertexarray.h" />
@@ -347,6 +350,7 @@
     <ClInclude Include="wall.h" />
     <ClInclude Include="wallhackpower.h" />
     <ClInclude Include="wallmanager.h" />
+    <ClInclude Include="windleveleffect.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="freeglut.dll" />

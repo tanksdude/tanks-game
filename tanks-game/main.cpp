@@ -61,12 +61,17 @@
 #include "sneakyrewardlevel.h"
 #include "lightningcornerslevel.h"
 #include "loneturretlevel.h"
+//"extra"... special
+#include "trickymaneuveringlevel.h"
 //dev levels:
 #include "developerlevel0.h"
 #include "developerlevel1.h"
 #include "developerlevel2.h"
 //old levels:
 #include "oldemptylevel.h"
+
+//level effects:
+#include "windleveleffect.h"
 
 //hazards:
 #include "stationaryturret.h"
@@ -200,6 +205,9 @@ int main(int argc, char** argv) {
 	PowerupManager::addPowerFactory(OldBigNamedPower::factory);
 
 	//vanilla (some are also "old"):
+	LevelManager::addLevelEffectFactory(WindLevelEffect::factory);
+
+	//vanilla (some are also "old"):
 	LevelManager::addLevelFactory(DefaultRandomLevel::factory);
 	LevelManager::addLevelFactory(EmptyLevel::factory);
 	LevelManager::addLevelFactory(CorridorLevel::factory);
@@ -212,6 +220,8 @@ int main(int argc, char** argv) {
 	LevelManager::addLevelFactory(SneakyRewardLevel::factory);
 	LevelManager::addLevelFactory(LightningCornersLevel::factory);
 	LevelManager::addLevelFactory(LoneTurretLevel::factory);
+	//"extra"... special:
+	LevelManager::addLevelFactory(TrickyManeuveringLevel::factory);
 
 	//dev:
 	LevelManager::addLevelFactory(DeveloperLevel0::factory);
@@ -221,6 +231,7 @@ int main(int argc, char** argv) {
 	//old:
 	LevelManager::addLevelFactory(OldEmptyLevel::factory);
 
+	//vanilla:
 	HazardManager::addCircleHazardFactory(StationaryTurret::factory, StationaryTurret::randomizingFactory);
 	HazardManager::addCircleHazardFactory(TargetingTurret::factory, TargetingTurret::randomizingFactory);
 	HazardManager::addRectHazardFactory(RectangularLightning::factory, RectangularLightning::randomizingFactory);
@@ -259,7 +270,7 @@ int main(int argc, char** argv) {
 
 	std::cout << "OpenGL renderer: " << glGetString(GL_RENDERER) << std::endl;
 	std::cout << "OpenGL vendor: " << glGetString(GL_VENDOR) << std::endl;
-	std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
+	std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl << std::endl;
 
 	//framelimiter
 	//glutTimerFunc(1000/physicsRate, tick, physicsRate); //see GameMainLoop

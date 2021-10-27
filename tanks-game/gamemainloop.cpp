@@ -69,6 +69,9 @@ void GameMainLoop::Tick(int physicsUPS) {
 	auto start = Diagnostics::getTime();
 	doThing();
 
+	//level stuff:
+	levelTick();
+
 	//move tanks:
 	moveTanks();
 
@@ -166,6 +169,19 @@ void GameMainLoop::Tick(int physicsUPS) {
 		glutPostRedisplay();
 		glutTimerFunc(1000, ResetThings::reset, 0);
 		glutTimerFunc(1000 + 1000/physicsUPS, GameMainLoop::Tick, physicsUPS);
+	}
+}
+
+void GameMainLoop::levelTick() {
+	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
+		LevelManager::getLevel(i)->tickLevelEffects();
+	}
+	//for (int i = 0; i < LevelManager::getNumLevels(); i++) {
+	//	LevelManager::getLevel(i)->doLevelEffects();
+	//}
+	//^^^ handled by level
+	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
+		LevelManager::getLevel(i)->tick();
 	}
 }
 
@@ -972,6 +988,16 @@ void GameMainLoop::drawEverything() {
 	Diagnostics::startTiming("tanks");
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
 		TankManager::getTank(i)->draw();
+	}
+	Renderer::UnbindAll();
+	Diagnostics::endTiming();
+
+	Diagnostics::startTiming("level");
+	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
+		LevelManager::getLevel(i)->draw();
+	}
+	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
+		LevelManager::getLevel(i)->drawLevelEffects();
 	}
 	Renderer::UnbindAll();
 	Diagnostics::endTiming();

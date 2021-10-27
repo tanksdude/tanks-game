@@ -14,6 +14,31 @@ std::unordered_map<std::string, float> Level::getWeights() const {
 	return weights;
 }
 
+void Level::tickLevelEffects() {
+	for (int i = 0; i < getNumEffects(); i++) {
+		effects[i]->tick(this);
+	}
+}
+
+void Level::doLevelEffects() {
+	for (int i = 0; i < getNumEffects(); i++) {
+		effects[i]->doEffects(this);
+	}
+}
+
+void Level::drawLevelEffects() const {
+	for (int i = 0; i < getNumEffects(); i++) {
+		effects[i]->draw();
+	}
+}
+
+Level::~Level() {
+	for (int i = 0; i < getNumEffects(); i++) {
+		delete effects[i];
+	}
+	effects.clear(); //does ~Level happen before ~child_Level?
+}
+
 /*
 TODO: separate levels from level effects? (... is this not the case?)
 
@@ -21,7 +46,7 @@ list of (eventual) levels or level effects, I dunno:
 |random (just need to flesh it out once powers and hazards exist)
 |empty
 invisibility? (no one appreciates it though)
-wind
+|wind
 ice (no one really likes it, as expected)
 mines
 
@@ -32,13 +57,13 @@ maze
 
 
 boring levels:
-hiding places (has mines?)
+|hiding places (has mines?)
 |evened corridors
 |few obstacles (homing level)
-turret level (kinda boring)
+|turret level (kinda boring)
 |concealed powers (needs some spice to become good)
 |many hazards
-lightning corners (needs spice, but is a kinda fun level)
+|lightning corners (needs spice, but is a kinda fun level)
 
 
 test levels (purpose: to showcase some functionality):

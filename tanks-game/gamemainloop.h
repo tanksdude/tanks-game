@@ -12,6 +12,7 @@ private:
 public:
 	//tick stuff:
 	static void Tick() { Tick(physicsRate); }
+	static void levelTick();
 	static void moveTanks();
 	static void tankToPowerup();
 	static void tickHazards();
