@@ -7,11 +7,11 @@
 
 //TODO?: CircleHazard and RectHazard use CollisionHandler for their modified tank/bullet collision by default
 
-std::unordered_map<char, int> EndGameHandler::teamWins;
-std::vector<EndGameHandler::CharAndString> EndGameHandler::teamsParticipating;
-std::vector<EndGameHandler::DoubleChar> EndGameHandler::killEvents;
+std::unordered_map<Team_ID, int> EndGameHandler::teamWins;
+std::vector<EndGameHandler::Team_IDAndString> EndGameHandler::teamsParticipating;
+std::vector<EndGameHandler::DoubleTeam_ID> EndGameHandler::killEvents;
 
-void EndGameHandler::addTeamToWatch(char teamID, std::string teamName) {
+void EndGameHandler::addTeamToWatch(Team_ID teamID, std::string teamName) {
 	if (teamID == DEFAULT_TEAM) {
 		std::cerr << "WARNING: DEFAULT_TEAM is not allowed to have a score" << std::endl;
 	} else {
@@ -33,7 +33,7 @@ void EndGameHandler::finalizeScores() {
 	//TODO: is this done? (will definitely update when multi-tank mode becomes a thing)
 
 	//process kill events
-	std::vector<EndGameHandler::DoubleChar> pastEvents; //in case tank dies from multiple bullets at the same time
+	std::vector<EndGameHandler::DoubleTeam_ID> pastEvents; //in case tank dies from multiple bullets at the same time
 	for (int i = 0; i < killEvents.size(); i++) {
 		bool previouslyHappened = false;
 		for (int j = 0; j < pastEvents.size(); j++) {

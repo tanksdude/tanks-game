@@ -21,7 +21,7 @@ protected:
 	double targetingX, targetingY; //not the x and y of the targeted tank; it's the x and y of the targeting reticule
 	ColorValueHolder reticuleColors[2];
 	double targetingCount;
-	long trackingID; //if ==this->getGameID(), then it's not tracking
+	Game_ID trackingID; //if ==this->getGameID(), then it's not tracking
 
 private:
 	static VertexArray* va;

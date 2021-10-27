@@ -81,7 +81,7 @@ protected:
 	bool dead = false; //only kill() should modify this
 	bool kill(); //allows for custom death (aka something saving the tank from death)
 
-	void resetThings(double x, double y, double a, char teamID);
+	void resetThings(double x, double y, double a, Team_ID teamID);
 	void terminalVelocity();
 
 	double shootCount;
@@ -107,7 +107,7 @@ private:
 	static bool uninitializeGPU();
 
 public:
-	Tank(double x, double y, double a, char id, std::string name, TankInputChar forward, TankInputChar left, TankInputChar right, TankInputChar shoot, TankInputChar special);
+	Tank(double x, double y, double a, Team_ID id, std::string name, TankInputChar forward, TankInputChar left, TankInputChar right, TankInputChar shoot, TankInputChar special);
 
 	void move();
 	//void edgeConstrain();

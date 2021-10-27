@@ -26,8 +26,8 @@ public: //hopefully temporary
 	SimpleVector2D velocity;
 	double initial_velocity;
 	double acceleration;
-	long parentID; //may not be used, depends on parentType
-	long getParentID() const { return parentID; }
+	Game_ID parentID; //may not be used, depends on parentType
+	Game_ID getParentID() const { return parentID; }
 	BulletParentType parentType;
 	BulletParentType getParentIDType() const { return parentType; }
 	bool canCollideWith(GameThing*) const;
@@ -74,14 +74,14 @@ private:
 	static bool uninitializeGPU();
 
 private:
-	Bullet(double x, double y, double a, char teamID, BulletParentType parentType, long parentID); //every bullet uses this
-	Bullet(double x, double y, double a, char teamID, BulletParentType parentType, long parentID, std::vector<BulletPower*>* bp); //most bullets use this
+	Bullet(double x, double y, double a, Team_ID teamID, BulletParentType parentType, Game_ID parentID); //every bullet uses this
+	Bullet(double x, double y, double a, Team_ID teamID, BulletParentType parentType, Game_ID parentID, std::vector<BulletPower*>* bp); //most bullets use this
 public:
-	Bullet(double x, double y, double r, double a, double vel, char teamID, BulletParentType parentType, long parentID, std::vector<BulletPower*>* bp, bool lessOverriding); //basically just for banana
-	Bullet(double x, double y, double r, double a, double vel, double acc, char teamID, BulletParentType parentType, long parentID, std::vector<BulletPower*>* bp, bool manualAcceleration); //avoid using
+	Bullet(double x, double y, double r, double a, double vel, Team_ID teamID, BulletParentType parentType, Game_ID parentID, std::vector<BulletPower*>* bp, bool lessOverriding); //basically just for banana
+	Bullet(double x, double y, double r, double a, double vel, double acc, Team_ID teamID, BulletParentType parentType, Game_ID parentID, std::vector<BulletPower*>* bp, bool manualAcceleration); //avoid using
 public:
-	Bullet(double x, double y, double r, double a, double vel, char teamID, BulletParentType parentType, long parentID);
-	Bullet(double x, double y, double r, double a, double vel, char teamID, BulletParentType parentType, long parentID, std::vector<BulletPower*>* bp);
+	Bullet(double x, double y, double r, double a, double vel, Team_ID teamID, BulletParentType parentType, Game_ID parentID);
+	Bullet(double x, double y, double r, double a, double vel, Team_ID teamID, BulletParentType parentType, Game_ID parentID, std::vector<BulletPower*>* bp);
 	void move();
 	void draw() const override;
 	void draw(double xpos, double ypos) const override;

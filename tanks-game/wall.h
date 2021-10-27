@@ -27,7 +27,7 @@ private:
 
 public:
 	Wall(double x, double y, double w, double h, ColorValueHolder);
-	Wall(double x, double y, double w, double h, ColorValueHolder c, char teamID);
+	//Wall(double x, double y, double w, double h, ColorValueHolder c, Team_ID teamID);
 
 	void draw() const override;
 	void draw(double xpos, double ypos) const override;

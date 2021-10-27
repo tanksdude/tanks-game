@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "colorvalueholder.h"
+#include "constants.h"
 
 class GeneralizedLightning {
 protected:
@@ -44,7 +45,7 @@ protected:
 	virtual int getDefaultNumBoltPoints(double horzDist) const; //number of points that make up a bolt
 	virtual void pushBolt(LightningBolt*) = 0;
 	virtual void pushDefaultBolt(int num, bool randomize) = 0; //randomize should be true all of the time
-	std::vector<long> targetedObjects;
+	std::vector<Game_ID> targetedObjects;
 
 	//the lightning is supposed to override this stuff:
 	/*

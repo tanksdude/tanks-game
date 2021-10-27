@@ -41,7 +41,7 @@ bool Tank::initialized_GPU = false;
 const double Tank::default_maxSpeed = 1;
 const double Tank::default_acceleration = 1.0/16;
 const double Tank::default_turningIncrement = 64;
-Tank::Tank(double x_, double y_, double a, char id_, std::string name_, TankInputChar forward, TankInputChar left, TankInputChar right, TankInputChar shoot, TankInputChar special) {
+Tank::Tank(double x_, double y_, double a, Team_ID id_, std::string name_, TankInputChar forward, TankInputChar left, TankInputChar right, TankInputChar shoot, TankInputChar special) {
 	x = x_;
 	y = y_;
 	velocity = SimpleVector2D(a, 0, true);
@@ -804,12 +804,12 @@ bool Tank::kill() {
 	return this->dead;
 }
 
-void Tank::resetThings(double x, double y, double a, char teamID) {
+void Tank::resetThings(double x, double y, double a, Team_ID teamID) {
 	this->dead = false;
 	this->x = x;
 	this->y = y;
 	this->velocity = SimpleVector2D(a, 0, true);
-	this->gameID = GameManager::getNextID(); //should this be updated?
+	this->gameID = GameManager::getNextID();
 	this->teamID = teamID;
 	//this->r = TANK_RADIUS;
 	shootCount = 0;

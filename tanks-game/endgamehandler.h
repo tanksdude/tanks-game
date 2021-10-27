@@ -13,21 +13,21 @@ class EndGameHandler { //also score manager (TODO: maybe move to GameManager)
 	friend class DeveloperManager;
 	friend class ResetThings;
 private:
-	struct DoubleChar {
-		char killer;
-		char killee;
-		DoubleChar(char a, char b) { killer = a; killee = b; }
-		DoubleChar() { killer = DEFAULT_TEAM; killee = DEFAULT_TEAM; }
+	struct DoubleTeam_ID {
+		Team_ID killer;
+		Team_ID killee;
+		DoubleTeam_ID(Team_ID a, Team_ID b) { killer = a; killee = b; }
+		DoubleTeam_ID() { killer = DEFAULT_TEAM; killee = DEFAULT_TEAM; }
 	};
-	struct CharAndString {
-		char teamID;
+	struct Team_IDAndString {
+		Team_ID teamID;
 		std::string teamName;
-		CharAndString(char id, std::string name) { teamID = id; teamName = name; }
-		CharAndString() { teamID = DEFAULT_TEAM; teamName = "DEFAULT_TEAM"; }
+		Team_IDAndString(Team_ID id, std::string name) { teamID = id; teamName = name; }
+		Team_IDAndString() { teamID = DEFAULT_TEAM; teamName = "DEFAULT_TEAM"; }
 	};
-	static std::unordered_map<char, int> teamWins;
-	static std::vector<EndGameHandler::CharAndString> teamsParticipating;
-	static std::vector<EndGameHandler::DoubleChar> killEvents;
+	static std::unordered_map<Team_ID, int> teamWins;
+	static std::vector<EndGameHandler::Team_IDAndString> teamsParticipating;
+	static std::vector<EndGameHandler::DoubleTeam_ID> killEvents;
 
 	static void finalizeScores(); //ResetThings calls this
 public:
@@ -41,7 +41,7 @@ public:
 
 	static bool shouldGameEnd();
 
-	static void addTeamToWatch(char teamID, std::string teamName);
+	static void addTeamToWatch(Team_ID teamID, std::string teamName);
 	static void clearWatchingTeams();
 
 private:
