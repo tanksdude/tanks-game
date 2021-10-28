@@ -39,11 +39,11 @@ HorizontalLightning::HorizontalLightning(double xpos, double ypos, double width,
 	initializeGPU();
 }
 
-Circle* HorizontalLightning::getLeftPoint() {
+Circle* HorizontalLightning::getLeftPoint() const {
 	return new Point(x, y + h/2);
 }
 
-Circle* HorizontalLightning::getRightPoint() {
+Circle* HorizontalLightning::getRightPoint() const {
 	return new Point(x + w, y + h/2);
 }
 
@@ -181,12 +181,12 @@ void HorizontalLightning::specialEffectCircleCollision(Circle* c) {
 		intersectionYL = c->y;
 		boltPointsL = 2;
 	} else {
-		DoublePositionHolder intersections = CollisionHandler::circleLineIntersection(c, xpos, ypos, leftPoint->x, leftPoint->y);
-		intersectionXL = std::min(intersections.x1, intersections.x2);
+		std::pair<PositionHolder, PositionHolder> intersections = CollisionHandler::circleLineIntersection(c, xpos, ypos, leftPoint->x, leftPoint->y);
+		intersectionXL = std::min(intersections.first.x, intersections.second.x);
 		if (c->y < y + h/2) {
-			intersectionYL = std::max(intersections.y1, intersections.y2);
+			intersectionYL = std::max(intersections.first.y, intersections.second.y);
 		} else {
-			intersectionYL = std::min(intersections.y1, intersections.y2);
+			intersectionYL = std::min(intersections.first.y, intersections.second.y);
 		}
 
 		if (intersectionXL < x || intersectionXL > x+w) {
@@ -210,12 +210,12 @@ void HorizontalLightning::specialEffectCircleCollision(Circle* c) {
 		intersectionYR = c->y;
 		boltPointsR = 2;
 	} else {
-		DoublePositionHolder intersections = CollisionHandler::circleLineIntersection(c, xpos, ypos, rightPoint->x, rightPoint->y);
-		intersectionXR = std::max(intersections.x1, intersections.x2);
+		std::pair<PositionHolder, PositionHolder> intersections = CollisionHandler::circleLineIntersection(c, xpos, ypos, rightPoint->x, rightPoint->y);
+		intersectionXR = std::max(intersections.first.x, intersections.second.x);
 		if (c->y < y + h/2) {
-			intersectionYR = std::max(intersections.y1, intersections.y2);
+			intersectionYR = std::max(intersections.first.y, intersections.second.y);
 		} else {
-			intersectionYR = std::min(intersections.y1, intersections.y2);
+			intersectionYR = std::min(intersections.first.y, intersections.second.y);
 		}
 
 		if (intersectionXR < x || intersectionXR > x+w) {
@@ -272,7 +272,7 @@ void HorizontalLightning::pushDefaultBolt(int num, bool randomize) {
 	}
 }
 
-bool HorizontalLightning::validLocation() {
+bool HorizontalLightning::validLocation() const {
 	bool wallOnLeft = false, wallOnRight = false, wallInMiddle = false;
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		Wall* wa = WallManager::getWall(i);
@@ -298,7 +298,7 @@ bool HorizontalLightning::validLocation() {
 	return (wallOnLeft && wallOnRight && !wallInMiddle);
 }
 
-bool HorizontalLightning::reasonableLocation() {
+bool HorizontalLightning::reasonableLocation() const {
 	bool wallOnTop = false, wallOnBottom = false;
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		Wall* wa = WallManager::getWall(i);

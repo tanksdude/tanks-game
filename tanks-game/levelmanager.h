@@ -9,6 +9,7 @@ typedef LevelEffect* (*LevelEffectFunction)(int, std::string*);
 
 class LevelManager {
 	friend class ResetThings;
+
 private:
 	static std::vector<Level*> levels; //active levels
 	static void clearLevels(); //for ResetThings
@@ -17,6 +18,7 @@ private:
 	static std::unordered_map<std::string, std::unordered_map<std::string, LevelEffectFunction>> levelEffectLookup;
 	static std::unordered_map<std::string, std::vector<std::string>> levelNameList;
 	static std::unordered_map<std::string, std::vector<std::string>> levelEffectNameList;
+
 public:
 	static void initialize();
 	static Level* getLevel(int index); //why would this be needed

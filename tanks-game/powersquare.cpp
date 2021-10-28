@@ -175,7 +175,7 @@ ColorValueHolder PowerSquare::getColor() const {
 	if (numOfPowers == 1) {
 		return heldPowers[0]->getColor();
 	} else {
-		double highest = -1;
+		double highest = LOW_IMPORTANCE;
 		for (int i = 0; i < numOfPowers; i++) {
 			if (heldPowers[i]->getColorImportance() > highest) {
 				highest = heldPowers[i]->getColorImportance();
@@ -201,8 +201,8 @@ void PowerSquare::givePower(Tank* t) {
 	//good enough for now
 }
 
-void PowerSquare::givePower(Bullet*) { return; } //don't think about it now, possibly ever; it's weird
-//void givePower(Hazard*);
+//void PowerSquare::givePower(Bullet*);
+//void PowerSquare::givePower(Hazard*);
 
 void PowerSquare::draw() const {
 	draw(x, y);
@@ -232,7 +232,7 @@ void PowerSquare::poseDraw() const {
 	return;
 }
 
-void PowerSquare::drawCPU() {
+void PowerSquare::drawCPU() const {
 	ColorValueHolder color = getColor();
 	if (numOfPowers > 1) { //move to drawUnder()
 		ColorValueHolder backgroundMix = ColorMixer::mix(color, BackgroundRect::getBackColor());

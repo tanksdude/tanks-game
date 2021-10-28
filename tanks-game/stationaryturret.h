@@ -29,26 +29,26 @@ private:
 	static bool uninitializeGPU();
 
 public:
-	virtual double getDefaultOffense() override { return 0; }
-	virtual double getDefaultDefense() override { return DESTRUCTION_TIER; }
-	//needs some sort of "overriding priority" function to destroy bullets with offense less than this defense
-
-	//virtual bool validLocation() override { return true; }
-	virtual bool reasonableLocation() override;
-
 	double getAngle() const;
-	virtual bool canSeeTank(Tank*) const; //true if pointing at tank with no wall obstructions
+	virtual bool canSeeTank(const Tank*) const; //true if pointing at tank with no wall obstructions
 	virtual ColorValueHolder getColor() const; //needed because turret doesn't use tickCount, instead using targetingCount (should change this)
 	virtual ColorValueHolder getColor(short state) const;
 
+	//virtual bool validLocation() const override { return true; }
+	virtual bool reasonableLocation() const override;
+
 	virtual std::string getName() const override { return getClassName(); }
 	static std::string getClassName() { return "stationary_turret"; }
+
+	virtual double getDefaultOffense() const override { return 0; }
+	virtual double getDefaultDefense() const override { return DESTRUCTION_TIER; }
+	//needs some sort of "overriding priority" function to destroy bullets with offense less than this defense
 
 	virtual void tick() override;
 	virtual void draw() const override;
 	virtual void draw(double xpos, double ypos) const override;
 	virtual void poseDraw() const override;
-	virtual void drawCPU();
+	virtual void drawCPU() const;
 
 protected:
 	StationaryTurret(double xpos, double ypos, double angle, bool noGPU); //doesn't initialize GPU

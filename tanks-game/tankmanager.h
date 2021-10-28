@@ -2,11 +2,13 @@
 #include "tank.h"
 #include <vector>
 
-class TankManager { //pretty much no point in having a manager for the tanks (unless singleplayer is a thing, or a main menu)
+class TankManager {
 	friend class ResetThings;
+
 private:
 	static std::vector<Tank*> tanks;
 	//static void clearTanks(); //for ResetThings (shouldn't be used, though (at least for now))
+
 public:
 	static void initialize();
 	static Tank* getTank(int index);

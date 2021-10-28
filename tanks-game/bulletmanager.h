@@ -4,12 +4,14 @@
 
 class BulletManager {
 	friend class ResetThings;
+
 private:
 	static std::vector<Bullet*> bullets;
 	static int maxBullets;
 	static bool limitBullets;
 	static bool autoLimitBullets; //limit bullets when they're first added
 	static void clearBullets(); //for ResetThings
+
 public:
 	static void initialize();
 	static Bullet* getBullet(int index);

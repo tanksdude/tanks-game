@@ -4,6 +4,7 @@
 class OpenGLVertexArray : public VertexArray {
 protected:
 	unsigned int rendererID;
+
 public:
 	OpenGLVertexArray(const VertexBuffer& vb, const VertexBufferLayout& layout);
 	~OpenGLVertexArray();

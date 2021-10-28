@@ -4,6 +4,7 @@
 class OpenGLVertexBuffer : public VertexBuffer {
 protected:
 	unsigned int rendererID;
+
 public:
 	void modifyData(const void* data, int offset, unsigned int size) override;
 	inline void modifyData(const void* data, unsigned int size) override { modifyData(data, 0, size); }

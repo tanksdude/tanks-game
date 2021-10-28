@@ -19,7 +19,7 @@ public:
 	virtual std::string getName() const override { return MinesPower::getClassName(); }
 	static std::string getClassName() { return "mines"; }
 	virtual ColorValueHolder getColor() const override { return MinesPower::getClassColor(); }
-	static ColorValueHolder getClassColor() { return ColorValueHolder(0, 0, 0); } //black, so it's hard to see where the tank is pointed
+	static ColorValueHolder getClassColor() { return ColorValueHolder(0.0f, 0.0f, 0.0f); } //black, so it's hard to see where the tank is pointed
 	virtual double getColorImportance() const override { return MinesPower::getClassColorImportance(); }
 	static double getClassColorImportance() { return .5; } //godmode can overpower this
 

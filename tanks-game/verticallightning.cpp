@@ -39,11 +39,11 @@ VerticalLightning::VerticalLightning(double xpos, double ypos, double width, dou
 	initializeGPU();
 }
 
-Circle* VerticalLightning::getTopPoint() {
+Circle* VerticalLightning::getTopPoint() const {
 	return new Point(x + w/2, y + h);
 }
 
-Circle* VerticalLightning::getBottomPoint() {
+Circle* VerticalLightning::getBottomPoint() const {
 	return new Point(x + w/2, y);
 }
 
@@ -181,13 +181,13 @@ void VerticalLightning::specialEffectCircleCollision(Circle* c) {
 		intersectionYD = c->y;
 		boltPointsD = 2;
 	} else {
-		DoublePositionHolder intersections = CollisionHandler::circleLineIntersection(c, xpos, ypos, bottomPoint->x, bottomPoint->y);
+		std::pair<PositionHolder, PositionHolder> intersections = CollisionHandler::circleLineIntersection(c, xpos, ypos, bottomPoint->x, bottomPoint->y);
 		if (c->x < x + w/2) {
-			intersectionXD = std::max(intersections.x1, intersections.x2);
+			intersectionXD = std::max(intersections.first.x, intersections.second.x);
 		} else {
-			intersectionXD = std::min(intersections.x1, intersections.x2);
+			intersectionXD = std::min(intersections.first.x, intersections.second.x);
 		}
-		intersectionYD = std::min(intersections.y1, intersections.y2);
+		intersectionYD = std::min(intersections.second.y, intersections.second.y);
 
 		if (intersectionXD < x || intersectionXD > x+w) {
 			std::cerr << "WARNING: vertical lightning endpoint X (bottom half) out of range!" << std::endl;
@@ -210,13 +210,13 @@ void VerticalLightning::specialEffectCircleCollision(Circle* c) {
 		intersectionYU = c->y;
 		boltPointsU = 2;
 	} else {
-		DoublePositionHolder intersections = CollisionHandler::circleLineIntersection(c, xpos, ypos, topPoint->x, topPoint->y);
+		std::pair<PositionHolder, PositionHolder> intersections = CollisionHandler::circleLineIntersection(c, xpos, ypos, topPoint->x, topPoint->y);
 		if (c->x < x + w/2) {
-			intersectionXU = std::max(intersections.x1, intersections.x2);
+			intersectionXU = std::max(intersections.first.x, intersections.second.x);
 		} else {
-			intersectionXU = std::min(intersections.x1, intersections.x2);
+			intersectionXU = std::min(intersections.first.x, intersections.second.x);
 		}
-		intersectionYU = std::max(intersections.y1, intersections.y2);
+		intersectionYU = std::max(intersections.first.y, intersections.second.y);
 
 		if (intersectionXU < x || intersectionXU > x+w) {
 			std::cerr << "WARNING: vertical lightning endpoint X (top half) out of range!" << std::endl;
@@ -272,7 +272,7 @@ void VerticalLightning::pushDefaultBolt(int num, bool randomize) {
 	}
 }
 
-bool VerticalLightning::validLocation() {
+bool VerticalLightning::validLocation() const {
 	bool wallOnTop = false, wallOnBottom = false, wallInMiddle = false;
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		Wall* wa = WallManager::getWall(i);
@@ -298,7 +298,7 @@ bool VerticalLightning::validLocation() {
 	return (wallOnTop && wallOnBottom && !wallInMiddle);
 }
 
-bool VerticalLightning::reasonableLocation() {
+bool VerticalLightning::reasonableLocation() const {
 	bool wallOnLeft = false, wallOnRight = false;
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		Wall* wa = WallManager::getWall(i);

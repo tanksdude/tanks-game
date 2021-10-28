@@ -61,9 +61,9 @@ void GeneralizedLightning::clearBolts() {
 
 ColorValueHolder GeneralizedLightning::getBackgroundColor() const {
 	if (currentlyActive) {
-		return ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(.75f, .75f, .75f), .25);
+		return ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(0.75f, 0.75f, 0.75f), .25);
 	}
-	return ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(.75f, .75f, .75f), .25*constrain<double>(tickCount/(tickCycle*stateMultiplier[currentlyActive]), 0, 1));
+	return ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(0.75f, 0.75f, 0.75f), .25*constrain<double>(tickCount/(tickCycle*stateMultiplier[currentlyActive]), 0, 1));
 }
 
 ColorValueHolder GeneralizedLightning::getBoltColor() const {

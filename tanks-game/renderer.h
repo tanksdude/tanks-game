@@ -26,6 +26,7 @@ enum class RenderingDrawTypes {
 
 class Renderer {
 	friend class DeveloperManager;
+
 public:
 	//public until I rewrite rendering
 	static glm::mat4 proj;

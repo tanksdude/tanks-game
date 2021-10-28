@@ -13,6 +13,7 @@ class Wall;
 class Wall : public Rect, public GameThing, public DrawableThing {
 	friend class ResetThings; //not really needed
 	friend class PowerFunctionHelper;
+
 protected:
 	ColorValueHolder color;
 
@@ -26,13 +27,12 @@ private:
 	static bool uninitializeGPU();
 
 public:
-	Wall(double x, double y, double w, double h, ColorValueHolder);
-	//Wall(double x, double y, double w, double h, ColorValueHolder c, Team_ID teamID);
-
 	void draw() const override;
 	void draw(double xpos, double ypos) const override;
 	void poseDraw() const override;
-	void drawCPU();
+	void drawCPU() const;
 
+	Wall(double x, double y, double w, double h, ColorValueHolder);
+	//Wall(double x, double y, double w, double h, ColorValueHolder c, Team_ID teamID);
 	~Wall();
 };

@@ -10,10 +10,10 @@ class Tank;
 #include "cannonpoint.h"
 #include "tankpower.h"
 #include "simplevector2d.h"
+
 #include "vertexarray.h"
 #include "vertexbuffer.h"
 #include "indexbuffer.h"
-#include "shader.h"
 
 struct TankInputChar {
 	bool isSpecial;
@@ -27,26 +27,27 @@ class Tank : public Circle, public GameThing, public DrawableThing {
 	friend class ResetThings;
 	friend class PowerFunctionHelper;
 	friend class EndGameHandler; //calls this->kill()
+
 public:
 	std::string name;
-
+	SimpleVector2D velocity;
 	double maxSpeed; // = 1;
 	double acceleration; // = 1.0/16; //intentional acceleration, not total
-	SimpleVector2D velocity;
 	double turningIncrement; // = 64;
-	double getAngle() const;
-	double getCannonAngle(int index) const;
-	double getRealCannonAngle(int index) const;
 	std::vector<CannonPoint>* shootingPoints;
-
 	std::vector<TankPower*> tankPowers;
-	double getOffenseTier();
-	double getDefenseTier();
+	double shootCount;
+	double maxShootCount;
+	bool dead = false; //only kill() should modify this
+
+	double getOffenseTier() const;
+	double getDefenseTier() const;
+
 protected:
-	double getHighestOffenseImportance();
-	double getHighestOffenseTier(double importance);
-	double getHighestDefenseImportance();
-	double getHighestDefenseTier(double importance);
+	double getHighestOffenseImportance() const;
+	double getHighestOffenseTier(double importance) const;
+	double getHighestDefenseImportance() const;
+	double getHighestDefenseTier(double importance) const;
 
 public:
 	//double shootingSpeedMultiplier = 1;
@@ -74,22 +75,22 @@ public:
 	void determineShootingAngles();
 
 protected:
-	ColorValueHolder defaultColor = ColorValueHolder(.5f, .5f, .5f);
+	ColorValueHolder defaultColor = ColorValueHolder(0.5f, 0.5f, 0.5f);
 	ColorValueHolder defaultNameFill = ColorValueHolder(1.0f, 1.0f, 1.0f);
-	ColorValueHolder defaultNameStroke = ColorValueHolder(0, 0, 0);
+	ColorValueHolder defaultNameStroke = ColorValueHolder(0.0f, 0.0f, 0.0f);
 
-	bool dead = false; //only kill() should modify this
-	bool kill(); //allows for custom death (aka something saving the tank from death)
-
+	bool kill(); //allows for custom death (a.k.a. something saving the tank from death)
 	void resetThings(double x, double y, double a, Team_ID teamID);
 	void terminalVelocity();
-
-	double shootCount;
-	double maxShootCount;
 
 public:
 	//helper stuff:
 	ColorValueHolder getBodyColor() const;
+	std::string getName() const { return name; }
+
+	double getAngle() const;
+	double getCannonAngle(int index) const;
+	double getRealCannonAngle(int index) const;
 
 	static const double default_maxSpeed;
 	static const double default_acceleration;
@@ -107,22 +108,18 @@ private:
 	static bool uninitializeGPU();
 
 public:
-	Tank(double x, double y, double a, Team_ID id, std::string name, TankInputChar forward, TankInputChar left, TankInputChar right, TankInputChar shoot, TankInputChar special);
-
 	void move();
-	//void edgeConstrain();
-	//bool isPartiallyOutOfBounds();
-	//bool isFullyOutOfBounds();
 	void shoot();
 	void powerCalculate();
 	void removePower(int index);
 	void powerReset();
+
 	void draw() const override;
 	void draw(double xpos, double ypos) const override;
 	void poseDraw() const override;
 	void drawCPU() const;
 	void drawCPU(double, double) const;
-	std::string getName() { return name; }
 
+	Tank(double x, double y, double a, Team_ID id, std::string name, TankInputChar forward, TankInputChar left, TankInputChar right, TankInputChar shoot, TankInputChar special);
 	~Tank();
 };

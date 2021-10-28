@@ -25,7 +25,7 @@ RectangularLava::RectangularLava(double xpos, double ypos, double width, double 
 	gameID = GameManager::getNextID();
 	teamID = HAZARD_TEAM;
 
-	//tickCount = 0;
+	tickCount = 0;
 	tickCycle = 2400;
 	bubbles.reserve(maxBubbles);
 	bubbleChance = 1.0/400;
@@ -136,7 +136,7 @@ void RectangularLava::pushNewBubble(double radius) {
 	}
 }
 
-bool RectangularLava::reasonableLocation() {
+bool RectangularLava::reasonableLocation() const {
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		if (CollisionHandler::partiallyCollided(this, WallManager::getWall(i))) {
 			return false;

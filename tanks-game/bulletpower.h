@@ -17,6 +17,7 @@ class BulletPower;
 
 class BulletPower : public InheritedPowerCommon {
 	friend class PowerFunctionHelper;
+
 protected:
 	//double timeLeft = 0;
 	//double maxTime = -1; //bullet powers typically last forever; setting this to -1 treats it as lasting forever
@@ -108,9 +109,9 @@ public:
 	virtual double getBulletAccelerationImportance() const { return 0; } //I don't think other functions should get importance values
 
 	virtual double getOffenseImportance() const { return 0; } //"importance" = "override" value (when dealing with other powers)
-	virtual double getOffenseTier(Bullet*) const { return 0; }
+	virtual double getOffenseTier(const Bullet*) const { return 0; }
 	virtual double getDefenseImportance() const { return 0; }
-	virtual double getDefenseTier(Bullet*) const { return 0; }
+	virtual double getDefenseTier(const Bullet*) const { return 0; }
 
 	virtual ~BulletPower() { return; }
 	//need separate offense stuff for different situations: tank vs bullet offense could be different (would it be more effective to have that stuff in modifiedTankCollision?)

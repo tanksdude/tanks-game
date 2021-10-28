@@ -19,7 +19,7 @@ public:
 	virtual std::string getName() const override { return DevAnnoyingPower::getClassName(); }
 	static std::string getClassName() { return "annoying"; }
 	virtual ColorValueHolder getColor() const override { return DevAnnoyingPower::getClassColor(); } //must be indigo because it's annoying trying to distinguish it from purple and/or blue
-	static ColorValueHolder getClassColor() { return ColorValueHolder(0x4B/255.0, 0x00/255.0f, 0x82/255.0f); } //indigo (#4E1885 is pretty close)
+	static ColorValueHolder getClassColor() { return ColorValueHolder(0x4B/255.0, 0x00/255.0, 0x82/255.0); } //indigo (#4E1885 is pretty close)
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
@@ -78,9 +78,9 @@ public:
 	virtual double getBulletSpeedMultiplier() const override { return .5; }
 
 	virtual double getOffenseImportance() const override;
-	virtual double getOffenseTier(Bullet*) const override;
+	virtual double getOffenseTier(const Bullet*) const override;
 	virtual double getDefenseImportance() const override;
-	virtual double getDefenseTier(Bullet*) const override;
+	virtual double getDefenseTier(const Bullet*) const override;
 
 	DevAnnoyingBulletPower();
 };

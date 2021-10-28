@@ -563,9 +563,6 @@
     <ClInclude Include="inversionpower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="doublepositionholder.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="godmodepower.h">
       <Filter>Header Files</Filter>
     </ClInclude>

@@ -9,10 +9,12 @@ class Level;
 
 class Level {
 	friend class LevelManager; //actually needs this unlike the other managers because the manager has more control
+
 protected:
 	std::vector<LevelEffect*> effects; //cleared in Level's destructor
+
 public:
-	LevelEffect* getLevelEffect(int i) { return effects[i]; }
+	LevelEffect* getLevelEffect(int i) const { return effects[i]; }
 	int getNumEffects() const { return effects.size(); }
 
 	virtual std::string getName() const = 0;

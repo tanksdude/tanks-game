@@ -13,9 +13,9 @@ class PowerSquare;
 #include "indexbuffer.h"
 
 class PowerSquare : public Rect, public GameThing, public DrawableThing {
-public:
+protected:
 	Power** heldPowers; //array of pointers (can do a vector for simplicity but I don't foresee a powersquare getting more powers)
-	short numOfPowers;
+	int numOfPowers;
 
 public:
 	static const double POWER_WIDTH;
@@ -33,6 +33,17 @@ private:
 	static bool initializeGPU();
 	static bool uninitializeGPU();
 
+public:
+	ColorValueHolder getColor() const;
+	void givePower(Tank*);
+	//void givePower(Bullet*); //don't think about it now, possibly ever; it's weird
+	//void givePower(Hazard*);
+
+	void draw() const override; //draws at center
+	void draw(double xpos, double ypos) const override;
+	void poseDraw() const override;
+	void drawCPU() const;
+
 private:
 	PowerSquare() {} //don't use
 	PowerSquare(double x, double y); //common
@@ -43,15 +54,5 @@ public:
 	PowerSquare(double x, double y, std::string type, std::string* names, int num);
 	PowerSquare(double x, double y, std::string* types, std::string* names, int num);
 	PowerSquare(const PowerSquare&);
-
-	ColorValueHolder getColor() const;
-	void draw() const override; //draws at center
-	void draw(double xpos, double ypos) const override;
-	void poseDraw() const override;
-	void drawCPU();
-	void givePower(Tank*);
-	void givePower(Bullet*); //don't think about it now, possibly ever; it's weird
-	//void givePower(Hazard*);
-
 	~PowerSquare();
 };

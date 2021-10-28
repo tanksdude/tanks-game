@@ -25,7 +25,7 @@ public:
 	virtual std::string getName() const override { return BouncePower::getClassName(); }
 	static std::string getClassName() { return "bounce"; }
 	virtual ColorValueHolder getColor() const override { return BouncePower::getClassColor(); }
-	static ColorValueHolder getClassColor() { return ColorValueHolder(1.0f, 0.0f, .75f); } //pink
+	static ColorValueHolder getClassColor() { return ColorValueHolder(1.0f, 0.0f, 0.75f); } //pink
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;

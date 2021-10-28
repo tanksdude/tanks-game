@@ -1,7 +1,8 @@
 #pragma once
 #include "circle.h"
 #include "rect.h"
-#include "doublepositionholder.h"
+#include "positionholder.h"
+#include <utility>
 
 class CollisionHandler {
 private:
@@ -86,7 +87,7 @@ public: //collision detection and handling (just moving)
 	*/
 
 public: //stuff that gives a location of intersection (only use if collision is guranteed) (this should be expanded)
-	static DoublePositionHolder circleLineIntersection(const Circle*, double lineX1, double lineY1, double lineX2, double lineY2);
+	static std::pair<PositionHolder, PositionHolder> circleLineIntersection(const Circle*, double lineX1, double lineY1, double lineX2, double lineY2);
 
 public: //other stuff
 	static bool lineLineCollision(double line1X, double line1Y, double line2X, double line2Y, double line3X, double line3Y, double line4X, double line4Y);

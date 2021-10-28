@@ -70,9 +70,9 @@ public:
 	//bool bulletRadiusStacks = true;
 
 	virtual double getOffenseImportance() const override { return 0; }
-	virtual double getOffenseTier(Bullet*) const override { return DESTRUCTION_TIER; }
+	virtual double getOffenseTier(const Bullet*) const override { return DESTRUCTION_TIER; }
 	virtual double getDefenseImportance() const override { return 0; }
-	virtual double getDefenseTier(Bullet*) const override { return DESTRUCTION_TIER; }
+	virtual double getDefenseTier(const Bullet*) const override { return DESTRUCTION_TIER; }
 
 	BigNamedBulletPower();
 };

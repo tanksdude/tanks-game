@@ -86,7 +86,7 @@ CircleHazard* CircularNoBulletZone::factory(int argc, std::string* argv) {
 	return new CircularNoBulletZone(0, 0, 0);
 }
 
-bool CircularNoBulletZone::reasonableLocation() {
+bool CircularNoBulletZone::reasonableLocation() const {
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		if (CollisionHandler::fullyCollided(this, WallManager::getWall(i))) {
 			return false;

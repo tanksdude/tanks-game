@@ -1,6 +1,7 @@
 #pragma once
 #include "recthazard.h"
 #include "generalizednobulletzone.h"
+#include "constants.h"
 
 #include "vertexarray.h"
 #include "vertexbuffer.h"
@@ -18,24 +19,23 @@ private:
 	static bool uninitializeGPU();
 
 public:
-	virtual double getDefaultOffense() override { return 999; }
-	virtual double getDefaultDefense() override { return 999; }
-
-	virtual bool actuallyCollided(Tank*) override { return false; }
+	virtual bool actuallyCollided(const Tank*) const override { return false; }
 	//bool modifiesTankCollision = true;
 	virtual void modifiedTankCollision(Tank*) override { return; }
 
-	virtual bool actuallyCollided(Bullet*) override { return true; }
+	virtual bool actuallyCollided(const Bullet*) const override { return true; }
 	//bool modifiesBulletCollision = true;
 	virtual void modifiedBulletCollision(Bullet*) override { return; } //TODO: should the bullet be destroyed here?
 
-	//virtual bool validLocation() override { return true; }
-	virtual bool reasonableLocation() override;
-
-	//ColorValueHolder getColor(); //in GeneralizedNoBulletZone
+public:
+	//virtual bool validLocation() const override { return true; }
+	virtual bool reasonableLocation() const override;
 
 	virtual std::string getName() const override { return getClassName(); }
 	static std::string getClassName() { return "no_bullet_zone"; }
+
+	virtual double getDefaultOffense() const override { return HIGH_TIER; }
+	virtual double getDefaultDefense() const override { return HIGH_TIER; }
 
 	virtual void tick() override { GeneralizedNoBulletZone::tick(); }
 	virtual void draw() const override;

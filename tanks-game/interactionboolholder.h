@@ -10,3 +10,4 @@ struct InteractionBoolHolder {
 	InteractionBoolHolder(bool a) : InteractionBoolHolder(a, false) {}
 	InteractionBoolHolder() : InteractionBoolHolder(false, false) {}
 };
+//could use std::pair

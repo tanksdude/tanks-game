@@ -22,44 +22,44 @@ enum class BulletParentType {
 class Bullet : public Circle, public GameThing, public DrawableThing {
 	friend class ResetThings;
 	friend class PowerFunctionHelper;
+
 public: //hopefully temporary
 	SimpleVector2D velocity;
 	double initial_velocity;
 	double acceleration;
 	Game_ID parentID; //may not be used, depends on parentType
-	Game_ID getParentID() const { return parentID; }
 	BulletParentType parentType;
-	BulletParentType getParentIDType() const { return parentType; }
-	bool canCollideWith(GameThing*) const;
-	bool canCollideWith(Bullet*) const;
-
-	ColorValueHolder defaultColor = ColorValueHolder(.5f, .5f, .5f);
-
-	bool kill(); //allows for custom death (aka something saving the bullet from death)
-
-	double getAngle() const;
-	double getInitialVelocity() const { return initial_velocity; }
-	double alpha; //[0,100] to avoid minor float imprecision
-	bool isDead() const;
-
-public:
 	std::vector<BulletPower*> bulletPowers; //change eventually?
-	double getOffenseTier();
-	double getDefenseTier();
-private:
-	double getHighestOffenseImportance();
-	double getHighestOffenseTier(double importance);
-	double getHighestDefenseImportance();
-	double getHighestDefenseTier(double importance);
+	double alpha; //[0,100] to avoid minor float imprecision
 
 public:
-	double getBulletSpeedMultiplier();
-	double getBulletRadiusMultiplier();
-	double getBulletAcceleration();
+	double getOffenseTier() const;
+	double getDefenseTier() const;
+
+protected:
+	double getHighestOffenseImportance() const;
+	double getHighestOffenseTier(double importance) const;
+	double getHighestDefenseImportance() const;
+	double getHighestDefenseTier(double importance) const;
+
+public:
+	double getBulletSpeedMultiplier() const;
+	double getBulletRadiusMultiplier() const;
+	double getBulletAcceleration() const;
+
+protected:
+	ColorValueHolder defaultColor = ColorValueHolder(0.5f, 0.5f, 0.5f);
+public:
+	bool kill(); //allows for custom death (a.k.a. something saving the bullet from death)
 
 public:
 	//helper functions:
 	ColorValueHolder getColor() const;
+	double getAngle() const;
+	double getInitialVelocity() const { return initial_velocity; }
+	Game_ID getParentID() const { return parentID; }
+	BulletParentType getParentIDType() const { return parentType; }
+	bool isDead() const { return (alpha <= 0); }
 
 	static const double default_radius;
 
@@ -73,6 +73,22 @@ private:
 	static bool initializeGPU(); //returns whether it successfully initialized (false if it was already initialized)
 	static bool uninitializeGPU();
 
+public:
+	void move();
+	void powerCalculate();
+	void removePower(int index);
+	//short determineDamage(); //maybe for another day
+	bool canCollideWith(const GameThing*) const;
+	bool canCollideWith(const Bullet*) const;
+
+	void draw() const override;
+	void draw(double xpos, double ypos) const override;
+	void poseDraw() const override;
+	void drawBody(double, double) const;
+	void drawOutline(double, double) const;
+	void drawCPU() const;
+	void drawCPU(double, double) const;
+
 private:
 	Bullet(double x, double y, double a, Team_ID teamID, BulletParentType parentType, Game_ID parentID); //every bullet uses this
 	Bullet(double x, double y, double a, Team_ID teamID, BulletParentType parentType, Game_ID parentID, std::vector<BulletPower*>* bp); //most bullets use this
@@ -82,25 +98,5 @@ public:
 public:
 	Bullet(double x, double y, double r, double a, double vel, Team_ID teamID, BulletParentType parentType, Game_ID parentID);
 	Bullet(double x, double y, double r, double a, double vel, Team_ID teamID, BulletParentType parentType, Game_ID parentID, std::vector<BulletPower*>* bp);
-	void move();
-	void draw() const override;
-	void draw(double xpos, double ypos) const override;
-	void poseDraw() const override;
-	void drawCPU() const;
-	void drawCPU(double, double) const;
-
-public:
-	void drawBody(double, double) const;
-	void drawOutline(double, double) const;
-
-	//short determineDamage(); //maybe for another day
-
-	void powerCalculate();
-	void removePower(int index);
-
-	//bool isFullyOutOfBounds();
-	//bool isPartiallyOutOfBounds();
-	//void edgeConstrain(); //should never be needed
-
 	~Bullet();
 };

@@ -84,9 +84,9 @@ public:
 	//with bulletSizeMultiplierPerTick = 257.0/256.0, 1.0/512 or 1.0/1024 (with a smaller radius multiplier per tick) might be closer to what I orignially thought of
 
 	virtual double getOffenseImportance() const override { return 0; }
-	virtual double getOffenseTier(Bullet*) const override;
+	virtual double getOffenseTier(const Bullet*) const override;
 	virtual double getDefenseImportance() const override { return 0; }
-	virtual double getDefenseTier(Bullet*) const override;
+	virtual double getDefenseTier(const Bullet*) const override;
 
 	MegaDeathBulletPower();
 };

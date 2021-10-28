@@ -82,9 +82,11 @@ Bullet::~Bullet() {
 	//uninitializeGPU();
 }
 
+/*
 bool Bullet::isDead() const {
 	return (alpha <= 0);
 }
+*/
 
 bool Bullet::initializeGPU() {
 	if (initialized_GPU) {
@@ -129,7 +131,7 @@ bool Bullet::uninitializeGPU() {
 	return true;
 }
 
-bool Bullet::canCollideWith(GameThing* thing) const {
+bool Bullet::canCollideWith(const GameThing* thing) const {
 	if (this->parentType == BulletParentType::team) {
 		return (this->getTeamID() != thing->getTeamID());
 	}
@@ -144,11 +146,11 @@ bool Bullet::canCollideWith(GameThing* thing) const {
 	return true;
 }
 
-bool Bullet::canCollideWith(Bullet* b_other) const {
+bool Bullet::canCollideWith(const Bullet* b_other) const {
 	if (this->parentType == BulletParentType::individual) {
 		return ((parentID != b_other->getGameID()) && (parentID != b_other->getParentID()));
 	}
-	return canCollideWith((GameThing*)b_other);
+	return canCollideWith((const GameThing*)b_other);
 }
 
 double Bullet::getAngle() const {
@@ -161,7 +163,7 @@ void Bullet::move() {
 	y += velocity.getYComp();
 }
 
-double Bullet::getBulletSpeedMultiplier() {
+double Bullet::getBulletSpeedMultiplier() const {
 	//look at Tank::getTankFiringRateMultiplier()
 
 	double highest = 1;
@@ -189,7 +191,7 @@ double Bullet::getBulletSpeedMultiplier() {
 	return highest * lowest * value;
 }
 
-double Bullet::getBulletRadiusMultiplier() {
+double Bullet::getBulletRadiusMultiplier() const {
 	//look at Tank::getTankFiringRateMultiplier()
 
 	double highest = 1;
@@ -216,7 +218,7 @@ double Bullet::getBulletRadiusMultiplier() {
 	return highest * lowest * value;
 }
 
-double Bullet::getBulletAcceleration() {
+double Bullet::getBulletAcceleration() const {
 	//look at Tank::getTankFiringRateMultiplier()
 	//(this has importance though)
 
@@ -224,7 +226,7 @@ double Bullet::getBulletAcceleration() {
 		return 0;
 	}
 
-	double importance = -1;
+	double importance = LOW_IMPORTANCE;
 	for (int i = 0; i < bulletPowers.size(); i++) {
 		double value = bulletPowers[i]->getBulletAccelerationImportance();
 		if (value > importance) {
@@ -269,7 +271,7 @@ ColorValueHolder Bullet::getColor() const {
 	if (bulletPowers.size() == 0) {
 		return defaultColor;
 	} else {
-		double highest = -1;
+		double highest = LOW_IMPORTANCE;
 		for (int i = 0; i < bulletPowers.size(); i++) {
 			if (bulletPowers[i]->getColorImportance() > highest) {
 				highest = bulletPowers[i]->getColorImportance();
@@ -407,8 +409,8 @@ bool Bullet::kill() {
 	return shouldBeKilled;
 }
 
-double Bullet::getHighestOffenseImportance() {
-	double highest = -1; //anything below -1 is really, really unimportant; so much so that it doesn't matter
+double Bullet::getHighestOffenseImportance() const {
+	double highest = LOW_IMPORTANCE;
 	for (int i = 0; i < bulletPowers.size(); i++) {
 		if (bulletPowers[i]->getOffenseImportance() > highest) {
 			highest = bulletPowers[i]->getOffenseImportance();
@@ -417,8 +419,8 @@ double Bullet::getHighestOffenseImportance() {
 	return highest;
 }
 
-double Bullet::getHighestOffenseTier(double importance) {
-	double highest = -999; //TODO: define these constants somewhere
+double Bullet::getHighestOffenseTier(double importance) const {
+	double highest = LOW_TIER;
 	for (int i = 0; i < bulletPowers.size(); i++) {
 		if (bulletPowers[i]->getOffenseImportance() == importance) {
 			if (bulletPowers[i]->getOffenseTier(this) > highest) {
@@ -432,12 +434,12 @@ double Bullet::getHighestOffenseTier(double importance) {
 	return highest;
 }
 
-double Bullet::getOffenseTier() {
+double Bullet::getOffenseTier() const {
 	return getHighestOffenseTier(getHighestOffenseImportance());
 }
 
-double Bullet::getHighestDefenseImportance() {
-	double highest = -1; //anything below -1 is really, really unimportant; so much so that it doesn't matter
+double Bullet::getHighestDefenseImportance() const {
+	double highest = LOW_IMPORTANCE;
 	for (int i = 0; i < bulletPowers.size(); i++) {
 		if (bulletPowers[i]->getDefenseImportance() > highest) {
 			highest = bulletPowers[i]->getDefenseImportance();
@@ -446,8 +448,8 @@ double Bullet::getHighestDefenseImportance() {
 	return highest;
 }
 
-double Bullet::getHighestDefenseTier(double importance) {
-	double highest = -999; //TODO: define these constants somewhere
+double Bullet::getHighestDefenseTier(double importance) const {
+	double highest = LOW_TIER;
 	for (int i = 0; i < bulletPowers.size(); i++) {
 		if (bulletPowers[i]->getDefenseImportance() == importance) {
 			if (bulletPowers[i]->getDefenseTier(this) > highest) {
@@ -461,16 +463,6 @@ double Bullet::getHighestDefenseTier(double importance) {
 	return highest;
 }
 
-double Bullet::getDefenseTier() {
+double Bullet::getDefenseTier() const {
 	return getHighestDefenseTier(getHighestDefenseImportance());
 }
-
-/*
-bool Bullet::isPartiallyOutOfBounds() {
-	return CollisionHandler::partiallyOutOfBoundsIgnoreEdge(this);
-} //care about equals edge?
-
-bool Bullet::isFullyOutOfBounds() {
-	return CollisionHandler::fullyOutOfBounds(this);
-}
-*/

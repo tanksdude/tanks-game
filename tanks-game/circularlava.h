@@ -1,6 +1,7 @@
 #pragma once
 #include "circlehazard.h"
 #include "generalizedlava.h"
+#include "constants.h"
 
 #include "vertexarray.h"
 #include "vertexbuffer.h"
@@ -23,22 +24,23 @@ private:
 	static bool uninitializeGPU();
 
 public:
-	virtual double getDefaultOffense() override { return .5; }
-	virtual double getDefaultDefense() override { return 999; }
-
-	//virtual bool actuallyCollided(Tank*) override { return true; }
+	//virtual bool actuallyCollided(const Tank*) const override { return true; }
 	//bool modifiesTankCollision = true;
 	virtual void modifiedTankCollision(Tank*) override { return; }
 
-	virtual bool actuallyCollided(Bullet* b) override { return (b->velocity.getMagnitude() == 0); }
+	virtual bool actuallyCollided(const Bullet* b) const override { return (b->velocity.getMagnitude() == 0); }
 	//bool modifiesBulletCollision = true;
 	virtual void modifiedBulletCollision(Bullet*) override { return; }
 
-	//virtual bool validLocation() override { return true; }
-	virtual bool reasonableLocation() override;
+public:
+	//virtual bool validLocation() const override { return true; }
+	virtual bool reasonableLocation() const override;
 
 	virtual std::string getName() const override { return getClassName(); }
 	static std::string getClassName() { return "lava"; }
+
+	virtual double getDefaultOffense() const override { return .5; }
+	virtual double getDefaultDefense() const override { return HIGH_TIER; }
 
 	virtual void tick() override { GeneralizedLava::tick(); }
 	virtual void draw() const override;

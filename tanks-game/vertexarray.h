@@ -5,6 +5,7 @@
 class VertexArray {
 private:
 	unsigned int rendererID;
+
 public:
 	virtual void Bind() const = 0;
 	virtual void Unbind() const = 0;

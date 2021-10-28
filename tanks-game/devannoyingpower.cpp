@@ -69,6 +69,7 @@ DevAnnoyingTankPower::DevAnnoyingTankPower() {
 
 
 #include "collisionhandler.h"
+//#include "constants.h"
 
 void DevAnnoyingBulletPower::initialize(Bullet* parent) {
 	//nothing
@@ -96,16 +97,16 @@ double DevAnnoyingBulletPower::getOffenseImportance() const {
 	return .5; //0?
 }
 
-double DevAnnoyingBulletPower::getOffenseTier(Bullet*) const {
-	return 0; //-1? //not sure
+double DevAnnoyingBulletPower::getOffenseTier(const Bullet*) const {
+	return 0; //LOW_TIER? //not sure
 }
 
 double DevAnnoyingBulletPower::getDefenseImportance() const {
 	return 0; //.5?
 }
 
-double DevAnnoyingBulletPower::getDefenseTier(Bullet*) const {
-	return 0; //999? //should be <= 0 so other bullets can kill it... right?
+double DevAnnoyingBulletPower::getDefenseTier(const Bullet*) const {
+	return 0; //HIGH_TIER? //should be <= 0 so other bullets can kill it... right?
 }
 
 DevAnnoyingBulletPower::DevAnnoyingBulletPower() {

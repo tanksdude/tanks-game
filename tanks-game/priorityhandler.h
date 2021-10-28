@@ -12,10 +12,7 @@ enum class PriorityResult {
 };
 
 class PriorityHandler {
-private:
 public:
-	//priority between something and a tank takes some extra consideration
-
 	static PriorityResult determinePriority(Tank* a, Tank* b);
 	static PriorityResult determinePriority(Tank* a, Bullet* b);
 	static PriorityResult determinePriority(Bullet* a, Bullet* b);

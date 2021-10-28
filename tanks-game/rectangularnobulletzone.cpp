@@ -85,7 +85,7 @@ RectHazard* RectangularNoBulletZone::factory(int argc, std::string* argv) {
 	return new RectangularNoBulletZone(0, 0, 0, 0);
 }
 
-bool RectangularNoBulletZone::reasonableLocation() {
+bool RectangularNoBulletZone::reasonableLocation() const {
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		if (CollisionHandler::fullyCollided(this, WallManager::getWall(i))) {
 			return false;

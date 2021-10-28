@@ -127,9 +127,9 @@ public:
 	bool tankTurningIncrementStacks = false;
 
 	virtual double getOffenseImportance() const { return 0; } //"importance" = "override" value (when dealing with other powers)
-	virtual double getOffenseTier(Tank*) const { return 0; }
+	virtual double getOffenseTier(const Tank*) const { return 0; }
 	virtual double getDefenseImportance() const { return 0; }
-	virtual double getDefenseTier(Tank*) const { return 0; }
+	virtual double getDefenseTier(const Tank*) const { return 0; }
 
 	virtual ~TankPower() { return; }
 };

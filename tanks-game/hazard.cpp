@@ -8,10 +8,10 @@ list of (eventual) hazards:
 |stationary turret
 |targeting turret
 patrolling turret
-|lightning rectangle
+|rectangular lightning
 |horizontal lightning
 |vertical lightning
-|lightning circle
+|circular lightning
 |rectangular lava
 |circular lava
 |rectangular no bullet zone

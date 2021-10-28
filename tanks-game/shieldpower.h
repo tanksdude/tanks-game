@@ -4,6 +4,7 @@
 class ShieldPower : public Power {
 	friend class ShieldTankPower;
 	friend class ShieldBulletPower; //probably won't be used
+
 protected:
 	static const double barrierStrength; //amount of time to subtract when harming the shield
 
@@ -21,7 +22,7 @@ public:
 	virtual std::string getName() const override { return ShieldPower::getClassName(); }
 	static std::string getClassName() { return "shield"; }
 	virtual ColorValueHolder getColor() const override { return ShieldPower::getClassColor(); }
-	static ColorValueHolder getClassColor() { return ColorValueHolder(0xB6/255.0f, 0xE6/255.0f, 0x9D/255.0f); } //approximately barrier but yellow, gray, and light
+	static ColorValueHolder getClassColor() { return ColorValueHolder(0xB6/255.0, 0xE6/255.0, 0x9D/255.0); } //approximately barrier but yellow, gray, and light
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;

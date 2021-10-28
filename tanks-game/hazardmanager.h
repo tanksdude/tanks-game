@@ -77,6 +77,7 @@ public:
 
 class HazardManager {
 	friend class ResetThings;
+
 private:
 	static std::vector<CircleHazard*> circleHazards;
 	static std::vector<RectHazard*> rectHazards;
@@ -87,6 +88,7 @@ private:
 	static std::unordered_map<std::string, std::unordered_map<std::string, RectHazardFactoryGroup>> rectHazardLookup;
 	static std::unordered_map<std::string, std::vector<std::string>> circleHazardNameList;
 	static std::unordered_map<std::string, std::vector<std::string>> rectHazardNameList;
+
 public:
 	static void initialize();
 	static CircleHazard* getCircleHazard(int index);

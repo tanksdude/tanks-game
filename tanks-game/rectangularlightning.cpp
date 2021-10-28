@@ -28,7 +28,7 @@ RectangularLightning::RectangularLightning(double xpos, double ypos, double widt
 	gameID = GameManager::getNextID();
 	teamID = HAZARD_TEAM;
 
-	//tickCount = 0;
+	tickCount = 0;
 	tickCycle = 100; //100 is JS default (because of power speed)
 	double temp[2] = { 2, 2 };
 	std::copy(temp, temp+2, stateMultiplier);
@@ -37,9 +37,9 @@ RectangularLightning::RectangularLightning(double xpos, double ypos, double widt
 	maxBolts = 1;
 	lengthOfBolt = 4; //TODO: figure out logic for constraining this to make it look pretty
 	bolts.reserve(maxBolts);
-	//boltTick = 0;
-	//boltCycle = 4;
-	//boltsNeeded = false;
+	boltTick = 0;
+	boltCycle = 4;
+	boltsNeeded = false;
 
 	canAcceptPowers = false;
 
@@ -57,7 +57,7 @@ RectangularLightning::RectangularLightning(double xpos, double ypos, double widt
 	initializeGPU();
 }
 
-Circle* RectangularLightning::getCenterPoint() {
+Circle* RectangularLightning::getCenterPoint() const {
 	return new Point(x + w/2, y + h/2);
 }
 
@@ -201,16 +201,16 @@ void RectangularLightning::specialEffectCircleCollision(Circle* c) {
 			}
 			//std::cout << "xpos: " << (xpos-c->x) << ", ypos: " << (ypos-c->y) << std::endl;
 
-			DoublePositionHolder intersections = CollisionHandler::circleLineIntersection(c, xpos, ypos, centerPoint->x, centerPoint->y);
+			std::pair<PositionHolder, PositionHolder> intersections = CollisionHandler::circleLineIntersection(c, xpos, ypos, centerPoint->x, centerPoint->y);
 			if (c->x < x + w/2) {
-				intersectionX = std::max(intersections.x1, intersections.x2);
+				intersectionX = std::max(intersections.first.x, intersections.second.x);
 			} else {
-				intersectionX = std::min(intersections.x1, intersections.x2);
+				intersectionX = std::min(intersections.first.x, intersections.second.x);
 			}
 			if (c->y < y + h/2) {
-				intersectionY = std::max(intersections.y1, intersections.y2);
+				intersectionY = std::max(intersections.first.y, intersections.second.y);
 			} else {
-				intersectionY = std::min(intersections.y1, intersections.y2);
+				intersectionY = std::min(intersections.first.y, intersections.second.y);
 			}
 
 			if (intersectionX < x || intersectionX > x+w) {
@@ -292,7 +292,7 @@ void RectangularLightning::pushDefaultBolt(int num, bool randomize) {
 	}
 }
 
-bool RectangularLightning::validLocation() {
+bool RectangularLightning::validLocation() const {
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		Wall* wa = WallManager::getWall(i);
 		if (CollisionHandler::partiallyCollidedIgnoreEdge(wa, this)) {
@@ -302,7 +302,7 @@ bool RectangularLightning::validLocation() {
 	return true;
 }
 
-bool RectangularLightning::reasonableLocation() {
+bool RectangularLightning::reasonableLocation() const {
 	for (int i = 0; i < HazardManager::getNumCircleHazards(); i++) {
 		if (CollisionHandler::partiallyCollided(this, HazardManager::getCircleHazard(i))) {
 			return false;

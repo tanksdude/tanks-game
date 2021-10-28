@@ -3,6 +3,7 @@
 
 struct SimpleVector2D {
 	friend class CollisionHandler;
+
 protected:
 	float xComp;
 	float yComp;

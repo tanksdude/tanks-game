@@ -76,13 +76,13 @@ InteractionBoolHolder MegaDeathBulletPower::modifiedMovement(Bullet* b) {
 	return { false };
 }
 
-double MegaDeathBulletPower::getOffenseTier(Bullet* b) const {
+double MegaDeathBulletPower::getOffenseTier(const Bullet* b) const {
 	double value = b->r / (Bullet::default_radius*4) * destroyWallTier;
 	//return (value >= destroyWallTier ? floor(value) : 0); //this is what I originally wanted in JS Tanks, I think, but in practice isn't preferable
 	return value;
 }
 
-double MegaDeathBulletPower::getDefenseTier(Bullet* b) const {
+double MegaDeathBulletPower::getDefenseTier(const Bullet* b) const {
 	double value = b->r / (Bullet::default_radius*4) * destroyWallTier;
 	//return (value >= destroyWallTier ? floor(value) : 0);
 	return value;

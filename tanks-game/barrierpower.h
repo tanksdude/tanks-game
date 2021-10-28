@@ -17,7 +17,7 @@ public:
 	virtual std::string getName() const override { return BarrierPower::getClassName(); }
 	static std::string getClassName() { return "barrier"; }
 	virtual ColorValueHolder getColor() const override { return BarrierPower::getClassColor(); }
-	static ColorValueHolder getClassColor() { return ColorValueHolder(0, 0.5f, 0.25f); } //dark green
+	static ColorValueHolder getClassColor() { return ColorValueHolder(0.0f, 0.5f, 0.25f); } //dark green
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;

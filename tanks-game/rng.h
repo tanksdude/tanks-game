@@ -6,6 +6,7 @@ private:
 	static const int MAX_RAND_NUM;
 	static std::mt19937 generator;
 	static std::uniform_int_distribution<int> distribution;
+
 public:
 	static void Initialize(long long seed);
 	static double randFunc(); //[0,1)

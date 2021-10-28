@@ -3,6 +3,7 @@
 
 class MultishotPower : public Power {
 	friend class MultishotTankPower;
+
 protected:
 	static const short bulletConstant = 8;
 

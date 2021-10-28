@@ -13,6 +13,7 @@ private:
 	static VertexBuffer* vb;
 	static IndexBuffer* ib;
 	static bool initialized_GPU;
+
 public:
 	static bool initializeGPU();
 	static bool uninitializeGPU();

@@ -510,7 +510,7 @@ ColorValueHolder Tank::getBodyColor() const {
 	if (tankPowers.size() == 0) {
 		return defaultColor;
 	} else {
-		double highest = -1;
+		double highest = LOW_IMPORTANCE;
 		for (int i = 0; i < tankPowers.size(); i++) {
 			if (tankPowers[i]->getColorImportance() > highest) {
 				highest = tankPowers[i]->getColorImportance();
@@ -544,7 +544,6 @@ void Tank::drawCPU() const {
 }
 
 void Tank::drawCPU(double xpos, double ypos) const {
-
 	//shooting cooldown outline:
 	glColor3f(1.0f, 1.0f, 1.0f);
 	glBegin(GL_POLYGON);
@@ -817,23 +816,17 @@ void Tank::resetThings(double x, double y, double a, Team_ID teamID) {
 
 	if (RNG::randFunc() < 1.0/4096) {
 		//shiny tank (yes, 1/8192 is the chance before Sword/Shield)
-		defaultColor = ColorValueHolder(.75f, .75f, .75f);
+		defaultColor = ColorValueHolder(0.75f, 0.75f, 0.75f);
 	} else {
-		defaultColor = ColorValueHolder(.5f, .5f, .5f);
+		defaultColor = ColorValueHolder(0.5f, 0.5f, 0.5f);
 	}
 
 	this->powerReset();
 	determineShootingAngles();
 }
 
-/*
-void Tank::edgeConstrain() {
-	CollisionHandler::edgeConstrain(this);
-}
-*/
-
-double Tank::getHighestOffenseImportance() {
-	double highest = -1; //anything below -1 is really, really unimportant; so much so that it doesn't matter
+double Tank::getHighestOffenseImportance() const {
+	double highest = LOW_IMPORTANCE;
 	for (int i = 0; i < tankPowers.size(); i++) {
 		if (tankPowers[i]->getOffenseImportance() > highest) {
 			highest = tankPowers[i]->getOffenseImportance();
@@ -842,8 +835,8 @@ double Tank::getHighestOffenseImportance() {
 	return highest;
 }
 
-double Tank::getHighestOffenseTier(double importance) {
-	double highest = -999; //TODO: define these constants somewhere or just have a bool for initialization
+double Tank::getHighestOffenseTier(double importance) const {
+	double highest = LOW_TIER;
 	for (int i = 0; i < tankPowers.size(); i++) {
 		if (tankPowers[i]->getOffenseImportance() == importance) {
 			if (tankPowers[i]->getOffenseTier(this) > highest) {
@@ -857,12 +850,12 @@ double Tank::getHighestOffenseTier(double importance) {
 	return highest;
 }
 
-double Tank::getOffenseTier() {
+double Tank::getOffenseTier() const {
 	return getHighestOffenseTier(getHighestOffenseImportance());
 }
 
-double Tank::getHighestDefenseImportance() {
-	double highest = -1; //anything below -1 is really, really unimportant; so much so that it doesn't matter
+double Tank::getHighestDefenseImportance() const {
+	double highest = LOW_IMPORTANCE;
 	for (int i = 0; i < tankPowers.size(); i++) {
 		if (tankPowers[i]->getDefenseImportance() > highest) {
 			highest = tankPowers[i]->getDefenseImportance();
@@ -871,8 +864,8 @@ double Tank::getHighestDefenseImportance() {
 	return highest;
 }
 
-double Tank::getHighestDefenseTier(double importance) {
-	double highest = -999; //TODO: define these constants somewhere or just have a bool for initialization
+double Tank::getHighestDefenseTier(double importance) const {
+	double highest = LOW_TIER;
 	for (int i = 0; i < tankPowers.size(); i++) {
 		if (tankPowers[i]->getDefenseImportance() == importance) {
 			if (tankPowers[i]->getDefenseTier(this) > highest) {
@@ -886,16 +879,6 @@ double Tank::getHighestDefenseTier(double importance) {
 	return highest;
 }
 
-double Tank::getDefenseTier() {
+double Tank::getDefenseTier() const {
 	return getHighestDefenseTier(getHighestDefenseImportance());
 }
-
-/*
-bool Tank::isPartiallyOutOfBounds() {
-	return CollisionHandler::partiallyOutOfBoundsIgnoreEdge(this);
-} //doesn't care if touching edge
-
-bool Tank::isFullyOutOfBounds() {
-	return CollisionHandler::fullyOutOfBoundsIgnoreEdge(this);
-}
-*/

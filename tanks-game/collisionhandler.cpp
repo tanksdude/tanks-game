@@ -500,7 +500,7 @@ void CollisionHandler::cornerPushMovableAwayFromImmovable(Rect* movable, Circle*
 }
 //void CollisionHandler::cornerPushMovableAwayFromMovable(Rect* movable1, Circle* movable2, double x, double y);
 
-DoublePositionHolder CollisionHandler::circleLineIntersection(const Circle* c, double lineX1, double lineY1, double lineX2, double lineY2) {
+std::pair<PositionHolder, PositionHolder> CollisionHandler::circleLineIntersection(const Circle* c, double lineX1, double lineY1, double lineX2, double lineY2) {
 	//circle-line intersection: https://mathworld.wolfram.com/Circle-LineIntersection.html
 	//normally I always use pow(x,2) for clarity, but it's getting repetitive, and also x*x is faster
 	double x1 = lineX1 - c->x, x2 = lineX2 - c->x;
@@ -525,7 +525,7 @@ DoublePositionHolder CollisionHandler::circleLineIntersection(const Circle* c, d
 	//std::cout << "y1: " << intersectionY1 << ", ";
 	//std::cout << "y2: " << intersectionY2 << std::endl;
 
-	return DoublePositionHolder(intersectionX1 + c->x, intersectionX2 + c->x, intersectionY1 + c->y, intersectionY2 + c->y);
+	return std::pair<PositionHolder, PositionHolder>{ {intersectionX1 + c->x, intersectionY1 + c->y}, {intersectionX2 + c->x, intersectionY2 + c->y} };
 }
 
 bool CollisionHandler::lineLineCollision(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4) {

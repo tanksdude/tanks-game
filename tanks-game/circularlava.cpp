@@ -24,7 +24,7 @@ CircularLava::CircularLava(double xpos, double ypos, double radius) {
 	gameID = GameManager::getNextID();
 	teamID = HAZARD_TEAM;
 
-	//tickCount = 0;
+	tickCount = 0;
 	tickCycle = 2400;
 	bubbles.reserve(maxBubbles);
 	bubbleChance = 1.0/400;
@@ -143,7 +143,7 @@ void CircularLava::pushNewBubble(double radius) {
 	}
 }
 
-bool CircularLava::reasonableLocation() {
+bool CircularLava::reasonableLocation() const {
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		if (CollisionHandler::partiallyCollided(this, WallManager::getWall(i))) {
 			return false;

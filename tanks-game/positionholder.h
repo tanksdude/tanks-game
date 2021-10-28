@@ -9,3 +9,4 @@ struct PositionHolder {
 	}
 	PositionHolder() : PositionHolder(0, 0) {}
 };
+//maybe use std::pair?

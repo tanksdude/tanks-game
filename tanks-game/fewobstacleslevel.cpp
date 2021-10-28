@@ -16,6 +16,7 @@ std::unordered_map<std::string, float> FewObstaclesLevel::getWeights() const {
 	weights.insert({ "random-old", .5f });
 	weights.insert({ "random", .5f });
 	return weights;
+	//it's not really an old level (missing the original walls) but whatever
 }
 
 void FewObstaclesLevel::initialize() {

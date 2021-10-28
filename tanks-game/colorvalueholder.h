@@ -2,6 +2,7 @@
 
 struct ColorValueHolder {
 	friend class ColorMixer;
+
 protected:
 	float R; //very little point in storing them as doubles when they'd just have to be casted to floats to be drawn
 	float G;

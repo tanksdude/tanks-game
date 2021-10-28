@@ -5,6 +5,7 @@ class KeypressManager {
 private:
 	static std::unordered_map<unsigned char, bool> normalKeyStates; //general keyboard
 	static std::unordered_map<int, bool> specialKeyStates; //non-ASCII
+
 public:
 	static bool getNormalKey(unsigned char key);
 	static bool getSpecialKey(int key);

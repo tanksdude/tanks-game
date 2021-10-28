@@ -10,16 +10,15 @@ class VerticalLightning : public RectangularLightning {
 protected:
 	//bool flexible; //worry about later
 
-	Circle* getTopPoint(); //for checks when a bullet/tank collides
-	Circle* getBottomPoint();
-
 	//unsigned int maxBolts; // = 2;
 	virtual void refreshBolt(int num) override; //uses RectangularLightning::refreshBolt
 	virtual void simpleRefreshBolt(int num); //fast path for refreshing a bolt that goes from beginning to end
-	//virtual int getDefaultNumBoltPoints(double horzDist);
 	virtual void pushBolt(LightningBolt* l) override { pushBolt(l, false); }
 	virtual void pushBolt(LightningBolt*, bool simpleRefresh);
 	virtual void pushDefaultBolt(int num, bool randomize) override;
+
+	Circle* getTopPoint() const; //for checks when a bullet/tank collides
+	Circle* getBottomPoint() const;
 
 private:
 	static VertexArray* background_va;
@@ -42,11 +41,11 @@ protected:
 	virtual void specialEffectCircleCollision(Circle*) override;
 
 public:
+	virtual bool validLocation() const override;
+	virtual bool reasonableLocation() const override;
+
 	virtual std::string getName() const override { return getClassName(); }
 	static std::string getClassName() { return "vertical_lightning"; }
-
-	virtual bool validLocation() override;
-	virtual bool reasonableLocation() override;
 
 	//virtual void tick() override;
 	virtual void draw() const override;

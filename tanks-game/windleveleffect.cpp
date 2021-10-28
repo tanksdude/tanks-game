@@ -97,7 +97,7 @@ void WindLevelEffect::draw() const {
 	}
 
 	Shader* shader = Renderer::getShader("main");
-	ColorValueHolder color = ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(0, 0, 0));
+	ColorValueHolder color = ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(0.0f, 0.0f, 0.0f));
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
 	const double length = 16 * pushDirection.getMagnitude() * getWindStrengthMultiplier(); //normal

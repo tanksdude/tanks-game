@@ -1,6 +1,7 @@
 #pragma once
 #include "circlehazard.h"
 #include "generalizedlightning.h"
+#include "constants.h"
 
 #include "vertexarray.h"
 #include "vertexbuffer.h"
@@ -8,13 +9,12 @@
 
 class CircularLightning : public CircleHazard, public GeneralizedLightning {
 protected:
-	Circle* getCenterPoint(); //for checks when a bullet/tank collides (needs to be a function in case the lightning changes size or position)
-
 	//unsigned int maxBolts; // = 1;
 	virtual void refreshBolt(int num) override;
-	//virtual int getDefaultNumBoltPoints(double horzDist);
 	virtual void pushBolt(LightningBolt*) override;
 	virtual void pushDefaultBolt(int num, bool randomize) override; //randomize should be true all of the time
+
+	Circle* getCenterPoint() const; //for checks when a bullet/tank collides (needs to be a function in case the lightning changes size or position)
 
 private:
 	static VertexArray* background_va;
@@ -34,16 +34,13 @@ private:
 	void local_uninitializeGPU();
 
 public:
-	virtual double getDefaultOffense() override { return .5; } //1.5?
-	virtual double getDefaultDefense() override { return 999; }
-
-	virtual bool actuallyCollided(Tank*) override { return currentlyActive; }
+	virtual bool actuallyCollided(const Tank*) const override { return currentlyActive; }
 	//bool modifiesTankCollision = true;
 	virtual void modifiedTankCollision(Tank*) override { return; }
 	//bool hasSpecialEffectTankCollision = true;
 	virtual void specialEffectTankCollision(Tank*) override;
 
-	virtual bool actuallyCollided(Bullet*) override { return currentlyActive; }
+	virtual bool actuallyCollided(const Bullet*) const override { return currentlyActive; }
 	//bool modifiesBulletCollision = true;
 	virtual void modifiedBulletCollision(Bullet*) override { return; }
 	//bool hasSpecialEffectBulletCollision = true;
@@ -52,11 +49,14 @@ protected:
 	virtual void specialEffectCircleCollision(Circle*); //tanks and bullets are both circles, so calculating the bolt positions would be the same
 
 public:
+	virtual bool validLocation() const override;
+	virtual bool reasonableLocation() const override;
+
 	virtual std::string getName() const override { return getClassName(); }
 	static std::string getClassName() { return "lightning"; }
 
-	virtual bool validLocation() override;
-	virtual bool reasonableLocation() override;
+	virtual double getDefaultOffense() const override { return .5; } //1.5?
+	virtual double getDefaultDefense() const override { return HIGH_TIER; }
 
 	virtual void tick() override { GeneralizedLightning::tick(); }
 	virtual void draw() const override;

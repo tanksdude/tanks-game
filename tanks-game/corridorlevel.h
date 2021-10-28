@@ -4,15 +4,16 @@
 class CorridorLevel : public Level {
 	//referred to as "evened corridors" in JS Tanks
 public:
-	std::string getName() const override { return "corridor"; }
-	ColorValueHolder getDefaultColor() const override { return ColorValueHolder(.125f, 0.5f, 1.0f); } //JS: #2288FF
-	std::vector<std::string> getLevelTypes() const override {
+	virtual std::string getName() const override { return "corridor"; }
+	virtual ColorValueHolder getDefaultColor() const override { return ColorValueHolder(0.125f, 0.5f, 1.0f); } //JS: #2288FF
+	virtual std::vector<std::string> getLevelTypes() const override {
 		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "old", "random-old", "random" };
 		return types;
 	}
-	std::unordered_map<std::string, float> getWeights() const override;
-	void initialize() override;
+	virtual std::unordered_map<std::string, float> getWeights() const override;
+	virtual void initialize() override;
 
 	CorridorLevel();
+	virtual ~CorridorLevel() { return; }
 	static Level* factory();
 };

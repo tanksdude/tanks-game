@@ -9,7 +9,6 @@ class InheritedPowerCommon;
 //#include "bullet.h"
 
 class InheritedPowerCommon {
-protected:
 public:
 	double timeLeft;
 	double maxTime;

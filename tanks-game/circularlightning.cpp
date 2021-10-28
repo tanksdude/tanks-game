@@ -27,7 +27,7 @@ CircularLightning::CircularLightning(double xpos, double ypos, double radius) {
 	gameID = GameManager::getNextID();
 	teamID = HAZARD_TEAM;
 
-	//tickCount = 0;
+	tickCount = 0;
 	tickCycle = 100; //100 is JS default (because of power speed)
 	double temp[2] = { 2, 2 };
 	std::copy(temp, temp+2, stateMultiplier);
@@ -38,9 +38,9 @@ CircularLightning::CircularLightning(double xpos, double ypos, double radius) {
 	lengthOfBolt = 4;
 	bolts.reserve(maxBolts);
 	pushDefaultBolt(maxBolts, true); //there isn't really a default bolt...
-	//boltTick = 0;
-	//boltCycle = 4;
-	//boltsNeeded = false;
+	boltTick = 0;
+	boltCycle = 4;
+	boltsNeeded = false;
 
 	canAcceptPowers = false;
 
@@ -53,7 +53,7 @@ CircularLightning::CircularLightning(double xpos, double ypos, double radius) {
 	initializeGPU();
 }
 
-Circle* CircularLightning::getCenterPoint() {
+Circle* CircularLightning::getCenterPoint() const {
 	return new Point(x, y);
 }
 
@@ -241,7 +241,7 @@ void CircularLightning::pushDefaultBolt(int num, bool randomize) {
 	}
 }
 
-bool CircularLightning::validLocation() {
+bool CircularLightning::validLocation() const {
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		Wall* wa = WallManager::getWall(i);
 		if (CollisionHandler::partiallyCollidedIgnoreEdge(wa, this)) {
@@ -251,7 +251,7 @@ bool CircularLightning::validLocation() {
 	return true;
 }
 
-bool CircularLightning::reasonableLocation() {
+bool CircularLightning::reasonableLocation() const {
 	for (int i = 0; i < HazardManager::getNumCircleHazards(); i++) {
 		CircleHazard* ch = HazardManager::getCircleHazard(i);
 		if (ch->getGameID() != this->getGameID()) {

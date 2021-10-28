@@ -44,9 +44,9 @@ public:
 	virtual double getTankAccelerationMultiplier() const override { return .5; }
 
 	virtual double getOffenseImportance() const override { return 0; }
-	virtual double getOffenseTier(Tank*) const override { return 0; }
+	virtual double getOffenseTier(const Tank*) const override { return 0; }
 	virtual double getDefenseImportance() const override { return 0; }
-	virtual double getDefenseTier(Tank*) const override { return 2.5; } // this is not DESTRUCTION_TIER+.5 in case someone wants to have a higher destruction tier
+	virtual double getDefenseTier(const Tank*) const override { return 2.5; } // this is not DESTRUCTION_TIER+.5 in case someone wants to have a higher destruction tier
 
 	InvincibleNamedTankPower();
 };
@@ -66,9 +66,9 @@ public:
 	virtual TankPower* makeTankPower() const override;
 
 	virtual double getOffenseImportance() const override { return 0; }
-	virtual double getOffenseTier(Bullet*) const override { return 1; }
+	virtual double getOffenseTier(const Bullet*) const override { return 1; }
 	virtual double getDefenseImportance() const override { return 0; }
-	virtual double getDefenseTier(Bullet*) const override { return 1; }
+	virtual double getDefenseTier(const Bullet*) const override { return 1; }
 
 	InvincibleNamedBulletPower();
 };

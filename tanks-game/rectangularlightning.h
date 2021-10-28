@@ -1,6 +1,7 @@
 #pragma once
 #include "recthazard.h"
 #include "generalizedlightning.h"
+#include "constants.h"
 
 #include "vertexarray.h"
 #include "vertexbuffer.h"
@@ -9,14 +10,13 @@
 class RectangularLightning : public RectHazard, public GeneralizedLightning {
 	//called LightningZone in JS Tanks
 protected:
-	Circle* getCenterPoint(); //for checks when a bullet/tank collides (needs to be a function in case the lightning changes size or position)
-
 	//unsigned int maxBolts; // = 1;
 	virtual void refreshBolt(int num) override;
 	virtual void refreshBolt(int num, double smaller, double larger);
-	//virtual int getDefaultNumBoltPoints(double horzDist);
 	virtual void pushBolt(LightningBolt*) override;
 	virtual void pushDefaultBolt(int num, bool randomize) override; //randomize should be true all of the time
+
+	Circle* getCenterPoint() const; //for checks when a bullet/tank collides (needs to be a function in case the lightning changes size or position)
 
 private:
 	static VertexArray* background_va;
@@ -36,16 +36,13 @@ private:
 	void local_uninitializeGPU();
 
 public:
-	virtual double getDefaultOffense() override { return .5; } //1.5?
-	virtual double getDefaultDefense() override { return 999; }
-
-	virtual bool actuallyCollided(Tank*) override { return currentlyActive; }
+	virtual bool actuallyCollided(const Tank*) const override { return currentlyActive; }
 	//bool modifiesTankCollision = true;
 	virtual void modifiedTankCollision(Tank*) override { return; }
 	//bool hasSpecialEffectTankCollision = true;
 	virtual void specialEffectTankCollision(Tank*) override;
 
-	virtual bool actuallyCollided(Bullet*) override { return currentlyActive; }
+	virtual bool actuallyCollided(const Bullet*) const override { return currentlyActive; }
 	//bool modifiesBulletCollision = true;
 	virtual void modifiedBulletCollision(Bullet*) override { return; }
 	//bool hasSpecialEffectBulletCollision = true;
@@ -54,11 +51,14 @@ protected:
 	virtual void specialEffectCircleCollision(Circle*); //tanks and bullets are both circles, so calculating the bolt positions would be the same
 
 public:
+	virtual bool validLocation() const override;
+	virtual bool reasonableLocation() const override;
+
 	virtual std::string getName() const override { return getClassName(); }
 	static std::string getClassName() { return "lightning"; }
 
-	virtual bool validLocation() override;
-	virtual bool reasonableLocation() override;
+	virtual double getDefaultOffense() const override { return .5; } //1.5?
+	virtual double getDefaultDefense() const override { return HIGH_TIER; }
 
 	virtual void tick() override { GeneralizedLightning::tick(); }
 	virtual void draw() const override;
@@ -69,7 +69,7 @@ protected:
 	RectangularLightning(double xpos, double ypos, double width, double height, bool noGPU); //doesn't initialize GPU
 public:
 	RectangularLightning(double xpos, double ypos, double width, double height);
-	~RectangularLightning();
+	virtual ~RectangularLightning();
 	static RectHazard* factory(int, std::string*);
 	static RectHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv);
 	virtual int getFactoryArgumentCount() const override { return 4; }

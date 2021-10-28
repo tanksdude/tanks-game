@@ -252,7 +252,6 @@
     <ClInclude Include="devannoyingpower.h" />
     <ClInclude Include="developerlevel2.h" />
     <ClInclude Include="devlonginvinciblenamedpower.h" />
-    <ClInclude Include="doublepositionholder.h" />
     <ClInclude Include="endgamehandler.h" />
     <ClInclude Include="fewobstacleslevel.h" />
     <ClInclude Include="gamemainloop.h" />

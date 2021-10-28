@@ -3,12 +3,14 @@
 class GameMainLoop {
 	friend class DeveloperManager;
 	friend class GameManager; //needed?
+
 private:
 	static bool currentlyDrawing;
 	static long frameCount;
 	static long ticksUntilFrame;
 	static int physicsRate;
 	static void Tick(int physicsUPS);
+
 public:
 	//tick stuff:
 	static void Tick() { Tick(physicsRate); }

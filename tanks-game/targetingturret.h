@@ -37,15 +37,15 @@ private:
 	static bool uninitializeGPU();
 
 public:
-	//virtual bool validLocation() override { return true; }
-	virtual bool reasonableLocation() override;
-
-	virtual bool canSeeTank(Tank*); //true if no walls obstruct any line of sight to tank
-	virtual void turnTowardsTank(Tank*);
-	virtual bool isPointedAt(Tank*);
+	virtual void turnTowardsTank(const Tank*);
+	virtual bool canSeeTank(const Tank*) const override; //true if no walls obstruct any line of sight to tank
+	virtual bool isPointedAt(const Tank*) const;
 	virtual ColorValueHolder getColor() const override;
 	virtual ColorValueHolder getColor(short state) const override;
 	virtual ColorValueHolder getReticuleColor() const;
+
+	//virtual bool validLocation() const override { return true; }
+	virtual bool reasonableLocation() const override;
 
 	virtual std::string getName() const override { return getClassName(); }
 	static std::string getClassName() { return "targeting_turret"; }
@@ -54,7 +54,7 @@ public:
 	virtual void draw() const override;
 	virtual void draw(double xpos, double ypos) const override;
 	virtual void poseDraw() const override;
-	virtual void drawCPU();
+	virtual void drawCPU() const;
 
 protected:
 	TargetingTurret(double xpos, double ypos, double angle, bool noGPU);

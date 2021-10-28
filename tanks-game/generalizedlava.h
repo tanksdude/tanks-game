@@ -45,7 +45,7 @@ protected:
 	};
 
 protected:
-	double tickCount = 0;
+	double tickCount;
 	double tickCycle; //this is used to make the brightness of the lava vary sinusoidally
 
 	const unsigned int maxBubbles = 8; //there wasn't a limit in JS Tanks because the bubbles were rare (1/400 per tick, 100Hz), but there should be, whether it's met or not

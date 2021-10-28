@@ -12,6 +12,11 @@ extern const double DESTRUCTION_TIER; //offense tier for destorying walls and tu
 extern const double BULLET_TO_TANK_RADIUS_RATIO;
 extern const double BULLET_TO_TANK_SPEED_RATIO;
 
+extern const double LOW_TIER;
+extern const double HIGH_TIER;
+extern const double LOW_IMPORTANCE;
+extern const double HIGH_IMPORTANCE;
+
 extern const Team_ID DEFAULT_TEAM; //walls and friends are this team
 extern const Team_ID HAZARD_TEAM;  //default team of hazards
 

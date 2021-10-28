@@ -145,7 +145,7 @@ void StationaryTurret::tick() {
 	}
 }
 
-bool StationaryTurret::canSeeTank(Tank* t) const {
+bool StationaryTurret::canSeeTank(const Tank* t) const {
 	double dist = sqrt(pow(x - t->x, 2) + (y - t->y, 2)); //dist to tank
 	double angle = atan2(y - t->y, x - t->x); //angle to tank
 	Circle* p = new Point(x + dist*cos(angle), y + dist*sin(angle));
@@ -165,7 +165,7 @@ bool StationaryTurret::canSeeTank(Tank* t) const {
 	return false;
 }
 
-bool StationaryTurret::reasonableLocation() {
+bool StationaryTurret::reasonableLocation() const {
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
 		if (canSeeTank(TankManager::getTank(i))) {
 			return false;
@@ -244,7 +244,7 @@ void StationaryTurret::poseDraw() const {
 	return;
 }
 
-void StationaryTurret::drawCPU() {
+void StationaryTurret::drawCPU() const {
 	//main body:
 	ColorValueHolder color = getColor();
 	glColor3f(color.getRf(), color.getGf(), color.getBf());

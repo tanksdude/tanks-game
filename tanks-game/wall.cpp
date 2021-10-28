@@ -90,7 +90,7 @@ void Wall::poseDraw() const {
 	return;
 }
 
-void Wall::drawCPU() {
+void Wall::drawCPU() const {
 	glColor3f(color.getRf(), color.getGf(), color.getBf());
 
 	glBegin(GL_POLYGON);

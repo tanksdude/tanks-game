@@ -16,7 +16,7 @@ public:
 	virtual std::string getName() const override { return InversionPower::getClassName(); }
 	static std::string getClassName() { return "inversion"; }
 	virtual ColorValueHolder getColor() const override { return InversionPower::getClassColor(); }
-	static ColorValueHolder getClassColor() { return ColorValueHolder(.75f, .75f, .875f); } //silver-teal, I think
+	static ColorValueHolder getClassColor() { return ColorValueHolder(0.75f, 0.75f, 0.875f); } //silver-teal, I think
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;

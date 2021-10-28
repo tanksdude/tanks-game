@@ -39,8 +39,6 @@ TargetingTurret::TargetingTurret(double xpos, double ypos, double angle, bool) :
 	std::copy(temp, temp+2, reticuleColors);
 
 	canAcceptPowers = false; //... true? probably; hazardpowers were thought up with patrolling turret in mind
-
-	initializeGPU();
 }
 
 TargetingTurret::TargetingTurret(double xpos, double ypos, double angle) : TargetingTurret(xpos, ypos, angle, true) {
@@ -165,7 +163,7 @@ void TargetingTurret::tick() {
 							if (targetingCount < 0) {
 								targetingCount = 0;
 							}
-							double dist = sqrt(pow(x - t->x, 2) + pow(y - t->y, 2));
+							double dist = sqrt(pow(t->x - x, 2) + pow(t->y - y, 2));
 							targetingX = x + dist * cos(angle);
 							targetingY = y + dist * sin(angle);
 						}
@@ -215,7 +213,7 @@ void TargetingTurret::tick() {
 				Tank* t = TankManager::getTank(indexOfTargetedTank);
 				trackingID = t->getGameID();
 				targeting = true;
-				double dist = sqrt(pow(x - t->x, 2) + pow(y - t->y, 2));
+				double dist = sqrt(pow(t->x - x, 2) + pow(t->y - y, 2));
 				targetingX = this->x + dist * cos(this->angle);
 				targetingY = this->y + dist * sin(this->angle);
 			}
@@ -227,7 +225,7 @@ void TargetingTurret::tick() {
 			BulletManager::pushBullet(new Bullet(x + r*cos(angle), y + r*sin(angle), r*BULLET_TO_TANK_RADIUS_RATIO, angle, Tank::default_maxSpeed*BULLET_TO_TANK_SPEED_RATIO, this->getTeamID(), BulletParentType::individual, this->getGameID()));
 			currentState = 2;
 			targetingCount = 0;
-			targeting = false;
+			targeting = false; //allows target to change (also controls whether the reticule is drawn)
 		}
 	}
 	if (currentState == 2) {
@@ -240,7 +238,7 @@ void TargetingTurret::tick() {
 	//maxState is 3; not using else in case tickCycle is zero
 }
 
-bool TargetingTurret::canSeeTank(Tank* t) {
+bool TargetingTurret::canSeeTank(const Tank* t) const {
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		Wall* wa = WallManager::getWall(i);
 		if (CollisionHandler::lineRectCollision(x, y, t->x, t->y, wa)) {
@@ -250,7 +248,7 @@ bool TargetingTurret::canSeeTank(Tank* t) {
 	return true;
 }
 
-void TargetingTurret::turnTowardsTank(Tank* t) {
+void TargetingTurret::turnTowardsTank(const Tank* t) {
 	//see PowerFunctionHelper::homingGeneric
 	double targetAngle = atan2(t->y - y, t->x - x);
 	SimpleVector2D distToTank = SimpleVector2D(t->getX() - this->x, t->getY() - this->y);
@@ -267,11 +265,11 @@ void TargetingTurret::turnTowardsTank(Tank* t) {
 	}
 }
 
-bool TargetingTurret::isPointedAt(Tank* t) {
-	return (abs(fmod(atan2(t->y - y, t->x - x) + 2*PI, 2*PI) - fmod(fmod(angle, 2*PI) + 2*PI, 2*PI)) < PI/turningIncrement);
+bool TargetingTurret::isPointedAt(const Tank* t) const {
+	return (abs(SimpleVector2D::angleBetween(SimpleVector2D(getAngle(), 0, true), SimpleVector2D(t->x - x, t->y - y))) < PI/turningIncrement);
 }
 
-bool TargetingTurret::reasonableLocation() {
+bool TargetingTurret::reasonableLocation() const {
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
 		if (canSeeTank(TankManager::getTank(i))) {
 			return false;
@@ -319,7 +317,7 @@ ColorValueHolder TargetingTurret::getReticuleColor() const {
 	if (currentState == 1) {
 		return reticuleColors[1];
 	}
-	return ColorValueHolder(0, 0, 0); //shouldn't be drawn
+	return ColorValueHolder(0.0f, 0.0f, 0.0f); //shouldn't be drawn
 }
 
 void TargetingTurret::draw() const {
@@ -372,7 +370,7 @@ void TargetingTurret::poseDraw() const {
 	return;
 }
 
-void TargetingTurret::drawCPU() {
+void TargetingTurret::drawCPU() const {
 	//nah
 }
 
