@@ -309,6 +309,9 @@
     <ClCompile Include="trickymaneuveringlevel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="respawningpowerupsleveleffect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -654,6 +657,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="trickymaneuveringlevel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="respawningpowerupsleveleffect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

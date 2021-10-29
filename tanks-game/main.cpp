@@ -72,6 +72,7 @@
 
 //level effects:
 #include "windleveleffect.h"
+#include "respawningpowerupsleveleffect.h"
 
 //hazards:
 #include "stationaryturret.h"
@@ -206,6 +207,7 @@ int main(int argc, char** argv) {
 
 	//vanilla (some are also "old"):
 	LevelManager::addLevelEffectFactory(WindLevelEffect::factory);
+	LevelManager::addLevelEffectFactory(RespawningPowerupsLevelEffect::factory);
 
 	//vanilla (some are also "old"):
 	LevelManager::addLevelFactory(DefaultRandomLevel::factory);

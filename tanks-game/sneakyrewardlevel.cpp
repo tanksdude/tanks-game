@@ -1,5 +1,6 @@
 #include "sneakyrewardlevel.h"
 #include "constants.h"
+#include "levelmanager.h"
 #include "randomlevel.h"
 #include "tankmanager.h"
 #include "powerupmanager.h"
@@ -9,6 +10,8 @@
 #include "resetthings.h"
 #include "rng.h"
 #include <iostream>
+#include <stdexcept>
+#include "respawningpowerupsleveleffect.h" //I hope this isn't permanent...
 
 ColorValueHolder SneakyRewardLevel::getDefaultColor() const {
 	return ColorValueHolder(0x99/255.0, 0x66/255.0, 0xCC/255.0); //amethyst
@@ -30,6 +33,19 @@ void SneakyRewardLevel::initialize() {
 	int tempRand;
 	PositionHolder pos;
 	std::string* paras;
+	PowerSquare* p;
+
+	LevelEffect* le = nullptr;
+	for (int i = 0; i < effects.size(); i++) {
+		if (effects[i]->getName() == "respawning_powerups") {
+			le = effects[i];
+		}
+	}
+	if (le == nullptr) {
+		throw std::logic_error("ERROR: \"sneaky_reward\" level does not have \"respawning_powerups\" level effect!");
+	}
+	RespawningPowerupsLevelEffect* respawning = (RespawningPowerupsLevelEffect*)le;
+	//TODO: should this be the preferred way of getting specific level effects?
 
 	for (int i = 0; i < 4; i++) {
 		//classic JS walls
@@ -67,10 +83,11 @@ void SneakyRewardLevel::initialize() {
 		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "dev", "annoying"));
 	}
 
-	//TODO: infinitely respawning powers
 	for (int i = 0; i < 4; i++) {
 		pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 240-32-(20), GAME_HEIGHT/2-(20));
-		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "wallhack"));
+		p = new PowerSquare(pos.x, pos.y, "wallhack");
+		PowerupManager::pushPowerup(p);
+		respawning->watchPowerSquare(p);
 	}
 	/*
 	pos = RandomLevel::getSymmetricPowerupPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_HEIGHT/2-(40+20+10));
@@ -83,11 +100,15 @@ void SneakyRewardLevel::initialize() {
 	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "no_bullet_zone")(4, paras));
 	delete[] paras;
 
-	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "dev", "inversion"));
+	p = new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "dev", "inversion");
+	PowerupManager::pushPowerup(p);
+	respawning->watchPowerSquare(p);
 }
 
 Level* SneakyRewardLevel::factory() {
 	return new SneakyRewardLevel();
 }
 
-SneakyRewardLevel::SneakyRewardLevel() { return; }
+SneakyRewardLevel::SneakyRewardLevel() {
+	effects.push_back(LevelManager::getLevelEffectFactory("vanilla", "respawning_powerups")(0, nullptr));
+}

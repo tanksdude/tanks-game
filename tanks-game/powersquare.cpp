@@ -5,6 +5,7 @@
 #include "colormixer.h"
 #include "renderer.h"
 #include "powerupmanager.h"
+#include "mylib.h"
 
 //for CPU drawing, in case other #includes go wrong:
 #include <GL/glew.h>
@@ -68,7 +69,7 @@ PowerSquare::PowerSquare(double x_, double y_, std::string* types, std::string* 
 	}
 }
 
-PowerSquare::PowerSquare(const PowerSquare& other) {
+PowerSquare::PowerSquare(const PowerSquare& other) : PowerSquare(other.x+PowerSquare::POWER_WIDTH/2, other.y+PowerSquare::POWER_HEIGHT/2) {
 	this->numOfPowers = other.numOfPowers;
 	this->heldPowers = new Power*[numOfPowers];
 	for (int i = 0; i < numOfPowers; i++) {
@@ -290,4 +291,28 @@ void PowerSquare::drawCPU() const {
 	glVertex3f(x + w, y + h, 0);
 
 	glEnd();
+}
+
+void PowerSquare::ghostDraw(float alpha) const {
+	alpha = constrain<float>(alpha, 0, 1);
+	alpha = alpha * alpha; //cheap way to make 100% not ghost more obvious
+
+	Shader* shader = Renderer::getShader("main");
+	glm::mat4 MVPM = Renderer::GenerateMatrix(w, h, 0, x, y);
+	ColorValueHolder color = getColor();
+	ColorValueHolder ghost_color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
+
+	if (numOfPowers > 1) { //move to drawUnder()
+		ColorValueHolder backgroundMix = ColorMixer::mix(color, BackgroundRect::getBackColor());
+		ColorValueHolder ghost_backgroundMix = ColorMixer::mix(BackgroundRect::getBackColor(), backgroundMix, alpha);
+		shader->setUniform4f("u_color", ghost_backgroundMix.getRf(), ghost_backgroundMix.getGf(), ghost_backgroundMix.getBf(), ghost_backgroundMix.getAf());
+		shader->setUniformMat4f("u_MVP", MVPM);
+
+		Renderer::Draw(*va, *ib_outline, *shader);
+	}
+
+	shader->setUniform4f("u_color", ghost_color.getRf(), ghost_color.getGf(), ghost_color.getBf(), ghost_color.getAf());
+	shader->setUniformMat4f("u_MVP", MVPM);
+
+	Renderer::Draw(*va, *ib_main, *shader);
 }

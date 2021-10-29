@@ -212,6 +212,7 @@
     <ClCompile Include="recthazard.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="resetthings.cpp" />
+    <ClCompile Include="respawningpowerupsleveleffect.cpp" />
     <ClCompile Include="rng.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="shieldpower.cpp" />
@@ -323,6 +324,7 @@
     <ClInclude Include="renderer.h" />
     <ClInclude Include="renderingcontext.h" />
     <ClInclude Include="resetthings.h" />
+    <ClInclude Include="respawningpowerupsleveleffect.h" />
     <ClInclude Include="res\vendor\glm\glm.hpp" />
     <ClInclude Include="res\vendor\glm\gtc\matrix_transform.hpp" />
     <ClInclude Include="res\vendor\glm\gtx\transform.hpp" />

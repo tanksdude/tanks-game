@@ -43,6 +43,7 @@ public:
 	void draw(double xpos, double ypos) const override;
 	void poseDraw() const override;
 	void drawCPU() const;
+	void ghostDraw(float alpha) const; //TODO: give to DrawableThing
 
 private:
 	PowerSquare() {} //don't use
