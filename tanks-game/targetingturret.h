@@ -22,6 +22,7 @@ protected:
 	ColorValueHolder reticuleColors[2];
 	double targetingCount;
 	Game_ID trackingID; //if ==this->getGameID(), then it's not tracking
+	virtual inline void updateTrackingPos(const Tank*, bool pointedAt);
 
 private:
 	static VertexArray* va;

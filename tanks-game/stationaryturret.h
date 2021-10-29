@@ -1,5 +1,6 @@
 #pragma once
 #include "circlehazard.h"
+#include "simplevector2d.h"
 #include "constants.h"
 
 #include "vertexarray.h"
@@ -9,7 +10,7 @@
 class StationaryTurret : public CircleHazard {
 	//just called Stationary in JS Tanks
 protected:
-	double angle;
+	SimpleVector2D direction;
 	double tickCount;
 	double tickCycle;
 	unsigned short currentState; //could use int instead of short because transfering a word is more efficient than a halfword but... eh
@@ -29,7 +30,7 @@ private:
 	static bool uninitializeGPU();
 
 public:
-	double getAngle() const;
+	//double getAngle() const;
 	virtual bool canSeeTank(const Tank*) const; //true if pointing at tank with no wall obstructions
 	virtual ColorValueHolder getColor() const; //needed because turret doesn't use tickCount, instead using targetingCount (should change this)
 	virtual ColorValueHolder getColor(short state) const;

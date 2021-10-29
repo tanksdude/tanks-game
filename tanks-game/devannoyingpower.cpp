@@ -98,7 +98,7 @@ double DevAnnoyingBulletPower::getOffenseImportance() const {
 }
 
 double DevAnnoyingBulletPower::getOffenseTier(const Bullet*) const {
-	return 0; //LOW_TIER? //not sure
+	return 0; //-1? //not sure
 }
 
 double DevAnnoyingBulletPower::getDefenseImportance() const {

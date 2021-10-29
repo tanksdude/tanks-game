@@ -24,7 +24,7 @@ bool StationaryTurret::initialized_GPU = false;
 StationaryTurret::StationaryTurret(double xpos, double ypos, double angle, bool noGPU) {
 	x = xpos;
 	y = ypos;
-	this->angle = angle;
+	this->direction = SimpleVector2D(angle, 0, true);
 	r = TANK_RADIUS / 4;
 	gameID = GameManager::getNextID();
 	teamID = HAZARD_TEAM;
@@ -34,7 +34,7 @@ StationaryTurret::StationaryTurret(double xpos, double ypos, double angle, bool 
 	currentState = 0;
 	maxState = 3;
 	stateMultiplier = new double[maxState]{2, 1, 2};
-	stateColors = new ColorValueHolder[maxState]{ {.5f, .5f, .5f}, {1.0f, 0x22/255.0, 0x11/255.0}, {0, 0.5f, 1.0f} };
+	stateColors = new ColorValueHolder[maxState]{ {0.5f, 0.5f, 0.5f}, {1.0f, 0x22/255.0, 0x11/255.0}, {0.0f, 0.5f, 1.0f} };
 
 	canAcceptPowers = false;
 }
@@ -119,9 +119,11 @@ CircleHazard* StationaryTurret::factory(int argc, std::string* argv) {
 	return new StationaryTurret(0, 0, 0);
 }
 
+/*
 double StationaryTurret::getAngle() const {
-	return fmod(fmod(angle, 2*PI) + 2*PI, 2*PI);
+	return fmod(fmod(direction.getAngle(), 2*PI) + 2*PI, 2*PI);
 }
+*/
 
 void StationaryTurret::tick() {
 	tickCount++;
@@ -141,7 +143,7 @@ void StationaryTurret::tick() {
 		}
 	}
 	if (mustShoot) {
-		BulletManager::pushBullet(new Bullet(x + r*cos(angle), y + r*sin(angle), r*(BULLET_TO_TANK_RADIUS_RATIO*2), angle, Tank::default_maxSpeed*BULLET_TO_TANK_SPEED_RATIO, this->getTeamID(), BulletParentType::individual, this->getGameID()));
+		BulletManager::pushBullet(new Bullet(x + r*cos(direction.getAngle()), y + r*sin(direction.getAngle()), r*(BULLET_TO_TANK_RADIUS_RATIO*2), direction.getAngle(), Tank::default_maxSpeed*BULLET_TO_TANK_SPEED_RATIO, this->getTeamID(), BulletParentType::individual, this->getGameID()));
 	}
 }
 
@@ -212,7 +214,7 @@ void StationaryTurret::draw() const {
 
 void StationaryTurret::draw(double xpos, double ypos) const {
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, angle, xpos, ypos);
+	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, direction.getAngle(), xpos, ypos);
 
 	//main body:
 	ColorValueHolder color = getColor();
@@ -230,7 +232,7 @@ void StationaryTurret::draw(double xpos, double ypos) const {
 	//barrel:
 	glLineWidth(2.0f);
 	shader->setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 1.0f);
-	MVPM = Renderer::GenerateMatrix(r, 1, angle, xpos, ypos);
+	MVPM = Renderer::GenerateMatrix(r, 1, direction.getAngle(), xpos, ypos);
 	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*cannon_va, *shader, GL_LINES, 0, 2);
@@ -276,7 +278,7 @@ void StationaryTurret::drawCPU() const {
 	glBegin(GL_LINES);
 
 	glVertex2f(x, y);
-	glVertex2f(x + r*cos(angle), y + r*sin(angle));
+	glVertex2f(x + r*cos(direction.getAngle()), y + r*sin(direction.getAngle()));
 
 	glEnd();
 }

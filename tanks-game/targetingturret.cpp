@@ -136,6 +136,17 @@ CircleHazard* TargetingTurret::factory(int argc, std::string* argv) {
 	return new TargetingTurret(0, 0, 0);
 }
 
+inline void TargetingTurret::updateTrackingPos(const Tank* t, bool pointedAt) {
+	if (pointedAt) {
+		targetingX = t->x;
+		targetingY = t->y;
+	} else {
+		double dist = sqrt(pow(t->x - x, 2) + pow(t->y - y, 2));
+		targetingX = x + dist * cos(direction.getAngle());
+		targetingY = y + dist * sin(direction.getAngle());
+	}
+}
+
 void TargetingTurret::tick() {
 	//tickCount is unused... maybe targetingCount should replace it...
 	if (currentState == 0) { //either tracking a tank or doing nothing
@@ -156,16 +167,13 @@ void TargetingTurret::tick() {
 								currentState = 1;
 								targetingCount = 0;
 							}
-							targetingX = t->x;
-							targetingY = t->y;
+							updateTrackingPos(t, true);
 						} else {
 							targetingCount--;
 							if (targetingCount < 0) {
 								targetingCount = 0;
 							}
-							double dist = sqrt(pow(t->x - x, 2) + pow(t->y - y, 2));
-							targetingX = x + dist * cos(angle);
-							targetingY = y + dist * sin(angle);
+							updateTrackingPos(t, false);
 						}
 					}
 				}
@@ -213,16 +221,14 @@ void TargetingTurret::tick() {
 				Tank* t = TankManager::getTank(indexOfTargetedTank);
 				trackingID = t->getGameID();
 				targeting = true;
-				double dist = sqrt(pow(t->x - x, 2) + pow(t->y - y, 2));
-				targetingX = this->x + dist * cos(this->angle);
-				targetingY = this->y + dist * sin(this->angle);
+				updateTrackingPos(t, isPointedAt(t));
 			}
 		}
 	}
 	if (currentState == 1) {
 		targetingCount++;
 		if (targetingCount >= stateMultiplier[1] * tickCycle) {
-			BulletManager::pushBullet(new Bullet(x + r*cos(angle), y + r*sin(angle), r*BULLET_TO_TANK_RADIUS_RATIO, angle, Tank::default_maxSpeed*BULLET_TO_TANK_SPEED_RATIO, this->getTeamID(), BulletParentType::individual, this->getGameID()));
+			BulletManager::pushBullet(new Bullet(x + r*cos(direction.getAngle()), y + r*sin(direction.getAngle()), r*BULLET_TO_TANK_RADIUS_RATIO, direction.getAngle(), Tank::default_maxSpeed*BULLET_TO_TANK_SPEED_RATIO, this->getTeamID(), BulletParentType::individual, this->getGameID()));
 			currentState = 2;
 			targetingCount = 0;
 			targeting = false; //allows target to change (also controls whether the reticule is drawn)
@@ -250,23 +256,22 @@ bool TargetingTurret::canSeeTank(const Tank* t) const {
 
 void TargetingTurret::turnTowardsTank(const Tank* t) {
 	//see PowerFunctionHelper::homingGeneric
-	double targetAngle = atan2(t->y - y, t->x - x);
 	SimpleVector2D distToTank = SimpleVector2D(t->getX() - this->x, t->getY() - this->y);
-	float theta = SimpleVector2D::angleBetween(distToTank, SimpleVector2D(getAngle(), 0, true));
+	float theta = SimpleVector2D::angleBetween(distToTank, SimpleVector2D(direction.getAngle(), 0, true));
 	if (abs(theta) < PI/turningIncrement) {
 		//too small to adjust angle
 	} else {
 		//large angle adjustment needed
 		if (theta < 0) {
-			this->angle += PI/turningIncrement;
+			this->direction.changeAngle(PI/turningIncrement);
 		} else {
-			this->angle -= PI/turningIncrement;
+			this->direction.changeAngle(-PI/turningIncrement);
 		}
 	}
 }
 
 bool TargetingTurret::isPointedAt(const Tank* t) const {
-	return (abs(SimpleVector2D::angleBetween(SimpleVector2D(getAngle(), 0, true), SimpleVector2D(t->x - x, t->y - y))) < PI/turningIncrement);
+	return (abs(SimpleVector2D::angleBetween(SimpleVector2D(direction.getAngle(), 0, true), SimpleVector2D(t->x - x, t->y - y))) < PI/turningIncrement);
 }
 
 bool TargetingTurret::reasonableLocation() const {
@@ -326,7 +331,7 @@ void TargetingTurret::draw() const {
 
 void TargetingTurret::draw(double xpos, double ypos) const {
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, angle, xpos, ypos);
+	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, direction.getAngle(), xpos, ypos);
 
 	//main body:
 	ColorValueHolder color = getColor();
@@ -344,7 +349,7 @@ void TargetingTurret::draw(double xpos, double ypos) const {
 	//barrel:
 	glLineWidth(2.0f);
 	shader->setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 1.0f);
-	MVPM = Renderer::GenerateMatrix(r, 1, angle, xpos, ypos);
+	MVPM = Renderer::GenerateMatrix(r, 1, direction.getAngle(), xpos, ypos);
 	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*cannon_va, *shader, GL_LINES, 0, 2);
