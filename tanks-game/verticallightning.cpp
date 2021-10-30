@@ -187,7 +187,7 @@ void VerticalLightning::specialEffectCircleCollision(Circle* c) {
 		} else {
 			intersectionXD = std::min(intersections.first.x, intersections.second.x);
 		}
-		intersectionYD = std::min(intersections.second.y, intersections.second.y);
+		intersectionYD = std::min(intersections.first.y, intersections.second.y);
 
 		if (intersectionXD < x || intersectionXD > x+w) {
 			std::cerr << "WARNING: vertical lightning endpoint X (bottom half) out of range!" << std::endl;

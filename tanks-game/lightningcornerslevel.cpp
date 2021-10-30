@@ -26,7 +26,7 @@ void LightningCornersLevel::initialize() {
 	int tempRand;
 	PositionHolder pos;
 	std::string* paras;
-
+	
 	for (int i = 0; i < 4; i++) {
 		//classic JS walls
 		pos = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-40*2-32, GAME_HEIGHT/2-128, 32, 128);
@@ -82,6 +82,32 @@ void LightningCornersLevel::initialize() {
 	//	pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 10, 10);
 	//	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "speed"));
 	//}
+
+	//not here in the JS level but I feel it should be here:
+	pos = RandomLevel::getSymmetricPowerupPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 80+10);
+	paras = new std::string[3]{std::to_string(pos.x), std::to_string(pos.y), std::to_string(0)};
+	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(3, paras));
+	delete[] paras;
+	pos = RandomLevel::getSymmetricPowerupPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 80+10);
+	paras = new std::string[3]{std::to_string(pos.x), std::to_string(pos.y), std::to_string(PI)};
+	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(3, paras));
+	delete[] paras;
+	pos = RandomLevel::getSymmetricPowerupPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, 80+10);
+	paras = new std::string[3]{std::to_string(pos.x), std::to_string(pos.y), std::to_string(PI/2)};
+	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(3, paras));
+	delete[] paras;
+	pos = RandomLevel::getSymmetricPowerupPositions_UD(1, GAME_WIDTH/2, GAME_HEIGHT/2, 80+10);
+	paras = new std::string[3]{std::to_string(pos.x), std::to_string(pos.y), std::to_string(-PI/2)};
+	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(3, paras));
+	delete[] paras;
+
+	//just trying stuff
+	//paras = new std::string[4]{std::to_string(wallArray[0].x+32), std::to_string(0), std::to_string(16), std::to_string(GAME_HEIGHT)};
+	//HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "vertical_lightning")(4, paras));
+	//delete[] paras;
+	//paras = new std::string[4]{std::to_string(wallArray[3].x-16), std::to_string(0), std::to_string(16), std::to_string(GAME_HEIGHT)};
+	//HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "vertical_lightning")(4, paras));
+	//delete[] paras;
 }
 
 Level* LightningCornersLevel::factory() {
