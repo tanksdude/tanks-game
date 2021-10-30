@@ -308,7 +308,7 @@ ColorValueHolder TargetingTurret::getColor() const {
 	return ColorMixer::mix(stateColors[currentState], stateColors[(currentState+1)%maxState], constrain<double>(targetingCount/(tickCycle*stateMultiplier[currentState]), 0, 1));
 }
 
-ColorValueHolder TargetingTurret::getColor(short state) const {
+ColorValueHolder TargetingTurret::getColor(int state) const {
 	if (state < 0) {
 		return stateColors[0];
 	}

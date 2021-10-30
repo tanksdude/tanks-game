@@ -77,7 +77,7 @@ public:
 	void move();
 	void powerCalculate();
 	void removePower(int index);
-	//short determineDamage(); //maybe for another day
+	//int determineDamage(); //maybe for another day
 	bool canCollideWith(const GameThing*) const;
 	bool canCollideWith(const Bullet*) const;
 

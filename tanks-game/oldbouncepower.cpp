@@ -53,7 +53,7 @@ OldBounceTankPower::OldBounceTankPower() {
 #include "powerfunctionhelper.h"
 #include "collisionhandler.h"
 
-const short OldBounceBulletPower::maxBounces = 16;
+const int OldBounceBulletPower::maxBounces = 16;
 
 InteractionBoolHolder OldBounceBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
 	if (abs(b->velocity.getMagnitude()) * Bullet::default_radius/b->r <= .5) {

@@ -26,7 +26,7 @@ void LightningCornersLevel::initialize() {
 	int tempRand;
 	PositionHolder pos;
 	std::string* paras;
-	
+
 	for (int i = 0; i < 4; i++) {
 		//classic JS walls
 		pos = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-40*2-32, GAME_HEIGHT/2-128, 32, 128);
@@ -84,19 +84,19 @@ void LightningCornersLevel::initialize() {
 	//}
 
 	//not here in the JS level but I feel it should be here:
-	pos = RandomLevel::getSymmetricPowerupPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 80+10);
+	pos = RandomLevel::getSymmetricPowerupPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 80+20);
 	paras = new std::string[3]{std::to_string(pos.x), std::to_string(pos.y), std::to_string(0)};
 	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(3, paras));
 	delete[] paras;
-	pos = RandomLevel::getSymmetricPowerupPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 80+10);
+	pos = RandomLevel::getSymmetricPowerupPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 80+20);
 	paras = new std::string[3]{std::to_string(pos.x), std::to_string(pos.y), std::to_string(PI)};
 	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(3, paras));
 	delete[] paras;
-	pos = RandomLevel::getSymmetricPowerupPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, 80+10);
+	pos = RandomLevel::getSymmetricPowerupPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, 80+20);
 	paras = new std::string[3]{std::to_string(pos.x), std::to_string(pos.y), std::to_string(PI/2)};
 	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(3, paras));
 	delete[] paras;
-	pos = RandomLevel::getSymmetricPowerupPositions_UD(1, GAME_WIDTH/2, GAME_HEIGHT/2, 80+10);
+	pos = RandomLevel::getSymmetricPowerupPositions_UD(1, GAME_WIDTH/2, GAME_HEIGHT/2, 80+20);
 	paras = new std::string[3]{std::to_string(pos.x), std::to_string(pos.y), std::to_string(-PI/2)};
 	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(3, paras));
 	delete[] paras;

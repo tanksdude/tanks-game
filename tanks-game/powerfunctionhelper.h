@@ -15,7 +15,7 @@ public:
 	static bool bounceGenericWithCorners(Bullet*, Wall*);
 	static bool bounceEdgeGenericX(Bullet*);
 	static bool bounceEdgeGenericY(Bullet*);
-	static void equallySpacedCannonPoints(Tank*, std::vector<CannonPoint>*, short); //fix?
+	static void equallySpacedCannonPoints(Tank*, std::vector<CannonPoint>*, int); //fix?
 
 private:
 	PowerFunctionHelper() {}

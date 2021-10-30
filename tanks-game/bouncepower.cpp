@@ -49,7 +49,7 @@ BounceTankPower::BounceTankPower() {
 #include "powerfunctionhelper.h"
 #include "collisionhandler.h"
 
-const short BounceBulletPower::maxBounces = 16;
+const int BounceBulletPower::maxBounces = 16;
 
 InteractionBoolHolder BounceBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
 	if (abs(b->velocity.getMagnitude()) * Bullet::default_radius/b->r <= .5) {
@@ -139,7 +139,7 @@ TankPower* BounceBulletPower::makeTankPower() const {
 
 BounceBulletPower::BounceBulletPower() : BounceBulletPower(BounceBulletPower::maxBounces) {}
 
-BounceBulletPower::BounceBulletPower(short bounces) {
+BounceBulletPower::BounceBulletPower(int bounces) {
 	timeLeft = 0;
 	maxTime = -1;
 

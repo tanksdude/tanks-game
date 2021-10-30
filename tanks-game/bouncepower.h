@@ -56,8 +56,8 @@ public:
 
 class BounceBulletPower : public BulletPower {
 protected:
-	static const short maxBounces;
-	short bouncesLeft;
+	static const int maxBounces;
+	int bouncesLeft;
 
 public:
 	virtual void initialize(Bullet* parent) override;
@@ -85,5 +85,5 @@ public:
 	virtual double getBulletSpeedMultiplier() const override { return .5; }
 
 	BounceBulletPower();
-	BounceBulletPower(short bounces);
+	BounceBulletPower(int bounces);
 };

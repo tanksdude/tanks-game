@@ -13,8 +13,8 @@ protected:
 	SimpleVector2D direction;
 	double tickCount;
 	double tickCycle;
-	unsigned short currentState; //could use int instead of short because transfering a word is more efficient than a halfword but... eh
-	unsigned short maxState;
+	unsigned int currentState;
+	unsigned int maxState;
 	double* stateMultiplier;
 	ColorValueHolder* stateColors;
 
@@ -33,7 +33,7 @@ public:
 	//double getAngle() const;
 	virtual bool canSeeTank(const Tank*) const; //true if pointing at tank with no wall obstructions
 	virtual ColorValueHolder getColor() const; //needed because turret doesn't use tickCount, instead using targetingCount (should change this)
-	virtual ColorValueHolder getColor(short state) const;
+	virtual ColorValueHolder getColor(int state) const;
 
 	//virtual bool validLocation() const override { return true; }
 	virtual bool reasonableLocation() const override;

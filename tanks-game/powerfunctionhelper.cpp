@@ -114,7 +114,7 @@ bool PowerFunctionHelper::bounceEdgeGenericX(Bullet* b) {
 	return bounced;
 }
 
-void PowerFunctionHelper::equallySpacedCannonPoints(Tank*, std::vector<CannonPoint>* cannonPoints, short num) {
+void PowerFunctionHelper::equallySpacedCannonPoints(Tank*, std::vector<CannonPoint>* cannonPoints, int num) {
 	for (int i = cannonPoints->size() - 1; i >= 0; i--) {
 		int end = (i + 1) % cannonPoints->size();
 		double angle_diff;

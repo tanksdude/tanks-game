@@ -11,8 +11,8 @@ protected:
 	//double angle;
 	//double tickCount;
 	//double tickCycle;
-	//unsigned short currentState;
-	//unsigned short maxState;
+	//unsigned int currentState;
+	//unsigned int maxState;
 	//double* stateMultiplier;
 	//ColorValueHolder* stateColors;
 
@@ -42,7 +42,7 @@ public:
 	virtual bool canSeeTank(const Tank*) const override; //true if no walls obstruct any line of sight to tank
 	virtual bool isPointedAt(const Tank*) const;
 	virtual ColorValueHolder getColor() const override;
-	virtual ColorValueHolder getColor(short state) const override;
+	virtual ColorValueHolder getColor(int state) const override;
 	virtual ColorValueHolder getReticuleColor() const;
 
 	//virtual bool validLocation() const override { return true; }

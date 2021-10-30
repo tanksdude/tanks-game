@@ -201,7 +201,7 @@ ColorValueHolder StationaryTurret::getColor() const {
 	return ColorMixer::mix(stateColors[currentState], stateColors[(currentState+1)%maxState], constrain<double>(tickCount/(tickCycle*stateMultiplier[currentState]), 0, 1));
 }
 
-ColorValueHolder StationaryTurret::getColor(short state) const {
+ColorValueHolder StationaryTurret::getColor(int state) const {
 	if (state < 0) {
 		return stateColors[0];
 	}

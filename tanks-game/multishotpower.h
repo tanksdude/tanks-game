@@ -5,7 +5,7 @@ class MultishotPower : public Power {
 	friend class MultishotTankPower;
 
 protected:
-	static const short bulletConstant = 8;
+	static const int bulletCount = 8;
 
 public:
 	virtual std::string getName() const override { return MultishotPower::getClassName(); }
