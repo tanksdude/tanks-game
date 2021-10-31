@@ -39,6 +39,11 @@ enum class CircleHazardConstructionTypes /*: unsigned char */ {
 	radiusAndAngleRequired
 };
 
+enum class CircleHazardCollisionType {
+	solid,
+	under
+};
+
 class CircleHazard : public Hazard, public Circle, public DrawableThing {
 public: //protected?
 	//std::vector<CircleHazardPower*> hazardPowers;
@@ -78,6 +83,7 @@ public:
 
 	virtual double getDefaultOffense() const = 0;
 	virtual double getDefaultDefense() const = 0;
+	virtual CircleHazardCollisionType getCollisionType() const = 0; // { return CircleHazardCollisionType::solid; }
 
 	virtual void tick() override = 0;
 	virtual void draw() const override = 0;

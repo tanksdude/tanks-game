@@ -70,7 +70,7 @@ void RespawningPowerupsLevelEffect::watchPowerSquare(const PowerSquare* p) {
 	for (int i = 0; i < watching.size(); i++) {
 		if (watching[i]->getPowerupID() == p->getGameID()) {
 			found = true;
-			std::cerr << "Warning: RespawningPowerupsLevelEffect is already watching PowerSquare ID\#" << p->getGameID() << std::endl;
+			std::cerr << "WARNING: RespawningPowerupsLevelEffect is already watching PowerSquare ID\#" << p->getGameID() << std::endl;
 			break;
 		}
 	}

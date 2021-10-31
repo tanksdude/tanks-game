@@ -59,6 +59,7 @@ public:
 
 	virtual double getDefaultOffense() const override { return .5; } //1.5?
 	virtual double getDefaultDefense() const override { return HIGH_TIER; }
+	virtual RectHazardCollisionType getCollisionType() const override { return RectHazardCollisionType::under; }
 
 	virtual void tick() override { GeneralizedLightning::tick(); }
 	virtual void draw() const override;

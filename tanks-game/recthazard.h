@@ -37,6 +37,11 @@ enum class RectHazardConstructionTypes /*: unsigned char */ {
 	standardConstruction //x, y, w, and h required
 };
 
+enum class RectHazardCollisionType {
+	solid,
+	under
+};
+
 class RectHazard : public Hazard, public Rect, public DrawableThing {
 public: //protected?
 	//std::vector<RectHazardPower*> hazardPowers;
@@ -76,6 +81,7 @@ public:
 
 	virtual double getDefaultOffense() const = 0;
 	virtual double getDefaultDefense() const = 0;
+	virtual RectHazardCollisionType getCollisionType() const = 0; // { return RectHazardCollisionType::solid; }
 
 	virtual void tick() override = 0;
 	virtual void draw() const override = 0;

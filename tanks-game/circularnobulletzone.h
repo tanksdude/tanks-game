@@ -35,6 +35,7 @@ public:
 
 	virtual double getDefaultOffense() const override { return HIGH_TIER; }
 	virtual double getDefaultDefense() const override { return HIGH_TIER; }
+	virtual CircleHazardCollisionType getCollisionType() const override { return CircleHazardCollisionType::under; } //not too sure
 
 	virtual void tick() override { GeneralizedNoBulletZone::tick(); }
 	virtual void draw() const override;

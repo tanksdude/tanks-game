@@ -41,6 +41,7 @@ public:
 
 	virtual double getDefaultOffense() const override { return .5; }
 	virtual double getDefaultDefense() const override { return HIGH_TIER; }
+	virtual CircleHazardCollisionType getCollisionType() const override { return CircleHazardCollisionType::under; }
 
 	virtual void tick() override { GeneralizedLava::tick(); }
 	virtual void draw() const override;

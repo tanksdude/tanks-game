@@ -43,7 +43,7 @@ public:
 
 	virtual double getDefaultOffense() const override { return 0; }
 	virtual double getDefaultDefense() const override { return DESTRUCTION_TIER; }
-	//needs some sort of "overriding priority" function to destroy bullets with offense less than this defense
+	virtual CircleHazardCollisionType getCollisionType() const override { return CircleHazardCollisionType::solid; }
 
 	virtual void tick() override;
 	virtual void draw() const override;
