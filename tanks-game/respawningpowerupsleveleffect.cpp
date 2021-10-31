@@ -1,8 +1,5 @@
 #include "respawningpowerupsleveleffect.h"
 #include "powerupmanager.h"
-#include "colormixer.h"
-#include "backgroundrect.h"
-#include "renderer.h"
 
 std::vector<std::string> RespawningPowerupsLevelEffect::getLevelEffectTypes() const {
 	std::vector<std::string> types = std::vector<std::string>{ "vanilla"/*, "random-vanilla"*/ };

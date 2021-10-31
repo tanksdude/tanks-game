@@ -5,7 +5,7 @@
 #include <math.h>
 #include "colormixer.h"
 #include "renderer.h"
-#include "collisionhandler.h"
+#include "backgroundrect.h"
 #include <iostream>
 
 //for CPU drawing, in case other #includes go wrong:
@@ -18,11 +18,11 @@ IndexBuffer* Bullet::ib;
 bool Bullet::initialized_GPU = false;
 
 const double Bullet::default_radius = 4;
-Bullet::Bullet(double x_, double y_, double a, Team_ID teamID, BulletParentType parentType, Game_ID parentID) { //every bullet constructor does this stuff
+Bullet::Bullet(double x_, double y_, double angle, Team_ID teamID, BulletParentType parentType, Game_ID parentID) { //every bullet constructor does this stuff
 	initializeGPU();
 	this->x = x_;
 	this->y = y_;
-	this->velocity = SimpleVector2D(a, 0, true);
+	this->velocity = SimpleVector2D(angle, 0, true);
 	this->gameID = GameManager::getNextID();
 	this->teamID = teamID;
 	this->parentType = parentType;
@@ -30,7 +30,7 @@ Bullet::Bullet(double x_, double y_, double a, Team_ID teamID, BulletParentType 
 	this->alpha = 100;
 }
 
-Bullet::Bullet(double x_, double y_, double a, Team_ID teamID, BulletParentType parentType, Game_ID parentID, std::vector<BulletPower*>* bp) : Bullet(x_,y_,a,teamID,parentType,parentID) {
+Bullet::Bullet(double x_, double y_, double angle, Team_ID teamID, BulletParentType parentType, Game_ID parentID, std::vector<BulletPower*>* bp) : Bullet(x_,y_,angle,teamID,parentType,parentID) {
 	bulletPowers.reserve(bp->size());
 	for (int i = 0; i < bp->size(); i++) {
 		bulletPowers.push_back(bp->at(i));
@@ -42,7 +42,7 @@ Bullet::Bullet(double x_, double y_, double a, Team_ID teamID, BulletParentType 
 }
 
 //probably just for banana bullet creation:
-Bullet::Bullet(double x_, double y_, double r_, double a, double vel, Team_ID teamID, BulletParentType parentType, Game_ID parentID, std::vector<BulletPower*>* bp, bool) : Bullet(x_,y_,a,teamID,parentType,parentID,bp) {
+Bullet::Bullet(double x_, double y_, double r_, double angle, double vel, Team_ID teamID, BulletParentType parentType, Game_ID parentID, std::vector<BulletPower*>* bp, bool) : Bullet(x_,y_,angle,teamID,parentType,parentID,bp) {
 	this->r = r_;
 	this->velocity.setMagnitude(vel); // * getBulletSpeedMultiplier(); //not wanted
 	this->initial_velocity = velocity.getMagnitude();
@@ -50,7 +50,7 @@ Bullet::Bullet(double x_, double y_, double r_, double a, double vel, Team_ID te
 }
 
 //avoid using:
-Bullet::Bullet(double x_, double y_, double r_, double a, double vel, double acc, Team_ID teamID, BulletParentType parentType, Game_ID parentID, std::vector<BulletPower*>* bp, bool) : Bullet(x_,y_,a,teamID,parentType,parentID,bp) {
+Bullet::Bullet(double x_, double y_, double r_, double angle, double vel, double acc, Team_ID teamID, BulletParentType parentType, Game_ID parentID, std::vector<BulletPower*>* bp, bool) : Bullet(x_,y_,angle,teamID,parentType,parentID,bp) {
 	this->r = r_ * getBulletRadiusMultiplier();
 	this->velocity.setMagnitude(vel * getBulletSpeedMultiplier());
 	this->initial_velocity = this->velocity.getMagnitude();
@@ -58,7 +58,7 @@ Bullet::Bullet(double x_, double y_, double r_, double a, double vel, double acc
 }
 
 //regular 1:
-Bullet::Bullet(double x_, double y_, double r_, double a, double vel, Team_ID teamID, BulletParentType parentType, Game_ID parentID) : Bullet(x_,y_,a,teamID,parentType,parentID) {
+Bullet::Bullet(double x_, double y_, double r_, double angle, double vel, Team_ID teamID, BulletParentType parentType, Game_ID parentID) : Bullet(x_,y_,angle,teamID,parentType,parentID) {
 	this->r = r_;
 	this->velocity.setMagnitude(vel);
 	this->initial_velocity = this->velocity.getMagnitude();
@@ -66,7 +66,7 @@ Bullet::Bullet(double x_, double y_, double r_, double a, double vel, Team_ID te
 }
 
 //regular 2:
-Bullet::Bullet(double x_, double y_, double r_, double a, double vel, Team_ID teamID, BulletParentType parentType, Game_ID parentID, std::vector<BulletPower*>* bp) : Bullet(x_,y_,a,teamID,parentType,parentID,bp) {
+Bullet::Bullet(double x_, double y_, double r_, double angle, double vel, Team_ID teamID, BulletParentType parentType, Game_ID parentID, std::vector<BulletPower*>* bp) : Bullet(x_,y_,angle,teamID,parentType,parentID,bp) {
 	this->r = r_ * getBulletRadiusMultiplier();
 	this->velocity.setMagnitude(vel * getBulletSpeedMultiplier());
 	this->initial_velocity = this->velocity.getMagnitude();
@@ -368,6 +368,61 @@ void Bullet::drawOutline(double xpos, double ypos) const {
 	glLineWidth(1.0f); //lines still look ugly even with glEnable(GL_LINE_SMOOTH), so I don't know what to set it at
 
 	shader->setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 1.0f);
+	shader->setUniformMat4f("u_MVP", MVPM);
+
+	Renderer::Draw(GL_LINE_LOOP, 1, Circle::numOfSides);
+
+	//cleanup:
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+	//drawing an outline: use a geometry shader (ugh) or another VAO+IBO (lesser ugh), the CPU (big ugh), or glDrawArrays with GL_LINE_LOOP (yay!)
+}
+
+void Bullet::ghostDraw(float opaqueAmount) const {
+	opaqueAmount = constrain<float>(opaqueAmount, 0, 1);
+	opaqueAmount = opaqueAmount * opaqueAmount; //cheap way to make 100% not ghost more obvious
+
+	//drawBody:
+
+	ColorValueHolder color = getColor();
+	ColorValueHolder ghost_color = ColorMixer::mix(BackgroundRect::getBackColor(), getColor(), opaqueAmount);
+	Shader* shader = Renderer::getShader("main");
+	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, 0, x, y);
+
+	if (glIsEnabled(GL_BLEND)) {
+		shader->setUniform4f("u_color", ghost_color.getRf(), ghost_color.getGf(), ghost_color.getBf(), this->alpha/100 * opaqueAmount);
+	} else {
+		if (this->alpha < 100) {
+			double deathPercent = constrain<double>(this->alpha/100, 0, 1);
+			unsigned int deathVertices = Circle::numOfSides * deathPercent;
+
+			if (deathVertices > 0) {
+				glm::mat4 MVPM_deathOutline = Renderer::GenerateMatrix((r+2) * 9.0/8.0, (r+2) * 9.0/8.0, PI/2, x, y);
+
+				ColorValueHolder ghost_alphaColor = ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(1.0f, 1.0f, 1.0f), opaqueAmount);
+				shader->setUniform4f("u_color", 1.0f, 1.0f, 1.0f, 1.0f);
+				shader->setUniformMat4f("u_MVP", MVPM_deathOutline);
+
+				Renderer::Draw(*va, *ib, *shader, deathVertices*3);
+			}
+		}
+
+		shader->setUniform4f("u_color", ghost_color.getRf(), ghost_color.getGf(), ghost_color.getBf(), 1.0f);
+	}
+
+	shader->setUniformMat4f("u_MVP", MVPM);
+	Renderer::Draw(*va, *ib, *shader);
+
+	//drawOutline:
+
+	shader = Renderer::getShader("main");
+	MVPM = Renderer::GenerateMatrix(r, r, 0, x, y);
+
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glLineWidth(1.0f); //lines still look ugly even with glEnable(GL_LINE_SMOOTH), so I don't know what to set it at
+
+	ColorValueHolder ghost_outlineColor = ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(0.0f, 0.0f, 0.0f), opaqueAmount);
+	shader->setUniform4f("u_color", ghost_color.getRf(), ghost_color.getGf(), ghost_color.getBf(), 1.0f);
 	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(GL_LINE_LOOP, 1, Circle::numOfSides);

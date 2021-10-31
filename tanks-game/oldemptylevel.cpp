@@ -15,6 +15,7 @@ std::unordered_map<std::string, float> OldEmptyLevel::getWeights() const {
 void OldEmptyLevel::initialize() {
 	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40, GAME_HEIGHT/2, true);
 
+	//in JS, power mixing was turned off (yeah, not super important on this level)
 	ColorValueHolder color = getDefaultColor();
 	int tempRand;
 	PositionHolder pos;

@@ -208,6 +208,7 @@ WindLevelEffect::~WindLevelEffect() {
 }
 
 LevelEffect* WindLevelEffect::factory(int argc, std::string* argv) {
+	//TODO: modify stateMultiplier
 	if (argc >= 1) {
 		bool t = std::stoi(argv[0]);
 		return new WindLevelEffect(t);

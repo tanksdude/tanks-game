@@ -24,15 +24,15 @@ void ResetThings::reset(int) {
 		}
 	}
 
-	TankManager::tanks[0]->resetThings(20, GAME_HEIGHT/2, 0, TankManager::tanks[0]->getTeamID());
-	TankManager::tanks[1]->resetThings(GAME_WIDTH - 20, GAME_HEIGHT/2, PI, TankManager::tanks[1]->getTeamID());
-
 	BulletManager::clearBullets();
 	WallManager::clearWalls();
 	PowerupManager::clearPowerups();
 	HazardManager::clearCircleHazards();
 	HazardManager::clearRectHazards();
 	LevelManager::clearLevels();
+
+	TankManager::tanks[0]->resetThings(20, GAME_HEIGHT/2, 0, TankManager::tanks[0]->getTeamID());
+	TankManager::tanks[1]->resetThings(GAME_WIDTH - 20, GAME_HEIGHT/2, PI, TankManager::tanks[1]->getTeamID());
 
 #if _DEBUG
 	LevelManager::pushLevel("dev", "dev0");

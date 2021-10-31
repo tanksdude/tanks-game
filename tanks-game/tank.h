@@ -80,7 +80,7 @@ protected:
 	ColorValueHolder defaultNameStroke = ColorValueHolder(0.0f, 0.0f, 0.0f);
 
 	bool kill(); //allows for custom death (a.k.a. something saving the tank from death)
-	void resetThings(double x, double y, double a, Team_ID teamID);
+	void resetThings(double x, double y, double angle, Team_ID teamID);
 	void terminalVelocity();
 
 public:

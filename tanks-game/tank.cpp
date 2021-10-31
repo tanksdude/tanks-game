@@ -7,8 +7,8 @@
 #include "renderer.h"
 #include "keypressmanager.h"
 #include "bulletmanager.h"
-#include "collisionhandler.h"
 #include "rng.h"
+#include "levelmanager.h"
 #include <iostream>
 
 //for CPU drawing, in case other #includes go wrong:
@@ -318,7 +318,16 @@ double Tank::getShootingSpeedMultiplier() const {
 		value *= stackList[i];
 	}
 
-	return highest * lowest * value; //unintentionally works out cleanly
+	double level_amount = 1;
+	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
+		Level* l = LevelManager::getLevel(i);
+		for (int j = 0; j < l->getNumEffects(); j++) {
+			LevelEffect* le = l->getLevelEffect(j);
+			level_amount *= le->getTankFiringRateMultiplier();
+		}
+	}
+
+	return highest * lowest * value * level_amount; //unintentionally works out cleanly
 }
 
 void Tank::updateAllValues() {
@@ -359,6 +368,8 @@ void Tank::updateSpecificValue(double& attribute, double (TankPower::*func)(void
 		value *= stackList[i];
 	}
 
+	//[insert level effect value getting here]
+
 	attribute = highest * lowest * value * multiplier;
 }
 */
@@ -388,7 +399,16 @@ void Tank::updateMaxSpeed() {
 		value *= stackList[i];
 	}
 
-	maxSpeed = highest * lowest * value * default_maxSpeed;
+	double level_amount = 1;
+	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
+		Level* l = LevelManager::getLevel(i);
+		for (int j = 0; j < l->getNumEffects(); j++) {
+			LevelEffect* le = l->getLevelEffect(j);
+			level_amount *= le->getTankMaxSpeedMultiplier();
+		}
+	}
+
+	maxSpeed = highest * lowest * value * level_amount * default_maxSpeed;
 }
 
 void Tank::updateAcceleration() {
@@ -416,7 +436,16 @@ void Tank::updateAcceleration() {
 		value *= stackList[i];
 	}
 
-	acceleration = highest * lowest * value * default_acceleration;
+	double level_amount = 1;
+	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
+		Level* l = LevelManager::getLevel(i);
+		for (int j = 0; j < l->getNumEffects(); j++) {
+			LevelEffect* le = l->getLevelEffect(j);
+			level_amount *= le->getTankAccelerationMultiplier();
+		}
+	}
+
+	acceleration = highest * lowest * value * level_amount * default_acceleration;
 }
 
 void Tank::updateRadius() {
@@ -444,7 +473,16 @@ void Tank::updateRadius() {
 		value *= stackList[i];
 	}
 
-	r = highest * lowest * value * TANK_RADIUS;
+	double level_amount = 1;
+	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
+		Level* l = LevelManager::getLevel(i);
+		for (int j = 0; j < l->getNumEffects(); j++) {
+			LevelEffect* le = l->getLevelEffect(j);
+			level_amount *= le->getTankRadiusMultiplier();
+		}
+	}
+
+	r = highest * lowest * value * level_amount * TANK_RADIUS;
 }
 
 void Tank::updateTurningIncrement() {
@@ -477,7 +515,16 @@ void Tank::updateTurningIncrement() {
 		value *= stackList[i];
 	}
 
-	turningIncrement = highest * lowest * value * default_turningIncrement * (negativeCount%2 == 0 ? 1 : -1);
+	double level_amount = 1;
+	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
+		Level* l = LevelManager::getLevel(i);
+		for (int j = 0; j < l->getNumEffects(); j++) {
+			LevelEffect* le = l->getLevelEffect(j);
+			level_amount *= le->getTankTurningIncrementMultiplier();
+		}
+	}
+
+	turningIncrement = highest * lowest * value * level_amount * default_turningIncrement * (negativeCount%2 == 0 ? 1 : -1);
 	velocity.setAngle(round(velocity.getAngle() / (PI / turningIncrement)) * (PI / turningIncrement));
 }
 
@@ -803,11 +850,15 @@ bool Tank::kill() {
 	return this->dead;
 }
 
-void Tank::resetThings(double x, double y, double a, Team_ID teamID) {
+void Tank::resetThings(double x, double y, double angle, Team_ID teamID) {
+	this->powerReset();
+	determineShootingAngles();
+	updateAllValues(); //powerReset doesn't reset the level's doings
+
 	this->dead = false;
 	this->x = x;
 	this->y = y;
-	this->velocity = SimpleVector2D(a, 0, true);
+	this->velocity = SimpleVector2D(angle, 0, true);
 	this->gameID = GameManager::getNextID();
 	this->teamID = teamID;
 	//this->r = TANK_RADIUS;
@@ -820,9 +871,6 @@ void Tank::resetThings(double x, double y, double a, Team_ID teamID) {
 	} else {
 		defaultColor = ColorValueHolder(0.5f, 0.5f, 0.5f);
 	}
-
-	this->powerReset();
-	determineShootingAngles();
 }
 
 double Tank::getHighestOffenseImportance() const {

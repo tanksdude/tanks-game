@@ -18,3 +18,4 @@ const double HIGH_IMPORTANCE = 999;
 
 const Team_ID DEFAULT_TEAM = 0;
 const Team_ID HAZARD_TEAM = -1;
+const Game_ID NO_PARENT = -1;

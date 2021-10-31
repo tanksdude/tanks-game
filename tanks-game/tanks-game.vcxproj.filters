@@ -312,6 +312,18 @@
     <ClCompile Include="respawningpowerupsleveleffect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="mineheavenlevel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="minefieldleveleffect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="iceleveleffect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="oldminespower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -660,6 +672,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="respawningpowerupsleveleffect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mineheavenlevel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="minefieldleveleffect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="iceleveleffect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="oldminespower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

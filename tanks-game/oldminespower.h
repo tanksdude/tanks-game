@@ -1,11 +1,11 @@
 #pragma once
-#include "power.h"
+//#include "power.h"
+#include "minespower.h"
 
-class MinesPower : public Power {
-	//this should be renamed (but probably won't...)
+class OldMinesPower : public MinesPower {
 public:
 	virtual std::vector<std::string> getPowerTypes() const override {
-		std::vector<std::string> types = std::vector<std::string>{ "vanilla-extra" };
+		std::vector<std::string> types = std::vector<std::string>{ "old" };
 		return types;
 	}
 	virtual std::unordered_map<std::string, float> getWeights() const override;
@@ -16,77 +16,83 @@ public:
 		return attributes;
 	}
 
-	virtual std::string getName() const override { return MinesPower::getClassName(); }
-	static std::string getClassName() { return "mines"; }
-	virtual ColorValueHolder getColor() const override { return MinesPower::getClassColor(); }
-	static ColorValueHolder getClassColor() { return ColorValueHolder(0.0f, 0.0f, 0.0f); } //black, so it's hard to see where the tank is pointed
-	virtual double getColorImportance() const override { return MinesPower::getClassColorImportance(); }
-	static double getClassColorImportance() { return .5; } //godmode can overpower this
+	virtual std::string getName() const override { return OldMinesPower::getClassName(); }
+	static std::string getClassName() { return "old_mines"; }
+	virtual ColorValueHolder getColor() const override { return OldMinesPower::getClassColor(); }
+	static ColorValueHolder getClassColor() { return MinesPower::getClassColor(); } //black, so it's hard to see where the tank is pointed
+	virtual double getColorImportance() const override { return OldMinesPower::getClassColorImportance(); }
+	static double getClassColorImportance() { return MinesPower::getClassColorImportance(); } //not supposed to have color importance but whatever
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
 	//virtual HazardPower* makeHazardPower() const override;
 
-	MinesPower();
-	//TODO: does it need a virtual destructor for OldMinesPower?
+	OldMinesPower();
 	static Power* factory();
 };
 
 
 
-class MinesTankPower : public TankPower {
+class OldMinesTankPower : public MinesTankPower {
 protected:
-	static const double bulletDistance; //percentage from center (beginning of cannon) to end of cannon
+	//static const double bulletDistance; //percentage from center (beginning of cannon) to end of cannon
 
 public:
 	virtual void initialize(Tank* parent) override;
 	virtual void removeEffects(Tank* parent) override;
 
+	/*
 	virtual void tick(Tank* t) override; //for updating modifiesAdditionalShooting based on whether there are any other powers that modify additionalShooting
 	//might need a secondary tick for this; one tick to do stuff, another tick to update interaction bools
+	*/
 
 	virtual ColorValueHolder getColor() const override {
-		return MinesPower::getClassColor();
+		return OldMinesPower::getClassColor();
 	}
 	virtual double getColorImportance() const override {
-		return MinesPower::getClassColorImportance();
+		return OldMinesPower::getClassColorImportance();
 	}
 
-	virtual TankPower* makeDuplicate() const override { return new MinesTankPower(); }
+	virtual TankPower* makeDuplicate() const override { return new OldMinesTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
 
+	/*
 	//bool modifiesAdditionalShooting = false;
 	virtual void additionalShooting(Tank* parent, CannonPoint) override;
 	//bool overridesAdditionalShooting = false;
 	//bool additionalShootingCanWorkWithOthers = true;
 	//bool additionalShootingCanOnlyWorkIndividually = false;
+	*/
 
-	virtual double getTankFiringRateMultiplier() const override { return .25; } //.5?
+	//virtual double getTankFiringRateMultiplier() const override { return .25; } //.5?
+	//bool tankFiringRateStacks = true;
 
-	MinesTankPower();
+	OldMinesTankPower();
 };
 
 
 
-class MinesBulletPower : public BulletPower {
+class OldMinesBulletPower : public MinesBulletPower {
 public:
 	virtual void initialize(Bullet* parent) override;
 	virtual void removeEffects(Bullet* parent) override;
 
 	virtual ColorValueHolder getColor() const override {
-		return MinesPower::getClassColor();
+		return OldMinesPower::getClassColor();
 	}
 	virtual double getColorImportance() const override {
-		return MinesPower::getClassColorImportance();
+		return OldMinesPower::getClassColorImportance();
 	}
 
-	virtual BulletPower* makeDuplicate() const override { return new MinesBulletPower(); }
+	virtual BulletPower* makeDuplicate() const override { return new OldMinesBulletPower(); }
 	virtual TankPower* makeTankPower() const override;
 
+	/*
 	virtual double getBulletSpeedMultiplier() const override { return 0; }
 	//bool bulletSpeedStacks = false; //true?
 	virtual double getBulletAcceleration() const override { return 0; }
 	virtual double getBulletAccelerationImportance() const override { return .5; }
+	*/
 
-	MinesBulletPower();
+	OldMinesBulletPower();
 };

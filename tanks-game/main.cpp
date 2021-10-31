@@ -63,16 +63,19 @@
 #include "loneturretlevel.h"
 //"extra"... special
 #include "trickymaneuveringlevel.h"
+#include "mineheavenlevel.h"
+//old levels:
+#include "oldemptylevel.h"
 //dev levels:
 #include "developerlevel0.h"
 #include "developerlevel1.h"
 #include "developerlevel2.h"
-//old levels:
-#include "oldemptylevel.h"
 
 //level effects:
 #include "windleveleffect.h"
 #include "respawningpowerupsleveleffect.h"
+#include "minefieldleveleffect.h"
+#include "iceleveleffect.h"
 
 //hazards:
 #include "stationaryturret.h"
@@ -107,13 +110,14 @@
 #include "trackingpower.h"
 #include "barrierpower.h"
 #include "shieldpower.h"
+//old powers:
+#include "oldbouncepower.h" //identical to bounce except it makes the tank smaller
+#include "oldbignamedpower.h" //big but moves at half speed (not quarter) and the speed stacks
+#include "oldminespower.h" //firing rate stacks
 //dev powers:
 #include "devlonginvinciblenamedpower.h" //invincible but lasts a long time
 #include "inversionpower.h" //flips left and right turning
 #include "devannoyingpower.h" //bullet doesn't hurt tank, merely pushes away
-//old powers:
-#include "oldbouncepower.h" //identical to bounce except it makes the tank smaller
-#include "oldbignamedpower.h" //big but moves at half speed (not quarter) and the speed stacks
 
 //a lot of the includes aren't needed anymore thanks to GameMainLoop, but may as well keep them
 #include "gamemainloop.h"
@@ -196,18 +200,21 @@ int main(int argc, char** argv) {
 	PowerupManager::addPowerFactory(BarrierPower::factory);
 	PowerupManager::addPowerFactory(ShieldPower::factory);
 
+	//old:
+	PowerupManager::addPowerFactory(OldBouncePower::factory);
+	PowerupManager::addPowerFactory(OldBigNamedPower::factory);
+	PowerupManager::addPowerFactory(OldMinesPower::factory);
+
 	//dev:
 	PowerupManager::addPowerFactory(DevLongInvincibleNamedPower::factory);
 	PowerupManager::addPowerFactory(InversionPower::factory);
 	PowerupManager::addPowerFactory(DevAnnoyingPower::factory);
 
-	//old:
-	PowerupManager::addPowerFactory(OldBouncePower::factory);
-	PowerupManager::addPowerFactory(OldBigNamedPower::factory);
-
 	//vanilla (some are also "old"):
 	LevelManager::addLevelEffectFactory(WindLevelEffect::factory);
 	LevelManager::addLevelEffectFactory(RespawningPowerupsLevelEffect::factory);
+	LevelManager::addLevelEffectFactory(MinefieldLevelEffect::factory);
+	LevelManager::addLevelEffectFactory(IceLevelEffect::factory);
 
 	//vanilla (some are also "old"):
 	LevelManager::addLevelFactory(DefaultRandomLevel::factory);
@@ -224,14 +231,15 @@ int main(int argc, char** argv) {
 	LevelManager::addLevelFactory(LoneTurretLevel::factory);
 	//"extra"... special:
 	LevelManager::addLevelFactory(TrickyManeuveringLevel::factory);
+	LevelManager::addLevelFactory(MineHeavenLevel::factory);
+
+	//old:
+	LevelManager::addLevelFactory(OldEmptyLevel::factory);
 
 	//dev:
 	LevelManager::addLevelFactory(DeveloperLevel0::factory);
 	LevelManager::addLevelFactory(DeveloperLevel1::factory);
 	LevelManager::addLevelFactory(DeveloperLevel2::factory);
-
-	//old:
-	LevelManager::addLevelFactory(OldEmptyLevel::factory);
 
 	//vanilla:
 	HazardManager::addCircleHazardFactory(StationaryTurret::factory, StationaryTurret::randomizingFactory);

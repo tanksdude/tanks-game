@@ -140,6 +140,7 @@ OldBounceBulletPower::OldBounceBulletPower() {
 	maxTime = -1;
 
 	bouncesLeft = OldBounceBulletPower::maxBounces;
+
 	modifiesCollisionWithWall = true;
 	//modifiedCollisionWithWallCanWorkWithOthers = false;
 	modifiesEdgeCollision = true;

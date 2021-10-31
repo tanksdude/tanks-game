@@ -33,6 +33,7 @@ void TrickyManeuveringLevel::initialize() {
 		effects[i]->apply();
 	}
 
+	//in JS, power mixing was turned off
 	ColorValueHolder color = getDefaultColor();
 	int tempRand;
 	PositionHolder pos;

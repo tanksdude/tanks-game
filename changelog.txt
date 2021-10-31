@@ -6,6 +6,7 @@
 * more powers?
     * ... sword???
 * ini file?
+* hazard powers?
 
 0.2.4 (obviously not here)
 * changed name from "Tanks" to "PowerTanks" so this game might actually become discoverable
@@ -15,11 +16,15 @@
 * changed file structure and formatting somewhat
     * I kinda know what I'm doing now
     * normal C++ class and function stuff
-* replace x-comp, y-comp, angle variables with singular vector variable
-    * this slightly reduces performance, but it's way cleaner
+    * replace x-comp, y-comp, angle variables with singular vector variable
+        * this slightly reduces performance, but it's way cleaner
 * drawing layers: "under", regular, "effects", debug
 * level effects added
-    * wind, ice, mines, gravity
+    * all JS level effects in! (except portal)
+        * wind, ice, mines, invisible walls
+        * portal and invisible walls weren't level effects in JS but should be counted as one
+    * powerup respawning
+    * gravity/magnet (which is it?)
 * powerups:
     * all JS powers in!
         * mines, shotgun, tracking
@@ -32,7 +37,7 @@
         * "hiding places" and "lone turret"
         * "lightning corners" (it was cut, but now it's back)
         * invisible level ("winning path"), wind level ("tricky maneuvering"), ice and mines level ("mine heaven")
-            * no, these levels didn't actually get names
+            * these levels didn't actually get names...
     * "sneaky reward" (... this is actually my first true level in this version, wow)
 * minor things:
     * minor overhaul (oxymoron?) of end game and score handling
@@ -151,3 +156,4 @@ future notes:
 2.0.0: level editor and/or power editor and/or game engine something thing (save for sequel instead?)
 
 other note: consider SDL instead of FreeGLUT
+JS Tanks: https://uncreativeusername.neocities.org/tanks.html
