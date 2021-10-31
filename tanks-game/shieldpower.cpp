@@ -67,6 +67,9 @@ BulletPower* ShieldTankPower::makeBulletPower() const {
 }
 
 InteractionBoolHolder ShieldTankPower::modifiedDeathHandling(Tank* parent) {
+	if (this->maxTime < 0) {
+		return { false, false };
+	}
 	if (this->timeLeft < ShieldPower::barrierStrength) {
 		return { false, true };
 	}
@@ -78,7 +81,7 @@ ShieldTankPower::ShieldTankPower() : ShieldTankPower(500) {}
 
 ShieldTankPower::ShieldTankPower(double life) {
 	maxTime = life;
-	timeLeft = 500;
+	timeLeft = life; //TODO: this fine?
 
 	modifiesDeathHandling = true;
 }
@@ -102,7 +105,7 @@ TankPower* ShieldBulletPower::makeTankPower() const {
 }
 
 InteractionBoolHolder ShieldBulletPower::modifiedDeathHandling(Bullet* parent) {
-	//TODO: should this be the case?
+	//TODO: should this be the case? //yes
 	return { false, true };
 }
 
