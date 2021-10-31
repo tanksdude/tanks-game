@@ -59,14 +59,29 @@ void ResetThings::reset(int) {
 
 	//initialize levels from LevelManager level list
 	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
-		LevelManager::levels[i]->initialize();
+		LevelManager::getLevel(i)->initialize();
+	}
+	//initialize their level effects
+	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
+		Level* l = LevelManager::getLevel(i);
+		for (int j = 0; j < l->getNumEffects(); j++) {
+			l->getLevelEffect(j)->apply();
+		}
 	}
 
 	GameManager::Reset();
 }
 
 void ResetThings::firstReset() {
-	LevelManager::levels[0]->initialize();
+	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
+		LevelManager::getLevel(i)->initialize();
+	}
+	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
+		Level* l = LevelManager::getLevel(i);
+		for (int j = 0; j < l->getNumEffects(); j++) {
+			l->getLevelEffect(j)->apply();
+		}
+	}
 }
 
 void ResetThings::tankPositionReset(Tank* first, Tank* second, int randNum) {

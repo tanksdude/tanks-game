@@ -2,14 +2,14 @@
 #include "powerupmanager.h"
 
 std::vector<std::string> RespawningPowerupsLevelEffect::getLevelEffectTypes() const {
-	std::vector<std::string> types = std::vector<std::string>{ "vanilla"/*, "random-vanilla"*/ };
+	std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla" };
 	return types;
 }
 
 std::unordered_map<std::string, float> RespawningPowerupsLevelEffect::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", 1.0f });
-	//weights.insert({ "random-vanilla", .5f }); //can't because the powerups need to be manually watched
+	weights.insert({ "random-vanilla", .5f }); //powerups need to be manually watched when not watching everything
 	return weights;
 }
 
@@ -66,23 +66,40 @@ RespawningPowerupsLevelEffect::PowerSquareWatcher::~PowerSquareWatcher() {
 }
 
 void RespawningPowerupsLevelEffect::watchPowerSquare(const PowerSquare* p) {
-	watching.push_back(new PowerSquareWatcher(p));
+	bool found = false;
+	for (int i = 0; i < watching.size(); i++) {
+		if (watching[i]->getPowerupID() == p->getGameID()) {
+			found = true;
+			std::cerr << "Warning: RespawningPowerupsLevelEffect is already watching PowerSquare ID\#" << p->getGameID() << std::endl;
+			break;
+		}
+	}
+	if (!found) {
+		watching.push_back(new PowerSquareWatcher(p));
+	}
 }
 
 void RespawningPowerupsLevelEffect::unwatchPowerSquare(Game_ID powerupID) {
 	for (int i = 0; i < watching.size(); i++) {
 		if (watching[i]->getPowerupID() == powerupID) {
 			watching.erase(watching.begin() + i);
-			break; //one unique gameID per object
+			break;
 		}
 	}
 }
 
 void RespawningPowerupsLevelEffect::apply() {
-	//nothing
+	if (watchAllPowerups) {
+		for (int i = 0; i < PowerupManager::getNumPowerups(); i++) {
+			watchPowerSquare(PowerupManager::getPowerup(i));
+		}
+	}
 }
 
 void RespawningPowerupsLevelEffect::tick(const Level* parent) {
+	//an option would be to check all powerups, and if there are new ones, watch them
+	//this isn't done because of dev menu inserting
+
 	for (int i = 0; i < watching.size(); i++) {
 		watching[i]->tick();
 	}
@@ -93,16 +110,16 @@ void RespawningPowerupsLevelEffect::doEffects(Level* parent) {
 }
 
 void RespawningPowerupsLevelEffect::draw() const {
-	//TODO: draw the ghost powerups
-
 	for (int i = 0; i < watching.size(); i++) {
 		watching[i]->draw();
 	}
 }
 
-RespawningPowerupsLevelEffect::RespawningPowerupsLevelEffect() {
-	//nothing
+RespawningPowerupsLevelEffect::RespawningPowerupsLevelEffect(bool watchEverything) {
+	watchAllPowerups = watchEverything;
 }
+
+RespawningPowerupsLevelEffect::RespawningPowerupsLevelEffect() : RespawningPowerupsLevelEffect(true) {}
 
 RespawningPowerupsLevelEffect::~RespawningPowerupsLevelEffect() {
 	for (int i = 0; i < watching.size(); i++) {
@@ -114,6 +131,8 @@ RespawningPowerupsLevelEffect::~RespawningPowerupsLevelEffect() {
 LevelEffect* RespawningPowerupsLevelEffect::factory(int argc, std::string* argv) {
 	if (argc >= 1) {
 		//don't push the powerups to watch at the start because level construction happens before level initialization
+		bool watch = std::stoi(argv[0]);
+		return new RespawningPowerupsLevelEffect(watch);
 	}
 	return new RespawningPowerupsLevelEffect();
 }

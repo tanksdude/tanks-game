@@ -29,10 +29,6 @@ void MineHeavenLevel::initialize() {
 	int randPos = RNG::randFunc() * 5;
 	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40, randPos);
 
-	for (int i = 0; i < getNumEffects(); i++) {
-		effects[i]->apply();
-	}
-
 	//in JS, power mixing was turned off
 	ColorValueHolder color = getDefaultColor();
 	int tempRand;

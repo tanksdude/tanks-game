@@ -36,6 +36,7 @@ protected:
 	};
 
 protected:
+	bool watchAllPowerups;
 	std::vector<PowerSquareWatcher*> watching;
 
 public:
@@ -55,6 +56,7 @@ public:
 	//virtual void poseDraw() const override;
 
 	RespawningPowerupsLevelEffect();
+	RespawningPowerupsLevelEffect(bool watchEverything);
 	virtual ~RespawningPowerupsLevelEffect();
 	static LevelEffect* factory(int, std::string*);
 };

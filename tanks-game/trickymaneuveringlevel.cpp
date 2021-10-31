@@ -29,10 +29,6 @@ void TrickyManeuveringLevel::initialize() {
 	int randPos = RNG::randFunc() * 5;
 	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40, randPos);
 
-	for (int i = 0; i < getNumEffects(); i++) {
-		effects[i]->apply();
-	}
-
 	//in JS, power mixing was turned off
 	ColorValueHolder color = getDefaultColor();
 	int tempRand;
@@ -114,6 +110,12 @@ void TrickyManeuveringLevel::initialize() {
 	}
 	delete[] names;
 	delete[] paras;
+
+	//not here in JS:
+	//pos = RandomLevel::getSymmetricPowerupPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, 80-20/2);
+	//PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "dev", "inversion"));
+	//pos = RandomLevel::getSymmetricPowerupPositions_UD(1, GAME_WIDTH/2, GAME_HEIGHT/2, 80-20/2);
+	//PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "dev", "inversion"));
 
 	delete[] wallArray;
 }
