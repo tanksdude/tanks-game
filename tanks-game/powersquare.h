@@ -39,11 +39,17 @@ public:
 	//void givePower(Bullet*); //don't think about it now, possibly ever; it's weird
 	//void givePower(Hazard*);
 
-	void draw() const override; //draws at center
-	void draw(double xpos, double ypos) const override;
+	void draw() const override;
+	void draw(DrawingLayers) const override;
 	void poseDraw() const override;
-	void drawCPU() const;
-	void ghostDraw(float alpha) const; //TODO: give to DrawableThing
+	void poseDraw(DrawingLayers) const override;
+	void ghostDraw(float alpha) const override;
+	void ghostDraw(DrawingLayers, float alpha) const override;
+	//void drawCPU() const;
+
+private:
+	inline void drawMain(float alpha = 1.0f) const;
+	inline void drawOutlineThing(float alpha = 1.0f) const;
 
 private:
 	PowerSquare() {} //don't use

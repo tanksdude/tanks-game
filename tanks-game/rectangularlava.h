@@ -45,9 +45,17 @@ public:
 
 	virtual void tick() override { GeneralizedLava::tick(); }
 	virtual void draw() const override;
-	virtual void draw(double xpos, double ypos) const override;
+	virtual void draw(DrawingLayers) const override;
 	virtual void poseDraw() const override;
+	virtual void poseDraw(DrawingLayers) const override;
+	virtual void ghostDraw(float alpha) const override;
+	virtual void ghostDraw(DrawingLayers, float alpha) const override;
 
+private:
+	inline void drawBackground(float alpha = 1.0f) const;
+	inline void drawBubbles(float alpha = 1.0f) const;
+
+public:
 	RectangularLava(double xpos, double ypos, double width, double height);
 	~RectangularLava();
 	static RectHazard* factory(int, std::string*);

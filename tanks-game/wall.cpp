@@ -1,7 +1,10 @@
 #include "wall.h"
 #include "gamemanager.h"
 #include "constants.h"
+#include "colormixer.h"
+#include "backgroundrect.h"
 #include "renderer.h"
+#include <iostream>
 
 //for CPU drawing, in case other #includes go wrong:
 #include <GL/glew.h>
@@ -72,24 +75,106 @@ bool Wall::uninitializeGPU() {
 }
 
 void Wall::draw() const {
-	draw(x, y);
+	ghostDraw(1.0f);
 }
 
-void Wall::draw(double xpos, double ypos) const {
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM = Renderer::GenerateMatrix(w, h, 0, xpos, ypos);
+void Wall::draw(DrawingLayers layer) const {
+	switch (layer) {
+		case DrawingLayers::under:
+			//nothing
+			break;
 
-	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for Wall::draw!" << std::endl;
+		case DrawingLayers::normal:
+			draw();
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
+}
+
+void Wall::poseDraw() const {
+	draw();
+}
+
+void Wall::poseDraw(DrawingLayers layer) const {
+	switch (layer) {
+		case DrawingLayers::under:
+			//nothing
+			break;
+
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for Wall::poseDraw!" << std::endl;
+		case DrawingLayers::normal:
+			poseDraw();
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
+}
+
+void Wall::ghostDraw(float alpha) const {
+	Shader* shader = Renderer::getShader("main");
+	glm::mat4 MVPM;
+
+	ColorValueHolder c = color;
+	c = ColorMixer::mix(BackgroundRect::getBackColor(), c, alpha);
+	shader->setUniform4f("u_color", c.getRf(), c.getGf(), c.getBf(), c.getAf());
+
+	MVPM = Renderer::GenerateMatrix(w, h, 0, x, y);
 	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*va, *ib, *shader);
 }
 
-void Wall::poseDraw() const {
-	//TODO: just body, outline, and barrel
-	return;
+void Wall::ghostDraw(DrawingLayers layer, float alpha) const {
+	switch (layer) {
+		case DrawingLayers::under:
+			//nothing
+			break;
+
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for Wall::ghostDraw!" << std::endl;
+		case DrawingLayers::normal:
+			ghostDraw(alpha);
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
 }
 
+/*
 void Wall::drawCPU() const {
 	glColor3f(color.getRf(), color.getGf(), color.getBf());
 
@@ -102,3 +187,4 @@ void Wall::drawCPU() const {
 
 	glEnd();
 }
+*/

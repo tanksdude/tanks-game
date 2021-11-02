@@ -33,6 +33,7 @@ BarrierPower::BarrierPower() {
 
 void BarrierTankPower::initialize(Tank* parent) {
 	//nothing
+	//in JS, the tank's shooting cooldown was reset
 }
 
 void BarrierTankPower::removeEffects(Tank* parent) {

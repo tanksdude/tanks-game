@@ -27,7 +27,7 @@ Bullet::Bullet(double x_, double y_, double angle, Team_ID teamID, BulletParentT
 	this->teamID = teamID;
 	this->parentType = parentType;
 	this->parentID = parentID;
-	this->alpha = 100;
+	this->opaqueness = 100;
 }
 
 Bullet::Bullet(double x_, double y_, double angle, Team_ID teamID, BulletParentType parentType, Game_ID parentID, std::vector<BulletPower*>* bp) : Bullet(x_,y_,angle,teamID,parentType,parentID) {
@@ -84,7 +84,7 @@ Bullet::~Bullet() {
 
 /*
 bool Bullet::isDead() const {
-	return (alpha <= 0);
+	return (opaqueness <= 0);
 }
 */
 
@@ -287,6 +287,7 @@ ColorValueHolder Bullet::getColor() const {
 	}
 }
 
+/*
 void Bullet::drawCPU() const {
 	drawCPU(x, y);
 }
@@ -316,35 +317,119 @@ void Bullet::drawCPU(double xpos, double ypos) const {
 
 	glEnd();
 }
+*/
 
 void Bullet::draw() const {
-	draw(x, y);
+	drawDeathCooldown();
+	drawBody();
+	drawOutline();
 }
 
-void Bullet::draw(double xpos, double ypos) const {
-	drawBody(xpos, ypos);
-	drawOutline(xpos, ypos);
+void Bullet::draw(DrawingLayers layer) const {
+	switch (layer) {
+		case DrawingLayers::under:
+			//nothing
+			break;
+
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for Bullet::draw!" << std::endl;
+		case DrawingLayers::normal:
+			draw();
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
 }
 
 void Bullet::poseDraw() const {
-	//TODO: just body and outline
-	return;
+	drawBody();
+	drawOutline();
 }
 
-void Bullet::drawBody(double xpos, double ypos) const {
-	ColorValueHolder color = getColor();
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, 0, xpos, ypos);
+void Bullet::poseDraw(DrawingLayers layer) const {
+	switch (layer) {
+		case DrawingLayers::under:
+			//nothing
+			break;
 
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for Bullet::poseDraw!" << std::endl;
+		case DrawingLayers::normal:
+			poseDraw();
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
+}
+
+void Bullet::ghostDraw(float alpha) const {
+	drawDeathCooldown(alpha);
+	drawBody(alpha);
+	drawOutline(alpha);
+}
+
+void Bullet::ghostDraw(DrawingLayers layer, float alpha) const {
+	switch (layer) {
+		case DrawingLayers::under:
+			//nothing
+			break;
+
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for Bullet::ghostDraw!" << std::endl;
+		case DrawingLayers::normal:
+			ghostDraw(alpha);
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
+}
+
+inline void Bullet::drawBody(float alpha) const {
+	alpha = constrain<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
+	Shader* shader = Renderer::getShader("main");
+	glm::mat4 MVPM;
+
+	/*
 	if (glIsEnabled(GL_BLEND)) {
-		shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), this->alpha/100);
+		shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), this->opaqueness/100);
 	} else {
-		if (alpha < 100) {
-			double deathPercent = constrain<double>(alpha/100, 0, 1);
+		if (this->opaqueness < 100) {
+			double deathPercent = constrain<double>(this->opaqueness/100, 0, 1);
 			unsigned int deathVertices = Circle::numOfSides * deathPercent;
 
 			if (deathVertices > 0) {
-				glm::mat4 MVPM_deathOutline = Renderer::GenerateMatrix((r+2) * 9.0/8.0, (r+2) * 9.0/8.0, PI/2, xpos, ypos);
+				glm::mat4 MVPM_deathOutline = Renderer::GenerateMatrix((r+2) * 9.0/8.0, (r+2) * 9.0/8.0, PI/2, x, y);
 
 				shader->setUniform4f("u_color", 1.0f, 1.0f, 1.0f, 1.0f);
 				shader->setUniformMat4f("u_MVP", MVPM_deathOutline);
@@ -355,19 +440,31 @@ void Bullet::drawBody(double xpos, double ypos) const {
 
 		shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), 1.0f);
 	}
+	*/
+	ColorValueHolder color = getColor();
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
+	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
+	MVPM = Renderer::GenerateMatrix(r, r, 0, x, y);
 	shader->setUniformMat4f("u_MVP", MVPM);
+
 	Renderer::Draw(*va, *ib, *shader);
 }
 
-void Bullet::drawOutline(double xpos, double ypos) const {
+inline void Bullet::drawOutline(float alpha) const {
+	alpha = constrain<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, 0, xpos, ypos);
+	glm::mat4 MVPM;
 
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glLineWidth(1.0f); //lines still look ugly even with glEnable(GL_LINE_SMOOTH), so I don't know what to set it at
 
-	shader->setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 1.0f);
+	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
+	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+
+	MVPM = Renderer::GenerateMatrix(r, r, 0, x, y);
 	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(GL_LINE_LOOP, 1, Circle::numOfSides);
@@ -378,59 +475,31 @@ void Bullet::drawOutline(double xpos, double ypos) const {
 	//drawing an outline: use a geometry shader (ugh) or another VAO+IBO (lesser ugh), the CPU (big ugh), or glDrawArrays with GL_LINE_LOOP (yay!)
 }
 
-void Bullet::ghostDraw(float opaqueAmount) const {
-	opaqueAmount = constrain<float>(opaqueAmount, 0, 1);
-	opaqueAmount = opaqueAmount * opaqueAmount; //cheap way to make 100% not ghost more obvious
-
-	//drawBody:
-
-	ColorValueHolder color = getColor();
-	ColorValueHolder ghost_color = ColorMixer::mix(BackgroundRect::getBackColor(), getColor(), opaqueAmount);
+inline void Bullet::drawDeathCooldown(float alpha) const {
+	alpha = constrain<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, 0, x, y);
+	//glm::mat4 MVPM;
 
-	if (glIsEnabled(GL_BLEND)) {
-		shader->setUniform4f("u_color", ghost_color.getRf(), ghost_color.getGf(), ghost_color.getBf(), this->alpha/100 * opaqueAmount);
-	} else {
-		if (this->alpha < 100) {
-			double deathPercent = constrain<double>(this->alpha/100, 0, 1);
+	//if (glIsEnabled(GL_BLEND)) {
+	//	//skip
+	//} else {
+		if (this->opaqueness < 100) {
+			double deathPercent = constrain<double>(this->opaqueness/100, 0, 1);
 			unsigned int deathVertices = Circle::numOfSides * deathPercent;
 
 			if (deathVertices > 0) {
-				glm::mat4 MVPM_deathOutline = Renderer::GenerateMatrix((r+2) * 9.0/8.0, (r+2) * 9.0/8.0, PI/2, x, y);
+				ColorValueHolder color = ColorValueHolder(1.0f, 1.0f, 1.0f);
+				color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
+				shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
-				ColorValueHolder ghost_alphaColor = ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(1.0f, 1.0f, 1.0f), opaqueAmount);
-				shader->setUniform4f("u_color", 1.0f, 1.0f, 1.0f, 1.0f);
+				glm::mat4 MVPM_deathOutline = Renderer::GenerateMatrix((r+2) * 9.0/8.0, (r+2) * 9.0/8.0, PI/2, x, y);
 				shader->setUniformMat4f("u_MVP", MVPM_deathOutline);
 
 				Renderer::Draw(*va, *ib, *shader, deathVertices*3);
 			}
 		}
-
-		shader->setUniform4f("u_color", ghost_color.getRf(), ghost_color.getGf(), ghost_color.getBf(), 1.0f);
-	}
-
-	shader->setUniformMat4f("u_MVP", MVPM);
-	Renderer::Draw(*va, *ib, *shader);
-
-	//drawOutline:
-
-	shader = Renderer::getShader("main");
-	MVPM = Renderer::GenerateMatrix(r, r, 0, x, y);
-
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glLineWidth(1.0f); //lines still look ugly even with glEnable(GL_LINE_SMOOTH), so I don't know what to set it at
-
-	ColorValueHolder ghost_outlineColor = ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(0.0f, 0.0f, 0.0f), opaqueAmount);
-	shader->setUniform4f("u_color", ghost_color.getRf(), ghost_color.getGf(), ghost_color.getBf(), 1.0f);
-	shader->setUniformMat4f("u_MVP", MVPM);
-
-	Renderer::Draw(GL_LINE_LOOP, 1, Circle::numOfSides);
-
-	//cleanup:
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-	//drawing an outline: use a geometry shader (ugh) or another VAO+IBO (lesser ugh), the CPU (big ugh), or glDrawArrays with GL_LINE_LOOP (yay!)
+	//}
 }
 
 bool Bullet::kill() {

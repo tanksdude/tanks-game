@@ -26,6 +26,7 @@ GrenadePower::GrenadePower() {
 
 void GrenadeTankPower::initialize(Tank* parent) {
 	//nothing
+	//in JS, the tank's shooting cooldown was reset
 }
 
 void GrenadeTankPower::removeEffects(Tank* parent) {
@@ -47,7 +48,7 @@ const double GrenadeBulletPower::degradeAmount = .875;
 
 InteractionBoolHolder GrenadeBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
 	if (b->velocity.getMagnitude() <= 0) {
-		b->alpha -= degradeAmount;
+		b->opaqueness -= degradeAmount;
 		return { b->isDead(), false };
 	} else {
 		if (b->acceleration < 0) {
@@ -64,7 +65,7 @@ InteractionBoolHolder GrenadeBulletPower::modifiedCollisionWithWall(Bullet* b, W
 
 InteractionBoolHolder GrenadeBulletPower::modifiedMovement(Bullet* b) {
 	if (b->velocity.getMagnitude() <= 0) {
-		b->alpha -= degradeAmount;
+		b->opaqueness -= degradeAmount;
 		b->r *= 65/64.0;
 	} /*else if (b->velocity.getMagnitude() < 0) {
 		b->velocity.setMagnitude(0);

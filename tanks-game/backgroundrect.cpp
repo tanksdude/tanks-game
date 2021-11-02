@@ -53,6 +53,7 @@ bool BackgroundRect::uninitializeGPU() {
 	return true;
 }
 
+/*
 void BackgroundRect::drawCPU() {
 	glColor3f(backColor.getRf(), backColor.getGf(), backColor.getBf());
 	glBegin(GL_POLYGON);
@@ -62,6 +63,7 @@ void BackgroundRect::drawCPU() {
 	glVertex3f(0, GAME_HEIGHT, 0);
 	glEnd();
 }
+*/
 
 void BackgroundRect::draw() {
 	Shader* shader = Renderer::getShader("main");

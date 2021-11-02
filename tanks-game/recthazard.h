@@ -85,8 +85,11 @@ public:
 
 	virtual void tick() override = 0;
 	virtual void draw() const override = 0;
-	virtual void draw(double xpos, double ypos) const override = 0;
+	virtual void draw(DrawingLayers) const override = 0;
 	virtual void poseDraw() const override = 0;
+	virtual void poseDraw(DrawingLayers) const override = 0;
+	virtual void ghostDraw(float alpha) const override = 0;
+	virtual void ghostDraw(DrawingLayers, float alpha) const override = 0;
 
 	virtual ~RectHazard() { return; }
 	static RectHazard* factory(int argc, std::string* argv);

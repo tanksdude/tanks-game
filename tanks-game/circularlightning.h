@@ -61,8 +61,15 @@ public:
 
 	virtual void tick() override { GeneralizedLightning::tick(); }
 	virtual void draw() const override;
-	virtual void draw(double xpos, double ypos) const override;
+	virtual void draw(DrawingLayers) const override;
 	virtual void poseDraw() const override;
+	virtual void poseDraw(DrawingLayers) const override;
+	virtual void ghostDraw(float alpha) const override;
+	virtual void ghostDraw(DrawingLayers, float alpha) const override;
+
+private:
+	inline void drawBackground(float alpha = 1.0f) const;
+	inline void drawBolts(float alpha = 1.0f) const;
 
 public:
 	CircularLightning(double xpos, double ypos, double radius);

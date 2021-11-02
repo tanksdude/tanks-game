@@ -3,6 +3,8 @@
 #include "renderer.h"
 #include "constants.h"
 #include <math.h>
+#include "colormixer.h"
+#include "backgroundrect.h"
 #include "mylib.h"
 #include "wallmanager.h"
 #include "hazardmanager.h"
@@ -111,24 +113,105 @@ bool CircularNoBulletZone::reasonableLocation() const {
 }
 
 void CircularNoBulletZone::draw() const {
-	draw(x, y);
+	ghostDraw(1.0f);
 }
 
-void CircularNoBulletZone::draw(double xpos, double ypos) const {
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, 0, xpos, ypos);
+void CircularNoBulletZone::draw(DrawingLayers layer) const {
+	switch (layer) {
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for CircularNoBulletZone::draw!" << std::endl;
+		case DrawingLayers::under:
+			draw();
+			break;
 
-	//TODO: make drawUnder() a thing
-	ColorValueHolder color = getColor();
+		case DrawingLayers::normal:
+			//nothing
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//nothing
+			break;
+	}
+}
+
+void CircularNoBulletZone::poseDraw() const {
+	draw();
+}
+
+void CircularNoBulletZone::poseDraw(DrawingLayers layer) const {
+	switch (layer) {
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for CircularNoBulletZone::poseDraw!" << std::endl;
+		case DrawingLayers::under:
+			poseDraw();
+			break;
+
+		case DrawingLayers::normal:
+			//nothing
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//nothing
+			break;
+	}
+}
+
+void CircularNoBulletZone::ghostDraw(float alpha) const {
+	alpha = constrain<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
+	Shader* shader = Renderer::getShader("main");
+	glm::mat4 MVPM;
+
+	ColorValueHolder color = GeneralizedNoBulletZone::getColor();
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+
+	MVPM = Renderer::GenerateMatrix(r, r, 0, x, y);
 	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*va, *ib, *shader);
 }
 
-void CircularNoBulletZone::poseDraw() const {
-	//TODO?
-	return;
+void CircularNoBulletZone::ghostDraw(DrawingLayers layer, float alpha) const {
+	switch (layer) {
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for CircularNoBulletZone::ghostDraw!" << std::endl;
+		case DrawingLayers::under:
+			ghostDraw(alpha);
+			break;
+
+		case DrawingLayers::normal:
+			//nothing
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//nothing
+			break;
+	}
 }
 
 CircleHazard* CircularNoBulletZone::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {

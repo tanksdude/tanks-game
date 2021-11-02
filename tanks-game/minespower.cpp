@@ -54,6 +54,7 @@ void MinesTankPower::additionalShooting(Tank* t, CannonPoint c) {
 
 void MinesTankPower::initialize(Tank* parent) {
 	//nothing
+	//in JS, the tank's shooting cooldown was reset
 }
 
 void MinesTankPower::removeEffects(Tank* parent) {

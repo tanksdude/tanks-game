@@ -115,11 +115,24 @@ public:
 	void powerReset();
 
 	void draw() const override;
-	void draw(double xpos, double ypos) const override;
+	void draw(DrawingLayers) const override;
 	void poseDraw() const override;
-	void drawCPU() const;
-	void drawCPU(double, double) const;
+	void poseDraw(DrawingLayers) const override;
+	void ghostDraw(float alpha) const override;
+	void ghostDraw(DrawingLayers, float alpha) const override;
+	//void drawCPU() const;
+	//void drawCPU(double, double) const;
 
+private:
+	inline void drawBody(float alpha = 1.0f) const;
+	inline void drawDead(float alpha = 1.0f) const; //probably doesn't need alpha
+	inline void drawOutline(float alpha = 1.0f) const;
+	inline void drawShootingCooldown(float alpha = 1.0f) const;
+	inline void drawPowerCooldown(float alpha = 1.0f) const;
+	inline void drawMainBarrel(float alpha = 1.0f) const;
+	inline void drawExtraBarrels(float alpha = 1.0f) const;
+
+public:
 	Tank(double x, double y, double a, Team_ID id, std::string name, TankInputChar forward, TankInputChar left, TankInputChar right, TankInputChar shoot, TankInputChar special);
 	~Tank();
 };

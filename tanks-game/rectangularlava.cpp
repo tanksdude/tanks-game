@@ -3,6 +3,8 @@
 #include "renderer.h"
 #include "constants.h"
 #include <math.h>
+#include "colormixer.h"
+#include "backgroundrect.h"
 #include "mylib.h"
 #include "wallmanager.h"
 #include "hazardmanager.h"
@@ -161,28 +163,82 @@ bool RectangularLava::reasonableLocation() const {
 }
 
 void RectangularLava::draw() const {
-	draw(x, y);
+	drawBackground();
+	drawBubbles();
 }
 
-void RectangularLava::draw(double xpos, double ypos) const {
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM = Renderer::GenerateMatrix(w, h, 0, xpos, ypos);
+void RectangularLava::draw(DrawingLayers layer) const {
+	switch (layer) {
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for RectangularLava::draw!" << std::endl;
+		case DrawingLayers::under:
+			drawBackground();
+			break;
 
-	//background:
-	//TODO: make drawUnder() a thing
+		case DrawingLayers::normal:
+			drawBubbles();
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
+}
+
+void RectangularLava::poseDraw() const {
+	//TODO
+	//just background?
+}
+
+void RectangularLava::poseDraw(DrawingLayers layer) const {
+	//TODO
+}
+
+void RectangularLava::ghostDraw(float alpha) const {
+	//TODO
+}
+
+void RectangularLava::ghostDraw(DrawingLayers layer, float alpha) const {
+	//TODO
+}
+
+inline void RectangularLava::drawBackground(float alpha) const {
+	alpha = constrain<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
+	Shader* shader = Renderer::getShader("main");
+	glm::mat4 MVPM;
+
 	ColorValueHolder color = getBackgroundColor();
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+
+	MVPM = Renderer::GenerateMatrix(w, h, 0, x, y);
 	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*background_va, *background_ib, *shader);
+}
 
-	//bubbles:
+inline void RectangularLava::drawBubbles(float alpha) const {
 	if (bubbles.size() == 0) {
 		return;
 	}
 
+	alpha = constrain<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
+	Shader* shader = Renderer::getShader("main");
+	glm::mat4 MVPM;
+
 	glLineWidth(2.0f);
-	//first, sort by alpha: lowest to highest
+
+	//first, sort by alpha: lowest to highest (this makes the bubbles less weird-looking when drawn over each other)
 	std::vector<LavaBubble*> sortedBubbles;
 	sortedBubbles.reserve(bubbles.size());
 	for (int i = 0; i < bubbles.size(); i++) {
@@ -197,21 +253,20 @@ void RectangularLava::draw(double xpos, double ypos) const {
 		}
 	}
 
-	//second, draw the bubbles (this makes the bubbles less weird-looking when drawn over each other)
+	//second, draw the bubbles
 	for (int i = 0; i < sortedBubbles.size(); i++) {
-		color = getBubbleColor(sortedBubbles[i]);
-		MVPM = Renderer::GenerateMatrix(sortedBubbles[i]->getR(), sortedBubbles[i]->getR(), 0, sortedBubbles[i]->getX()*w + xpos, sortedBubbles[i]->getY()*h + ypos);
-
+		ColorValueHolder color = getBubbleColor(sortedBubbles[i]);
+		color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 		shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+
+		MVPM = Renderer::GenerateMatrix(sortedBubbles[i]->getR(), sortedBubbles[i]->getR(), 0, sortedBubbles[i]->getX()*w + x, sortedBubbles[i]->getY()*h + y);
 		shader->setUniformMat4f("u_MVP", MVPM);
 
 		Renderer::Draw(*bubble_va, *shader, GL_LINE_LOOP, 1, Circle::numOfSides);
 	}
-}
 
-void RectangularLava::poseDraw() const {
-	//TODO
-	return;
+	//cleanup
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 RectHazard* RectangularLava::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {

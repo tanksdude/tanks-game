@@ -3,6 +3,8 @@
 #include "renderer.h"
 #include "constants.h"
 #include <math.h>
+#include "colormixer.h"
+#include "backgroundrect.h"
 #include "mylib.h"
 #include "wallmanager.h"
 #include "hazardmanager.h"
@@ -169,27 +171,82 @@ bool CircularLava::reasonableLocation() const {
 }
 
 void CircularLava::draw() const {
-	draw(x, y);
+	drawBackground();
+	drawBubbles();
 }
 
-void CircularLava::draw(double xpos, double ypos) const {
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, 0, xpos, ypos);
+void CircularLava::draw(DrawingLayers layer) const {
+	switch (layer) {
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for CircularLava::draw!" << std::endl;
+		case DrawingLayers::under:
+			drawBackground();
+			break;
 
-	//background:
+		case DrawingLayers::normal:
+			drawBubbles();
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
+}
+
+void CircularLava::poseDraw() const {
+	//TODO
+	//just background?
+}
+
+void CircularLava::poseDraw(DrawingLayers layer) const {
+	//TODO
+}
+
+void CircularLava::ghostDraw(float alpha) const {
+	//TODO
+}
+
+void CircularLava::ghostDraw(DrawingLayers layer, float alpha) const {
+	//TODO
+}
+
+inline void CircularLava::drawBackground(float alpha) const {
+	alpha = constrain<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
+	Shader* shader = Renderer::getShader("main");
+	glm::mat4 MVPM;
+
 	ColorValueHolder color = getBackgroundColor();
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+
+	MVPM = Renderer::GenerateMatrix(r, r, 0, x, y);
 	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*background_va, *background_ib, *shader);
+}
 
-	//bubbles:
+inline void CircularLava::drawBubbles(float alpha) const {
 	if (bubbles.size() == 0) {
 		return;
 	}
 
+	alpha = constrain<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
+	Shader* shader = Renderer::getShader("main");
+	glm::mat4 MVPM;
+
 	glLineWidth(2.0f);
-	//first, sort by alpha: lowest to highest
+
+	//first, sort by alpha: lowest to highest (this makes the bubbles less weird-looking when drawn over each other)
 	std::vector<LavaBubble*> sortedBubbles;
 	sortedBubbles.reserve(bubbles.size());
 	for (int i = 0; i < bubbles.size(); i++) {
@@ -204,21 +261,20 @@ void CircularLava::draw(double xpos, double ypos) const {
 		}
 	}
 
-	//second, draw the bubbles (this makes the bubbles less weird-looking when drawn over each other)
+	//second, draw the bubbles
 	for (int i = 0; i < sortedBubbles.size(); i++) {
-		color = getBubbleColor(sortedBubbles[i]);
-		MVPM = Renderer::GenerateMatrix(sortedBubbles[i]->getR(), sortedBubbles[i]->getR(), 0, sortedBubbles[i]->getX()*r + xpos, sortedBubbles[i]->getY()*r + ypos);
-
+		ColorValueHolder color = getBubbleColor(sortedBubbles[i]);
+		color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 		shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+
+		MVPM = Renderer::GenerateMatrix(sortedBubbles[i]->getR(), sortedBubbles[i]->getR(), 0, sortedBubbles[i]->getX()*r + x, sortedBubbles[i]->getY()*r + y);
 		shader->setUniformMat4f("u_MVP", MVPM);
 
 		Renderer::Draw(*bubble_va, *shader, GL_LINE_LOOP, 1, Circle::numOfSides);
 	}
-}
 
-void CircularLava::poseDraw() const {
-	//TODO
-	return;
+	//cleanup
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 CircleHazard* CircularLava::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {

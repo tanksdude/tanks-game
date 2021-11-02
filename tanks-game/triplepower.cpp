@@ -36,6 +36,7 @@ void TripleTankPower::additionalShooting(Tank* parent, CannonPoint c) {
 
 void TripleTankPower::initialize(Tank* parent) {
 	//nothing
+	//in JS, the tank's shooting cooldown was reset
 }
 
 void TripleTankPower::removeEffects(Tank* parent) {

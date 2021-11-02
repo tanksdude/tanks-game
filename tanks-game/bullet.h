@@ -30,7 +30,7 @@ public: //hopefully temporary
 	Game_ID parentID; //may not be used, depends on parentType
 	BulletParentType parentType;
 	std::vector<BulletPower*> bulletPowers; //change eventually?
-	double alpha; //[0,100] to avoid minor float imprecision
+	double opaqueness; //[0,100] to avoid minor float imprecision //not called "transparency" because that would imply 100% is not visible
 
 public:
 	double getOffenseTier() const;
@@ -59,7 +59,7 @@ public:
 	double getInitialVelocity() const { return initial_velocity; }
 	Game_ID getParentID() const { return parentID; }
 	BulletParentType getParentIDType() const { return parentType; }
-	bool isDead() const { return (alpha <= 0); }
+	bool isDead() const { return (opaqueness <= 0); }
 
 	static const double default_radius;
 
@@ -82,13 +82,18 @@ public:
 	bool canCollideWith(const Bullet*) const;
 
 	void draw() const override;
-	void draw(double xpos, double ypos) const override;
+	void draw(DrawingLayers) const override;
 	void poseDraw() const override;
-	void drawBody(double, double) const;
-	void drawOutline(double, double) const;
-	void drawCPU() const;
-	void drawCPU(double, double) const;
-	void ghostDraw(float alpha) const; //TODO: give to DrawableThing
+	void poseDraw(DrawingLayers) const override;
+	void ghostDraw(float alpha) const override;
+	void ghostDraw(DrawingLayers, float alpha) const override;
+	//void drawCPU() const;
+	//void drawCPU(double, double) const;
+
+private:
+	inline void drawBody(float alpha = 1.0f) const;
+	inline void drawOutline(float alpha = 1.0f) const;
+	inline void drawDeathCooldown(float alpha = 1.0f) const;
 
 private:
 	Bullet(double x, double y, double angle, Team_ID teamID, BulletParentType parentType, Game_ID parentID); //every bullet uses this

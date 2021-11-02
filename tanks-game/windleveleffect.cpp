@@ -90,13 +90,15 @@ void WindLevelEffect::doEffects(Level* parent) {
 void WindLevelEffect::draw() const {
 	//length = 16 * pushDirection.getMagnitude()
 	//7 x 5 arrows
-	//color: colorMix(backColor,"#000000",.5);
+	//color: ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(0.0f, 0.0f, 0.0f), .5);
 
 	if (getWindStrengthMultiplier() <= 0) {
 		return;
 	}
 
 	Shader* shader = Renderer::getShader("main");
+	glm::mat4 MVPM;
+
 	ColorValueHolder color = ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(0.0f, 0.0f, 0.0f));
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
@@ -108,7 +110,7 @@ void WindLevelEffect::draw() const {
 	const double y_offset = 64; //JS y offset: (320)/5 = 64
 	for (int i = -3; i <= 3; i++) {
 		for (int j = -2; j <= 2; j++) {
-			glm::mat4 MVPM = Renderer::GenerateMatrix(length, length, pushDirection.getAngle(), GAME_WIDTH/2 + i*x_offset, GAME_HEIGHT/2 + j*y_offset);
+			MVPM = Renderer::GenerateMatrix(length, length, pushDirection.getAngle(), GAME_WIDTH/2 + i*x_offset, GAME_HEIGHT/2 + j*y_offset);
 			shader->setUniformMat4f("u_MVP", MVPM);
 
 			if (i == 0 && j == 0) {
@@ -118,6 +120,48 @@ void WindLevelEffect::draw() const {
 			}
 		}
 	}
+}
+
+void WindLevelEffect::draw(DrawingLayers layer) const {
+	switch (layer) {
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for WindLevelEffect::draw!" << std::endl;
+		case DrawingLayers::under:
+			draw();
+			break;
+
+		case DrawingLayers::normal:
+			//nothing
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
+}
+
+void WindLevelEffect::poseDraw() const {
+	//TODO
+}
+
+void WindLevelEffect::poseDraw(DrawingLayers layer) const {
+	//TODO
+}
+
+void WindLevelEffect::ghostDraw(float alpha) const {
+	//TODO
+}
+
+void WindLevelEffect::ghostDraw(DrawingLayers layer, float alpha) const {
+	//TODO
 }
 
 bool WindLevelEffect::initializeGPU() {

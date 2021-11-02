@@ -53,9 +53,18 @@ public:
 
 	virtual void tick() override;
 	virtual void draw() const override;
-	virtual void draw(double xpos, double ypos) const override;
+	virtual void draw(DrawingLayers) const override;
 	virtual void poseDraw() const override;
-	virtual void drawCPU() const;
+	virtual void poseDraw(DrawingLayers) const override;
+	virtual void ghostDraw(float alpha) const override;
+	virtual void ghostDraw(DrawingLayers, float alpha) const override;
+	//virtual void drawCPU() const override;
+
+private:
+	inline void drawBody(float alpha = 1.0f) const;
+	inline void drawOutline(float alpha = 1.0f) const;
+	inline void drawBarrel(float alpha = 1.0f) const;
+	inline void drawReticule(float alpha = 1.0f) const;
 
 protected:
 	TargetingTurret(double xpos, double ypos, double angle, bool noGPU);

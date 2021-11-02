@@ -64,9 +64,51 @@ void MinefieldLevelEffect::draw() const {
 	}
 }
 
+void MinefieldLevelEffect::draw(DrawingLayers layer) const {
+	switch (layer) {
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for MinefieldLevelEffect::draw!" << std::endl;
+		case DrawingLayers::under:
+			draw(); //should it be in effects...? JS had it here
+			break;
+
+		case DrawingLayers::normal:
+			//nothing
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
+}
+
+void MinefieldLevelEffect::poseDraw() const {
+	//TODO
+}
+
+void MinefieldLevelEffect::poseDraw(DrawingLayers layer) const {
+	//TODO
+}
+
+void MinefieldLevelEffect::ghostDraw(float alpha) const {
+	//TODO
+}
+
+void MinefieldLevelEffect::ghostDraw(DrawingLayers layer, float alpha) const {
+	//TODO
+}
+
 MinefieldLevelEffect::MinefieldLevelEffect(double x_start, double y_start, double area_width, double area_height, int initialMineCount) {
 	tickCount = 0;
-	tickCycle = 400;
+	tickCycle = 400; //in JS, 4*powerSpeed
 
 	minefield_startX = x_start;
 	minefield_startY = y_start;

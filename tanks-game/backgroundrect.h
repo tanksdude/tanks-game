@@ -21,7 +21,7 @@ public:
 	static ColorValueHolder getBackColor();
 
 	static void draw();
-	static void drawCPU();
+	//static void drawCPU();
 
 private:
 	BackgroundRect() {}

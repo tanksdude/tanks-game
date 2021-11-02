@@ -947,33 +947,53 @@ void GameMainLoop::drawEverything() {
 	glLoadIdentity();
 
 
+	Diagnostics::startTiming("hazards under");
+	for (int i = 0; i < HazardManager::getNumCircleHazards(); i++) {
+		HazardManager::getCircleHazard(i)->draw(DrawingLayers::under);
+	}
+	for (int i = 0; i < HazardManager::getNumRectHazards(); i++) {
+		HazardManager::getRectHazard(i)->draw(DrawingLayers::under);
+	}
+	Renderer::UnbindAll();
+	Diagnostics::endTiming();
+
+	Diagnostics::startTiming("level under");
+	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
+		LevelManager::getLevel(i)->draw(DrawingLayers::under);
+	}
+	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
+		LevelManager::getLevel(i)->drawLevelEffects(DrawingLayers::under);
+	}
+	Renderer::UnbindAll();
+	Diagnostics::endTiming();
+
 	Diagnostics::startTiming("powerups");
 	for (int i = 0; i < PowerupManager::getNumPowerups(); i++) {
-		PowerupManager::getPowerup(i)->draw();
+		PowerupManager::getPowerup(i)->draw(DrawingLayers::normal);
 	}
 	Renderer::UnbindAll();
 	Diagnostics::endTiming();
 
 	Diagnostics::startTiming("hazards");
 	for (int i = 0; i < HazardManager::getNumCircleHazards(); i++) {
-		HazardManager::getCircleHazard(i)->draw();
+		HazardManager::getCircleHazard(i)->draw(DrawingLayers::normal);
 	}
 	for (int i = 0; i < HazardManager::getNumRectHazards(); i++) {
-		HazardManager::getRectHazard(i)->draw();
+		HazardManager::getRectHazard(i)->draw(DrawingLayers::normal);
 	}
 	Renderer::UnbindAll();
 	Diagnostics::endTiming();
 
 	Diagnostics::startTiming("walls");
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
-		WallManager::getWall(i)->draw();
+		WallManager::getWall(i)->draw(DrawingLayers::normal);
 	}
 	Renderer::UnbindAll();
 	Diagnostics::endTiming();
 
 	Diagnostics::startTiming("bullets");
 	for (int i = 0; i < BulletManager::getNumBullets(); i++) {
-		BulletManager::getBullet(i)->draw();
+		BulletManager::getBullet(i)->draw(DrawingLayers::normal);
 	}
 	Renderer::UnbindAll();
 	Diagnostics::endTiming();
@@ -987,17 +1007,34 @@ void GameMainLoop::drawEverything() {
 
 	Diagnostics::startTiming("tanks");
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
-		TankManager::getTank(i)->draw();
+		TankManager::getTank(i)->draw(DrawingLayers::normal);
 	}
 	Renderer::UnbindAll();
 	Diagnostics::endTiming();
 
-	Diagnostics::startTiming("level");
+	Diagnostics::startTiming("hazards effects");
+	for (int i = 0; i < HazardManager::getNumCircleHazards(); i++) {
+		HazardManager::getCircleHazard(i)->draw(DrawingLayers::effects);
+	}
+	for (int i = 0; i < HazardManager::getNumRectHazards(); i++) {
+		HazardManager::getRectHazard(i)->draw(DrawingLayers::effects);
+	}
+	Renderer::UnbindAll();
+	Diagnostics::endTiming();
+
+	Diagnostics::startTiming("level effects");
 	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
-		LevelManager::getLevel(i)->draw();
+		LevelManager::getLevel(i)->draw(DrawingLayers::normal);
 	}
 	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
-		LevelManager::getLevel(i)->drawLevelEffects();
+		LevelManager::getLevel(i)->drawLevelEffects(DrawingLayers::effects);
+	}
+	Renderer::UnbindAll();
+	Diagnostics::endTiming();
+
+	Diagnostics::startTiming("tanks dead");
+	for (int i = 0; i < TankManager::getNumTanks(); i++) {
+		TankManager::getTank(i)->draw(DrawingLayers::top);
 	}
 	Renderer::UnbindAll();
 	Diagnostics::endTiming();

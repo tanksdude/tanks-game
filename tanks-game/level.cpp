@@ -32,6 +32,12 @@ void Level::drawLevelEffects() const {
 	}
 }
 
+void Level::drawLevelEffects(DrawingLayers layer) const {
+	for (int i = 0; i < getNumEffects(); i++) {
+		effects[i]->draw(layer);
+	}
+}
+
 Level::~Level() {
 	for (int i = 0; i < getNumEffects(); i++) {
 		delete effects[i];
@@ -40,15 +46,11 @@ Level::~Level() {
 }
 
 /*
-TODO: separate levels from level effects? (... is this not the case?)
-
-list of (eventual) levels or level effects, I dunno:
-|random (just need to flesh it out once powers and hazards exist)
+list of (eventual) levels:
 |empty
 invisibility? (no one appreciates it though)
 |wind
-ice (no one really likes it, as expected)
-mines
+|ice and mines
 
 
 list of potential levels:

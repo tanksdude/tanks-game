@@ -297,9 +297,10 @@ int main(int argc, char** argv) {
  * * add a gradient shader
  * * gotta learn how to do batching
  * * make things more efficient (way easier said than done, I suppose)
- * 92.5?% theoretical foundation: no hazard powers, no level... anything
+ * * drawing layers
+ * 97.5?% theoretical foundation: no hazard powers
  * * hazard powers: ~50%
- * * levels: ~75%; no level effects
+ * * levels: ~95%? not too sure
  * 90% actual foundation: not every "modification function" actually does something
  * * almost everything needed is somewhere, so copy-and-paste will be the solution (unless I can figure out member function pointers)
  * ~40% game code:

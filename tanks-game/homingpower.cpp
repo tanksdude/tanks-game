@@ -26,6 +26,7 @@ HomingPower::HomingPower() {
 
 void HomingTankPower::initialize(Tank* parent) {
 	//nothing
+	//in JS, the tank's shooting cooldown was reset
 }
 
 void HomingTankPower::removeEffects(Tank* parent) {

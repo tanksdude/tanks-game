@@ -8,7 +8,7 @@ class LevelEffect;
 #include <unordered_map>
 
 //TODO: level effects basically need to be powers but for levels (needs to be able to override some things in GameMainLoop, I think)
-class LevelEffect {
+class LevelEffect : public DrawableThing {
 public:
 	virtual std::string getName() const = 0;
 	virtual std::vector<std::string> getLevelEffectTypes() const;
@@ -26,10 +26,12 @@ public:
 	virtual double getTankTurningIncrementMultiplier() const { return 1; }
 	//they all stack because you shouldn't have too many
 
-	//should LevelEffect extend DrawableThing?
-	virtual void draw() const { return; }
-	//virtual void draw(double xpos, double ypos) const = 0; //would this be used?
-	//virtual void poseDraw() const = 0;
+	virtual void draw() const override { return; }
+	virtual void draw(DrawingLayers) const override { return; }
+	virtual void poseDraw() const override { return; }
+	virtual void poseDraw(DrawingLayers) const override { return; }
+	virtual void ghostDraw(float alpha) const override { return; }
+	virtual void ghostDraw(DrawingLayers, float alpha) const override { return; }
 
 	virtual ~LevelEffect() { return; }
 	static LevelEffect* factory();

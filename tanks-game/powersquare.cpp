@@ -206,33 +206,134 @@ void PowerSquare::givePower(Tank* t) {
 //void PowerSquare::givePower(Hazard*);
 
 void PowerSquare::draw() const {
-	draw(x, y);
+	drawOutlineThing();
+	drawMain();
 }
 
-void PowerSquare::draw(double xpos, double ypos) const {
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM = Renderer::GenerateMatrix(w, h, 0, xpos, ypos);
-	ColorValueHolder color = getColor();
+void PowerSquare::draw(DrawingLayers layer) const {
+	switch (layer) {
+		case DrawingLayers::under:
+			//nothing
+			//TODO: should drawOutlineThing() be here?
+			break;
 
-	if (numOfPowers > 1) { //move to drawUnder()
-		ColorValueHolder backgroundMix = ColorMixer::mix(color, BackgroundRect::getBackColor());
-		shader->setUniform4f("u_color", backgroundMix.getRf(), backgroundMix.getGf(), backgroundMix.getBf(), backgroundMix.getAf());
-		shader->setUniformMat4f("u_MVP", MVPM);
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for PowerSquare::draw!" << std::endl;
+		case DrawingLayers::normal:
+			draw();
+			break;
 
-		Renderer::Draw(*va, *ib_outline, *shader);
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
 	}
+}
 
+void PowerSquare::poseDraw() const {
+	drawOutlineThing();
+	drawMain();
+}
+
+void PowerSquare::poseDraw(DrawingLayers layer) const {
+	switch (layer) {
+		case DrawingLayers::under:
+			//nothing
+			break;
+
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for PowerSquare::poseDraw!" << std::endl;
+		case DrawingLayers::normal:
+			poseDraw();
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
+}
+
+void PowerSquare::ghostDraw(float alpha) const {
+	drawOutlineThing(alpha);
+	drawMain(alpha);
+}
+
+void PowerSquare::ghostDraw(DrawingLayers layer, float alpha) const {
+	switch (layer) {
+		case DrawingLayers::under:
+			//nothing
+			break;
+
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for PowerSquare::ghostDraw!" << std::endl;
+		case DrawingLayers::normal:
+			ghostDraw(alpha);
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
+}
+
+inline void PowerSquare::drawMain(float alpha) const {
+	alpha = constrain<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
+	Shader* shader = Renderer::getShader("main");
+	glm::mat4 MVPM;
+
+	ColorValueHolder color = getColor();
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+
+	MVPM = Renderer::GenerateMatrix(w, h, 0, x, y);
 	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*va, *ib_main, *shader);
 }
 
-void PowerSquare::poseDraw() const {
-	//TODO
-	return;
+inline void PowerSquare::drawOutlineThing(float alpha) const {
+	alpha = constrain<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
+	Shader* shader = Renderer::getShader("main");
+	glm::mat4 MVPM;
+
+	if (numOfPowers > 1) {
+		ColorValueHolder backgroundMix = ColorMixer::mix(getColor(), BackgroundRect::getBackColor());
+		backgroundMix = ColorMixer::mix(BackgroundRect::getBackColor(), backgroundMix, alpha);
+		shader->setUniform4f("u_color", backgroundMix.getRf(), backgroundMix.getGf(), backgroundMix.getBf(), backgroundMix.getAf());
+
+		MVPM = Renderer::GenerateMatrix(w, h, 0, x, y);
+		shader->setUniformMat4f("u_MVP", MVPM);
+
+		Renderer::Draw(*va, *ib_outline, *shader);
+	}
 }
 
+/*
 void PowerSquare::drawCPU() const {
 	ColorValueHolder color = getColor();
 	if (numOfPowers > 1) { //move to drawUnder()
@@ -292,27 +393,4 @@ void PowerSquare::drawCPU() const {
 
 	glEnd();
 }
-
-void PowerSquare::ghostDraw(float alpha) const {
-	alpha = constrain<float>(alpha, 0, 1);
-	alpha = alpha * alpha; //cheap way to make 100% not ghost more obvious
-
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM = Renderer::GenerateMatrix(w, h, 0, x, y);
-	ColorValueHolder color = getColor();
-	ColorValueHolder ghost_color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-
-	if (numOfPowers > 1) { //move to drawUnder()
-		ColorValueHolder backgroundMix = ColorMixer::mix(color, BackgroundRect::getBackColor());
-		ColorValueHolder ghost_backgroundMix = ColorMixer::mix(BackgroundRect::getBackColor(), backgroundMix, alpha);
-		shader->setUniform4f("u_color", ghost_backgroundMix.getRf(), ghost_backgroundMix.getGf(), ghost_backgroundMix.getBf(), ghost_backgroundMix.getAf());
-		shader->setUniformMat4f("u_MVP", MVPM);
-
-		Renderer::Draw(*va, *ib_outline, *shader);
-	}
-
-	shader->setUniform4f("u_color", ghost_color.getRf(), ghost_color.getGf(), ghost_color.getBf(), ghost_color.getAf());
-	shader->setUniformMat4f("u_MVP", MVPM);
-
-	Renderer::Draw(*va, *ib_main, *shader);
-}
+*/

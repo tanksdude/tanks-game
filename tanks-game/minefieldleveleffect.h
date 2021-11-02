@@ -7,6 +7,7 @@
 #include "indexbuffer.h"
 
 class MinefieldLevelEffect : public LevelEffect {
+	//called "mines" in JS
 protected:
 	double tickCount;
 	double tickCycle;
@@ -31,8 +32,11 @@ public:
 	virtual void doEffects(Level* parent) override;
 
 	virtual void draw() const override;
-	//virtual void draw(double xpos, double ypos) const override;
-	//virtual void poseDraw() const override;
+	virtual void draw(DrawingLayers) const override;
+	virtual void poseDraw() const override;
+	virtual void poseDraw(DrawingLayers) const override;
+	virtual void ghostDraw(float alpha) const override;
+	virtual void ghostDraw(DrawingLayers, float alpha) const override;
 
 	MinefieldLevelEffect();
 	MinefieldLevelEffect(double x_start, double y_start, double area_width, double area_height);

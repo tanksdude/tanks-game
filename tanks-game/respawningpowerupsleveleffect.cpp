@@ -53,7 +53,7 @@ RespawningPowerupsLevelEffect::PowerSquareWatcher::PowerSquareWatcher(const Powe
 
 void RespawningPowerupsLevelEffect::PowerSquareWatcher::draw() const {
 	if (isGone) {
-		powerupCopy->ghostDraw(tickCount / maxTickCount);
+		powerupCopy->ghostDraw(tickCount / maxTickCount); //TODO: drawing layer things?
 	}
 }
 
@@ -113,6 +113,49 @@ void RespawningPowerupsLevelEffect::draw() const {
 	for (int i = 0; i < watching.size(); i++) {
 		watching[i]->draw();
 	}
+}
+
+void RespawningPowerupsLevelEffect::draw(DrawingLayers layer) const {
+	switch (layer) {
+		case DrawingLayers::under:
+			//nothing
+			break;
+
+		case DrawingLayers::normal:
+			//nothing
+			break;
+
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for RespawningPowerupsLevelEffect::draw!" << std::endl;
+		case DrawingLayers::effects:
+			draw();
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
+}
+
+void RespawningPowerupsLevelEffect::poseDraw() const {
+	//TODO
+	//draw the watched powerups with 50% alpha?
+}
+
+void RespawningPowerupsLevelEffect::poseDraw(DrawingLayers layer) const {
+	//TODO
+}
+
+void RespawningPowerupsLevelEffect::ghostDraw(float alpha) const {
+	//TODO
+}
+
+void RespawningPowerupsLevelEffect::ghostDraw(DrawingLayers layer, float alpha) const {
+	//TODO
 }
 
 RespawningPowerupsLevelEffect::RespawningPowerupsLevelEffect(bool watchEverything) {

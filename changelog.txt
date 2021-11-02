@@ -18,7 +18,7 @@
     * normal C++ class and function stuff
     * replace x-comp, y-comp, angle variables with singular vector variable
         * this slightly reduces performance, but it's way cleaner
-* drawing layers: "under", regular, "effects", debug
+* drawing layers: under, normal, effects, top, debug
 * level effects added
     * all JS level effects in! (except portal)
         * wind, ice, mines, invisible walls

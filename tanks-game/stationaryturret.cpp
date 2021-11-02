@@ -1,9 +1,10 @@
 #include "stationaryturret.h"
 #include "gamemanager.h"
 #include "renderer.h"
-#include "colormixer.h"
-//#include "constants.h"
+#include "constants.h"
 #include <math.h>
+#include "colormixer.h"
+#include "backgroundrect.h"
 #include "mylib.h"
 #include "point.h"
 #include "tank.h"
@@ -209,30 +210,155 @@ ColorValueHolder StationaryTurret::getColor(int state) const {
 }
 
 void StationaryTurret::draw() const {
-	draw(x, y);
+	drawBody();
+	drawOutline();
+	drawBarrel();
 }
 
-void StationaryTurret::draw(double xpos, double ypos) const {
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, direction.getAngle(), xpos, ypos);
+void StationaryTurret::draw(DrawingLayers layer) const {
+	switch (layer) {
+		case DrawingLayers::under:
+			//nothing
+			break;
 
-	//main body:
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for StationaryTurret::draw!" << std::endl;
+		case DrawingLayers::normal:
+			draw();
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
+}
+
+void StationaryTurret::poseDraw() const {
+	//TODO: adjust so drawBody will only draw with the normal color?
+	drawBody();
+	drawOutline();
+	drawBarrel();
+}
+
+void StationaryTurret::poseDraw(DrawingLayers layer) const {
+	//TODO: adjust so drawBody will only draw with the normal color?
+	switch (layer) {
+		case DrawingLayers::under:
+			//nothing
+			break;
+
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for StationaryTurret::poseDraw!" << std::endl;
+		case DrawingLayers::normal:
+			poseDraw();
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
+}
+
+void StationaryTurret::ghostDraw(float alpha) const {
+	//TODO: adjust so drawBody will only draw with the normal color?
+	drawBody(alpha);
+	drawOutline(alpha);
+	drawBarrel(alpha);
+}
+
+void StationaryTurret::ghostDraw(DrawingLayers layer, float alpha) const {
+	//TODO: adjust so drawBody will only draw with the normal color?
+	switch (layer) {
+		case DrawingLayers::under:
+			//nothing
+			break;
+
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for StationaryTurret::ghostDraw!" << std::endl;
+		case DrawingLayers::normal:
+			ghostDraw(alpha);
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
+}
+
+inline void StationaryTurret::drawBody(float alpha) const {
+	alpha = constrain<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
+	Shader* shader = Renderer::getShader("main");
+	glm::mat4 MVPM;
+
 	ColorValueHolder color = getColor();
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+
+	MVPM = Renderer::GenerateMatrix(r, r, 0, x, y);
 	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*va, *ib, *shader);
+}
 
-	//outline:
-	shader->setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 1.0f);
-	//shader->setUniformMat4f("u_MVP", MVPM);
+inline void StationaryTurret::drawOutline(float alpha) const {
+	alpha = constrain<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
+	Shader* shader = Renderer::getShader("main");
+	glm::mat4 MVPM;
+
+	glLineWidth(1.0f);
+
+	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
+	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+
+	MVPM = Renderer::GenerateMatrix(r, r, 0, x, y);
+	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*va, *shader, GL_LINE_LOOP, 1, Circle::numOfSides);
 
-	//barrel:
+	//cleanup
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
+
+inline void StationaryTurret::drawBarrel(float alpha) const {
+	alpha = constrain<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
+	Shader* shader = Renderer::getShader("main");
+	glm::mat4 MVPM;
+
 	glLineWidth(2.0f);
-	shader->setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 1.0f);
-	MVPM = Renderer::GenerateMatrix(r, 1, direction.getAngle(), xpos, ypos);
+
+	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
+	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+
+	MVPM = Renderer::GenerateMatrix(r, 1, direction.getAngle(), x, y);
 	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*cannon_va, *shader, GL_LINES, 0, 2);
@@ -241,11 +367,7 @@ void StationaryTurret::draw(double xpos, double ypos) const {
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
-void StationaryTurret::poseDraw() const {
-	//TODO: just body, outline, and barrel
-	return;
-}
-
+/*
 void StationaryTurret::drawCPU() const {
 	//main body:
 	ColorValueHolder color = getColor();
@@ -282,6 +404,7 @@ void StationaryTurret::drawCPU() const {
 
 	glEnd();
 }
+*/
 
 CircleHazard* StationaryTurret::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {
 	int attempts = 0;

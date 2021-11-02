@@ -20,8 +20,12 @@ multiple level effects can happen on the same level (can they interact with each
 list of (eventual) level effects:
 invisibility? (no one appreciates it though)
 |wind
-ice (no one really likes it, as expected)
-mines
+|ice (no one really likes it, as expected)
+|minefield
+
+|respawning powerups
+respawning walls?
+moving walls... of some sort
 
 I need more ideas for level effects...
 

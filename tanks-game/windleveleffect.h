@@ -38,8 +38,11 @@ public:
 	virtual void doEffects(Level* parent) override;
 
 	virtual void draw() const override;
-	//virtual void draw(double xpos, double ypos) const override;
-	//virtual void poseDraw() const override;
+	virtual void draw(DrawingLayers) const override;
+	virtual void poseDraw() const override;
+	virtual void poseDraw(DrawingLayers) const override;
+	virtual void ghostDraw(float alpha) const override;
+	virtual void ghostDraw(DrawingLayers, float alpha) const override;
 
 	WindLevelEffect();
 	WindLevelEffect(bool transitionWind);

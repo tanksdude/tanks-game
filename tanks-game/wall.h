@@ -28,9 +28,12 @@ private:
 
 public:
 	void draw() const override;
-	void draw(double xpos, double ypos) const override;
+	void draw(DrawingLayers) const override;
 	void poseDraw() const override;
-	void drawCPU() const;
+	void poseDraw(DrawingLayers) const override;
+	void ghostDraw(float alpha) const override;
+	void ghostDraw(DrawingLayers, float alpha) const override;
+	//void drawCPU() const;
 
 	Wall(double x, double y, double w, double h, ColorValueHolder);
 	//Wall(double x, double y, double w, double h, ColorValueHolder c, Team_ID teamID);

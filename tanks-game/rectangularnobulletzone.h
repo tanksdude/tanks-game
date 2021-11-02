@@ -40,9 +40,13 @@ public:
 
 	virtual void tick() override { GeneralizedNoBulletZone::tick(); }
 	virtual void draw() const override;
-	virtual void draw(double xpos, double ypos) const override;
+	virtual void draw(DrawingLayers) const override;
 	virtual void poseDraw() const override;
+	virtual void poseDraw(DrawingLayers) const override;
+	virtual void ghostDraw(float alpha) const override;
+	virtual void ghostDraw(DrawingLayers, float alpha) const override;
 
+public:
 	RectangularNoBulletZone(double xpos, double ypos, double width, double height);
 	~RectangularNoBulletZone();
 	static RectHazard* factory(int, std::string*);

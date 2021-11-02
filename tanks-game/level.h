@@ -3,11 +3,12 @@ class Level;
 
 #include "leveleffect.h"
 #include "colorvalueholder.h"
+#include "drawablething.h"
 #include <vector>
 #include <string>
 #include <unordered_map>
 
-class Level {
+class Level : public DrawableThing {
 	friend class LevelManager; //actually needs this unlike the other managers because the manager has more control
 
 protected:
@@ -26,8 +27,14 @@ public:
 	virtual void tick() { return; }
 	void tickLevelEffects();
 	void doLevelEffects();
-	virtual void draw() const { return; }
+	virtual void draw() const override { return; }
+	virtual void draw(DrawingLayers) const override { return; }
+	virtual void poseDraw() const override { return; }
+	virtual void poseDraw(DrawingLayers) const override { return; }
+	virtual void ghostDraw(float) const override { return; } //ignore... probably
+	virtual void ghostDraw(DrawingLayers, float) const override { return; } //ignore... probably
 	void drawLevelEffects() const;
+	void drawLevelEffects(DrawingLayers) const;
 
 	virtual ~Level();
 	static Level* factory(int, std::string*);

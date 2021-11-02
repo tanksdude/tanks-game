@@ -4,6 +4,7 @@
 #include <math.h>
 #include "mylib.h"
 #include "colormixer.h"
+#include "backgroundrect.h"
 #include "renderer.h"
 #include "keypressmanager.h"
 #include "bulletmanager.h"
@@ -585,6 +586,7 @@ double Tank::getRealCannonAngle(int i) const {
 	return fmod(fmod(shootingPoints->at(i).angle + velocity.getAngle(), 2*PI) + 2*PI, 2*PI);
 }
 
+/*
 void Tank::drawCPU() const {
 	//TODO: need ability for more special drawing
 	drawCPU(x, y);
@@ -683,36 +685,190 @@ void Tank::drawCPU(double xpos, double ypos) const {
 
 	glEnd();
 }
+*/
 
 void Tank::draw() const {
-	draw(x, y);
+	if (this->dead) {
+		drawDead();
+	} else {
+		drawShootingCooldown();
+		drawPowerCooldown();
+		drawBody();
+		drawExtraBarrels();
+		drawOutline();
+		drawMainBarrel();
+	}
 }
 
-void Tank::draw(double xpos, double ypos) const {
-	//stuff that will be used:
+void Tank::draw(DrawingLayers layer) const {
+	switch (layer) {
+		case DrawingLayers::under:
+			//nothing
+			break;
+
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for Tank::draw!" << std::endl;
+		case DrawingLayers::normal:
+			if (!this->dead) {
+				drawShootingCooldown();
+				drawPowerCooldown();
+				drawBody();
+				drawExtraBarrels();
+				drawOutline();
+				drawMainBarrel();
+			}
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			if (this->dead) {
+				drawDead();
+			}
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
+}
+
+void Tank::poseDraw() const {
+	//does not have to worry about being dead
+	drawBody();
+	//drawExtraBarrels();
+	drawOutline();
+	drawMainBarrel();
+}
+
+void Tank::poseDraw(DrawingLayers layer) const {
+	switch (layer) {
+		case DrawingLayers::under:
+			//nothing
+			break;
+
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for Tank::poseDraw!" << std::endl;
+		case DrawingLayers::normal:
+			drawBody();
+			//drawExtraBarrels();
+			drawOutline();
+			drawMainBarrel();
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//drawDead();
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
+}
+
+void Tank::ghostDraw(float alpha) const {
+	//does not have to worry about being dead
+	drawBody(alpha);
+	drawExtraBarrels(alpha);
+	drawOutline(alpha);
+	drawMainBarrel(alpha);
+}
+
+void Tank::ghostDraw(DrawingLayers layer, float alpha) const {
+	switch (layer) {
+		case DrawingLayers::under:
+			//nothing
+			break;
+
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for Tank::ghostDraw!" << std::endl;
+		case DrawingLayers::normal:
+			drawBody(alpha);
+			drawExtraBarrels(alpha);
+			drawOutline(alpha);
+			drawMainBarrel(alpha);
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//drawDead();
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
+}
+
+inline void Tank::drawBody(float alpha) const {
+	alpha = constrain<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 MVPM;
 
-	if (dead) {
-		//main body:
-		MVPM = Renderer::GenerateMatrix(r, r, getAngle(), xpos, ypos);
-
-		shader->setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 0.5f); //alpha isn't interpreted
-		shader->setUniformMat4f("u_MVP", MVPM);
-
-		Renderer::Draw(*va, *ib, *shader);
-
-		//outline:
-		MVPM = Renderer::GenerateMatrix(r, r, 0, xpos, ypos);
-		shader->setUniform4f("u_color", 1.0f, 1.0f, 1.0f, 1.0f);
-		shader->setUniformMat4f("u_MVP", MVPM);
-
-		Renderer::Draw(*va, *shader, GL_LINE_LOOP, 1, Circle::numOfSides);
-
-		return;
+	ColorValueHolder color;
+	if (this->dead) {
+		color = ColorValueHolder(0.0f, 0.0f, 0.0f);
+		//shader->setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 0.5f); //alpha isn't interpreted
+	} else {
+		color = getBodyColor();
 	}
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
+	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
-	//shooting cooldown outline:
+	MVPM = Renderer::GenerateMatrix(r, r, 0, x, y);
+	shader->setUniformMat4f("u_MVP", MVPM);
+
+	Renderer::Draw(*va, *ib, *shader);
+}
+
+inline void Tank::drawDead(float alpha) const {
+	drawBody(alpha);
+	drawOutline(alpha);
+}
+
+inline void Tank::drawOutline(float alpha) const {
+	alpha = constrain<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
+	Shader* shader = Renderer::getShader("main");
+	glm::mat4 MVPM;
+
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glLineWidth(1.0f);
+
+	ColorValueHolder color;
+	if (this->dead) {
+		color = ColorValueHolder(1.0f, 1.0f, 1.0f);
+	} else {
+		color = ColorValueHolder(0.0f, 0.0f, 0.0f);
+	}
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
+	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+
+	MVPM = Renderer::GenerateMatrix(r, r, 0, x, y);
+	shader->setUniformMat4f("u_MVP", MVPM);
+
+	Renderer::Draw(*va, *shader, GL_LINE_LOOP, 1, Circle::numOfSides);
+
+	//cleanup
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
+
+inline void Tank::drawShootingCooldown(float alpha) const {
+	alpha = constrain<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
+	Shader* shader = Renderer::getShader("main");
+	glm::mat4 MVPM;
+
 	double shootingOutlinePercent;
 	if (maxShootCount*getShootingSpeedMultiplier() <= 0 || maxShootCount <= 0) {
 		shootingOutlinePercent = 0;
@@ -722,15 +878,23 @@ void Tank::draw(double xpos, double ypos) const {
 	unsigned int shootingOutlineVertices = Circle::numOfSides * shootingOutlinePercent;
 
 	if (shootingOutlineVertices > 0) {
-		glm::mat4 MVPM_shootingOutline = Renderer::GenerateMatrix(r * 5.0/4.0, r * 5.0/4.0, getAngle(), xpos, ypos);
+		ColorValueHolder color = ColorValueHolder(1.0f, 1.0f, 1.0f);
+		color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
+		shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
-		shader->setUniform4f("u_color", 1.0f, 1.0f, 1.0f, 1.0f);
-		shader->setUniformMat4f("u_MVP", MVPM_shootingOutline);
+		MVPM = Renderer::GenerateMatrix(r * 5.0/4.0, r * 5.0/4.0, getAngle(), x, y);
+		shader->setUniformMat4f("u_MVP", MVPM);
 
 		Renderer::Draw(*va, *ib, *shader, shootingOutlineVertices*3);
 	}
-	
-	//power cooldown outlines:
+}
+
+inline void Tank::drawPowerCooldown(float alpha) const {
+	alpha = constrain<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
+	Shader* shader = Renderer::getShader("main");
+	glm::mat4 MVPM;
+
 	//first, sort by timeLeft/maxTime
 	std::vector<TankPower*> sortedTankPowers; //there shouldn't be more than a few powers, so no need to do anything more complex than an array
 	sortedTankPowers.reserve(tankPowers.size());
@@ -746,6 +910,7 @@ void Tank::draw(double xpos, double ypos) const {
 			}
 		}
 	}
+
 	//second, actually draw them
 	for (int i = 0; i < sortedTankPowers.size(); i++) {
 		double powerOutlinePercent;
@@ -757,50 +922,31 @@ void Tank::draw(double xpos, double ypos) const {
 		unsigned int powerOutlineVertices = Circle::numOfSides * powerOutlinePercent;
 
 		if (powerOutlineVertices > 0) {
-			glm::mat4 MVPM_powerOutline = Renderer::GenerateMatrix(r * 9.0/8.0, r * 9.0/8.0, getAngle(), xpos, ypos);
-
 			ColorValueHolder c = sortedTankPowers[i]->getColor();
+			c = ColorMixer::mix(BackgroundRect::getBackColor(), c, alpha);
 			shader->setUniform4f("u_color", c.getRf(), c.getGf(), c.getBf(), c.getAf());
-			shader->setUniformMat4f("u_MVP", MVPM_powerOutline);
+
+			MVPM = Renderer::GenerateMatrix(r * 9.0/8.0, r * 9.0/8.0, getAngle(), x, y);
+			shader->setUniformMat4f("u_MVP", MVPM);
 
 			Renderer::Draw(*va, *ib, *shader, powerOutlineVertices*3);
 		}
 	}
+}
 
-	//main body:
-	MVPM = Renderer::GenerateMatrix(r, r, getAngle(), xpos, ypos);
+inline void Tank::drawMainBarrel(float alpha) const {
+	alpha = constrain<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
+	Shader* shader = Renderer::getShader("main");
+	glm::mat4 MVPM;
 
-	ColorValueHolder color = getBodyColor();
-	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-	shader->setUniformMat4f("u_MVP", MVPM);
-
-	Renderer::Draw(*va, *ib, *shader);
-
-	//other barrels:
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glLineWidth(1.0f);
-
-	//shader->setUniform4f("u_color", .5f, .5f, .5f, .25f); //CPU color
-	shader->setUniform4f("u_color", .75f, .75f, .75f, 1.0f);
-
-	for (int i = 1; i < shootingPoints->size(); i++) {
-		MVPM = Renderer::GenerateMatrix(r, 1, getRealCannonAngle(i), xpos, ypos);
-		shader->setUniformMat4f("u_MVP", MVPM);
-
-		Renderer::Draw(*cannon_va, *shader, GL_LINES, 0, 2);
-	}
-
-	//outline:
-	MVPM = Renderer::GenerateMatrix(r, r, 0, xpos, ypos);
-	shader->setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 1.0f);
-	shader->setUniformMat4f("u_MVP", MVPM);
-
-	Renderer::Draw(*va, *shader, GL_LINE_LOOP, 1, Circle::numOfSides);
-
-	//barrel:
 	glLineWidth(2.0f);
-	shader->setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 1.0f);
-	MVPM = Renderer::GenerateMatrix(r, 1, getAngle(), xpos, ypos);
+
+	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
+	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+
+	MVPM = Renderer::GenerateMatrix(r, 1, getAngle(), x, y);
 	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*cannon_va, *shader, GL_LINES, 0, 2);
@@ -809,9 +955,29 @@ void Tank::draw(double xpos, double ypos) const {
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
-void Tank::poseDraw() const {
-	//TODO: just body, outline, and barrel
-	return;
+inline void Tank::drawExtraBarrels(float alpha) const {
+	alpha = constrain<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
+	Shader* shader = Renderer::getShader("main");
+	glm::mat4 MVPM;
+
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glLineWidth(1.0f);
+
+	//shader->setUniform4f("u_color", 0.5f, 0.5f, 0.5f, 0.25f); //CPU color
+	ColorValueHolder color = ColorValueHolder(0.75f, 0.75f, 0.75f);
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
+	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+
+	for (int i = 1; i < shootingPoints->size(); i++) {
+		MVPM = Renderer::GenerateMatrix(r, 1, getRealCannonAngle(i), x, y);
+		shader->setUniformMat4f("u_MVP", MVPM);
+
+		Renderer::Draw(*cannon_va, *shader, GL_LINES, 0, 2);
+	}
+
+	//cleanup
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 bool Tank::kill() {

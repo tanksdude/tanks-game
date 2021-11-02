@@ -383,30 +383,85 @@ void RectangularLightning::refreshBolt(int num, double smaller, double larger) {
 }
 
 void RectangularLightning::draw() const {
-	draw(x, y);
+	drawBackground();
+	drawBolts();
 }
 
-void RectangularLightning::draw(double xpos, double ypos) const {
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM = Renderer::GenerateMatrix(w, h, 0, xpos, ypos);
+void RectangularLightning::draw(DrawingLayers layer) const {
+	switch (layer) {
+		case DrawingLayers::under:
+			drawBackground();
+			break;
 
-	//background:
-	//TODO: make drawUnder() a thing
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for RectangularLightning::draw!" << std::endl;
+		case DrawingLayers::normal:
+			drawBolts();
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
+}
+
+void RectangularLightning::poseDraw() const {
+	//TODO
+}
+
+void RectangularLightning::poseDraw(DrawingLayers layer) const {
+	//TODO
+}
+
+void RectangularLightning::ghostDraw(float alpha) const {
+	//TODO
+}
+
+void RectangularLightning::ghostDraw(DrawingLayers layer, float alpha) const {
+	//TODO
+}
+
+inline void RectangularLightning::drawBackground(float alpha) const {
+	alpha = constrain<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
+	Shader* shader = Renderer::getShader("main");
+	glm::mat4 MVPM;
+
 	ColorValueHolder color = getBackgroundColor();
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+
+	MVPM = Renderer::GenerateMatrix(w, h, 0, x, y);
 	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*background_va, *background_ib, *shader);
+}
 
-	//bolts:
+inline void RectangularLightning::drawBolts(float alpha) const {
+	alpha = constrain<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
+	Shader* shader = Renderer::getShader("main");
+	glm::mat4 MVPM;
+
 	if (!currentlyActive) {
 		return;
 	}
 
 	glLineWidth(2.0f);
-	color = getBoltColor();
+
+	ColorValueHolder color = getBoltColor();
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-	MVPM = Renderer::GenerateMatrix(1, 1, 0, xpos, ypos);
+
+	MVPM = Renderer::GenerateMatrix(1, 1, 0, x, y);
 	shader->setUniformMat4f("u_MVP", MVPM);
 
 	for (int i = 0; i < bolts.size(); i++) {
@@ -420,11 +475,9 @@ void RectangularLightning::draw(double xpos, double ypos) const {
 		streamBoltVertices(i); //TODO: fix (but better)
 		Renderer::Draw(*bolt_va, *shader, GL_LINE_STRIP, 0, bolts[i]->length);
 	}
-}
 
-void RectangularLightning::poseDraw() const {
-	//TODO
-	return;
+	//cleanup
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 RectHazard* RectangularLightning::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {

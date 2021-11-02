@@ -78,7 +78,7 @@ const double BlastBulletPower::degradeAmount = .25;
 
 InteractionBoolHolder BlastBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
 	if (b->velocity.getMagnitude() <= 0) {
-		b->alpha -= degradeAmount;
+		b->opaqueness -= degradeAmount;
 		return { b->isDead(), false };
 	} else {
 		if (CollisionHandler::partiallyCollided(b, w)) {
@@ -93,7 +93,7 @@ InteractionBoolHolder BlastBulletPower::modifiedCollisionWithWall(Bullet* b, Wal
 
 InteractionBoolHolder BlastBulletPower::modifiedMovement(Bullet* b) {
 	if (b->velocity.getMagnitude() <= 0) {
-		b->alpha -= degradeAmount;
+		b->opaqueness -= degradeAmount;
 	} /*else if (b->velocity < 0) {
 		b->velocity.setMagnitude(0);
 		b->acceleration = 0;
