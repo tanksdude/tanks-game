@@ -324,6 +324,12 @@
     <ClCompile Include="oldminespower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="winningpathlevel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="invisiblewallsleveleffect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -684,6 +690,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="oldminespower.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="winningpathlevel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="invisiblewallsleveleffect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

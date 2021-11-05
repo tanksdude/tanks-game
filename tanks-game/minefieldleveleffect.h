@@ -7,7 +7,7 @@
 #include "indexbuffer.h"
 
 class MinefieldLevelEffect : public LevelEffect {
-	//called "mines" in JS
+	//called "mines" in JS Tanks
 protected:
 	double tickCount;
 	double tickCycle;

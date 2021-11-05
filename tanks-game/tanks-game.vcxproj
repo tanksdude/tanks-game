@@ -163,6 +163,7 @@
     <ClCompile Include="hidingplaceslevel.cpp" />
     <ClCompile Include="iceleveleffect.cpp" />
     <ClCompile Include="inversionpower.cpp" />
+    <ClCompile Include="invisiblewallsleveleffect.cpp" />
     <ClCompile Include="level.cpp" />
     <ClCompile Include="lightningcornerslevel.cpp" />
     <ClCompile Include="loneturretlevel.cpp" />
@@ -238,6 +239,7 @@
     <ClCompile Include="wallhackpower.cpp" />
     <ClCompile Include="wallmanager.cpp" />
     <ClCompile Include="windleveleffect.cpp" />
+    <ClCompile Include="winningpathlevel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="backgroundrect.h" />
@@ -270,6 +272,7 @@
     <ClInclude Include="iceleveleffect.h" />
     <ClInclude Include="interactionboolholder.h" />
     <ClInclude Include="inversionpower.h" />
+    <ClInclude Include="invisiblewallsleveleffect.h" />
     <ClInclude Include="lightningcornerslevel.h" />
     <ClInclude Include="loneturretlevel.h" />
     <ClInclude Include="manyhazardslevel.h" />
@@ -360,6 +363,7 @@
     <ClInclude Include="wallhackpower.h" />
     <ClInclude Include="wallmanager.h" />
     <ClInclude Include="windleveleffect.h" />
+    <ClInclude Include="winningpathlevel.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="freeglut.dll" />

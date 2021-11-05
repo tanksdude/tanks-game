@@ -2,7 +2,7 @@
 #include "level.h"
 
 class TrickyManeuveringLevel : public Level {
-	//was just referred to as "wind" (as in, "wind" level) in JS
+	//was just referred to as "wind" (as in, "wind" level) in JS Tanks
 public:
 	virtual std::string getName() const override { return "tricky_maneuvering"; }
 	virtual ColorValueHolder getDefaultColor() const override { return ColorValueHolder(0.5f, 0.75f, 1.0f); } //JS: #88CCFF

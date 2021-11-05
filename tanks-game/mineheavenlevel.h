@@ -2,7 +2,7 @@
 #include "level.h"
 
 class MineHeavenLevel : public Level {
-	//was just referred to as "ice and mines" in JS
+	//was just referred to as "ice and mines" in JS Tanks
 public:
 	virtual std::string getName() const override { return "mine_heaven"; }
 	virtual ColorValueHolder getDefaultColor() const override { return ColorValueHolder(0.25f, 0.25f, 0.25f); } //JS: #444444

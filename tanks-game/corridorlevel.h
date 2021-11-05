@@ -2,7 +2,7 @@
 #include "level.h"
 
 class CorridorLevel : public Level {
-	//referred to as "evened corridors" in JS Tanks
+	//called "evened corridors" in JS Tanks
 public:
 	virtual std::string getName() const override { return "corridor"; }
 	virtual ColorValueHolder getDefaultColor() const override { return ColorValueHolder(0.125f, 0.5f, 1.0f); } //JS: #2288FF

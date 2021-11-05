@@ -14,7 +14,7 @@ public:
 	}
 
 	virtual std::string getName() const override { return WallhackPower::getClassName(); }
-	static std::string getClassName() { return "wallhack"; }
+	static std::string getClassName() { return "wallhack"; } //"wallHack" in JS Tanks
 	virtual ColorValueHolder getColor() const override { return WallhackPower::getClassColor(); }
 	static ColorValueHolder getClassColor() { return ColorValueHolder(1.0f, 1.0f, 0.0f); } //yellow
 

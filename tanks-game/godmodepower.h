@@ -14,7 +14,7 @@ public:
 	}
 
 	virtual std::string getName() const override { return GodmodePower::getClassName(); }
-	static std::string getClassName() { return "godmode"; }
+	static std::string getClassName() { return "godmode"; } //"godMode" in JS Tanks
 	virtual ColorValueHolder getColor() const override { return GodmodePower::getClassColor(); }
 	static ColorValueHolder getClassColor(); //rainbow!
 	virtual double getColorImportance() const override { return GodmodePower::getClassColorImportance(); }

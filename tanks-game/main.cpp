@@ -64,6 +64,7 @@
 //"extra"... special
 #include "trickymaneuveringlevel.h"
 #include "mineheavenlevel.h"
+#include "winningpathlevel.h"
 //old levels:
 #include "oldemptylevel.h"
 //dev levels:
@@ -76,6 +77,7 @@
 #include "respawningpowerupsleveleffect.h"
 #include "minefieldleveleffect.h"
 #include "iceleveleffect.h"
+#include "invisiblewallsleveleffect.h"
 
 //hazards:
 #include "stationaryturret.h"
@@ -215,6 +217,7 @@ int main(int argc, char** argv) {
 	LevelManager::addLevelEffectFactory(RespawningPowerupsLevelEffect::factory);
 	LevelManager::addLevelEffectFactory(MinefieldLevelEffect::factory);
 	LevelManager::addLevelEffectFactory(IceLevelEffect::factory);
+	LevelManager::addLevelEffectFactory(InvisibleWallsLevelEffect::factory);
 
 	//vanilla (some are also "old"):
 	LevelManager::addLevelFactory(DefaultRandomLevel::factory);
@@ -232,6 +235,7 @@ int main(int argc, char** argv) {
 	//"extra"... special:
 	LevelManager::addLevelFactory(TrickyManeuveringLevel::factory);
 	LevelManager::addLevelFactory(MineHeavenLevel::factory);
+	LevelManager::addLevelFactory(WinningPathLevel::factory);
 
 	//old:
 	LevelManager::addLevelFactory(OldEmptyLevel::factory);

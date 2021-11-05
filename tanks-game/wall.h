@@ -14,7 +14,7 @@ class Wall : public Rect, public GameThing, public DrawableThing {
 	friend class ResetThings; //not really needed
 	friend class PowerFunctionHelper;
 
-protected:
+public: //TODO: shouldn't be public
 	ColorValueHolder color;
 
 private:
