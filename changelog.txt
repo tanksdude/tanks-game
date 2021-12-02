@@ -1,12 +1,16 @@
 0.2.5 (obviously definitely not here)
-* abstracted the renderer
-    * "it's all right" -user; "it's okay" -me; "can I be quoted?" -person who shall not be named
-    * it's not good enough for a game engine but that's fine
-* more levels
-* more powers?
+* hazard powers
+* powerups:
     * ... sword???
+* hazards:
+    * patrolling turret
+    * teleporter?
+    * reflecktor?
+* levels:
+    * more
+* level effects:
+    * ?
 * ini file?
-* hazard powers?
 
 0.2.4 (obviously not here)
 * changed name from "Tanks" to "PowerTanks" so this game might actually become discoverable
@@ -18,6 +22,7 @@
     * normal C++ class and function stuff
     * replace x-comp, y-comp, angle variables with singular vector variable
         * this slightly reduces performance, but it's way cleaner
+        * fixed edgecases for things that need to detect angles
 * drawing layers: under, normal, effects, top, debug
 * level effects added
     * all JS level effects in! (except portal)
@@ -30,14 +35,13 @@
         * mines, shotgun, tracking
         * barrier (previously called life)
     * shield (multi-hit barrier)
-    * [dev] annoying
-        * pushes tank away instead of killing it
+    * [dev] annoying: pushes tank away instead of killing it
 * levels:
     * all JS levels in! (except portal)
         * "hiding places" and "lone turret"
         * "lightning corners" (it was cut, but now it's back)
         * invisible level ("winning path"), wind level ("tricky maneuvering"), ice and mines level ("mine heaven")
-            * these levels didn't actually get names...
+            * these levels didn't get names in JS...
     * "sneaky reward" (... this is actually my first true level in this version, wow)
 * minor things:
     * minor overhaul (oxymoron?) of end game and score handling
@@ -141,10 +145,10 @@
 * cleanup for me (very little actual change)
 
 0.0.7 and before:
-* stuff. primarily the framework and some powers to test the framework. (look at commit history)
+* primarily the framework and some powers to test the framework
 
 future notes:
-0.3.0: an ini file
+0.3.0: better renderer abstraction
 0.4.0: mods? hazardpowers?
 0.4.A: priorities for the power modification functions?
 0.5.0: hazardpowers can special-case some additional functionality to hazards (like turrets knowing about bouncing bullets, or wallhack (this is for AI))?
@@ -156,4 +160,6 @@ future notes:
 2.0.0: level editor and/or power editor and/or game engine something thing (save for sequel instead?)
 
 other note: consider SDL instead of FreeGLUT
+
+GitHub: https://github.com/tanksdude/tanks-game
 JS Tanks: https://uncreativeusername.neocities.org/tanks.html

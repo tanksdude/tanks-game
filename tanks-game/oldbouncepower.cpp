@@ -25,7 +25,7 @@ Power* OldBouncePower::factory() {
 	return new OldBouncePower();
 }
 
-OldBouncePower::OldBouncePower() {
+OldBouncePower::OldBouncePower() : BouncePower() {
 	return;
 }
 
@@ -43,9 +43,11 @@ BulletPower* OldBounceTankPower::makeBulletPower() const {
 	return new OldBounceBulletPower();
 }
 
-OldBounceTankPower::OldBounceTankPower() {
+OldBounceTankPower::OldBounceTankPower() : BounceTankPower() {
+	/*
 	maxTime = 500;
 	timeLeft = 500;
+	*/
 }
 
 
@@ -53,8 +55,9 @@ OldBounceTankPower::OldBounceTankPower() {
 #include "powerfunctionhelper.h"
 #include "collisionhandler.h"
 
-const int OldBounceBulletPower::maxBounces = 16;
+//const int OldBounceBulletPower::maxBounces = 16;
 
+/*
 InteractionBoolHolder OldBounceBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
 	if (abs(b->velocity.getMagnitude()) * Bullet::default_radius/b->r <= .5) {
 		if (PowerFunctionHelper::bounceGenericWithCorners(b, w)) {
@@ -122,6 +125,7 @@ InteractionBoolHolder OldBounceBulletPower::modifiedEdgeCollision(Bullet* b) {
 
 	return { CollisionHandler::fullyOutOfBounds(b) };
 }
+*/
 
 void OldBounceBulletPower::initialize(Bullet* parent) {
 	//nothing
@@ -135,7 +139,8 @@ TankPower* OldBounceBulletPower::makeTankPower() const {
 	return new OldBounceTankPower();
 }
 
-OldBounceBulletPower::OldBounceBulletPower() {
+OldBounceBulletPower::OldBounceBulletPower() : BounceBulletPower() {
+	/*
 	timeLeft = 0;
 	maxTime = -1;
 
@@ -144,4 +149,5 @@ OldBounceBulletPower::OldBounceBulletPower() {
 	modifiesCollisionWithWall = true;
 	//modifiedCollisionWithWallCanWorkWithOthers = false;
 	modifiesEdgeCollision = true;
+	*/
 }

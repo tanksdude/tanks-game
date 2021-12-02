@@ -3,6 +3,7 @@
 std::unordered_map<std::string, float> MinesPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla-extra", .25f });
+	weights.insert({ "old", .125f });
 	return weights;
 }
 

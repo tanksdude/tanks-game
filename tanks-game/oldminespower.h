@@ -6,15 +6,11 @@ class OldMinesPower : public MinesPower {
 public:
 	virtual std::vector<std::string> getPowerTypes() const override {
 		std::vector<std::string> types = std::vector<std::string>{ "old" };
+		//no random-old
 		return types;
 	}
 	virtual std::unordered_map<std::string, float> getWeights() const override;
-	virtual std::vector<std::string> getPowerAttributes() const override {
-		//conflicted on this one, like bounce, though leaning much more towards "doesn't stack" than "does stack"
-		//also somewhat conflicted on mixing because it just doesn't mix well
-		std::vector<std::string> attributes = std::vector<std::string>{ "mix" };
-		return attributes;
-	}
+	//virtual std::vector<std::string> getPowerAttributes() const override; //follows MinesPower
 
 	virtual std::string getName() const override { return OldMinesPower::getClassName(); }
 	static std::string getClassName() { return "old_mines"; }
@@ -57,11 +53,9 @@ public:
 	virtual BulletPower* makeBulletPower() const override;
 
 	/*
-	//bool modifiesAdditionalShooting = false;
+	//bool modifiesAdditionalShooting = true;
 	virtual void additionalShooting(Tank* parent, CannonPoint) override;
-	//bool overridesAdditionalShooting = false;
-	//bool additionalShootingCanWorkWithOthers = true;
-	//bool additionalShootingCanOnlyWorkIndividually = false;
+	//bool overridesAdditionalShooting = true;
 	*/
 
 	//virtual double getTankFiringRateMultiplier() const override { return .25; } //.5?

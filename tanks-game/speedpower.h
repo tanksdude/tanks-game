@@ -3,10 +3,17 @@
 
 class SpeedPower : public Power {
 public:
+	virtual std::vector<std::string> getPowerTypes() const override {
+		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "old", "random-old", "supermix", "supermix-vanilla", "random" };
+		return types;
+	}
+	virtual std::unordered_map<std::string, float> getWeights() const override;
+	//virtual std::vector<std::string> getPowerAttributes() const override;
+
 	virtual std::string getName() const override { return SpeedPower::getClassName(); }
 	static std::string getClassName() { return "speed"; }
 	virtual ColorValueHolder getColor() const override { return SpeedPower::getClassColor(); }
-	static ColorValueHolder getClassColor() { return ColorValueHolder(0x44/255.0, 0x44/255.0, 1.0f); } //blue
+	static ColorValueHolder getClassColor() { return ColorValueHolder(0.25f, 0.25f, 1.0f); } //blue //JS: #4444FF
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;

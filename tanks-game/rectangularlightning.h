@@ -36,6 +36,12 @@ private:
 	void local_uninitializeGPU();
 
 public:
+	virtual std::vector<std::string> getHazardTypes() const override {
+		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "old", "random-old", "random" };
+		return types;
+	}
+	virtual std::unordered_map<std::string, float> getWeights() const override;
+
 	virtual bool actuallyCollided(const Tank*) const override { return currentlyActive; }
 	//bool modifiesTankCollision = true;
 	virtual void modifiedTankCollision(Tank*) override { return; }

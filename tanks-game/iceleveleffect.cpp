@@ -1,11 +1,6 @@
 #include "iceleveleffect.h"
 #include "tankmanager.h"
 
-std::vector<std::string> IceLevelEffect::getLevelEffectTypes() const {
-	std::vector<std::string> types = std::vector<std::string>{ "vanilla-extra", "old" };
-	return types;
-}
-
 std::unordered_map<std::string, float> IceLevelEffect::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla-extra", .25f });

@@ -7,7 +7,6 @@
 #include "hazardmanager.h"
 #include "mylib.h"
 #include "resetthings.h"
-#include "rng.h"
 #include <iostream>
 
 std::unordered_map<std::string, float> LightningCornersLevel::getWeights() const {
@@ -19,13 +18,13 @@ std::unordered_map<std::string, float> LightningCornersLevel::getWeights() const
 }
 
 void LightningCornersLevel::initialize() {
-	int randPos = RNG::randFunc() * 5;
-	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40, randPos);
+	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40);
 
 	ColorValueHolder color = getDefaultColor();
-	int tempRand;
+	//int tempRand;
 	PositionHolder pos;
 	std::string* paras;
+	std::string* names;
 
 	for (int i = 0; i < 4; i++) {
 		//classic JS walls
@@ -72,7 +71,7 @@ void LightningCornersLevel::initialize() {
 	//	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "banana"));
 	//}
 
-	std::string* names = new std::string[5]{ "speed", "speed", "speed", "big", "big" };
+	names = new std::string[5]{ "speed", "speed", "speed", "big", "big" };
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, names, 5));
 	delete[] names;
 	//JS used 4 speed to accomplish the same thing (big bullet speed decrease stacked there) (if using old big power, do what JS does)

@@ -2,6 +2,7 @@
 #include <stdexcept>
 
 std::vector<Level*> LevelManager::levels;
+
 std::unordered_map<std::string, std::unordered_map<std::string, LevelFunction>> LevelManager::levelLookup;
 std::unordered_map<std::string, std::unordered_map<std::string, LevelEffectFunction>> LevelManager::levelEffectLookup;
 std::unordered_map<std::string, std::vector<std::string>> LevelManager::levelNameList;
@@ -11,18 +12,18 @@ void LevelManager::initialize() {
 	levelLookup.insert({ "vanilla", std::unordered_map<std::string, LevelFunction>() });
 	levelLookup.insert({ "vanilla-extra", std::unordered_map<std::string, LevelFunction>() }); //... what does this include?
 	levelLookup.insert({ "random-vanilla", std::unordered_map<std::string, LevelFunction>() }); //can include vanilla-extra but probably won't
-	levelLookup.insert({ "random", std::unordered_map<std::string, LevelFunction>() }); //general random (requires the level to manually insert itself here)
 	levelLookup.insert({ "old", std::unordered_map<std::string, LevelFunction>() });
 	levelLookup.insert({ "random-old", std::unordered_map<std::string, LevelFunction>() });
+	levelLookup.insert({ "random", std::unordered_map<std::string, LevelFunction>() }); //general random
 	levelLookup.insert({ "dev", std::unordered_map<std::string, LevelFunction>() });
 	levelLookup.insert({ "random-dev", std::unordered_map<std::string, LevelFunction>() }); //would this be used?
 
 	levelEffectLookup.insert({ "vanilla", std::unordered_map<std::string, LevelEffectFunction>() });
 	levelEffectLookup.insert({ "vanilla-extra", std::unordered_map<std::string, LevelEffectFunction>() }); //most would probably fall here...
 	levelEffectLookup.insert({ "random-vanilla", std::unordered_map<std::string, LevelEffectFunction>() });
-	levelEffectLookup.insert({ "random", std::unordered_map<std::string, LevelEffectFunction>() }); //this could be a little terrifying
 	levelEffectLookup.insert({ "old", std::unordered_map<std::string, LevelEffectFunction>() });
 	levelEffectLookup.insert({ "random-old", std::unordered_map<std::string, LevelEffectFunction>() });
+	levelEffectLookup.insert({ "random", std::unordered_map<std::string, LevelEffectFunction>() }); //this could be a little terrifying
 	levelEffectLookup.insert({ "dev", std::unordered_map<std::string, LevelEffectFunction>() });
 	levelEffectLookup.insert({ "random-dev", std::unordered_map<std::string, LevelEffectFunction>() }); //would this be used?
 }

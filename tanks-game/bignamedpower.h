@@ -4,10 +4,13 @@
 class BigNamedPower : public Power {
 public:
 	virtual std::vector<std::string> getPowerTypes() const override {
-		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "random" };
+		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "old", "random" };
+		//do include in old because it's from JS but not random-old because it's different
+		//include ultimate?
 		return types;
 	}
 	virtual std::unordered_map<std::string, float> getWeights() const override;
+	//virtual std::vector<std::string> getPowerAttributes() const override;
 
 	virtual std::string getName() const override { return BigNamedPower::getClassName(); }
 	static std::string getClassName() { return "big"; }
@@ -19,6 +22,7 @@ public:
 	//virtual HazardPower* makeHazardPower() const override;
 
 	BigNamedPower();
+	//TODO: virtual destructor for OldBigNamedPower?
 	static Power* factory();
 };
 
@@ -61,9 +65,7 @@ public:
 
 	//bool modifiesCollisionWithWall = true;
 	virtual InteractionBoolHolder modifiedCollisionWithWall(Bullet*, Wall*) override;
-	//bool overridesCollisionWithWall = true;
-	//bool modifiedCollisionWithWallCanWorkWithOthers = true;
-	//bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;
+	//bool modifiedCollisionWithWallCanWorkWithOthers = false;
 
 	virtual double getBulletSpeedMultiplier() const override { return .25; }
 	virtual double getBulletRadiusMultiplier() const override { return 4; }

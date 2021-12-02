@@ -9,7 +9,10 @@
 #include "hazardmanager.h"
 #include "levelmanager.h"
 #include "mylib.h"
+#include "rng.h"
 #include <iostream>
+
+const double ResetThings::default_tankToEdgeDist = 20;
 
 void ResetThings::reset(int) {
 	EndGameHandler::finalizeScores();
@@ -31,8 +34,8 @@ void ResetThings::reset(int) {
 	HazardManager::clearRectHazards();
 	LevelManager::clearLevels();
 
-	TankManager::tanks[0]->resetThings(20, GAME_HEIGHT/2, 0, TankManager::tanks[0]->getTeamID());
-	TankManager::tanks[1]->resetThings(GAME_WIDTH - 20, GAME_HEIGHT/2, PI, TankManager::tanks[1]->getTeamID());
+	TankManager::tanks[0]->resetThings(default_tankToEdgeDist, GAME_HEIGHT/2, 0, TankManager::tanks[0]->getTeamID());
+	TankManager::tanks[1]->resetThings(GAME_WIDTH - default_tankToEdgeDist, GAME_HEIGHT/2, PI, TankManager::tanks[1]->getTeamID());
 
 #if _DEBUG
 	LevelManager::pushLevel("dev", "dev0");
@@ -84,26 +87,23 @@ void ResetThings::firstReset() {
 	}
 }
 
-void ResetThings::tankPositionReset(Tank* first, Tank* second, int randNum) {
-	//x-position set by ResetThings (first line of reset(int))
-	randNum = constrain<int>(randNum, 0, 4); //no trolls here
-	first->y = randNum * (GAME_HEIGHT/5) + (GAME_HEIGHT/10);
-	second->y = (4 - randNum) * (GAME_HEIGHT/5) + (GAME_HEIGHT/10);
+void ResetThings::tankPositionReset(Tank* first, Tank* second) {
+	tankPositionReset(first, second, default_tankToEdgeDist);
 }
 
-void ResetThings::tankPositionReset(Tank* first, Tank* second, double x, int randNum) {
+void ResetThings::tankPositionReset(Tank* first, Tank* second, double x) {
 	x = constrain<double>(x, 0, GAME_WIDTH); //trolls begone
 	first->x = x;
 	second->x = GAME_WIDTH - x;
 
-	randNum = constrain<int>(randNum, 0, 4); //trolls, no trolling
+	int randNum = RNG::randFunc() * 5;
 	first->y = randNum * (GAME_HEIGHT/5) + (GAME_HEIGHT/10);
 	second->y = (4 - randNum) * (GAME_HEIGHT/5) + (GAME_HEIGHT/10);
 }
 
-void ResetThings::tankPositionReset(Tank* first, Tank* second, double x, double y, bool) {
-	x = constrain<double>(x, 0, GAME_WIDTH); //troll police, open up!
-	y = constrain<double>(y, 0, GAME_HEIGHT); //trolly mctrollface
+void ResetThings::tankPositionReset(Tank* first, Tank* second, double x, double y) {
+	x = constrain<double>(x, 0, GAME_WIDTH); //no trolls here
+	y = constrain<double>(y, 0, GAME_HEIGHT); //trolls begone
 	first->x = x;
 	second->x = GAME_WIDTH - x;
 	first->y = y;

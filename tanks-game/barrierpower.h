@@ -5,19 +5,17 @@ class BarrierPower : public Power {
 	//called life in JS Tanks
 public:
 	virtual std::vector<std::string> getPowerTypes() const override {
-		std::vector<std::string> types = std::vector<std::string>{ "vanilla-extra", "supermix" };
+		std::vector<std::string> types = std::vector<std::string>{ "vanilla-extra", "old", "random-old" };
+		//no supermix; it'd be a little too strong
 		return types;
 	}
 	virtual std::unordered_map<std::string, float> getWeights() const override;
-	virtual std::vector<std::string> getPowerAttributes() const override {
-		std::vector<std::string> attributes = std::vector<std::string>{ "mix" };
-		return attributes;
-	}
+	//virtual std::vector<std::string> getPowerAttributes() const override;
 
 	virtual std::string getName() const override { return BarrierPower::getClassName(); }
 	static std::string getClassName() { return "barrier"; }
 	virtual ColorValueHolder getColor() const override { return BarrierPower::getClassColor(); }
-	static ColorValueHolder getClassColor() { return ColorValueHolder(0.0f, 0.5f, 0.25f); } //dark green
+	static ColorValueHolder getClassColor() { return ColorValueHolder(0.0f, 0.5f, 0.25f); } //dark green //JS: #008844
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;

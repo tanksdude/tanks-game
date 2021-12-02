@@ -1,6 +1,5 @@
 #include "developerlevel2.h"
 #include "constants.h"
-//#include "mylib.h"
 #include "randomlevel.h"
 #include "tankmanager.h"
 #include "powerupmanager.h"
@@ -20,11 +19,12 @@ std::unordered_map<std::string, float> DeveloperLevel2::getWeights() const {
 
 void DeveloperLevel2::initialize() {
 	//primary purpose: banana testing
-	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 20, GAME_HEIGHT/2, true);
+	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), ResetThings::default_tankToEdgeDist, GAME_HEIGHT/2);
 
-	int tempRand;
+	//int tempRand;
 	PositionHolder pos;
-	std::string* paras;
+	//std::string* paras;
+	std::string* names;
 
 	//assumption: TANK_RADIUS=16 (why it would ever be changed is beyond me)
 	PowerupManager::pushPowerup(new PowerSquare(20, 20, "speed"));
@@ -55,7 +55,7 @@ void DeveloperLevel2::initialize() {
 	PowerupManager::pushPowerup(new PowerSquare(120, GAME_HEIGHT-20, "dev", "inversion"));
 	PowerupManager::pushPowerup(new PowerSquare(140, GAME_HEIGHT-20, "dev", "annoying"));
 
-	std::string* names = new std::string[2]{ "multishot", "multishot" };
+	names = new std::string[2]{ "multishot", "multishot" };
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH-20, GAME_HEIGHT-20, names, 2));
 	names[0] = "speed", names[1] = "wallhack";
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH-40, GAME_HEIGHT-20, names, 2));

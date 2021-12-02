@@ -1,5 +1,17 @@
 #include "firenamedpower.h"
 
+std::unordered_map<std::string, float> FireNamedPower::getWeights() const {
+	std::unordered_map<std::string, float> weights;
+	weights.insert({ "vanilla", .5f });
+	weights.insert({ "random-vanilla", .5f });
+	weights.insert({ "old", .5f });
+	weights.insert({ "random-old", .5f });
+	weights.insert({ "supermix", .5f });
+	weights.insert({ "supermix-vanilla", .5f });
+	weights.insert({ "random", .5f });
+	return weights;
+}
+
 TankPower* FireNamedPower::makeTankPower() const {
 	return new FireNamedTankPower();
 }
@@ -53,6 +65,7 @@ BulletPower* FireNamedTankPower::makeBulletPower() const {
 FireNamedTankPower::FireNamedTankPower() {
 	maxTime = 500;
 	timeLeft = 500;
+	//JS: maxTime = 1000
 
 	modifiesAdditionalShooting = true;
 	overridesAdditionalShooting = true;
@@ -66,6 +79,18 @@ const double FireNamedBulletPower::maxBulletAcceleration = 3/32.0;
 const double FireNamedBulletPower::minBulletAcceleration = 1/32.0;
 const double FireNamedBulletPower::degradeAmount = .5;
 const double FireNamedBulletPower::growAmount = 1.5/32.0; //TODO: need way to pass parameters into bulletpower constructor
+
+InteractionBoolHolder FireNamedBulletPower::modifiedMovement(Bullet* b) {
+	if (b->velocity.getMagnitude() > 0) {
+		b->r += growAmount;
+	} else if (b->velocity.getMagnitude() <= 0) {
+		b->opaqueness -= degradeAmount;
+	} /*else if (b->velocity < 0) {
+		b->velocity.setMagnitude(0);
+		b->acceleration = 0;
+	}*/
+	return { false };
+}
 
 InteractionBoolHolder FireNamedBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
 	if (b->velocity.getMagnitude() <= 0) {
@@ -82,18 +107,6 @@ InteractionBoolHolder FireNamedBulletPower::modifiedCollisionWithWall(Bullet* b,
 		}
 		return { false, false };
 	}
-}
-
-InteractionBoolHolder FireNamedBulletPower::modifiedMovement(Bullet* b) {
-	if (b->velocity.getMagnitude() > 0) {
-		b->r += growAmount;
-	} else if (b->velocity.getMagnitude() <= 0) {
-		b->opaqueness -= degradeAmount;
-	} /*else if (b->velocity < 0) {
-		b->velocity.setMagnitude(0);
-		b->acceleration = 0;
-	}*/
-	return { false };
 }
 
 double FireNamedBulletPower::getBulletAcceleration() const {
@@ -128,5 +141,4 @@ FireNamedBulletPower::FireNamedBulletPower(double acceleration) {
 
 	modifiesMovement = true;
 	modifiesCollisionWithWall = true;
-	overridesCollisionWithWall = true;
 }

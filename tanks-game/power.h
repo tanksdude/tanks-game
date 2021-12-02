@@ -10,8 +10,8 @@ class Power;
 
 class Power {
 public:
-	virtual std::vector<std::string> getPowerTypes() const; //defined in source file in case I change some values
-	virtual std::unordered_map<std::string, float> getWeights() const; //intended range: (0,1]
+	virtual std::vector<std::string> getPowerTypes() const = 0; //pure virtual to make sure powers define it
+	virtual std::unordered_map<std::string, float> getWeights() const = 0; //intended range: (0,1]
 	virtual std::vector<std::string> getPowerAttributes() const; //stuff like "can stack", "can mix" ("can X" is only a suggestion)
 
 	virtual std::string getName() const = 0;

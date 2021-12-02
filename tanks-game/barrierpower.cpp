@@ -3,7 +3,8 @@
 std::unordered_map<std::string, float> BarrierPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla-extra", .25f });
-	weights.insert({ "supermix", .5f });
+	weights.insert({ "old", .25f });
+	weights.insert({ "random-old", .25f });
 	return weights;
 }
 
@@ -51,6 +52,7 @@ InteractionBoolHolder BarrierTankPower::modifiedDeathHandling(Tank* parent) {
 BarrierTankPower::BarrierTankPower() {
 	maxTime = 500;
 	timeLeft = 500;
+	//JS: maxTime = 1000
 
 	modifiesDeathHandling = true;
 }

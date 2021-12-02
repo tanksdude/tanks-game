@@ -4,7 +4,7 @@
 class InvincibleNamedPower : public Power {
 public:
 	virtual std::vector<std::string> getPowerTypes() const override {
-		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "random" };
+		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "old", "random-old", "random" };
 		return types;
 	}
 	virtual std::unordered_map<std::string, float> getWeights() const override;
@@ -23,6 +23,7 @@ public:
 	//virtual HazardPower* makeHazardPower() const override;
 
 	InvincibleNamedPower();
+	//TODO: virtual destructor for DevLongInvincibleNamedPower?
 	static Power* factory();
 };
 

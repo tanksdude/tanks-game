@@ -157,7 +157,7 @@ void GameMainLoop::Tick(int physicsUPS) {
 	//Diagnostics::printPreciseTimings();
 	Diagnostics::clearTimes();
 
-	//std::cout << "tick: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << "ms" << endl << endl;
+	//std::cout << "tick: " << (long long)Diagnostics::getDiff(start, end) << "ms" << std::endl << std::endl;
 
 	if (!EndGameHandler::shouldGameEnd()) {
 		glutTimerFunc(1000/physicsUPS, GameMainLoop::Tick, physicsUPS);
@@ -179,7 +179,7 @@ void GameMainLoop::levelTick() {
 	//for (int i = 0; i < LevelManager::getNumLevels(); i++) {
 	//	LevelManager::getLevel(i)->doLevelEffects();
 	//}
-	//^^^ handled by level
+	//TODO: ^^^ handled by level?
 	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
 		LevelManager::getLevel(i)->tick();
 	}
@@ -356,7 +356,7 @@ void GameMainLoop::tankToHazard() {
 			if (CollisionHandler::partiallyCollided(t, ch)) {
 				//tankpower decides whether to use the partial collision or the true collision
 				for (int k = 0; k < t->tankPowers.size(); k++) {
-					if (t->tankPowers[k]->modifiesCollisionWithCircleHazard) {
+					if (t->tankPowers[k]->getModifiesCollisionWithCircleHazard(ch)) {
 						if (t->tankPowers[k]->modifiedCollisionWithCircleHazardCanOnlyWorkIndividually && modifiedCircleHazardCollision) {
 							continue;
 						}
@@ -413,7 +413,7 @@ void GameMainLoop::tankToHazard() {
 
 			if (CollisionHandler::partiallyCollided(t, rh)) {
 				for (int k = 0; k < t->tankPowers.size(); k++) {
-					if (t->tankPowers[k]->modifiesCollisionWithRectHazard) {
+					if (t->tankPowers[k]->getModifiesCollisionWithRectHazard(rh)) {
 						if (t->tankPowers[k]->modifiedCollisionWithRectHazardCanOnlyWorkIndividually && modifiedRectHazardCollision) {
 							continue;
 						}
@@ -695,7 +695,7 @@ void GameMainLoop::bulletToHazard() {
 			}
 			if (CollisionHandler::partiallyCollided(b, ch)) {
 				for (int k = 0; k < b->bulletPowers.size(); k++) {
-					if (b->bulletPowers[k]->modifiesCollisionWithCircleHazard) {
+					if (b->bulletPowers[k]->getModifiesCollisionWithCircleHazard(ch)) {
 						if (b->bulletPowers[k]->modifiedCollisionWithCircleHazardCanOnlyWorkIndividually && modifiedCircleHazardCollision) {
 							continue;
 						}
@@ -758,7 +758,7 @@ void GameMainLoop::bulletToHazard() {
 			}
 			if (CollisionHandler::partiallyCollided(b, rh)) {
 				for (int k = 0; k < b->bulletPowers.size(); k++) {
-					if (b->bulletPowers[k]->modifiesCollisionWithRectHazard) {
+					if (b->bulletPowers[k]->getModifiesCollisionWithRectHazard(rh)) {
 						if (b->bulletPowers[k]->modifiedCollisionWithRectHazardCanOnlyWorkIndividually && modifiedRectHazardCollision) {
 							continue;
 						}
@@ -1055,7 +1055,7 @@ void GameMainLoop::drawEverything() {
 	//Diagnostics::printPreciseTimings();
 	Diagnostics::clearTimes();
 
-	//std::cout << "entire: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << "ms" << endl << endl;
+	//std::cout << "entire: " << (long long)Diagnostics::getDiff(start, end) << "ms" << std::endl << std::endl;
 
 	currentlyDrawing = false;
 }

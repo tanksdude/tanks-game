@@ -13,13 +13,13 @@ std::unordered_map<std::string, float> OldEmptyLevel::getWeights() const {
 }
 
 void OldEmptyLevel::initialize() {
-	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40, GAME_HEIGHT/2, true);
+	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40, GAME_HEIGHT/2);
 
 	//in JS, power mixing was turned off (yeah, not super important on this level)
 	ColorValueHolder color = getDefaultColor();
-	int tempRand;
+	//int tempRand;
 	PositionHolder pos;
-	std::string* paras;
+	//std::string* paras;
 
 	for (int i = 0; i < 4; i++) {
 		//classic JS walls

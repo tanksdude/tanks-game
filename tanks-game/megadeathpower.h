@@ -5,6 +5,8 @@ class MegaDeathPower : public Power {
 public:
 	virtual std::vector<std::string> getPowerTypes() const override {
 		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "random" };
+		//should it be in old? (it only sorta existed)
+		//JS: did have supermix (I thought it was impossible for it to exist normally... well, whatever)
 		return types;
 	}
 	virtual std::unordered_map<std::string, float> getWeights() const override;
@@ -14,9 +16,9 @@ public:
 	}
 
 	virtual std::string getName() const override { return MegaDeathPower::getClassName(); }
-	static std::string getClassName() { return "megadeath"; }
+	static std::string getClassName() { return "megadeath"; } //"mega-death" in JS Tanks
 	virtual ColorValueHolder getColor() const override { return MegaDeathPower::getClassColor(); }
-	static ColorValueHolder getClassColor() { return ColorValueHolder(0x4F/255.0, 0x3E/255.0, 0x3E/255.0); } //brown-ish
+	static ColorValueHolder getClassColor() { return ColorValueHolder(0x4F/255.0, 0x3E/255.0, 0x3E/255.0); } //brown-ish //JS unused alternate: #201A1A
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
@@ -56,7 +58,7 @@ public:
 	virtual void initialize(Bullet* parent) override;
 	virtual void removeEffects(Bullet* parent) override;
 
-	virtual void tick(Bullet* b) override; //for updating wall collision bools based on size //(override in case the Bullet* argument changes)
+	virtual void tick(Bullet* b) override; //for updating wall collision bools based on size
 
 	virtual ColorValueHolder getColor() const override {
 		return MegaDeathPower::getClassColor();
@@ -67,15 +69,10 @@ public:
 
 	//bool modifiesMovement = true;
 	virtual InteractionBoolHolder modifiedMovement(Bullet*) override;
-	//bool overridesMovement = false;
-	//bool modifiedMovementCanWorkWithOthers = true;
-	//bool modifiedMovementCanOnlyWorkIndividually = false;
 
 	//bool modifiesCollisionWithWall = true;
 	virtual InteractionBoolHolder modifiedCollisionWithWall(Bullet*, Wall*) override;
-	//bool overridesCollisionWithWall = true;
-	//bool modifiedCollisionWithWallCanWorkWithOthers = true;
-	//bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;
+	//bool modifiedCollisionWithWallCanWorkWithOthers = false;
 
 	virtual double getBulletSpeedMultiplier() const override { return 1.0/4; }
 	//with bulletSizeMultiplierPerTick = 257.0/256.0, 1.0/128 or 1.0/64 might be closer to what I originally thought of

@@ -37,6 +37,14 @@ private:
 	static bool uninitializeGPU();
 	void local_uninitializeGPU();
 
+public:
+	virtual std::vector<std::string> getHazardTypes() const override {
+		//should match with RectangularLightning
+		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "old", "random-old", "random" };
+		return types;
+	}
+	virtual std::unordered_map<std::string, float> getWeights() const override;
+
 protected:
 	virtual void specialEffectCircleCollision(Circle*) override;
 

@@ -2,6 +2,7 @@
 #include "collisionhandler.h"
 #include "constants.h"
 
+/*
 std::vector<std::string> CircleHazard::getHazardTypes() const {
 	std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "random" };
 	return types;
@@ -15,6 +16,7 @@ std::unordered_map<std::string, float> CircleHazard::getWeights() const {
 	weights.insert({ "random", .5f });
 	return weights;
 }
+*/
 
 void CircleHazard::modifiedTankCollision(Tank* t) {
 	CollisionHandler::pushMovableAwayFromImmovable(t, this);

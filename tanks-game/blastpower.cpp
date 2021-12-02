@@ -4,7 +4,9 @@ std::unordered_map<std::string, float> BlastPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", .5f });
 	weights.insert({ "random-vanilla", .25f });
-	weights.insert({ "random", .25f });
+	weights.insert({ "old", .5f });
+	weights.insert({ "random-old", .25f });
+	weights.insert({ "random", .125f });
 	return weights;
 }
 
@@ -62,6 +64,7 @@ BulletPower* BlastTankPower::makeBulletPower() const {
 BlastTankPower::BlastTankPower() {
 	maxTime = 500;
 	timeLeft = 500;
+	//JS: maxTime = 1000
 
 	modifiesAdditionalShooting = true;
 	overridesAdditionalShooting = true;
@@ -75,6 +78,16 @@ BlastTankPower::BlastTankPower() {
 const double BlastBulletPower::maxBulletAcceleration = 3/16.0;
 const double BlastBulletPower::minBulletAcceleration = 1/16.0;
 const double BlastBulletPower::degradeAmount = .25;
+
+InteractionBoolHolder BlastBulletPower::modifiedMovement(Bullet* b) {
+	if (b->velocity.getMagnitude() <= 0) {
+		b->opaqueness -= degradeAmount;
+	} /*else if (b->velocity < 0) {
+		b->velocity.setMagnitude(0);
+		b->acceleration = 0;
+	}*/
+	return { false };
+}
 
 InteractionBoolHolder BlastBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
 	if (b->velocity.getMagnitude() <= 0) {
@@ -91,14 +104,26 @@ InteractionBoolHolder BlastBulletPower::modifiedCollisionWithWall(Bullet* b, Wal
 	}
 }
 
-InteractionBoolHolder BlastBulletPower::modifiedMovement(Bullet* b) {
-	if (b->velocity.getMagnitude() <= 0) {
-		b->opaqueness -= degradeAmount;
-	} /*else if (b->velocity < 0) {
-		b->velocity.setMagnitude(0);
-		b->acceleration = 0;
-	}*/
-	return { false };
+bool BlastBulletPower::getModifiesCollisionWithCircleHazard(const CircleHazard* ch) const {
+	return (ch->getCollisionType() == CircleHazardCollisionType::solid);
+}
+
+bool BlastBulletPower::getModifiesCollisionWithRectHazard(const RectHazard* rh) const {
+	return (rh->getCollisionType() == RectHazardCollisionType::solid);
+}
+
+InteractionBoolHolder BlastBulletPower::modifiedCollisionWithCircleHazard(Bullet* b, CircleHazard* ch) {
+	CollisionHandler::pushMovableAwayFromImmovable(b, ch);
+	b->acceleration = 0;
+	b->velocity.setMagnitude(0);
+	return { false, false };
+}
+
+InteractionBoolHolder BlastBulletPower::modifiedCollisionWithRectHazard(Bullet* b, RectHazard* rh) {
+	CollisionHandler::pushMovableAwayFromImmovable(b, rh);
+	b->acceleration = 0;
+	b->velocity.setMagnitude(0);
+	return { false, false };
 }
 
 double BlastBulletPower::getBulletAcceleration() const {
@@ -133,5 +158,4 @@ BlastBulletPower::BlastBulletPower(double acceleration) {
 
 	modifiesMovement = true;
 	modifiesCollisionWithWall = true;
-	overridesCollisionWithWall = true;
 }

@@ -30,11 +30,19 @@ private:
 	static bool uninitializeGPU();
 
 public:
+	virtual std::vector<std::string> getHazardTypes() const override {
+		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "old", "random-old", "random" };
+		return types;
+	}
+	virtual std::unordered_map<std::string, float> getWeights() const override;
+
+protected:
 	//double getAngle() const;
 	virtual bool canSeeTank(const Tank*) const; //true if pointing at tank with no wall obstructions
 	virtual ColorValueHolder getColor() const; //needed because turret doesn't use tickCount, instead using targetingCount (should change this)
 	virtual ColorValueHolder getColor(int state) const;
 
+public:
 	//virtual bool validLocation() const override { return true; }
 	virtual bool reasonableLocation() const override;
 

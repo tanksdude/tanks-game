@@ -2,6 +2,7 @@
 #include <stdexcept>
 
 std::vector<PowerSquare*> PowerupManager::powerups; //active powersquares
+
 std::unordered_map<std::string, std::unordered_map<std::string, PowerFunction>> PowerupManager::powerLookup;
 std::unordered_map<std::string, std::vector<std::string>> PowerupManager::powerNameList;
 
@@ -9,13 +10,15 @@ void PowerupManager::initialize() {
 	powerLookup.insert({ "vanilla", std::unordered_map<std::string, PowerFunction>() });
 	powerLookup.insert({ "vanilla-extra", std::unordered_map<std::string, PowerFunction>() }); //shotgun, mines, tracking, fire?, barrier?
 	powerLookup.insert({ "random-vanilla", std::unordered_map<std::string, PowerFunction>() });
-	powerLookup.insert({ "random", std::unordered_map<std::string, PowerFunction>() }); //general random (requires the power to manually insert itself here)
-	powerLookup.insert({ "old", std::unordered_map<std::string, PowerFunction>() }); //probably just includes the versions of the powers from JS
+	powerLookup.insert({ "old", std::unordered_map<std::string, PowerFunction>() }); //powers from JS (they may also be in vanilla)
 	powerLookup.insert({ "random-old", std::unordered_map<std::string, PowerFunction>() });
-	powerLookup.insert({ "dev", std::unordered_map<std::string, PowerFunction>() });
-	powerLookup.insert({ "random-dev", std::unordered_map<std::string, PowerFunction>() }); //would this be used?
 	powerLookup.insert({ "supermix", std::unordered_map<std::string, PowerFunction>() }); //these powerups are for godmode
 	powerLookup.insert({ "supermix-vanilla", std::unordered_map<std::string, PowerFunction>() }); //(godmode actually uses this one)
+	powerLookup.insert({ "ultimate", std::unordered_map<std::string, PowerFunction>() }); //ultimate powerups (say, at the center of a level) (wallhack and godmode)
+	powerLookup.insert({ "ultimate-vanilla", std::unordered_map<std::string, PowerFunction>() });
+	powerLookup.insert({ "random", std::unordered_map<std::string, PowerFunction>() }); //general random
+	powerLookup.insert({ "dev", std::unordered_map<std::string, PowerFunction>() });
+	powerLookup.insert({ "random-dev", std::unordered_map<std::string, PowerFunction>() }); //would this be used?
 }
 
 PowerSquare* PowerupManager::getPowerup(int index) {

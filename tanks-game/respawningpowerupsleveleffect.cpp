@@ -1,11 +1,6 @@
 #include "respawningpowerupsleveleffect.h"
 #include "powerupmanager.h"
 
-std::vector<std::string> RespawningPowerupsLevelEffect::getLevelEffectTypes() const {
-	std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla" };
-	return types;
-}
-
 std::unordered_map<std::string, float> RespawningPowerupsLevelEffect::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", 1.0f });

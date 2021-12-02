@@ -1,17 +1,16 @@
 #pragma once
 #include "leveleffect.h"
 
-#include "vertexarray.h"
-#include "vertexbuffer.h"
-#include "indexbuffer.h"
-
 class IceLevelEffect : public LevelEffect {
 protected:
 	double iceFactor;
 
 public:
 	virtual std::string getName() const override { return "ice"; }
-	virtual std::vector<std::string> getLevelEffectTypes() const override;
+	virtual std::vector<std::string> getLevelEffectTypes() const override {
+		std::vector<std::string> types = std::vector<std::string>{ "vanilla-extra", "old" };
+		return types;
+	}
 	virtual std::unordered_map<std::string, float> getWeights() const override;
 	virtual void apply() override;
 	virtual void tick(const Level* parent) override;

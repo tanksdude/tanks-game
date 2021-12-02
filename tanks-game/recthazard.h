@@ -57,8 +57,8 @@ protected:
 	double getHighestDefenseTier(double importance) const;
 
 public:
-	virtual std::vector<std::string> getHazardTypes() const;
-	virtual std::unordered_map<std::string, float> getWeights() const; //intended range: (0,1]
+	virtual std::vector<std::string> getHazardTypes() const = 0; //pure virtual to make sure recthazards define it
+	virtual std::unordered_map<std::string, float> getWeights() const = 0; //intended range: (0,1]
 
 	virtual bool actuallyCollided(const Tank*) const { return true; } //precondition: currently and partially collided with tank
 	bool modifiesTankCollision = false;

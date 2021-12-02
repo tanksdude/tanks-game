@@ -7,7 +7,7 @@ public:
 	virtual std::string getName() const override { return "mine_heaven"; }
 	virtual ColorValueHolder getDefaultColor() const override { return ColorValueHolder(0.25f, 0.25f, 0.25f); } //JS: #444444
 	virtual std::vector<std::string> getLevelTypes() const override {
-		std::vector<std::string> types = std::vector<std::string>{ "vanilla-extra", "random-vanilla", "old" };
+		std::vector<std::string> types = std::vector<std::string>{ "vanilla-extra", "random-vanilla", "old", "random-old" };
 		return types;
 	}
 	virtual std::unordered_map<std::string, float> getWeights() const override;

@@ -20,12 +20,13 @@ std::unordered_map<std::string, float> DeveloperLevel1::getWeights() const {
 }
 
 void DeveloperLevel1::initialize() {
-	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 20, GAME_HEIGHT/2, true);
+	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), ResetThings::default_tankToEdgeDist, GAME_HEIGHT/2);
 
 	ColorValueHolder wallColor = getDefaultColor();
-	int tempRand;
+	//int tempRand;
 	PositionHolder pos;
 	std::string* paras;
+	std::string* names;
 
 	PositionHolder wallPos1 = RandomLevel::getSymmetricWallPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 20, 80);
 	WallManager::pushWall(new Wall(wallPos1.x, wallPos1.y, 20, 80, wallColor));
@@ -68,7 +69,7 @@ void DeveloperLevel1::initialize() {
 	PowerupManager::pushPowerup(new PowerSquare(140, 20, "grenade"));
 	PowerupManager::pushPowerup(new PowerSquare(160, 20, "banana"));
 
-	std::string* names = new std::string[3]{ "multishot", "multishot", "invincible" };
+	names = new std::string[3]{ "multishot", "multishot", "invincible" };
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH-20, GAME_HEIGHT-20, names, 3));
 	names[0] = "multishot", names[1] = "big", names[2] = "big";
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH-40, GAME_HEIGHT-20, names, 3));

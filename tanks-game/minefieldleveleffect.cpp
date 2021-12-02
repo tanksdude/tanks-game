@@ -5,11 +5,6 @@
 #include "bulletmanager.h"
 #include "minespower.h"
 
-std::vector<std::string> MinefieldLevelEffect::getLevelEffectTypes() const {
-	std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "old", "random-old" };
-	return types;
-}
-
 std::unordered_map<std::string, float> MinefieldLevelEffect::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", .5f });

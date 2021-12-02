@@ -8,7 +8,6 @@
 #include "hazardmanager.h"
 #include "mylib.h"
 #include "resetthings.h"
-#include "rng.h"
 #include <iostream>
 
 std::unordered_map<std::string, float> TrickyManeuveringLevel::getWeights() const {
@@ -16,24 +15,24 @@ std::unordered_map<std::string, float> TrickyManeuveringLevel::getWeights() cons
 	weights.insert({ "vanilla-extra", .25f });
 	weights.insert({ "random-vanilla", .125f });
 	weights.insert({ "old", .125f });
+	weights.insert({ "random-old", .125f });
 	return weights;
 }
 
 void TrickyManeuveringLevel::tick() {
-	for (int i = 0; i < getNumEffects(); i++) {
-		effects[i]->doEffects(this);
-	}
+	//TODO: should this be changed?
+	doLevelEffects();
 }
 
 void TrickyManeuveringLevel::initialize() {
-	int randPos = RNG::randFunc() * 5;
-	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40, randPos);
+	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40);
 
 	//in JS, power mixing was turned off
 	ColorValueHolder color = getDefaultColor();
-	int tempRand;
+	//int tempRand;
 	PositionHolder pos;
 	std::string* paras;
+	std::string* names;
 
 	PositionHolder* wallArray = new PositionHolder[4];
 	for (int i = 0; i < 4; i++) {
@@ -88,14 +87,14 @@ void TrickyManeuveringLevel::initialize() {
 
 	//[insert LightningCorner's center powerup here] (JS has it in its comments)
 
-	//std::string* names = new std::string[3]{ "big", "blast", "banana" }; //JS
-	std::string* names = new std::string[3]{ "big", "banana", "banana" };
+	//names = new std::string[3]{ "big", "blast", "banana" }; //JS
+	names = new std::string[3]{ "big", "banana", "banana" };
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, names, 3));
 	delete[] names;
 	//in JS, blast's bullet acceleration did not affect banana
 	//TODO: power constructors take arguments, increase second banana's bananaCount to 16
 
-	//did this level come first, or did LightningCorners? I don't remember
+	//did this level come first, or did LightningCorners? probably LightningCorners
 
 	for (int i = 0; i < 4; i++) {
 		pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 16, 16);

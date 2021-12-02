@@ -20,8 +20,7 @@ std::unordered_map<std::string, float> HidingPlacesLevel::getWeights() const {
 }
 
 void HidingPlacesLevel::initialize() {
-	int randPos = RNG::randFunc() * 5;
-	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40, randPos);
+	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40);
 
 	ColorValueHolder color = getDefaultColor();
 	int tempRand;

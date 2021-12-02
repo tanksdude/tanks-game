@@ -45,10 +45,6 @@ public:
 
 	//bool modifiesEdgeCollision = true;
 	virtual InteractionBoolHolder modifiedEdgeCollision(Tank*) override;
-	//precondition: was out-of-bounds, is not necessarily out-of-bounds
-	//bool overridesEdgeCollision = true;
-	//bool modifiedEdgeCollisionCanWorkWithOthers = true;
-	//bool modifiedEdgeCollisionCanOnlyWorkIndividually = false;
 
 	virtual double getTankAccelerationMultiplier() const override;
 
@@ -71,9 +67,6 @@ public:
 
 	//bool modifiesCollisionWithTank = true;
 	virtual InteractionBoolHolder modifiedCollisionWithTank(Bullet*, Tank*) override;
-	//bool overridesCollisionWithTank = true;
-	//bool modifiedCollisionWithTankCanWorkWithOthers = true;
-	//bool modifiedCollisionWithTankCanOnlyWorkIndividually = false;
 
 	virtual double getBulletSpeedMultiplier() const override { return .5; }
 

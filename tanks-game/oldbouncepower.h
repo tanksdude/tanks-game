@@ -1,23 +1,20 @@
 #pragma once
-#include "power.h"
+//#include "power.h"
+#include "bouncepower.h"
 
-class OldBouncePower : public Power {
+class OldBouncePower : public BouncePower {
 public:
 	virtual std::vector<std::string> getPowerTypes() const override {
 		std::vector<std::string> types = std::vector<std::string>{ "old", "random-old" };
 		return types;
 	}
 	virtual std::unordered_map<std::string, float> getWeights() const override;
-	virtual std::vector<std::string> getPowerAttributes() const override {
-		//match with BouncePower
-		std::vector<std::string> attributes = std::vector<std::string>{ "mix" };
-		return attributes;
-	}
+	//virtual std::vector<std::string> getPowerAttributes() const override;
 
 	virtual std::string getName() const override { return OldBouncePower::getClassName(); }
 	static std::string getClassName() { return "old_bounce"; }
 	virtual ColorValueHolder getColor() const override { return OldBouncePower::getClassColor(); }
-	static ColorValueHolder getClassColor() { return ColorValueHolder(1.0f, 0.0f, 0xCC/255.0); } //pink
+	static ColorValueHolder getClassColor() { return BouncePower::getClassColor(); } //pink
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
@@ -29,7 +26,7 @@ public:
 
 
 
-class OldBounceTankPower : public TankPower {
+class OldBounceTankPower : public BounceTankPower {
 public:
 	virtual void initialize(Tank* parent) override;
 	virtual void removeEffects(Tank* parent) override;
@@ -50,10 +47,10 @@ public:
 
 
 
-class OldBounceBulletPower : public BulletPower {
+class OldBounceBulletPower : public BounceBulletPower {
 protected:
-	static const int maxBounces;
-	int bouncesLeft;
+	//static const int maxBounces;
+	//int bouncesLeft;
 
 public:
 	virtual void initialize(Bullet* parent) override;
@@ -66,17 +63,13 @@ public:
 	virtual BulletPower* makeDuplicate() const override { return new OldBounceBulletPower(); } //I don't think bounces were passed on in JS
 	virtual TankPower* makeTankPower() const override;
 
+	/*
 	//bool modifiesCollisionWithWall = true;
 	virtual InteractionBoolHolder modifiedCollisionWithWall(Bullet*, Wall*) override;
-	//bool overridesCollisionWithWall = true;
-	//bool modifiedCollisionWithWallCanWorkWithOthers = true;
-	//bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;
 
 	//bool modifiesCollisionWithEdge = true;
 	virtual InteractionBoolHolder modifiedEdgeCollision(Bullet*) override;
-	//bool overridesEdgeCollision = true;
-	//bool modifiedEdgeCollisionCanWorkWithOthers = false;
-	//bool modifiedEdgeCollisionCanOnlyWorkIndividually = false;
+	*/
 
 	virtual double getBulletSpeedMultiplier() const override { return .25; }
 

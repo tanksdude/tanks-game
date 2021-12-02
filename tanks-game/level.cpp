@@ -1,6 +1,6 @@
 #include "level.h"
 
-//this shouldn't really need to be changed, but I'll leave it here
+/*
 std::vector<std::string> Level::getLevelTypes() const {
 	std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "random" };
 	return types;
@@ -13,6 +13,7 @@ std::unordered_map<std::string, float> Level::getWeights() const {
 	weights.insert({ "random", .5f });
 	return weights;
 }
+*/
 
 void Level::tickLevelEffects() {
 	for (int i = 0; i < getNumEffects(); i++) {
@@ -48,7 +49,7 @@ Level::~Level() {
 /*
 list of (eventual) levels:
 |empty
-invisibility? (no one appreciates it though)
+|invisible walls
 |wind
 |ice and mines
 
@@ -66,6 +67,10 @@ boring levels:
 |concealed powers (needs some spice to become good)
 |many hazards
 |lightning corners (needs spice, but is a kinda fun level)
+
+
+other:
+wallless (no walls, only no bullet zones)
 
 
 test levels (purpose: to showcase some functionality):

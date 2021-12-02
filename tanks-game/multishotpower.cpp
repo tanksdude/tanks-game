@@ -1,5 +1,17 @@
 #include "multishotpower.h"
 
+std::unordered_map<std::string, float> MultishotPower::getWeights() const {
+	std::unordered_map<std::string, float> weights;
+	weights.insert({ "vanilla", .5f });
+	weights.insert({ "random-vanilla", .5f });
+	weights.insert({ "old", .5f });
+	weights.insert({ "random-old", .5f });
+	weights.insert({ "supermix", .5f });
+	weights.insert({ "supermix-vanilla", .5f });
+	weights.insert({ "random", .5f });
+	return weights;
+}
+
 TankPower* MultishotPower::makeTankPower() const {
 	return new MultishotTankPower();
 }
@@ -45,6 +57,7 @@ void MultishotTankPower::addShootingPoints(Tank* t, std::vector<CannonPoint>* ca
 MultishotTankPower::MultishotTankPower() {
 	maxTime = 500;
 	timeLeft = 500;
+	//JS: maxTime = 1000
 
 	addsShootingPoints = true;
 }

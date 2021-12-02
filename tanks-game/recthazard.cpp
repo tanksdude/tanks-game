@@ -1,6 +1,7 @@
 #include "recthazard.h"
 #include "collisionhandler.h"
 
+/*
 std::vector<std::string> RectHazard::getHazardTypes() const {
 	std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "random" };
 	return types;
@@ -13,6 +14,7 @@ std::unordered_map<std::string, float> RectHazard::getWeights() const {
 	weights.insert({ "random", .5f });
 	return weights;
 }
+*/
 
 void RectHazard::modifiedTankCollision(Tank* t) {
 	CollisionHandler::pushMovableAwayFromImmovable(t, this);

@@ -81,7 +81,7 @@ void DeveloperManager::mouseWheelFunc(int wheel, int dir, int x, int y) {
 	std::cout << "DeveloperManager insertIdentifier: " << insertListIdentifiers[insertIndex] << std::endl;
 }
 
-std::vector<std::string> DeveloperManager::insertListIdentifiers = { "longinvincible", "temp", "banana", "barrier", "shield", "mines", "godmode", "inversion", "stationary_turret", "vert_wall", "horz_wall" };
+std::vector<std::string> DeveloperManager::insertListIdentifiers = { "longinvincible", "temp", "banana", "barrier", "shield", "mines", "godmode", "big", "inversion", "stationary_turret", "vert_wall", "horz_wall" };
 void DeveloperManager::devInsert(int x, int y) {
 	std::string* paras;
 	switch (insertIndex) {
@@ -90,6 +90,7 @@ void DeveloperManager::devInsert(int x, int y) {
 			break;
 		case 1:
 			PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "annoying"));
+			//PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla", "blast"));
 			break;
 		case 2:
 			PowerupManager::pushPowerup(new PowerSquare(x, y, "banana"));
@@ -107,19 +108,25 @@ void DeveloperManager::devInsert(int x, int y) {
 			PowerupManager::pushPowerup(new PowerSquare(x, y, "godmode"));
 			break;
 		case 7:
-			PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "inversion"));
+			PowerupManager::pushPowerup(new PowerSquare(x, y, "big"));
 			break;
 		case 8:
+			PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "inversion"));
+			break;
+		case 9:
 			paras = new std::string[3]{std::to_string(x), std::to_string(y), std::to_string(0)};
 			HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(3, paras));
 			delete[] paras;
 			break;
-		case 9:
+		case 10:
 			WallManager::pushWall(new Wall(x, y, 20, 60, LevelManager::getLevel(0)->getDefaultColor()));
 			break;
-		case 10:
+		case 11:
 			WallManager::pushWall(new Wall(x, y, 60, 20, LevelManager::getLevel(0)->getDefaultColor()));
 			break;
+		default:
+			//better than nothing happening
+			PowerupManager::pushPowerup(new PowerSquare(x, y, "speed"));
+			break;
 	}
-	//no default
 }

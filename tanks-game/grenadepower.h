@@ -3,6 +3,11 @@
 
 class GrenadePower : public Power {
 public:
+	virtual std::vector<std::string> getPowerTypes() const override {
+		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "old", "random-old", "supermix", "supermix-vanilla", "random" };
+		return types;
+	}
+	virtual std::unordered_map<std::string, float> getWeights() const override;
 	virtual std::vector<std::string> getPowerAttributes() const override {
 		std::vector<std::string> attributes = std::vector<std::string>{ "mix" };
 		return attributes;
@@ -11,7 +16,7 @@ public:
 	virtual std::string getName() const override { return GrenadePower::getClassName(); }
 	static std::string getClassName() { return "grenade"; }
 	virtual ColorValueHolder getColor() const override { return GrenadePower::getClassColor(); }
-	static ColorValueHolder getClassColor() { return ColorValueHolder(0xCC/255.0, 1.0f, 0.0f); } //lime green
+	static ColorValueHolder getClassColor() { return ColorValueHolder(0.75f, 1.0f, 0.0f); } //lime green //JS: #CCFF00
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
@@ -57,15 +62,9 @@ public:
 
 	//bool modifiesMovement = true;
 	virtual InteractionBoolHolder modifiedMovement(Bullet*) override;
-	//bool overridesMovement = false;
-	//bool modifiedMovementCanWorkWithOthers = true;
-	//bool modifiedMovementCanOnlyWorkIndividually = false;
 
 	//bool modifiesCollisionWithWall = true;
 	virtual InteractionBoolHolder modifiedCollisionWithWall(Bullet*, Wall*) override;
-	//bool overridesCollisionWithWall = true;
-	//bool modifiedCollisionWithWallCanWorkWithOthers = true;
-	//bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;
 
 	virtual double getBulletAcceleration() const override { return -1.0/16; }
 

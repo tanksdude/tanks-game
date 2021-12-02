@@ -3,6 +3,11 @@
 
 class FireNamedPower : public Power {
 public:
+	virtual std::vector<std::string> getPowerTypes() const override {
+		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "old", "random-old", "supermix", "supermix-vanilla", "random" };
+		return types;
+	}
+	virtual std::unordered_map<std::string, float> getWeights() const override;
 	virtual std::vector<std::string> getPowerAttributes() const override {
 		std::vector<std::string> attributes = std::vector<std::string>{ "mix" };
 		return attributes;
@@ -11,7 +16,7 @@ public:
 	virtual std::string getName() const override { return FireNamedPower::getClassName(); }
 	static std::string getClassName() { return "fire"; }
 	virtual ColorValueHolder getColor() const override { return FireNamedPower::getClassColor(); }
-	static ColorValueHolder getClassColor() { return ColorValueHolder(1.0f, 0.5f, 0.0f); } //orange
+	static ColorValueHolder getClassColor() { return ColorValueHolder(1.0f, 0.5f, 0.0f); } //orange //JS: #FF8800
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
@@ -39,13 +44,12 @@ public:
 	virtual TankPower* makeDuplicate() const override { return new FireNamedTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
 
-	//bool modifiesAdditionalShooting = false;
+	//bool modifiesAdditionalShooting = true;
 	virtual void additionalShooting(Tank* parent, CannonPoint) override;
-	//bool overridesAdditionalShooting = false;
-	//bool additionalShootingCanWorkWithOthers = true;
-	//bool additionalShootingCanOnlyWorkIndividually = false;
+	//bool overridesAdditionalShooting = true;
 
-	//virtual double getTankMaxSpeedMultiplier() const override { return .75; }
+	//virtual double getTankMaxSpeedMultiplier() const override { return .75; } //JS
+	//virtual double getTankAccelerationMultiplier() const override { return .75; } //JS
 	virtual double getTankFiringRateMultiplier() const override { return .5; }
 	virtual double getTankTurningIncrementMultiplier() const override { return 2; }
 
@@ -75,15 +79,9 @@ public:
 
 	//bool modifiesMovement = true;
 	virtual InteractionBoolHolder modifiedMovement(Bullet*) override;
-	//bool overridesMovement = false;
-	//bool modifiedMovementCanWorkWithOthers = true;
-	//bool modifiedMovementCanOnlyWorkIndividually = false;
 
 	//bool modifiesCollisionWithWall = true;
 	virtual InteractionBoolHolder modifiedCollisionWithWall(Bullet*, Wall*) override;
-	//bool overridesCollisionWithWall = true;
-	//bool modifiedCollisionWithWallCanWorkWithOthers = true;
-	//bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;
 
 	virtual double getBulletSpeedMultiplier() const override { return .5; }
 	virtual double getBulletAcceleration() const override;

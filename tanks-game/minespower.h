@@ -5,13 +5,14 @@ class MinesPower : public Power {
 	//this should be renamed (but probably won't...)
 public:
 	virtual std::vector<std::string> getPowerTypes() const override {
-		std::vector<std::string> types = std::vector<std::string>{ "vanilla-extra" };
+		std::vector<std::string> types = std::vector<std::string>{ "vanilla-extra", "old" };
+		//no random; must be intentional
+		//JS: did have supermix (it does more now, so no more supermix)
 		return types;
 	}
 	virtual std::unordered_map<std::string, float> getWeights() const override;
 	virtual std::vector<std::string> getPowerAttributes() const override {
-		//conflicted on this one, like bounce, though leaning much more towards "doesn't stack" than "does stack"
-		//also somewhat conflicted on mixing because it just doesn't mix well
+		//somewhat conflicted on mixing because it just doesn't mix well
 		std::vector<std::string> attributes = std::vector<std::string>{ "mix" };
 		return attributes;
 	}
@@ -28,7 +29,7 @@ public:
 	//virtual HazardPower* makeHazardPower() const override;
 
 	MinesPower();
-	//TODO: does it need a virtual destructor for OldMinesPower?
+	//TODO: virtual destructor for OldMinesPower?
 	static Power* factory();
 };
 
@@ -55,11 +56,9 @@ public:
 	virtual TankPower* makeDuplicate() const override { return new MinesTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
 
-	//bool modifiesAdditionalShooting = false;
+	//bool modifiesAdditionalShooting = true;
 	virtual void additionalShooting(Tank* parent, CannonPoint) override;
-	//bool overridesAdditionalShooting = false;
-	//bool additionalShootingCanWorkWithOthers = true;
-	//bool additionalShootingCanOnlyWorkIndividually = false;
+	//bool overridesAdditionalShooting = true;
 
 	virtual double getTankFiringRateMultiplier() const override { return .25; } //.5?
 

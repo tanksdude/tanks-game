@@ -25,7 +25,7 @@ Power* OldBigNamedPower::factory() {
 	return new OldBigNamedPower();
 }
 
-OldBigNamedPower::OldBigNamedPower() {
+OldBigNamedPower::OldBigNamedPower() : BigNamedPower() {
 	return;
 }
 
@@ -43,16 +43,18 @@ BulletPower* OldBigNamedTankPower::makeBulletPower() const {
 	return new OldBigNamedBulletPower();
 }
 
-OldBigNamedTankPower::OldBigNamedTankPower() {
-	maxTime = 500;
-	timeLeft = 500;
+OldBigNamedTankPower::OldBigNamedTankPower() : BigNamedTankPower() {
+	//maxTime = 500;
+	//timeLeft = 500;
 }
 
 
 
+/*
 InteractionBoolHolder OldBigNamedBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
 	return { false, true };
 }
+*/
 
 void OldBigNamedBulletPower::initialize(Bullet* parent) {
 	//nothing
@@ -66,13 +68,15 @@ TankPower* OldBigNamedBulletPower::makeTankPower() const {
 	return new OldBigNamedTankPower();
 }
 
-OldBigNamedBulletPower::OldBigNamedBulletPower() {
+OldBigNamedBulletPower::OldBigNamedBulletPower() : BigNamedBulletPower() {
+	/*
 	timeLeft = 0;
 	maxTime = -1;
 
 	modifiesCollisionWithWall = true;
 	modifiedCollisionWithWallCanWorkWithOthers = false;
 
+	*/
 	bulletSpeedStacks = true;
-	bulletRadiusStacks = true;
+	//bulletRadiusStacks = true;
 }

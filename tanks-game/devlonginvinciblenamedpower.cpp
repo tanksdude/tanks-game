@@ -1,5 +1,12 @@
 #include "devlonginvinciblenamedpower.h"
 
+std::unordered_map<std::string, float> DevLongInvincibleNamedPower::getWeights() const {
+	std::unordered_map<std::string, float> weights;
+	weights.insert({ "dev", 0.0f });
+	//weights.insert({ "random-dev", 0.0f });
+	return weights;
+}
+
 TankPower* DevLongInvincibleNamedPower::makeTankPower() const {
 	return new DevLongInvincibleNamedTankPower();
 }
@@ -18,7 +25,7 @@ Power* DevLongInvincibleNamedPower::factory() {
 	return new DevLongInvincibleNamedPower();
 }
 
-DevLongInvincibleNamedPower::DevLongInvincibleNamedPower() {
+DevLongInvincibleNamedPower::DevLongInvincibleNamedPower() : InvincibleNamedPower() {
 	return;
 }
 
@@ -36,7 +43,7 @@ BulletPower* DevLongInvincibleNamedTankPower::makeBulletPower() const {
 	return new DevLongInvincibleNamedBulletPower();
 }
 
-DevLongInvincibleNamedTankPower::DevLongInvincibleNamedTankPower() {
+DevLongInvincibleNamedTankPower::DevLongInvincibleNamedTankPower() : InvincibleNamedTankPower() {
 	maxTime = -1;
 	timeLeft = 0;
 }
@@ -55,7 +62,9 @@ TankPower* DevLongInvincibleNamedBulletPower::makeTankPower() const {
 	return new DevLongInvincibleNamedTankPower();
 }
 
-DevLongInvincibleNamedBulletPower::DevLongInvincibleNamedBulletPower() {
+DevLongInvincibleNamedBulletPower::DevLongInvincibleNamedBulletPower() : InvincibleNamedBulletPower() {
+	/*
 	timeLeft = 0;
 	maxTime = -1;
+	*/
 }

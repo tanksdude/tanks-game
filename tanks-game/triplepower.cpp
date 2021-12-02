@@ -1,5 +1,17 @@
 #include "triplepower.h"
 
+std::unordered_map<std::string, float> TriplePower::getWeights() const {
+	std::unordered_map<std::string, float> weights;
+	weights.insert({ "vanilla", .5f });
+	weights.insert({ "random-vanilla", .5f });
+	weights.insert({ "old", .5f });
+	weights.insert({ "random-old", .5f });
+	weights.insert({ "supermix", .5f });
+	weights.insert({ "supermix-vanilla", .5f });
+	weights.insert({ "random", .5f });
+	return weights;
+}
+
 TankPower* TriplePower::makeTankPower() const {
 	return new TripleTankPower();
 }
@@ -50,6 +62,7 @@ BulletPower* TripleTankPower::makeBulletPower() const {
 TripleTankPower::TripleTankPower() {
 	maxTime = 500;
 	timeLeft = 500;
+	//JS: maxTime = 1000
 
 	modifiesAdditionalShooting = true;
 }

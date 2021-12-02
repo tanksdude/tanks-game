@@ -16,15 +16,10 @@ ColorValueHolder WinningPathLevel::getDefaultColor() const {
 	//in JS, it just used the background rect's color
 }
 
-std::vector<std::string> WinningPathLevel::getLevelTypes() const {
-	std::vector<std::string> types = std::vector<std::string>{ "vanilla-extra", "random-vanilla", "old", "random-old" };
-	return types;
-}
-
 std::unordered_map<std::string, float> WinningPathLevel::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla-extra", .125f });
-	weights.insert({ "random-vanilla", .125f });
+	weights.insert({ "random-vanilla", .0625f });
 	weights.insert({ "old", .125f });
 	weights.insert({ "random-old", .125f });
 	return weights;
@@ -35,13 +30,12 @@ void WinningPathLevel::tick() {
 }
 
 void WinningPathLevel::initialize() {
-	int randPos = RNG::randFunc() * 5;
-	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40, randPos);
+	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40);
 
 	ColorValueHolder color = getDefaultColor();
-	int tempRand;
+	//int tempRand;
 	PositionHolder pos;
-	std::string* paras;
+	//std::string* paras;
 
 	PositionHolder* wallArray = new PositionHolder[4];
 	for (int i = 0; i < 4; i++) {

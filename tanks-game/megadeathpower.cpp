@@ -4,7 +4,9 @@ std::unordered_map<std::string, float> MegaDeathPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", .25f });
 	weights.insert({ "random-vanilla", .25f });
-	weights.insert({ "random", .25f });
+	//weights.insert({ "old", .125f });
+	//weights.insert({ "random-old", .125f });
+	weights.insert({ "random", .125f });
 	return weights;
 }
 
@@ -66,14 +68,14 @@ void MegaDeathBulletPower::tick(Bullet* b) {
 	}
 }
 
-InteractionBoolHolder MegaDeathBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
-	//tick() happens before this, so modifiesCollisionWithWall will only be set to true if the bullet can destroy walls
-	return { false, true };
-}
-
 InteractionBoolHolder MegaDeathBulletPower::modifiedMovement(Bullet* b) {
 	b->r *= bulletSizeMultiplierPerTick;
 	return { false };
+}
+
+InteractionBoolHolder MegaDeathBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
+	//tick() happens before this, so modifiesCollisionWithWall will only be set to true if the bullet can destroy walls
+	return { false, true };
 }
 
 double MegaDeathBulletPower::getOffenseTier(const Bullet* b) const {

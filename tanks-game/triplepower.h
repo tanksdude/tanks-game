@@ -3,8 +3,12 @@
 
 class TriplePower : public Power {
 public:
+	virtual std::vector<std::string> getPowerTypes() const override {
+		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "old", "random-old", "supermix", "supermix-vanilla", "random" };
+		return types;
+	}
+	virtual std::unordered_map<std::string, float> getWeights() const override;
 	virtual std::vector<std::string> getPowerAttributes() const override {
-		//might want to change how this power works (need to adjust cannonpoints)
 		std::vector<std::string> attributes = std::vector<std::string>{ "mix" };
 		return attributes;
 	}
@@ -12,7 +16,7 @@ public:
 	virtual std::string getName() const override { return TriplePower::getClassName(); }
 	static std::string getClassName() { return "triple"; }
 	virtual ColorValueHolder getColor() const override { return TriplePower::getClassColor(); }
-	static ColorValueHolder getClassColor() { return ColorValueHolder(0xCC/255.0, 0xCC/255.0, 0.5f); } //beige
+	static ColorValueHolder getClassColor() { return ColorValueHolder(0.75f, 0.75f, 0.5f); } //beige //JS: #CCCC88
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
@@ -41,9 +45,6 @@ public:
 
 	//bool modifiesAdditionalShooting = true;
 	virtual void additionalShooting(Tank* parent, CannonPoint) override;
-	//bool overridesAdditionalShooting = false;
-	//bool additionalShootingCanWorkWithOthers = true;
-	//bool additionalShootingCanOnlyWorkIndividually = false;
 
 	TripleTankPower();
 };

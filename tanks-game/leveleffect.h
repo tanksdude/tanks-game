@@ -11,8 +11,8 @@ class LevelEffect;
 class LevelEffect : public DrawableThing {
 public:
 	virtual std::string getName() const = 0;
-	virtual std::vector<std::string> getLevelEffectTypes() const;
-	virtual std::unordered_map<std::string, float> getWeights() const; //intended range: (0,1]
+	virtual std::vector<std::string> getLevelEffectTypes() const = 0; //pure virtual to make sure level effects define it
+	virtual std::unordered_map<std::string, float> getWeights() const = 0; //intended range: (0,1]
 
 public:
 	virtual void apply() = 0;

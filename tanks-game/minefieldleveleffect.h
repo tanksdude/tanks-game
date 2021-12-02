@@ -2,10 +2,6 @@
 #include "leveleffect.h"
 #include "bullet.h"
 
-#include "vertexarray.h"
-#include "vertexbuffer.h"
-#include "indexbuffer.h"
-
 class MinefieldLevelEffect : public LevelEffect {
 	//called "mines" in JS Tanks
 protected:
@@ -25,7 +21,10 @@ protected:
 
 public:
 	virtual std::string getName() const override { return "minefield"; }
-	virtual std::vector<std::string> getLevelEffectTypes() const override;
+	virtual std::vector<std::string> getLevelEffectTypes() const override {
+		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "old", "random-old" };
+		return types;
+	}
 	virtual std::unordered_map<std::string, float> getWeights() const override;
 	virtual void apply() override;
 	virtual void tick(const Level* parent) override;

@@ -24,15 +24,12 @@ ColorValueHolder DefaultRandomLevel::getDefaultColor() const {
 }
 
 void DefaultRandomLevel::initialize() { //still needs a lot of work
-	int randPos = RNG::randFunc() * 5;
-	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), randPos);
+	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1));
 
-	//TODO: should this go in the constructor or initialize()?
-	currentColor = ColorValueHolder(RNG::randFunc2(), RNG::randFunc2(), RNG::randFunc2());
 	ColorValueHolder randColor = getDefaultColor();
-	int tempRand;
+	//int tempRand;
 	PositionHolder pos;
-	std::string* paras;
+	//std::string* paras;
 
 	//some random walls
 	for (int i = 0; i < 16; i++) {
@@ -81,6 +78,9 @@ void DefaultRandomLevel::initialize() { //still needs a lot of work
 	}
 	//std::cout << (HazardManager::getNumCircleHazards() + HazardManager::getNumCircleHazards()) << std::endl;
 
+	delete[] circleHazardWeights;
+	delete[] rectHazardWeights;
+
 	//randomize powers:
 	int powerNum = PowerupManager::getNumPowerTypes("random-vanilla");
 	std::string* possiblePowers = new std::string[powerNum];
@@ -108,10 +108,28 @@ void DefaultRandomLevel::initialize() { //still needs a lot of work
 		delete[] randPowers;
 	}
 
-	delete[] circleHazardWeights;
-	delete[] rectHazardWeights;
 	delete[] possiblePowers;
 	delete[] canStack;
+	delete[] powerWeights;
+
+	//throw somethin' special in the center
+	powerNum = PowerupManager::getNumPowerTypes("ultimate-vanilla");
+	possiblePowers = new std::string[powerNum];
+	for (int i = 0; i < powerNum; i++) {
+		possiblePowers[i] = PowerupManager::getPowerName("ultimate-vanilla", i);
+	}
+
+	powerWeights = new float[powerNum];
+	for (int i = 0; i < powerNum; i++) {
+		Power* p = PowerupManager::getPowerFactory("ultimate-vanilla", possiblePowers[i])();
+		powerWeights[i] = p->getWeights()["ultimate-vanilla"];
+		delete p;
+	}
+
+	std::string ultimatePowerName = PowerupManager::getPowerName("ultimate-vanilla", weightedSelect<float>(powerWeights, powerNum));
+	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "ultimate-vanilla", ultimatePowerName));
+
+	delete[] possiblePowers;
 	delete[] powerWeights;
 }
 
@@ -119,4 +137,7 @@ Level* DefaultRandomLevel::factory() {
 	return new DefaultRandomLevel();
 }
 
-DefaultRandomLevel::DefaultRandomLevel() { return; }
+DefaultRandomLevel::DefaultRandomLevel() {
+	//TODO: should this go in the constructor or initialize()?
+	currentColor = ColorValueHolder(RNG::randFunc2(), RNG::randFunc2(), RNG::randFunc2());
+}

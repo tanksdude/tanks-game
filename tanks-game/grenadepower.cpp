@@ -1,5 +1,17 @@
 #include "grenadepower.h"
 
+std::unordered_map<std::string, float> GrenadePower::getWeights() const {
+	std::unordered_map<std::string, float> weights;
+	weights.insert({ "vanilla", .5f });
+	weights.insert({ "random-vanilla", .5f });
+	weights.insert({ "old", .5f });
+	weights.insert({ "random-old", .5f });
+	weights.insert({ "supermix", .5f });
+	weights.insert({ "supermix-vanilla", .5f });
+	weights.insert({ "random", .5f });
+	return weights;
+}
+
 TankPower* GrenadePower::makeTankPower() const {
 	return new GrenadeTankPower();
 }
@@ -40,11 +52,23 @@ BulletPower* GrenadeTankPower::makeBulletPower() const {
 GrenadeTankPower::GrenadeTankPower() {
 	maxTime = 500;
 	timeLeft = 500;
+	//JS: maxTime = 1000
 }
 
 
 
 const double GrenadeBulletPower::degradeAmount = .875;
+
+InteractionBoolHolder GrenadeBulletPower::modifiedMovement(Bullet* b) {
+	if (b->velocity.getMagnitude() <= 0) {
+		b->opaqueness -= degradeAmount;
+		b->r *= 65/64.0;
+	} /*else if (b->velocity.getMagnitude() < 0) {
+		b->velocity.setMagnitude(0);
+		b->acceleration = 0;
+	}*/
+	return { false };
+}
 
 InteractionBoolHolder GrenadeBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
 	if (b->velocity.getMagnitude() <= 0) {
@@ -61,17 +85,6 @@ InteractionBoolHolder GrenadeBulletPower::modifiedCollisionWithWall(Bullet* b, W
 		}
 		return { false, false };
 	}
-}
-
-InteractionBoolHolder GrenadeBulletPower::modifiedMovement(Bullet* b) {
-	if (b->velocity.getMagnitude() <= 0) {
-		b->opaqueness -= degradeAmount;
-		b->r *= 65/64.0;
-	} /*else if (b->velocity.getMagnitude() < 0) {
-		b->velocity.setMagnitude(0);
-		b->acceleration = 0;
-	}*/
-	return { false };
 }
 
 void GrenadeBulletPower::initialize(Bullet* parent) {
@@ -92,5 +105,4 @@ GrenadeBulletPower::GrenadeBulletPower() {
 
 	modifiesMovement = true;
 	modifiesCollisionWithWall = true;
-	overridesCollisionWithWall = true;
 }

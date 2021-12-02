@@ -16,11 +16,6 @@ VertexBuffer* WindLevelEffect::vb_extra;
 IndexBuffer* WindLevelEffect::ib_extra;
 bool WindLevelEffect::initialized_GPU = false;
 
-std::vector<std::string> WindLevelEffect::getLevelEffectTypes() const {
-	std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "old", "random-old", "random" };
-	return types;
-}
-
 std::unordered_map<std::string, float> WindLevelEffect::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", .5f });

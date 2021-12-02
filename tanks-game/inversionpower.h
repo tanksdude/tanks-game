@@ -8,10 +8,7 @@ public:
 		return types;
 	}
 	virtual std::unordered_map<std::string, float> getWeights() const override;
-	virtual std::vector<std::string> getPowerAttributes() const override {
-		std::vector<std::string> attributes = std::vector<std::string>{ "mix" };
-		return attributes;
-	}
+	//virtual std::vector<std::string> getPowerAttributes() const override;
 
 	virtual std::string getName() const override { return InversionPower::getClassName(); }
 	static std::string getClassName() { return "inversion"; }
@@ -44,8 +41,6 @@ public:
 	//bool modifiesMovement = true;
 	//virtual InteractionBoolHolder modifiedMovement(Tank*) override;
 	//bool overridesMovement = true;
-	//bool modifiedMovementCanWorkWithOthers = true;
-	//bool modifiedMovementCanOnlyWorkIndividually = false;
 
 	virtual double getTankTurningIncrementMultiplier() const override { return -1; }
 	//bool tankTurningIncrementStacks = true;

@@ -1,5 +1,6 @@
 #include "power.h"
 
+/*
 std::vector<std::string> Power::getPowerTypes() const {
 	std::vector<std::string> types = std::vector<std::string>{ "vanilla", "supermix-vanilla", "supermix", "random-vanilla", "random" };
 	return types;
@@ -8,12 +9,13 @@ std::vector<std::string> Power::getPowerTypes() const {
 std::unordered_map<std::string, float> Power::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", .5f });
+	weights.insert({ "random-vanilla", .5f });
 	weights.insert({ "supermix-vanilla", .5f });
 	weights.insert({ "supermix", .5f });
-	weights.insert({ "random-vanilla", .5f });
 	weights.insert({ "random", .5f });
 	return weights;
 }
+*/
 
 std::vector<std::string> Power::getPowerAttributes() const {
 	std::vector<std::string> attributes = std::vector<std::string>{ "stack", "mix" };
@@ -32,14 +34,13 @@ list of (eventual) powers:
 |invincibility (tier 1)
 |big (tier 2)
 |mega-death (variable big)
-the super (tier 3) (name WIP) (come on, of course the name isn't going to be temporary!) (save for later because there's little point in including it as of now)
-|grenade?
-|fire?
+the super (tier 3) (name WIP) (come on, of course the name isn't going to be temporary!)
+|grenade
+|fire
 |banana
 |godmode
 |barrier
-super life/shield/barrier (barrier health dependent on time left on power)
-swarm (check notes if you forgot, me) (modifiedMovementCanOnlyWorkIndividually = true?)
+|shield (super barrier) (barrier health dependent on time left on power)
 
 
 powers that are rare because the level wants them, not because they're good:
@@ -47,6 +48,32 @@ powers that are rare because the level wants them, not because they're good:
 |blast
 |shotgun
 |tracking
+
+
+possible uses:
+|inversion (inverts turning of tank)
+|annoying (is annoying)
+
+
+other ideas, some of which are jokes, some of which are lesser jokes:
+nukes (???) (the only thing I remember about its conception is that it would act like Snake's Final Smash in Brawl)
+ghost (color would be partially transparent)
+the ID changer
+poison? (like, another bullet/hazard is hit and it stops) (tank hits poisoned tank and dies)
+boomerang (non-refillable? except when the shot is destroyed)
+shurikan (shouldn't be too hard, especially if blast gets in)
+teleport? (will have a teleport hazard, but how would a powerup look like? the longer you hold down shoot the further you'll teleport?)
+trickster (moves in circles around its path; imagine MewTwo's shadow ball)
+
+
+other:
+swarm (bullets circle around tank at a set distance) (modifiedMovementCanOnlyWorkIndividually = true?)
+sword (melee power) (heck yeah, but would have to let Tank hold an object; shouldn't be too hard?)
+stationary turret superguard? (like multishot but turrets spaced around tank)
+dev: ultrabounce (bounce but it pushes the walls back)
+dev: spread (triple but shoots at the same point and spreads out)
+dev: pusher (pushes walls and hazards (tank only))
+dev: ring-shooter (shoots a ring of bullets; just looks amusing) (multishot but all the angles are the same)
 
 
 invincibility series notes:
@@ -61,19 +88,6 @@ joke (ID changer): tank/hazard: tier 0 defense (importance 0), tier 0 offense (i
 ghost: tank/hazard: tier 1 defense (importance 0), tier 0 offense (importance 0); bullet: tier 0 offense against tank/hazard (importance 0), tier -999 offense against bullet (importance 0?), tier 999 defense (importance 0) //will pass through other bullets, can kill regular tank, cannot kill regular bullet
 poison: tank/hazard: tier 0 defense (importance 0), tier 1 offense (importance 0); bullet: tier 1 offense against tank/hazard (importance 0), tier -1 offense against bullet (importance 0), tier -1 defense (importance 0)
 weak invincibility: tank/hazard: tier 1 defense (importance 0), tier 0 offense (importance 0); bullet: tier 0 offense against tank/hazard (importance 0), tier 0 offense against bullet (importance 0), tier 0 defense (importance 0)
-
-
-other ideas, some of which are jokes, some of which are lesser jokes:
-nukes (???) (the only thing I remember about its conception is that it would act like Snake's Final Smash in Brawl)
-sword (melee power) (heck yeah, but would have to let Tank hold an object; shouldn't be too hard?)
-ghost (color would be partially transparent)
-the ID changer
-poison? (like, another bullet/hazard is hit and it stops) (tank hits poisoned tank and dies)
-boomerang (non-refillable? except when the shot is destroyed)
-shurikan (shouldn't be too hard, especially if blast gets in)
-teleport? (will have a teleport hazard, but how would a powerup look like? the longer you hold down shoot the further you'll teleport?)
-ring-shooter? (shoots a ring of bullets; just looks amusing) (multishot but all the angles are the same)
-trickster (moves in circles around its path; imagine MewTwo's shadow ball)
 
 
 things the powers need to access, override, and/or deal with (of bullets and tanks, probably hazards too):

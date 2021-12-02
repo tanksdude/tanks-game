@@ -20,8 +20,8 @@ public:
 
 	virtual std::string getName() const = 0;
 	virtual ColorValueHolder getDefaultColor() const = 0;
-	virtual std::vector<std::string> getLevelTypes() const;
-	virtual std::unordered_map<std::string, float> getWeights() const; //intended range: (0,1]
+	virtual std::vector<std::string> getLevelTypes() const = 0; //pure virtual to make sure levels define it
+	virtual std::unordered_map<std::string, float> getWeights() const = 0; //intended range: (0,1]
 
 	virtual void initialize() = 0;
 	virtual void tick() { return; }

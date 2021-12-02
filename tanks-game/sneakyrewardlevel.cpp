@@ -26,13 +26,13 @@ std::unordered_map<std::string, float> SneakyRewardLevel::getWeights() const {
 }
 
 void SneakyRewardLevel::initialize() {
-	int randPos = RNG::randFunc() * 5;
-	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40, randPos);
+	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40);
 
 	ColorValueHolder color = getDefaultColor();
 	int tempRand;
 	PositionHolder pos;
 	std::string* paras;
+	std::string* names;
 	PowerSquare* p;
 
 	LevelEffect* le = nullptr;
@@ -62,7 +62,7 @@ void SneakyRewardLevel::initialize() {
 		WallManager::pushWall(new Wall(pos.x, pos.y, 40, 10, color));
 	}
 
-	std::string* names = new std::string[2]{ "wallhack", "godmode" };
+	names = new std::string[2]{ "wallhack", "godmode" };
 	tempRand = RNG::randFunc() * 2;
 	//TOOD: better power alternate functions
 	if (tempRand) {

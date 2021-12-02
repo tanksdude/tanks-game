@@ -38,6 +38,13 @@ private:
 	static bool uninitializeGPU();
 
 public:
+	virtual std::vector<std::string> getHazardTypes() const override {
+		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "old", "random-old", "random" };
+		return types;
+	}
+	virtual std::unordered_map<std::string, float> getWeights() const override;
+
+protected:
 	virtual void turnTowardsTank(const Tank*);
 	virtual bool canSeeTank(const Tank*) const override; //true if no walls obstruct any line of sight to tank
 	virtual bool isPointedAt(const Tank*) const;
@@ -45,6 +52,7 @@ public:
 	virtual ColorValueHolder getColor(int state) const override;
 	virtual ColorValueHolder getReticuleColor() const;
 
+public:
 	//virtual bool validLocation() const override { return true; }
 	virtual bool reasonableLocation() const override;
 

@@ -1,5 +1,17 @@
 #include "bananapower.h"
 
+std::unordered_map<std::string, float> BananaPower::getWeights() const {
+	std::unordered_map<std::string, float> weights;
+	weights.insert({ "vanilla", .5f });
+	weights.insert({ "random-vanilla", .5f });
+	weights.insert({ "old", .5f });
+	weights.insert({ "random-old", .5f });
+	weights.insert({ "supermix", .5f });
+	weights.insert({ "supermix-vanilla", .5f });
+	weights.insert({ "random", .5f });
+	return weights;
+}
+
 TankPower* BananaPower::makeTankPower() const {
 	return new BananaTankPower();
 }
@@ -98,5 +110,6 @@ BananaBulletPower::BananaBulletPower() {
 	maxTime = -1;
 
 	wasStationary = false;
+
 	modifiesMovement = true;
 }

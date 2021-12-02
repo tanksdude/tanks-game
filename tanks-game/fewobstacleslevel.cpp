@@ -20,13 +20,12 @@ std::unordered_map<std::string, float> FewObstaclesLevel::getWeights() const {
 }
 
 void FewObstaclesLevel::initialize() {
-	int randPos = RNG::randFunc() * 5;
-	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), randPos);
+	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1));
 
 	ColorValueHolder color = getDefaultColor();
 	int tempRand;
 	PositionHolder pos;
-	std::string* paras;
+	//std::string* paras;
 
 	//classic JS walls removed
 

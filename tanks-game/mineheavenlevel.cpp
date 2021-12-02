@@ -8,7 +8,6 @@
 #include "hazardmanager.h"
 #include "mylib.h"
 #include "resetthings.h"
-#include "rng.h"
 #include <iostream>
 
 std::unordered_map<std::string, float> MineHeavenLevel::getWeights() const {
@@ -16,6 +15,7 @@ std::unordered_map<std::string, float> MineHeavenLevel::getWeights() const {
 	weights.insert({ "vanilla-extra", .125f });
 	weights.insert({ "random-vanilla", .0625f }); //people just do not like ice physics
 	weights.insert({ "old", .125f });
+	weights.insert({ "random-old", .0625f });
 	return weights;
 }
 
@@ -26,14 +26,14 @@ void MineHeavenLevel::tick() {
 }
 
 void MineHeavenLevel::initialize() {
-	int randPos = RNG::randFunc() * 5;
-	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40, randPos);
+	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40);
 
 	//in JS, power mixing was turned off
 	ColorValueHolder color = getDefaultColor();
-	int tempRand;
+	//int tempRand;
 	PositionHolder pos;
 	std::string* paras;
+	std::string* names;
 
 	PositionHolder* wallArray = new PositionHolder[4];
 	for (int i = 0; i < 4; i++) {
@@ -45,7 +45,7 @@ void MineHeavenLevel::initialize() {
 	//total of 77 mine powerups
 
 	paras = new std::string[2]{ "mines", "old_mines" };
-	std::string* names = new std::string[2]{ "vanilla-extra", "old" };
+	names = new std::string[2]{ "vanilla-extra", "old" };
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, names, paras, 2));
 	delete[] paras;
 	delete[] names;

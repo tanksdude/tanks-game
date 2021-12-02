@@ -20,6 +20,16 @@ VertexBuffer* HorizontalLightning::background_vb;
 IndexBuffer* HorizontalLightning::background_ib;
 bool HorizontalLightning::initialized_GPU = false;
 
+std::unordered_map<std::string, float> HorizontalLightning::getWeights() const {
+	std::unordered_map<std::string, float> weights;
+	weights.insert({ "vanilla", .5f });
+	weights.insert({ "random-vanilla", .5f });
+	weights.insert({ "old", .5f });
+	weights.insert({ "random-old", .5f });
+	weights.insert({ "random", .5f });
+	return weights;
+}
+
 HorizontalLightning::HorizontalLightning(double xpos, double ypos, double width, double height) : RectangularLightning(xpos,ypos,width,height,true) {
 	//flexible = false;
 

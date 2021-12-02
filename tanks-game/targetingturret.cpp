@@ -25,6 +25,16 @@ VertexArray* TargetingTurret::reticule_va;
 VertexBuffer* TargetingTurret::reticule_vb;
 bool TargetingTurret::initialized_GPU = false;
 
+std::unordered_map<std::string, float> TargetingTurret::getWeights() const {
+	std::unordered_map<std::string, float> weights;
+	weights.insert({ "vanilla", .5f });
+	weights.insert({ "random-vanilla", .5f });
+	weights.insert({ "old", .5f });
+	weights.insert({ "random-old", .5f });
+	weights.insert({ "random", .5f });
+	return weights;
+}
+
 TargetingTurret::TargetingTurret(double xpos, double ypos, double angle, bool) : StationaryTurret(xpos, ypos, angle, true) {
 	//x = xpos;
 	//y = ypos;

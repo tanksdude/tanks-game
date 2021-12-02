@@ -56,12 +56,12 @@
 #include "fewobstacleslevel.h"
 #include "concealedpowerupslevel.h"
 #include "manyhazardslevel.h"
-//"extra" (is there even a reason for this?):
+//"extra":
 #include "hidingplaceslevel.h"
 #include "sneakyrewardlevel.h"
 #include "lightningcornerslevel.h"
 #include "loneturretlevel.h"
-//"extra"... special
+//special levels:
 #include "trickymaneuveringlevel.h"
 #include "mineheavenlevel.h"
 #include "winningpathlevel.h"
@@ -180,7 +180,8 @@ int main(int argc, char** argv) {
 	// Set callback for the idle function
 	//glutIdleFunc(draw);
 
-	//vanilla (should some be "old"?):
+	//powers:
+	//vanilla (some are also "old"):
 	PowerupManager::addPowerFactory(SpeedPower::factory);
 	PowerupManager::addPowerFactory(WallhackPower::factory);
 	PowerupManager::addPowerFactory(BouncePower::factory);
@@ -212,6 +213,20 @@ int main(int argc, char** argv) {
 	PowerupManager::addPowerFactory(InversionPower::factory);
 	PowerupManager::addPowerFactory(DevAnnoyingPower::factory);
 
+	//hazards
+	//vanilla (some are also "old"):
+	HazardManager::addCircleHazardFactory(StationaryTurret::factory, StationaryTurret::randomizingFactory);
+	HazardManager::addCircleHazardFactory(TargetingTurret::factory, TargetingTurret::randomizingFactory);
+	HazardManager::addRectHazardFactory(RectangularLightning::factory, RectangularLightning::randomizingFactory);
+	HazardManager::addRectHazardFactory(HorizontalLightning::factory, HorizontalLightning::randomizingFactory);
+	HazardManager::addRectHazardFactory(VerticalLightning::factory, VerticalLightning::randomizingFactory);
+	HazardManager::addCircleHazardFactory(CircularLightning::factory, CircularLightning::randomizingFactory);
+	HazardManager::addRectHazardFactory(RectangularLava::factory, RectangularLava::randomizingFactory);
+	HazardManager::addCircleHazardFactory(CircularLava::factory, CircularLava::randomizingFactory);
+	HazardManager::addRectHazardFactory(RectangularNoBulletZone::factory, RectangularNoBulletZone::randomizingFactory);
+	HazardManager::addCircleHazardFactory(CircularNoBulletZone::factory, CircularNoBulletZone::randomizingFactory);
+
+	//level effects
 	//vanilla (some are also "old"):
 	LevelManager::addLevelEffectFactory(WindLevelEffect::factory);
 	LevelManager::addLevelEffectFactory(RespawningPowerupsLevelEffect::factory);
@@ -219,6 +234,7 @@ int main(int argc, char** argv) {
 	LevelManager::addLevelEffectFactory(IceLevelEffect::factory);
 	LevelManager::addLevelEffectFactory(InvisibleWallsLevelEffect::factory);
 
+	//levels
 	//vanilla (some are also "old"):
 	LevelManager::addLevelFactory(DefaultRandomLevel::factory);
 	LevelManager::addLevelFactory(EmptyLevel::factory);
@@ -232,7 +248,8 @@ int main(int argc, char** argv) {
 	LevelManager::addLevelFactory(SneakyRewardLevel::factory);
 	LevelManager::addLevelFactory(LightningCornersLevel::factory);
 	LevelManager::addLevelFactory(LoneTurretLevel::factory);
-	//"extra"... special:
+
+	//special:
 	LevelManager::addLevelFactory(TrickyManeuveringLevel::factory);
 	LevelManager::addLevelFactory(MineHeavenLevel::factory);
 	LevelManager::addLevelFactory(WinningPathLevel::factory);
@@ -244,18 +261,6 @@ int main(int argc, char** argv) {
 	LevelManager::addLevelFactory(DeveloperLevel0::factory);
 	LevelManager::addLevelFactory(DeveloperLevel1::factory);
 	LevelManager::addLevelFactory(DeveloperLevel2::factory);
-
-	//vanilla:
-	HazardManager::addCircleHazardFactory(StationaryTurret::factory, StationaryTurret::randomizingFactory);
-	HazardManager::addCircleHazardFactory(TargetingTurret::factory, TargetingTurret::randomizingFactory);
-	HazardManager::addRectHazardFactory(RectangularLightning::factory, RectangularLightning::randomizingFactory);
-	HazardManager::addRectHazardFactory(HorizontalLightning::factory, HorizontalLightning::randomizingFactory);
-	HazardManager::addRectHazardFactory(VerticalLightning::factory, VerticalLightning::randomizingFactory);
-	HazardManager::addCircleHazardFactory(CircularLightning::factory, CircularLightning::randomizingFactory);
-	HazardManager::addRectHazardFactory(RectangularLava::factory, RectangularLava::randomizingFactory);
-	HazardManager::addCircleHazardFactory(CircularLava::factory, CircularLava::randomizingFactory);
-	HazardManager::addRectHazardFactory(RectangularNoBulletZone::factory, RectangularNoBulletZone::randomizingFactory);
-	HazardManager::addCircleHazardFactory(CircularNoBulletZone::factory, CircularNoBulletZone::randomizingFactory);
 
 	//initialize managers and stuff:
 	GameManager::Initialize();
@@ -277,6 +282,10 @@ int main(int argc, char** argv) {
 	EndGameHandler::addTeamToWatch(HAZARD_TEAM, "HAZARDS");
 #if _DEBUG
 	LevelManager::pushLevel("dev", "dev2");
+	//LevelManager::pushLevel("vanilla", "default_random");
+	//LevelManager::pushLevel("random-vanilla", "sneaky_reward");
+	//LevelManager::pushLevel("vanilla-extra", "tricky_maneuvering");
+	//LevelManager::pushLevel("vanilla-extra", "lone_turret");
 #else
 	LevelManager::pushLevel("vanilla", "default_random");
 #endif

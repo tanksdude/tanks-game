@@ -2,16 +2,10 @@
 #include "wallmanager.h"
 #include "backgroundrect.h"
 
-std::vector<std::string> InvisibleWallsLevelEffect::getLevelEffectTypes() const {
-	std::vector<std::string> types = std::vector<std::string>{ "vanilla", "old" };
-	return types;
-}
-
 std::unordered_map<std::string, float> InvisibleWallsLevelEffect::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", .125f });
 	weights.insert({ "old", .125f });
-	//no random; it must be intentional
 	return weights;
 }
 

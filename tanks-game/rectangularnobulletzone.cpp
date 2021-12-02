@@ -16,6 +16,16 @@ VertexBuffer* RectangularNoBulletZone::vb;
 IndexBuffer* RectangularNoBulletZone::ib;
 bool RectangularNoBulletZone::initialized_GPU = false;
 
+std::unordered_map<std::string, float> RectangularNoBulletZone::getWeights() const {
+	std::unordered_map<std::string, float> weights;
+	weights.insert({ "vanilla", .5f });
+	weights.insert({ "random-vanilla", .25f });
+	weights.insert({ "old", .5f });
+	weights.insert({ "random-old", .25f });
+	weights.insert({ "random", .125f });
+	return weights;
+}
+
 RectangularNoBulletZone::RectangularNoBulletZone(double xpos, double ypos, double width, double height) {
 	x = xpos;
 	y = ypos;

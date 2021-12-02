@@ -4,7 +4,7 @@
 class WallhackPower : public Power {
 public:
 	virtual std::vector<std::string> getPowerTypes() const override {
-		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "random" };
+		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "ultimate", "ultimate-vanilla", "random" };
 		return types;
 	}
 	virtual std::unordered_map<std::string, float> getWeights() const override;
@@ -42,9 +42,7 @@ public:
 
 	//bool modifiesCollisionWithWall = true;
 	virtual InteractionBoolHolder modifiedCollisionWithWall(Tank*, Wall*) override;
-	//bool overridesCollisionWithWall = true;
 	//bool modifiedCollisionWithWallCanWorkWithOthers = false;
-	//bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;
 
 	WallhackTankPower();
 };
@@ -65,9 +63,7 @@ public:
 
 	//bool modifiesCollisionWithWall = true;
 	virtual InteractionBoolHolder modifiedCollisionWithWall(Bullet*, Wall*) override;
-	//bool overridesCollisionWithWall = true; //false means also use the default
 	//bool modifiedCollisionWithWallCanWorkWithOthers = false;
-	//bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;
 
 	WallhackBulletPower();
 };

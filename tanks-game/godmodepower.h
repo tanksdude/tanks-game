@@ -4,7 +4,7 @@
 class GodmodePower : public Power {
 public:
 	virtual std::vector<std::string> getPowerTypes() const override {
-		std::vector<std::string> types = std::vector<std::string>{ "vanilla", /*"random-vanilla",*/ "random" };
+		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "ultimate", "ultimate-vanilla" };
 		return types;
 	}
 	virtual std::unordered_map<std::string, float> getWeights() const override;

@@ -22,15 +22,13 @@ std::unordered_map<std::string, float> DeveloperLevel0::getWeights() const {
 }
 
 void DeveloperLevel0::initialize() {
-	int randPos = RNG::randFunc() * 5;
-	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), randPos);
+	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1));
 
-	//TODO: should this go in the constructor or initialize()?
-	currentColor = ColorValueHolder(RNG::randFunc2(), RNG::randFunc2(), RNG::randFunc2());
 	ColorValueHolder randColor = getDefaultColor();
-	int tempRand;
+	//int tempRand;
 	PositionHolder pos;
 	std::string* paras;
+	std::string* names;
 
 	for (int i = 0; i < 16; i++) {
 		WallManager::pushWall(RandomLevel::makeNewRandomWall(TANK_RADIUS*2.5, TANK_RADIUS*2, GAME_WIDTH - 2*(TANK_RADIUS*2.5), GAME_HEIGHT - 2*(TANK_RADIUS*2), randColor));
@@ -56,7 +54,7 @@ void DeveloperLevel0::initialize() {
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2 + 20, "big"));
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2 - 20, "megadeath"));
 
-	std::string* names = new std::string[2]{ "multishot", "multishot" };
+	names = new std::string[2]{ "multishot", "multishot" };
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH-20, GAME_HEIGHT-20, names, 2));
 	names[0] = "speed", names[1] = "wallhack";
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH-40, GAME_HEIGHT-20, names, 2));
@@ -75,4 +73,7 @@ Level* DeveloperLevel0::factory() {
 	return new DeveloperLevel0();
 }
 
-DeveloperLevel0::DeveloperLevel0() { return; }
+DeveloperLevel0::DeveloperLevel0() {
+	//TODO: should this go in the constructor or initialize()?
+	currentColor = ColorValueHolder(RNG::randFunc2(), RNG::randFunc2(), RNG::randFunc2());
+}

@@ -5,13 +5,14 @@
 std::unordered_map<std::string, float> GodmodePower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", .5f });
-	//weights.insert({ "random-vanilla", .5f });
-	weights.insert({ "random", .5f });
+	weights.insert({ "ultimate", .125f });
+	weights.insert({ "ultimate-vanilla", .125f });
 	return weights;
 }
 
 ColorValueHolder GodmodePower::getClassColor() {
 	return ColorMixer::HSVtoRGB(fmod(GameManager::getTickCount(), 360), .75, .75);
+	//JS just did the tank default color (as a PowerSquare; it was rainbow for tanks and bullets)
 }
 
 TankPower* GodmodePower::makeTankPower() const {

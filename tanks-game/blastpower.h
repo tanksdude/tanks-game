@@ -4,9 +4,10 @@
 class BlastPower : public Power {
 	//called mega-blast in JS Tanks
 public:
-	//TODO: move to vanilla-extra?
 	virtual std::vector<std::string> getPowerTypes() const override {
-		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "random" };
+		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "old", "random-old", "random" };
+		//TODO: move to vanilla-extra?
+		//JS: did have supermix (replaced by bounce)
 		return types;
 	}
 	virtual std::unordered_map<std::string, float> getWeights() const override;
@@ -46,14 +47,13 @@ public:
 	virtual TankPower* makeDuplicate() const override { return new BlastTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
 
-	//bool modifiesAdditionalShooting = false;
+	//bool modifiesAdditionalShooting = true;
 	virtual void additionalShooting(Tank* parent, CannonPoint) override;
-	//bool overridesAdditionalShooting = false;
-	//bool additionalShootingCanWorkWithOthers = true;
-	//bool additionalShootingCanOnlyWorkIndividually = false;
+	//bool overridesAdditionalShooting = true;
 
 	virtual double getTankMaxSpeedMultiplier() const override { return .5; }
 	virtual double getTankAccelerationMultiplier() const override { return .5; }
+	//virtual double getTankFiringRateMultiplier() const override { return .5; } //JS
 
 	BlastTankPower();
 };
@@ -80,15 +80,15 @@ public:
 
 	//bool modifiesMovement = true;
 	virtual InteractionBoolHolder modifiedMovement(Bullet*) override;
-	//bool overridesMovement = false;
-	//bool modifiedMovementCanWorkWithOthers = true;
-	//bool modifiedMovementCanOnlyWorkIndividually = false;
 
 	//bool modifiesCollisionWithWall = true;
 	virtual InteractionBoolHolder modifiedCollisionWithWall(Bullet*, Wall*) override;
-	//bool overridesCollisionWithWall = true;
-	//bool modifiedCollisionWithWallCanWorkWithOthers = true;
-	//bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;
+
+	virtual bool getModifiesCollisionWithCircleHazard(const CircleHazard*) const override;
+	virtual InteractionBoolHolder modifiedCollisionWithCircleHazard(Bullet*, CircleHazard*) override;
+
+	virtual bool getModifiesCollisionWithRectHazard(const RectHazard*) const override;
+	virtual InteractionBoolHolder modifiedCollisionWithRectHazard(Bullet*, RectHazard*) override;
 
 	virtual double getBulletRadiusMultiplier() const override { return .25; }
 	virtual double getBulletAcceleration() const override;

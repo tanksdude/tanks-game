@@ -3,6 +3,14 @@
 
 class BananaPower : public Power {
 public:
+	virtual std::vector<std::string> getPowerTypes() const override {
+		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "old", "random-old", "supermix", "supermix-vanilla", "random" };
+		//include ultimate?
+		return types;
+	}
+	virtual std::unordered_map<std::string, float> getWeights() const override;
+	//virtual std::vector<std::string> getPowerAttributes() const override;
+
 	virtual std::string getName() const override { return BananaPower::getClassName(); }
 	static std::string getClassName() { return "banana"; }
 	virtual ColorValueHolder getColor() const override { return BananaPower::getClassColor(); }
@@ -55,9 +63,6 @@ public:
 
 	//bool modifiesMovement = true;
 	virtual InteractionBoolHolder modifiedMovement(Bullet*) override;
-	//bool overridesMovement = false;
-	//bool modifiedMovementCanWorkWithOthers = true;
-	//bool modifiedMovementCanOnlyWorkIndividually = false;
 
 	virtual double getBulletAcceleration() const override { return -1.0/8; }
 

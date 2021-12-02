@@ -73,14 +73,14 @@ public:
 	//bool modifiesCollisionWithBullet = false;
 	//virtual void modifiedCollisionWithBullet(Tank*, Bullet*) { return; } //probably shouldn't be used
 
-	bool modifiesCollisionWithCircleHazard = false;
+	virtual bool getModifiesCollisionWithCircleHazard(const CircleHazard*) const { return  false; }
 	virtual InteractionBoolHolder modifiedCollisionWithCircleHazard(Tank*, CircleHazard*) { return { false, false }; }
 	//precondition: hit circlehazard, is not necessarily inside circlehazard
 	bool overridesCollisionWithCircleHazard = true; //false means also use the default, which means destroy the bullet if it collides
 	bool modifiedCollisionWithCircleHazardCanWorkWithOthers = true;
 	bool modifiedCollisionWithCircleHazardCanOnlyWorkIndividually = false;
 
-	bool modifiesCollisionWithRectHazard = false;
+	virtual bool getModifiesCollisionWithRectHazard(const RectHazard*) const { return false; }
 	virtual InteractionBoolHolder modifiedCollisionWithRectHazard(Tank*, RectHazard*) { return { false, false }; }
 	//precondition: hit recthazard, is not necessarily inside recthazard
 	bool overridesCollisionWithRectHazard = true; //false means also use the default, which means destroy the bullet if it collides
@@ -91,15 +91,17 @@ public:
 	virtual InteractionBoolHolder modifiedDeathHandling(Tank* parent) { return { true, false }; } //first is tank, second is tankpower
 	//it's first come, first served
 
+	/*
 	bool modifiesShooting = false;
 	virtual void modifiedShooting(Tank* parent) { return; } //for melee-class powerups
 	bool overridesShooting = true; //false? dunno
 	bool modifiedShootingCanWorkWithOthers = true;
 	bool modifiedShootingCanOnlyWorkIndividually = false;
+	*/
 
 	bool modifiesAdditionalShooting = false;
 	virtual void additionalShooting(Tank* parent, CannonPoint) { return; } //for regular powerups (triple/shotgun, fire/blast, mines(?))
-	bool overridesAdditionalShooting = false; //probably should only be false
+	bool overridesAdditionalShooting = false; //true if default shooting won't be used
 	bool additionalShootingCanWorkWithOthers = true; //probably should only be true
 	bool additionalShootingCanOnlyWorkIndividually = false;
 

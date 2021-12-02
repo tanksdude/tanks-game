@@ -3,10 +3,12 @@
 
 class HomingPower : public Power {
 public:
-	virtual std::vector<std::string> getPowerAttributes() const override {
-		std::vector<std::string> attributes = std::vector<std::string>{ "mix" };
-		return attributes;
+	virtual std::vector<std::string> getPowerTypes() const override {
+		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "old", "random-old", "supermix", "supermix-vanilla", "random" };
+		return types;
 	}
+	virtual std::unordered_map<std::string, float> getWeights() const override;
+	//virtual std::vector<std::string> getPowerAttributes() const override; //mix only?
 
 	virtual std::string getName() const override { return HomingPower::getClassName(); }
 	static std::string getClassName() { return "homing"; }
@@ -55,17 +57,11 @@ public:
 	virtual BulletPower* makeDuplicate() const override { return new HomingBulletPower(); }
 	virtual TankPower* makeTankPower() const override;
 
-	//bool modifiesMovement = false;
+	//bool modifiesMovement = true;
 	virtual InteractionBoolHolder modifiedMovement(Bullet*) override;
-	//bool overridesMovement = false;
-	//bool modifiedMovementCanWorkWithOthers = true;
-	//bool modifiedMovementCanOnlyWorkIndividually = false;
 
 	//bool modifiesCollisionWithEdge = true;
 	virtual InteractionBoolHolder modifiedEdgeCollision(Bullet*) override;
-	//bool overridesEdgeCollision = true;
-	//bool modifiedEdgeCollisionCanWorkWithOthers = false;
-	//bool modifiedEdgeCollisionCanOnlyWorkIndividually = false;
 
 	virtual double getBulletSpeedMultiplier() const override { return .5; }
 

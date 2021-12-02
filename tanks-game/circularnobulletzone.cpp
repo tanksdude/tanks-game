@@ -16,6 +16,16 @@ VertexBuffer* CircularNoBulletZone::vb;
 IndexBuffer* CircularNoBulletZone::ib;
 bool CircularNoBulletZone::initialized_GPU = false;
 
+std::unordered_map<std::string, float> CircularNoBulletZone::getWeights() const {
+	std::unordered_map<std::string, float> weights;
+	weights.insert({ "vanilla", .5f });
+	weights.insert({ "random-vanilla", .25f });
+	weights.insert({ "old", .5f });
+	weights.insert({ "random-old", .25f });
+	weights.insert({ "random", .125f });
+	return weights;
+}
+
 CircularNoBulletZone::CircularNoBulletZone(double xpos, double ypos, double radius) {
 	x = xpos;
 	y = ypos;

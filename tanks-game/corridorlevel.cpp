@@ -19,13 +19,12 @@ std::unordered_map<std::string, float> CorridorLevel::getWeights() const {
 }
 
 void CorridorLevel::initialize() {
-	int randPos = RNG::randFunc() * 5;
-	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40, randPos);
+	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40);
 
 	ColorValueHolder color = getDefaultColor();
 	int tempRand;
 	PositionHolder pos;
-	std::string* paras;
+	//std::string* paras;
 
 	for (int i = 0; i < 4; i++) {
 		//classic JS walls
