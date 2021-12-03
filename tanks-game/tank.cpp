@@ -25,7 +25,7 @@ TankInputChar::TankInputChar() {
 	character = '`';
 }
 
-bool TankInputChar::getKeyState() {
+bool TankInputChar::getKeyState() const {
 	if (isSpecial) {
 		return KeypressManager::getSpecialKey(character);
 	}
@@ -42,14 +42,16 @@ bool Tank::initialized_GPU = false;
 const double Tank::default_maxSpeed = 1;
 const double Tank::default_acceleration = 1.0/16;
 const double Tank::default_turningIncrement = 64;
-Tank::Tank(double x_, double y_, double a, Team_ID id_, std::string name_, TankInputChar forward, TankInputChar left, TankInputChar right, TankInputChar shoot, TankInputChar special) {
+
+Tank::Tank(double x_, double y_, double angle, Team_ID id_, std::string name_, TankInputChar forward, TankInputChar left, TankInputChar right, TankInputChar shoot, TankInputChar special) {
 	x = x_;
 	y = y_;
-	velocity = SimpleVector2D(a, 0, true);
+	velocity = SimpleVector2D(angle, 0, true);
 	gameID = GameManager::getNextID();
 	teamID = id_;
 	r = TANK_RADIUS;
 	name = name_;
+	this->dead = false;
 
 	maxSpeed = default_maxSpeed;
 	acceleration = default_acceleration;
@@ -64,19 +66,28 @@ Tank::Tank(double x_, double y_, double a, Team_ID id_, std::string name_, TankI
 	this->shooting = shoot;
 	this->specialKey = special;
 
-	shootingPoints = new std::vector<CannonPoint>;
+	shootingPoints = std::vector<CannonPoint>();
 	determineShootingAngles();
+	updateAllValues();
+
+	if (RNG::randFunc() < 1.0/4096) {
+		//shiny tank (yes, 1/8192 is the chance before Sword/Shield)
+		defaultColor = ColorValueHolder(0.75f, 0.75f, 0.75f);
+	} else {
+		defaultColor = ColorValueHolder(0.5f, 0.5f, 0.5f);
+	}
 
 	initializeGPU();
 }
+
+Tank::Tank(double x_, double y_, double angle, Team_ID id_, std::string name_, TankInputChar* inputs)
+: Tank(x_, y_, angle, id_, name_, inputs[0], inputs[1], inputs[2], inputs[3], inputs[4]) {}
 
 Tank::~Tank() {
 	for (int i = 0; i < tankPowers.size(); i++) {
 		delete tankPowers[i];
 	}
 	tankPowers.clear();
-
-	delete shootingPoints;
 
 	//uninitializeGPU();
 }
@@ -138,6 +149,10 @@ bool Tank::uninitializeGPU() {
 
 	initialized_GPU = false;
 	return true;
+}
+
+TankInputChar* Tank::getKeys() const {
+	return new TankInputChar[]{ forward, turnL, turnR, shooting, specialKey };
 }
 
 void Tank::move() {
@@ -211,15 +226,15 @@ void Tank::shoot() {
 				if (!tankPowers[j]->additionalShootingCanWorkWithOthers) {
 					noMoreOtherAdditionalShooting = true;
 				}
-				for (int i = 0; i < shootingPoints->size(); i++) {
-					tankPowers[j]->additionalShooting(this, shootingPoints->at(i));
+				for (int i = 0; i < shootingPoints.size(); i++) {
+					tankPowers[j]->additionalShooting(this, shootingPoints.at(i));
 				}
 			}
 		}
 
 		if (!overridedShooting) {
-			for (int i = 0; i < shootingPoints->size(); i++) {
-				defaultMakeBullet(shootingPoints->at(i).angle + velocity.getAngle());
+			for (int i = 0; i < shootingPoints.size(); i++) {
+				defaultMakeBullet(shootingPoints[i].angle + velocity.getAngle());
 			}
 		}
 		//makeBullet(x + r*cos(angle), y + r*sin(angle), angle, r/4, maxSpeed*2, bp); //should be maxSpeed*4 //this is old, don't look at for too long
@@ -264,8 +279,8 @@ void Tank::regularMakeBullet(double x, double y, double angle) {
 }
 
 void Tank::determineShootingAngles() {
-	shootingPoints->clear();
-	shootingPoints->push_back(CannonPoint(0));
+	shootingPoints.clear();
+	shootingPoints.push_back(CannonPoint(0));
 
 	bool modifiedAdditionalShooting = false;
 	bool noMoreAdditionalShootingSpecials = false;
@@ -284,7 +299,7 @@ void Tank::determineShootingAngles() {
 				noMoreAdditionalShootingSpecials = true;
 			}
 
-			tankPowers[i]->addShootingPoints(this, shootingPoints);
+			tankPowers[i]->addShootingPoints(this, &shootingPoints);
 		}
 	}
 }
@@ -579,11 +594,11 @@ double Tank::getAngle() const {
 }
 
 double Tank::getCannonAngle(int i) const {
-	return fmod(fmod(shootingPoints->at(i).angle, 2*PI) + 2*PI, 2*PI);
+	return fmod(fmod(shootingPoints[i].angle, 2*PI) + 2*PI, 2*PI);
 }
 
 double Tank::getRealCannonAngle(int i) const {
-	return fmod(fmod(shootingPoints->at(i).angle + velocity.getAngle(), 2*PI) + 2*PI, 2*PI);
+	return fmod(fmod(shootingPoints[i].angle + velocity.getAngle(), 2*PI) + 2*PI, 2*PI);
 }
 
 /*
@@ -969,7 +984,7 @@ inline void Tank::drawExtraBarrels(float alpha) const {
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
-	for (int i = 1; i < shootingPoints->size(); i++) {
+	for (int i = 1; i < shootingPoints.size(); i++) {
 		MVPM = Renderer::GenerateMatrix(r, 1, getRealCannonAngle(i), x, y);
 		shader->setUniformMat4f("u_MVP", MVPM);
 
@@ -1016,6 +1031,7 @@ bool Tank::kill() {
 	return this->dead;
 }
 
+/*
 void Tank::resetThings(double x, double y, double angle, Team_ID teamID) {
 	this->powerReset();
 	determineShootingAngles();
@@ -1038,6 +1054,7 @@ void Tank::resetThings(double x, double y, double angle, Team_ID teamID) {
 		defaultColor = ColorValueHolder(0.5f, 0.5f, 0.5f);
 	}
 }
+*/
 
 double Tank::getHighestOffenseImportance() const {
 	double highest = LOW_IMPORTANCE;

@@ -27,15 +27,21 @@ void ResetThings::reset(int) {
 		}
 	}
 
+	TankInputChar* tankInput1 = TankManager::getTank(0)->getKeys();
+	TankInputChar* tankInput2 = TankManager::getTank(1)->getKeys();
+	//TODO: need to get inputs, name, and teamID; need something like Tank::getIdentification()
+	//maybe it also needs to store starting angle (if getNumTanks() > 2)
+
 	BulletManager::clearBullets();
 	WallManager::clearWalls();
 	PowerupManager::clearPowerups();
 	HazardManager::clearCircleHazards();
 	HazardManager::clearRectHazards();
 	LevelManager::clearLevels();
+	TankManager::clearTanks();
 
-	TankManager::tanks[0]->resetThings(default_tankToEdgeDist, GAME_HEIGHT/2, 0, TankManager::tanks[0]->getTeamID());
-	TankManager::tanks[1]->resetThings(GAME_WIDTH - default_tankToEdgeDist, GAME_HEIGHT/2, PI, TankManager::tanks[1]->getTeamID());
+	TankManager::pushTank(new Tank(default_tankToEdgeDist, GAME_HEIGHT/2, 0, 1, "WASD", tankInput1));
+	TankManager::pushTank(new Tank(GAME_WIDTH-default_tankToEdgeDist, GAME_HEIGHT/2, PI, 2, "Arrow Keys", tankInput2));
 
 #if _DEBUG
 	LevelManager::pushLevel("dev", "dev0");

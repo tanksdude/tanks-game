@@ -7,7 +7,7 @@ class TankManager {
 
 private:
 	static std::vector<Tank*> tanks;
-	//static void clearTanks(); //for ResetThings (shouldn't be used, though (at least for now))
+	static void clearTanks(); //for ResetThings
 
 public:
 	static void initialize();

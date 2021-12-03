@@ -18,7 +18,7 @@ class Tank;
 struct TankInputChar {
 	bool isSpecial;
 	int character;
-	bool getKeyState();
+	bool getKeyState() const;
 	TankInputChar(bool, int);
 	TankInputChar();
 };
@@ -34,7 +34,7 @@ public:
 	double maxSpeed; // = 1;
 	double acceleration; // = 1.0/16; //intentional acceleration, not total
 	double turningIncrement; // = 64;
-	std::vector<CannonPoint>* shootingPoints;
+	std::vector<CannonPoint> shootingPoints;
 	std::vector<TankPower*> tankPowers;
 	double shootCount;
 	double maxShootCount;
@@ -67,6 +67,7 @@ public:
 	TankInputChar shooting;
 	//TankInputChar backwards; //not the point of the game
 	TankInputChar specialKey;
+	TankInputChar* getKeys() const;
 
 	void makeBulletCommon(double x, double y, double angle, double radius, double speed); //move to private eventually
 	void makeBullet(double x, double y, double angle, double radius, double speed, double acc); //move to private eventually (does not use makeBulletCommon) (avoid using)
@@ -75,13 +76,13 @@ public:
 	void determineShootingAngles();
 
 protected:
-	ColorValueHolder defaultColor = ColorValueHolder(0.5f, 0.5f, 0.5f);
+	ColorValueHolder defaultColor = ColorValueHolder(0.5f, 0.5f, 0.5f); //JS: #888888
 	ColorValueHolder defaultNameFill = ColorValueHolder(1.0f, 1.0f, 1.0f);
 	ColorValueHolder defaultNameStroke = ColorValueHolder(0.0f, 0.0f, 0.0f);
 
 	bool kill(); //allows for custom death (a.k.a. something saving the tank from death)
-	void resetThings(double x, double y, double angle, Team_ID teamID);
 	void terminalVelocity();
+	//void resetThings(double x, double y, double angle, Team_ID teamID);
 
 public:
 	//helper stuff:
@@ -133,6 +134,7 @@ private:
 	inline void drawExtraBarrels(float alpha = 1.0f) const;
 
 public:
-	Tank(double x, double y, double a, Team_ID id, std::string name, TankInputChar forward, TankInputChar left, TankInputChar right, TankInputChar shoot, TankInputChar special);
+	Tank(double x, double y, double angle, Team_ID id, std::string name, TankInputChar* inputs);
+	Tank(double x, double y, double angle, Team_ID id, std::string name, TankInputChar forward, TankInputChar left, TankInputChar right, TankInputChar shoot, TankInputChar special);
 	~Tank();
 };
