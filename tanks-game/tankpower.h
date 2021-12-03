@@ -73,7 +73,7 @@ public:
 	//bool modifiesCollisionWithBullet = false;
 	//virtual void modifiedCollisionWithBullet(Tank*, Bullet*) { return; } //probably shouldn't be used
 
-	virtual bool getModifiesCollisionWithCircleHazard(const CircleHazard*) const { return  false; }
+	virtual bool getModifiesCollisionWithCircleHazard(const CircleHazard*) const { return false; }
 	virtual InteractionBoolHolder modifiedCollisionWithCircleHazard(Tank*, CircleHazard*) { return { false, false }; }
 	//precondition: hit circlehazard, is not necessarily inside circlehazard
 	bool overridesCollisionWithCircleHazard = true; //false means also use the default, which means destroy the bullet if it collides

@@ -120,6 +120,7 @@
 #include "devlonginvinciblenamedpower.h" //invincible but lasts a long time
 #include "inversionpower.h" //flips left and right turning
 #include "devannoyingpower.h" //bullet doesn't hurt tank, merely pushes away
+#include "ultrabouncepower.h" //pushes wall away when it bounces
 
 //a lot of the includes aren't needed anymore thanks to GameMainLoop, but may as well keep them
 #include "gamemainloop.h"
@@ -212,6 +213,7 @@ int main(int argc, char** argv) {
 	PowerupManager::addPowerFactory(DevLongInvincibleNamedPower::factory);
 	PowerupManager::addPowerFactory(InversionPower::factory);
 	PowerupManager::addPowerFactory(DevAnnoyingPower::factory);
+	PowerupManager::addPowerFactory(UltraBouncePower::factory);
 
 	//hazards
 	//vanilla (some are also "old"):

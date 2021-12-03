@@ -36,6 +36,7 @@
         * barrier (previously called life)
     * shield (multi-hit barrier)
     * [dev] annoying: pushes tank away instead of killing it
+    * [dev] ultrabounce: bounce bullets push away walls when bouncing
 * levels:
     * all JS levels in! (except portal)
         * "hiding places" and "lone turret"

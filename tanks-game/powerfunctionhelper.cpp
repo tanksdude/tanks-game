@@ -6,7 +6,7 @@
 #include "tankmanager.h"
 #include <iostream>
 
-bool PowerFunctionHelper::bounceGeneric(Bullet* b, Wall* w) {
+bool PowerFunctionHelper::superbounceGeneric(Bullet* b, Wall* w, double strength) {
 	if (!CollisionHandler::partiallyCollided(b, w)) {
 		return false;
 	}
@@ -15,17 +15,21 @@ bool PowerFunctionHelper::bounceGeneric(Bullet* b, Wall* w) {
 		if (b->y - (w->y + w->h) <= (-w->h / w->w) * (b->x - w->x)) { //bottom
 			b->y -= (b->y + b->r - w->y) * 2; //b->y = w->y - b->r
 			b->velocity.setAngle(b->velocity.getAngle() * -1);
+			w->y += strength;
 		} else { //right
 			b->x += (w->x + w->w - (b->x - b->r)) * 2; //b->x = w->x + w->w + w->r
 			b->velocity.setAngle(PI - b->velocity.getAngle());
+			w->x -= strength;
 		}
 	} else { //top left?
 		if (b->y - (w->y + w->h) <= (-w->h / w->w) * (b->x - w->x)) { //left
 			b->x -= (b->x + b->r - w->x) * 2; //b->x = w->x - b->r
 			b->velocity.setAngle(PI - b->velocity.getAngle());
+			w->x += strength;
 		} else { //top
 			b->y += (w->y + w->h - (b->y - b->r)) * 2; //b->y = w->y + w->h + b->r
 			b->velocity.setAngle(b->velocity.getAngle() * -1);
+			w->y -= strength;
 		}
 	}
 	//TODO: ensure bullet is not actually in wall; move bullet to edge of relevant wall if still colliding
@@ -33,30 +37,30 @@ bool PowerFunctionHelper::bounceGeneric(Bullet* b, Wall* w) {
 	return true; //this means the bullet bounced, not that it should be deleted
 }
 
-bool PowerFunctionHelper::bounceGenericWithCorners(Bullet* b, Wall* w) { //not the default because bullets move too quickly on average
+bool PowerFunctionHelper::superbounceGenericWithCorners(Bullet* b, Wall* w, double strength) { //not the default because bullets move too quickly on average
 	if (!CollisionHandler::partiallyCollided(b, w)) {
 		return false;
 	}
 
 	if ((b->x < w->x) && (b->y < w->y)) { //circle in bottom left
-		return bounceGenericWithCornersCornerHandler(b, w->x, w->y);
+		return PowerFunctionHelper::superbounceGenericCornerHandler(b, w, w->x, w->y, strength);
 	}
 	//can't do elses because more than one corner could be in the circle (TODO: really?)
 	if ((b->x > (w->x + w->w)) && (b->y < w->y)) { //circle in bottom right
-		return bounceGenericWithCornersCornerHandler(b, (w->x + w->w), w->y);
+		return PowerFunctionHelper::superbounceGenericCornerHandler(b, w, (w->x + w->w), w->y, strength);
 	}
 	if ((b->x < w->x) && (b->y > (w->y + w->h))) { //circle in top left
-		return bounceGenericWithCornersCornerHandler(b, w->x, (w->y + w->h));
+		return PowerFunctionHelper::superbounceGenericCornerHandler(b, w, w->x, (w->y + w->h), strength);
 	}
 	if ((b->x > (w->x + w->w)) && (b->y > (w->y + w->h))) { //circle in top right
-		return bounceGenericWithCornersCornerHandler(b, (w->x + w->w), (w->y + w->h));
+		return PowerFunctionHelper::superbounceGenericCornerHandler(b, w, (w->x + w->w), (w->y + w->h), strength);
 	}
 
-	return PowerFunctionHelper::bounceGeneric(b, w);
+	return PowerFunctionHelper::superbounceGeneric(b, w, strength);
 	//return false;
 }
 
-bool PowerFunctionHelper::bounceGenericWithCornersCornerHandler(Bullet* b, double x, double y) {
+bool PowerFunctionHelper::superbounceGenericCornerHandler(Bullet* b, Wall* w, double x, double y, double strength) {
 	//I have no idea if this is correct but it behaves exactly as I want it to, I think
 	//it's not exact because intersection points aren't calculated but it's close enough
 
@@ -76,6 +80,8 @@ bool PowerFunctionHelper::bounceGenericWithCornersCornerHandler(Bullet* b, doubl
 			b->y += sin(newAngle) * (b->r - d);
 			b->x += cos(newAngle) * (b->r - d);
 			b->velocity.setAngle(newAngle);
+			w->y += sin(angle) * strength;
+			w->x += cos(angle) * strength;
 
 			return true;
 		}
@@ -84,22 +90,7 @@ bool PowerFunctionHelper::bounceGenericWithCornersCornerHandler(Bullet* b, doubl
 	return false;
 }
 
-bool PowerFunctionHelper::bounceEdgeGenericY(Bullet* b) {
-	bool bounced = 0;
-	if (b->y + b->r > GAME_HEIGHT) { //top edge
-		b->y -= ((b->y + b->r) - GAME_HEIGHT) * 2;
-		b->velocity.setAngle(b->velocity.getAngle() * -1);
-		bounced = true;
-	} else if (b->y - b->r < 0) { //bottom edge
-		b->y += -(b->y - b->r) * 2;
-		b->velocity.setAngle(b->velocity.getAngle() * -1);
-		bounced = true;
-	}
-
-	return bounced;
-}
-
-bool PowerFunctionHelper::bounceEdgeGenericX(Bullet* b) {
+bool PowerFunctionHelper::superbounceEdgeGenericX(Bullet* b, double) {
 	bool bounced = 0;
 	if (b->x + b->r > GAME_WIDTH) { //right edge
 		b->x -= (b->x + b->r - GAME_WIDTH) * 2;
@@ -108,6 +99,21 @@ bool PowerFunctionHelper::bounceEdgeGenericX(Bullet* b) {
 	} else if (b->x - b->r < 0) { //left edge
 		b->x += -(b->x - b->r) * 2;
 		b->velocity.setAngle(PI - b->velocity.getAngle());
+		bounced = true;
+	}
+
+	return bounced;
+}
+
+bool PowerFunctionHelper::superbounceEdgeGenericY(Bullet* b, double) {
+	bool bounced = 0;
+	if (b->y + b->r > GAME_HEIGHT) { //top edge
+		b->y -= ((b->y + b->r) - GAME_HEIGHT) * 2;
+		b->velocity.setAngle(b->velocity.getAngle() * -1);
+		bounced = true;
+	} else if (b->y - b->r < 0) { //bottom edge
+		b->y += -(b->y - b->r) * 2;
+		b->velocity.setAngle(b->velocity.getAngle() * -1);
 		bounced = true;
 	}
 
@@ -136,7 +142,8 @@ void PowerFunctionHelper::equallySpacedCannonPoints(Tank*, std::vector<CannonPoi
 	}
 }
 
-bool PowerFunctionHelper::homingGeneric(Bullet* b, double maxAngleMove, bool moveByAngle) { //moveByAngle = target based on angle differences, not distance
+bool PowerFunctionHelper::homingGeneric(Bullet* b, double maxAngleChange, bool moveByAngle) {
+	//moveByAngle = target based on angle differences, not distance
 	//TODO: when team mode is a thing (or single-player campaign?), this will need an update
 	int targetTankIndex;
 
@@ -182,20 +189,20 @@ bool PowerFunctionHelper::homingGeneric(Bullet* b, double maxAngleMove, bool mov
 	double bulletAngle = (b->getAngle()>PI ? b->getAngle() - 2*PI : b->getAngle());
 	//std::cout << targetAngle << " " << bulletAngle << " " << maxAngleMove << std::endl;
 
-	if ((abs(targetAngle - bulletAngle) <= maxAngleMove) || (abs(fmod(targetAngle + PI, 2*PI) - fmod(bulletAngle + PI, 2*PI)) <= maxAngleMove)) {
+	if ((abs(targetAngle - bulletAngle) <= maxAngleChange) || (abs(fmod(targetAngle + PI, 2*PI) - fmod(bulletAngle + PI, 2*PI)) <= maxAngleChange)) {
 		b->velocity.setAngle(targetAngle);
 	} else {
 		SimpleVector2D distToTank = SimpleVector2D(t->getX() - b->x, t->getY() - b->y);
 		float theta = SimpleVector2D::angleBetween(distToTank, b->velocity);
-		if (abs(theta) <= maxAngleMove) {
+		if (abs(theta) <= maxAngleChange) {
 			//small angle adjustment needed
 			b->velocity.setAngle(distToTank.getAngle());
 		} else {
 			//large angle adjustment needed
 			if (theta < 0) {
-				b->velocity.changeAngle(maxAngleMove);
+				b->velocity.changeAngle(maxAngleChange);
 			} else {
-				b->velocity.changeAngle(-maxAngleMove);
+				b->velocity.changeAngle(-maxAngleChange);
 			}
 		}
 	}

@@ -26,7 +26,7 @@ public:
 	//virtual HazardPower* makeHazardPower() const override;
 
 	BouncePower();
-	//TODO: virtual destructor for OldBouncePower?
+	//TODO: virtual destructor for OldBouncePower and UltraBouncePower?
 	static Power* factory();
 };
 

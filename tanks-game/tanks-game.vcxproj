@@ -232,6 +232,7 @@
     <ClCompile Include="trickymaneuveringlevel.cpp" />
     <ClCompile Include="triplepower.cpp" />
     <ClCompile Include="targetingturret.cpp" />
+    <ClCompile Include="ultrabouncepower.cpp" />
     <ClCompile Include="vertexarray.cpp" />
     <ClCompile Include="vertexbuffer.cpp" />
     <ClCompile Include="verticallightning.cpp" />
@@ -355,6 +356,7 @@
     <ClInclude Include="trickymaneuveringlevel.h" />
     <ClInclude Include="triplepower.h" />
     <ClInclude Include="targetingturret.h" />
+    <ClInclude Include="ultrabouncepower.h" />
     <ClInclude Include="vertexarray.h" />
     <ClInclude Include="vertexbuffer.h" />
     <ClInclude Include="vertexbufferlayout.h" />

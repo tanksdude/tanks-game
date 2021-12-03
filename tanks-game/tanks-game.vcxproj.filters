@@ -330,6 +330,9 @@
     <ClCompile Include="invisiblewallsleveleffect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ultrabouncepower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -696,6 +699,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="invisiblewallsleveleffect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ultrabouncepower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
