@@ -18,6 +18,15 @@ Bullet* BulletManager::getBullet(int index) {
 	return bullets[index];
 }
 
+Bullet* BulletManager::getBulletByID(Game_ID gameID) {
+	for (int i = 0; i < bullets.size(); i++) {
+		if (bullets[i]->getGameID() == gameID) {
+			return bullets[i];
+		}
+	}
+	return nullptr;
+}
+
 void BulletManager::pushBullet(Bullet* b) {
 	bullets.push_back(b);
 	if (autoLimitBullets && limitBullets) {
@@ -38,6 +47,14 @@ void BulletManager::forceLimitBullets() {
 void BulletManager::deleteBullet(int index) {
 	delete bullets[index];
 	bullets.erase(bullets.begin() + index);
+}
+
+void BulletManager::deleteBulletByID(Game_ID gameID) {
+	for (int i = 0; i < bullets.size(); i++) {
+		if (bullets[i]->getGameID() == gameID) {
+			deleteBullet(i);
+		}
+	}
 }
 
 void BulletManager::clearBullets() {

@@ -15,9 +15,11 @@ private:
 public:
 	static void initialize();
 	static Bullet* getBullet(int index);
+	static Bullet* getBulletByID(Game_ID);
 	static void pushBullet(Bullet*);
 	static int getNumBullets() { return bullets.size(); }
 	static void deleteBullet(int index);
+	static void deleteBulletByID(Game_ID);
 	static void forceLimitBullets();
 
 private:

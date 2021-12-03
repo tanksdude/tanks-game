@@ -12,9 +12,11 @@ private:
 public:
 	static void initialize();
 	static Tank* getTank(int index);
+	static Tank* getTankByID(Game_ID);
 	static void pushTank(Tank*);
 	static int getNumTanks() { return tanks.size(); }
 	//static void deleteTank(int index);
+	//static void deleteTankByID(Game_ID);
 
 private:
 	TankManager() {}

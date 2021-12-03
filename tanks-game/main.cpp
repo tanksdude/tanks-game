@@ -267,6 +267,7 @@ int main(int argc, char** argv) {
 	//initialize managers and stuff:
 	GameManager::Initialize();
 	KeypressManager::Initialize();
+	TankManager::initialize();
 	BulletManager::initialize();
 	PowerupManager::initialize();
 	WallManager::initialize();

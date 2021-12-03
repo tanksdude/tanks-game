@@ -163,29 +163,26 @@ void TargetingTurret::tick() {
 	if (currentState == 0) { //either tracking a tank or doing nothing
 		//should this be else?
 		if (targeting) { //tracking tank
-			bool tankIsVisible = false; //singular
-			for (int i = 0; i < TankManager::getNumTanks(); i++) {
-				//check if 1. tank with gameID of trackingID exists, 2. no walls blocking line of sight to tank
-				Tank* t = TankManager::getTank(i); //TODO: go through GameManager because it should have every object and their IDs
-				if (t->getGameID() == this->trackingID) { //exists
-					if (canSeeTank(t)) { //no obstructions
-						tankIsVisible = true;
-						//main logic here
-						turnTowardsTank(t);
-						if (isPointedAt(t)) {
-							targetingCount++;
-							if (targetingCount >= stateMultiplier[0] * tickCycle) {
-								currentState = 1;
-								targetingCount = 0;
-							}
-							updateTrackingPos(t, true);
-						} else {
-							targetingCount--;
-							if (targetingCount < 0) {
-								targetingCount = 0;
-							}
-							updateTrackingPos(t, false);
+			bool tankIsVisible = false;
+			const Tank* t = TankManager::getTankByID(this->trackingID);
+			if (t != nullptr) { //exists
+				if (canSeeTank(t)) { //no obstructions
+					tankIsVisible = true;
+					//main logic here
+					turnTowardsTank(t);
+					if (isPointedAt(t)) {
+						targetingCount++;
+						if (targetingCount >= stateMultiplier[0] * tickCycle) {
+							currentState = 1;
+							targetingCount = 0;
 						}
+						updateTrackingPos(t, true);
+					} else {
+						targetingCount--;
+						if (targetingCount < 0) {
+							targetingCount = 0;
+						}
+						updateTrackingPos(t, false);
 					}
 				}
 			}
@@ -200,7 +197,7 @@ void TargetingTurret::tick() {
 			std::vector<bool> tankVisibility; tankVisibility.reserve(TankManager::getNumTanks()); //not using regular arrays so people (including future me) can actually read this
 			std::vector<double> distancesToTank; distancesToTank.reserve(TankManager::getNumTanks()); //TODO: option for angle-based selection (look at homing in PowerFunctionHelper)
 			for (int i = 0; i < TankManager::getNumTanks(); i++) {
-				Tank* t = TankManager::getTank(i); //TODO: go through GameManager because it should have every object and their IDs
+				Tank* t = TankManager::getTank(i);
 				tankVisibility.push_back(canSeeTank(t));
 				if (tankVisibility.at(i)) {
 					distancesToTank.push_back(sqrt(pow(x - t->x, 2) + pow(y - t->y, 2)));

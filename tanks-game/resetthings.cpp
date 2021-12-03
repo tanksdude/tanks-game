@@ -42,6 +42,7 @@ void ResetThings::reset(int) {
 
 	TankManager::pushTank(new Tank(default_tankToEdgeDist, GAME_HEIGHT/2, 0, 1, "WASD", tankInput1));
 	TankManager::pushTank(new Tank(GAME_WIDTH-default_tankToEdgeDist, GAME_HEIGHT/2, PI, 2, "Arrow Keys", tankInput2));
+	delete[] tankInput1, tankInput2;
 
 #if _DEBUG
 	LevelManager::pushLevel("dev", "dev0");
@@ -92,6 +93,9 @@ void ResetThings::firstReset() {
 		}
 	}
 }
+
+//TODO: tankPositionReset should have a version with no Tank inputs
+//worry about this when there's more than two tanks
 
 void ResetThings::tankPositionReset(Tank* first, Tank* second) {
 	tankPositionReset(first, second, default_tankToEdgeDist);

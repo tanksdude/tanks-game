@@ -12,9 +12,11 @@ private:
 public:
 	static void initialize();
 	static Wall* getWall(int index);
+	static Wall* getWallByID(Game_ID);
 	static void pushWall(Wall*);
 	static int getNumWalls() { return walls.size(); }
 	static void deleteWall(int index);
+	static void deleteWallByID(Game_ID);
 
 private:
 	WallManager() {}

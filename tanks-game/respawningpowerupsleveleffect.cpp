@@ -18,15 +18,8 @@ void RespawningPowerupsLevelEffect::PowerSquareWatcher::tick() {
 			reset(p);
 		}
 	} else {
-		bool found = false;
-		for (int i = 0; i < PowerupManager::getNumPowerups(); i++) {
-			const PowerSquare* p = PowerupManager::getPowerup(i);
-			if (p->getGameID() == this->powerupID) {
-				found = true;
-				break;
-			}
-		}
-		if (!found) {
+		const PowerSquare* p = PowerupManager::getPowerupByID(this->powerupID);
+		if (p == nullptr) {
 			setIsGone();
 		}
 	}

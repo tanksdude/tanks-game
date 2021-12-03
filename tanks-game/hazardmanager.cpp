@@ -35,6 +35,23 @@ RectHazard* HazardManager::getRectHazard(int index) {
 	return rectHazards[index];
 }
 
+CircleHazard* HazardManager::getCircleHazardByID(Game_ID gameID) {
+	for (int i = 0; i < circleHazards.size(); i++) {
+		if (circleHazards[i]->getGameID() == gameID) {
+			return circleHazards[i];
+		}
+	}
+	return nullptr;
+}
+RectHazard* HazardManager::getRectHazardByID(Game_ID gameID) {
+	for (int i = 0; i < rectHazards.size(); i++) {
+		if (rectHazards[i]->getGameID() == gameID) {
+			return rectHazards[i];
+		}
+	}
+	return nullptr;
+}
+
 void HazardManager::pushCircleHazard(CircleHazard* ch) {
 	circleHazards.push_back(ch);
 }
@@ -49,6 +66,21 @@ void HazardManager::deleteCircleHazard(int index) {
 void HazardManager::deleteRectHazard(int index) {
 	delete rectHazards[index];
 	rectHazards.erase(rectHazards.begin() + index);
+}
+
+void HazardManager::deleteCircleHazardByID(Game_ID gameID) {
+	for (int i = 0; i < circleHazards.size(); i++) {
+		if (circleHazards[i]->getGameID() == gameID) {
+			deleteCircleHazard(i);
+		}
+	}
+}
+void HazardManager::deleteRectHazardByID(Game_ID gameID) {
+	for (int i = 0; i < rectHazards.size(); i++) {
+		if (rectHazards[i]->getGameID() == gameID) {
+			deleteRectHazard(i);
+		}
+	}
 }
 
 void HazardManager::clearCircleHazards() {

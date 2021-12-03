@@ -19,9 +19,11 @@ private:
 public:
 	static void initialize();
 	static PowerSquare* getPowerup(int index);
+	static PowerSquare* getPowerupByID(Game_ID);
 	static void pushPowerup(PowerSquare*);
 	static int getNumPowerups() { return powerups.size(); }
 	static void deletePowerup(int index);
+	static void deletePowerupByID(Game_ID);
 
 	static void addPowerFactory(PowerFunction);
 	static PowerFunction getPowerFactory(std::string type, std::string name);

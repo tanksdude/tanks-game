@@ -25,6 +25,15 @@ PowerSquare* PowerupManager::getPowerup(int index) {
 	return powerups[index];
 }
 
+PowerSquare* PowerupManager::getPowerupByID(Game_ID gameID) {
+	for (int i = 0; i < powerups.size(); i++) {
+		if (powerups[i]->getGameID() == gameID) {
+			return powerups[i];
+		}
+	}
+	return nullptr;
+}
+
 void PowerupManager::pushPowerup(PowerSquare* p) {
 	powerups.push_back(p);
 }
@@ -32,6 +41,14 @@ void PowerupManager::pushPowerup(PowerSquare* p) {
 void PowerupManager::deletePowerup(int index) {
 	delete powerups[index];
 	powerups.erase(powerups.begin() + index);
+}
+
+void PowerupManager::deletePowerupByID(Game_ID gameID) {
+	for (int i = 0; i < powerups.size(); i++) {
+		if (powerups[i]->getGameID() == gameID) {
+			deletePowerup(i);
+		}
+	}
 }
 
 void PowerupManager::clearPowerups() {
