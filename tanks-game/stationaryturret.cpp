@@ -159,9 +159,8 @@ void StationaryTurret::tick() {
 }
 
 bool StationaryTurret::canSeeTank(const Tank* t) const {
-	double dist = sqrt(pow(x - t->x, 2) + (y - t->y, 2)); //dist to tank
-	double angle = atan2(y - t->y, x - t->x); //angle to tank
-	Circle* p = new Point(x + dist*cos(angle), y + dist*sin(angle));
+	SimpleVector2D distToTank = SimpleVector2D(t->getX() - x, t->getY() - y);
+	Circle* p = new Point(x + distToTank.getMagnitude()*cos(this->direction.getAngle()), y + distToTank.getMagnitude()*sin(this->direction.getAngle()));
 	if (!CollisionHandler::fullyCollided(p, t)) {
 		delete p;
 		return false; //not pointing at tank (it's an approximation but it's good enough)
@@ -171,11 +170,11 @@ bool StationaryTurret::canSeeTank(const Tank* t) const {
 		Wall* wa = WallManager::getWall(i);
 		if (CollisionHandler::lineRectCollision(x, y, p->x, p->y, wa)) {
 			delete p;
-			return true;
+			return false;
 		}
 	}
 	delete p;
-	return false;
+	return true;
 }
 
 bool StationaryTurret::reasonableLocation() const {

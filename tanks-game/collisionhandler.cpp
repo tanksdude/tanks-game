@@ -157,7 +157,7 @@ bool CollisionHandler::cornerCollidedIgnoreEdge(const Circle* a, double x, doubl
 	return false;
 }
 
-bool CollisionHandler::fullyCollided(const Rect* a, const Rect* b) {
+bool CollisionHandler::fullyCollided(const Rect* a, const Rect* b) { //a inside b
 	return ((a->x >= b->x) && ((a->x + a->w) <= (b->x + b->w)) && (a->y >= b->y) && ((a->y + a->h) <= (b->y + b->h)));
 }
 bool CollisionHandler::fullyCollided(const Rect* a, const Circle* b) { //rectangle inside circle
@@ -172,9 +172,9 @@ bool CollisionHandler::fullyCollided(const Rect* a, const Circle* b) { //rectang
 bool CollisionHandler::fullyCollided(const Circle* a, const Rect* b) { //circle inside rectangle
 	return (((a->x - a->r) >= b->x) && ((a->x + a->r) <= (b->x + b->w)) && ((a->y - a->r) >= b->y) && ((a->y + a->r) <= (b->y + b->h)));
 }
-bool CollisionHandler::fullyCollided(const Circle* a, const Circle* b) {
+bool CollisionHandler::fullyCollided(const Circle* a, const Circle* b) { //a inside b
 	if (((a->x - a->r) >= (b->x - b->r)) && ((a->x + a->r) <= (b->x + b->r)) && ((a->y - a->r) >= (b->y - b->r)) && ((a->y + a->r) <= (b->y + b->r))) { //check R-R collision
-		return (sqrt(pow(a->x - b->x, 2) + pow(a->y - b->y, 2)) <= a->r + b->r);
+		return (sqrt(pow(a->x - b->x, 2) + pow(a->y - b->y, 2)) <= b->r - a->r);
 	}
 	return false;
 }
