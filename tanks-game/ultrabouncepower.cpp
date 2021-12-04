@@ -145,6 +145,10 @@ void UltraBounceBulletPower::removeEffects(Bullet* parent) {
 	//nothing
 }
 
+BulletPower* UltraBounceBulletPower::makeDuplicate() const {
+	return new UltraBounceBulletPower(this->bouncesLeft);
+}
+
 TankPower* UltraBounceBulletPower::makeTankPower() const {
 	return new UltraBounceTankPower();
 }

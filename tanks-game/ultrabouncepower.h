@@ -56,7 +56,7 @@ public:
 		return UltraBouncePower::getClassColor();
 	}
 
-	virtual BulletPower* makeDuplicate() const override { return new UltraBounceBulletPower(); } //I don't think bounces were passed on in JS
+	virtual BulletPower* makeDuplicate() const override;
 	virtual TankPower* makeTankPower() const override;
 
 	//bool modifiesCollisionWithWall = true;
