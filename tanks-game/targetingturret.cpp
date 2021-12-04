@@ -160,96 +160,114 @@ inline void TargetingTurret::updateTrackingPos(const Tank* t, bool pointedAt) {
 
 void TargetingTurret::tick() {
 	//tickCount is unused... maybe targetingCount should replace it...
+
 	if (currentState == 0) { //either tracking a tank or doing nothing
-		//should this be else?
 		if (targeting) { //tracking tank
-			bool tankIsVisible = false;
-			const Tank* t = TankManager::getTankByID(this->trackingID);
-			if (t != nullptr) { //exists
-				if (canSeeTank(t)) { //no obstructions
-					tankIsVisible = true;
-					//main logic here
-					turnTowardsTank(t);
-					if (isPointedAt(t)) {
-						targetingCount++;
-						if (targetingCount >= stateMultiplier[0] * tickCycle) {
-							currentState = 1;
-							targetingCount = 0;
-						}
-						updateTrackingPos(t, true);
-					} else {
-						targetingCount--;
-						if (targetingCount < 0) {
-							targetingCount = 0;
-						}
-						updateTrackingPos(t, false);
-					}
-				}
-			}
-			if (!tankIsVisible) {
-				targeting = false;
-			}
+			tick_continueTracking();
 		}
-
 		if (!targeting) { //looking for a tank
-			targetingCount = 0;
-
-			std::vector<bool> tankVisibility; tankVisibility.reserve(TankManager::getNumTanks()); //not using regular arrays so people (including future me) can actually read this
-			std::vector<double> distancesToTank; distancesToTank.reserve(TankManager::getNumTanks()); //TODO: option for angle-based selection (look at homing in PowerFunctionHelper)
-			for (int i = 0; i < TankManager::getNumTanks(); i++) {
-				Tank* t = TankManager::getTank(i);
-				tankVisibility.push_back(canSeeTank(t));
-				if (tankVisibility.at(i)) {
-					distancesToTank.push_back(sqrt(pow(x - t->x, 2) + pow(y - t->y, 2)));
-				} else {
-					distancesToTank.push_back(GAME_WIDTH*2 + GAME_HEIGHT*2);
-				}
-			}
-
-			double minDist = GAME_WIDTH*2 + GAME_HEIGHT*2;
-			std::vector<int> tankIndices; tankIndices.reserve(TankManager::getNumTanks()); //multiple tanks can have same distance
-			for (int i = 0; i < TankManager::getNumTanks(); i++) {
-				if (distancesToTank[i] == minDist) {
-					tankIndices.push_back(i);
-				} else if (distancesToTank[i] < minDist) {
-					tankIndices.clear();
-					tankIndices.push_back(i);
-					minDist = distancesToTank[i];
-				}
-			}
-
-			int indexOfTargetedTank;
-			if (tankIndices.size() == 1) {
-				indexOfTargetedTank = tankIndices[0];
-			} else {
-				indexOfTargetedTank = tankIndices[int(RNG::randFunc() * tankIndices.size())];
-			}
-
-			if (tankVisibility[indexOfTargetedTank]) {
-				Tank* t = TankManager::getTank(indexOfTargetedTank);
-				trackingID = t->getGameID();
-				targeting = true;
-				updateTrackingPos(t, isPointedAt(t));
-			}
+			tick_lookForNewTarget();
 		}
 	}
-	if (currentState == 1) {
-		targetingCount++;
-		if (targetingCount >= stateMultiplier[1] * tickCycle) {
-			BulletManager::pushBullet(new Bullet(x + r*cos(direction.getAngle()), y + r*sin(direction.getAngle()), r*BULLET_TO_TANK_RADIUS_RATIO, direction.getAngle(), Tank::default_maxSpeed*BULLET_TO_TANK_SPEED_RATIO, this->getTeamID(), BulletParentType::individual, this->getGameID()));
-			currentState = 2;
-			targetingCount = 0;
-			targeting = false; //allows target to change (also controls whether the reticule is drawn)
-		}
+
+	if (currentState == 1) { //charging up to shoot (and shooting)
+		tick_chargeUp();
 	}
-	if (currentState == 2) {
-		targetingCount++;
-		if (targetingCount >= stateMultiplier[2] * tickCycle) {
-			targetingCount = 0;
-			currentState = 0;
-		}
+
+	if (currentState == 2) { //cooling down
+		tick_cooldown();
 	}
+
 	//maxState is 3; not using else in case tickCycle is zero
+}
+
+inline void TargetingTurret::tick_continueTracking() {
+	bool tankIsVisible = false;
+	const Tank* t = TankManager::getTankByID(this->trackingID);
+	if (t != nullptr) { //exists
+		if (canSeeTank(t)) { //no obstructions
+			tankIsVisible = true;
+			//main logic here
+			turnTowardsTank(t);
+			if (isPointedAt(t)) {
+				targetingCount++;
+				if (targetingCount >= stateMultiplier[0] * tickCycle) {
+					currentState = 1;
+					targetingCount = 0;
+				}
+				updateTrackingPos(t, true);
+			} else {
+				targetingCount--;
+				if (targetingCount < 0) {
+					targetingCount = 0;
+				}
+				updateTrackingPos(t, false);
+			}
+		}
+	}
+	if (!tankIsVisible) {
+		targeting = false;
+	}
+}
+
+inline void TargetingTurret::tick_lookForNewTarget() {
+	targetingCount = 0;
+
+	std::vector<bool> tankVisibility; tankVisibility.reserve(TankManager::getNumTanks()); //not using regular arrays so people (including future me) can actually read this
+	std::vector<double> distancesToTank; distancesToTank.reserve(TankManager::getNumTanks()); //TODO: option for angle-based selection (look at homing in PowerFunctionHelper)
+	for (int i = 0; i < TankManager::getNumTanks(); i++) {
+		Tank* t = TankManager::getTank(i);
+		tankVisibility.push_back(canSeeTank(t));
+		if (tankVisibility.at(i)) {
+			distancesToTank.push_back(sqrt(pow(x - t->x, 2) + pow(y - t->y, 2)));
+		} else {
+			distancesToTank.push_back(GAME_WIDTH*2 + GAME_HEIGHT*2);
+		}
+	}
+
+	double minDist = GAME_WIDTH*2 + GAME_HEIGHT*2;
+	std::vector<int> tankIndices; tankIndices.reserve(TankManager::getNumTanks()); //multiple tanks can have same distance
+	for (int i = 0; i < TankManager::getNumTanks(); i++) {
+		if (distancesToTank[i] == minDist) {
+			tankIndices.push_back(i);
+		} else if (distancesToTank[i] < minDist) {
+			tankIndices.clear();
+			tankIndices.push_back(i);
+			minDist = distancesToTank[i];
+		}
+	}
+
+	int indexOfTargetedTank;
+	if (tankIndices.size() == 1) {
+		indexOfTargetedTank = tankIndices[0];
+	} else {
+		indexOfTargetedTank = tankIndices[int(RNG::randFunc() * tankIndices.size())];
+	}
+
+	if (tankVisibility[indexOfTargetedTank]) {
+		const Tank* t = TankManager::getTank(indexOfTargetedTank);
+		trackingID = t->getGameID();
+		targeting = true;
+		updateTrackingPos(t, isPointedAt(t));
+	}
+}
+
+inline void TargetingTurret::tick_chargeUp() {
+	targetingCount++;
+	if (targetingCount >= stateMultiplier[1] * tickCycle) {
+		BulletManager::pushBullet(new Bullet(x + r*cos(direction.getAngle()), y + r*sin(direction.getAngle()), r*BULLET_TO_TANK_RADIUS_RATIO, direction.getAngle(), Tank::default_maxSpeed*BULLET_TO_TANK_SPEED_RATIO, this->getTeamID(), BulletParentType::individual, this->getGameID()));
+		currentState = 2;
+		targetingCount = 0;
+		targeting = false; //allows target to change (also controls whether the reticule is drawn)
+	}
+}
+
+inline void TargetingTurret::tick_cooldown() {
+	targetingCount++;
+	if (targetingCount >= stateMultiplier[2] * tickCycle) {
+		targetingCount = 0;
+		currentState = 0;
+	}
 }
 
 bool TargetingTurret::canSeeTank(const Tank* t) const {

@@ -52,6 +52,12 @@ protected:
 	virtual ColorValueHolder getColor(int state) const override;
 	virtual ColorValueHolder getReticuleColor() const;
 
+protected:
+	virtual inline void tick_continueTracking();
+	virtual inline void tick_lookForNewTarget();
+	virtual inline void tick_chargeUp();
+	virtual inline void tick_cooldown();
+
 public:
 	//virtual bool validLocation() const override { return true; }
 	virtual bool reasonableLocation() const override;
