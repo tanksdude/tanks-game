@@ -55,7 +55,10 @@ TrackingTankPower::TrackingTankPower() {
 #include "constants.h"
 
 InteractionBoolHolder TrackingBulletPower::modifiedMovement(Bullet* b) {
-	if (PowerFunctionHelper::homingGeneric(b, 2*PI, false)) {
+	Game_ID targetID = PowerFunctionHelper::homingGenericTarget(b, true);
+	if (targetID != -1) {
+		PowerFunctionHelper::homingGenericMove(b, targetID, 2*PI);
+	} else {
 		//update with HomingBulletPower::modifiedMovement
 		//can't just set b->angle to the correct angle because there has to be a targeting round (for multi-tank mode)
 	}

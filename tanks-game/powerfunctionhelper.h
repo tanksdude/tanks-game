@@ -6,14 +6,15 @@
 #include "wall.h"
 
 class PowerFunctionHelper {
-private:
+protected:
 	static inline bool bounceGenericCornerHandler(Bullet* b, Wall* w, double x, double y) {
 		return superbounceGenericCornerHandler(b, w, x, y, 0);
 	}
 	static bool superbounceGenericCornerHandler(Bullet*, Wall*, double x, double y, double strength = 0);
 
 public:
-	static bool homingGeneric(Bullet*, double maxAngleChange, bool moveByAngle);
+	static Game_ID homingGenericTarget(Bullet*, bool targetUsingAngleDiff); //find target for homing
+	static void homingGenericMove(Bullet*, Game_ID targetID, double maxAngleChange); //do homing on target
 
 	static inline bool bounceGeneric(Bullet* b, Wall* w) { return superbounceGeneric(b, w, 0); }
 	static inline bool bounceGenericWithCorners(Bullet* b, Wall* w) { return superbounceGenericWithCorners(b, w, 0); }

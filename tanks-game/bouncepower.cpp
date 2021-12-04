@@ -91,31 +91,30 @@ InteractionBoolHolder BounceBulletPower::modifiedEdgeCollision(Bullet* b) {
 	//I could have different checks for partiallyOutOfBounds() to only require one check each but whatever
 
 	bool bouncedY = false;
+	//bool bouncedX = false;
+
 	if (CollisionHandler::partiallyOutOfBounds(b)) {
 		if (PowerFunctionHelper::bounceEdgeGenericY(b)) {
 			bouncesLeft--;
 			bouncedY = true;
 		}
+		if (bouncesLeft <= 0) {
+			modifiesCollisionWithWall = false;
+			modifiesEdgeCollision = false;
+			return { CollisionHandler::fullyOutOfBounds(b) };
+		}
 	}
 
-	if (bouncesLeft <= 0) {
-		modifiesEdgeCollision = false;
-		modifiesCollisionWithWall = false;
-		return { CollisionHandler::fullyOutOfBounds(b) };
-	}
-
-	//bool bouncedX = false;
 	if (CollisionHandler::partiallyOutOfBounds(b)) {
 		if (PowerFunctionHelper::bounceEdgeGenericX(b)) {
 			bouncesLeft--;
 			//bouncedX = true;
 		}
-	}
-
-	if (bouncesLeft <= 0) {
-		modifiesEdgeCollision = false;
-		modifiesCollisionWithWall = false;
-		return { CollisionHandler::fullyOutOfBounds(b) };
+		if (bouncesLeft <= 0) {
+			modifiesCollisionWithWall = false;
+			modifiesEdgeCollision = false;
+			return { CollisionHandler::fullyOutOfBounds(b) };
+		}
 	}
 
 	if (!bouncedY && CollisionHandler::partiallyOutOfBounds(b)) {
@@ -123,11 +122,11 @@ InteractionBoolHolder BounceBulletPower::modifiedEdgeCollision(Bullet* b) {
 			bouncesLeft--;
 			//bouncedY = true;
 		}
-	}
-
-	if (bouncesLeft <= 0) {
-		modifiesEdgeCollision = false;
-		modifiesCollisionWithWall = false;
+		if (bouncesLeft <= 0) {
+			modifiesCollisionWithWall = false;
+			modifiesEdgeCollision = false;
+			//return { CollisionHandler::fullyOutOfBounds(b) };
+		}
 	}
 
 	return { CollisionHandler::fullyOutOfBounds(b) };

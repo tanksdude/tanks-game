@@ -62,7 +62,10 @@ HomingTankPower::HomingTankPower() {
 const double HomingBulletPower::homingStrength = 2*PI / 256; //JS Tanks used 2*PI / 512
 
 InteractionBoolHolder HomingBulletPower::modifiedMovement(Bullet* b) {
-	if (PowerFunctionHelper::homingGeneric(b, HomingBulletPower::homingStrength, true)) {
+	Game_ID targetID = PowerFunctionHelper::homingGenericTarget(b, true);
+	if (targetID != -1) {
+		PowerFunctionHelper::homingGenericMove(b, targetID, HomingBulletPower::homingStrength);
+	} else {
 		//do another targeting round, but on hazards/"targetables" instead
 		//this will only occur for some sort of "team mode" or single-player campaign
 	}

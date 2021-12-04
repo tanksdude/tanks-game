@@ -5,7 +5,7 @@
 #include <utility>
 
 class CollisionHandler {
-private:
+protected:
 	static bool cornerCollided(const Circle*, double x, double y);
 	static bool cornerCollidedIgnoreEdge(const Circle*, double x, double y);
 	static void cornerPushMovableAwayFromImmovable(Circle* movable, double x, double y);

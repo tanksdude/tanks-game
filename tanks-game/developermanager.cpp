@@ -81,7 +81,7 @@ void DeveloperManager::mouseWheelFunc(int wheel, int dir, int x, int y) {
 	std::cout << "DeveloperManager insertIdentifier: " << insertListIdentifiers[insertIndex] << std::endl;
 }
 
-std::vector<std::string> DeveloperManager::insertListIdentifiers = { "longinvincible", "temp", "banana", "barrier", "shield", "mines", "godmode", "big", "inversion", "stationary_turret", "vert_wall", "horz_wall" };
+std::vector<std::string> DeveloperManager::insertListIdentifiers = { "longinvincible", "temp", "banana", "homing", "barrier", "shield", "mines", "godmode", "big", "inversion", "stationary_turret", "vert_wall", "horz_wall" };
 void DeveloperManager::devInsert(int x, int y) {
 	std::string* paras;
 	switch (insertIndex) {
@@ -97,32 +97,35 @@ void DeveloperManager::devInsert(int x, int y) {
 			PowerupManager::pushPowerup(new PowerSquare(x, y, "banana"));
 			break;
 		case 3:
-			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla-extra", "barrier"));
+			PowerupManager::pushPowerup(new PowerSquare(x, y, "homing"));
 			break;
 		case 4:
-			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla-extra", "shield"));
+			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla-extra", "barrier"));
 			break;
 		case 5:
-			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla-extra", "mines"));
+			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla-extra", "shield"));
 			break;
 		case 6:
-			PowerupManager::pushPowerup(new PowerSquare(x, y, "godmode"));
+			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla-extra", "mines"));
 			break;
 		case 7:
-			PowerupManager::pushPowerup(new PowerSquare(x, y, "big"));
+			PowerupManager::pushPowerup(new PowerSquare(x, y, "godmode"));
 			break;
 		case 8:
-			PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "inversion"));
+			PowerupManager::pushPowerup(new PowerSquare(x, y, "big"));
 			break;
 		case 9:
+			PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "inversion"));
+			break;
+		case 10:
 			paras = new std::string[3]{std::to_string(x), std::to_string(y), std::to_string(0)};
 			HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(3, paras));
 			delete[] paras;
 			break;
-		case 10:
+		case 11:
 			WallManager::pushWall(new Wall(x, y, 20, 60, LevelManager::getLevel(0)->getDefaultColor()));
 			break;
-		case 11:
+		case 12:
 			WallManager::pushWall(new Wall(x, y, 60, 20, LevelManager::getLevel(0)->getDefaultColor()));
 			break;
 		default:

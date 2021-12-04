@@ -93,37 +93,33 @@ InteractionBoolHolder UltraBounceBulletPower::modifiedCollisionWithWall(Bullet* 
 }
 
 InteractionBoolHolder UltraBounceBulletPower::modifiedEdgeCollision(Bullet* b) {
-	//the bullet can bounce off of edges twice in a single tick
-	//therefore, it can lose 2 bounces at once
-	//shouldn't ever have negative bounces, so need to check Y, then X, then Y if Y wasn't already checked, and check bouncesLeft after each edge bounce
-	//I could have different checks for partiallyOutOfBounds() to only require one check each but whatever
+	//match with BounceBulletPower::modifiedEdgeCollision
 
 	bool bouncedY = false;
+	//bool bouncedX = false;
+
 	if (CollisionHandler::partiallyOutOfBounds(b)) {
 		if (PowerFunctionHelper::superbounceEdgeGenericY(b, b->r/2)) {
 			bouncesLeft--;
 			bouncedY = true;
 		}
+		if (bouncesLeft <= 0) {
+			modifiesCollisionWithWall = false;
+			modifiesEdgeCollision = false;
+			return { CollisionHandler::fullyOutOfBounds(b) };
+		}
 	}
 
-	if (bouncesLeft <= 0) {
-		modifiesEdgeCollision = false;
-		modifiesCollisionWithWall = false;
-		return { CollisionHandler::fullyOutOfBounds(b) };
-	}
-
-	//bool bouncedX = false;
 	if (CollisionHandler::partiallyOutOfBounds(b)) {
 		if (PowerFunctionHelper::superbounceEdgeGenericX(b, b->r/2)) {
 			bouncesLeft--;
 			//bouncedX = true;
 		}
-	}
-
-	if (bouncesLeft <= 0) {
-		modifiesEdgeCollision = false;
-		modifiesCollisionWithWall = false;
-		return { CollisionHandler::fullyOutOfBounds(b) };
+		if (bouncesLeft <= 0) {
+			modifiesCollisionWithWall = false;
+			modifiesEdgeCollision = false;
+			return { CollisionHandler::fullyOutOfBounds(b) };
+		}
 	}
 
 	if (!bouncedY && CollisionHandler::partiallyOutOfBounds(b)) {
@@ -131,11 +127,11 @@ InteractionBoolHolder UltraBounceBulletPower::modifiedEdgeCollision(Bullet* b) {
 			bouncesLeft--;
 			//bouncedY = true;
 		}
-	}
-
-	if (bouncesLeft <= 0) {
-		modifiesEdgeCollision = false;
-		modifiesCollisionWithWall = false;
+		if (bouncesLeft <= 0) {
+			modifiesCollisionWithWall = false;
+			modifiesEdgeCollision = false;
+			//return { CollisionHandler::fullyOutOfBounds(b) };
+		}
 	}
 
 	return { CollisionHandler::fullyOutOfBounds(b) };

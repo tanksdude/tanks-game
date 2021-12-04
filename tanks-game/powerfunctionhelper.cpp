@@ -17,7 +17,7 @@ bool PowerFunctionHelper::superbounceGeneric(Bullet* b, Wall* w, double strength
 			b->velocity.setAngle(b->velocity.getAngle() * -1);
 			w->y += strength;
 		} else { //right
-			b->x += (w->x + w->w - (b->x - b->r)) * 2; //b->x = w->x + w->w + w->r
+			b->x += (w->x + w->w - (b->x - b->r)) * 2; //b->x = w->x + w->w + b->r
 			b->velocity.setAngle(PI - b->velocity.getAngle());
 			w->x -= strength;
 		}
@@ -80,6 +80,7 @@ bool PowerFunctionHelper::superbounceGenericCornerHandler(Bullet* b, Wall* w, do
 			b->y += sin(newAngle) * (b->r - d);
 			b->x += cos(newAngle) * (b->r - d);
 			b->velocity.setAngle(newAngle);
+
 			w->y += sin(angle) * strength;
 			w->x += cos(angle) * strength;
 
@@ -142,15 +143,13 @@ void PowerFunctionHelper::equallySpacedCannonPoints(Tank*, std::vector<CannonPoi
 	}
 }
 
-bool PowerFunctionHelper::homingGeneric(Bullet* b, double maxAngleChange, bool moveByAngle) {
-	//moveByAngle = target based on angle differences, not distance
-	//TODO: when team mode is a thing (or single-player campaign?), this will need an update
-	int targetTankIndex;
+Game_ID PowerFunctionHelper::homingGenericTarget(Bullet* b, bool targetUsingAngleDiff) {
+	int targetTankIndex; //only targets tanks for now
 
-	if (moveByAngle) {
+	if (targetUsingAngleDiff) {
 		double* angleDiffs = new double[TankManager::getNumTanks()];
 		for (int i = 0; i < TankManager::getNumTanks(); i++) {
-			Tank* t = TankManager::getTank(i);
+			const Tank* t = TankManager::getTank(i);
 			if (t->getTeamID() == b->getTeamID()) {
 				angleDiffs[i] = 2*PI * 2; //is way more than enough
 			} else {
@@ -162,10 +161,10 @@ bool PowerFunctionHelper::homingGeneric(Bullet* b, double maxAngleChange, bool m
 			targetTankIndex = -1;
 		}
 		delete[] angleDiffs;
-	} else { //moveByDistance
+	} else { //targetUsingDistance
 		double* distDiffs = new double[TankManager::getNumTanks()];
 		for (int i = 0; i < TankManager::getNumTanks(); i++) {
-			Tank* t = TankManager::getTank(i);
+			const Tank* t = TankManager::getTank(i);
 			if (t->getTeamID() == b->getTeamID()) {
 				distDiffs[i] = GAME_WIDTH*2 + GAME_HEIGHT*2; //should be enough
 			} else {
@@ -180,14 +179,18 @@ bool PowerFunctionHelper::homingGeneric(Bullet* b, double maxAngleChange, bool m
 	}
 
 	if (targetTankIndex == -1) {
-		return false; //means there was nothing to target; realistically, shouldn't be happening, unless 1-tank mode is a thing
+		return -1; //means there was nothing to target; realistically, shouldn't be happening, unless 1-tank mode is a thing
 	}
-	Tank* t = TankManager::getTank(targetTankIndex);
+	return TankManager::getTank(targetTankIndex)->getGameID();
+}
+
+void PowerFunctionHelper::homingGenericMove(Bullet* b, Game_ID targetID, double maxAngleChange) {
+	const Tank* t = TankManager::getTankByID(targetID);
 
 	double targetAngle = atan2(t->y - b->y, t->x - b->x);
 	double posTargetAngle = fmod(targetAngle + 2*PI, 2*PI);
 	double bulletAngle = (b->getAngle()>PI ? b->getAngle() - 2*PI : b->getAngle());
-	//std::cout << targetAngle << " " << bulletAngle << " " << maxAngleMove << std::endl;
+	//std::cout << targetAngle << " " << bulletAngle << " " << maxAngleChange << std::endl;
 
 	if ((abs(targetAngle - bulletAngle) <= maxAngleChange) || (abs(fmod(targetAngle + PI, 2*PI) - fmod(bulletAngle + PI, 2*PI)) <= maxAngleChange)) {
 		b->velocity.setAngle(targetAngle);
@@ -206,6 +209,4 @@ bool PowerFunctionHelper::homingGeneric(Bullet* b, double maxAngleChange, bool m
 			}
 		}
 	}
-
-	return true; //could target something
 }
