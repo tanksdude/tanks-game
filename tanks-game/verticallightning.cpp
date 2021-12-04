@@ -49,11 +49,11 @@ VerticalLightning::VerticalLightning(double xpos, double ypos, double width, dou
 	initializeGPU();
 }
 
-Circle* VerticalLightning::getTopPoint() const {
+inline Circle* VerticalLightning::getTopPoint() const {
 	return new Point(x + w/2, y + h);
 }
 
-Circle* VerticalLightning::getBottomPoint() const {
+inline Circle* VerticalLightning::getBottomPoint() const {
 	return new Point(x + w/2, y);
 }
 

@@ -67,7 +67,7 @@ RectangularLightning::RectangularLightning(double xpos, double ypos, double widt
 	initializeGPU();
 }
 
-Circle* RectangularLightning::getCenterPoint() const {
+inline Circle* RectangularLightning::getCenterPoint() const {
 	return new Point(x + w/2, y + h/2);
 }
 

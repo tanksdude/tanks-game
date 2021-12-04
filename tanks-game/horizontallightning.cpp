@@ -49,11 +49,11 @@ HorizontalLightning::HorizontalLightning(double xpos, double ypos, double width,
 	initializeGPU();
 }
 
-Circle* HorizontalLightning::getLeftPoint() const {
+inline Circle* HorizontalLightning::getLeftPoint() const {
 	return new Point(x, y + h/2);
 }
 
-Circle* HorizontalLightning::getRightPoint() const {
+inline Circle* HorizontalLightning::getRightPoint() const {
 	return new Point(x + w, y + h/2);
 }
 

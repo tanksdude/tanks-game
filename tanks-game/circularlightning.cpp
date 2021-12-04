@@ -63,7 +63,7 @@ CircularLightning::CircularLightning(double xpos, double ypos, double radius) {
 	initializeGPU();
 }
 
-Circle* CircularLightning::getCenterPoint() const {
+inline Circle* CircularLightning::getCenterPoint() const {
 	return new Point(x, y);
 }
 

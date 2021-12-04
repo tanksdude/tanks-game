@@ -17,8 +17,8 @@ protected:
 	virtual void pushBolt(LightningBolt*, bool simpleRefresh);
 	virtual void pushDefaultBolt(int num, bool randomize) override;
 
-	Circle* getLeftPoint() const; //for checks when a bullet/tank collides
-	Circle* getRightPoint() const;
+	inline Circle* getLeftPoint() const; //for checks when a bullet/tank collides
+	inline Circle* getRightPoint() const;
 
 private:
 	static VertexArray* background_va;
