@@ -206,7 +206,7 @@ void Tank::shoot() {
 	}
 
 	if (shooting.getKeyState() && shootCount <= 0) {
-		determineShootingAngles();
+		//determineShootingAngles(); //TODO: is this needed?
 		bool modifiedAdditionalShooting = false;
 		bool overridedShooting = false;
 		bool noMoreOtherAdditionalShooting = false;
@@ -233,7 +233,7 @@ void Tank::shoot() {
 		}
 
 		if (!overridedShooting) {
-			for (int i = 0; i < shootingPoints.size(); i++) {
+			for (int i = shootingPoints.size() - 1; i >= 0; i--) {
 				defaultMakeBullet(shootingPoints[i].angle + velocity.getAngle());
 			}
 		}

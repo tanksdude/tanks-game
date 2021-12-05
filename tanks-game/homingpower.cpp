@@ -59,7 +59,7 @@ HomingTankPower::HomingTankPower() {
 #include "powerfunctionhelper.h"
 #include "constants.h"
 
-const double HomingBulletPower::homingStrength = 2*PI / 256; //JS Tanks used 2*PI / 512
+const double HomingBulletPower::homingStrength = 2*PI / 256; //JS: 2*PI / 512
 
 InteractionBoolHolder HomingBulletPower::modifiedMovement(Bullet* b) {
 	Game_ID targetID = PowerFunctionHelper::homingGenericTarget(b, true);
@@ -73,7 +73,9 @@ InteractionBoolHolder HomingBulletPower::modifiedMovement(Bullet* b) {
 }
 
 InteractionBoolHolder HomingBulletPower::modifiedEdgeCollision(Bullet* b) {
-	return { ((b->x + b->r <= 0) || (b->x - b->r >= GAME_WIDTH)) }; //TODO: wanted?
+	return { ((b->x + b->r <= 0) || (b->x - b->r >= GAME_WIDTH) ||
+	         ((b->velocity.getMagnitude() <= 0) && ((b->y - b->r >= GAME_HEIGHT*2) || (b->y + b->r <= -GAME_HEIGHT)))) };
+	//TODO: wanted?
 }
 
 void HomingBulletPower::initialize(Bullet* parent) {
