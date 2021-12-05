@@ -52,8 +52,9 @@ void DefaultRandomLevel::initialize() { //still needs a lot of work
 		rectHazardWeights[i] = rh->getWeights()["random-vanilla"];
 		delete rh;
 	}
-	float choosingHazardWeights[] = { 0.5f, 1.5f, 2.0f, 1.0f };
+
 	//add the hazards, but randomly based on their weight (if one has a high weight, it can get randomized multiple times)
+	float choosingHazardWeights[] = { 0.5f, 1.5f, 2.0f, 1.0f };
 	for (int i = 0; i < HazardManager::getNumCircleHazardTypes("random-vanilla"); i++) {
 		int count = weightedSelect<float>(choosingHazardWeights, 4); //{0, 1, 2, 3}
 		int index = weightedSelect<float>(circleHazardWeights, HazardManager::getNumCircleHazardTypes("random-vanilla")); //randomize which hazard gets chosen (it could be one that was already chosen)
@@ -82,55 +83,19 @@ void DefaultRandomLevel::initialize() { //still needs a lot of work
 	delete[] rectHazardWeights;
 
 	//randomize powers:
-	int powerNum = PowerupManager::getNumPowerTypes("random-vanilla");
-	std::string* possiblePowers = new std::string[powerNum];
-	for (int i = 0; i < powerNum; i++) {
-		possiblePowers[i] = PowerupManager::getPowerName("random-vanilla", i);
-	}
-
-	//get stacking status and weight of the powers
-	bool* canStack = new bool[powerNum];
-	float* powerWeights = new float[powerNum];
-	for (int i = 0; i < powerNum; i++) {
-		Power* p = PowerupManager::getPowerFactory("random-vanilla", possiblePowers[i])();
-		std::vector<std::string> attributes = p->getPowerAttributes();
-		canStack[i] = (std::find(attributes.begin(), attributes.end(), "stack") != attributes.end());
-		powerWeights[i] = p->getWeights()["random-vanilla"];
-		delete p;
-	}
-
 	float choosingPowerWeights[] = { 1.0f, 1.0f, .25f };
 	for (int i = 0; i < 4; i++) {
 		int count = weightedSelect<float>(choosingPowerWeights, 3) + 1; //{1, 2, 3}
-		std::string* randPowers = RandomLevel::getRandomPowers(count, canStack, possiblePowers, powerWeights, powerNum);
+		std::string* randPowers = RandomLevel::getRandomPowers(count, "random-vanilla");
 		pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-60, GAME_HEIGHT/2-16);
 		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "random-vanilla", randPowers, count));
 		delete[] randPowers;
 	}
 
-	delete[] possiblePowers;
-	delete[] canStack;
-	delete[] powerWeights;
-
 	//throw somethin' special in the center
-	powerNum = PowerupManager::getNumPowerTypes("ultimate-vanilla");
-	possiblePowers = new std::string[powerNum];
-	for (int i = 0; i < powerNum; i++) {
-		possiblePowers[i] = PowerupManager::getPowerName("ultimate-vanilla", i);
-	}
-
-	powerWeights = new float[powerNum];
-	for (int i = 0; i < powerNum; i++) {
-		Power* p = PowerupManager::getPowerFactory("ultimate-vanilla", possiblePowers[i])();
-		powerWeights[i] = p->getWeights()["ultimate-vanilla"];
-		delete p;
-	}
-
-	std::string ultimatePowerName = PowerupManager::getPowerName("ultimate-vanilla", weightedSelect<float>(powerWeights, powerNum));
-	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "ultimate-vanilla", ultimatePowerName));
-
-	delete[] possiblePowers;
-	delete[] powerWeights;
+	std::string* ultimatePowerName = RandomLevel::getRandomPowers(1, "ultimate-vanilla");
+	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "ultimate-vanilla", ultimatePowerName[0]));
+	delete[] ultimatePowerName;
 }
 
 Level* DefaultRandomLevel::factory() {

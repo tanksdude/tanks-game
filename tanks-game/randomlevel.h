@@ -10,6 +10,8 @@ public:
 	static inline Wall* makeNewRandomWall(double x_beginning, double y_beginning, double width_ofArea, double height_ofArea, ColorValueHolder c) {
 		return RandomLevel::makeNewRandomWall(x_beginning, y_beginning, width_ofArea, height_ofArea, c, 12, 8, 64, 96);
 	}
+	static std::string* getRandomPowers(int count, std::string type); //handles stacking and weights for a whole group (use this)
+	static std::string* getRandomPowers(int count, std::string type, std::string* names, int nameCount); //no option for multiple types (it's effort)
 	static std::string* getRandomPowersOld(int count, bool replacement, std::string* names, int nameCount); //equal weight, replacement is an option
 	static std::string* getRandomPowers(int count, bool* powersCanStack, std::string* names, int nameCount); //equal weight, replaces the non-stacking names
 	static std::string* getRandomPowers(int count, bool* powersCanStack, std::string* names, float* weights, int powerCount); //nonequal weight, replaces the non-stacking names
@@ -21,7 +23,7 @@ public:
 	static PositionHolder getSymmetricPowerupPositions_Corners(int position, double x_center, double y_center, double x_offset, double y_offset); //position: {0,1,2,3}
 	static PositionHolder getSymmetricPowerupPositions_DiagForwardSlash(int position, double x_center, double y_center, double x_offset, double y_offset); //position: {0,1}
 	static PositionHolder getSymmetricPowerupPositions_DiagBackwardSlash(int position, double x_center, double y_center, double x_offset, double y_offset); //position: {0,1}
-	//about _DiagForwardSlash and _DiagBackwardSlash: it's half of _Corners; uses the diagonal two that go in the direction of a regular (forward) slash (/) or backslash (\)
+	//about _DiagForwardSlash and _DiagBackwardSlash: it's half of _Corners; uses the diagonal two that go in the direction of a forward slash (/) or backslash (\)
 
 	static PositionHolder getSymmetricWallPositions_LR(int position, double x_center, double y_center, double x_offset, double wallWidth, double wallHeight); //position: {0,1}
 	static PositionHolder getSymmetricWallPositions_UD(int position, double x_center, double y_center, double y_offset, double wallWidth, double wallHeight); //position: {0,1}
