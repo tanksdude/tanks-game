@@ -333,6 +333,21 @@
     <ClCompile Include="ultrabouncepower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="devnowallslevel1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="timedrewardlevel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="unnamedlevel1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="unnamedlevel2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="devsymmetrictanksleveleffect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -702,6 +717,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ultrabouncepower.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="devnowallslevel1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="timedrewardlevel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="unnamedlevel1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="unnamedlevel2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="devsymmetrictanksleveleffect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

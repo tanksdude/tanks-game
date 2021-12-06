@@ -16,8 +16,8 @@ ColorValueHolder DeveloperLevel0::getDefaultColor() const {
 
 std::unordered_map<std::string, float> DeveloperLevel0::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "dev", .5f });
-	weights.insert({ "random-dev", .5f });
+	weights.insert({ "dev", 1.0f });
+	weights.insert({ "random-dev", 1.0f });
 	return weights;
 }
 

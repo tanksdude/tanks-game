@@ -14,8 +14,8 @@ ColorValueHolder DeveloperLevel1::getDefaultColor() const {
 
 std::unordered_map<std::string, float> DeveloperLevel1::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "dev", .5f });
-	weights.insert({ "random-dev", .5f });
+	weights.insert({ "dev", 1.0f });
+	weights.insert({ "random-dev", 1.0f });
 	return weights;
 }
 
@@ -68,6 +68,8 @@ void DeveloperLevel1::initialize() {
 	PowerupManager::pushPowerup(new PowerSquare(120, 20, "homing"));
 	PowerupManager::pushPowerup(new PowerSquare(140, 20, "grenade"));
 	PowerupManager::pushPowerup(new PowerSquare(160, 20, "banana"));
+
+	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH-20, 20, "dev", "ultrabounce"));
 
 	names = new std::string[3]{ "multishot", "multishot", "invincible" };
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH-20, GAME_HEIGHT-20, names, 3));

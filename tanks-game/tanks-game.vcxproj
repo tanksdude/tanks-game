@@ -151,6 +151,8 @@
     <ClCompile Include="devannoyingpower.cpp" />
     <ClCompile Include="developerlevel2.cpp" />
     <ClCompile Include="devlonginvinciblenamedpower.cpp" />
+    <ClCompile Include="devnowallslevel1.cpp" />
+    <ClCompile Include="devsymmetrictanksleveleffect.cpp" />
     <ClCompile Include="endgamehandler.cpp" />
     <ClCompile Include="fewobstacleslevel.cpp" />
     <ClCompile Include="gamemainloop.cpp" />
@@ -228,11 +230,14 @@
     <ClCompile Include="stationaryturret.cpp" />
     <ClCompile Include="tank.cpp" />
     <ClCompile Include="tankmanager.cpp" />
+    <ClCompile Include="timedrewardlevel.cpp" />
     <ClCompile Include="trackingpower.cpp" />
     <ClCompile Include="trickymaneuveringlevel.cpp" />
     <ClCompile Include="triplepower.cpp" />
     <ClCompile Include="targetingturret.cpp" />
     <ClCompile Include="ultrabouncepower.cpp" />
+    <ClCompile Include="unnamedlevel1.cpp" />
+    <ClCompile Include="unnamedlevel2.cpp" />
     <ClCompile Include="vertexarray.cpp" />
     <ClCompile Include="vertexbuffer.cpp" />
     <ClCompile Include="verticallightning.cpp" />
@@ -260,6 +265,8 @@
     <ClInclude Include="devannoyingpower.h" />
     <ClInclude Include="developerlevel2.h" />
     <ClInclude Include="devlonginvinciblenamedpower.h" />
+    <ClInclude Include="devnowallslevel1.h" />
+    <ClInclude Include="devsymmetrictanksleveleffect.h" />
     <ClInclude Include="endgamehandler.h" />
     <ClInclude Include="fewobstacleslevel.h" />
     <ClInclude Include="gamemainloop.h" />
@@ -352,11 +359,14 @@
     <ClInclude Include="tank.h" />
     <ClInclude Include="tankmanager.h" />
     <ClInclude Include="tankpower.h" />
+    <ClInclude Include="timedrewardlevel.h" />
     <ClInclude Include="trackingpower.h" />
     <ClInclude Include="trickymaneuveringlevel.h" />
     <ClInclude Include="triplepower.h" />
     <ClInclude Include="targetingturret.h" />
     <ClInclude Include="ultrabouncepower.h" />
+    <ClInclude Include="unnamedlevel1.h" />
+    <ClInclude Include="unnamedlevel2.h" />
     <ClInclude Include="vertexarray.h" />
     <ClInclude Include="vertexbuffer.h" />
     <ClInclude Include="vertexbufferlayout.h" />

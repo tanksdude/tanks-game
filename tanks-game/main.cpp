@@ -71,6 +71,10 @@
 #include "developerlevel0.h"
 #include "developerlevel1.h"
 #include "developerlevel2.h"
+#include "unnamedlevel1.h"
+#include "unnamedlevel2.h"
+#include "devnowallslevel1.h"
+#include "timedrewardlevel.h"
 
 //level effects:
 #include "windleveleffect.h"
@@ -78,6 +82,8 @@
 #include "minefieldleveleffect.h"
 #include "iceleveleffect.h"
 #include "invisiblewallsleveleffect.h"
+//dev level effects:
+#include "devsymmetrictanksleveleffect.h"
 
 //hazards:
 #include "stationaryturret.h"
@@ -236,6 +242,9 @@ int main(int argc, char** argv) {
 	LevelManager::addLevelEffectFactory(IceLevelEffect::factory);
 	LevelManager::addLevelEffectFactory(InvisibleWallsLevelEffect::factory);
 
+	//dev:
+	LevelManager::addLevelEffectFactory(DevSymmetricTanksLevelEffect::factory);
+
 	//levels
 	//vanilla (some are also "old"):
 	LevelManager::addLevelFactory(DefaultRandomLevel::factory);
@@ -263,6 +272,10 @@ int main(int argc, char** argv) {
 	LevelManager::addLevelFactory(DeveloperLevel0::factory);
 	LevelManager::addLevelFactory(DeveloperLevel1::factory);
 	LevelManager::addLevelFactory(DeveloperLevel2::factory);
+	LevelManager::addLevelFactory(UnnamedLevel1::factory);
+	LevelManager::addLevelFactory(UnnamedLevel2::factory);
+	LevelManager::addLevelFactory(DevNoWallsLevel1::factory);
+	LevelManager::addLevelFactory(TimedRewardLevel::factory);
 
 	//initialize managers and stuff:
 	GameManager::Initialize();
