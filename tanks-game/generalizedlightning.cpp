@@ -66,6 +66,11 @@ ColorValueHolder GeneralizedLightning::getBackgroundColor() const {
 	return ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(0.75f, 0.75f, 0.75f), .25*constrain<double>(tickCount/(tickCycle*stateMultiplier[currentlyActive]), 0, 1));
 }
 
+ColorValueHolder GeneralizedLightning::getBackgroundColor_Pose() const {
+	//getBackgroundColor when currentlyActive = true
+	return ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(0.75f, 0.75f, 0.75f), .25);
+}
+
 ColorValueHolder GeneralizedLightning::getBoltColor() const {
 	return ColorValueHolder(0xBB/255.0, 1.0f, 1.0f);
 }

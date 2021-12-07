@@ -152,8 +152,8 @@ void RectangularLightning::local_uninitializeGPU() {
 	delete bolt_vb;
 }
 
-void RectangularLightning::streamBoltVertices(unsigned int boltNum) const {
-	bolt_vb->modifyData(bolts[boltNum]->positions.data(), bolts[boltNum]->length*2 * sizeof(float));
+void RectangularLightning::streamBoltVertices(const LightningBolt* l) const {
+	bolt_vb->modifyData(l->positions.data(), l->length*2 * sizeof(float));
 }
 
 RectHazard* RectangularLightning::factory(int argc, std::string* argv) {
@@ -283,7 +283,7 @@ void RectangularLightning::pushBolt(LightningBolt* l) {
 		local_reinitializeGPU(l->length);
 	}
 	bolts.push_back(l);
-	refreshBolt(bolts.size() - 1);
+	refreshBolt(l);
 }
 
 void RectangularLightning::pushDefaultBolt(int num, bool randomize) {
@@ -331,18 +331,18 @@ bool RectangularLightning::reasonableLocation() const {
 	return validLocation();
 }
 
-void RectangularLightning::refreshBolt(int num) {
-	refreshBolt(num, std::min(h, w), std::max(h, w));
+void RectangularLightning::refreshBolt(LightningBolt* l) const {
+	refreshBolt(l, std::min(h, w), std::max(h, w));
 }
 
-void RectangularLightning::refreshBolt(int num, double smaller, double larger) {
+void RectangularLightning::refreshBolt(LightningBolt* l, double smaller, double larger) const {
 	//TODO: this needs more testing
-	if (bolts[num]->length <= 2) {
+	if (l->length <= 2) {
 		return;
 	}
 
-	float deltaX = bolts[num]->positions[bolts[num]->length*2-2] - bolts[num]->positions[0];
-	float deltaY = bolts[num]->positions[bolts[num]->length*2-1] - bolts[num]->positions[1];
+	float deltaX = l->positions[l->length*2-2] - l->positions[0];
+	float deltaY = l->positions[l->length*2-1] - l->positions[1];
 	double dist = sqrt(pow(deltaX, 2) + pow(deltaY, 2));
 	double rotationAngle = atan2(deltaY, deltaX);
 	double angleSin = sin(rotationAngle);
@@ -351,20 +351,20 @@ void RectangularLightning::refreshBolt(int num, double smaller, double larger) {
 	double maxVariance = 1.0/4.0 * dist * smaller/larger;
 
 	float polygonX[6] = {
-		bolts[num]->positions[0],
-		bolts[num]->positions[0] + deltaX * 1.0/4.0 - angleSin * newH * .5,
-		bolts[num]->positions[0] + deltaX * 3.0/4.0 - angleSin * newH * .5,
-		bolts[num]->positions[0] + deltaX,
-		bolts[num]->positions[0] + deltaX * 3.0/4.0 + angleSin * newH * .5,
-		bolts[num]->positions[0] + deltaX * 1.0/4.0 + angleSin * newH * .5
+		l->positions[0],
+		l->positions[0] + deltaX * 1.0/4.0 - angleSin * newH * .5,
+		l->positions[0] + deltaX * 3.0/4.0 - angleSin * newH * .5,
+		l->positions[0] + deltaX,
+		l->positions[0] + deltaX * 3.0/4.0 + angleSin * newH * .5,
+		l->positions[0] + deltaX * 1.0/4.0 + angleSin * newH * .5
 	};
 	float polygonY[6] = {
-		bolts[num]->positions[1],
-		bolts[num]->positions[1] + deltaY * 1.0/4.0 + angleCos * newH * .5,
-		bolts[num]->positions[1] + deltaY * 3.0/4.0 + angleCos * newH * .5,
-		bolts[num]->positions[1] + deltaY,
-		bolts[num]->positions[1] + deltaY * 3.0/4.0 - angleCos * newH * .5,
-		bolts[num]->positions[1] + deltaY * 1.0/4.0 - angleCos * newH * .5
+		l->positions[1],
+		l->positions[1] + deltaY * 1.0/4.0 + angleCos * newH * .5,
+		l->positions[1] + deltaY * 3.0/4.0 + angleCos * newH * .5,
+		l->positions[1] + deltaY,
+		l->positions[1] + deltaY * 3.0/4.0 - angleCos * newH * .5,
+		l->positions[1] + deltaY * 1.0/4.0 - angleCos * newH * .5
 	};
 
 	//std::cout << "deltaX: " << deltaX << std::endl;
@@ -374,33 +374,33 @@ void RectangularLightning::refreshBolt(int num, double smaller, double larger) {
 	//std::cout << "angle: " << (rotationAngle * 180/3.1415926535897) << std::endl;
 	//std::cout << "cos(angle): " << angleCos << std::endl;
 	//std::cout << "sin(angle): " << angleSin << std::endl;
-	for (int i = 0; i < 6; i++) {
-		//std::cout << i << ": " << polygonX[i] << " " << polygonY[i] << std::endl;
-	}
+	//for (int i = 0; i < 6; i++) {
+	//	std::cout << i << ": " << polygonX[i] << " " << polygonY[i] << std::endl;
+	//}
 
-	for (int j = 1; j < bolts[num]->length-1; j++) {
+	for (int j = 1; j < l->length-1; j++) {
 		double randTemp;
 		float testY, testX;
 		do {
 			randTemp = (RNG::randFunc2()*2-1)*maxVariance;
-			testY = bolts[num]->positions[j*2 - 1] + (deltaY/(bolts[num]->length-1)) + randTemp * angleCos;
-			testX = bolts[num]->positions[j*2 - 2] + (deltaX/(bolts[num]->length-1)) - randTemp * angleSin;
+			testY = l->positions[j*2 - 1] + (deltaY/(l->length-1)) + randTemp * angleCos;
+			testX = l->positions[j*2 - 2] + (deltaX/(l->length-1)) - randTemp * angleSin;
 			//std::cout << testX << " " << testY << std::endl;
 		} while (testY < 0 || testY > h || testX < 0 || testX > w || !pointInPolygon(6, polygonX, polygonY, testX, testY));
-		bolts[num]->positions[j*2]   = testX;
-		bolts[num]->positions[j*2+1] = testY;
+		l->positions[j*2]   = testX;
+		l->positions[j*2+1] = testY;
 	}
 }
 
 void RectangularLightning::draw() const {
-	drawBackground();
+	drawBackground(false);
 	drawBolts();
 }
 
 void RectangularLightning::draw(DrawingLayers layer) const {
 	switch (layer) {
 		case DrawingLayers::under:
-			drawBackground();
+			drawBackground(false);
 			break;
 
 		default:
@@ -424,28 +424,74 @@ void RectangularLightning::draw(DrawingLayers layer) const {
 }
 
 void RectangularLightning::poseDraw() const {
-	//TODO
+	drawBackground(true);
+	drawBolts_Pose();
 }
 
 void RectangularLightning::poseDraw(DrawingLayers layer) const {
-	//TODO
+	switch (layer) {
+		case DrawingLayers::under:
+			drawBackground(true);
+			break;
+
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for RectangularLightning::poseDraw!" << std::endl;
+		case DrawingLayers::normal:
+			drawBolts_Pose();
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
 }
 
 void RectangularLightning::ghostDraw(float alpha) const {
-	//TODO
+	drawBackground(true, alpha);
+	drawBolts_Pose(alpha);
 }
 
 void RectangularLightning::ghostDraw(DrawingLayers layer, float alpha) const {
-	//TODO
+	switch (layer) {
+		case DrawingLayers::under:
+			drawBackground(true, alpha);
+			break;
+
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for RectangularLightning::ghostDraw!" << std::endl;
+		case DrawingLayers::normal:
+			drawBolts_Pose(alpha);
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
 }
 
-inline void RectangularLightning::drawBackground(float alpha) const {
+inline void RectangularLightning::drawBackground(bool pose, float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 MVPM;
 
-	ColorValueHolder color = getBackgroundColor();
+	ColorValueHolder color = (pose ? getBackgroundColor_Pose() : getBackgroundColor());
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
@@ -482,8 +528,48 @@ inline void RectangularLightning::drawBolts(float alpha) const {
 			local_reinitializeGPU(bolts[i]->length);
 		}
 		*/
-		streamBoltVertices(i); //TODO: fix (but better)
+		streamBoltVertices(bolts[i]); //TODO: fix (but better)
 		Renderer::Draw(*bolt_va, *shader, GL_LINE_STRIP, 0, bolts[i]->length);
+	}
+
+	//cleanup
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
+
+inline void RectangularLightning::drawBolts_Pose(float alpha) const {
+	alpha = constrain<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
+	Shader* shader = Renderer::getShader("main");
+	glm::mat4 MVPM;
+
+	glLineWidth(2.0f);
+
+	ColorValueHolder color = getBoltColor();
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
+	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+
+	MVPM = Renderer::GenerateMatrix(1, 1, 0, x, y);
+	shader->setUniformMat4f("u_MVP", MVPM);
+
+	//generate bolts
+	std::vector<LightningBolt*> poseBolts;
+	for (int i = 0; i < 4; i++) {
+		//from pushDefaultBolt(), mostly
+		double xEnd = (i%2==0) * w/2*.75, yEnd = (i/2==0) * h/2*.75;
+		LightningBolt* l = new LightningBolt(w/2, h/2, xEnd, yEnd, getDefaultNumBoltPoints(sqrt(pow(xEnd - w/2, 2) + pow(yEnd - h/2, 2))));
+
+		if (l->length > bolt_vb_length) {
+			//cut off the parts that won't fit; shouldn't happen though
+			l->length = bolt_vb_length;
+		}
+		refreshBolt(l);
+	}
+
+	//draw
+	for (int i = 0; i < poseBolts.size(); i++) {
+		//match with drawBolts()
+		streamBoltVertices(poseBolts[i]);
+		Renderer::Draw(*bolt_va, *shader, GL_LINE_STRIP, 0, poseBolts[i]->length);
 	}
 
 	//cleanup

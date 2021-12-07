@@ -21,6 +21,7 @@ protected:
 		virtual void tick();
 		virtual void reset(const PowerSquare*);
 		virtual void draw() const;
+		virtual void ghostDraw(float alpha) const;
 
 		PowerSquareWatcher(const PowerSquare*);
 		PowerSquareWatcher(const PowerSquare*, double count);

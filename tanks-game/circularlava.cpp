@@ -181,8 +181,8 @@ bool CircularLava::reasonableLocation() const {
 }
 
 void CircularLava::draw() const {
-	drawBackground();
-	drawBubbles();
+	drawBackground(false);
+	drawBubbles(false);
 }
 
 void CircularLava::draw(DrawingLayers layer) const {
@@ -190,11 +190,11 @@ void CircularLava::draw(DrawingLayers layer) const {
 		default:
 			std::cerr << "WARNING: unknown DrawingLayer for CircularLava::draw!" << std::endl;
 		case DrawingLayers::under:
-			drawBackground();
+			drawBackground(false);
 			break;
 
 		case DrawingLayers::normal:
-			drawBubbles();
+			drawBubbles(false);
 			break;
 
 		case DrawingLayers::effects:
@@ -212,29 +212,73 @@ void CircularLava::draw(DrawingLayers layer) const {
 }
 
 void CircularLava::poseDraw() const {
-	//TODO
-	//just background?
+	drawBackground(true);
 }
 
 void CircularLava::poseDraw(DrawingLayers layer) const {
-	//TODO
+	switch (layer) {
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for CircularLava::poseDraw!" << std::endl;
+		case DrawingLayers::under:
+			drawBackground(true);
+			break;
+
+		case DrawingLayers::normal:
+			//drawBubbles(true);
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
 }
 
 void CircularLava::ghostDraw(float alpha) const {
-	//TODO
+	drawBackground(false, alpha);
+	//no bubbles
 }
 
 void CircularLava::ghostDraw(DrawingLayers layer, float alpha) const {
-	//TODO
+	switch (layer) {
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for CircularLava::ghostDraw!" << std::endl;
+		case DrawingLayers::under:
+			drawBackground(false, alpha);
+			break;
+
+		case DrawingLayers::normal:
+			//drawBubbles(false, alpha);
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
 }
 
-inline void CircularLava::drawBackground(float alpha) const {
+inline void CircularLava::drawBackground(bool pose, float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 MVPM;
 
-	ColorValueHolder color = getBackgroundColor();
+	ColorValueHolder color = (pose ? getBackgroundColor_Pose() : getBackgroundColor());
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
@@ -244,7 +288,7 @@ inline void CircularLava::drawBackground(float alpha) const {
 	Renderer::Draw(*background_va, *background_ib, *shader);
 }
 
-inline void CircularLava::drawBubbles(float alpha) const {
+inline void CircularLava::drawBubbles(bool pose, float alpha) const {
 	if (bubbles.size() == 0) {
 		return;
 	}
@@ -273,7 +317,7 @@ inline void CircularLava::drawBubbles(float alpha) const {
 
 	//second, draw the bubbles
 	for (int i = 0; i < sortedBubbles.size(); i++) {
-		ColorValueHolder color = getBubbleColor(sortedBubbles[i]);
+		ColorValueHolder color = (pose ? getBubbleColor_Pose(sortedBubbles[i]) : getBubbleColor(sortedBubbles[i]));
 		color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 		shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 

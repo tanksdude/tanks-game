@@ -139,8 +139,8 @@ void HorizontalLightning::local_uninitializeGPU() {
 	delete bolt_vb;
 }
 
-void HorizontalLightning::streamBoltVertices(unsigned int boltNum) const {
-	bolt_vb->modifyData(bolts[boltNum]->positions.data(), bolts[boltNum]->length*2 * sizeof(float));
+void HorizontalLightning::streamBoltVertices(const LightningBolt* l) const {
+	bolt_vb->modifyData(l->positions.data(), l->length*2 * sizeof(float));
 }
 
 RectHazard* HorizontalLightning::factory(int argc, std::string* argv) {
@@ -262,9 +262,9 @@ void HorizontalLightning::pushBolt(LightningBolt* l, bool simpleRefresh) {
 	}
 	bolts.push_back(l);
 	if (simpleRefresh) {
-		simpleRefreshBolt(bolts.size() - 1);
+		simpleRefreshBolt(l);
 	} else {
-		refreshBolt(bolts.size() - 1);
+		refreshBolt(l);
 	}
 }
 
@@ -348,7 +348,7 @@ bool HorizontalLightning::reasonableLocation() const {
 	return (!(wallOnTop && wallOnBottom) && validLocation());
 }
 
-void HorizontalLightning::simpleRefreshBolt(int num) {
+void HorizontalLightning::simpleRefreshBolt(LightningBolt* l) const {
 	double maxVariance = h/4;
 	/* lightning bolts are allowed to be in an area that looks like this:
 	 * 
@@ -369,63 +369,63 @@ void HorizontalLightning::simpleRefreshBolt(int num) {
 	//old method:
 	/*
 	//old method note: x and y coordinates in range [0,1], maxVariance = 1.0/4.0
-	for (int j = 1; j < bolts[num]->length-1; j++) {
-		//bolts[num]->positions[j*2]   = float(j)/(bolts[num]->length - 1);
-		//bolts[num]->positions[j*2+1] = randFunc2();
+	for (int j = 1; j < l->length-1; j++) {
+		//l->positions[j*2]   = float(j)/(l->length - 1);
+		//l->positions[j*2+1] = randFunc2();
 		double testPoint; //y-position of the new point
-		if(j < bolts[num]->length / 4){ //first quarter
-			do{
-				testPoint = bolts[num]->positions[j*2 - 1] + (randFunc2()*2-1) * maxVariance;
-			}while(testPoint <= -2 * (double(j) / bolts[num]->length) + .5 || //"below" the triangle (just in slope-intercept form, nothing special)
-			       testPoint >=  2 * (double(j) / bolts[num]->length) + .5);  //"above" the triangle
-		}else if(j < bolts[num]->length * 3.0/4.0){ //middle half
-			do{
-				testPoint = bolts[num]->positions[j*2 - 1] + (randFunc2()*2-1) * maxVariance;
-			}while(testPoint >= 1 || testPoint <= 0);
-		}else{ //last quarter
-			do{
-				testPoint = bolts[num]->positions[j*2 - 1] + (randFunc2()*2-1) * maxVariance;
-			}while(testPoint <=  2 * (double(j) / bolts[num]->length - 3.0/4.0) + 0 ||
-			       testPoint >= -2 * (double(j) / bolts[num]->length - 3.0/4.0) + 1);
+		if (j < l->length / 4) { //first quarter
+			do {
+				testPoint = l->positions[j*2 - 1] + (randFunc2()*2-1) * maxVariance;
+			} while(testPoint <= -2 * (double(j) / l->length) + .5 || //"below" the triangle (just in slope-intercept form, nothing special)
+			        testPoint >=  2 * (double(j) / l->length) + .5);  //"above" the triangle
+		} else if (j < l->length * 3.0/4.0) { //middle half
+			do {
+				testPoint = l->positions[j*2 - 1] + (randFunc2()*2-1) * maxVariance;
+			} while(testPoint >= 1 || testPoint <= 0);
+		} else { //last quarter
+			do {
+				testPoint = l->positions[j*2 - 1] + (randFunc2()*2-1) * maxVariance;
+			} while(testPoint <=  2 * (double(j) / l->length - 3.0/4.0) + 0 ||
+			        testPoint >= -2 * (double(j) / l->length - 3.0/4.0) + 1);
 		}
-		bolts[num]->positions[j*2+1] = testPoint;
+		l->positions[j*2+1] = testPoint;
 	}
 	*/
 
-	double deltaX = (bolts[num]->positions[bolts[num]->length*2-2] - bolts[num]->positions[0]) / (bolts[num]->length - 1);
-	for (int j = 1; j < bolts[num]->length-1; j++) {
-		double yRangeLower = bolts[num]->positions[j*2 - 1] - maxVariance;
-		double yRangeUpper = bolts[num]->positions[j*2 - 1] + maxVariance;
+	double deltaX = (l->positions[l->length*2-2] - l->positions[0]) / (l->length - 1);
+	for (int j = 1; j < l->length-1; j++) {
+		double yRangeLower = l->positions[j*2 - 1] - maxVariance;
+		double yRangeUpper = l->positions[j*2 - 1] + maxVariance;
 		double yMin, yMax;
-		if (j < bolts[num]->length/4) { //first quarter
+		if (j < l->length/4) { //first quarter
 			yMin = -2*h/w * (deltaX * j) + h/2;
 			yMax =  2*h/w * (deltaX * j) + h/2;
-		} else if (j < bolts[num]->length * 3.0/4.0) { //middle half
+		} else if (j < l->length * 3.0/4.0) { //middle half
 			yMin = 0;
 			yMax = h;
 		} else { //last quarter
-			yMin =  2*h/w * (deltaX * (j - bolts[num]->length*3.0/4.0)) + 0;
-			yMax = -2*h/w * (deltaX * (j - bolts[num]->length*3.0/4.0)) + h;
+			yMin =  2*h/w * (deltaX * (j - l->length*3.0/4.0)) + 0;
+			yMax = -2*h/w * (deltaX * (j - l->length*3.0/4.0)) + h;
 		}
 		yRangeLower = (yRangeLower < yMin ? yMin : yRangeLower);
 		yRangeUpper = (yRangeUpper > yMax ? yMax : yRangeUpper);
-		bolts[num]->positions[j*2+1] = yRangeLower + (yRangeUpper - yRangeLower) * RNG::randFunc2();
+		l->positions[j*2+1] = yRangeLower + (yRangeUpper - yRangeLower) * RNG::randFunc2();
 	}
 }
 
-void HorizontalLightning::refreshBolt(int num) {
-	RectangularLightning::refreshBolt(num, h, w);
+void HorizontalLightning::refreshBolt(LightningBolt* l) const {
+	RectangularLightning::refreshBolt(l, this->h, this->w);
 }
 
 void HorizontalLightning::draw() const {
-	drawBackground();
+	drawBackground(false);
 	drawBolts();
 }
 
 void HorizontalLightning::draw(DrawingLayers layer) const {
 	switch (layer) {
 		case DrawingLayers::under:
-			drawBackground();
+			drawBackground(false);
 			break;
 
 		default:
@@ -449,28 +449,74 @@ void HorizontalLightning::draw(DrawingLayers layer) const {
 }
 
 void HorizontalLightning::poseDraw() const {
-	//TODO
+	drawBackground(true);
+	drawBolts_Pose();
 }
 
 void HorizontalLightning::poseDraw(DrawingLayers layer) const {
-	//TODO
+	switch (layer) {
+		case DrawingLayers::under:
+			drawBackground(true);
+			break;
+
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for HorizontalLightning::poseDraw!" << std::endl;
+		case DrawingLayers::normal:
+			drawBolts_Pose();
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
 }
 
 void HorizontalLightning::ghostDraw(float alpha) const {
-	//TODO
+	drawBackground(true, alpha);
+	drawBolts_Pose(alpha);
 }
 
 void HorizontalLightning::ghostDraw(DrawingLayers layer, float alpha) const {
-	//TODO
+	switch (layer) {
+		case DrawingLayers::under:
+			drawBackground(true, alpha);
+			break;
+
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for HorizontalLightning::ghostDraw!" << std::endl;
+		case DrawingLayers::normal:
+			drawBolts_Pose(alpha);
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
 }
 
-inline void HorizontalLightning::drawBackground(float alpha) const {
+inline void HorizontalLightning::drawBackground(bool pose, float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 MVPM;
 
-	ColorValueHolder color = getBackgroundColor();
+	ColorValueHolder color = (pose ? getBackgroundColor_Pose() : getBackgroundColor());
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
@@ -507,8 +553,45 @@ inline void HorizontalLightning::drawBolts(float alpha) const {
 			local_reinitializeGPU(bolts[i]->length);
 		}
 		*/
-		streamBoltVertices(i); //TODO: fix
+		streamBoltVertices(bolts[i]); //TODO: fix
 		Renderer::Draw(*bolt_va, *shader, GL_LINE_STRIP, 0, bolts[i]->length);
+	}
+
+	//cleanup
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
+
+inline void HorizontalLightning::drawBolts_Pose(float alpha) const {
+	alpha = constrain<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
+	Shader* shader = Renderer::getShader("main");
+	glm::mat4 MVPM;
+
+	glLineWidth(2.0f);
+
+	ColorValueHolder color = getBoltColor();
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
+	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+
+	MVPM = Renderer::GenerateMatrix(1, 1, 0, x, y);
+	shader->setUniformMat4f("u_MVP", MVPM);
+
+	//generate bolts
+	std::vector<LightningBolt*> poseBolts;
+	//from pushDefaultBolt(), mostly
+	LightningBolt* l = new LightningBolt(0, h/2, w, h/2, getDefaultNumBoltPoints(w));
+
+	if (l->length > bolt_vb_length) {
+		//cut off the parts that won't fit; shouldn't happen though
+		l->length = bolt_vb_length;
+	}
+	refreshBolt(l);
+
+	//draw
+	for (int i = 0; i < poseBolts.size(); i++) {
+		//match with drawBolts()
+		streamBoltVertices(poseBolts[i]);
+		Renderer::Draw(*bolt_va, *shader, GL_LINE_STRIP, 0, poseBolts[i]->length);
 	}
 
 	//cleanup

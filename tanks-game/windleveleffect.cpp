@@ -144,19 +144,94 @@ void WindLevelEffect::draw(DrawingLayers layer) const {
 }
 
 void WindLevelEffect::poseDraw() const {
-	//TODO
+	ghostDraw(1.0f);
 }
 
 void WindLevelEffect::poseDraw(DrawingLayers layer) const {
-	//TODO
+	switch (layer) {
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for WindLevelEffect::poseDraw!" << std::endl;
+		case DrawingLayers::under:
+			poseDraw();
+			break;
+
+		case DrawingLayers::normal:
+			//nothing
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
 }
 
 void WindLevelEffect::ghostDraw(float alpha) const {
-	//TODO
+	//from draw() (maybe copy-pasting isn't a good idea)
+	//7 x 5 arrows
+	Shader* shader = Renderer::getShader("main");
+	glm::mat4 MVPM;
+
+	ColorValueHolder color = ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(0.0f, 0.0f, 0.0f));
+	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+
+	const double length = 16 * pushDirection.getMagnitude();
+	const double x_offset = 64;
+	const double y_offset = 64;
+	for (int i = -3; i <= 3; i++) {
+		for (int j = -2; j <= 2; j++) {
+			if (i == -j) {
+				continue;
+			}
+
+			double angle;
+			if (i < -j) {
+				//bottom left
+				angle = -3*PI/4;
+			} else {
+				//top right
+				angle = PI/4;
+			}
+
+			MVPM = Renderer::GenerateMatrix(length, length, angle, GAME_WIDTH/2 + i*x_offset, GAME_HEIGHT/2 + j*y_offset);
+			shader->setUniformMat4f("u_MVP", MVPM);
+
+			Renderer::Draw(*va, *ib, *shader);
+		}
+	}
 }
 
 void WindLevelEffect::ghostDraw(DrawingLayers layer, float alpha) const {
-	//TODO
+	switch (layer) {
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for WindLevelEffect::ghostDraw!" << std::endl;
+		case DrawingLayers::under:
+			ghostDraw(alpha);
+			break;
+
+		case DrawingLayers::normal:
+			//nothing
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
 }
 
 bool WindLevelEffect::initializeGPU() {

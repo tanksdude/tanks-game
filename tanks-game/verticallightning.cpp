@@ -139,8 +139,8 @@ void VerticalLightning::local_uninitializeGPU() {
 	delete bolt_vb;
 }
 
-void VerticalLightning::streamBoltVertices(unsigned int boltNum) const {
-	bolt_vb->modifyData(bolts[boltNum]->positions.data(), bolts[boltNum]->length*2 * sizeof(float));
+void VerticalLightning::streamBoltVertices(const LightningBolt* l) const {
+	bolt_vb->modifyData(l->positions.data(), l->length*2 * sizeof(float));
 }
 
 RectHazard* VerticalLightning::factory(int argc, std::string* argv) {
@@ -262,9 +262,9 @@ void VerticalLightning::pushBolt(LightningBolt* l, bool simpleRefresh) {
 	}
 	bolts.push_back(l);
 	if (simpleRefresh) {
-		simpleRefreshBolt(bolts.size() - 1);
+		simpleRefreshBolt(l);
 	} else {
-		refreshBolt(bolts.size() - 1);
+		refreshBolt(l);
 	}
 }
 
@@ -348,7 +348,7 @@ bool VerticalLightning::reasonableLocation() const {
 	return (!(wallOnLeft && wallOnRight) && validLocation());
 }
 
-void VerticalLightning::simpleRefreshBolt(int num) {
+void VerticalLightning::simpleRefreshBolt(LightningBolt* l) const {
 	double maxVariance = w/4;
 	/* lightning bolts are allowed to be in an area that looks like this:
 	 * (see HorizontalLightning for a better diagram, then just mentally rotate it)
@@ -370,44 +370,44 @@ void VerticalLightning::simpleRefreshBolt(int num) {
 	 * the region is (from bottom to top) 1/4 triangle, 1/2 rectangle, then 1/4 triangle
 	 */
 
-	double deltaY = (bolts[num]->positions[bolts[num]->length*2-1] - bolts[num]->positions[1]) / (bolts[num]->length - 1);
-	for (int j = 1; j < bolts[num]->length-1; j++) {
-		double xRangeLower = bolts[num]->positions[j*2 - 2] - maxVariance;
-		double xRangeUpper = bolts[num]->positions[j*2 - 2] + maxVariance;
+	double deltaY = (l->positions[l->length*2-1] - l->positions[1]) / (l->length - 1);
+	for (int j = 1; j < l->length-1; j++) {
+		double xRangeLower = l->positions[j*2 - 2] - maxVariance;
+		double xRangeUpper = l->positions[j*2 - 2] + maxVariance;
 		double xMin, xMax;
-		if (j < bolts[num]->length/4) { //bottom quarter
+		if (j < l->length/4) { //bottom quarter
 			//instead of y=ax+b, use x=(y-b)/a
 			xMin = ((deltaY * j) - h/4) / (-.5*h/w);
 			xMax = ((deltaY * j) + h/4) / ( .5*h/w);
-		} else if (j < bolts[num]->length * 3.0/4.0) { //middle half
+		} else if (j < l->length * 3.0/4.0) { //middle half
 			xMin = 0;
 			xMax = w;
 		} else { //top quarter
 			xMin = ((deltaY * j) - 3.0/4.0*h) / ( .5*h/w);
 			xMax = ((deltaY * j) - 5.0/4.0*h) / (-.5*h/w);
 			//alternatively:
-			//xMin = ((deltaY * (j - bolts[num]->length*3.0/4.0)) -   0) / ( .5*h/w);
-			//xMax = ((deltaY * (j - bolts[num]->length*3.0/4.0)) - h/2) / (-.5*h/w);
+			//xMin = ((deltaY * (j - l->length*3.0/4.0)) -   0) / ( .5*h/w);
+			//xMax = ((deltaY * (j - l->length*3.0/4.0)) - h/2) / (-.5*h/w);
 		}
 		xRangeLower = (xRangeLower < xMin ? xMin : xRangeLower);
 		xRangeUpper = (xRangeUpper > xMax ? xMax : xRangeUpper);
-		bolts[num]->positions[j*2+0] = xRangeLower + (xRangeUpper - xRangeLower) * RNG::randFunc2();
+		l->positions[j*2+0] = xRangeLower + (xRangeUpper - xRangeLower) * RNG::randFunc2();
 	}
 }
 
-void VerticalLightning::refreshBolt(int num) {
-	RectangularLightning::refreshBolt(num, w, h);
+void VerticalLightning::refreshBolt(LightningBolt* l) const {
+	RectangularLightning::refreshBolt(l, this->w, this->h);
 }
 
 void VerticalLightning::draw() const {
-	drawBackground();
+	drawBackground(false);
 	drawBolts();
 }
 
 void VerticalLightning::draw(DrawingLayers layer) const {
 	switch (layer) {
 		case DrawingLayers::under:
-			drawBackground();
+			drawBackground(false);
 			break;
 
 		default:
@@ -431,28 +431,74 @@ void VerticalLightning::draw(DrawingLayers layer) const {
 }
 
 void VerticalLightning::poseDraw() const {
-	//TODO
+	drawBackground(true);
+	drawBolts_Pose();
 }
 
 void VerticalLightning::poseDraw(DrawingLayers layer) const {
-	//TODO
+	switch (layer) {
+		case DrawingLayers::under:
+			drawBackground(true);
+			break;
+
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for VerticalLightning::poseDraw!" << std::endl;
+		case DrawingLayers::normal:
+			drawBolts_Pose();
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
 }
 
 void VerticalLightning::ghostDraw(float alpha) const {
-	//TODO
+	drawBackground(true, alpha);
+	drawBolts_Pose(alpha);
 }
 
 void VerticalLightning::ghostDraw(DrawingLayers layer, float alpha) const {
-	//TODO
+	switch (layer) {
+		case DrawingLayers::under:
+			drawBackground(true, alpha);
+			break;
+
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for VerticalLightning::ghostDraw!" << std::endl;
+		case DrawingLayers::normal:
+			drawBolts_Pose(alpha);
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
 }
 
-inline void VerticalLightning::drawBackground(float alpha) const {
+inline void VerticalLightning::drawBackground(bool pose, float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 MVPM;
 
-	ColorValueHolder color = getBackgroundColor();
+	ColorValueHolder color = (pose ? getBackgroundColor_Pose() : getBackgroundColor());
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
@@ -489,8 +535,45 @@ inline void VerticalLightning::drawBolts(float alpha) const {
 			local_reinitializeGPU(bolts[i]->length);
 		}
 		*/
-		streamBoltVertices(i); //TODO: fix
+		streamBoltVertices(bolts[i]); //TODO: fix
 		Renderer::Draw(*bolt_va, *shader, GL_LINE_STRIP, 0, bolts[i]->length);
+	}
+
+	//cleanup
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
+
+inline void VerticalLightning::drawBolts_Pose(float alpha) const {
+	alpha = constrain<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
+	Shader* shader = Renderer::getShader("main");
+	glm::mat4 MVPM;
+
+	glLineWidth(2.0f);
+
+	ColorValueHolder color = getBoltColor();
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
+	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+
+	MVPM = Renderer::GenerateMatrix(1, 1, 0, x, y);
+	shader->setUniformMat4f("u_MVP", MVPM);
+
+	//generate bolts
+	std::vector<LightningBolt*> poseBolts;
+	//from pushDefaultBolt(), mostly
+	LightningBolt* l = new LightningBolt(w/2, 0, w/2, h, getDefaultNumBoltPoints(h));
+
+	if (l->length > bolt_vb_length) {
+		//cut off the parts that won't fit; shouldn't happen though
+		l->length = bolt_vb_length;
+	}
+	refreshBolt(l);
+
+	//draw
+	for (int i = 0; i < poseBolts.size(); i++) {
+		//match with drawBolts()
+		streamBoltVertices(poseBolts[i]);
+		Renderer::Draw(*bolt_va, *shader, GL_LINE_STRIP, 0, poseBolts[i]->length);
 	}
 
 	//cleanup

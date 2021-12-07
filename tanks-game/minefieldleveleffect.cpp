@@ -86,19 +86,65 @@ void MinefieldLevelEffect::draw(DrawingLayers layer) const {
 }
 
 void MinefieldLevelEffect::poseDraw() const {
-	//TODO
+	//TODO: I have no idea what this should be
+	draw();
 }
 
 void MinefieldLevelEffect::poseDraw(DrawingLayers layer) const {
-	//TODO
+	switch (layer) {
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for MinefieldLevelEffect::poseDraw!" << std::endl;
+		case DrawingLayers::under:
+			poseDraw();
+			break;
+
+		case DrawingLayers::normal:
+			//nothing
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
 }
 
 void MinefieldLevelEffect::ghostDraw(float alpha) const {
-	//TODO
+	//TODO: this fine?
+	ghostMine->ghostDraw(alpha);
 }
 
 void MinefieldLevelEffect::ghostDraw(DrawingLayers layer, float alpha) const {
-	//TODO
+	switch (layer) {
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for MinefieldLevelEffect::ghostDraw!" << std::endl;
+		case DrawingLayers::under:
+			ghostDraw(alpha);
+			break;
+
+		case DrawingLayers::normal:
+			//nothing
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
 }
 
 MinefieldLevelEffect::MinefieldLevelEffect(double x_start, double y_start, double area_width, double area_height, int initialMineCount) {

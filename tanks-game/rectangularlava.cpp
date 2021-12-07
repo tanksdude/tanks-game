@@ -173,8 +173,8 @@ bool RectangularLava::reasonableLocation() const {
 }
 
 void RectangularLava::draw() const {
-	drawBackground();
-	drawBubbles();
+	drawBackground(false);
+	drawBubbles(false);
 }
 
 void RectangularLava::draw(DrawingLayers layer) const {
@@ -182,11 +182,11 @@ void RectangularLava::draw(DrawingLayers layer) const {
 		default:
 			std::cerr << "WARNING: unknown DrawingLayer for RectangularLava::draw!" << std::endl;
 		case DrawingLayers::under:
-			drawBackground();
+			drawBackground(false);
 			break;
 
 		case DrawingLayers::normal:
-			drawBubbles();
+			drawBubbles(false);
 			break;
 
 		case DrawingLayers::effects:
@@ -204,29 +204,73 @@ void RectangularLava::draw(DrawingLayers layer) const {
 }
 
 void RectangularLava::poseDraw() const {
-	//TODO
-	//just background?
+	drawBackground(true);
 }
 
 void RectangularLava::poseDraw(DrawingLayers layer) const {
-	//TODO
+	switch (layer) {
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for RectangularLava::poseDraw!" << std::endl;
+		case DrawingLayers::under:
+			drawBackground(true);
+			break;
+
+		case DrawingLayers::normal:
+			//drawBubbles(true);
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
 }
 
 void RectangularLava::ghostDraw(float alpha) const {
-	//TODO
+	drawBackground(false, alpha);
+	//no bubbles
 }
 
 void RectangularLava::ghostDraw(DrawingLayers layer, float alpha) const {
-	//TODO
+	switch (layer) {
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for RectangularLava::ghostDraw!" << std::endl;
+		case DrawingLayers::under:
+			drawBackground(false, alpha);
+			break;
+
+		case DrawingLayers::normal:
+			//drawBubbles(false, alpha);
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
 }
 
-inline void RectangularLava::drawBackground(float alpha) const {
+inline void RectangularLava::drawBackground(bool pose, float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 MVPM;
 
-	ColorValueHolder color = getBackgroundColor();
+	ColorValueHolder color = (pose ? getBackgroundColor_Pose() : getBackgroundColor());
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
@@ -236,7 +280,7 @@ inline void RectangularLava::drawBackground(float alpha) const {
 	Renderer::Draw(*background_va, *background_ib, *shader);
 }
 
-inline void RectangularLava::drawBubbles(float alpha) const {
+inline void RectangularLava::drawBubbles(bool pose, float alpha) const {
 	if (bubbles.size() == 0) {
 		return;
 	}
@@ -265,7 +309,7 @@ inline void RectangularLava::drawBubbles(float alpha) const {
 
 	//second, draw the bubbles
 	for (int i = 0; i < sortedBubbles.size(); i++) {
-		ColorValueHolder color = getBubbleColor(sortedBubbles[i]);
+		ColorValueHolder color = (pose ? getBubbleColor_Pose(sortedBubbles[i]) : getBubbleColor(sortedBubbles[i]));
 		color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 		shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 

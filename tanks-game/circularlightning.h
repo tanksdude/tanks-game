@@ -10,7 +10,7 @@
 class CircularLightning : public CircleHazard, public GeneralizedLightning {
 protected:
 	//unsigned int maxBolts; // = 1;
-	virtual void refreshBolt(int num) override;
+	virtual void refreshBolt(LightningBolt*) const override;
 	virtual void pushBolt(LightningBolt*) override;
 	virtual void pushDefaultBolt(int num, bool randomize) override; //randomize should be true all of the time
 
@@ -26,7 +26,7 @@ private:
 	int bolt_vb_length;
 	static bool initialized_GPU;
 	void local_reinitializeGPU(int length);
-	void streamBoltVertices(unsigned int boltNum) const; //(stream to bolt_vb)
+	void streamBoltVertices(const LightningBolt*) const; //(stream to bolt_vb)
 
 	static bool initializeGPU();
 	void local_initializeGPU();
@@ -75,8 +75,9 @@ public:
 	virtual void ghostDraw(DrawingLayers, float alpha) const override;
 
 private:
-	inline void drawBackground(float alpha = 1.0f) const;
+	inline void drawBackground(bool pose, float alpha = 1.0f) const;
 	inline void drawBolts(float alpha = 1.0f) const;
+	inline void drawBolts_Pose(float alpha = 1.0f) const;
 
 public:
 	CircularLightning(double xpos, double ypos, double radius);

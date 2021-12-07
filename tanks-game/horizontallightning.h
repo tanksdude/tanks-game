@@ -11,8 +11,8 @@ protected:
 	//bool flexible; //worry about later
 
 	//unsigned int maxBolts; // = 2;
-	virtual void refreshBolt(int num) override; //uses RectangularLightning::refreshBolt
-	virtual void simpleRefreshBolt(int num); //fast path for refreshing a bolt that goes from beginning to end
+	virtual void refreshBolt(LightningBolt*) const override; //uses RectangularLightning::refreshBolt
+	virtual void simpleRefreshBolt(LightningBolt*) const; //fast path for refreshing a bolt that goes from beginning to end
 	virtual void pushBolt(LightningBolt* l) override { pushBolt(l, false); }
 	virtual void pushBolt(LightningBolt*, bool simpleRefresh);
 	virtual void pushDefaultBolt(int num, bool randomize) override;
@@ -30,7 +30,7 @@ private:
 	int bolt_vb_length;
 	static bool initialized_GPU;
 	void local_reinitializeGPU(int length);
-	void streamBoltVertices(unsigned int boltNum) const;
+	void streamBoltVertices(const LightningBolt*) const;
 
 	static bool initializeGPU();
 	void local_initializeGPU();
@@ -64,8 +64,9 @@ public:
 	virtual void ghostDraw(DrawingLayers, float alpha) const override;
 
 private:
-	inline void drawBackground(float alpha = 1.0f) const;
+	inline void drawBackground(bool pose, float alpha = 1.0f) const;
 	inline void drawBolts(float alpha = 1.0f) const;
+	inline void drawBolts_Pose(float alpha = 1.0f) const;
 
 public:
 	HorizontalLightning(double xpos, double ypos, double width, double height);

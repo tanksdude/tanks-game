@@ -55,7 +55,9 @@ protected:
 
 public:
 	virtual ColorValueHolder getBackgroundColor() const;
+	virtual ColorValueHolder getBackgroundColor_Pose() const;
 	virtual ColorValueHolder getBubbleColor(LavaBubble* bubble) const;
+	virtual ColorValueHolder getBubbleColor_Pose(LavaBubble* bubble) const;
 
 	virtual void tick();
 
