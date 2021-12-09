@@ -87,12 +87,18 @@ void UnnamedLevel2::initialize() {
 		if (i == 0) {
 			ypos += EDGE_THICKNESS/2;
 			wall_height -= EDGE_THICKNESS/2;
-		} else if (i == EDGE_COUNT) {
+		}
+		if (i == EDGE_COUNT) {
+			//not else for when EDGE_COUNT = 0
 			wall_height -= EDGE_THICKNESS/2;
 		}
 
 		WallManager::pushWall(new Wall(xpos, ypos, wall_width, wall_height, wallColor));
 	}
+
+	//for (int i = 0; i < WallManager::getNumWalls(); i++) {
+	//	std::cout << CollisionHandler::partiallyOutOfBoundsIgnoreEdge(WallManager::getWall(i)) << std::endl;
+	//}
 
 	PowerupManager::pushPowerup(new PowerSquare(20, 20, "wallhack")); //only to avoid softlocks
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH - 20, GAME_HEIGHT - 20, "wallhack"));

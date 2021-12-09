@@ -71,6 +71,7 @@ boring levels:
 
 other:
 wallless (no walls, only no bullet zones)
+level that randomly gives powers (that last one second)?
 
 
 test levels (purpose: to showcase some functionality):

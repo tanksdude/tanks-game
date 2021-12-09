@@ -48,7 +48,7 @@ public:
 
 	bool modifiesEdgeCollision = false;
 	virtual InteractionBoolHolder modifiedEdgeCollision(Tank*) { return { false }; } //only the first false means something
-	//precondition: was out-of-bounds, is not necessarily out-of-bounds
+	//precondition: was out of bounds, is not necessarily out of bounds
 	bool overridesEdgeCollision = true;
 	bool modifiedEdgeCollisionCanWorkWithOthers = true;
 	bool modifiedEdgeCollisionCanOnlyWorkIndividually = false;

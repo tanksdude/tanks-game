@@ -29,7 +29,6 @@ class Tank : public Circle, public GameThing, public DrawableThing {
 	friend class EndGameHandler; //calls this->kill()
 
 public:
-	std::string name;
 	SimpleVector2D velocity;
 	double maxSpeed; // = 1;
 	double acceleration; // = 1.0/16; //intentional acceleration, not total
@@ -54,26 +53,28 @@ public:
 	double getShootingSpeedMultiplier() const;
 	//double powerMultiplier; //would be used for an ini
 
+public:
+	void determineShootingAngles();
 	void updateAllValues(); //this is supposed to update all values that can get affected by powers, such as maxSpeed and acceleration
 	void updateMaxSpeed();
 	void updateAcceleration();
 	void updateRadius();
 	void updateTurningIncrement();
 
-public:
+protected:
+	std::string name;
 	TankInputChar forward;
 	TankInputChar turnL;
 	TankInputChar turnR;
 	TankInputChar shooting;
 	//TankInputChar backwards; //not the point of the game
 	TankInputChar specialKey;
-	TankInputChar* getKeys() const;
 
-	void makeBulletCommon(double x, double y, double angle, double radius, double speed); //move to private eventually
+	void makeBulletCommon(double x, double y, double angle, double radius, double speed);
+public:
 	void makeBullet(double x, double y, double angle, double radius, double speed, double acc); //move to private eventually (does not use makeBulletCommon) (avoid using)
 	void defaultMakeBullet(double angle); //simple shoot: bullet points away from tank center at a given angle
 	void regularMakeBullet(double x_offset, double y_offset, double angle); //make bullet x and y dist from tank, moving with angle
-	void determineShootingAngles();
 
 protected:
 	ColorValueHolder defaultColor = ColorValueHolder(0.5f, 0.5f, 0.5f); //JS: #888888
@@ -88,6 +89,7 @@ public:
 	//helper stuff:
 	ColorValueHolder getBodyColor() const;
 	std::string getName() const { return name; }
+	TankInputChar* getKeys() const;
 
 	double getAngle() const;
 	double getCannonAngle(int index) const;

@@ -267,6 +267,7 @@ int main(int argc, char** argv) {
 
 	//old:
 	LevelManager::addLevelFactory(OldEmptyLevel::factory);
+	//TODO: add old versions of levels when (if) traps are made (but make sure they're disabled since no one likes them)
 
 	//dev:
 	LevelManager::addLevelFactory(DeveloperLevel0::factory);

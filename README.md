@@ -7,16 +7,16 @@ The C++ upgrade of my [JavaScript game](https://uncreativeusername.neocities.org
 ### Prerequisites
 
 * If compiling from source, you'll want Visual Studio (2019)
-    * pre-compiled executables are provided if that's not an option for you
+    * [pre-compiled executables](https://github.com/tanksdude/tanks-game/releases) are provided if that's not an option for you
 * Graphics card probably required
 * OpenGL 3.3 or later
     * 3.2 or earlier might work if you update the shaders, but don't count on it
 * 3GHz+ CPU recommended (2GHz is probably fine)
-	* Faster CPU -> more bullets on screen
+    * Faster CPU -> more bullets on screen
     * Single-core CPU is enough (because there's no multithreading)
 * RAM requirements unknown, but 100MB is good
 * No audio needed (unlikely to change in the future)
-* **Currently Windows-only** (as far as I know) and 64-bit-only
+* **Currently Windows-only** (feel free to try your luck with an emulator) and 64-bit-only
 
 ### Installing
 
@@ -28,7 +28,7 @@ Pre-compiled executables are available under "Releases" in the [GitHub repositor
 
 Hahaha, nope.
 
-Will need them eventually, though
+Will need them eventually, though.
 
 ## Built With
 
@@ -41,7 +41,9 @@ Will need them eventually, though
 
 I plan on working alone for the forseeable future, possibly welcoming new stuff once the underlying code is done.
 
-If you really want a change, you could submit an Issue 
+If you really want a change, you could submit an Issue.
+
+Alternatively, you can fork this repository and add change all you want.
 
 ## Versioning
 
@@ -65,4 +67,5 @@ This project is licensed under GNU General Public License v3.0
 * [The Coding Train](https://www.youtube.com/user/shiffman/videos) is helpful, but wasn't *specifically* used for this project (probably was used for the JS game, but I don't remember)
 * [Factorio](https://www.factorio.com/)'s Friday Fun Facts are amazing and made me enjoy low-level C++ optimizations
 * [Nitronic Rush](http://nitronic-rush.com/) is the other game that made me want to learn C++ in the first place
-* [N++](http://www.nplusplus.org/) for just being a good game (also the developers had some [good GDC talks](https://www.youtube.com/watch?v=VZ4xevskMCI) and have a fantastic game development blog)
+* [N++](http://www.nplusplus.org/) for just being a good game (also the developers had some [good GDC talks](https://www.youtube.com/watch?v=VZ4xevskMCI) and have a [useful game development blog](https://www.metanetsoftware.com/technique/tutorialAbak.html))
+* [Creeper World](https://knucklecracker.com/creeperworld4/cw4.php) for also just being a good game

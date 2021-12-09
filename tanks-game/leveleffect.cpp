@@ -25,6 +25,7 @@ list of (eventual) level effects:
 |ice (no one really likes it, as expected)
 |minefield
 |respawning powerups
+gravity/magnet (which is it?)
 
 other:
 respawning walls?

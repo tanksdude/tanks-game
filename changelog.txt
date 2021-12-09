@@ -1,6 +1,11 @@
+0.3.0 (obviously super definitely not here)
+* lots and lots of new stuff
+
 0.2.5 (obviously definitely not here)
 * hazard powers
 * powerups:
+    * growing and degrading powerups mix better
+        * megadeath update?
     * ... sword???
 * hazards:
     * patrolling turret
@@ -8,6 +13,7 @@
     * reflecktor?
 * levels:
     * more
+    * old versions of some levels (they're barely different but may as well include them)
 * level effects:
     * ?
 * ini file?
@@ -17,19 +23,16 @@
 * switch to 64-bit because no modern computer should be 32-bit
 * made some changes to the renderer
     * will be better in a later version
-* changed file structure and formatting somewhat
-    * I kinda know what I'm doing now
+* cleanup: changed file structure somewhat and formatting a lot
     * normal C++ class and function stuff
     * replace x-comp, y-comp, angle variables with singular vector variable
-        * this slightly reduces performance, but it's way cleaner
         * fixed edgecases for things that need to detect angles
 * drawing layers: under, normal, effects, top, debug
 * level effects added
     * all JS level effects in! (except portal)
-        * wind, ice, mines, invisible walls
-        * portal and invisible walls weren't level effects in JS but should be counted as one
+        * wind, ice, minefield, invisible walls
+        * portal and invisible walls technically weren't level effects in JS but should be counted as one
     * powerup respawning
-    * gravity/magnet (which is it?)
 * powerups:
     * all JS powers in!
         * mines, shotgun, tracking
@@ -41,13 +44,16 @@
     * all JS levels in! (except portal)
         * "hiding places" and "lone turret"
         * "lightning corners" (it was cut, but now it's back)
-        * invisible level ("winning path"), wind level ("tricky maneuvering"), ice and mines level ("mine heaven")
+        * "winning path" (invisible level), "tricky maneuvering" (wind level), "mine heaven" (ice and mines level)
             * these levels didn't get names in JS...
     * "sneaky reward" (... this is actually my first true level in this version, wow)
+    * "timed reward" (moving walls) (should be a dev level but I wanna show off the moving walls)
+    * [dev] "nowall1": a test of a level without walls
+    * [dev] "unnamed1" and "unnamed2": a generic level and a level with a zig-zag of walls
 * minor things:
+    * major cleanup (like massive cleanup, absolutely humongous, gigantically colossal)
     * minor overhaul (oxymoron?) of end game and score handling
     * inserting stuff through the dev menu is easier
-    * major cleanup
 
 0.2.3 "features"
 * most things from JS Tanks in!!!
@@ -149,8 +155,8 @@
 * primarily the framework and some powers to test the framework
 
 future notes:
-0.3.0: better renderer abstraction
-0.4.0: mods? hazardpowers?
+0.3.0: menu? better renderer abstraction?
+0.4.0: mod support?
 0.4.A: priorities for the power modification functions?
 0.5.0: hazardpowers can special-case some additional functionality to hazards (like turrets knowing about bouncing bullets, or wallhack (this is for AI))?
 0.A.B: graphs for diagnostics

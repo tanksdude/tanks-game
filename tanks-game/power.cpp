@@ -70,7 +70,8 @@ other:
 swarm (bullets circle around tank at a set distance) (modifiedMovementCanOnlyWorkIndividually = true?)
 sword (melee power) (heck yeah, but would have to let Tank hold an object; shouldn't be too hard?)
 stationary turret superguard? (like multishot but turrets spaced around tank)
-dev: ultrabounce (bounce but it pushes the walls back)
+mine layer (shoot a regular bullet, every certain distance a mine is dropped)
+|dev: ultrabounce (bounce but it pushes the walls back)
 dev: spread (triple but shoots at the same point and spreads out)
 dev: pusher (pushes walls and hazards (tank only))
 dev: ring-shooter (shoots a ring of bullets; just looks amusing) (multishot but all the angles are the same)
@@ -103,9 +104,13 @@ if powers cannot be mixed on level, ability to persist over other powers (use VE
 ability to be permanently applied
 ability to override duration
 give tank a time limit before it can fire the new power, but must be overridable and dependent on default shooting speed
-can leave out-of-bounds, both real and fake (fake in the case of a portal level situation: center can leave out-of-bounds, edges might, dividing walls can't)
+can leave out of bounds, both real and fake (fake in the case of a portal level situation: center can leave out of bounds, edges might, dividing walls can't)
 
 
-if you don't know where I got these names: that's okay, I do (more or less)
-but they're from my JS game "Tanks: Battle of the Circles" (hosted on uncreativeusername.neocities.org), and this is a C++ port/remake/remaster/sequel (closest to sequel, closer to remake, barely a remaster, hardly a port)
+JS power numbers (with names updated):
+0 = speed, 1 = invincible, 2 = wallhack, 3 = trap, 4 = bounce, 5 = multishot, 6 = big, 7 = barrier, 8 = shotgun, 9 = mines, 10 = laser, 11 = fire, 12 = triple, 13 = blast, 14 = homing, 15 = tracking, 16 = grenade, 17 = banana, 18 = godmode, 19 = megadeath
+trap obviously won't be a powerup this time and laser is really complex, so those won't get implemented
+C++ order of creating the JS powers:
+speed, wallhack, multishot, bounce, homing, triple, invincible, big, megadeath, grenade, fire, blast, banana, godmode, mines, shotgun, tracking, barrier
+
 */

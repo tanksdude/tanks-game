@@ -52,7 +52,7 @@ public:
 
 	bool modifiesEdgeCollision = false;
 	virtual InteractionBoolHolder modifiedEdgeCollision(Bullet*) { return { false }; } //only the first false means something
-	//precondition: was out-of-bounds, is not necessarily out-of-bounds
+	//precondition: was out of bounds, is not necessarily out of bounds
 	bool overridesEdgeCollision = true;
 	bool modifiedEdgeCollisionCanWorkWithOthers = false; //options: either it bounces or temporarily stays outside, so it has no need to work with others; that makes the promise of powerup mixing kinda depressing
 	bool modifiedEdgeCollisionCanOnlyWorkIndividually = false;
