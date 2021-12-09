@@ -2,11 +2,11 @@
 
 std::unordered_map<std::string, float> BlastPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "vanilla", .5f });
-	weights.insert({ "random-vanilla", .25f });
-	weights.insert({ "old", .5f });
-	weights.insert({ "random-old", .25f });
-	weights.insert({ "random", .125f });
+	weights.insert({ "vanilla", 1.0f });
+	weights.insert({ "random-vanilla", .5f });
+	weights.insert({ "old", 1.0f });
+	weights.insert({ "random-old", .5f });
+	weights.insert({ "random", .25f });
 	return weights;
 }
 

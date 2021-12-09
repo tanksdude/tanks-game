@@ -4,7 +4,7 @@ const double ShieldPower::barrierStrength = 50; //TODO: this good?
 
 std::unordered_map<std::string, float> ShieldPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "vanilla-extra", .25f });
+	weights.insert({ "vanilla-extra", .5f });
 	return weights;
 }
 

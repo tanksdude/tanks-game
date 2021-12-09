@@ -3,8 +3,8 @@
 
 std::unordered_map<std::string, float> RespawningPowerupsLevelEffect::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "vanilla", 1.0f });
-	weights.insert({ "random-vanilla", .5f }); //powerups need to be manually watched when not watching everything
+	weights.insert({ "vanilla", 2.0f });
+	weights.insert({ "random-vanilla", 1.0f }); //powerups need to be manually watched when not watching everything
 	return weights;
 }
 

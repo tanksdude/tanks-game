@@ -2,8 +2,8 @@
 
 std::unordered_map<std::string, float> InversionPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "dev", .5f });
-	weights.insert({ "random-dev", .5f });
+	weights.insert({ "dev", 1.0f });
+	weights.insert({ "random-dev", 1.0f });
 	return weights;
 }
 

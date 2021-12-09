@@ -13,6 +13,7 @@ public:
 		return types;
 	}
 	virtual std::unordered_map<std::string, float> getWeights() const override;
+
 	virtual void initialize() override;
 
 	DefaultRandomLevel();

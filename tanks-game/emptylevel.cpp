@@ -4,9 +4,10 @@
 
 std::unordered_map<std::string, float> EmptyLevel::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "vanilla", .125f });
-	weights.insert({ "random-vanilla", .125f });
-	weights.insert({ "random", .0625f }); //it's boring so it shouldn't appear very often
+	weights.insert({ "vanilla", .25f });
+	weights.insert({ "random-vanilla", .25f });
+	weights.insert({ "old", .25f }); //not really necessary
+	weights.insert({ "random", .125f }); //it's boring so it shouldn't appear very often
 	return weights;
 }
 

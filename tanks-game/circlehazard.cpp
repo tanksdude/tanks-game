@@ -11,9 +11,9 @@ std::vector<std::string> CircleHazard::getHazardTypes() const {
 std::unordered_map<std::string, float> CircleHazard::getWeights() const {
 	//not really sure what the weights mean yet
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "vanilla", .5f });
-	weights.insert({ "random-vanilla", .5f });
-	weights.insert({ "random", .5f });
+	weights.insert({ "vanilla", 1.0f });
+	weights.insert({ "random-vanilla", 1.0f });
+	weights.insert({ "random", 1.0f });
 	return weights;
 }
 */

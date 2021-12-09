@@ -14,6 +14,7 @@ public:
 		return types;
 	}
 	virtual std::unordered_map<std::string, float> getWeights() const override;
+
 	virtual void initialize() override;
 	virtual void tick() override;
 

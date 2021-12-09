@@ -50,7 +50,7 @@ public:
 
 	//virtual double getTankMaxSpeedMultiplier() const override { return .75; } //JS
 	//virtual double getTankAccelerationMultiplier() const override { return .75; } //JS
-	virtual double getTankFiringRateMultiplier() const override { return .5; }
+	virtual double getTankFiringRateMultiplier() const override { return .5; } //JS: .25
 	virtual double getTankTurningIncrementMultiplier() const override { return 2; }
 
 	FireNamedTankPower();

@@ -90,7 +90,7 @@ public:
 	virtual bool getModifiesCollisionWithRectHazard(const RectHazard*) const override;
 	virtual InteractionBoolHolder modifiedCollisionWithRectHazard(Bullet*, RectHazard*) override;
 
-	virtual double getBulletRadiusMultiplier() const override { return .25; }
+	virtual double getBulletRadiusMultiplier() const override { return .25; } //JS: .5
 	virtual double getBulletAcceleration() const override;
 
 	BlastBulletPower();

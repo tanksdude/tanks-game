@@ -21,7 +21,7 @@ ColorValueHolder SneakyRewardLevel::getDefaultColor() const {
 std::unordered_map<std::string, float> SneakyRewardLevel::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla-extra", .5f });
-	weights.insert({ "random-vanilla", .125f }); //should this even appear?
+	weights.insert({ "random-vanilla", .25f }); //should this even appear?
 	return weights;
 }
 

@@ -2,8 +2,8 @@
 
 std::unordered_map<std::string, float> OldBouncePower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "old", .5f });
-	weights.insert({ "random-old", .5f });
+	weights.insert({ "old", 1.0f });
+	weights.insert({ "random-old", 1.0f });
 	return weights;
 }
 

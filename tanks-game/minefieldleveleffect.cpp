@@ -7,10 +7,10 @@
 
 std::unordered_map<std::string, float> MinefieldLevelEffect::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "vanilla", .5f });
-	weights.insert({ "random-vanilla", .5f });
-	weights.insert({ "old", .5f });
-	weights.insert({ "random-old", .5f });
+	weights.insert({ "vanilla", 1.0f });
+	weights.insert({ "random-vanilla", 1.0f });
+	weights.insert({ "old", 1.0f });
+	weights.insert({ "random-old", 1.0f });
 	return weights;
 }
 

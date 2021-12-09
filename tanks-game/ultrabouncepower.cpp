@@ -18,7 +18,7 @@ std::unordered_map<std::string, float> UltraBouncePower::getWeights() const {
 //static ColorValueHolder getClassColor() { return ColorValueHolder(0xB8/255.0, 0x28/255.0, 0xC3/255.0); } //^^^ then more pink (awful)
 //static ColorValueHolder getClassColor() { return ColorValueHolder(0xE7/255.0, 0x72/255.0, 0xE2/255.0); } //pink then lighter (good)
 //static ColorValueHolder getClassColor() { return ColorValueHolder(0xFB/255.0, 0x6F/255.0, 0xF5/255.0); } //^^^ then more pink (too close to bounce + invincible)
-static ColorValueHolder getClassColor() { return ColorValueHolder(0xE1 / 255.0, 0x53 / 255.0, 0xDB / 255.0); } //more pink again (not sure it's good, but whatever)
+static ColorValueHolder getClassColor() { return ColorValueHolder(0xE1/255.0, 0x53/255.0, 0xDB/255.0); } //more pink again (not sure it's good, but whatever)
 */
 
 TankPower* UltraBouncePower::makeTankPower() const {

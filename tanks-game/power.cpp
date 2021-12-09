@@ -8,11 +8,11 @@ std::vector<std::string> Power::getPowerTypes() const {
 
 std::unordered_map<std::string, float> Power::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "vanilla", .5f });
-	weights.insert({ "random-vanilla", .5f });
-	weights.insert({ "supermix-vanilla", .5f });
-	weights.insert({ "supermix", .5f });
-	weights.insert({ "random", .5f });
+	weights.insert({ "vanilla", 1.0f });
+	weights.insert({ "random-vanilla", 1.0f });
+	weights.insert({ "supermix-vanilla", 1.0f });
+	weights.insert({ "supermix", 1.0f });
+	weights.insert({ "random", 1.0f });
 	return weights;
 }
 */

@@ -12,10 +12,10 @@
 
 std::unordered_map<std::string, float> HidingPlacesLevel::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "vanilla-extra", .5f });
-	weights.insert({ "random-vanilla", .25f });
-	weights.insert({ "old", .5f });
-	weights.insert({ "random-old", .25f });
+	weights.insert({ "vanilla-extra", 1.0f });
+	weights.insert({ "random-vanilla", .5f });
+	weights.insert({ "old", 1.0f });
+	weights.insert({ "random-old", .5f });
 	return weights;
 }
 
@@ -67,7 +67,7 @@ void HidingPlacesLevel::initialize() {
 	tempRand = RNG::randFunc() * 2;
 	for (int i = 0; i < 4; i++) {
 		pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 80);
-		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, RandomLevel::powerAlternate(i, tempRand, "bounce", "speed"))); //speed=barrier here
+		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, RandomLevel::powerAlternate(i, tempRand, "bounce", "speed"))); //JS: speed=barrier
 	}
 
 	//alternate powers:

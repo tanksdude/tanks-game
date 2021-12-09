@@ -36,6 +36,7 @@ public:
 		return types;
 	}
 	virtual std::unordered_map<std::string, float> getWeights() const override;
+
 	virtual void apply() override;
 	virtual void tick(const Level* parent) override;
 	virtual void doEffects(Level* parent) override;

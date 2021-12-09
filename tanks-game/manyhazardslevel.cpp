@@ -11,11 +11,11 @@
 
 std::unordered_map<std::string, float> ManyHazardsLevel::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "vanilla", .25f });
-	weights.insert({ "random-vanilla", .25f });
-	weights.insert({ "old", .25f });
-	weights.insert({ "random-old", .25f });
-	weights.insert({ "random", .25f });
+	weights.insert({ "vanilla", .5f });
+	weights.insert({ "random-vanilla", .5f });
+	weights.insert({ "old", .5f });
+	weights.insert({ "random-old", .5f });
+	weights.insert({ "random", .5f });
 	return weights;
 }
 

@@ -12,9 +12,9 @@
 
 std::unordered_map<std::string, float> DefaultRandomLevel::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "vanilla", 2.0f });
-	weights.insert({ "random-vanilla", 2.0f });
-	weights.insert({ "random", 1.0f });
+	weights.insert({ "vanilla", 4.0f });
+	weights.insert({ "random-vanilla", 4.0f });
+	weights.insert({ "random", 2.0f });
 	return weights;
 }
 

@@ -12,10 +12,10 @@
 
 std::unordered_map<std::string, float> LoneTurretLevel::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "vanilla-extra", .5f });
-	weights.insert({ "random-vanilla", .25f }); //adjust later
-	weights.insert({ "old", .5f });
-	weights.insert({ "random-old", .25f });
+	weights.insert({ "vanilla-extra", 1.0f });
+	weights.insert({ "random-vanilla", .5f }); //adjust later
+	weights.insert({ "old", 1.0f });
+	weights.insert({ "random-old", .5f });
 	return weights;
 }
 

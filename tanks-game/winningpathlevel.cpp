@@ -18,10 +18,10 @@ ColorValueHolder WinningPathLevel::getDefaultColor() const {
 
 std::unordered_map<std::string, float> WinningPathLevel::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "vanilla-extra", .125f });
-	weights.insert({ "random-vanilla", .0625f });
-	weights.insert({ "old", .125f });
-	weights.insert({ "random-old", .125f });
+	weights.insert({ "vanilla-extra", .25f });
+	weights.insert({ "random-vanilla", .125f });
+	weights.insert({ "old", .25f });
+	weights.insert({ "random-old", .25f });
 	return weights;
 }
 

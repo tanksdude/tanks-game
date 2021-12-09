@@ -4,7 +4,7 @@
 
 std::unordered_map<std::string, float> GodmodePower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "vanilla", .5f });
+	weights.insert({ "vanilla", 1.0f });
 	weights.insert({ "ultimate", .125f });
 	weights.insert({ "ultimate-vanilla", .125f });
 	return weights;

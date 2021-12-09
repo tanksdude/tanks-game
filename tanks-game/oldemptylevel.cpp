@@ -7,8 +7,8 @@
 
 std::unordered_map<std::string, float> OldEmptyLevel::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "old", .125f });
-	weights.insert({ "random-old", .125f });
+	weights.insert({ "old", .25f });
+	weights.insert({ "random-old", .25f });
 	return weights;
 }
 
