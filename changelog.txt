@@ -1,7 +1,7 @@
-0.3.0 (obviously super definitely not here)
+0.3.0 (obviously definitely not here)
 * lots and lots of new stuff
 
-0.2.5 (obviously definitely not here)
+0.2.5 (obviously not here)
 * hazard powers
 * powerups:
     * growing and degrading powerups mix better
@@ -18,7 +18,7 @@
     * ?
 * ini file?
 
-0.2.4 (obviously not here)
+0.2.4
 * changed name from "Tanks" to "PowerTanks" so this game might actually become discoverable
 * switch to 64-bit because no modern computer should be 32-bit
 * made some changes to the renderer

@@ -150,7 +150,7 @@ int main(int argc, char** argv) {
 
 	Renderer::SetContext("OpenGL");
 	try {
-		Renderer::PreInitialize(&argc, argv, "PowerTanks Battle v0.2.4 NOT FINAL"); //this is not guaranteed to be correct every commit but likely will be
+		Renderer::PreInitialize(&argc, argv, "PowerTanks Battle v0.2.4"); //this is not guaranteed to be correct every commit but likely will be
 	}
 	catch (std::exception& e) {
 		std::cout << e.what() << std::endl;
@@ -295,7 +295,7 @@ int main(int argc, char** argv) {
 	TankManager::pushTank(new Tank(GAME_WIDTH-20, GAME_HEIGHT/2, PI, 2, "Arrow Keys", { true, GLUT_KEY_UP }, { true, GLUT_KEY_LEFT }, { true, GLUT_KEY_RIGHT }, { true, GLUT_KEY_DOWN }, { false, '/' }));
 	EndGameHandler::addTeamToWatch(1, "\"WASD 4 Life\"");
 	EndGameHandler::addTeamToWatch(2, "\"Arrow Keys R WINZ\"");
-	//these are just the kind of names that will make me cringe in a month
+	//they're good team names, deal with it
 	EndGameHandler::addTeamToWatch(HAZARD_TEAM, "HAZARDS");
 #if _DEBUG
 	LevelManager::pushLevel("dev", "dev2");
@@ -333,7 +333,7 @@ int main(int argc, char** argv) {
  * * levels: ~95%? not too sure
  * 90% actual foundation: not every "modification function" actually does something
  * * almost everything needed is somewhere, so copy-and-paste will be the solution (unless I can figure out member function pointers)
- * ~40% game code:
+ * ~50% game code:
  * * I don't know what will be final beyond the ideas located in power.cpp, hazard.cpp, level.cpp, and elsewhere
  * * it's just an estimate
  * * 100% probably won't be "finished" on this scale (it could jump from 60% to 100%)
