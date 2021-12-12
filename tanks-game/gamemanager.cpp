@@ -1,6 +1,6 @@
 #include "gamemanager.h"
 
-long GameManager::nextID = -1;
+Game_ID GameManager::nextID = -1;
 double GameManager::tickCount = 0;
 
 void GameManager::Initialize() {
@@ -16,7 +16,7 @@ void GameManager::Reset() {
 	tickCount = 0;
 }
 
-long GameManager::getNextID() {
+Game_ID GameManager::getNextID() {
 	nextID++;
 	return nextID;
 }

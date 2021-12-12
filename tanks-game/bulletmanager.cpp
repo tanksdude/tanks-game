@@ -2,7 +2,12 @@
 
 std::vector<Bullet*> BulletManager::bullets;
 int BulletManager::maxBullets = 2048;
+#if _DEBUG
 bool BulletManager::limitBullets = false;
+#else
+bool BulletManager::limitBullets = true;
+#endif
+bool BulletManager::autoLimitBullets = false;
 
 void BulletManager::initialize() {
 	bullets.reserve(4096);
@@ -13,11 +18,28 @@ Bullet* BulletManager::getBullet(int index) {
 	return bullets[index];
 }
 
+Bullet* BulletManager::getBulletByID(Game_ID gameID) {
+	for (int i = 0; i < bullets.size(); i++) {
+		if (bullets[i]->getGameID() == gameID) {
+			return bullets[i];
+		}
+	}
+	return nullptr;
+}
+
 void BulletManager::pushBullet(Bullet* b) {
 	bullets.push_back(b);
+	if (autoLimitBullets && limitBullets) {
+		while (bullets.size() > maxBullets) {
+			deleteBullet(0);
+		}
+	}
+}
+
+void BulletManager::forceLimitBullets() {
 	if (limitBullets) {
 		while (bullets.size() > maxBullets) {
-			bullets.erase(bullets.begin() + 0);
+			deleteBullet(0);
 		}
 	}
 }
@@ -25,6 +47,14 @@ void BulletManager::pushBullet(Bullet* b) {
 void BulletManager::deleteBullet(int index) {
 	delete bullets[index];
 	bullets.erase(bullets.begin() + index);
+}
+
+void BulletManager::deleteBulletByID(Game_ID gameID) {
+	for (int i = 0; i < bullets.size(); i++) {
+		if (bullets[i]->getGameID() == gameID) {
+			deleteBullet(i);
+		}
+	}
 }
 
 void BulletManager::clearBullets() {

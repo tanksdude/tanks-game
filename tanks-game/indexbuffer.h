@@ -1,16 +1,13 @@
 #pragma once
 
 class IndexBuffer {
-private:
-	unsigned int rendererID;
-	unsigned int count;
 public:
-	IndexBuffer(const unsigned int* data, unsigned int count);
-	~IndexBuffer();
+	virtual void Bind() const = 0;
+	virtual void Unbind() const = 0;
 
-	void Bind() const;
-	void Unbind() const;
+	virtual unsigned int getCount() const = 0;
+	virtual unsigned int getRendererID() const = 0;
 
-	unsigned int getCount() const { return count; }
-	unsigned int getRendererID() const { return rendererID; }
+	static IndexBuffer* MakeIndexBuffer(const unsigned int* data, unsigned int count);
+	virtual ~IndexBuffer() { return; }
 };

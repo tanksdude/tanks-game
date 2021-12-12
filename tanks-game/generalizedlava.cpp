@@ -5,6 +5,7 @@
 #include <math.h>
 #include "mylib.h"
 #include "colormixer.h"
+#include "rng.h"
 
 //yes, the syntax is a little weird
 GeneralizedLava::LavaBubble::LavaBubble(float radius, float x0, float y0, float x1, float y1, float tickStart) {
@@ -25,6 +26,10 @@ GeneralizedLava::LavaBubble::LavaBubble(float radius, float x0, float y0, float 
 GeneralizedLava::LavaBubble::LavaBubble(float radius, float x0, float y0, float x1, float y1, float tickStart, float* tickMultiplier)
 : LavaBubble(radius, x0, y0, x1, y1, tickStart) {
 	std::copy(tickMultiplier, tickMultiplier + 3, stateMultiplier); //the last one isn't supposed to be modified (or used)
+}
+
+GeneralizedLava::LavaBubble::~LavaBubble() {
+	//nothing
 }
 
 void GeneralizedLava::LavaBubble::tick() {
@@ -72,15 +77,24 @@ float GeneralizedLava::LavaBubble::getY() const {
 
 
 
-ColorValueHolder GeneralizedLava::getBackgroundColor() {
+ColorValueHolder GeneralizedLava::getBackgroundColor() const {
 	//colors: red (#FF0000) and orange-red (#FFAA00) mixed
-	return ColorMixer::mix(ColorValueHolder(1.0f, 0.0f, 0.0f), ColorValueHolder(1.0f, .875f, 0.0f),
+	return ColorMixer::mix(ColorValueHolder(1.0f, 0.0f, 0.0f), ColorValueHolder(1.0f, 0.875f, 0.0f),
 	                       .625 + sin(2*PI * tickCount/tickCycle)/8 + cos(2*PI * tickCount/tickCycle * 8)/8);
 }
 
-ColorValueHolder GeneralizedLava::getBubbleColor(LavaBubble* bubble) {
+ColorValueHolder GeneralizedLava::getBackgroundColor_Pose() const {
+	//color: orange-red-ish (#FF4400)
+	return ColorValueHolder(1.0f, 0.25f, 0.0f);
+}
+
+ColorValueHolder GeneralizedLava::getBubbleColor(LavaBubble* bubble) const {
 	//a bubble's natural color is white, but with an alpha of .5, but blending is expensive so it's just mixed with the lava background
 	return ColorMixer::mix(ColorValueHolder(1.0f, 1.0f, 1.0f), getBackgroundColor(), 1.0f - bubble->getAlpha());
+}
+
+ColorValueHolder GeneralizedLava::getBubbleColor_Pose(LavaBubble* bubble) const {
+	return ColorMixer::mix(ColorValueHolder(1.0f, 1.0f, 1.0f), getBackgroundColor(), .5); //TODO: allow getting the base alpha from a bubble
 }
 
 void GeneralizedLava::tick() {
@@ -88,7 +102,7 @@ void GeneralizedLava::tick() {
 		tickCount = 0;
 	}
 
-	if ((bubbles.size() < maxBubbles) && (randFunc() < bubbleChance)) {
+	if ((bubbles.size() < maxBubbles) && (RNG::randFunc() < bubbleChance)) {
 		pushNewBubble(4); //possible radius: sqrt(w * h * 2)/50 or sqrt(r * r * 2)/50
 	}
 

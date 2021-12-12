@@ -1,12 +1,13 @@
 #pragma once
 #include "circle.h"
 #include "rect.h"
-#include "doublepositionholder.h"
+#include "positionholder.h"
+#include <utility>
 
 class CollisionHandler {
-private:
-	static bool cornerCollided(Circle*, double x, double y);
-	static bool cornerCollidedIgnoreEdge(Circle*, double x, double y);
+protected:
+	static bool cornerCollided(const Circle*, double x, double y);
+	static bool cornerCollidedIgnoreEdge(const Circle*, double x, double y);
 	static void cornerPushMovableAwayFromImmovable(Circle* movable, double x, double y);
 	static void cornerPushMovableAwayFromMovable(Circle* movable1, Rect* movable2, double x, double y);
 	static void cornerPushMovableAwayFromImmovable(Rect* movable, Circle*, double x, double y);
@@ -15,39 +16,41 @@ private:
 	}
 
 public: //for tanks and bullets and stuff (things that move around)
-	static bool partiallyOutOfBounds(Rect*);
-	static bool partiallyOutOfBoundsIgnoreEdge(Rect*);
-	static bool fullyOutOfBounds(Rect*);
-	static bool fullyOutOfBoundsIgnoreEdge(Rect*);
+	static bool partiallyOutOfBounds(const Rect*);
+	static bool partiallyOutOfBoundsIgnoreEdge(const Rect*);
+	static bool fullyOutOfBounds(const Rect*);
+	static bool fullyOutOfBoundsIgnoreEdge(const Rect*);
 
 	//below: only does simple check, treating the circle like a square
-	static bool partiallyOutOfBounds(Circle*);
-	static bool partiallyOutOfBoundsIgnoreEdge(Circle*);
-	static bool fullyOutOfBounds(Circle*);
-	static bool fullyOutOfBoundsIgnoreEdge(Circle*);
+	static bool partiallyOutOfBounds(const Circle*);
+	static bool partiallyOutOfBoundsIgnoreEdge(const Circle*);
+	static bool fullyOutOfBounds(const Circle*);
+	static bool fullyOutOfBoundsIgnoreEdge(const Circle*);
 
 	static void edgeConstrain(Rect*);
 	static void edgeConstrain(Circle*);
+	static void edgeConstrain(Rect*, double distFromEdge); //why? at the very least, it's better than powers having to do it themselves, I guess
+	static void edgeConstrain(Circle*, double distFromEdge);
 
 public: //collision detection and handling (just moving)
-	static bool partiallyCollided(Rect*, Rect*);
-	static bool partiallyCollided(Rect*, Circle*);
-	static bool partiallyCollided(Circle* c, Rect* r) {
+	static bool partiallyCollided(const Rect*, const Rect*);
+	static bool partiallyCollided(const Rect*, const Circle*);
+	static bool partiallyCollided(const Circle* c, const Rect* r) {
 		return CollisionHandler::partiallyCollided(r, c);
 	}
-	static bool partiallyCollided(Circle*, Circle*);
+	static bool partiallyCollided(const Circle*, const Circle*);
 
-	static bool partiallyCollidedIgnoreEdge(Rect*, Rect*);
-	static bool partiallyCollidedIgnoreEdge(Rect*, Circle*);
-	static bool partiallyCollidedIgnoreEdge(Circle* c, Rect* r) {
+	static bool partiallyCollidedIgnoreEdge(const Rect*, const Rect*);
+	static bool partiallyCollidedIgnoreEdge(const Rect*, const Circle*);
+	static bool partiallyCollidedIgnoreEdge(const Circle* c, const Rect* r) {
 		return CollisionHandler::partiallyCollidedIgnoreEdge(r, c);
 	}
-	static bool partiallyCollidedIgnoreEdge(Circle*, Circle*);
+	static bool partiallyCollidedIgnoreEdge(const Circle*, const Circle*);
 
-	static bool fullyCollided(Rect*, Rect*);
-	static bool fullyCollided(Rect*, Circle*);
-	static bool fullyCollided(Circle* c, Rect* r); //different
-	static bool fullyCollided(Circle*, Circle*);
+	static bool fullyCollided(const Rect*, const Rect*);
+	static bool fullyCollided(const Rect*, const Circle*);
+	static bool fullyCollided(const Circle*, const Rect*); //different
+	static bool fullyCollided(const Circle*, const Circle*);
 
 	static void pushMovableAwayFromImmovable(Rect* movable, Rect* immovable);
 	static void pushMovableAwayFromMovable(Rect* movable1, Rect* movable2);
@@ -84,9 +87,13 @@ public: //collision detection and handling (just moving)
 	*/
 
 public: //stuff that gives a location of intersection (only use if collision is guranteed) (this should be expanded)
-	static DoublePositionHolder circleLineIntersection(Circle*, double lineX1, double lineY1, double lineX2, double lineY2);
+	static std::pair<PositionHolder, PositionHolder> circleLineIntersection(const Circle*, double lineX1, double lineY1, double lineX2, double lineY2);
 
 public: //other stuff
 	static bool lineLineCollision(double line1X, double line1Y, double line2X, double line2Y, double line3X, double line3Y, double line4X, double line4Y);
-	static bool lineRectCollision(double line1X, double line1Y, double line2X, double line2Y, Rect* r);
+	static bool lineRectCollision(double line1X, double line1Y, double line2X, double line2Y, const Rect* r);
+
+private:
+	CollisionHandler() {}
+	CollisionHandler(const CollisionHandler&) {}
 };

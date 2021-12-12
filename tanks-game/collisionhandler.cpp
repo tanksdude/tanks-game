@@ -4,35 +4,35 @@
 #include <stdexcept>
 #include <iostream>
 
-bool CollisionHandler::partiallyOutOfBounds(Rect* r) {
+bool CollisionHandler::partiallyOutOfBounds(const Rect* r) {
 	return ((r->x + r->w >= GAME_WIDTH) || (r->x <= 0) || (r->y + r->h >= GAME_HEIGHT) || (r->y <= 0));
 }
 
-bool CollisionHandler::partiallyOutOfBoundsIgnoreEdge(Rect* r) {
+bool CollisionHandler::partiallyOutOfBoundsIgnoreEdge(const Rect* r) {
 	return ((r->x + r->w > GAME_WIDTH) || (r->x < 0) || (r->y + r->h > GAME_HEIGHT) || (r->y < 0));
 }
 
-bool CollisionHandler::fullyOutOfBounds(Rect* r) {
+bool CollisionHandler::fullyOutOfBounds(const Rect* r) {
 	return ((r->x >= GAME_WIDTH) || (r->x + r->w <= 0) || (r->y >= GAME_HEIGHT) || (r->y + r->h <= 0));
 }
 
-bool CollisionHandler::fullyOutOfBoundsIgnoreEdge(Rect* r) {
+bool CollisionHandler::fullyOutOfBoundsIgnoreEdge(const Rect* r) {
 	return ((r->x > GAME_WIDTH) || (r->x + r->w < 0) || (r->y > GAME_HEIGHT) || (r->y + r->h < 0));
 }
 
-bool CollisionHandler::partiallyOutOfBounds(Circle* c) {
+bool CollisionHandler::partiallyOutOfBounds(const Circle* c) {
 	return ((c->x + c->r >= GAME_WIDTH) || (c->x - c->r <= 0) || (c->y + c->r >= GAME_HEIGHT) || (c->y - c->r <= 0));
 }
 
-bool CollisionHandler::partiallyOutOfBoundsIgnoreEdge(Circle* c) {
+bool CollisionHandler::partiallyOutOfBoundsIgnoreEdge(const Circle* c) {
 	return ((c->x + c->r > GAME_WIDTH) || (c->x - c->r < 0) || (c->y + c->r > GAME_HEIGHT) || (c->y - c->r < 0));
 }
 
-bool CollisionHandler::fullyOutOfBounds(Circle* c) {
+bool CollisionHandler::fullyOutOfBounds(const Circle* c) {
 	return ((c->x - c->r >= GAME_WIDTH) || (c->x + c->r <= 0) || (c->y - c->r >= GAME_HEIGHT) || (c->y + c->r <= 0));
 }
 
-bool CollisionHandler::fullyOutOfBoundsIgnoreEdge(Circle* c) {
+bool CollisionHandler::fullyOutOfBoundsIgnoreEdge(const Circle* c) {
 	return ((c->x - c->r > GAME_WIDTH) || (c->x + c->r < 0) || (c->y - c->r > GAME_HEIGHT) || (c->y + c->r < 0));
 }
 
@@ -62,11 +62,37 @@ void CollisionHandler::edgeConstrain(Circle* c) {
 	}
 }
 
-bool CollisionHandler::partiallyCollided(Rect* a, Rect* b) {
+void CollisionHandler::edgeConstrain(Rect* r, double distFromEdge) {
+	if (r->x + r->w > (GAME_WIDTH - distFromEdge)) {
+		r->x = (GAME_WIDTH - distFromEdge) - r->w;
+	} else if (r->x < distFromEdge) {
+		r->x = distFromEdge;
+	}
+	if (r->y + r->h > (GAME_HEIGHT - distFromEdge)) {
+		r->y = (GAME_HEIGHT - distFromEdge) - r->h;
+	} else if (r->y < distFromEdge) {
+		r->y = distFromEdge;
+	}
+}
+
+void CollisionHandler::edgeConstrain(Circle* c, double distFromEdge) {
+	if (c->x + c->r > (GAME_WIDTH - distFromEdge)) {
+		c->x = (GAME_WIDTH - distFromEdge) - c->r;
+	} else if (c->x - c->r < distFromEdge) {
+		c->x = c->r + distFromEdge;
+	}
+	if (c->y + c->r > (GAME_HEIGHT - distFromEdge)) {
+		c->y = (GAME_HEIGHT - distFromEdge) - c->r;
+	} else if (c->y - c->r < distFromEdge) {
+		c->y = c->r + distFromEdge;
+	}
+}
+
+bool CollisionHandler::partiallyCollided(const Rect* a, const Rect* b) {
 	return ((a->x + a->w >= b->x) && (a->x <= b->x + b->w) && (a->y + a->h >= b->y) && (a->y <= b->y + b->h));
 }
 
-bool CollisionHandler::partiallyCollided(Rect* a, Circle* b) {
+bool CollisionHandler::partiallyCollided(const Rect* a, const Circle* b) {
 	if ((b->x < a->x) && (b->y < a->y)) { //bottom left
 		return cornerCollided(b, a->x, a->y);
 	} else if ((b->x > (a->x + a->w)) && (b->y < a->y)) { //bottom right
@@ -79,16 +105,16 @@ bool CollisionHandler::partiallyCollided(Rect* a, Circle* b) {
 		return (((b->x + b->r) >= a->x) && ((b->x - b->r) <= (a->x + a->w)) && ((b->y + b->r) >= a->y) && ((b->y - b->r) <= (a->y + a->h)));
 	}
 }
-//bool CollisionHandler::partiallyCollided(Circle* a, Rect* b);
+//bool CollisionHandler::partiallyCollided(const Circle* a, const Rect* b);
 
-bool CollisionHandler::partiallyCollided(Circle* a, Circle* b) {
+bool CollisionHandler::partiallyCollided(const Circle* a, const Circle* b) {
 	if ((abs(a->x - b->x) <= a->r + b->r) && (abs(a->y - b->y) <= a->r + b->r)) {
 		return (sqrt(pow(a->x - b->x, 2) + pow(a->y - b->y, 2)) <= a->r + b->r);
 	}
 	return false;
 }
 
-bool CollisionHandler::cornerCollided(Circle* a, double x, double y) { //effectively C-C but C2->r = 0
+bool CollisionHandler::cornerCollided(const Circle* a, double x, double y) { //effectively C-C but C2->r = 0
 	if ((abs(x - a->x) <= a->r) && (abs(y - a->y) <= a->r)) {
 		double d = sqrt(pow(x - a->x, 2) + pow(y - a->y, 2));
 		return (d <= a->r);
@@ -97,11 +123,11 @@ bool CollisionHandler::cornerCollided(Circle* a, double x, double y) { //effecti
 }
 
 //IgnoreEdge variant: code is near-identical to non IgnoreEdge version
-bool CollisionHandler::partiallyCollidedIgnoreEdge(Rect* a, Rect* b) {
+bool CollisionHandler::partiallyCollidedIgnoreEdge(const Rect* a, const Rect* b) {
 	return ((a->x + a->w > b->x) && (a->x < b->x + b->w) && (a->y + a->h > b->y) && (a->y < b->y + b->h));
 }
 
-bool CollisionHandler::partiallyCollidedIgnoreEdge(Rect* a, Circle* b) {
+bool CollisionHandler::partiallyCollidedIgnoreEdge(const Rect* a, const Circle* b) {
 	if ((b->x < a->x) && (b->y < a->y)) { //bottom left
 		return cornerCollided(b, a->x, a->y);
 	} else if ((b->x > (a->x + a->w)) && (b->y < a->y)) { //bottom right
@@ -114,16 +140,16 @@ bool CollisionHandler::partiallyCollidedIgnoreEdge(Rect* a, Circle* b) {
 		return (((b->x + b->r) > a->x) && ((b->x - b->r) < (a->x + a->w)) && ((b->y + b->r) > a->y) && ((b->y - b->r) < (a->y + a->h)));
 	}
 }
-//bool CollisionHandler::partiallyCollidedIgnoreEdge(Circle* a, Rect* b);
+//bool CollisionHandler::partiallyCollidedIgnoreEdge(const Circle* a, const Rect* b);
 
-bool CollisionHandler::partiallyCollidedIgnoreEdge(Circle* a, Circle* b) {
+bool CollisionHandler::partiallyCollidedIgnoreEdge(const Circle* a, const Circle* b) {
 	if ((abs(a->x - b->x) < a->r + b->r) && (abs(a->y - b->y) < a->r + b->r)) {
 		return (sqrt(pow(a->x - b->x, 2) + pow(a->y - b->y, 2)) < a->r + b->r);
 	}
 	return false;
 }
 
-bool CollisionHandler::cornerCollidedIgnoreEdge(Circle* a, double x, double y) {
+bool CollisionHandler::cornerCollidedIgnoreEdge(const Circle* a, double x, double y) {
 	if ((abs(x - a->x) < a->r) && (abs(y - a->y) < a->r)) {
 		double d = sqrt(pow(x - a->x, 2) + pow(y - a->y, 2));
 		return (d < a->r);
@@ -131,10 +157,10 @@ bool CollisionHandler::cornerCollidedIgnoreEdge(Circle* a, double x, double y) {
 	return false;
 }
 
-bool CollisionHandler::fullyCollided(Rect* a, Rect* b) {
+bool CollisionHandler::fullyCollided(const Rect* a, const Rect* b) { //a inside b
 	return ((a->x >= b->x) && ((a->x + a->w) <= (b->x + b->w)) && (a->y >= b->y) && ((a->y + a->h) <= (b->y + b->h)));
 }
-bool CollisionHandler::fullyCollided(Rect* a, Circle* b) { //rectangle inside circle
+bool CollisionHandler::fullyCollided(const Rect* a, const Circle* b) { //rectangle inside circle
 	if ((a->x >= (b->x - b->r)) && ((a->x + a->w) <= (b->x + b->r)) && (a->y >= (b->y - b->r)) && ((a->y + a->h) <= (b->y + b->r))) { //check R-R collision
 		return ((sqrt(pow(a->x - b->x, 2) + pow(a->y - b->y, 2)) <= b->r) && //check distance between each corner to circle center
 		        (sqrt(pow(a->x - b->x, 2) + pow((a->y + a->h) - b->y, 2)) <= b->r) &&
@@ -143,12 +169,12 @@ bool CollisionHandler::fullyCollided(Rect* a, Circle* b) { //rectangle inside ci
 	}
 	return false;
 }
-bool CollisionHandler::fullyCollided(Circle* a, Rect* b) { //circle inside rectangle
+bool CollisionHandler::fullyCollided(const Circle* a, const Rect* b) { //circle inside rectangle
 	return (((a->x - a->r) >= b->x) && ((a->x + a->r) <= (b->x + b->w)) && ((a->y - a->r) >= b->y) && ((a->y + a->r) <= (b->y + b->h)));
 }
-bool CollisionHandler::fullyCollided(Circle* a, Circle* b) {
+bool CollisionHandler::fullyCollided(const Circle* a, const Circle* b) { //a inside b
 	if (((a->x - a->r) >= (b->x - b->r)) && ((a->x + a->r) <= (b->x + b->r)) && ((a->y - a->r) >= (b->y - b->r)) && ((a->y + a->r) <= (b->y + b->r))) { //check R-R collision
-		return (sqrt(pow(a->x - b->x, 2) + pow(a->y - b->y, 2)) <= a->r + b->r);
+		return (sqrt(pow(a->x - b->x, 2) + pow(a->y - b->y, 2)) <= b->r - a->r);
 	}
 	return false;
 }
@@ -163,8 +189,7 @@ void CollisionHandler::pushMovableAwayFromImmovable(Rect* movable, Rect* immovab
 		} else { //right
 			movable->x = immovable->x + immovable->w;
 		}
-	}
-	else { //bottom left?
+	} else { //bottom left?
 		if ((movable->y + movable->h / 2) - (immovable->y + immovable->h) <= (-immovable->h / immovable->w) * ((movable->x + movable->w / 2) - immovable->x)) { //left
 			movable->x = immovable->x - movable->w;
 		} else { //bottom
@@ -176,7 +201,7 @@ void CollisionHandler::pushMovableAwayFromImmovable(Rect* movable, Rect* immovab
 	if (movable->x <= immovable->x) {
 		movable->x = immovable->x - movable->w;
 	}
-	else if((movable->x + movable->w) >= (immovable->x + immovable->w)){
+	else if((movable->x + movable->w) >= (immovable->x + immovable->w)) {
 		movable->x = immovable->x + immovable->w;
 	}
 	else { //movable is inside immovable
@@ -278,7 +303,7 @@ void CollisionHandler::pushMovableAwayFromMovable(Rect* movable1, Rect* movable2
 
 void CollisionHandler::pushMovableAwayFromImmovable(Circle* movable, Rect* immovable) {
 	//typically Tank-Wall collision
-	
+
 	bool cornerCollided = false;
 	if ((movable->x < immovable->x) && (movable->y < immovable->y)) { //circle in bottom left
 		cornerPushMovableAwayFromImmovable(movable, immovable->x, immovable->y);
@@ -324,7 +349,7 @@ void CollisionHandler::pushMovableAwayFromImmovable(Rect* movable, Circle* immov
 	//first, find if circle is in outer corner (as opposed to near a side)
 	//if on side, R-R stuff
 	//else, C-C stuff (if dist < asdf then move, but don't use else)
-	
+
 	if ((immovable->x < movable->x) && (immovable->y < movable->y)) { //circle in top left
 		cornerPushMovableAwayFromImmovable(movable, immovable, movable->x, movable->y);
 	}
@@ -338,7 +363,7 @@ void CollisionHandler::pushMovableAwayFromImmovable(Rect* movable, Circle* immov
 	if ((immovable->x > (movable->x + movable->w)) && (immovable->y > (movable->y + movable->h))) { //circle in bottom right
 		cornerPushMovableAwayFromImmovable(movable, immovable, (movable->x + movable->w), (movable->y + movable->h));
 	}
-	
+
 	/*
 	if (sqrt(pow(movable->x - immovable->x, 2) + pow(movable->y - immovable->y, 2)) <= immovable->r) { //top left rectangle corner
 		double angle = atan2((movable->y - immovable->y), (movable->x - immovable->x));
@@ -399,7 +424,6 @@ void CollisionHandler::pushMovableAwayFromImmovable(Rect* movable, Circle* immov
 	}
 	//else?
 	*/
-	
 }
 void CollisionHandler::pushMovableAwayFromMovable(Rect* movable1, Circle* movable2) {
 	if ((movable2->x < movable1->x) && (movable2->y < movable1->y)) { //circle in top left
@@ -476,7 +500,7 @@ void CollisionHandler::cornerPushMovableAwayFromImmovable(Rect* movable, Circle*
 }
 //void CollisionHandler::cornerPushMovableAwayFromMovable(Rect* movable1, Circle* movable2, double x, double y);
 
-DoublePositionHolder CollisionHandler::circleLineIntersection(Circle* c, double lineX1, double lineY1, double lineX2, double lineY2) {
+std::pair<PositionHolder, PositionHolder> CollisionHandler::circleLineIntersection(const Circle* c, double lineX1, double lineY1, double lineX2, double lineY2) {
 	//circle-line intersection: https://mathworld.wolfram.com/Circle-LineIntersection.html
 	//normally I always use pow(x,2) for clarity, but it's getting repetitive, and also x*x is faster
 	double x1 = lineX1 - c->x, x2 = lineX2 - c->x;
@@ -491,7 +515,7 @@ DoublePositionHolder CollisionHandler::circleLineIntersection(Circle* c, double 
 		throw std::logic_error("CollisionHandler::circleLineIntersection was not given an intersecting circle and line!");
 		//invalid_argument instead?
 	}
-	
+
 	double intersectionX1 = (D*dy - (dy<0 ? -1 : 1) * dx * sqrt(c->r*c->r * dr*dr - D*D)) / (dr*dr);
 	double intersectionX2 = (D*dy + (dy<0 ? -1 : 1) * dx * sqrt(c->r*c->r * dr*dr - D*D)) / (dr*dr);
 	double intersectionY1 = (-D*dx - abs(dy) * sqrt(c->r*c->r * dr*dr - D*D)) / (dr*dr);
@@ -501,7 +525,7 @@ DoublePositionHolder CollisionHandler::circleLineIntersection(Circle* c, double 
 	//std::cout << "y1: " << intersectionY1 << ", ";
 	//std::cout << "y2: " << intersectionY2 << std::endl;
 
-	return DoublePositionHolder(intersectionX1 + c->x, intersectionX2 + c->x, intersectionY1 + c->y, intersectionY2 + c->y);
+	return std::pair<PositionHolder, PositionHolder>{ {intersectionX1 + c->x, intersectionY1 + c->y}, {intersectionX2 + c->x, intersectionY2 + c->y} };
 }
 
 bool CollisionHandler::lineLineCollision(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4) {
@@ -511,7 +535,7 @@ bool CollisionHandler::lineLineCollision(double x1, double y1, double x2, double
 	return (uA >= 0 && uA <= 1 && uB >= 0 && uB <= 1);
 }
 
-bool CollisionHandler::lineRectCollision(double line1X, double line1Y, double line2X, double line2Y, Rect* r) {
+bool CollisionHandler::lineRectCollision(double line1X, double line1Y, double line2X, double line2Y, const Rect* r) {
 	return (lineLineCollision(line1X, line1Y, line2X, line2Y, r->x, r->y, r->x + r->w, r->y) || //bottom left to bottom right
 	        lineLineCollision(line1X, line1Y, line2X, line2Y, r->x, r->y, r->x, r->y + r->h) || //bottom left to top left
 	        lineLineCollision(line1X, line1Y, line2X, line2Y, r->x + r->w, r->y, r->x + r->w, r->y + r->h) || //bottom right to top right

@@ -77,6 +77,7 @@ public:
 
 class HazardManager {
 	friend class ResetThings;
+
 private:
 	static std::vector<CircleHazard*> circleHazards;
 	static std::vector<RectHazard*> rectHazards;
@@ -87,16 +88,21 @@ private:
 	static std::unordered_map<std::string, std::unordered_map<std::string, RectHazardFactoryGroup>> rectHazardLookup;
 	static std::unordered_map<std::string, std::vector<std::string>> circleHazardNameList;
 	static std::unordered_map<std::string, std::vector<std::string>> rectHazardNameList;
+
 public:
 	static void initialize();
 	static CircleHazard* getCircleHazard(int index);
 	static RectHazard* getRectHazard(int index);
+	static CircleHazard* getCircleHazardByID(Game_ID);
+	static RectHazard* getRectHazardByID(Game_ID);
 	static void pushCircleHazard(CircleHazard*);
 	static void pushRectHazard(RectHazard*);
 	static int getNumCircleHazards() { return circleHazards.size(); }
 	static int getNumRectHazards() { return rectHazards.size(); }
 	static void deleteCircleHazard(int index);
 	static void deleteRectHazard(int index);
+	static void deleteCircleHazardByID(Game_ID);
+	static void deleteRectHazardByID(Game_ID);
 
 	static void addCircleHazardFactory(CircleHazardFunction, CircleHazardRandomizationFunction);
 	static void addRectHazardFactory(RectHazardFunction, RectHazardRandomizationFunction);
@@ -110,4 +116,8 @@ public:
 	static std::string getRectHazardName(std::string type, int index);
 	static int getNumCircleHazardTypes(std::string type);
 	static int getNumRectHazardTypes(std::string type);
+
+private:
+	HazardManager() {}
+	HazardManager(const HazardManager&) {}
 };

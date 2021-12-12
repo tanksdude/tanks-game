@@ -2,18 +2,30 @@
 #include <stdexcept>
 
 std::vector<Level*> LevelManager::levels;
+
 std::unordered_map<std::string, std::unordered_map<std::string, LevelFunction>> LevelManager::levelLookup;
+std::unordered_map<std::string, std::unordered_map<std::string, LevelEffectFunction>> LevelManager::levelEffectLookup;
 std::unordered_map<std::string, std::vector<std::string>> LevelManager::levelNameList;
+std::unordered_map<std::string, std::vector<std::string>> LevelManager::levelEffectNameList;
 
 void LevelManager::initialize() {
 	levelLookup.insert({ "vanilla", std::unordered_map<std::string, LevelFunction>() });
 	levelLookup.insert({ "vanilla-extra", std::unordered_map<std::string, LevelFunction>() }); //... what does this include?
 	levelLookup.insert({ "random-vanilla", std::unordered_map<std::string, LevelFunction>() }); //can include vanilla-extra but probably won't
-	levelLookup.insert({ "random", std::unordered_map<std::string, LevelFunction>() }); //general random (requires the level to manually insert itself here)
 	levelLookup.insert({ "old", std::unordered_map<std::string, LevelFunction>() });
 	levelLookup.insert({ "random-old", std::unordered_map<std::string, LevelFunction>() });
+	levelLookup.insert({ "random", std::unordered_map<std::string, LevelFunction>() }); //general random
 	levelLookup.insert({ "dev", std::unordered_map<std::string, LevelFunction>() });
 	levelLookup.insert({ "random-dev", std::unordered_map<std::string, LevelFunction>() }); //would this be used?
+
+	levelEffectLookup.insert({ "vanilla", std::unordered_map<std::string, LevelEffectFunction>() });
+	levelEffectLookup.insert({ "vanilla-extra", std::unordered_map<std::string, LevelEffectFunction>() }); //most would probably fall here...
+	levelEffectLookup.insert({ "random-vanilla", std::unordered_map<std::string, LevelEffectFunction>() });
+	levelEffectLookup.insert({ "old", std::unordered_map<std::string, LevelEffectFunction>() });
+	levelEffectLookup.insert({ "random-old", std::unordered_map<std::string, LevelEffectFunction>() });
+	levelEffectLookup.insert({ "random", std::unordered_map<std::string, LevelEffectFunction>() }); //this could be a little terrifying
+	levelEffectLookup.insert({ "dev", std::unordered_map<std::string, LevelEffectFunction>() });
+	levelEffectLookup.insert({ "random-dev", std::unordered_map<std::string, LevelEffectFunction>() }); //would this be used?
 }
 
 Level* LevelManager::getLevel(int index) {
@@ -79,4 +91,42 @@ int LevelManager::getNumLevelTypes(std::string type) {
 		throw std::domain_error("level type \"" + type + "\" unknown!");
 	}
 	return levelNameList[type].size();
+}
+
+
+void LevelManager::addLevelEffectFactory(LevelEffectFunction factory) {
+	LevelEffect* le = factory(0, nullptr);
+	std::vector<std::string> types = le->getLevelEffectTypes();
+	for (int i = 0; i < types.size(); i++) {
+		/*
+		//is this necessary?
+		if (levelEffectLookup.find(types[i]) == levelEffectLookup.end()) {
+			levelEffectLookup.insert({ types[i], std::unordered_map<std::string, LevelEffectFunction>() });
+		}
+		*/
+		levelEffectLookup[types[i]].insert({ le->getName(), factory });
+		levelEffectNameList[types[i]].push_back(le->getName());
+	}
+	delete le;
+}
+
+LevelEffectFunction LevelManager::getLevelEffectFactory(std::string type, std::string name) {
+	if (levelEffectLookup.find(type) == levelEffectLookup.end()) {
+		throw std::domain_error("level effect type \"" + type + "\" unknown!");
+	}
+	return levelEffectLookup[type][name];
+}
+
+std::string LevelManager::getLevelEffectName(std::string type, int index) {
+	if (levelEffectLookup.find(type) == levelEffectLookup.end()) {
+		throw std::domain_error("level effect type \"" + type + "\" unknown!");
+	}
+	return levelEffectNameList[type][index];
+}
+
+int LevelManager::getNumLevelEffectTypes(std::string type) {
+	if (levelEffectLookup.find(type) == levelEffectLookup.end()) {
+		throw std::domain_error("level effect type \"" + type + "\" unknown!");
+	}
+	return levelEffectNameList[type].size();
 }

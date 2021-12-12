@@ -3,10 +3,13 @@
 #include "renderer.h"
 #include "constants.h"
 #include <math.h>
+#include "colormixer.h"
+#include "backgroundrect.h"
 #include "mylib.h"
 #include "wallmanager.h"
 #include "hazardmanager.h"
 #include "collisionhandler.h"
+#include "rng.h"
 
 VertexArray* RectangularLava::background_va;
 VertexBuffer* RectangularLava::background_vb;
@@ -16,6 +19,16 @@ VertexBuffer* RectangularLava::bubble_vb;
 IndexBuffer* RectangularLava::bubble_ib;
 bool RectangularLava::initialized_GPU = false;
 
+std::unordered_map<std::string, float> RectangularLava::getWeights() const {
+	std::unordered_map<std::string, float> weights;
+	weights.insert({ "vanilla", 1.0f });
+	weights.insert({ "random-vanilla", 1.0f });
+	weights.insert({ "old", 1.0f });
+	weights.insert({ "random-old", 1.0f });
+	weights.insert({ "random", 1.0f });
+	return weights;
+}
+
 RectangularLava::RectangularLava(double xpos, double ypos, double width, double height) {
 	x = xpos;
 	y = ypos;
@@ -24,11 +37,11 @@ RectangularLava::RectangularLava(double xpos, double ypos, double width, double 
 	gameID = GameManager::getNextID();
 	teamID = HAZARD_TEAM;
 
-	//tickCount = 0;
+	tickCount = 0;
 	tickCycle = 2400;
 	bubbles.reserve(maxBubbles);
 	bubbleChance = 1.0/400;
-	
+
 	canAcceptPowers = false;
 
 	modifiesTankCollision = true;
@@ -58,11 +71,11 @@ bool RectangularLava::initializeGPU() {
 		2, 3, 0
 	};
 
-	background_vb = new VertexBuffer(background_positions, 4*2 * sizeof(float), GL_DYNAMIC_DRAW);
+	background_vb = VertexBuffer::MakeVertexBuffer(background_positions, 4*2 * sizeof(float), RenderingHints::dynamic_draw);
 	VertexBufferLayout background_layout(2);
-	background_va = new VertexArray(*background_vb, background_layout);
+	background_va = VertexArray::MakeVertexArray(*background_vb, background_layout);
 
-	background_ib = new IndexBuffer(background_indices, 6);
+	background_ib = IndexBuffer::MakeIndexBuffer(background_indices, 6);
 
 	//bubble:
 	float bubble_positions[(Circle::numOfSides+1)*2];
@@ -80,11 +93,11 @@ bool RectangularLava::initializeGPU() {
 		bubble_indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
 	}
 
-	bubble_vb = new VertexBuffer(bubble_positions, (Circle::numOfSides+1)*2 * sizeof(float), GL_DYNAMIC_DRAW);
+	bubble_vb = VertexBuffer::MakeVertexBuffer(bubble_positions, (Circle::numOfSides+1)*2 * sizeof(float), RenderingHints::dynamic_draw);
 	VertexBufferLayout bubble_layout(2);
-	bubble_va = new VertexArray(*bubble_vb, bubble_layout);
-	
-	bubble_ib = new IndexBuffer(bubble_indices, Circle::numOfSides*3);
+	bubble_va = VertexArray::MakeVertexArray(*bubble_vb, bubble_layout);
+
+	bubble_ib = IndexBuffer::MakeIndexBuffer(bubble_indices, Circle::numOfSides*3);
 
 	initialized_GPU = true;
 	return true;
@@ -117,29 +130,25 @@ RectHazard* RectangularLava::factory(int argc, std::string* argv) {
 	return new RectangularLava(0, 0, 0, 0);
 }
 
-void RectangularLava::tick() {
-	GeneralizedLava::tick();
-}
-
 void RectangularLava::pushNewBubble(double radius) {
 	float x0, y0, x1, y1;
 	int attempts = 0;
-		
-	x0 = randFunc() * (w - radius*2) + radius;
-	y0 = randFunc() * (h - radius*2) + radius;
+
+	x0 = RNG::randFunc() * (w - radius*2) + radius;
+	y0 = RNG::randFunc() * (h - radius*2) + radius;
 	do {
-		x1 = randFunc() * (w - radius*2) + radius;
-		y1 = randFunc() * (h - radius*2) + radius;
+		x1 = RNG::randFunc() * (w - radius*2) + radius;
+		y1 = RNG::randFunc() * (h - radius*2) + radius;
 		attempts++;
-	} while((attempts < 8) && (abs(x0-x1) < w/16 || abs(y0-y1) < h/16)); //JS Tanks used w/8 and h/8
+	} while ((attempts < 8) && (abs(x0-x1) < w/16 || abs(y0-y1) < h/16)); //JS Tanks used w/8 and h/8
 
 	if (attempts < 8) {
-		double maxTick = floor(randFunc()*101) + 200;
+		double maxTick = floor(RNG::randFunc()*101) + 200;
 		bubbles.push_back(new LavaBubble(radius, x0/w, y0/h, x1/w, y1/h, maxTick));
 	}
 }
 
-bool RectangularLava::reasonableLocation() {
+bool RectangularLava::reasonableLocation() const {
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		if (CollisionHandler::partiallyCollided(this, WallManager::getWall(i))) {
 			return false;
@@ -163,25 +172,127 @@ bool RectangularLava::reasonableLocation() {
 	return validLocation();
 }
 
-void RectangularLava::draw() {
+void RectangularLava::draw() const {
+	drawBackground(false);
+	drawBubbles(false);
+}
+
+void RectangularLava::draw(DrawingLayers layer) const {
+	switch (layer) {
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for RectangularLava::draw!" << std::endl;
+		case DrawingLayers::under:
+			drawBackground(false);
+			break;
+
+		case DrawingLayers::normal:
+			drawBubbles(false);
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
+}
+
+void RectangularLava::poseDraw() const {
+	drawBackground(true);
+}
+
+void RectangularLava::poseDraw(DrawingLayers layer) const {
+	switch (layer) {
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for RectangularLava::poseDraw!" << std::endl;
+		case DrawingLayers::under:
+			drawBackground(true);
+			break;
+
+		case DrawingLayers::normal:
+			//drawBubbles(true);
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
+}
+
+void RectangularLava::ghostDraw(float alpha) const {
+	drawBackground(false, alpha);
+	//no bubbles
+}
+
+void RectangularLava::ghostDraw(DrawingLayers layer, float alpha) const {
+	switch (layer) {
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for RectangularLava::ghostDraw!" << std::endl;
+		case DrawingLayers::under:
+			drawBackground(false, alpha);
+			break;
+
+		case DrawingLayers::normal:
+			//drawBubbles(false, alpha);
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
+}
+
+inline void RectangularLava::drawBackground(bool pose, float alpha) const {
+	alpha = constrain<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM = Renderer::GenerateMatrix(w, h, 0, x, y);
-	
-	//background:
-	//TODO: make drawUnder() a thing
-	ColorValueHolder color = getBackgroundColor();
+	glm::mat4 MVPM;
+
+	ColorValueHolder color = (pose ? getBackgroundColor_Pose() : getBackgroundColor());
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+
+	MVPM = Renderer::GenerateMatrix(w, h, 0, x, y);
 	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*background_va, *background_ib, *shader);
+}
 
-	//bubbles:
+inline void RectangularLava::drawBubbles(bool pose, float alpha) const {
 	if (bubbles.size() == 0) {
 		return;
 	}
 
+	alpha = constrain<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
+	Shader* shader = Renderer::getShader("main");
+	glm::mat4 MVPM;
+
 	glLineWidth(2.0f);
-	//first, sort by alpha: lowest to highest
+
+	//first, sort by alpha: lowest to highest (this makes the bubbles less weird-looking when drawn over each other)
 	std::vector<LavaBubble*> sortedBubbles;
 	sortedBubbles.reserve(bubbles.size());
 	for (int i = 0; i < bubbles.size(); i++) {
@@ -196,23 +307,20 @@ void RectangularLava::draw() {
 		}
 	}
 
-	//second, draw the bubbles (this makes the bubbles less weird-looking when drawn over each other)
+	//second, draw the bubbles
 	for (int i = 0; i < sortedBubbles.size(); i++) {
-		color = getBubbleColor(sortedBubbles[i]);
-		MVPM = Renderer::GenerateMatrix(sortedBubbles[i]->getR(), sortedBubbles[i]->getR(), 0, sortedBubbles[i]->getX()*w + x, sortedBubbles[i]->getY()*h + y);
-
+		ColorValueHolder color = (pose ? getBubbleColor_Pose(sortedBubbles[i]) : getBubbleColor(sortedBubbles[i]));
+		color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 		shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+
+		MVPM = Renderer::GenerateMatrix(sortedBubbles[i]->getR(), sortedBubbles[i]->getR(), 0, sortedBubbles[i]->getX()*w + x, sortedBubbles[i]->getY()*h + y);
 		shader->setUniformMat4f("u_MVP", MVPM);
 
 		Renderer::Draw(*bubble_va, *shader, GL_LINE_LOOP, 1, Circle::numOfSides);
 	}
-}
 
-void RectangularLava::drawCPU() {
-	//background:
-
-	//bubbles:
-
+	//cleanup
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 RectHazard* RectangularLava::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {
@@ -224,11 +332,11 @@ RectHazard* RectangularLava::randomizingFactory(double x_start, double y_start, 
 			width = std::stod(argv[0]);
 			height = std::stod(argv[1]);
 		} else {
-			width = randFunc2() * (120 - 30) + 30; //TODO: where should these constants be?
-			height = randFunc2() * (80 - 20) + 20; //TODO: where should these constants be?
+			width = RNG::randFunc2() * (120 - 30) + 30; //TODO: where should these constants be?
+			height = RNG::randFunc2() * (80 - 20) + 20; //TODO: where should these constants be?
 		}
-		xpos = randFunc2() * (area_width - 2*width) + (x_start + width);
-		ypos = randFunc2() * (area_height - 2*height) + (y_start + height);
+		xpos = RNG::randFunc2() * (area_width - 2*width) + (x_start + width);
+		ypos = RNG::randFunc2() * (area_height - 2*height) + (y_start + height);
 		RectHazard* testRectangularLava = new RectangularLava(xpos, ypos, width, height);
 		if (testRectangularLava->reasonableLocation()) {
 			randomized = testRectangularLava;

@@ -7,5 +7,6 @@ struct PositionHolder {
 		x = x_;
 		y = y_;
 	}
-	PositionHolder() { x = y = 0; }
+	PositionHolder() : PositionHolder(0, 0) {}
 };
+//maybe use std::pair?

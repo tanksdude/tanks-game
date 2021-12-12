@@ -35,8 +35,7 @@ void Shader::read_shader_src(const char* fname, std::vector<char>& buffer) {
 		in.close();
 		// Add a valid C - string end
 		buffer[length] = '\0';
-	}
-	else {
+	} else {
 		std::cerr << "Unable to open " << fname << " I'm out!" << std::endl;
 		exit(-1);
 	}

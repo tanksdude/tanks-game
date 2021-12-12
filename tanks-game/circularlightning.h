@@ -1,6 +1,7 @@
 #pragma once
 #include "circlehazard.h"
 #include "generalizedlightning.h"
+#include "constants.h"
 
 #include "vertexarray.h"
 #include "vertexbuffer.h"
@@ -8,13 +9,12 @@
 
 class CircularLightning : public CircleHazard, public GeneralizedLightning {
 protected:
-	Circle* getCenterPoint(); //for checks when a bullet/tank collides (needs to be a function in case the lightning changes size or position)
-
 	//unsigned int maxBolts; // = 1;
-	virtual void refreshBolt(int num);
-	//virtual int getDefaultNumBoltPoints(double horzDist);
-	virtual void pushBolt(LightningBolt*);
-	virtual void pushDefaultBolt(int num, bool randomize); //randomize should be true all of the time
+	virtual void refreshBolt(LightningBolt*) const override;
+	virtual void pushBolt(LightningBolt*) override;
+	virtual void pushDefaultBolt(int num, bool randomize) override; //randomize should be true all of the time
+
+	inline Circle* getCenterPoint() const; //for checks when a bullet/tank collides (needs to be a function in case the lightning changes size or position)
 
 private:
 	static VertexArray* background_va;
@@ -26,7 +26,7 @@ private:
 	int bolt_vb_length;
 	static bool initialized_GPU;
 	void local_reinitializeGPU(int length);
-	void streamBoltVertices(unsigned int boltNum); //(stream to bolt_vb)
+	void streamBoltVertices(const LightningBolt*) const; //(stream to bolt_vb)
 
 	static bool initializeGPU();
 	void local_initializeGPU();
@@ -34,16 +34,20 @@ private:
 	void local_uninitializeGPU();
 
 public:
-	virtual double getDefaultOffense() override { return .5; } //1.5?
-	virtual double getDefaultDefense() override { return 999; }
+	virtual std::vector<std::string> getHazardTypes() const override {
+		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "old", "random-old", "random" };
+		//it's not really an old hazard (lightning was rectangular only)
+		return types;
+	}
+	virtual std::unordered_map<std::string, float> getWeights() const override;
 
-	virtual bool actuallyCollided(Tank*) override { return currentlyActive; }
+	virtual bool actuallyCollided(const Tank*) const override { return currentlyActive; }
 	//bool modifiesTankCollision = true;
 	virtual void modifiedTankCollision(Tank*) override { return; }
 	//bool hasSpecialEffectTankCollision = true;
 	virtual void specialEffectTankCollision(Tank*) override;
 
-	virtual bool actuallyCollided(Bullet*) override { return currentlyActive; }
+	virtual bool actuallyCollided(const Bullet*) const override { return currentlyActive; }
 	//bool modifiesBulletCollision = true;
 	virtual void modifiedBulletCollision(Bullet*) override { return; }
 	//bool hasSpecialEffectBulletCollision = true;
@@ -52,22 +56,35 @@ protected:
 	virtual void specialEffectCircleCollision(Circle*); //tanks and bullets are both circles, so calculating the bolt positions would be the same
 
 public:
-	virtual std::string getName() { return getClassName(); }
-	static std::string getClassName() { return "circular lightning"; }
+	virtual bool validLocation() const override;
+	virtual bool reasonableLocation() const override;
 
-	virtual bool validLocation() override;
-	virtual bool reasonableLocation() override;
+	virtual std::string getName() const override { return getClassName(); }
+	static std::string getClassName() { return "lightning"; }
 
-	virtual void tick() { GeneralizedLightning::tick(); }
-	virtual void draw();
-	virtual void drawCPU();
+	virtual double getDefaultOffense() const override { return .5; } //1.5?
+	virtual double getDefaultDefense() const override { return HIGH_TIER; }
+	virtual CircleHazardCollisionType getCollisionType() const override { return CircleHazardCollisionType::under; }
+
+	virtual void tick() override { GeneralizedLightning::tick(); }
+	virtual void draw() const override;
+	virtual void draw(DrawingLayers) const override;
+	virtual void poseDraw() const override;
+	virtual void poseDraw(DrawingLayers) const override;
+	virtual void ghostDraw(float alpha) const override;
+	virtual void ghostDraw(DrawingLayers, float alpha) const override;
+
+private:
+	inline void drawBackground(bool pose, float alpha = 1.0f) const;
+	inline void drawBolts(float alpha = 1.0f) const;
+	inline void drawBolts_Pose(float alpha = 1.0f) const;
 
 public:
 	CircularLightning(double xpos, double ypos, double radius);
 	~CircularLightning();
 	static CircleHazard* factory(int, std::string*);
 	static CircleHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv);
-	virtual int getFactoryArgumentCount() override { return 3; }
-	virtual CircleHazardConstructionTypes getConstructionType() override { return CircleHazardConstructionTypes::radiusRequired; }
-	virtual CircleFactoryInformation getFactoryInformation() override { return { false, false, false, false, false }; }
+	virtual int getFactoryArgumentCount() const override { return 3; }
+	virtual CircleHazardConstructionTypes getConstructionType() const override { return CircleHazardConstructionTypes::radiusRequired; }
+	virtual CircleFactoryInformation getFactoryInformation() const override { return { false, false, false, false, false }; }
 };

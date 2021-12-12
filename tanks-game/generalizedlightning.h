@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "colorvalueholder.h"
+#include "constants.h"
 
 class GeneralizedLightning {
 protected:
@@ -22,10 +23,13 @@ protected:
 			}
 			positions.push_back(endX); positions.push_back(endY);
 		}
+		//LightningBolt(const LightningBolt&); //no need
+	private:
+		LightningBolt() {}
 	};
 
 protected:
-	double tickCount = 0;
+	double tickCount;
 	double tickCycle;
 	bool currentlyActive;
 	double stateMultiplier[2]; //length = 2 because bool bolt action
@@ -34,47 +38,22 @@ protected:
 	double lengthOfBolt;
 	std::vector<LightningBolt*> bolts; //is a vector of pointers instead of objects so resizes take less time
 	virtual void clearBolts(); //the vector holds pointers, so memory has to be freed
-	double boltTick = 0;
-	double boltCycle = 4; //how often bolts get refreshed
-	bool boltsNeeded = false; //if the lightning hits something, this is changed, and no random bolts will be made; resets every boltCycle ticks
-	virtual void refreshBolt(int num) = 0; //"redraw" a bolt //this is the hardest thing to generalize, so... copy and paste
-	virtual int getDefaultNumBoltPoints(double horzDist); //number of points that make up a bolt
+	double boltTick;
+	double boltCycle; //= 4; //how often bolts get refreshed
+	bool boltsNeeded; //= false; //if the lightning hits something, this is changed, and no random bolts will be made; resets every boltCycle ticks
+	virtual void refreshBolt(LightningBolt*) const = 0; //"redraw" a bolt //this is the hardest thing to generalize, so... copy and paste
+	virtual int getDefaultNumBoltPoints(double horzDist) const; //number of points that make up a bolt
 	virtual void pushBolt(LightningBolt*) = 0;
 	virtual void pushDefaultBolt(int num, bool randomize) = 0; //randomize should be true all of the time
-	std::vector<long> targetedObjects;
-
-	//the lightning is supposed to override this stuff:
-	/*
-public:
-	virtual double getDefaultOffense() { return .5; } //1.5?
-	virtual double getDefaultDefense() { return 999; }
-
-	virtual bool actuallyCollided(Tank*) { return currentlyActive; }
-	//bool modifiesTankCollision = true;
-	virtual void modifiedTankCollision(Tank*) { return; }
-	//bool hasSpecialEffectTankCollision = true;
-	virtual void specialEffectTankCollision(Tank*);
-
-	virtual bool actuallyCollided(Bullet*) { return currentlyActive; }
-	//bool modifiesBulletCollision = true;
-	virtual void modifiedBulletCollision(Bullet*) { return; }
-	//bool hasSpecialEffectBulletCollision = true;
-	virtual void specialEffectBulletCollision(Bullet*);
-protected:
-	virtual void specialEffectCircleCollision(Circle*); //tanks and bullets are both circles, so calculating the bolt positions would be the same
-	*/
+	std::vector<Game_ID> targetedObjects;
 
 public:
-	virtual ColorValueHolder getBackgroundColor();
-	virtual ColorValueHolder getBoltColor();
+	virtual ColorValueHolder getBackgroundColor() const;
+	virtual ColorValueHolder getBackgroundColor_Pose() const;
+	virtual ColorValueHolder getBoltColor() const;
 
-	virtual bool validLocation() = 0;
-
+	virtual bool validLocation() const = 0;
 	virtual void tick();
-	virtual void draw() = 0;
-	//virtual void drawCPU() = 0;
-	//extending hazard requires a redefinition of validLocation, tick, and draw
 
-public:
-	~GeneralizedLightning();
+	virtual ~GeneralizedLightning();
 };

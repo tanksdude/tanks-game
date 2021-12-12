@@ -1,7 +1,10 @@
 #include "wall.h"
 #include "gamemanager.h"
 #include "constants.h"
+#include "colormixer.h"
+#include "backgroundrect.h"
 #include "renderer.h"
+#include <iostream>
 
 //for CPU drawing, in case other #includes go wrong:
 #include <GL/glew.h>
@@ -24,9 +27,9 @@ Wall::Wall(double x_, double y_, double w_, double h_, ColorValueHolder c) {
 	initializeGPU();
 }
 
-Wall::Wall(double x_, double y_, double w_, double h_, ColorValueHolder c, char teamID_) : Wall(x_, y_, w_, h_, c) {
-	this->teamID = teamID_;
-}
+//Wall::Wall(double x_, double y_, double w_, double h_, ColorValueHolder c, Team_ID teamID_) : Wall(x_, y_, w_, h_, c) {
+//	this->teamID = teamID_;
+//}
 
 Wall::~Wall() {
 	//uninitializeGPU();
@@ -36,7 +39,7 @@ bool Wall::initializeGPU() {
 	if (initialized_GPU) {
 		return false;
 	}
-	
+
 	float positions[] = {
 		0, 0,
 		1, 0,
@@ -48,11 +51,11 @@ bool Wall::initializeGPU() {
 		2, 3, 0
 	};
 
-	vb = new VertexBuffer(positions, 4*2 * sizeof(float), GL_DYNAMIC_DRAW);
+	vb = VertexBuffer::MakeVertexBuffer(positions, 4*2 * sizeof(float), RenderingHints::dynamic_draw);
 	VertexBufferLayout layout(2);
-	va = new VertexArray(*vb, layout);
+	va = VertexArray::MakeVertexArray(*vb, layout);
 
-	ib = new IndexBuffer(indices, 6);
+	ib = IndexBuffer::MakeIndexBuffer(indices, 6);
 
 	initialized_GPU = true;
 	return true;
@@ -71,17 +74,108 @@ bool Wall::uninitializeGPU() {
 	return true;
 }
 
-void Wall::draw() {
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM = Renderer::GenerateMatrix(w, h, 0, x, y);
+void Wall::draw() const {
+	ghostDraw(1.0f);
+}
 
-	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+void Wall::draw(DrawingLayers layer) const {
+	switch (layer) {
+		case DrawingLayers::under:
+			//nothing
+			break;
+
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for Wall::draw!" << std::endl;
+		case DrawingLayers::normal:
+			draw();
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
+}
+
+void Wall::poseDraw() const {
+	draw();
+}
+
+void Wall::poseDraw(DrawingLayers layer) const {
+	switch (layer) {
+		case DrawingLayers::under:
+			//nothing
+			break;
+
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for Wall::poseDraw!" << std::endl;
+		case DrawingLayers::normal:
+			poseDraw();
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
+}
+
+void Wall::ghostDraw(float alpha) const {
+	Shader* shader = Renderer::getShader("main");
+	glm::mat4 MVPM;
+
+	ColorValueHolder c = color;
+	c = ColorMixer::mix(BackgroundRect::getBackColor(), c, alpha);
+	shader->setUniform4f("u_color", c.getRf(), c.getGf(), c.getBf(), c.getAf());
+
+	MVPM = Renderer::GenerateMatrix(w, h, 0, x, y);
 	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*va, *ib, *shader);
 }
 
-void Wall::drawCPU() {
+void Wall::ghostDraw(DrawingLayers layer, float alpha) const {
+	switch (layer) {
+		case DrawingLayers::under:
+			//nothing
+			break;
+
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for Wall::ghostDraw!" << std::endl;
+		case DrawingLayers::normal:
+			ghostDraw(alpha);
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
+}
+
+/*
+void Wall::drawCPU() const {
 	glColor3f(color.getRf(), color.getGf(), color.getBf());
 
 	glBegin(GL_POLYGON);
@@ -93,3 +187,4 @@ void Wall::drawCPU() {
 
 	glEnd();
 }
+*/

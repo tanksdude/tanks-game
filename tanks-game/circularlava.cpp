@@ -3,10 +3,13 @@
 #include "renderer.h"
 #include "constants.h"
 #include <math.h>
+#include "colormixer.h"
+#include "backgroundrect.h"
 #include "mylib.h"
 #include "wallmanager.h"
 #include "hazardmanager.h"
 #include "collisionhandler.h"
+#include "rng.h"
 
 VertexArray* CircularLava::background_va;
 VertexBuffer* CircularLava::background_vb;
@@ -16,6 +19,16 @@ VertexBuffer* CircularLava::bubble_vb;
 IndexBuffer* CircularLava::bubble_ib;
 bool CircularLava::initialized_GPU = false;
 
+std::unordered_map<std::string, float> CircularLava::getWeights() const {
+	std::unordered_map<std::string, float> weights;
+	weights.insert({ "vanilla", 1.0f });
+	weights.insert({ "random-vanilla", 1.0f });
+	weights.insert({ "old", 1.0f });
+	weights.insert({ "random-old", 1.0f });
+	weights.insert({ "random", 1.0f });
+	return weights;
+}
+
 CircularLava::CircularLava(double xpos, double ypos, double radius) {
 	x = xpos;
 	y = ypos;
@@ -23,11 +36,11 @@ CircularLava::CircularLava(double xpos, double ypos, double radius) {
 	gameID = GameManager::getNextID();
 	teamID = HAZARD_TEAM;
 
-	//tickCount = 0;
+	tickCount = 0;
 	tickCycle = 2400;
 	bubbles.reserve(maxBubbles);
 	bubbleChance = 1.0/400;
-	
+
 	canAcceptPowers = false;
 
 	modifiesTankCollision = true;
@@ -61,11 +74,11 @@ bool CircularLava::initializeGPU() {
 		background_indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
 	}
 
-	background_vb = new VertexBuffer(background_positions, (Circle::numOfSides+1)*2 * sizeof(float), GL_STATIC_DRAW);
+	background_vb = VertexBuffer::MakeVertexBuffer(background_positions, (Circle::numOfSides+1)*2 * sizeof(float), RenderingHints::static_draw);
 	VertexBufferLayout background_layout(2);
-	background_va = new VertexArray(*background_vb, background_layout);
+	background_va = VertexArray::MakeVertexArray(*background_vb, background_layout);
 
-	background_ib = new IndexBuffer(background_indices, Circle::numOfSides*3);
+	background_ib = IndexBuffer::MakeIndexBuffer(background_indices, Circle::numOfSides*3);
 
 	//bubble:
 	float bubble_positions[(Circle::numOfSides+1)*2];
@@ -83,11 +96,11 @@ bool CircularLava::initializeGPU() {
 		bubble_indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
 	}
 
-	bubble_vb = new VertexBuffer(bubble_positions, (Circle::numOfSides+1)*2 * sizeof(float), GL_DYNAMIC_DRAW);
+	bubble_vb = VertexBuffer::MakeVertexBuffer(bubble_positions, (Circle::numOfSides+1)*2 * sizeof(float), RenderingHints::dynamic_draw);
 	VertexBufferLayout bubble_layout(2);
-	bubble_va = new VertexArray(*bubble_vb, bubble_layout);
-	
-	bubble_ib = new IndexBuffer(bubble_indices, Circle::numOfSides*3);
+	bubble_va = VertexArray::MakeVertexArray(*bubble_vb, bubble_layout);
+
+	bubble_ib = IndexBuffer::MakeIndexBuffer(bubble_indices, Circle::numOfSides*3);
 
 	initialized_GPU = true;
 	return true;
@@ -119,34 +132,30 @@ CircleHazard* CircularLava::factory(int argc, std::string* argv) {
 	return new CircularLava(0, 0, 0);
 }
 
-void CircularLava::tick() {
-	GeneralizedLava::tick();
-}
-
 void CircularLava::pushNewBubble(double radius) {
 	float x0, y0, x1, y1;
 	int attempts = 0;
-	
+
 	float r0, a0, r1, a1;
-	r0 = randFunc() * (r - radius);
-	a0 = randFunc() * (2*PI);
+	r0 = RNG::randFunc() * (r - radius);
+	a0 = RNG::randFunc() * (2*PI);
 	x0 = r0 * cos(a0);
 	y0 = r0 * sin(a0);
 	do {
-		r1 = randFunc() * (r - radius);
-		a1 = randFunc() * (2 * PI);
+		r1 = RNG::randFunc() * (r - radius);
+		a1 = RNG::randFunc() * (2 * PI);
 		x1 = r1 * cos(a1);
 		y1 = r1 * sin(a1);
 		attempts++;
-	} while((attempts < 8) && (abs(x0-x1) < r/16 || abs(y0-y1) < r/16));
+	} while ((attempts < 8) && (abs(x0-x1) < r/16 || abs(y0-y1) < r/16));
 
 	if (attempts < 8) {
-		double maxTick = floor(randFunc()*101) + 200;
+		double maxTick = floor(RNG::randFunc()*101) + 200;
 		bubbles.push_back(new LavaBubble(radius, x0/r, y0/r, x1/r, y1/r, maxTick));
 	}
 }
 
-bool CircularLava::reasonableLocation() {
+bool CircularLava::reasonableLocation() const {
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		if (CollisionHandler::partiallyCollided(this, WallManager::getWall(i))) {
 			return false;
@@ -171,24 +180,127 @@ bool CircularLava::reasonableLocation() {
 	return validLocation();
 }
 
-void CircularLava::draw() {
+void CircularLava::draw() const {
+	drawBackground(false);
+	drawBubbles(false);
+}
+
+void CircularLava::draw(DrawingLayers layer) const {
+	switch (layer) {
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for CircularLava::draw!" << std::endl;
+		case DrawingLayers::under:
+			drawBackground(false);
+			break;
+
+		case DrawingLayers::normal:
+			drawBubbles(false);
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
+}
+
+void CircularLava::poseDraw() const {
+	drawBackground(true);
+}
+
+void CircularLava::poseDraw(DrawingLayers layer) const {
+	switch (layer) {
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for CircularLava::poseDraw!" << std::endl;
+		case DrawingLayers::under:
+			drawBackground(true);
+			break;
+
+		case DrawingLayers::normal:
+			//drawBubbles(true);
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
+}
+
+void CircularLava::ghostDraw(float alpha) const {
+	drawBackground(false, alpha);
+	//no bubbles
+}
+
+void CircularLava::ghostDraw(DrawingLayers layer, float alpha) const {
+	switch (layer) {
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for CircularLava::ghostDraw!" << std::endl;
+		case DrawingLayers::under:
+			drawBackground(false, alpha);
+			break;
+
+		case DrawingLayers::normal:
+			//drawBubbles(false, alpha);
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
+}
+
+inline void CircularLava::drawBackground(bool pose, float alpha) const {
+	alpha = constrain<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, 0, x, y);
-	
-	//background:
-	ColorValueHolder color = getBackgroundColor();
+	glm::mat4 MVPM;
+
+	ColorValueHolder color = (pose ? getBackgroundColor_Pose() : getBackgroundColor());
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+
+	MVPM = Renderer::GenerateMatrix(r, r, 0, x, y);
 	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*background_va, *background_ib, *shader);
+}
 
-	//bubbles:
+inline void CircularLava::drawBubbles(bool pose, float alpha) const {
 	if (bubbles.size() == 0) {
 		return;
 	}
 
+	alpha = constrain<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
+	Shader* shader = Renderer::getShader("main");
+	glm::mat4 MVPM;
+
 	glLineWidth(2.0f);
-	//first, sort by alpha: lowest to highest
+
+	//first, sort by alpha: lowest to highest (this makes the bubbles less weird-looking when drawn over each other)
 	std::vector<LavaBubble*> sortedBubbles;
 	sortedBubbles.reserve(bubbles.size());
 	for (int i = 0; i < bubbles.size(); i++) {
@@ -203,23 +315,20 @@ void CircularLava::draw() {
 		}
 	}
 
-	//second, draw the bubbles (this makes the bubbles less weird-looking when drawn over each other)
+	//second, draw the bubbles
 	for (int i = 0; i < sortedBubbles.size(); i++) {
-		color = getBubbleColor(sortedBubbles[i]);
-		MVPM = Renderer::GenerateMatrix(sortedBubbles[i]->getR(), sortedBubbles[i]->getR(), 0, sortedBubbles[i]->getX()*r + x, sortedBubbles[i]->getY()*r + y);
-
+		ColorValueHolder color = (pose ? getBubbleColor_Pose(sortedBubbles[i]) : getBubbleColor(sortedBubbles[i]));
+		color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 		shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+
+		MVPM = Renderer::GenerateMatrix(sortedBubbles[i]->getR(), sortedBubbles[i]->getR(), 0, sortedBubbles[i]->getX()*r + x, sortedBubbles[i]->getY()*r + y);
 		shader->setUniformMat4f("u_MVP", MVPM);
 
 		Renderer::Draw(*bubble_va, *shader, GL_LINE_LOOP, 1, Circle::numOfSides);
 	}
-}
 
-void CircularLava::drawCPU() {
-	//background:
-
-	//bubbles:
-
+	//cleanup
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 CircleHazard* CircularLava::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {
@@ -230,10 +339,10 @@ CircleHazard* CircularLava::randomizingFactory(double x_start, double y_start, d
 		if (argc >= 1) {
 			radius = std::stod(argv[0]);
 		} else {
-			radius = randFunc2() * (40 - 20) + 20; //TODO: where should these constants be?
+			radius = RNG::randFunc2() * (40 - 20) + 20; //TODO: where should these constants be?
 		}
-		xpos = randFunc2() * (area_width - 2*radius) + (x_start + radius);
-		ypos = randFunc2() * (area_height - 2*radius) + (y_start + radius);
+		xpos = RNG::randFunc2() * (area_width - 2*radius) + (x_start + radius);
+		ypos = RNG::randFunc2() * (area_height - 2*radius) + (y_start + radius);
 		CircleHazard* testCircularLava = new CircularLava(xpos, ypos, radius);
 		if (testCircularLava->reasonableLocation()) {
 			randomized = testCircularLava;

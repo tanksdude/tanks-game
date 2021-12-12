@@ -1,6 +1,7 @@
 #include "mylib.h"
 #include <sstream> //stringstream for hex conversion
 #include <iostream>
+#include "rng.h"
 
 std::string numToHex(unsigned char x) {
 	std::stringstream stream;
@@ -29,8 +30,7 @@ std::string toLowerCase(std::string stuff) {
 	for (int i = 0; i < stuff.size(); i++) {
 		if (stuff[i] >= 65 && stuff[i] <= 90) {
 			letters += (stuff[i] + 32);
-		}
-		else {
+		} else {
 			letters += stuff[i];
 		}
 	}
@@ -95,15 +95,8 @@ template double constrain<double>(double, double, double);
 //(behind the scenes, I understand what's happening, mostly, but it's still moderately cool)
 
 bool XOR(bool a, bool b) {
-	return ((a || b) && !(a && b));
-}
-
-double randFunc() {
-	return double(rand()) / double(RAND_MAX+1);
-}
-
-double randFunc2() {
-	return double(rand()) / double(RAND_MAX);
+	return (a != b);
+	//return ((a || b) && !(a && b));
 }
 
 //algorithm from https://wrf.ecse.rpi.edu/Research/Short_Notes/pnpoly.html
@@ -170,7 +163,7 @@ int weightedSelect(const T* weights, int num) {
 	for (int i = 0; i < num; i++) {
 		weightTotal += weights[i];
 	}
-	T targetWeight = randFunc() * weightTotal;
+	T targetWeight = RNG::randFunc() * weightTotal;
 	T newWeight = 0;
 	int newIndex = 0;
 	while (targetWeight >= newWeight) {

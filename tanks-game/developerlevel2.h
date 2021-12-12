@@ -3,19 +3,17 @@
 
 class DeveloperLevel2 : public Level {
 public:
-	std::string getName() { return "dev2"; }
-	std::vector<std::string> getLevelTypes() override {
+	virtual std::string getName() const override { return "dev2"; }
+	virtual ColorValueHolder getDefaultColor() const override;
+	virtual std::vector<std::string> getLevelTypes() const override {
 		std::vector<std::string> types = std::vector<std::string>{ "dev", "random-dev" };
 		return types;
 	}
-	std::unordered_map<std::string, float> getWeights() override {
-		std::unordered_map<std::string, float> weights;
-		weights.insert({ "dev", .5f });
-		weights.insert({ "random-dev", .5f });
-		return weights;
-	}
-	void initialize();
-	
+	virtual std::unordered_map<std::string, float> getWeights() const override;
+
+	virtual void initialize() override;
+
 	DeveloperLevel2();
+	virtual ~DeveloperLevel2() { return; }
 	static Level* factory();
 };

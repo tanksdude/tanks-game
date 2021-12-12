@@ -1,11 +1,64 @@
 #include "randomlevel.h"
 #include "mylib.h"
+#include "rng.h"
+#include "powerupmanager.h"
 
 Wall* RandomLevel::makeNewRandomWall(double x_beginning, double y_beginning, double width_ofArea, double height_ofArea, ColorValueHolder c, double minW, double minH, double maxW, double maxH) {
-	double w = randFunc2() * (maxW - minW) + minW;
-	double h = randFunc2() * (maxH - minH) + minH;
+	double w = RNG::randFunc2() * (maxW - minW) + minW;
+	double h = RNG::randFunc2() * (maxH - minH) + minH;
 
-	return new Wall(x_beginning + randFunc2() * (width_ofArea - w), y_beginning + randFunc2() * (height_ofArea - h), w, h, c);
+	return new Wall(x_beginning + RNG::randFunc2() * (width_ofArea - w), y_beginning + RNG::randFunc2() * (height_ofArea - h), w, h, c);
+}
+
+std::string* RandomLevel::getRandomPowers(int count, std::string type) {
+	//get list of powers
+	int powerNum = PowerupManager::getNumPowerTypes(type);
+	std::string* possiblePowers = new std::string[powerNum];
+	for (int i = 0; i < powerNum; i++) {
+		possiblePowers[i] = PowerupManager::getPowerName(type, i);
+	}
+
+	//get stacking status and weight of the powers
+	bool* canStack = new bool[powerNum];
+	float* powerWeights = new float[powerNum];
+	for (int i = 0; i < powerNum; i++) {
+		Power* p = PowerupManager::getPowerFactory(type, possiblePowers[i])();
+		std::vector<std::string> attributes = p->getPowerAttributes();
+		canStack[i] = (std::find(attributes.begin(), attributes.end(), "stack") != attributes.end());
+		powerWeights[i] = p->getWeights()[type];
+		delete p;
+	}
+
+	//get the randomized powers
+	std::string* n = RandomLevel::getRandomPowers(count, canStack, possiblePowers, powerWeights, powerNum);
+
+	delete[] possiblePowers;
+	delete[] canStack;
+	delete[] powerWeights;
+
+	return n;
+}
+
+//this can be condensed with the previous function but whatever
+std::string* RandomLevel::getRandomPowers(int count, std::string type, std::string* names, int nameCount) {
+	//get stacking status and weight of the powers
+	bool* canStack = new bool[nameCount];
+	float* powerWeights = new float[nameCount];
+	for (int i = 0; i < nameCount; i++) {
+		Power* p = PowerupManager::getPowerFactory(type, names[i])();
+		std::vector<std::string> attributes = p->getPowerAttributes();
+		canStack[i] = (std::find(attributes.begin(), attributes.end(), "stack") != attributes.end());
+		powerWeights[i] = p->getWeights()[type];
+		delete p;
+	}
+
+	//get the randomized powers
+	std::string* n = RandomLevel::getRandomPowers(count, canStack, names, powerWeights, nameCount);
+
+	delete[] canStack;
+	delete[] powerWeights;
+
+	return n;
 }
 
 std::string* RandomLevel::getRandomPowersOld(int count, bool replacement, std::string* names, int nameCount) {
@@ -27,7 +80,7 @@ std::string* RandomLevel::getRandomPowersOld(int count, bool replacement, std::s
 				//there are values that can get chosen
 				int index;
 				do {
-					index = randFunc() * nameCount;
+					index = RNG::randFunc() * nameCount;
 				} while (isInArray<int>(index, used, i+1));
 				used[i] = index;
 			} else {
@@ -36,7 +89,7 @@ std::string* RandomLevel::getRandomPowersOld(int count, bool replacement, std::s
 			}
 		}
 		if (replacement) {
-			int index = randFunc() * nameCount;
+			int index = RNG::randFunc() * nameCount;
 			used[i] = index;
 		}
 	}
@@ -67,11 +120,11 @@ std::string* RandomLevel::getRandomPowers(int count, bool* powersCanStack, std::
 		if (!leftoverPowersCanStack) {
 			//there are values that can get chosen
 			do {
-				index = randFunc() * nameCount;
+				index = RNG::randFunc() * nameCount;
 			} while (!powersCanStack[index] && isInArray<int>(index, used, i+1));
 		} else {
 			//there aren't values that can get chosen or no stacking problems yet
-			index = randFunc() * nameCount;
+			index = RNG::randFunc() * nameCount;
 		}
 		//not sure if the comments are right, but the results are (empirically determined)
 		used[i] = index;

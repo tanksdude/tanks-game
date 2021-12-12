@@ -5,7 +5,7 @@
 #include <math.h>
 #include "colormixer.h"
 #include "renderer.h"
-#include "collisionhandler.h"
+#include "backgroundrect.h"
 #include <iostream>
 
 //for CPU drawing, in case other #includes go wrong:
@@ -18,18 +18,19 @@ IndexBuffer* Bullet::ib;
 bool Bullet::initialized_GPU = false;
 
 const double Bullet::default_radius = 4;
-Bullet::Bullet(double x_, double y_, double a, char id_, long parentID) { //every bullet constructor does this stuff
+Bullet::Bullet(double x_, double y_, double angle, Team_ID teamID, BulletParentType parentType, Game_ID parentID) { //every bullet constructor does this stuff
 	initializeGPU();
 	this->x = x_;
 	this->y = y_;
-	this->angle = a;
+	this->velocity = SimpleVector2D(angle, 0, true);
 	this->gameID = GameManager::getNextID();
-	this->teamID = id_;
+	this->teamID = teamID;
+	this->parentType = parentType;
 	this->parentID = parentID;
-	this->alpha = 100;
+	this->opaqueness = 100;
 }
 
-Bullet::Bullet(double x_, double y_, double a, char id_, long parentID, std::vector<BulletPower*>* bp) : Bullet(x_,y_,a,id_,parentID) {
+Bullet::Bullet(double x_, double y_, double angle, Team_ID teamID, BulletParentType parentType, Game_ID parentID, std::vector<BulletPower*>* bp) : Bullet(x_,y_,angle,teamID,parentType,parentID) {
 	bulletPowers.reserve(bp->size());
 	for (int i = 0; i < bp->size(); i++) {
 		bulletPowers.push_back(bp->at(i));
@@ -41,37 +42,34 @@ Bullet::Bullet(double x_, double y_, double a, char id_, long parentID, std::vec
 }
 
 //probably just for banana bullet creation:
-Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_, long parentID, std::vector<BulletPower*>* bp, bool) : Bullet(x_,y_,a,id_,parentID,bp) {
+Bullet::Bullet(double x_, double y_, double r_, double angle, double vel, Team_ID teamID, BulletParentType parentType, Game_ID parentID, std::vector<BulletPower*>* bp, bool) : Bullet(x_,y_,angle,teamID,parentType,parentID,bp) {
 	this->r = r_;
-
-	this->velocity = vel * getBulletSpeedMultiplier(); //TODO: not sure this is wanted
-	this->initial_velocity = this->velocity;
+	this->velocity.setMagnitude(vel); // * getBulletSpeedMultiplier(); //not wanted
+	this->initial_velocity = velocity.getMagnitude();
 	this->acceleration = getBulletAcceleration();
 }
 
 //avoid using:
-Bullet::Bullet(double x_, double y_, double r_, double a, double vel, double acc, char id_, long parentID, std::vector<BulletPower*>* bp, bool) : Bullet(x_,y_,a,id_,parentID,bp) {
-	this->r = r_;
-
+Bullet::Bullet(double x_, double y_, double r_, double angle, double vel, double acc, Team_ID teamID, BulletParentType parentType, Game_ID parentID, std::vector<BulletPower*>* bp, bool) : Bullet(x_,y_,angle,teamID,parentType,parentID,bp) {
 	this->r = r_ * getBulletRadiusMultiplier();
-	this->velocity = vel * getBulletSpeedMultiplier();
-	this->initial_velocity = this->velocity;
-	this->acceleration = getBulletAcceleration();
+	this->velocity.setMagnitude(vel * getBulletSpeedMultiplier());
+	this->initial_velocity = this->velocity.getMagnitude();
+	this->acceleration = acc;
 }
 
 //regular 1:
-Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_, long parentID) : Bullet(x_,y_,a,id_,parentID) {
+Bullet::Bullet(double x_, double y_, double r_, double angle, double vel, Team_ID teamID, BulletParentType parentType, Game_ID parentID) : Bullet(x_,y_,angle,teamID,parentType,parentID) {
 	this->r = r_;
-	this->velocity = vel;
-	this->initial_velocity = vel;
+	this->velocity.setMagnitude(vel);
+	this->initial_velocity = this->velocity.getMagnitude();
 	this->acceleration = 0;
 }
 
 //regular 2:
-Bullet::Bullet(double x_, double y_, double r_, double a, double vel, char id_, long parentID, std::vector<BulletPower*>* bp) : Bullet(x_,y_,a,id_,parentID,bp) {
+Bullet::Bullet(double x_, double y_, double r_, double angle, double vel, Team_ID teamID, BulletParentType parentType, Game_ID parentID, std::vector<BulletPower*>* bp) : Bullet(x_,y_,angle,teamID,parentType,parentID,bp) {
 	this->r = r_ * getBulletRadiusMultiplier();
-	this->velocity = vel * getBulletSpeedMultiplier();
-	this->initial_velocity = this->velocity;
+	this->velocity.setMagnitude(vel * getBulletSpeedMultiplier());
+	this->initial_velocity = this->velocity.getMagnitude();
 	this->acceleration = getBulletAcceleration();
 }
 
@@ -84,9 +82,11 @@ Bullet::~Bullet() {
 	//uninitializeGPU();
 }
 
-bool Bullet::isDead() {
-	return (alpha <= 0);
+/*
+bool Bullet::isDead() const {
+	return (opaqueness <= 0);
 }
+*/
 
 bool Bullet::initializeGPU() {
 	if (initialized_GPU) {
@@ -108,11 +108,11 @@ bool Bullet::initializeGPU() {
 		indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
 	}
 
-	vb = new VertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float), GL_DYNAMIC_DRAW);
+	vb = VertexBuffer::MakeVertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float), RenderingHints::dynamic_draw);
 	VertexBufferLayout layout(2);
-	va = new VertexArray(*vb, layout);
-	
-	ib = new IndexBuffer(indices, Circle::numOfSides*3);
+	va = VertexArray::MakeVertexArray(*vb, layout);
+
+	ib = IndexBuffer::MakeIndexBuffer(indices, Circle::numOfSides*3);
 
 	initialized_GPU = true;
 	return true;
@@ -131,17 +131,39 @@ bool Bullet::uninitializeGPU() {
 	return true;
 }
 
-double Bullet::getAngle() {
-	return fmod(fmod(angle, 2*PI) + 2*PI, 2*PI);
+bool Bullet::canCollideWith(const GameThing* thing) const {
+	if (this->parentType == BulletParentType::team) {
+		return (this->getTeamID() != thing->getTeamID());
+	}
+	if (this->parentType == BulletParentType::individual) {
+		return (parentID != thing->getGameID());
+	}
+	/*
+	if (this->parentType == BulletParentType::name) {
+		//TODO
+	}
+	*/
+	return true;
+}
+
+bool Bullet::canCollideWith(const Bullet* b_other) const {
+	if (this->parentType == BulletParentType::individual) {
+		return ((parentID != b_other->getGameID()) && (parentID != b_other->getParentID()));
+	}
+	return canCollideWith((const GameThing*)b_other);
+}
+
+double Bullet::getAngle() const {
+	return fmod(fmod(velocity.getAngle(), 2*PI) + 2*PI, 2*PI);
 }
 
 void Bullet::move() {
-	velocity += acceleration;
-	x += velocity * cos(angle);
-	y += velocity * sin(angle);
+	velocity.changeMagnitude(acceleration);
+	x += velocity.getXComp();
+	y += velocity.getYComp();
 }
 
-double Bullet::getBulletSpeedMultiplier() {
+double Bullet::getBulletSpeedMultiplier() const {
 	//look at Tank::getTankFiringRateMultiplier()
 
 	double highest = 1;
@@ -169,7 +191,7 @@ double Bullet::getBulletSpeedMultiplier() {
 	return highest * lowest * value;
 }
 
-double Bullet::getBulletRadiusMultiplier() {
+double Bullet::getBulletRadiusMultiplier() const {
 	//look at Tank::getTankFiringRateMultiplier()
 
 	double highest = 1;
@@ -196,17 +218,32 @@ double Bullet::getBulletRadiusMultiplier() {
 	return highest * lowest * value;
 }
 
-double Bullet::getBulletAcceleration() {
+double Bullet::getBulletAcceleration() const {
 	//look at Tank::getTankFiringRateMultiplier()
+	//(this has importance though)
+
+	if (bulletPowers.size() == 0) {
+		return 0;
+	}
+
+	double importance = LOW_IMPORTANCE;
+	for (int i = 0; i < bulletPowers.size(); i++) {
+		double value = bulletPowers[i]->getBulletAccelerationImportance();
+		if (value > importance) {
+			importance = value;
+		}
+	}
 
 	double highest = 0;
 	double lowest = 0;
 	for (int i = 0; i < bulletPowers.size(); i++) {
-		double value = bulletPowers[i]->getBulletAcceleration();
-		if (value < 0 && value < lowest) {
-			lowest = value;
-		} else if (value > 0 && value > highest) {
-			highest = value;
+		if (bulletPowers[i]->getBulletAccelerationImportance() == importance) {
+			double value = bulletPowers[i]->getBulletAcceleration();
+			if (value < 0 && value < lowest) {
+				lowest = value;
+			} else if (value > 0 && value > highest) {
+				highest = value;
+			}
 		}
 	}
 	return highest + lowest;
@@ -230,11 +267,11 @@ void Bullet::removePower(int i) {
 	bulletPowers.erase(bulletPowers.begin() + i);
 }
 
-ColorValueHolder Bullet::getColor() {
+ColorValueHolder Bullet::getColor() const {
 	if (bulletPowers.size() == 0) {
 		return defaultColor;
 	} else {
-		double highest = -1;
+		double highest = LOW_IMPORTANCE;
 		for (int i = 0; i < bulletPowers.size(); i++) {
 			if (bulletPowers[i]->getColorImportance() > highest) {
 				highest = bulletPowers[i]->getColorImportance();
@@ -250,11 +287,12 @@ ColorValueHolder Bullet::getColor() {
 	}
 }
 
-void Bullet::drawCPU() {
+/*
+void Bullet::drawCPU() const {
 	drawCPU(x, y);
 }
 
-void Bullet::drawCPU(double xpos, double ypos) {
+void Bullet::drawCPU(double xpos, double ypos) const {
 	//main body:
 	ColorValueHolder color = getColor();
 	glColor3f(color.getRf(), color.getGf(), color.getBf());
@@ -279,30 +317,119 @@ void Bullet::drawCPU(double xpos, double ypos) {
 
 	glEnd();
 }
+*/
 
-void Bullet::draw() {
-	draw(x, y);
+void Bullet::draw() const {
+	drawDeathCooldown();
+	drawBody();
+	drawOutline();
 }
 
-void Bullet::draw(double xpos, double ypos) {
-	drawBody(xpos, ypos);
-	drawOutline(xpos, ypos);
+void Bullet::draw(DrawingLayers layer) const {
+	switch (layer) {
+		case DrawingLayers::under:
+			//nothing
+			break;
+
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for Bullet::draw!" << std::endl;
+		case DrawingLayers::normal:
+			draw();
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
 }
 
-void Bullet::drawBody(double xpos, double ypos) {
-	ColorValueHolder color = getColor();
+void Bullet::poseDraw() const {
+	drawBody();
+	drawOutline();
+}
+
+void Bullet::poseDraw(DrawingLayers layer) const {
+	switch (layer) {
+		case DrawingLayers::under:
+			//nothing
+			break;
+
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for Bullet::poseDraw!" << std::endl;
+		case DrawingLayers::normal:
+			poseDraw();
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
+}
+
+void Bullet::ghostDraw(float alpha) const {
+	drawDeathCooldown(alpha);
+	drawBody(alpha);
+	drawOutline(alpha);
+}
+
+void Bullet::ghostDraw(DrawingLayers layer, float alpha) const {
+	switch (layer) {
+		case DrawingLayers::under:
+			//nothing
+			break;
+
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for Bullet::ghostDraw!" << std::endl;
+		case DrawingLayers::normal:
+			ghostDraw(alpha);
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
+}
+
+inline void Bullet::drawBody(float alpha) const {
+	alpha = constrain<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, 0, xpos, ypos);
+	glm::mat4 MVPM;
 
+	/*
 	if (glIsEnabled(GL_BLEND)) {
-		shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), this->alpha/100);
+		shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), this->opaqueness/100);
 	} else {
-		if (alpha < 100) {
-			double deathPercent = constrain<double>(alpha/100, 0, 1);
+		if (this->opaqueness < 100) {
+			double deathPercent = constrain<double>(this->opaqueness/100, 0, 1);
 			unsigned int deathVertices = Circle::numOfSides * deathPercent;
 
 			if (deathVertices > 0) {
-				glm::mat4 MVPM_deathOutline = Renderer::GenerateMatrix((r+2) * 9.0/8.0, (r+2) * 9.0/8.0, PI/2, xpos, ypos);
+				glm::mat4 MVPM_deathOutline = Renderer::GenerateMatrix((r+2) * 9.0/8.0, (r+2) * 9.0/8.0, PI/2, x, y);
 
 				shader->setUniform4f("u_color", 1.0f, 1.0f, 1.0f, 1.0f);
 				shader->setUniformMat4f("u_MVP", MVPM_deathOutline);
@@ -313,31 +440,101 @@ void Bullet::drawBody(double xpos, double ypos) {
 
 		shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), 1.0f);
 	}
+	*/
+	ColorValueHolder color = getColor();
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
+	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
+	MVPM = Renderer::GenerateMatrix(r, r, 0, x, y);
 	shader->setUniformMat4f("u_MVP", MVPM);
+
 	Renderer::Draw(*va, *ib, *shader);
 }
 
-void Bullet::drawOutline(double xpos, double ypos) {
+inline void Bullet::drawOutline(float alpha) const {
+	alpha = constrain<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, 0, xpos, ypos);
+	glm::mat4 MVPM;
 
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glLineWidth(1.0f); //lines still look ugly even with glEnable(GL_LINE_SMOOTH), so I don't know what to set it at
 
-	shader->setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 1.0f);
+	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
+	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+
+	MVPM = Renderer::GenerateMatrix(r, r, 0, x, y);
 	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(GL_LINE_LOOP, 1, Circle::numOfSides);
-	
+
 	//cleanup:
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	//drawing an outline: use a geometry shader (ugh) or another VAO+IBO (lesser ugh), the CPU (big ugh), or glDrawArrays with GL_LINE_LOOP (yay!)
 }
 
-double Bullet::getHighestOffenseImportance() {
-	double highest = -1; //anything below -1 is really, really unimportant; so much so that it doesn't matter
+inline void Bullet::drawDeathCooldown(float alpha) const {
+	alpha = constrain<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
+	Shader* shader = Renderer::getShader("main");
+	//glm::mat4 MVPM;
+
+	//if (glIsEnabled(GL_BLEND)) {
+	//	//skip
+	//} else {
+		if (this->opaqueness < 100) {
+			double deathPercent = constrain<double>(this->opaqueness/100, 0, 1);
+			unsigned int deathVertices = Circle::numOfSides * deathPercent;
+
+			if (deathVertices > 0) {
+				ColorValueHolder color = ColorValueHolder(1.0f, 1.0f, 1.0f);
+				color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
+				shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+
+				glm::mat4 MVPM_deathOutline = Renderer::GenerateMatrix((r+2) * 9.0/8.0, (r+2) * 9.0/8.0, PI/2, x, y);
+				shader->setUniformMat4f("u_MVP", MVPM_deathOutline);
+
+				Renderer::Draw(*va, *ib, *shader, deathVertices*3);
+			}
+		}
+	//}
+}
+
+bool Bullet::kill() {
+	//see Tank::kill()
+
+	bool shouldBeKilled = true;
+
+	for (int i = 0; i < bulletPowers.size(); i++) {
+		bool killBulletPower = false;
+
+		if (bulletPowers[i]->modifiesDeathHandling) {
+			InteractionBoolHolder check_temp = bulletPowers[i]->modifiedDeathHandling(this);
+			if (!check_temp.shouldDie) {
+				shouldBeKilled = false;
+			}
+			if (check_temp.otherShouldDie) {
+				killBulletPower = true;
+			}
+		}
+
+		if (killBulletPower) {
+			removePower(i);
+			i--;
+			//continue;
+		}
+		if (!shouldBeKilled) {
+			break;
+		}
+	}
+
+	return shouldBeKilled;
+}
+
+double Bullet::getHighestOffenseImportance() const {
+	double highest = LOW_IMPORTANCE;
 	for (int i = 0; i < bulletPowers.size(); i++) {
 		if (bulletPowers[i]->getOffenseImportance() > highest) {
 			highest = bulletPowers[i]->getOffenseImportance();
@@ -346,8 +543,8 @@ double Bullet::getHighestOffenseImportance() {
 	return highest;
 }
 
-double Bullet::getHighestOffenseTier(double importance) {
-	double highest = -999; //TODO: define these constants somewhere
+double Bullet::getHighestOffenseTier(double importance) const {
+	double highest = LOW_TIER;
 	for (int i = 0; i < bulletPowers.size(); i++) {
 		if (bulletPowers[i]->getOffenseImportance() == importance) {
 			if (bulletPowers[i]->getOffenseTier(this) > highest) {
@@ -361,12 +558,12 @@ double Bullet::getHighestOffenseTier(double importance) {
 	return highest;
 }
 
-double Bullet::getOffenseTier() {
+double Bullet::getOffenseTier() const {
 	return getHighestOffenseTier(getHighestOffenseImportance());
 }
 
-double Bullet::getHighestDefenseImportance() {
-	double highest = -1; //anything below -1 is really, really unimportant; so much so that it doesn't matter
+double Bullet::getHighestDefenseImportance() const {
+	double highest = LOW_IMPORTANCE;
 	for (int i = 0; i < bulletPowers.size(); i++) {
 		if (bulletPowers[i]->getDefenseImportance() > highest) {
 			highest = bulletPowers[i]->getDefenseImportance();
@@ -375,8 +572,8 @@ double Bullet::getHighestDefenseImportance() {
 	return highest;
 }
 
-double Bullet::getHighestDefenseTier(double importance) {
-	double highest = -999; //TODO: define these constants somewhere
+double Bullet::getHighestDefenseTier(double importance) const {
+	double highest = LOW_TIER;
 	for (int i = 0; i < bulletPowers.size(); i++) {
 		if (bulletPowers[i]->getDefenseImportance() == importance) {
 			if (bulletPowers[i]->getDefenseTier(this) > highest) {
@@ -390,14 +587,6 @@ double Bullet::getHighestDefenseTier(double importance) {
 	return highest;
 }
 
-double Bullet::getDefenseTier() {
+double Bullet::getDefenseTier() const {
 	return getHighestDefenseTier(getHighestDefenseImportance());
-}
-
-bool Bullet::isPartiallyOutOfBounds() {
-	return CollisionHandler::partiallyOutOfBoundsIgnoreEdge(this);
-} //care about equals edge?
-
-bool Bullet::isFullyOutOfBounds() {
-	return CollisionHandler::fullyOutOfBounds(this);
 }

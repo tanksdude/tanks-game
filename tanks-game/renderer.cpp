@@ -4,6 +4,9 @@
 #include <gtc/matrix_transform.hpp>
 #include "constants.h"
 #include "keypressmanager.h"
+#include "openglrenderingcontext.h"
+#include "softwarerenderingcontext.h"
+#include "nullrenderingcontext.h"
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 #include <iostream>
@@ -14,6 +17,8 @@ int Renderer::window_width = GAME_WIDTH*2 * 1.25;
 int Renderer::window_height = GAME_HEIGHT*2 * 1.25;
 int Renderer::gamewindow_width = Renderer::window_width;
 int Renderer::gamewindow_height = Renderer::window_height;
+RenderingContext* Renderer::renderingMethod = nullptr;
+AvailableRenderingContexts Renderer::renderingMethodType;
 
 // Handles window resizing (FreeGLUT event function)
 void Renderer::windowResizeFunc(int w, int h) {
@@ -49,8 +54,7 @@ void Renderer::windowResizeFunc(int w, int h) {
 		Renderer::proj = glm::ortho(0.0f, float(GAME_WIDTH*scale), 0.0f, (float)GAME_HEIGHT); //GPU
 		Renderer::gamewindow_width = Renderer::window_height * (GAME_WIDTH/GAME_HEIGHT);
 		Renderer::gamewindow_height = Renderer::window_height;
-	}
-	else { //too tall
+	} else { //too tall
 		scale = ((appXmax - appXmin) / w) / ((appYmax - appYmin) / h);
 		center = 0;
 		winYmin = center - (center - appYmin) * scale;
@@ -83,14 +87,88 @@ void Renderer::BeginningStuff() {
 	}
 }
 
+void Renderer::SetContext(AvailableRenderingContexts API) {
+	if (renderingMethod != nullptr) {
+		throw std::logic_error("ERROR: Cannot change rendering context!");
+	}
+
+	switch (API) {
+		case AvailableRenderingContexts::OpenGL:
+			renderingMethod = new OpenGLRenderingContext();
+			renderingMethodType = AvailableRenderingContexts::OpenGL;
+			return;
+		case AvailableRenderingContexts::software:
+			renderingMethod = new SoftwareRenderingContext();
+			renderingMethodType = AvailableRenderingContexts::software;
+			return;
+		case AvailableRenderingContexts::null_rendering:
+			renderingMethod = new NullRenderingContext();
+			renderingMethodType = AvailableRenderingContexts::null_rendering;
+			return;
+		default:
+			std::cerr << "Rendering context unknown! Defaulting to OpenGL..." << std::endl;
+			renderingMethod = new OpenGLRenderingContext();
+			renderingMethodType = AvailableRenderingContexts::OpenGL;
+	}
+}
+
+void Renderer::SetContext(std::string API) {
+	if (API == "OpenGL") {
+		renderingMethod = new OpenGLRenderingContext();
+		renderingMethodType = AvailableRenderingContexts::OpenGL;
+	} else if (API == "software") {
+		renderingMethod = new SoftwareRenderingContext();
+		renderingMethodType = AvailableRenderingContexts::software;
+	} else if (API == "null" || API == "NULL") {
+		renderingMethod = new NullRenderingContext();
+		renderingMethodType = AvailableRenderingContexts::null_rendering;
+	} else {
+		std::cerr << "Rendering context unknown! Defaulting to OpenGL..." << std::endl;
+		renderingMethod = new OpenGLRenderingContext();
+		renderingMethodType = AvailableRenderingContexts::OpenGL;
+	}
+}
+
+void Renderer::PreInitialize(int* argc, char** argv, std::string windowName) {
+	Renderer::PreInitialize(argc, argv, windowName, 60, 60);
+}
+
+void Renderer::PreInitialize(int* argc, char** argv, std::string windowName, int startX, int startY) {
+	// Initialize GLUT
+	glutInit(argc, argv);
+	glutInitDisplayMode(GLUT_SINGLE | GLUT_DEPTH);
+	//thanks to https://community.khronos.org/t/wglmakecurrent-issues/62656/3 for solving why a draw call would take ~15ms for no reason (it's just the V-sync time)
+
+	// Setup window position, size, and title
+	glutInitWindowPosition(startX, startY);
+	glutInitWindowSize(Renderer::window_width, Renderer::window_height);
+	glutCreateWindow(windowName.c_str());
+
+	// Setup some OpenGL options
+	glPointSize(2);
+	glEnable(GL_POINT_SMOOTH);
+	glEnable(GL_LINE_SMOOTH);
+	glDisable(GL_DEPTH_TEST);
+	//glEnable(GL_BLEND);
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	//initialize glew
+	glewExperimental = GL_TRUE;
+	GLenum res = glewInit();
+	if (res != GLEW_OK) {
+		fprintf(stderr, "Error: '%s'\n", glewGetErrorString(res));
+		throw "glew failed";
+	}
+}
+
 void Renderer::Initialize() {
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-	Shader* shader = new Shader("res/shaders/main-vertex.shader", "res/shaders/main-fragment.shader");
+	Shader* shader = new Shader("res/shaders/main.vert", "res/shaders/main.frag");
 	shaderCache.insert({ "main", shader });
 	bindShader(shader); //the main shader will be used most often so it gets binded at start
 
-	shader = new Shader("res/shaders/default-vertex.shader", "res/shaders/default-fragment.shader");
+	shader = new Shader("res/shaders/default.vert", "res/shaders/default.frag");
 	shaderCache.insert({ "default", shader });
 }
 
@@ -133,7 +211,7 @@ inline void Renderer::bindIndexBuffer(const IndexBuffer& ib) {
 
 Shader* Renderer::getShader(std::string s) {
 	//return shaderCache[s];
-	
+
 	auto get = shaderCache.find(s);
 	if (get != shaderCache.end()) {
 		Shader* shader = shaderCache[s];
@@ -141,7 +219,7 @@ Shader* Renderer::getShader(std::string s) {
 		return shader;
 	}
 	//else shader wasn't found
-	std::cout << "Could not find '" << s << "' shader!" << std::endl;
+	std::cerr << "Could not find '" << s << "' shader!" << std::endl;
 
 	//return the magenta shader, just so there's something
 	get = shaderCache.find("default");
@@ -151,7 +229,7 @@ Shader* Renderer::getShader(std::string s) {
 		return shader;
 	}
 	//else big uh-oh
-	std::cout << "Could not find the default shader!" << std::endl;
+	std::cerr << "Could not find the default shader!" << std::endl;
 
 	return nullptr; //default magenta shader is missing
 }

@@ -8,7 +8,7 @@
 #include <algorithm> //std::copy
 #include <iostream>
 
-int GeneralizedLightning::getDefaultNumBoltPoints(double horzDist) {
+int GeneralizedLightning::getDefaultNumBoltPoints(double horzDist) const {
 	int boltPoints = ceil(horzDist / lengthOfBolt); //not floor because the last point is the edge of the lightning area
 	return (boltPoints < 2 ? 2 : boltPoints);
 }
@@ -36,7 +36,7 @@ void GeneralizedLightning::tick() {
 			currentlyActive = !currentlyActive;
 		}
 	}
-	
+
 	if (currentlyActive) {
 		if (boltTick >= boltCycle) {
 			//hazard tick comes before collision, therefore there will be more bolt refreshes after this if a bullet/tank collides
@@ -59,13 +59,18 @@ void GeneralizedLightning::clearBolts() {
 	bolts.clear();
 }
 
-ColorValueHolder GeneralizedLightning::getBackgroundColor() {
+ColorValueHolder GeneralizedLightning::getBackgroundColor() const {
 	if (currentlyActive) {
-		return ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(.75f, .75f, .75f), .25);
+		return ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(0.75f, 0.75f, 0.75f), .25);
 	}
-	return ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(.75f, .75f, .75f), .25*constrain<double>(tickCount/(tickCycle*stateMultiplier[currentlyActive]), 0, 1));
+	return ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(0.75f, 0.75f, 0.75f), .25*constrain<double>(tickCount/(tickCycle*stateMultiplier[currentlyActive]), 0, 1));
 }
 
-ColorValueHolder GeneralizedLightning::getBoltColor() {
+ColorValueHolder GeneralizedLightning::getBackgroundColor_Pose() const {
+	//getBackgroundColor when currentlyActive = true
+	return ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(0.75f, 0.75f, 0.75f), .25);
+}
+
+ColorValueHolder GeneralizedLightning::getBoltColor() const {
 	return ColorValueHolder(0xBB/255.0, 1.0f, 1.0f);
 }

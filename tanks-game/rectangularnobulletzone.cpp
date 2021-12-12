@@ -3,15 +3,28 @@
 #include "renderer.h"
 #include "constants.h"
 #include <math.h>
+#include "colormixer.h"
+#include "backgroundrect.h"
 #include "mylib.h"
 #include "wallmanager.h"
 #include "hazardmanager.h"
 #include "collisionhandler.h"
+#include "rng.h"
 
 VertexArray* RectangularNoBulletZone::va;
 VertexBuffer* RectangularNoBulletZone::vb;
 IndexBuffer* RectangularNoBulletZone::ib;
 bool RectangularNoBulletZone::initialized_GPU = false;
+
+std::unordered_map<std::string, float> RectangularNoBulletZone::getWeights() const {
+	std::unordered_map<std::string, float> weights;
+	weights.insert({ "vanilla", 1.0f });
+	weights.insert({ "random-vanilla", .5f });
+	weights.insert({ "old", 1.0f });
+	weights.insert({ "random-old", .5f });
+	weights.insert({ "random", .25f });
+	return weights;
+}
 
 RectangularNoBulletZone::RectangularNoBulletZone(double xpos, double ypos, double width, double height) {
 	x = xpos;
@@ -20,7 +33,7 @@ RectangularNoBulletZone::RectangularNoBulletZone(double xpos, double ypos, doubl
 	h = height;
 	gameID = GameManager::getNextID();
 	teamID = HAZARD_TEAM;
-	
+
 	canAcceptPowers = false;
 
 	modifiesTankCollision = true;
@@ -50,11 +63,11 @@ bool RectangularNoBulletZone::initializeGPU() {
 		2, 3, 0
 	};
 
-	vb = new VertexBuffer(positions, 4*2 * sizeof(float), GL_DYNAMIC_DRAW);
+	vb = VertexBuffer::MakeVertexBuffer(positions, 4*2 * sizeof(float), RenderingHints::static_draw);
 	VertexBufferLayout layout(2);
-	va = new VertexArray(*vb, layout);
+	va = VertexArray::MakeVertexArray(*vb, layout);
 
-	ib = new IndexBuffer(indices, 6);
+	ib = IndexBuffer::MakeIndexBuffer(indices, 6);
 
 	initialized_GPU = true;
 	return true;
@@ -84,11 +97,7 @@ RectHazard* RectangularNoBulletZone::factory(int argc, std::string* argv) {
 	return new RectangularNoBulletZone(0, 0, 0, 0);
 }
 
-void RectangularNoBulletZone::tick() {
-	GeneralizedNoBulletZone::tick();
-}
-
-bool RectangularNoBulletZone::reasonableLocation() {
+bool RectangularNoBulletZone::reasonableLocation() const {
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		if (CollisionHandler::fullyCollided(this, WallManager::getWall(i))) {
 			return false;
@@ -112,20 +121,106 @@ bool RectangularNoBulletZone::reasonableLocation() {
 	return validLocation();
 }
 
-void RectangularNoBulletZone::draw() {
+void RectangularNoBulletZone::draw() const {
+	ghostDraw(1.0f);
+}
+
+void RectangularNoBulletZone::draw(DrawingLayers layer) const {
+	switch (layer) {
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for RectangularNoBulletZone::draw!" << std::endl;
+		case DrawingLayers::under:
+			draw();
+			break;
+
+		case DrawingLayers::normal:
+			//nothing
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//nothing
+			break;
+	}
+}
+
+void RectangularNoBulletZone::poseDraw() const {
+	draw();
+}
+
+void RectangularNoBulletZone::poseDraw(DrawingLayers layer) const {
+	switch (layer) {
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for RectangularNoBulletZone::poseDraw!" << std::endl;
+		case DrawingLayers::under:
+			poseDraw();
+			break;
+
+		case DrawingLayers::normal:
+			//nothing
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//nothing
+			break;
+	}
+}
+
+void RectangularNoBulletZone::ghostDraw(float alpha) const {
+	alpha = constrain<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM = Renderer::GenerateMatrix(w, h, 0, x, y);
-	
-	//TODO: make drawUnder() a thing
+	glm::mat4 MVPM;
+
 	ColorValueHolder color = GeneralizedNoBulletZone::getColor();
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+
+	MVPM = Renderer::GenerateMatrix(w, h, 0, x, y);
 	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*va, *ib, *shader);
 }
 
-void RectangularNoBulletZone::drawCPU() {
-	
+void RectangularNoBulletZone::ghostDraw(DrawingLayers layer, float alpha) const {
+	switch (layer) {
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for RectangularNoBulletZone::ghostDraw!" << std::endl;
+		case DrawingLayers::under:
+			ghostDraw(alpha);
+			break;
+
+		case DrawingLayers::normal:
+			//nothing
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//nothing
+			break;
+	}
 }
 
 RectHazard* RectangularNoBulletZone::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {
@@ -137,11 +232,11 @@ RectHazard* RectangularNoBulletZone::randomizingFactory(double x_start, double y
 			width = std::stod(argv[0]);
 			height = std::stod(argv[1]);
 		} else {
-			width = randFunc2() * (40 - 20) + 20; //TODO: where should these constants be?
-			height = randFunc2() * (50 - 20) + 20; //TODO: where should these constants be?
+			width = RNG::randFunc2() * (40 - 20) + 20; //TODO: where should these constants be?
+			height = RNG::randFunc2() * (50 - 20) + 20; //TODO: where should these constants be?
 		}
-		xpos = randFunc2() * (area_width - 2*width) + (x_start + width);
-		ypos = randFunc2() * (area_height - 2*height) + (y_start + height);
+		xpos = RNG::randFunc2() * (area_width - 2*width) + (x_start + width);
+		ypos = RNG::randFunc2() * (area_height - 2*height) + (y_start + height);
 		RectHazard* testRectangularNoBulletZone = new RectangularNoBulletZone(xpos, ypos, width, height);
 		if (testRectangularNoBulletZone->reasonableLocation()) {
 			randomized = testRectangularNoBulletZone;

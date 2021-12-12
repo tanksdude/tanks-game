@@ -8,6 +8,7 @@ private:
 	static std::vector<std::chrono::time_point<std::chrono::steady_clock>> times;
 	static std::vector<std::string> timeNames;
 	static bool currentlyTiming;
+
 public:
 	static std::chrono::time_point<std::chrono::steady_clock> getTime();
 	static long double getDiff(std::chrono::time_point<std::chrono::steady_clock> start, std::chrono::time_point<std::chrono::steady_clock> end);
@@ -17,4 +18,8 @@ public:
 	static void clearTimes(); //(and names)
 	static void printTimings(); //plain milliseconds
 	static void printPreciseTimings(); //microsecond accuracy
+
+private:
+	Diagnostics() {}
+	Diagnostics(const Diagnostics&) {}
 };

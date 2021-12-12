@@ -2,8 +2,8 @@
 #include "backgroundrect.h"
 #include "colormixer.h"
 
-ColorValueHolder GeneralizedNoBulletZone::getColor() {
-	return ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(.5f, .5f, .5f), .125);
+ColorValueHolder GeneralizedNoBulletZone::getColor() const {
+	return ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(0.5f, 0.5f, 0.5f), .125);
 }
 
 void GeneralizedNoBulletZone::tick() {

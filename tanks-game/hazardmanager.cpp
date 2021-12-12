@@ -12,18 +12,18 @@ void HazardManager::initialize() {
 	circleHazardLookup.insert({ "vanilla", std::unordered_map<std::string, CircleHazardFactoryGroup>() });
 	circleHazardLookup.insert({ "vanilla-extra", std::unordered_map<std::string, CircleHazardFactoryGroup>() }); //what would this include? no bullet zone?
 	circleHazardLookup.insert({ "random-vanilla", std::unordered_map<std::string, CircleHazardFactoryGroup>() }); //can include vanilla-extra but probably won't
-	circleHazardLookup.insert({ "random", std::unordered_map<std::string, CircleHazardFactoryGroup>() }); //general random
 	circleHazardLookup.insert({ "old", std::unordered_map<std::string, CircleHazardFactoryGroup>() }); //will probably be deleted
 	circleHazardLookup.insert({ "random-old", std::unordered_map<std::string, CircleHazardFactoryGroup>() });
+	circleHazardLookup.insert({ "random", std::unordered_map<std::string, CircleHazardFactoryGroup>() }); //general random
 	circleHazardLookup.insert({ "dev", std::unordered_map<std::string, CircleHazardFactoryGroup>() }); //anything?
 	circleHazardLookup.insert({ "random-dev", std::unordered_map<std::string, CircleHazardFactoryGroup>() }); //would this be used?
 
 	rectHazardLookup.insert({ "vanilla", std::unordered_map<std::string, RectHazardFactoryGroup>() });
 	rectHazardLookup.insert({ "vanilla-extra", std::unordered_map<std::string, RectHazardFactoryGroup>() });
 	rectHazardLookup.insert({ "random-vanilla", std::unordered_map<std::string, RectHazardFactoryGroup>() });
-	rectHazardLookup.insert({ "random", std::unordered_map<std::string, RectHazardFactoryGroup>() });
 	rectHazardLookup.insert({ "old", std::unordered_map<std::string, RectHazardFactoryGroup>() });
 	rectHazardLookup.insert({ "random-old", std::unordered_map<std::string, RectHazardFactoryGroup>() });
+	rectHazardLookup.insert({ "random", std::unordered_map<std::string, RectHazardFactoryGroup>() });
 	rectHazardLookup.insert({ "dev", std::unordered_map<std::string, RectHazardFactoryGroup>() });
 	rectHazardLookup.insert({ "random-dev", std::unordered_map<std::string, RectHazardFactoryGroup>() });
 }
@@ -33,6 +33,23 @@ CircleHazard* HazardManager::getCircleHazard(int index) {
 }
 RectHazard* HazardManager::getRectHazard(int index) {
 	return rectHazards[index];
+}
+
+CircleHazard* HazardManager::getCircleHazardByID(Game_ID gameID) {
+	for (int i = 0; i < circleHazards.size(); i++) {
+		if (circleHazards[i]->getGameID() == gameID) {
+			return circleHazards[i];
+		}
+	}
+	return nullptr;
+}
+RectHazard* HazardManager::getRectHazardByID(Game_ID gameID) {
+	for (int i = 0; i < rectHazards.size(); i++) {
+		if (rectHazards[i]->getGameID() == gameID) {
+			return rectHazards[i];
+		}
+	}
+	return nullptr;
 }
 
 void HazardManager::pushCircleHazard(CircleHazard* ch) {
@@ -49,6 +66,21 @@ void HazardManager::deleteCircleHazard(int index) {
 void HazardManager::deleteRectHazard(int index) {
 	delete rectHazards[index];
 	rectHazards.erase(rectHazards.begin() + index);
+}
+
+void HazardManager::deleteCircleHazardByID(Game_ID gameID) {
+	for (int i = 0; i < circleHazards.size(); i++) {
+		if (circleHazards[i]->getGameID() == gameID) {
+			deleteCircleHazard(i);
+		}
+	}
+}
+void HazardManager::deleteRectHazardByID(Game_ID gameID) {
+	for (int i = 0; i < rectHazards.size(); i++) {
+		if (rectHazards[i]->getGameID() == gameID) {
+			deleteRectHazard(i);
+		}
+	}
 }
 
 void HazardManager::clearCircleHazards() {

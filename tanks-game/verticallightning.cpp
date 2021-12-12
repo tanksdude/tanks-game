@@ -12,6 +12,7 @@
 #include "wallmanager.h"
 #include "hazardmanager.h"
 #include "collisionhandler.h"
+#include "rng.h"
 #include <iostream>
 
 VertexArray* VerticalLightning::background_va;
@@ -19,9 +20,19 @@ VertexBuffer* VerticalLightning::background_vb;
 IndexBuffer* VerticalLightning::background_ib;
 bool VerticalLightning::initialized_GPU = false;
 
+std::unordered_map<std::string, float> VerticalLightning::getWeights() const {
+	std::unordered_map<std::string, float> weights;
+	weights.insert({ "vanilla", 1.0f });
+	weights.insert({ "random-vanilla", 1.0f });
+	weights.insert({ "old", 1.0f });
+	weights.insert({ "random-old", 1.0f });
+	weights.insert({ "random", 1.0f });
+	return weights;
+}
+
 VerticalLightning::VerticalLightning(double xpos, double ypos, double width, double height) : RectangularLightning(xpos,ypos,width,height,true) {
 	//flexible = false;
-	
+
 	maxBolts = 2;
 	//lengthOfBolt = 4;
 	bolts.reserve(maxBolts);
@@ -38,11 +49,11 @@ VerticalLightning::VerticalLightning(double xpos, double ypos, double width, dou
 	initializeGPU();
 }
 
-Circle* VerticalLightning::getTopPoint() {
+inline Circle* VerticalLightning::getTopPoint() const {
 	return new Point(x + w/2, y + h);
 }
 
-Circle* VerticalLightning::getBottomPoint() {
+inline Circle* VerticalLightning::getBottomPoint() const {
 	return new Point(x + w/2, y);
 }
 
@@ -70,11 +81,11 @@ bool VerticalLightning::initializeGPU() {
 		2, 3, 0
 	};
 
-	background_vb = new VertexBuffer(positions, 4*2 * sizeof(float), GL_DYNAMIC_DRAW);
+	background_vb = VertexBuffer::MakeVertexBuffer(positions, 4*2 * sizeof(float), RenderingHints::dynamic_draw);
 	VertexBufferLayout layout(2);
-	background_va = new VertexArray(*background_vb, layout);
+	background_va = VertexArray::MakeVertexArray(*background_vb, layout);
 
-	background_ib = new IndexBuffer(indices, 6);
+	background_ib = IndexBuffer::MakeIndexBuffer(indices, 6);
 
 	initialized_GPU = true;
 	return true;
@@ -88,10 +99,10 @@ void VerticalLightning::local_initializeGPU() {
 		positions[i*2+1] = bolts[0]->positions[i*2+1];
 	}
 	bolt_vb_length = bolts[0]->length;
-	
-	bolt_vb = new VertexBuffer(positions, bolts[0]->length*2 * sizeof(float), GL_STREAM_DRAW);
+
+	bolt_vb = VertexBuffer::MakeVertexBuffer(positions, bolts[0]->length*2 * sizeof(float), RenderingHints::stream_draw);
 	VertexBufferLayout layout(2);
-	bolt_va = new VertexArray(*bolt_vb, layout);
+	bolt_va = VertexArray::MakeVertexArray(*bolt_vb, layout);
 
 	delete[] positions;
 }
@@ -102,10 +113,10 @@ void VerticalLightning::local_reinitializeGPU(int length) { //does not seed the 
 
 	float* positions = new float[length*2];
 	bolt_vb_length = length;
-	
-	bolt_vb = new VertexBuffer(positions, length*2 * sizeof(float), GL_STREAM_DRAW);
+
+	bolt_vb = VertexBuffer::MakeVertexBuffer(positions, length*2 * sizeof(float), RenderingHints::stream_draw);
 	VertexBufferLayout layout(2);
-	bolt_va = new VertexArray(*bolt_vb, layout);
+	bolt_va = VertexArray::MakeVertexArray(*bolt_vb, layout);
 
 	delete[] positions;
 }
@@ -128,8 +139,8 @@ void VerticalLightning::local_uninitializeGPU() {
 	delete bolt_vb;
 }
 
-void VerticalLightning::streamBoltVertices(unsigned int boltNum) {
-	bolt_vb->modifyData(bolts[boltNum]->positions.data(), bolts[boltNum]->length*2 * sizeof(float));
+void VerticalLightning::streamBoltVertices(const LightningBolt* l) const {
+	bolt_vb->modifyData(l->positions.data(), l->length*2 * sizeof(float));
 }
 
 RectHazard* VerticalLightning::factory(int argc, std::string* argv) {
@@ -180,13 +191,13 @@ void VerticalLightning::specialEffectCircleCollision(Circle* c) {
 		intersectionYD = c->y;
 		boltPointsD = 2;
 	} else {
-		DoublePositionHolder intersections = CollisionHandler::circleLineIntersection(c, xpos, ypos, bottomPoint->x, bottomPoint->y);
+		std::pair<PositionHolder, PositionHolder> intersections = CollisionHandler::circleLineIntersection(c, xpos, ypos, bottomPoint->x, bottomPoint->y);
 		if (c->x < x + w/2) {
-			intersectionXD = std::max(intersections.x1, intersections.x2);
+			intersectionXD = std::max(intersections.first.x, intersections.second.x);
 		} else {
-			intersectionXD = std::min(intersections.x1, intersections.x2);
+			intersectionXD = std::min(intersections.first.x, intersections.second.x);
 		}
-		intersectionYD = std::min(intersections.y1, intersections.y2);
+		intersectionYD = std::min(intersections.first.y, intersections.second.y);
 
 		if (intersectionXD < x || intersectionXD > x+w) {
 			std::cerr << "WARNING: vertical lightning endpoint X (bottom half) out of range!" << std::endl;
@@ -209,13 +220,13 @@ void VerticalLightning::specialEffectCircleCollision(Circle* c) {
 		intersectionYU = c->y;
 		boltPointsU = 2;
 	} else {
-		DoublePositionHolder intersections = CollisionHandler::circleLineIntersection(c, xpos, ypos, topPoint->x, topPoint->y);
+		std::pair<PositionHolder, PositionHolder> intersections = CollisionHandler::circleLineIntersection(c, xpos, ypos, topPoint->x, topPoint->y);
 		if (c->x < x + w/2) {
-			intersectionXU = std::max(intersections.x1, intersections.x2);
+			intersectionXU = std::max(intersections.first.x, intersections.second.x);
 		} else {
-			intersectionXU = std::min(intersections.x1, intersections.x2);
+			intersectionXU = std::min(intersections.first.x, intersections.second.x);
 		}
-		intersectionYU = std::max(intersections.y1, intersections.y2);
+		intersectionYU = std::max(intersections.first.y, intersections.second.y);
 
 		if (intersectionXU < x || intersectionXU > x+w) {
 			std::cerr << "WARNING: vertical lightning endpoint X (top half) out of range!" << std::endl;
@@ -251,9 +262,9 @@ void VerticalLightning::pushBolt(LightningBolt* l, bool simpleRefresh) {
 	}
 	bolts.push_back(l);
 	if (simpleRefresh) {
-		simpleRefreshBolt(bolts.size() - 1);
+		simpleRefreshBolt(l);
 	} else {
-		refreshBolt(bolts.size() - 1);
+		refreshBolt(l);
 	}
 }
 
@@ -271,7 +282,7 @@ void VerticalLightning::pushDefaultBolt(int num, bool randomize) {
 	}
 }
 
-bool VerticalLightning::validLocation() {
+bool VerticalLightning::validLocation() const {
 	bool wallOnTop = false, wallOnBottom = false, wallInMiddle = false;
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		Wall* wa = WallManager::getWall(i);
@@ -297,7 +308,7 @@ bool VerticalLightning::validLocation() {
 	return (wallOnTop && wallOnBottom && !wallInMiddle);
 }
 
-bool VerticalLightning::reasonableLocation() {
+bool VerticalLightning::reasonableLocation() const {
 	bool wallOnLeft = false, wallOnRight = false;
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		Wall* wa = WallManager::getWall(i);
@@ -337,7 +348,7 @@ bool VerticalLightning::reasonableLocation() {
 	return (!(wallOnLeft && wallOnRight) && validLocation());
 }
 
-void VerticalLightning::simpleRefreshBolt(int num) {
+void VerticalLightning::simpleRefreshBolt(LightningBolt* l) const {
 	double maxVariance = w/4;
 	/* lightning bolts are allowed to be in an area that looks like this:
 	 * (see HorizontalLightning for a better diagram, then just mentally rotate it)
@@ -359,55 +370,160 @@ void VerticalLightning::simpleRefreshBolt(int num) {
 	 * the region is (from bottom to top) 1/4 triangle, 1/2 rectangle, then 1/4 triangle
 	 */
 
-	double deltaY = (bolts[num]->positions[bolts[num]->length*2-1] - bolts[num]->positions[1]) / (bolts[num]->length - 1);
-	for (int j = 1; j < bolts[num]->length-1; j++) {
-		double xRangeLower = bolts[num]->positions[j*2 - 2] - maxVariance;
-		double xRangeUpper = bolts[num]->positions[j*2 - 2] + maxVariance;
+	double deltaY = (l->positions[l->length*2-1] - l->positions[1]) / (l->length - 1);
+	for (int j = 1; j < l->length-1; j++) {
+		double xRangeLower = l->positions[j*2 - 2] - maxVariance;
+		double xRangeUpper = l->positions[j*2 - 2] + maxVariance;
 		double xMin, xMax;
-		if (j < bolts[num]->length/4) { //bottom quarter
+		if (j < l->length/4) { //bottom quarter
 			//instead of y=ax+b, use x=(y-b)/a
 			xMin = ((deltaY * j) - h/4) / (-.5*h/w);
 			xMax = ((deltaY * j) + h/4) / ( .5*h/w);
-		} else if (j < bolts[num]->length * 3.0/4.0) { //middle half
+		} else if (j < l->length * 3.0/4.0) { //middle half
 			xMin = 0;
 			xMax = w;
 		} else { //top quarter
 			xMin = ((deltaY * j) - 3.0/4.0*h) / ( .5*h/w);
 			xMax = ((deltaY * j) - 5.0/4.0*h) / (-.5*h/w);
 			//alternatively:
-			//xMin = ((deltaY * (j - bolts[num]->length*3.0/4.0)) -   0) / ( .5*h/w);
-			//xMax = ((deltaY * (j - bolts[num]->length*3.0/4.0)) - h/2) / (-.5*h/w);
+			//xMin = ((deltaY * (j - l->length*3.0/4.0)) -   0) / ( .5*h/w);
+			//xMax = ((deltaY * (j - l->length*3.0/4.0)) - h/2) / (-.5*h/w);
 		}
 		xRangeLower = (xRangeLower < xMin ? xMin : xRangeLower);
 		xRangeUpper = (xRangeUpper > xMax ? xMax : xRangeUpper);
-		bolts[num]->positions[j*2+0] = xRangeLower + (xRangeUpper - xRangeLower) * randFunc2();
+		l->positions[j*2+0] = xRangeLower + (xRangeUpper - xRangeLower) * RNG::randFunc2();
 	}
 }
 
-void VerticalLightning::refreshBolt(int num) {
-	RectangularLightning::refreshBolt(num, w, h);
+void VerticalLightning::refreshBolt(LightningBolt* l) const {
+	RectangularLightning::refreshBolt(l, this->w, this->h);
 }
 
-void VerticalLightning::draw() {
+void VerticalLightning::draw() const {
+	drawBackground(false);
+	drawBolts();
+}
+
+void VerticalLightning::draw(DrawingLayers layer) const {
+	switch (layer) {
+		case DrawingLayers::under:
+			drawBackground(false);
+			break;
+
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for VerticalLightning::draw!" << std::endl;
+		case DrawingLayers::normal:
+			drawBolts();
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
+}
+
+void VerticalLightning::poseDraw() const {
+	drawBackground(true);
+	drawBolts_Pose();
+}
+
+void VerticalLightning::poseDraw(DrawingLayers layer) const {
+	switch (layer) {
+		case DrawingLayers::under:
+			drawBackground(true);
+			break;
+
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for VerticalLightning::poseDraw!" << std::endl;
+		case DrawingLayers::normal:
+			drawBolts_Pose();
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
+}
+
+void VerticalLightning::ghostDraw(float alpha) const {
+	drawBackground(true, alpha);
+	drawBolts_Pose(alpha);
+}
+
+void VerticalLightning::ghostDraw(DrawingLayers layer, float alpha) const {
+	switch (layer) {
+		case DrawingLayers::under:
+			drawBackground(true, alpha);
+			break;
+
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for VerticalLightning::ghostDraw!" << std::endl;
+		case DrawingLayers::normal:
+			drawBolts_Pose(alpha);
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
+}
+
+inline void VerticalLightning::drawBackground(bool pose, float alpha) const {
+	alpha = constrain<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM = Renderer::GenerateMatrix(w, h, 0, x, y);
-	
-	//background:
-	//TODO: make drawUnder() a thing
-	ColorValueHolder color = getBackgroundColor();
+	glm::mat4 MVPM;
+
+	ColorValueHolder color = (pose ? getBackgroundColor_Pose() : getBackgroundColor());
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+
+	MVPM = Renderer::GenerateMatrix(w, h, 0, x, y);
 	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*background_va, *background_ib, *shader);
+}
 
-	//bolts:
+inline void VerticalLightning::drawBolts(float alpha) const {
+	alpha = constrain<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
+	Shader* shader = Renderer::getShader("main");
+	glm::mat4 MVPM;
+
 	if (!currentlyActive) {
 		return;
 	}
 
 	glLineWidth(2.0f);
-	color = getBoltColor();
+
+	ColorValueHolder color = getBoltColor();
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+
 	MVPM = Renderer::GenerateMatrix(1, 1, 0, x, y);
 	shader->setUniformMat4f("u_MVP", MVPM);
 
@@ -419,16 +535,49 @@ void VerticalLightning::draw() {
 			local_reinitializeGPU(bolts[i]->length);
 		}
 		*/
-		streamBoltVertices(i);
+		streamBoltVertices(bolts[i]); //TODO: fix
 		Renderer::Draw(*bolt_va, *shader, GL_LINE_STRIP, 0, bolts[i]->length);
 	}
+
+	//cleanup
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
-void VerticalLightning::drawCPU() {
-	//background:
+inline void VerticalLightning::drawBolts_Pose(float alpha) const {
+	alpha = constrain<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
+	Shader* shader = Renderer::getShader("main");
+	glm::mat4 MVPM;
 
-	//bolts:
+	glLineWidth(2.0f);
 
+	ColorValueHolder color = getBoltColor();
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
+	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+
+	MVPM = Renderer::GenerateMatrix(1, 1, 0, x, y);
+	shader->setUniformMat4f("u_MVP", MVPM);
+
+	//generate bolts
+	std::vector<LightningBolt*> poseBolts;
+	//from pushDefaultBolt(), mostly
+	LightningBolt* l = new LightningBolt(w/2, 0, w/2, h, getDefaultNumBoltPoints(h));
+
+	if (l->length > bolt_vb_length) {
+		//cut off the parts that won't fit; shouldn't happen though
+		l->length = bolt_vb_length;
+	}
+	refreshBolt(l);
+
+	//draw
+	for (int i = 0; i < poseBolts.size(); i++) {
+		//match with drawBolts()
+		streamBoltVertices(poseBolts[i]);
+		Renderer::Draw(*bolt_va, *shader, GL_LINE_STRIP, 0, poseBolts[i]->length);
+	}
+
+	//cleanup
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 RectHazard* VerticalLightning::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {
@@ -441,22 +590,22 @@ RectHazard* VerticalLightning::randomizingFactory(double x_start, double y_start
 	double xpos, ypos, width, height;
 	double minHeight = 40, maxHeight = 160;
 	do {
-		width = randFunc2() * (24 - 12) + 12;
+		width = RNG::randFunc2() * (24 - 12) + 12;
 		//TODO: ability to use an edge
 		for (int i = 0; i < WallManager::getNumWalls(); i++) {
 			Wall* wa = WallManager::getWall(i);
-			xpos = wa->x + randFunc2() * constrain<double>(wa->w - width, 0, wa->w);
+			xpos = wa->x + RNG::randFunc2() * constrain<double>(wa->w - width, 0, wa->w);
 			ypos = wa->y + wa->h;
 			int j, wallAttempts = 0;
 			do {
-				j = randFunc() * WallManager::getNumWalls();
+				j = RNG::randFunc() * WallManager::getNumWalls();
 				wallAttempts++;
 			} while ((wallAttempts < 8) && (j == i));
 			if (j != i) {
 				Wall* otherWall = WallManager::getWall(j);
 				height = otherWall->y - ypos;
 			} else {
-				height = randFunc2() * (maxHeight - minHeight) + minHeight;
+				height = RNG::randFunc2() * (maxHeight - minHeight) + minHeight;
 			}
 		}
 		if ((xpos >= x_start) && (xpos + width <= x_start + area_width) && (ypos >= y_start) && (ypos + height <= y_start + area_height) && (height <= maxHeight) && (height >= minHeight)) {

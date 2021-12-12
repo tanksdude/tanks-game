@@ -2,6 +2,7 @@
 class RectHazard;
 
 #include "hazard.h"
+#include "drawablething.h"
 #include "rect.h"
 #include <string>
 #include <unordered_map>
@@ -36,47 +37,64 @@ enum class RectHazardConstructionTypes /*: unsigned char */ {
 	standardConstruction //x, y, w, and h required
 };
 
-class RectHazard : public Hazard, public Rect {
+enum class RectHazardCollisionType {
+	solid,
+	under
+};
+
+class RectHazard : public Hazard, public Rect, public DrawableThing {
 public: //protected?
 	//std::vector<RectHazardPower*> hazardPowers;
-public:
-	double getHighestOffenseImportance();
-	double getHighestOffenseTier(double importance);
-	double getHighestDefenseImportance();
-	double getHighestDefenseTier(double importance);
-public:
-	virtual std::vector<std::string> getHazardTypes();
-	virtual std::unordered_map<std::string, float> getWeights(); //intended range: (0,1]
 
-	double getOffenseTier();
-	double getDefenseTier();
-	virtual double getDefaultOffense() = 0;
-	virtual double getDefaultDefense() = 0;
+public:
+	double getOffenseTier() const;
+	double getDefenseTier() const;
 
-	virtual bool actuallyCollided(Tank*) { return true; } //precondition: currently and partially collided with tank
+protected:
+	double getHighestOffenseImportance() const;
+	double getHighestOffenseTier(double importance) const;
+	double getHighestDefenseImportance() const;
+	double getHighestDefenseTier(double importance) const;
+
+public:
+	virtual std::vector<std::string> getHazardTypes() const = 0; //pure virtual to make sure recthazards define it
+	virtual std::unordered_map<std::string, float> getWeights() const = 0; //intended range: (0,1]
+
+	virtual bool actuallyCollided(const Tank*) const { return true; } //precondition: currently and partially collided with tank
 	bool modifiesTankCollision = false;
 	virtual void modifiedTankCollision(Tank*);
 	bool hasSpecialEffectTankCollision = false;
 	virtual void specialEffectTankCollision(Tank*) { return; } //always activated before modifiedTankCollision
 
-	virtual bool actuallyCollided(Bullet*) { return true; } //precondition: currently and partially collided with bullet
+	virtual bool actuallyCollided(const Bullet*) const { return true; } //precondition: currently and partially collided with bullet
 	bool modifiesBulletCollision = false;
 	virtual void modifiedBulletCollision(Bullet*);
 	bool hasSpecialEffectBulletCollision = false;
 	virtual void specialEffectBulletCollision(Bullet*) { return; } //always activated before modifiedBulletCollision
 
-	//virtual bool validLocation() { return true; }
-	//virtual bool reasonableLocation() = 0;
+public:
+	virtual bool validLocation() const override { return true; }
+	virtual bool reasonableLocation() const override = 0;
 
-	virtual std::string getName() = 0;
+	virtual std::string getName() const = 0;
 	//static std::string getClassName();
-	//virtual bool initializeGPU() = 0;
-	virtual void draw() = 0;
 
+	virtual double getDefaultOffense() const = 0;
+	virtual double getDefaultDefense() const = 0;
+	virtual RectHazardCollisionType getCollisionType() const = 0; // { return RectHazardCollisionType::solid; }
+
+	virtual void tick() override = 0;
+	virtual void draw() const override = 0;
+	virtual void draw(DrawingLayers) const override = 0;
+	virtual void poseDraw() const override = 0;
+	virtual void poseDraw(DrawingLayers) const override = 0;
+	virtual void ghostDraw(float alpha) const override = 0;
+	virtual void ghostDraw(DrawingLayers, float alpha) const override = 0;
+
+	virtual ~RectHazard() { return; }
 	static RectHazard* factory(int argc, std::string* argv);
 	static RectHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv);
-	virtual int getFactoryArgumentCount() = 0;
-	virtual RectHazardConstructionTypes getConstructionType() = 0;
-	virtual RectFactoryInformation getFactoryInformation() = 0;
-	virtual ~RectHazard() { return; }
+	virtual int getFactoryArgumentCount() const = 0;
+	virtual RectHazardConstructionTypes getConstructionType() const = 0;
+	virtual RectFactoryInformation getFactoryInformation() const = 0;
 };

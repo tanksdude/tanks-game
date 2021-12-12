@@ -1,6 +1,7 @@
 #pragma once
 #include "circlehazard.h"
 #include "generalizedlava.h"
+#include "constants.h"
 
 #include "vertexarray.h"
 #include "vertexbuffer.h"
@@ -8,7 +9,7 @@
 
 class CircularLava : public CircleHazard, public GeneralizedLava {
 protected:
-	virtual void pushNewBubble(double radius);
+	virtual void pushNewBubble(double radius) override;
 
 private:
 	static VertexArray* background_va;
@@ -18,37 +19,55 @@ private:
 	static VertexBuffer* bubble_vb;
 	static IndexBuffer* bubble_ib;
 	static bool initialized_GPU;
-	
+
 	static bool initializeGPU();
 	static bool uninitializeGPU();
 
 public:
-	virtual double getDefaultOffense() override { return .5; }
-	virtual double getDefaultDefense() override { return 999; }
+	virtual std::vector<std::string> getHazardTypes() const override {
+		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "old", "random-old", "random" };
+		//it's not really an old hazard (lava was rectangular only)
+		return types;
+	}
+	virtual std::unordered_map<std::string, float> getWeights() const override;
 
-	//virtual bool actuallyCollided(Tank*) override { return true; }
+	//virtual bool actuallyCollided(const Tank*) const override { return true; }
 	//bool modifiesTankCollision = true;
 	virtual void modifiedTankCollision(Tank*) override { return; }
-	
-	virtual bool actuallyCollided(Bullet* b) override { return (b->velocity == 0); }
+
+	virtual bool actuallyCollided(const Bullet* b) const override { return (b->velocity.getMagnitude() == 0); }
 	//bool modifiesBulletCollision = true;
 	virtual void modifiedBulletCollision(Bullet*) override { return; }
 
-	//virtual bool validLocation() override { return true; }
-	virtual bool reasonableLocation() override;
+public:
+	//virtual bool validLocation() const override { return true; }
+	virtual bool reasonableLocation() const override;
 
-	virtual std::string getName() { return getClassName(); }
+	virtual std::string getName() const override { return getClassName(); }
 	static std::string getClassName() { return "lava"; }
 
-	virtual void tick();
-	virtual void draw();
-	virtual void drawCPU();
+	virtual double getDefaultOffense() const override { return .5; }
+	virtual double getDefaultDefense() const override { return HIGH_TIER; }
+	virtual CircleHazardCollisionType getCollisionType() const override { return CircleHazardCollisionType::under; }
 
+	virtual void tick() override { GeneralizedLava::tick(); }
+	virtual void draw() const override;
+	virtual void draw(DrawingLayers) const override;
+	virtual void poseDraw() const override;
+	virtual void poseDraw(DrawingLayers) const override;
+	virtual void ghostDraw(float alpha) const override;
+	virtual void ghostDraw(DrawingLayers, float alpha) const override;
+
+private:
+	inline void drawBackground(bool pose, float alpha = 1.0f) const;
+	inline void drawBubbles(bool pose, float alpha = 1.0f) const;
+
+public:
 	CircularLava(double xpos, double ypos, double radius);
 	~CircularLava();
 	static CircleHazard* factory(int, std::string*);
 	static CircleHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv);
-	virtual int getFactoryArgumentCount() override { return 3; }
-	virtual CircleHazardConstructionTypes getConstructionType() override { return CircleHazardConstructionTypes::radiusRequired; }
-	virtual CircleFactoryInformation getFactoryInformation() override { return { false, false, false, false, false }; }
+	virtual int getFactoryArgumentCount() const override { return 3; }
+	virtual CircleHazardConstructionTypes getConstructionType() const override { return CircleHazardConstructionTypes::radiusRequired; }
+	virtual CircleFactoryInformation getFactoryInformation() const override { return { false, false, false, false, false }; }
 };

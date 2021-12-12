@@ -2,32 +2,97 @@
 #include "power.h"
 
 class BlastPower : public Power {
+	//called mega-blast in JS Tanks
 public:
-	virtual std::vector<std::string> getPowerTypes() override {
-		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "random" };
+	virtual std::vector<std::string> getPowerTypes() const override {
+		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "old", "random-old", "random" };
+		//TODO: move to vanilla-extra?
+		//JS: did have supermix (replaced by bounce)
 		return types;
 	}
-	virtual std::unordered_map<std::string, float> getWeights() override {
-		std::unordered_map<std::string, float> weights;
-		weights.insert({ "vanilla", .5f });
-		weights.insert({ "random-vanilla", .5f });
-		weights.insert({ "random", .5f });
-		return weights;
-	}
-	virtual std::vector<std::string> getPowerAttributes() override {
+	virtual std::unordered_map<std::string, float> getWeights() const override;
+	virtual std::vector<std::string> getPowerAttributes() const override {
 		std::vector<std::string> attributes = std::vector<std::string>{ "mix" };
 		return attributes;
 	}
 
-	virtual std::string getName() { return BlastPower::getClassName(); }
+	virtual std::string getName() const override { return BlastPower::getClassName(); }
 	static std::string getClassName() { return "blast"; }
-	virtual ColorValueHolder getColor() { return BlastPower::getClassColor(); }
+	virtual ColorValueHolder getColor() const override { return BlastPower::getClassColor(); }
 	static ColorValueHolder getClassColor() { return ColorValueHolder(0x44/255.0, 0x66/255.0, 0x88/255.0); } //dark blue
 
-	virtual TankPower* makeTankPower();
-	virtual BulletPower* makeBulletPower();
-	//virtual HazardPower* makeHazardPower();
+	virtual TankPower* makeTankPower() const override;
+	virtual BulletPower* makeBulletPower() const override;
+	//virtual HazardPower* makeHazardPower() const override;
 
 	BlastPower();
 	static Power* factory();
+};
+
+
+
+class BlastTankPower : public TankPower {
+protected:
+	static const double bulletAngleDeviation;
+	static const int bulletAmount;
+
+public:
+	virtual void initialize(Tank* parent) override;
+	virtual void removeEffects(Tank* parent) override;
+
+	virtual ColorValueHolder getColor() const override {
+		return BlastPower::getClassColor();
+	}
+
+	virtual TankPower* makeDuplicate() const override { return new BlastTankPower(); }
+	virtual BulletPower* makeBulletPower() const override;
+
+	//bool modifiesAdditionalShooting = true;
+	virtual void additionalShooting(Tank* parent, CannonPoint) override;
+	//bool overridesAdditionalShooting = true;
+
+	virtual double getTankMaxSpeedMultiplier() const override { return .5; }
+	virtual double getTankAccelerationMultiplier() const override { return .5; }
+	//virtual double getTankFiringRateMultiplier() const override { return .5; } //JS
+
+	BlastTankPower();
+};
+
+
+
+class BlastBulletPower : public BulletPower {
+protected:
+	static const double maxBulletAcceleration;
+	static const double minBulletAcceleration;
+	static const double degradeAmount;
+	double accelerationAmount;
+
+public:
+	virtual void initialize(Bullet* parent) override;
+	virtual void removeEffects(Bullet* parent) override;
+
+	virtual ColorValueHolder getColor() const override {
+		return BlastPower::getClassColor();
+	}
+
+	virtual BulletPower* makeDuplicate() const override;
+	virtual TankPower* makeTankPower() const override;
+
+	//bool modifiesMovement = true;
+	virtual InteractionBoolHolder modifiedMovement(Bullet*) override;
+
+	//bool modifiesCollisionWithWall = true;
+	virtual InteractionBoolHolder modifiedCollisionWithWall(Bullet*, Wall*) override;
+
+	virtual bool getModifiesCollisionWithCircleHazard(const CircleHazard*) const override;
+	virtual InteractionBoolHolder modifiedCollisionWithCircleHazard(Bullet*, CircleHazard*) override;
+
+	virtual bool getModifiesCollisionWithRectHazard(const RectHazard*) const override;
+	virtual InteractionBoolHolder modifiedCollisionWithRectHazard(Bullet*, RectHazard*) override;
+
+	virtual double getBulletRadiusMultiplier() const override { return .25; } //JS: .5
+	virtual double getBulletAcceleration() const override;
+
+	BlastBulletPower();
+	BlastBulletPower(double acceleration); //protected?
 };

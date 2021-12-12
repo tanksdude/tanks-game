@@ -3,15 +3,28 @@
 #include "renderer.h"
 #include "constants.h"
 #include <math.h>
+#include "colormixer.h"
+#include "backgroundrect.h"
 #include "mylib.h"
 #include "wallmanager.h"
 #include "hazardmanager.h"
 #include "collisionhandler.h"
+#include "rng.h"
 
 VertexArray* CircularNoBulletZone::va;
 VertexBuffer* CircularNoBulletZone::vb;
 IndexBuffer* CircularNoBulletZone::ib;
 bool CircularNoBulletZone::initialized_GPU = false;
+
+std::unordered_map<std::string, float> CircularNoBulletZone::getWeights() const {
+	std::unordered_map<std::string, float> weights;
+	weights.insert({ "vanilla", 1.0f });
+	weights.insert({ "random-vanilla", .5f });
+	weights.insert({ "old", 1.0f });
+	weights.insert({ "random-old", .5f });
+	weights.insert({ "random", .25f });
+	return weights;
+}
 
 CircularNoBulletZone::CircularNoBulletZone(double xpos, double ypos, double radius) {
 	x = xpos;
@@ -19,7 +32,7 @@ CircularNoBulletZone::CircularNoBulletZone(double xpos, double ypos, double radi
 	r = radius;
 	gameID = GameManager::getNextID();
 	teamID = HAZARD_TEAM;
-	
+
 	canAcceptPowers = false;
 
 	modifiesTankCollision = true;
@@ -52,11 +65,11 @@ bool CircularNoBulletZone::initializeGPU() {
 		indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
 	}
 
-	vb = new VertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float), GL_DYNAMIC_DRAW);
+	vb = VertexBuffer::MakeVertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float), RenderingHints::static_draw);
 	VertexBufferLayout layout(2);
-	va = new VertexArray(*vb, layout);
+	va = VertexArray::MakeVertexArray(*vb, layout);
 
-	ib = new IndexBuffer(indices, Circle::numOfSides*3);
+	ib = IndexBuffer::MakeIndexBuffer(indices, Circle::numOfSides*3);
 
 	initialized_GPU = true;
 	return true;
@@ -85,11 +98,7 @@ CircleHazard* CircularNoBulletZone::factory(int argc, std::string* argv) {
 	return new CircularNoBulletZone(0, 0, 0);
 }
 
-void CircularNoBulletZone::tick() {
-	GeneralizedNoBulletZone::tick();
-}
-
-bool CircularNoBulletZone::reasonableLocation() {
+bool CircularNoBulletZone::reasonableLocation() const {
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		if (CollisionHandler::fullyCollided(this, WallManager::getWall(i))) {
 			return false;
@@ -113,20 +122,106 @@ bool CircularNoBulletZone::reasonableLocation() {
 	return validLocation();
 }
 
-void CircularNoBulletZone::draw() {
+void CircularNoBulletZone::draw() const {
+	ghostDraw(1.0f);
+}
+
+void CircularNoBulletZone::draw(DrawingLayers layer) const {
+	switch (layer) {
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for CircularNoBulletZone::draw!" << std::endl;
+		case DrawingLayers::under:
+			draw();
+			break;
+
+		case DrawingLayers::normal:
+			//nothing
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//nothing
+			break;
+	}
+}
+
+void CircularNoBulletZone::poseDraw() const {
+	draw();
+}
+
+void CircularNoBulletZone::poseDraw(DrawingLayers layer) const {
+	switch (layer) {
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for CircularNoBulletZone::poseDraw!" << std::endl;
+		case DrawingLayers::under:
+			poseDraw();
+			break;
+
+		case DrawingLayers::normal:
+			//nothing
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//nothing
+			break;
+	}
+}
+
+void CircularNoBulletZone::ghostDraw(float alpha) const {
+	alpha = constrain<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, 0, x, y);
-	
-	//TODO: make drawUnder() a thing
-	ColorValueHolder color = getColor();
+	glm::mat4 MVPM;
+
+	ColorValueHolder color = GeneralizedNoBulletZone::getColor();
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+
+	MVPM = Renderer::GenerateMatrix(r, r, 0, x, y);
 	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*va, *ib, *shader);
 }
 
-void CircularNoBulletZone::drawCPU() {
-	
+void CircularNoBulletZone::ghostDraw(DrawingLayers layer, float alpha) const {
+	switch (layer) {
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for CircularNoBulletZone::ghostDraw!" << std::endl;
+		case DrawingLayers::under:
+			ghostDraw(alpha);
+			break;
+
+		case DrawingLayers::normal:
+			//nothing
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//nothing
+			break;
+	}
 }
 
 CircleHazard* CircularNoBulletZone::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {
@@ -137,10 +232,10 @@ CircleHazard* CircularNoBulletZone::randomizingFactory(double x_start, double y_
 		if (argc >= 1) {
 			radius = std::stod(argv[0]);
 		} else {
-			radius = randFunc2() * (20 - 10) + 10; //TODO: where should these constants be?
+			radius = RNG::randFunc2() * (20 - 10) + 10; //TODO: where should these constants be?
 		}
-		xpos = randFunc2() * (area_width - 2*radius) + (x_start + radius);
-		ypos = randFunc2() * (area_height - 2*radius) + (y_start + radius);
+		xpos = RNG::randFunc2() * (area_width - 2*radius) + (x_start + radius);
+		ypos = RNG::randFunc2() * (area_height - 2*radius) + (y_start + radius);
 		CircleHazard* testCircularNoBulletZone = new CircularNoBulletZone(xpos, ypos, radius);
 		if (testCircularNoBulletZone->reasonableLocation()) {
 			randomized = testCircularNoBulletZone;

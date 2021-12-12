@@ -7,22 +7,30 @@
 #include "wallmanager.h"
 #include "hazardmanager.h"
 #include "resetthings.h"
+#include "rng.h"
 #include <iostream>
 
-std::unordered_map<std::string, float> DefaultRandomLevel::getWeights() {
+std::unordered_map<std::string, float> DefaultRandomLevel::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "vanilla", 2.0f });
-	weights.insert({ "random-vanilla", 2.0f });
-	weights.insert({ "random", 1.0f });
+	weights.insert({ "vanilla", 4.0f });
+	weights.insert({ "random-vanilla", 4.0f });
+	weights.insert({ "random", 2.0f });
 	return weights;
 }
 
-void DefaultRandomLevel::initialize() { //still needs a lot of work
-	int randPos = randFunc() * 5;
-	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), randPos);
+ColorValueHolder DefaultRandomLevel::getDefaultColor() const {
+	//return ColorValueHolder(RNG::randFunc2(), RNG::randFunc2(), RNG::randFunc2());
+	return currentColor;
+}
 
-	ColorValueHolder randColor(randFunc2(), randFunc2(), randFunc2());
-	
+void DefaultRandomLevel::initialize() { //still needs a lot of work
+	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1));
+
+	ColorValueHolder randColor = getDefaultColor();
+	//int tempRand;
+	PositionHolder pos;
+	//std::string* paras;
+
 	//some random walls
 	for (int i = 0; i < 16; i++) {
 		WallManager::pushWall(RandomLevel::makeNewRandomWall(TANK_RADIUS*2.5*2, TANK_RADIUS*2, GAME_WIDTH - 2*(TANK_RADIUS*2.5*2), GAME_HEIGHT - 2*(TANK_RADIUS*2), randColor));
@@ -44,8 +52,9 @@ void DefaultRandomLevel::initialize() { //still needs a lot of work
 		rectHazardWeights[i] = rh->getWeights()["random-vanilla"];
 		delete rh;
 	}
-	float choosingHazardWeights[] = { 0.5f, 1.5f, 2.0f, 1.0f };
+
 	//add the hazards, but randomly based on their weight (if one has a high weight, it can get randomized multiple times)
+	float choosingHazardWeights[] = { 0.5f, 1.5f, 2.0f, 1.0f };
 	for (int i = 0; i < HazardManager::getNumCircleHazardTypes("random-vanilla"); i++) {
 		int count = weightedSelect<float>(choosingHazardWeights, 4); //{0, 1, 2, 3}
 		int index = weightedSelect<float>(circleHazardWeights, HazardManager::getNumCircleHazardTypes("random-vanilla")); //randomize which hazard gets chosen (it could be one that was already chosen)
@@ -69,41 +78,31 @@ void DefaultRandomLevel::initialize() { //still needs a lot of work
 		}
 	}
 	//std::cout << (HazardManager::getNumCircleHazards() + HazardManager::getNumCircleHazards()) << std::endl;
-	
+
+	delete[] circleHazardWeights;
+	delete[] rectHazardWeights;
+
 	//randomize powers:
-	int powerNum = PowerupManager::getNumPowerTypes("random-vanilla");
-	std::string* possiblePowers = new std::string[powerNum];
-	for (int i = 0; i < powerNum; i++) {
-		possiblePowers[i] = PowerupManager::getPowerName("random-vanilla", i);
-	}
-
-	//get stacking status and weight of the powers
-	bool* canStack = new bool[powerNum];
-	float* powerWeights = new float[powerNum];
-	for (int i = 0; i < powerNum; i++) {
-		Power* p = PowerupManager::getPowerFactory("random-vanilla", possiblePowers[i])();
-		std::vector<std::string> attributes = p->getPowerAttributes();
-		canStack[i] = (std::find(attributes.begin(), attributes.end(), "stack") != attributes.end());
-		powerWeights[i] = p->getWeights()["random-vanilla"];
-		delete p;
-	}
-
 	float choosingPowerWeights[] = { 1.0f, 1.0f, .25f };
 	for (int i = 0; i < 4; i++) {
 		int count = weightedSelect<float>(choosingPowerWeights, 3) + 1; //{1, 2, 3}
-		std::string* randPowers = RandomLevel::getRandomPowers(count, canStack, possiblePowers, powerWeights, powerNum);
-		PositionHolder pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-60, GAME_HEIGHT/2-16);
+		std::string* randPowers = RandomLevel::getRandomPowers(count, "random-vanilla");
+		pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-60, GAME_HEIGHT/2-16);
 		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "random-vanilla", randPowers, count));
 		delete[] randPowers;
 	}
 
-	delete[] possiblePowers;
-	delete[] canStack;
-	delete[] powerWeights;
+	//throw somethin' special in the center
+	std::string* ultimatePowerName = RandomLevel::getRandomPowers(1, "ultimate-vanilla");
+	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "ultimate-vanilla", ultimatePowerName[0]));
+	delete[] ultimatePowerName;
 }
 
 Level* DefaultRandomLevel::factory() {
 	return new DefaultRandomLevel();
 }
 
-DefaultRandomLevel::DefaultRandomLevel() { return; }
+DefaultRandomLevel::DefaultRandomLevel() {
+	//TODO: should this go in the constructor or initialize()?
+	currentColor = ColorValueHolder(RNG::randFunc2(), RNG::randFunc2(), RNG::randFunc2());
+}

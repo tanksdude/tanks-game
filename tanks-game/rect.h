@@ -1,6 +1,6 @@
 #pragma once
 
-class Rect {
+struct Rect {
 	friend class DeveloperManager;
 	friend class CollisionHandler;
 	friend class PowerFunctionHelper;
@@ -10,4 +10,9 @@ public:
 	double y;
 	double w;
 	double h;
+
+	double getX() const { return x; }
+	double getY() const { return y; }
+	double getW() const { return w; }
+	double getH() const { return h; }
 };

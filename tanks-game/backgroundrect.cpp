@@ -3,6 +3,8 @@
 #include "constants.h"
 
 ColorValueHolder BackgroundRect::backColor = ColorValueHolder(0xDD/255.0, 0xDD/255.0, 0xDD/255.0);
+//ColorValueHolder BackgroundRect::backColor = ColorValueHolder(0.875f, 0.875f, 0.875f);
+
 ColorValueHolder BackgroundRect::getBackColor() {
 	return backColor;
 }
@@ -28,11 +30,11 @@ bool BackgroundRect::initializeGPU() {
 		2, 3, 0
 	};
 
-	vb = new VertexBuffer(background_positions, 4*2 * sizeof(float), GL_DYNAMIC_DRAW);
+	vb = VertexBuffer::MakeVertexBuffer(background_positions, 4*2 * sizeof(float), RenderingHints::static_draw);
 	VertexBufferLayout layout(2);
-	va = new VertexArray(*vb, layout);
+	va = VertexArray::MakeVertexArray(*vb, layout);
 
-	ib = new IndexBuffer(background_indices, 6);
+	ib = IndexBuffer::MakeIndexBuffer(background_indices, 6);
 
 	initialized_GPU = true;
 	return true;
@@ -51,6 +53,7 @@ bool BackgroundRect::uninitializeGPU() {
 	return true;
 }
 
+/*
 void BackgroundRect::drawCPU() {
 	glColor3f(backColor.getRf(), backColor.getGf(), backColor.getBf());
 	glBegin(GL_POLYGON);
@@ -60,6 +63,7 @@ void BackgroundRect::drawCPU() {
 	glVertex3f(0, GAME_HEIGHT, 0);
 	glEnd();
 }
+*/
 
 void BackgroundRect::draw() {
 	Shader* shader = Renderer::getShader("main");

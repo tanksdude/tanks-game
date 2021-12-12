@@ -1,18 +1,20 @@
 #include "recthazard.h"
 #include "collisionhandler.h"
 
-std::vector<std::string> RectHazard::getHazardTypes() {
+/*
+std::vector<std::string> RectHazard::getHazardTypes() const {
 	std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "random" };
 	return types;
 }
 
-std::unordered_map<std::string, float> RectHazard::getWeights() {
+std::unordered_map<std::string, float> RectHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "vanilla", .5f });
-	weights.insert({ "random-vanilla", .5f });
-	weights.insert({ "random", .5f });
+	weights.insert({ "vanilla", 1.0f });
+	weights.insert({ "random-vanilla", 1.0f });
+	weights.insert({ "random", 1.0f });
 	return weights;
 }
+*/
 
 void RectHazard::modifiedTankCollision(Tank* t) {
 	CollisionHandler::pushMovableAwayFromImmovable(t, this);
@@ -22,8 +24,8 @@ void RectHazard::modifiedBulletCollision(Bullet* b) {
 	CollisionHandler::pushMovableAwayFromImmovable(b, this);
 }
 
-double RectHazard::getHighestOffenseImportance() {
-	double highest = -1; //anything below -1 is really, really unimportant; so much so that it doesn't matter
+double RectHazard::getHighestOffenseImportance() const {
+	double highest = LOW_IMPORTANCE;
 	/*
 	for (int i = 0; i < hazardPowers.size(); i++) {
 		if (hazardPowers[i]->getOffenseImportance() > highest) {
@@ -34,8 +36,8 @@ double RectHazard::getHighestOffenseImportance() {
 	return highest;
 }
 
-double RectHazard::getHighestOffenseTier(double importance) {
-	double highest = -999;
+double RectHazard::getHighestOffenseTier(double importance) const {
+	double highest = LOW_TIER;
 	/*
 	for (int i = 0; i < hazardPowers.size(); i++) {
 		if (hazardPowers[i]->getOffenseImportance() == importance) {
@@ -54,12 +56,12 @@ double RectHazard::getHighestOffenseTier(double importance) {
 	return highest;
 }
 
-double RectHazard::getOffenseTier() {
+double RectHazard::getOffenseTier() const {
 	return getHighestOffenseTier(getHighestOffenseImportance());
 }
 
-double RectHazard::getHighestDefenseImportance() {
-	double highest = -1; //anything below -1 is really, really unimportant; so much so that it doesn't matter
+double RectHazard::getHighestDefenseImportance() const {
+	double highest = LOW_IMPORTANCE;
 	/*
 	for (int i = 0; i < hazardPowers.size(); i++) {
 		if (hazardPowers[i]->getDefenseImportance() > highest) {
@@ -70,8 +72,8 @@ double RectHazard::getHighestDefenseImportance() {
 	return highest;
 }
 
-double RectHazard::getHighestDefenseTier(double importance) {
-	double highest = -999; //TODO: define these constants somewhere
+double RectHazard::getHighestDefenseTier(double importance) const {
+	double highest = LOW_TIER;
 	/*
 	for (int i = 0; i < hazardPowers.size(); i++) {
 		if (hazardPowers[i]->getDefenseImportance() == importance) {
@@ -90,7 +92,7 @@ double RectHazard::getHighestDefenseTier(double importance) {
 	return highest;
 }
 
-double RectHazard::getDefenseTier() {
+double RectHazard::getDefenseTier() const {
 	return getHighestDefenseTier(getHighestDefenseImportance());
 }
 

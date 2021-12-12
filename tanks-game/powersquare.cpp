@@ -5,6 +5,7 @@
 #include "colormixer.h"
 #include "renderer.h"
 #include "powerupmanager.h"
+#include "mylib.h"
 
 //for CPU drawing, in case other #includes go wrong:
 #include <GL/glew.h>
@@ -65,6 +66,14 @@ PowerSquare::PowerSquare(double x_, double y_, std::string* types, std::string* 
 	heldPowers = new Power*[num];
 	for (int i = 0; i < num; i++) {
 		heldPowers[i] = PowerupManager::getPowerFactory(types[i], names[i])();
+	}
+}
+
+PowerSquare::PowerSquare(const PowerSquare& other) : PowerSquare(other.x+PowerSquare::POWER_WIDTH/2, other.y+PowerSquare::POWER_HEIGHT/2) {
+	this->numOfPowers = other.numOfPowers;
+	this->heldPowers = new Power*[numOfPowers];
+	for (int i = 0; i < numOfPowers; i++) {
+		heldPowers[i] = PowerupManager::getPowerFactory(other.heldPowers[i]->getPowerTypes()[0], other.heldPowers[i]->getName())();
 	}
 }
 
@@ -138,12 +147,12 @@ bool PowerSquare::initializeGPU() {
 		11, 10, 6
 	};
 
-	vb = new VertexBuffer(positions, 12*2 * sizeof(float), GL_DYNAMIC_DRAW);
+	vb = VertexBuffer::MakeVertexBuffer(positions, 12*2 * sizeof(float), RenderingHints::dynamic_draw);
 	VertexBufferLayout layout(2);
-	va = new VertexArray(*vb, layout);
+	va = VertexArray::MakeVertexArray(*vb, layout);
 
-	ib_main = new IndexBuffer(main_indices, 6*4);
-	ib_outline = new IndexBuffer(outline_indices, 6*4);
+	ib_main = IndexBuffer::MakeIndexBuffer(main_indices, 6*4);
+	ib_outline = IndexBuffer::MakeIndexBuffer(outline_indices, 6*4);
 
 	initialized_GPU = true;
 	return true;
@@ -163,11 +172,11 @@ bool PowerSquare::uninitializeGPU() {
 	return true;
 }
 
-ColorValueHolder PowerSquare::getColor() {
+ColorValueHolder PowerSquare::getColor() const {
 	if (numOfPowers == 1) {
 		return heldPowers[0]->getColor();
 	} else {
-		double highest = -1;
+		double highest = LOW_IMPORTANCE;
 		for (int i = 0; i < numOfPowers; i++) {
 			if (heldPowers[i]->getColorImportance() > highest) {
 				highest = heldPowers[i]->getColorImportance();
@@ -193,29 +202,139 @@ void PowerSquare::givePower(Tank* t) {
 	//good enough for now
 }
 
-void PowerSquare::givePower(Bullet*) { return; } //don't think about it now, possibly ever; it's weird
-//void givePower(Hazard*);
+//void PowerSquare::givePower(Bullet*);
+//void PowerSquare::givePower(Hazard*);
 
-void PowerSquare::draw() {
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM = Renderer::GenerateMatrix(w, h, 0, x, y);
-	ColorValueHolder color = getColor();
+void PowerSquare::draw() const {
+	drawOutlineThing();
+	drawMain();
+}
 
-	if (numOfPowers > 1) { //move to drawUnder()
-		ColorValueHolder backgroundMix = ColorMixer::mix(color, BackgroundRect::getBackColor());
-		shader->setUniform4f("u_color", backgroundMix.getRf(), backgroundMix.getGf(), backgroundMix.getBf(), backgroundMix.getAf());
-		shader->setUniformMat4f("u_MVP", MVPM);
+void PowerSquare::draw(DrawingLayers layer) const {
+	switch (layer) {
+		case DrawingLayers::under:
+			//nothing
+			//TODO: should drawOutlineThing() be here?
+			break;
 
-		Renderer::Draw(*va, *ib_outline, *shader);
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for PowerSquare::draw!" << std::endl;
+		case DrawingLayers::normal:
+			draw();
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
 	}
+}
 
+void PowerSquare::poseDraw() const {
+	drawOutlineThing();
+	drawMain();
+}
+
+void PowerSquare::poseDraw(DrawingLayers layer) const {
+	switch (layer) {
+		case DrawingLayers::under:
+			//nothing
+			break;
+
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for PowerSquare::poseDraw!" << std::endl;
+		case DrawingLayers::normal:
+			poseDraw();
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
+}
+
+void PowerSquare::ghostDraw(float alpha) const {
+	drawOutlineThing(alpha);
+	drawMain(alpha);
+}
+
+void PowerSquare::ghostDraw(DrawingLayers layer, float alpha) const {
+	switch (layer) {
+		case DrawingLayers::under:
+			//nothing
+			break;
+
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for PowerSquare::ghostDraw!" << std::endl;
+		case DrawingLayers::normal:
+			ghostDraw(alpha);
+			break;
+
+		case DrawingLayers::effects:
+			//nothing
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
+}
+
+inline void PowerSquare::drawMain(float alpha) const {
+	alpha = constrain<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
+	Shader* shader = Renderer::getShader("main");
+	glm::mat4 MVPM;
+
+	ColorValueHolder color = getColor();
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+
+	MVPM = Renderer::GenerateMatrix(w, h, 0, x, y);
 	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*va, *ib_main, *shader);
 }
 
-void PowerSquare::drawCPU() {
+inline void PowerSquare::drawOutlineThing(float alpha) const {
+	alpha = constrain<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
+	Shader* shader = Renderer::getShader("main");
+	glm::mat4 MVPM;
+
+	if (numOfPowers > 1) {
+		ColorValueHolder backgroundMix = ColorMixer::mix(getColor(), BackgroundRect::getBackColor());
+		backgroundMix = ColorMixer::mix(BackgroundRect::getBackColor(), backgroundMix, alpha);
+		shader->setUniform4f("u_color", backgroundMix.getRf(), backgroundMix.getGf(), backgroundMix.getBf(), backgroundMix.getAf());
+
+		MVPM = Renderer::GenerateMatrix(w, h, 0, x, y);
+		shader->setUniformMat4f("u_MVP", MVPM);
+
+		Renderer::Draw(*va, *ib_outline, *shader);
+	}
+}
+
+/*
+void PowerSquare::drawCPU() const {
 	ColorValueHolder color = getColor();
 	if (numOfPowers > 1) { //move to drawUnder()
 		ColorValueHolder backgroundMix = ColorMixer::mix(color, BackgroundRect::getBackColor());
@@ -274,3 +393,4 @@ void PowerSquare::drawCPU() {
 
 	glEnd();
 }
+*/

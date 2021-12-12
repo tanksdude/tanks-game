@@ -2,282 +2,333 @@
 #include "priorityhandler.h"
 #include "collisionhandler.h"
 #include "tankmanager.h"
+#include "constants.h"
+#include <iostream>
 
 //TODO?: CircleHazard and RectHazard use CollisionHandler for their modified tank/bullet collision by default
 
-void EndGameHandler::finalizeScores() {
-	//TODO: GameManager holds information about objects and their IDs (and what teamIDs are being used)
-	//TODO: this logic isn't done
-	//notes: in the determineWinner functions that involve a tank: add killer (and killee) to list; when finalizing scores, add wins as needed (to GameManager, because that's supposed to hold the team wins)
+std::unordered_map<Team_ID, int> EndGameHandler::teamWins;
+std::vector<EndGameHandler::Team_IDAndString> EndGameHandler::teamsParticipating;
+std::vector<EndGameHandler::DoubleTeam_ID> EndGameHandler::killEvents;
 
-	bool* deadStatus = new bool[TankManager::getNumTanks()];
-	bool everyTankIsDead = true;
-	for (int i = 0; i < TankManager::getNumTanks(); i++) {
-		deadStatus[i] = (TankManager::getTank(i)->dead);
-		if (!deadStatus[i]) {
-			everyTankIsDead = false;
-		}
-	}
-
-	if (!everyTankIsDead) {
-		for (int i = 0; i < TankManager::getNumTanks(); i++) {
-			if (!deadStatus[i]) {
-				TankManager::getTank(i)->wins++;
-			}
-		}
+void EndGameHandler::addTeamToWatch(Team_ID teamID, std::string teamName) {
+	if (teamID == DEFAULT_TEAM) {
+		std::cerr << "WARNING: DEFAULT_TEAM is not allowed to have a score" << std::endl;
+	} else {
+		teamsParticipating.push_back({ teamID, teamName });
+		teamWins.insert({ teamID, 0 });
 	}
 }
 
-InteractionBoolHolder EndGameHandler::determineWinner(Tank* t, Bullet* b) {
-	char result = PriorityHandler::determinePriority(t, b);
-	bool tankDies = false, bulletDies = false;
-	if (result <= -2) {
-		bool firstDies = rand()%2;
-		if (firstDies) {
-			tankDies = true;
-		} else {
-			bulletDies = true;
+void EndGameHandler::clearWatchingTeams() {
+	for (int i = 0; i < teamsParticipating.size(); i++) {
+		teamWins.erase(teamsParticipating[i].teamID);
+	}
+	teamsParticipating.clear();
+	killEvents.clear(); //just in case
+}
+
+void EndGameHandler::finalizeScores() {
+	//TODO: GameManager holds information about objects and their IDs (and what teamIDs are being used?)
+	//TODO: is this done? (will definitely update when multi-tank mode becomes a thing)
+
+	//process kill events
+	std::vector<EndGameHandler::DoubleTeam_ID> pastEvents; //in case tank dies from multiple bullets at the same time
+	for (int i = 0; i < killEvents.size(); i++) {
+		bool previouslyHappened = false;
+		for (int j = 0; j < pastEvents.size(); j++) {
+			if ((killEvents[i].killer == pastEvents[j].killer) && (killEvents[i].killee == pastEvents[j].killee)) {
+				previouslyHappened = true;
+				break;
+			}
 		}
-	} else if (result == -1) { //both die
-		tankDies = true;
-		bulletDies = true;
-	} else if (result >= 2) { //it's a draw, so neither dies (probably not going to happen)
-		//nothing
-	} else {
-		if (result == 0) {
-			tankDies = true;
-		} else {
-			bulletDies = true;
+		if (!previouslyHappened) {
+			if (killEvents[i].killer != killEvents[i].killee) { //friendly fire score increase prevention
+				teamWins[killEvents[i].killer]++;
+				pastEvents.push_back(killEvents[i]);
+			}
+			/*
+			//... maybe
+			else {
+				teamWins[killEvents[i].killer]--;
+			}
+			*/
 		}
 	}
+	killEvents.clear();
+
+	//TODO: if two tanks kill each other at the same time, then they'll both get a point; might change it so that can't happen, though I think the logic will be complicated when num of tanks > 2
+	//other note: if hazard and tank kill other tank at same time, they both get a point; this is the intended behavior
+	//quick note: there can be many hazards in the level, so the hazard team can get multiple points in one round (TODO: the logic can't deal with team mode, so fix that)
+}
+
+bool EndGameHandler::shouldGameEnd() {
+	//TODO: account for two tanks on the same team (probably need to make GameManager keep track of stuff)
+	int numOfAliveTanks = 0;
+	for (int i = 0; i < TankManager::getNumTanks(); i++) {
+		if (!TankManager::getTank(i)->dead) {
+			numOfAliveTanks++;
+		}
+	}
+	return (numOfAliveTanks <= 1);
+}
+
+InteractionBoolHolder EndGameHandler::determineWinner(Tank* t, Bullet* b) {
+	PriorityResult result = PriorityHandler::determinePriority(t, b);
+	bool tankDies = false, bulletDies = false;
+	switch (result) {
+		case PriorityResult::bothDie:
+			tankDies = true;
+			bulletDies = true;
+			break;
+		case PriorityResult::neitherDie:
+			//nothing
+			break;
+		case PriorityResult::firstDies:
+			tankDies = true;
+			break;
+		case PriorityResult::secondDies:
+			bulletDies = true;
+			break;
+		default:
+			std::cerr << "WARNING: unknown PriorityResult!" << std::endl;
+			//neither die
+			break;
+	}
 	if (tankDies) {
+		//if the bullet wants to kill the tank, the bullet must die
+		bulletDies = true;
+
 		tankDies = t->kill();
+		if (tankDies) {
+			killEvents.push_back({ b->getTeamID(), t->getTeamID() });
+		}
 	}
 	return { tankDies, bulletDies };
 }
 
 InteractionBoolHolder EndGameHandler::determineWinner(Tank* t1, Tank* t2) {
-	char result = PriorityHandler::determinePriority(t1, t2);
+	PriorityResult result = PriorityHandler::determinePriority(t1, t2);
 	bool firstTankDies = false, secondTankDies = false;
-	if (result <= -2) {
-		bool firstDies = rand()%2;
-		if (firstDies) {
+	switch (result) {
+		case PriorityResult::bothDie:
 			firstTankDies = true;
-		} else {
 			secondTankDies = true;
-		}
-	} else if (result == -1) { //both die
-		firstTankDies = true;
-		secondTankDies = true;
-	} else if (result >= 2) { //it's a draw, so neither dies (normal result)
-		CollisionHandler::pushMovableAwayFromMovable(t1, t2);
-	} else {
-		if (result == 0) {
+			break;
+		case PriorityResult::neitherDie: //normal result
+			CollisionHandler::pushMovableAwayFromMovable(t1, t2);
+			break;
+		case PriorityResult::firstDies:
 			firstTankDies = true;
-		} else {
+			break;
+		case PriorityResult::secondDies:
 			secondTankDies = true;
-		}
+			break;
+		default:
+			std::cerr << "WARNING: unknown PriorityResult!" << std::endl;
+			//neither die
+			break;
 	}
 	if (firstTankDies) {
 		firstTankDies = t1->kill();
+		if (firstTankDies) {
+			killEvents.push_back({ t2->getTeamID(), t1->getTeamID() });
+		}
 	}
 	if (secondTankDies) {
 		secondTankDies = t2->kill();
+		if (secondTankDies) {
+			killEvents.push_back({ t1->getTeamID(), t2->getTeamID() });
+		}
 	}
 	return { firstTankDies, secondTankDies };
 }
 
 InteractionBoolHolder EndGameHandler::determineWinner(Bullet* b1, Bullet* b2) {
-	char result = PriorityHandler::determinePriority(b1, b2);
+	PriorityResult result = PriorityHandler::determinePriority(b1, b2);
 	bool firstBulletDies = false, secondBulletDies = false;
-	if (result <= -2) {
-		bool firstDies = rand()%2;
-		if (firstDies) {
+	switch (result) {
+		case PriorityResult::bothDie:
 			firstBulletDies = true;
-		} else {
 			secondBulletDies = true;
-		}
-	} else if (result == -1) { //both die
-		firstBulletDies = true;
-		secondBulletDies = true;
-	} else if (result >= 2) { //it's a draw, so neither dies
-		//nothing
-	} else {
-		if (result == 0) {
+			break;
+		case PriorityResult::neitherDie:
+			//nothing
+			break;
+		case PriorityResult::firstDies:
 			firstBulletDies = true;
-		} else {
+			break;
+		case PriorityResult::secondDies:
 			secondBulletDies = true;
-		}
+			break;
+		default:
+			std::cerr << "WARNING: unknown PriorityResult!" << std::endl;
+			//neither die
+			break;
 	}
 	return { firstBulletDies, secondBulletDies };
 }
 
 InteractionBoolHolder EndGameHandler::determineWinner(Tank* t, CircleHazard* ch) {
-	char result = PriorityHandler::determinePriority(t, ch);
+	PriorityResult result = PriorityHandler::determinePriority(t, ch);
 	bool tankDies = false, circleHazardDies = false;
-	if (result <= -2) {
-		bool firstDies = rand()%2;
-		if (firstDies) {
+	switch (result) {
+		case PriorityResult::bothDie:
+			tankDies = true;
+			circleHazardDies = true;
+			break;
+		case PriorityResult::neitherDie:
+			if (ch->modifiesTankCollision) {
+				if (ch->hasSpecialEffectTankCollision) {
+					ch->specialEffectTankCollision(t);
+				}
+				ch->modifiedTankCollision(t);
+			} else {
+				if (ch->hasSpecialEffectTankCollision) {
+					ch->specialEffectTankCollision(t);
+				}
+				CollisionHandler::pushMovableAwayFromImmovable(t, ch);
+			}
+			break;
+		case PriorityResult::firstDies:
 			if (ch->hasSpecialEffectTankCollision) {
 				ch->specialEffectTankCollision(t);
 			}
 			tankDies = true;
-		} else {
+			break;
+		case PriorityResult::secondDies:
 			circleHazardDies = true;
-		}
-	} else if (result == -1) { //both die
-		tankDies = true;
-		circleHazardDies = true;
-	} else if (result >= 2) { //it's a draw, so neither dies
-		if (ch->modifiesTankCollision) {
-			if (ch->hasSpecialEffectTankCollision) {
-				ch->specialEffectTankCollision(t);
-			}
-			ch->modifiedTankCollision(t);
-		} else {
-			if (ch->hasSpecialEffectTankCollision) {
-				ch->specialEffectTankCollision(t);
-			}
-			CollisionHandler::pushMovableAwayFromImmovable(t, ch);
-		}
-	} else {
-		if (result == 0) {
-			if (ch->hasSpecialEffectTankCollision) {
-				ch->specialEffectTankCollision(t);
-			}
-			tankDies = true;
-		} else {
-			circleHazardDies = true;
-		}
+			break;
+		default:
+			std::cerr << "WARNING: unknown PriorityResult!" << std::endl;
+			//neither die
+			break;
 	}
 	if (tankDies) {
 		tankDies = t->kill();
+		if (tankDies) {
+			killEvents.push_back({ ch->getTeamID(), t->getTeamID() });
+		}
 	}
 	return { tankDies, circleHazardDies };
 }
 
 InteractionBoolHolder EndGameHandler::determineWinner(Tank* t, RectHazard* rh) {
-	char result = PriorityHandler::determinePriority(t, rh);
+	PriorityResult result = PriorityHandler::determinePriority(t, rh);
 	bool tankDies = false, rectHazardDies = false;
-	if (result <= -2) {
-		bool firstDies = rand()%2;
-		if (firstDies) {
+	switch (result) {
+		case PriorityResult::bothDie:
+			tankDies = true;
+			rectHazardDies = true;
+			break;
+		case PriorityResult::neitherDie:
+			if (rh->modifiesTankCollision) {
+				if (rh->hasSpecialEffectTankCollision) {
+					rh->specialEffectTankCollision(t);
+				}
+				rh->modifiedTankCollision(t);
+			} else {
+				if (rh->hasSpecialEffectTankCollision) {
+					rh->specialEffectTankCollision(t);
+				}
+				CollisionHandler::pushMovableAwayFromImmovable(t, rh);
+			}
+			break;
+		case PriorityResult::firstDies:
 			if (rh->hasSpecialEffectTankCollision) {
 				rh->specialEffectTankCollision(t);
 			}
 			tankDies = true;
-		} else {
+			break;
+		case PriorityResult::secondDies:
 			rectHazardDies = true;
-		}
-	} else if (result == -1) { //both die
-		tankDies = true;
-		rectHazardDies = true;
-	} else if (result >= 2) { //it's a draw, so neither dies
-		if (rh->modifiesTankCollision) {
-			if (rh->hasSpecialEffectTankCollision) {
-				rh->specialEffectTankCollision(t);
-			}
-			rh->modifiedTankCollision(t);
-		} else {
-			if (rh->hasSpecialEffectTankCollision) {
-				rh->specialEffectTankCollision(t);
-			}
-			CollisionHandler::pushMovableAwayFromImmovable(t, rh);
-		}
-	} else {
-		if (result == 0) {
-			if (rh->hasSpecialEffectTankCollision) {
-				rh->specialEffectTankCollision(t);
-			}
-			tankDies = true;
-		} else {
-			rectHazardDies = true;
-		}
+			break;
+		default:
+			std::cerr << "WARNING: unknown PriorityResult!" << std::endl;
+			//neither die
+			break;
 	}
 	if (tankDies) {
 		tankDies = t->kill();
+		if (tankDies) {
+			killEvents.push_back({ rh->getTeamID(), t->getTeamID() });
+		}
 	}
 	return { tankDies, rectHazardDies };
 }
 
 InteractionBoolHolder EndGameHandler::determineWinner(Bullet* b, CircleHazard* ch) {
-	char result = PriorityHandler::determinePriority(b, ch);
+	PriorityResult result = PriorityHandler::determinePriority(b, ch);
 	bool bulletDies = false, circleHazardDies = false;
-	if (result <= -2) {
-		bool firstDies = rand()%2;
-		if (firstDies) {
+	switch (result) {
+		case PriorityResult::bothDie:
+			bulletDies = true;
+			circleHazardDies = true;
+			break;
+		case PriorityResult::neitherDie:
+			if (ch->modifiesBulletCollision) {
+				if (ch->hasSpecialEffectBulletCollision) {
+					ch->specialEffectBulletCollision(b);
+				}
+				ch->modifiedBulletCollision(b);
+			} else {
+				if (ch->hasSpecialEffectBulletCollision) {
+					ch->specialEffectBulletCollision(b);
+				}
+				CollisionHandler::pushMovableAwayFromImmovable(b, ch);
+			}
+			break;
+		case PriorityResult::firstDies:
 			if (ch->hasSpecialEffectBulletCollision) {
 				ch->specialEffectBulletCollision(b);
 			}
 			bulletDies = true;
-		} else {
+			break;
+		case PriorityResult::secondDies:
 			circleHazardDies = true;
-		}
-	} else if (result == -1) { //both die
-		bulletDies = true;
-		circleHazardDies = true;
-	} else if (result >= 2) { //it's a draw, so neither dies
-		if (ch->modifiesBulletCollision) {
-			if (ch->hasSpecialEffectBulletCollision) {
-				ch->specialEffectBulletCollision(b);
-			}
-			ch->modifiedBulletCollision(b);
-		} else {
-			if (ch->hasSpecialEffectBulletCollision) {
-				ch->specialEffectBulletCollision(b);
-			}
-			CollisionHandler::pushMovableAwayFromImmovable(b, ch);
-		}
-	} else {
-		if (result == 0) {
-			if (ch->hasSpecialEffectBulletCollision) {
-				ch->specialEffectBulletCollision(b);
-			}
-			bulletDies = true;
-		} else {
-			circleHazardDies = true;
-		}
+			break;
+		default:
+			std::cerr << "WARNING: unknown PriorityResult!" << std::endl;
+			//neither die
+			break;
 	}
 	return { bulletDies, circleHazardDies };
 }
 
 InteractionBoolHolder EndGameHandler::determineWinner(Bullet* b, RectHazard* rh) {
-	char result = PriorityHandler::determinePriority(b, rh);
+	PriorityResult result = PriorityHandler::determinePriority(b, rh);
 	bool bulletDies = false, rectHazardDies = false;
-	if (result <= -2) {
-		bool firstDies = rand()%2;
-		if (firstDies) {
+	switch (result) {
+		case PriorityResult::bothDie:
+			bulletDies = true;
+			rectHazardDies = true;
+			break;
+		case PriorityResult::neitherDie:
+			if (rh->modifiesBulletCollision) {
+				if (rh->hasSpecialEffectBulletCollision) {
+					rh->specialEffectBulletCollision(b);
+				}
+				rh->modifiedBulletCollision(b);
+			} else {
+				if (rh->hasSpecialEffectBulletCollision) {
+					rh->specialEffectBulletCollision(b);
+				}
+				CollisionHandler::pushMovableAwayFromImmovable(b, rh);
+			}
+			break;
+		case PriorityResult::firstDies:
 			if (rh->hasSpecialEffectBulletCollision) {
 				rh->specialEffectBulletCollision(b);
 			}
 			bulletDies = true;
-		} else {
+			break;
+		case PriorityResult::secondDies:
 			rectHazardDies = true;
-		}
-	} else if (result == -1) { //both die
-		bulletDies = true;
-		rectHazardDies = true;
-	} else if (result >= 2) { //it's a draw, so neither dies
-		if (rh->modifiesBulletCollision) {
-			if (rh->hasSpecialEffectBulletCollision) {
-				rh->specialEffectBulletCollision(b);
-			}
-			rh->modifiedBulletCollision(b);
-		} else {
-			if (rh->hasSpecialEffectBulletCollision) {
-				rh->specialEffectBulletCollision(b);
-			}
-			CollisionHandler::pushMovableAwayFromImmovable(b, rh);
-		}
-	} else {
-		if (result == 0) {
-			if (rh->hasSpecialEffectBulletCollision) {
-				rh->specialEffectBulletCollision(b);
-			}
-			bulletDies = true;
-		} else {
-			rectHazardDies = true;
-		}
+			break;
+		default:
+			std::cerr << "WARNING: unknown PriorityResult!" << std::endl;
+			//neither die
+			break;
 	}
 	return { bulletDies, rectHazardDies };
 }

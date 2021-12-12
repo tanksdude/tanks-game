@@ -4,15 +4,17 @@
 class FewObstaclesLevel : public Level {
 	//really needs a better name
 public:
-	std::string getName() { return "few obstacles"; }
-	std::vector<std::string> getLevelTypes() override {
+	virtual std::string getName() const override { return "few_obstacles"; }
+	virtual ColorValueHolder getDefaultColor() const override { return ColorValueHolder(0.25f, 0.75f, 0x99/255.0); } //JS: #44CC99
+	virtual std::vector<std::string> getLevelTypes() const override {
 		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "old", "random-old", "random" };
-		//it's not really an old level (missing the original walls) but whatever
 		return types;
 	}
-	std::unordered_map<std::string, float> getWeights() override;
-	void initialize();
+	virtual std::unordered_map<std::string, float> getWeights() const override;
+
+	virtual void initialize() override;
 
 	FewObstaclesLevel();
+	virtual ~FewObstaclesLevel() { return; }
 	static Level* factory();
 };

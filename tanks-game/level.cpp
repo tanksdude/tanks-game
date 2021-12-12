@@ -1,29 +1,57 @@
 #include "level.h"
 
-//this shouldn't really need to be changed, but I'll leave it here
-std::vector<std::string> Level::getLevelTypes() {
+/*
+std::vector<std::string> Level::getLevelTypes() const {
 	std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "random" };
 	return types;
 }
 
-std::unordered_map<std::string, float> Level::getWeights() {
+std::unordered_map<std::string, float> Level::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "vanilla", .5f });
-	weights.insert({ "random-vanilla", .5f });
-	weights.insert({ "random", .5f });
+	weights.insert({ "vanilla", 1.0f });
+	weights.insert({ "random-vanilla", 1.0f });
+	weights.insert({ "random", 1.0f });
 	return weights;
+}
+*/
+
+void Level::tickLevelEffects() {
+	for (int i = 0; i < getNumEffects(); i++) {
+		effects[i]->tick(this);
+	}
+}
+
+void Level::doLevelEffects() {
+	for (int i = 0; i < getNumEffects(); i++) {
+		effects[i]->doEffects(this);
+	}
+}
+
+void Level::drawLevelEffects() const {
+	for (int i = 0; i < getNumEffects(); i++) {
+		effects[i]->draw();
+	}
+}
+
+void Level::drawLevelEffects(DrawingLayers layer) const {
+	for (int i = 0; i < getNumEffects(); i++) {
+		effects[i]->draw(layer);
+	}
+}
+
+Level::~Level() {
+	for (int i = 0; i < getNumEffects(); i++) {
+		delete effects[i];
+	}
+	effects.clear(); //does ~Level happen before ~child_Level?
 }
 
 /*
-TODO: separate levels from level effects? (... is this not the case?)
-
-list of (eventual) levels or level effects, I dunno:
-|random (just need to flesh it out once powers and hazards exist)
+list of (eventual) levels:
 |empty
-invisibility? (no one appreciates it though)
-wind
-ice (no one really likes it, as expected)
-mines
+|invisible walls
+|wind
+|ice and mines
 
 
 list of potential levels:
@@ -32,13 +60,18 @@ maze
 
 
 boring levels:
-hiding places (has mines?)
+|hiding places (has mines?)
 |evened corridors
 |few obstacles (homing level)
-turret level (kinda boring)
+|turret level (kinda boring)
 |concealed powers (needs some spice to become good)
-many hazards
-lightning corners (needs spice, but is a kinda fun level)
+|many hazards
+|lightning corners (needs spice, but is a kinda fun level)
+
+
+other:
+wallless (no walls, only no bullet zones)
+level that randomly gives powers (that last one second)?
 
 
 test levels (purpose: to showcase some functionality):

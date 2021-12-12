@@ -1,9 +1,10 @@
 #include "targetingturret.h"
 #include "gamemanager.h"
 #include "renderer.h"
-#include "colormixer.h"
-//#include "constants.h"
+#include "constants.h"
 #include <math.h>
+#include "colormixer.h"
+#include "backgroundrect.h"
 #include <algorithm>
 #include "mylib.h"
 #include "tank.h"
@@ -12,6 +13,7 @@
 #include "wallmanager.h"
 #include "hazardmanager.h"
 #include "collisionhandler.h"
+#include "rng.h"
 #include <iostream>
 
 VertexArray* TargetingTurret::va;
@@ -23,6 +25,16 @@ VertexArray* TargetingTurret::reticule_va;
 VertexBuffer* TargetingTurret::reticule_vb;
 bool TargetingTurret::initialized_GPU = false;
 
+std::unordered_map<std::string, float> TargetingTurret::getWeights() const {
+	std::unordered_map<std::string, float> weights;
+	weights.insert({ "vanilla", 1.0f });
+	weights.insert({ "random-vanilla", 1.0f });
+	weights.insert({ "old", 1.0f });
+	weights.insert({ "random-old", 1.0f });
+	weights.insert({ "random", 1.0f });
+	return weights;
+}
+
 TargetingTurret::TargetingTurret(double xpos, double ypos, double angle, bool) : StationaryTurret(xpos, ypos, angle, true) {
 	//x = xpos;
 	//y = ypos;
@@ -31,12 +43,13 @@ TargetingTurret::TargetingTurret(double xpos, double ypos, double angle, bool) :
 	//gameID = GameManager::getNextID();
 	//teamID = HAZARD_TEAM;
 
+	targeting = false;
+	targetingCount = 0;
+	trackingID = this->getGameID();
 	ColorValueHolder temp[2] = { {1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f} };
 	std::copy(temp, temp+2, reticuleColors);
 
 	canAcceptPowers = false; //... true? probably; hazardpowers were thought up with patrolling turret in mind
-
-	initializeGPU();
 }
 
 TargetingTurret::TargetingTurret(double xpos, double ypos, double angle) : TargetingTurret(xpos, ypos, angle, true) {
@@ -75,17 +88,17 @@ bool TargetingTurret::initializeGPU() {
 		indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
 	}
 
-	vb = new VertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float), GL_STATIC_DRAW);
+	vb = VertexBuffer::MakeVertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float), RenderingHints::dynamic_draw);
 	VertexBufferLayout layout(2);
-	va = new VertexArray(*vb, layout);
+	va = VertexArray::MakeVertexArray(*vb, layout);
 
-	ib = new IndexBuffer(indices, Circle::numOfSides*3);
+	ib = IndexBuffer::MakeIndexBuffer(indices, Circle::numOfSides*3);
 
 	//cannon:
 	float cannon_positions[4] = { 0.0f, 0.0f, 1.0f, 0.0f };
-	cannon_vb = new VertexBuffer(cannon_positions, 2*2 * sizeof(float));
+	cannon_vb = VertexBuffer::MakeVertexBuffer(cannon_positions, 2*2 * sizeof(float), RenderingHints::dynamic_draw);
 	VertexBufferLayout cannon_layout(2);
-	cannon_va = new VertexArray(*cannon_vb, cannon_layout);
+	cannon_va = VertexArray::MakeVertexArray(*cannon_vb, cannon_layout);
 
 	//targeting reticule:
 	//the circle is the same as the body
@@ -95,9 +108,9 @@ bool TargetingTurret::initializeGPU() {
 		-0.75f,  0.0f,  -1.25f,  0.0f,  //left
 		 0.0f,  -0.75f,  0.0f,  -1.25f  //down
 	};
-	reticule_vb = new VertexBuffer(reticule_positions, 16*2 * sizeof(float));
+	reticule_vb = VertexBuffer::MakeVertexBuffer(reticule_positions, 16*2 * sizeof(float));
 	VertexBufferLayout reticule_layout(2);
-	reticule_va = new VertexArray(*reticule_vb, reticule_layout);
+	reticule_va = VertexArray::MakeVertexArray(*reticule_vb, reticule_layout);
 
 	initialized_GPU = true;
 	return true;
@@ -134,108 +147,130 @@ CircleHazard* TargetingTurret::factory(int argc, std::string* argv) {
 	return new TargetingTurret(0, 0, 0);
 }
 
+inline void TargetingTurret::updateTrackingPos(const Tank* t, bool pointedAt) {
+	if (pointedAt) {
+		targetingX = t->x;
+		targetingY = t->y;
+	} else {
+		double dist = sqrt(pow(t->x - x, 2) + pow(t->y - y, 2));
+		targetingX = x + dist * cos(direction.getAngle());
+		targetingY = y + dist * sin(direction.getAngle());
+	}
+}
+
 void TargetingTurret::tick() {
 	//tickCount is unused... maybe targetingCount should replace it...
+
 	if (currentState == 0) { //either tracking a tank or doing nothing
-		//should this be else?
-		if(targeting) { //tracking tank
-			bool tankIsVisible = false; //singular
-			for (int i = 0; i < TankManager::getNumTanks(); i++) {
-				//check if 1. tank with gameID of trackingID exists, 2. no walls blocking line of sight to tank
-				Tank* t = TankManager::getTank(i); //TODO: go through GameManager because it should have every object and their IDs
-				if (t->getGameID() == this->trackingID) { //exists
-					if (canSeeTank(t)) { //no obstructions
-						tankIsVisible = true;
-						//main logic here
-						turnTowardsTank(t);
-						if (isPointedAt(t)) {
-							targetingCount++;
-							if (targetingCount >= stateMultiplier[0] * tickCycle) {
-								currentState = 1;
-								targetingCount = 0;
-							}
-							targetingX = t->x;
-							targetingY = t->y;
-						} else {
-							targetingCount--;
-							if (targetingCount < 0) {
-								targetingCount = 0;
-							}
-							double dist = sqrt(pow(x - t->x, 2) + pow(y - t->y, 2));
-							targetingX = x + dist * cos(angle);
-							targetingY = y + dist * sin(angle);
-						}
-					}
-				}
-			}
-			if (!tankIsVisible) {
-				targeting = false;
-			}
+		if (targeting) { //tracking tank
+			tick_continueTracking();
 		}
-
 		if (!targeting) { //looking for a tank
-			targetingCount = 0;
-
-			std::vector<bool> tankVisibility; tankVisibility.reserve(TankManager::getNumTanks()); //not using regular arrays so people (including future me) can actually read this
-			std::vector<double> distancesToTank; distancesToTank.reserve(TankManager::getNumTanks()); //TODO: option for angle-based selection (look at homing in PowerFunctionHelper)
-			for (int i = 0; i < TankManager::getNumTanks(); i++) {
-				Tank* t = TankManager::getTank(i); //TODO: go through GameManager because it should have every object and their IDs
-				tankVisibility.push_back(canSeeTank(t));
-				if (tankVisibility.at(i)) {
-					distancesToTank.push_back(sqrt(pow(x - t->x, 2) + pow(y - t->y, 2)));
-				} else {
-					distancesToTank.push_back(GAME_WIDTH * GAME_HEIGHT);
-				}
-			}
-
-			double minDist = GAME_WIDTH * GAME_HEIGHT;
-			std::vector<int> tankIndices; tankIndices.reserve(TankManager::getNumTanks()); //multiple tanks can have same distance
-			for (int i = 0; i < TankManager::getNumTanks(); i++) {
-				if (distancesToTank[i] == minDist) {
-					tankIndices.push_back(i);
-				} else if(distancesToTank[i] < minDist) {
-					tankIndices.clear();
-					tankIndices.push_back(i);
-				}
-			}
-
-			int indexOfTargetedTank;
-			if (tankIndices.size() == 1) {
-				indexOfTargetedTank = tankIndices[0];
-			} else {
-				indexOfTargetedTank = tankIndices[int(randFunc() * tankIndices.size())];
-			}
-			
-			if (tankVisibility[indexOfTargetedTank]) {
-				Tank* t = TankManager::getTank(indexOfTargetedTank);
-				trackingID = t->getGameID();
-				targeting = true;
-				double dist = sqrt(pow(x - t->x, 2) + pow(y - t->y, 2));
-				targetingX = this->x + dist * cos(this->angle);
-				targetingY = this->y + dist * sin(this->angle);
-			}
+			tick_lookForNewTarget();
 		}
 	}
-	if (currentState == 1) {
-		targetingCount++;
-		if (targetingCount >= stateMultiplier[1] * tickCycle) {
-			BulletManager::pushBullet(new Bullet(x + r*cos(angle), y + r*sin(angle), r*BULLET_TO_TANK_RADIUS_RATIO, angle, Tank::default_maxSpeed*BULLET_TO_TANK_SPEED_RATIO, this->getTeamID(), this->getGameID()));
-			currentState = 2;
-			targetingCount = 0;
-			targeting = false;
-		}
+
+	if (currentState == 1) { //charging up to shoot (and shooting)
+		tick_chargeUp();
 	}
-	if (currentState == 2) {
-		targetingCount++;
-		if (targetingCount >= stateMultiplier[2] * tickCycle) {
-			targetingCount = 0;
-			currentState = 0;
-		}
+
+	if (currentState == 2) { //cooling down
+		tick_cooldown();
 	}
+
 	//maxState is 3; not using else in case tickCycle is zero
 }
 
-bool TargetingTurret::canSeeTank(Tank* t) {
+inline void TargetingTurret::tick_continueTracking() {
+	bool tankIsVisible = false;
+	const Tank* t = TankManager::getTankByID(this->trackingID);
+	if (t != nullptr) { //exists
+		if (canSeeTank(t)) { //no obstructions
+			tankIsVisible = true;
+			//main logic here
+			turnTowardsTank(t);
+			if (isPointedAt(t)) {
+				targetingCount++;
+				if (targetingCount >= stateMultiplier[0] * tickCycle) {
+					currentState = 1;
+					targetingCount = 0;
+				}
+				updateTrackingPos(t, true);
+			} else {
+				targetingCount--;
+				if (targetingCount < 0) {
+					targetingCount = 0;
+				}
+				updateTrackingPos(t, false);
+			}
+		}
+	}
+	if (!tankIsVisible) {
+		targeting = false;
+	}
+}
+
+inline void TargetingTurret::tick_lookForNewTarget() {
+	targetingCount = 0;
+
+	std::vector<bool> tankVisibility; tankVisibility.reserve(TankManager::getNumTanks()); //not using regular arrays so people (including future me) can actually read this
+	std::vector<double> distancesToTank; distancesToTank.reserve(TankManager::getNumTanks()); //TODO: option for angle-based selection (look at homing in PowerFunctionHelper)
+	for (int i = 0; i < TankManager::getNumTanks(); i++) {
+		Tank* t = TankManager::getTank(i);
+		tankVisibility.push_back(canSeeTank(t));
+		if (tankVisibility.at(i)) {
+			distancesToTank.push_back(sqrt(pow(x - t->x, 2) + pow(y - t->y, 2)));
+		} else {
+			distancesToTank.push_back(GAME_WIDTH*2 + GAME_HEIGHT*2);
+		}
+	}
+
+	double minDist = GAME_WIDTH*2 + GAME_HEIGHT*2;
+	std::vector<int> tankIndices; tankIndices.reserve(TankManager::getNumTanks()); //multiple tanks can have same distance
+	for (int i = 0; i < TankManager::getNumTanks(); i++) {
+		if (distancesToTank[i] == minDist) {
+			tankIndices.push_back(i);
+		} else if (distancesToTank[i] < minDist) {
+			tankIndices.clear();
+			tankIndices.push_back(i);
+			minDist = distancesToTank[i];
+		}
+	}
+
+	int indexOfTargetedTank;
+	if (tankIndices.size() == 1) {
+		indexOfTargetedTank = tankIndices[0];
+	} else {
+		indexOfTargetedTank = tankIndices[int(RNG::randFunc() * tankIndices.size())];
+	}
+
+	if (tankVisibility[indexOfTargetedTank]) {
+		const Tank* t = TankManager::getTank(indexOfTargetedTank);
+		trackingID = t->getGameID();
+		targeting = true;
+		updateTrackingPos(t, isPointedAt(t));
+	}
+}
+
+inline void TargetingTurret::tick_chargeUp() {
+	targetingCount++;
+	if (targetingCount >= stateMultiplier[1] * tickCycle) {
+		BulletManager::pushBullet(new Bullet(x + r*cos(direction.getAngle()), y + r*sin(direction.getAngle()), r*BULLET_TO_TANK_RADIUS_RATIO, direction.getAngle(), Tank::default_maxSpeed*BULLET_TO_TANK_SPEED_RATIO, this->getTeamID(), BulletParentType::individual, this->getGameID()));
+		currentState = 2;
+		targetingCount = 0;
+		targeting = false; //allows target to change (also controls whether the reticule is drawn)
+	}
+}
+
+inline void TargetingTurret::tick_cooldown() {
+	targetingCount++;
+	if (targetingCount >= stateMultiplier[2] * tickCycle) {
+		targetingCount = 0;
+		currentState = 0;
+	}
+}
+
+bool TargetingTurret::canSeeTank(const Tank* t) const {
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		Wall* wa = WallManager::getWall(i);
 		if (CollisionHandler::lineRectCollision(x, y, t->x, t->y, wa)) {
@@ -245,34 +280,27 @@ bool TargetingTurret::canSeeTank(Tank* t) {
 	return true;
 }
 
-void TargetingTurret::turnTowardsTank(Tank* t) {
+void TargetingTurret::turnTowardsTank(const Tank* t) {
 	//see PowerFunctionHelper::homingGeneric
-	double targetAngle = atan2(t->y - y, t->x - x);
-	double turretAngle = (StationaryTurret::getAngle() > PI ? StationaryTurret::getAngle() - 2*PI : StationaryTurret::getAngle());
-	if ((abs(targetAngle - turretAngle) <= PI/turningIncrement) || (abs(fmod(targetAngle + PI, 2*PI) - fmod(turretAngle + PI, 2*PI)) <= PI/turningIncrement)) {
-		return;
+	SimpleVector2D distToTank = SimpleVector2D(t->getX() - this->x, t->getY() - this->y);
+	float theta = SimpleVector2D::angleBetween(distToTank, SimpleVector2D(direction.getAngle(), 0, true));
+	if (abs(theta) < PI/turningIncrement) {
+		//too small to adjust angle
 	} else {
-		if (StationaryTurret::getAngle() > PI/2 && StationaryTurret::getAngle() <= 3*PI/2) {
-			if (t->y - y < tan(this->angle) * (t->x - x)) {
-				this->angle += PI/turningIncrement;
-			} else {
-				this->angle -= PI/turningIncrement;
-			}
+		//large angle adjustment needed
+		if (theta < 0) {
+			this->direction.changeAngle(PI/turningIncrement);
 		} else {
-			if (t->y - y < tan(this->angle) * (t->x - x)) {
-				this->angle -= PI/turningIncrement;
-			} else {
-				this->angle += PI/turningIncrement;
-			}
+			this->direction.changeAngle(-PI/turningIncrement);
 		}
 	}
 }
 
-bool TargetingTurret::isPointedAt(Tank* t) {
-	return (abs(fmod(atan2(t->y - y, t->x - x) + 2*PI, 2*PI) - fmod(fmod(angle, 2*PI) + 2*PI, 2*PI)) < PI/turningIncrement);
+bool TargetingTurret::isPointedAt(const Tank* t) const {
+	return (abs(SimpleVector2D::angleBetween(SimpleVector2D(direction.getAngle(), 0, true), SimpleVector2D(t->x - x, t->y - y))) < PI/turningIncrement);
 }
 
-bool TargetingTurret::reasonableLocation() {
+bool TargetingTurret::reasonableLocation() const {
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
 		if (canSeeTank(TankManager::getTank(i))) {
 			return false;
@@ -302,71 +330,230 @@ bool TargetingTurret::reasonableLocation() {
 	return validLocation();
 }
 
-ColorValueHolder TargetingTurret::getColor() {
+ColorValueHolder TargetingTurret::getColor() const {
 	return ColorMixer::mix(stateColors[currentState], stateColors[(currentState+1)%maxState], constrain<double>(targetingCount/(tickCycle*stateMultiplier[currentState]), 0, 1));
 }
 
-ColorValueHolder TargetingTurret::getColor(short state) {
+ColorValueHolder TargetingTurret::getColor(int state) const {
 	if (state < 0) {
 		return stateColors[0];
 	}
 	return stateColors[state % maxState];
 }
 
-ColorValueHolder TargetingTurret::getReticuleColor() {
+ColorValueHolder TargetingTurret::getReticuleColor() const {
 	if (currentState == 0) {
 		return reticuleColors[0];
 	}
-	if(currentState == 1){
+	if (currentState == 1) {
 		return reticuleColors[1];
 	}
-	return ColorValueHolder(0, 0, 0); //shouldn't be drawn
+	return ColorValueHolder(0.0f, 0.0f, 0.0f); //shouldn't be drawn
 }
 
-void TargetingTurret::draw() {
+void TargetingTurret::draw() const {
+	drawBody();
+	drawOutline();
+	drawBarrel();
+	drawReticule();
+}
+
+void TargetingTurret::draw(DrawingLayers layer) const {
+	switch (layer) {
+		case DrawingLayers::under:
+			//nothing
+			break;
+
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for TargetingTurret::draw!" << std::endl;
+		case DrawingLayers::normal:
+			drawBody();
+			drawOutline();
+			drawBarrel();
+			break;
+
+		case DrawingLayers::effects:
+			drawReticule();
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
+}
+
+void TargetingTurret::poseDraw() const {
+	//TODO: adjust so drawBody will only draw with the normal color?
+	drawBody();
+	drawOutline();
+	drawBarrel();
+}
+
+void TargetingTurret::poseDraw(DrawingLayers layer) const {
+	//TODO: adjust so drawBody will only draw with the normal color?
+	switch (layer) {
+		case DrawingLayers::under:
+			//nothing
+			break;
+
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for TargetingTurret::poseDraw!" << std::endl;
+		case DrawingLayers::normal:
+			drawBody();
+			drawOutline();
+			drawBarrel();
+			break;
+
+		case DrawingLayers::effects:
+			//drawReticule();
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
+}
+
+void TargetingTurret::ghostDraw(float alpha) const {
+	//TODO: adjust so drawBody will only draw with the normal color?
+	drawBody(alpha);
+	drawOutline(alpha);
+	drawBarrel(alpha);
+}
+
+void TargetingTurret::ghostDraw(DrawingLayers layer, float alpha) const {
+	//TODO: adjust so drawBody will only draw with the normal color?
+	switch (layer) {
+		case DrawingLayers::under:
+			//nothing
+			break;
+
+		default:
+			std::cerr << "WARNING: unknown DrawingLayer for TargetingTurret::ghostDraw!" << std::endl;
+		case DrawingLayers::normal:
+			drawBody(alpha);
+			drawOutline(alpha);
+			drawBarrel(alpha);
+			break;
+
+		case DrawingLayers::effects:
+			//drawReticule(alpha);
+			break;
+
+		case DrawingLayers::top:
+			//nothing
+			break;
+
+		case DrawingLayers::debug:
+			//later
+			break;
+	}
+}
+
+inline void TargetingTurret::drawBody(float alpha) const {
+	alpha = constrain<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM = Renderer::GenerateMatrix(r, r, angle, x, y);
-	
-	//main body:
+	glm::mat4 MVPM;
+
 	ColorValueHolder color = getColor();
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+
+	MVPM = Renderer::GenerateMatrix(r, r, 0, x, y);
 	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*va, *ib, *shader);
+}
 
-	//outline:
-	shader->setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 1.0f);
-	//shader->setUniformMat4f("u_MVP", MVPM);
+inline void TargetingTurret::drawOutline(float alpha) const {
+	alpha = constrain<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
+	Shader* shader = Renderer::getShader("main");
+	glm::mat4 MVPM;
 
-	Renderer::Draw(*va, *shader, GL_LINE_LOOP, 1, Circle::numOfSides);
+	glLineWidth(1.0f);
 
-	//barrel:
-	glLineWidth(2.0f);
-	shader->setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 1.0f);
-	MVPM = Renderer::GenerateMatrix(r, 1, angle, x, y);
+	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
+	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+
+	MVPM = Renderer::GenerateMatrix(r, r, 0, x, y);
 	shader->setUniformMat4f("u_MVP", MVPM);
 
-	Renderer::Draw(*cannon_va, *shader, GL_LINES, 0, 2);
-
-	//reticule:
-	if (targeting) {
-		//glLineWidth(2.0f);
-		color = getReticuleColor();
-		shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-		MVPM = Renderer::GenerateMatrix(2*TANK_RADIUS, 2*TANK_RADIUS, 0, targetingX, targetingY);
-		shader->setUniformMat4f("u_MVP", MVPM);
-
-		Renderer::Draw(*va, *shader, GL_LINE_LOOP, 1, Circle::numOfSides);
-		Renderer::Draw(*reticule_va, *shader, GL_LINES, 0, 8);
-	}
+	Renderer::Draw(*va, *shader, GL_LINE_LOOP, 1, Circle::numOfSides);
 
 	//cleanup
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
-void TargetingTurret::drawCPU() {
+inline void TargetingTurret::drawBarrel(float alpha) const {
+	alpha = constrain<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
+	Shader* shader = Renderer::getShader("main");
+	glm::mat4 MVPM;
+
+	glLineWidth(2.0f);
+
+	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
+	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+
+	MVPM = Renderer::GenerateMatrix(r, 1, direction.getAngle(), x, y);
+	shader->setUniformMat4f("u_MVP", MVPM);
+
+	Renderer::Draw(*cannon_va, *shader, GL_LINES, 0, 2);
+
+	//cleanup
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
+
+inline void TargetingTurret::drawReticule(float alpha) const {
+	if (!targeting) {
+		return;
+	}
+
+	alpha = constrain<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
+	Shader* shader = Renderer::getShader("main");
+	glm::mat4 MVPM;
+
+	glLineWidth(2.0f);
+
+	ColorValueHolder color = getReticuleColor();
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
+	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+
+	/*
+	if (currentState == 0) {
+		MVPM = Renderer::GenerateMatrix(2*TANK_RADIUS, 2*TANK_RADIUS, -PI/2 * targetingCount/(stateMultiplier[0] * tickCycle), targetingX, targetingY);
+	} else {
+		MVPM = Renderer::GenerateMatrix(2*TANK_RADIUS, 2*TANK_RADIUS, -PI/2, targetingX, targetingY);
+	}
+	*/
+	MVPM = Renderer::GenerateMatrix(2*TANK_RADIUS, 2*TANK_RADIUS, 0, targetingX, targetingY);
+	shader->setUniformMat4f("u_MVP", MVPM);
+
+	Renderer::Draw(*va, *shader, GL_LINE_LOOP, 1, Circle::numOfSides);
+	Renderer::Draw(*reticule_va, *shader, GL_LINES, 0, 8);
+
+	//cleanup
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
+
+/*
+void TargetingTurret::drawCPU() const {
 	//nah
 }
+*/
 
 CircleHazard* TargetingTurret::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {
 	int attempts = 0;
@@ -375,11 +562,11 @@ CircleHazard* TargetingTurret::randomizingFactory(double x_start, double y_start
 	if (argc >= 1) {
 		angle = std::stod(argv[0]);
 	} else {
-		angle = randFunc() * 2*PI;
+		angle = RNG::randFunc() * 2*PI;
 	}
 	do {
-		xpos = randFunc2() * (area_width - 2*TANK_RADIUS/2) + (x_start + TANK_RADIUS/2);
-		ypos = randFunc2() * (area_height - 2*TANK_RADIUS/2) + (y_start + TANK_RADIUS/2);
+		xpos = RNG::randFunc2() * (area_width - 2*TANK_RADIUS/2) + (x_start + TANK_RADIUS/2);
+		ypos = RNG::randFunc2() * (area_height - 2*TANK_RADIUS/2) + (y_start + TANK_RADIUS/2);
 		CircleHazard* testTargetingTurret = new TargetingTurret(xpos, ypos, angle);
 		if (testTargetingTurret->reasonableLocation()) {
 			randomized = testTargetingTurret;

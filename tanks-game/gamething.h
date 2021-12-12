@@ -1,11 +1,14 @@
 #pragma once
+#include "constants.h"
 
 class GameThing {
 	friend class GameManager;
+
 protected:
-	long gameID;
-	char teamID;
+	Game_ID gameID;
+	Team_ID teamID;
+
 public:
-	long getGameID() { return gameID; }
-	char getTeamID() { return teamID; }
+	Game_ID getGameID() const { return gameID; }
+	Team_ID getTeamID() const { return teamID; }
 };
