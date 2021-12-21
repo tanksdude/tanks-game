@@ -39,6 +39,7 @@ void SneakyRewardLevel::initialize() {
 	for (int i = 0; i < effects.size(); i++) {
 		if (effects[i]->getName() == "respawning_powerups") {
 			le = effects[i];
+			break;
 		}
 	}
 	if (le == nullptr) {

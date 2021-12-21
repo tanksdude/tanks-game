@@ -14,6 +14,7 @@ Tank* TankManager::getTankByID(Game_ID gameID) {
 	for (int i = 0; i < tanks.size(); i++) {
 		if (tanks[i]->getGameID() == gameID) {
 			return tanks[i];
+			break;
 		}
 	}
 	return nullptr;

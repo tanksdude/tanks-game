@@ -65,32 +65,32 @@ SimpleVector2D SimpleVector2D::operator-(const SimpleVector2D& other) {
 }
 
 std::ostream& operator<<(std::ostream& os, const SimpleVector2D& v) {
-	return os << v.xComp << " " << v.yComp;
+	return os << "<" << v.xComp << ", " << v.yComp << ">";
 }
 
 /*
-//finds the angle between the two vectors by the dot product (can be negative*)
-//*arccos cannot be negative, so the returned angle cannot be negative...
+//finds the angle between the two vectors by the dot product (can be negative)
 float SimpleVector2D::angleBetween(const SimpleVector2D& v1, const SimpleVector2D& v2) {
 	//dot product: v1.x*v2.x + v1.y*v2.y = |v1||v2|cos(theta)
 	//theta = arccos((v1.x*v2.x + v1.y*v2.y) / (|v1||v2|)))
 	return acos((v1.getXComp()*v2.getXComp() + v1.getYComp()*v2.getYComp()) / (v1.getMagnitude() * v2.getMagnitude()));
 }
+//problem: arccos cannot be negative, so the returned angle cannot be negative...
 */
 
 /*
 //finds the angle between the two vectors by the cross product (can be negative)
-//problem: does not handle |theta| > PI/2
 float SimpleVector2D::angleBetween(const SimpleVector2D& v1, const SimpleVector2D& v2) {
 	//cross product: |v1 cross v2| = |v1||v2|sin(theta)
 	//|i    j    k   |
 	//|v1.x v1.y v1.z|
 	//|v2.x v2.y v2.z|
 	//v1.z = v2.z = 0, so
-	//det = v1.x*v2.y - v2.x-v1.y
+	//det = v1.x*v2.y - v2.x*v1.y
 	//theta = arcsin((v1.x*v2.y - v2.x*v1.y) / (|v1||v2|)))
 	return = asin((v1.getXComp()*v2.getYComp() - v2.getXComp()*v1.getYComp()) / (v1.getMagnitude() * v2.getMagnitude()));
 }
+//problem: does not handle |theta| > PI/2
 */
 
 float SimpleVector2D::dotProduct(const SimpleVector2D& v1, const SimpleVector2D& v2) {
@@ -114,5 +114,5 @@ float SimpleVector2D::angleBetween(const SimpleVector2D& v1, const SimpleVector2
 	adjusted_v1.setMagnitude(1); adjusted_v2.setMagnitude(1);
 	float crossAngle = asin(SimpleVector2D::crossProduct(adjusted_v1, adjusted_v2));
 	float dotAngle = acos(SimpleVector2D::dotProduct(adjusted_v1, adjusted_v2));
-	return copysign(dotAngle, crossAngle); //this function is surprisingly useful!
+	return copysign(dotAngle, crossAngle); //this function is surprisingly helpful!
 }

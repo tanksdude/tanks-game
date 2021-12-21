@@ -53,6 +53,7 @@ void BulletManager::deleteBulletByID(Game_ID gameID) {
 	for (int i = 0; i < bullets.size(); i++) {
 		if (bullets[i]->getGameID() == gameID) {
 			deleteBullet(i);
+			break;
 		}
 	}
 }

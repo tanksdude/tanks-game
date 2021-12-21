@@ -143,7 +143,7 @@ void PowerFunctionHelper::equallySpacedCannonPoints(Tank*, std::vector<CannonPoi
 	}
 }
 
-Game_ID PowerFunctionHelper::homingGenericTarget(Bullet* b, bool targetUsingAngleDiff) {
+Game_ID PowerFunctionHelper::homingGenericTarget(const Bullet* b, bool targetUsingAngleDiff) {
 	int targetTankIndex; //only targets tanks for now
 
 	if (targetUsingAngleDiff) {

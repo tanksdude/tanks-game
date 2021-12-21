@@ -72,6 +72,7 @@ void HazardManager::deleteCircleHazardByID(Game_ID gameID) {
 	for (int i = 0; i < circleHazards.size(); i++) {
 		if (circleHazards[i]->getGameID() == gameID) {
 			deleteCircleHazard(i);
+			break;
 		}
 	}
 }
@@ -79,6 +80,7 @@ void HazardManager::deleteRectHazardByID(Game_ID gameID) {
 	for (int i = 0; i < rectHazards.size(); i++) {
 		if (rectHazards[i]->getGameID() == gameID) {
 			deleteRectHazard(i);
+			break;
 		}
 	}
 }

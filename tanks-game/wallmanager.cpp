@@ -32,6 +32,7 @@ void WallManager::deleteWallByID(Game_ID gameID) {
 	for (int i = 0; i < walls.size(); i++) {
 		if (walls[i]->getGameID() == gameID) {
 			deleteWall(i);
+			break;
 		}
 	}
 }

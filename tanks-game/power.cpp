@@ -33,7 +33,7 @@ list of (eventual) powers:
 |homing
 |invincibility (tier 1)
 |big (tier 2)
-|mega-death (variable big)
+|megadeath (variable big)
 the super (tier 3) (name WIP) (come on, of course the name isn't going to be temporary!)
 |grenade
 |fire
@@ -110,7 +110,7 @@ can leave out of bounds, both real and fake (fake in the case of a portal level 
 JS power numbers (with names updated):
 0 = speed, 1 = invincible, 2 = wallhack, 3 = trap, 4 = bounce, 5 = multishot, 6 = big, 7 = barrier, 8 = shotgun, 9 = mines, 10 = laser, 11 = fire, 12 = triple, 13 = blast, 14 = homing, 15 = tracking, 16 = grenade, 17 = banana, 18 = godmode, 19 = megadeath
 trap obviously won't be a powerup this time and laser is really complex, so those won't get implemented
-C++ order of creating the JS powers:
+C++ order of creating the JS powers (probably):
 speed, wallhack, multishot, bounce, homing, triple, invincible, big, megadeath, grenade, fire, blast, banana, godmode, mines, shotgun, tracking, barrier
 
 */

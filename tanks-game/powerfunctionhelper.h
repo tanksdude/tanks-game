@@ -13,7 +13,7 @@ protected:
 	static bool superbounceGenericCornerHandler(Bullet*, Wall*, double x, double y, double strength = 0);
 
 public:
-	static Game_ID homingGenericTarget(Bullet*, bool targetUsingAngleDiff); //find target for homing
+	static Game_ID homingGenericTarget(const Bullet*, bool targetUsingAngleDiff); //find target for homing
 	static void homingGenericMove(Bullet*, Game_ID targetID, double maxAngleChange); //do homing on target
 
 	static inline bool bounceGeneric(Bullet* b, Wall* w) { return superbounceGeneric(b, w, 0); }

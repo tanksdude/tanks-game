@@ -17,8 +17,6 @@ std::unordered_map<std::string, float> LevelEffect::getWeights() const {
 
 //level effect notes:
 /*
-multiple level effects can happen on the same level (can they interact with each other?)
-
 list of (eventual) level effects:
 |wall invisibility
 |wind
@@ -27,6 +25,7 @@ list of (eventual) level effects:
 |respawning powerups
 gravity/magnet (which is it?)
 
+
 other:
 respawning walls?
 moving walls... of some sort
@@ -34,5 +33,12 @@ ultrafast shooting?
 darkness?
 
 I need more ideas for level effects...
+
+
+JS level effect numbers (with names updated):
+0 = wind, 1 = ice, 2 = minefield
+invisible walls and portal were not real level effects
+C++ order of creating the JS level effects (probably):
+wind, minefield, ice, invisible walls
 
 */

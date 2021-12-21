@@ -31,4 +31,11 @@ tank swapper (swaps tanks every so often) (could also teleport them to some rand
 list of possible hazards, joke or not:
 the reflecktor (bounces/reflects tanks when they hit it)
 
+
+JS hazard numbers (with names updated):
+0 = targeting turret, 1 = horizontal lightning, 2 = lava (rectangular), 3 = stationary turret, 4 = vertical lightning, 5 = rectangular lightning, 6 = no bullet zone, 7 = patrolling turret (unimplemented)
+quite the lack of circular hazards
+C++ order of creating the JS hazards (probably):
+stationary turret, horizontal lightning, lava, rectangular lightning, vertical lightning, no bullet zone, targeting turret
+
 */

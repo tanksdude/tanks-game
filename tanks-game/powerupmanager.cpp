@@ -47,6 +47,7 @@ void PowerupManager::deletePowerupByID(Game_ID gameID) {
 	for (int i = 0; i < powerups.size(); i++) {
 		if (powerups[i]->getGameID() == gameID) {
 			deletePowerup(i);
+			break;
 		}
 	}
 }

@@ -86,4 +86,11 @@ turret room: two turrets; one has distance-based targeting (just selection), one
 "other":
 team mode! (for two tanks...)
 
+
+JS level numbers (with names updated):
+special: 0 = default random, 1 = empty, 2 = portal level, 3 = winning path, 4 = tricky maneuvering, 5 = mine heaven; not special: 0 = hiding places, 1 = corridor, 2 = few obstacles, 3 = lone turret, 4 = concealed powerups, 5 = many hazards, 6 = lightning corners (but not really since it was cut)
+portal will be hard...
+C++ order of creating the JS levels (probably):
+empty, default random, corridor, few obstacles, concealed powerups, many hazards, hiding places, lightning corners, lone turret, tricky maneuvering, mine heaven, winning path
+
 */
