@@ -69,7 +69,7 @@
     <ClCompile Include="homingpower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="triplepower.cpp">
+    <ClCompile Include="triplenamedpower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="mylib.cpp">
@@ -126,7 +126,7 @@
     <ClCompile Include="recthazard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="stationaryturret.cpp">
+    <ClCompile Include="stationaryturrethazard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="bulletmanager.cpp">
@@ -162,7 +162,7 @@
     <ClCompile Include="developermanager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="horizontallightning.cpp">
+    <ClCompile Include="horizontallightninghazard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="developerlevel1.cpp">
@@ -177,13 +177,13 @@
     <ClCompile Include="gamemanager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="circularlava.cpp">
+    <ClCompile Include="circularlavahazard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="generalizedlava.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="rectangularlava.cpp">
+    <ClCompile Include="rectangularlavahazard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="fewobstacleslevel.cpp">
@@ -213,16 +213,16 @@
     <ClCompile Include="oldbignamedpower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="rectangularlightning.cpp">
+    <ClCompile Include="rectangularlightninghazard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="circularlightning.cpp">
+    <ClCompile Include="circularlightninghazard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="generalizedlightning.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="verticallightning.cpp">
+    <ClCompile Include="verticallightninghazard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="inversionpower.cpp">
@@ -237,19 +237,19 @@
     <ClCompile Include="endgamehandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="circularnobulletzone.cpp">
+    <ClCompile Include="circularnobulletzonehazard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="generalizednobulletzone.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="rectangularnobulletzone.cpp">
+    <ClCompile Include="rectangularnobulletzonehazard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="manyhazardslevel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="targetingturret.cpp">
+    <ClCompile Include="targetingturrethazard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="minespower.cpp">
@@ -428,7 +428,7 @@
     <ClInclude Include="homingpower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="triplepower.h">
+    <ClInclude Include="triplenamedpower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mylib.h">
@@ -497,7 +497,7 @@
     <ClInclude Include="recthazard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="stationaryturret.h">
+    <ClInclude Include="stationaryturrethazard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="bulletmanager.h">
@@ -533,7 +533,7 @@
     <ClInclude Include="developermanager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="horizontallightning.h">
+    <ClInclude Include="horizontallightninghazard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="developerlevel1.h">
@@ -554,13 +554,13 @@
     <ClInclude Include="gamething.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="circularlava.h">
+    <ClInclude Include="circularlavahazard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="generalizedlava.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="rectangularlava.h">
+    <ClInclude Include="rectangularlavahazard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="fewobstacleslevel.h">
@@ -587,16 +587,16 @@
     <ClInclude Include="oldbignamedpower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="rectangularlightning.h">
+    <ClInclude Include="rectangularlightninghazard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="circularlightning.h">
+    <ClInclude Include="circularlightninghazard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="generalizedlightning.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="verticallightning.h">
+    <ClInclude Include="verticallightninghazard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="inversionpower.h">
@@ -608,19 +608,19 @@
     <ClInclude Include="endgamehandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="circularnobulletzone.h">
+    <ClInclude Include="circularnobulletzonehazard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="generalizednobulletzone.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="rectangularnobulletzone.h">
+    <ClInclude Include="rectangularnobulletzonehazard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="manyhazardslevel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="targetingturret.h">
+    <ClInclude Include="targetingturrethazard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="interactionboolholder.h">

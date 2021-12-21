@@ -1,5 +1,5 @@
 #pragma once
-#include "circlehazard.h"
+#include "recthazard.h"
 #include "generalizedlightning.h"
 #include "constants.h"
 
@@ -7,10 +7,12 @@
 #include "vertexbuffer.h"
 #include "indexbuffer.h"
 
-class CircularLightning : public CircleHazard, public GeneralizedLightning {
+class RectangularLightningHazard : public RectHazard, public GeneralizedLightning {
+	//called LightningZone in JS Tanks
 protected:
 	//unsigned int maxBolts; // = 1;
 	virtual void refreshBolt(LightningBolt*) const override;
+	virtual void refreshBolt(LightningBolt*, double smaller, double larger) const;
 	virtual void pushBolt(LightningBolt*) override;
 	virtual void pushDefaultBolt(int num, bool randomize) override; //randomize should be true all of the time
 
@@ -36,10 +38,11 @@ private:
 public:
 	virtual std::vector<std::string> getHazardTypes() const override {
 		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "old", "random-old", "random" };
-		//it's not really an old hazard (lightning was rectangular only)
 		return types;
 	}
 	virtual std::unordered_map<std::string, float> getWeights() const override;
+
+	virtual RectHazardCollisionType getCollisionType() const override { return RectHazardCollisionType::under; }
 
 	virtual bool actuallyCollided(const Tank*) const override { return currentlyActive; }
 	//bool modifiesTankCollision = true;
@@ -55,16 +58,16 @@ public:
 protected:
 	virtual void specialEffectCircleCollision(Circle*); //tanks and bullets are both circles, so calculating the bolt positions would be the same
 
+protected:
+	virtual double getDefaultOffense() const override { return .5; } //1.5?
+	virtual double getDefaultDefense() const override { return HIGH_TIER; }
+
 public:
 	virtual bool validLocation() const override;
 	virtual bool reasonableLocation() const override;
 
 	virtual std::string getName() const override { return getClassName(); }
 	static std::string getClassName() { return "lightning"; }
-
-	virtual double getDefaultOffense() const override { return .5; } //1.5?
-	virtual double getDefaultDefense() const override { return HIGH_TIER; }
-	virtual CircleHazardCollisionType getCollisionType() const override { return CircleHazardCollisionType::under; }
 
 	virtual void tick() override { GeneralizedLightning::tick(); }
 	virtual void draw() const override;
@@ -79,12 +82,14 @@ private:
 	inline void drawBolts(float alpha = 1.0f) const;
 	inline void drawBolts_Pose(float alpha = 1.0f) const;
 
+protected:
+	RectangularLightningHazard(double xpos, double ypos, double width, double height, bool noGPU); //doesn't initialize GPU
 public:
-	CircularLightning(double xpos, double ypos, double radius);
-	~CircularLightning();
-	static CircleHazard* factory(int, std::string*);
-	static CircleHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv);
-	virtual int getFactoryArgumentCount() const override { return 3; }
-	virtual CircleHazardConstructionTypes getConstructionType() const override { return CircleHazardConstructionTypes::radiusRequired; }
-	virtual CircleFactoryInformation getFactoryInformation() const override { return { false, false, false, false, false }; }
+	RectangularLightningHazard(double xpos, double ypos, double width, double height);
+	virtual ~RectangularLightningHazard();
+	static RectHazard* factory(int, std::string*);
+	static RectHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv);
+	virtual int getFactoryArgumentCount() const override { return 4; }
+	virtual RectHazardConstructionTypes getConstructionType() const override { return RectHazardConstructionTypes::standardConstruction; }
+	virtual RectFactoryInformation getFactoryInformation() const override { return { false, false, false, false, false }; }
 };

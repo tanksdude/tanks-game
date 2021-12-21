@@ -1,4 +1,4 @@
-#include "rectangularnobulletzone.h"
+#include "rectangularnobulletzonehazard.h"
 #include "gamemanager.h"
 #include "renderer.h"
 #include "constants.h"
@@ -11,12 +11,12 @@
 #include "collisionhandler.h"
 #include "rng.h"
 
-VertexArray* RectangularNoBulletZone::va;
-VertexBuffer* RectangularNoBulletZone::vb;
-IndexBuffer* RectangularNoBulletZone::ib;
-bool RectangularNoBulletZone::initialized_GPU = false;
+VertexArray* RectangularNoBulletZoneHazard::va;
+VertexBuffer* RectangularNoBulletZoneHazard::vb;
+IndexBuffer* RectangularNoBulletZoneHazard::ib;
+bool RectangularNoBulletZoneHazard::initialized_GPU = false;
 
-std::unordered_map<std::string, float> RectangularNoBulletZone::getWeights() const {
+std::unordered_map<std::string, float> RectangularNoBulletZoneHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", 1.0f });
 	weights.insert({ "random-vanilla", .5f });
@@ -26,7 +26,7 @@ std::unordered_map<std::string, float> RectangularNoBulletZone::getWeights() con
 	return weights;
 }
 
-RectangularNoBulletZone::RectangularNoBulletZone(double xpos, double ypos, double width, double height) {
+RectangularNoBulletZoneHazard::RectangularNoBulletZoneHazard(double xpos, double ypos, double width, double height) {
 	x = xpos;
 	y = ypos;
 	w = width;
@@ -42,11 +42,11 @@ RectangularNoBulletZone::RectangularNoBulletZone(double xpos, double ypos, doubl
 	initializeGPU();
 }
 
-RectangularNoBulletZone::~RectangularNoBulletZone() {
+RectangularNoBulletZoneHazard::~RectangularNoBulletZoneHazard() {
 	//uninitializeGPU();
 }
 
-bool RectangularNoBulletZone::initializeGPU() {
+bool RectangularNoBulletZoneHazard::initializeGPU() {
 	if (initialized_GPU) {
 		return false;
 	}
@@ -73,7 +73,7 @@ bool RectangularNoBulletZone::initializeGPU() {
 	return true;
 }
 
-bool RectangularNoBulletZone::uninitializeGPU() {
+bool RectangularNoBulletZoneHazard::uninitializeGPU() {
 	if (!initialized_GPU) {
 		return false;
 	}
@@ -86,18 +86,18 @@ bool RectangularNoBulletZone::uninitializeGPU() {
 	return true;
 }
 
-RectHazard* RectangularNoBulletZone::factory(int argc, std::string* argv) {
+RectHazard* RectangularNoBulletZoneHazard::factory(int argc, std::string* argv) {
 	if (argc >= 4) {
 		double x = std::stod(argv[0]);
 		double y = std::stod(argv[1]);
 		double w = std::stod(argv[2]);
 		double h = std::stod(argv[3]);
-		return new RectangularNoBulletZone(x, y, w, h);
+		return new RectangularNoBulletZoneHazard(x, y, w, h);
 	}
-	return new RectangularNoBulletZone(0, 0, 0, 0);
+	return new RectangularNoBulletZoneHazard(0, 0, 0, 0);
 }
 
-bool RectangularNoBulletZone::reasonableLocation() const {
+bool RectangularNoBulletZoneHazard::reasonableLocation() const {
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		if (CollisionHandler::fullyCollided(this, WallManager::getWall(i))) {
 			return false;
@@ -121,14 +121,14 @@ bool RectangularNoBulletZone::reasonableLocation() const {
 	return validLocation();
 }
 
-void RectangularNoBulletZone::draw() const {
+void RectangularNoBulletZoneHazard::draw() const {
 	ghostDraw(1.0f);
 }
 
-void RectangularNoBulletZone::draw(DrawingLayers layer) const {
+void RectangularNoBulletZoneHazard::draw(DrawingLayers layer) const {
 	switch (layer) {
 		default:
-			std::cerr << "WARNING: unknown DrawingLayer for RectangularNoBulletZone::draw!" << std::endl;
+			std::cerr << "WARNING: unknown DrawingLayer for RectangularNoBulletZoneHazard::draw!" << std::endl;
 		case DrawingLayers::under:
 			draw();
 			break;
@@ -151,14 +151,14 @@ void RectangularNoBulletZone::draw(DrawingLayers layer) const {
 	}
 }
 
-void RectangularNoBulletZone::poseDraw() const {
+void RectangularNoBulletZoneHazard::poseDraw() const {
 	draw();
 }
 
-void RectangularNoBulletZone::poseDraw(DrawingLayers layer) const {
+void RectangularNoBulletZoneHazard::poseDraw(DrawingLayers layer) const {
 	switch (layer) {
 		default:
-			std::cerr << "WARNING: unknown DrawingLayer for RectangularNoBulletZone::poseDraw!" << std::endl;
+			std::cerr << "WARNING: unknown DrawingLayer for RectangularNoBulletZoneHazard::poseDraw!" << std::endl;
 		case DrawingLayers::under:
 			poseDraw();
 			break;
@@ -181,7 +181,7 @@ void RectangularNoBulletZone::poseDraw(DrawingLayers layer) const {
 	}
 }
 
-void RectangularNoBulletZone::ghostDraw(float alpha) const {
+void RectangularNoBulletZoneHazard::ghostDraw(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
@@ -197,10 +197,10 @@ void RectangularNoBulletZone::ghostDraw(float alpha) const {
 	Renderer::Draw(*va, *ib, *shader);
 }
 
-void RectangularNoBulletZone::ghostDraw(DrawingLayers layer, float alpha) const {
+void RectangularNoBulletZoneHazard::ghostDraw(DrawingLayers layer, float alpha) const {
 	switch (layer) {
 		default:
-			std::cerr << "WARNING: unknown DrawingLayer for RectangularNoBulletZone::ghostDraw!" << std::endl;
+			std::cerr << "WARNING: unknown DrawingLayer for RectangularNoBulletZoneHazard::ghostDraw!" << std::endl;
 		case DrawingLayers::under:
 			ghostDraw(alpha);
 			break;
@@ -223,7 +223,7 @@ void RectangularNoBulletZone::ghostDraw(DrawingLayers layer, float alpha) const 
 	}
 }
 
-RectHazard* RectangularNoBulletZone::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {
+RectHazard* RectangularNoBulletZoneHazard::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {
 	int attempts = 0;
 	RectHazard* randomized = nullptr;
 	double xpos, ypos, width, height;
@@ -237,7 +237,7 @@ RectHazard* RectangularNoBulletZone::randomizingFactory(double x_start, double y
 		}
 		xpos = RNG::randFunc2() * (area_width - 2*width) + (x_start + width);
 		ypos = RNG::randFunc2() * (area_height - 2*height) + (y_start + height);
-		RectHazard* testRectangularNoBulletZone = new RectangularNoBulletZone(xpos, ypos, width, height);
+		RectHazard* testRectangularNoBulletZone = new RectangularNoBulletZoneHazard(xpos, ypos, width, height);
 		if (testRectangularNoBulletZone->reasonableLocation()) {
 			randomized = testRectangularNoBulletZone;
 			break;

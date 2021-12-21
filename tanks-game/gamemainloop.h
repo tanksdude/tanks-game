@@ -1,4 +1,5 @@
 #pragma once
+#include "drawablething.h"
 
 class GameMainLoop {
 	friend class DeveloperManager;
@@ -10,6 +11,7 @@ private:
 	static long ticksUntilFrame;
 	static int physicsRate;
 	static void Tick(int physicsUPS);
+	static void drawLayer(DrawingLayers);
 
 public:
 	//tick stuff:
@@ -32,7 +34,8 @@ public:
 	static void bulletToBullet();
 	static void bulletToTank();
 
-	static void drawEverything();
+	static void drawMain(); //doesn't draw all layers (since not everything uses everything)
+	static void drawAllLayers();
 
 private:
 	GameMainLoop() {}

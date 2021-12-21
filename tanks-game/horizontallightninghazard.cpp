@@ -1,4 +1,4 @@
-#include "horizontallightning.h"
+#include "horizontallightninghazard.h"
 #include "gamemanager.h"
 #include "renderer.h"
 #include "backgroundrect.h"
@@ -15,12 +15,12 @@
 #include "rng.h"
 #include <iostream>
 
-VertexArray* HorizontalLightning::background_va;
-VertexBuffer* HorizontalLightning::background_vb;
-IndexBuffer* HorizontalLightning::background_ib;
-bool HorizontalLightning::initialized_GPU = false;
+VertexArray* HorizontalLightningHazard::background_va;
+VertexBuffer* HorizontalLightningHazard::background_vb;
+IndexBuffer* HorizontalLightningHazard::background_ib;
+bool HorizontalLightningHazard::initialized_GPU = false;
 
-std::unordered_map<std::string, float> HorizontalLightning::getWeights() const {
+std::unordered_map<std::string, float> HorizontalLightningHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", 1.0f });
 	weights.insert({ "random-vanilla", 1.0f });
@@ -30,7 +30,7 @@ std::unordered_map<std::string, float> HorizontalLightning::getWeights() const {
 	return weights;
 }
 
-HorizontalLightning::HorizontalLightning(double xpos, double ypos, double width, double height) : RectangularLightning(xpos,ypos,width,height,true) {
+HorizontalLightningHazard::HorizontalLightningHazard(double xpos, double ypos, double width, double height) : RectangularLightningHazard(xpos,ypos,width,height,true) {
 	//flexible = false;
 
 	maxBolts = 2;
@@ -49,23 +49,23 @@ HorizontalLightning::HorizontalLightning(double xpos, double ypos, double width,
 	initializeGPU();
 }
 
-inline Circle* HorizontalLightning::getLeftPoint() const {
+inline Circle* HorizontalLightningHazard::getLeftPoint() const {
 	return new Point(x, y + h/2);
 }
 
-inline Circle* HorizontalLightning::getRightPoint() const {
+inline Circle* HorizontalLightningHazard::getRightPoint() const {
 	return new Point(x + w, y + h/2);
 }
 
-HorizontalLightning::~HorizontalLightning() {
-	//calls ~RectangularLightning(), so this doesn't need to do anything extra
+HorizontalLightningHazard::~HorizontalLightningHazard() {
+	//calls ~RectangularLightningHazard(), so this doesn't need to do anything extra
 	//clearBolts();
 
 	local_uninitializeGPU(); //I don't know if this is okay, but there isn't an error...
 	//uninitializeGPU();
 }
 
-bool HorizontalLightning::initializeGPU() {
+bool HorizontalLightningHazard::initializeGPU() {
 	if (initialized_GPU) {
 		return false;
 	}
@@ -92,7 +92,7 @@ bool HorizontalLightning::initializeGPU() {
 }
 
 //requires a bolt to initialize:
-void HorizontalLightning::local_initializeGPU() {
+void HorizontalLightningHazard::local_initializeGPU() {
 	float* positions = new float[bolts[0]->length*2];
 	for (int i = 0; i < bolts[0]->length; i++) {
 		positions[i*2]   = bolts[0]->positions[i*2];
@@ -107,7 +107,7 @@ void HorizontalLightning::local_initializeGPU() {
 	delete[] positions;
 }
 
-void HorizontalLightning::local_reinitializeGPU(int length) { //does not seed the VertexBuffer with values
+void HorizontalLightningHazard::local_reinitializeGPU(int length) { //does not seed the VertexBuffer with values
 	delete bolt_va;
 	delete bolt_vb;
 
@@ -121,7 +121,7 @@ void HorizontalLightning::local_reinitializeGPU(int length) { //does not seed th
 	delete[] positions;
 }
 
-bool HorizontalLightning::uninitializeGPU() {
+bool HorizontalLightningHazard::uninitializeGPU() {
 	if (!initialized_GPU) {
 		return false;
 	}
@@ -134,27 +134,27 @@ bool HorizontalLightning::uninitializeGPU() {
 	return true;
 }
 
-void HorizontalLightning::local_uninitializeGPU() {
+void HorizontalLightningHazard::local_uninitializeGPU() {
 	delete bolt_va;
 	delete bolt_vb;
 }
 
-void HorizontalLightning::streamBoltVertices(const LightningBolt* l) const {
+void HorizontalLightningHazard::streamBoltVertices(const LightningBolt* l) const {
 	bolt_vb->modifyData(l->positions.data(), l->length*2 * sizeof(float));
 }
 
-RectHazard* HorizontalLightning::factory(int argc, std::string* argv) {
+RectHazard* HorizontalLightningHazard::factory(int argc, std::string* argv) {
 	if (argc >= 4) {
 		double x = std::stod(argv[0]);
 		double y = std::stod(argv[1]);
 		double w = std::stod(argv[2]);
 		double h = std::stod(argv[3]);
-		return new HorizontalLightning(x, y, w, h);
+		return new HorizontalLightningHazard(x, y, w, h);
 	}
-	return new HorizontalLightning(0, 0, 0, 0);
+	return new HorizontalLightningHazard(0, 0, 0, 0);
 }
 
-void HorizontalLightning::specialEffectCircleCollision(Circle* c) {
+void HorizontalLightningHazard::specialEffectCircleCollision(Circle* c) {
 	//TODO: confirm everything is good
 	Circle* leftPoint = getLeftPoint();
 	Circle* rightPoint = getRightPoint();
@@ -256,7 +256,7 @@ void HorizontalLightning::specialEffectCircleCollision(Circle* c) {
 	//TODO: refactor? (it's done, right?)
 }
 
-void HorizontalLightning::pushBolt(LightningBolt* l, bool simpleRefresh) {
+void HorizontalLightningHazard::pushBolt(LightningBolt* l, bool simpleRefresh) {
 	if (l->length > bolt_vb_length) {
 		local_reinitializeGPU(l->length);
 	}
@@ -268,7 +268,7 @@ void HorizontalLightning::pushBolt(LightningBolt* l, bool simpleRefresh) {
 	}
 }
 
-void HorizontalLightning::pushDefaultBolt(int num, bool randomize) {
+void HorizontalLightningHazard::pushDefaultBolt(int num, bool randomize) {
 	for (int i = 0; i < num; i++) {
 		LightningBolt* l = new LightningBolt(0, h/2, w, h/2, getDefaultNumBoltPoints(w));
 		if (randomize) {
@@ -282,7 +282,7 @@ void HorizontalLightning::pushDefaultBolt(int num, bool randomize) {
 	}
 }
 
-bool HorizontalLightning::validLocation() const {
+bool HorizontalLightningHazard::validLocation() const {
 	bool wallOnLeft = false, wallOnRight = false, wallInMiddle = false;
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		Wall* wa = WallManager::getWall(i);
@@ -308,7 +308,7 @@ bool HorizontalLightning::validLocation() const {
 	return (wallOnLeft && wallOnRight && !wallInMiddle);
 }
 
-bool HorizontalLightning::reasonableLocation() const {
+bool HorizontalLightningHazard::reasonableLocation() const {
 	bool wallOnTop = false, wallOnBottom = false;
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		Wall* wa = WallManager::getWall(i);
@@ -348,7 +348,7 @@ bool HorizontalLightning::reasonableLocation() const {
 	return (!(wallOnTop && wallOnBottom) && validLocation());
 }
 
-void HorizontalLightning::simpleRefreshBolt(LightningBolt* l) const {
+void HorizontalLightningHazard::simpleRefreshBolt(LightningBolt* l) const {
 	double maxVariance = h/4;
 	/* lightning bolts are allowed to be in an area that looks like this:
 	 * 
@@ -413,23 +413,23 @@ void HorizontalLightning::simpleRefreshBolt(LightningBolt* l) const {
 	}
 }
 
-void HorizontalLightning::refreshBolt(LightningBolt* l) const {
-	RectangularLightning::refreshBolt(l, this->h, this->w);
+void HorizontalLightningHazard::refreshBolt(LightningBolt* l) const {
+	RectangularLightningHazard::refreshBolt(l, this->h, this->w);
 }
 
-void HorizontalLightning::draw() const {
+void HorizontalLightningHazard::draw() const {
 	drawBackground(false);
 	drawBolts();
 }
 
-void HorizontalLightning::draw(DrawingLayers layer) const {
+void HorizontalLightningHazard::draw(DrawingLayers layer) const {
 	switch (layer) {
 		case DrawingLayers::under:
 			drawBackground(false);
 			break;
 
 		default:
-			std::cerr << "WARNING: unknown DrawingLayer for HorizontalLightning::draw!" << std::endl;
+			std::cerr << "WARNING: unknown DrawingLayer for HorizontalLightningHazard::draw!" << std::endl;
 		case DrawingLayers::normal:
 			drawBolts();
 			break;
@@ -448,19 +448,19 @@ void HorizontalLightning::draw(DrawingLayers layer) const {
 	}
 }
 
-void HorizontalLightning::poseDraw() const {
+void HorizontalLightningHazard::poseDraw() const {
 	drawBackground(true);
 	drawBolts_Pose();
 }
 
-void HorizontalLightning::poseDraw(DrawingLayers layer) const {
+void HorizontalLightningHazard::poseDraw(DrawingLayers layer) const {
 	switch (layer) {
 		case DrawingLayers::under:
 			drawBackground(true);
 			break;
 
 		default:
-			std::cerr << "WARNING: unknown DrawingLayer for HorizontalLightning::poseDraw!" << std::endl;
+			std::cerr << "WARNING: unknown DrawingLayer for HorizontalLightningHazard::poseDraw!" << std::endl;
 		case DrawingLayers::normal:
 			drawBolts_Pose();
 			break;
@@ -479,19 +479,19 @@ void HorizontalLightning::poseDraw(DrawingLayers layer) const {
 	}
 }
 
-void HorizontalLightning::ghostDraw(float alpha) const {
+void HorizontalLightningHazard::ghostDraw(float alpha) const {
 	drawBackground(true, alpha);
 	drawBolts_Pose(alpha);
 }
 
-void HorizontalLightning::ghostDraw(DrawingLayers layer, float alpha) const {
+void HorizontalLightningHazard::ghostDraw(DrawingLayers layer, float alpha) const {
 	switch (layer) {
 		case DrawingLayers::under:
 			drawBackground(true, alpha);
 			break;
 
 		default:
-			std::cerr << "WARNING: unknown DrawingLayer for HorizontalLightning::ghostDraw!" << std::endl;
+			std::cerr << "WARNING: unknown DrawingLayer for HorizontalLightningHazard::ghostDraw!" << std::endl;
 		case DrawingLayers::normal:
 			drawBolts_Pose(alpha);
 			break;
@@ -510,7 +510,7 @@ void HorizontalLightning::ghostDraw(DrawingLayers layer, float alpha) const {
 	}
 }
 
-inline void HorizontalLightning::drawBackground(bool pose, float alpha) const {
+inline void HorizontalLightningHazard::drawBackground(bool pose, float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
@@ -526,7 +526,7 @@ inline void HorizontalLightning::drawBackground(bool pose, float alpha) const {
 	Renderer::Draw(*background_va, *background_ib, *shader);
 }
 
-inline void HorizontalLightning::drawBolts(float alpha) const {
+inline void HorizontalLightningHazard::drawBolts(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
@@ -561,7 +561,7 @@ inline void HorizontalLightning::drawBolts(float alpha) const {
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
-inline void HorizontalLightning::drawBolts_Pose(float alpha) const {
+inline void HorizontalLightningHazard::drawBolts_Pose(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
@@ -598,7 +598,7 @@ inline void HorizontalLightning::drawBolts_Pose(float alpha) const {
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
-RectHazard* HorizontalLightning::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {
+RectHazard* HorizontalLightningHazard::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {
 	//minimum/maximum width and height not in argv
 	if (WallManager::getNumWalls() == 0) {
 		return nullptr; //don't bother trying to see if a horizontal lightning could go from edge to edge
@@ -626,7 +626,7 @@ RectHazard* HorizontalLightning::randomizingFactory(double x_start, double y_sta
 			}
 		}
 		if ((xpos >= x_start) && (xpos + width <= x_start + area_width) && (ypos >= y_start) && (ypos + height <= y_start + area_height) && (width <= maxWidth) && (width >= minWidth)) {
-			RectHazard* testHorizontalLightning = new HorizontalLightning(xpos, ypos, width, height);
+			RectHazard* testHorizontalLightning = new HorizontalLightningHazard(xpos, ypos, width, height);
 			if (testHorizontalLightning->reasonableLocation()) {
 				randomized = testHorizontalLightning;
 				break;

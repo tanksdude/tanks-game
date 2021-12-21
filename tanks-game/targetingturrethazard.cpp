@@ -1,4 +1,4 @@
-#include "targetingturret.h"
+#include "targetingturrethazard.h"
 #include "gamemanager.h"
 #include "renderer.h"
 #include "constants.h"
@@ -16,16 +16,16 @@
 #include "rng.h"
 #include <iostream>
 
-VertexArray* TargetingTurret::va;
-VertexBuffer* TargetingTurret::vb;
-IndexBuffer* TargetingTurret::ib;
-VertexArray* TargetingTurret::cannon_va;
-VertexBuffer* TargetingTurret::cannon_vb;
-VertexArray* TargetingTurret::reticule_va;
-VertexBuffer* TargetingTurret::reticule_vb;
-bool TargetingTurret::initialized_GPU = false;
+VertexArray* TargetingTurretHazard::va;
+VertexBuffer* TargetingTurretHazard::vb;
+IndexBuffer* TargetingTurretHazard::ib;
+VertexArray* TargetingTurretHazard::cannon_va;
+VertexBuffer* TargetingTurretHazard::cannon_vb;
+VertexArray* TargetingTurretHazard::reticule_va;
+VertexBuffer* TargetingTurretHazard::reticule_vb;
+bool TargetingTurretHazard::initialized_GPU = false;
 
-std::unordered_map<std::string, float> TargetingTurret::getWeights() const {
+std::unordered_map<std::string, float> TargetingTurretHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", 1.0f });
 	weights.insert({ "random-vanilla", 1.0f });
@@ -35,7 +35,7 @@ std::unordered_map<std::string, float> TargetingTurret::getWeights() const {
 	return weights;
 }
 
-TargetingTurret::TargetingTurret(double xpos, double ypos, double angle, bool) : StationaryTurret(xpos, ypos, angle, true) {
+TargetingTurretHazard::TargetingTurretHazard(double xpos, double ypos, double angle, bool) : StationaryTurretHazard(xpos, ypos, angle, true) {
 	//x = xpos;
 	//y = ypos;
 	//this->angle = angle;
@@ -52,22 +52,22 @@ TargetingTurret::TargetingTurret(double xpos, double ypos, double angle, bool) :
 	canAcceptPowers = false; //... true? probably; hazardpowers were thought up with patrolling turret in mind
 }
 
-TargetingTurret::TargetingTurret(double xpos, double ypos, double angle) : TargetingTurret(xpos, ypos, angle, true) {
+TargetingTurretHazard::TargetingTurretHazard(double xpos, double ypos, double angle) : TargetingTurretHazard(xpos, ypos, angle, true) {
 	initializeGPU();
 }
 
-TargetingTurret::TargetingTurret(double xpos, double ypos, double angle, double radius) : TargetingTurret(xpos, ypos, angle) {
+TargetingTurretHazard::TargetingTurretHazard(double xpos, double ypos, double angle, double radius) : TargetingTurretHazard(xpos, ypos, angle) {
 	r = radius;
 }
 
-TargetingTurret::~TargetingTurret() {
+TargetingTurretHazard::~TargetingTurretHazard() {
 	//delete[] stateMultiplier;
 	//delete[] stateColors;
 
 	//uninitializeGPU();
 }
 
-bool TargetingTurret::initializeGPU() {
+bool TargetingTurretHazard::initializeGPU() {
 	if (initialized_GPU) {
 		return false;
 	}
@@ -116,7 +116,7 @@ bool TargetingTurret::initializeGPU() {
 	return true;
 }
 
-bool TargetingTurret::uninitializeGPU() {
+bool TargetingTurretHazard::uninitializeGPU() {
 	if (!initialized_GPU) {
 		return false;
 	}
@@ -133,21 +133,21 @@ bool TargetingTurret::uninitializeGPU() {
 	return true;
 }
 
-CircleHazard* TargetingTurret::factory(int argc, std::string* argv) {
+CircleHazard* TargetingTurretHazard::factory(int argc, std::string* argv) {
 	if (argc >= 3) {
 		double x = std::stod(argv[0]);
 		double y = std::stod(argv[1]);
 		double a = std::stod(argv[2]);
 		if (argc >= 4) {
 			double r = std::stod(argv[3]);
-			return new TargetingTurret(x, y, a, r);
+			return new TargetingTurretHazard(x, y, a, r);
 		}
-		return new TargetingTurret(x, y, a);
+		return new TargetingTurretHazard(x, y, a);
 	}
-	return new TargetingTurret(0, 0, 0);
+	return new TargetingTurretHazard(0, 0, 0);
 }
 
-inline void TargetingTurret::updateTrackingPos(const Tank* t, bool pointedAt) {
+inline void TargetingTurretHazard::updateTrackingPos(const Tank* t, bool pointedAt) {
 	if (pointedAt) {
 		targetingX = t->x;
 		targetingY = t->y;
@@ -158,7 +158,7 @@ inline void TargetingTurret::updateTrackingPos(const Tank* t, bool pointedAt) {
 	}
 }
 
-void TargetingTurret::tick() {
+void TargetingTurretHazard::tick() {
 	//tickCount is unused... maybe targetingCount should replace it...
 
 	if (currentState == 0) { //either tracking a tank or doing nothing
@@ -181,7 +181,7 @@ void TargetingTurret::tick() {
 	//maxState is 3; not using else in case tickCycle is zero
 }
 
-inline void TargetingTurret::tick_continueTracking() {
+inline void TargetingTurretHazard::tick_continueTracking() {
 	bool tankIsVisible = false;
 	const Tank* t = TankManager::getTankByID(this->trackingID);
 	if (t != nullptr) { //exists
@@ -210,7 +210,7 @@ inline void TargetingTurret::tick_continueTracking() {
 	}
 }
 
-inline void TargetingTurret::tick_lookForNewTarget() {
+inline void TargetingTurretHazard::tick_lookForNewTarget() {
 	targetingCount = 0;
 
 	std::vector<bool> tankVisibility; tankVisibility.reserve(TankManager::getNumTanks()); //not using regular arrays so people (including future me) can actually read this
@@ -252,7 +252,7 @@ inline void TargetingTurret::tick_lookForNewTarget() {
 	}
 }
 
-inline void TargetingTurret::tick_chargeUp() {
+inline void TargetingTurretHazard::tick_chargeUp() {
 	targetingCount++;
 	if (targetingCount >= stateMultiplier[1] * tickCycle) {
 		BulletManager::pushBullet(new Bullet(x + r*cos(direction.getAngle()), y + r*sin(direction.getAngle()), r*BULLET_TO_TANK_RADIUS_RATIO, direction.getAngle(), Tank::default_maxSpeed*BULLET_TO_TANK_SPEED_RATIO, this->getTeamID(), BulletParentType::individual, this->getGameID()));
@@ -262,7 +262,7 @@ inline void TargetingTurret::tick_chargeUp() {
 	}
 }
 
-inline void TargetingTurret::tick_cooldown() {
+inline void TargetingTurretHazard::tick_cooldown() {
 	targetingCount++;
 	if (targetingCount >= stateMultiplier[2] * tickCycle) {
 		targetingCount = 0;
@@ -270,7 +270,7 @@ inline void TargetingTurret::tick_cooldown() {
 	}
 }
 
-bool TargetingTurret::canSeeTank(const Tank* t) const {
+bool TargetingTurretHazard::canSeeTank(const Tank* t) const {
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		Wall* wa = WallManager::getWall(i);
 		if (CollisionHandler::lineRectCollision(x, y, t->x, t->y, wa)) {
@@ -280,7 +280,7 @@ bool TargetingTurret::canSeeTank(const Tank* t) const {
 	return true;
 }
 
-void TargetingTurret::turnTowardsTank(const Tank* t) {
+void TargetingTurretHazard::turnTowardsTank(const Tank* t) {
 	//see PowerFunctionHelper::homingGeneric
 	SimpleVector2D distToTank = SimpleVector2D(t->getX() - this->x, t->getY() - this->y);
 	float theta = SimpleVector2D::angleBetween(distToTank, SimpleVector2D(direction.getAngle(), 0, true));
@@ -296,11 +296,11 @@ void TargetingTurret::turnTowardsTank(const Tank* t) {
 	}
 }
 
-bool TargetingTurret::isPointedAt(const Tank* t) const {
+bool TargetingTurretHazard::isPointedAt(const Tank* t) const {
 	return (abs(SimpleVector2D::angleBetween(SimpleVector2D(direction.getAngle(), 0, true), SimpleVector2D(t->x - x, t->y - y))) < PI/turningIncrement);
 }
 
-bool TargetingTurret::reasonableLocation() const {
+bool TargetingTurretHazard::reasonableLocation() const {
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
 		if (canSeeTank(TankManager::getTank(i))) {
 			return false;
@@ -330,18 +330,18 @@ bool TargetingTurret::reasonableLocation() const {
 	return validLocation();
 }
 
-ColorValueHolder TargetingTurret::getColor() const {
+ColorValueHolder TargetingTurretHazard::getColor() const {
 	return ColorMixer::mix(stateColors[currentState], stateColors[(currentState+1)%maxState], constrain<double>(targetingCount/(tickCycle*stateMultiplier[currentState]), 0, 1));
 }
 
-ColorValueHolder TargetingTurret::getColor(int state) const {
+ColorValueHolder TargetingTurretHazard::getColor(int state) const {
 	if (state < 0) {
 		return stateColors[0];
 	}
 	return stateColors[state % maxState];
 }
 
-ColorValueHolder TargetingTurret::getReticuleColor() const {
+ColorValueHolder TargetingTurretHazard::getReticuleColor() const {
 	if (currentState == 0) {
 		return reticuleColors[0];
 	}
@@ -351,21 +351,21 @@ ColorValueHolder TargetingTurret::getReticuleColor() const {
 	return ColorValueHolder(0.0f, 0.0f, 0.0f); //shouldn't be drawn
 }
 
-void TargetingTurret::draw() const {
+void TargetingTurretHazard::draw() const {
 	drawBody();
 	drawOutline();
 	drawBarrel();
 	drawReticule();
 }
 
-void TargetingTurret::draw(DrawingLayers layer) const {
+void TargetingTurretHazard::draw(DrawingLayers layer) const {
 	switch (layer) {
 		case DrawingLayers::under:
 			//nothing
 			break;
 
 		default:
-			std::cerr << "WARNING: unknown DrawingLayer for TargetingTurret::draw!" << std::endl;
+			std::cerr << "WARNING: unknown DrawingLayer for TargetingTurretHazard::draw!" << std::endl;
 		case DrawingLayers::normal:
 			drawBody();
 			drawOutline();
@@ -386,14 +386,14 @@ void TargetingTurret::draw(DrawingLayers layer) const {
 	}
 }
 
-void TargetingTurret::poseDraw() const {
+void TargetingTurretHazard::poseDraw() const {
 	//TODO: adjust so drawBody will only draw with the normal color?
 	drawBody();
 	drawOutline();
 	drawBarrel();
 }
 
-void TargetingTurret::poseDraw(DrawingLayers layer) const {
+void TargetingTurretHazard::poseDraw(DrawingLayers layer) const {
 	//TODO: adjust so drawBody will only draw with the normal color?
 	switch (layer) {
 		case DrawingLayers::under:
@@ -401,7 +401,7 @@ void TargetingTurret::poseDraw(DrawingLayers layer) const {
 			break;
 
 		default:
-			std::cerr << "WARNING: unknown DrawingLayer for TargetingTurret::poseDraw!" << std::endl;
+			std::cerr << "WARNING: unknown DrawingLayer for TargetingTurretHazard::poseDraw!" << std::endl;
 		case DrawingLayers::normal:
 			drawBody();
 			drawOutline();
@@ -422,14 +422,14 @@ void TargetingTurret::poseDraw(DrawingLayers layer) const {
 	}
 }
 
-void TargetingTurret::ghostDraw(float alpha) const {
+void TargetingTurretHazard::ghostDraw(float alpha) const {
 	//TODO: adjust so drawBody will only draw with the normal color?
 	drawBody(alpha);
 	drawOutline(alpha);
 	drawBarrel(alpha);
 }
 
-void TargetingTurret::ghostDraw(DrawingLayers layer, float alpha) const {
+void TargetingTurretHazard::ghostDraw(DrawingLayers layer, float alpha) const {
 	//TODO: adjust so drawBody will only draw with the normal color?
 	switch (layer) {
 		case DrawingLayers::under:
@@ -437,7 +437,7 @@ void TargetingTurret::ghostDraw(DrawingLayers layer, float alpha) const {
 			break;
 
 		default:
-			std::cerr << "WARNING: unknown DrawingLayer for TargetingTurret::ghostDraw!" << std::endl;
+			std::cerr << "WARNING: unknown DrawingLayer for TargetingTurretHazard::ghostDraw!" << std::endl;
 		case DrawingLayers::normal:
 			drawBody(alpha);
 			drawOutline(alpha);
@@ -458,7 +458,7 @@ void TargetingTurret::ghostDraw(DrawingLayers layer, float alpha) const {
 	}
 }
 
-inline void TargetingTurret::drawBody(float alpha) const {
+inline void TargetingTurretHazard::drawBody(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
@@ -474,7 +474,7 @@ inline void TargetingTurret::drawBody(float alpha) const {
 	Renderer::Draw(*va, *ib, *shader);
 }
 
-inline void TargetingTurret::drawOutline(float alpha) const {
+inline void TargetingTurretHazard::drawOutline(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
@@ -495,7 +495,7 @@ inline void TargetingTurret::drawOutline(float alpha) const {
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
-inline void TargetingTurret::drawBarrel(float alpha) const {
+inline void TargetingTurretHazard::drawBarrel(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
@@ -516,7 +516,7 @@ inline void TargetingTurret::drawBarrel(float alpha) const {
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
-inline void TargetingTurret::drawReticule(float alpha) const {
+inline void TargetingTurretHazard::drawReticule(float alpha) const {
 	if (!targeting) {
 		return;
 	}
@@ -550,12 +550,12 @@ inline void TargetingTurret::drawReticule(float alpha) const {
 }
 
 /*
-void TargetingTurret::drawCPU() const {
+void TargetingTurretHazard::drawCPU() const {
 	//nah
 }
 */
 
-CircleHazard* TargetingTurret::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {
+CircleHazard* TargetingTurretHazard::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {
 	int attempts = 0;
 	CircleHazard* randomized = nullptr;
 	double xpos, ypos, angle;
@@ -567,7 +567,7 @@ CircleHazard* TargetingTurret::randomizingFactory(double x_start, double y_start
 	do {
 		xpos = RNG::randFunc2() * (area_width - 2*TANK_RADIUS/2) + (x_start + TANK_RADIUS/2);
 		ypos = RNG::randFunc2() * (area_height - 2*TANK_RADIUS/2) + (y_start + TANK_RADIUS/2);
-		CircleHazard* testTargetingTurret = new TargetingTurret(xpos, ypos, angle);
+		CircleHazard* testTargetingTurret = new TargetingTurretHazard(xpos, ypos, angle);
 		if (testTargetingTurret->reasonableLocation()) {
 			randomized = testTargetingTurret;
 			break;

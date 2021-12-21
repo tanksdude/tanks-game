@@ -62,6 +62,8 @@ public:
 	virtual std::vector<std::string> getHazardTypes() const = 0; //pure virtual to make sure circlehazards define it
 	virtual std::unordered_map<std::string, float> getWeights() const = 0; //intended range: (0,1]
 
+	virtual CircleHazardCollisionType getCollisionType() const = 0; // { return CircleHazardCollisionType::solid; }
+
 	virtual bool actuallyCollided(const Tank*) const { return true; } //precondition: currently and partially collided with tank
 	bool modifiesTankCollision = false;
 	virtual void modifiedTankCollision(Tank*);
@@ -74,16 +76,16 @@ public:
 	bool hasSpecialEffectBulletCollision = false;
 	virtual void specialEffectBulletCollision(Bullet*) { return; } //always activated before modifiedBulletCollision
 
+protected:
+	virtual double getDefaultOffense() const = 0;
+	virtual double getDefaultDefense() const = 0;
+
 public:
 	virtual bool validLocation() const override { return true; }
 	virtual bool reasonableLocation() const override = 0;
 
 	virtual std::string getName() const = 0;
 	//static std::string getClassName();
-
-	virtual double getDefaultOffense() const = 0;
-	virtual double getDefaultDefense() const = 0;
-	virtual CircleHazardCollisionType getCollisionType() const = 0; // { return CircleHazardCollisionType::solid; }
 
 	virtual void tick() override = 0;
 	virtual void draw() const override = 0;

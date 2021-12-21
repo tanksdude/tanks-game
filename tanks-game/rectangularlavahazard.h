@@ -7,7 +7,7 @@
 #include "vertexbuffer.h"
 #include "indexbuffer.h"
 
-class RectangularLava : public RectHazard, public GeneralizedLava {
+class RectangularLavaHazard : public RectHazard, public GeneralizedLava {
 protected:
 	virtual void pushNewBubble(double radius) override;
 
@@ -30,6 +30,8 @@ public:
 	}
 	virtual std::unordered_map<std::string, float> getWeights() const override;
 
+	virtual RectHazardCollisionType getCollisionType() const override { return RectHazardCollisionType::under; }
+
 	//virtual bool actuallyCollided(const Tank*) const override { return true; }
 	//bool modifiesTankCollision = true;
 	virtual void modifiedTankCollision(Tank*) override { return; }
@@ -38,16 +40,16 @@ public:
 	//bool modifiesBulletCollision = true;
 	virtual void modifiedBulletCollision(Bullet*) override { return; }
 
+protected:
+	virtual double getDefaultOffense() const override { return .5; }
+	virtual double getDefaultDefense() const override { return HIGH_TIER; }
+
 public:
 	//virtual bool validLocation() const override { return true; }
 	virtual bool reasonableLocation() const override;
 
 	virtual std::string getName() const override { return getClassName(); }
 	static std::string getClassName() { return "lava"; }
-
-	virtual double getDefaultOffense() const override { return .5; }
-	virtual double getDefaultDefense() const override { return HIGH_TIER; }
-	virtual RectHazardCollisionType getCollisionType() const override { return RectHazardCollisionType::under; }
 
 	virtual void tick() override { GeneralizedLava::tick(); }
 	virtual void draw() const override;
@@ -62,8 +64,8 @@ private:
 	inline void drawBubbles(bool pose, float alpha = 1.0f) const;
 
 public:
-	RectangularLava(double xpos, double ypos, double width, double height);
-	~RectangularLava();
+	RectangularLavaHazard(double xpos, double ypos, double width, double height);
+	~RectangularLavaHazard();
 	static RectHazard* factory(int, std::string*);
 	static RectHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv);
 	virtual int getFactoryArgumentCount() const override { return 4; }

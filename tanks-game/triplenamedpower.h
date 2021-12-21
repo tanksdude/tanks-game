@@ -1,7 +1,7 @@
 #pragma once
 #include "power.h"
 
-class TriplePower : public Power {
+class TripleNamedPower : public Power {
 public:
 	virtual std::vector<std::string> getPowerTypes() const override {
 		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "old", "random-old", "supermix", "supermix-vanilla", "random" };
@@ -13,22 +13,22 @@ public:
 		return attributes;
 	}
 
-	virtual std::string getName() const override { return TriplePower::getClassName(); }
+	virtual std::string getName() const override { return TripleNamedPower::getClassName(); }
 	static std::string getClassName() { return "triple"; }
-	virtual ColorValueHolder getColor() const override { return TriplePower::getClassColor(); }
+	virtual ColorValueHolder getColor() const override { return TripleNamedPower::getClassColor(); }
 	static ColorValueHolder getClassColor() { return ColorValueHolder(0.75f, 0.75f, 0.5f); } //beige //JS: #CCCC88
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
 	//virtual HazardPower* makeHazardPower() const override;
 
-	TriplePower();
+	TripleNamedPower();
 	static Power* factory();
 };
 
 
 
-class TripleTankPower : public TankPower {
+class TripleNamedTankPower : public TankPower {
 protected:
 	static const double angleDiff;
 
@@ -37,31 +37,31 @@ public:
 	virtual void removeEffects(Tank* parent) override;
 
 	virtual ColorValueHolder getColor() const override {
-		return TriplePower::getClassColor();
+		return TripleNamedPower::getClassColor();
 	}
 
-	virtual TankPower* makeDuplicate() const override { return new TripleTankPower(); }
+	virtual TankPower* makeDuplicate() const override { return new TripleNamedTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
 
 	//bool modifiesAdditionalShooting = true;
 	virtual void additionalShooting(Tank* parent, CannonPoint) override;
 
-	TripleTankPower();
+	TripleNamedTankPower();
 };
 
 
 
-class TripleBulletPower : public BulletPower {
+class TripleNamedBulletPower : public BulletPower {
 public:
 	virtual void initialize(Bullet* parent) override;
 	virtual void removeEffects(Bullet* parent) override;
 
 	virtual ColorValueHolder getColor() const override {
-		return TriplePower::getClassColor();
+		return TripleNamedPower::getClassColor();
 	}
 
-	virtual BulletPower* makeDuplicate() const override { return new TripleBulletPower(); }
+	virtual BulletPower* makeDuplicate() const override { return new TripleNamedBulletPower(); }
 	virtual TankPower* makeTankPower() const override;
 
-	TripleBulletPower();
+	TripleNamedBulletPower();
 };

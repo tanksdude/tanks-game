@@ -1,4 +1,4 @@
-#include "verticallightning.h"
+#include "verticallightninghazard.h"
 #include "gamemanager.h"
 #include "renderer.h"
 #include "backgroundrect.h"
@@ -15,12 +15,12 @@
 #include "rng.h"
 #include <iostream>
 
-VertexArray* VerticalLightning::background_va;
-VertexBuffer* VerticalLightning::background_vb;
-IndexBuffer* VerticalLightning::background_ib;
-bool VerticalLightning::initialized_GPU = false;
+VertexArray* VerticalLightningHazard::background_va;
+VertexBuffer* VerticalLightningHazard::background_vb;
+IndexBuffer* VerticalLightningHazard::background_ib;
+bool VerticalLightningHazard::initialized_GPU = false;
 
-std::unordered_map<std::string, float> VerticalLightning::getWeights() const {
+std::unordered_map<std::string, float> VerticalLightningHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", 1.0f });
 	weights.insert({ "random-vanilla", 1.0f });
@@ -30,7 +30,7 @@ std::unordered_map<std::string, float> VerticalLightning::getWeights() const {
 	return weights;
 }
 
-VerticalLightning::VerticalLightning(double xpos, double ypos, double width, double height) : RectangularLightning(xpos,ypos,width,height,true) {
+VerticalLightningHazard::VerticalLightningHazard(double xpos, double ypos, double width, double height) : RectangularLightningHazard(xpos,ypos,width,height,true) {
 	//flexible = false;
 
 	maxBolts = 2;
@@ -49,23 +49,23 @@ VerticalLightning::VerticalLightning(double xpos, double ypos, double width, dou
 	initializeGPU();
 }
 
-inline Circle* VerticalLightning::getTopPoint() const {
+inline Circle* VerticalLightningHazard::getTopPoint() const {
 	return new Point(x + w/2, y + h);
 }
 
-inline Circle* VerticalLightning::getBottomPoint() const {
+inline Circle* VerticalLightningHazard::getBottomPoint() const {
 	return new Point(x + w/2, y);
 }
 
-VerticalLightning::~VerticalLightning() {
-	//calls ~RectangularLightning(), so this doesn't need to do anything extra
+VerticalLightningHazard::~VerticalLightningHazard() {
+	//calls ~RectangularLightningHazard(), so this doesn't need to do anything extra
 	//clearBolts();
 
 	local_uninitializeGPU(); //I don't know if this is okay, but there isn't an error...
 	//uninitializeGPU();
 }
 
-bool VerticalLightning::initializeGPU() {
+bool VerticalLightningHazard::initializeGPU() {
 	if (initialized_GPU) {
 		return false;
 	}
@@ -92,7 +92,7 @@ bool VerticalLightning::initializeGPU() {
 }
 
 //requires a bolt to initialize:
-void VerticalLightning::local_initializeGPU() {
+void VerticalLightningHazard::local_initializeGPU() {
 	float* positions = new float[bolts[0]->length*2];
 	for (int i = 0; i < bolts[0]->length; i++) {
 		positions[i*2]   = bolts[0]->positions[i*2];
@@ -107,7 +107,7 @@ void VerticalLightning::local_initializeGPU() {
 	delete[] positions;
 }
 
-void VerticalLightning::local_reinitializeGPU(int length) { //does not seed the VertexBuffer with values
+void VerticalLightningHazard::local_reinitializeGPU(int length) { //does not seed the VertexBuffer with values
 	delete bolt_va;
 	delete bolt_vb;
 
@@ -121,7 +121,7 @@ void VerticalLightning::local_reinitializeGPU(int length) { //does not seed the 
 	delete[] positions;
 }
 
-bool VerticalLightning::uninitializeGPU() {
+bool VerticalLightningHazard::uninitializeGPU() {
 	if (!initialized_GPU) {
 		return false;
 	}
@@ -134,27 +134,27 @@ bool VerticalLightning::uninitializeGPU() {
 	return true;
 }
 
-void VerticalLightning::local_uninitializeGPU() {
+void VerticalLightningHazard::local_uninitializeGPU() {
 	delete bolt_va;
 	delete bolt_vb;
 }
 
-void VerticalLightning::streamBoltVertices(const LightningBolt* l) const {
+void VerticalLightningHazard::streamBoltVertices(const LightningBolt* l) const {
 	bolt_vb->modifyData(l->positions.data(), l->length*2 * sizeof(float));
 }
 
-RectHazard* VerticalLightning::factory(int argc, std::string* argv) {
+RectHazard* VerticalLightningHazard::factory(int argc, std::string* argv) {
 	if (argc >= 4) {
 		double x = std::stod(argv[0]);
 		double y = std::stod(argv[1]);
 		double w = std::stod(argv[2]);
 		double h = std::stod(argv[3]);
-		return new VerticalLightning(x, y, w, h);
+		return new VerticalLightningHazard(x, y, w, h);
 	}
-	return new VerticalLightning(0, 0, 0, 0);
+	return new VerticalLightningHazard(0, 0, 0, 0);
 }
 
-void VerticalLightning::specialEffectCircleCollision(Circle* c) {
+void VerticalLightningHazard::specialEffectCircleCollision(Circle* c) {
 	//TODO: confirm everything is good
 	Circle* bottomPoint = getBottomPoint();
 	Circle* topPoint = getTopPoint();
@@ -256,7 +256,7 @@ void VerticalLightning::specialEffectCircleCollision(Circle* c) {
 	//TODO: refactor? (it's done, right?)
 }
 
-void VerticalLightning::pushBolt(LightningBolt* l, bool simpleRefresh) {
+void VerticalLightningHazard::pushBolt(LightningBolt* l, bool simpleRefresh) {
 	if (l->length > bolt_vb_length) {
 		local_reinitializeGPU(l->length);
 	}
@@ -268,7 +268,7 @@ void VerticalLightning::pushBolt(LightningBolt* l, bool simpleRefresh) {
 	}
 }
 
-void VerticalLightning::pushDefaultBolt(int num, bool randomize) {
+void VerticalLightningHazard::pushDefaultBolt(int num, bool randomize) {
 	for (int i = 0; i < num; i++) {
 		LightningBolt* l = new LightningBolt(w/2, 0, w/2, h, getDefaultNumBoltPoints(h));
 		if (randomize) {
@@ -282,7 +282,7 @@ void VerticalLightning::pushDefaultBolt(int num, bool randomize) {
 	}
 }
 
-bool VerticalLightning::validLocation() const {
+bool VerticalLightningHazard::validLocation() const {
 	bool wallOnTop = false, wallOnBottom = false, wallInMiddle = false;
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		Wall* wa = WallManager::getWall(i);
@@ -308,7 +308,7 @@ bool VerticalLightning::validLocation() const {
 	return (wallOnTop && wallOnBottom && !wallInMiddle);
 }
 
-bool VerticalLightning::reasonableLocation() const {
+bool VerticalLightningHazard::reasonableLocation() const {
 	bool wallOnLeft = false, wallOnRight = false;
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		Wall* wa = WallManager::getWall(i);
@@ -348,10 +348,10 @@ bool VerticalLightning::reasonableLocation() const {
 	return (!(wallOnLeft && wallOnRight) && validLocation());
 }
 
-void VerticalLightning::simpleRefreshBolt(LightningBolt* l) const {
+void VerticalLightningHazard::simpleRefreshBolt(LightningBolt* l) const {
 	double maxVariance = w/4;
 	/* lightning bolts are allowed to be in an area that looks like this:
-	 * (see HorizontalLightning for a better diagram, then just mentally rotate it)
+	 * (see HorizontalLightningHazard for a better diagram, then just mentally rotate it)
 	 * +-------- /-\ --------+        <- h
 	 *         /     \        
 	 *      /           \     
@@ -395,23 +395,23 @@ void VerticalLightning::simpleRefreshBolt(LightningBolt* l) const {
 	}
 }
 
-void VerticalLightning::refreshBolt(LightningBolt* l) const {
-	RectangularLightning::refreshBolt(l, this->w, this->h);
+void VerticalLightningHazard::refreshBolt(LightningBolt* l) const {
+	RectangularLightningHazard::refreshBolt(l, this->w, this->h);
 }
 
-void VerticalLightning::draw() const {
+void VerticalLightningHazard::draw() const {
 	drawBackground(false);
 	drawBolts();
 }
 
-void VerticalLightning::draw(DrawingLayers layer) const {
+void VerticalLightningHazard::draw(DrawingLayers layer) const {
 	switch (layer) {
 		case DrawingLayers::under:
 			drawBackground(false);
 			break;
 
 		default:
-			std::cerr << "WARNING: unknown DrawingLayer for VerticalLightning::draw!" << std::endl;
+			std::cerr << "WARNING: unknown DrawingLayer for VerticalLightningHazard::draw!" << std::endl;
 		case DrawingLayers::normal:
 			drawBolts();
 			break;
@@ -430,19 +430,19 @@ void VerticalLightning::draw(DrawingLayers layer) const {
 	}
 }
 
-void VerticalLightning::poseDraw() const {
+void VerticalLightningHazard::poseDraw() const {
 	drawBackground(true);
 	drawBolts_Pose();
 }
 
-void VerticalLightning::poseDraw(DrawingLayers layer) const {
+void VerticalLightningHazard::poseDraw(DrawingLayers layer) const {
 	switch (layer) {
 		case DrawingLayers::under:
 			drawBackground(true);
 			break;
 
 		default:
-			std::cerr << "WARNING: unknown DrawingLayer for VerticalLightning::poseDraw!" << std::endl;
+			std::cerr << "WARNING: unknown DrawingLayer for VerticalLightningHazard::poseDraw!" << std::endl;
 		case DrawingLayers::normal:
 			drawBolts_Pose();
 			break;
@@ -461,19 +461,19 @@ void VerticalLightning::poseDraw(DrawingLayers layer) const {
 	}
 }
 
-void VerticalLightning::ghostDraw(float alpha) const {
+void VerticalLightningHazard::ghostDraw(float alpha) const {
 	drawBackground(true, alpha);
 	drawBolts_Pose(alpha);
 }
 
-void VerticalLightning::ghostDraw(DrawingLayers layer, float alpha) const {
+void VerticalLightningHazard::ghostDraw(DrawingLayers layer, float alpha) const {
 	switch (layer) {
 		case DrawingLayers::under:
 			drawBackground(true, alpha);
 			break;
 
 		default:
-			std::cerr << "WARNING: unknown DrawingLayer for VerticalLightning::ghostDraw!" << std::endl;
+			std::cerr << "WARNING: unknown DrawingLayer for VerticalLightningHazard::ghostDraw!" << std::endl;
 		case DrawingLayers::normal:
 			drawBolts_Pose(alpha);
 			break;
@@ -492,7 +492,7 @@ void VerticalLightning::ghostDraw(DrawingLayers layer, float alpha) const {
 	}
 }
 
-inline void VerticalLightning::drawBackground(bool pose, float alpha) const {
+inline void VerticalLightningHazard::drawBackground(bool pose, float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
@@ -508,7 +508,7 @@ inline void VerticalLightning::drawBackground(bool pose, float alpha) const {
 	Renderer::Draw(*background_va, *background_ib, *shader);
 }
 
-inline void VerticalLightning::drawBolts(float alpha) const {
+inline void VerticalLightningHazard::drawBolts(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
@@ -543,7 +543,7 @@ inline void VerticalLightning::drawBolts(float alpha) const {
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
-inline void VerticalLightning::drawBolts_Pose(float alpha) const {
+inline void VerticalLightningHazard::drawBolts_Pose(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
@@ -580,7 +580,7 @@ inline void VerticalLightning::drawBolts_Pose(float alpha) const {
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
-RectHazard* VerticalLightning::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {
+RectHazard* VerticalLightningHazard::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {
 	//minimum/maximum width and height not in argv
 	if (WallManager::getNumWalls() == 0) {
 		return nullptr; //don't bother trying to see if a vertical lightning could go from edge to edge
@@ -609,7 +609,7 @@ RectHazard* VerticalLightning::randomizingFactory(double x_start, double y_start
 			}
 		}
 		if ((xpos >= x_start) && (xpos + width <= x_start + area_width) && (ypos >= y_start) && (ypos + height <= y_start + area_height) && (height <= maxHeight) && (height >= minHeight)) {
-			RectHazard* testVerticalLightning = new VerticalLightning(xpos, ypos, width, height);
+			RectHazard* testVerticalLightning = new VerticalLightningHazard(xpos, ypos, width, height);
 			if (testVerticalLightning->reasonableLocation()) {
 				randomized = testVerticalLightning;
 				break;

@@ -1,11 +1,11 @@
 #pragma once
-#include "stationaryturret.h"
+#include "stationaryturrethazard.h"
 
 #include "vertexarray.h"
 #include "vertexbuffer.h"
 #include "indexbuffer.h"
 
-class TargetingTurret : public StationaryTurret {
+class TargetingTurretHazard : public StationaryTurretHazard {
 	//just called Turret in JS Tanks
 protected:
 	//double angle;
@@ -23,6 +23,14 @@ protected:
 	double targetingCount;
 	Game_ID trackingID; //if ==this->getGameID(), then it's not tracking
 	virtual inline void updateTrackingPos(const Tank*, bool pointedAt);
+
+protected:
+	virtual void turnTowardsTank(const Tank*);
+	virtual bool canSeeTank(const Tank*) const override; //true if no walls obstruct any line of sight to tank
+	virtual bool isPointedAt(const Tank*) const;
+	virtual ColorValueHolder getColor() const override;
+	virtual ColorValueHolder getColor(int state) const override;
+	virtual ColorValueHolder getReticuleColor() const;
 
 private:
 	static VertexArray* va;
@@ -44,20 +52,6 @@ public:
 	}
 	virtual std::unordered_map<std::string, float> getWeights() const override;
 
-protected:
-	virtual void turnTowardsTank(const Tank*);
-	virtual bool canSeeTank(const Tank*) const override; //true if no walls obstruct any line of sight to tank
-	virtual bool isPointedAt(const Tank*) const;
-	virtual ColorValueHolder getColor() const override;
-	virtual ColorValueHolder getColor(int state) const override;
-	virtual ColorValueHolder getReticuleColor() const;
-
-protected:
-	virtual inline void tick_continueTracking();
-	virtual inline void tick_lookForNewTarget();
-	virtual inline void tick_chargeUp();
-	virtual inline void tick_cooldown();
-
 public:
 	//virtual bool validLocation() const override { return true; }
 	virtual bool reasonableLocation() const override;
@@ -74,6 +68,12 @@ public:
 	virtual void ghostDraw(DrawingLayers, float alpha) const override;
 	//virtual void drawCPU() const override;
 
+protected:
+	virtual inline void tick_continueTracking();
+	virtual inline void tick_lookForNewTarget();
+	virtual inline void tick_chargeUp();
+	virtual inline void tick_cooldown();
+
 private:
 	inline void drawBody(float alpha = 1.0f) const;
 	inline void drawOutline(float alpha = 1.0f) const;
@@ -81,11 +81,11 @@ private:
 	inline void drawReticule(float alpha = 1.0f) const;
 
 protected:
-	TargetingTurret(double xpos, double ypos, double angle, bool noGPU);
+	TargetingTurretHazard(double xpos, double ypos, double angle, bool noGPU);
 public:
-	TargetingTurret(double xpos, double ypos, double angle);
-	TargetingTurret(double xpos, double ypos, double angle, double radius);
-	virtual ~TargetingTurret();
+	TargetingTurretHazard(double xpos, double ypos, double angle);
+	TargetingTurretHazard(double xpos, double ypos, double angle, double radius);
+	virtual ~TargetingTurretHazard();
 	static CircleHazard* factory(int, std::string*);
 	static CircleHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv);
 	//virtual int getFactoryArgumentCount() const override { return 3; }

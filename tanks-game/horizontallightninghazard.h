@@ -1,15 +1,14 @@
 #pragma once
-#include "rectangularlightning.h"
+#include "rectangularlightninghazard.h"
 
 #include "vertexarray.h"
 #include "vertexbuffer.h"
 #include "indexbuffer.h"
 
-class VerticalLightning : public RectangularLightning {
-	//called VLightning in JS Tanks
+class HorizontalLightningHazard : public RectangularLightningHazard {
+	//just called Lightning in JS Tanks
 protected:
 	//bool flexible; //worry about later
-
 	//unsigned int maxBolts; // = 2;
 	virtual void refreshBolt(LightningBolt*) const override; //uses RectangularLightning::refreshBolt
 	virtual void simpleRefreshBolt(LightningBolt*) const; //fast path for refreshing a bolt that goes from beginning to end
@@ -17,8 +16,8 @@ protected:
 	virtual void pushBolt(LightningBolt*, bool simpleRefresh);
 	virtual void pushDefaultBolt(int num, bool randomize) override;
 
-	inline Circle* getTopPoint() const; //for checks when a bullet/tank collides
-	inline Circle* getBottomPoint() const;
+	inline Circle* getLeftPoint() const; //for checks when a bullet/tank collides
+	inline Circle* getRightPoint() const;
 
 private:
 	static VertexArray* background_va;
@@ -53,7 +52,7 @@ public:
 	virtual bool reasonableLocation() const override;
 
 	virtual std::string getName() const override { return getClassName(); }
-	static std::string getClassName() { return "vertical_lightning"; }
+	static std::string getClassName() { return "horizontal_lightning"; }
 
 	//virtual void tick() override;
 	virtual void draw() const override;
@@ -69,12 +68,12 @@ private:
 	inline void drawBolts_Pose(float alpha = 1.0f) const;
 
 public:
-	VerticalLightning(double xpos, double ypos, double width, double height);
-	//VerticalLightning(double xpos, double ypos, double width, double height, bool flexible);
-	~VerticalLightning();
+	HorizontalLightningHazard(double xpos, double ypos, double width, double height);
+	//HorizontalLightningHazard(double xpos, double ypos, double width, double height, bool flexible);
+	~HorizontalLightningHazard();
 	static RectHazard* factory(int, std::string*);
 	static RectHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv);
 	virtual int getFactoryArgumentCount() const override { return 4; }
 	virtual RectHazardConstructionTypes getConstructionType() const override { return RectHazardConstructionTypes::standardConstruction; }
-	virtual RectFactoryInformation getFactoryInformation() const override { return { false, false, true, true, true }; }
+	virtual RectFactoryInformation getFactoryInformation() const override { return { true, true, false, false, true }; }
 };

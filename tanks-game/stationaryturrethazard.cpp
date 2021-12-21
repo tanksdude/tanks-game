@@ -1,4 +1,4 @@
-#include "stationaryturret.h"
+#include "stationaryturrethazard.h"
 #include "gamemanager.h"
 #include "renderer.h"
 #include "constants.h"
@@ -15,14 +15,14 @@
 #include "collisionhandler.h"
 #include "rng.h"
 
-VertexArray* StationaryTurret::va;
-VertexBuffer* StationaryTurret::vb;
-IndexBuffer* StationaryTurret::ib;
-VertexArray* StationaryTurret::cannon_va;
-VertexBuffer* StationaryTurret::cannon_vb;
-bool StationaryTurret::initialized_GPU = false;
+VertexArray* StationaryTurretHazard::va;
+VertexBuffer* StationaryTurretHazard::vb;
+IndexBuffer* StationaryTurretHazard::ib;
+VertexArray* StationaryTurretHazard::cannon_va;
+VertexBuffer* StationaryTurretHazard::cannon_vb;
+bool StationaryTurretHazard::initialized_GPU = false;
 
-std::unordered_map<std::string, float> StationaryTurret::getWeights() const {
+std::unordered_map<std::string, float> StationaryTurretHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", 1.0f });
 	weights.insert({ "random-vanilla", 1.0f });
@@ -32,7 +32,7 @@ std::unordered_map<std::string, float> StationaryTurret::getWeights() const {
 	return weights;
 }
 
-StationaryTurret::StationaryTurret(double xpos, double ypos, double angle, bool noGPU) {
+StationaryTurretHazard::StationaryTurretHazard(double xpos, double ypos, double angle, bool noGPU) {
 	x = xpos;
 	y = ypos;
 	this->direction = SimpleVector2D(angle, 0, true);
@@ -50,23 +50,23 @@ StationaryTurret::StationaryTurret(double xpos, double ypos, double angle, bool 
 	canAcceptPowers = false;
 }
 
-StationaryTurret::StationaryTurret(double xpos, double ypos, double angle)
-: StationaryTurret(xpos, ypos, angle, true) {
+StationaryTurretHazard::StationaryTurretHazard(double xpos, double ypos, double angle)
+: StationaryTurretHazard(xpos, ypos, angle, true) {
 	initializeGPU();
 }
 
-StationaryTurret::StationaryTurret(double xpos, double ypos, double angle, double radius) : StationaryTurret(xpos, ypos, angle) {
+StationaryTurretHazard::StationaryTurretHazard(double xpos, double ypos, double angle, double radius) : StationaryTurretHazard(xpos, ypos, angle) {
 	r = radius;
 }
 
-StationaryTurret::~StationaryTurret() {
+StationaryTurretHazard::~StationaryTurretHazard() {
 	delete[] stateMultiplier;
 	delete[] stateColors;
 
 	//uninitializeGPU();
 }
 
-bool StationaryTurret::initializeGPU() {
+bool StationaryTurretHazard::initializeGPU() {
 	if (initialized_GPU) {
 		return false;
 	}
@@ -101,7 +101,7 @@ bool StationaryTurret::initializeGPU() {
 	return true;
 }
 
-bool StationaryTurret::uninitializeGPU() {
+bool StationaryTurretHazard::uninitializeGPU() {
 	if (!initialized_GPU) {
 		return false;
 	}
@@ -116,27 +116,27 @@ bool StationaryTurret::uninitializeGPU() {
 	return true;
 }
 
-CircleHazard* StationaryTurret::factory(int argc, std::string* argv) {
+CircleHazard* StationaryTurretHazard::factory(int argc, std::string* argv) {
 	if (argc >= 3) {
 		double x = std::stod(argv[0]);
 		double y = std::stod(argv[1]);
 		double a = std::stod(argv[2]);
 		if (argc >= 4) {
 			double r = std::stod(argv[3]);
-			return new StationaryTurret(x, y, a, r);
+			return new StationaryTurretHazard(x, y, a, r);
 		}
-		return new StationaryTurret(x, y, a);
+		return new StationaryTurretHazard(x, y, a);
 	}
-	return new StationaryTurret(0, 0, 0);
+	return new StationaryTurretHazard(0, 0, 0);
 }
 
 /*
-double StationaryTurret::getAngle() const {
+double StationaryTurretHazard::getAngle() const {
 	return fmod(fmod(direction.getAngle(), 2*PI) + 2*PI, 2*PI);
 }
 */
 
-void StationaryTurret::tick() {
+void StationaryTurretHazard::tick() {
 	tickCount++;
 	bool mustShoot = false; //in case two state cycles happen at once (this will have annoying unit tests)
 	while (tickCount >= tickCycle * stateMultiplier[currentState]) {
@@ -158,7 +158,7 @@ void StationaryTurret::tick() {
 	}
 }
 
-bool StationaryTurret::canSeeTank(const Tank* t) const {
+bool StationaryTurretHazard::canSeeTank(const Tank* t) const {
 	SimpleVector2D distToTank = SimpleVector2D(t->getX() - x, t->getY() - y);
 	Circle* p = new Point(x + distToTank.getMagnitude()*cos(this->direction.getAngle()), y + distToTank.getMagnitude()*sin(this->direction.getAngle()));
 	if (!CollisionHandler::fullyCollided(p, t)) {
@@ -177,7 +177,7 @@ bool StationaryTurret::canSeeTank(const Tank* t) const {
 	return true;
 }
 
-bool StationaryTurret::reasonableLocation() const {
+bool StationaryTurretHazard::reasonableLocation() const {
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
 		if (canSeeTank(TankManager::getTank(i))) {
 			return false;
@@ -207,31 +207,31 @@ bool StationaryTurret::reasonableLocation() const {
 	return validLocation();
 }
 
-ColorValueHolder StationaryTurret::getColor() const {
+ColorValueHolder StationaryTurretHazard::getColor() const {
 	return ColorMixer::mix(stateColors[currentState], stateColors[(currentState+1)%maxState], constrain<double>(tickCount/(tickCycle*stateMultiplier[currentState]), 0, 1));
 }
 
-ColorValueHolder StationaryTurret::getColor(int state) const {
+ColorValueHolder StationaryTurretHazard::getColor(int state) const {
 	if (state < 0) {
 		return stateColors[0];
 	}
 	return stateColors[state % maxState];
 }
 
-void StationaryTurret::draw() const {
+void StationaryTurretHazard::draw() const {
 	drawBody();
 	drawOutline();
 	drawBarrel();
 }
 
-void StationaryTurret::draw(DrawingLayers layer) const {
+void StationaryTurretHazard::draw(DrawingLayers layer) const {
 	switch (layer) {
 		case DrawingLayers::under:
 			//nothing
 			break;
 
 		default:
-			std::cerr << "WARNING: unknown DrawingLayer for StationaryTurret::draw!" << std::endl;
+			std::cerr << "WARNING: unknown DrawingLayer for StationaryTurretHazard::draw!" << std::endl;
 		case DrawingLayers::normal:
 			draw();
 			break;
@@ -250,14 +250,14 @@ void StationaryTurret::draw(DrawingLayers layer) const {
 	}
 }
 
-void StationaryTurret::poseDraw() const {
+void StationaryTurretHazard::poseDraw() const {
 	//TODO: adjust so drawBody will only draw with the normal color?
 	drawBody();
 	drawOutline();
 	drawBarrel();
 }
 
-void StationaryTurret::poseDraw(DrawingLayers layer) const {
+void StationaryTurretHazard::poseDraw(DrawingLayers layer) const {
 	//TODO: adjust so drawBody will only draw with the normal color?
 	switch (layer) {
 		case DrawingLayers::under:
@@ -265,7 +265,7 @@ void StationaryTurret::poseDraw(DrawingLayers layer) const {
 			break;
 
 		default:
-			std::cerr << "WARNING: unknown DrawingLayer for StationaryTurret::poseDraw!" << std::endl;
+			std::cerr << "WARNING: unknown DrawingLayer for StationaryTurretHazard::poseDraw!" << std::endl;
 		case DrawingLayers::normal:
 			poseDraw();
 			break;
@@ -284,14 +284,14 @@ void StationaryTurret::poseDraw(DrawingLayers layer) const {
 	}
 }
 
-void StationaryTurret::ghostDraw(float alpha) const {
+void StationaryTurretHazard::ghostDraw(float alpha) const {
 	//TODO: adjust so drawBody will only draw with the normal color?
 	drawBody(alpha);
 	drawOutline(alpha);
 	drawBarrel(alpha);
 }
 
-void StationaryTurret::ghostDraw(DrawingLayers layer, float alpha) const {
+void StationaryTurretHazard::ghostDraw(DrawingLayers layer, float alpha) const {
 	//TODO: adjust so drawBody will only draw with the normal color?
 	switch (layer) {
 		case DrawingLayers::under:
@@ -299,7 +299,7 @@ void StationaryTurret::ghostDraw(DrawingLayers layer, float alpha) const {
 			break;
 
 		default:
-			std::cerr << "WARNING: unknown DrawingLayer for StationaryTurret::ghostDraw!" << std::endl;
+			std::cerr << "WARNING: unknown DrawingLayer for StationaryTurretHazard::ghostDraw!" << std::endl;
 		case DrawingLayers::normal:
 			ghostDraw(alpha);
 			break;
@@ -318,7 +318,7 @@ void StationaryTurret::ghostDraw(DrawingLayers layer, float alpha) const {
 	}
 }
 
-inline void StationaryTurret::drawBody(float alpha) const {
+inline void StationaryTurretHazard::drawBody(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
@@ -334,7 +334,7 @@ inline void StationaryTurret::drawBody(float alpha) const {
 	Renderer::Draw(*va, *ib, *shader);
 }
 
-inline void StationaryTurret::drawOutline(float alpha) const {
+inline void StationaryTurretHazard::drawOutline(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
@@ -355,7 +355,7 @@ inline void StationaryTurret::drawOutline(float alpha) const {
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
-inline void StationaryTurret::drawBarrel(float alpha) const {
+inline void StationaryTurretHazard::drawBarrel(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
@@ -377,7 +377,7 @@ inline void StationaryTurret::drawBarrel(float alpha) const {
 }
 
 /*
-void StationaryTurret::drawCPU() const {
+void StationaryTurretHazard::drawCPU() const {
 	//main body:
 	ColorValueHolder color = getColor();
 	glColor3f(color.getRf(), color.getGf(), color.getBf());
@@ -415,7 +415,7 @@ void StationaryTurret::drawCPU() const {
 }
 */
 
-CircleHazard* StationaryTurret::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {
+CircleHazard* StationaryTurretHazard::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {
 	int attempts = 0;
 	CircleHazard* randomized = nullptr;
 	double xpos, ypos, angle;
@@ -427,7 +427,7 @@ CircleHazard* StationaryTurret::randomizingFactory(double x_start, double y_star
 	do {
 		xpos = RNG::randFunc2() * (area_width - 2*TANK_RADIUS/4) + (x_start + TANK_RADIUS/4);
 		ypos = RNG::randFunc2() * (area_height - 2*TANK_RADIUS/4) + (y_start + TANK_RADIUS/4);
-		CircleHazard* testStationaryTurret = new StationaryTurret(xpos, ypos, angle);
+		CircleHazard* testStationaryTurret = new StationaryTurretHazard(xpos, ypos, angle);
 		if (testStationaryTurret->reasonableLocation()) {
 			randomized = testStationaryTurret;
 			break;

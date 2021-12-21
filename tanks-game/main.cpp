@@ -86,23 +86,23 @@
 #include "devsymmetrictanksleveleffect.h"
 
 //hazards:
-#include "stationaryturret.h"
-#include "targetingturret.h"
-#include "rectangularlightning.h"
-#include "horizontallightning.h"
-#include "verticallightning.h"
-#include "circularlightning.h"
-#include "rectangularlava.h"
-#include "circularlava.h"
-#include "rectangularnobulletzone.h"
-#include "circularnobulletzone.h"
+#include "stationaryturrethazard.h"
+#include "targetingturrethazard.h"
+#include "rectangularlightninghazard.h"
+#include "horizontallightninghazard.h"
+#include "verticallightninghazard.h"
+#include "circularlightninghazard.h"
+#include "rectangularlavahazard.h"
+#include "circularlavahazard.h"
+#include "rectangularnobulletzonehazard.h"
+#include "circularnobulletzonehazard.h"
 
 //powers:
 #include "speedpower.h"
 #include "wallhackpower.h"
 #include "multishotpower.h"
 #include "bouncepower.h"
-#include "triplepower.h"
+#include "triplenamedpower.h"
 #include "homingpower.h"
 #include "invinciblenamedpower.h"
 #include "bignamedpower.h"
@@ -150,7 +150,7 @@ int main(int argc, char** argv) {
 
 	Renderer::SetContext("OpenGL");
 	try {
-		Renderer::PreInitialize(&argc, argv, "PowerTanks Battle v0.2.4"); //this is not guaranteed to be correct every commit but likely will be
+		Renderer::PreInitialize(&argc, argv, "PowerTanks Battle v0.2.5 NOT FINAL"); //this is not guaranteed to be correct every commit but likely will be
 	}
 	catch (std::exception& e) {
 		std::cout << e.what() << std::endl;
@@ -158,7 +158,7 @@ int main(int argc, char** argv) {
 	}
 
 	// Set callback for drawing the scene
-	glutDisplayFunc(GameMainLoop::drawEverything);
+	glutDisplayFunc(GameMainLoop::drawMain);
 
 	// Set callback for resizing the window
 	glutReshapeFunc(Renderer::windowResizeFunc);
@@ -193,7 +193,7 @@ int main(int argc, char** argv) {
 	PowerupManager::addPowerFactory(WallhackPower::factory);
 	PowerupManager::addPowerFactory(BouncePower::factory);
 	PowerupManager::addPowerFactory(MultishotPower::factory);
-	PowerupManager::addPowerFactory(TriplePower::factory);
+	PowerupManager::addPowerFactory(TripleNamedPower::factory);
 	PowerupManager::addPowerFactory(HomingPower::factory);
 	PowerupManager::addPowerFactory(InvincibleNamedPower::factory);
 	PowerupManager::addPowerFactory(BigNamedPower::factory);
@@ -223,16 +223,16 @@ int main(int argc, char** argv) {
 
 	//hazards
 	//vanilla (some are also "old"):
-	HazardManager::addCircleHazardFactory(StationaryTurret::factory, StationaryTurret::randomizingFactory);
-	HazardManager::addCircleHazardFactory(TargetingTurret::factory, TargetingTurret::randomizingFactory);
-	HazardManager::addRectHazardFactory(RectangularLightning::factory, RectangularLightning::randomizingFactory);
-	HazardManager::addRectHazardFactory(HorizontalLightning::factory, HorizontalLightning::randomizingFactory);
-	HazardManager::addRectHazardFactory(VerticalLightning::factory, VerticalLightning::randomizingFactory);
-	HazardManager::addCircleHazardFactory(CircularLightning::factory, CircularLightning::randomizingFactory);
-	HazardManager::addRectHazardFactory(RectangularLava::factory, RectangularLava::randomizingFactory);
-	HazardManager::addCircleHazardFactory(CircularLava::factory, CircularLava::randomizingFactory);
-	HazardManager::addRectHazardFactory(RectangularNoBulletZone::factory, RectangularNoBulletZone::randomizingFactory);
-	HazardManager::addCircleHazardFactory(CircularNoBulletZone::factory, CircularNoBulletZone::randomizingFactory);
+	HazardManager::addCircleHazardFactory(StationaryTurretHazard::factory, StationaryTurretHazard::randomizingFactory);
+	HazardManager::addCircleHazardFactory(TargetingTurretHazard::factory, TargetingTurretHazard::randomizingFactory);
+	HazardManager::addRectHazardFactory(RectangularLightningHazard::factory, RectangularLightningHazard::randomizingFactory);
+	HazardManager::addRectHazardFactory(HorizontalLightningHazard::factory, HorizontalLightningHazard::randomizingFactory);
+	HazardManager::addRectHazardFactory(VerticalLightningHazard::factory, VerticalLightningHazard::randomizingFactory);
+	HazardManager::addCircleHazardFactory(CircularLightningHazard::factory, CircularLightningHazard::randomizingFactory);
+	HazardManager::addRectHazardFactory(RectangularLavaHazard::factory, RectangularLavaHazard::randomizingFactory);
+	HazardManager::addCircleHazardFactory(CircularLavaHazard::factory, CircularLavaHazard::randomizingFactory);
+	HazardManager::addRectHazardFactory(RectangularNoBulletZoneHazard::factory, RectangularNoBulletZoneHazard::randomizingFactory);
+	HazardManager::addCircleHazardFactory(CircularNoBulletZoneHazard::factory, CircularNoBulletZoneHazard::randomizingFactory);
 
 	//level effects
 	//vanilla (some are also "old"):

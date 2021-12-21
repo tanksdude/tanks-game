@@ -1,4 +1,4 @@
-#include "circularlava.h"
+#include "rectangularlavahazard.h"
 #include "gamemanager.h"
 #include "renderer.h"
 #include "constants.h"
@@ -11,15 +11,15 @@
 #include "collisionhandler.h"
 #include "rng.h"
 
-VertexArray* CircularLava::background_va;
-VertexBuffer* CircularLava::background_vb;
-IndexBuffer* CircularLava::background_ib;
-VertexArray* CircularLava::bubble_va;
-VertexBuffer* CircularLava::bubble_vb;
-IndexBuffer* CircularLava::bubble_ib;
-bool CircularLava::initialized_GPU = false;
+VertexArray* RectangularLavaHazard::background_va;
+VertexBuffer* RectangularLavaHazard::background_vb;
+IndexBuffer* RectangularLavaHazard::background_ib;
+VertexArray* RectangularLavaHazard::bubble_va;
+VertexBuffer* RectangularLavaHazard::bubble_vb;
+IndexBuffer* RectangularLavaHazard::bubble_ib;
+bool RectangularLavaHazard::initialized_GPU = false;
 
-std::unordered_map<std::string, float> CircularLava::getWeights() const {
+std::unordered_map<std::string, float> RectangularLavaHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", 1.0f });
 	weights.insert({ "random-vanilla", 1.0f });
@@ -29,10 +29,11 @@ std::unordered_map<std::string, float> CircularLava::getWeights() const {
 	return weights;
 }
 
-CircularLava::CircularLava(double xpos, double ypos, double radius) {
+RectangularLavaHazard::RectangularLavaHazard(double xpos, double ypos, double width, double height) {
 	x = xpos;
 	y = ypos;
-	r = radius;
+	w = width;
+	h = height;
 	gameID = GameManager::getNextID();
 	teamID = HAZARD_TEAM;
 
@@ -49,36 +50,32 @@ CircularLava::CircularLava(double xpos, double ypos, double radius) {
 	initializeGPU();
 }
 
-CircularLava::~CircularLava() {
+RectangularLavaHazard::~RectangularLavaHazard() {
 	//uninitializeGPU();
 }
 
-bool CircularLava::initializeGPU() {
+bool RectangularLavaHazard::initializeGPU() {
 	if (initialized_GPU) {
 		return false;
 	}
 
 	//background:
-	float background_positions[(Circle::numOfSides+1)*2];
-	background_positions[0] = 0;
-	background_positions[1] = 0;
-	for (int i = 1; i < Circle::numOfSides+1; i++) {
-		background_positions[i*2]   = cos((i-1) * 2*PI / Circle::numOfSides);
-		background_positions[i*2+1] = sin((i-1) * 2*PI / Circle::numOfSides);
-	}
+	float background_positions[] = {
+		0, 0,
+		1, 0,
+		1, 1,
+		0, 1
+	};
+	unsigned int background_indices[] = {
+		0, 1, 2,
+		2, 3, 0
+	};
 
-	unsigned int background_indices[Circle::numOfSides*3];
-	for (int i = 0; i < Circle::numOfSides; i++) {
-		background_indices[i*3]   = 0;
-		background_indices[i*3+1] = i+1;
-		background_indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
-	}
-
-	background_vb = VertexBuffer::MakeVertexBuffer(background_positions, (Circle::numOfSides+1)*2 * sizeof(float), RenderingHints::static_draw);
+	background_vb = VertexBuffer::MakeVertexBuffer(background_positions, 4*2 * sizeof(float), RenderingHints::dynamic_draw);
 	VertexBufferLayout background_layout(2);
 	background_va = VertexArray::MakeVertexArray(*background_vb, background_layout);
 
-	background_ib = IndexBuffer::MakeIndexBuffer(background_indices, Circle::numOfSides*3);
+	background_ib = IndexBuffer::MakeIndexBuffer(background_indices, 6);
 
 	//bubble:
 	float bubble_positions[(Circle::numOfSides+1)*2];
@@ -106,7 +103,7 @@ bool CircularLava::initializeGPU() {
 	return true;
 }
 
-bool CircularLava::uninitializeGPU() {
+bool RectangularLavaHazard::uninitializeGPU() {
 	if (!initialized_GPU) {
 		return false;
 	}
@@ -122,40 +119,36 @@ bool CircularLava::uninitializeGPU() {
 	return true;
 }
 
-CircleHazard* CircularLava::factory(int argc, std::string* argv) {
-	if (argc >= 3) {
+RectHazard* RectangularLavaHazard::factory(int argc, std::string* argv) {
+	if (argc >= 4) {
 		double x = std::stod(argv[0]);
 		double y = std::stod(argv[1]);
-		double r = std::stod(argv[2]);
-		return new CircularLava(x, y, r);
+		double w = std::stod(argv[2]);
+		double h = std::stod(argv[3]);
+		return new RectangularLavaHazard(x, y, w, h);
 	}
-	return new CircularLava(0, 0, 0);
+	return new RectangularLavaHazard(0, 0, 0, 0);
 }
 
-void CircularLava::pushNewBubble(double radius) {
+void RectangularLavaHazard::pushNewBubble(double radius) {
 	float x0, y0, x1, y1;
 	int attempts = 0;
 
-	float r0, a0, r1, a1;
-	r0 = RNG::randFunc() * (r - radius);
-	a0 = RNG::randFunc() * (2*PI);
-	x0 = r0 * cos(a0);
-	y0 = r0 * sin(a0);
+	x0 = RNG::randFunc() * (w - radius*2) + radius;
+	y0 = RNG::randFunc() * (h - radius*2) + radius;
 	do {
-		r1 = RNG::randFunc() * (r - radius);
-		a1 = RNG::randFunc() * (2 * PI);
-		x1 = r1 * cos(a1);
-		y1 = r1 * sin(a1);
+		x1 = RNG::randFunc() * (w - radius*2) + radius;
+		y1 = RNG::randFunc() * (h - radius*2) + radius;
 		attempts++;
-	} while ((attempts < 8) && (abs(x0-x1) < r/16 || abs(y0-y1) < r/16));
+	} while ((attempts < 8) && (abs(x0-x1) < w/16 || abs(y0-y1) < h/16)); //JS Tanks used w/8 and h/8
 
 	if (attempts < 8) {
 		double maxTick = floor(RNG::randFunc()*101) + 200;
-		bubbles.push_back(new LavaBubble(radius, x0/r, y0/r, x1/r, y1/r, maxTick));
+		bubbles.push_back(new LavaBubble(radius, x0/w, y0/h, x1/w, y1/h, maxTick));
 	}
 }
 
-bool CircularLava::reasonableLocation() const {
+bool RectangularLavaHazard::reasonableLocation() const {
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		if (CollisionHandler::partiallyCollided(this, WallManager::getWall(i))) {
 			return false;
@@ -163,32 +156,31 @@ bool CircularLava::reasonableLocation() const {
 	}
 
 	for (int i = 0; i < HazardManager::getNumCircleHazards(); i++) {
-		CircleHazard* ch = HazardManager::getCircleHazard(i);
-		if ((ch->getGameID() != this->getGameID()) && (ch->getName() != this->getName())) {
-			//TODO: does this care if it's colliding with another version of itself?
-			if (CollisionHandler::partiallyCollided(this, ch)) {
-				return false;
-			}
+		if (CollisionHandler::partiallyCollided(this, HazardManager::getCircleHazard(i))) {
+			return false;
 		}
 	}
 	for (int i = 0; i < HazardManager::getNumRectHazards(); i++) {
-		if (CollisionHandler::partiallyCollided(this, HazardManager::getRectHazard(i))) {
-			return false;
+		RectHazard* rh = HazardManager::getRectHazard(i);
+		if ((rh->getGameID() != this->getGameID()) && (rh->getName() != this->getName())) {
+			if (CollisionHandler::partiallyCollided(this, rh)) {
+				return false;
+			}
 		}
 	}
 
 	return validLocation();
 }
 
-void CircularLava::draw() const {
+void RectangularLavaHazard::draw() const {
 	drawBackground(false);
 	drawBubbles(false);
 }
 
-void CircularLava::draw(DrawingLayers layer) const {
+void RectangularLavaHazard::draw(DrawingLayers layer) const {
 	switch (layer) {
 		default:
-			std::cerr << "WARNING: unknown DrawingLayer for CircularLava::draw!" << std::endl;
+			std::cerr << "WARNING: unknown DrawingLayer for RectangularLavaHazard::draw!" << std::endl;
 		case DrawingLayers::under:
 			drawBackground(false);
 			break;
@@ -211,14 +203,14 @@ void CircularLava::draw(DrawingLayers layer) const {
 	}
 }
 
-void CircularLava::poseDraw() const {
+void RectangularLavaHazard::poseDraw() const {
 	drawBackground(true);
 }
 
-void CircularLava::poseDraw(DrawingLayers layer) const {
+void RectangularLavaHazard::poseDraw(DrawingLayers layer) const {
 	switch (layer) {
 		default:
-			std::cerr << "WARNING: unknown DrawingLayer for CircularLava::poseDraw!" << std::endl;
+			std::cerr << "WARNING: unknown DrawingLayer for RectangularLavaHazard::poseDraw!" << std::endl;
 		case DrawingLayers::under:
 			drawBackground(true);
 			break;
@@ -241,15 +233,15 @@ void CircularLava::poseDraw(DrawingLayers layer) const {
 	}
 }
 
-void CircularLava::ghostDraw(float alpha) const {
+void RectangularLavaHazard::ghostDraw(float alpha) const {
 	drawBackground(false, alpha);
 	//no bubbles
 }
 
-void CircularLava::ghostDraw(DrawingLayers layer, float alpha) const {
+void RectangularLavaHazard::ghostDraw(DrawingLayers layer, float alpha) const {
 	switch (layer) {
 		default:
-			std::cerr << "WARNING: unknown DrawingLayer for CircularLava::ghostDraw!" << std::endl;
+			std::cerr << "WARNING: unknown DrawingLayer for RectangularLavaHazard::ghostDraw!" << std::endl;
 		case DrawingLayers::under:
 			drawBackground(false, alpha);
 			break;
@@ -272,7 +264,7 @@ void CircularLava::ghostDraw(DrawingLayers layer, float alpha) const {
 	}
 }
 
-inline void CircularLava::drawBackground(bool pose, float alpha) const {
+inline void RectangularLavaHazard::drawBackground(bool pose, float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
@@ -282,13 +274,13 @@ inline void CircularLava::drawBackground(bool pose, float alpha) const {
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
-	MVPM = Renderer::GenerateMatrix(r, r, 0, x, y);
+	MVPM = Renderer::GenerateMatrix(w, h, 0, x, y);
 	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*background_va, *background_ib, *shader);
 }
 
-inline void CircularLava::drawBubbles(bool pose, float alpha) const {
+inline void RectangularLavaHazard::drawBubbles(bool pose, float alpha) const {
 	if (bubbles.size() == 0) {
 		return;
 	}
@@ -321,7 +313,7 @@ inline void CircularLava::drawBubbles(bool pose, float alpha) const {
 		color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 		shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
-		MVPM = Renderer::GenerateMatrix(sortedBubbles[i]->getR(), sortedBubbles[i]->getR(), 0, sortedBubbles[i]->getX()*r + x, sortedBubbles[i]->getY()*r + y);
+		MVPM = Renderer::GenerateMatrix(sortedBubbles[i]->getR(), sortedBubbles[i]->getR(), 0, sortedBubbles[i]->getX()*w + x, sortedBubbles[i]->getY()*h + y);
 		shader->setUniformMat4f("u_MVP", MVPM);
 
 		Renderer::Draw(*bubble_va, *shader, GL_LINE_LOOP, 1, Circle::numOfSides);
@@ -331,24 +323,26 @@ inline void CircularLava::drawBubbles(bool pose, float alpha) const {
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
-CircleHazard* CircularLava::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {
+RectHazard* RectangularLavaHazard::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {
 	int attempts = 0;
-	CircleHazard* randomized = nullptr;
-	double xpos, ypos, radius;
+	RectHazard* randomized = nullptr;
+	double xpos, ypos, width, height;
 	do {
-		if (argc >= 1) {
-			radius = std::stod(argv[0]);
+		if (argc >= 2) {
+			width = std::stod(argv[0]);
+			height = std::stod(argv[1]);
 		} else {
-			radius = RNG::randFunc2() * (40 - 20) + 20; //TODO: where should these constants be?
+			width = RNG::randFunc2() * (120 - 30) + 30; //TODO: where should these constants be?
+			height = RNG::randFunc2() * (80 - 20) + 20; //TODO: where should these constants be?
 		}
-		xpos = RNG::randFunc2() * (area_width - 2*radius) + (x_start + radius);
-		ypos = RNG::randFunc2() * (area_height - 2*radius) + (y_start + radius);
-		CircleHazard* testCircularLava = new CircularLava(xpos, ypos, radius);
-		if (testCircularLava->reasonableLocation()) {
-			randomized = testCircularLava;
+		xpos = RNG::randFunc2() * (area_width - 2*width) + (x_start + width);
+		ypos = RNG::randFunc2() * (area_height - 2*height) + (y_start + height);
+		RectHazard* testRectangularLava = new RectangularLavaHazard(xpos, ypos, width, height);
+		if (testRectangularLava->reasonableLocation()) {
+			randomized = testRectangularLava;
 			break;
 		} else {
-			delete testCircularLava;
+			delete testRectangularLava;
 		}
 		attempts++;
 	} while (attempts < 64);

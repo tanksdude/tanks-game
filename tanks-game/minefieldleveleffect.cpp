@@ -64,7 +64,7 @@ void MinefieldLevelEffect::draw(DrawingLayers layer) const {
 		default:
 			std::cerr << "WARNING: unknown DrawingLayer for MinefieldLevelEffect::draw!" << std::endl;
 		case DrawingLayers::under:
-			draw(); //should it be in effects...? JS had it here
+			draw(); //should it be in effects? JS had it there
 			break;
 
 		case DrawingLayers::normal:

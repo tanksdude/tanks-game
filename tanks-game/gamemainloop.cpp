@@ -925,7 +925,7 @@ void GameMainLoop::bulletToTank() {
 	}
 }
 
-void GameMainLoop::drawEverything() {
+void GameMainLoop::drawMain() {
 	GameMainLoop::currentlyDrawing = true;
 
 	auto start = Diagnostics::getTime();
@@ -1024,7 +1024,7 @@ void GameMainLoop::drawEverything() {
 
 	Diagnostics::startTiming("level effects");
 	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
-		LevelManager::getLevel(i)->draw(DrawingLayers::normal);
+		LevelManager::getLevel(i)->draw(DrawingLayers::effects);
 	}
 	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
 		LevelManager::getLevel(i)->drawLevelEffects(DrawingLayers::effects);
@@ -1058,4 +1058,90 @@ void GameMainLoop::drawEverything() {
 	//std::cout << "entire: " << (long long)Diagnostics::getDiff(start, end) << "ms" << std::endl << std::endl;
 
 	currentlyDrawing = false;
+}
+
+void GameMainLoop::drawLayer(DrawingLayers layer) {
+	GameMainLoop::currentlyDrawing = true;
+
+	auto start = Diagnostics::getTime();
+
+	Diagnostics::startTiming("powerups");
+	for (int i = 0; i < PowerupManager::getNumPowerups(); i++) {
+		PowerupManager::getPowerup(i)->draw(layer);
+	}
+	Renderer::UnbindAll();
+	Diagnostics::endTiming();
+
+	Diagnostics::startTiming("hazards");
+	for (int i = 0; i < HazardManager::getNumCircleHazards(); i++) {
+		HazardManager::getCircleHazard(i)->draw(layer);
+	}
+	for (int i = 0; i < HazardManager::getNumRectHazards(); i++) {
+		HazardManager::getRectHazard(i)->draw(layer);
+	}
+	Renderer::UnbindAll();
+	Diagnostics::endTiming();
+
+	Diagnostics::startTiming("walls");
+	for (int i = 0; i < WallManager::getNumWalls(); i++) {
+		WallManager::getWall(i)->draw(layer);
+	}
+	Renderer::UnbindAll();
+	Diagnostics::endTiming();
+
+	Diagnostics::startTiming("bullets");
+	for (int i = 0; i < BulletManager::getNumBullets(); i++) {
+		BulletManager::getBullet(i)->draw(layer);
+	}
+	Renderer::UnbindAll();
+	Diagnostics::endTiming();
+
+	Diagnostics::startTiming("tanks");
+	for (int i = 0; i < TankManager::getNumTanks(); i++) {
+		TankManager::getTank(i)->draw(layer);
+	}
+	Renderer::UnbindAll();
+	Diagnostics::endTiming();
+
+	Diagnostics::startTiming("level");
+	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
+		LevelManager::getLevel(i)->draw(layer);
+	}
+	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
+		LevelManager::getLevel(i)->drawLevelEffects(layer);
+	}
+	Renderer::UnbindAll();
+	Diagnostics::endTiming();
+
+	Diagnostics::startTiming("flush");
+	Renderer::Cleanup();
+	glFlush();
+	//glutSwapBuffers();
+	Diagnostics::endTiming();
+
+	auto end = Diagnostics::getTime();
+
+	//Diagnostics::printPreciseTimings();
+	Diagnostics::clearTimes();
+
+	//std::cout << "entire: " << (long long)Diagnostics::getDiff(start, end) << "ms" << std::endl << std::endl;
+
+	currentlyDrawing = false;
+}
+
+void GameMainLoop::drawAllLayers() {
+	Renderer::BeginningStuff();
+	Renderer::Clear();
+	BackgroundRect::draw();
+	Renderer::UnbindAll();
+	/*
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	*/
+
+	drawLayer(DrawingLayers::under);
+	drawLayer(DrawingLayers::normal);
+	drawLayer(DrawingLayers::effects);
+	drawLayer(DrawingLayers::top);
+	//drawLayer(DrawingLayers::debug);
 }

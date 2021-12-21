@@ -7,7 +7,7 @@
 #include "vertexbuffer.h"
 #include "indexbuffer.h"
 
-class StationaryTurret : public CircleHazard {
+class StationaryTurretHazard : public CircleHazard {
 	//just called Stationary in JS Tanks
 protected:
 	SimpleVector2D direction;
@@ -17,6 +17,12 @@ protected:
 	unsigned int maxState;
 	double* stateMultiplier;
 	ColorValueHolder* stateColors;
+
+protected:
+	//double getAngle() const;
+	virtual bool canSeeTank(const Tank*) const; //true if pointing at tank with no wall obstructions
+	virtual ColorValueHolder getColor() const; //needed because turret doesn't use tickCount, instead using targetingCount (should change this)
+	virtual ColorValueHolder getColor(int state) const;
 
 private:
 	static VertexArray* va;
@@ -36,11 +42,11 @@ public:
 	}
 	virtual std::unordered_map<std::string, float> getWeights() const override;
 
+	virtual CircleHazardCollisionType getCollisionType() const override { return CircleHazardCollisionType::solid; }
+
 protected:
-	//double getAngle() const;
-	virtual bool canSeeTank(const Tank*) const; //true if pointing at tank with no wall obstructions
-	virtual ColorValueHolder getColor() const; //needed because turret doesn't use tickCount, instead using targetingCount (should change this)
-	virtual ColorValueHolder getColor(int state) const;
+	virtual double getDefaultOffense() const override { return 0; }
+	virtual double getDefaultDefense() const override { return DESTRUCTION_TIER; }
 
 public:
 	//virtual bool validLocation() const override { return true; }
@@ -48,10 +54,6 @@ public:
 
 	virtual std::string getName() const override { return getClassName(); }
 	static std::string getClassName() { return "stationary_turret"; }
-
-	virtual double getDefaultOffense() const override { return 0; }
-	virtual double getDefaultDefense() const override { return DESTRUCTION_TIER; }
-	virtual CircleHazardCollisionType getCollisionType() const override { return CircleHazardCollisionType::solid; }
 
 	virtual void tick() override;
 	virtual void draw() const override;
@@ -68,11 +70,11 @@ private:
 	inline void drawBarrel(float alpha = 1.0f) const;
 
 protected:
-	StationaryTurret(double xpos, double ypos, double angle, bool noGPU); //doesn't initialize GPU
+	StationaryTurretHazard(double xpos, double ypos, double angle, bool noGPU); //doesn't initialize GPU
 public:
-	StationaryTurret(double xpos, double ypos, double angle);
-	StationaryTurret(double xpos, double ypos, double angle, double radius);
-	virtual ~StationaryTurret();
+	StationaryTurretHazard(double xpos, double ypos, double angle);
+	StationaryTurretHazard(double xpos, double ypos, double angle, double radius);
+	virtual ~StationaryTurretHazard();
 	static CircleHazard* factory(int, std::string*);
 	static CircleHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv);
 	virtual int getFactoryArgumentCount() const override { return 3; }
