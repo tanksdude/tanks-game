@@ -1,19 +1,19 @@
 #pragma once
 class Tank;
 
-#include "gamething.h"
-#include "drawablething.h"
+#include "game-thing.h"
+#include "drawable-thing.h"
 #include "circle.h"
 #include <string>
 #include <vector>
-#include "colorvalueholder.h"
-#include "cannonpoint.h"
-#include "tankpower.h"
-#include "simplevector2d.h"
+#include "color-value-holder.h"
+#include "cannon-point.h"
+#include "tank-power.h"
+#include "simple-vector-2d.h"
 
-#include "vertexarray.h"
-#include "vertexbuffer.h"
-#include "indexbuffer.h"
+#include "vertex-array.h"
+#include "vertex-buffer.h"
+#include "index-buffer.h"
 
 struct TankInputChar {
 	bool isSpecial;

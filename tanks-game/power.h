@@ -4,9 +4,9 @@ class Power;
 #include <string>
 #include <vector>
 #include <unordered_map>
-#include "colorvalueholder.h"
-#include "tankpower.h"
-#include "bulletpower.h"
+#include "color-value-holder.h"
+#include "tank-power.h"
+#include "bullet-power.h"
 
 class Power {
 public:

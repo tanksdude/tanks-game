@@ -8,9 +8,9 @@
 #include <stdexcept>
 
 //GPU rendering:
-#include "vertexbuffer.h"
-#include "indexbuffer.h"
-#include "vertexarray.h"
+#include "vertex-array.h"
+#include "vertex-buffer.h"
+#include "index-buffer.h"
 #include "shader.h"
 #include "renderer.h"
 #include <glm.hpp> //GLM is overkill but that's okay
@@ -19,119 +19,119 @@
 
 //important stuff:
 #include "rng.h"
-#include "colorvalueholder.h"
-#include "backgroundrect.h"
+#include "color-value-holder.h"
+#include "background-rect.h"
 #include "tank.h"
 #include "wall.h"
 #include "bullet.h"
-#include "powersquare.h"
+#include "power-square.h"
 #include "level.h"
-#include "circlehazard.h"
-#include "recthazard.h"
+#include "circle-hazard.h"
+#include "rect-hazard.h"
 
 //managers:
-#include "developermanager.h"
-#include "gamemanager.h"
-#include "keypressmanager.h"
-#include "tankmanager.h"
-#include "bulletmanager.h"
-#include "powerupmanager.h"
-#include "wallmanager.h"
-#include "levelmanager.h"
-#include "hazardmanager.h"
+#include "developer-manager.h"
+#include "game-manager.h"
+#include "keypress-manager.h"
+#include "tank-manager.h"
+#include "bullet-manager.h"
+#include "powerup-manager.h"
+#include "wall-manager.h"
+#include "level-manager.h"
+#include "hazard-manager.h"
 #include "diagnostics.h"
 
 //classes with important handling functions:
-#include "collisionhandler.h"
-#include "resetthings.h"
-#include "priorityhandler.h"
-#include "colormixer.h"
-#include "powerfunctionhelper.h"
-#include "endgamehandler.h"
+#include "collision-handler.h"
+#include "reset-things.h"
+#include "priority-handler.h"
+#include "color-mixer.h"
+#include "power-function-helper.h"
+#include "end-game-handler.h"
 
 //levels:
-#include "defaultrandomlevel.h"
-#include "emptylevel.h"
-#include "corridorlevel.h"
-#include "bigfunlevel.h"
-#include "fewobstacleslevel.h"
-#include "concealedpowerupslevel.h"
-#include "manyhazardslevel.h"
+#include "default-random-level.h"
+#include "empty-level.h"
+#include "corridor-level.h"
+#include "big-fun-level.h"
+#include "few-obstacles-level.h"
+#include "concealed-powerups-level.h"
+#include "many-hazards-level.h"
 //"extra":
-#include "hidingplaceslevel.h"
-#include "sneakyrewardlevel.h"
-#include "lightningcornerslevel.h"
-#include "loneturretlevel.h"
+#include "hiding-places-level.h"
+#include "sneaky-reward-level.h"
+#include "lightning-corners-level.h"
+#include "lone-turret-level.h"
 //special levels:
-#include "trickymaneuveringlevel.h"
-#include "mineheavenlevel.h"
-#include "winningpathlevel.h"
+#include "tricky-maneuvering-level.h"
+#include "mine-heaven-level.h"
+#include "winning-path-level.h"
 //old levels:
-#include "oldemptylevel.h"
+#include "old-empty-level.h"
 //dev levels:
-#include "developerlevel0.h"
-#include "developerlevel1.h"
-#include "developerlevel2.h"
-#include "unnamedlevel1.h"
-#include "unnamedlevel2.h"
-#include "devnowallslevel1.h"
-#include "timedrewardlevel.h"
+#include "developer-level-0.h"
+#include "developer-level-1.h"
+#include "developer-level-2.h"
+#include "unnamed-level-1.h"
+#include "unnamed-level-2.h"
+#include "dev-no-walls-level-1.h"
+#include "timed-reward-level.h"
 
 //level effects:
-#include "windleveleffect.h"
-#include "respawningpowerupsleveleffect.h"
-#include "minefieldleveleffect.h"
-#include "iceleveleffect.h"
-#include "invisiblewallsleveleffect.h"
+#include "wind-level-effect.h"
+#include "respawning-powerups-level-effect.h"
+#include "minefield-level-effect.h"
+#include "ice-level-effect.h"
+#include "invisible-walls-level-effect.h"
 //dev level effects:
-#include "devsymmetrictanksleveleffect.h"
+#include "dev-symmetric-tanks-level-effect.h"
 
 //hazards:
-#include "stationaryturrethazard.h"
-#include "targetingturrethazard.h"
-#include "rectangularlightninghazard.h"
-#include "horizontallightninghazard.h"
-#include "verticallightninghazard.h"
-#include "circularlightninghazard.h"
-#include "rectangularlavahazard.h"
-#include "circularlavahazard.h"
-#include "rectangularnobulletzonehazard.h"
-#include "circularnobulletzonehazard.h"
+#include "stationary-turret-hazard.h"
+#include "targeting-turret-hazard.h"
+#include "rectangular-lightning-hazard.h"
+#include "horizontal-lightning-hazard.h"
+#include "vertical-lightning-hazard.h"
+#include "circular-lightning-hazard.h"
+#include "rectangular-lava-hazard.h"
+#include "circular-lava-hazard.h"
+#include "rectangular-no-bullet-zone-hazard.h"
+#include "circular-no-bullet-zone-hazard.h"
 
 //powers:
-#include "speedpower.h"
-#include "wallhackpower.h"
-#include "multishotpower.h"
-#include "bouncepower.h"
-#include "triplenamedpower.h"
-#include "homingpower.h"
-#include "invinciblenamedpower.h"
-#include "bignamedpower.h"
-#include "megadeathpower.h"
-#include "grenadepower.h"
-#include "firenamedpower.h"
-#include "blastpower.h"
-#include "bananapower.h"
-#include "godmodepower.h"
+#include "speed-power.h"
+#include "wallhack-power.h"
+#include "multishot-power.h"
+#include "bounce-power.h"
+#include "triple-named-power.h"
+#include "homing-power.h"
+#include "invincible-named-power.h"
+#include "big-named-power.h"
+#include "mega-death-power.h"
+#include "grenade-power.h"
+#include "fire-named-power.h"
+#include "blast-power.h"
+#include "banana-power.h"
+#include "god-mode-power.h"
 //"extra":
-#include "minespower.h"
-#include "shotgunpower.h"
-#include "trackingpower.h"
-#include "barrierpower.h"
-#include "shieldpower.h"
+#include "mines-power.h"
+#include "shotgun-power.h"
+#include "tracking-power.h"
+#include "barrier-power.h"
+#include "shield-power.h"
 //old powers:
-#include "oldbouncepower.h" //identical to bounce except it makes the tank smaller
-#include "oldbignamedpower.h" //big but moves at half speed (not quarter) and the speed stacks
-#include "oldminespower.h" //firing rate stacks
+#include "old-bounce-power.h" //identical to bounce except it makes the tank smaller
+#include "old-big-named-power.h" //big but moves at half speed (not quarter) and the speed stacks
+#include "old-mines-power.h" //firing rate stacks
 //dev powers:
-#include "devlonginvinciblenamedpower.h" //invincible but lasts a long time
-#include "inversionpower.h" //flips left and right turning
-#include "devannoyingpower.h" //bullet doesn't hurt tank, merely pushes away
-#include "ultrabouncepower.h" //pushes wall away when it bounces
-#include "devcolorchangingpower.h" //color changes based on tank proximity
+#include "dev-long-invincible-named-power.h" //invincible but lasts a long time
+#include "inversion-power.h" //flips left and right turning
+#include "dev-annoying-power.h" //bullet doesn't hurt tank, merely pushes away
+#include "ultra-bounce-power.h" //pushes wall away when it bounces
+#include "dev-color-changing-power.h" //color changes based on tank proximity
 
 //a lot of the includes aren't needed anymore thanks to GameMainLoop, but may as well keep them
-#include "gamemainloop.h"
+#include "game-main-loop.h"
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>

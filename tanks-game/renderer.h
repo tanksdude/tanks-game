@@ -1,12 +1,13 @@
 #pragma once
 #include <string>
 #include <unordered_map>
-#include "renderingcontext.h"
-#include "vertexarray.h"
-#include "indexbuffer.h"
+#include "rendering-context.h"
+#include "vertex-array.h"
+#include "vertex-buffer.h"
+#include "index-buffer.h"
 #include "shader.h"
-#include "drawablething.h"
-#include "colorvalueholder.h"
+#include "drawable-thing.h"
+#include "color-value-holder.h"
 #include <glm.hpp>
 #include <GL/glew.h>
 

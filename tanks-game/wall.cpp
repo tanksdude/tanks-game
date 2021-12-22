@@ -1,8 +1,8 @@
 #include "wall.h"
-#include "gamemanager.h"
+#include "game-manager.h"
 #include "constants.h"
-#include "colormixer.h"
-#include "backgroundrect.h"
+#include "color-mixer.h"
+#include "background-rect.h"
 #include "renderer.h"
 #include <iostream>
 

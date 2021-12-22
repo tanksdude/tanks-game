@@ -3,11 +3,11 @@
 #include <vector>
 #include <string>
 #include <unordered_map>
-#include "colorvalueholder.h"
+#include "color-value-holder.h"
 
-#include "vertexarray.h"
-#include "vertexbuffer.h"
-#include "indexbuffer.h"
+#include "vertex-array.h"
+#include "vertex-buffer.h"
+#include "index-buffer.h"
 
 class Diagnostics {
 private:

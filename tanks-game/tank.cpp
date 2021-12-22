@@ -1,15 +1,15 @@
 #include "tank.h"
-#include "gamemanager.h"
+#include "game-manager.h"
 #include "constants.h"
 #include <math.h>
 #include "mylib.h"
-#include "colormixer.h"
-#include "backgroundrect.h"
+#include "color-mixer.h"
+#include "background-rect.h"
 #include "renderer.h"
-#include "keypressmanager.h"
-#include "bulletmanager.h"
+#include "keypress-manager.h"
+#include "bullet-manager.h"
 #include "rng.h"
-#include "levelmanager.h"
+#include "level-manager.h"
 #include <iostream>
 
 //for CPU drawing, in case other #includes go wrong:

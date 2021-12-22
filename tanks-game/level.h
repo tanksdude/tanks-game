@@ -1,9 +1,9 @@
 #pragma once
 class Level;
 
-#include "leveleffect.h"
-#include "colorvalueholder.h"
-#include "drawablething.h"
+#include "level-effect.h"
+#include "color-value-holder.h"
+#include "drawable-thing.h"
 #include <vector>
 #include <string>
 #include <unordered_map>

@@ -1,6 +1,6 @@
 #pragma once
-#include "gamething.h"
-#include "colorvalueholder.h"
+#include "game-thing.h"
+#include "color-value-holder.h"
 
 class Hazard : public GameThing {
 	friend class ResetThings;

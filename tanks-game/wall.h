@@ -1,14 +1,14 @@
 #pragma once
 class Wall;
 
-#include "gamething.h"
-#include "drawablething.h"
+#include "game-thing.h"
+#include "drawable-thing.h"
 #include "rect.h"
-#include "colorvalueholder.h"
+#include "color-value-holder.h"
 
-#include "vertexarray.h"
-#include "vertexbuffer.h"
-#include "indexbuffer.h"
+#include "vertex-array.h"
+#include "vertex-buffer.h"
+#include "index-buffer.h"
 
 class Wall : public Rect, public GameThing, public DrawableThing {
 	friend class ResetThings; //not really needed

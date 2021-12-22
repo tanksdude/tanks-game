@@ -1,11 +1,11 @@
 #include "bullet.h"
-#include "gamemanager.h"
+#include "game-manager.h"
 #include "mylib.h"
 #include "constants.h"
 #include <math.h>
-#include "colormixer.h"
+#include "color-mixer.h"
 #include "renderer.h"
-#include "backgroundrect.h"
+#include "background-rect.h"
 #include <iostream>
 
 //for CPU drawing, in case other #includes go wrong:

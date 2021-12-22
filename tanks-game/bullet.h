@@ -1,16 +1,16 @@
 #pragma once
 class Bullet;
 
-#include "gamething.h"
-#include "drawablething.h"
+#include "game-thing.h"
+#include "drawable-thing.h"
 #include "circle.h"
-#include "colorvalueholder.h"
-#include "bulletpower.h"
-#include "simplevector2d.h"
+#include "color-value-holder.h"
+#include "bullet-power.h"
+#include "simple-vector-2d.h"
 
-#include "vertexarray.h"
-#include "vertexbuffer.h"
-#include "indexbuffer.h"
+#include "vertex-array.h"
+#include "vertex-buffer.h"
+#include "index-buffer.h"
 
 enum class BulletParentType {
 	team, //tanks
