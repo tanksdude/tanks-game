@@ -149,6 +149,7 @@
     <ClCompile Include="circularnobulletzonehazard.cpp" />
     <ClCompile Include="concealedpowerupslevel.cpp" />
     <ClCompile Include="devannoyingpower.cpp" />
+    <ClCompile Include="devcolorchangingpower.cpp" />
     <ClCompile Include="developerlevel2.cpp" />
     <ClCompile Include="devlonginvinciblenamedpower.cpp" />
     <ClCompile Include="devnowallslevel1.cpp" />
@@ -263,6 +264,7 @@
     <ClInclude Include="circularnobulletzonehazard.h" />
     <ClInclude Include="concealedpowerupslevel.h" />
     <ClInclude Include="devannoyingpower.h" />
+    <ClInclude Include="devcolorchangingpower.h" />
     <ClInclude Include="developerlevel2.h" />
     <ClInclude Include="devlonginvinciblenamedpower.h" />
     <ClInclude Include="devnowallslevel1.h" />

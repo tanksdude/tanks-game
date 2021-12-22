@@ -128,6 +128,7 @@
 #include "inversionpower.h" //flips left and right turning
 #include "devannoyingpower.h" //bullet doesn't hurt tank, merely pushes away
 #include "ultrabouncepower.h" //pushes wall away when it bounces
+#include "devcolorchangingpower.h" //color changes based on tank proximity
 
 //a lot of the includes aren't needed anymore thanks to GameMainLoop, but may as well keep them
 #include "gamemainloop.h"
@@ -219,6 +220,7 @@ int main(int argc, char** argv) {
 	PowerupManager::addPowerFactory(InversionPower::factory);
 	PowerupManager::addPowerFactory(DevAnnoyingPower::factory);
 	PowerupManager::addPowerFactory(UltraBouncePower::factory);
+	PowerupManager::addPowerFactory(DevColorChangingPower::factory);
 
 	//hazards
 	//vanilla (some are also "old"):

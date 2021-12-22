@@ -348,6 +348,9 @@
     <ClCompile Include="devsymmetrictanksleveleffect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="devcolorchangingpower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -732,6 +735,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="devsymmetrictanksleveleffect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="devcolorchangingpower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
