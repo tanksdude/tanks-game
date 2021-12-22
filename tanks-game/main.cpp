@@ -39,6 +39,7 @@
 #include "wallmanager.h"
 #include "levelmanager.h"
 #include "hazardmanager.h"
+#include "diagnostics.h"
 
 //classes with important handling functions:
 #include "collisionhandler.h"
@@ -133,8 +134,6 @@
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
-
-//#include "diagnostics.h"
 
 //tank team rules:
 //0  = no team or default team
@@ -289,6 +288,18 @@ int main(int argc, char** argv) {
 	HazardManager::initialize();
 	Renderer::Initialize(); //static VAO, VBO, and IBO has better performance
 	BackgroundRect::initializeGPU();
+	Diagnostics::Initialize();
+
+	Diagnostics::declareGraph("tick", ColorValueHolder(1.0f, 0.0f, 0.0f));
+	Diagnostics::declareGraph("draw", ColorValueHolder(0.0f, 0.0f, 1.0f));
+
+#if _DEBUG
+	Diagnostics::setGraphYOffset(0);
+	//Diagnostics::setGraphYOffset(GAME_HEIGHT);
+#else
+	//Diagnostics::setGraphYOffset(0);
+	Diagnostics::setGraphYOffset(GAME_HEIGHT);
+#endif
 
 	//main game code initialization stuff:
 	TankManager::pushTank(new Tank(20, GAME_HEIGHT/2, 0, 1, "WASD", { false, 'w' }, { false, 'a' }, { false, 'd' }, { false, 's' }, { false, 'e' }));

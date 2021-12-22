@@ -10,6 +10,7 @@
 #include "levelmanager.h"
 #include "mylib.h"
 #include "rng.h"
+#include "diagnostics.h"
 #include <iostream>
 
 const double ResetThings::default_tankToEdgeDist = 20;
@@ -80,6 +81,7 @@ void ResetThings::reset(int) {
 	}
 
 	GameManager::Reset();
+	Diagnostics::clearGraph();
 }
 
 void ResetThings::firstReset() {

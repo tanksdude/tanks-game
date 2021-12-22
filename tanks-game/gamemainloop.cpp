@@ -40,6 +40,7 @@
 #include "wallmanager.h"
 #include "levelmanager.h"
 #include "hazardmanager.h"
+#include "diagnostics.h"
 
 //classes with important handling functions:
 #include "collisionhandler.h"
@@ -153,6 +154,7 @@ void GameMainLoop::Tick(int physicsUPS) {
 	GameManager::Tick();
 
 	auto end = Diagnostics::getTime();
+	Diagnostics::pushGraphTime("tick", Diagnostics::getDiff(start, end));
 
 	//Diagnostics::printPreciseTimings();
 	Diagnostics::clearTimes();
@@ -937,7 +939,7 @@ void GameMainLoop::drawMain() {
 
 	Diagnostics::startTiming("background rect");
 	BackgroundRect::draw();
-	Renderer::UnbindAll(); //I honestly don't know if this is needed anymore but it doesn't hurt performance too much so it can stay
+	Renderer::UnbindAll();
 	Diagnostics::endTiming();
 
 
@@ -1039,18 +1041,21 @@ void GameMainLoop::drawMain() {
 	Renderer::UnbindAll();
 	Diagnostics::endTiming();
 
-	Diagnostics::startTiming("flush");
+	auto end = Diagnostics::getTime();
+	Diagnostics::pushGraphTime("draw", Diagnostics::getDiff(start, end));
+	Diagnostics::drawGraphTimes();
+	Renderer::UnbindAll(); //needed
 
-	Renderer::Cleanup(); //possibly put glFlush/glutSwapBuffers in this
+	Diagnostics::startTiming("flush");
+	Renderer::Cleanup();
 
 	//for single framebuffer, use glFlush; for double framebuffer, swap the buffers
 	//swapping buffers is limited to monitor refresh rate, so I use glFlush
 	glFlush();
 	//glutSwapBuffers();
-
 	Diagnostics::endTiming();
 
-	auto end = Diagnostics::getTime();
+	//end = Diagnostics::getTime();
 
 	//Diagnostics::printPreciseTimings();
 	Diagnostics::clearTimes();
