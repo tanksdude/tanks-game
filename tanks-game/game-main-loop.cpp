@@ -49,6 +49,7 @@
 #include "color-mixer.h"
 #include "power-function-helper.h"
 #include "end-game-handler.h"
+#include "physics-handler.h"
 
 #include "diagnostics.h"
 
@@ -619,63 +620,81 @@ void GameMainLoop::bulletToEdge() {
 }
 
 void GameMainLoop::bulletToWall() {
-	for (int i = BulletManager::getNumBullets() - 1; i >= 0; i--) {
-		Bullet* b = BulletManager::getBullet(i);
+	//broad phase
+	std::vector<std::pair<int, int>> collisionList = PhysicsHandler::sweepAndPrune<Circle*, Rect*>(BulletManager::getBulletCollisionList(), WallManager::getWallCollisionList());
+
+	//narrow phase and resolve collision
+	std::vector<Game_ID> bulletDeletionList;
+	std::vector<Game_ID> wallDeletionList;
+	for (int i = 0; i < collisionList.size(); i++) {
+		std::pair<int, int> collisionPair = collisionList[i];
+		Bullet* b = BulletManager::getBullet(collisionPair.first);
 		bool shouldBeKilled = false;
 
-		for (int j = WallManager::getNumWalls() - 1; j >= 0; j--) {
-			Wall* w = WallManager::getWall(j);
-			bool killWall = false;
-			bool modifiedWallCollision = false;
-			bool overridedWallCollision = false;
-			bool noMoreWallCollisionSpecials = false;
+		Wall* w = WallManager::getWall(collisionPair.second);
+		bool killWall = false;
+		bool modifiedWallCollision = false;
+		bool overridedWallCollision = false;
+		bool noMoreWallCollisionSpecials = false;
 
-			if (CollisionHandler::partiallyCollided(b, w)) {
-				for (int k = 0; k < b->bulletPowers.size(); k++) {
-					if (b->bulletPowers[k]->modifiesCollisionWithWall) {
-						if (b->bulletPowers[k]->modifiedCollisionWithWallCanOnlyWorkIndividually && modifiedWallCollision) {
-							continue;
-						}
-						if (noMoreWallCollisionSpecials) {
-							continue;
-						}
-
-						modifiedWallCollision = true;
-						if (b->bulletPowers[k]->overridesCollisionWithWall) {
-							overridedWallCollision = true;
-						}
-						if (!b->bulletPowers[k]->modifiedCollisionWithWallCanWorkWithOthers) {
-							noMoreWallCollisionSpecials = true;
-						}
-
-						InteractionBoolHolder check_temp = b->bulletPowers[k]->modifiedCollisionWithWall(b, w);
-						if (check_temp.shouldDie) {
-							shouldBeKilled = true;
-						}
-						if (check_temp.otherShouldDie) {
-							killWall = true;
-						}
+		if (CollisionHandler::partiallyCollided(b, w)) {
+			for (int k = 0; k < b->bulletPowers.size(); k++) {
+				if (b->bulletPowers[k]->modifiesCollisionWithWall) {
+					if (b->bulletPowers[k]->modifiedCollisionWithWallCanOnlyWorkIndividually && modifiedWallCollision) {
+						continue;
 					}
-				}
+					if (noMoreWallCollisionSpecials) {
+						continue;
+					}
 
-				if (!overridedWallCollision) {
-					if (CollisionHandler::partiallyCollided(b, w)) {
+					modifiedWallCollision = true;
+					if (b->bulletPowers[k]->overridesCollisionWithWall) {
+						overridedWallCollision = true;
+					}
+					if (!b->bulletPowers[k]->modifiedCollisionWithWallCanWorkWithOthers) {
+						noMoreWallCollisionSpecials = true;
+					}
+
+					InteractionBoolHolder check_temp = b->bulletPowers[k]->modifiedCollisionWithWall(b, w);
+					if (check_temp.shouldDie) {
 						shouldBeKilled = true;
 					}
+					if (check_temp.otherShouldDie) {
+						killWall = true;
+					}
 				}
 			}
 
-			if (killWall) {
-				WallManager::deleteWall(j);
+			if (!overridedWallCollision) {
+				if (CollisionHandler::partiallyCollided(b, w)) {
+					shouldBeKilled = true;
+				}
 			}
+		}
+
+		if (killWall) {
+			//wallDeletionList.push_back(collisionPair.second);
+			wallDeletionList.push_back(w->getGameID());
 		}
 
 		if (shouldBeKilled) {
 			//shouldBeKilled = b->kill();
 			//if (shouldBeKilled) {
-				BulletManager::deleteBullet(i);
+				//bulletDeletionList.push_back(collisionPair.first);
+				bulletDeletionList.push_back(b->getGameID());
 			//}
 		}
+	}
+
+	//clear deaths
+	//std::sort(bulletDeletionList.begin(), bulletDeletionList.end());
+	for (int i = bulletDeletionList.size() - 1; i >= 0; i--) {
+		//BulletManager::deleteBullet(bulletDeletionList[i]);
+		BulletManager::deleteBulletByID(bulletDeletionList[i]);
+	}
+	//std::sort(wallDeletionList.begin(), wallDeletionList.end());
+	for (int i = wallDeletionList.size() - 1; i >= 0; i--) {
+		WallManager::deleteWallByID(wallDeletionList[i]);
 	}
 }
 
@@ -813,35 +832,36 @@ void GameMainLoop::bulletToHazard() {
 
 void GameMainLoop::bulletToBullet() {
 	//TODO: modernize (add default vs custom collision stuff)
-	for (int i = BulletManager::getNumBullets() - 1; i >= 0; i--) {
-		Bullet* b_outer = BulletManager::getBullet(i);
+	//broad phase
+	std::vector<std::pair<int, int>> collisionList = PhysicsHandler::sweepAndPrune<Circle*>(BulletManager::getBulletCollisionList());
+
+	//narrow phase and resolve collision
+	std::vector<Game_ID> bulletDeletionList;
+	for (int i = 0; i < collisionList.size(); i++) {
+		std::pair<int, int> collisionPair = collisionList[i];
+		Bullet* b_outer = BulletManager::getBullet(collisionPair.first);
 		bool b_outerShouldDie = false;
 
-		for (int j = BulletManager::getNumBullets() - 1; j >= 0; j--) { //could start at i-1? //TODO: find out
-			Bullet* b_inner = BulletManager::getBullet(j);
-			bool b_innerShouldDie = false;
+		Bullet* b_inner = BulletManager::getBullet(collisionPair.second);
+		bool b_innerShouldDie = false;
 
-			if (b_outer == b_inner) {
-				continue;
-			}
-			if (!b_outer->canCollideWith(b_inner)) {
-				continue;
-			}
-			if (CollisionHandler::partiallyCollided(b_outer, b_inner)) {
-				InteractionBoolHolder result = EndGameHandler::determineWinner(b_outer, b_inner);
-				//if (!b_outerShouldDie) {
-					b_outerShouldDie = result.shouldDie; //TODO: does this need to go in the conditional?
-				//}
-				b_innerShouldDie = result.otherShouldDie;
+		if (b_outer == b_inner) {
+			continue;
+		}
+		if (!b_outer->canCollideWith(b_inner)) {
+			continue;
+		}
+		if (CollisionHandler::partiallyCollided(b_outer, b_inner)) {
+			InteractionBoolHolder result = EndGameHandler::determineWinner(b_outer, b_inner);
+			//if (!b_outerShouldDie) {
+				b_outerShouldDie = result.shouldDie; //TODO: does this need to go in the conditional?
+			//}
+			b_innerShouldDie = result.otherShouldDie;
 
+			if (b_innerShouldDie) {
+				b_innerShouldDie = b_inner->kill();
 				if (b_innerShouldDie) {
-					b_innerShouldDie = b_inner->kill();
-					if (b_innerShouldDie) {
-						BulletManager::deleteBullet(j);
-						if (i > j) {
-							i--;
-						}
-					}
+					bulletDeletionList.push_back(b_inner->getGameID());
 				}
 			}
 		}
@@ -849,9 +869,16 @@ void GameMainLoop::bulletToBullet() {
 		if (b_outerShouldDie) {
 			b_outerShouldDie = b_outer->kill();
 			if (b_outerShouldDie) {
-				BulletManager::deleteBullet(i);
+				bulletDeletionList.push_back(b_outer->getGameID());
 			}
 		}
+	}
+
+	//clear deaths
+	//std::sort(bulletDeletionList.begin(), bulletDeletionList.end());
+	for (int i = bulletDeletionList.size() - 1; i >= 0; i--) {
+		//BulletManager::deleteBullet(bulletDeletionList[i]);
+		BulletManager::deleteBulletByID(bulletDeletionList[i]);
 	}
 }
 

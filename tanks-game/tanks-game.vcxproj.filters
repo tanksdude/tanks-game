@@ -351,6 +351,9 @@
     <ClCompile Include="dev-color-changing-power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="physics-handler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -738,6 +741,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="dev-color-changing-power.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="physics-handler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

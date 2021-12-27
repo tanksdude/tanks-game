@@ -48,6 +48,7 @@
 #include "color-mixer.h"
 #include "power-function-helper.h"
 #include "end-game-handler.h"
+#include "physics-handler.h"
 
 //levels:
 #include "default-random-level.h"

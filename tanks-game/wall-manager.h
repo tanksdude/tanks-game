@@ -18,6 +18,14 @@ public:
 	static void deleteWall(int index);
 	static void deleteWallByID(Game_ID);
 
+	static std::vector<Rect*> getWallCollisionList() {
+		std::vector<Rect*> wallList; wallList.reserve(walls.size());
+		for (int i = 0; i < walls.size(); i++) {
+			wallList.push_back((Rect*)walls[i]);
+		}
+		return wallList;
+	}
+
 private:
 	WallManager() {}
 	WallManager(const WallManager&) {}

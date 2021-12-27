@@ -179,6 +179,7 @@
     <ClCompile Include="opengl-rendering-context.cpp" />
     <ClCompile Include="opengl-vertex-array.cpp" />
     <ClCompile Include="opengl-vertex-buffer.cpp" />
+    <ClCompile Include="physics-handler.cpp" />
     <ClCompile Include="rectangular-no-bullet-zone-hazard.cpp" />
     <ClCompile Include="old-big-named-power.cpp" />
     <ClCompile Include="old-bounce-power.cpp" />
@@ -295,6 +296,7 @@
     <ClInclude Include="opengl-rendering-context.h" />
     <ClInclude Include="opengl-vertex-array.h" />
     <ClInclude Include="opengl-vertex-buffer.h" />
+    <ClInclude Include="physics-handler.h" />
     <ClInclude Include="rectangular-no-bullet-zone-hazard.h" />
     <ClInclude Include="old-big-named-power.h" />
     <ClInclude Include="old-bounce-power.h" />
