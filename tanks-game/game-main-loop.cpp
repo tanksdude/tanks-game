@@ -78,7 +78,7 @@ void GameMainLoop::Tick(int physicsUPS) {
 	moveTanks();
 
 	//collide tanks with powerups:
-	Diagnostics::startTiming("tank to powerups");
+	Diagnostics::startTiming("tank-powerups");
 	tankToPowerup();
 	Diagnostics::endTiming();
 
@@ -89,7 +89,7 @@ void GameMainLoop::Tick(int physicsUPS) {
 	moveBullets();
 
 	//powerCalculate on tanks and bullets, then tank shoot:
-	Diagnostics::startTiming("powerCalculate and tank shoot");
+	Diagnostics::startTiming("power calculate and tank shoot");
 	tankPowerCalculate();
 	bulletPowerCalculate();
 	tankShoot();
@@ -98,7 +98,7 @@ void GameMainLoop::Tick(int physicsUPS) {
 
 	//collide tanks with walls:
 	//this comes before powerCalculate stuff in JS Tanks; TODO: should this be changed?
-	Diagnostics::startTiming("tank to walls");
+	Diagnostics::startTiming("tank-walls");
 	tankToWall();
 	Diagnostics::endTiming();
 
@@ -124,21 +124,17 @@ void GameMainLoop::Tick(int physicsUPS) {
 	Diagnostics::startTiming("bullet-wall");
 	bulletToWall();
 	Diagnostics::endTiming();
-	//bullet to wall is a big timesink, but it can only really be sped up by multithreading
 
 	//collide bullets with hazards:
 	Diagnostics::startTiming("bullet-hazards");
 	bulletToHazard();
 	Diagnostics::endTiming();
-	//probably another big timesink, but there aren't many hazards
 
 	//collide bullets with bullets:
 	Diagnostics::startTiming("bullet-bullet");
 	bulletToBullet();
 	Diagnostics::endTiming();
 	//add another shader: main uses proj, modify doesn't
-	//bullet to bullet collision is the biggest timesink (obviously)
-	//unfortunately it can only be O(n^2), and multithreading doesn't seem like it would work
 
 	//collide bullets with tanks:
 	Diagnostics::startTiming("bullet-tank");
@@ -160,7 +156,14 @@ void GameMainLoop::Tick(int physicsUPS) {
 	//Diagnostics::printPreciseTimings();
 	Diagnostics::clearTimes();
 
+	//std::cout << BulletManager::getNumBullets() << std::endl;
 	//std::cout << "tick: " << (long long)Diagnostics::getDiff(start, end) << "ms" << std::endl << std::endl;
+
+	//largest timesinks:
+	//1. bullet-bullet
+	//2. bullet-hazard
+	//2. bullet-wall (really depends on how many hazards/walls)
+	//3. power calculate and tank shoot
 
 	if (!EndGameHandler::shouldGameEnd()) {
 		glutTimerFunc(1000/physicsUPS, GameMainLoop::Tick, physicsUPS);
@@ -699,134 +702,160 @@ void GameMainLoop::bulletToWall() {
 }
 
 void GameMainLoop::bulletToHazard() {
-	for (int i = BulletManager::getNumBullets() - 1; i >= 0; i--) {
-		Bullet* b = BulletManager::getBullet(i);
+	//broad phase
+	std::vector<std::pair<int, int>> collisionList = PhysicsHandler::sweepAndPrune<Circle*, Circle*>(BulletManager::getBulletCollisionList(), HazardManager::getCircleHazardCollisionList());
+
+	//narrow phase and resolve collision
+	std::vector<Game_ID> bulletDeletionList;
+	std::vector<Game_ID> circleHazardDeletionList;
+	for (int i = 0; i < collisionList.size(); i++) {
+		std::pair<int, int> collisionPair = collisionList[i];
+		Bullet* b = BulletManager::getBullet(collisionPair.first);
 		bool shouldBeKilled = false;
 
 		//circles:
-		for (int j = HazardManager::getNumCircleHazards() - 1; j >= 0; j--) {
-			CircleHazard* ch = HazardManager::getCircleHazard(j);
-			bool killCircleHazard = false;
-			bool modifiedCircleHazardCollision = false;
-			bool overridedCircleHazardCollision = false;
-			bool noMoreCircleHazardCollisionSpecials = false;
+		CircleHazard* ch = HazardManager::getCircleHazard(collisionPair.second);
+		bool killCircleHazard = false;
+		bool modifiedCircleHazardCollision = false;
+		bool overridedCircleHazardCollision = false;
+		bool noMoreCircleHazardCollisionSpecials = false;
 
-			if (!b->canCollideWith(ch)) {
-				continue;
-			}
-			if (CollisionHandler::partiallyCollided(b, ch)) {
-				for (int k = 0; k < b->bulletPowers.size(); k++) {
-					if (b->bulletPowers[k]->getModifiesCollisionWithCircleHazard(ch)) {
-						if (b->bulletPowers[k]->modifiedCollisionWithCircleHazardCanOnlyWorkIndividually && modifiedCircleHazardCollision) {
-							continue;
-						}
-						if (noMoreCircleHazardCollisionSpecials) {
-							continue;
-						}
-
-						modifiedCircleHazardCollision = true;
-						if (b->bulletPowers[k]->overridesCollisionWithCircleHazard) {
-							overridedCircleHazardCollision = true;
-						}
-						if (!b->bulletPowers[k]->modifiedCollisionWithCircleHazardCanWorkWithOthers) {
-							noMoreCircleHazardCollisionSpecials = true;
-						}
-
-						InteractionBoolHolder check_temp = b->bulletPowers[k]->modifiedCollisionWithCircleHazard(b, ch);
-						if (check_temp.shouldDie) {
-							shouldBeKilled = true;
-						}
-						if (check_temp.otherShouldDie) {
-							killCircleHazard = true;
-						}
+		if (!b->canCollideWith(ch)) {
+			continue;
+		}
+		if (CollisionHandler::partiallyCollided(b, ch)) {
+			for (int k = 0; k < b->bulletPowers.size(); k++) {
+				if (b->bulletPowers[k]->getModifiesCollisionWithCircleHazard(ch)) {
+					if (b->bulletPowers[k]->modifiedCollisionWithCircleHazardCanOnlyWorkIndividually && modifiedCircleHazardCollision) {
+						continue;
 					}
-				}
+					if (noMoreCircleHazardCollisionSpecials) {
+						continue;
+					}
 
-				if (!overridedCircleHazardCollision) {
-					if (CollisionHandler::partiallyCollided(b, ch)) {
-						if (ch->actuallyCollided(b)) {
-							InteractionBoolHolder result = EndGameHandler::determineWinner(b, ch);
-							shouldBeKilled = result.shouldDie;
-							killCircleHazard = result.otherShouldDie;
-						}
+					modifiedCircleHazardCollision = true;
+					if (b->bulletPowers[k]->overridesCollisionWithCircleHazard) {
+						overridedCircleHazardCollision = true;
+					}
+					if (!b->bulletPowers[k]->modifiedCollisionWithCircleHazardCanWorkWithOthers) {
+						noMoreCircleHazardCollisionSpecials = true;
+					}
+
+					InteractionBoolHolder check_temp = b->bulletPowers[k]->modifiedCollisionWithCircleHazard(b, ch);
+					if (check_temp.shouldDie) {
+						shouldBeKilled = true;
+					}
+					if (check_temp.otherShouldDie) {
+						killCircleHazard = true;
 					}
 				}
 			}
 
-			if (killCircleHazard) {
-				HazardManager::deleteCircleHazard(j);
+			if (!overridedCircleHazardCollision) {
+				if (CollisionHandler::partiallyCollided(b, ch)) {
+					if (ch->actuallyCollided(b)) {
+						InteractionBoolHolder result = EndGameHandler::determineWinner(b, ch);
+						shouldBeKilled = result.shouldDie;
+						killCircleHazard = result.otherShouldDie;
+					}
+				}
 			}
+		}
+
+		if (killCircleHazard) {
+			circleHazardDeletionList.push_back(ch->getGameID());
 		}
 
 		if (shouldBeKilled) {
 			//shouldBeKilled = b->kill();
 			//if (shouldBeKilled) {
-				BulletManager::deleteBullet(i);
-				continue; //bullet died, can't do any more collision with it
+				bulletDeletionList.push_back(b->getGameID());
+				//it's possible to add the same bullet twice, but deleting by ID doesn't care about that
 			//}
 		}
+	}
+
+	//broad phase
+	collisionList = PhysicsHandler::sweepAndPrune<Circle*, Rect*>(BulletManager::getBulletCollisionList(), HazardManager::getRectHazardCollisionList());
+
+	//narrow phase and resolve collision
+	std::vector<Game_ID> rectHazardDeletionList;
+	for (int i = 0; i < collisionList.size(); i++) {
+		std::pair<int, int> collisionPair = collisionList[i];
+		Bullet* b = BulletManager::getBullet(collisionPair.first);
+		bool shouldBeKilled = false;
 
 		//rectangles:
-		for (int j = 0; j < HazardManager::getNumRectHazards(); j++) {
-			RectHazard* rh = HazardManager::getRectHazard(j);
-			bool killRectHazard = false;
-			bool modifiedRectHazardCollision = false;
-			bool overridedRectHazardCollision = false;
-			bool noMoreRectHazardCollisionSpecials = false;
+		RectHazard* rh = HazardManager::getRectHazard(collisionPair.second);
+		bool killRectHazard = false;
+		bool modifiedRectHazardCollision = false;
+		bool overridedRectHazardCollision = false;
+		bool noMoreRectHazardCollisionSpecials = false;
 
-			if (!b->canCollideWith(rh)) {
-				continue;
-			}
-			if (CollisionHandler::partiallyCollided(b, rh)) {
-				for (int k = 0; k < b->bulletPowers.size(); k++) {
-					if (b->bulletPowers[k]->getModifiesCollisionWithRectHazard(rh)) {
-						if (b->bulletPowers[k]->modifiedCollisionWithRectHazardCanOnlyWorkIndividually && modifiedRectHazardCollision) {
-							continue;
-						}
-						if (noMoreRectHazardCollisionSpecials) {
-							continue;
-						}
-
-						modifiedRectHazardCollision = true;
-						if (b->bulletPowers[k]->overridesCollisionWithRectHazard) {
-							overridedRectHazardCollision = true;
-						}
-						if (!b->bulletPowers[k]->modifiedCollisionWithRectHazardCanWorkWithOthers) {
-							noMoreRectHazardCollisionSpecials = true;
-						}
-
-						InteractionBoolHolder check_temp = b->bulletPowers[k]->modifiedCollisionWithRectHazard(b, rh);
-						if (check_temp.shouldDie) {
-							shouldBeKilled = true;
-						}
-						if (check_temp.otherShouldDie) {
-							killRectHazard = true;
-						}
+		if (!b->canCollideWith(rh)) {
+			continue;
+		}
+		if (CollisionHandler::partiallyCollided(b, rh)) {
+			for (int k = 0; k < b->bulletPowers.size(); k++) {
+				if (b->bulletPowers[k]->getModifiesCollisionWithRectHazard(rh)) {
+					if (b->bulletPowers[k]->modifiedCollisionWithRectHazardCanOnlyWorkIndividually && modifiedRectHazardCollision) {
+						continue;
 					}
-				}
+					if (noMoreRectHazardCollisionSpecials) {
+						continue;
+					}
 
-				if (!overridedRectHazardCollision) {
-					if (CollisionHandler::partiallyCollided(b, rh)) {
-						if (rh->actuallyCollided(b)) {
-							InteractionBoolHolder result = EndGameHandler::determineWinner(b, rh);
-							shouldBeKilled = result.shouldDie;
-							killRectHazard = result.otherShouldDie;
-						}
+					modifiedRectHazardCollision = true;
+					if (b->bulletPowers[k]->overridesCollisionWithRectHazard) {
+						overridedRectHazardCollision = true;
+					}
+					if (!b->bulletPowers[k]->modifiedCollisionWithRectHazardCanWorkWithOthers) {
+						noMoreRectHazardCollisionSpecials = true;
+					}
+
+					InteractionBoolHolder check_temp = b->bulletPowers[k]->modifiedCollisionWithRectHazard(b, rh);
+					if (check_temp.shouldDie) {
+						shouldBeKilled = true;
+					}
+					if (check_temp.otherShouldDie) {
+						killRectHazard = true;
 					}
 				}
 			}
 
-			if (killRectHazard) {
-				HazardManager::deleteRectHazard(j);
+			if (!overridedRectHazardCollision) {
+				if (CollisionHandler::partiallyCollided(b, rh)) {
+					if (rh->actuallyCollided(b)) {
+						InteractionBoolHolder result = EndGameHandler::determineWinner(b, rh);
+						shouldBeKilled = result.shouldDie;
+						killRectHazard = result.otherShouldDie;
+					}
+				}
 			}
+		}
+
+		if (killRectHazard) {
+			rectHazardDeletionList.push_back(rh->getGameID());
 		}
 
 		if (shouldBeKilled) {
 			//shouldBeKilled = b->kill();
 			//if (shouldBeKilled) {
-				BulletManager::deleteBullet(i);
+				bulletDeletionList.push_back(b->getGameID());
+				//it's possible to add the same bullet twice, but deleting by ID doesn't care about that
 			//}
 		}
+	}
+
+	//clear deaths
+	for (int i = bulletDeletionList.size() - 1; i >= 0; i--) {
+		BulletManager::deleteBulletByID(bulletDeletionList[i]);
+	}
+	for (int i = circleHazardDeletionList.size() - 1; i >= 0; i--) {
+		HazardManager::deleteCircleHazardByID(circleHazardDeletionList[i]);
+	}
+	for (int i = rectHazardDeletionList.size() - 1; i >= 0; i--) {
+		HazardManager::deleteRectHazardByID(rectHazardDeletionList[i]);
 	}
 }
 
@@ -834,6 +863,7 @@ void GameMainLoop::bulletToBullet() {
 	//TODO: modernize (add default vs custom collision stuff)
 	//broad phase
 	std::vector<std::pair<int, int>> collisionList = PhysicsHandler::sweepAndPrune<Circle*>(BulletManager::getBulletCollisionList());
+	//TODO: this returns a large list only to get destroyed when the function ends; any way to reduce this memory footprint?
 
 	//narrow phase and resolve collision
 	std::vector<Game_ID> bulletDeletionList;
