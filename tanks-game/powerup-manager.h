@@ -25,7 +25,7 @@ public:
 	static void deletePowerup(int index);
 	static void deletePowerupByID(Game_ID);
 
-	static std::vector<Rect*> getPowerSquareCollisionList();
+	static std::vector<Rect*> getPowerupCollisionList();
 
 	static void addPowerFactory(PowerFunction);
 	static PowerFunction getPowerFactory(std::string type, std::string name);

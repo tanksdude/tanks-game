@@ -198,17 +198,26 @@ void GameMainLoop::moveTanks() {
 }
 
 void GameMainLoop::tankToPowerup() {
-	for (int i = PowerupManager::getNumPowerups() - 1; i >= 0; i--) {
-		PowerSquare* p = PowerupManager::getPowerup(i);
+	//broad phase
+	std::vector<std::pair<int, int>> collisionList = PhysicsHandler::sweepAndPrune<Circle*, Rect*>(TankManager::getTankCollisionList(), PowerupManager::getPowerupCollisionList());
 
-		for (int j = 0; j < TankManager::getNumTanks(); j++) {
-			Tank* t = TankManager::getTank(j);
-			if (CollisionHandler::partiallyCollided(p, t)) {
-				p->givePower(t);
-				PowerupManager::deletePowerup(i);
-				break;
-			}
+	//narrow phase and resolve collision
+	//std::vector<Game_ID> tankDeletionList; //custom tank-powerup collision doesn't exist
+	std::vector<Game_ID> powerupDeletionList;
+	for (int i = 0; i < collisionList.size(); i++) {
+		std::pair<int, int> collisionPair = collisionList[i];
+		Tank* t = TankManager::getTank(collisionPair.first);
+		PowerSquare* p = PowerupManager::getPowerup(collisionPair.second);
+
+		if (CollisionHandler::partiallyCollided(p, t)) {
+			p->givePower(t);
+			powerupDeletionList.push_back(p->getGameID());
 		}
+	}
+
+	//clear deaths
+	for (int i = powerupDeletionList.size() - 1; i >= 0; i--) {
+		PowerupManager::deletePowerupByID(powerupDeletionList[i]);
 	}
 }
 
@@ -291,201 +300,233 @@ void GameMainLoop::tankShoot() {
 }
 
 void GameMainLoop::tankToWall() {
-	for (int i = 0; i < TankManager::getNumTanks(); i++) {
-		Tank* t = TankManager::getTank(i);
+	//broad phase
+	std::vector<std::pair<int, int>> collisionList = PhysicsHandler::sweepAndPrune<Circle*, Rect*>(TankManager::getTankCollisionList(), WallManager::getWallCollisionList());
+
+	//narrow phase and resolve collision
+	//std::vector<Game_ID> tankDeletionList;
+	std::vector<Game_ID> wallDeletionList;
+	for (int i = 0; i < collisionList.size(); i++) {
+		std::pair<int, int> collisionPair = collisionList[i];
+		Tank* t = TankManager::getTank(collisionPair.first);
 		bool shouldBeKilled = false; //unlikely to be set
 
-		for (int j = WallManager::getNumWalls() - 1; j >= 0; j--) {
-			Wall* w = WallManager::getWall(j);
-			bool killWall = false;
-			bool modifiedWallCollision = false;
-			bool overridedWallCollision = false;
-			bool noMoreWallCollisionSpecials = false;
+		Wall* w = WallManager::getWall(collisionPair.second);
+		bool killWall = false;
+		bool modifiedWallCollision = false;
+		bool overridedWallCollision = false;
+		bool noMoreWallCollisionSpecials = false;
 
-			if (CollisionHandler::partiallyCollided(t, w)) {
-				for (int k = 0; k < t->tankPowers.size(); k++) {
-					if (t->tankPowers[k]->modifiesCollisionWithWall) {
-						if (t->tankPowers[k]->modifiedCollisionWithWallCanOnlyWorkIndividually && modifiedWallCollision) {
-							continue;
-						}
-						if (noMoreWallCollisionSpecials) {
-							continue;
-						}
-
-						modifiedWallCollision = true;
-						if (t->tankPowers[k]->overridesCollisionWithWall) {
-							overridedWallCollision = true;
-						}
-						if (!t->tankPowers[k]->modifiedEdgeCollisionCanWorkWithOthers) {
-							noMoreWallCollisionSpecials = true;
-						}
-
-						InteractionBoolHolder check_temp = t->tankPowers[k]->modifiedCollisionWithWall(t, w);
-						if (check_temp.shouldDie) {
-							shouldBeKilled = true;
-						}
-						if (check_temp.otherShouldDie) {
-							killWall = true;
-						}
+		if (CollisionHandler::partiallyCollided(t, w)) {
+			for (int k = 0; k < t->tankPowers.size(); k++) {
+				if (t->tankPowers[k]->modifiesCollisionWithWall) {
+					if (t->tankPowers[k]->modifiedCollisionWithWallCanOnlyWorkIndividually && modifiedWallCollision) {
+						continue;
 					}
-				}
+					if (noMoreWallCollisionSpecials) {
+						continue;
+					}
 
-				if (!overridedWallCollision) {
-					if (CollisionHandler::partiallyCollided(t, w)) {
-						InteractionBoolHolder result = EndGameHandler::determineWinner(t, w, shouldBeKilled);
-						if (result.shouldDie) {
-							shouldBeKilled = true;
-						}
-						if (result.otherShouldDie) {
-							killWall = true;
-						}
+					modifiedWallCollision = true;
+					if (t->tankPowers[k]->overridesCollisionWithWall) {
+						overridedWallCollision = true;
+					}
+					if (!t->tankPowers[k]->modifiedEdgeCollisionCanWorkWithOthers) {
+						noMoreWallCollisionSpecials = true;
+					}
+
+					InteractionBoolHolder check_temp = t->tankPowers[k]->modifiedCollisionWithWall(t, w);
+					if (check_temp.shouldDie) {
+						shouldBeKilled = true;
+					}
+					if (check_temp.otherShouldDie) {
+						killWall = true;
 					}
 				}
 			}
 
-			if (killWall) {
-				WallManager::deleteWall(j);
+			if (!overridedWallCollision) {
+				if (CollisionHandler::partiallyCollided(t, w)) {
+					InteractionBoolHolder result = EndGameHandler::determineWinner(t, w, shouldBeKilled);
+					if (result.shouldDie) {
+						shouldBeKilled = true;
+					}
+					if (result.otherShouldDie) {
+						killWall = true;
+					}
+				}
 			}
+		}
+
+		if (killWall) {
+			wallDeletionList.push_back(w->getGameID());
 		}
 
 		if (shouldBeKilled) {
 			//TODO: proper implementation?
 		}
+	}
+
+	//clear deaths
+	for (int i = wallDeletionList.size() - 1; i >= 0; i--) {
+		WallManager::deleteWallByID(wallDeletionList[i]);
 	}
 }
 
 void GameMainLoop::tankToHazard() {
-	for (int i = 0; i < TankManager::getNumTanks(); i++) {
-		Tank* t = TankManager::getTank(i);
+	//broad phase
+	std::vector<std::pair<int, int>> collisionList = PhysicsHandler::sweepAndPrune<Circle*, Circle*>(TankManager::getTankCollisionList(), HazardManager::getCircleHazardCollisionList());
+
+	//narrow phase and resolve collision
+	//std::vector<Game_ID> tankDeletionList;
+	std::vector<Game_ID> circleHazardDeletionList;
+	for (int i = 0; i < collisionList.size(); i++) {
+		std::pair<int, int> collisionPair = collisionList[i];
+		Tank* t = TankManager::getTank(collisionPair.first);
 		bool shouldBeKilled = false;
 
 		//circles:
-		for (int j = HazardManager::getNumCircleHazards() - 1; j >= 0; j--) {
-			CircleHazard* ch = HazardManager::getCircleHazard(j);
-			bool killCircleHazard = false;
-			bool modifiedCircleHazardCollision = false;
-			bool overridedCircleHazardCollision = false;
-			bool noMoreCircleHazardCollisionSpecials = false;
+		CircleHazard* ch = HazardManager::getCircleHazard(collisionPair.second);
+		bool killCircleHazard = false;
+		bool modifiedCircleHazardCollision = false;
+		bool overridedCircleHazardCollision = false;
+		bool noMoreCircleHazardCollisionSpecials = false;
 
-			if (CollisionHandler::partiallyCollided(t, ch)) {
-				//tankpower decides whether to use the partial collision or the true collision
-				for (int k = 0; k < t->tankPowers.size(); k++) {
-					if (t->tankPowers[k]->getModifiesCollisionWithCircleHazard(ch)) {
-						if (t->tankPowers[k]->modifiedCollisionWithCircleHazardCanOnlyWorkIndividually && modifiedCircleHazardCollision) {
-							continue;
-						}
-						if (noMoreCircleHazardCollisionSpecials) {
-							continue;
-						}
+		if (CollisionHandler::partiallyCollided(t, ch)) {
+			//tankpower decides whether to use the partial collision or the true collision
+			for (int k = 0; k < t->tankPowers.size(); k++) {
+				if (t->tankPowers[k]->getModifiesCollisionWithCircleHazard(ch)) {
+					if (t->tankPowers[k]->modifiedCollisionWithCircleHazardCanOnlyWorkIndividually && modifiedCircleHazardCollision) {
+						continue;
+					}
+					if (noMoreCircleHazardCollisionSpecials) {
+						continue;
+					}
 
-						modifiedCircleHazardCollision = true;
-						if (t->tankPowers[k]->overridesCollisionWithCircleHazard) {
-							overridedCircleHazardCollision = true;
-						}
-						if (!t->tankPowers[k]->modifiedCollisionWithCircleHazardCanWorkWithOthers) {
-							noMoreCircleHazardCollisionSpecials = true;
-						}
+					modifiedCircleHazardCollision = true;
+					if (t->tankPowers[k]->overridesCollisionWithCircleHazard) {
+						overridedCircleHazardCollision = true;
+					}
+					if (!t->tankPowers[k]->modifiedCollisionWithCircleHazardCanWorkWithOthers) {
+						noMoreCircleHazardCollisionSpecials = true;
+					}
 
-						//TODO: this doesn't kill the tank but it should
-						InteractionBoolHolder check_temp = t->tankPowers[k]->modifiedCollisionWithCircleHazard(t, ch);
-						if (check_temp.shouldDie) {
+					//TODO: this doesn't kill the tank but it should
+					InteractionBoolHolder check_temp = t->tankPowers[k]->modifiedCollisionWithCircleHazard(t, ch);
+					if (check_temp.shouldDie) {
+						shouldBeKilled = true;
+					}
+					if (check_temp.otherShouldDie) {
+						killCircleHazard = true;
+					}
+				}
+			}
+
+			if (!overridedCircleHazardCollision) {
+				if (CollisionHandler::partiallyCollided(t, ch)) {
+					if (ch->actuallyCollided(t)) {
+						InteractionBoolHolder result = EndGameHandler::determineWinner(t, ch);
+						if (result.shouldDie) {
 							shouldBeKilled = true;
 						}
-						if (check_temp.otherShouldDie) {
+						if (result.otherShouldDie) {
 							killCircleHazard = true;
 						}
 					}
 				}
-
-				if (!overridedCircleHazardCollision) {
-					if (CollisionHandler::partiallyCollided(t, ch)) {
-						if (ch->actuallyCollided(t)) {
-							InteractionBoolHolder result = EndGameHandler::determineWinner(t, ch);
-							if (result.shouldDie) {
-								shouldBeKilled = true;
-							}
-							if (result.otherShouldDie) {
-								killCircleHazard = true;
-							}
-						}
-					}
-				}
-			}
-
-			if (killCircleHazard) {
-				HazardManager::deleteCircleHazard(j);
 			}
 		}
 
-		if (shouldBeKilled) {
-			//TODO: proper implementation?
-			//continue;
-		}
-
-		//rectangles:
-		for (int j = 0; j < HazardManager::getNumRectHazards(); j++) {
-			bool modifiedRectHazardCollision = false;
-			bool overridedRectHazardCollision = false;
-			bool noMoreRectHazardCollisionSpecials = false;
-			bool killRectHazard = false;
-			RectHazard* rh = HazardManager::getRectHazard(j);
-
-			if (CollisionHandler::partiallyCollided(t, rh)) {
-				for (int k = 0; k < t->tankPowers.size(); k++) {
-					if (t->tankPowers[k]->getModifiesCollisionWithRectHazard(rh)) {
-						if (t->tankPowers[k]->modifiedCollisionWithRectHazardCanOnlyWorkIndividually && modifiedRectHazardCollision) {
-							continue;
-						}
-						if (noMoreRectHazardCollisionSpecials) {
-							continue;
-						}
-
-						modifiedRectHazardCollision = true;
-						if (t->tankPowers[k]->overridesCollisionWithRectHazard) {
-							overridedRectHazardCollision = true;
-						}
-						if (!t->tankPowers[k]->modifiedCollisionWithRectHazardCanWorkWithOthers) {
-							noMoreRectHazardCollisionSpecials = true;
-						}
-
-						//TODO: this doesn't kill the tank but it should
-						InteractionBoolHolder check_temp = t->tankPowers[k]->modifiedCollisionWithRectHazard(t, rh);
-						if (check_temp.shouldDie) {
-							shouldBeKilled = true;
-						}
-						if (check_temp.otherShouldDie) {
-							killRectHazard = true;
-						}
-					}
-				}
-
-				if (!overridedRectHazardCollision) {
-					if (CollisionHandler::partiallyCollided(t, rh)) {
-						if (rh->actuallyCollided(t)) {
-							InteractionBoolHolder result = EndGameHandler::determineWinner(t, rh);
-							if (result.shouldDie) {
-								shouldBeKilled = true;
-							}
-							if (result.otherShouldDie) {
-								killRectHazard = true;
-							}
-						}
-					}
-				}
-			}
-
-			if (killRectHazard) {
-				HazardManager::deleteRectHazard(j);
-			}
+		if (killCircleHazard) {
+			circleHazardDeletionList.push_back(ch->getGameID());
 		}
 
 		if (shouldBeKilled) {
 			//TODO: proper implementation?
 		}
 	}
+
+	//broad phase
+	collisionList = PhysicsHandler::sweepAndPrune<Circle*, Rect*>(TankManager::getTankCollisionList(), HazardManager::getRectHazardCollisionList());
+
+	//narrow phase and resolve collision
+	std::vector<Game_ID> rectHazardDeletionList;
+	for (int i = 0; i < collisionList.size(); i++) {
+		std::pair<int, int> collisionPair = collisionList[i];
+		Tank* t = TankManager::getTank(collisionPair.first);
+		bool shouldBeKilled = false;
+
+		//rectangles:
+		RectHazard* rh = HazardManager::getRectHazard(collisionPair.second);
+		bool modifiedRectHazardCollision = false;
+		bool overridedRectHazardCollision = false;
+		bool noMoreRectHazardCollisionSpecials = false;
+		bool killRectHazard = false;
+
+		if (CollisionHandler::partiallyCollided(t, rh)) {
+			for (int k = 0; k < t->tankPowers.size(); k++) {
+				if (t->tankPowers[k]->getModifiesCollisionWithRectHazard(rh)) {
+					if (t->tankPowers[k]->modifiedCollisionWithRectHazardCanOnlyWorkIndividually && modifiedRectHazardCollision) {
+						continue;
+					}
+					if (noMoreRectHazardCollisionSpecials) {
+						continue;
+					}
+
+					modifiedRectHazardCollision = true;
+					if (t->tankPowers[k]->overridesCollisionWithRectHazard) {
+						overridedRectHazardCollision = true;
+					}
+					if (!t->tankPowers[k]->modifiedCollisionWithRectHazardCanWorkWithOthers) {
+						noMoreRectHazardCollisionSpecials = true;
+					}
+
+					//TODO: this doesn't kill the tank but it should
+					InteractionBoolHolder check_temp = t->tankPowers[k]->modifiedCollisionWithRectHazard(t, rh);
+					if (check_temp.shouldDie) {
+						shouldBeKilled = true;
+					}
+					if (check_temp.otherShouldDie) {
+						killRectHazard = true;
+					}
+				}
+			}
+
+			if (!overridedRectHazardCollision) {
+				if (CollisionHandler::partiallyCollided(t, rh)) {
+					if (rh->actuallyCollided(t)) {
+						InteractionBoolHolder result = EndGameHandler::determineWinner(t, rh);
+						if (result.shouldDie) {
+							shouldBeKilled = true;
+						}
+						if (result.otherShouldDie) {
+							killRectHazard = true;
+						}
+					}
+				}
+			}
+		}
+
+		if (killRectHazard) {
+			rectHazardDeletionList.push_back(rh->getGameID());
+		}
+
+		if (shouldBeKilled) {
+			//TODO: proper implementation?
+		}
+	}
+
+	//clear deaths
+	for (int i = circleHazardDeletionList.size() - 1; i >= 0; i--) {
+		HazardManager::deleteCircleHazardByID(circleHazardDeletionList[i]);
+	}
+	for (int i = rectHazardDeletionList.size() - 1; i >= 0; i--) {
+		HazardManager::deleteRectHazardByID(rectHazardDeletionList[i]);
+	}
 }
 
 void GameMainLoop::tankToTank() {
+	//doesn't really need sweep and prune, but will need to be updated to avoid one tank getting preference over the other
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
 		Tank* t_outer = TankManager::getTank(i);
 		bool t_outerShouldDie = false;
@@ -925,67 +966,75 @@ void GameMainLoop::bulletToBullet() {
 
 void GameMainLoop::bulletToTank() {
 	//TODO: tanks and bullets both have powers, so which one gets custom collision priority? (tanks, probably)
-	for (int i = BulletManager::getNumBullets() - 1; i >= 0; i--) {
-		Bullet* b = BulletManager::getBullet(i);
+	//broad phase
+	std::vector<std::pair<int, int>> collisionList = PhysicsHandler::sweepAndPrune<Circle*, Circle*>(BulletManager::getBulletCollisionList(), TankManager::getTankCollisionList());
+
+	//narrow phase and resolve collision
+	std::vector<Game_ID> bulletDeletionList;
+	for (int i = 0; i < collisionList.size(); i++) {
+		std::pair<int, int> collisionPair = collisionList[i];
+		Bullet* b = BulletManager::getBullet(collisionPair.first);
 		bool shouldBeKilled = false;
-		bool wasKilled = false;
 
-		for (int j = 0; j < TankManager::getNumTanks(); j++) {
-			Tank* t = TankManager::getTank(j);
-			bool killTank = false;
-			bool modifiedTankCollision = false;
-			bool overridedTankCollision = false;
-			bool noMoreTankCollisionSpecials = false;
+		Tank* t = TankManager::getTank(collisionPair.second);
+		bool killTank = false;
+		bool modifiedTankCollision = false;
+		bool overridedTankCollision = false;
+		bool noMoreTankCollisionSpecials = false;
 
-			if (b->canCollideWith(t)) {
-				for (int k = 0; k < b->bulletPowers.size(); k++) {
-					if (b->bulletPowers[k]->modifiesCollisionWithTank) {
-						if (b->bulletPowers[k]->modifiedCollisionWithTankCanOnlyWorkIndividually && modifiedTankCollision) {
-							continue;
-						}
-						if (noMoreTankCollisionSpecials) {
-							continue;
-						}
-
-						modifiedTankCollision = true;
-						if (b->bulletPowers[k]->overridesCollisionWithTank) {
-							overridedTankCollision = true;
-						}
-						if (!b->bulletPowers[k]->modifiedCollisionWithTankCanWorkWithOthers) {
-							noMoreTankCollisionSpecials = true;
-						}
-
-						InteractionBoolHolder check_temp = b->bulletPowers[k]->modifiedCollisionWithTank(b, t);
-						if (check_temp.shouldDie) {
-							shouldBeKilled = true;
-						}
-						if (check_temp.otherShouldDie) {
-							killTank = true;
-						}
+		if (b->canCollideWith(t)) {
+			for (int k = 0; k < b->bulletPowers.size(); k++) {
+				if (b->bulletPowers[k]->modifiesCollisionWithTank) {
+					if (b->bulletPowers[k]->modifiedCollisionWithTankCanOnlyWorkIndividually && modifiedTankCollision) {
+						continue;
 					}
-				}
+					if (noMoreTankCollisionSpecials) {
+						continue;
+					}
 
-				if (!overridedTankCollision) {
-					if (CollisionHandler::partiallyCollided(t, b)) {
-						InteractionBoolHolder result = EndGameHandler::determineWinner(t, b);
-						killTank = result.shouldDie;
-						shouldBeKilled = result.otherShouldDie;
+					modifiedTankCollision = true;
+					if (b->bulletPowers[k]->overridesCollisionWithTank) {
+						overridedTankCollision = true;
+					}
+					if (!b->bulletPowers[k]->modifiedCollisionWithTankCanWorkWithOthers) {
+						noMoreTankCollisionSpecials = true;
+					}
 
-						BulletManager::deleteBullet(i);
-						wasKilled = true;
-						break;
+					InteractionBoolHolder check_temp = b->bulletPowers[k]->modifiedCollisionWithTank(b, t);
+					if (check_temp.shouldDie) {
+						shouldBeKilled = true;
+					}
+					if (check_temp.otherShouldDie) {
+						killTank = true;
 					}
 				}
 			}
 
-			if (killTank) {
-				//TODO: proper implementation?
+			if (!overridedTankCollision) {
+				if (CollisionHandler::partiallyCollided(t, b)) {
+					InteractionBoolHolder result = EndGameHandler::determineWinner(t, b);
+					if (result.shouldDie) {
+						killTank = true;
+					}
+					if (result.otherShouldDie) {
+						shouldBeKilled = true;
+					}
+				}
 			}
 		}
 
-		if (shouldBeKilled && !wasKilled) {
-			BulletManager::deleteBullet(i);
+		if (killTank) {
+			//TODO: proper implementation?
 		}
+
+		if (shouldBeKilled) {
+			bulletDeletionList.push_back(b->getGameID());
+		}
+	}
+
+	//clear deaths
+	for (int i = bulletDeletionList.size() - 1; i >= 0; i--) {
+		BulletManager::deleteBulletByID(bulletDeletionList[i]);
 	}
 }
 
