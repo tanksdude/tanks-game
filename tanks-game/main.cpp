@@ -73,6 +73,7 @@
 #include "developer-level-0.h"
 #include "developer-level-1.h"
 #include "developer-level-2.h"
+#include "developer-level-3.h"
 #include "unnamed-level-1.h"
 #include "unnamed-level-2.h"
 #include "dev-no-walls-level-1.h"
@@ -130,6 +131,7 @@
 #include "dev-annoying-power.h" //bullet doesn't hurt tank, merely pushes away
 #include "ultra-bounce-power.h" //pushes wall away when it bounces
 #include "dev-color-changing-power.h" //color changes based on tank proximity
+#include "dev-other-stuff-is-poison-power.h" //kills tank when touching normally-safe stuff
 
 //a lot of the includes aren't needed anymore thanks to GameMainLoop, but may as well keep them
 #include "game-main-loop.h"
@@ -222,6 +224,7 @@ int main(int argc, char** argv) {
 	PowerupManager::addPowerFactory(DevAnnoyingPower::factory);
 	PowerupManager::addPowerFactory(UltraBouncePower::factory);
 	PowerupManager::addPowerFactory(DevColorChangingPower::factory);
+	PowerupManager::addPowerFactory(DevOtherStuffIsPoisonPower::factory);
 
 	//hazards
 	//vanilla (some are also "old"):
@@ -275,6 +278,7 @@ int main(int argc, char** argv) {
 	LevelManager::addLevelFactory(DeveloperLevel0::factory);
 	LevelManager::addLevelFactory(DeveloperLevel1::factory);
 	LevelManager::addLevelFactory(DeveloperLevel2::factory);
+	LevelManager::addLevelFactory(DeveloperLevel3::factory);
 	LevelManager::addLevelFactory(UnnamedLevel1::factory);
 	LevelManager::addLevelFactory(UnnamedLevel2::factory);
 	LevelManager::addLevelFactory(DevNoWallsLevel1::factory);

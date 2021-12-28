@@ -293,7 +293,7 @@ void GameMainLoop::tankShoot() {
 void GameMainLoop::tankToWall() {
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
 		Tank* t = TankManager::getTank(i);
-		bool shouldBeKilled = false; //maybe the walls are poison with a certain powerup? I dunno, but gotta have it as an option
+		bool shouldBeKilled = false; //unlikely to be set
 
 		for (int j = WallManager::getNumWalls() - 1; j >= 0; j--) {
 			Wall* w = WallManager::getWall(j);
@@ -331,7 +331,15 @@ void GameMainLoop::tankToWall() {
 				}
 
 				if (!overridedWallCollision) {
-					CollisionHandler::pushMovableAwayFromImmovable(t, w);
+					if (CollisionHandler::partiallyCollided(t, w)) {
+						InteractionBoolHolder result = EndGameHandler::determineWinner(t, w, shouldBeKilled);
+						if (result.shouldDie) {
+							shouldBeKilled = true;
+						}
+						if (result.otherShouldDie) {
+							killWall = true;
+						}
+					}
 				}
 			}
 
@@ -378,6 +386,7 @@ void GameMainLoop::tankToHazard() {
 							noMoreCircleHazardCollisionSpecials = true;
 						}
 
+						//TODO: this doesn't kill the tank but it should
 						InteractionBoolHolder check_temp = t->tankPowers[k]->modifiedCollisionWithCircleHazard(t, ch);
 						if (check_temp.shouldDie) {
 							shouldBeKilled = true;
@@ -392,8 +401,12 @@ void GameMainLoop::tankToHazard() {
 					if (CollisionHandler::partiallyCollided(t, ch)) {
 						if (ch->actuallyCollided(t)) {
 							InteractionBoolHolder result = EndGameHandler::determineWinner(t, ch);
-							shouldBeKilled = result.shouldDie;
-							killCircleHazard = result.otherShouldDie;
+							if (result.shouldDie) {
+								shouldBeKilled = true;
+							}
+							if (result.otherShouldDie) {
+								killCircleHazard = true;
+							}
 						}
 					}
 				}
@@ -435,6 +448,7 @@ void GameMainLoop::tankToHazard() {
 							noMoreRectHazardCollisionSpecials = true;
 						}
 
+						//TODO: this doesn't kill the tank but it should
 						InteractionBoolHolder check_temp = t->tankPowers[k]->modifiedCollisionWithRectHazard(t, rh);
 						if (check_temp.shouldDie) {
 							shouldBeKilled = true;
@@ -449,8 +463,12 @@ void GameMainLoop::tankToHazard() {
 					if (CollisionHandler::partiallyCollided(t, rh)) {
 						if (rh->actuallyCollided(t)) {
 							InteractionBoolHolder result = EndGameHandler::determineWinner(t, rh);
-							shouldBeKilled = result.shouldDie;
-							killRectHazard = result.otherShouldDie;
+							if (result.shouldDie) {
+								shouldBeKilled = true;
+							}
+							if (result.otherShouldDie) {
+								killRectHazard = true;
+							}
 						}
 					}
 				}
@@ -681,11 +699,8 @@ void GameMainLoop::bulletToWall() {
 		}
 
 		if (shouldBeKilled) {
-			//shouldBeKilled = b->kill();
-			//if (shouldBeKilled) {
-				//bulletDeletionList.push_back(collisionPair.first);
-				bulletDeletionList.push_back(b->getGameID());
-			//}
+			//bulletDeletionList.push_back(collisionPair.first);
+			bulletDeletionList.push_back(b->getGameID());
 		}
 	}
 
@@ -755,8 +770,12 @@ void GameMainLoop::bulletToHazard() {
 				if (CollisionHandler::partiallyCollided(b, ch)) {
 					if (ch->actuallyCollided(b)) {
 						InteractionBoolHolder result = EndGameHandler::determineWinner(b, ch);
-						shouldBeKilled = result.shouldDie;
-						killCircleHazard = result.otherShouldDie;
+						if (result.shouldDie) {
+							shouldBeKilled = true;
+						}
+						if (result.otherShouldDie) {
+							killCircleHazard = true;
+						}
 					}
 				}
 			}
@@ -767,11 +786,8 @@ void GameMainLoop::bulletToHazard() {
 		}
 
 		if (shouldBeKilled) {
-			//shouldBeKilled = b->kill();
-			//if (shouldBeKilled) {
-				bulletDeletionList.push_back(b->getGameID());
-				//it's possible to add the same bullet twice, but deleting by ID doesn't care about that
-			//}
+			bulletDeletionList.push_back(b->getGameID());
+			//it's possible to add the same bullet twice, but deleting by ID doesn't care about that
 		}
 	}
 
@@ -827,8 +843,12 @@ void GameMainLoop::bulletToHazard() {
 				if (CollisionHandler::partiallyCollided(b, rh)) {
 					if (rh->actuallyCollided(b)) {
 						InteractionBoolHolder result = EndGameHandler::determineWinner(b, rh);
-						shouldBeKilled = result.shouldDie;
-						killRectHazard = result.otherShouldDie;
+						if (result.shouldDie) {
+							shouldBeKilled = true;
+						}
+						if (result.otherShouldDie) {
+							killRectHazard = true;
+						}
 					}
 				}
 			}
@@ -839,11 +859,8 @@ void GameMainLoop::bulletToHazard() {
 		}
 
 		if (shouldBeKilled) {
-			//shouldBeKilled = b->kill();
-			//if (shouldBeKilled) {
-				bulletDeletionList.push_back(b->getGameID());
-				//it's possible to add the same bullet twice, but deleting by ID doesn't care about that
-			//}
+			bulletDeletionList.push_back(b->getGameID());
+			//it's possible to add the same bullet twice, but deleting by ID doesn't care about that
 		}
 	}
 
@@ -889,18 +906,12 @@ void GameMainLoop::bulletToBullet() {
 			b_innerShouldDie = result.otherShouldDie;
 
 			if (b_innerShouldDie) {
-				b_innerShouldDie = b_inner->kill();
-				if (b_innerShouldDie) {
-					bulletDeletionList.push_back(b_inner->getGameID());
-				}
+				bulletDeletionList.push_back(b_inner->getGameID());
 			}
 		}
 
 		if (b_outerShouldDie) {
-			b_outerShouldDie = b_outer->kill();
-			if (b_outerShouldDie) {
-				bulletDeletionList.push_back(b_outer->getGameID());
-			}
+			bulletDeletionList.push_back(b_outer->getGameID());
 		}
 	}
 
@@ -960,15 +971,9 @@ void GameMainLoop::bulletToTank() {
 						killTank = result.shouldDie;
 						shouldBeKilled = result.otherShouldDie;
 
-						//if (shouldBeKilled) {
-							//shouldBeKilled = b->kill();
-							//if (shouldBeKilled) {
-								BulletManager::deleteBullet(i);
-								wasKilled = true;
-								break;
-							//}
-							//the bullet needs to be killed
-						//}
+						BulletManager::deleteBullet(i);
+						wasKilled = true;
+						break;
 					}
 				}
 			}

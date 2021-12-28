@@ -95,6 +95,12 @@ InteractionBoolHolder EndGameHandler::determineWinner(Tank* t, Bullet* b) {
 			//neither die
 			break;
 	}
+	if (bulletDies && !tankDies) {
+		bulletDies = b->kill();
+		if (bulletDies) {
+			//something?
+		}
+	}
 	if (tankDies) {
 		//if the bullet wants to kill the tank, the bullet must die
 		bulletDies = true;
@@ -165,6 +171,18 @@ InteractionBoolHolder EndGameHandler::determineWinner(Bullet* b1, Bullet* b2) {
 			std::cerr << "WARNING: unknown PriorityResult!" << std::endl;
 			//neither die
 			break;
+	}
+	if (firstBulletDies) {
+		firstBulletDies = b1->kill();
+		if (firstBulletDies) {
+			//something?
+		}
+	}
+	if (secondBulletDies) {
+		secondBulletDies = b2->kill();
+		if (secondBulletDies) {
+			//something?
+		}
 	}
 	return { firstBulletDies, secondBulletDies };
 }
@@ -292,6 +310,12 @@ InteractionBoolHolder EndGameHandler::determineWinner(Bullet* b, CircleHazard* c
 			//neither die
 			break;
 	}
+	if (bulletDies && (ch->getCollisionType() != CircleHazardCollisionType::solid)) {
+		bulletDies = b->kill();
+		if (bulletDies) {
+			//something?
+		}
+	}
 	return { bulletDies, circleHazardDies };
 }
 
@@ -330,5 +354,27 @@ InteractionBoolHolder EndGameHandler::determineWinner(Bullet* b, RectHazard* rh)
 			//neither die
 			break;
 	}
+	if (bulletDies && (rh->getCollisionType() != RectHazardCollisionType::solid)) {
+		bulletDies = b->kill();
+		if (bulletDies) {
+			//something?
+		}
+	}
 	return { bulletDies, rectHazardDies };
+}
+
+InteractionBoolHolder EndGameHandler::determineWinner(Tank* t, Wall* w, bool tankDies) {
+	CollisionHandler::pushMovableAwayFromImmovable(t, w);
+	if (tankDies) {
+		tankDies = t->kill();
+		if (tankDies) {
+			killEvents.push_back({ w->getTeamID(), t->getTeamID() });
+		}
+	}
+	return { tankDies, false };
+}
+
+InteractionBoolHolder EndGameHandler::determineWinner(Bullet* b, Wall* w, bool bulletDies) {
+	//don't check for extra lives
+	return { bulletDies, false };
 }

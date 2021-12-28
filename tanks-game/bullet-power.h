@@ -28,13 +28,15 @@ public:
 
 	virtual void tick(Bullet*) { return; } //most will be doing a lot, though they shouldn't need this, but just in case
 	virtual void powerTick(Bullet*) {
-		timeLeft--; //not like any bulletpower is limited, though
+		timeLeft--;
+		//should this really be virtual?
 	}
-	virtual bool isDone() const { //typically, this will always be false
+	bool isDone() const { //will usually be false
 		if (maxTime < 0) {
 			return false;
 		}
 		return (timeLeft <= 0);
+		//probably shouldn't be virtual
 	}
 	virtual ColorValueHolder getColor() const = 0;
 	virtual double getColorImportance() const { return 0; }

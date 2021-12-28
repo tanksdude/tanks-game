@@ -22,6 +22,7 @@ enum class BulletParentType {
 class Bullet : public Circle, public GameThing, public DrawableThing {
 	friend class ResetThings;
 	friend class PowerFunctionHelper;
+	friend class EndGameHandler;
 
 public: //hopefully temporary
 	SimpleVector2D velocity;
@@ -49,7 +50,6 @@ public:
 
 protected:
 	ColorValueHolder defaultColor = ColorValueHolder(0.5f, 0.5f, 0.5f);
-public:
 	bool kill(); //allows for custom death (a.k.a. something saving the bullet from death)
 
 public:

@@ -150,10 +150,12 @@
     <ClCompile Include="concealed-powerups-level.cpp" />
     <ClCompile Include="dev-annoying-power.cpp" />
     <ClCompile Include="dev-color-changing-power.cpp" />
+    <ClCompile Include="dev-other-stuff-is-poison-power.cpp" />
     <ClCompile Include="developer-level-2.cpp" />
     <ClCompile Include="dev-long-invincible-named-power.cpp" />
     <ClCompile Include="dev-no-walls-level-1.cpp" />
     <ClCompile Include="dev-symmetric-tanks-level-effect.cpp" />
+    <ClCompile Include="developer-level-3.cpp" />
     <ClCompile Include="end-game-handler.cpp" />
     <ClCompile Include="few-obstacles-level.cpp" />
     <ClCompile Include="game-main-loop.cpp" />
@@ -266,10 +268,12 @@
     <ClInclude Include="concealed-powerups-level.h" />
     <ClInclude Include="dev-annoying-power.h" />
     <ClInclude Include="dev-color-changing-power.h" />
+    <ClInclude Include="dev-other-stuff-is-poison-power.h" />
     <ClInclude Include="developer-level-2.h" />
     <ClInclude Include="dev-long-invincible-named-power.h" />
     <ClInclude Include="dev-no-walls-level-1.h" />
     <ClInclude Include="dev-symmetric-tanks-level-effect.h" />
+    <ClInclude Include="developer-level-3.h" />
     <ClInclude Include="end-game-handler.h" />
     <ClInclude Include="few-obstacles-level.h" />
     <ClInclude Include="game-main-loop.h" />

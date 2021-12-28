@@ -20,18 +20,17 @@ public:
 	virtual void initialize(Tank* parent) = 0;
 	virtual void removeEffects(Tank* parent) = 0;
 
-	virtual void tick(Tank*) {
-		//most shouldn't be doing anything
-		return;
-	}
+	virtual void tick(Tank*) { return; } //most shouldn't be doing anything
 	virtual void powerTick(Tank*) {
 		timeLeft--;
+		//should this really be virtual?
 	}
-	virtual bool isDone() const {
+	bool isDone() const {
 		if (maxTime < 0) {
 			return false;
 		}
 		return (timeLeft <= 0);
+		//probably shouldn't be virtual
 	}
 	virtual ColorValueHolder getColor() const = 0;
 	virtual double getColorImportance() const { return 0; }
@@ -76,14 +75,14 @@ public:
 	virtual bool getModifiesCollisionWithCircleHazard(const CircleHazard*) const { return false; }
 	virtual InteractionBoolHolder modifiedCollisionWithCircleHazard(Tank*, CircleHazard*) { return { false, false }; }
 	//precondition: hit circlehazard, is not necessarily inside circlehazard
-	bool overridesCollisionWithCircleHazard = true; //false means also use the default, which means destroy the bullet if it collides
+	bool overridesCollisionWithCircleHazard = true; //false means also use the default, which means destroy the tank if it collides
 	bool modifiedCollisionWithCircleHazardCanWorkWithOthers = true;
 	bool modifiedCollisionWithCircleHazardCanOnlyWorkIndividually = false;
 
 	virtual bool getModifiesCollisionWithRectHazard(const RectHazard*) const { return false; }
 	virtual InteractionBoolHolder modifiedCollisionWithRectHazard(Tank*, RectHazard*) { return { false, false }; }
 	//precondition: hit recthazard, is not necessarily inside recthazard
-	bool overridesCollisionWithRectHazard = true; //false means also use the default, which means destroy the bullet if it collides
+	bool overridesCollisionWithRectHazard = true; //false means also use the default, which means destroy the tank if it collides
 	bool modifiedCollisionWithRectHazardCanWorkWithOthers = true;
 	bool modifiedCollisionWithRectHazardCanOnlyWorkIndividually = false;
 

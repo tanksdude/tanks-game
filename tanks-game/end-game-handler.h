@@ -34,14 +34,17 @@ private:
 
 	static void finalizeScores(); //ResetThings calls this
 
-public:
-	static InteractionBoolHolder determineWinner(Tank*, Bullet*); //note: can kill tank
-	static InteractionBoolHolder determineWinner(Tank*, Tank*); //note: can kill tanks
+public: //note: these kill tanks and bullets
+	static InteractionBoolHolder determineWinner(Tank*, Bullet*);
+	static InteractionBoolHolder determineWinner(Tank*, Tank*);
 	static InteractionBoolHolder determineWinner(Bullet*, Bullet*);
-	static InteractionBoolHolder determineWinner(Tank*, CircleHazard*); //note: can kill tank
-	static InteractionBoolHolder determineWinner(Tank*, RectHazard*); //note: can kill tank
+	static InteractionBoolHolder determineWinner(Tank*, CircleHazard*);
+	static InteractionBoolHolder determineWinner(Tank*, RectHazard*);
 	static InteractionBoolHolder determineWinner(Bullet*, CircleHazard*);
 	static InteractionBoolHolder determineWinner(Bullet*, RectHazard*);
+	static InteractionBoolHolder determineWinner(Tank*, Wall*, bool tankDies); //temporary
+	static InteractionBoolHolder determineWinner(Bullet*, Wall*, bool bulletDies); //temporary
+	//TODO: rewrite these functions to be more of a "handleCollisionEvent" thing
 
 	static bool shouldGameEnd();
 

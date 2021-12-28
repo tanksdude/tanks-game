@@ -354,6 +354,12 @@
     <ClCompile Include="physics-handler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="developer-level-3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dev-other-stuff-is-poison-power.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -744,6 +750,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="physics-handler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="developer-level-3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dev-other-stuff-is-poison-power.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
