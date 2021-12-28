@@ -104,12 +104,8 @@ public:
 	static void deleteCircleHazardByID(Game_ID);
 	static void deleteRectHazardByID(Game_ID);
 
-	static std::vector<Circle*> getCircleHazardCollisionList() {
-		return std::vector<Circle*>(circleHazards.begin(), circleHazards.end());
-	}
-	static std::vector<Rect*> getRectHazardCollisionList() {
-		return std::vector<Rect*>(rectHazards.begin(), rectHazards.end());
-	}
+	static std::vector<Circle*> getCircleHazardCollisionList();
+	static std::vector<Rect*> getRectHazardCollisionList();
 
 	static void addCircleHazardFactory(CircleHazardFunction, CircleHazardRandomizationFunction);
 	static void addRectHazardFactory(RectHazardFunction, RectHazardRandomizationFunction);

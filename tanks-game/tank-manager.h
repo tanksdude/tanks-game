@@ -18,6 +18,8 @@ public:
 	//static void deleteTank(int index);
 	//static void deleteTankByID(Game_ID);
 
+	static std::vector<Circle*> getTankCollisionList();
+
 private:
 	TankManager() {}
 	TankManager(const TankManager&) {}

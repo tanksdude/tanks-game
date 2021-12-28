@@ -152,3 +152,10 @@ int HazardManager::getNumCircleHazardTypes(std::string type) {
 int HazardManager::getNumRectHazardTypes(std::string type) {
 	return rectHazardNameList[type].size();
 }
+
+std::vector<Circle*> HazardManager::getCircleHazardCollisionList() {
+	return std::vector<Circle*>(circleHazards.begin(), circleHazards.end());
+}
+std::vector<Rect*> HazardManager::getRectHazardCollisionList() {
+	return std::vector<Rect*>(rectHazards.begin(), rectHazards.end());
+}

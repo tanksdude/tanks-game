@@ -96,3 +96,7 @@ int PowerupManager::getNumPowerTypes(std::string type) {
 	}
 	return powerNameList[type].size();
 }
+
+std::vector<Rect*> PowerupManager::getPowerSquareCollisionList() {
+	return std::vector<Rect*>(powerups.begin(), powerups.end());
+}

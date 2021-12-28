@@ -22,9 +22,7 @@ public:
 	static void deleteBulletByID(Game_ID);
 	static void forceLimitBullets();
 
-	static std::vector<Circle*> getBulletCollisionList() {
-		return std::vector<Circle*>(bullets.begin(), bullets.end());
-	}
+	static std::vector<Circle*> getBulletCollisionList();
 
 private:
 	BulletManager() {}

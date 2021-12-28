@@ -45,3 +45,7 @@ void TankManager::clearTanks() {
 	}
 	tanks.clear();
 }
+
+std::vector<Circle*> TankManager::getTankCollisionList() {
+	return std::vector<Circle*>(tanks.begin(), tanks.end());
+}
