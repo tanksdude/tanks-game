@@ -536,7 +536,7 @@ inline void HorizontalLightningHazard::drawBolts(float alpha) const {
 		return;
 	}
 
-	glLineWidth(2.0f);
+	Renderer::SetLineWidth(2.0f);
 
 	ColorValueHolder color = getBoltColor();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
@@ -567,7 +567,7 @@ inline void HorizontalLightningHazard::drawBolts_Pose(float alpha) const {
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 MVPM;
 
-	glLineWidth(2.0f);
+	Renderer::SetLineWidth(2.0f);
 
 	ColorValueHolder color = getBoltColor();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);

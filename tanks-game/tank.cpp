@@ -858,7 +858,8 @@ inline void Tank::drawOutline(float alpha) const {
 	glm::mat4 MVPM;
 
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glLineWidth(1.0f);
+	//glLineWidth(1.0f);
+	Renderer::SetLineWidth(1.0f);
 
 	ColorValueHolder color;
 	if (this->dead) {
@@ -955,7 +956,7 @@ inline void Tank::drawMainBarrel(float alpha) const {
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 MVPM;
 
-	glLineWidth(2.0f);
+	Renderer::SetLineWidth(2.0f);
 
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
@@ -977,7 +978,8 @@ inline void Tank::drawExtraBarrels(float alpha) const {
 	glm::mat4 MVPM;
 
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glLineWidth(1.0f);
+	//glLineWidth(1.0f);
+	Renderer::SetLineWidth(1.0f);
 
 	//shader->setUniform4f("u_color", 0.5f, 0.5f, 0.5f, 0.25f); //CPU color
 	ColorValueHolder color = ColorValueHolder(0.75f, 0.75f, 0.75f);

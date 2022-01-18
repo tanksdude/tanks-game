@@ -216,7 +216,7 @@ void Diagnostics::drawGraphTimes_graph() {
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 MVPM;
 
-	glLineWidth(4.0f); //TODO: change?
+	Renderer::SetLineWidth(4.0f); //TODO: change?
 
 	ColorValueHolder color = ColorValueHolder(0.75f, 0.75f, 0.75f);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
@@ -235,7 +235,7 @@ void Diagnostics::drawGraphTimes_data(std::string name) {
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 MVPM;
 
-	glLineWidth(4.0f); //TODO: change?
+	Renderer::SetLineWidth(4.0f); //TODO: change?
 
 	ColorValueHolder color = graphTimes[graphNameToIndex[name]].color;
 	//ColorValueHolder color = ColorValueHolder(1.0f, 1.0f, 1.0f);
@@ -255,7 +255,7 @@ void Diagnostics::drawGraphTimes_data() {
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 MVPM;
 
-	glLineWidth(4.0f); //TODO: change?
+	Renderer::SetLineWidth(4.0f); //TODO: change?
 
 	MVPM = Renderer::GenerateMatrix(graphLength, graphHeight, 0, graphXOffset, graphYOffset);
 	shader->setUniformMat4f("u_MVP", MVPM);

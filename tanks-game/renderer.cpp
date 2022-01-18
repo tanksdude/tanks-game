@@ -338,6 +338,14 @@ void Renderer::Draw(GLenum type, GLint first, GLsizei count) {
 	glDrawArrays(type, first, count);
 }
 
+void Renderer::SetLineWidth(float w) {
+	glLineWidth(w);
+}
+
+void Renderer::SetPointSize(float s) {
+	glPointSize(s);
+}
+
 void Renderer::Cleanup() {
 	glDisableVertexAttribArray(0); //disable vertex attribute to avoid issues
 }

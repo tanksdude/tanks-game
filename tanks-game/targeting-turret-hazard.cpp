@@ -480,7 +480,7 @@ inline void TargetingTurretHazard::drawOutline(float alpha) const {
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 MVPM;
 
-	glLineWidth(1.0f);
+	Renderer::SetLineWidth(1.0f);
 
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
@@ -501,7 +501,7 @@ inline void TargetingTurretHazard::drawBarrel(float alpha) const {
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 MVPM;
 
-	glLineWidth(2.0f);
+	Renderer::SetLineWidth(2.0f);
 
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
@@ -526,7 +526,7 @@ inline void TargetingTurretHazard::drawReticule(float alpha) const {
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 MVPM;
 
-	glLineWidth(2.0f);
+	Renderer::SetLineWidth(2.0f);
 
 	ColorValueHolder color = getReticuleColor();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);

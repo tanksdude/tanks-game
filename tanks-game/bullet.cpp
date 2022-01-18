@@ -458,7 +458,8 @@ inline void Bullet::drawOutline(float alpha) const {
 	glm::mat4 MVPM;
 
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glLineWidth(1.0f); //lines still look ugly even with glEnable(GL_LINE_SMOOTH), so I don't know what to set it at
+	//glLineWidth(1.0f); //lines still look ugly even with glEnable(GL_LINE_SMOOTH), so I don't know what to set it at
+	Renderer::SetLineWidth(1.0f);
 
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);

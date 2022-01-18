@@ -298,7 +298,7 @@ inline void CircularLavaHazard::drawBubbles(bool pose, float alpha) const {
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 MVPM;
 
-	glLineWidth(2.0f);
+	Renderer::SetLineWidth(2.0f);
 
 	//first, sort by alpha: lowest to highest (this makes the bubbles less weird-looking when drawn over each other)
 	std::vector<LavaBubble*> sortedBubbles;
