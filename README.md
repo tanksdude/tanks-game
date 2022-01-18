@@ -8,15 +8,15 @@ The C++ upgrade of my [JavaScript game](https://uncreativeusername.neocities.org
 
 * If compiling from source, you'll want Visual Studio (2019)
     * [pre-compiled executables](https://github.com/tanksdude/tanks-game/releases) are provided if that's not an option for you
-* Graphics card probably required
 * OpenGL 3.3 or later
-    * 3.2 or earlier might work if you update the shaders, but don't count on it
+    * Earlier versions probably work if you update the shaders
 * 3GHz+ CPU recommended (2GHz is probably fine)
     * Faster CPU -> more bullets on screen
-    * Single-core CPU is enough (because there's no multithreading)
+    * Single-core CPU is enough (multithreading *potentially* coming "soon")
 * RAM requirements unknown, but 100MB is good
-* No audio needed (unlikely to change in the future)
-* **Currently Windows-only** (feel free to try your luck with an emulator) and 64-bit-only
+    * More bullets -> more RAM needed
+* No audio requirements (unlikely to change in the future)
+* **Windows-only** (feel free to try your luck with an emulator) and 64-bit-only
 
 ### Installing
 
@@ -39,9 +39,9 @@ Will need them eventually, though.
 
 ## Contributing
 
-I plan on working alone for the forseeable future, possibly welcoming new stuff once the underlying code is done.
+I plan on working alone on this project, possibly welcoming new stuff once the underlying code is done.
 
-If you really want a change, you could submit an Issue.
+If you really want a change, you could submit an Issue on GitHub.
 
 Alternatively, you can fork this repository and add change all you want.
 
@@ -55,13 +55,15 @@ This project is licensed under GNU General Public License v3.0
 
 ## Acknowledgments
 
-* JS game (made by me): [tanks.html](https://uncreativeusername.neocities.org/tanks.html)
-    * C++ version is now at feature parity (actually, it has more stuff than JS Tanks)
+* JS Tanks (made by me): [tanks.html](https://uncreativeusername.neocities.org/tanks.html)
+    * C++ version has more stuff
 * Many people across the Interwebs who made StackOverflow and other forum posts
 * Lots of YouTube tutorials, GDC talks, and my CS professors providing assistance
 
 ## More acknowledgements
 
+* [Super Smash Bros.](https://www.smashbros.com/en_US/index.html) for being a very fun game
+    * (Smash Bros the *party* game, not the competitive fighting game; use items!)
 * [The Cherno](https://www.youtube.com/user/TheChernoProject/videos) is very helpful for OpenGL
 * [Solarian Programmer](https://solarianprogrammer.com/) has good starter code for hardware rendering
 * [The Coding Train](https://www.youtube.com/user/shiffman/videos) is helpful, but wasn't *specifically* used for this project (probably was used for the JS game, but I don't remember)

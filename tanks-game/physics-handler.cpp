@@ -57,7 +57,7 @@ std::vector<std::pair<int, int>> PhysicsHandler::sweepAndPrune(const std::vector
 		objectIntervals.push_back(ObjectIntervalInfo(o, j, false));
 	}
 	std::sort(objectIntervals.begin(), objectIntervals.end(),
-		[](const ObjectIntervalInfo& lhs, const ObjectIntervalInfo& rhs) { return (lhs.xStart < rhs.xStart); });
+		[](const ObjectIntervalInfo& lhs, const ObjectIntervalInfo& rhs) { return (lhs.xStart < rhs.xStart); }); //lambda
 
 	//sweep through
 	std::vector<ObjectIntervalInfo> iteratingObjects;
@@ -104,7 +104,7 @@ std::vector<std::pair<int, int>> PhysicsHandler::sweepAndPrune(const std::vector
 		objectIntervals.push_back(ObjectIntervalInfo(o, i, true));
 	}
 	std::sort(objectIntervals.begin(), objectIntervals.end(),
-		[](const ObjectIntervalInfo& lhs, const ObjectIntervalInfo& rhs) { return (lhs.xStart < rhs.xStart); });
+		[](const ObjectIntervalInfo& lhs, const ObjectIntervalInfo& rhs) { return (lhs.xStart < rhs.xStart); }); //lambda
 
 	//sweep through
 	std::vector<ObjectIntervalInfo> iteratingObjects;

@@ -336,6 +336,8 @@ int main(int argc, char** argv) {
 
 	// Start the main loop
 	glutMainLoop();
+
+	return 0;
 }
 
 /*

@@ -54,6 +54,7 @@ void Renderer::windowResizeFunc(int w, int h) {
 		Renderer::proj = glm::ortho(0.0f, float(GAME_WIDTH*scale), 0.0f, (float)GAME_HEIGHT); //GPU
 		Renderer::gamewindow_width = Renderer::window_height * (GAME_WIDTH/GAME_HEIGHT);
 		Renderer::gamewindow_height = Renderer::window_height;
+		//Renderer::proj = glm::ortho(float(-gamewindow_width/2), float(GAME_WIDTH*scale + gamewindow_width/2), 0.0f, (float)GAME_HEIGHT); //GPU
 	} else { //too tall
 		scale = ((appXmax - appXmin) / w) / ((appYmax - appYmin) / h);
 		center = 0;
@@ -65,6 +66,13 @@ void Renderer::windowResizeFunc(int w, int h) {
 		Renderer::proj = glm::ortho(0.0f, (float)GAME_WIDTH, 0.0f, float(GAME_HEIGHT*scale)); //GPU
 		Renderer::gamewindow_width = Renderer::window_width;
 		Renderer::gamewindow_height = Renderer::window_width * (GAME_HEIGHT/GAME_WIDTH);
+		//Renderer::proj = glm::ortho(0.0f, (float)GAME_WIDTH, float(-window_height*scale), float(GAME_HEIGHT*scale)); //GPU
+
+		/*
+		std::cout << "window_width: " << window_width << std::endl;
+		std::cout << "window_height: " << window_height << std::endl;
+		std::cout << "GAME_HEIGHT*scale: " << (GAME_HEIGHT*scale) << std::endl << std::endl;
+		*/
 	}
 
 	// Now we use glOrtho to set up our viewing frustum (CPU only)

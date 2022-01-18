@@ -2,8 +2,10 @@
 * lots and lots of new stuff
 
 0.2.5 (obviously not here)
-* hazard powers
+* overhaul collision
+    * two passes for collision (like proper game physics)
 * powerups:
+    * hazard powers!
     * growing and degrading powerups mix better
         * megadeath update?
     * ... sword???
@@ -11,12 +13,15 @@
     * patrolling turret
     * teleporter?
     * reflecktor?
+    * [dev] selective no bullet zone (doesn't affect a certain teamID)
 * levels:
     * more
     * old versions of some levels (they're barely different but may as well include them)
 * level effects:
     * ?
 * ini file?
+* minor things:
+    * overhaul priority handling (again)
 
 0.2.4
 * changed name from "Tanks" to "PowerTanks" so this game might actually become discoverable
