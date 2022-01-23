@@ -157,7 +157,47 @@ double Bullet::getAngle() const {
 	return fmod(fmod(velocity.getAngle(), 2*PI) + 2*PI, 2*PI);
 }
 
-void Bullet::move() {
+bool Bullet::move() {
+	bool shouldBeKilled = false;
+	bool modifiedMovement = false;
+	bool overridedMovement = false;
+	bool noMoreMovementSpecials = false;
+	//TODO: handle killing the bulletpowers
+
+	for (int k = 0; k < bulletPowers.size(); k++) {
+		if (bulletPowers[k]->modifiesMovement) {
+			if (bulletPowers[k]->modifiedMovementCanOnlyWorkIndividually && modifiedMovement) {
+				continue;
+			}
+			if (noMoreMovementSpecials) {
+				continue;
+			}
+
+			modifiedMovement = true;
+			if (bulletPowers[k]->overridesMovement) {
+				overridedMovement = true;
+			}
+			if (!bulletPowers[k]->modifiedMovementCanWorkWithOthers) {
+				noMoreMovementSpecials = true;
+			}
+
+			InteractionBoolHolder check_temp = bulletPowers[k]->modifiedMovement(this);
+			if (check_temp.shouldDie) {
+				shouldBeKilled = true;
+				overridedMovement = true;
+				break;
+			}
+		}
+	}
+
+	if (!overridedMovement) {
+		move_base();
+	}
+
+	return shouldBeKilled;
+}
+
+inline void Bullet::move_base() {
 	velocity.changeMagnitude(acceleration);
 	x += velocity.getXComp();
 	y += velocity.getYComp();

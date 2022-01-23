@@ -155,9 +155,47 @@ TankInputChar* Tank::getKeys() const {
 	return new TankInputChar[]{ forward, turnL, turnR, shooting, specialKey };
 }
 
-void Tank::move() {
-	//TODO: go through each power in the power vector, then use the function that it points to for movement; if none modified movement, use this default
+bool Tank::move() {
+	bool shouldBeKilled = false;
+	bool modifiedMovement = false;
+	bool overridedMovement = false;
+	bool noMoreMovementSpecials = false;
+	//TODO: handle killing the tankpowers
 
+	for (int k = 0; k < tankPowers.size(); k++) {
+		if (tankPowers[k]->modifiesMovement) {
+			if (tankPowers[k]->modifiedMovementCanOnlyWorkIndividually && modifiedMovement) {
+				continue;
+			}
+			if (noMoreMovementSpecials) {
+				continue;
+			}
+
+			modifiedMovement = true;
+			if (tankPowers[k]->overridesMovement) {
+				overridedMovement = true;
+			}
+			if (!tankPowers[k]->modifiedMovementCanWorkWithOthers) {
+				noMoreMovementSpecials = true;
+			}
+
+			InteractionBoolHolder check_temp = tankPowers[k]->modifiedMovement(this);
+			if (check_temp.shouldDie) {
+				shouldBeKilled = true;
+				overridedMovement = true;
+				break;
+			}
+		}
+	}
+
+	if (!overridedMovement) {
+		move_base();
+	}
+
+	return shouldBeKilled;
+}
+
+inline void Tank::move_base() {
 	//if (!forward || !document.getElementById("moveturn").checked) { //change && to || and remove second ! to flip playstyle
 		if (turnL.getKeyState()) {
 			velocity.changeAngle(PI / turningIncrement);
@@ -185,7 +223,7 @@ void Tank::move() {
 	y += velocity.getYComp();
 }
 
-void Tank::terminalVelocity() {
+inline void Tank::terminalVelocity() {
 	if (velocity.getMagnitude() > maxSpeed + acceleration) {
 		velocity.changeMagnitude(-acceleration);
 		if (forward.getKeyState() && velocity.getMagnitude() > maxSpeed) {
@@ -1031,6 +1069,10 @@ bool Tank::kill() {
 	}
 
 	return this->dead;
+}
+
+void Tank::kill_hard() {
+	this->dead = true;
 }
 
 /*

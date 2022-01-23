@@ -46,6 +46,12 @@ public: //note: these kill tanks and bullets
 	static InteractionBoolHolder determineWinner(Bullet*, Wall*, bool bulletDies); //temporary
 	//TODO: rewrite these functions to be more of a "handleCollisionEvent" thing
 
+	//just for GameMainLoop and EndGameHandler
+	static void killTank(Tank*); //suicide (does not get an extra life)
+	static bool killTank(Tank*, GameThing* killer); //returns whether the tank is dead
+	static void killBullet(Bullet*);
+	static bool killBullet(Bullet*, GameThing* killer);
+
 	static bool shouldGameEnd();
 
 	static void addTeamToWatch(Team_ID teamID, std::string teamName);

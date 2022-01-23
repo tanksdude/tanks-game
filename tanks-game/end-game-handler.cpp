@@ -35,6 +35,11 @@ void EndGameHandler::finalizeScores() {
 	//process kill events
 	std::vector<EndGameHandler::DoubleTeam_ID> pastEvents; //in case tank dies from multiple bullets at the same time
 	for (int i = 0; i < killEvents.size(); i++) {
+		/*
+		if (killEvents[i].killer == DEFAULT_TEAM) {
+			continue;
+		}
+		*/
 		bool previouslyHappened = false;
 		for (int j = 0; j < pastEvents.size(); j++) {
 			if ((killEvents[i].killer == pastEvents[j].killer) && (killEvents[i].killee == pastEvents[j].killee)) {
@@ -46,13 +51,9 @@ void EndGameHandler::finalizeScores() {
 			if (killEvents[i].killer != killEvents[i].killee) { //friendly fire score increase prevention
 				teamWins[killEvents[i].killer]++;
 				pastEvents.push_back(killEvents[i]);
+				//this can increase the score of DEFAULT_TEAM and other non-participating teams, but that's fine since their score isn't shown
 			}
-			/*
-			//... maybe
-			else {
-				teamWins[killEvents[i].killer]--;
-			}
-			*/
+			//don't decrease score
 		}
 	}
 	killEvents.clear();
@@ -71,6 +72,32 @@ bool EndGameHandler::shouldGameEnd() {
 		}
 	}
 	return (numOfAliveTanks <= 1);
+}
+
+void EndGameHandler::killTank(Tank* t) {
+	t->kill_hard();
+	killEvents.push_back({ DEFAULT_TEAM, t->getTeamID() }); //TODO: which team should get this point?
+}
+
+bool EndGameHandler::killTank(Tank* t, GameThing* thing) {
+	bool tankDies = t->kill();
+	if (tankDies) {
+		killEvents.push_back({ thing->getTeamID(), t->getTeamID() });
+	}
+	return tankDies;
+}
+
+void EndGameHandler::killBullet(Bullet* b) {
+	//something?
+}
+
+bool EndGameHandler::killBullet(Bullet* b, GameThing* thing) {
+	bool bulletDies = b->kill();
+	if (bulletDies) {
+		//something?
+		//maybe increase in bullet kills from a team, for statistics
+	}
+	return bulletDies;
 }
 
 InteractionBoolHolder EndGameHandler::determineWinner(Tank* t, Bullet* b) {
@@ -96,19 +123,12 @@ InteractionBoolHolder EndGameHandler::determineWinner(Tank* t, Bullet* b) {
 			break;
 	}
 	if (bulletDies && !tankDies) {
-		bulletDies = b->kill();
-		if (bulletDies) {
-			//something?
-		}
+		bulletDies = killBullet(b, t);
 	}
 	if (tankDies) {
 		//if the bullet wants to kill the tank, the bullet must die
 		bulletDies = true;
-
-		tankDies = t->kill();
-		if (tankDies) {
-			killEvents.push_back({ b->getTeamID(), t->getTeamID() });
-		}
+		tankDies = killTank(t, b);
 	}
 	return { tankDies, bulletDies };
 }
@@ -136,16 +156,10 @@ InteractionBoolHolder EndGameHandler::determineWinner(Tank* t1, Tank* t2) {
 			break;
 	}
 	if (firstTankDies) {
-		firstTankDies = t1->kill();
-		if (firstTankDies) {
-			killEvents.push_back({ t2->getTeamID(), t1->getTeamID() });
-		}
+		firstTankDies = killTank(t1, t2);
 	}
 	if (secondTankDies) {
-		secondTankDies = t2->kill();
-		if (secondTankDies) {
-			killEvents.push_back({ t1->getTeamID(), t2->getTeamID() });
-		}
+		secondTankDies = killTank(t2, t1);
 	}
 	return { firstTankDies, secondTankDies };
 }
@@ -173,16 +187,10 @@ InteractionBoolHolder EndGameHandler::determineWinner(Bullet* b1, Bullet* b2) {
 			break;
 	}
 	if (firstBulletDies) {
-		firstBulletDies = b1->kill();
-		if (firstBulletDies) {
-			//something?
-		}
+		firstBulletDies = killBullet(b1, b2);
 	}
 	if (secondBulletDies) {
-		secondBulletDies = b2->kill();
-		if (secondBulletDies) {
-			//something?
-		}
+		secondBulletDies = killBullet(b2, b1);
 	}
 	return { firstBulletDies, secondBulletDies };
 }
@@ -223,10 +231,7 @@ InteractionBoolHolder EndGameHandler::determineWinner(Tank* t, CircleHazard* ch)
 			break;
 	}
 	if (tankDies) {
-		tankDies = t->kill();
-		if (tankDies) {
-			killEvents.push_back({ ch->getTeamID(), t->getTeamID() });
-		}
+		tankDies = killTank(t, ch);
 	}
 	return { tankDies, circleHazardDies };
 }
@@ -267,10 +272,7 @@ InteractionBoolHolder EndGameHandler::determineWinner(Tank* t, RectHazard* rh) {
 			break;
 	}
 	if (tankDies) {
-		tankDies = t->kill();
-		if (tankDies) {
-			killEvents.push_back({ rh->getTeamID(), t->getTeamID() });
-		}
+		tankDies = killTank(t, rh);
 	}
 	return { tankDies, rectHazardDies };
 }
@@ -311,10 +313,7 @@ InteractionBoolHolder EndGameHandler::determineWinner(Bullet* b, CircleHazard* c
 			break;
 	}
 	if (bulletDies && (ch->getCollisionType() != CircleHazardCollisionType::solid)) {
-		bulletDies = b->kill();
-		if (bulletDies) {
-			//something?
-		}
+		bulletDies = killBullet(b, ch);
 	}
 	return { bulletDies, circleHazardDies };
 }
@@ -355,10 +354,7 @@ InteractionBoolHolder EndGameHandler::determineWinner(Bullet* b, RectHazard* rh)
 			break;
 	}
 	if (bulletDies && (rh->getCollisionType() != RectHazardCollisionType::solid)) {
-		bulletDies = b->kill();
-		if (bulletDies) {
-			//something?
-		}
+		bulletDies = killBullet(b, rh);
 	}
 	return { bulletDies, rectHazardDies };
 }
@@ -366,10 +362,7 @@ InteractionBoolHolder EndGameHandler::determineWinner(Bullet* b, RectHazard* rh)
 InteractionBoolHolder EndGameHandler::determineWinner(Tank* t, Wall* w, bool tankDies) {
 	CollisionHandler::pushMovableAwayFromImmovable(t, w);
 	if (tankDies) {
-		tankDies = t->kill();
-		if (tankDies) {
-			killEvents.push_back({ w->getTeamID(), t->getTeamID() });
-		}
+		tankDies = killTank(t, w);
 	}
 	return { tankDies, false };
 }

@@ -51,6 +51,7 @@ public:
 protected:
 	ColorValueHolder defaultColor = ColorValueHolder(0.5f, 0.5f, 0.5f);
 	bool kill(); //allows for custom death (a.k.a. something saving the bullet from death)
+	inline void move_base();
 
 public:
 	//helper functions:
@@ -74,7 +75,7 @@ private:
 	static bool uninitializeGPU();
 
 public:
-	void move();
+	bool move();
 	void powerCalculate();
 	void removePower(int index);
 	//int determineDamage(); //maybe for another day

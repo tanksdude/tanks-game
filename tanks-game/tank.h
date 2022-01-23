@@ -70,6 +70,7 @@ protected:
 	//TankInputChar backwards; //not the point of the game
 	TankInputChar specialKey;
 
+protected:
 	void makeBulletCommon(double x, double y, double angle, double radius, double speed);
 public:
 	void makeBullet(double x, double y, double angle, double radius, double speed, double acc); //move to private eventually (does not use makeBulletCommon) (avoid using)
@@ -82,7 +83,9 @@ protected:
 	ColorValueHolder defaultNameStroke = ColorValueHolder(0.0f, 0.0f, 0.0f);
 
 	bool kill(); //allows for custom death (a.k.a. something saving the tank from death)
-	void terminalVelocity();
+	void kill_hard(); //kills without accounting for extra lives
+	inline void terminalVelocity();
+	inline void move_base();
 	//void resetThings(double x, double y, double angle, Team_ID teamID);
 
 public:
@@ -111,7 +114,7 @@ private:
 	static bool uninitializeGPU();
 
 public:
-	void move();
+	bool move();
 	void shoot();
 	void powerCalculate();
 	void removePower(int index);

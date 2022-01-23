@@ -192,7 +192,11 @@ void GameMainLoop::levelTick() {
 
 void GameMainLoop::moveTanks() {
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
-		TankManager::getTank(i)->move();
+		Tank* t = TankManager::getTank(i);
+		bool shouldBeKilled = t->move();
+		if (shouldBeKilled) {
+			EndGameHandler::killTank(t);
+		}
 	}
 }
 
@@ -232,46 +236,15 @@ void GameMainLoop::tickHazards() {
 void GameMainLoop::moveBullets() {
 	for (int i = BulletManager::getNumBullets() - 1; i >= 0; i--) {
 		Bullet* b = BulletManager::getBullet(i);
-		bool shouldBeKilled = false;
-		bool modifiedMovement = false;
-		bool overridedMovement = false;
-		bool noMoreMovementSpecials = false;
-
-		for (int k = 0; k < b->bulletPowers.size(); k++) {
-			if (b->bulletPowers[k]->modifiesMovement) {
-				if (b->bulletPowers[k]->modifiedMovementCanOnlyWorkIndividually && modifiedMovement) {
-					continue;
-				}
-				if (noMoreMovementSpecials) {
-					continue;
-				}
-
-				modifiedMovement = true;
-				if (b->bulletPowers[k]->overridesMovement) {
-					overridedMovement = true;
-				}
-				if (!b->bulletPowers[k]->modifiedMovementCanWorkWithOthers) {
-					noMoreMovementSpecials = true;
-				}
-
-				InteractionBoolHolder check_temp = b->bulletPowers[k]->modifiedMovement(b);
-				if (check_temp.shouldDie) {
-					shouldBeKilled = true;
-					overridedMovement = true;
-					break;
-				}
-			}
-		}
-
-		if (!overridedMovement) {
-			b->move();
-		}
-
+		bool shouldBeKilled = b->move();
 		if (shouldBeKilled) {
+			EndGameHandler::killBullet(b);
 			BulletManager::deleteBullet(i);
 			continue;
+			//TODO: should all the actual deletions go at the end of everything?
 		}
 	}
+
 	BulletManager::forceLimitBullets();
 }
 
