@@ -30,6 +30,8 @@ void MineHeavenLevel::initialize() {
 	ColorValueHolder color = getDefaultColor();
 	//int tempRand;
 	PositionHolder pos;
+	//GenericFactoryConstructionData constructionData;
+	//double* posArr;
 	std::string* paras;
 	std::string* names;
 

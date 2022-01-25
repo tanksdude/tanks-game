@@ -27,16 +27,18 @@ void DeveloperLevel0::initialize() {
 	ColorValueHolder randColor = getDefaultColor();
 	//int tempRand;
 	PositionHolder pos;
-	std::string* paras;
+	GenericFactoryConstructionData constructionData;
+	double* posArr;
 	std::string* names;
 
 	for (int i = 0; i < 16; i++) {
 		WallManager::pushWall(RandomLevel::makeNewRandomWall(TANK_RADIUS*2.5, TANK_RADIUS*2, GAME_WIDTH - 2*(TANK_RADIUS*2.5), GAME_HEIGHT - 2*(TANK_RADIUS*2), randColor));
 	}
 
-	paras = new std::string[3]{std::to_string(GAME_WIDTH/2), std::to_string(GAME_HEIGHT/2), std::to_string(RNG::randFunc() * 2*PI)};
-	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(3, paras));
-	delete[] paras;
+	posArr = new double[3]{ GAME_WIDTH/2, GAME_HEIGHT/2, RNG::randFunc() * 2*PI };
+	constructionData = GenericFactoryConstructionData(3, posArr);
+	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(constructionData));
+	delete[] posArr;
 
 	//assumption: TANK_RADIUS=16 (why it would ever be changed is beyond me)
 	PowerupManager::pushPowerup(new PowerSquare(20, 20, "speed"));

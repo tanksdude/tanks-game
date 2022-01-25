@@ -4,10 +4,10 @@
 #include <vector>
 #include <unordered_map>
 
-typedef CircleHazard* (*CircleHazardFunction)(int, std::string*);
-typedef CircleHazard* (*CircleHazardRandomizationFunction)(double, double, double, double, int, std::string*);
-typedef RectHazard* (*RectHazardFunction)(int, std::string*);
-typedef RectHazard* (*RectHazardRandomizationFunction)(double, double, double, double, int, std::string*);
+typedef CircleHazard* (*CircleHazardFunction)(GenericFactoryConstructionData&);
+typedef CircleHazard* (*CircleHazardRandomizationFunction)(double, double, double, double, GenericFactoryConstructionData&);
+typedef RectHazard* (*RectHazardFunction)(GenericFactoryConstructionData&);
+typedef RectHazard* (*RectHazardRandomizationFunction)(double, double, double, double, GenericFactoryConstructionData&);
 
 struct CircleHazardFactoryGroup {
 protected:

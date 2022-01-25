@@ -24,16 +24,17 @@ void DevNoWallsLevel1::initialize() {
 
 	//int tempRand;
 	PositionHolder pos;
-	std::string* paras;
-	//std::string* names;
+	GenericFactoryConstructionData constructionData;
+	double* posArr;
 
 	PositionHolder* wallArray = new PositionHolder[4];
 	for (int i = 0; i < 4; i++) {
 		//classic JS walls, except NoBulletZones
 		wallArray[i] = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-40*2-32, GAME_HEIGHT/2-128, 32, 128);
-		paras = new std::string[4]{std::to_string(wallArray[i].x), std::to_string(wallArray[i].y), std::to_string(32), std::to_string(128)};
-		HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "no_bullet_zone")(4, paras));
-		delete[] paras;
+		posArr = new double[4]{ wallArray[i].x, wallArray[i].y, 32, 128 };
+		constructionData = GenericFactoryConstructionData(4, posArr);
+		HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "no_bullet_zone")(constructionData));
+		delete[] posArr;
 	}
 
 	const double distFromCorner = 40;

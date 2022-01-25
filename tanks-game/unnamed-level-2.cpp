@@ -30,7 +30,8 @@ void UnnamedLevel2::initialize() {
 	ColorValueHolder wallColor = getDefaultColor();
 	//int tempRand;
 	PositionHolder pos;
-	//std::string* paras;
+	//GenericFactoryConstructionData constructionData;
+	//double* posArr;
 
 	//1. generate squares, then only use the diagonal edges
 	//(maybe the diagonal can be randomized (either forward slash or backslash direction)?)

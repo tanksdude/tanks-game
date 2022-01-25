@@ -71,8 +71,8 @@ public:
 	HorizontalLightningHazard(double xpos, double ypos, double width, double height);
 	//HorizontalLightningHazard(double xpos, double ypos, double width, double height, bool flexible);
 	~HorizontalLightningHazard();
-	static RectHazard* factory(int, std::string*);
-	static RectHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv);
+	static RectHazard* factory(GenericFactoryConstructionData&);
+	static RectHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, GenericFactoryConstructionData&);
 	virtual int getFactoryArgumentCount() const override { return 4; }
 	virtual RectHazardConstructionTypes getConstructionType() const override { return RectHazardConstructionTypes::standardConstruction; }
 	virtual RectFactoryInformation getFactoryInformation() const override { return { true, true, false, false, true }; }

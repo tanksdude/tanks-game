@@ -25,7 +25,8 @@ void DeveloperLevel3::initialize() {
 	ColorValueHolder wallColor = getDefaultColor();
 	//int tempRand;
 	PositionHolder pos;
-	std::string* paras;
+	GenericFactoryConstructionData constructionData;
+	double* posArr;
 	std::string* names;
 
 	//from dev1
@@ -34,15 +35,18 @@ void DeveloperLevel3::initialize() {
 	pos = RandomLevel::getSymmetricWallPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 20, 80);
 	WallManager::pushWall(new Wall(pos.x, pos.y, 20, 80, wallColor));
 
-	paras = new std::string[4]{std::to_string(GAME_WIDTH/2 - 80 + 20), std::to_string(GAME_HEIGHT/2 + 10), std::to_string(60*2), std::to_string(20*2 - 10)};
-	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "lava")(4, paras));
-	delete[] paras;
-	paras = new std::string[3]{std::to_string(GAME_WIDTH/2), std::to_string(GAME_HEIGHT/2 + 100), std::to_string(40)};
-	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "lightning")(3, paras));
-	delete[] paras;
-	paras = new std::string[3]{std::to_string(GAME_WIDTH/2), std::to_string(GAME_HEIGHT/2), std::to_string(PI/2)};
-	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(3, paras));
-	delete[] paras;
+	posArr = new double[4]{ GAME_WIDTH/2 - 80 + 20, GAME_HEIGHT/2 + 10, 60*2, 20*2 - 10 };
+	constructionData = GenericFactoryConstructionData(4, posArr);
+	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "lava")(constructionData));
+	delete[] posArr;
+	posArr = new double[3]{ GAME_WIDTH/2, GAME_HEIGHT/2 + 100, 40 };
+	constructionData = GenericFactoryConstructionData(3, posArr);
+	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "lightning")(constructionData));
+	delete[] posArr;
+	posArr = new double[3]{ GAME_WIDTH/2, GAME_HEIGHT/2, PI/2 };
+	constructionData = GenericFactoryConstructionData(3, posArr);
+	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(constructionData));
+	delete[] posArr;
 
 	//from dev2
 	PowerupManager::pushPowerup(new PowerSquare(20, 20, "speed"));

@@ -31,7 +31,8 @@ void SneakyRewardLevel::initialize() {
 	ColorValueHolder color = getDefaultColor();
 	int tempRand;
 	PositionHolder pos;
-	std::string* paras;
+	GenericFactoryConstructionData constructionData;
+	double* posArr;
 	std::string* names;
 	PowerSquare* p;
 
@@ -97,9 +98,10 @@ void SneakyRewardLevel::initialize() {
 	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "wallhack"));
 	*/
 
-	paras = new std::string[4]{std::to_string(GAME_WIDTH/2-20/2), std::to_string(GAME_HEIGHT/2-80), std::to_string(20), std::to_string(80*2)};
-	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "no_bullet_zone")(4, paras));
-	delete[] paras;
+	posArr = new double[4]{ GAME_WIDTH/2-20/2, GAME_HEIGHT/2-80, 20, 80*2 };
+	constructionData = GenericFactoryConstructionData(4, posArr);
+	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "no_bullet_zone")(constructionData));
+	delete[] posArr;
 
 	p = new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "dev", "inversion");
 	PowerupManager::pushPowerup(p);

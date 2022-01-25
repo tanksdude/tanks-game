@@ -27,7 +27,8 @@ void BigFunLevel::initialize() {
 	ColorValueHolder color = getDefaultColor();
 	//int tempRand;
 	PositionHolder pos;
-	//std::string* paras;
+	//GenericFactoryConstructionData constructionData;
+	//double* posArr;
 
 	for (int i = 0; i < 4; i++) {
 		//classic JS walls

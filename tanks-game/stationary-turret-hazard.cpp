@@ -116,16 +116,21 @@ bool StationaryTurretHazard::uninitializeGPU() {
 	return true;
 }
 
-CircleHazard* StationaryTurretHazard::factory(int argc, std::string* argv) {
-	if (argc >= 3) {
-		double x = std::stod(argv[0]);
-		double y = std::stod(argv[1]);
-		double a = std::stod(argv[2]);
-		if (argc >= 4) {
-			double r = std::stod(argv[3]);
-			return new StationaryTurretHazard(x, y, a, r);
+CircleHazard* StationaryTurretHazard::factory(GenericFactoryConstructionData& args) {
+	if (args.getDataCount() >= 1) {
+		int count = args.getDataPortionLength(0);
+
+		if (count >= 3) {
+			double* arr = (double*)(args.getDataPortion(0));
+			double x = arr[0];
+			double y = arr[1];
+			double a = arr[2];
+			if (count >= 4) {
+				double r = arr[3];
+				return new StationaryTurretHazard(x, y, a, r);
+			}
+			return new StationaryTurretHazard(x, y, a);
 		}
-		return new StationaryTurretHazard(x, y, a);
 	}
 	return new StationaryTurretHazard(0, 0, 0);
 }
@@ -415,15 +420,22 @@ void StationaryTurretHazard::drawCPU() const {
 }
 */
 
-CircleHazard* StationaryTurretHazard::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {
+CircleHazard* StationaryTurretHazard::randomizingFactory(double x_start, double y_start, double area_width, double area_height, GenericFactoryConstructionData& args) {
 	int attempts = 0;
 	CircleHazard* randomized = nullptr;
 	double xpos, ypos, angle;
-	if (argc >= 1) {
-		angle = std::stod(argv[0]);
+
+	int count = 0;
+	if (args.getDataCount() >= 1) {
+		int count = args.getDataPortionLength(0);
+	}
+	if (count >= 1) {
+		double* arr = (double*)(args.getDataPortion(0));
+		angle = arr[0];
 	} else {
 		angle = RNG::randFunc() * 2*PI;
 	}
+
 	do {
 		xpos = RNG::randFunc2() * (area_width - 2*TANK_RADIUS/4) + (x_start + TANK_RADIUS/4);
 		ypos = RNG::randFunc2() * (area_height - 2*TANK_RADIUS/4) + (y_start + TANK_RADIUS/4);

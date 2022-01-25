@@ -26,7 +26,8 @@ void ManyHazardsLevel::initialize() {
 	ColorValueHolder color = getDefaultColor();
 	//int tempRand;
 	PositionHolder pos;
-	std::string* paras;
+	GenericFactoryConstructionData constructionData;
+	double* posArr;
 
 	PositionHolder* wallArray = new PositionHolder[4];
 	for (int i = 0; i < 4; i++) {
@@ -35,48 +36,54 @@ void ManyHazardsLevel::initialize() {
 		WallManager::pushWall(new Wall(wallArray[i].x, wallArray[i].y, 32, 128, color));
 	}
 
-	paras = new std::string[4]{std::to_string(GAME_WIDTH/2 - 10), std::to_string(128), std::to_string(10*2), std::to_string(GAME_HEIGHT - 128*2)};
-	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "no_bullet_zone")(4, paras));
-	delete[] paras;
+	posArr = new double[4]{ GAME_WIDTH/2 - 10, 128, 10*2, GAME_HEIGHT - 128*2 };
+	constructionData = GenericFactoryConstructionData(4, posArr);
+	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "no_bullet_zone")(constructionData));
+	delete[] posArr;
 
 	const int TURRET_COUNT = 16; //stationary turret count, not regular turret count
 	//const double turretDistance = (wallArray[3].x - (wallArray[0].x+32)) / (TURRET_COUNT+1);
 	const double turretDistance = (wallArray[3].x - (wallArray[0].x+32) - 8) / (TURRET_COUNT+1);
 	for (int i = 0; i < TURRET_COUNT; i++) {
 		//bottom half
-		//paras = new std::string[3]{std::to_string(wallArray[0].x+32 + turretDistance * (i+1)), std::to_string(16), std::to_string(PI/2)};
-		paras = new std::string[3]{std::to_string(wallArray[0].x+32+8/2 + turretDistance * (i+1)), std::to_string(16), std::to_string(PI/2)};
-		HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(3, paras));
-		delete[] paras;
+		//posArr = new double[3]{ wallArray[0].x+32 + turretDistance * (i+1), 16, PI/2 };
+		posArr = new double[3]{ wallArray[0].x+32+8/2 + turretDistance * (i+1), 16, PI/2 };
+		constructionData = GenericFactoryConstructionData(3, posArr);
+		HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(constructionData));
+		delete[] posArr;
 	}
 	for (int i = 0; i < TURRET_COUNT; i++) {
 		//top half
-		//paras = new std::string[3]{std::to_string(wallArray[0].x+32 + turretDistance * (i+1)), std::to_string(GAME_HEIGHT-16), std::to_string(-PI/2)};
-		paras = new std::string[3]{std::to_string(wallArray[0].x+32+8/2 + turretDistance * (i+1)), std::to_string(GAME_HEIGHT-16), std::to_string(-PI/2)};
-		HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(3, paras));
-		delete[] paras;
+		//posArr = new double[3]{ wallArray[0].x+32 + turretDistance * (i+1), GAME_HEIGHT-16, -PI/2 };
+		posArr = new double[3]{ wallArray[0].x+32+8/2 + turretDistance * (i+1), GAME_HEIGHT-16, -PI/2 };
+		constructionData = GenericFactoryConstructionData(3, posArr);
+		HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(constructionData));
+		delete[] posArr;
 	}
 	//JS x positions: [140, 164, ..., 476, 500]; C++ x positions: [136.471, 160.941, ..., 479.059, 503.529]
 	//positions have been updated to JS version; old version left commented out
 
 	//this is too much:
 	//for (int i = 0; i < TURRET_COUNT-1; i++) {
-	//	paras = new std::string[3]{std::to_string(wallArray[0].x+32+8/2 + turretDistance * (i+1) + 4+8), std::to_string(16), std::to_string(PI/2)};
-	//	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "targeting_turret")(3, paras));
-	//	delete[] paras;
+	//	posArr = new double[3]{ wallArray[0].x+32+8/2 + turretDistance * (i+1) + 4+8, 16, PI/2 };
+	//	constructionData = GenericFactoryConstructionData(3, posArr);
+	//	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "targeting_turret")(constructionData));
+	//	delete[] posArr;
 	//}
 	//for (int i = 0; i < TURRET_COUNT-1; i++) {
-	//	paras = new std::string[3]{std::to_string(wallArray[0].x+32+8/2 + turretDistance * (i+1) + 4+8), std::to_string(GAME_HEIGHT-16), std::to_string(-PI/2)};
-	//	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "targeting_turret")(3, paras));
-	//	delete[] paras;
+	//	posArr = new double[3]{ wallArray[0].x+32+8/2 + turretDistance * (i+1) + 4+8, GAME_HEIGHT-16, -PI/2 };
+	//	constructionData = GenericFactoryConstructionData(3, posArr);
+	//	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "targeting_turret")(constructionData));
+	//	delete[] posArr;
 	//}
 
 	for (int i = 0; i < 4; i++) {
 		pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2 - ((wallArray[0].x+32) + (TANK_RADIUS/2 * 1.5)), 32 + 20 + (TANK_RADIUS/2 * 2.5));
 		//pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2 - ((wallArray[0].x+32) + (TANK_RADIUS/2 * 1.5) + 4), 32 + 20 + (TANK_RADIUS/2 * 2.5));
-		paras = new std::string[3]{std::to_string(pos.x), std::to_string(pos.y), std::to_string(PI * (i%2))};
-		HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "targeting_turret")(3, paras));
-		delete[] paras;
+		posArr = new double[3]{ pos.x, pos.y, PI * (i%2) };
+		constructionData = GenericFactoryConstructionData(3, posArr);
+		HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "targeting_turret")(constructionData));
+		delete[] posArr;
 	}
 
 	//useless traps:
@@ -92,9 +99,10 @@ void ManyHazardsLevel::initialize() {
 
 	for (int i = 0; i < 4; i++) {
 		pos = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 160/2, (GAME_HEIGHT - 128*2)/2, (GAME_WIDTH/2 - 160/2 - (wallArray[0].x+32)), 20);
-		paras = new std::string[4]{std::to_string(pos.x), std::to_string(pos.y), std::to_string(GAME_WIDTH/2 - 160/2 - (wallArray[0].x+32)), std::to_string(20)};
-		HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "horizontal_lightning")(4, paras));
-		delete[] paras;
+		posArr = new double[4]{ pos.x, pos.y, GAME_WIDTH/2 - 160/2 - (wallArray[0].x+32), 20 };
+		constructionData = GenericFactoryConstructionData(4, posArr);
+		HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "horizontal_lightning")(constructionData));
+		delete[] posArr;
 	}
 
 	pos = RandomLevel::getSymmetricPowerupPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 160/4 * 1.5);
@@ -103,19 +111,22 @@ void ManyHazardsLevel::initialize() {
 	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "vanilla-extra", "barrier"));
 
 	pos = RandomLevel::getSymmetricWallPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_HEIGHT/2 - wallPos1.y, 160/2, 50);
-	paras = new std::string[4]{std::to_string(pos.x), std::to_string(pos.y), std::to_string(160/2), std::to_string(50)};
-	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "lava")(4, paras));
-	delete[] paras;
+	posArr = new double[4]{ pos.x, pos.y, 160/2, 50 };
+	constructionData = GenericFactoryConstructionData(4, posArr);
+	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "lava")(constructionData));
+	delete[] posArr;
 	pos = RandomLevel::getSymmetricWallPositions_UD(1, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_HEIGHT/2 - wallPos1.y, 160/2, 50);
-	paras = new std::string[4]{std::to_string(pos.x), std::to_string(pos.y), std::to_string(160/2), std::to_string(50)};
-	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "lava")(4, paras));
-	delete[] paras;
+	posArr = new double[4]{ pos.x, pos.y, 160/2, 50 };
+	constructionData = GenericFactoryConstructionData(4, posArr);
+	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "lava")(constructionData));
+	delete[] posArr;
 
 	for (int i = 0; i < 4; i++) {
 		pos = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 160/4, GAME_HEIGHT/2 - wallPos1.y, 160/4, 50);
-		paras = new std::string[4]{std::to_string(pos.x), std::to_string(pos.y), std::to_string(160/4), std::to_string(50)};
-		HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "lightning")(4, paras));
-		delete[] paras;
+		posArr = new double[4]{ pos.x, pos.y, 160/4, 50 };
+		constructionData = GenericFactoryConstructionData(4, posArr);
+		HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "lightning")(constructionData));
+		delete[] posArr;
 	}
 
 	for (int i = 0; i < 4; i++) {

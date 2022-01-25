@@ -9,6 +9,7 @@ class RectHazard;
 //#include "rect-hazard-power.h"
 #include "tank.h"
 #include "bullet.h"
+#include "generic-factory-construction-data.h"
 
 //this is basically so lightning can get randomized (currently unused)
 struct RectFactoryInformation {
@@ -94,8 +95,8 @@ public:
 	virtual void ghostDraw(DrawingLayers, float alpha) const override = 0;
 
 	virtual ~RectHazard() { return; }
-	static RectHazard* factory(int argc, std::string* argv);
-	static RectHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv);
+	static RectHazard* factory(GenericFactoryConstructionData&);
+	static RectHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, GenericFactoryConstructionData&);
 	virtual int getFactoryArgumentCount() const = 0;
 	virtual RectHazardConstructionTypes getConstructionType() const = 0;
 	virtual RectFactoryInformation getFactoryInformation() const = 0;

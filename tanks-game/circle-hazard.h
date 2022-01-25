@@ -9,6 +9,7 @@ class CircleHazard;
 //#include "circle-hazard-power.h"
 #include "tank.h"
 #include "bullet.h"
+#include "generic-factory-construction-data.h"
 
 //I strongly doubt anything will use this; the only thing I can think of is like a sentry gun, so I'm probably going to get rid of this
 struct CircleFactoryInformation {
@@ -96,8 +97,8 @@ public:
 	virtual void ghostDraw(DrawingLayers, float alpha) const override = 0;
 
 	virtual ~CircleHazard() { return; }
-	static CircleHazard* factory(int argc, std::string* argv);
-	static CircleHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv);
+	static CircleHazard* factory(GenericFactoryConstructionData&);
+	static CircleHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, GenericFactoryConstructionData&);
 	virtual int getFactoryArgumentCount() const = 0;
 	virtual CircleHazardConstructionTypes getConstructionType() const = 0;
 	virtual CircleFactoryInformation getFactoryInformation() const = 0;

@@ -143,13 +143,18 @@ void VerticalLightningHazard::streamBoltVertices(const LightningBolt* l) const {
 	bolt_vb->modifyData(l->positions.data(), l->length*2 * sizeof(float));
 }
 
-RectHazard* VerticalLightningHazard::factory(int argc, std::string* argv) {
-	if (argc >= 4) {
-		double x = std::stod(argv[0]);
-		double y = std::stod(argv[1]);
-		double w = std::stod(argv[2]);
-		double h = std::stod(argv[3]);
-		return new VerticalLightningHazard(x, y, w, h);
+RectHazard* VerticalLightningHazard::factory(GenericFactoryConstructionData& args) {
+	if (args.getDataCount() >= 1) {
+		int count = args.getDataPortionLength(0);
+
+		if (count >= 4) {
+			double* arr = (double*)(args.getDataPortion(0));
+			double x = arr[0];
+			double y = arr[1];
+			double w = arr[2];
+			double h = arr[3];
+			return new VerticalLightningHazard(x, y, w, h);
+		}
 	}
 	return new VerticalLightningHazard(0, 0, 0, 0);
 }
@@ -580,15 +585,17 @@ inline void VerticalLightningHazard::drawBolts_Pose(float alpha) const {
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
-RectHazard* VerticalLightningHazard::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {
+RectHazard* VerticalLightningHazard::randomizingFactory(double x_start, double y_start, double area_width, double area_height, GenericFactoryConstructionData& args) {
 	//minimum/maximum width and height not in argv
 	if (WallManager::getNumWalls() == 0) {
 		return nullptr; //don't bother trying to see if a vertical lightning could go from edge to edge
 	}
+
 	int attempts = 0;
 	RectHazard* randomized = nullptr;
 	double xpos, ypos, width, height;
 	double minHeight = 40, maxHeight = 160;
+
 	do {
 		width = RNG::randFunc2() * (24 - 12) + 12;
 		//TODO: ability to use an edge

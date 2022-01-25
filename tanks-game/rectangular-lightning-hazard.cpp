@@ -156,13 +156,18 @@ void RectangularLightningHazard::streamBoltVertices(const LightningBolt* l) cons
 	bolt_vb->modifyData(l->positions.data(), l->length*2 * sizeof(float));
 }
 
-RectHazard* RectangularLightningHazard::factory(int argc, std::string* argv) {
-	if (argc >= 4) {
-		double x = std::stod(argv[0]);
-		double y = std::stod(argv[1]);
-		double w = std::stod(argv[2]);
-		double h = std::stod(argv[3]);
-		return new RectangularLightningHazard(x, y, w, h);
+RectHazard* RectangularLightningHazard::factory(GenericFactoryConstructionData& args) {
+	if (args.getDataCount() >= 1) {
+		int count = args.getDataPortionLength(0);
+
+		if (count >= 4) {
+			double* arr = (double*)(args.getDataPortion(0));
+			double x = arr[0];
+			double y = arr[1];
+			double w = arr[2];
+			double h = arr[3];
+			return new RectangularLightningHazard(x, y, w, h);
+		}
 	}
 	return new RectangularLightningHazard(0, 0, 0, 0);
 }
@@ -576,15 +581,27 @@ inline void RectangularLightningHazard::drawBolts_Pose(float alpha) const {
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
-RectHazard* RectangularLightningHazard::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {
+RectHazard* RectangularLightningHazard::randomizingFactory(double x_start, double y_start, double area_width, double area_height, GenericFactoryConstructionData& args) {
 	int attempts = 0;
 	RectHazard* randomized = nullptr;
 	double xpos, ypos, width, height;
+
+	bool randomizeWH;
+	int count = 0;
+	if (args.getDataCount() >= 1) {
+		int count = args.getDataPortionLength(0);
+	}
+	if (count >= 2) {
+		double* arr = (double*)(args.getDataPortion(0));
+		width = arr[0];
+		height = arr[1];
+		randomizeWH = false;
+	} else {
+		randomizeWH = true;
+	}
+
 	do {
-		if (argc >= 2) {
-			width = std::stod(argv[0]);
-			height = std::stod(argv[1]);
-		} else {
+		if (randomizeWH) {
 			width = RNG::randFunc2() * (80 - 30) + 30; //TODO: where should these constants be?
 			height = RNG::randFunc2() * (80 - 30) + 30; //TODO: where should these constants be?
 		}

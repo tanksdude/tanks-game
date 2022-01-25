@@ -163,6 +163,7 @@
     <ClCompile Include="generalized-lava.cpp" />
     <ClCompile Include="generalized-lightning.cpp" />
     <ClCompile Include="generalized-no-bullet-zone.cpp" />
+    <ClCompile Include="generic-factory-construction-data.cpp" />
     <ClCompile Include="god-mode-power.cpp" />
     <ClCompile Include="hazard.cpp" />
     <ClCompile Include="hiding-places-level.cpp" />
@@ -282,6 +283,7 @@
     <ClInclude Include="generalized-lava.h" />
     <ClInclude Include="generalized-lightning.h" />
     <ClInclude Include="generalized-no-bullet-zone.h" />
+    <ClInclude Include="generic-factory-construction-data.h" />
     <ClInclude Include="god-mode-power.h" />
     <ClInclude Include="hiding-places-level.h" />
     <ClInclude Include="ice-level-effect.h" />

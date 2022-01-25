@@ -26,7 +26,8 @@ void UnnamedLevel1::initialize() {
 	ColorValueHolder wallColor = getDefaultColor();
 	//int tempRand;
 	PositionHolder pos;
-	//std::string* paras;
+	//GenericFactoryConstructionData constructionData;
+	//double* posArr;
 
 	//outer walls
 	for (int i = 0; i < 4; i++) {

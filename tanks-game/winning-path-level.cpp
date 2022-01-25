@@ -35,7 +35,8 @@ void WinningPathLevel::initialize() {
 	ColorValueHolder color = getDefaultColor();
 	//int tempRand;
 	PositionHolder pos;
-	//std::string* paras;
+	//GenericFactoryConstructionData constructionData;
+	//double* posArr;
 
 	PositionHolder* wallArray = new PositionHolder[4];
 	for (int i = 0; i < 4; i++) {

@@ -25,7 +25,8 @@ void HidingPlacesLevel::initialize() {
 	ColorValueHolder color = getDefaultColor();
 	int tempRand;
 	PositionHolder pos;
-	std::string* paras;
+	GenericFactoryConstructionData constructionData;
+	double* posArr;
 
 	for (int i = 0; i < 4; i++) {
 		//classic JS walls
@@ -78,9 +79,10 @@ void HidingPlacesLevel::initialize() {
 	//}
 
 	//not here in the JS level but I feel it should be here:
-	paras = new std::string[4]{std::to_string(GAME_WIDTH/2-20/2), std::to_string(GAME_HEIGHT/2-20/2), std::to_string(20), std::to_string(20)};
-	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "no_bullet_zone")(4, paras));
-	delete[] paras;
+	posArr = new double[4]{ GAME_WIDTH/2-20/2, GAME_HEIGHT/2-20/2, 20, 20 };
+	constructionData = GenericFactoryConstructionData(4, posArr);
+	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "no_bullet_zone")(constructionData));
+	delete[] posArr;
 }
 
 Level* HidingPlacesLevel::factory() {

@@ -23,7 +23,8 @@ void DeveloperLevel2::initialize() {
 
 	//int tempRand;
 	PositionHolder pos;
-	//std::string* paras;
+	//GenericFactoryConstructionData constructionData;
+	//double* posArr;
 	std::string* names;
 
 	//assumption: TANK_RADIUS=16 (why it would ever be changed is beyond me)

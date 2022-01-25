@@ -31,6 +31,8 @@ void TrickyManeuveringLevel::initialize() {
 	ColorValueHolder color = getDefaultColor();
 	//int tempRand;
 	PositionHolder pos;
+	GenericFactoryConstructionData constructionData;
+	double* posArr;
 	std::string* paras;
 	std::string* names;
 
@@ -46,25 +48,31 @@ void TrickyManeuveringLevel::initialize() {
 		WallManager::pushWall(new Wall(pos.x, pos.y, 20, 20, color));
 	}
 
-	paras = new std::string[4]{std::to_string(GAME_WIDTH/2 - 40), std::to_string(GAME_HEIGHT/2 - 40 - 20), std::to_string(40*2), std::to_string(20)};
-	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "horizontal_lightning")(4, paras));
-	delete[] paras;
-	paras = new std::string[4]{std::to_string(GAME_WIDTH/2 - 40), std::to_string(GAME_HEIGHT/2 + 40), std::to_string(40*2), std::to_string(20)};
-	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "horizontal_lightning")(4, paras));
-	delete[] paras;
-	paras = new std::string[4]{std::to_string(GAME_WIDTH/2 - 40 - 20), std::to_string(GAME_HEIGHT/2 - 40), std::to_string(20), std::to_string(40*2)};
-	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "vertical_lightning")(4, paras));
-	delete[] paras;
-	paras = new std::string[4]{std::to_string(GAME_WIDTH/2 + 40), std::to_string(GAME_HEIGHT/2 - 40), std::to_string(20), std::to_string(40*2)};
-	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "vertical_lightning")(4, paras));
-	delete[] paras;
+	posArr = new double[4]{ GAME_WIDTH/2 - 40, GAME_HEIGHT/2 - 40 - 20, 40*2, 20 };
+	constructionData = GenericFactoryConstructionData(4, posArr);
+	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "horizontal_lightning")(constructionData));
+	delete[] posArr;
+	posArr = new double[4]{ GAME_WIDTH/2 - 40, GAME_HEIGHT/2 + 40, 40*2, 20 };
+	constructionData = GenericFactoryConstructionData(4, posArr);
+	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "horizontal_lightning")(constructionData));
+	delete[] posArr;
+	posArr = new double[4]{ GAME_WIDTH/2 - 40 - 20, GAME_HEIGHT/2 - 40, 20, 40*2 };
+	constructionData = GenericFactoryConstructionData(4, posArr);
+	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "vertical_lightning")(constructionData));
+	delete[] posArr;
+	posArr = new double[4]{ GAME_WIDTH/2 + 40, GAME_HEIGHT/2 - 40, 20, 40*2 };
+	constructionData = GenericFactoryConstructionData(4, posArr);
+	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "vertical_lightning")(constructionData));
+	delete[] posArr;
 
-	paras = new std::string[4]{std::to_string(wallArray[0].x+32), std::to_string(0), std::to_string(wallArray[3].x - (wallArray[0].x+32)), std::to_string(16)};
-	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "lava")(4, paras));
-	delete[] paras;
-	paras = new std::string[4]{std::to_string(wallArray[0].x+32), std::to_string(GAME_HEIGHT - 16), std::to_string(wallArray[3].x - (wallArray[0].x+32)), std::to_string(16)};
-	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "lava")(4, paras));
-	delete[] paras;
+	posArr = new double[4]{ wallArray[0].x+32, 0, wallArray[3].x - (wallArray[0].x+32), 16 };
+	constructionData = GenericFactoryConstructionData(4, posArr);
+	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "lava")(constructionData));
+	delete[] posArr;
+	posArr = new double[4]{ wallArray[0].x+32, GAME_HEIGHT - 16, wallArray[3].x - (wallArray[0].x+32), 16 };
+	constructionData = GenericFactoryConstructionData(4, posArr);
+	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "lava")(constructionData));
+	delete[] posArr;
 
 	//traps:
 	//for (int i = 0; i < 4; i++) {

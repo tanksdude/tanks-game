@@ -100,7 +100,8 @@ void HazardManager::clearRectHazards() {
 
 
 void HazardManager::addCircleHazardFactory(CircleHazardFunction factory, CircleHazardRandomizationFunction randFactory) {
-	CircleHazard* ch = factory(0, nullptr);
+	GenericFactoryConstructionData constructionData;
+	CircleHazard* ch = factory(constructionData);
 	std::vector<std::string> types = ch->getHazardTypes();
 	for (int i = 0; i < types.size(); i++) {
 		circleHazardLookup[types[i]].insert({ ch->getName(), { factory, ch->getFactoryArgumentCount(), ch->getConstructionType(), ch->getFactoryInformation(), randFactory } });
@@ -109,7 +110,8 @@ void HazardManager::addCircleHazardFactory(CircleHazardFunction factory, CircleH
 	delete ch;
 }
 void HazardManager::addRectHazardFactory(RectHazardFunction factory, RectHazardRandomizationFunction randFactory) {
-	RectHazard* rh = factory(0, nullptr);
+	GenericFactoryConstructionData constructionData;
+	RectHazard* rh = factory(constructionData);
 	std::vector<std::string> types = rh->getHazardTypes();
 	for (int i = 0; i < types.size(); i++) {
 		rectHazardLookup[types[i]].insert({ rh->getName(), { factory, rh->getFactoryArgumentCount(), rh->getConstructionType(), rh->getFactoryInformation(), randFactory } });

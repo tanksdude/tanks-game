@@ -156,12 +156,17 @@ void CircularLightningHazard::streamBoltVertices(const LightningBolt* l) const {
 	bolt_vb->modifyData(l->positions.data(), l->length*2 * sizeof(float));
 }
 
-CircleHazard* CircularLightningHazard::factory(int argc, std::string* argv) {
-	if (argc >= 3) {
-		double x = std::stod(argv[0]);
-		double y = std::stod(argv[1]);
-		double r = std::stod(argv[2]);
-		return new CircularLightningHazard(x, y, r);
+CircleHazard* CircularLightningHazard::factory(GenericFactoryConstructionData& args) {
+	if (args.getDataCount() >= 1) {
+		int count = args.getDataPortionLength(0);
+
+		if (count >= 3) {
+			double* arr = (double*)(args.getDataPortion(0));
+			double x = arr[0];
+			double y = arr[1];
+			double r = arr[2];
+			return new CircularLightningHazard(x, y, r);
+		}
 	}
 	return new CircularLightningHazard(0, 0, 0);
 }
@@ -525,14 +530,26 @@ inline void CircularLightningHazard::drawBolts_Pose(float alpha) const {
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
-CircleHazard* CircularLightningHazard::randomizingFactory(double x_start, double y_start, double area_width, double area_height, int argc, std::string* argv) {
+CircleHazard* CircularLightningHazard::randomizingFactory(double x_start, double y_start, double area_width, double area_height, GenericFactoryConstructionData& args) {
 	int attempts = 0;
 	CircleHazard* randomized = nullptr;
 	double xpos, ypos, radius;
+
+	bool randomizeR;
+	int count = 0;
+	if (args.getDataCount() >= 1) {
+		int count = args.getDataPortionLength(0);
+	}
+	if (count >= 1) {
+		double* arr = (double*)(args.getDataPortion(0));
+		radius = arr[0];
+		randomizeR = false;
+	} else {
+		randomizeR = true;
+	}
+
 	do {
-		if (argc >= 1) {
-			radius = std::stod(argv[0]);
-		} else {
+		if (randomizeR) {
 			radius = RNG::randFunc2() * (60 - 30) + 30; //TODO: where should these constants be?
 		}
 		xpos = RNG::randFunc2() * (area_width - 2*radius) + (x_start + radius);

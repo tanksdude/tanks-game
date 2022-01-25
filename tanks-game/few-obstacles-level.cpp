@@ -25,7 +25,8 @@ void FewObstaclesLevel::initialize() {
 	ColorValueHolder color = getDefaultColor();
 	int tempRand;
 	PositionHolder pos;
-	//std::string* paras;
+	//GenericFactoryConstructionData constructionData;
+	//double* posArr;
 
 	//classic JS walls removed
 

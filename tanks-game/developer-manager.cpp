@@ -83,7 +83,8 @@ void DeveloperManager::mouseWheelFunc(int wheel, int dir, int x, int y) {
 
 std::vector<std::string> DeveloperManager::insertListIdentifiers = { "longinvincible", "temp", "banana", "homing", "barrier", "shield", "mines", "multishot", "godmode", "big", "inversion", "annoying", "stationary_turret", "vert_wall", "horz_wall" };
 void DeveloperManager::devInsert(int x, int y) {
-	std::string* paras;
+	GenericFactoryConstructionData constructionData;
+	double* posArr;
 	switch (insertIndex) {
 		case 0:
 			PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "longinvincible"));
@@ -125,9 +126,10 @@ void DeveloperManager::devInsert(int x, int y) {
 			PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "annoying"));
 			break;
 		case 12:
-			paras = new std::string[3]{std::to_string(x), std::to_string(y), std::to_string(0)};
-			HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(3, paras));
-			delete[] paras;
+			posArr = new double[3]{ double(x), double(y), 0 };
+			constructionData = GenericFactoryConstructionData(3, posArr);
+			HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(constructionData));
+			delete[] posArr;
 			break;
 		case 13:
 			WallManager::pushWall(new Wall(x, y, 20, 60, LevelManager::getLevel(0)->getDefaultColor()));

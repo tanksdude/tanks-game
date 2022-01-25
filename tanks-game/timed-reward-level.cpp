@@ -45,7 +45,8 @@ void TimedRewardLevel::initialize() {
 	ColorValueHolder wallColor = getDefaultColor();
 	//int tempRand;
 	PositionHolder pos;
-	std::string* paras;
+	GenericFactoryConstructionData constructionData;
+	double* posArr;
 
 	pos = RandomLevel::getSymmetricWallPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, 40, 120*2, 40);
 	WallManager::pushWall(new Wall(pos.x, pos.y, 120*2, 40, wallColor));
@@ -66,9 +67,10 @@ void TimedRewardLevel::initialize() {
 	for (int i = 0; i < 4; i++) {
 		pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 120 - 20 - 4*2, 40 - 4*2);
 		SimpleVector2D distToCenter = SimpleVector2D(GAME_WIDTH/2 - pos.x, GAME_HEIGHT/2 - pos.y);
-		paras = new std::string[3]{std::to_string(pos.x), std::to_string(pos.y), std::to_string(distToCenter.getAngle())};
-		HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(3, paras));
-		delete[] paras;
+		posArr = new double[3]{ pos.x, pos.y, distToCenter.getAngle() };
+		constructionData = GenericFactoryConstructionData(3, posArr);
+		HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(constructionData));
+		delete[] posArr;
 	}
 
 	for (int i = 0; i < 4; i++) {
@@ -77,13 +79,15 @@ void TimedRewardLevel::initialize() {
 	}
 
 	pos = RandomLevel::getSymmetricWallPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, 40+40, 20, (GAME_HEIGHT/2 - (40+40)));
-	paras = new std::string[4]{std::to_string(pos.x), std::to_string(pos.y), std::to_string(20), std::to_string(GAME_HEIGHT/2 - (40+40))};
-	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "vertical_lightning")(4, paras));
-	delete[] paras;
+	posArr = new double[4]{ pos.x, pos.y, 20, GAME_HEIGHT/2 - (40+40) };
+	constructionData = GenericFactoryConstructionData(4, posArr);
+	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "vertical_lightning")(constructionData));
+	delete[] posArr;
 	pos = RandomLevel::getSymmetricWallPositions_UD(1, GAME_WIDTH/2, GAME_HEIGHT/2, 40+40, 20, (GAME_HEIGHT/2 - (40+40)));
-	paras = new std::string[4]{std::to_string(pos.x), std::to_string(pos.y), std::to_string(20), std::to_string(GAME_HEIGHT/2 - (40+40))};
-	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "vertical_lightning")(4, paras));
-	delete[] paras;
+	posArr = new double[4]{ pos.x, pos.y, 20, GAME_HEIGHT/2 - (40+40) };
+	constructionData = GenericFactoryConstructionData(4, posArr);
+	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "vertical_lightning")(constructionData));
+	delete[] posArr;
 
 	//other potential powers:
 	//homing, tracking, big, speed?, triple?, blast, annoying
