@@ -63,5 +63,5 @@ public:
 	RespawningPowerupsLevelEffect();
 	RespawningPowerupsLevelEffect(bool watchEverything);
 	virtual ~RespawningPowerupsLevelEffect();
-	static LevelEffect* factory(int, std::string*);
+	static LevelEffect* factory(GenericFactoryConstructionData&);
 };

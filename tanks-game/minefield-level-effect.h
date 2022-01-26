@@ -42,5 +42,5 @@ public:
 	MinefieldLevelEffect(double x_start, double y_start, double area_width, double area_height);
 	MinefieldLevelEffect(double x_start, double y_start, double area_width, double area_height, int initialMineCount);
 	virtual ~MinefieldLevelEffect();
-	static LevelEffect* factory(int, std::string*);
+	static LevelEffect* factory(GenericFactoryConstructionData&);
 };

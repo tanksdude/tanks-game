@@ -209,11 +209,16 @@ RespawningPowerupsLevelEffect::~RespawningPowerupsLevelEffect() {
 	watching.clear(); //not really necessary
 }
 
-LevelEffect* RespawningPowerupsLevelEffect::factory(int argc, std::string* argv) {
-	if (argc >= 1) {
-		//don't push the powerups to watch at the start because level construction happens before level initialization
-		bool watch = std::stoi(argv[0]);
-		return new RespawningPowerupsLevelEffect(watch);
+LevelEffect* RespawningPowerupsLevelEffect::factory(GenericFactoryConstructionData& args) {
+	if (args.getDataCount() >= 1) {
+		int count = args.getDataPortionLength(0);
+
+		if (count >= 1) {
+			//don't push the powerups to watch at the start because level construction happens before level initialization
+			bool* arr = (bool*)(args.getDataPortion(0));
+			bool watch = arr[0];
+			return new RespawningPowerupsLevelEffect(watch);
+		}
 	}
 	return new RespawningPowerupsLevelEffect();
 }

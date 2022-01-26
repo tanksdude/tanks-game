@@ -95,7 +95,8 @@ int LevelManager::getNumLevelTypes(std::string type) {
 
 
 void LevelManager::addLevelEffectFactory(LevelEffectFunction factory) {
-	LevelEffect* le = factory(0, nullptr);
+	GenericFactoryConstructionData constructionData;
+	LevelEffect* le = factory(constructionData);
 	std::vector<std::string> types = le->getLevelEffectTypes();
 	for (int i = 0; i < types.size(); i++) {
 		/*

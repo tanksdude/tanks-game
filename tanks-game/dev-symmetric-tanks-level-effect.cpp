@@ -24,10 +24,15 @@ DevSymmetricTanksLevelEffect::DevSymmetricTanksLevelEffect(bool alsoDoAngle) {
 
 DevSymmetricTanksLevelEffect::DevSymmetricTanksLevelEffect() : DevSymmetricTanksLevelEffect(false) {}
 
-LevelEffect* DevSymmetricTanksLevelEffect::factory(int argc, std::string* argv) {
-	if (argc >= 1) {
-		bool angle = std::stoi(argv[0]);
-		return new DevSymmetricTanksLevelEffect(angle);
+LevelEffect* DevSymmetricTanksLevelEffect::factory(GenericFactoryConstructionData& args) {
+	if (args.getDataCount() >= 1) {
+		int count = args.getDataPortionLength(0);
+
+		if (count >= 1) {
+			bool* arr = (bool*)(args.getDataPortion(0));
+			bool angle = arr[0];
+			return new DevSymmetricTanksLevelEffect(angle);
+		}
 	}
 	return new DevSymmetricTanksLevelEffect();
 }

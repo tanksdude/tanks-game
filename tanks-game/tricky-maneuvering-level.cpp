@@ -132,6 +132,7 @@ Level* TrickyManeuveringLevel::factory() {
 }
 
 TrickyManeuveringLevel::TrickyManeuveringLevel() {
-	std::string temp[1] = { "1" };
-	effects.push_back(LevelManager::getLevelEffectFactory("vanilla", "wind")(1, temp));
+	bool temp[1] = { true };
+	GenericFactoryConstructionData constructionData(1, temp);
+	effects.push_back(LevelManager::getLevelEffectFactory("vanilla", "wind")(constructionData));
 }

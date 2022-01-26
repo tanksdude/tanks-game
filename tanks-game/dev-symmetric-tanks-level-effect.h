@@ -20,5 +20,5 @@ public:
 	DevSymmetricTanksLevelEffect();
 	DevSymmetricTanksLevelEffect(bool alsoDoAngle);
 	virtual ~DevSymmetricTanksLevelEffect() { return; }
-	static LevelEffect* factory(int, std::string*);
+	static LevelEffect* factory(GenericFactoryConstructionData&);
 };

@@ -170,17 +170,25 @@ MinefieldLevelEffect::~MinefieldLevelEffect() {
 	delete ghostMine;
 }
 
-LevelEffect* MinefieldLevelEffect::factory(int argc, std::string* argv) {
-	if (argc >= 4) {
-		double x_start = std::stoi(argv[0]);
-		double y_start = std::stoi(argv[1]);
-		double area_width = std::stoi(argv[2]);
-		double area_height = std::stoi(argv[3]);
-		if (argc >= 5) {
-			int mineCount = std::stoi(argv[4]);
-			return new MinefieldLevelEffect(x_start, y_start, area_width, area_height, mineCount);
+LevelEffect* MinefieldLevelEffect::factory(GenericFactoryConstructionData& args) {
+	if (args.getDataCount() >= 1) {
+		int count = args.getDataPortionLength(0);
+
+		if (count >= 4) {
+			double* arr = (double*)(args.getDataPortion(0));
+			double x_start = arr[0];
+			double y_start = arr[1];
+			double area_width = arr[2];
+			double area_height = arr[3];
+
+			if ((args.getDataCount() >= 2) && (args.getDataPortionLength(1) >= 1)) {
+				int* arr_mine = (int*)(args.getDataPortion(1));
+				int mineCount = arr_mine[0];
+				return new MinefieldLevelEffect(x_start, y_start, area_width, area_height, mineCount);
+			}
+
+			return new MinefieldLevelEffect(x_start, y_start, area_width, area_height);
 		}
-		return new MinefieldLevelEffect(x_start, y_start, area_width, area_height);
 	}
 	return new MinefieldLevelEffect();
 }

@@ -57,6 +57,7 @@ Level* DevNoWallsLevel1::factory() {
 }
 
 DevNoWallsLevel1::DevNoWallsLevel1() {
-	effects.push_back(LevelManager::getLevelEffectFactory("vanilla", "respawning_powerups")(0, nullptr));
+	GenericFactoryConstructionData constructionData;
+	effects.push_back(LevelManager::getLevelEffectFactory("vanilla", "respawning_powerups")(constructionData));
 	//should probably only affect the shield powerups, not everything, but whatever
 }

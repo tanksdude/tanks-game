@@ -51,5 +51,5 @@ public:
 	WindLevelEffect();
 	WindLevelEffect(bool transitionWind);
 	virtual ~WindLevelEffect();
-	static LevelEffect* factory(int, std::string*);
+	static LevelEffect* factory(GenericFactoryConstructionData&);
 };

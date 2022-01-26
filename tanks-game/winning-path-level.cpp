@@ -75,5 +75,6 @@ Level* WinningPathLevel::factory() {
 }
 
 WinningPathLevel::WinningPathLevel() {
-	effects.push_back(LevelManager::getLevelEffectFactory("vanilla", "invisible_walls")(0, nullptr));
+	GenericFactoryConstructionData constructionData;
+	effects.push_back(LevelManager::getLevelEffectFactory("vanilla", "invisible_walls")(constructionData));
 }

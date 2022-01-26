@@ -33,10 +33,15 @@ IceLevelEffect::~IceLevelEffect() {
 	//nothing
 }
 
-LevelEffect* IceLevelEffect::factory(int argc, std::string* argv) {
-	if (argc >= 1) {
-		double ice = std::stoi(argv[0]);
-		return new IceLevelEffect(ice);
+LevelEffect* IceLevelEffect::factory(GenericFactoryConstructionData& args) {
+	if (args.getDataCount() >= 1) {
+		int count = args.getDataPortionLength(0);
+
+		if (count >= 1) {
+			double* arr = (double*)(args.getDataPortion(0));
+			double ice = arr[0];
+			return new IceLevelEffect(ice);
+		}
 	}
 	return new IceLevelEffect();
 }

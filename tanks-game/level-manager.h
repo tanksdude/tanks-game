@@ -5,7 +5,7 @@
 #include <unordered_map>
 
 typedef Level* (*LevelFunction)(void);
-typedef LevelEffect* (*LevelEffectFunction)(int, std::string*);
+typedef LevelEffect* (*LevelEffectFunction)(GenericFactoryConstructionData&);
 
 class LevelManager {
 	friend class ResetThings;

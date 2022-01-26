@@ -113,6 +113,7 @@ Level* SneakyRewardLevel::factory() {
 }
 
 SneakyRewardLevel::SneakyRewardLevel() {
-	std::string temp[1] = { "0" };
-	effects.push_back(LevelManager::getLevelEffectFactory("vanilla", "respawning_powerups")(1, temp));
+	bool temp[1] = { false };
+	GenericFactoryConstructionData constructionData(1, temp);
+	effects.push_back(LevelManager::getLevelEffectFactory("vanilla", "respawning_powerups")(constructionData));
 }

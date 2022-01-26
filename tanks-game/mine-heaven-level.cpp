@@ -97,9 +97,11 @@ MineHeavenLevel::MineHeavenLevel() {
 		//WallManager::pushWall(new Wall(wallArray[i].x, wallArray[i].y, 32, 128, color));
 	}
 
-	effects.push_back(LevelManager::getLevelEffectFactory("vanilla-extra", "ice")(0, nullptr));
-	std::string temp[4] = { std::to_string(wallArray[0].x+32), std::to_string(0), std::to_string(wallArray[3].x - (wallArray[0].x+32)), std::to_string(GAME_HEIGHT) };
-	effects.push_back(LevelManager::getLevelEffectFactory("vanilla", "minefield")(4, temp));
+	GenericFactoryConstructionData constructionData;
+	effects.push_back(LevelManager::getLevelEffectFactory("vanilla-extra", "ice")(constructionData));
+	double temp[4] = { wallArray[0].x+32, 0, wallArray[3].x - (wallArray[0].x+32), GAME_HEIGHT };
+	constructionData = GenericFactoryConstructionData(4, temp);
+	effects.push_back(LevelManager::getLevelEffectFactory("vanilla", "minefield")(constructionData));
 
 	delete[] wallArray;
 }

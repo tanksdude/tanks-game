@@ -23,5 +23,5 @@ public:
 	IceLevelEffect();
 	IceLevelEffect(double iceFactor);
 	virtual ~IceLevelEffect();
-	static LevelEffect* factory(int, std::string*);
+	static LevelEffect* factory(GenericFactoryConstructionData&);
 };

@@ -321,11 +321,16 @@ WindLevelEffect::~WindLevelEffect() {
 	delete[] stateMultiplier;
 }
 
-LevelEffect* WindLevelEffect::factory(int argc, std::string* argv) {
+LevelEffect* WindLevelEffect::factory(GenericFactoryConstructionData& args) {
 	//TODO: modify stateMultiplier
-	if (argc >= 1) {
-		bool t = std::stoi(argv[0]);
-		return new WindLevelEffect(t);
+	if (args.getDataCount() >= 1) {
+		int count = args.getDataPortionLength(0);
+
+		if (count >= 1) {
+			bool* arr = (bool*)(args.getDataPortion(0));
+			bool t = arr[0];
+			return new WindLevelEffect(t);
+		}
 	}
 	return new WindLevelEffect();
 }

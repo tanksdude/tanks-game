@@ -7,6 +7,7 @@ class Level;
 #include <vector>
 #include <string>
 #include <unordered_map>
+#include "generic-factory-construction-data.h"
 
 class Level : public DrawableThing {
 	friend class LevelManager; //actually needs this unlike the other managers because the manager has more control
@@ -37,5 +38,6 @@ public:
 	void drawLevelEffects(DrawingLayers) const;
 
 	virtual ~Level();
-	static Level* factory(int, std::string*);
+	//static Level* factory(GenericFactoryConstructionData&); //not necessary
+	static Level* factory();
 };
