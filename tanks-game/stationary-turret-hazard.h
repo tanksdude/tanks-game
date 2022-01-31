@@ -10,7 +10,7 @@
 class StationaryTurretHazard : public CircleHazard {
 	//just called Stationary in JS Tanks
 protected:
-	SimpleVector2D direction;
+	SimpleVector2D velocity; //for stationary and targeting turrets, the magnitude will obviously be 0
 	double tickCount;
 	double tickCycle;
 	unsigned int currentState;

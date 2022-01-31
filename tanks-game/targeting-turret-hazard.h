@@ -8,7 +8,7 @@
 class TargetingTurretHazard : public StationaryTurretHazard {
 	//just called Turret in JS Tanks
 protected:
-	//double angle;
+	//SimpleVector2D velocity; //for stationary and targeting turrets, the magnitude will obviously be 0
 	//double tickCount;
 	//double tickCycle;
 	//unsigned int currentState;
@@ -22,9 +22,10 @@ protected:
 	ColorValueHolder reticuleColors[2];
 	double targetingCount;
 	Game_ID trackingID; //if ==this->getGameID(), then it's not tracking
-	virtual inline void updateTrackingPos(const Tank*, bool pointedAt);
 
 protected:
+	virtual inline void updateTrackingPos(const Tank*, bool pointedAt);
+
 	virtual void turnTowardsTank(const Tank*);
 	virtual bool canSeeTank(const Tank*) const override; //true if no walls obstruct any line of sight to tank
 	virtual bool isPointedAt(const Tank*) const;

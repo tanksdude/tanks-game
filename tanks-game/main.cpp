@@ -91,6 +91,7 @@
 //hazards:
 #include "stationary-turret-hazard.h"
 #include "targeting-turret-hazard.h"
+#include "patrolling-turret-hazard.h"
 #include "rectangular-lightning-hazard.h"
 #include "horizontal-lightning-hazard.h"
 #include "vertical-lightning-hazard.h"
@@ -162,6 +163,7 @@ int main(int argc, char** argv) {
 
 	// Set callback for drawing the scene
 	glutDisplayFunc(GameMainLoop::drawMain);
+	//glutDisplayFunc(GameMainLoop::drawAllLayers);
 
 	// Set callback for resizing the window
 	glutReshapeFunc(Renderer::windowResizeFunc);
@@ -230,6 +232,7 @@ int main(int argc, char** argv) {
 	//vanilla (some are also "old"):
 	HazardManager::addCircleHazardFactory(StationaryTurretHazard::factory, StationaryTurretHazard::randomizingFactory);
 	HazardManager::addCircleHazardFactory(TargetingTurretHazard::factory, TargetingTurretHazard::randomizingFactory);
+	HazardManager::addCircleHazardFactory(PatrollingTurretHazard::factory, PatrollingTurretHazard::randomizingFactory);
 	HazardManager::addRectHazardFactory(RectangularLightningHazard::factory, RectangularLightningHazard::randomizingFactory);
 	HazardManager::addRectHazardFactory(HorizontalLightningHazard::factory, HorizontalLightningHazard::randomizingFactory);
 	HazardManager::addRectHazardFactory(VerticalLightningHazard::factory, VerticalLightningHazard::randomizingFactory);
@@ -316,13 +319,14 @@ int main(int argc, char** argv) {
 	//they're good team names, deal with it
 	EndGameHandler::addTeamToWatch(HAZARD_TEAM, "HAZARDS");
 #if _DEBUG
-	LevelManager::pushLevel("dev", "dev2");
+	LevelManager::pushLevel("dev", "dev3");
 	//LevelManager::pushLevel("vanilla", "default_random");
 	//LevelManager::pushLevel("random-vanilla", "sneaky_reward");
 	//LevelManager::pushLevel("vanilla-extra", "tricky_maneuvering");
 	//LevelManager::pushLevel("vanilla-extra", "lone_turret");
 #else
 	LevelManager::pushLevel("vanilla", "default_random");
+	//LevelManager::pushLevel("dev", "dev3");
 #endif
 	ResetThings::firstReset();
 

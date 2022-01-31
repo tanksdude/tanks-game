@@ -43,10 +43,27 @@ void DeveloperLevel3::initialize() {
 	constructionData = GenericFactoryConstructionData(3, posArr);
 	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "lightning")(constructionData));
 	delete[] posArr;
-	posArr = new double[3]{ GAME_WIDTH/2, GAME_HEIGHT/2, PI/2 };
+	posArr = new double[3]{ GAME_WIDTH/2, GAME_HEIGHT/2, -PI/2 };
 	constructionData = GenericFactoryConstructionData(3, posArr);
 	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(constructionData));
 	delete[] posArr;
+
+	//not from dev1
+	posArr = new double[3]{ GAME_WIDTH/2, GAME_HEIGHT/2 + 10+30/2, PI/2 };
+	int* patrolCount = new int[1]{ 4 };
+	double* patrolRoute = new double[4*2]{
+		//to maintain consistency, patrolRoute (the array) should be in another array which then gets passed on to the turret
+		//I don't care that much, so I'm doing it the easier way
+		GAME_WIDTH/2 - 40, GAME_HEIGHT/2 + 10+30/2,
+		GAME_WIDTH/2 - 40, GAME_HEIGHT/2 - 10-30/2,
+		GAME_WIDTH/2 + 40, GAME_HEIGHT/2 - 10-30/2,
+		GAME_WIDTH/2 + 40, GAME_HEIGHT/2 + 10+30/2
+	};
+	constructionData = GenericFactoryConstructionData(3, posArr);
+	constructionData.pushData(1, patrolCount);
+	constructionData.pushData(4*2, patrolRoute);
+	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "patrolling_turret")(constructionData));
+	delete[] posArr, patrolCount, patrolRoute;
 
 	//from dev2
 	PowerupManager::pushPowerup(new PowerSquare(20, 20, "speed"));

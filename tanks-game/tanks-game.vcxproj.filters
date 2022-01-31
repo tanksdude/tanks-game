@@ -363,6 +363,9 @@
     <ClCompile Include="generic-factory-construction-data.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="patrolling-turret-hazard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -762,6 +765,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="generic-factory-construction-data.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="patrolling-turret-hazard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

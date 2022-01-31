@@ -38,7 +38,7 @@ std::unordered_map<std::string, float> TargetingTurretHazard::getWeights() const
 TargetingTurretHazard::TargetingTurretHazard(double xpos, double ypos, double angle, bool) : StationaryTurretHazard(xpos, ypos, angle, true) {
 	//x = xpos;
 	//y = ypos;
-	//this->angle = angle;
+	//velocity = SimpleVector2D(angle, 0, true);
 	r = TANK_RADIUS / 2;
 	//gameID = GameManager::getNextID();
 	//teamID = HAZARD_TEAM;
@@ -49,7 +49,7 @@ TargetingTurretHazard::TargetingTurretHazard(double xpos, double ypos, double an
 	ColorValueHolder temp[2] = { {1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f} };
 	std::copy(temp, temp+2, reticuleColors);
 
-	canAcceptPowers = false; //... true? probably; hazardpowers were thought up with patrolling turret in mind
+	canAcceptPowers = false; //... true?
 }
 
 TargetingTurretHazard::TargetingTurretHazard(double xpos, double ypos, double angle) : TargetingTurretHazard(xpos, ypos, angle, true) {
@@ -158,8 +158,8 @@ inline void TargetingTurretHazard::updateTrackingPos(const Tank* t, bool pointed
 		targetingY = t->y;
 	} else {
 		double dist = sqrt(pow(t->x - x, 2) + pow(t->y - y, 2));
-		targetingX = x + dist * cos(direction.getAngle());
-		targetingY = y + dist * sin(direction.getAngle());
+		targetingX = x + dist * cos(velocity.getAngle());
+		targetingY = y + dist * sin(velocity.getAngle());
 	}
 }
 
@@ -260,7 +260,7 @@ inline void TargetingTurretHazard::tick_lookForNewTarget() {
 inline void TargetingTurretHazard::tick_chargeUp() {
 	targetingCount++;
 	if (targetingCount >= stateMultiplier[1] * tickCycle) {
-		BulletManager::pushBullet(new Bullet(x + r*cos(direction.getAngle()), y + r*sin(direction.getAngle()), r*BULLET_TO_TANK_RADIUS_RATIO, direction.getAngle(), Tank::default_maxSpeed*BULLET_TO_TANK_SPEED_RATIO, this->getTeamID(), BulletParentType::individual, this->getGameID()));
+		BulletManager::pushBullet(new Bullet(x + r*cos(velocity.getAngle()), y + r*sin(velocity.getAngle()), r*BULLET_TO_TANK_RADIUS_RATIO, velocity.getAngle(), Tank::default_maxSpeed*BULLET_TO_TANK_SPEED_RATIO, this->getTeamID(), BulletParentType::individual, this->getGameID()));
 		currentState = 2;
 		targetingCount = 0;
 		targeting = false; //allows target to change (also controls whether the reticule is drawn)
@@ -288,21 +288,21 @@ bool TargetingTurretHazard::canSeeTank(const Tank* t) const {
 void TargetingTurretHazard::turnTowardsTank(const Tank* t) {
 	//see PowerFunctionHelper::homingGeneric
 	SimpleVector2D distToTank = SimpleVector2D(t->getX() - this->x, t->getY() - this->y);
-	float theta = SimpleVector2D::angleBetween(distToTank, SimpleVector2D(direction.getAngle(), 0, true));
+	float theta = SimpleVector2D::angleBetween(distToTank, velocity);
 	if (abs(theta) < PI/turningIncrement) {
 		//too small to adjust angle
 	} else {
 		//large angle adjustment needed
 		if (theta < 0) {
-			this->direction.changeAngle(PI/turningIncrement);
+			this->velocity.changeAngle(PI/turningIncrement);
 		} else {
-			this->direction.changeAngle(-PI/turningIncrement);
+			this->velocity.changeAngle(-PI/turningIncrement);
 		}
 	}
 }
 
 bool TargetingTurretHazard::isPointedAt(const Tank* t) const {
-	return (abs(SimpleVector2D::angleBetween(SimpleVector2D(direction.getAngle(), 0, true), SimpleVector2D(t->x - x, t->y - y))) < PI/turningIncrement);
+	return (abs(SimpleVector2D::angleBetween(velocity, SimpleVector2D(t->x - x, t->y - y))) < PI/turningIncrement);
 }
 
 bool TargetingTurretHazard::reasonableLocation() const {
@@ -512,7 +512,7 @@ inline void TargetingTurretHazard::drawBarrel(float alpha) const {
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
-	MVPM = Renderer::GenerateMatrix(r, 1, direction.getAngle(), x, y);
+	MVPM = Renderer::GenerateMatrix(r, 1, velocity.getAngle(), x, y);
 	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*cannon_va, *shader, GL_LINES, 0, 2);

@@ -35,7 +35,7 @@ std::unordered_map<std::string, float> StationaryTurretHazard::getWeights() cons
 StationaryTurretHazard::StationaryTurretHazard(double xpos, double ypos, double angle, bool noGPU) {
 	x = xpos;
 	y = ypos;
-	this->direction = SimpleVector2D(angle, 0, true);
+	velocity = SimpleVector2D(angle, 0, true);
 	r = TANK_RADIUS / 4;
 	gameID = GameManager::getNextID();
 	teamID = HAZARD_TEAM;
@@ -159,13 +159,13 @@ void StationaryTurretHazard::tick() {
 		}
 	}
 	if (mustShoot) {
-		BulletManager::pushBullet(new Bullet(x + r*cos(direction.getAngle()), y + r*sin(direction.getAngle()), r*(BULLET_TO_TANK_RADIUS_RATIO*2), direction.getAngle(), Tank::default_maxSpeed*BULLET_TO_TANK_SPEED_RATIO, this->getTeamID(), BulletParentType::individual, this->getGameID()));
+		BulletManager::pushBullet(new Bullet(x + r*cos(velocity.getAngle()), y + r*sin(velocity.getAngle()), r*(BULLET_TO_TANK_RADIUS_RATIO*2), velocity.getAngle(), Tank::default_maxSpeed*BULLET_TO_TANK_SPEED_RATIO, this->getTeamID(), BulletParentType::individual, this->getGameID()));
 	}
 }
 
 bool StationaryTurretHazard::canSeeTank(const Tank* t) const {
 	SimpleVector2D distToTank = SimpleVector2D(t->getX() - x, t->getY() - y);
-	Circle* p = new Point(x + distToTank.getMagnitude()*cos(this->direction.getAngle()), y + distToTank.getMagnitude()*sin(this->direction.getAngle()));
+	Circle* p = new Point(x + distToTank.getMagnitude()*cos(this->velocity.getAngle()), y + distToTank.getMagnitude()*sin(this->velocity.getAngle()));
 	if (!CollisionHandler::fullyCollided(p, t)) {
 		delete p;
 		return false; //not pointing at tank (it's an approximation but it's good enough)
@@ -372,7 +372,7 @@ inline void StationaryTurretHazard::drawBarrel(float alpha) const {
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
-	MVPM = Renderer::GenerateMatrix(r, 1, direction.getAngle(), x, y);
+	MVPM = Renderer::GenerateMatrix(r, 1, velocity.getAngle(), x, y);
 	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*cannon_va, *shader, GL_LINES, 0, 2);
@@ -414,7 +414,7 @@ void StationaryTurretHazard::drawCPU() const {
 	glBegin(GL_LINES);
 
 	glVertex2f(x, y);
-	glVertex2f(x + r*cos(direction.getAngle()), y + r*sin(direction.getAngle()));
+	glVertex2f(x + r*cos(velocity.getAngle()), y + r*sin(velocity.getAngle()));
 
 	glEnd();
 }
