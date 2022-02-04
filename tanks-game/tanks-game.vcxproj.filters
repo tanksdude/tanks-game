@@ -366,6 +366,9 @@
     <ClCompile Include="patrolling-turret-hazard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="tight-patrolling-corridor-level.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -768,6 +771,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="patrolling-turret-hazard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="tight-patrolling-corridor-level.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

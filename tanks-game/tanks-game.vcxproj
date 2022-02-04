@@ -236,6 +236,7 @@
     <ClCompile Include="stationary-turret-hazard.cpp" />
     <ClCompile Include="tank.cpp" />
     <ClCompile Include="tank-manager.cpp" />
+    <ClCompile Include="tight-patrolling-corridor-level.cpp" />
     <ClCompile Include="timed-reward-level.cpp" />
     <ClCompile Include="tracking-power.cpp" />
     <ClCompile Include="tricky-maneuvering-level.cpp" />
@@ -371,6 +372,7 @@
     <ClInclude Include="tank.h" />
     <ClInclude Include="tank-manager.h" />
     <ClInclude Include="tank-power.h" />
+    <ClInclude Include="tight-patrolling-corridor-level.h" />
     <ClInclude Include="timed-reward-level.h" />
     <ClInclude Include="tracking-power.h" />
     <ClInclude Include="tricky-maneuvering-level.h" />

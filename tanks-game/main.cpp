@@ -78,6 +78,7 @@
 #include "unnamed-level-2.h"
 #include "dev-no-walls-level-1.h"
 #include "timed-reward-level.h"
+#include "tight-patrolling-corridor-level.h"
 
 //level effects:
 #include "wind-level-effect.h"
@@ -286,6 +287,7 @@ int main(int argc, char** argv) {
 	LevelManager::addLevelFactory(UnnamedLevel2::factory);
 	LevelManager::addLevelFactory(DevNoWallsLevel1::factory);
 	LevelManager::addLevelFactory(TimedRewardLevel::factory);
+	LevelManager::addLevelFactory(TightPatrollingCorridorLevel::factory);
 
 	//initialize managers and stuff:
 	GameManager::Initialize();
@@ -323,7 +325,7 @@ int main(int argc, char** argv) {
 	//LevelManager::pushLevel("vanilla", "default_random");
 	//LevelManager::pushLevel("random-vanilla", "sneaky_reward");
 	//LevelManager::pushLevel("vanilla-extra", "tricky_maneuvering");
-	//LevelManager::pushLevel("vanilla-extra", "lone_turret");
+	//LevelManager::pushLevel("random-vanilla", "tight-patrolling-corridor");
 #else
 	LevelManager::pushLevel("vanilla", "default_random");
 	//LevelManager::pushLevel("dev", "dev3");
