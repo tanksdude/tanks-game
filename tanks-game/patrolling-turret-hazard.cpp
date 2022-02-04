@@ -538,13 +538,14 @@ inline void PatrollingTurretHazard::drawReticule(float alpha) const {
 }
 
 inline void PatrollingTurretHazard::drawPath(float alpha) const {
-	//TODO: this is temporary; it should be a line (and maybe circles), not just circles
+	//TODO: this is temporary; the path should have its own VA/VB/IB (not stealing the barrel's stuff)
 
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 MVPM;
 
+	//circles
 	ColorValueHolder color = ColorValueHolder(0, 0, 0);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
@@ -554,6 +555,15 @@ inline void PatrollingTurretHazard::drawPath(float alpha) const {
 		shader->setUniformMat4f("u_MVP", MVPM);
 
 		Renderer::Draw(*va, *ib, *shader);
+	}
+
+	//lines
+	for (int i = 0; i < routePosPairNum; i++) {
+		SimpleVector2D dist = SimpleVector2D(getRoutePosX((i+1) % routePosPairNum) - getRoutePosX(i), getRoutePosY((i+1) % routePosPairNum) - getRoutePosY(i));
+		MVPM = Renderer::GenerateMatrix(dist.getMagnitude(), 1, dist.getAngle(), getRoutePosX(i), getRoutePosY(i));
+		shader->setUniformMat4f("u_MVP", MVPM);
+
+		Renderer::Draw(*cannon_va, *shader, GL_LINES, 0, 2);
 	}
 }
 
