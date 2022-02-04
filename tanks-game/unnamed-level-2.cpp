@@ -27,7 +27,7 @@ std::unordered_map<std::string, float> UnnamedLevel2::getWeights() const {
 void UnnamedLevel2::initialize() {
 	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1));
 
-	ColorValueHolder wallColor = getDefaultColor();
+	ColorValueHolder color = getDefaultColor();
 	//int tempRand;
 	PositionHolder pos;
 	//GenericFactoryConstructionData constructionData;
@@ -43,7 +43,7 @@ void UnnamedLevel2::initialize() {
 	const double EDGE_WIDTH = GAME_HEIGHT / (EDGE_COUNT+1); //since GAME_HEIGHT < GAME_WIDTH
 	const double EDGE_THICKNESS = 20.0;
 
-	//wallColor = ColorValueHolder(0, 0, 0);
+	//color = ColorValueHolder(0, 0, 0);
 	if (EDGE_WIDTH - EDGE_THICKNESS > 0) { //walls will have positive widths
 		//occurs when EDGE_COUNT < 15 given EDGE_THICKNESS = 20.0
 		for (int i = 1; i <= EDGE_COUNT; i++) { //horizontal edges
@@ -63,11 +63,11 @@ void UnnamedLevel2::initialize() {
 			xpos += EDGE_THICKNESS;
 			wall_width -= 2*EDGE_THICKNESS;
 
-			WallManager::pushWall(new Wall(xpos, ypos, wall_width, wall_height, wallColor));
+			WallManager::pushWall(new Wall(xpos, ypos, wall_width, wall_height, color));
 		}
 	}
 
-	//wallColor = getDefaultColor();
+	//color = getDefaultColor();
 	for (int i = 0; i <= EDGE_COUNT; i++) { //vertical edges
 		//line
 		double xpos = GAME_WIDTH/2 - EDGE_WIDTH * double(EDGE_COUNT)/2 + EDGE_WIDTH * (i-0);
@@ -94,7 +94,7 @@ void UnnamedLevel2::initialize() {
 			wall_height -= EDGE_THICKNESS/2;
 		}
 
-		WallManager::pushWall(new Wall(xpos, ypos, wall_width, wall_height, wallColor));
+		WallManager::pushWall(new Wall(xpos, ypos, wall_width, wall_height, color));
 	}
 
 	//for (int i = 0; i < WallManager::getNumWalls(); i++) {

@@ -23,7 +23,7 @@ std::unordered_map<std::string, float> UnnamedLevel1::getWeights() const {
 void UnnamedLevel1::initialize() {
 	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1));
 
-	ColorValueHolder wallColor = getDefaultColor();
+	ColorValueHolder color = getDefaultColor();
 	//int tempRand;
 	PositionHolder pos;
 	//GenericFactoryConstructionData constructionData;
@@ -32,18 +32,18 @@ void UnnamedLevel1::initialize() {
 	//outer walls
 	for (int i = 0; i < 4; i++) {
 		pos = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 20, 20+20+40, 160, 20);
-		WallManager::pushWall(new Wall(pos.x, pos.y, 160, 20, wallColor));
+		WallManager::pushWall(new Wall(pos.x, pos.y, 160, 20, color));
 	}
 	pos = RandomLevel::getSymmetricWallPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 20+160-20, 20, (20+20+40)*2);
-	WallManager::pushWall(new Wall(pos.x, pos.y, 20, (20+20+40)*2, wallColor));
+	WallManager::pushWall(new Wall(pos.x, pos.y, 20, (20+20+40)*2, color));
 	pos = RandomLevel::getSymmetricWallPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 20+160-20, 20, (20+20+40)*2);
-	WallManager::pushWall(new Wall(pos.x, pos.y, 20, (20+20+40)*2, wallColor));
+	WallManager::pushWall(new Wall(pos.x, pos.y, 20, (20+20+40)*2, color));
 
 	//inner walls
 	pos = RandomLevel::getSymmetricWallPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, 20, (20+160-20-40)*2, 20);
-	WallManager::pushWall(new Wall(pos.x, pos.y, (20+160-20-40)*2, 20, wallColor));
+	WallManager::pushWall(new Wall(pos.x, pos.y, (20+160-20-40)*2, 20, color));
 	pos = RandomLevel::getSymmetricWallPositions_UD(1, GAME_WIDTH/2, GAME_HEIGHT/2, 20, (20+160-20-40)*2, 20);
-	WallManager::pushWall(new Wall(pos.x, pos.y, (20+160-20-40)*2, 20, wallColor));
+	WallManager::pushWall(new Wall(pos.x, pos.y, (20+160-20-40)*2, 20, color));
 
 	for (int i = 0; i < 4; i++) {
 		pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 20+160+40, (GAME_HEIGHT/2 - (20+20+40+20))/2 + (20+20+40+20));

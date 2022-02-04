@@ -42,22 +42,22 @@ void TimedRewardLevel::tick() {
 void TimedRewardLevel::initialize() {
 	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40);
 
-	ColorValueHolder wallColor = getDefaultColor();
+	ColorValueHolder color = getDefaultColor();
 	//int tempRand;
 	PositionHolder pos;
 	GenericFactoryConstructionData constructionData;
 	double* posArr;
 
 	pos = RandomLevel::getSymmetricWallPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, 40, 120*2, 40);
-	WallManager::pushWall(new Wall(pos.x, pos.y, 120*2, 40, wallColor));
+	WallManager::pushWall(new Wall(pos.x, pos.y, 120*2, 40, color));
 	pos = RandomLevel::getSymmetricWallPositions_UD(1, GAME_WIDTH/2, GAME_HEIGHT/2, 40, 120*2, 40);
-	WallManager::pushWall(new Wall(pos.x, pos.y, 120*2, 40, wallColor));
+	WallManager::pushWall(new Wall(pos.x, pos.y, 120*2, 40, color));
 
 	//moving walls
 	for (int i = 0; i < 4; i++) {
 		pos = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 120-20, 20/2, 20, 40+20);
 		//Wall* tempWall = new Wall(pos.x, pos.y, 20, 40+20, ColorValueHolder(0, 0, 0));
-		Wall* tempWall = new Wall(pos.x, pos.y, 20, 40+20, wallColor);
+		Wall* tempWall = new Wall(pos.x, pos.y, 20, 40+20, color);
 		movingWalls[i] = tempWall->getGameID();
 		WallManager::pushWall(tempWall);
 	}

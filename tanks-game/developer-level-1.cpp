@@ -22,7 +22,7 @@ std::unordered_map<std::string, float> DeveloperLevel1::getWeights() const {
 void DeveloperLevel1::initialize() {
 	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), ResetThings::default_tankToEdgeDist, GAME_HEIGHT/2);
 
-	ColorValueHolder wallColor = getDefaultColor();
+	ColorValueHolder color = getDefaultColor();
 	//int tempRand;
 	PositionHolder pos;
 	GenericFactoryConstructionData constructionData;
@@ -30,10 +30,10 @@ void DeveloperLevel1::initialize() {
 	std::string* names;
 
 	PositionHolder wallPos1 = RandomLevel::getSymmetricWallPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 20, 80);
-	WallManager::pushWall(new Wall(wallPos1.x, wallPos1.y, 20, 80, wallColor));
+	WallManager::pushWall(new Wall(wallPos1.x, wallPos1.y, 20, 80, color));
 	PositionHolder wallPos2 = RandomLevel::getSymmetricWallPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 20, 80);
-	WallManager::pushWall(new Wall(wallPos2.x, wallPos2.y, 20, 80, wallColor));
-	WallManager::pushWall(new Wall(wallPos2.x, GAME_HEIGHT-20, 20, 20, wallColor));
+	WallManager::pushWall(new Wall(wallPos2.x, wallPos2.y, 20, 80, color));
+	WallManager::pushWall(new Wall(wallPos2.x, GAME_HEIGHT-20, 20, 20, color));
 
 	posArr = new double[4]{ wallPos2.x, wallPos2.y+80, 20, (GAME_HEIGHT-20)-(wallPos2.y+80) };
 	constructionData = GenericFactoryConstructionData(4, posArr);

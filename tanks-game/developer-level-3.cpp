@@ -22,7 +22,7 @@ void DeveloperLevel3::initialize() {
 	//primary purpose: stupid powerup showcase
 	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), ResetThings::default_tankToEdgeDist, GAME_HEIGHT/2);
 
-	ColorValueHolder wallColor = getDefaultColor();
+	ColorValueHolder color = getDefaultColor();
 	//int tempRand;
 	PositionHolder pos;
 	GenericFactoryConstructionData constructionData;
@@ -31,9 +31,9 @@ void DeveloperLevel3::initialize() {
 
 	//from dev1
 	pos = RandomLevel::getSymmetricWallPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 20, 80);
-	WallManager::pushWall(new Wall(pos.x, pos.y, 20, 80, wallColor));
+	WallManager::pushWall(new Wall(pos.x, pos.y, 20, 80, color));
 	pos = RandomLevel::getSymmetricWallPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 20, 80);
-	WallManager::pushWall(new Wall(pos.x, pos.y, 20, 80, wallColor));
+	WallManager::pushWall(new Wall(pos.x, pos.y, 20, 80, color));
 
 	posArr = new double[4]{ GAME_WIDTH/2 - 80 + 20, GAME_HEIGHT/2 + 10, 60*2, 20*2 - 10 };
 	constructionData = GenericFactoryConstructionData(4, posArr);
