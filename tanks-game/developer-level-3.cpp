@@ -65,6 +65,17 @@ void DeveloperLevel3::initialize() {
 	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "patrolling_turret")(constructionData));
 	delete[] posArr, patrolCount, patrolRoute;
 
+	pos = RandomLevel::getSymmetricWallPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 20, 80);
+	posArr = new double[4]{ pos.x - 40, pos.y, 20, 80 };
+	constructionData = GenericFactoryConstructionData(4, posArr);
+	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("dev", "wall")(constructionData));
+	delete[] posArr;
+	pos = RandomLevel::getSymmetricWallPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 20, 80);
+	posArr = new double[4]{ pos.x + 40, pos.y, 20, 80 };
+	constructionData = GenericFactoryConstructionData(4, posArr);
+	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("dev", "wall")(constructionData));
+	delete[] posArr;
+
 	//from dev2
 	PowerupManager::pushPowerup(new PowerSquare(20, 20, "speed"));
 	PowerupManager::pushPowerup(new PowerSquare(40, 20, "wallhack"));

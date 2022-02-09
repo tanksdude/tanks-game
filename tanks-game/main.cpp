@@ -101,6 +101,8 @@
 #include "circular-lava-hazard.h"
 #include "rectangular-no-bullet-zone-hazard.h"
 #include "circular-no-bullet-zone-hazard.h"
+//dev hazards:
+#include "dev-wall-hazard.h"
 
 //powers:
 #include "speed-power.h"
@@ -242,6 +244,8 @@ int main(int argc, char** argv) {
 	HazardManager::addCircleHazardFactory(CircularLavaHazard::factory, CircularLavaHazard::randomizingFactory);
 	HazardManager::addRectHazardFactory(RectangularNoBulletZoneHazard::factory, RectangularNoBulletZoneHazard::randomizingFactory);
 	HazardManager::addCircleHazardFactory(CircularNoBulletZoneHazard::factory, CircularNoBulletZoneHazard::randomizingFactory);
+	//dev:
+	HazardManager::addRectHazardFactory(DevWallHazard::factory, DevWallHazard::randomizingFactory);
 
 	//level effects
 	//vanilla (some are also "old"):

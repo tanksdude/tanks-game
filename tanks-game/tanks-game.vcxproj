@@ -151,6 +151,7 @@
     <ClCompile Include="dev-annoying-power.cpp" />
     <ClCompile Include="dev-color-changing-power.cpp" />
     <ClCompile Include="dev-other-stuff-is-poison-power.cpp" />
+    <ClCompile Include="dev-wall-hazard.cpp" />
     <ClCompile Include="developer-level-2.cpp" />
     <ClCompile Include="dev-long-invincible-named-power.cpp" />
     <ClCompile Include="dev-no-walls-level-1.cpp" />
@@ -272,6 +273,7 @@
     <ClInclude Include="dev-annoying-power.h" />
     <ClInclude Include="dev-color-changing-power.h" />
     <ClInclude Include="dev-other-stuff-is-poison-power.h" />
+    <ClInclude Include="dev-wall-hazard.h" />
     <ClInclude Include="developer-level-2.h" />
     <ClInclude Include="dev-long-invincible-named-power.h" />
     <ClInclude Include="dev-no-walls-level-1.h" />

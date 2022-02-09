@@ -369,6 +369,9 @@
     <ClCompile Include="tight-patrolling-corridor-level.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="dev-wall-hazard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -774,6 +777,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="tight-patrolling-corridor-level.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dev-wall-hazard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
