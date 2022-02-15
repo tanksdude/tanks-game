@@ -178,6 +178,7 @@
     <ClCompile Include="minefield-level-effect.cpp" />
     <ClCompile Include="mine-heaven-level.cpp" />
     <ClCompile Include="mines-power.cpp" />
+    <ClCompile Include="mother-turret-hazard.cpp" />
     <ClCompile Include="old-mines-power.cpp" />
     <ClCompile Include="opengl-index-buffer.cpp" />
     <ClCompile Include="opengl-rendering-context.cpp" />
@@ -246,6 +247,7 @@
     <ClCompile Include="ultra-bounce-power.cpp" />
     <ClCompile Include="unnamed-level-1.cpp" />
     <ClCompile Include="unnamed-level-2.cpp" />
+    <ClCompile Include="unnamed-level-3.cpp" />
     <ClCompile Include="vertex-array.cpp" />
     <ClCompile Include="vertex-buffer.cpp" />
     <ClCompile Include="vertical-lightning-hazard.cpp" />
@@ -300,6 +302,7 @@
     <ClInclude Include="minefield-level-effect.h" />
     <ClInclude Include="mine-heaven-level.h" />
     <ClInclude Include="mines-power.h" />
+    <ClInclude Include="mother-turret-hazard.h" />
     <ClInclude Include="null-rendering-context.h" />
     <ClInclude Include="old-mines-power.h" />
     <ClInclude Include="opengl-index-buffer.h" />
@@ -383,6 +386,7 @@
     <ClInclude Include="ultra-bounce-power.h" />
     <ClInclude Include="unnamed-level-1.h" />
     <ClInclude Include="unnamed-level-2.h" />
+    <ClInclude Include="unnamed-level-3.h" />
     <ClInclude Include="vertex-array.h" />
     <ClInclude Include="vertex-buffer.h" />
     <ClInclude Include="vertex-buffer-layout.h" />

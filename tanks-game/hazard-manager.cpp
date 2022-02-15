@@ -54,9 +54,11 @@ RectHazard* HazardManager::getRectHazardByID(Game_ID gameID) {
 
 void HazardManager::pushCircleHazard(CircleHazard* ch) {
 	circleHazards.push_back(ch);
+	ch->initialize();
 }
 void HazardManager::pushRectHazard(RectHazard* rh) {
 	rectHazards.push_back(rh);
+	rh->initialize();
 }
 
 void HazardManager::deleteCircleHazard(int index) {

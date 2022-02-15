@@ -84,6 +84,7 @@ protected:
 public:
 	virtual bool validLocation() const override { return true; }
 	virtual bool reasonableLocation() const override = 0;
+	virtual void initialize() { return; } //called when circlehazard is pushed for the first time
 
 	virtual std::string getName() const = 0;
 	//static std::string getClassName();

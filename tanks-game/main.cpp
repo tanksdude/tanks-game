@@ -76,6 +76,7 @@
 #include "developer-level-3.h"
 #include "unnamed-level-1.h"
 #include "unnamed-level-2.h"
+#include "unnamed-level-3.h"
 #include "dev-no-walls-level-1.h"
 #include "timed-reward-level.h"
 #include "tight-patrolling-corridor-level.h"
@@ -93,6 +94,7 @@
 #include "stationary-turret-hazard.h"
 #include "targeting-turret-hazard.h"
 #include "patrolling-turret-hazard.h"
+#include "mother-turret-hazard.h"
 #include "rectangular-lightning-hazard.h"
 #include "horizontal-lightning-hazard.h"
 #include "vertical-lightning-hazard.h"
@@ -236,6 +238,7 @@ int main(int argc, char** argv) {
 	HazardManager::addCircleHazardFactory(StationaryTurretHazard::factory, StationaryTurretHazard::randomizingFactory);
 	HazardManager::addCircleHazardFactory(TargetingTurretHazard::factory, TargetingTurretHazard::randomizingFactory);
 	HazardManager::addCircleHazardFactory(PatrollingTurretHazard::factory, PatrollingTurretHazard::randomizingFactory);
+	HazardManager::addCircleHazardFactory(MotherTurretHazard::factory, MotherTurretHazard::randomizingFactory);
 	HazardManager::addRectHazardFactory(RectangularLightningHazard::factory, RectangularLightningHazard::randomizingFactory);
 	HazardManager::addRectHazardFactory(HorizontalLightningHazard::factory, HorizontalLightningHazard::randomizingFactory);
 	HazardManager::addRectHazardFactory(VerticalLightningHazard::factory, VerticalLightningHazard::randomizingFactory);
@@ -289,6 +292,7 @@ int main(int argc, char** argv) {
 	LevelManager::addLevelFactory(DeveloperLevel3::factory);
 	LevelManager::addLevelFactory(UnnamedLevel1::factory);
 	LevelManager::addLevelFactory(UnnamedLevel2::factory);
+	LevelManager::addLevelFactory(UnnamedLevel3::factory);
 	LevelManager::addLevelFactory(DevNoWallsLevel1::factory);
 	LevelManager::addLevelFactory(TimedRewardLevel::factory);
 	LevelManager::addLevelFactory(TightPatrollingCorridorLevel::factory);
@@ -330,6 +334,7 @@ int main(int argc, char** argv) {
 	//LevelManager::pushLevel("random-vanilla", "sneaky_reward");
 	//LevelManager::pushLevel("vanilla-extra", "tricky_maneuvering");
 	//LevelManager::pushLevel("random-vanilla", "tight-patrolling-corridor");
+	//LevelManager::pushLevel("dev", "unnamed3");
 #else
 	LevelManager::pushLevel("vanilla", "default_random");
 	//LevelManager::pushLevel("dev", "dev3");
