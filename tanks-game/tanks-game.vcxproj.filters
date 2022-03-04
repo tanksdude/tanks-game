@@ -378,6 +378,9 @@
     <ClCompile Include="unnamed-level-3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ginormous-turret-hazard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -792,6 +795,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="unnamed-level-3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ginormous-turret-hazard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -95,6 +95,7 @@
 #include "targeting-turret-hazard.h"
 #include "patrolling-turret-hazard.h"
 #include "mother-turret-hazard.h"
+#include "ginormous-turret-hazard.h" //currently not used
 #include "rectangular-lightning-hazard.h"
 #include "horizontal-lightning-hazard.h"
 #include "vertical-lightning-hazard.h"
@@ -239,6 +240,7 @@ int main(int argc, char** argv) {
 	HazardManager::addCircleHazardFactory(TargetingTurretHazard::factory, TargetingTurretHazard::randomizingFactory);
 	HazardManager::addCircleHazardFactory(PatrollingTurretHazard::factory, PatrollingTurretHazard::randomizingFactory);
 	HazardManager::addCircleHazardFactory(MotherTurretHazard::factory, MotherTurretHazard::randomizingFactory);
+	HazardManager::addCircleHazardFactory(GinormousTurretHazard::factory, GinormousTurretHazard::randomizingFactory);
 	HazardManager::addRectHazardFactory(RectangularLightningHazard::factory, RectangularLightningHazard::randomizingFactory);
 	HazardManager::addRectHazardFactory(HorizontalLightningHazard::factory, HorizontalLightningHazard::randomizingFactory);
 	HazardManager::addRectHazardFactory(VerticalLightningHazard::factory, VerticalLightningHazard::randomizingFactory);

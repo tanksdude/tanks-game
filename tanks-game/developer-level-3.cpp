@@ -47,6 +47,7 @@ void DeveloperLevel3::initialize() {
 	constructionData = GenericFactoryConstructionData(3, posArr);
 	//HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(constructionData));
 	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "mother_turret")(constructionData));
+	//HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("dev", "ginormous_turret")(constructionData));
 	delete[] posArr;
 
 	//not from dev1
