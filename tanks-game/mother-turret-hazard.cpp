@@ -14,6 +14,7 @@
 #include "hazard-manager.h"
 #include "collision-handler.h"
 #include "rng.h"
+#include "targeting-turret-hazard.h" //in case mother turrets no longer extend targeting turrets
 #include <iostream>
 
 VertexArray* MotherTurretHazard::va;
@@ -39,7 +40,7 @@ MotherTurretHazard::MotherTurretHazard(double xpos, double ypos, double angle, i
 	//gameID = GameManager::getNextID();
 	//teamID = HAZARD_TEAM;
 
-	stateMultiplier[1] = 4;
+	stateMultiplier[1] *= 4;
 	turningIncrement *= 2;
 
 	maxChildTurrets = (maxChildren/2)*2; //even numbers only
@@ -693,12 +694,12 @@ CircleHazard* MotherTurretHazard::randomizingFactory(double x_start, double y_st
 	do {
 		xpos = RNG::randFunc2() * (area_width - 2*TANK_RADIUS*2) + (x_start + TANK_RADIUS*2);
 		ypos = RNG::randFunc2() * (area_height - 2*TANK_RADIUS*2) + (y_start + TANK_RADIUS*2);
-		CircleHazard* testTargetingTurret = new MotherTurretHazard(xpos, ypos, angle);
-		if (testTargetingTurret->reasonableLocation()) {
-			randomized = testTargetingTurret;
+		CircleHazard* testMotherTurret = new MotherTurretHazard(xpos, ypos, angle);
+		if (testMotherTurret->reasonableLocation()) {
+			randomized = testMotherTurret;
 			break;
 		} else {
-			delete testTargetingTurret;
+			delete testMotherTurret;
 		}
 		attempts++;
 	} while (attempts < 128);
