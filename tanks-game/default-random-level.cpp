@@ -58,27 +58,30 @@ void DefaultRandomLevel::initialize() { //still needs a lot of work
 
 	//add the hazards, but randomly based on their weight (if one has a high weight, it can get randomized multiple times)
 	float choosingHazardWeights[] = { 0.5f, 1.5f, 2.0f, 1.0f };
-	for (int i = 0; i < HazardManager::getNumCircleHazardTypes("random-vanilla"); i++) {
-		int count = weightedSelect<float>(choosingHazardWeights, 4); //{0, 1, 2, 3}
-		int index = weightedSelect<float>(circleHazardWeights, HazardManager::getNumCircleHazardTypes("random-vanilla")); //randomize which hazard gets chosen (it could be one that was already chosen)
-		CircleHazardRandomizationFunction f = HazardManager::getCircleHazardRandomizationFunction("random-vanilla", HazardManager::getCircleHazardName("random-vanilla", index));
-		for (int i = 0; i < count; i++) {
-			GenericFactoryConstructionData constructionData;
-			CircleHazard* ch = f(TANK_RADIUS*2.5*2, TANK_RADIUS*2, GAME_WIDTH - 2*(TANK_RADIUS*2.5*2), GAME_HEIGHT - 2*(TANK_RADIUS*2), constructionData);
-			if (ch != nullptr) {
-				HazardManager::pushCircleHazard(ch);
+	double circleVsRectHazardChoice = double(HazardManager::getNumCircleHazardTypes("random-vanilla"))/double(HazardManager::getNumCircleHazardTypes("random-vanilla") + HazardManager::getNumRectHazardTypes("random-vanilla"));
+	int addHazardCount = RNG::randNumInRange(8, 12+1); //v0.2.4 had 5 circle hazards and 5 rect hazards, meaning there used to be ~10 chances to insert hazards
+	for (int i = 0; i < addHazardCount; i++) {
+		if (RNG::randFunc() < circleVsRectHazardChoice) {
+			int count = weightedSelect<float>(choosingHazardWeights, 4); //{0, 1, 2, 3}
+			int index = weightedSelect<float>(circleHazardWeights, HazardManager::getNumCircleHazardTypes("random-vanilla")); //randomize which hazard gets chosen (it could be one that was already chosen)
+			CircleHazardRandomizationFunction f = HazardManager::getCircleHazardRandomizationFunction("random-vanilla", HazardManager::getCircleHazardName("random-vanilla", index));
+			for (int i = 0; i < count; i++) {
+				GenericFactoryConstructionData constructionData;
+				CircleHazard* ch = f(TANK_RADIUS*2.5*2, TANK_RADIUS*2, GAME_WIDTH - 2*(TANK_RADIUS*2.5*2), GAME_HEIGHT - 2*(TANK_RADIUS*2), constructionData);
+				if (ch != nullptr) {
+					HazardManager::pushCircleHazard(ch);
+				}
 			}
-		}
-	}
-	for (int i = 0; i < HazardManager::getNumRectHazardTypes("random-vanilla"); i++) {
-		int count = weightedSelect<float>(choosingHazardWeights, 4); //{0, 1, 2, 3}
-		int index = weightedSelect<float>(rectHazardWeights, HazardManager::getNumRectHazardTypes("random-vanilla"));
-		RectHazardRandomizationFunction f = HazardManager::getRectHazardRandomizationFunction("random-vanilla", HazardManager::getRectHazardName("random-vanilla", index));
-		for (int i = 0; i < count; i++) {
-			GenericFactoryConstructionData constructionData;
-			RectHazard* rh = f(TANK_RADIUS*2.5*2, TANK_RADIUS*2, GAME_WIDTH - 2*(TANK_RADIUS*2.5*2), GAME_HEIGHT - 2*(TANK_RADIUS*2), constructionData);
-			if (rh != nullptr) {
-				HazardManager::pushRectHazard(rh);
+		} else {
+			int count = weightedSelect<float>(choosingHazardWeights, 4); //{0, 1, 2, 3}
+			int index = weightedSelect<float>(rectHazardWeights, HazardManager::getNumRectHazardTypes("random-vanilla"));
+			RectHazardRandomizationFunction f = HazardManager::getRectHazardRandomizationFunction("random-vanilla", HazardManager::getRectHazardName("random-vanilla", index));
+			for (int i = 0; i < count; i++) {
+				GenericFactoryConstructionData constructionData;
+				RectHazard* rh = f(TANK_RADIUS*2.5*2, TANK_RADIUS*2, GAME_WIDTH - 2*(TANK_RADIUS*2.5*2), GAME_HEIGHT - 2*(TANK_RADIUS*2), constructionData);
+				if (rh != nullptr) {
+					HazardManager::pushRectHazard(rh);
+				}
 			}
 		}
 	}
