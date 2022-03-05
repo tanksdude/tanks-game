@@ -356,10 +356,10 @@ CircleHazard* CircularLavaHazard::randomizingFactory(double x_start, double y_st
 
 	do {
 		if (randomizeR) {
-			radius = RNG::randFunc2() * (40 - 20) + 20; //TODO: where should these constants be?
+			radius = RNG::randFunc() * (40 - 20) + 20; //TODO: where should these constants be?
 		}
-		xpos = RNG::randFunc2() * (area_width - 2*radius) + (x_start + radius);
-		ypos = RNG::randFunc2() * (area_height - 2*radius) + (y_start + radius);
+		xpos = RNG::randFunc() * (area_width - 2*radius) + (x_start + radius);
+		ypos = RNG::randFunc() * (area_height - 2*radius) + (y_start + radius);
 		CircleHazard* testCircularLava = new CircularLavaHazard(xpos, ypos, radius);
 		if (testCircularLava->reasonableLocation()) {
 			randomized = testCircularLava;

@@ -78,7 +78,7 @@ InteractionBoolHolder BananaBulletPower::modifiedMovement(Bullet* b) {
 			if (newVelocity == 0) {
 				newVelocity = Tank::default_maxSpeed*BULLET_TO_TANK_SPEED_RATIO; //if bullet's initial speed is zero, it should still explode (TODO: what should the initial speed be?)
 			}
-			newVelocity = newVelocity * ((RNG::randFunc2()+RNG::randFunc2())/2 * (maxNewBulletVelocity - minNewBulletVelocity) + minNewBulletVelocity);
+			newVelocity = newVelocity * ((RNG::randFunc()+RNG::randFunc())/2 * (maxNewBulletVelocity - minNewBulletVelocity) + minNewBulletVelocity);
 			BulletManager::pushBullet(new Bullet(b->x, b->y, b->r/2, RNG::randFunc() * 2*PI, newVelocity, b->getTeamID(), b->getParentIDType(), b->getParentID(), bp, true));
 			delete bp;
 		}

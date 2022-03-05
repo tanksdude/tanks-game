@@ -10,7 +10,7 @@
 #include "rng.h"
 
 ColorValueHolder DeveloperLevel0::getDefaultColor() const {
-	//return ColorValueHolder(RNG::randFunc2(), RNG::randFunc2(), RNG::randFunc2());
+	//return ColorValueHolder(RNG::randFunc(), RNG::randFunc(), RNG::randFunc());
 	return currentColor;
 }
 
@@ -77,5 +77,5 @@ Level* DeveloperLevel0::factory() {
 
 DeveloperLevel0::DeveloperLevel0() {
 	//TODO: should this go in the constructor or initialize()?
-	currentColor = ColorValueHolder(RNG::randFunc2(), RNG::randFunc2(), RNG::randFunc2());
+	currentColor = ColorValueHolder(RNG::randFunc(), RNG::randFunc(), RNG::randFunc());
 }

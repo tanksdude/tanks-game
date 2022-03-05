@@ -53,7 +53,7 @@ void FireNamedTankPower::removeEffects(Tank* parent) {
 
 void FireNamedTankPower::additionalShooting(Tank* t, CannonPoint c) {
 	for (int i = 0; i < bulletAmount; i++) {
-		double tempAngle = (RNG::randFunc2()+RNG::randFunc2() - 1) * bulletAngleDeviation; //[-1,1] * deviation
+		double tempAngle = (RNG::randFunc()+RNG::randFunc() - 1) * bulletAngleDeviation; //[-1,1) * deviation
 		t->regularMakeBullet(t->r * cos(c.angle + t->velocity.getAngle() + tempAngle), t->r * sin(c.angle + t->velocity.getAngle() + tempAngle), c.angle + t->velocity.getAngle() + tempAngle);
 	}
 }
@@ -130,8 +130,8 @@ TankPower* FireNamedBulletPower::makeTankPower() const {
 }
 
 FireNamedBulletPower::FireNamedBulletPower()
-: FireNamedBulletPower(-1 * ((RNG::randFunc2()+RNG::randFunc2())/2 * (maxBulletAcceleration - minBulletAcceleration) + minBulletAcceleration)) {}
-//accleration: [0,1] * accDiff + min
+: FireNamedBulletPower(-1 * ((RNG::randFunc()+RNG::randFunc())/2 * (maxBulletAcceleration - minBulletAcceleration) + minBulletAcceleration)) {}
+//accleration: [0,1) * accDiff + min
 
 FireNamedBulletPower::FireNamedBulletPower(double acceleration) {
 	timeLeft = 0;

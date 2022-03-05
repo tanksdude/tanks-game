@@ -4,10 +4,10 @@
 #include "powerup-manager.h"
 
 Wall* RandomLevel::makeNewRandomWall(double x_beginning, double y_beginning, double width_ofArea, double height_ofArea, ColorValueHolder c, double minW, double minH, double maxW, double maxH) {
-	double w = RNG::randFunc2() * (maxW - minW) + minW;
-	double h = RNG::randFunc2() * (maxH - minH) + minH;
+	double w = RNG::randFunc() * (maxW - minW) + minW;
+	double h = RNG::randFunc() * (maxH - minH) + minH;
 
-	return new Wall(x_beginning + RNG::randFunc2() * (width_ofArea - w), y_beginning + RNG::randFunc2() * (height_ofArea - h), w, h, c);
+	return new Wall(x_beginning + RNG::randFunc() * (width_ofArea - w), y_beginning + RNG::randFunc() * (height_ofArea - h), w, h, c);
 }
 
 std::string* RandomLevel::getRandomPowers(int count, std::string type) {

@@ -26,8 +26,14 @@ double RNG::randFunc() {
 	return distribution(generator);
 }
 
+/*
 double RNG::randFunc2() {
 	//return double(distribution(generator)) / double(RNG::MAX_RAND_NUM);
 	//return double(rand()) / double(RAND_MAX);
 	return distribution(generator); //not [0,1] but whatever, it's not that important
+}
+*/
+
+int RNG::randNumInRange(int min, int max) {
+	return int(RNG::randFunc() * (max - min)) + min;
 }

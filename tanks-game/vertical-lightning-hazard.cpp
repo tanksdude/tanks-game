@@ -396,7 +396,7 @@ void VerticalLightningHazard::simpleRefreshBolt(LightningBolt* l) const {
 		}
 		xRangeLower = (xRangeLower < xMin ? xMin : xRangeLower);
 		xRangeUpper = (xRangeUpper > xMax ? xMax : xRangeUpper);
-		l->positions[j*2+0] = xRangeLower + (xRangeUpper - xRangeLower) * RNG::randFunc2();
+		l->positions[j*2+0] = xRangeLower + (xRangeUpper - xRangeLower) * RNG::randFunc();
 	}
 }
 
@@ -597,11 +597,11 @@ RectHazard* VerticalLightningHazard::randomizingFactory(double x_start, double y
 	double minHeight = 40, maxHeight = 160;
 
 	do {
-		width = RNG::randFunc2() * (24 - 12) + 12;
+		width = RNG::randFunc() * (24 - 12) + 12;
 		//TODO: ability to use an edge
 		for (int i = 0; i < WallManager::getNumWalls(); i++) {
 			Wall* wa = WallManager::getWall(i);
-			xpos = wa->x + RNG::randFunc2() * constrain<double>(wa->w - width, 0, wa->w);
+			xpos = wa->x + RNG::randFunc() * constrain<double>(wa->w - width, 0, wa->w);
 			ypos = wa->y + wa->h;
 			int j, wallAttempts = 0;
 			do {
@@ -612,7 +612,7 @@ RectHazard* VerticalLightningHazard::randomizingFactory(double x_start, double y
 				Wall* otherWall = WallManager::getWall(j);
 				height = otherWall->y - ypos;
 			} else {
-				height = RNG::randFunc2() * (maxHeight - minHeight) + minHeight;
+				height = RNG::randFunc() * (maxHeight - minHeight) + minHeight;
 			}
 		}
 		if ((xpos >= x_start) && (xpos + width <= x_start + area_width) && (ypos >= y_start) && (ypos + height <= y_start + area_height) && (height <= maxHeight) && (height >= minHeight)) {

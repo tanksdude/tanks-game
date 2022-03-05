@@ -349,11 +349,11 @@ RectHazard* RectangularLavaHazard::randomizingFactory(double x_start, double y_s
 
 	do {
 		if (randomizeWH) {
-			width = RNG::randFunc2() * (120 - 30) + 30; //TODO: where should these constants be?
-			height = RNG::randFunc2() * (80 - 20) + 20; //TODO: where should these constants be?
+			width = RNG::randFunc() * (120 - 30) + 30; //TODO: where should these constants be?
+			height = RNG::randFunc() * (80 - 20) + 20; //TODO: where should these constants be?
 		}
-		xpos = RNG::randFunc2() * (area_width - 2*width) + (x_start + width);
-		ypos = RNG::randFunc2() * (area_height - 2*height) + (y_start + height);
+		xpos = RNG::randFunc() * (area_width - 2*width) + (x_start + width);
+		ypos = RNG::randFunc() * (area_height - 2*height) + (y_start + height);
 		RectHazard* testRectangularLava = new RectangularLavaHazard(xpos, ypos, width, height);
 		if (testRectangularLava->reasonableLocation()) {
 			randomized = testRectangularLava;

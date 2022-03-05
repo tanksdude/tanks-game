@@ -376,20 +376,20 @@ void HorizontalLightningHazard::simpleRefreshBolt(LightningBolt* l) const {
 	//old method note: x and y coordinates in range [0,1], maxVariance = 1.0/4.0
 	for (int j = 1; j < l->length-1; j++) {
 		//l->positions[j*2]   = float(j)/(l->length - 1);
-		//l->positions[j*2+1] = randFunc2();
+		//l->positions[j*2+1] = randFunc();
 		double testPoint; //y-position of the new point
 		if (j < l->length / 4) { //first quarter
 			do {
-				testPoint = l->positions[j*2 - 1] + (randFunc2()*2-1) * maxVariance;
+				testPoint = l->positions[j*2 - 1] + (randFunc()*2-1) * maxVariance;
 			} while(testPoint <= -2 * (double(j) / l->length) + .5 || //"below" the triangle (just in slope-intercept form, nothing special)
 			        testPoint >=  2 * (double(j) / l->length) + .5);  //"above" the triangle
 		} else if (j < l->length * 3.0/4.0) { //middle half
 			do {
-				testPoint = l->positions[j*2 - 1] + (randFunc2()*2-1) * maxVariance;
+				testPoint = l->positions[j*2 - 1] + (randFunc()*2-1) * maxVariance;
 			} while(testPoint >= 1 || testPoint <= 0);
 		} else { //last quarter
 			do {
-				testPoint = l->positions[j*2 - 1] + (randFunc2()*2-1) * maxVariance;
+				testPoint = l->positions[j*2 - 1] + (randFunc()*2-1) * maxVariance;
 			} while(testPoint <=  2 * (double(j) / l->length - 3.0/4.0) + 0 ||
 			        testPoint >= -2 * (double(j) / l->length - 3.0/4.0) + 1);
 		}
@@ -414,7 +414,7 @@ void HorizontalLightningHazard::simpleRefreshBolt(LightningBolt* l) const {
 		}
 		yRangeLower = (yRangeLower < yMin ? yMin : yRangeLower);
 		yRangeUpper = (yRangeUpper > yMax ? yMax : yRangeUpper);
-		l->positions[j*2+1] = yRangeLower + (yRangeUpper - yRangeLower) * RNG::randFunc2();
+		l->positions[j*2+1] = yRangeLower + (yRangeUpper - yRangeLower) * RNG::randFunc();
 	}
 }
 
@@ -615,11 +615,11 @@ RectHazard* HorizontalLightningHazard::randomizingFactory(double x_start, double
 	double minWidth = 40, maxWidth = 160;
 
 	do {
-		height = RNG::randFunc2() * (24 - 12) + 12;
+		height = RNG::randFunc() * (24 - 12) + 12;
 		for (int i = 0; i < WallManager::getNumWalls(); i++) {
 			Wall* wa = WallManager::getWall(i);
 			xpos = wa->x + wa->w;
-			ypos = wa->y + RNG::randFunc2() * constrain<double>(wa->h - height, 0, wa->h);
+			ypos = wa->y + RNG::randFunc() * constrain<double>(wa->h - height, 0, wa->h);
 			int j, wallAttempts = 0;
 			do {
 				j = RNG::randFunc() * WallManager::getNumWalls();
@@ -629,7 +629,7 @@ RectHazard* HorizontalLightningHazard::randomizingFactory(double x_start, double
 				Wall* otherWall = WallManager::getWall(j);
 				width = otherWall->x - xpos;
 			} else {
-				width = RNG::randFunc2() * (maxWidth - minWidth) + minWidth;
+				width = RNG::randFunc() * (maxWidth - minWidth) + minWidth;
 			}
 		}
 		if ((xpos >= x_start) && (xpos + width <= x_start + area_width) && (ypos >= y_start) && (ypos + height <= y_start + area_height) && (width <= maxWidth) && (width >= minWidth)) {

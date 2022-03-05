@@ -254,10 +254,10 @@ RectHazard* DevWallHazard::randomizingFactory(double x_start, double y_start, do
 
 	do {
 		if (randomizeWH) {
-			width = RNG::randFunc2() * (64 - 12) + 12; //from RandomLevel::makeNewRandomWall
-			height = RNG::randFunc2() * (96 - 8) + 8;
+			width = RNG::randFunc() * (64 - 12) + 12; //from RandomLevel::makeNewRandomWall
+			height = RNG::randFunc() * (96 - 8) + 8;
 		}
-		RectHazard* testWall = new DevWallHazard(x_start + RNG::randFunc2() * (area_width - width), y_start + RNG::randFunc2() * (area_height - height), width, height);
+		RectHazard* testWall = new DevWallHazard(x_start + RNG::randFunc() * (area_width - width), y_start + RNG::randFunc() * (area_height - height), width, height);
 		if (testWall->reasonableLocation()) {
 			randomized = testWall;
 			break;

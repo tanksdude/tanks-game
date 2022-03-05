@@ -61,8 +61,8 @@ void WindLevelEffect::tick(const Level* parent) {
 		}
 	}
 	if (changeWind) {
-		//pushDirection = SimpleVector2D(RNG::randFunc() * 2*PI, RNG::randFunc2(), true); //JS, I think (~90% sure)
-		pushDirection = SimpleVector2D(RNG::randFunc() * 2*PI, RNG::randFunc2()*.875 + .125, true);
+		//pushDirection = SimpleVector2D(RNG::randFunc() * 2*PI, RNG::randFunc(), true); //JS, I think (~90% sure)
+		pushDirection = SimpleVector2D(RNG::randFunc() * 2*PI, RNG::randFunc()*.875 + .125, true);
 	}
 	//std::cout << currentState << " " << getWindStrengthMultiplier() << std::endl;
 }

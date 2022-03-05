@@ -581,8 +581,8 @@ CircleHazard* PatrollingTurretHazard::randomizingFactory(double x_start, double 
 		angle = RNG::randFunc() * 2*PI;
 	//}
 	do {
-		xpos = RNG::randFunc2() * (area_width - 2*TANK_RADIUS/2) + (x_start + TANK_RADIUS/2);
-		ypos = RNG::randFunc2() * (area_height - 2*TANK_RADIUS/2) + (y_start + TANK_RADIUS/2);
+		xpos = RNG::randFunc() * (area_width - 2*TANK_RADIUS/2) + (x_start + TANK_RADIUS/2);
+		ypos = RNG::randFunc() * (area_height - 2*TANK_RADIUS/2) + (y_start + TANK_RADIUS/2);
 		CircleHazard* testTargetingTurret = new PatrollingTurretHazard(xpos, ypos, angle);
 		if (testTargetingTurret->reasonableLocation()) {
 			randomized = testTargetingTurret;

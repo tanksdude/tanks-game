@@ -18,8 +18,8 @@ Bullet* MinefieldLevelEffect::genMine() const {
 	//teamID = HAZARD_TEAM
 	std::vector<BulletPower*> bp = {(BulletPower*)(new MinesBulletPower())};
 	double r = TANK_RADIUS * BULLET_TO_TANK_RADIUS_RATIO;
-	double x = minefield_startX + r + RNG::randFunc2() * (minefield_areaWidth - 2*r);
-	double y = minefield_startY + r + RNG::randFunc2() * (minefield_areaHeight - 2*r);
+	double x = minefield_startX + r + RNG::randFunc() * (minefield_areaWidth - 2*r);
+	double y = minefield_startY + r + RNG::randFunc() * (minefield_areaHeight - 2*r);
 	Bullet* mine = new Bullet(x, y, r, RNG::randFunc() * 2*PI, 0, HAZARD_TEAM, BulletParentType::team, NO_PARENT, &bp);
 	return mine;
 }

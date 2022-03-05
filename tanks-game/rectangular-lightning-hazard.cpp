@@ -293,7 +293,7 @@ void RectangularLightningHazard::pushBolt(LightningBolt* l) {
 
 void RectangularLightningHazard::pushDefaultBolt(int num, bool randomize) {
 	//the default bolt is from center to a random point
-	double xEnd = w*RNG::randFunc2(), yEnd = h*RNG::randFunc2();
+	double xEnd = w*RNG::randFunc(), yEnd = h*RNG::randFunc();
 	for (int i = 0; i < num; i++) {
 		LightningBolt* l = new LightningBolt(w/2, h/2, xEnd, yEnd, getDefaultNumBoltPoints(sqrt(pow(xEnd - w/2, 2) + pow(yEnd - h/2, 2))));
 		if (randomize) {
@@ -387,7 +387,7 @@ void RectangularLightningHazard::refreshBolt(LightningBolt* l, double smaller, d
 		double randTemp;
 		float testY, testX;
 		do {
-			randTemp = (RNG::randFunc2()*2-1)*maxVariance;
+			randTemp = (RNG::randFunc()*2-1)*maxVariance;
 			testY = l->positions[j*2 - 1] + (deltaY/(l->length-1)) + randTemp * angleCos;
 			testX = l->positions[j*2 - 2] + (deltaX/(l->length-1)) - randTemp * angleSin;
 			//std::cout << testX << " " << testY << std::endl;
@@ -602,11 +602,11 @@ RectHazard* RectangularLightningHazard::randomizingFactory(double x_start, doubl
 
 	do {
 		if (randomizeWH) {
-			width = RNG::randFunc2() * (80 - 30) + 30; //TODO: where should these constants be?
-			height = RNG::randFunc2() * (80 - 30) + 30; //TODO: where should these constants be?
+			width = RNG::randFunc() * (80 - 30) + 30; //TODO: where should these constants be?
+			height = RNG::randFunc() * (80 - 30) + 30; //TODO: where should these constants be?
 		}
-		xpos = RNG::randFunc2() * (area_width - 2*width) + (x_start + width);
-		ypos = RNG::randFunc2() * (area_height - 2*height) + (y_start + height);
+		xpos = RNG::randFunc() * (area_width - 2*width) + (x_start + width);
+		ypos = RNG::randFunc() * (area_height - 2*height) + (y_start + height);
 		RectHazard* testRectangularLightning = new RectangularLightningHazard(xpos, ypos, width, height);
 		if (testRectangularLightning->reasonableLocation()) {
 			randomized = testRectangularLightning;

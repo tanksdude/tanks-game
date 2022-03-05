@@ -19,7 +19,7 @@ std::unordered_map<std::string, float> DefaultRandomLevel::getWeights() const {
 }
 
 ColorValueHolder DefaultRandomLevel::getDefaultColor() const {
-	//return ColorValueHolder(RNG::randFunc2(), RNG::randFunc2(), RNG::randFunc2());
+	//return ColorValueHolder(RNG::randFunc(), RNG::randFunc(), RNG::randFunc());
 	return currentColor;
 }
 
@@ -109,5 +109,5 @@ Level* DefaultRandomLevel::factory() {
 
 DefaultRandomLevel::DefaultRandomLevel() {
 	//TODO: should this go in the constructor or initialize()?
-	currentColor = ColorValueHolder(RNG::randFunc2(), RNG::randFunc2(), RNG::randFunc2());
+	currentColor = ColorValueHolder(RNG::randFunc(), RNG::randFunc(), RNG::randFunc());
 }
