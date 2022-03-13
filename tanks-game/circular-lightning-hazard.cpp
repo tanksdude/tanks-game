@@ -30,12 +30,10 @@ std::unordered_map<std::string, float> CircularLightningHazard::getWeights() con
 	return weights;
 }
 
-CircularLightningHazard::CircularLightningHazard(double xpos, double ypos, double radius) {
+CircularLightningHazard::CircularLightningHazard(double xpos, double ypos, double radius) : CircleHazard(HAZARD_TEAM) {
 	x = xpos;
 	y = ypos;
 	r = radius;
-	gameID = GameManager::getNextID();
-	teamID = HAZARD_TEAM;
 
 	tickCount = 0;
 	tickCycle = 100; //100 is JS default (because of power speed)

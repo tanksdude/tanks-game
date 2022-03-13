@@ -161,13 +161,13 @@
     <ClCompile Include="few-obstacles-level.cpp" />
     <ClCompile Include="game-main-loop.cpp" />
     <ClCompile Include="game-manager.cpp" />
+    <ClCompile Include="game-thing.cpp" />
     <ClCompile Include="generalized-lava.cpp" />
     <ClCompile Include="generalized-lightning.cpp" />
     <ClCompile Include="generalized-no-bullet-zone.cpp" />
     <ClCompile Include="generic-factory-construction-data.cpp" />
     <ClCompile Include="ginormous-turret-hazard.cpp" />
     <ClCompile Include="god-mode-power.cpp" />
-    <ClCompile Include="hazard.cpp" />
     <ClCompile Include="hiding-places-level.cpp" />
     <ClCompile Include="ice-level-effect.cpp" />
     <ClCompile Include="inversion-power.cpp" />
@@ -335,7 +335,6 @@
     <ClInclude Include="empty-level.h" />
     <ClInclude Include="fire-named-power.h" />
     <ClInclude Include="grenade-power.h" />
-    <ClInclude Include="hazard.h" />
     <ClInclude Include="hazard-manager.h" />
     <ClInclude Include="homing-power.h" />
     <ClInclude Include="horizontal-lightning-hazard.h" />

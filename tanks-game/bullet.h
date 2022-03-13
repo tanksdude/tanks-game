@@ -2,11 +2,12 @@
 class Bullet;
 
 #include "game-thing.h"
-#include "drawable-thing.h"
 #include "circle.h"
+#include "drawable-thing.h"
+#include <vector>
 #include "color-value-holder.h"
-#include "bullet-power.h"
 #include "simple-vector-2d.h"
+#include "bullet-power.h"
 
 #include "vertex-array.h"
 #include "vertex-buffer.h"
@@ -19,7 +20,7 @@ enum class BulletParentType {
 	none //anything?
 };
 
-class Bullet : public Circle, public GameThing, public DrawableThing {
+class Bullet : public GameThing, public Circle, public DrawableThing {
 	friend class ResetThings;
 	friend class PowerFunctionHelper;
 	friend class EndGameHandler;

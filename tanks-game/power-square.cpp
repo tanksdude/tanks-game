@@ -22,13 +22,11 @@ const double PowerSquare::POWER_HEIGHT = 6;
 const double PowerSquare::POWER_LINE_WIDTH = 1.0/3.0;
 const double PowerSquare::POWER_OUTLINE_MULTIPLIER = 1.5;
 
-PowerSquare::PowerSquare(double x_, double y_) {
+PowerSquare::PowerSquare(double x_, double y_) : GameThing(DEFAULT_TEAM) {
 	x = x_ - PowerSquare::POWER_WIDTH/2;
 	y = y_ - PowerSquare::POWER_HEIGHT/2;
 	w = PowerSquare::POWER_WIDTH;
 	h = PowerSquare::POWER_HEIGHT;
-	gameID = GameManager::getNextID();
-	teamID = DEFAULT_TEAM; //not used
 
 	initializeGPU();
 }

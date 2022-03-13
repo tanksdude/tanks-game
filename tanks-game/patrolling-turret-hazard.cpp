@@ -38,10 +38,10 @@ PatrollingTurretHazard::PatrollingTurretHazard(double xpos, double ypos, double 
 	//y = ypos;
 	velocity = SimpleVector2D(angle, Tank::default_maxSpeed/2, true);
 	//r = TANK_RADIUS / 2;
-	//gameID = GameManager::getNextID();
-	//teamID = HAZARD_TEAM;
 
 	//targeting = false;
+	//targetingX = this->x;
+	//targetingY = this->y;
 	//targetingCount = 0;
 	//trackingID = this->getGameID();
 	//ColorValueHolder temp[2] = { {1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f} };

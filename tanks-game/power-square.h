@@ -2,17 +2,17 @@
 class PowerSquare;
 
 #include "game-thing.h"
-#include "drawable-thing.h"
 #include "rect.h"
-#include "color-value-holder.h"
+#include "drawable-thing.h"
 #include <string>
+#include "color-value-holder.h"
 #include "power.h"
 
 #include "vertex-array.h"
 #include "vertex-buffer.h"
 #include "index-buffer.h"
 
-class PowerSquare : public Rect, public GameThing, public DrawableThing {
+class PowerSquare : public GameThing, public Rect, public DrawableThing {
 protected:
 	Power** heldPowers; //array of pointers (can do a vector for simplicity but I don't foresee a powersquare getting more powers)
 	int numOfPowers;
@@ -52,7 +52,7 @@ private:
 	inline void drawOutlineThing(float alpha = 1.0f) const;
 
 private:
-	PowerSquare() {} //don't use
+	PowerSquare() : GameThing(0) {} //don't use
 	PowerSquare(double x, double y); //common
 public:
 	PowerSquare(double x, double y, std::string name);

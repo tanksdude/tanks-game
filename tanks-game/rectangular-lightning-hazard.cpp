@@ -30,13 +30,11 @@ std::unordered_map<std::string, float> RectangularLightningHazard::getWeights() 
 	return weights;
 }
 
-RectangularLightningHazard::RectangularLightningHazard(double xpos, double ypos, double width, double height, bool) {
+RectangularLightningHazard::RectangularLightningHazard(double xpos, double ypos, double width, double height, bool) : RectHazard(HAZARD_TEAM) {
 	x = xpos;
 	y = ypos;
 	w = width;
 	h = height;
-	gameID = GameManager::getNextID();
-	teamID = HAZARD_TEAM;
 
 	tickCount = 0;
 	tickCycle = 100; //100 is JS default (because of power speed)

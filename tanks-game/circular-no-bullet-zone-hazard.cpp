@@ -26,12 +26,10 @@ std::unordered_map<std::string, float> CircularNoBulletZoneHazard::getWeights() 
 	return weights;
 }
 
-CircularNoBulletZoneHazard::CircularNoBulletZoneHazard(double xpos, double ypos, double radius) {
+CircularNoBulletZoneHazard::CircularNoBulletZoneHazard(double xpos, double ypos, double radius) : CircleHazard(HAZARD_TEAM) {
 	x = xpos;
 	y = ypos;
 	r = radius;
-	gameID = GameManager::getNextID();
-	teamID = HAZARD_TEAM;
 
 	canAcceptPowers = false;
 

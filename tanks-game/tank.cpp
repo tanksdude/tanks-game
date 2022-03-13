@@ -43,12 +43,10 @@ const double Tank::default_maxSpeed = 1;
 const double Tank::default_acceleration = 1.0/16;
 const double Tank::default_turningIncrement = 64;
 
-Tank::Tank(double x_, double y_, double angle, Team_ID id_, std::string name_, TankInputChar forward, TankInputChar left, TankInputChar right, TankInputChar shoot, TankInputChar special) {
+Tank::Tank(double x_, double y_, double angle, Team_ID teamID, std::string name_, TankInputChar forward, TankInputChar left, TankInputChar right, TankInputChar shoot, TankInputChar special) : GameThing(teamID) {
 	x = x_;
 	y = y_;
 	velocity = SimpleVector2D(angle, 0, true);
-	gameID = GameManager::getNextID();
-	teamID = id_;
 	r = TANK_RADIUS;
 	name = name_;
 	this->dead = false;

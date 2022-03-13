@@ -118,3 +118,5 @@ void RectHazard::initializeGPU() {
 	ib = new IndexBuffer(indices, 6);
 }
 */
+
+//see circle-hazard.cpp for hazard notes

@@ -18,13 +18,11 @@ IndexBuffer* Bullet::ib;
 bool Bullet::initialized_GPU = false;
 
 const double Bullet::default_radius = 4;
-Bullet::Bullet(double x_, double y_, double angle, Team_ID teamID, BulletParentType parentType, Game_ID parentID) { //every bullet constructor does this stuff
+Bullet::Bullet(double x_, double y_, double angle, Team_ID teamID, BulletParentType parentType, Game_ID parentID) : GameThing(teamID) { //every bullet constructor does this stuff
 	initializeGPU();
 	this->x = x_;
 	this->y = y_;
 	this->velocity = SimpleVector2D(angle, 0, true);
-	this->gameID = GameManager::getNextID();
-	this->teamID = teamID;
 	this->parentType = parentType;
 	this->parentID = parentID;
 	this->opaqueness = 100;

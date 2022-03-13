@@ -32,13 +32,11 @@ std::unordered_map<std::string, float> StationaryTurretHazard::getWeights() cons
 	return weights;
 }
 
-StationaryTurretHazard::StationaryTurretHazard(double xpos, double ypos, double angle, bool noGPU) {
+StationaryTurretHazard::StationaryTurretHazard(double xpos, double ypos, double angle, bool noGPU) : CircleHazard(HAZARD_TEAM) {
 	x = xpos;
 	y = ypos;
 	velocity = SimpleVector2D(angle, 0, true);
 	r = TANK_RADIUS / 4;
-	gameID = GameManager::getNextID();
-	teamID = HAZARD_TEAM;
 
 	tickCount = 0;
 	tickCycle = 100; //100 is JS default (because of shooting speed) and 200 just looks weird

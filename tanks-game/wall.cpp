@@ -15,13 +15,11 @@ VertexBuffer* Wall::vb;
 IndexBuffer* Wall::ib;
 bool Wall::initialized_GPU = false;
 
-Wall::Wall(double x_, double y_, double w_, double h_, ColorValueHolder c) {
+Wall::Wall(double x_, double y_, double w_, double h_, ColorValueHolder c) : GameThing(DEFAULT_TEAM) {
 	this->x = x_;
 	this->y = y_;
 	this->w = w_;
 	this->h = h_;
-	this->gameID = GameManager::getNextID();
-	this->teamID = DEFAULT_TEAM;
 	color = c;
 
 	initializeGPU();

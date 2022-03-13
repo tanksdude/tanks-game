@@ -231,9 +231,6 @@
     <ClCompile Include="god-mode-power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="hazard.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="end-game-handler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -381,6 +378,9 @@
     <ClCompile Include="ginormous-turret-hazard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="game-thing.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -405,9 +405,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="empty-level.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="hazard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="level.h">

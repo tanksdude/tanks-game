@@ -28,13 +28,11 @@ std::unordered_map<std::string, float> DevWallHazard::getWeights() const {
 	return weights;
 }
 
-DevWallHazard::DevWallHazard(double xpos, double ypos, double width, double height) {
+DevWallHazard::DevWallHazard(double xpos, double ypos, double width, double height) : RectHazard(DEFAULT_TEAM) {
 	x = xpos;
 	y = ypos;
 	w = width;
 	h = height;
-	gameID = GameManager::getNextID();
-	teamID = DEFAULT_TEAM;
 	if (LevelManager::getNumLevels() > 0) {
 		color = LevelManager::getLevel(0)->getDefaultColor();
 	} else {

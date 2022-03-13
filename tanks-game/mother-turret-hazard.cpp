@@ -37,8 +37,6 @@ MotherTurretHazard::MotherTurretHazard(double xpos, double ypos, double angle, i
 	//y = ypos;
 	//velocity = SimpleVector2D(angle, 0, true);
 	r = TANK_RADIUS * 2; // that's a little big
-	//gameID = GameManager::getNextID();
-	//teamID = HAZARD_TEAM;
 
 	stateMultiplier[1] *= 4;
 	turningIncrement *= 2;

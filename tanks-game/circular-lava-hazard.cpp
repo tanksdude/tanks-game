@@ -29,12 +29,10 @@ std::unordered_map<std::string, float> CircularLavaHazard::getWeights() const {
 	return weights;
 }
 
-CircularLavaHazard::CircularLavaHazard(double xpos, double ypos, double radius) {
+CircularLavaHazard::CircularLavaHazard(double xpos, double ypos, double radius) : CircleHazard(HAZARD_TEAM) {
 	x = xpos;
 	y = ypos;
 	r = radius;
-	gameID = GameManager::getNextID();
-	teamID = HAZARD_TEAM;
 
 	tickCount = 0;
 	tickCycle = 2400;

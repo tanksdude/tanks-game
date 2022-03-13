@@ -40,10 +40,10 @@ TargetingTurretHazard::TargetingTurretHazard(double xpos, double ypos, double an
 	//y = ypos;
 	//velocity = SimpleVector2D(angle, 0, true);
 	r = TANK_RADIUS / 2;
-	//gameID = GameManager::getNextID();
-	//teamID = HAZARD_TEAM;
 
 	targeting = false;
+	targetingX = this->x;
+	targetingY = this->y;
 	targetingCount = 0;
 	trackingID = this->getGameID();
 	ColorValueHolder temp[2] = { {1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f} };

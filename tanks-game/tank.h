@@ -2,14 +2,14 @@
 class Tank;
 
 #include "game-thing.h"
-#include "drawable-thing.h"
 #include "circle.h"
+#include "drawable-thing.h"
 #include <string>
 #include <vector>
 #include "color-value-holder.h"
+#include "simple-vector-2d.h"
 #include "cannon-point.h"
 #include "tank-power.h"
-#include "simple-vector-2d.h"
 
 #include "vertex-array.h"
 #include "vertex-buffer.h"
@@ -23,7 +23,7 @@ struct TankInputChar {
 	TankInputChar();
 };
 
-class Tank : public Circle, public GameThing, public DrawableThing {
+class Tank : public GameThing, public Circle, public DrawableThing {
 	friend class ResetThings;
 	friend class PowerFunctionHelper;
 	friend class EndGameHandler; //calls this->kill()

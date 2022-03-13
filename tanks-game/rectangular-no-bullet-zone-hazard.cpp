@@ -26,13 +26,11 @@ std::unordered_map<std::string, float> RectangularNoBulletZoneHazard::getWeights
 	return weights;
 }
 
-RectangularNoBulletZoneHazard::RectangularNoBulletZoneHazard(double xpos, double ypos, double width, double height) {
+RectangularNoBulletZoneHazard::RectangularNoBulletZoneHazard(double xpos, double ypos, double width, double height) : RectHazard(HAZARD_TEAM) {
 	x = xpos;
 	y = ypos;
 	w = width;
 	h = height;
-	gameID = GameManager::getNextID();
-	teamID = HAZARD_TEAM;
 
 	canAcceptPowers = false;
 

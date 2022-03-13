@@ -1,11 +1,13 @@
 #pragma once
 class CircleHazard;
 
-#include "hazard.h"
-#include "drawable-thing.h"
+#include "game-thing.h"
 #include "circle.h"
+#include "drawable-thing.h"
 #include <string>
+#include <vector>
 #include <unordered_map>
+#include "color-value-holder.h"
 //#include "circle-hazard-power.h"
 #include "tank.h"
 #include "bullet.h"
@@ -45,9 +47,11 @@ enum class CircleHazardCollisionType {
 	under
 };
 
-class CircleHazard : public Hazard, public Circle, public DrawableThing {
+class CircleHazard : public GameThing, public Circle, public DrawableThing {
 public: //protected?
 	//std::vector<CircleHazardPower*> hazardPowers;
+	bool canAcceptPowers;
+	//virtual bool getCanAcceptPowers();
 
 public:
 	double getOffenseTier() const;
@@ -82,14 +86,14 @@ protected:
 	virtual double getDefaultDefense() const = 0;
 
 public:
-	virtual bool validLocation() const override { return true; }
-	virtual bool reasonableLocation() const override = 0;
+	virtual bool validLocation() const { return true; }
+	virtual bool reasonableLocation() const = 0;
 	virtual void initialize() { return; } //called when circlehazard is pushed for the first time
 
 	virtual std::string getName() const = 0;
 	//static std::string getClassName();
 
-	virtual void tick() override = 0;
+	virtual void tick() = 0;
 	virtual void draw() const override = 0;
 	virtual void draw(DrawingLayers) const override = 0;
 	virtual void poseDraw() const override = 0;
@@ -103,4 +107,7 @@ public:
 	virtual int getFactoryArgumentCount() const = 0;
 	virtual CircleHazardConstructionTypes getConstructionType() const = 0;
 	virtual CircleFactoryInformation getFactoryInformation() const = 0;
+
+protected:
+	CircleHazard(Team_ID t_id) : GameThing(t_id) {}
 };

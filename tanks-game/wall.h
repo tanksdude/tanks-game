@@ -2,15 +2,15 @@
 class Wall;
 
 #include "game-thing.h"
-#include "drawable-thing.h"
 #include "rect.h"
+#include "drawable-thing.h"
 #include "color-value-holder.h"
 
 #include "vertex-array.h"
 #include "vertex-buffer.h"
 #include "index-buffer.h"
 
-class Wall : public Rect, public GameThing, public DrawableThing {
+class Wall : public GameThing, public Rect, public DrawableThing {
 	friend class ResetThings; //not really needed
 	friend class PowerFunctionHelper;
 

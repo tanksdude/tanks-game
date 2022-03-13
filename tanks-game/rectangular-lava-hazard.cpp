@@ -29,13 +29,11 @@ std::unordered_map<std::string, float> RectangularLavaHazard::getWeights() const
 	return weights;
 }
 
-RectangularLavaHazard::RectangularLavaHazard(double xpos, double ypos, double width, double height) {
+RectangularLavaHazard::RectangularLavaHazard(double xpos, double ypos, double width, double height) : RectHazard(HAZARD_TEAM) {
 	x = xpos;
 	y = ypos;
 	w = width;
 	h = height;
-	gameID = GameManager::getNextID();
-	teamID = HAZARD_TEAM;
 
 	tickCount = 0;
 	tickCycle = 2400;
