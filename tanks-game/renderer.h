@@ -63,6 +63,7 @@ public:
 	static void BeginningStuff();
 	static void Clear();
 	static void Clear(int bits);
+	static void Flush();
 	static void SetContext(AvailableRenderingContexts);
 	static void SetContext(std::string);
 	static AvailableRenderingContexts GetContext() { return renderingMethodType; }

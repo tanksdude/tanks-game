@@ -310,6 +310,10 @@ void Renderer::Clear(int flags) {
 	glClear(flags);
 }
 
+void Renderer::Flush() {
+	glFlush();
+}
+
 void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader) {
 	bindShader(shader);
 	bindVertexArray(va);

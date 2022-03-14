@@ -381,6 +381,12 @@
     <ClCompile Include="game-thing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="game-scene-manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="game-scene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -795,6 +801,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ginormous-turret-hazard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="game-scene-manager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="game-scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

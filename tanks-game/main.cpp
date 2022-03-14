@@ -30,6 +30,7 @@
 #include "rect-hazard.h"
 
 //managers:
+#include "game-scene-manager.h"
 #include "developer-manager.h"
 #include "game-manager.h"
 #include "keypress-manager.h"
@@ -168,7 +169,8 @@ int main(int argc, char** argv) {
 	}
 
 	// Set callback for drawing the scene
-	glutDisplayFunc(GameMainLoop::drawMain);
+	glutDisplayFunc(GameSceneManager::DrawScenes);
+	//glutDisplayFunc(GameMainLoop::drawMain);
 	//glutDisplayFunc(GameMainLoop::drawAllLayers);
 
 	// Set callback for resizing the window
@@ -323,6 +325,9 @@ int main(int argc, char** argv) {
 	Diagnostics::setGraphYOffset(GAME_HEIGHT);
 #endif
 
+	//game mode:
+	GameSceneManager::pushScene(new GameMainLoop());
+
 	//main game code initialization stuff:
 	TankManager::pushTank(new Tank(20, GAME_HEIGHT/2, 0, 1, "WASD", { false, 'w' }, { false, 'a' }, { false, 'd' }, { false, 's' }, { false, 'e' }));
 	TankManager::pushTank(new Tank(GAME_WIDTH-20, GAME_HEIGHT/2, PI, 2, "Arrow Keys", { true, GLUT_KEY_UP }, { true, GLUT_KEY_LEFT }, { true, GLUT_KEY_RIGHT }, { true, GLUT_KEY_DOWN }, { false, '/' }));
@@ -349,12 +354,13 @@ int main(int argc, char** argv) {
 
 	//framelimiter
 	//glutTimerFunc(1000/physicsRate, tick, physicsRate); //see GameMainLoop
-	GameMainLoop::Tick();
+	//GameMainLoop::Tick();
+	GameSceneManager::TickScenes(100);
 
 	// Start the main loop
 	glutMainLoop();
 
-	return 0;
+	return 0; //does this even do anything?
 }
 
 /*

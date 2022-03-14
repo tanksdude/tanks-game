@@ -1,43 +1,48 @@
 #pragma once
+#include "game-scene.h"
 #include "drawable-thing.h"
 
-class GameMainLoop {
+class GameMainLoop : public GameScene {
 	friend class DeveloperManager;
 	friend class GameManager; //needed?
 
-private:
-	static bool currentlyDrawing;
-	static long frameCount;
-	static long ticksUntilFrame;
-	static int physicsRate;
-	static void Tick(int physicsUPS);
-	static void drawLayer(DrawingLayers);
+protected:
+	//bool currentlyDrawing; //look into std::mutex
+	//long frameCount; //doesn't need a long for how it's interpreted...
+	//long ticksUntilFrame; //whatever again
+	int physicsRate; //(in Hz)
+	int waitCount;
+	int maxWaitCount;
 
 public:
-	//tick stuff:
-	static void Tick() { Tick(physicsRate); }
-	static void levelTick();
-	static void moveTanks();
-	static void tankToPowerup();
-	static void tickHazards();
-	static void moveBullets();
-	static void tankPowerCalculate();
-	static void bulletPowerCalculate();
-	static void tankShoot();
-	static void tankToWall();
-	static void tankToHazard();
-	static void tankToTank();
-	static void tankToEdge();
-	static void bulletToEdge();
-	static void bulletToWall();
-	static void bulletToHazard();
-	static void bulletToBullet();
-	static void bulletToTank();
+	GameMainLoop();
+	void Tick() { Tick(physicsRate); }
+	void Tick(int UPS) override;
+	void Draw() const override { drawMain(); }
 
-	static void drawMain(); //doesn't draw all layers (since not everything uses everything)
-	static void drawAllLayers();
+	//tick stuff:
+	void levelTick();
+	void moveTanks();
+	void tankToPowerup();
+	void tickHazards();
+	void moveBullets();
+	void tankPowerCalculate();
+	void bulletPowerCalculate();
+	void tankShoot();
+	void tankToWall();
+	void tankToHazard();
+	void tankToTank();
+	void tankToEdge();
+	void bulletToEdge();
+	void bulletToWall();
+	void bulletToHazard();
+	void bulletToBullet();
+	void bulletToTank();
+
+	void drawMain() const; //doesn't draw all layers (since not everything uses everything)
+	void drawAllLayers() const;
+	void drawLayer(DrawingLayers) const;
 
 private:
-	GameMainLoop() {}
 	GameMainLoop(const GameMainLoop&) {}
 };

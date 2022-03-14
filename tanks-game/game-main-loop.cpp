@@ -31,6 +31,7 @@
 #include "rect-hazard.h"
 
 //managers:
+#include "game-scene-manager.h"
 #include "developer-manager.h"
 #include "game-manager.h"
 #include "keypress-manager.h"
@@ -53,20 +54,33 @@
 
 #include "diagnostics.h"
 
-#include <GL/glew.h>
-#include <GL/freeglut.h>
-
-bool GameMainLoop::currentlyDrawing = false; //look into std::mutex
-long GameMainLoop::frameCount = 0; //doesn't need a long for how it's interpreted...
-long GameMainLoop::ticksUntilFrame = 1; //whatever again
-int GameMainLoop::physicsRate = 100; //(in Hz)
+//#include <GL/glew.h>
+//#include <GL/freeglut.h>
 
 void doThing() {
 	return;
 }
 
-void GameMainLoop::Tick(int physicsUPS) {
+GameMainLoop::GameMainLoop() : GameScene() {
+	//currentlyDrawing = false;
+	//frameCount = 0;
+	//ticksUntilFrame = 1;
+	physicsRate = 100;
+	waitCount = 0;
+	maxWaitCount = 1000/physicsRate * 10;
+}
+
+void GameMainLoop::Tick(int UPS) {
 	//while (currentlyDrawing) {}
+
+	if (EndGameHandler::shouldGameEnd()) {
+		waitCount++;
+		if (waitCount >= maxWaitCount) {
+			waitCount = 0;
+			ResetThings::reset();
+		}
+		return;
+	}
 
 	auto start = Diagnostics::getTime();
 	doThing();
@@ -164,6 +178,8 @@ void GameMainLoop::Tick(int physicsUPS) {
 	//2. bullet-wall (really depends on how many hazards/walls)
 	//3. power calculate and tank shoot
 
+	//old method of starting new game:
+	/*
 	if (!EndGameHandler::shouldGameEnd()) {
 		glutTimerFunc(1000/physicsUPS, GameMainLoop::Tick, physicsUPS);
 		if (frameCount == 0) {
@@ -175,6 +191,7 @@ void GameMainLoop::Tick(int physicsUPS) {
 		glutTimerFunc(1000, ResetThings::reset, 0);
 		glutTimerFunc(1000 + 1000/physicsUPS, GameMainLoop::Tick, physicsUPS);
 	}
+	*/
 }
 
 void GameMainLoop::levelTick() {
@@ -1010,15 +1027,18 @@ void GameMainLoop::bulletToTank() {
 	}
 }
 
-void GameMainLoop::drawMain() {
-	GameMainLoop::currentlyDrawing = true;
+void GameMainLoop::drawMain() const {
+	//currentlyDrawing = true;
 
 	auto start = Diagnostics::getTime();
 
+	//moved to GameSceneManager:
+	/*
 	Diagnostics::startTiming("clear");
 	Renderer::BeginningStuff();
 	Renderer::Clear();
 	Diagnostics::endTiming();
+	*/
 
 	Diagnostics::startTiming("background rect");
 	BackgroundRect::draw();
@@ -1129,14 +1149,17 @@ void GameMainLoop::drawMain() {
 	Diagnostics::drawGraphTimes();
 	Renderer::UnbindAll(); //needed
 
-	Diagnostics::startTiming("flush");
+	//Diagnostics::startTiming("flush");
 	Renderer::Cleanup();
 
+	//moved to Renderer:
+	/*
 	//for single framebuffer, use glFlush; for double framebuffer, swap the buffers
 	//swapping buffers is limited to monitor refresh rate, so I use glFlush
 	glFlush();
 	//glutSwapBuffers();
-	Diagnostics::endTiming();
+	*/
+	//Diagnostics::endTiming();
 
 	//end = Diagnostics::getTime();
 
@@ -1145,11 +1168,11 @@ void GameMainLoop::drawMain() {
 
 	//std::cout << "entire: " << (long long)Diagnostics::getDiff(start, end) << "ms" << std::endl << std::endl;
 
-	currentlyDrawing = false;
+	//currentlyDrawing = false;
 }
 
-void GameMainLoop::drawLayer(DrawingLayers layer) {
-	GameMainLoop::currentlyDrawing = true;
+void GameMainLoop::drawLayer(DrawingLayers layer) const {
+	//currentlyDrawing = true;
 
 	auto start = Diagnostics::getTime();
 
@@ -1214,10 +1237,10 @@ void GameMainLoop::drawLayer(DrawingLayers layer) {
 
 	//std::cout << "entire: " << (long long)Diagnostics::getDiff(start, end) << "ms" << std::endl << std::endl;
 
-	currentlyDrawing = false;
+	//currentlyDrawing = false;
 }
 
-void GameMainLoop::drawAllLayers() {
+void GameMainLoop::drawAllLayers() const {
 	Renderer::BeginningStuff();
 	Renderer::Clear();
 	BackgroundRect::draw();

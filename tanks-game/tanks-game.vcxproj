@@ -161,6 +161,8 @@
     <ClCompile Include="few-obstacles-level.cpp" />
     <ClCompile Include="game-main-loop.cpp" />
     <ClCompile Include="game-manager.cpp" />
+    <ClCompile Include="game-scene-manager.cpp" />
+    <ClCompile Include="game-scene.cpp" />
     <ClCompile Include="game-thing.cpp" />
     <ClCompile Include="generalized-lava.cpp" />
     <ClCompile Include="generalized-lightning.cpp" />
@@ -286,6 +288,8 @@
     <ClInclude Include="few-obstacles-level.h" />
     <ClInclude Include="game-main-loop.h" />
     <ClInclude Include="game-manager.h" />
+    <ClInclude Include="game-scene-manager.h" />
+    <ClInclude Include="game-scene.h" />
     <ClInclude Include="game-thing.h" />
     <ClInclude Include="generalized-lava.h" />
     <ClInclude Include="generalized-lightning.h" />
