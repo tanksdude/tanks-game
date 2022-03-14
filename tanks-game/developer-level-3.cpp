@@ -1,6 +1,6 @@
 #include "developer-level-3.h"
 #include "constants.h"
-#include "random-level.h"
+#include "level-helper.h"
 #include "tank-manager.h"
 #include "powerup-manager.h"
 #include "wall-manager.h"
@@ -30,9 +30,9 @@ void DeveloperLevel3::initialize() {
 	std::string* names;
 
 	//from dev1
-	pos = RandomLevel::getSymmetricWallPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 20, 80);
+	pos = LevelHelper::getSymmetricWallPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 20, 80);
 	WallManager::pushWall(new Wall(pos.x, pos.y, 20, 80, color));
-	pos = RandomLevel::getSymmetricWallPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 20, 80);
+	pos = LevelHelper::getSymmetricWallPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 20, 80);
 	WallManager::pushWall(new Wall(pos.x, pos.y, 20, 80, color));
 
 	posArr = new double[4]{ GAME_WIDTH/2 - 80 + 20, GAME_HEIGHT/2 + 10, 60*2, 20*2 - 10 };
@@ -67,12 +67,12 @@ void DeveloperLevel3::initialize() {
 	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "patrolling_turret")(constructionData));
 	delete[] posArr, patrolCount, patrolRoute;
 
-	pos = RandomLevel::getSymmetricWallPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 20, 80);
+	pos = LevelHelper::getSymmetricWallPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 20, 80);
 	posArr = new double[4]{ pos.x - 40, pos.y, 20, 80 };
 	constructionData = GenericFactoryConstructionData(4, posArr);
 	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("dev", "wall")(constructionData));
 	delete[] posArr;
-	pos = RandomLevel::getSymmetricWallPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 20, 80);
+	pos = LevelHelper::getSymmetricWallPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 20, 80);
 	posArr = new double[4]{ pos.x + 40, pos.y, 20, 80 };
 	constructionData = GenericFactoryConstructionData(4, posArr);
 	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("dev", "wall")(constructionData));

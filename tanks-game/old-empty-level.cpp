@@ -1,6 +1,6 @@
 #include "old-empty-level.h"
 #include "constants.h"
-#include "random-level.h"
+#include "level-helper.h"
 #include "tank-manager.h"
 #include "wall-manager.h"
 #include "reset-things.h"
@@ -24,7 +24,7 @@ void OldEmptyLevel::initialize() {
 
 	for (int i = 0; i < 4; i++) {
 		//classic JS walls
-		pos = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-40*2-32, GAME_HEIGHT/2-128, 32, 128);
+		pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-40*2-32, GAME_HEIGHT/2-128, 32, 128);
 		WallManager::pushWall(new Wall(pos.x, pos.y, 32, 128, color));
 	}
 }

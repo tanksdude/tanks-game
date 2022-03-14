@@ -1,6 +1,6 @@
 #include "developer-level-2.h"
 #include "constants.h"
-#include "random-level.h"
+#include "level-helper.h"
 #include "tank-manager.h"
 #include "powerup-manager.h"
 #include "reset-things.h"

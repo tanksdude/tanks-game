@@ -1,6 +1,6 @@
 #include "unnamed-level-3.h"
 #include "constants.h"
-#include "random-level.h"
+#include "level-helper.h"
 #include "tank-manager.h"
 #include "powerup-manager.h"
 #include "wall-manager.h"
@@ -61,44 +61,44 @@ void UnnamedLevel3::initialize() {
 	/*
 	//equal x and y offsets from center with gap from top
 	for (int i = 0; i < 4; i++) {
-		pos = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_HEIGHT/2-(top_gap+side_length), GAME_HEIGHT/2-(top_gap+side_length), side_length, 20);
+		pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_HEIGHT/2-(top_gap+side_length), GAME_HEIGHT/2-(top_gap+side_length), side_length, 20);
 		WallManager::pushWall(new Wall(pos.x, pos.y, side_length, 20, color));
 	}
 	for (int i = 0; i < 4; i++) {
-		pos = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_HEIGHT/2-(top_gap+side_length), GAME_HEIGHT/2-(top_gap+side_length), 20, side_length);
+		pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_HEIGHT/2-(top_gap+side_length), GAME_HEIGHT/2-(top_gap+side_length), 20, side_length);
 		WallManager::pushWall(new Wall(pos.x, pos.y, 20, side_length, color));
 	}
 	//x offset from center equals y offset from edge
 	for (int i = 0; i < 4; i++) {
-		pos = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-(top_gap+side_length), GAME_HEIGHT/2-(top_gap+side_length), side_length, 20);
+		pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-(top_gap+side_length), GAME_HEIGHT/2-(top_gap+side_length), side_length, 20);
 		WallManager::pushWall(new Wall(pos.x, pos.y, side_length, 20, color));
 	}
 	for (int i = 0; i < 4; i++) {
-		pos = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-(top_gap+side_length), GAME_HEIGHT/2-(top_gap+side_length), 20, side_length);
+		pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-(top_gap+side_length), GAME_HEIGHT/2-(top_gap+side_length), 20, side_length);
 		WallManager::pushWall(new Wall(pos.x, pos.y, 20, side_length, color));
 	}
 	//middle of the two
 	for (int i = 0; i < 4; i++) {
-		pos = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, (GAME_WIDTH/2+GAME_HEIGHT/2)/2-(top_gap+side_length), GAME_HEIGHT/2-(top_gap+side_length), side_length, 20);
+		pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, (GAME_WIDTH/2+GAME_HEIGHT/2)/2-(top_gap+side_length), GAME_HEIGHT/2-(top_gap+side_length), side_length, 20);
 		WallManager::pushWall(new Wall(pos.x, pos.y, side_length, 20, color));
 	}
 	for (int i = 0; i < 4; i++) {
-		pos = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, (GAME_WIDTH/2+GAME_HEIGHT/2)/2-(top_gap+side_length), GAME_HEIGHT/2-(top_gap+side_length), 20, side_length);
+		pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, (GAME_WIDTH/2+GAME_HEIGHT/2)/2-(top_gap+side_length), GAME_HEIGHT/2-(top_gap+side_length), 20, side_length);
 		WallManager::pushWall(new Wall(pos.x, pos.y, 20, side_length, color));
 	}
 	*/
 	//just use a custom distance
 	for (int i = 0; i < 4; i++) {
-		pos = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, (GAME_HEIGHT/2+40)-(top_gap+side_length)+20, GAME_HEIGHT/2-(top_gap+side_length), side_length-20, 20);
+		pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, (GAME_HEIGHT/2+40)-(top_gap+side_length)+20, GAME_HEIGHT/2-(top_gap+side_length), side_length-20, 20);
 		WallManager::pushWall(new Wall(pos.x, pos.y, side_length-20, 20, color));
 	}
 	for (int i = 0; i < 4; i++) {
-		pos = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, (GAME_HEIGHT/2+40)-(top_gap+side_length), GAME_HEIGHT/2-(top_gap+side_length), 20, side_length);
+		pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, (GAME_HEIGHT/2+40)-(top_gap+side_length), GAME_HEIGHT/2-(top_gap+side_length), 20, side_length);
 		WallManager::pushWall(new Wall(pos.x, pos.y, 20, side_length, color));
 	}
 
 	for (int i = 0; i < 4; i++) {
-		pos = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, (GAME_HEIGHT/2+40)-(top_gap+side_length), GAME_HEIGHT/2-(top_gap), 20, top_gap);
+		pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, (GAME_HEIGHT/2+40)-(top_gap+side_length), GAME_HEIGHT/2-(top_gap), 20, top_gap);
 		posArr = new double[4]{ pos.x, pos.y, 20, top_gap };
 		constructionData = GenericFactoryConstructionData(4, posArr);
 		HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "vertical_lightning")(constructionData));
@@ -106,43 +106,43 @@ void UnnamedLevel3::initialize() {
 	}
 
 	//top/bottom walls
-	pos = RandomLevel::getSymmetricWallPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_HEIGHT/2-(top_gap+10), 60, 10);
+	pos = LevelHelper::getSymmetricWallPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_HEIGHT/2-(top_gap+10), 60, 10);
 	WallManager::pushWall(new Wall(pos.x, pos.y, 60, 10, color));
-	pos = RandomLevel::getSymmetricWallPositions_UD(1, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_HEIGHT/2-(top_gap+10), 60, 10);
+	pos = LevelHelper::getSymmetricWallPositions_UD(1, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_HEIGHT/2-(top_gap+10), 60, 10);
 	WallManager::pushWall(new Wall(pos.x, pos.y, 60, 10, color));
 	//little hooks
 	for (int i = 0; i < 4; i++) {
-		pos = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 60/2-10, GAME_HEIGHT/2-(top_gap+10)-(10), 10, 10);
+		pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 60/2-10, GAME_HEIGHT/2-(top_gap+10)-(10), 10, 10);
 		WallManager::pushWall(new Wall(pos.x, pos.y, 10, 10, color));
 	}
 
 	//starting walls
-	pos = RandomLevel::getSymmetricWallPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-(40+20), 20, GAME_HEIGHT-(top_gap+side_length-20)*2);
+	pos = LevelHelper::getSymmetricWallPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-(40+20), 20, GAME_HEIGHT-(top_gap+side_length-20)*2);
 	WallManager::pushWall(new Wall(pos.x, pos.y, 20, GAME_HEIGHT-(top_gap+side_length-20)*2, color));
-	pos = RandomLevel::getSymmetricWallPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-(40+20), 20, GAME_HEIGHT-(top_gap+side_length-20)*2);
+	pos = LevelHelper::getSymmetricWallPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-(40+20), 20, GAME_HEIGHT-(top_gap+side_length-20)*2);
 	WallManager::pushWall(new Wall(pos.x, pos.y, 20, GAME_HEIGHT-(top_gap+side_length-20)*2, color));
 
 	//pocket for a power
 	for (int i = 0; i < 4; i++) {
-		pos = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-(40+20)-(40), 20, 40, 10);
+		pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-(40+20)-(40), 20, 40, 10);
 		WallManager::pushWall(new Wall(pos.x, pos.y, 40, 10, color));
 	}
 
 	//pocket powers:
-	pos = RandomLevel::getSymmetricPowerupPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-(40+20)-(40)/2);
+	pos = LevelHelper::getSymmetricPowerupPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-(40+20)-(40)/2);
 	p = new PowerSquare(pos.x, pos.y, "vanilla", "big");
 	PowerupManager::pushPowerup(p);
 	respawning->watchPowerSquare(p);
-	pos = RandomLevel::getSymmetricPowerupPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-(40+20)-(40)/2);
+	pos = LevelHelper::getSymmetricPowerupPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-(40+20)-(40)/2);
 	p = new PowerSquare(pos.x, pos.y, "vanilla", "big");
 	PowerupManager::pushPowerup(p);
 	respawning->watchPowerSquare(p);
 
 	//top/bottom powers
 	names = new std::string[2]{ "multishot", "bounce" };
-	pos = RandomLevel::getSymmetricPowerupPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_HEIGHT/2-(top_gap+10)-(10));
+	pos = LevelHelper::getSymmetricPowerupPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_HEIGHT/2-(top_gap+10)-(10));
 	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, names, 2));
-	pos = RandomLevel::getSymmetricPowerupPositions_UD(1, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_HEIGHT/2-(top_gap+10)-(10));
+	pos = LevelHelper::getSymmetricPowerupPositions_UD(1, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_HEIGHT/2-(top_gap+10)-(10));
 	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, names, 2));
 	delete[] names;
 
@@ -150,7 +150,7 @@ void UnnamedLevel3::initialize() {
 	paras = new std::string[2]{ "vanilla", "vanilla" };
 	names = new std::string[2]{ "grenade", "triple" };
 	for (int i = 0; i < 4; i++) {
-		pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, (GAME_HEIGHT/2+40)-(top_gap+side_length)+(side_length/2), GAME_HEIGHT/2-(top_gap+side_length)+(side_length/2));
+		pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, (GAME_HEIGHT/2+40)-(top_gap+side_length)+(side_length/2), GAME_HEIGHT/2-(top_gap+side_length)+(side_length/2));
 		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, paras, names, 2));
 	}
 	delete[] paras, names;
@@ -160,8 +160,8 @@ void UnnamedLevel3::initialize() {
 	//names = new std::string[2]{ "fire", "invincible" };
 	tempRand = RNG::randFunc() * 2;
 	for (int i = 0; i < 4; i++) {
-		pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, (GAME_HEIGHT/2+40)-(top_gap+side_length)-(10), GAME_HEIGHT/2-(top_gap+side_length)-(10));
-		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "vanilla", RandomLevel::powerAlternate(i, tempRand, "fire", "invincible")));
+		pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, (GAME_HEIGHT/2+40)-(top_gap+side_length)-(10), GAME_HEIGHT/2-(top_gap+side_length)-(10));
+		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "vanilla", LevelHelper::powerAlternate(i, tempRand, "fire", "invincible")));
 	}
 	//delete[] paras, names;
 }

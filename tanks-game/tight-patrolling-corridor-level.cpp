@@ -1,6 +1,6 @@
 #include "tight-patrolling-corridor-level.h"
 #include "constants.h"
-#include "random-level.h"
+#include "level-helper.h"
 #include "tank-manager.h"
 #include "wall-manager.h"
 #include "powerup-manager.h"
@@ -42,7 +42,7 @@ void TightPatrollingCorridorLevel::initialize() {
 	PositionHolder* wallArray = new PositionHolder[4];
 	for (int i = 0; i < 4; i++) {
 		//classic JS walls
-		wallArray[i] = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-40*2-32, GAME_HEIGHT/2-128, 32, 128);
+		wallArray[i] = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-40*2-32, GAME_HEIGHT/2-128, 32, 128);
 		WallManager::pushWall(new Wall(wallArray[i].x, wallArray[i].y, 32, 128, color));
 	}
 	*/
@@ -70,9 +70,9 @@ void TightPatrollingCorridorLevel::initialize() {
 	delete[] posArr, patrolCount, patrolRoute1, patrolRoute2;
 
 	//inner walls
-	pos = RandomLevel::getSymmetricWallPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 20, (40+40)*2);
+	pos = LevelHelper::getSymmetricWallPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 20, (40+40)*2);
 	WallManager::pushWall(new Wall(pos.x, pos.y, 20, (40+40)*2, color));
-	pos = RandomLevel::getSymmetricWallPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 20, (40+40)*2);
+	pos = LevelHelper::getSymmetricWallPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 20, (40+40)*2);
 	WallManager::pushWall(new Wall(pos.x, pos.y, 20, (40+40)*2, color));
 
 	//PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "godmode"));
@@ -82,20 +82,20 @@ void TightPatrollingCorridorLevel::initialize() {
 
 	//"inner" powers
 	for (int i = 0; i < 4; i++) {
-		pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 60+20+20/2, 40+40/2);
+		pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 60+20+20/2, 40+40/2);
 		//PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "vanilla-extra", "shield"));
 		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "vanilla-extra", "barrier"));
 	}
 
 	//next layer
-	//pos = RandomLevel::getSymmetricWallPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, (40+30) + 40, (60+20/2 + 30)*2, 20);
-	pos = RandomLevel::getSymmetricWallPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_HEIGHT/2 - 20, (60+20 + 40)*2, 20);
+	//pos = LevelHelper::getSymmetricWallPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, (40+30) + 40, (60+20/2 + 30)*2, 20);
+	pos = LevelHelper::getSymmetricWallPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_HEIGHT/2 - 20, (60+20 + 40)*2, 20);
 	WallManager::pushWall(new Wall(pos.x, pos.y, (60+20 + 40)*2, 20, color));
-	pos = RandomLevel::getSymmetricWallPositions_UD(1, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_HEIGHT/2 - 20, (60+20 + 40)*2, 20);
+	pos = LevelHelper::getSymmetricWallPositions_UD(1, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_HEIGHT/2 - 20, (60+20 + 40)*2, 20);
 	WallManager::pushWall(new Wall(pos.x, pos.y, (60+20 + 40)*2, 20, color));
 
 	for (int i = 0; i < 4; i++) {
-		pos = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, (60+20 + 40) + 20 + 20/2, 40-10, 20/2, 40+10*2);
+		pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, (60+20 + 40) + 20 + 20/2, 40-10, 20/2, 40+10*2);
 		WallManager::pushWall(new Wall(pos.x, pos.y, 20/2, 40+10*2, color));
 		//posArr = new double[4]{ pos.x, pos.y, 20/2, 40+10*2 };
 		//constructionData = GenericFactoryConstructionData(4, posArr);
@@ -127,23 +127,23 @@ void TightPatrollingCorridorLevel::initialize() {
 
 	//outer walls
 	for (int i = 0; i < 4; i++) {
-		pos = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, (60+20 + 40) + 80, 20, 20, GAME_HEIGHT/2-(20+40));
+		pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, (60+20 + 40) + 80, 20, 20, GAME_HEIGHT/2-(20+40));
 		WallManager::pushWall(new Wall(pos.x, pos.y, 20, GAME_HEIGHT/2-(20+40), color));
 	}
 	//extra
 	for (int i = 0; i < 4; i++) {
-		pos = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, (60+20 + 40) + 80 + 20, GAME_HEIGHT/2-(20+40), GAME_WIDTH/2 - ((60+20 + 40) + 80 + 20), 20);
+		pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, (60+20 + 40) + 80 + 20, GAME_HEIGHT/2-(20+40), GAME_WIDTH/2 - ((60+20 + 40) + 80 + 20), 20);
 		WallManager::pushWall(new Wall(pos.x, pos.y, GAME_WIDTH/2 - ((60+20 + 40) + 80 + 20), 20, color));
 	}
 
 	//extra powers
 	for (int i = 0; i < 4; i++) {
-		pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2 - 20, GAME_HEIGHT/2 - 20);
+		pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2 - 20, GAME_HEIGHT/2 - 20);
 		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "speed"));
 	}
 	//experimental power positions
 	for (int i = 0; i < 4; i++) {
-		pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2 - 10, GAME_HEIGHT/2 - (20+20+20+10));
+		pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2 - 10, GAME_HEIGHT/2 - (20+20+20+10));
 		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "invincible"));
 	}
 

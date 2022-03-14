@@ -1,6 +1,6 @@
 #include "lightning-corners-level.h"
 #include "constants.h"
-#include "random-level.h"
+#include "level-helper.h"
 #include "tank-manager.h"
 #include "powerup-manager.h"
 #include "wall-manager.h"
@@ -30,12 +30,12 @@ void LightningCornersLevel::initialize() {
 
 	for (int i = 0; i < 4; i++) {
 		//classic JS walls
-		pos = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-40*2-32, GAME_HEIGHT/2-128, 32, 128);
+		pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-40*2-32, GAME_HEIGHT/2-128, 32, 128);
 		WallManager::pushWall(new Wall(pos.x, pos.y, 32, 128, color));
 	}
 
 	for (int i = 0; i < 4; i++) {
-		pos = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 80-20, 80-20, 20, 20);
+		pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 80-20, 80-20, 20, 20);
 		WallManager::pushWall(new Wall(pos.x, pos.y, 20, 20, color));
 	}
 
@@ -64,17 +64,17 @@ void LightningCornersLevel::initialize() {
 
 	//traps:
 	//for (int i = 0; i < 4; i++) {
-	//	pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 80-20/2, 80+20/2);
+	//	pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 80-20/2, 80+20/2);
 	//	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "speed"));
 	//}
 	//for (int i = 0; i < 4; i++) {
-	//	pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 80+20/2, 80-20/2);
+	//	pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 80+20/2, 80-20/2);
 	//	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "speed"));
 	//}
 
 	//unused:
 	//for (int i = 0; i < 4; i++) {
-	//	pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 80+20/2, 80+20/2);
+	//	pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 80+20/2, 80+20/2);
 	//	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "banana"));
 	//}
 
@@ -85,27 +85,27 @@ void LightningCornersLevel::initialize() {
 
 	//if the powerup at the center is split, use this:
 	//for (int i = 0; i < 4; i++) {
-	//	pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 10, 10);
+	//	pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 10, 10);
 	//	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "speed"));
 	//}
 
 	//not here in the JS level but I feel it should be here:
-	pos = RandomLevel::getSymmetricPowerupPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 80+20);
+	pos = LevelHelper::getSymmetricPowerupPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 80+20);
 	posArr = new double[3]{ pos.x, pos.y, 0 };
 	constructionData = GenericFactoryConstructionData(3, posArr);
 	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(constructionData));
 	delete[] posArr;
-	pos = RandomLevel::getSymmetricPowerupPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 80+20);
+	pos = LevelHelper::getSymmetricPowerupPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 80+20);
 	posArr = new double[3]{ pos.x, pos.y, PI };
 	constructionData = GenericFactoryConstructionData(3, posArr);
 	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(constructionData));
 	delete[] posArr;
-	pos = RandomLevel::getSymmetricPowerupPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, 80+20);
+	pos = LevelHelper::getSymmetricPowerupPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, 80+20);
 	posArr = new double[3]{ pos.x, pos.y, PI/2 };
 	constructionData = GenericFactoryConstructionData(3, posArr);
 	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(constructionData));
 	delete[] posArr;
-	pos = RandomLevel::getSymmetricPowerupPositions_UD(1, GAME_WIDTH/2, GAME_HEIGHT/2, 80+20);
+	pos = LevelHelper::getSymmetricPowerupPositions_UD(1, GAME_WIDTH/2, GAME_HEIGHT/2, 80+20);
 	posArr = new double[3]{ pos.x, pos.y, -PI/2 };
 	constructionData = GenericFactoryConstructionData(3, posArr);
 	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(constructionData));

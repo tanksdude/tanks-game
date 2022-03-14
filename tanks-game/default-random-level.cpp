@@ -1,7 +1,7 @@
 #include "default-random-level.h"
 #include "constants.h"
 #include "mylib.h"
-#include "random-level.h"
+#include "level-helper.h"
 #include "tank-manager.h"
 #include "powerup-manager.h"
 #include "wall-manager.h"
@@ -34,7 +34,7 @@ void DefaultRandomLevel::initialize() { //still needs a lot of work
 
 	//some random walls
 	for (int i = 0; i < 16; i++) {
-		WallManager::pushWall(RandomLevel::makeNewRandomWall(TANK_RADIUS*2.5*2, TANK_RADIUS*2, GAME_WIDTH - 2*(TANK_RADIUS*2.5*2), GAME_HEIGHT - 2*(TANK_RADIUS*2), randColor));
+		WallManager::pushWall(LevelHelper::makeNewRandomWall(TANK_RADIUS*2.5*2, TANK_RADIUS*2, GAME_WIDTH - 2*(TANK_RADIUS*2.5*2), GAME_HEIGHT - 2*(TANK_RADIUS*2), randColor));
 	}
 
 	//randomize hazards:
@@ -94,14 +94,14 @@ void DefaultRandomLevel::initialize() { //still needs a lot of work
 	float choosingPowerWeights[] = { 1.0f, 1.0f, .25f };
 	for (int i = 0; i < 4; i++) {
 		int count = weightedSelect<float>(choosingPowerWeights, 3) + 1; //{1, 2, 3}
-		std::string* randPowers = RandomLevel::getRandomPowers(count, "random-vanilla");
-		pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-60, GAME_HEIGHT/2-16);
+		std::string* randPowers = LevelHelper::getRandomPowers(count, "random-vanilla");
+		pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-60, GAME_HEIGHT/2-16);
 		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "random-vanilla", randPowers, count));
 		delete[] randPowers;
 	}
 
 	//throw somethin' special in the center
-	std::string* ultimatePowerName = RandomLevel::getRandomPowers(1, "ultimate-vanilla");
+	std::string* ultimatePowerName = LevelHelper::getRandomPowers(1, "ultimate-vanilla");
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "ultimate-vanilla", ultimatePowerName[0]));
 	delete[] ultimatePowerName;
 }

@@ -223,7 +223,7 @@
     <ClCompile Include="power-square.cpp" />
     <ClCompile Include="powerup-manager.cpp" />
     <ClCompile Include="developer-level-0.cpp" />
-    <ClCompile Include="random-level.cpp" />
+    <ClCompile Include="level-helper.cpp" />
     <ClCompile Include="rectangular-lightning-hazard.cpp" />
     <ClCompile Include="rect-hazard.cpp" />
     <ClCompile Include="renderer.cpp" />
@@ -354,7 +354,7 @@
     <ClInclude Include="power-square.h" />
     <ClInclude Include="powerup-manager.h" />
     <ClInclude Include="developer-level-0.h" />
-    <ClInclude Include="random-level.h" />
+    <ClInclude Include="level-helper.h" />
     <ClInclude Include="rect.h" />
     <ClInclude Include="rectangular-lightning-hazard.h" />
     <ClInclude Include="rect-hazard.h" />

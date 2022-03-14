@@ -4,11 +4,11 @@
 #include "wall.h"
 #include "position-holder.h"
 
-class RandomLevel { //has stuff for randomizing stuff in levels
+class LevelHelper { //has stuff for randomizing stuff in levels
 public:
 	static Wall* makeNewRandomWall(double x_beginning, double y_beginning, double width_ofArea, double height_ofArea, ColorValueHolder c, double minW, double minH, double maxW, double maxH);
 	static inline Wall* makeNewRandomWall(double x_beginning, double y_beginning, double width_ofArea, double height_ofArea, ColorValueHolder c) {
-		return RandomLevel::makeNewRandomWall(x_beginning, y_beginning, width_ofArea, height_ofArea, c, 12, 8, 64, 96);
+		return LevelHelper::makeNewRandomWall(x_beginning, y_beginning, width_ofArea, height_ofArea, c, 12, 8, 64, 96);
 	}
 	static std::string* getRandomPowers(int count, std::string type); //handles stacking and weights for a whole group (use this)
 	static std::string* getRandomPowers(int count, std::string type, std::string* names, int nameCount); //no option for multiple types (it's effort)
@@ -32,6 +32,6 @@ public:
 	static PositionHolder getSymmetricWallPositions_DiagBackwardSlash(int position, double x_center, double y_center, double x_offset, double y_offset, double wallWidth, double wallHeight); //position: {0,1}
 
 private:
-	RandomLevel() {}
-	RandomLevel(const RandomLevel&) {}
+	LevelHelper() {}
+	LevelHelper(const LevelHelper&) {}
 };

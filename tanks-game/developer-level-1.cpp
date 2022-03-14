@@ -4,7 +4,7 @@
 #include "powerup-manager.h"
 #include "wall-manager.h"
 #include "hazard-manager.h"
-#include "random-level.h"
+#include "level-helper.h"
 #include "reset-things.h"
 //#include <iostream>
 
@@ -29,9 +29,9 @@ void DeveloperLevel1::initialize() {
 	double* posArr;
 	std::string* names;
 
-	PositionHolder wallPos1 = RandomLevel::getSymmetricWallPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 20, 80);
+	PositionHolder wallPos1 = LevelHelper::getSymmetricWallPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 20, 80);
 	WallManager::pushWall(new Wall(wallPos1.x, wallPos1.y, 20, 80, color));
-	PositionHolder wallPos2 = RandomLevel::getSymmetricWallPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 20, 80);
+	PositionHolder wallPos2 = LevelHelper::getSymmetricWallPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 20, 80);
 	WallManager::pushWall(new Wall(wallPos2.x, wallPos2.y, 20, 80, color));
 	WallManager::pushWall(new Wall(wallPos2.x, GAME_HEIGHT-20, 20, 20, color));
 

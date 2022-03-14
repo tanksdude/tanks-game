@@ -144,7 +144,7 @@
     <ClCompile Include="developer-level-0.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="random-level.cpp">
+    <ClCompile Include="level-helper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="level-manager.cpp">
@@ -545,7 +545,7 @@
     <ClInclude Include="developer-level-0.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="random-level.h">
+    <ClInclude Include="level-helper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="level-manager.h">

@@ -252,7 +252,7 @@ RectHazard* DevWallHazard::randomizingFactory(double x_start, double y_start, do
 
 	do {
 		if (randomizeWH) {
-			width = RNG::randFunc() * (64 - 12) + 12; //from RandomLevel::makeNewRandomWall
+			width = RNG::randFunc() * (64 - 12) + 12; //from LevelHelper::makeNewRandomWall
 			height = RNG::randFunc() * (96 - 8) + 8;
 		}
 		RectHazard* testWall = new DevWallHazard(x_start + RNG::randFunc() * (area_width - width), y_start + RNG::randFunc() * (area_height - height), width, height);

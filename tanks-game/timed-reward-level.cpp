@@ -1,7 +1,7 @@
 #include "timed-reward-level.h"
 #include "constants.h"
 #include <math.h>
-#include "random-level.h"
+#include "level-helper.h"
 #include "tank-manager.h"
 #include "wall-manager.h"
 #include "powerup-manager.h"
@@ -48,14 +48,14 @@ void TimedRewardLevel::initialize() {
 	GenericFactoryConstructionData constructionData;
 	double* posArr;
 
-	pos = RandomLevel::getSymmetricWallPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, 40, 120*2, 40);
+	pos = LevelHelper::getSymmetricWallPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, 40, 120*2, 40);
 	WallManager::pushWall(new Wall(pos.x, pos.y, 120*2, 40, color));
-	pos = RandomLevel::getSymmetricWallPositions_UD(1, GAME_WIDTH/2, GAME_HEIGHT/2, 40, 120*2, 40);
+	pos = LevelHelper::getSymmetricWallPositions_UD(1, GAME_WIDTH/2, GAME_HEIGHT/2, 40, 120*2, 40);
 	WallManager::pushWall(new Wall(pos.x, pos.y, 120*2, 40, color));
 
 	//moving walls
 	for (int i = 0; i < 4; i++) {
-		pos = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 120-20, 20/2, 20, 40+20);
+		pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 120-20, 20/2, 20, 40+20);
 		//Wall* tempWall = new Wall(pos.x, pos.y, 20, 40+20, ColorValueHolder(0, 0, 0));
 		Wall* tempWall = new Wall(pos.x, pos.y, 20, 40+20, color);
 		movingWalls[i] = tempWall->getGameID();
@@ -65,7 +65,7 @@ void TimedRewardLevel::initialize() {
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "godmode"));
 
 	for (int i = 0; i < 4; i++) {
-		pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 120 - 20 - 4*2, 40 - 4*2);
+		pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 120 - 20 - 4*2, 40 - 4*2);
 		SimpleVector2D distToCenter = SimpleVector2D(GAME_WIDTH/2 - pos.x, GAME_HEIGHT/2 - pos.y);
 		posArr = new double[3]{ pos.x, pos.y, distToCenter.getAngle() };
 		constructionData = GenericFactoryConstructionData(3, posArr);
@@ -74,16 +74,16 @@ void TimedRewardLevel::initialize() {
 	}
 
 	for (int i = 0; i < 4; i++) {
-		pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 120 + 60, GAME_HEIGHT/2 - (40+40)/2);
+		pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 120 + 60, GAME_HEIGHT/2 - (40+40)/2);
 		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "vanilla-extra", "shield"));
 	}
 
-	pos = RandomLevel::getSymmetricWallPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, 40+40, 20, (GAME_HEIGHT/2 - (40+40)));
+	pos = LevelHelper::getSymmetricWallPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, 40+40, 20, (GAME_HEIGHT/2 - (40+40)));
 	posArr = new double[4]{ pos.x, pos.y, 20, GAME_HEIGHT/2 - (40+40) };
 	constructionData = GenericFactoryConstructionData(4, posArr);
 	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "vertical_lightning")(constructionData));
 	delete[] posArr;
-	pos = RandomLevel::getSymmetricWallPositions_UD(1, GAME_WIDTH/2, GAME_HEIGHT/2, 40+40, 20, (GAME_HEIGHT/2 - (40+40)));
+	pos = LevelHelper::getSymmetricWallPositions_UD(1, GAME_WIDTH/2, GAME_HEIGHT/2, 40+40, 20, (GAME_HEIGHT/2 - (40+40)));
 	posArr = new double[4]{ pos.x, pos.y, 20, GAME_HEIGHT/2 - (40+40) };
 	constructionData = GenericFactoryConstructionData(4, posArr);
 	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "vertical_lightning")(constructionData));

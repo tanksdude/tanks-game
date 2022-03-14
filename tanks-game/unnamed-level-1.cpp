@@ -1,6 +1,6 @@
 #include "unnamed-level-1.h"
 #include "constants.h"
-#include "random-level.h"
+#include "level-helper.h"
 #include "tank-manager.h"
 #include "wall-manager.h"
 #include "powerup-manager.h"
@@ -31,27 +31,27 @@ void UnnamedLevel1::initialize() {
 
 	//outer walls
 	for (int i = 0; i < 4; i++) {
-		pos = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 20, 20+20+40, 160, 20);
+		pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 20, 20+20+40, 160, 20);
 		WallManager::pushWall(new Wall(pos.x, pos.y, 160, 20, color));
 	}
-	pos = RandomLevel::getSymmetricWallPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 20+160-20, 20, (20+20+40)*2);
+	pos = LevelHelper::getSymmetricWallPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 20+160-20, 20, (20+20+40)*2);
 	WallManager::pushWall(new Wall(pos.x, pos.y, 20, (20+20+40)*2, color));
-	pos = RandomLevel::getSymmetricWallPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 20+160-20, 20, (20+20+40)*2);
+	pos = LevelHelper::getSymmetricWallPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 20+160-20, 20, (20+20+40)*2);
 	WallManager::pushWall(new Wall(pos.x, pos.y, 20, (20+20+40)*2, color));
 
 	//inner walls
-	pos = RandomLevel::getSymmetricWallPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, 20, (20+160-20-40)*2, 20);
+	pos = LevelHelper::getSymmetricWallPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, 20, (20+160-20-40)*2, 20);
 	WallManager::pushWall(new Wall(pos.x, pos.y, (20+160-20-40)*2, 20, color));
-	pos = RandomLevel::getSymmetricWallPositions_UD(1, GAME_WIDTH/2, GAME_HEIGHT/2, 20, (20+160-20-40)*2, 20);
+	pos = LevelHelper::getSymmetricWallPositions_UD(1, GAME_WIDTH/2, GAME_HEIGHT/2, 20, (20+160-20-40)*2, 20);
 	WallManager::pushWall(new Wall(pos.x, pos.y, (20+160-20-40)*2, 20, color));
 
 	for (int i = 0; i < 4; i++) {
-		pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 20+160+40, (GAME_HEIGHT/2 - (20+20+40+20))/2 + (20+20+40+20));
+		pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 20+160+40, (GAME_HEIGHT/2 - (20+20+40+20))/2 + (20+20+40+20));
 		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "multishot"));
 	}
 
 	for (int i = 0; i < 4; i++) {
-		pos = RandomLevel::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 20+160-20-20, 20+20+20);
+		pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 20+160-20-20, 20+20+20);
 		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "speed"));
 	}
 

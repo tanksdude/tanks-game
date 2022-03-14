@@ -1,7 +1,7 @@
 #include "winning-path-level.h"
 #include "level-manager.h"
 #include "constants.h"
-#include "random-level.h"
+#include "level-helper.h"
 #include "tank-manager.h"
 #include "powerup-manager.h"
 #include "wall-manager.h"
@@ -41,15 +41,15 @@ void WinningPathLevel::initialize() {
 	PositionHolder* wallArray = new PositionHolder[4];
 	for (int i = 0; i < 4; i++) {
 		//classic JS walls
-		wallArray[i] = RandomLevel::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-40*2-32, GAME_HEIGHT/2-128, 32, 128);
+		wallArray[i] = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-40*2-32, GAME_HEIGHT/2-128, 32, 128);
 		WallManager::pushWall(new Wall(wallArray[i].x, wallArray[i].y, 32, 128, color));
 	}
 
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "godmode"));
 
-	pos = RandomLevel::getSymmetricWallPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 20, 20, GAME_HEIGHT/2);
+	pos = LevelHelper::getSymmetricWallPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 20, 20, GAME_HEIGHT/2);
 	WallManager::pushWall(new Wall(pos.x, pos.y, 20, GAME_HEIGHT/2, color));
-	pos = RandomLevel::getSymmetricWallPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 20, 20, GAME_HEIGHT/2);
+	pos = LevelHelper::getSymmetricWallPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 20, 20, GAME_HEIGHT/2);
 	WallManager::pushWall(new Wall(pos.x, pos.y, 20, GAME_HEIGHT/2, color));
 
 	const double WALL_WIDTH = 32;
@@ -63,7 +63,7 @@ void WinningPathLevel::initialize() {
 		double x_offset = RNG::randFunc() * ((wallArray[3].x - 40) - (GAME_WIDTH/2 + 20+20) - w);
 		double y_offset = RNG::randFunc() * ((GAME_HEIGHT/2 - 40) - (GAME_HEIGHT/4) - h);
 		//space from LR walls' corner to classic walls, minus 40 for the tanks to move around
-		pos = RandomLevel::getSymmetricWallPositions_Corners(i%4, GAME_WIDTH/2, GAME_HEIGHT/2, 20+20 + x_offset, GAME_HEIGHT/4 + y_offset, w, h);
+		pos = LevelHelper::getSymmetricWallPositions_Corners(i%4, GAME_WIDTH/2, GAME_HEIGHT/2, 20+20 + x_offset, GAME_HEIGHT/4 + y_offset, w, h);
 		WallManager::pushWall(new Wall(pos.x, pos.y, w, h, color));
 	}
 
