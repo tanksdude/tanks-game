@@ -16,6 +16,15 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 
+TankInputChar::TankInputChar(std::string key) {
+	if (KeypressManager::keyIsSpecialFromString(key)) {
+		isSpecial = true;
+		character = KeypressManager::specialKeyFromString(key);
+	} else {
+		isSpecial = false;
+		character = KeypressManager::normalKeyFromString(key);
+	}
+}
 TankInputChar::TankInputChar(bool special, int c) {
 	isSpecial = special;
 	character = c;
@@ -42,6 +51,9 @@ bool Tank::initialized_GPU = false;
 const double Tank::default_maxSpeed = 1;
 const double Tank::default_acceleration = 1.0/16;
 const double Tank::default_turningIncrement = 64;
+
+Tank::Tank(double x_, double y_, double angle, Team_ID teamID, std::string name_, std::string forward, std::string left, std::string right, std::string shoot, std::string special)
+: Tank(x_, y_, angle, teamID, name_, TankInputChar(forward), TankInputChar(left), TankInputChar(right), TankInputChar(shoot), TankInputChar(special)) {}
 
 Tank::Tank(double x_, double y_, double angle, Team_ID teamID, std::string name_, TankInputChar forward, TankInputChar left, TankInputChar right, TankInputChar shoot, TankInputChar special) : GameThing(teamID) {
 	x = x_;

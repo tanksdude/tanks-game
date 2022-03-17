@@ -19,6 +19,7 @@ struct TankInputChar {
 	bool isSpecial;
 	int character;
 	bool getKeyState() const;
+	TankInputChar(std::string);
 	TankInputChar(bool, int);
 	TankInputChar();
 };
@@ -139,6 +140,7 @@ private:
 	inline void drawExtraBarrels(float alpha = 1.0f) const;
 
 public:
+	Tank(double x, double y, double angle, Team_ID id, std::string name, std::string forward, std::string left, std::string right, std::string shoot, std::string special);
 	Tank(double x, double y, double angle, Team_ID id, std::string name, TankInputChar* inputs);
 	Tank(double x, double y, double angle, Team_ID id, std::string name, TankInputChar forward, TankInputChar left, TankInputChar right, TankInputChar shoot, TankInputChar special);
 	~Tank();

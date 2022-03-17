@@ -69,6 +69,7 @@ public:
 	static AvailableRenderingContexts GetContext() { return renderingMethodType; }
 	static void PreInitialize(int* argc, char** argv, std::string windowName); //initialize freeglut and GLEW
 	static void PreInitialize(int* argc, char** argv, std::string windowName, int startX, int startY);
+	static void PreInitialize(int* argc, char** argv, std::string windowName, int startX, int startY, int sizeX, int sizeY);
 	static void Initialize();
 	static void Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader);
 	static void Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader, unsigned int count);

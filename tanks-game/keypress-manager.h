@@ -16,6 +16,10 @@ public:
 	static void setSpecialKey(int key, int x, int y);
 	static void unsetSpecialKey(int key, int x, int y);
 
+	static bool keyIsSpecialFromString(std::string key);
+	static unsigned char normalKeyFromString(std::string key);
+	static int specialKeyFromString(std::string key);
+
 	static void Initialize();
 
 private:

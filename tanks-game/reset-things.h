@@ -8,7 +8,10 @@ public:
 public:
 	static void reset() { ResetThings::reset(0); }
 	static void reset(int);
-	static void firstReset(); //temporary; just for main() to do its thing while I'm still testing
+	static void firstReset(); //temporary?
+	static void firstGameInitialize(std::string tank1TeamName, std::string tank2TeamName); //pushes the first tanks and team watchings
+	static void firstLevelPush(); //chosen from INI file
+
 	static void tankPositionReset(Tank* first, Tank* second); //use this one
 	static void tankPositionReset(Tank* first, Tank* second, double x); //distance from edge
 	static void tankPositionReset(Tank* first, Tank* second, double x, double y); //x and y are first's position; second is opposite first

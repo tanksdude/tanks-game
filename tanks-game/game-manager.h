@@ -1,5 +1,6 @@
 #pragma once
 #include "constants.h"
+#include "basic-ini-parser.h"
 
 class GameManager {
 	friend class DeveloperManager;
@@ -11,10 +12,17 @@ private:
 	static void Reset();
 
 public:
+	static void Initialize();
 	static void Tick();
 	static double getTickCount();
 	static Game_ID getNextID();
-	static void Initialize();
+
+private:
+	static BasicINIParser::BasicINIData INI_file; //TODO: should this be stored here?
+
+public:
+	static void initializeINI(std::string path);
+	static const BasicINIParser::BasicINIData& get_INI();
 
 private:
 	GameManager() {}

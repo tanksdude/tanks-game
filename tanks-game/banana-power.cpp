@@ -60,7 +60,7 @@ BananaTankPower::BananaTankPower() {
 #include "rng.h"
 #include <vector>
 
-const int BananaBulletPower::bananaCount = 8;
+const int BananaBulletPower::bananaCount = 8; //TODO: change with INI
 const double BananaBulletPower::maxNewBulletVelocity = 5.0/4.0;
 const double BananaBulletPower::minNewBulletVelocity = 1.0/2.0;
 

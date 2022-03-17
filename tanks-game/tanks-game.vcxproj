@@ -138,6 +138,7 @@
     <ClCompile Include="background-rect.cpp" />
     <ClCompile Include="banana-power.cpp" />
     <ClCompile Include="barrier-power.cpp" />
+    <ClCompile Include="basic-ini-parser.cpp" />
     <ClCompile Include="big-fun-level.cpp" />
     <ClCompile Include="big-named-power.cpp" />
     <ClCompile Include="blast-power.cpp" />
@@ -264,6 +265,7 @@
     <ClInclude Include="background-rect.h" />
     <ClInclude Include="banana-power.h" />
     <ClInclude Include="barrier-power.h" />
+    <ClInclude Include="basic-ini-parser.h" />
     <ClInclude Include="big-fun-level.h" />
     <ClInclude Include="big-named-power.h" />
     <ClInclude Include="blast-power.h" />

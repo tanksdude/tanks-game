@@ -1,10 +1,27 @@
 #include "game-manager.h"
+#include <iostream>
+#include <stdexcept>
 
 Game_ID GameManager::nextID = -1;
 double GameManager::tickCount = 0;
+BasicINIParser::BasicINIData GameManager::INI_file;
 
 void GameManager::Initialize() {
-	//nothing
+	//does not initialize the INI
+}
+
+void GameManager::initializeINI(std::string path) {
+	try {
+		INI_file = BasicINIParser::readFile(path);
+	}
+	catch (std::runtime_error& e) {
+		std::cout << e.what() << std::endl;
+	}
+}
+
+const BasicINIParser::BasicINIData& GameManager::get_INI() {
+	//return (const BasicINIParser::BasicINIData&)INI_file;
+	return INI_file;
 }
 
 void GameManager::Tick() {

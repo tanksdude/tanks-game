@@ -387,6 +387,9 @@
     <ClCompile Include="game-scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="basic-ini-parser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -807,6 +810,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="game-scene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="basic-ini-parser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

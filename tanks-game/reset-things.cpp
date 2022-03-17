@@ -96,6 +96,74 @@ void ResetThings::firstReset() {
 	}
 }
 
+void ResetThings::firstGameInitialize(std::string tank1TeamName, std::string tank2TeamName) {
+	const BasicINIParser::BasicINIData& ini_data = GameManager::get_INI();
+
+	std::string tank1Name = "WASD";
+	std::string tank2Name = "Arrow Keys";
+	if (ini_data.exists("CONTROLS", "Tank1.Name")) {
+		tank1Name = ini_data.get("CONTROLS", "Tank1.Name");
+	}
+	if (ini_data.exists("CONTROLS", "Tank2.Name")) {
+		tank2Name = ini_data.get("CONTROLS", "Tank2.Name");
+	}
+	if (ini_data.exists("CONTROLS", "Tank1.TeamName")) {
+		tank1TeamName = ini_data.get("CONTROLS", "Tank1.TeamName");
+	}
+	if (ini_data.exists("CONTROLS", "Tank2.TeamName")) {
+		tank2TeamName = ini_data.get("CONTROLS", "Tank2.TeamName");
+	}
+
+	std::string tank1Forward = "w", tank1Left = "a", tank1Right = "d", tank1Shoot = "s", tank1Special = "e";
+	if (ini_data.exists("CONTROLS", "Tank1.Forward")) {
+		tank1Forward = ini_data.get("CONTROLS", "Tank1.Forward");
+	}
+	if (ini_data.exists("CONTROLS", "Tank1.Left")) {
+		tank1Left = ini_data.get("CONTROLS", "Tank1.Left");
+	}
+	if (ini_data.exists("CONTROLS", "Tank1.Right")) {
+		tank1Right = ini_data.get("CONTROLS", "Tank1.Right");
+	}
+	if (ini_data.exists("CONTROLS", "Tank1.Shoot")) {
+		tank1Shoot = ini_data.get("CONTROLS", "Tank1.Shoot");
+	}
+	if (ini_data.exists("CONTROLS", "Tank1.Special")) {
+		tank1Special = ini_data.get("CONTROLS", "Tank1.Special");
+	}
+	std::string tank2Forward = "Up", tank2Left = "Left", tank2Right = "Right", tank2Shoot = "Down", tank2Special = "/";
+	if (ini_data.exists("CONTROLS", "Tank2.Forward")) {
+		tank2Forward = ini_data.get("CONTROLS", "Tank2.Forward");
+	}
+	if (ini_data.exists("CONTROLS", "Tank2.Left")) {
+		tank2Left = ini_data.get("CONTROLS", "Tank2.Left");
+	}
+	if (ini_data.exists("CONTROLS", "Tank2.Right")) {
+		tank2Right = ini_data.get("CONTROLS", "Tank2.Right");
+	}
+	if (ini_data.exists("CONTROLS", "Tank2.Shoot")) {
+		tank2Shoot = ini_data.get("CONTROLS", "Tank2.Shoot");
+	}
+	if (ini_data.exists("CONTROLS", "Tank2.Special")) {
+		tank2Special = ini_data.get("CONTROLS", "Tank2.Special");
+	}
+
+	TankManager::pushTank(new Tank(20, GAME_HEIGHT/2, 0, 1, tank1Name, tank1Forward, tank1Left, tank1Right, tank1Shoot, tank1Special));
+	TankManager::pushTank(new Tank(GAME_WIDTH-20, GAME_HEIGHT/2, PI, 2, tank2Name, tank2Forward, tank2Left, tank2Right, tank2Shoot, tank2Special));
+	EndGameHandler::addTeamToWatch(1, tank1TeamName);
+	EndGameHandler::addTeamToWatch(2, tank2TeamName);
+	EndGameHandler::addTeamToWatch(HAZARD_TEAM, "HAZARDS");
+}
+
+void ResetThings::firstLevelPush() {
+	const BasicINIParser::BasicINIData& ini_data = GameManager::get_INI();
+
+	if (ini_data.exists("GAME_OPTIONS", "GameFirstLevel") && (ini_data.length("GAME_OPTIONS", "GameFirstLevel") >= 2)) {
+		LevelManager::pushLevel(ini_data.get("GAME_OPTIONS", "GameFirstLevel", 0), ini_data.get("GAME_OPTIONS", "GameFirstLevel", 1));
+	} else {
+		LevelManager::pushLevel("vanilla", "default_random");
+	}
+}
+
 //TODO: tankPositionReset should have a version with no Tank inputs
 //worry about this when there's more than two tanks
 

@@ -142,6 +142,10 @@ void Renderer::PreInitialize(int* argc, char** argv, std::string windowName) {
 }
 
 void Renderer::PreInitialize(int* argc, char** argv, std::string windowName, int startX, int startY) {
+	Renderer::PreInitialize(argc, argv, windowName, startX, startY, Renderer::window_width, Renderer::window_height);
+}
+
+void Renderer::PreInitialize(int* argc, char** argv, std::string windowName, int startX, int startY, int sizeX, int sizeY) {
 	// Initialize GLUT
 	glutInit(argc, argv);
 	glutInitDisplayMode(GLUT_SINGLE | GLUT_DEPTH);
@@ -149,6 +153,7 @@ void Renderer::PreInitialize(int* argc, char** argv, std::string windowName, int
 
 	// Setup window position, size, and title
 	glutInitWindowPosition(startX, startY);
+	Renderer::window_width = sizeX; Renderer::window_height = sizeY;
 	glutInitWindowSize(Renderer::window_width, Renderer::window_height);
 	glutCreateWindow(windowName.c_str());
 

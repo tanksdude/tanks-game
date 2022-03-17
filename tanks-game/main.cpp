@@ -41,6 +41,7 @@
 #include "level-manager.h"
 #include "hazard-manager.h"
 #include "diagnostics.h"
+#include "basic-ini-parser.h"
 
 //classes with important handling functions:
 #include "collision-handler.h"
@@ -157,11 +158,41 @@
 
 
 int main(int argc, char** argv) {
-	RNG::Initialize(std::chrono::high_resolution_clock::now().time_since_epoch().count());
+	GameManager::initializeINI("../tanks.ini");
+	const BasicINIParser::BasicINIData& ini_data = GameManager::get_INI();
 
-	Renderer::SetContext("OpenGL");
+	if (ini_data.exists("UNIVERSAL", "RNGSeed") && (ini_data.get("UNIVERSAL", "RNGSeed") != "")) {
+		RNG::Initialize(std::stoll(ini_data.get("UNIVERSAL", "RNGSeed")));
+	} else {
+		RNG::Initialize(std::chrono::high_resolution_clock::now().time_since_epoch().count());
+	}
+	if (ini_data.exists("UNIVERSAL", "GraphicsContext")) {
+		Renderer::SetContext(ini_data.get("UNIVERSAL", "GraphicsContext"));
+	} else {
+		Renderer::SetContext("OpenGL");
+	}
+	//std::cout << "RNGSeed: " << ini_data.get("", "RNGSeed") << std::endl;
+	//std::cout << "GraphisContext: " << ini_data.get("", "GraphicsContext") << std::endl;
+
 	try {
-		Renderer::PreInitialize(&argc, argv, "PowerTanks Battle v0.2.5 NOT FINAL"); //this is not guaranteed to be correct every commit but likely will be
+		std::string name = "PowerTanks Battle v0.2.5 NOT FINAL"; //this is not guaranteed to be correct every commit but likely will be
+		if (ini_data.exists("GRAPHICS_SETTINGS", "Position.StartX") && ini_data.exists("GRAPHICS_SETTINGS", "Position.StartY")) {
+			int startX = std::stoi(ini_data.get("GRAPHICS_SETTINGS", "Position.StartX"));
+			int startY = std::stoi(ini_data.get("GRAPHICS_SETTINGS", "Position.StartY"));
+			if (ini_data.exists("GRAPHICS_SETTINGS", "Position.SizeX") && ini_data.exists("GRAPHICS_SETTINGS", "Position.SizeY")) {
+				std::string sizeX = ini_data.get("GRAPHICS_SETTINGS", "Position.SizeX");
+				std::string sizeY = ini_data.get("GRAPHICS_SETTINGS", "Position.SizeY");
+				if ((sizeX == "") || (sizeY == "")) {
+					Renderer::PreInitialize(&argc, argv, name, startX, startY);
+				} else {
+					Renderer::PreInitialize(&argc, argv, name, startX, startY, std::stoi(sizeX), std::stoi(sizeY));
+				}
+			} else {
+				Renderer::PreInitialize(&argc, argv, name, startX, startY);
+			}
+		} else {
+			Renderer::PreInitialize(&argc, argv, name);
+		}
 	}
 	catch (std::exception& e) {
 		std::cout << e.what() << std::endl;
@@ -313,6 +344,7 @@ int main(int argc, char** argv) {
 	Renderer::Initialize(); //static VAO, VBO, and IBO has better performance
 	BackgroundRect::initializeGPU();
 	Diagnostics::Initialize();
+	GameSceneManager::Initialize();
 
 	Diagnostics::declareGraph("tick", ColorValueHolder(1.0f, 0.0f, 0.0f));
 	Diagnostics::declareGraph("draw", ColorValueHolder(0.0f, 0.0f, 1.0f));
@@ -321,20 +353,34 @@ int main(int argc, char** argv) {
 	Diagnostics::setGraphYOffset(0);
 	//Diagnostics::setGraphYOffset(GAME_HEIGHT);
 #else
+	//TODO: INI setting?
 	//Diagnostics::setGraphYOffset(0);
 	Diagnostics::setGraphYOffset(GAME_HEIGHT);
 #endif
 
 	//game mode:
-	GameSceneManager::pushScene(new GameMainLoop());
+	if (ini_data.exists("UNIVERAL", "GameMode")) {
+		int mode = std::stoi(ini_data.get("UNIVERSAL", "GameMode"));
+		switch (mode) {
+			default:
+				std::cerr << "Unknown GameMode \"" << mode << "\"!" << std::endl;
+			case 0:
+				//normal
+				GameSceneManager::pushScene(new GameMainLoop());
+			case 1:
+				//superfast shooting
+				GameSceneManager::pushScene(new GameMainLoop());
+			case 2:
+				//infinite world
+				GameSceneManager::pushScene(new GameMainLoop());
+		}
+	} else {
+		GameSceneManager::pushScene(new GameMainLoop());
+	}
 
 	//main game code initialization stuff:
-	TankManager::pushTank(new Tank(20, GAME_HEIGHT/2, 0, 1, "WASD", { false, 'w' }, { false, 'a' }, { false, 'd' }, { false, 's' }, { false, 'e' }));
-	TankManager::pushTank(new Tank(GAME_WIDTH-20, GAME_HEIGHT/2, PI, 2, "Arrow Keys", { true, GLUT_KEY_UP }, { true, GLUT_KEY_LEFT }, { true, GLUT_KEY_RIGHT }, { true, GLUT_KEY_DOWN }, { false, '/' }));
-	EndGameHandler::addTeamToWatch(1, "\"WASD 4 Life\"");
-	EndGameHandler::addTeamToWatch(2, "\"Arrow Keys R WINZ\"");
+	ResetThings::firstGameInitialize("\"WASD 4 Life\"", "\"Arrow Keys R WINZ\"");
 	//they're good team names, deal with it
-	EndGameHandler::addTeamToWatch(HAZARD_TEAM, "HAZARDS");
 #if _DEBUG
 	LevelManager::pushLevel("dev", "dev3");
 	//LevelManager::pushLevel("vanilla", "default_random");
@@ -343,8 +389,7 @@ int main(int argc, char** argv) {
 	//LevelManager::pushLevel("random-vanilla", "tight-patrolling-corridor");
 	//LevelManager::pushLevel("dev", "unnamed3");
 #else
-	LevelManager::pushLevel("vanilla", "default_random");
-	//LevelManager::pushLevel("dev", "dev3");
+	ResetThings::firstLevelPush();
 #endif
 	ResetThings::firstReset();
 
