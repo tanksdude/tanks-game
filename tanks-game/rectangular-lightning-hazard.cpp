@@ -1,5 +1,4 @@
 #include "rectangular-lightning-hazard.h"
-#include "game-manager.h"
 #include "renderer.h"
 #include "background-rect.h"
 #include "color-mixer.h"

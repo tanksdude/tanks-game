@@ -1,5 +1,4 @@
 #include "circular-lava-hazard.h"
-#include "game-manager.h"
 #include "renderer.h"
 #include "constants.h"
 #include <math.h>
