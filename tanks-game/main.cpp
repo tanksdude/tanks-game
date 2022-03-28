@@ -386,7 +386,7 @@ int main(int argc, char** argv) {
 	//LevelManager::pushLevel("vanilla", "default_random");
 	//LevelManager::pushLevel("random-vanilla", "sneaky_reward");
 	//LevelManager::pushLevel("vanilla-extra", "tricky_maneuvering");
-	//LevelManager::pushLevel("random-vanilla", "tight-patrolling-corridor");
+	//LevelManager::pushLevel("random-vanilla", "tight_patrolling_corridor");
 	//LevelManager::pushLevel("dev", "unnamed3");
 #else
 	ResetThings::firstLevelPush();

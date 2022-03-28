@@ -3,7 +3,7 @@
 
 class TightPatrollingCorridorLevel : public Level {
 public:
-	virtual std::string getName() const override { return "tight-patrolling-corridor"; }
+	virtual std::string getName() const override { return "tight_patrolling_corridor"; }
 	virtual ColorValueHolder getDefaultColor() const override;
 	virtual std::vector<std::string> getLevelTypes() const override {
 		std::vector<std::string> types = std::vector<std::string>{ "vanilla-extra", "random-vanilla" };
