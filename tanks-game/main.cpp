@@ -353,9 +353,14 @@ int main(int argc, char** argv) {
 	Diagnostics::setGraphYOffset(0);
 	//Diagnostics::setGraphYOffset(GAME_HEIGHT);
 #else
-	//TODO: INI setting?
 	//Diagnostics::setGraphYOffset(0);
-	Diagnostics::setGraphYOffset(GAME_HEIGHT);
+	//Diagnostics::setGraphYOffset(GAME_HEIGHT);
+
+	if (ini_data.exists("DEBUG", "PerformanceGraphOffset") && (ini_data.get("DEBUG", "PerformanceGraphOffset") != "")) {
+		Diagnostics::setGraphYOffset(GAME_HEIGHT * std::stod(ini_data.get("DEBUG", "PerformanceGraphOffset")));
+	} else {
+		Diagnostics::setGraphYOffset(GAME_HEIGHT);
+	}
 #endif
 
 	//game mode:
