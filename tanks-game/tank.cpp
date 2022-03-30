@@ -880,20 +880,58 @@ inline void Tank::drawBody(float alpha) const {
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 MVPM;
 
-	ColorValueHolder color;
 	if (this->dead) {
-		color = ColorValueHolder(0.0f, 0.0f, 0.0f);
+		ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
 		//shader->setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 0.5f); //alpha isn't interpreted
+
+		color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
+		shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+
+		MVPM = Renderer::GenerateMatrix(r, r, 0, x, y);
+		shader->setUniformMat4f("u_MVP", MVPM);
+
+		Renderer::Draw(*va, *ib, *shader);
 	} else {
-		color = getBodyColor();
+		if (tankPowers.size() <= 1) {
+			ColorValueHolder color = getBodyColor();
+
+			color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
+			shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+
+			MVPM = Renderer::GenerateMatrix(r, r, 0, x, y);
+			shader->setUniformMat4f("u_MVP", MVPM);
+
+			Renderer::Draw(*va, *ib, *shader);
+		} else {
+			//main color split:
+			ColorValueHolder color;
+			for (int i = 0; i < tankPowers.size(); i++) {
+				color = tankPowers[i]->getColor();
+
+				color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
+				shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+
+				double rotatePercent = floor((float(i) / tankPowers.size()) * Circle::numOfSides) / Circle::numOfSides;
+				double nextRotatePercent = floor((float(i+1) / tankPowers.size()) * Circle::numOfSides) / Circle::numOfSides;
+				unsigned int rotateVertices = floor((nextRotatePercent - rotatePercent) * Circle::numOfSides);
+				MVPM = Renderer::GenerateMatrix(r, r, velocity.getAngle() + (rotatePercent * 2*PI), x, y);
+				shader->setUniformMat4f("u_MVP", MVPM);
+
+				Renderer::Draw(*va, *ib, *shader, rotateVertices*3);
+			}
+
+			//center colors mix:
+			color = getBodyColor();
+
+			color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
+			shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+
+			MVPM = Renderer::GenerateMatrix(r*.75, r*.75, 0, x, y);
+			shader->setUniformMat4f("u_MVP", MVPM);
+
+			Renderer::Draw(*va, *ib, *shader);
+		}
 	}
-	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-
-	MVPM = Renderer::GenerateMatrix(r, r, 0, x, y);
-	shader->setUniformMat4f("u_MVP", MVPM);
-
-	Renderer::Draw(*va, *ib, *shader);
 }
 
 inline void Tank::drawDead(float alpha) const {
