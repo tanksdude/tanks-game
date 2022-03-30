@@ -161,7 +161,7 @@ int main(int argc, char** argv) {
 	GameManager::initializeINI("../tanks.ini");
 	const BasicINIParser::BasicINIData& ini_data = GameManager::get_INI();
 
-	if (ini_data.exists("UNIVERSAL", "RNGSeed") && (ini_data.get("UNIVERSAL", "RNGSeed") != "")) {
+	if (ini_data.exists("UNIVERSAL", "RNGSeed")) {
 		RNG::Initialize(std::stoll(ini_data.get("UNIVERSAL", "RNGSeed")));
 	} else {
 		RNG::Initialize(std::chrono::high_resolution_clock::now().time_since_epoch().count());
@@ -180,13 +180,9 @@ int main(int argc, char** argv) {
 			int startX = std::stoi(ini_data.get("GRAPHICS_SETTINGS", "Position.StartX"));
 			int startY = std::stoi(ini_data.get("GRAPHICS_SETTINGS", "Position.StartY"));
 			if (ini_data.exists("GRAPHICS_SETTINGS", "Position.SizeX") && ini_data.exists("GRAPHICS_SETTINGS", "Position.SizeY")) {
-				std::string sizeX = ini_data.get("GRAPHICS_SETTINGS", "Position.SizeX");
-				std::string sizeY = ini_data.get("GRAPHICS_SETTINGS", "Position.SizeY");
-				if ((sizeX == "") || (sizeY == "")) {
-					Renderer::PreInitialize(&argc, argv, name, startX, startY);
-				} else {
-					Renderer::PreInitialize(&argc, argv, name, startX, startY, std::stoi(sizeX), std::stoi(sizeY));
-				}
+				int sizeX = std::stoi(ini_data.get("GRAPHICS_SETTINGS", "Position.SizeX"));
+				int sizeY = std::stoi(ini_data.get("GRAPHICS_SETTINGS", "Position.SizeY"));
+				Renderer::PreInitialize(&argc, argv, name, startX, startY, sizeX, sizeY);
 			} else {
 				Renderer::PreInitialize(&argc, argv, name, startX, startY);
 			}
@@ -356,7 +352,7 @@ int main(int argc, char** argv) {
 	//Diagnostics::setGraphYOffset(0);
 	//Diagnostics::setGraphYOffset(GAME_HEIGHT);
 
-	if (ini_data.exists("DEBUG", "PerformanceGraphOffset") && (ini_data.get("DEBUG", "PerformanceGraphOffset") != "")) {
+	if (ini_data.exists("DEBUG", "PerformanceGraphOffset")) {
 		Diagnostics::setGraphYOffset(GAME_HEIGHT * std::stod(ini_data.get("DEBUG", "PerformanceGraphOffset")));
 	} else {
 		Diagnostics::setGraphYOffset(GAME_HEIGHT);
