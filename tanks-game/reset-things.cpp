@@ -28,8 +28,8 @@ void ResetThings::reset(int) {
 		}
 	}
 
-	TankInputChar* tankInput1 = TankManager::getTank(0)->getKeys();
-	TankInputChar* tankInput2 = TankManager::getTank(1)->getKeys();
+	std::string* tankInput1 = TankManager::getTank(0)->getKeys();
+	std::string* tankInput2 = TankManager::getTank(1)->getKeys();
 	//TODO: need to get inputs, name, and teamID; need something like Tank::getIdentification()
 	//maybe it also needs to store starting angle (if getNumTanks() > 2)
 

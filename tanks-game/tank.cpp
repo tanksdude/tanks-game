@@ -16,29 +16,34 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 
-TankInputChar::TankInputChar(std::string key) {
-	if (KeypressManager::keyIsSpecialFromString(key)) {
+TankInputChar::TankInputChar(std::string key_input) {
+	key = key_input;
+	if (KeypressManager::keyIsSpecialFromString(key_input)) {
 		isSpecial = true;
-		character = KeypressManager::specialKeyFromString(key);
+		key_num = KeypressManager::specialKeyFromString(key_input);
 	} else {
 		isSpecial = false;
-		character = KeypressManager::normalKeyFromString(key);
+		key_num = KeypressManager::normalKeyFromString(key_input);
 	}
 }
+/*
 TankInputChar::TankInputChar(bool special, int c) {
+	key = "";
 	isSpecial = special;
-	character = c;
+	key_num = c;
 }
+*/
 TankInputChar::TankInputChar() {
+	key = "`";
 	isSpecial = false;
-	character = '`';
+	key_num = '`';
 }
 
 bool TankInputChar::getKeyState() const {
 	if (isSpecial) {
-		return KeypressManager::getSpecialKey(character);
+		return KeypressManager::getSpecialKey(key_num);
 	}
-	return KeypressManager::getNormalKey(character);
+	return KeypressManager::getNormalKey(key_num);
 }
 
 VertexArray* Tank::va;
@@ -52,10 +57,7 @@ const double Tank::default_maxSpeed = 1;
 const double Tank::default_acceleration = 1.0/16;
 const double Tank::default_turningIncrement = 64;
 
-Tank::Tank(double x_, double y_, double angle, Team_ID teamID, std::string name_, std::string forward, std::string left, std::string right, std::string shoot, std::string special)
-: Tank(x_, y_, angle, teamID, name_, TankInputChar(forward), TankInputChar(left), TankInputChar(right), TankInputChar(shoot), TankInputChar(special)) {}
-
-Tank::Tank(double x_, double y_, double angle, Team_ID teamID, std::string name_, TankInputChar forward, TankInputChar left, TankInputChar right, TankInputChar shoot, TankInputChar special) : GameThing(teamID) {
+Tank::Tank(double x_, double y_, double angle, Team_ID teamID, std::string name_, std::string forward, std::string left, std::string right, std::string shoot, std::string special) : GameThing(teamID) {
 	x = x_;
 	y = y_;
 	velocity = SimpleVector2D(angle, 0, true);
@@ -70,11 +72,11 @@ Tank::Tank(double x_, double y_, double angle, Team_ID teamID, std::string name_
 	shootCount = 0;
 	maxShootCount = 100; //will change whenever while I'm testing
 
-	this->forward = forward;
-	this->turnL = left;
-	this->turnR = right;
-	this->shooting = shoot;
-	this->specialKey = special;
+	this->forward = TankInputChar(forward);
+	this->turnL = TankInputChar(left);
+	this->turnR = TankInputChar(right);
+	this->shooting = TankInputChar(shoot);
+	this->specialKey = TankInputChar(special);
 
 	shootingPoints = std::vector<CannonPoint>();
 	determineShootingAngles();
@@ -90,7 +92,7 @@ Tank::Tank(double x_, double y_, double angle, Team_ID teamID, std::string name_
 	initializeGPU();
 }
 
-Tank::Tank(double x_, double y_, double angle, Team_ID id_, std::string name_, TankInputChar* inputs)
+Tank::Tank(double x_, double y_, double angle, Team_ID id_, std::string name_, std::string* inputs)
 : Tank(x_, y_, angle, id_, name_, inputs[0], inputs[1], inputs[2], inputs[3], inputs[4]) {}
 
 Tank::~Tank() {
@@ -161,8 +163,8 @@ bool Tank::uninitializeGPU() {
 	return true;
 }
 
-TankInputChar* Tank::getKeys() const {
-	return new TankInputChar[]{ forward, turnL, turnR, shooting, specialKey };
+std::string* Tank::getKeys() const {
+	return new std::string[]{ forward.getKey(), turnL.getKey(), turnR.getKey(), shooting.getKey(), specialKey.getKey() };
 }
 
 bool Tank::move() {

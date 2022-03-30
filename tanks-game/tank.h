@@ -16,11 +16,15 @@ class Tank;
 #include "index-buffer.h"
 
 struct TankInputChar {
+protected:
+	std::string key;
 	bool isSpecial;
-	int character;
+	int key_num;
+public:
+	std::string getKey() const { return key; }
 	bool getKeyState() const;
 	TankInputChar(std::string);
-	TankInputChar(bool, int);
+	//TankInputChar(bool, int);
 	TankInputChar();
 };
 
@@ -93,7 +97,7 @@ public:
 	//helper stuff:
 	ColorValueHolder getBodyColor() const;
 	std::string getName() const { return name; }
-	TankInputChar* getKeys() const;
+	std::string* getKeys() const;
 
 	double getAngle() const;
 	double getCannonAngle(int index) const;
@@ -141,7 +145,6 @@ private:
 
 public:
 	Tank(double x, double y, double angle, Team_ID id, std::string name, std::string forward, std::string left, std::string right, std::string shoot, std::string special);
-	Tank(double x, double y, double angle, Team_ID id, std::string name, TankInputChar* inputs);
-	Tank(double x, double y, double angle, Team_ID id, std::string name, TankInputChar forward, TankInputChar left, TankInputChar right, TankInputChar shoot, TankInputChar special);
+	Tank(double x, double y, double angle, Team_ID id, std::string name, std::string* inputs);
 	~Tank();
 };
