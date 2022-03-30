@@ -266,16 +266,18 @@ bool CircularLightningHazard::validLocation() const {
 bool CircularLightningHazard::reasonableLocation() const {
 	for (int i = 0; i < HazardManager::getNumCircleHazards(); i++) {
 		CircleHazard* ch = HazardManager::getCircleHazard(i);
-		if (ch->getGameID() != this->getGameID()) {
-			//TODO: does this care if it's colliding with another version of itself?
+		if (ch->getName() != this->getName()) {
 			if (CollisionHandler::partiallyCollided(this, ch)) {
 				return false;
 			}
 		}
 	}
 	for (int i = 0; i < HazardManager::getNumRectHazards(); i++) {
-		if (CollisionHandler::partiallyCollided(this, HazardManager::getRectHazard(i))) {
-			return false;
+		RectHazard* rh = HazardManager::getRectHazard(i);
+		if (rh->getName() != this->getName()) {
+			if (CollisionHandler::partiallyCollided(this, rh)) {
+				return false;
+			}
 		}
 	}
 

@@ -334,6 +334,7 @@ bool VerticalLightningHazard::reasonableLocation() const {
 		wallOnRight = true;
 	}
 
+	//don't check general lightnings
 	for (int i = 0; i < HazardManager::getNumCircleHazards(); i++) {
 		if (CollisionHandler::partiallyCollided(this, HazardManager::getCircleHazard(i))) {
 			return false;
@@ -341,8 +342,7 @@ bool VerticalLightningHazard::reasonableLocation() const {
 	}
 	for (int i = 0; i < HazardManager::getNumRectHazards(); i++) {
 		RectHazard* rh = HazardManager::getRectHazard(i);
-		if (rh->getGameID() != this->getGameID()) {
-			//TODO: does this care if it's colliding with another version of itself?
+		if (rh->getName() != this->getName()) {
 			if (CollisionHandler::partiallyCollided(this, rh)) {
 				return false;
 			}
