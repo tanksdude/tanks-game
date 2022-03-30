@@ -13,6 +13,9 @@
 VertexArray* RectangularNoBulletZoneHazard::va;
 VertexBuffer* RectangularNoBulletZoneHazard::vb;
 IndexBuffer* RectangularNoBulletZoneHazard::ib;
+VertexArray* RectangularNoBulletZoneHazard::extra_va;
+VertexBuffer* RectangularNoBulletZoneHazard::extra_vb;
+IndexBuffer* RectangularNoBulletZoneHazard::extra_ib;
 bool RectangularNoBulletZoneHazard::initialized_GPU = false;
 
 std::unordered_map<std::string, float> RectangularNoBulletZoneHazard::getWeights() const {
@@ -65,6 +68,46 @@ bool RectangularNoBulletZoneHazard::initializeGPU() {
 	va = VertexArray::MakeVertexArray(*vb, layout);
 
 	ib = IndexBuffer::MakeIndexBuffer(indices, 6);
+
+	//red X:
+	float extra_positions[] = {
+		//forward slash:
+		0.0,           0.0, //0
+		0.0 + X_WIDTH, 0.0,
+		0.0,           0.0 + X_WIDTH,
+
+		1.0,           1.0, //3
+		1.0 - X_WIDTH, 1.0,
+		1.0,           1.0 - X_WIDTH,
+
+		//backslash:
+		0.0,           1.0, //6
+		0.0,           1.0 - X_WIDTH,
+		0.0 + X_WIDTH, 1.0,
+
+		1.0,           0.0, //9
+		1.0,           0.0 + X_WIDTH,
+		1.0 - X_WIDTH, 0.0
+	};
+	unsigned int extra_indices[] = {
+		//forward slash:
+		0, 1, 2, //bottom left
+		3, 4, 5, //top right
+		1, 5, 4,
+		4, 2, 1,
+
+		//backslash:
+		6, 7, 8, //top left
+		9, 10, 11, //bottom right
+		8, 7, 11,
+		11, 10, 8
+	};
+
+	extra_vb = VertexBuffer::MakeVertexBuffer(extra_positions, 6*2*2 * sizeof(float), RenderingHints::static_draw);
+	VertexBufferLayout extra_layout(2);
+	extra_va = VertexArray::MakeVertexArray(*extra_vb, layout);
+
+	extra_ib = IndexBuffer::MakeIndexBuffer(extra_indices, 8*3);
 
 	initialized_GPU = true;
 	return true;
@@ -189,6 +232,7 @@ void RectangularNoBulletZoneHazard::ghostDraw(float alpha) const {
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 MVPM;
 
+	//background:
 	ColorValueHolder color = GeneralizedNoBulletZone::getColor();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
@@ -197,6 +241,17 @@ void RectangularNoBulletZoneHazard::ghostDraw(float alpha) const {
 	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*va, *ib, *shader);
+
+	//red X:
+	color = X_COLOR;
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, .75);
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
+	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+
+	MVPM = Renderer::GenerateMatrix(w, h, 0, x, y);
+	shader->setUniformMat4f("u_MVP", MVPM);
+
+	Renderer::Draw(*extra_va, *extra_ib, *shader);
 }
 
 void RectangularNoBulletZoneHazard::ghostDraw(DrawingLayers layer, float alpha) const {

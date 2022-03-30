@@ -13,6 +13,9 @@
 VertexArray* CircularNoBulletZoneHazard::va;
 VertexBuffer* CircularNoBulletZoneHazard::vb;
 IndexBuffer* CircularNoBulletZoneHazard::ib;
+//VertexArray* CircularNoBulletZoneHazard::extra_va;
+//VertexBuffer* CircularNoBulletZoneHazard::extra_vb;
+IndexBuffer* CircularNoBulletZoneHazard::extra_ib;
 bool CircularNoBulletZoneHazard::initialized_GPU = false;
 
 std::unordered_map<std::string, float> CircularNoBulletZoneHazard::getWeights() const {
@@ -47,6 +50,7 @@ bool CircularNoBulletZoneHazard::initializeGPU() {
 		return false;
 	}
 
+	//background:
 	float positions[(Circle::numOfSides+1)*2];
 	positions[0] = 0;
 	positions[1] = 0;
@@ -67,6 +71,64 @@ bool CircularNoBulletZoneHazard::initializeGPU() {
 	va = VertexArray::MakeVertexArray(*vb, layout);
 
 	ib = IndexBuffer::MakeIndexBuffer(indices, Circle::numOfSides*3);
+
+	//red X:
+	//compared to the rectangular version, the width and height will basically be 1/4 of the circumference
+	//num vertices for one half of the X on one edge: Circle::numOfSides/4 * X_WIDTH
+	//const int num_portion_indices = ceil(Circle::numOfSides/4 * X_WIDTH); //2
+	const int num_portion_indices = floor(Circle::numOfSides/4 * X_WIDTH); //closer to the rectangular version
+	const int num_extra_indicies = 8*num_portion_indices; //ceil: 16; floor: 8
+	//unsigned int* extra_indices = new unsigned int[num_extra_indicies];
+	unsigned int* real_extra_indices = new unsigned int[num_extra_indicies*3 + 3*4];
+
+	for (int k = 0; k < 4; k++) {
+		for (int i = -1*num_portion_indices; i < num_portion_indices; i++) {
+			int val = (k*Circle::numOfSides/4 + Circle::numOfSides/8) + i + 1;
+			int insert_index = k*(2*num_portion_indices) + (i + num_portion_indices);
+			real_extra_indices[insert_index*3]   = 0;
+			real_extra_indices[insert_index*3+1] = val;
+			real_extra_indices[insert_index*3+2] = val+1;
+		}
+	}
+
+	//full triangles like the rectangular version
+	/*
+	real_extra_indices[num_extra_indicies*3 +  0] = (0*Circle::numOfSides/4 + Circle::numOfSides/8) - num_portion_indices + 1;
+	real_extra_indices[num_extra_indicies*3 +  1] = (0*Circle::numOfSides/4 + Circle::numOfSides/8) + num_portion_indices + 1;
+	real_extra_indices[num_extra_indicies*3 +  2] = (2*Circle::numOfSides/4 + Circle::numOfSides/8) - num_portion_indices + 1;
+
+	real_extra_indices[num_extra_indicies*3 +  3] = (2*Circle::numOfSides/4 + Circle::numOfSides/8) - num_portion_indices + 1;
+	real_extra_indices[num_extra_indicies*3 +  4] = (2*Circle::numOfSides/4 + Circle::numOfSides/8) + num_portion_indices + 1;
+	real_extra_indices[num_extra_indicies*3 +  5] = (0*Circle::numOfSides/4 + Circle::numOfSides/8) - num_portion_indices + 1;
+
+	real_extra_indices[num_extra_indicies*3 +  6] = (1*Circle::numOfSides/4 + Circle::numOfSides/8) - num_portion_indices + 1;
+	real_extra_indices[num_extra_indicies*3 +  7] = (1*Circle::numOfSides/4 + Circle::numOfSides/8) + num_portion_indices + 1;
+	real_extra_indices[num_extra_indicies*3 +  8] = (3*Circle::numOfSides/4 + Circle::numOfSides/8) - num_portion_indices + 1;
+
+	real_extra_indices[num_extra_indicies*3 +  9] = (3*Circle::numOfSides/4 + Circle::numOfSides/8) - num_portion_indices + 1;
+	real_extra_indices[num_extra_indicies*3 + 10] = (3*Circle::numOfSides/4 + Circle::numOfSides/8) + num_portion_indices + 1;
+	real_extra_indices[num_extra_indicies*3 + 11] = (1*Circle::numOfSides/4 + Circle::numOfSides/8) - num_portion_indices + 1;
+	*/
+
+	//the X lines don't draw over the previously-drawn arcs
+	real_extra_indices[num_extra_indicies*3 +  0] = 0;
+	real_extra_indices[num_extra_indicies*3 +  1] = (2*Circle::numOfSides/4 + Circle::numOfSides/8) + num_portion_indices + 1;
+	real_extra_indices[num_extra_indicies*3 +  2] = (0*Circle::numOfSides/4 + Circle::numOfSides/8) - num_portion_indices + 1;
+
+	real_extra_indices[num_extra_indicies*3 +  3] = 0;
+	real_extra_indices[num_extra_indicies*3 +  4] = (0*Circle::numOfSides/4 + Circle::numOfSides/8) + num_portion_indices + 1;
+	real_extra_indices[num_extra_indicies*3 +  5] = (2*Circle::numOfSides/4 + Circle::numOfSides/8) - num_portion_indices + 1;
+
+	real_extra_indices[num_extra_indicies*3 +  6] = 0;
+	real_extra_indices[num_extra_indicies*3 +  7] = (3*Circle::numOfSides/4 + Circle::numOfSides/8) + num_portion_indices + 1;
+	real_extra_indices[num_extra_indicies*3 +  8] = (1*Circle::numOfSides/4 + Circle::numOfSides/8) - num_portion_indices + 1;
+
+	real_extra_indices[num_extra_indicies*3 +  9] = 0;
+	real_extra_indices[num_extra_indicies*3 + 10] = (1*Circle::numOfSides/4 + Circle::numOfSides/8) + num_portion_indices + 1;
+	real_extra_indices[num_extra_indicies*3 + 11] = (3*Circle::numOfSides/4 + Circle::numOfSides/8) - num_portion_indices + 1;
+
+	extra_ib = IndexBuffer::MakeIndexBuffer(real_extra_indices, num_extra_indicies*3 + 3*4);
+	delete[] real_extra_indices;
 
 	initialized_GPU = true;
 	return true;
@@ -190,6 +252,7 @@ void CircularNoBulletZoneHazard::ghostDraw(float alpha) const {
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 MVPM;
 
+	//background:
 	ColorValueHolder color = GeneralizedNoBulletZone::getColor();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
@@ -198,6 +261,17 @@ void CircularNoBulletZoneHazard::ghostDraw(float alpha) const {
 	shader->setUniformMat4f("u_MVP", MVPM);
 
 	Renderer::Draw(*va, *ib, *shader);
+
+	//red X:
+	color = X_COLOR;
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, .75);
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
+	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+
+	MVPM = Renderer::GenerateMatrix(r, r, 0, x, y);
+	shader->setUniformMat4f("u_MVP", MVPM);
+
+	Renderer::Draw(*va, *extra_ib, *shader);
 }
 
 void CircularNoBulletZoneHazard::ghostDraw(DrawingLayers layer, float alpha) const {

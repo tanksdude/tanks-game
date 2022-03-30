@@ -2,7 +2,10 @@
 #include "color-value-holder.h"
 
 class GeneralizedNoBulletZone {
-	//the sole purpose of this is to provide the color
+	//provides almost nothing
+public:
+	static const float X_WIDTH;
+	static const ColorValueHolder X_COLOR;
 public:
 	virtual ColorValueHolder getColor() const;
 	virtual void tick(); //does nothing...

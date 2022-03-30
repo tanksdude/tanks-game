@@ -502,14 +502,36 @@ inline void VerticalLightningHazard::drawBackground(bool pose, float alpha) cons
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 MVPM;
 
-	ColorValueHolder color = (pose ? getBackgroundColor_Pose() : getBackgroundColor());
+	double scale;
+	if (pose || currentlyActive) {
+		scale = 1.0;
+	} else {
+		scale = tickCount / (tickCycle * stateMultiplier[currentlyActive]);
+	}
+	//scale = scale * scale;
+
+	//main background:
+	//ColorValueHolder color = (pose ? getBackgroundColor_Pose() : getBackgroundColor());
+	ColorValueHolder color = getBackgroundColor_Pose();
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
+	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+
+	MVPM = Renderer::GenerateMatrix(w, h*scale, 0, x, y + (h*(1-scale))/2);
+	shader->setUniformMat4f("u_MVP", MVPM);
+
+	Renderer::Draw(*background_va, *background_ib, *shader);
+
+	//outline:
+	Renderer::SetLineWidth(1.0f);
+
+	color = ColorValueHolder(0, 0, 0);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
 	MVPM = Renderer::GenerateMatrix(w, h, 0, x, y);
 	shader->setUniformMat4f("u_MVP", MVPM);
 
-	Renderer::Draw(*background_va, *background_ib, *shader);
+	Renderer::Draw(*background_va, *shader, GL_LINES, 1, 4); //not sure if this is actually okay, but at least it works
 }
 
 inline void VerticalLightningHazard::drawBolts(float alpha) const {

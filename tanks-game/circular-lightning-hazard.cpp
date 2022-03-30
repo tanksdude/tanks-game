@@ -441,14 +441,36 @@ inline void CircularLightningHazard::drawBackground(bool pose, float alpha) cons
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 MVPM;
 
-	ColorValueHolder color = (pose ? getBackgroundColor_Pose() : getBackgroundColor());
+	double scale;
+	if (pose || currentlyActive) {
+		scale = 1.0;
+	} else {
+		scale = tickCount / (tickCycle * stateMultiplier[currentlyActive]);
+	}
+	scale = scale * scale;
+
+	//main background:
+	//ColorValueHolder color = (pose ? getBackgroundColor_Pose() : getBackgroundColor());
+	ColorValueHolder color = getBackgroundColor_Pose();
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
+	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+
+	MVPM = Renderer::GenerateMatrix(r*scale, r*scale, 0, x, y);
+	shader->setUniformMat4f("u_MVP", MVPM);
+
+	Renderer::Draw(*background_va, *background_ib, *shader);
+
+	//outline:
+	Renderer::SetLineWidth(1.0f);
+
+	color = ColorValueHolder(0, 0, 0);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
 	MVPM = Renderer::GenerateMatrix(r, r, 0, x, y);
 	shader->setUniformMat4f("u_MVP", MVPM);
 
-	Renderer::Draw(*background_va, *background_ib, *shader);
+	Renderer::Draw(*background_va, *shader, GL_LINE_LOOP, 1, Circle::numOfSides);
 }
 
 inline void CircularLightningHazard::drawBolts(float alpha) const {

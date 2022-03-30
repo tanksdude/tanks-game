@@ -13,6 +13,9 @@ private:
 	static VertexArray* va;
 	static VertexBuffer* vb;
 	static IndexBuffer* ib;
+	static VertexArray* extra_va; //the red X
+	static VertexBuffer* extra_vb;
+	static IndexBuffer* extra_ib;
 	static bool initialized_GPU;
 
 	static bool initializeGPU();
