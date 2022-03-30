@@ -390,6 +390,9 @@
     <ClCompile Include="basic-ini-parser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="dev-backwards-movement-power.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -813,6 +816,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="basic-ini-parser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dev-backwards-movement-power.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

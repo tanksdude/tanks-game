@@ -51,6 +51,11 @@ void DeveloperLevel3::initialize() {
 	delete[] posArr;
 
 	//not from dev1
+	pos = LevelHelper::getSymmetricPowerupPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 60+20+40+10);
+	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "dev", "backwards_movement"));
+	pos = LevelHelper::getSymmetricPowerupPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 60+20+40+10);
+	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "dev", "backwards_movement"));
+
 	posArr = new double[3]{ GAME_WIDTH/2, GAME_HEIGHT/2 + 10+30/2, PI/2 };
 	int* patrolCount = new int[1]{ 4 };
 	double* patrolRoute = new double[4*2]{

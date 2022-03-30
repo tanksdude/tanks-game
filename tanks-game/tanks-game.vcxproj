@@ -150,6 +150,7 @@
     <ClCompile Include="circular-no-bullet-zone-hazard.cpp" />
     <ClCompile Include="concealed-powerups-level.cpp" />
     <ClCompile Include="dev-annoying-power.cpp" />
+    <ClCompile Include="dev-backwards-movement-power.cpp" />
     <ClCompile Include="dev-color-changing-power.cpp" />
     <ClCompile Include="dev-other-stuff-is-poison-power.cpp" />
     <ClCompile Include="dev-wall-hazard.cpp" />
@@ -278,6 +279,7 @@
     <ClInclude Include="circular-no-bullet-zone-hazard.h" />
     <ClInclude Include="concealed-powerups-level.h" />
     <ClInclude Include="dev-annoying-power.h" />
+    <ClInclude Include="dev-backwards-movement-power.h" />
     <ClInclude Include="dev-color-changing-power.h" />
     <ClInclude Include="dev-other-stuff-is-poison-power.h" />
     <ClInclude Include="dev-wall-hazard.h" />

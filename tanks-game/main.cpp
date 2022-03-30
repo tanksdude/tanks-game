@@ -141,6 +141,7 @@
 #include "ultra-bounce-power.h" //pushes wall away when it bounces
 #include "dev-color-changing-power.h" //color changes based on tank proximity
 #include "dev-other-stuff-is-poison-power.h" //kills tank when touching normally-safe stuff
+#include "dev-backwards-movement-power.h" //self-explanatory
 
 //a lot of the includes aren't needed anymore thanks to GameMainLoop, but may as well keep them
 #include "game-main-loop.h"
@@ -262,6 +263,7 @@ int main(int argc, char** argv) {
 	PowerupManager::addPowerFactory(UltraBouncePower::factory);
 	PowerupManager::addPowerFactory(DevColorChangingPower::factory);
 	PowerupManager::addPowerFactory(DevOtherStuffIsPoisonPower::factory);
+	PowerupManager::addPowerFactory(DevBackwardsMovementPower::factory);
 
 	//hazards
 	//vanilla (some are also "old"):
