@@ -59,7 +59,7 @@ HomingTankPower::HomingTankPower() {
 #include "power-function-helper.h"
 #include "constants.h"
 
-const double HomingBulletPower::homingStrength = 2*PI / 256; //JS: 2*PI / 512
+const double HomingBulletPower::homingStrength = 2*PI / 512; //old: 2*PI / 256 (it was too strong before)
 
 InteractionBoolHolder HomingBulletPower::modifiedMovement(Bullet* b) {
 	Game_ID targetID = PowerFunctionHelper::homingGenericTarget(b, true);
