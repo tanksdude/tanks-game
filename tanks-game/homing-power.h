@@ -2,6 +2,9 @@
 #include "power.h"
 
 class HomingPower : public Power {
+public: //bullet stuff
+	static const double homingStrength;
+
 public:
 	virtual std::vector<std::string> getPowerTypes() const override {
 		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "old", "random-old", "supermix", "supermix-vanilla", "random" };
@@ -43,9 +46,6 @@ public:
 
 
 class HomingBulletPower : public BulletPower {
-protected: //public?
-	static const double homingStrength;
-
 public:
 	virtual void initialize(Bullet* parent) override;
 	virtual void removeEffects(Bullet* parent) override;

@@ -2,6 +2,9 @@
 #include "power.h"
 
 class TripleNamedPower : public Power {
+public: //tank stuff
+	static const double bulletAngleDiff;
+
 public:
 	virtual std::vector<std::string> getPowerTypes() const override {
 		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "old", "random-old", "supermix", "supermix-vanilla", "random" };
@@ -29,9 +32,6 @@ public:
 
 
 class TripleNamedTankPower : public TankPower {
-protected:
-	static const double angleDiff;
-
 public:
 	virtual void initialize(Tank* parent) override;
 	virtual void removeEffects(Tank* parent) override;
@@ -44,7 +44,7 @@ public:
 	virtual BulletPower* makeBulletPower() const override;
 
 	//bool modifiesAdditionalShooting = true;
-	virtual void additionalShooting(Tank* parent, CannonPoint) override;
+	virtual void additionalShooting(Tank* parent, const CannonPoint&) override;
 
 	TripleNamedTankPower();
 };

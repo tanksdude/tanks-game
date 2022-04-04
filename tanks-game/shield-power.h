@@ -2,10 +2,7 @@
 #include "power.h"
 
 class ShieldPower : public Power {
-	friend class ShieldTankPower;
-	friend class ShieldBulletPower; //probably won't be used
-
-protected:
+public: //tank and bullet stuff
 	static const double barrierStrength; //amount of time to subtract when harming the shield
 
 public:

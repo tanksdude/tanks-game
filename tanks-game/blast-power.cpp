@@ -1,5 +1,12 @@
 #include "blast-power.h"
 
+const double BlastPower::bulletAngleDeviation = PI/3;
+const int BlastPower::bulletAmount = 16;
+
+const double BlastPower::maxBulletAcceleration = 3/16.0;
+const double BlastPower::minBulletAcceleration = 1/16.0;
+const double BlastPower::degradeAmount = .25;
+
 std::unordered_map<std::string, float> BlastPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", 1.0f });
@@ -39,9 +46,6 @@ BlastPower::BlastPower() {
 #include <math.h>
 #include "rng.h"
 
-const double BlastTankPower::bulletAngleDeviation = PI/3;
-const int BlastTankPower::bulletAmount = 16;
-
 void BlastTankPower::initialize(Tank* parent) {
 	//nothing
 }
@@ -50,9 +54,9 @@ void BlastTankPower::removeEffects(Tank* parent) {
 	//nothing
 }
 
-void BlastTankPower::additionalShooting(Tank* t, CannonPoint c) {
-	for (int i = 0; i < bulletAmount; i++) {
-		double tempAngle = (RNG::randFunc()*2 - 1) * bulletAngleDeviation; //[-1,1) * deviation
+void BlastTankPower::additionalShooting(Tank* t, const CannonPoint& c) {
+	for (int i = 0; i < BlastPower::bulletAmount; i++) {
+		double tempAngle = (RNG::randFunc()*2 - 1) * BlastPower::bulletAngleDeviation; //[-1,1) * deviation
 		t->regularMakeBullet(t->r * cos(c.angle + t->velocity.getAngle() + tempAngle), t->r * sin(c.angle + t->velocity.getAngle() + tempAngle), c.angle + t->velocity.getAngle() + tempAngle);
 	}
 }
@@ -75,13 +79,9 @@ BlastTankPower::BlastTankPower() {
 #include "collision-handler.h"
 #include "rng.h"
 
-const double BlastBulletPower::maxBulletAcceleration = 3/16.0;
-const double BlastBulletPower::minBulletAcceleration = 1/16.0;
-const double BlastBulletPower::degradeAmount = .25;
-
 InteractionBoolHolder BlastBulletPower::modifiedMovement(Bullet* b) {
 	if (b->velocity.getMagnitude() <= 0) {
-		b->opaqueness -= degradeAmount;
+		b->opaqueness -= BlastPower::degradeAmount;
 	} /*else if (b->velocity < 0) {
 		b->velocity.setMagnitude(0);
 		b->acceleration = 0;
@@ -91,7 +91,7 @@ InteractionBoolHolder BlastBulletPower::modifiedMovement(Bullet* b) {
 
 InteractionBoolHolder BlastBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
 	if (b->velocity.getMagnitude() <= 0) {
-		b->opaqueness -= degradeAmount;
+		b->opaqueness -= BlastPower::degradeAmount;
 		return { b->isDead(), false };
 	} else {
 		if (CollisionHandler::partiallyCollided(b, w)) {
@@ -147,7 +147,7 @@ TankPower* BlastBulletPower::makeTankPower() const {
 }
 
 BlastBulletPower::BlastBulletPower()
-: BlastBulletPower(-1 * ((RNG::randFunc()+RNG::randFunc())/2 * (maxBulletAcceleration - minBulletAcceleration) + minBulletAcceleration)) {}
+: BlastBulletPower(-1 * ((RNG::randFunc()+RNG::randFunc())/2 * (BlastPower::maxBulletAcceleration - BlastPower::minBulletAcceleration) + BlastPower::minBulletAcceleration)) {}
 //acceleration: [0,1) * accDiff + min
 
 BlastBulletPower::BlastBulletPower(double acceleration) {

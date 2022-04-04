@@ -2,6 +2,11 @@
 #include "power.h"
 
 class BananaPower : public Power {
+public: //bullet stuff
+	static const int bananaCount; //TODO: ability to change this in constructor
+	static const double maxNewBulletVelocity;
+	static const double minNewBulletVelocity;
+
 public:
 	virtual std::vector<std::string> getPowerTypes() const override {
 		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "old", "random-old", "supermix", "supermix-vanilla", "random" };
@@ -45,9 +50,6 @@ public:
 
 class BananaBulletPower : public BulletPower {
 protected:
-	static const int bananaCount; //TODO: ability to change this in constructor
-	static const double maxNewBulletVelocity;
-	static const double minNewBulletVelocity;
 	bool wasStationary; //must have velocity of zero for one tick before banana-ing
 
 public:

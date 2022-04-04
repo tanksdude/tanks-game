@@ -1,5 +1,7 @@
 #include "grenade-power.h"
 
+const double GrenadePower::degradeAmount = .875;
+
 std::unordered_map<std::string, float> GrenadePower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", 1.0f });
@@ -57,11 +59,9 @@ GrenadeTankPower::GrenadeTankPower() {
 
 
 
-const double GrenadeBulletPower::degradeAmount = .875;
-
 InteractionBoolHolder GrenadeBulletPower::modifiedMovement(Bullet* b) {
 	if (b->velocity.getMagnitude() <= 0) {
-		b->opaqueness -= degradeAmount;
+		b->opaqueness -= GrenadePower::degradeAmount;
 		b->r *= 65/64.0;
 	} /*else if (b->velocity.getMagnitude() < 0) {
 		b->velocity.setMagnitude(0);
@@ -72,7 +72,7 @@ InteractionBoolHolder GrenadeBulletPower::modifiedMovement(Bullet* b) {
 
 InteractionBoolHolder GrenadeBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
 	if (b->velocity.getMagnitude() <= 0) {
-		b->opaqueness -= degradeAmount;
+		b->opaqueness -= GrenadePower::degradeAmount;
 		return { b->isDead(), false };
 	} else {
 		if (b->acceleration < 0) {

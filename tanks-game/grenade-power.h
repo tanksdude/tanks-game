@@ -2,6 +2,9 @@
 #include "power.h"
 
 class GrenadePower : public Power {
+public: //bullet stuff
+	static const double degradeAmount;
+
 public:
 	virtual std::vector<std::string> getPowerTypes() const override {
 		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "old", "random-old", "supermix", "supermix-vanilla", "random" };
@@ -46,9 +49,6 @@ public:
 
 
 class GrenadeBulletPower : public BulletPower {
-protected:
-	static const double degradeAmount;
-
 public:
 	virtual void initialize(Bullet* parent) override;
 	virtual void removeEffects(Bullet* parent) override;

@@ -2,7 +2,7 @@
 #include "power.h"
 
 class MultishotPower : public Power {
-public:
+public: //tank stuff
 	static const int bulletCount = 8;
 
 public:

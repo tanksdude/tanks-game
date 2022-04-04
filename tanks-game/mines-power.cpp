@@ -1,5 +1,7 @@
 #include "mines-power.h"
 
+const double MinesPower::bulletDistance = 1.0/8;
+
 std::unordered_map<std::string, float> MinesPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla-extra", .5f });
@@ -34,8 +36,6 @@ MinesPower::MinesPower() {
 //#include "constants.h"
 #include <math.h>
 
-const double MinesTankPower::bulletDistance = 1.0/8;
-
 void MinesTankPower::tick(Tank* t) {
 	for (int i = 0; i < t->tankPowers.size(); i++) {
 		if (t->tankPowers[i] != this) {
@@ -49,8 +49,8 @@ void MinesTankPower::tick(Tank* t) {
 	this->modifiesAdditionalShooting = true;
 }
 
-void MinesTankPower::additionalShooting(Tank* t, CannonPoint c) {
-	t->regularMakeBullet(t->r * cos(t->velocity.getAngle() + c.angle) * bulletDistance, t->r * sin(t->velocity.getAngle() + c.angle) * bulletDistance, c.angle + t->velocity.getAngle());
+void MinesTankPower::additionalShooting(Tank* t, const CannonPoint& c) {
+	t->regularMakeBullet(t->r * cos(t->velocity.getAngle() + c.angle) * MinesPower::bulletDistance, t->r * sin(t->velocity.getAngle() + c.angle) * MinesPower::bulletDistance, c.angle + t->velocity.getAngle());
 }
 
 void MinesTankPower::initialize(Tank* parent) {

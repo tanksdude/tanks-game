@@ -1,5 +1,7 @@
 #include "shotgun-power.h"
 
+const int ShotgunPower::bulletSpreadCount = 2;
+
 std::unordered_map<std::string, float> ShotgunPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla-extra", 1.0f });
@@ -37,11 +39,9 @@ ShotgunPower::ShotgunPower() {
 #include "constants.h"
 #include <math.h>
 
-const int ShotgunTankPower::bulletSpreadCount = 2;
-
-void ShotgunTankPower::additionalShooting(Tank* parent, CannonPoint c) {
-	const double angleDiff = PI/2 / bulletSpreadCount;
-	for (int i = bulletSpreadCount; i >= 1; i--) {
+void ShotgunTankPower::additionalShooting(Tank* parent, const CannonPoint& c) {
+	const double angleDiff = PI/2 / ShotgunPower::bulletSpreadCount;
+	for (int i = ShotgunPower::bulletSpreadCount; i >= 1; i--) {
 		parent->regularMakeBullet(parent->r * cos(parent->velocity.getAngle() + c.angle + angleDiff*i), parent->r * sin(parent->velocity.getAngle() + c.angle + angleDiff*i), parent->velocity.getAngle() + c.angle);
 		parent->regularMakeBullet(parent->r * cos(parent->velocity.getAngle() + c.angle - angleDiff*i), parent->r * sin(parent->velocity.getAngle() + c.angle - angleDiff*i), parent->velocity.getAngle() + c.angle);
 	}

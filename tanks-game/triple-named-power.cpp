@@ -1,5 +1,7 @@
 #include "triple-named-power.h"
 
+const double TripleNamedPower::bulletAngleDiff = PI/16;
+
 std::unordered_map<std::string, float> TripleNamedPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", 1.0f });
@@ -39,11 +41,9 @@ TripleNamedPower::TripleNamedPower() {
 #include "constants.h"
 #include <math.h>
 
-const double TripleNamedTankPower::angleDiff = PI/16;
-
-void TripleNamedTankPower::additionalShooting(Tank* parent, CannonPoint c) {
-	parent->regularMakeBullet(parent->r * cos(parent->velocity.getAngle() + c.angle + angleDiff), parent->r * sin(parent->velocity.getAngle() + c.angle + angleDiff), parent->velocity.getAngle() + c.angle);
-	parent->regularMakeBullet(parent->r * cos(parent->velocity.getAngle() + c.angle - angleDiff), parent->r * sin(parent->velocity.getAngle() + c.angle - angleDiff), parent->velocity.getAngle() + c.angle);
+void TripleNamedTankPower::additionalShooting(Tank* parent, const CannonPoint& c) {
+	parent->regularMakeBullet(parent->r * cos(parent->velocity.getAngle() + c.angle + TripleNamedPower::bulletAngleDiff), parent->r * sin(parent->velocity.getAngle() + c.angle + TripleNamedPower::bulletAngleDiff), parent->velocity.getAngle() + c.angle);
+	parent->regularMakeBullet(parent->r * cos(parent->velocity.getAngle() + c.angle - TripleNamedPower::bulletAngleDiff), parent->r * sin(parent->velocity.getAngle() + c.angle - TripleNamedPower::bulletAngleDiff), parent->velocity.getAngle() + c.angle);
 }
 
 void TripleNamedTankPower::initialize(Tank* parent) {

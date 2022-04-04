@@ -3,6 +3,9 @@
 #include "bounce-power.h"
 
 class UltraBouncePower : public BouncePower {
+public: //bullet stuff
+	//static const int maxBounces;
+
 public:
 	virtual std::vector<std::string> getPowerTypes() const override {
 		std::vector<std::string> types = std::vector<std::string>{ "dev", "random-dev" };
@@ -45,7 +48,6 @@ public:
 
 class UltraBounceBulletPower : public BounceBulletPower {
 protected:
-	//static const int maxBounces;
 	//int bouncesLeft;
 
 public:

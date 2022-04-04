@@ -1,5 +1,9 @@
 #include "banana-power.h"
 
+const int BananaPower::bananaCount = 8; //TODO: change with INI
+const double BananaPower::maxNewBulletVelocity = 5.0/4.0;
+const double BananaPower::minNewBulletVelocity = 1.0/2.0;
+
 std::unordered_map<std::string, float> BananaPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", 1.0f });
@@ -60,13 +64,9 @@ BananaTankPower::BananaTankPower() {
 #include "rng.h"
 #include <vector>
 
-const int BananaBulletPower::bananaCount = 8; //TODO: change with INI
-const double BananaBulletPower::maxNewBulletVelocity = 5.0/4.0;
-const double BananaBulletPower::minNewBulletVelocity = 1.0/2.0;
-
 InteractionBoolHolder BananaBulletPower::modifiedMovement(Bullet* b) {
 	if (wasStationary && b->velocity.getMagnitude() <= 0) {
-		for (int i = 0; i < bananaCount; i++) {
+		for (int i = 0; i < BananaPower::bananaCount; i++) {
 			std::vector<BulletPower*>* bp = new std::vector<BulletPower*>;
 			bp->reserve(b->bulletPowers.size()-1);
 			for (int i = 0; i < b->bulletPowers.size(); i++) {
@@ -78,7 +78,7 @@ InteractionBoolHolder BananaBulletPower::modifiedMovement(Bullet* b) {
 			if (newVelocity == 0) {
 				newVelocity = Tank::default_maxSpeed*BULLET_TO_TANK_SPEED_RATIO; //if bullet's initial speed is zero, it should still explode (TODO: what should the initial speed be?)
 			}
-			newVelocity = newVelocity * ((RNG::randFunc()+RNG::randFunc())/2 * (maxNewBulletVelocity - minNewBulletVelocity) + minNewBulletVelocity);
+			newVelocity = newVelocity * ((RNG::randFunc()+RNG::randFunc())/2 * (BananaPower::maxNewBulletVelocity - BananaPower::minNewBulletVelocity) + BananaPower::minNewBulletVelocity);
 			BulletManager::pushBullet(new Bullet(b->x, b->y, b->r/2, RNG::randFunc() * 2*PI, newVelocity, b->getTeamID(), b->getParentIDType(), b->getParentID(), bp, true));
 			delete bp;
 		}

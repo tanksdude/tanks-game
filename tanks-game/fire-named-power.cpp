@@ -1,5 +1,13 @@
 #include "fire-named-power.h"
 
+const double FireNamedPower::bulletAngleDeviation = PI/4;
+const int FireNamedPower::bulletAmount = 4;
+
+const double FireNamedPower::maxBulletAcceleration = 3/32.0;
+const double FireNamedPower::minBulletAcceleration = 1/32.0;
+const double FireNamedPower::degradeAmount = .5;
+const double FireNamedPower::growAmount = 1.5/32.0; //TODO: need way to pass parameters into bulletpower constructor
+
 std::unordered_map<std::string, float> FireNamedPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", 1.0f });
@@ -40,9 +48,6 @@ FireNamedPower::FireNamedPower() {
 #include <math.h>
 #include "rng.h"
 
-const double FireNamedTankPower::bulletAngleDeviation = PI/4;
-const int FireNamedTankPower::bulletAmount = 4;
-
 void FireNamedTankPower::initialize(Tank* parent) {
 	//nothing
 }
@@ -51,9 +56,9 @@ void FireNamedTankPower::removeEffects(Tank* parent) {
 	//nothing
 }
 
-void FireNamedTankPower::additionalShooting(Tank* t, CannonPoint c) {
-	for (int i = 0; i < bulletAmount; i++) {
-		double tempAngle = (RNG::randFunc()+RNG::randFunc() - 1) * bulletAngleDeviation; //[-1,1) * deviation
+void FireNamedTankPower::additionalShooting(Tank* t, const CannonPoint& c) {
+	for (int i = 0; i < FireNamedPower::bulletAmount; i++) {
+		double tempAngle = (RNG::randFunc()+RNG::randFunc() - 1) * FireNamedPower::bulletAngleDeviation; //[-1,1) * deviation
 		t->regularMakeBullet(t->r * cos(c.angle + t->velocity.getAngle() + tempAngle), t->r * sin(c.angle + t->velocity.getAngle() + tempAngle), c.angle + t->velocity.getAngle() + tempAngle);
 	}
 }
@@ -75,16 +80,11 @@ FireNamedTankPower::FireNamedTankPower() {
 
 #include "rng.h"
 
-const double FireNamedBulletPower::maxBulletAcceleration = 3/32.0;
-const double FireNamedBulletPower::minBulletAcceleration = 1/32.0;
-const double FireNamedBulletPower::degradeAmount = .5;
-const double FireNamedBulletPower::growAmount = 1.5/32.0; //TODO: need way to pass parameters into bulletpower constructor
-
 InteractionBoolHolder FireNamedBulletPower::modifiedMovement(Bullet* b) {
 	if (b->velocity.getMagnitude() > 0) {
-		b->r += growAmount;
+		b->r += FireNamedPower::growAmount;
 	} else if (b->velocity.getMagnitude() <= 0) {
-		b->opaqueness -= degradeAmount;
+		b->opaqueness -= FireNamedPower::degradeAmount;
 	} /*else if (b->velocity < 0) {
 		b->velocity.setMagnitude(0);
 		b->acceleration = 0;
@@ -94,7 +94,7 @@ InteractionBoolHolder FireNamedBulletPower::modifiedMovement(Bullet* b) {
 
 InteractionBoolHolder FireNamedBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
 	if (b->velocity.getMagnitude() <= 0) {
-		b->opaqueness -= degradeAmount;
+		b->opaqueness -= FireNamedPower::degradeAmount;
 		return { b->isDead(), false };
 	} else {
 		if (b->acceleration < 0) {
@@ -130,7 +130,7 @@ TankPower* FireNamedBulletPower::makeTankPower() const {
 }
 
 FireNamedBulletPower::FireNamedBulletPower()
-: FireNamedBulletPower(-1 * ((RNG::randFunc()+RNG::randFunc())/2 * (maxBulletAcceleration - minBulletAcceleration) + minBulletAcceleration)) {}
+: FireNamedBulletPower(-1 * ((RNG::randFunc()+RNG::randFunc())/2 * (FireNamedPower::maxBulletAcceleration - FireNamedPower::minBulletAcceleration) + FireNamedPower::minBulletAcceleration)) {}
 //accleration: [0,1) * accDiff + min
 
 FireNamedBulletPower::FireNamedBulletPower(double acceleration) {

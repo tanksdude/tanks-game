@@ -2,6 +2,10 @@
 #include "power.h"
 
 class MegaDeathPower : public Power {
+public: //bullet stuff
+	static const double destroyWallTier; //(and destroyHazardTier)
+	static const double bulletSizeMultiplierPerTick;
+
 public:
 	virtual std::vector<std::string> getPowerTypes() const override {
 		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "random" };
@@ -50,10 +54,6 @@ public:
 
 
 class MegaDeathBulletPower : public BulletPower {
-protected: //public?
-	static const double destroyWallTier; //(and destroyHazardTier)
-	static const double bulletSizeMultiplierPerTick;
-
 public:
 	virtual void initialize(Bullet* parent) override;
 	virtual void removeEffects(Bullet* parent) override;

@@ -2,6 +2,16 @@
 #include "power.h"
 
 class FireNamedPower : public Power {
+public: //tank stuff
+	static const double bulletAngleDeviation;
+	static const int bulletAmount;
+
+public: //bullet stuff
+	static const double maxBulletAcceleration;
+	static const double minBulletAcceleration;
+	static const double degradeAmount;
+	static const double growAmount;
+
 public:
 	virtual std::vector<std::string> getPowerTypes() const override {
 		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "old", "random-old", "supermix", "supermix-vanilla", "random" };
@@ -29,10 +39,6 @@ public:
 
 
 class FireNamedTankPower : public TankPower {
-protected:
-	static const double bulletAngleDeviation;
-	static const int bulletAmount;
-
 public:
 	virtual void initialize(Tank* parent) override;
 	virtual void removeEffects(Tank* parent) override;
@@ -45,7 +51,7 @@ public:
 	virtual BulletPower* makeBulletPower() const override;
 
 	//bool modifiesAdditionalShooting = true;
-	virtual void additionalShooting(Tank* parent, CannonPoint) override;
+	virtual void additionalShooting(Tank* parent, const CannonPoint&) override;
 	//bool overridesAdditionalShooting = true;
 
 	//virtual double getTankMaxSpeedMultiplier() const override { return .75; } //JS
@@ -60,10 +66,6 @@ public:
 
 class FireNamedBulletPower : public BulletPower {
 protected:
-	static const double maxBulletAcceleration;
-	static const double minBulletAcceleration;
-	static const double degradeAmount;
-	static const double growAmount;
 	double accelerationAmount;
 
 public:

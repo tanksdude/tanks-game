@@ -99,7 +99,7 @@ public:
 	*/
 
 	bool modifiesAdditionalShooting = false;
-	virtual void additionalShooting(Tank* parent, CannonPoint) { return; } //for regular powerups (triple/shotgun, fire/blast, mines(?))
+	virtual void additionalShooting(Tank* parent, const CannonPoint&) { return; } //for regular powerups (triple/shotgun, fire/blast, mines(?))
 	bool overridesAdditionalShooting = false; //true if default shooting won't be used
 	bool additionalShootingCanWorkWithOthers = true; //probably should only be true
 	bool additionalShootingCanOnlyWorkIndividually = false;

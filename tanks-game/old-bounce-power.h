@@ -3,6 +3,9 @@
 #include "bounce-power.h"
 
 class OldBouncePower : public BouncePower {
+public: //bullet stuff
+	//static const int maxBounces;
+
 public:
 	virtual std::vector<std::string> getPowerTypes() const override {
 		std::vector<std::string> types = std::vector<std::string>{ "old", "random-old" };
@@ -49,7 +52,6 @@ public:
 
 class OldBounceBulletPower : public BounceBulletPower {
 protected:
-	//static const int maxBounces;
 	//int bouncesLeft;
 
 public:

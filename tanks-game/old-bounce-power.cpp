@@ -1,5 +1,7 @@
 #include "old-bounce-power.h"
 
+//const int OldBouncePower::maxBounces = 16;
+
 std::unordered_map<std::string, float> OldBouncePower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "old", 1.0f });
@@ -55,8 +57,6 @@ OldBounceTankPower::OldBounceTankPower() : BounceTankPower() {
 #include "power-function-helper.h"
 #include "collision-handler.h"
 
-//const int OldBounceBulletPower::maxBounces = 16;
-
 /*
 InteractionBoolHolder OldBounceBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
 	return BounceBulletPower::modifiedCollisionWithWall(b, w);
@@ -84,7 +84,7 @@ OldBounceBulletPower::OldBounceBulletPower() : BounceBulletPower() {
 	timeLeft = 0;
 	maxTime = -1;
 
-	bouncesLeft = OldBounceBulletPower::maxBounces;
+	bouncesLeft = OldBouncePower::maxBounces;
 
 	modifiesCollisionWithWall = true;
 	//modifiedCollisionWithWallCanWorkWithOthers = false;

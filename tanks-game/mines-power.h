@@ -3,6 +3,9 @@
 
 class MinesPower : public Power {
 	//this should be renamed (but probably won't...)
+public: //tank stuff
+	static const double bulletDistance; //percentage from center (beginning of cannon) to end of cannon
+
 public:
 	virtual std::vector<std::string> getPowerTypes() const override {
 		std::vector<std::string> types = std::vector<std::string>{ "vanilla-extra", "old" };
@@ -36,9 +39,6 @@ public:
 
 
 class MinesTankPower : public TankPower {
-protected:
-	static const double bulletDistance; //percentage from center (beginning of cannon) to end of cannon
-
 public:
 	virtual void initialize(Tank* parent) override;
 	virtual void removeEffects(Tank* parent) override;
@@ -57,7 +57,7 @@ public:
 	virtual BulletPower* makeBulletPower() const override;
 
 	//bool modifiesAdditionalShooting = true;
-	virtual void additionalShooting(Tank* parent, CannonPoint) override;
+	virtual void additionalShooting(Tank* parent, const CannonPoint&) override;
 	//bool overridesAdditionalShooting = true;
 
 	virtual double getTankFiringRateMultiplier() const override { return .25; } //.5?

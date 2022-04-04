@@ -1,5 +1,7 @@
 #include "homing-power.h"
 
+const double HomingPower::homingStrength = 2*PI / 512; //old: 2*PI / 256 (it was too strong before)
+
 std::unordered_map<std::string, float> HomingPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", 1.0f });
@@ -59,12 +61,10 @@ HomingTankPower::HomingTankPower() {
 #include "power-function-helper.h"
 #include "constants.h"
 
-const double HomingBulletPower::homingStrength = 2*PI / 512; //old: 2*PI / 256 (it was too strong before)
-
 InteractionBoolHolder HomingBulletPower::modifiedMovement(Bullet* b) {
 	Game_ID targetID = PowerFunctionHelper::homingGenericTarget(b, true);
 	if (targetID != -1) {
-		PowerFunctionHelper::homingGenericMove(b, targetID, HomingBulletPower::homingStrength);
+		PowerFunctionHelper::homingGenericMove(b, targetID, HomingPower::homingStrength);
 	} else {
 		//do another targeting round, but on hazards/"targetables" instead
 		//this will only occur for some sort of "team mode" or single-player campaign

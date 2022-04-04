@@ -1,5 +1,7 @@
 #include "ultra-bounce-power.h"
 
+//const int UltraBouncePower::maxBounces = 16;
+
 std::unordered_map<std::string, float> UltraBouncePower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "dev", .5f });
@@ -68,8 +70,6 @@ UltraBounceTankPower::UltraBounceTankPower() : BounceTankPower() {
 
 #include "power-function-helper.h"
 #include "collision-handler.h"
-
-//const int UltraBounceBulletPower::maxBounces = 16;
 
 InteractionBoolHolder UltraBounceBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
 	//if (abs(b->velocity.getMagnitude()) * Bullet::default_radius/b->r <= .5) {
@@ -153,7 +153,7 @@ TankPower* UltraBounceBulletPower::makeTankPower() const {
 	return new UltraBounceTankPower();
 }
 
-UltraBounceBulletPower::UltraBounceBulletPower() : UltraBounceBulletPower(BounceBulletPower::maxBounces) {}
+UltraBounceBulletPower::UltraBounceBulletPower() : UltraBounceBulletPower(BouncePower::maxBounces) {}
 
 UltraBounceBulletPower::UltraBounceBulletPower(int bounces) : BounceBulletPower(bounces) {
 	/*

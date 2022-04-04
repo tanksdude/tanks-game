@@ -1,5 +1,8 @@
 #include "mega-death-power.h"
 
+const double MegaDeathPower::destroyWallTier = DESTRUCTION_TIER;
+const double MegaDeathPower::bulletSizeMultiplierPerTick = 65.0/64.0;
+
 std::unordered_map<std::string, float> MegaDeathPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", .5f });
@@ -55,11 +58,8 @@ MegaDeathTankPower::MegaDeathTankPower() {
 
 #include "constants.h"
 
-const double MegaDeathBulletPower::destroyWallTier = DESTRUCTION_TIER;
-const double MegaDeathBulletPower::bulletSizeMultiplierPerTick = 65.0/64.0;
-
 void MegaDeathBulletPower::tick(Bullet* b) {
-	if (getOffenseTier(b) >= destroyWallTier) {
+	if (getOffenseTier(b) >= MegaDeathPower::destroyWallTier) {
 		modifiesCollisionWithWall = true;
 		modifiedCollisionWithWallCanWorkWithOthers = false;
 	} else { //the size could have decreased
@@ -69,7 +69,7 @@ void MegaDeathBulletPower::tick(Bullet* b) {
 }
 
 InteractionBoolHolder MegaDeathBulletPower::modifiedMovement(Bullet* b) {
-	b->r *= bulletSizeMultiplierPerTick;
+	b->r *= MegaDeathPower::bulletSizeMultiplierPerTick;
 	return { false };
 }
 
@@ -79,14 +79,14 @@ InteractionBoolHolder MegaDeathBulletPower::modifiedCollisionWithWall(Bullet* b,
 }
 
 double MegaDeathBulletPower::getOffenseTier(const Bullet* b) const {
-	double value = b->r / (Bullet::default_radius*4) * destroyWallTier;
-	//return (value >= destroyWallTier ? floor(value) : 0); //this is what I originally wanted in JS Tanks, I think, but in practice isn't preferable
+	double value = b->r / (Bullet::default_radius*4) * MegaDeathPower::destroyWallTier;
+	//return (value >= MegaDeathPower::destroyWallTier ? floor(value) : 0); //this is what I originally wanted in JS Tanks, I think, but in practice isn't preferable
 	return value;
 }
 
 double MegaDeathBulletPower::getDefenseTier(const Bullet* b) const {
-	double value = b->r / (Bullet::default_radius*4) * destroyWallTier;
-	//return (value >= destroyWallTier ? floor(value) : 0);
+	double value = b->r / (Bullet::default_radius*4) * MegaDeathPower::destroyWallTier;
+	//return (value >= MegaDeathPower::destroyWallTier ? floor(value) : 0);
 	return value;
 }
 

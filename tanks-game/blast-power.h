@@ -3,6 +3,15 @@
 
 class BlastPower : public Power {
 	//called mega-blast in JS Tanks
+public: //tank stuff
+	static const double bulletAngleDeviation;
+	static const int bulletAmount;
+
+public: //bullet stuff
+	static const double maxBulletAcceleration;
+	static const double minBulletAcceleration;
+	static const double degradeAmount;
+
 public:
 	virtual std::vector<std::string> getPowerTypes() const override {
 		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "old", "random-old", "random" };
@@ -32,10 +41,6 @@ public:
 
 
 class BlastTankPower : public TankPower {
-protected:
-	static const double bulletAngleDeviation;
-	static const int bulletAmount;
-
 public:
 	virtual void initialize(Tank* parent) override;
 	virtual void removeEffects(Tank* parent) override;
@@ -48,7 +53,7 @@ public:
 	virtual BulletPower* makeBulletPower() const override;
 
 	//bool modifiesAdditionalShooting = true;
-	virtual void additionalShooting(Tank* parent, CannonPoint) override;
+	virtual void additionalShooting(Tank* parent, const CannonPoint&) override;
 	//bool overridesAdditionalShooting = true;
 
 	virtual double getTankMaxSpeedMultiplier() const override { return .5; }
@@ -62,9 +67,6 @@ public:
 
 class BlastBulletPower : public BulletPower {
 protected:
-	static const double maxBulletAcceleration;
-	static const double minBulletAcceleration;
-	static const double degradeAmount;
 	double accelerationAmount;
 
 public:

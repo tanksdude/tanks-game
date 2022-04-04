@@ -1,5 +1,7 @@
 #include "bounce-power.h"
 
+const int BouncePower::maxBounces = 16;
+
 std::unordered_map<std::string, float> BouncePower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", 1.0f });
@@ -60,8 +62,6 @@ BounceTankPower::BounceTankPower() {
 
 #include "power-function-helper.h"
 #include "collision-handler.h"
-
-const int BounceBulletPower::maxBounces = 16;
 
 InteractionBoolHolder BounceBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
 	if (abs(b->velocity.getMagnitude()) * Bullet::default_radius/b->r <= .5) {
@@ -148,7 +148,7 @@ TankPower* BounceBulletPower::makeTankPower() const {
 	return new BounceTankPower();
 }
 
-BounceBulletPower::BounceBulletPower() : BounceBulletPower(BounceBulletPower::maxBounces) {}
+BounceBulletPower::BounceBulletPower() : BounceBulletPower(BouncePower::maxBounces) {}
 
 BounceBulletPower::BounceBulletPower(int bounces) {
 	timeLeft = 0;
