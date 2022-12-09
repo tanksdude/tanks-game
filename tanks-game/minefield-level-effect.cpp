@@ -1,6 +1,6 @@
 #include "minefield-level-effect.h"
 #include "constants.h"
-#include <math.h>
+#include <cmath>
 #include "rng.h"
 #include "bullet-manager.h"
 #include "mines-power.h"

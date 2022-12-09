@@ -1,7 +1,7 @@
 #include "rectangular-lava-hazard.h"
 #include "renderer.h"
 #include "constants.h"
-#include <math.h>
+#include <cmath>
 #include "color-mixer.h"
 #include "background-rect.h"
 #include "mylib.h"

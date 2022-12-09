@@ -2,7 +2,7 @@
 #include <limits> //for std::numeric_limits<float>::infinity();
 #include <algorithm> //for std::copy
 #include "constants.h"
-#include <math.h>
+#include <cmath>
 #include "mylib.h"
 #include "color-mixer.h"
 #include "rng.h"

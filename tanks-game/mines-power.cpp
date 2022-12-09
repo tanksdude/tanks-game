@@ -34,7 +34,7 @@ MinesPower::MinesPower() {
 
 
 //#include "constants.h"
-#include <math.h>
+#include <cmath>
 
 void MinesTankPower::tick(Tank* t) {
 	for (int i = 0; i < t->tankPowers.size(); i++) {

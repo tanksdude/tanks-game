@@ -1,7 +1,7 @@
 #include "power-function-helper.h"
 #include "collision-handler.h"
 #include "constants.h"
-#include <math.h>
+#include <cmath>
 #include "mylib.h"
 #include "tank-manager.h"
 #include <iostream>

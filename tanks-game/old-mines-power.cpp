@@ -33,7 +33,7 @@ OldMinesPower::OldMinesPower() : MinesPower() {
 
 
 //#include "constants.h"
-#include <math.h>
+#include <cmath>
 
 /*
 void OldMinesTankPower::tick(Tank* t) {

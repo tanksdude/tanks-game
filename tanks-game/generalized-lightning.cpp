@@ -3,7 +3,7 @@
 #include "color-mixer.h"
 #include "mylib.h"
 #include "constants.h"
-#include <math.h>
+#include <cmath>
 //#include <stdexcept>
 #include <algorithm> //std::copy
 #include <iostream>

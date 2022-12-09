@@ -1,7 +1,7 @@
 #include "tank.h"
 #include "game-manager.h"
 #include "constants.h"
-#include <math.h>
+#include <cmath>
 #include "mylib.h"
 #include "color-mixer.h"
 #include "background-rect.h"

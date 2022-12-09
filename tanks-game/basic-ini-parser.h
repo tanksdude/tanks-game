@@ -5,7 +5,7 @@
 
 class BasicINIParser {
 	//only reads, no writing
-	
+
 public:
 	struct BasicINIData {
 		//to support writing, would probably need list with every line

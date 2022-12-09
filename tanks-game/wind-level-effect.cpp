@@ -1,6 +1,6 @@
 #include "wind-level-effect.h"
 #include "constants.h"
-#include <math.h>
+#include <cmath>
 #include "rng.h"
 #include "tank-manager.h"
 #include "bullet-manager.h"

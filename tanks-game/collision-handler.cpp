@@ -1,6 +1,6 @@
 #include "collision-handler.h"
 #include "constants.h"
-#include <math.h>
+#include <cmath>
 #include <stdexcept>
 #include <iostream>
 

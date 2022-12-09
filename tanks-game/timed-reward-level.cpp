@@ -1,6 +1,6 @@
 #include "timed-reward-level.h"
 #include "constants.h"
-#include <math.h>
+#include <cmath>
 #include "level-helper.h"
 #include "tank-manager.h"
 #include "wall-manager.h"

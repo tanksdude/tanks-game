@@ -1,5 +1,5 @@
 #include "simple-vector-2d.h"
-#include <math.h>
+#include <cmath>
 #include "constants.h"
 
 SimpleVector2D::SimpleVector2D(float xComp, float yComp) {

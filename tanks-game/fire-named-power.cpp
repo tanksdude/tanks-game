@@ -45,7 +45,7 @@ FireNamedPower::FireNamedPower() {
 
 
 #include "constants.h"
-#include <math.h>
+#include <cmath>
 #include "rng.h"
 
 void FireNamedTankPower::initialize(Tank* parent) {

@@ -3,7 +3,7 @@
 typedef long Game_ID;
 typedef char Team_ID;
 
-extern const double PI; //this doesn't need to exist but typing the #define before the #include <math.h> is annoying
+extern const double PI; //this doesn't need to exist but typing the #define before the #include <cmath> is annoying
 extern const double GAME_WIDTH;
 extern const double GAME_HEIGHT;
 extern const double TANK_RADIUS;

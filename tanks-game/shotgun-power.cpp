@@ -37,7 +37,7 @@ ShotgunPower::ShotgunPower() {
 
 
 #include "constants.h"
-#include <math.h>
+#include <cmath>
 
 void ShotgunTankPower::additionalShooting(Tank* parent, const CannonPoint& c) {
 	const double angleDiff = PI/2 / ShotgunPower::bulletSpreadCount;

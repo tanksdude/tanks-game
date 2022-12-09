@@ -39,7 +39,7 @@ TripleNamedPower::TripleNamedPower() {
 
 
 #include "constants.h"
-#include <math.h>
+#include <cmath>
 
 void TripleNamedTankPower::additionalShooting(Tank* parent, const CannonPoint& c) {
 	parent->regularMakeBullet(parent->r * cos(parent->velocity.getAngle() + c.angle + TripleNamedPower::bulletAngleDiff), parent->r * sin(parent->velocity.getAngle() + c.angle + TripleNamedPower::bulletAngleDiff), parent->velocity.getAngle() + c.angle);

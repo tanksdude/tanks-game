@@ -2,7 +2,7 @@
 #include "game-manager.h"
 #include "mylib.h"
 #include "constants.h"
-#include <math.h>
+#include <cmath>
 #include "color-mixer.h"
 #include "renderer.h"
 #include "background-rect.h"

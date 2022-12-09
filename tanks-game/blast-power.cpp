@@ -43,7 +43,7 @@ BlastPower::BlastPower() {
 
 #include "mylib.h"
 #include "constants.h"
-#include <math.h>
+#include <cmath>
 #include "rng.h"
 
 void BlastTankPower::initialize(Tank* parent) {

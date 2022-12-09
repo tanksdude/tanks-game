@@ -1,6 +1,6 @@
 #include "constants.h"
 #define _USE_MATH_DEFINES
-#include <math.h>
+#include <cmath>
 
 const double PI = M_PI;
 const double GAME_WIDTH = 640;
