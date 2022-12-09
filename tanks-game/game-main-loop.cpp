@@ -104,9 +104,9 @@ void GameMainLoop::Tick(int UPS) {
 
 	//powerCalculate on tanks and bullets, then tank shoot:
 	Diagnostics::startTiming("power calculate and tank shoot");
+	tankShoot();
 	tankPowerCalculate();
 	bulletPowerCalculate();
-	tankShoot();
 	Diagnostics::endTiming();
 
 	//collide tanks with walls:

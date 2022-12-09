@@ -1,8 +1,12 @@
 # PowerTanks Battle
 
-The C++ upgrade of my [JavaScript game](https://uncreativeusername.neocities.org/tanks.html)
+The C++ upgrade of my [JavaScript game](https://uncreativeusername.neocities.org/tanks.html).
 
 ## Getting Started
+
+TODO: add an image here
+
+TODO: maybe a gif later
 
 ### Prerequisites
 
@@ -20,15 +24,19 @@ The C++ upgrade of my [JavaScript game](https://uncreativeusername.neocities.org
 
 ### Installing
 
-Install Visual Studio (2019) and the GitHub extension (I don't know if that's needed), then clone this project and run x64 Release (or Debug if you want to) (also make sure you're on the solution, not project)
+Install Visual Studio (2019) and the GitHub extension (I don't know if that's needed), then clone this project and run x64 Release (or Debug if you want to) (also make sure you're on the solution, not project).
 
 Pre-compiled executables are available under "Releases" in the [GitHub repository](https://github.com/tanksdude/tanks-game).
 
 ## Running the tests
 
-Hahaha, nope.
+Will come soon™.
 
-Will need them eventually, though.
+## Documentation
+
+I didn't find a good way to easily build documentation, so... there's no documentation.
+
+Will add some notes eventually, but nothing major.
 
 ## Built With
 
@@ -39,15 +47,13 @@ Will need them eventually, though.
 
 ## Contributing
 
-I plan on working alone on this project, possibly welcoming new stuff once the underlying code is done.
-
-If you really want a change, you could submit an Issue on GitHub.
-
-Alternatively, you can fork this repository and add change all you want.
+I plan on working alone on this project, since it's my personal project. If you wanna do something with this project, you can fork this repository and do whatever you want.
 
 ## Versioning
 
-Version numbers are subjective and 1.0.0 is "game finished." This is contrary to semantic versioning because I don't know what I'm doing all the time.
+1.0.0 is "game finished," but I probably won't get around to actually finalizing this.
+
+*Really* big changes will increment the second digit, otherwise only the third digit will get incremented.
 
 ## License
 
@@ -59,6 +65,7 @@ This project is licensed under GNU General Public License v3.0
     * C++ version has more stuff
 * Many people across the Interwebs who made StackOverflow and other forum posts
 * Lots of YouTube tutorials, GDC talks, and my CS professors providing assistance
+* The vague inspiration I had for this game back when I made it: some top-down Flash tank game. I've tried searching for it multiple times but have never found it, so given my continuously fading memories of that game I played, I'll probably never find out what it actually was. (No, it wasn't Wii Tanks (that's not a Flash game, come on!). I think the game had a more cartoonish than realistic artstyle. I don't remember if there were powerups. My closest guess was some old Atari game remade in Flash, but my searches didn't find anything useful.)
 
 ## More acknowledgements
 
@@ -71,3 +78,4 @@ This project is licensed under GNU General Public License v3.0
 * [Nitronic Rush](http://nitronic-rush.com/) is the other game that made me want to learn C++ in the first place
 * [N++](http://www.nplusplus.org/) for just being a good game (also the developers had some [good GDC talks](https://www.youtube.com/watch?v=VZ4xevskMCI) and have a [useful game development blog](https://www.metanetsoftware.com/technique/tutorialAbak.html))
 * [Creeper World](https://knucklecracker.com/creeperworld4/cw4.php) for also just being a good game
+* [Outer Wilds](https://www.mobiusdigitalgames.com/outer-wilds.html) for just being a really good game

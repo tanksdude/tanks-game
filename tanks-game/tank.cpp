@@ -595,6 +595,7 @@ void Tank::updateTurningIncrement() {
 }
 
 void Tank::powerCalculate() {
+	//TODO: separate into power tick and power count down
 	for (int i = tankPowers.size() - 1; i >= 0; i--) {
 		tankPowers[i]->tick(this); //I don't think any power will use this, but whatever
 		if (tankPowers[i]->isDone()) {
@@ -935,6 +936,7 @@ inline void Tank::drawBody(float alpha) const {
 }
 
 inline void Tank::drawDead(float alpha) const {
+	//TODO: draw X like no bullet zone
 	drawBody(alpha);
 	drawOutline(alpha);
 }

@@ -825,9 +825,5 @@
   <ItemGroup>
     <None Include="freeglut.dll" />
     <None Include="glew32.dll" />
-    <None Include="res\shaders\default-fragment.shader" />
-    <None Include="res\shaders\default-vertex.shader" />
-    <None Include="res\shaders\main-fragment.shader" />
-    <None Include="res\shaders\main-vertex.shader" />
   </ItemGroup>
 </Project>

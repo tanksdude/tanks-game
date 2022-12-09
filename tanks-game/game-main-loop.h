@@ -26,9 +26,9 @@ public:
 	void tankToPowerup();
 	void tickHazards();
 	void moveBullets();
+	void tankShoot();
 	void tankPowerCalculate();
 	void bulletPowerCalculate();
-	void tankShoot();
 	void tankToWall();
 	void tankToHazard();
 	void tankToTank();

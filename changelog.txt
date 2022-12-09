@@ -1,18 +1,32 @@
 0.3.0 (obviously definitely not here)
+* new game mode: infinite world!
+    * single-player-only
+    * the point is just to explore
+    * have fun!
+* some unit tests
+    * finally...
 * lots and lots of new stuff
-
-0.2.5 (obviously not here)
-* overhaul collision
-    * two passes for collision (like proper game physics)
-* ini file
-    * allows for some customization
-    * now it's possible to view certain levels/whatever that exist but aren't playable
-        * should probably make a list of some sort to know what exists...
 * powerups:
     * hazard powers!
     * growing and degrading powerups mix better
         * megadeath update?
     * ... sword???
+
+0.2.5 (obviously not here)
+* ini file
+    * allows for some customization
+    * now it's possible to view certain levels/whatever that exist but aren't playable
+        * should probably make a list of some sort to know what exists...
+* gifs and images in the README
+* rudimentary custom levels
+    * turns out, DLLs were too complicated
+* mild QoL improvements to displaying things
+    * tank multi-powers are more obvious
+    * lightning hazards and no bullet zones are significantly easier to spot
+    * would make sense to have powerups be identified by an image instead of a color, but that'll happen in a sequel
+* overhaul collision
+    * two passes for collision (like proper game physics)
+    * more efficient
 * hazards:
     * patrolling turret
     * teleporter?
@@ -25,6 +39,7 @@
     * ?
 * minor things:
     * overhaul priority handling (again)
+    * made static classes (mainly managers) not static
 
 0.2.4
 * changed name from "Tanks" to "PowerTanks" so this game might actually become discoverable
@@ -173,6 +188,7 @@ future notes:
 0.B.0: multithreading? (std::async to start)
 1.0.0: all levels, powers, and other stuff that I want
 2.0.0: level editor and/or power editor and/or game engine something thing (save for sequel instead?)
+sequel note: draw an image for powerups instead of just a color
 
 other note: consider SDL instead of FreeGLUT
 
