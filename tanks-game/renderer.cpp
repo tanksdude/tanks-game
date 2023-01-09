@@ -348,6 +348,9 @@ void Renderer::Draw(GLenum type, GLint first, GLsizei count) {
 }
 
 void Renderer::SetLineWidth(float w) {
+	//so lines (and probably points) aren't native drawing options to most APIs, such as DirectX; OpenGL is the outlier
+	//it's not a good idea to change over to geometry shaders since Metal literally doesn't support them
+	//in conclusion, I don't know how to solve this problem so I won't think about it for now
 	glLineWidth(w);
 }
 
