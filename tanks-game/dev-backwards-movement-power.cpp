@@ -39,14 +39,12 @@ void DevBackwardsMovementTankPower::removeEffects(Tank* parent) {
 	//nothing
 }
 
-InteractionBoolHolder DevBackwardsMovementTankPower::modifiedMovement(Tank* t) {
-	std::string* inputs = t->getKeys(); //TODO: need to be able to directly get the input
-	if (TankInputChar(inputs[4]).getKeyState()) {
+InteractionBoolHolder DevBackwardsMovementTankPower::modifiedMovement(Tank* t, bool forward, bool turnL, bool turnR, bool specialKey) {
+	if (specialKey) {
 		//TODO: I don't know how this should be implemented (it should do something with acceleration; use the tank's or store a vector?)
 		t->x -= t->maxSpeed * cos(t->velocity.getAngle());
 		t->y -= t->maxSpeed * sin(t->velocity.getAngle());
 	}
-	delete[] inputs;
 	return { false };
 }
 

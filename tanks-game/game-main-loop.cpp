@@ -61,6 +61,29 @@ void doThing() {
 	return;
 }
 
+TankInputChar::TankInputChar(std::string key_input) {
+	key = key_input;
+	if (KeypressManager::keyIsSpecialFromString(key_input)) {
+		isSpecial = true;
+		key_num = KeypressManager::specialKeyFromString(key_input);
+	} else {
+		isSpecial = false;
+		key_num = KeypressManager::normalKeyFromString(key_input);
+	}
+}
+TankInputChar::TankInputChar() {
+	key = "`";
+	isSpecial = false;
+	key_num = '`';
+}
+
+bool TankInputChar::getKeyState() const {
+	if (isSpecial) {
+		return KeypressManager::getSpecialKey(key_num);
+	}
+	return KeypressManager::getNormalKey(key_num);
+}
+
 GameMainLoop::GameMainLoop() : GameScene() {
 	//currentlyDrawing = false;
 	//frameCount = 0;
@@ -208,12 +231,26 @@ void GameMainLoop::levelTick() {
 }
 
 void GameMainLoop::moveTanks() {
+	/*
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
 		Tank* t = TankManager::getTank(i);
 		bool shouldBeKilled = t->move();
 		if (shouldBeKilled) {
 			EndGameHandler::killTank(t);
 		}
+	}
+	*/
+
+	//TODO: make this a loop (not done right now 'cuz I don't want to do more arrays than I absolutely have to)
+	Tank* t = TankManager::getTank(0);
+	bool shouldBeKilled = t->move(tank1Inputs[0].getKeyState(), tank1Inputs[1].getKeyState(), tank1Inputs[2].getKeyState(), tank1Inputs[4].getKeyState());
+	if (shouldBeKilled) {
+		EndGameHandler::killTank(t);
+	}
+	t = TankManager::getTank(1);
+	shouldBeKilled = t->move(tank2Inputs[0].getKeyState(), tank2Inputs[1].getKeyState(), tank2Inputs[2].getKeyState(), tank2Inputs[4].getKeyState());
+	if (shouldBeKilled) {
+		EndGameHandler::killTank(t);
 	}
 }
 
@@ -283,9 +320,15 @@ void GameMainLoop::bulletPowerCalculate() {
 }
 
 void GameMainLoop::tankShoot() {
+	/*
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
 		TankManager::getTank(i)->shoot();
 	}
+	*/
+
+	//TODO: loop
+	TankManager::getTank(0)->shoot(tank1Inputs[3].getKeyState());
+	TankManager::getTank(1)->shoot(tank2Inputs[3].getKeyState());
 }
 
 void GameMainLoop::tankToWall() {

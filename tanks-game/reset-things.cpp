@@ -28,8 +28,7 @@ void ResetThings::reset(int) {
 		}
 	}
 
-	std::string* tankInput1 = TankManager::getTank(0)->getKeys();
-	std::string* tankInput2 = TankManager::getTank(1)->getKeys();
+	//TODO: better solution to that vvv
 	//TODO: need to get inputs, name, and teamID; need something like Tank::getIdentification()
 	//maybe it also needs to store starting angle (if getNumTanks() > 2)
 
@@ -41,9 +40,8 @@ void ResetThings::reset(int) {
 	LevelManager::clearLevels();
 	TankManager::clearTanks();
 
-	TankManager::pushTank(new Tank(default_tankToEdgeDist, GAME_HEIGHT/2, 0, 1, "WASD", tankInput1));
-	TankManager::pushTank(new Tank(GAME_WIDTH-default_tankToEdgeDist, GAME_HEIGHT/2, PI, 2, "Arrow Keys", tankInput2));
-	delete[] tankInput1, tankInput2;
+	TankManager::pushTank(new Tank(default_tankToEdgeDist, GAME_HEIGHT/2, 0, 1, "WASD"));
+	TankManager::pushTank(new Tank(GAME_WIDTH-default_tankToEdgeDist, GAME_HEIGHT/2, PI, 2, "Arrow Keys"));
 
 #if _DEBUG
 	LevelManager::pushLevel("dev", "dev0");
@@ -96,7 +94,7 @@ void ResetThings::firstReset() {
 	}
 }
 
-void ResetThings::firstGameInitialize(std::string tank1TeamName, std::string tank2TeamName) {
+void ResetThings::firstGameInitialize(std::string tank1TeamName, std::string tank2TeamName, GameMainLoop& gameInstance) {
 	const BasicINIParser::BasicINIData& ini_data = GameManager::get_INI();
 
 	std::string tank1Name = "WASD";
@@ -147,8 +145,19 @@ void ResetThings::firstGameInitialize(std::string tank1TeamName, std::string tan
 		tank2Special = ini_data.get("CONTROLS", "Tank2.Special");
 	}
 
-	TankManager::pushTank(new Tank(20, GAME_HEIGHT/2, 0, 1, tank1Name, tank1Forward, tank1Left, tank1Right, tank1Shoot, tank1Special));
-	TankManager::pushTank(new Tank(GAME_WIDTH-20, GAME_HEIGHT/2, PI, 2, tank2Name, tank2Forward, tank2Left, tank2Right, tank2Shoot, tank2Special));
+	gameInstance.tank1Inputs[0] = TankInputChar(tank1Forward);
+	gameInstance.tank1Inputs[1] = TankInputChar(tank1Left);
+	gameInstance.tank1Inputs[2] = TankInputChar(tank1Right);
+	gameInstance.tank1Inputs[3] = TankInputChar(tank1Shoot);
+	gameInstance.tank1Inputs[4] = TankInputChar(tank1Special);
+	gameInstance.tank2Inputs[0] = TankInputChar(tank2Forward);
+	gameInstance.tank2Inputs[1] = TankInputChar(tank2Left);
+	gameInstance.tank2Inputs[2] = TankInputChar(tank2Right);
+	gameInstance.tank2Inputs[3] = TankInputChar(tank2Shoot);
+	gameInstance.tank2Inputs[4] = TankInputChar(tank2Special);
+
+	TankManager::pushTank(new Tank(20, GAME_HEIGHT/2, 0, 1, tank1Name));
+	TankManager::pushTank(new Tank(GAME_WIDTH-20, GAME_HEIGHT/2, PI, 2, tank2Name));
 	EndGameHandler::addTeamToWatch(1, tank1TeamName);
 	EndGameHandler::addTeamToWatch(2, tank2TeamName);
 	EndGameHandler::addTeamToWatch(HAZARD_TEAM, "HAZARDS");

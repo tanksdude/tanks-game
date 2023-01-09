@@ -39,7 +39,7 @@ public:
 	virtual BulletPower* makeBulletPower() const = 0;
 
 	bool modifiesMovement = false;
-	virtual InteractionBoolHolder modifiedMovement(Tank*) { return { false }; }
+	virtual InteractionBoolHolder modifiedMovement(Tank*, bool forward, bool turnL, bool turnR, bool specialKey) { return { false }; }
 	//precondition: nothing
 	bool overridesMovement = false; //set to true if the power completely changes how it moves; regular powers slightly modify movement and still want basic tank move
 	bool modifiedMovementCanWorkWithOthers = true; //stops later powerups in list from activating

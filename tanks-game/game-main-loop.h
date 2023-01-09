@@ -1,6 +1,19 @@
 #pragma once
 #include "game-scene.h"
 #include "drawable-thing.h"
+#include <string>
+
+struct TankInputChar {
+protected:
+	std::string key;
+	bool isSpecial;
+	int key_num;
+public:
+	std::string getKey() const { return key; }
+	bool getKeyState() const;
+	TankInputChar(std::string);
+	TankInputChar();
+};
 
 class GameMainLoop : public GameScene {
 	friend class DeveloperManager;
@@ -13,6 +26,11 @@ protected:
 	int physicsRate; //(in Hz)
 	int waitCount;
 	int maxWaitCount;
+
+public: //only for ResetThings
+	//forward, turnL, turnR, shooting, specialKey
+	TankInputChar tank1Inputs[5];
+	TankInputChar tank2Inputs[5];
 
 public:
 	GameMainLoop();

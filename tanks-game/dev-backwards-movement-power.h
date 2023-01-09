@@ -41,7 +41,7 @@ public:
 	virtual BulletPower* makeBulletPower() const override;
 
 	//bool modifiesMovement = true;
-	virtual InteractionBoolHolder modifiedMovement(Tank*) override;
+	virtual InteractionBoolHolder modifiedMovement(Tank*, bool forward, bool turnL, bool turnR, bool specialKey) override;
 
 	//virtual double getTankAccelerationMultiplier() const override { return .5; }
 

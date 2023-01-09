@@ -15,19 +15,6 @@ class Tank;
 #include "vertex-buffer.h"
 #include "index-buffer.h"
 
-struct TankInputChar {
-protected:
-	std::string key;
-	bool isSpecial;
-	int key_num;
-public:
-	std::string getKey() const { return key; }
-	bool getKeyState() const;
-	TankInputChar(std::string);
-	//TankInputChar(bool, int);
-	TankInputChar();
-};
-
 class Tank : public GameThing, public Circle, public DrawableThing {
 	friend class ResetThings;
 	friend class PowerFunctionHelper;
@@ -68,12 +55,6 @@ public:
 
 protected:
 	std::string name;
-	TankInputChar forward;
-	TankInputChar turnL;
-	TankInputChar turnR;
-	TankInputChar shooting;
-	//TankInputChar backwards; //not the point of the game
-	TankInputChar specialKey;
 
 protected:
 	void makeBulletCommon(double x, double y, double angle, double radius, double speed);
@@ -89,15 +70,14 @@ protected:
 
 	bool kill(); //allows for custom death (a.k.a. something saving the tank from death)
 	void kill_hard(); //kills without accounting for extra lives
-	inline void terminalVelocity();
-	inline void move_base();
+	inline void terminalVelocity(bool forward);
+	inline void move_base(bool forward, bool turnL, bool turnR);
 	//void resetThings(double x, double y, double angle, Team_ID teamID);
 
 public:
 	//helper stuff:
 	ColorValueHolder getBodyColor() const;
 	std::string getName() const { return name; }
-	std::string* getKeys() const;
 
 	double getAngle() const;
 	double getCannonAngle(int index) const;
@@ -119,8 +99,8 @@ private:
 	static bool uninitializeGPU();
 
 public:
-	bool move();
-	void shoot();
+	bool move(bool forward, bool turnL, bool turnR, bool specialKey);
+	void shoot(bool shooting);
 	void powerCalculate();
 	void removePower(int index);
 	void powerReset();
@@ -144,7 +124,6 @@ private:
 	inline void drawExtraBarrels(float alpha = 1.0f) const;
 
 public:
-	Tank(double x, double y, double angle, Team_ID id, std::string name, std::string forward, std::string left, std::string right, std::string shoot, std::string special);
-	Tank(double x, double y, double angle, Team_ID id, std::string name, std::string* inputs);
+	Tank(double x, double y, double angle, Team_ID id, std::string name);
 	~Tank();
 };

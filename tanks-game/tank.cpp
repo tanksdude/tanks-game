@@ -6,7 +6,6 @@
 #include "color-mixer.h"
 #include "background-rect.h"
 #include "renderer.h"
-#include "keypress-manager.h"
 #include "bullet-manager.h"
 #include "rng.h"
 #include "level-manager.h"
@@ -15,6 +14,20 @@
 //for CPU drawing, in case other #includes go wrong:
 #include <GL/glew.h>
 #include <GL/freeglut.h>
+
+/*
+struct TankInputChar {
+protected:
+	std::string key;
+	bool isSpecial;
+	int key_num;
+public:
+	std::string getKey() const { return key; }
+	bool getKeyState() const;
+	TankInputChar(std::string);
+	//TankInputChar(bool, int);
+	TankInputChar();
+};
 
 TankInputChar::TankInputChar(std::string key_input) {
 	key = key_input;
@@ -26,13 +39,6 @@ TankInputChar::TankInputChar(std::string key_input) {
 		key_num = KeypressManager::normalKeyFromString(key_input);
 	}
 }
-/*
-TankInputChar::TankInputChar(bool special, int c) {
-	key = "";
-	isSpecial = special;
-	key_num = c;
-}
-*/
 TankInputChar::TankInputChar() {
 	key = "`";
 	isSpecial = false;
@@ -45,6 +51,7 @@ bool TankInputChar::getKeyState() const {
 	}
 	return KeypressManager::getNormalKey(key_num);
 }
+*/
 
 VertexArray* Tank::va;
 VertexBuffer* Tank::vb;
@@ -57,7 +64,7 @@ const double Tank::default_maxSpeed = 1;
 const double Tank::default_acceleration = 1.0/16;
 const double Tank::default_turningIncrement = 64;
 
-Tank::Tank(double x_, double y_, double angle, Team_ID teamID, std::string name_, std::string forward, std::string left, std::string right, std::string shoot, std::string special) : GameThing(teamID) {
+Tank::Tank(double x_, double y_, double angle, Team_ID teamID, std::string name_) : GameThing(teamID) {
 	x = x_;
 	y = y_;
 	velocity = SimpleVector2D(angle, 0, true);
@@ -72,12 +79,6 @@ Tank::Tank(double x_, double y_, double angle, Team_ID teamID, std::string name_
 	shootCount = 0;
 	maxShootCount = 100; //will change whenever while I'm testing
 
-	this->forward = TankInputChar(forward);
-	this->turnL = TankInputChar(left);
-	this->turnR = TankInputChar(right);
-	this->shooting = TankInputChar(shoot);
-	this->specialKey = TankInputChar(special);
-
 	shootingPoints = std::vector<CannonPoint>();
 	determineShootingAngles();
 	updateAllValues();
@@ -91,9 +92,6 @@ Tank::Tank(double x_, double y_, double angle, Team_ID teamID, std::string name_
 
 	initializeGPU();
 }
-
-Tank::Tank(double x_, double y_, double angle, Team_ID id_, std::string name_, std::string* inputs)
-: Tank(x_, y_, angle, id_, name_, inputs[0], inputs[1], inputs[2], inputs[3], inputs[4]) {}
 
 Tank::~Tank() {
 	for (int i = 0; i < tankPowers.size(); i++) {
@@ -163,11 +161,7 @@ bool Tank::uninitializeGPU() {
 	return true;
 }
 
-std::string* Tank::getKeys() const {
-	return new std::string[]{ forward.getKey(), turnL.getKey(), turnR.getKey(), shooting.getKey(), specialKey.getKey() };
-}
-
-bool Tank::move() {
+bool Tank::move(bool forward, bool turnL, bool turnR, bool specialKey) {
 	bool shouldBeKilled = false;
 	bool modifiedMovement = false;
 	bool overridedMovement = false;
@@ -191,7 +185,7 @@ bool Tank::move() {
 				noMoreMovementSpecials = true;
 			}
 
-			InteractionBoolHolder check_temp = tankPowers[k]->modifiedMovement(this);
+			InteractionBoolHolder check_temp = tankPowers[k]->modifiedMovement(this, forward, turnL, turnR, specialKey);
 			if (check_temp.shouldDie) {
 				shouldBeKilled = true;
 				overridedMovement = true;
@@ -201,31 +195,32 @@ bool Tank::move() {
 	}
 
 	if (!overridedMovement) {
-		move_base();
+		move_base(forward, turnL, turnR);
 	}
 
 	return shouldBeKilled;
 }
 
-inline void Tank::move_base() {
+inline void Tank::move_base(bool forward, bool turnL, bool turnR) {
+	//TODO: ini settings vvv
 	//if (!forward || !document.getElementById("moveturn").checked) { //change && to || and remove second ! to flip playstyle
-		if (turnL.getKeyState()) {
+		if (turnL) {
 			velocity.changeAngle(PI / turningIncrement);
 		}
-		if (turnR.getKeyState()) {
+		if (turnR) {
 			velocity.changeAngle(-PI / turningIncrement);
 		}
 	//}
 	//if (!document.getElementById("acceleration").checked) {
-		if (forward.getKeyState()) {
+		if (forward) {
 			velocity.changeMagnitude(acceleration);
 		} else {
 			velocity.changeMagnitude(-acceleration); //can result in negative velocities, fixed by SimpleVector2D just not allowing that
 		}
-		terminalVelocity();
+		terminalVelocity(forward);
 	//}
 	/*else {
-		if (forward.getKeyState())
+		if (forward)
 			velocity = maxSpeed;
 		else
 			velocity = 0;
@@ -235,10 +230,10 @@ inline void Tank::move_base() {
 	y += velocity.getYComp();
 }
 
-inline void Tank::terminalVelocity() {
+inline void Tank::terminalVelocity(bool forward) {
 	if (velocity.getMagnitude() > maxSpeed + acceleration) {
 		velocity.changeMagnitude(-acceleration);
-		if (forward.getKeyState() && velocity.getMagnitude() > maxSpeed) {
+		if (forward && velocity.getMagnitude() > maxSpeed) {
 			//so the tank doesn't stay at a high velocity if it loses its ability to go as fast as it previously could (maybe change?)
 			velocity.changeMagnitude(-acceleration);
 		}
@@ -249,13 +244,13 @@ inline void Tank::terminalVelocity() {
 	}*/
 }
 
-void Tank::shoot() {
+void Tank::shoot(bool shooting) {
 	//TODO: allow it to handle multiple shooting cooldowns? (not the point of the game (if it was, shooting cooldown color = mix(white, power color)))
 	if (shootCount > 0) { //check isn't really needed, but it also doesn't decrease performance by a real amount
 		shootCount--;
 	}
 
-	if (shooting.getKeyState() && shootCount <= 0) {
+	if (shooting && shootCount <= 0) {
 		//determineShootingAngles(); //TODO: is this needed?
 		bool modifiedAdditionalShooting = false;
 		bool overridedShooting = false;

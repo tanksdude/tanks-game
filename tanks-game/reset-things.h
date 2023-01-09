@@ -1,5 +1,6 @@
 #pragma once
 #include "tank.h"
+#include "game-main-loop.h"
 
 class ResetThings {
 public:
@@ -9,7 +10,7 @@ public:
 	static void reset() { ResetThings::reset(0); }
 	static void reset(int);
 	static void firstReset(); //temporary?
-	static void firstGameInitialize(std::string tank1TeamName, std::string tank2TeamName); //pushes the first tanks and team watchings
+	static void firstGameInitialize(std::string tank1TeamName, std::string tank2TeamName, GameMainLoop& gameInstance); //pushes the first tanks and team watchings
 	static void firstLevelPush(); //chosen from INI file
 
 	static void tankPositionReset(Tank* first, Tank* second); //use this one

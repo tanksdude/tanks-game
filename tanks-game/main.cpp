@@ -362,6 +362,7 @@ int main(int argc, char** argv) {
 #endif
 
 	//game mode:
+	GameMainLoop* game;
 	if (ini_data.exists("UNIVERAL", "GameMode")) {
 		int mode = std::stoi(ini_data.get("UNIVERSAL", "GameMode"));
 		switch (mode) {
@@ -369,20 +370,21 @@ int main(int argc, char** argv) {
 				std::cerr << "Unknown GameMode \"" << mode << "\"!" << std::endl;
 			case 0:
 				//normal
-				GameSceneManager::pushScene(new GameMainLoop());
+				game = new GameMainLoop();
 			case 1:
 				//superfast shooting
-				GameSceneManager::pushScene(new GameMainLoop());
+				game = new GameMainLoop();
 			case 2:
 				//infinite world
-				GameSceneManager::pushScene(new GameMainLoop());
+				game = new GameMainLoop();
 		}
 	} else {
-		GameSceneManager::pushScene(new GameMainLoop());
+		game = new GameMainLoop();
 	}
+	GameSceneManager::pushScene(game);
 
 	//main game code initialization stuff:
-	ResetThings::firstGameInitialize("\"WASD 4 Life\"", "\"Arrow Keys R WINZ\"");
+	ResetThings::firstGameInitialize("\"WASD 4 Life\"", "\"Arrow Keys R WINZ\"", *game);
 	//they're good team names, deal with it
 #if _DEBUG
 	LevelManager::pushLevel("dev", "dev3");
