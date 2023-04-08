@@ -393,6 +393,12 @@
     <ClCompile Include="dev-backwards-movement-power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="bullet-update-struct.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wall-update-struct.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -819,6 +825,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="dev-backwards-movement-power.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="bullet-update-struct.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="wall-update-struct.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -84,7 +84,7 @@ public:
 	virtual InteractionBoolHolder modifiedMovement(Bullet*) override;
 
 	//bool modifiesCollisionWithWall = true;
-	virtual InteractionBoolHolder modifiedCollisionWithWall(Bullet*, Wall*) override;
+	virtual InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> modifiedCollisionWithWall(const Bullet*, const Wall*) override;
 
 	virtual bool getModifiesCollisionWithCircleHazard(const CircleHazard*) const override;
 	virtual InteractionBoolHolder modifiedCollisionWithCircleHazard(Bullet*, CircleHazard*) override;

@@ -65,8 +65,8 @@ InteractionBoolHolder TrackingBulletPower::modifiedMovement(Bullet* b) {
 	return { false };
 }
 
-InteractionBoolHolder TrackingBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
-	return { false, false };
+InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> TrackingBulletPower::modifiedCollisionWithWall(const Bullet* b, const Wall* w) {
+	return { false, false, {}, {} };
 }
 
 void TrackingBulletPower::initialize(Bullet* parent) {

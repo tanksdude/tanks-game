@@ -63,14 +63,23 @@ BounceTankPower::BounceTankPower() {
 #include "power-function-helper.h"
 #include "collision-handler.h"
 
-InteractionBoolHolder BounceBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
+InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> BounceBulletPower::modifiedCollisionWithWall(const Bullet* b, const Wall* w) {
+	BulletUpdateStruct b_update;
+	WallUpdateStruct w_update;
+
 	if (abs(b->velocity.getMagnitude()) * Bullet::default_radius/b->r <= .5) {
 		//should abs() be used? it's not needed...
-		if (PowerFunctionHelper::bounceGenericWithCorners(b, w)) {
+		auto result = PowerFunctionHelper::bounceGenericWithCorners(b, w);
+		b_update = result.second.firstUpdate;
+		w_update = result.second.secondUpdate;
+		if (result.first) {
 			bouncesLeft--;
 		}
 	} else {
-		if (PowerFunctionHelper::bounceGeneric(b, w)) {
+		auto result = PowerFunctionHelper::bounceGeneric(b, w);
+		b_update = result.second.firstUpdate;
+		w_update = result.second.secondUpdate;
+		if (result.first) {
 			bouncesLeft--;
 		}
 	}
@@ -80,7 +89,7 @@ InteractionBoolHolder BounceBulletPower::modifiedCollisionWithWall(Bullet* b, Wa
 		modifiesEdgeCollision = false;
 	}
 
-	return { (bouncesLeft < 0), false };
+	return { (bouncesLeft < 0), false, b_update, w_update };
 }
 //TODO: need ability to delete just the bulletpower (needed? wanted? no because bounces should be reset for banana (should it?))
 
@@ -92,12 +101,16 @@ InteractionBoolHolder BounceBulletPower::modifiedEdgeCollision(Bullet* b) {
 
 	bool bouncedY = false;
 	//bool bouncedX = false;
+	BulletUpdateStruct b_update;
 
 	if (CollisionHandler::partiallyOutOfBounds(b)) {
-		if (PowerFunctionHelper::bounceEdgeGenericY(b)) {
+		auto result = PowerFunctionHelper::bounceEdgeGenericY(b);
+		if (result.first) {
 			bouncesLeft--;
 			bouncedY = true;
 		}
+		//TODO: update modifiedEdgeCollision to also use update structs
+		b->update(&result.second);
 		if (bouncesLeft <= 0) {
 			modifiesCollisionWithWall = false;
 			modifiesEdgeCollision = false;
@@ -106,10 +119,13 @@ InteractionBoolHolder BounceBulletPower::modifiedEdgeCollision(Bullet* b) {
 	}
 
 	if (CollisionHandler::partiallyOutOfBounds(b)) {
-		if (PowerFunctionHelper::bounceEdgeGenericX(b)) {
+		auto result = PowerFunctionHelper::bounceEdgeGenericX(b);
+		if (result.first) {
 			bouncesLeft--;
 			//bouncedX = true;
 		}
+		//TODO: update modifiedEdgeCollision to also use update structs
+		b->update(&result.second);
 		if (bouncesLeft <= 0) {
 			modifiesCollisionWithWall = false;
 			modifiesEdgeCollision = false;
@@ -118,10 +134,13 @@ InteractionBoolHolder BounceBulletPower::modifiedEdgeCollision(Bullet* b) {
 	}
 
 	if (!bouncedY && CollisionHandler::partiallyOutOfBounds(b)) {
-		if (PowerFunctionHelper::bounceEdgeGenericY(b)) {
+		auto result = PowerFunctionHelper::bounceEdgeGenericY(b);
+		if (result.first) {
 			bouncesLeft--;
 			//bouncedY = true;
 		}
+		//TODO: update modifiedEdgeCollision to also use update structs
+		b->update(&result.second);
 		if (bouncesLeft <= 0) {
 			modifiesCollisionWithWall = false;
 			modifiesEdgeCollision = false;

@@ -71,14 +71,23 @@ UltraBounceTankPower::UltraBounceTankPower() : BounceTankPower() {
 #include "power-function-helper.h"
 #include "collision-handler.h"
 
-InteractionBoolHolder UltraBounceBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
+InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> UltraBounceBulletPower::modifiedCollisionWithWall(const Bullet* b, const Wall* w) {
+	BulletUpdateStruct b_update;
+	WallUpdateStruct w_update;
+
 	//if (abs(b->velocity.getMagnitude()) * Bullet::default_radius/b->r <= .5) {
 	if (true) { //it's a dev power, so may as well
-		if (PowerFunctionHelper::superbounceGenericWithCorners(b, w, b->r/2)) {
+		auto result = PowerFunctionHelper::superbounceGenericWithCorners(b, w, b->r/2);
+		b_update = result.second.firstUpdate;
+		w_update = result.second.secondUpdate;
+		if (result.first) {
 			bouncesLeft--;
 		}
 	} else {
-		if (PowerFunctionHelper::superbounceGeneric(b, w, b->r/2)) {
+		auto result = PowerFunctionHelper::superbounceGeneric(b, w, b->r/2);
+		b_update = result.second.firstUpdate;
+		w_update = result.second.secondUpdate;
+		if (result.first) {
 			bouncesLeft--;
 		}
 	}
@@ -89,7 +98,7 @@ InteractionBoolHolder UltraBounceBulletPower::modifiedCollisionWithWall(Bullet* 
 		modifiesEdgeCollision = false;
 	}
 
-	return { (bouncesLeft < 0), false };
+	return { (bouncesLeft < 0), false, b_update, w_update };
 }
 
 InteractionBoolHolder UltraBounceBulletPower::modifiedEdgeCollision(Bullet* b) {
@@ -97,12 +106,16 @@ InteractionBoolHolder UltraBounceBulletPower::modifiedEdgeCollision(Bullet* b) {
 
 	bool bouncedY = false;
 	//bool bouncedX = false;
+	BulletUpdateStruct b_update;
 
 	if (CollisionHandler::partiallyOutOfBounds(b)) {
-		if (PowerFunctionHelper::superbounceEdgeGenericY(b, b->r/2)) {
+		auto result = PowerFunctionHelper::superbounceEdgeGenericY(b, b->r/2);
+		if (result.first) {
 			bouncesLeft--;
 			bouncedY = true;
 		}
+		//TODO: update modifiedEdgeCollision to also use update structs
+		b->update(&result.second);
 		if (bouncesLeft <= 0) {
 			modifiesCollisionWithWall = false;
 			modifiesEdgeCollision = false;
@@ -111,10 +124,13 @@ InteractionBoolHolder UltraBounceBulletPower::modifiedEdgeCollision(Bullet* b) {
 	}
 
 	if (CollisionHandler::partiallyOutOfBounds(b)) {
-		if (PowerFunctionHelper::superbounceEdgeGenericX(b, b->r/2)) {
+		auto result = PowerFunctionHelper::superbounceEdgeGenericX(b, b->r/2);
+		if (result.first) {
 			bouncesLeft--;
 			//bouncedX = true;
 		}
+		//TODO: update modifiedEdgeCollision to also use update structs
+		b->update(&result.second);
 		if (bouncesLeft <= 0) {
 			modifiesCollisionWithWall = false;
 			modifiesEdgeCollision = false;
@@ -123,10 +139,13 @@ InteractionBoolHolder UltraBounceBulletPower::modifiedEdgeCollision(Bullet* b) {
 	}
 
 	if (!bouncedY && CollisionHandler::partiallyOutOfBounds(b)) {
-		if (PowerFunctionHelper::superbounceEdgeGenericY(b, b->r/2)) {
+		auto result = PowerFunctionHelper::superbounceEdgeGenericY(b, b->r/2);
+		if (result.first) {
 			bouncesLeft--;
 			//bouncedY = true;
 		}
+		//TODO: update modifiedEdgeCollision to also use update structs
+		b->update(&result.second);
 		if (bouncesLeft <= 0) {
 			modifiesCollisionWithWall = false;
 			modifiesEdgeCollision = false;

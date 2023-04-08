@@ -11,3 +11,16 @@ struct InteractionBoolHolder {
 	InteractionBoolHolder() : InteractionBoolHolder(false, false) {}
 };
 //could use std::pair
+
+template<typename T, typename U>
+struct InteractionUpdateHolder {
+	InteractionBoolHolder deaths;
+	T firstUpdate;
+	U secondUpdate;
+
+	InteractionUpdateHolder(bool a, bool b, T update1, U update2) {
+		deaths = InteractionBoolHolder(a, b);
+		firstUpdate = update1;
+		secondUpdate = update2;
+	}
+};

@@ -53,8 +53,8 @@ BigNamedTankPower::BigNamedTankPower() {
 
 
 
-InteractionBoolHolder BigNamedBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
-	return { false, true };
+InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> BigNamedBulletPower::modifiedCollisionWithWall(const Bullet* b, const Wall* w) {
+	return { false, true, {}, {} };
 }
 
 void BigNamedBulletPower::initialize(Bullet* parent) {

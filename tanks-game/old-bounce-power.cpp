@@ -58,7 +58,7 @@ OldBounceTankPower::OldBounceTankPower() : BounceTankPower() {
 #include "collision-handler.h"
 
 /*
-InteractionBoolHolder OldBounceBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
+InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> OldBounceBulletPower::modifiedCollisionWithWall(const Bullet* b, const Wall* w) {
 	return BounceBulletPower::modifiedCollisionWithWall(b, w);
 }
 

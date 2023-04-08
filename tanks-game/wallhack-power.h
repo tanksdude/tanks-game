@@ -62,7 +62,7 @@ public:
 	virtual TankPower* makeTankPower() const override;
 
 	//bool modifiesCollisionWithWall = true;
-	virtual InteractionBoolHolder modifiedCollisionWithWall(Bullet*, Wall*) override;
+	virtual InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> modifiedCollisionWithWall(const Bullet*, const Wall*) override;
 	//bool modifiedCollisionWithWallCanWorkWithOthers = false;
 
 	WallhackBulletPower();

@@ -151,6 +151,14 @@ bool Bullet::canCollideWith(const Bullet* b_other) const {
 	return canCollideWith((const GameThing*)b_other);
 }
 
+void Bullet::update(const BulletUpdateStruct* up) {
+	this->x += up->x;
+	this->y += up->y;
+	this->r += up->r;
+	this->velocity = SimpleVector2D(velocity.getAngle() + up->angle, velocity.getMagnitude() + up->speed, true);
+	this->opaqueness += up->alpha;
+}
+
 double Bullet::getAngle() const {
 	return fmod(fmod(velocity.getAngle(), 2*PI) + 2*PI, 2*PI);
 }

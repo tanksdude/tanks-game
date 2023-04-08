@@ -7,6 +7,7 @@ class Bullet;
 #include <vector>
 #include "color-value-holder.h"
 #include "simple-vector-2d.h"
+#include "bullet-update-struct.h"
 #include "bullet-power.h"
 
 #include "vertex-array.h"
@@ -82,6 +83,7 @@ public:
 	//int determineDamage(); //maybe for another day
 	bool canCollideWith(const GameThing*) const;
 	bool canCollideWith(const Bullet*) const;
+	void update(const BulletUpdateStruct*);
 
 	void draw() const override;
 	void draw(DrawingLayers) const override;

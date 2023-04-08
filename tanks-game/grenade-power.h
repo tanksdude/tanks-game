@@ -64,7 +64,7 @@ public:
 	virtual InteractionBoolHolder modifiedMovement(Bullet*) override;
 
 	//bool modifiesCollisionWithWall = true;
-	virtual InteractionBoolHolder modifiedCollisionWithWall(Bullet*, Wall*) override;
+	virtual InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> modifiedCollisionWithWall(const Bullet*, const Wall*) override;
 
 	virtual double getBulletAcceleration() const override { return -1.0/16; }
 

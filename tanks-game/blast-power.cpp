@@ -89,18 +89,20 @@ InteractionBoolHolder BlastBulletPower::modifiedMovement(Bullet* b) {
 	return { false };
 }
 
-InteractionBoolHolder BlastBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
+InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> BlastBulletPower::modifiedCollisionWithWall(const Bullet* b, const Wall* w) {
 	if (b->velocity.getMagnitude() <= 0) {
-		b->opaqueness -= BlastPower::degradeAmount;
-		return { b->isDead(), false };
+		//b->opaqueness -= BlastPower::degradeAmount;
+		return { b->isDead(), false, BulletUpdateStruct(0,0,0,0,0, -BlastPower::degradeAmount), {} };
 	} else {
 		if (CollisionHandler::partiallyCollided(b, w)) {
-			CollisionHandler::pushMovableAwayFromImmovable(b, w);
+			//CollisionHandler::pushMovableAwayFromImmovable(b, w);
+			//TODO
 
-			b->acceleration = 0;
-			b->velocity.setMagnitude(0);
+			//b->acceleration = 0;
+			//b->velocity.setMagnitude(0);
+			return { false, false, BulletUpdateStruct(0,0,0,0,0,0), {} };
 		}
-		return { false, false };
+		return { false, false, {}, {} };
 	}
 }
 

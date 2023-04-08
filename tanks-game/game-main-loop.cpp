@@ -85,12 +85,34 @@ bool TankInputChar::getKeyState() const {
 }
 
 GameMainLoop::GameMainLoop() : GameScene() {
+	test_thread = std::thread(thread_func);
+
 	//currentlyDrawing = false;
 	//frameCount = 0;
 	//ticksUntilFrame = 1;
 	physicsRate = 100;
 	waitCount = 0;
 	maxWaitCount = 1000/physicsRate * 10;
+}
+
+std::atomic_bool GameMainLoop::hasWork = false;
+void* GameMainLoop::shared_bulletUpdates;
+void* GameMainLoop::shared_bulletUpdateList;
+void GameMainLoop::thread_func() {
+	while (1) {
+		while (!hasWork.load()) {
+			std::this_thread::yield();
+		}
+		std::unordered_map<Game_ID, BulletUpdateStruct>* bulletUpdates = (std::unordered_map<Game_ID, BulletUpdateStruct>*) GameMainLoop::shared_bulletUpdates;
+		std::vector<Game_ID>* bulletUpdateList = (std::vector<Game_ID>*) GameMainLoop::shared_bulletUpdateList;
+
+		for (int i = bulletUpdateList->size() / 2; i < bulletUpdateList->size(); i++) {
+			Bullet* b = BulletManager::getBulletByID(bulletUpdateList->at(i));
+			b->update(&bulletUpdates->at(bulletUpdateList->at(i)));
+		}
+
+		hasWork.store(false);
+	}
 }
 
 void GameMainLoop::Tick(int UPS) {
@@ -720,6 +742,12 @@ void GameMainLoop::bulletToWall() {
 	//narrow phase and resolve collision
 	std::vector<Game_ID> bulletDeletionList;
 	std::vector<Game_ID> wallDeletionList;
+
+	std::unordered_map<Game_ID, BulletUpdateStruct> bulletUpdates; //TODO: what if a bullet wants to make more of itself when it hits a wall?
+	std::vector<Game_ID> bulletUpdateList;
+	std::unordered_map<Game_ID, WallUpdateStruct> wallUpdates; //bullets probably shouldn't be able to hit a wall and make more walls
+	std::vector<Game_ID> wallUpdateList;
+
 	for (int i = 0; i < collisionList.size(); i++) {
 		std::pair<int, int> collisionPair = collisionList[i];
 		Bullet* b = BulletManager::getBullet(collisionPair.first);
@@ -749,12 +777,26 @@ void GameMainLoop::bulletToWall() {
 						noMoreWallCollisionSpecials = true;
 					}
 
-					InteractionBoolHolder check_temp = b->bulletPowers[k]->modifiedCollisionWithWall(b, w);
-					if (check_temp.shouldDie) {
+					InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> check_temp = b->bulletPowers[k]->modifiedCollisionWithWall(b, w);
+					if (check_temp.deaths.shouldDie) {
 						shouldBeKilled = true;
 					}
-					if (check_temp.otherShouldDie) {
+					if (check_temp.deaths.otherShouldDie) {
 						killWall = true;
+					}
+
+					//TODO: maybe package all the updates together, then do this upsert
+					if (bulletUpdates.find(b->getGameID()) == bulletUpdates.end()) {
+						bulletUpdates.insert({ b->getGameID(), check_temp.firstUpdate });
+						bulletUpdateList.push_back(b->getGameID());
+					} else {
+						bulletUpdates[b->getGameID()].add(check_temp.firstUpdate);
+					}
+					if (wallUpdates.find(w->getGameID()) == wallUpdates.end()) {
+						wallUpdates.insert({ w->getGameID(), check_temp.secondUpdate });
+						wallUpdateList.push_back(w->getGameID());
+					} else {
+						wallUpdates[w->getGameID()].add(check_temp.secondUpdate);
 					}
 				}
 			}
@@ -776,6 +818,22 @@ void GameMainLoop::bulletToWall() {
 			bulletDeletionList.push_back(b->getGameID());
 		}
 	}
+
+	//TODO: multithreading here! (remember to do chunking, not interleaving)
+	shared_bulletUpdates = &bulletUpdates;
+	shared_bulletUpdateList = &bulletUpdateList;
+	GameMainLoop::hasWork.store(true);
+
+	for (int i = 0; i < bulletUpdateList.size() / 2; i++) {
+		Bullet* b = BulletManager::getBulletByID(bulletUpdateList[i]);
+		b->update(&bulletUpdates[bulletUpdateList[i]]);
+	}
+	for (int i = 0; i < wallUpdateList.size(); i++) {
+		Wall* w = WallManager::getWallByID(wallUpdateList[i]);
+		w->update(&wallUpdates[wallUpdateList[i]]);
+	}
+
+	while (hasWork.load()) {} //if you don't join, this is how you wait for the thread to finish
 
 	//clear deaths
 	//std::sort(bulletDeletionList.begin(), bulletDeletionList.end());

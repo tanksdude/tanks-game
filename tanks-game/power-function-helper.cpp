@@ -6,40 +6,48 @@
 #include "tank-manager.h"
 #include <iostream>
 
-bool PowerFunctionHelper::superbounceGeneric(Bullet* b, Wall* w, double strength) {
+std::pair<bool, InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct>> PowerFunctionHelper::superbounceGeneric(const Bullet* b, const Wall* w, double strength) {
 	if (!CollisionHandler::partiallyCollided(b, w)) {
-		return false;
+		return { false, { false, false, {}, {} } };
 	}
+
+	double b_xDelta, b_yDelta, b_angleDelta;
+	double w_xDelta, w_yDelta;
 
 	if (b->y - w->y <= (w->h / w->w) * (b->x - w->x)) { //I think this is bottom right
 		if (b->y - (w->y + w->h) <= (-w->h / w->w) * (b->x - w->x)) { //bottom
-			b->y -= (b->y + b->r - w->y) * 2; //b->y = w->y - b->r
-			b->velocity.setAngle(b->velocity.getAngle() * -1);
-			w->y += strength;
+			b_yDelta = -1 * ((b->y + b->r - w->y) * 2); //b->y = w->y - b->r
+			b_angleDelta = -2 * b->velocity.getAngle(); //b->velocity.setAngle(b->velocity.getAngle() * -1);
+			w_yDelta = strength;
+			b_xDelta = 0, w_xDelta = 0;
 		} else { //right
-			b->x += (w->x + w->w - (b->x - b->r)) * 2; //b->x = w->x + w->w + b->r
-			b->velocity.setAngle(PI - b->velocity.getAngle());
-			w->x -= strength;
+			b_xDelta = (w->x + w->w - (b->x - b->r)) * 2; //b->x = w->x + w->w + b->r
+			b_angleDelta = PI - 2*b->velocity.getAngle(); //b->velocity.setAngle(PI - b->velocity.getAngle());
+			w_xDelta = -1 * strength;
+			b_yDelta = 0, w_yDelta = 0;
 		}
 	} else { //top left?
 		if (b->y - (w->y + w->h) <= (-w->h / w->w) * (b->x - w->x)) { //left
-			b->x -= (b->x + b->r - w->x) * 2; //b->x = w->x - b->r
-			b->velocity.setAngle(PI - b->velocity.getAngle());
-			w->x += strength;
+			b_xDelta = -1 * ((b->x + b->r - w->x) * 2); //b->x = w->x - b->r
+			b_angleDelta = PI - 2*b->velocity.getAngle(); //b->velocity.setAngle(PI - b->velocity.getAngle());
+			w_xDelta = strength;
+			b_yDelta = 0, w_yDelta = 0;
 		} else { //top
-			b->y += (w->y + w->h - (b->y - b->r)) * 2; //b->y = w->y + w->h + b->r
-			b->velocity.setAngle(b->velocity.getAngle() * -1);
-			w->y -= strength;
+			b_yDelta = (w->y + w->h - (b->y - b->r)) * 2; //b->y = w->y + w->h + b->r
+			b_angleDelta = -2 * b->velocity.getAngle(); //b->velocity.setAngle(b->velocity.getAngle() * -1);
+			w_yDelta = -1 * strength;
+			b_xDelta = 0, w_xDelta = 0;
 		}
 	}
-	//TODO: ensure bullet is not actually in wall; move bullet to edge of relevant wall if still colliding
+	//TODO: ensure bullet is not actually in wall; move bullet to edge of relevant wall if still colliding (TODO: this still relevant?)
 
-	return true; //this means the bullet bounced, not that it should be deleted
+	return { true, { false, false, BulletUpdateStruct(b_xDelta, b_yDelta, 0,0, b_angleDelta, 0), WallUpdateStruct(w_xDelta, w_yDelta, 0,0) } };
+	//TODO: doesn't mean it should be deleted; should separate the update struct
 }
 
-bool PowerFunctionHelper::superbounceGenericWithCorners(Bullet* b, Wall* w, double strength) { //not the default because bullets move too quickly on average
+std::pair<bool, InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct>> PowerFunctionHelper::superbounceGenericWithCorners(const Bullet* b, const Wall* w, double strength) { //not the default because bullets move too quickly on average
 	if (!CollisionHandler::partiallyCollided(b, w)) {
-		return false;
+		return { false, { false, false, {}, {} } };
 	}
 
 	if ((b->x < w->x) && (b->y < w->y)) { //circle in bottom left
@@ -60,16 +68,19 @@ bool PowerFunctionHelper::superbounceGenericWithCorners(Bullet* b, Wall* w, doub
 	//return false;
 }
 
-bool PowerFunctionHelper::superbounceGenericCornerHandler(Bullet* b, Wall* w, double x, double y, double strength) {
+std::pair<bool, InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct>> PowerFunctionHelper::superbounceGenericCornerHandler(const Bullet* b, const Wall* w, double x, double y, double strength) {
 	//I have no idea if this is correct but it behaves exactly as I want it to, I think
 	//it's not exact because intersection points aren't calculated but it's close enough
 
 	if ((abs(x - b->x) <= b->r) && (abs(y - b->y) <= b->r)) {
 		double d = sqrt(pow(x - b->x, 2) + pow(y - b->y, 2));
 		if (d <= b->r) {
+			double b_xDelta = 0, b_yDelta = 0, b_angleDelta;
+			double w_xDelta, w_yDelta;
+
 			double angle = atan2((y - b->y), (x - b->x));
-			b->y -= sin(angle) * (b->r - d);
-			b->x -= cos(angle) * (b->r - d);
+			b_yDelta -= sin(angle) * (b->r - d);
+			b_xDelta -= cos(angle) * (b->r - d);
 
 			//so a rectangle has an area of influence against a circle: outer edges + radius, and corners are radius (picture a rounded rectangle)
 			//when a bullet's center enters the area, it is inside the rectangle, and therefore needs to reflect
@@ -77,48 +88,58 @@ bool PowerFunctionHelper::superbounceGenericCornerHandler(Bullet* b, Wall* w, do
 			//the bullet's angle needs to reflect off of the perpendicular to the tangent, and the tangent goes through the intersection between the bullet's path and the area of influence
 
 			double newAngle = 2*angle - (b->velocity.getAngle() - PI);
-			b->y += sin(newAngle) * (b->r - d);
-			b->x += cos(newAngle) * (b->r - d);
-			b->velocity.setAngle(newAngle);
+			b_yDelta += sin(newAngle) * (b->r - d);
+			b_xDelta += cos(newAngle) * (b->r - d);
+			b_angleDelta = (newAngle - b->velocity.getAngle()); //b->velocity.setAngle(newAngle);
 
-			w->y += sin(angle) * strength;
-			w->x += cos(angle) * strength;
+			w_yDelta = sin(angle) * strength;
+			w_xDelta = cos(angle) * strength;
 
-			return true;
+			return { true, { false, false, BulletUpdateStruct(b_xDelta, b_yDelta, 0,0, b_angleDelta, 0), WallUpdateStruct(w_xDelta, w_yDelta, 0,0) } };
 		}
 	}
 
-	return false;
+	return { false, { false, false, {}, {} } };
 }
 
-bool PowerFunctionHelper::superbounceEdgeGenericX(Bullet* b, double) {
-	bool bounced = 0;
+std::pair<bool, BulletUpdateStruct> PowerFunctionHelper::superbounceEdgeGenericX(const Bullet* b, double) {
+	bool bounced = 0; //wait, why is this =0? leftover from edge bouncing X and Y being together?
+	double b_xDelta, b_yDelta=0, b_angleDelta;
+
 	if (b->x + b->r > GAME_WIDTH) { //right edge
-		b->x -= (b->x + b->r - GAME_WIDTH) * 2;
-		b->velocity.setAngle(PI - b->velocity.getAngle());
+		b_xDelta = -1 * (((b->x + b->r) - GAME_WIDTH) * 2);
+		b_angleDelta = PI - 2*b->velocity.getAngle(); //b->velocity.setAngle(PI - b->velocity.getAngle());
 		bounced = true;
 	} else if (b->x - b->r < 0) { //left edge
-		b->x += -(b->x - b->r) * 2;
-		b->velocity.setAngle(PI - b->velocity.getAngle());
+		b_xDelta = -(b->x - b->r) * 2;
+		b_angleDelta = PI - 2*b->velocity.getAngle(); //b->velocity.setAngle(PI - b->velocity.getAngle());
 		bounced = true;
+	} else {
+		b_xDelta = 0;
+		b_angleDelta = 0;
 	}
 
-	return bounced;
+	return { bounced, BulletUpdateStruct(b_xDelta, b_yDelta, 0,0, b_angleDelta, 0) };
 }
 
-bool PowerFunctionHelper::superbounceEdgeGenericY(Bullet* b, double) {
+std::pair<bool, BulletUpdateStruct> PowerFunctionHelper::superbounceEdgeGenericY(const Bullet* b, double) {
 	bool bounced = 0;
+	double b_xDelta=0, b_yDelta, b_angleDelta;
+
 	if (b->y + b->r > GAME_HEIGHT) { //top edge
-		b->y -= ((b->y + b->r) - GAME_HEIGHT) * 2;
-		b->velocity.setAngle(b->velocity.getAngle() * -1);
+		b_yDelta = -1 * (((b->y + b->r) - GAME_HEIGHT) * 2);
+		b_angleDelta = -2 * b->velocity.getAngle(); //b->velocity.setAngle(b->velocity.getAngle() * -1);
 		bounced = true;
 	} else if (b->y - b->r < 0) { //bottom edge
-		b->y += -(b->y - b->r) * 2;
-		b->velocity.setAngle(b->velocity.getAngle() * -1);
+		b_yDelta = -(b->y - b->r) * 2;
+		b_angleDelta = -2 * b->velocity.getAngle(); //b->velocity.setAngle(b->velocity.getAngle() * -1);
 		bounced = true;
+	} else {
+		b_yDelta = 0;
+		b_angleDelta = 0;
 	}
 
-	return bounced;
+	return { bounced, BulletUpdateStruct(b_xDelta, b_yDelta, 0,0, b_angleDelta, 0) };
 }
 
 void PowerFunctionHelper::equallySpacedCannonPoints(Tank*, std::vector<CannonPoint>* cannonPoints, int num) {

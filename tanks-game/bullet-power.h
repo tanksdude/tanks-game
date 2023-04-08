@@ -67,7 +67,7 @@ public:
 	bool modifiedCollisionWithTankCanOnlyWorkIndividually = false;
 
 	bool modifiesCollisionWithWall = false;
-	virtual InteractionBoolHolder modifiedCollisionWithWall(Bullet*, Wall*) { return { false, false }; }
+	virtual InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> modifiedCollisionWithWall(const Bullet*, const Wall*) { return { false, false, {}, {} }; }
 	//precondition: hit wall, is not necessarily inside wall
 	bool overridesCollisionWithWall = true; //false means also use the default, which is just destroy the bullet if it collides
 	bool modifiedCollisionWithWallCanWorkWithOthers = true;

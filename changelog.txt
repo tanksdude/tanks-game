@@ -5,6 +5,9 @@
     * have fun!
 * some unit tests
     * finally...
+* rudimentary custom levels
+    * turns out, DLLs were too complicated
+* variable physics rate?
 * lots and lots of new stuff
 * powerups:
     * hazard powers!
@@ -18,8 +21,8 @@
     * now it's possible to view certain levels/whatever that exist but aren't playable
         * should probably make a list of some sort to know what exists...
 * gifs and images in the README
-* rudimentary custom levels
-    * turns out, DLLs were too complicated
+* slight multithreading!
+    * set number of threads in the ini
 * mild QoL improvements to displaying things
     * tank multi-powers are more obvious
     * lightning hazards and no bullet zones are significantly easier to spot
@@ -27,6 +30,7 @@
 * overhaul collision
     * two passes for collision (like proper game physics)
     * more efficient
+    * actually proper physics, meaning earlier objects don't get priority over later ones anymore
 * hazards:
     * patrolling turret
     * teleporter?
@@ -39,7 +43,8 @@
     * ?
 * minor things:
     * overhaul priority handling (again)
-    * made static classes (mainly managers) not static
+    * [dev] power: wall sparks, makes extra bullets when it hits a wall
+    * attempted: make static classes (mainly managers) not static; didn't work, everything is too interconnected, need to learn how structure games
 
 0.2.4
 * changed name from "Tanks" to "PowerTanks" so this game might actually become discoverable
@@ -167,14 +172,14 @@
 * invincibility n' stuff (invincibility, big, megadeath)
 * cleaned up how powers interacted
 
-0.1.0:
+0.1.0
 * rendering on GPU!
 * lost the ability to draw tank names but that's okay
 
-0.0.7.1:
+0.0.7.1
 * cleanup for me (very little actual change)
 
-0.0.7 and before:
+0.0.7 and before
 * primarily the framework and some powers to test the framework
 
 future notes:
@@ -184,13 +189,18 @@ future notes:
 0.5.0: hazardpowers can special-case some additional functionality to hazards (like turrets knowing about bouncing bullets, or wallhack (this is for AI))?
 0.A.B: graphs for diagnostics
 0.X.0: big change in levels or powers or something else, like bulletpower memory management (std::shared_ptr)
-0.A.0: batching
+0.A.0: graphics batching
 0.B.0: multithreading? (std::async to start)
-1.0.0: all levels, powers, and other stuff that I want
+1.0.0: all levels, powers, and other stuff that I want, and AI
 2.0.0: level editor and/or power editor and/or game engine something thing (save for sequel instead?)
-sequel note: draw an image for powerups instead of just a color
-
 other note: consider SDL instead of FreeGLUT
 
+sequel notes:
+draw an image for powerups instead of just a color
+arbitrary convex shapes for walls and hazards (would also allow spinning stuff) and arbitrary game world size
+proper structure, built for unit testing and multithreading
+AI and online play (intended LAN but theoretically anywhere, as long as the input buffer is configurable)
+variable physics rate
+
 GitHub: https://github.com/tanksdude/tanks-game
-JS Tanks: https://uncreativeusername.neocities.org/tanks.html
+JS Tanks (old): https://uncreativeusername.neocities.org/tanks.html

@@ -73,9 +73,9 @@ InteractionBoolHolder MegaDeathBulletPower::modifiedMovement(Bullet* b) {
 	return { false };
 }
 
-InteractionBoolHolder MegaDeathBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
+InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> MegaDeathBulletPower::modifiedCollisionWithWall(const Bullet* b, const Wall* w) {
 	//tick() happens before this, so modifiesCollisionWithWall will only be set to true if the bullet can destroy walls
-	return { false, true };
+	return { false, true, {}, {} };
 }
 
 double MegaDeathBulletPower::getOffenseTier(const Bullet* b) const {

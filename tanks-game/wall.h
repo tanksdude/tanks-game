@@ -5,6 +5,7 @@ class Wall;
 #include "rect.h"
 #include "drawable-thing.h"
 #include "color-value-holder.h"
+#include "wall-update-struct.h"
 
 #include "vertex-array.h"
 #include "vertex-buffer.h"
@@ -34,6 +35,8 @@ public:
 	void ghostDraw(float alpha) const override;
 	void ghostDraw(DrawingLayers, float alpha) const override;
 	//void drawCPU() const;
+
+	void update(const WallUpdateStruct*);
 
 	Wall(double x, double y, double w, double h, ColorValueHolder);
 	//Wall(double x, double y, double w, double h, ColorValueHolder c, Team_ID teamID);

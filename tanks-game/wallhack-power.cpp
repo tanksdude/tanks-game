@@ -72,8 +72,8 @@ TankPower* WallhackBulletPower::makeTankPower() const {
 	return new WallhackTankPower();
 }
 
-InteractionBoolHolder WallhackBulletPower::modifiedCollisionWithWall(Bullet* b, Wall* w) {
-	return { false, false };
+InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> WallhackBulletPower::modifiedCollisionWithWall(const Bullet* b, const Wall* w) {
+	return { false, false, {}, {} };
 }
 
 WallhackBulletPower::WallhackBulletPower() {

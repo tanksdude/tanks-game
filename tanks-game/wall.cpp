@@ -33,6 +33,13 @@ Wall::~Wall() {
 	//uninitializeGPU();
 }
 
+void Wall::update(const WallUpdateStruct* up) {
+	this->x += up->x;
+	this->y += up->y;
+	this->w += up->w;
+	this->h += up->h;
+}
+
 bool Wall::initializeGPU() {
 	if (initialized_GPU) {
 		return false;

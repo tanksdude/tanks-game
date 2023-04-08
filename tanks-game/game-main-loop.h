@@ -2,6 +2,8 @@
 #include "game-scene.h"
 #include "drawable-thing.h"
 #include <string>
+#include <thread>
+#include <atomic>
 
 struct TankInputChar {
 protected:
@@ -18,6 +20,13 @@ public:
 class GameMainLoop : public GameScene {
 	friend class DeveloperManager;
 	friend class GameManager; //needed?
+
+protected:
+	std::thread test_thread;
+	static void thread_func();
+	static std::atomic_bool hasWork; //treated as a semaphore more than a flag
+	static void* shared_bulletUpdates;
+	static void* shared_bulletUpdateList; //can't be bothered to do anything else for now; probably doesn't need to be atomic
 
 protected:
 	//bool currentlyDrawing; //look into std::mutex
