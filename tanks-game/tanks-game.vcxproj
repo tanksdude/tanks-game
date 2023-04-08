@@ -257,6 +257,7 @@
     <ClCompile Include="vertex-array.cpp" />
     <ClCompile Include="vertex-buffer.cpp" />
     <ClCompile Include="vertical-lightning-hazard.cpp" />
+    <ClCompile Include="wall-sparks-power.cpp" />
     <ClCompile Include="wall-update-struct.cpp" />
     <ClCompile Include="wall.cpp" />
     <ClCompile Include="wallhack-power.cpp" />
@@ -403,6 +404,7 @@
     <ClInclude Include="vertex-buffer.h" />
     <ClInclude Include="vertex-buffer-layout.h" />
     <ClInclude Include="vertical-lightning-hazard.h" />
+    <ClInclude Include="wall-sparks-power.h" />
     <ClInclude Include="wall-update-struct.h" />
     <ClInclude Include="wall.h" />
     <ClInclude Include="wallhack-power.h" />
