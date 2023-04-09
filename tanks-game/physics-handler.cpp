@@ -98,6 +98,7 @@ std::vector<std::pair<int, int>> PhysicsHandler::sweepAndPrune(const std::vector
 	std::vector<std::pair<int, int>> collisionList;
 
 	//find object intervals
+	//TODO: this step isn't supposed to be computed every time; information should be stored, then insertion sort can be used to fix the new data
 	std::vector<ObjectIntervalInfo> objectIntervals; objectIntervals.reserve(collider.size());
 	for (int i = 0; i < collider.size(); i++) {
 		T o = collider[i];
@@ -107,11 +108,12 @@ std::vector<std::pair<int, int>> PhysicsHandler::sweepAndPrune(const std::vector
 		[](const ObjectIntervalInfo& lhs, const ObjectIntervalInfo& rhs) { return (lhs.xStart < rhs.xStart); }); //lambda
 
 	//sweep through
+	//BIG TODO: is it possible to multithread this? because it's the biggest timesink
 	std::vector<ObjectIntervalInfo> iteratingObjects;
 	for (int i = 0; i < objectIntervals.size(); i++) {
 		ObjectIntervalInfo currentObject = objectIntervals[i];
 		for (int j = 0; j < iteratingObjects.size(); j++) {
-			//remove if not in active interval
+			//prune if not in active interval
 			if (iteratingObjects[j].xEnd < currentObject.xStart) {
 				iteratingObjects.erase(iteratingObjects.begin() + j);
 				j--;
@@ -125,6 +127,7 @@ std::vector<std::pair<int, int>> PhysicsHandler::sweepAndPrune(const std::vector
 	}
 
 	return collisionList;
+	//TODO: this algorithm is somewhat simple; how difficult would it be to do it on the GPU?
 }
 
 template std::vector<std::pair<int, int>> PhysicsHandler::sweepAndPrune<Rect*>

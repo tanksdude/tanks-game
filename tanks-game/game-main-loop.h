@@ -4,6 +4,9 @@
 #include <string>
 #include <thread>
 #include <atomic>
+#include <mutex>
+#include <queue>
+#include <condition_variable>
 
 struct TankInputChar {
 protected:
@@ -17,16 +20,44 @@ public:
 	TankInputChar();
 };
 
+enum class ThreadJobType {
+	nothing,
+	bulletUpdate,
+	wallUpdate,
+	circleHazardUpdate,
+	rectHazardUpdate
+};
+
 class GameMainLoop : public GameScene {
 	friend class DeveloperManager;
 	friend class GameManager; //needed?
 
+	struct ThreadJob {
+		ThreadJobType jobType;
+		void* updateList;
+		void* updateValues;
+		int arrayStart, arrayEnd;
+		ThreadJob(ThreadJobType j, void* list, void* values, int start, int end);
+	private:
+		ThreadJob();
+		ThreadJob(const ThreadJob&);
+	};
+
 protected:
-	std::thread test_thread;
-	static void thread_func();
-	static std::atomic_bool hasWork; //treated as a semaphore more than a flag
-	static void* shared_bulletUpdates;
-	static void* shared_bulletUpdateList; //can't be bothered to do anything else for now; probably doesn't need to be atomic
+	int helperThreadCount;
+	std::thread* thread_arr;
+public:
+	static std::atomic_bool keepRunning;
+	static std::queue<GameMainLoop::ThreadJob*> workQueue; //TODO: real asynchronous consumer-producer queue
+	static std::condition_variable queueCV;
+	static std::mutex queueMutex;
+	static std::atomic_bool* thread_isWorking;
+
+	static void thread_func(int thread_id, int numThreads);
+	static inline void thread_updateBulletsFunc(void* updateBulletList, void* updateBulletValues, int start, int end); //[start, end)
+	static inline void thread_updateWallsFunc(void* updateWallList, void* updateWallValues, int start, int end); //probably pointless
+	static inline void thread_updateCircleHazardsFunc(void* updateCircleHazardList, void* updateCircleHazardValues, int start, int end); //maybe pointless
+	static inline void thread_updateRectHazardsFunc(void* updateRectHazardsList, void* updateRectHazardValues, int start, int end);
 
 protected:
 	//bool currentlyDrawing; //look into std::mutex
@@ -43,6 +74,7 @@ public: //only for ResetThings
 
 public:
 	GameMainLoop();
+	~GameMainLoop();
 	void Tick() { Tick(physicsRate); }
 	void Tick(int UPS) override;
 	void Draw() const override { drawMain(); }

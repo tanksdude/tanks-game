@@ -84,8 +84,35 @@ bool TankInputChar::getKeyState() const {
 	return KeypressManager::getNormalKey(key_num);
 }
 
+GameMainLoop::ThreadJob::ThreadJob(ThreadJobType j, void* list, void* values, int start, int end) {
+	jobType = j;
+	updateList = list;
+	updateValues = values;
+	arrayStart = start;
+	arrayEnd = end;
+}
+
+std::atomic_bool GameMainLoop::keepRunning;
+std::queue<GameMainLoop::ThreadJob*> GameMainLoop::workQueue; //TODO: real asynchronous consumer-producer queue
+std::condition_variable GameMainLoop::queueCV;
+std::mutex GameMainLoop::queueMutex;
+std::atomic_bool* GameMainLoop::thread_isWorking;
+
 GameMainLoop::GameMainLoop() : GameScene() {
-	test_thread = std::thread(thread_func);
+	const BasicINIParser::BasicINIData& ini_data = GameManager::get_INI();
+
+	helperThreadCount = 0;
+	if (ini_data.exists("UNIVERSAL", "ThreadCount")) {
+		helperThreadCount = -1 + std::stoi(ini_data.get("UNIVERSAL", "ThreadCount")); //the ini lists total thread count, this only generates the extra threads
+		helperThreadCount = std::max(helperThreadCount, 0);
+	}
+
+	thread_isWorking = new std::atomic_bool[helperThreadCount];
+	thread_arr = new std::thread[helperThreadCount];
+	for (int i = 0; i < helperThreadCount; i++) {
+		thread_isWorking[i].store(false);
+		thread_arr[i] = std::thread(thread_func, i, helperThreadCount+1);
+	}
 
 	//currentlyDrawing = false;
 	//frameCount = 0;
@@ -95,24 +122,122 @@ GameMainLoop::GameMainLoop() : GameScene() {
 	maxWaitCount = 1000/physicsRate * 10;
 }
 
-std::atomic_bool GameMainLoop::hasWork = false;
-void* GameMainLoop::shared_bulletUpdates;
-void* GameMainLoop::shared_bulletUpdateList;
-void GameMainLoop::thread_func() {
-	while (1) {
-		while (!hasWork.load()) {
-			std::this_thread::yield();
-		}
-		std::unordered_map<Game_ID, BulletUpdateStruct>* bulletUpdates = (std::unordered_map<Game_ID, BulletUpdateStruct>*) GameMainLoop::shared_bulletUpdates;
-		std::vector<Game_ID>* bulletUpdateList = (std::vector<Game_ID>*) GameMainLoop::shared_bulletUpdateList;
+GameMainLoop::~GameMainLoop() {
+	keepRunning.store(false);
+	queueCV.notify_all();
 
-		for (int i = bulletUpdateList->size() / 2; i < bulletUpdateList->size(); i++) {
-			Bullet* b = BulletManager::getBulletByID(bulletUpdateList->at(i));
-			b->update(&bulletUpdates->at(bulletUpdateList->at(i)));
-		}
-
-		hasWork.store(false);
+	for (int i = 0; i < helperThreadCount; i++) {
+		thread_arr[i].join();
 	}
+	delete[] thread_arr;
+	delete[] thread_isWorking;
+
+	while (!workQueue.empty()) {
+		delete workQueue.front();
+		workQueue.pop();
+	}
+}
+
+void GameMainLoop::thread_func(int thread_id, int numThreads) {
+	while (keepRunning.load()) {
+		std::unique_lock<std::mutex> lock(queueMutex);
+		while (keepRunning.load()) {
+			queueCV.wait(lock);
+		}
+		if (!keepRunning) {
+			//notify_all was called, thread needs to die
+			//TODO: is the mutex supposed to be unlocked?
+			break;
+		}
+		if (workQueue.size() == 0) {
+			//thread accidentally woken up
+			queueMutex.unlock();
+			//std::this_thread::yield();
+			continue;
+		}
+
+		GameMainLoop::ThreadJob* job = workQueue.front();
+		workQueue.pop();
+		thread_isWorking[thread_id].store(true);
+		queueMutex.unlock();
+
+		bool didWork = true;
+		switch (job->jobType) {
+			default:
+			case ThreadJobType::nothing:
+				//no work
+				didWork = false;
+				break;
+			case ThreadJobType::bulletUpdate:
+				//bullets
+				thread_updateBulletsFunc(job->updateList, job->updateValues, job->arrayStart, job->arrayEnd);
+				break;
+			case ThreadJobType::wallUpdate:
+				//walls
+				thread_updateWallsFunc(job->updateList, job->updateValues, job->arrayStart, job->arrayEnd);
+				break;
+			case ThreadJobType::circleHazardUpdate:
+				//circle hazards
+				thread_updateCircleHazardsFunc(job->updateList, job->updateValues, job->arrayStart, job->arrayEnd);
+				break;
+			case ThreadJobType::rectHazardUpdate:
+				//rect hazards
+				thread_updateRectHazardsFunc(job->updateList, job->updateValues, job->arrayStart, job->arrayEnd);
+				break;
+		}
+
+		delete job;
+		if (didWork) {
+			thread_isWorking[thread_id].store(false);
+		} else {
+			continue;
+		}
+	}
+	//make sure to join() to properly end the thread
+}
+
+inline void GameMainLoop::thread_updateBulletsFunc(void* updateBulletList, void* updateBulletValues, int start, int end) {
+	std::unordered_map<Game_ID, BulletUpdateStruct>* bulletUpdates = (std::unordered_map<Game_ID, BulletUpdateStruct>*) updateBulletValues;
+	std::vector<Game_ID>* bulletUpdateList = (std::vector<Game_ID>*) updateBulletList;
+
+	for (int i = start; i < end; i++) {
+		Bullet* b = BulletManager::getBulletByID(bulletUpdateList->at(i));
+		b->update(&bulletUpdates->at(bulletUpdateList->at(i)));
+	}
+}
+
+inline void GameMainLoop::thread_updateWallsFunc(void* updateWallList, void* updateWallValues, int start, int end) {
+	std::unordered_map<Game_ID, WallUpdateStruct>* wallUpdates = (std::unordered_map<Game_ID, WallUpdateStruct>*) updateWallValues;
+	std::vector<Game_ID>* wallUpdateList = (std::vector<Game_ID>*) updateWallList;
+	
+	for (int i = start; i < end; i++) {
+		Wall* w = WallManager::getWallByID(wallUpdateList->at(i));
+		w->update(&wallUpdates->at(wallUpdateList->at(i)));
+	}
+}
+
+inline void GameMainLoop::thread_updateCircleHazardsFunc(void* updateCircleHazardList, void* updateCircleHazardValues, int start, int end) {
+	/*
+	std::unordered_map<Game_ID, CircleHazardUpdateStruct>* wallUpdates = (std::unordered_map<Game_ID, CircleHazardUpdateStruct>*) updateCircleHazardValues;
+	std::vector<Game_ID>* circleHazardUpdateList = (std::vector<Game_ID>*) updateCircleHazardList;
+
+	for (int i = start; i < end; i++) {
+		CircleHazard* ch = HazardManager::getCircleHazardByID(circleHazardUpdateList->at(i));
+		ch->update(&circleHazardUpdates->at(circleHazardUpdateList->at(i)));
+	}
+	*/
+}
+
+inline void GameMainLoop::thread_updateRectHazardsFunc(void* updateRectHazardsList, void* updateRectHazardValues, int start, int end) {
+	/*
+	std::unordered_map<Game_ID, RectHazardUpdateStruct>* wallUpdates = (std::unordered_map<Game_ID, RectHazardUpdateStruct>*) updateRectHazardValues;
+	std::vector<Game_ID>* rectHazardUpdateList = (std::vector<Game_ID>*) updateRectHazardList;
+
+	for (int i = start; i < end; i++) {
+		RectHazard* rh = HazardManager::getRectHazardByID(rectHazardUpdateList->at(i));
+		rh->update(&rectHazardUpdates->at(rectHazardUpdateList->at(i)));
+	}
+	*/
 }
 
 void GameMainLoop::Tick(int UPS) {
@@ -819,21 +944,22 @@ void GameMainLoop::bulletToWall() {
 		}
 	}
 
-	//TODO: multithreading here! (remember to do chunking, not interleaving)
-	shared_bulletUpdates = &bulletUpdates;
-	shared_bulletUpdateList = &bulletUpdateList;
-	GameMainLoop::hasWork.store(true);
-
-	for (int i = 0; i < bulletUpdateList.size() / 2; i++) {
-		Bullet* b = BulletManager::getBulletByID(bulletUpdateList[i]);
-		b->update(&bulletUpdates[bulletUpdateList[i]]);
-	}
-	for (int i = 0; i < wallUpdateList.size(); i++) {
-		Wall* w = WallManager::getWallByID(wallUpdateList[i]);
-		w->update(&wallUpdates[wallUpdateList[i]]);
+	for (int i = 0; i < GameMainLoop::helperThreadCount; i++) {
+		int start =   i * bulletUpdateList.size() / (helperThreadCount+1);
+		int end = (i+1) * bulletUpdateList.size() / (helperThreadCount+1);
+		queueMutex.lock();
+		GameMainLoop::ThreadJob* job = new GameMainLoop::ThreadJob(ThreadJobType::bulletUpdate, &bulletUpdateList, &bulletUpdates, start, end);
+		workQueue.push(job);
+		queueCV.notify_one();
+		queueMutex.unlock();
 	}
 
-	while (hasWork.load()) {} //if you don't join, this is how you wait for the thread to finish
+	thread_updateBulletsFunc(&bulletUpdateList, &bulletUpdates, (helperThreadCount-1) * bulletUpdateList.size() / (helperThreadCount+1), bulletUpdates.size());
+	thread_updateWallsFunc(&wallUpdateList, &wallUpdates, 0, wallUpdateList.size()); //should go below for "clean code" but should stay here for thread scheduling reasons
+
+	for (int i = 0; i < GameMainLoop::helperThreadCount; i++) {
+		while (thread_isWorking[i].load()) {} //if you don't join, this is how you wait for the thread to finish
+	}
 
 	//clear deaths
 	//std::sort(bulletDeletionList.begin(), bulletDeletionList.end());
@@ -1011,10 +1137,15 @@ void GameMainLoop::bulletToBullet() {
 	//TODO: modernize (add default vs custom collision stuff)
 	//broad phase
 	std::vector<std::pair<int, int>> collisionList = PhysicsHandler::sweepAndPrune<Circle*>(BulletManager::getBulletCollisionList());
+	//this is the largest timesink
 	//TODO: this returns a large list only to get destroyed when the function ends; any way to reduce this memory footprint?
 
 	//narrow phase and resolve collision
 	std::vector<Game_ID> bulletDeletionList;
+
+	std::unordered_map<Game_ID, BulletUpdateStruct> bulletUpdates; //yeah, this is unused...
+	std::vector<Game_ID> bulletUpdateList;
+
 	for (int i = 0; i < collisionList.size(); i++) {
 		std::pair<int, int> collisionPair = collisionList[i];
 		Bullet* b_outer = BulletManager::getBullet(collisionPair.first);
