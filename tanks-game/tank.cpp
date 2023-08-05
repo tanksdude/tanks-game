@@ -64,7 +64,7 @@ const double Tank::default_maxSpeed = 1;
 const double Tank::default_acceleration = 1.0/16;
 const double Tank::default_turningIncrement = 64;
 
-Tank::Tank(double x_, double y_, double angle, Team_ID teamID, std::string name_) : GameThing(teamID) {
+Tank::Tank(double x_, double y_, double angle, Team_ID teamID, std::string name_, double shootCooldown) : GameThing(teamID) {
 	x = x_;
 	y = y_;
 	velocity = SimpleVector2D(angle, 0, true);
@@ -77,7 +77,7 @@ Tank::Tank(double x_, double y_, double angle, Team_ID teamID, std::string name_
 	turningIncrement = default_turningIncrement;
 
 	shootCount = 0;
-	maxShootCount = 100; //will change whenever while I'm testing
+	maxShootCount = shootCooldown;
 
 	shootingPoints = std::vector<CannonPoint>();
 	determineShootingAngles();

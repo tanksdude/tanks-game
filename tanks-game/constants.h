@@ -7,6 +7,8 @@ extern const double PI; //this doesn't need to exist but typing the #define befo
 extern const double GAME_WIDTH;
 extern const double GAME_HEIGHT;
 extern const double TANK_RADIUS;
+extern const double SHOOT_COOLDOWN;
+extern const double POWER_COOLDOWN;
 
 extern const double DESTRUCTION_TIER; //offense tier for destorying walls and turrets & stuff
 extern const double BULLET_TO_TANK_RADIUS_RATIO;

@@ -28,10 +28,6 @@ void ResetThings::reset(int) {
 		}
 	}
 
-	//TODO: better solution to that vvv
-	//TODO: need to get inputs, name, and teamID; need something like Tank::getIdentification()
-	//maybe it also needs to store starting angle (if getNumTanks() > 2)
-
 	BulletManager::clearBullets();
 	WallManager::clearWalls();
 	PowerupManager::clearPowerups();
@@ -40,8 +36,15 @@ void ResetThings::reset(int) {
 	LevelManager::clearLevels();
 	TankManager::clearTanks();
 
-	TankManager::pushTank(new Tank(default_tankToEdgeDist, GAME_HEIGHT/2, 0, 1, "WASD"));
-	TankManager::pushTank(new Tank(GAME_WIDTH-default_tankToEdgeDist, GAME_HEIGHT/2, PI, 2, "Arrow Keys"));
+	//TODO: maybe GameMainLoop should hold the shooting cooldown? (but the tank still needs to get initialized with it...)
+	const BasicINIParser::BasicINIData& ini_data = GameManager::get_INI();
+	double shootCooldown = SHOOT_COOLDOWN;
+	if (ini_data.exists("GAME_OPTIONS", "ShootingCooldown")) {
+		shootCooldown = std::stod(ini_data.get("GAME_OPTIONS", "ShootingCooldown"));
+	}
+
+	TankManager::pushTank(new Tank(default_tankToEdgeDist, GAME_HEIGHT/2, 0, 1, "WASD", shootCooldown));
+	TankManager::pushTank(new Tank(GAME_WIDTH-default_tankToEdgeDist, GAME_HEIGHT/2, PI, 2, "Arrow Keys", shootCooldown));
 
 #if _DEBUG
 	LevelManager::pushLevel("dev", "dev0");
@@ -156,8 +159,13 @@ void ResetThings::firstGameInitialize(std::string tank1TeamName, std::string tan
 	gameInstance.tank2Inputs[3] = TankInputChar(tank2Shoot);
 	gameInstance.tank2Inputs[4] = TankInputChar(tank2Special);
 
-	TankManager::pushTank(new Tank(20, GAME_HEIGHT/2, 0, 1, tank1Name));
-	TankManager::pushTank(new Tank(GAME_WIDTH-20, GAME_HEIGHT/2, PI, 2, tank2Name));
+	double shootCooldown = SHOOT_COOLDOWN;
+	if (ini_data.exists("GAME_OPTIONS", "ShootingCooldown")) {
+		shootCooldown = std::stod(ini_data.get("GAME_OPTIONS", "ShootingCooldown"));
+	}
+
+	TankManager::pushTank(new Tank(20, GAME_HEIGHT/2, 0, 1, tank1Name, shootCooldown));
+	TankManager::pushTank(new Tank(GAME_WIDTH-20, GAME_HEIGHT/2, PI, 2, tank2Name, shootCooldown));
 	EndGameHandler::addTeamToWatch(1, tank1TeamName);
 	EndGameHandler::addTeamToWatch(2, tank2TeamName);
 	EndGameHandler::addTeamToWatch(HAZARD_TEAM, "HAZARDS");

@@ -124,6 +124,6 @@ private:
 	inline void drawExtraBarrels(float alpha = 1.0f) const;
 
 public:
-	Tank(double x, double y, double angle, Team_ID id, std::string name);
+	Tank(double x, double y, double angle, Team_ID id, std::string name, double shootCooldown);
 	~Tank();
 };
