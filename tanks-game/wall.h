@@ -1,11 +1,11 @@
 #pragma once
 class Wall;
+struct WallUpdateStruct;
 
 #include "game-thing.h"
 #include "rect.h"
 #include "drawable-thing.h"
 #include "color-value-holder.h"
-#include "wall-update-struct.h"
 
 #include "vertex-array.h"
 #include "vertex-buffer.h"
@@ -41,4 +41,19 @@ public:
 	Wall(double x, double y, double w, double h, ColorValueHolder);
 	//Wall(double x, double y, double w, double h, ColorValueHolder c, Team_ID teamID);
 	~Wall();
+};
+
+struct WallUpdateStruct {
+	//deltas:
+	double x;
+	double y;
+	double w;
+	double h;
+	//absolutes:
+	//ColorValueHolder color;
+
+	void add(const WallUpdateStruct& other);
+
+	WallUpdateStruct(double x, double y, double w, double h);
+	WallUpdateStruct() : WallUpdateStruct(0, 0, 0, 0) {}
 };

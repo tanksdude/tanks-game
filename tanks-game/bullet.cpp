@@ -637,3 +637,35 @@ double Bullet::getHighestDefenseTier(double importance) const {
 double Bullet::getDefenseTier() const {
 	return getHighestDefenseTier(getHighestDefenseImportance());
 }
+
+BulletUpdateStruct::BulletUpdateStruct(double x, double y, double r, double speed, double angle, double alpha, const std::vector<Bullet*>& newBullets) {
+	//add acceleration?
+	this->x = x;
+	this->y = y;
+	this->r = r;
+	this->speed = speed;
+	this->angle = angle;
+	this->alpha = alpha;
+	this->newBullets = std::vector<Bullet*>(newBullets);
+}
+
+BulletUpdateStruct::BulletUpdateStruct(double x, double y, double r, double speed, double angle, double alpha) {
+	//add acceleration?
+	this->x = x;
+	this->y = y;
+	this->r = r;
+	this->speed = speed;
+	this->angle = angle;
+	this->alpha = alpha;
+	this->newBullets = std::vector<Bullet*>();
+}
+
+void BulletUpdateStruct::add(const BulletUpdateStruct& other) {
+	this->x += other.x;
+	this->y += other.y;
+	this->r += other.r;
+	this->speed += other.speed;
+	this->angle += other.angle;
+	this->alpha += other.alpha;
+	newBullets.insert(newBullets.end(), other.newBullets.begin(), other.newBullets.end());
+}

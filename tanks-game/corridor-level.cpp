@@ -10,11 +10,11 @@
 
 std::unordered_map<std::string, float> CorridorLevel::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "vanilla", 1.0f });
-	weights.insert({ "random-vanilla", 1.0f });
+	weights.insert({ "vanilla", 0.5f });
+	weights.insert({ "random-vanilla", 0.5f });
 	weights.insert({ "old", 1.0f });
 	weights.insert({ "random-old", 1.0f });
-	weights.insert({ "random", 1.0f });
+	weights.insert({ "random", 0.25f });
 	return weights;
 }
 

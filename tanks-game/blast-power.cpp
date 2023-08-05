@@ -92,7 +92,7 @@ InteractionBoolHolder BlastBulletPower::modifiedMovement(Bullet* b) {
 InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> BlastBulletPower::modifiedCollisionWithWall(const Bullet* b, const Wall* w) {
 	if (b->velocity.getMagnitude() <= 0) {
 		//b->opaqueness -= BlastPower::degradeAmount;
-		return { b->isDead(), false, BulletUpdateStruct(0,0,0,0,0, -BlastPower::degradeAmount), {} };
+		return { b->isDead(), false, new BulletUpdateStruct(0,0,0,0,0, -BlastPower::degradeAmount), nullptr };
 	} else {
 		if (CollisionHandler::partiallyCollided(b, w)) {
 			//CollisionHandler::pushMovableAwayFromImmovable(b, w);
@@ -100,9 +100,9 @@ InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> BlastBulletPower::
 
 			//b->acceleration = 0;
 			//b->velocity.setMagnitude(0);
-			return { false, false, BulletUpdateStruct(0,0,0,0,0,0), {} };
+			return { false, false, new BulletUpdateStruct(0,0,0,0,0,0), nullptr };
 		}
-		return { false, false, {}, {} };
+		return { false, false, nullptr, nullptr };
 	}
 }
 

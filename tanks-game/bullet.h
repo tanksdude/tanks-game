@@ -1,5 +1,6 @@
 #pragma once
 class Bullet;
+struct BulletUpdateStruct;
 
 #include "game-thing.h"
 #include "circle.h"
@@ -7,7 +8,6 @@ class Bullet;
 #include <vector>
 #include "color-value-holder.h"
 #include "simple-vector-2d.h"
-#include "bullet-update-struct.h"
 #include "bullet-power.h"
 
 #include "vertex-array.h"
@@ -109,4 +109,23 @@ public:
 	Bullet(double x, double y, double r, double angle, double vel, Team_ID teamID, BulletParentType parentType, Game_ID parentID);
 	Bullet(double x, double y, double r, double angle, double vel, Team_ID teamID, BulletParentType parentType, Game_ID parentID, std::vector<BulletPower*>* bp);
 	~Bullet();
+};
+
+struct BulletUpdateStruct {
+	//deltas:
+	double x;
+	double y;
+	double r;
+	double speed;
+	double angle;
+	double alpha;
+	//absolutes:
+	//double acceleration;
+	std::vector<Bullet*> newBullets;
+
+	void add(const BulletUpdateStruct& other);
+
+	BulletUpdateStruct(double x, double y, double r, double speed, double angle, double alpha, const std::vector<Bullet*>& newBullets);
+	BulletUpdateStruct(double x, double y, double r, double speed, double angle, double alpha);
+	BulletUpdateStruct() : BulletUpdateStruct(0, 0, 0, 0, 0, 0) {}
 };

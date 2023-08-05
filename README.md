@@ -16,7 +16,8 @@ TODO: maybe a gif later
     * Earlier versions probably work if you update the shaders
 * 3GHz+ CPU recommended (2GHz is probably fine)
     * Faster CPU -> more bullets on screen
-    * Single-core CPU is enough (multithreading *potentially* coming "soon")
+    * Multithreading possibly coming soon™
+        * I recently realized RNG isn't multithreaded so there's gonna be limits
 * RAM requirements unknown, but 100MB is good
     * More bullets -> more RAM needed
 * No audio requirements (unlikely to change in the future)
@@ -47,17 +48,11 @@ Will add some notes eventually, but nothing major.
 
 ## Contributing
 
-I plan on working alone on this project, since it's my personal project. If you wanna do something with this project, you can fork this repository and do whatever you want.
-
-## Versioning
-
-1.0.0 is "game finished," but I probably won't get around to actually finalizing this.
-
-*Really* big changes will increment the second digit, otherwise only the third digit will get incremented.
+This is my personal project so I won't be taking others' contributions. (Plus I've learned so much and would rather make a sequel at this point.) If you wanna do something with this project, you can fork this repository and do whatever you want.
 
 ## License
 
-This project is licensed under GNU General Public License v3.0
+GNU General Public License v3.0
 
 ## Acknowledgments
 
@@ -73,8 +68,8 @@ This project is licensed under GNU General Public License v3.0
     * (Smash Bros the *party* game, not the competitive fighting game; use items!)
 * [The Cherno](https://www.youtube.com/user/TheChernoProject/videos) is very helpful for OpenGL
 * [Solarian Programmer](https://solarianprogrammer.com/) has good starter code for hardware rendering
-* [The Coding Train](https://www.youtube.com/user/shiffman/videos) is helpful, but wasn't *specifically* used for this project (probably was used for the JS game, but I don't remember)
-* [Factorio](https://www.factorio.com/)'s Friday Fun Facts are amazing and made me enjoy low-level C++ optimizations
+* [The Coding Train](https://www.youtube.com/@TheCodingTrain/videos) is helpful, but wasn't *specifically* used for this project (probably was used for the JS game, but I don't remember)
+* [Factorio](https://www.factorio.com/)'s Friday Fun Facts are amazing and got me interested in low-level C++ optimizations
 * [Nitronic Rush](http://nitronic-rush.com/) is the other game that made me want to learn C++ in the first place
 * [N++](http://www.nplusplus.org/) for just being a good game (also the developers had some [good GDC talks](https://www.youtube.com/watch?v=VZ4xevskMCI) and have a [useful game development blog](https://www.metanetsoftware.com/technique/tutorialAbak.html))
 * [Creeper World](https://knucklecracker.com/creeperworld4/cw4.php) for also just being a good game

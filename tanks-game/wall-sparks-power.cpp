@@ -64,8 +64,8 @@ WallSparksTankPower::WallSparksTankPower() {
 #include <vector>
 
 InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> WallSparksBulletPower::modifiedCollisionWithWall(const Bullet* b, const Wall* w) {
-	BulletUpdateStruct b_update;
-	WallUpdateStruct w_update;
+	std::shared_ptr<BulletUpdateStruct> b_update;
+	std::shared_ptr<WallUpdateStruct> w_update;
 
 	//first, bounce off wall
 
@@ -95,8 +95,8 @@ InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> WallSparksBulletPo
 			newVelocity = Tank::default_maxSpeed*BULLET_TO_TANK_SPEED_RATIO; //if bullet's initial speed is zero, it should still explode (TODO: what should the initial speed be?)
 		}
 		newVelocity = newVelocity * ((RNG::randFunc()+RNG::randFunc())/2 * (WallSparksPower::maxNewBulletVelocity - WallSparksPower::minNewBulletVelocity) + WallSparksPower::minNewBulletVelocity);
-		double newAngle = (b->getAngle() + b_update.angle) + (RNG::randFunc()+RNG::randFunc() - 1) * WallSparksPower::bulletAngleDeviation;
-		BulletManager::pushBullet(new Bullet(b->x + b_update.x, b->y + b_update.y, b->r, newAngle, newVelocity, b->getTeamID(), b->getParentIDType(), b->getParentID(), bp, true));
+		double newAngle = (b->getAngle() + b_update->angle) + (RNG::randFunc()+RNG::randFunc() - 1) * WallSparksPower::bulletAngleDeviation;
+		BulletManager::pushBullet(new Bullet(b->x + b_update->x, b->y + b_update->y, b->r, newAngle, newVelocity, b->getTeamID(), b->getParentIDType(), b->getParentID(), bp, true));
 		delete bp;
 	}
 

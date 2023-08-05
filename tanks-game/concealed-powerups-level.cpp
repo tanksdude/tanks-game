@@ -11,11 +11,11 @@
 
 std::unordered_map<std::string, float> ConcealedPowerupsLevel::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "vanilla", 1.0f });
-	weights.insert({ "random-vanilla", 1.0f });
+	weights.insert({ "vanilla", 0.25f });
+	weights.insert({ "random-vanilla", 0.25f });
 	weights.insert({ "old", 1.0f });
 	weights.insert({ "random-old", 1.0f });
-	weights.insert({ "random", 1.0f });
+	weights.insert({ "random", 0.125f });
 	return weights;
 }
 

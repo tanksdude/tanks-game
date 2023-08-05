@@ -81,7 +81,7 @@ void DeveloperManager::mouseWheelFunc(int wheel, int dir, int x, int y) {
 	std::cout << "DeveloperManager insertIdentifier: " << insertListIdentifiers[insertIndex] << std::endl;
 }
 
-std::vector<std::string> DeveloperManager::insertListIdentifiers = { "longinvincible", "temp", "banana", "homing", "barrier", "shield", "mines", "multishot", "godmode", "big", "inversion", "annoying", "stationary_turret", "vert_wall", "horz_wall" };
+std::vector<std::string> DeveloperManager::insertListIdentifiers = { "longinvincible", "temp", "banana", "homing", "barrier", "bounce", "mines", "multishot", "godmode", "big", "inversion", "annoying", "stationary_turret", "vert_wall", "horz_wall" };
 void DeveloperManager::devInsert(int x, int y) {
 	GenericFactoryConstructionData constructionData;
 	double* posArr;
@@ -90,11 +90,11 @@ void DeveloperManager::devInsert(int x, int y) {
 			PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "longinvincible"));
 			break;
 		case 1:
-			//PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "annoying"));
-			//PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla", "blast"));
+			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla", "blast"));
 			//PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "ultrabounce"));
 			//PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "other_stuff_is_poison"));
-			PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "backwards_movement"));
+			//PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "backwards_movement"));
+			//PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "wall_sparks"));
 			break;
 		case 2:
 			PowerupManager::pushPowerup(new PowerSquare(x, y, "banana"));
@@ -106,7 +106,7 @@ void DeveloperManager::devInsert(int x, int y) {
 			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla-extra", "barrier"));
 			break;
 		case 5:
-			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla-extra", "shield"));
+			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla", "bounce"));
 			break;
 		case 6:
 			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla-extra", "mines"));

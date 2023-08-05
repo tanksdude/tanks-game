@@ -72,8 +72,8 @@ UltraBounceTankPower::UltraBounceTankPower() : BounceTankPower() {
 #include "collision-handler.h"
 
 InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> UltraBounceBulletPower::modifiedCollisionWithWall(const Bullet* b, const Wall* w) {
-	BulletUpdateStruct b_update;
-	WallUpdateStruct w_update;
+	std::shared_ptr<BulletUpdateStruct> b_update;
+	std::shared_ptr<WallUpdateStruct> w_update;
 
 	//if (abs(b->velocity.getMagnitude()) * Bullet::default_radius/b->r <= .5) {
 	if (true) { //it's a dev power, so may as well

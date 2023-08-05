@@ -18,7 +18,7 @@ ColorValueHolder TimedRewardLevel::getDefaultColor() const {
 std::unordered_map<std::string, float> TimedRewardLevel::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla-extra", .25f });
-	weights.insert({ "random-vanilla", .125f });
+	weights.insert({ "random-vanilla", .25f });
 	weights.insert({ "dev", .5f });
 	weights.insert({ "random-dev", .5f });
 	//shouldn't really be in a regular group since it's not done... but it's fine

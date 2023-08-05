@@ -84,13 +84,17 @@ bool TankInputChar::getKeyState() const {
 	return KeypressManager::getNormalKey(key_num);
 }
 
-GameMainLoop::ThreadJob::ThreadJob(ThreadJobType j, void* list, void* values, int start, int end) {
+GameMainLoop::ThreadJob::ThreadJob(ThreadJobType j, void* list, void* values, void** newArr, int start, int end) {
 	jobType = j;
 	updateList = list;
 	updateValues = values;
+	newArrayPointer = newArr;
 	arrayStart = start;
 	arrayEnd = end;
 }
+
+GameMainLoop::ThreadJob::ThreadJob(ThreadJobType j, void* list, void* values, int start, int end)
+: GameMainLoop::ThreadJob::ThreadJob(j, list, values, nullptr, start, end) {}
 
 std::atomic_bool GameMainLoop::keepRunning;
 std::queue<GameMainLoop::ThreadJob*> GameMainLoop::workQueue; //TODO: real asynchronous consumer-producer queue
@@ -164,25 +168,38 @@ void GameMainLoop::thread_func(int thread_id, int numThreads) {
 		bool didWork = true;
 		switch (job->jobType) {
 			default:
+				std::cerr << "unsupported job type " << int(job->jobType) << std::endl;
 			case ThreadJobType::nothing:
-				//no work
 				didWork = false;
 				break;
-			case ThreadJobType::bulletUpdate:
-				//bullets
+
+			case ThreadJobType::update_bullets:
 				thread_updateBulletsFunc(job->updateList, job->updateValues, job->arrayStart, job->arrayEnd);
 				break;
-			case ThreadJobType::wallUpdate:
-				//walls
+			case ThreadJobType::update_walls:
 				thread_updateWallsFunc(job->updateList, job->updateValues, job->arrayStart, job->arrayEnd);
 				break;
-			case ThreadJobType::circleHazardUpdate:
-				//circle hazards
+			case ThreadJobType::update_circleHazards:
 				thread_updateCircleHazardsFunc(job->updateList, job->updateValues, job->arrayStart, job->arrayEnd);
 				break;
-			case ThreadJobType::rectHazardUpdate:
-				//rect hazards
+			case ThreadJobType::update_rectHazards:
 				thread_updateRectHazardsFunc(job->updateList, job->updateValues, job->arrayStart, job->arrayEnd);
+				break;
+
+			case ThreadJobType::broad_bulletToWall:
+				thread_broadBulletToWall(job->updateList, job->updateValues, job->newArrayPointer);
+				break;
+			case ThreadJobType::broad_bulletToCircleHazard:
+				thread_broadBulletToCircleHazard(job->updateList, job->updateValues, job->newArrayPointer);
+				break;
+			case ThreadJobType::broad_bulletToRectHazard:
+				thread_broadBulletToRectHazard(job->updateList, job->updateValues, job->newArrayPointer);
+				break;
+			case ThreadJobType::broad_bulletToBullet:
+				thread_broadBulletToBullet(job->updateList, job->newArrayPointer);
+				break;
+			case ThreadJobType::broad_bulletToTank:
+				thread_broadBulletToTank(job->updateList, job->updateValues, job->newArrayPointer);
 				break;
 		}
 
@@ -194,6 +211,26 @@ void GameMainLoop::thread_func(int thread_id, int numThreads) {
 		}
 	}
 	//make sure to join() to properly end the thread
+}
+
+inline void GameMainLoop::thread_broadBulletToWall(void* bulletCollisionList, void* wallCollisionList, void** collisionPairList) {
+	*collisionPairList = PhysicsHandler::sweepAndPrune<Circle*, Rect*>(*((std::vector<Circle*>*) bulletCollisionList), *((std::vector<Rect*>*) wallCollisionList));
+}
+
+inline void GameMainLoop::thread_broadBulletToCircleHazard(void* bulletCollisionList, void* circleHazardCollisionList, void** collisionPairList) {
+	*collisionPairList = PhysicsHandler::sweepAndPrune<Circle*, Circle*>(*((std::vector<Circle*>*) bulletCollisionList), *((std::vector<Circle*>*) circleHazardCollisionList));
+}
+
+inline void GameMainLoop::thread_broadBulletToRectHazard(void* bulletCollisionList, void* rectHazardCollisionList, void** collisionPairList) {
+	*collisionPairList = PhysicsHandler::sweepAndPrune<Circle*, Rect*>(*((std::vector<Circle*>*) bulletCollisionList), *((std::vector<Rect*>*) rectHazardCollisionList));
+}
+
+inline void GameMainLoop::thread_broadBulletToBullet(void* bulletCollisionList, void** collisionPairList) {
+	*collisionPairList = PhysicsHandler::sweepAndPrune<Circle*>(*((std::vector<Circle*>*) bulletCollisionList));
+}
+
+inline void GameMainLoop::thread_broadBulletToTank(void* bulletCollisionList, void* tankCollisionList, void** collisionPairList) {
+	*collisionPairList = PhysicsHandler::sweepAndPrune<Circle*, Circle*>(*((std::vector<Circle*>*) bulletCollisionList), *((std::vector<Circle*>*) tankCollisionList));
 }
 
 inline void GameMainLoop::thread_updateBulletsFunc(void* updateBulletList, void* updateBulletValues, int start, int end) {
@@ -213,6 +250,7 @@ inline void GameMainLoop::thread_updateWallsFunc(void* updateWallList, void* upd
 	for (int i = start; i < end; i++) {
 		Wall* w = WallManager::getWallByID(wallUpdateList->at(i));
 		w->update(&wallUpdates->at(wallUpdateList->at(i)));
+		//TODO: is there still a unordered_map invalid key error here?
 	}
 }
 
@@ -251,6 +289,10 @@ void GameMainLoop::Tick(int UPS) {
 		}
 		return;
 	}
+
+	//big problem: I currently don't have the brainpower or willingness to parallelize the broad phase of collision, but I need to multithread something
+	//solution: parallelize the various broad phases!
+	//bonus: this is how all collision will be able to be done simultaneously
 
 	auto start = Diagnostics::getTime();
 	doThing();
@@ -403,13 +445,13 @@ void GameMainLoop::moveTanks() {
 
 void GameMainLoop::tankToPowerup() {
 	//broad phase
-	std::vector<std::pair<int, int>> collisionList = PhysicsHandler::sweepAndPrune<Circle*, Rect*>(TankManager::getTankCollisionList(), PowerupManager::getPowerupCollisionList());
+	std::vector<std::pair<int, int>>* collisionList = PhysicsHandler::sweepAndPrune<Circle*, Rect*>(TankManager::getTankCollisionList(), PowerupManager::getPowerupCollisionList());
 
 	//narrow phase and resolve collision
 	//std::vector<Game_ID> tankDeletionList; //custom tank-powerup collision doesn't exist
 	std::vector<Game_ID> powerupDeletionList;
-	for (int i = 0; i < collisionList.size(); i++) {
-		std::pair<int, int> collisionPair = collisionList[i];
+	for (int i = 0; i < collisionList->size(); i++) {
+		std::pair<int, int> collisionPair = collisionList->at(i);
 		Tank* t = TankManager::getTank(collisionPair.first);
 		PowerSquare* p = PowerupManager::getPowerup(collisionPair.second);
 
@@ -423,6 +465,8 @@ void GameMainLoop::tankToPowerup() {
 	for (int i = powerupDeletionList.size() - 1; i >= 0; i--) {
 		PowerupManager::deletePowerupByID(powerupDeletionList[i]);
 	}
+
+	delete collisionList;
 }
 
 void GameMainLoop::tickHazards() {
@@ -480,13 +524,13 @@ void GameMainLoop::tankShoot() {
 
 void GameMainLoop::tankToWall() {
 	//broad phase
-	std::vector<std::pair<int, int>> collisionList = PhysicsHandler::sweepAndPrune<Circle*, Rect*>(TankManager::getTankCollisionList(), WallManager::getWallCollisionList());
+	std::vector<std::pair<int, int>>* collisionList = PhysicsHandler::sweepAndPrune<Circle*, Rect*>(TankManager::getTankCollisionList(), WallManager::getWallCollisionList());
 
 	//narrow phase and resolve collision
 	//std::vector<Game_ID> tankDeletionList;
 	std::vector<Game_ID> wallDeletionList;
-	for (int i = 0; i < collisionList.size(); i++) {
-		std::pair<int, int> collisionPair = collisionList[i];
+	for (int i = 0; i < collisionList->size(); i++) {
+		std::pair<int, int> collisionPair = collisionList->at(i);
 		Tank* t = TankManager::getTank(collisionPair.first);
 		bool shouldBeKilled = false; //unlikely to be set
 
@@ -550,17 +594,19 @@ void GameMainLoop::tankToWall() {
 	for (int i = wallDeletionList.size() - 1; i >= 0; i--) {
 		WallManager::deleteWallByID(wallDeletionList[i]);
 	}
+
+	delete collisionList;
 }
 
 void GameMainLoop::tankToHazard() {
 	//broad phase
-	std::vector<std::pair<int, int>> collisionList = PhysicsHandler::sweepAndPrune<Circle*, Circle*>(TankManager::getTankCollisionList(), HazardManager::getCircleHazardCollisionList());
+	std::vector<std::pair<int, int>>* collisionList = PhysicsHandler::sweepAndPrune<Circle*, Circle*>(TankManager::getTankCollisionList(), HazardManager::getCircleHazardCollisionList());
 
 	//narrow phase and resolve collision
 	//std::vector<Game_ID> tankDeletionList;
 	std::vector<Game_ID> circleHazardDeletionList;
-	for (int i = 0; i < collisionList.size(); i++) {
-		std::pair<int, int> collisionPair = collisionList[i];
+	for (int i = 0; i < collisionList->size(); i++) {
+		std::pair<int, int> collisionPair = collisionList->at(i);
 		Tank* t = TankManager::getTank(collisionPair.first);
 		bool shouldBeKilled = false;
 
@@ -625,13 +671,15 @@ void GameMainLoop::tankToHazard() {
 		}
 	}
 
+	delete collisionList;
+
 	//broad phase
 	collisionList = PhysicsHandler::sweepAndPrune<Circle*, Rect*>(TankManager::getTankCollisionList(), HazardManager::getRectHazardCollisionList());
 
 	//narrow phase and resolve collision
 	std::vector<Game_ID> rectHazardDeletionList;
-	for (int i = 0; i < collisionList.size(); i++) {
-		std::pair<int, int> collisionPair = collisionList[i];
+	for (int i = 0; i < collisionList->size(); i++) {
+		std::pair<int, int> collisionPair = collisionList->at(i);
 		Tank* t = TankManager::getTank(collisionPair.first);
 		bool shouldBeKilled = false;
 
@@ -702,6 +750,8 @@ void GameMainLoop::tankToHazard() {
 	for (int i = rectHazardDeletionList.size() - 1; i >= 0; i--) {
 		HazardManager::deleteRectHazardByID(rectHazardDeletionList[i]);
 	}
+
+	delete collisionList;
 }
 
 void GameMainLoop::tankToTank() {
@@ -862,7 +912,7 @@ void GameMainLoop::bulletToEdge() {
 
 void GameMainLoop::bulletToWall() {
 	//broad phase
-	std::vector<std::pair<int, int>> collisionList = PhysicsHandler::sweepAndPrune<Circle*, Rect*>(BulletManager::getBulletCollisionList(), WallManager::getWallCollisionList());
+	std::vector<std::pair<int, int>>* collisionList = PhysicsHandler::sweepAndPrune<Circle*, Rect*>(BulletManager::getBulletCollisionList(), WallManager::getWallCollisionList());
 
 	//narrow phase and resolve collision
 	std::vector<Game_ID> bulletDeletionList;
@@ -873,8 +923,8 @@ void GameMainLoop::bulletToWall() {
 	std::unordered_map<Game_ID, WallUpdateStruct> wallUpdates; //bullets probably shouldn't be able to hit a wall and make more walls
 	std::vector<Game_ID> wallUpdateList;
 
-	for (int i = 0; i < collisionList.size(); i++) {
-		std::pair<int, int> collisionPair = collisionList[i];
+	for (int i = 0; i < collisionList->size(); i++) {
+		std::pair<int, int> collisionPair = collisionList->at(i);
 		Bullet* b = BulletManager::getBullet(collisionPair.first);
 		bool shouldBeKilled = false;
 
@@ -911,17 +961,21 @@ void GameMainLoop::bulletToWall() {
 					}
 
 					//TODO: maybe package all the updates together, then do this upsert
-					if (bulletUpdates.find(b->getGameID()) == bulletUpdates.end()) {
-						bulletUpdates.insert({ b->getGameID(), check_temp.firstUpdate });
-						bulletUpdateList.push_back(b->getGameID());
-					} else {
-						bulletUpdates[b->getGameID()].add(check_temp.firstUpdate);
+					if (check_temp.firstUpdate != nullptr) {
+						if (bulletUpdates.find(b->getGameID()) == bulletUpdates.end()) {
+							bulletUpdates.insert({ b->getGameID(), BulletUpdateStruct(*check_temp.firstUpdate) });
+							bulletUpdateList.push_back(b->getGameID());
+						} else {
+							bulletUpdates[b->getGameID()].add(BulletUpdateStruct(*check_temp.firstUpdate));
+						}
 					}
-					if (wallUpdates.find(w->getGameID()) == wallUpdates.end()) {
-						wallUpdates.insert({ w->getGameID(), check_temp.secondUpdate });
-						wallUpdateList.push_back(w->getGameID());
-					} else {
-						wallUpdates[w->getGameID()].add(check_temp.secondUpdate);
+					if (check_temp.secondUpdate != nullptr) {
+						if (wallUpdates.find(w->getGameID()) == wallUpdates.end()) {
+							wallUpdates.insert({ w->getGameID(), WallUpdateStruct(*check_temp.secondUpdate) });
+							wallUpdateList.push_back(w->getGameID());
+						} else {
+							wallUpdates[w->getGameID()].add(WallUpdateStruct(*check_temp.secondUpdate));
+						}
 					}
 				}
 			}
@@ -944,22 +998,28 @@ void GameMainLoop::bulletToWall() {
 		}
 	}
 
+	/*
+	//this is not demanding enough to multithread
 	for (int i = 0; i < GameMainLoop::helperThreadCount; i++) {
 		int start =   i * bulletUpdateList.size() / (helperThreadCount+1);
 		int end = (i+1) * bulletUpdateList.size() / (helperThreadCount+1);
 		queueMutex.lock();
-		GameMainLoop::ThreadJob* job = new GameMainLoop::ThreadJob(ThreadJobType::bulletUpdate, &bulletUpdateList, &bulletUpdates, start, end);
+		GameMainLoop::ThreadJob* job = new GameMainLoop::ThreadJob(ThreadJobType::update_bullets, &bulletUpdateList, &bulletUpdates, start, end);
 		workQueue.push(job);
 		queueCV.notify_one();
 		queueMutex.unlock();
 	}
-
 	thread_updateBulletsFunc(&bulletUpdateList, &bulletUpdates, (helperThreadCount-1) * bulletUpdateList.size() / (helperThreadCount+1), bulletUpdates.size());
+	*/
+
+	thread_updateBulletsFunc(&bulletUpdateList, &bulletUpdates, 0, bulletUpdates.size());
 	thread_updateWallsFunc(&wallUpdateList, &wallUpdates, 0, wallUpdateList.size()); //should go below for "clean code" but should stay here for thread scheduling reasons
 
+	/*
 	for (int i = 0; i < GameMainLoop::helperThreadCount; i++) {
 		while (thread_isWorking[i].load()) {} //if you don't join, this is how you wait for the thread to finish
 	}
+	*/
 
 	//clear deaths
 	//std::sort(bulletDeletionList.begin(), bulletDeletionList.end());
@@ -971,17 +1031,19 @@ void GameMainLoop::bulletToWall() {
 	for (int i = wallDeletionList.size() - 1; i >= 0; i--) {
 		WallManager::deleteWallByID(wallDeletionList[i]);
 	}
+
+	delete collisionList;
 }
 
 void GameMainLoop::bulletToHazard() {
 	//broad phase
-	std::vector<std::pair<int, int>> collisionList = PhysicsHandler::sweepAndPrune<Circle*, Circle*>(BulletManager::getBulletCollisionList(), HazardManager::getCircleHazardCollisionList());
+	std::vector<std::pair<int, int>>* collisionList = PhysicsHandler::sweepAndPrune<Circle*, Circle*>(BulletManager::getBulletCollisionList(), HazardManager::getCircleHazardCollisionList());
 
 	//narrow phase and resolve collision
 	std::vector<Game_ID> bulletDeletionList;
 	std::vector<Game_ID> circleHazardDeletionList;
-	for (int i = 0; i < collisionList.size(); i++) {
-		std::pair<int, int> collisionPair = collisionList[i];
+	for (int i = 0; i < collisionList->size(); i++) {
+		std::pair<int, int> collisionPair = collisionList->at(i);
 		Bullet* b = BulletManager::getBullet(collisionPair.first);
 		bool shouldBeKilled = false;
 
@@ -1048,13 +1110,15 @@ void GameMainLoop::bulletToHazard() {
 		}
 	}
 
+	delete collisionList;
+
 	//broad phase
 	collisionList = PhysicsHandler::sweepAndPrune<Circle*, Rect*>(BulletManager::getBulletCollisionList(), HazardManager::getRectHazardCollisionList());
 
 	//narrow phase and resolve collision
 	std::vector<Game_ID> rectHazardDeletionList;
-	for (int i = 0; i < collisionList.size(); i++) {
-		std::pair<int, int> collisionPair = collisionList[i];
+	for (int i = 0; i < collisionList->size(); i++) {
+		std::pair<int, int> collisionPair = collisionList->at(i);
 		Bullet* b = BulletManager::getBullet(collisionPair.first);
 		bool shouldBeKilled = false;
 
@@ -1131,12 +1195,15 @@ void GameMainLoop::bulletToHazard() {
 	for (int i = rectHazardDeletionList.size() - 1; i >= 0; i--) {
 		HazardManager::deleteRectHazardByID(rectHazardDeletionList[i]);
 	}
+
+	delete collisionList;
 }
 
 void GameMainLoop::bulletToBullet() {
 	//TODO: modernize (add default vs custom collision stuff)
 	//broad phase
-	std::vector<std::pair<int, int>> collisionList = PhysicsHandler::sweepAndPrune<Circle*>(BulletManager::getBulletCollisionList());
+	std::vector<std::pair<int, int>>* collisionList = PhysicsHandler::sweepAndPrune<Circle*>(BulletManager::getBulletCollisionList());
+	//std::cout << "old: " << (BulletManager::getNumBullets() * BulletManager::getNumBullets()) << ", new: " << collisionList.size() << std::endl;
 	//this is the largest timesink
 	//TODO: this returns a large list only to get destroyed when the function ends; any way to reduce this memory footprint?
 
@@ -1146,8 +1213,8 @@ void GameMainLoop::bulletToBullet() {
 	std::unordered_map<Game_ID, BulletUpdateStruct> bulletUpdates; //yeah, this is unused...
 	std::vector<Game_ID> bulletUpdateList;
 
-	for (int i = 0; i < collisionList.size(); i++) {
-		std::pair<int, int> collisionPair = collisionList[i];
+	for (int i = 0; i < collisionList->size(); i++) {
+		std::pair<int, int> collisionPair = collisionList->at(i);
 		Bullet* b_outer = BulletManager::getBullet(collisionPair.first);
 		bool b_outerShouldDie = false;
 
@@ -1183,17 +1250,19 @@ void GameMainLoop::bulletToBullet() {
 		//BulletManager::deleteBullet(bulletDeletionList[i]);
 		BulletManager::deleteBulletByID(bulletDeletionList[i]);
 	}
+
+	delete collisionList;
 }
 
 void GameMainLoop::bulletToTank() {
 	//TODO: tanks and bullets both have powers, so which one gets custom collision priority? (tanks, probably)
 	//broad phase
-	std::vector<std::pair<int, int>> collisionList = PhysicsHandler::sweepAndPrune<Circle*, Circle*>(BulletManager::getBulletCollisionList(), TankManager::getTankCollisionList());
+	std::vector<std::pair<int, int>>* collisionList = PhysicsHandler::sweepAndPrune<Circle*, Circle*>(BulletManager::getBulletCollisionList(), TankManager::getTankCollisionList());
 
 	//narrow phase and resolve collision
 	std::vector<Game_ID> bulletDeletionList;
-	for (int i = 0; i < collisionList.size(); i++) {
-		std::pair<int, int> collisionPair = collisionList[i];
+	for (int i = 0; i < collisionList->size(); i++) {
+		std::pair<int, int> collisionPair = collisionList->at(i);
 		Bullet* b = BulletManager::getBullet(collisionPair.first);
 		bool shouldBeKilled = false;
 
@@ -1257,6 +1326,8 @@ void GameMainLoop::bulletToTank() {
 	for (int i = bulletDeletionList.size() - 1; i >= 0; i--) {
 		BulletManager::deleteBulletByID(bulletDeletionList[i]);
 	}
+
+	delete collisionList;
 }
 
 void GameMainLoop::drawMain() const {

@@ -8,7 +8,7 @@
 
 std::pair<bool, InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct>> PowerFunctionHelper::superbounceGeneric(const Bullet* b, const Wall* w, double strength) {
 	if (!CollisionHandler::partiallyCollided(b, w)) {
-		return { false, { false, false, {}, {} } };
+		return { false, { false, false, nullptr, nullptr } };
 	}
 
 	double b_xDelta, b_yDelta, b_angleDelta;
@@ -41,13 +41,13 @@ std::pair<bool, InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct>> P
 	}
 	//TODO: ensure bullet is not actually in wall; move bullet to edge of relevant wall if still colliding (TODO: this still relevant?)
 
-	return { true, { false, false, BulletUpdateStruct(b_xDelta, b_yDelta, 0,0, b_angleDelta, 0), WallUpdateStruct(w_xDelta, w_yDelta, 0,0) } };
+	return { true, { false, false, new BulletUpdateStruct(b_xDelta, b_yDelta, 0,0, b_angleDelta, 0), new WallUpdateStruct(w_xDelta, w_yDelta, 0,0) } };
 	//TODO: doesn't mean it should be deleted; should separate the update struct
 }
 
 std::pair<bool, InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct>> PowerFunctionHelper::superbounceGenericWithCorners(const Bullet* b, const Wall* w, double strength) { //not the default because bullets move too quickly on average
 	if (!CollisionHandler::partiallyCollided(b, w)) {
-		return { false, { false, false, {}, {} } };
+		return { false, { false, false, nullptr, nullptr } };
 	}
 
 	if ((b->x < w->x) && (b->y < w->y)) { //circle in bottom left
@@ -95,7 +95,7 @@ std::pair<bool, InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct>> P
 			w_yDelta = sin(angle) * strength;
 			w_xDelta = cos(angle) * strength;
 
-			return { true, { false, false, BulletUpdateStruct(b_xDelta, b_yDelta, 0,0, b_angleDelta, 0), WallUpdateStruct(w_xDelta, w_yDelta, 0,0) } };
+			return { true, { false, false, new BulletUpdateStruct(b_xDelta, b_yDelta, 0,0, b_angleDelta, 0), new WallUpdateStruct(w_xDelta, w_yDelta, 0,0) } };
 		}
 	}
 
