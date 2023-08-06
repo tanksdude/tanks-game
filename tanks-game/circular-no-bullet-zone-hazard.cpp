@@ -250,15 +250,15 @@ void CircularNoBulletZoneHazard::ghostDraw(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM;
+	glm::mat4 modelMatrix;
 
 	//background:
 	ColorValueHolder color = GeneralizedNoBulletZone::getColor();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
-	MVPM = Renderer::GenerateMatrix(r, r, 0, x, y);
-	shader->setUniformMat4f("u_MVP", MVPM);
+	modelMatrix = Renderer::GenerateModelMatrix(r, r, 0, x, y);
+	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 	Renderer::Draw(*va, *ib, *shader);
 
@@ -268,8 +268,8 @@ void CircularNoBulletZoneHazard::ghostDraw(float alpha) const {
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
-	MVPM = Renderer::GenerateMatrix(r, r, 0, x, y);
-	shader->setUniformMat4f("u_MVP", MVPM);
+	modelMatrix = Renderer::GenerateModelMatrix(r, r, 0, x, y);
+	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 	Renderer::Draw(*va, *extra_ib, *shader);
 }

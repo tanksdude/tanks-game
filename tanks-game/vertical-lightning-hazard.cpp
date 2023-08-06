@@ -500,7 +500,7 @@ inline void VerticalLightningHazard::drawBackground(bool pose, float alpha) cons
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM;
+	glm::mat4 modelMatrix;
 
 	double scale;
 	if (pose || currentlyActive) {
@@ -516,20 +516,20 @@ inline void VerticalLightningHazard::drawBackground(bool pose, float alpha) cons
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
-	MVPM = Renderer::GenerateMatrix(w, h*scale, 0, x, y + (h*(1-scale))/2);
-	shader->setUniformMat4f("u_MVP", MVPM);
+	modelMatrix = Renderer::GenerateModelMatrix(w, h*scale, 0, x, y + (h*(1-scale))/2);
+	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 	Renderer::Draw(*background_va, *background_ib, *shader);
 
 	//outline:
-	Renderer::SetLineWidth(1.0f);
+	glLineWidth(1.0f);
 
 	color = ColorValueHolder(0, 0, 0);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
-	MVPM = Renderer::GenerateMatrix(w, h, 0, x, y);
-	shader->setUniformMat4f("u_MVP", MVPM);
+	modelMatrix = Renderer::GenerateModelMatrix(w, h, 0, x, y);
+	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 	Renderer::Draw(*background_va, *shader, GL_LINES, 1, 4); //not sure if this is actually okay, but at least it works
 }
@@ -538,20 +538,20 @@ inline void VerticalLightningHazard::drawBolts(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM;
+	glm::mat4 modelMatrix;
 
 	if (!currentlyActive) {
 		return;
 	}
 
-	Renderer::SetLineWidth(2.0f);
+	glLineWidth(2.0f);
 
 	ColorValueHolder color = getBoltColor();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
-	MVPM = Renderer::GenerateMatrix(1, 1, 0, x, y);
-	shader->setUniformMat4f("u_MVP", MVPM);
+	modelMatrix = Renderer::GenerateModelMatrix(1, 1, 0, x, y);
+	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 	for (int i = 0; i < bolts.size(); i++) {
 		//I think the VertexBuffer resizing should happen here, but there would probably be less strain if it happens only when a bullet/tank collides
@@ -573,16 +573,16 @@ inline void VerticalLightningHazard::drawBolts_Pose(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM;
+	glm::mat4 modelMatrix;
 
-	Renderer::SetLineWidth(2.0f);
+	glLineWidth(2.0f);
 
 	ColorValueHolder color = getBoltColor();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
-	MVPM = Renderer::GenerateMatrix(1, 1, 0, x, y);
-	shader->setUniformMat4f("u_MVP", MVPM);
+	modelMatrix = Renderer::GenerateModelMatrix(1, 1, 0, x, y);
+	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 	//generate bolts
 	std::vector<LightningBolt*> poseBolts;

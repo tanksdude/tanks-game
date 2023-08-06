@@ -19,11 +19,19 @@ bool BackgroundRect::initializeGPU() {
 		return false;
 	}
 
+	/*
 	float background_positions[] = {
 		0, 0,
 		GAME_WIDTH, 0,
 		GAME_WIDTH, GAME_HEIGHT,
 		0, GAME_HEIGHT
+	};
+	*/
+	float background_positions[] = {
+		0, 0,
+		1, 0,
+		1, 1,
+		0, 1
 	};
 	unsigned int background_indices[] = {
 		0, 1, 2,
@@ -68,7 +76,8 @@ void BackgroundRect::drawCPU() {
 void BackgroundRect::draw() {
 	Shader* shader = Renderer::getShader("main");
 	shader->setUniform4f("u_color", backColor.getRf(), backColor.getGf(), backColor.getBf(), backColor.getAf());
-	shader->setUniformMat4f("u_MVP", Renderer::getProj());
+	//shader->setUniformMat4f("u_ModelMatrix", Renderer::GenerateModelMatrix(1, 1, 0, 0, 0));
+	shader->setUniformMat4f("u_ModelMatrix", Renderer::GenerateModelMatrix(GAME_WIDTH, GAME_HEIGHT, 0, 0, 0));
 
 	Renderer::Draw(*va, *ib, *shader);
 }

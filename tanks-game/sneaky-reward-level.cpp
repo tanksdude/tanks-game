@@ -106,6 +106,8 @@ void SneakyRewardLevel::initialize() {
 	p = new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "dev", "inversion");
 	PowerupManager::pushPowerup(p);
 	respawning->watchPowerSquare(p);
+
+	//TODO: so technically it's still possible to softlock on this level; should the godmode power be respawning?
 }
 
 Level* SneakyRewardLevel::factory() {

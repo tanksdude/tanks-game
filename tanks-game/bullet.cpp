@@ -464,7 +464,7 @@ inline void Bullet::drawBody(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM;
+	glm::mat4 modelMatrix;
 
 	/*
 	if (glIsEnabled(GL_BLEND)) {
@@ -475,10 +475,10 @@ inline void Bullet::drawBody(float alpha) const {
 			unsigned int deathVertices = Circle::numOfSides * deathPercent;
 
 			if (deathVertices > 0) {
-				glm::mat4 MVPM_deathOutline = Renderer::GenerateMatrix((r+2) * 9.0/8.0, (r+2) * 9.0/8.0, PI/2, x, y);
+				glm::mat4 modelMatrix_deathOutline = Renderer::GenerateModelMatrix((r+2) * 9.0/8.0, (r+2) * 9.0/8.0, PI/2, x, y);
 
 				shader->setUniform4f("u_color", 1.0f, 1.0f, 1.0f, 1.0f);
-				shader->setUniformMat4f("u_MVP", MVPM_deathOutline);
+				shader->setUniformMat4f("u_ModelMatrix", modelMatrix_deathOutline);
 
 				Renderer::Draw(*va, *ib, *shader, deathVertices*3);
 			}
@@ -491,8 +491,8 @@ inline void Bullet::drawBody(float alpha) const {
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
-	MVPM = Renderer::GenerateMatrix(r, r, 0, x, y);
-	shader->setUniformMat4f("u_MVP", MVPM);
+	modelMatrix = Renderer::GenerateModelMatrix(r, r, 0, x, y);
+	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 	Renderer::Draw(*va, *ib, *shader);
 }
@@ -501,18 +501,17 @@ inline void Bullet::drawOutline(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM;
+	glm::mat4 modelMatrix;
 
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	//glLineWidth(1.0f); //lines still look ugly even with glEnable(GL_LINE_SMOOTH), so I don't know what to set it at
-	Renderer::SetLineWidth(1.0f);
+	glLineWidth(1.0f); //lines still look ugly even with glEnable(GL_LINE_SMOOTH), so I don't know what to set it at
 
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
-	MVPM = Renderer::GenerateMatrix(r, r, 0, x, y);
-	shader->setUniformMat4f("u_MVP", MVPM);
+	modelMatrix = Renderer::GenerateModelMatrix(r, r, 0, x, y);
+	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 	Renderer::Draw(GL_LINE_LOOP, 1, Circle::numOfSides);
 
@@ -526,7 +525,7 @@ inline void Bullet::drawDeathCooldown(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
-	//glm::mat4 MVPM;
+	//glm::mat4 modelMatrix;
 
 	//if (glIsEnabled(GL_BLEND)) {
 	//	//skip
@@ -540,8 +539,8 @@ inline void Bullet::drawDeathCooldown(float alpha) const {
 				color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 				shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
-				glm::mat4 MVPM_deathOutline = Renderer::GenerateMatrix((r+2) * 9.0/8.0, (r+2) * 9.0/8.0, PI/2, x, y);
-				shader->setUniformMat4f("u_MVP", MVPM_deathOutline);
+				glm::mat4 modelMatrix_deathOutline = Renderer::GenerateModelMatrix((r+2) * 9.0/8.0, (r+2) * 9.0/8.0, PI/2, x, y);
+				shader->setUniformMat4f("u_ModelMatrix", modelMatrix_deathOutline);
 
 				Renderer::Draw(*va, *ib, *shader, deathVertices*3);
 			}

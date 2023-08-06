@@ -214,15 +214,15 @@ void Diagnostics::drawGraphTimes(std::string name) {
 
 void Diagnostics::drawGraphTimes_graph() {
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM;
+	glm::mat4 modelMatrix;
 
-	Renderer::SetLineWidth(4.0f); //TODO: change?
+	glLineWidth(4.0f); //TODO: change?
 
 	ColorValueHolder color = ColorValueHolder(0.75f, 0.75f, 0.75f);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
-	MVPM = Renderer::GenerateMatrix(graphLength, graphHeight, 0, graphXOffset, graphYOffset);
-	shader->setUniformMat4f("u_MVP", MVPM);
+	modelMatrix = Renderer::GenerateModelMatrix(graphLength, graphHeight, 0, graphXOffset, graphYOffset);
+	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 	//Renderer::Draw(*graph_va, *shader, GL_LINE_LOOP, 0, 4);
 	Renderer::Draw(*graph_va, *shader, GL_LINE_STRIP, 1, 3);
@@ -233,16 +233,16 @@ void Diagnostics::drawGraphTimes_graph() {
 
 void Diagnostics::drawGraphTimes_data(std::string name) {
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM;
+	glm::mat4 modelMatrix;
 
-	Renderer::SetLineWidth(4.0f); //TODO: change?
+	glLineWidth(4.0f); //TODO: change?
 
 	ColorValueHolder color = graphTimes[graphNameToIndex[name]].color;
 	//ColorValueHolder color = ColorValueHolder(1.0f, 1.0f, 1.0f);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
-	MVPM = Renderer::GenerateMatrix(graphLength, graphHeight, 0, graphXOffset, graphYOffset);
-	shader->setUniformMat4f("u_MVP", MVPM);
+	modelMatrix = Renderer::GenerateModelMatrix(graphLength, graphHeight, 0, graphXOffset, graphYOffset);
+	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 	streamDataGPU(graphTimes[graphNameToIndex[name]].data);
 	Renderer::Draw(*data_va, *shader, GL_LINE_STRIP, 0, graphTimes[graphNameToIndex[name]].data.size());
@@ -253,12 +253,12 @@ void Diagnostics::drawGraphTimes_data(std::string name) {
 
 void Diagnostics::drawGraphTimes_data() {
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM;
+	glm::mat4 modelMatrix;
 
-	Renderer::SetLineWidth(4.0f); //TODO: change?
+	glLineWidth(4.0f); //TODO: change?
 
-	MVPM = Renderer::GenerateMatrix(graphLength, graphHeight, 0, graphXOffset, graphYOffset);
-	shader->setUniformMat4f("u_MVP", MVPM);
+	modelMatrix = Renderer::GenerateModelMatrix(graphLength, graphHeight, 0, graphXOffset, graphYOffset);
+	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 	for (int i = 0; i < graphTimes.size(); i++) {
 		ColorValueHolder color = graphTimes[i].color;

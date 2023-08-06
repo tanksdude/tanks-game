@@ -262,14 +262,14 @@ inline void GinormousTurretHazard::drawBody(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM;
+	glm::mat4 modelMatrix;
 
 	ColorValueHolder color = getColor();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
-	MVPM = Renderer::GenerateMatrix(r, r, 0, x, y);
-	shader->setUniformMat4f("u_MVP", MVPM);
+	modelMatrix = Renderer::GenerateModelMatrix(r, r, 0, x, y);
+	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 	Renderer::Draw(*va, *ib, *shader);
 }
@@ -278,16 +278,16 @@ inline void GinormousTurretHazard::drawOutline(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM;
+	glm::mat4 modelMatrix;
 
-	Renderer::SetLineWidth(1.0f);
+	glLineWidth(1.0f);
 
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
-	MVPM = Renderer::GenerateMatrix(r, r, 0, x, y);
-	shader->setUniformMat4f("u_MVP", MVPM);
+	modelMatrix = Renderer::GenerateModelMatrix(r, r, 0, x, y);
+	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 	Renderer::Draw(*va, *shader, GL_LINE_LOOP, 1, Circle::numOfSides);
 
@@ -299,16 +299,16 @@ inline void GinormousTurretHazard::drawBarrel(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM;
+	glm::mat4 modelMatrix;
 
-	Renderer::SetLineWidth(2.0f);
+	glLineWidth(2.0f);
 
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
-	MVPM = Renderer::GenerateMatrix(r, 1, velocity.getAngle(), x, y);
-	shader->setUniformMat4f("u_MVP", MVPM);
+	modelMatrix = Renderer::GenerateModelMatrix(r, 1, velocity.getAngle(), x, y);
+	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 	Renderer::Draw(*cannon_va, *shader, GL_LINES, 0, 2);
 

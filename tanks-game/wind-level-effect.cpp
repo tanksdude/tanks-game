@@ -92,7 +92,7 @@ void WindLevelEffect::draw() const {
 	}
 
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM;
+	glm::mat4 modelMatrix;
 
 	ColorValueHolder color = ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(0.0f, 0.0f, 0.0f));
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
@@ -105,8 +105,8 @@ void WindLevelEffect::draw() const {
 	const double y_offset = 64; //JS y offset: (320)/5 = 64
 	for (int i = -3; i <= 3; i++) {
 		for (int j = -2; j <= 2; j++) {
-			MVPM = Renderer::GenerateMatrix(length, length, pushDirection.getAngle(), GAME_WIDTH/2 + i*x_offset, GAME_HEIGHT/2 + j*y_offset);
-			shader->setUniformMat4f("u_MVP", MVPM);
+			modelMatrix = Renderer::GenerateModelMatrix(length, length, pushDirection.getAngle(), GAME_WIDTH/2 + i*x_offset, GAME_HEIGHT/2 + j*y_offset);
+			shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 			if (i == 0 && j == 0) {
 				Renderer::Draw(*va_extra, *ib_extra, *shader);
@@ -177,7 +177,7 @@ void WindLevelEffect::ghostDraw(float alpha) const {
 	//from draw() (maybe copy-pasting isn't a good idea)
 	//7 x 5 arrows
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM;
+	glm::mat4 modelMatrix;
 
 	ColorValueHolder color = ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(0.0f, 0.0f, 0.0f));
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
@@ -200,8 +200,8 @@ void WindLevelEffect::ghostDraw(float alpha) const {
 				angle = PI/4;
 			}
 
-			MVPM = Renderer::GenerateMatrix(length, length, angle, GAME_WIDTH/2 + i*x_offset, GAME_HEIGHT/2 + j*y_offset);
-			shader->setUniformMat4f("u_MVP", MVPM);
+			modelMatrix = Renderer::GenerateModelMatrix(length, length, angle, GAME_WIDTH/2 + i*x_offset, GAME_HEIGHT/2 + j*y_offset);
+			shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 			Renderer::Draw(*va, *ib, *shader);
 		}

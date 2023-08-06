@@ -278,14 +278,14 @@ inline void CircularLavaHazard::drawBackground(bool pose, float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM;
+	glm::mat4 modelMatrix;
 
 	ColorValueHolder color = (pose ? getBackgroundColor_Pose() : getBackgroundColor());
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
-	MVPM = Renderer::GenerateMatrix(r, r, 0, x, y);
-	shader->setUniformMat4f("u_MVP", MVPM);
+	modelMatrix = Renderer::GenerateModelMatrix(r, r, 0, x, y);
+	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 	Renderer::Draw(*background_va, *background_ib, *shader);
 }
@@ -298,9 +298,9 @@ inline void CircularLavaHazard::drawBubbles(bool pose, float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM;
+	glm::mat4 modelMatrix;
 
-	Renderer::SetLineWidth(2.0f);
+	glLineWidth(2.0f);
 
 	//first, sort by alpha: lowest to highest (this makes the bubbles less weird-looking when drawn over each other)
 	std::vector<LavaBubble*> sortedBubbles;
@@ -323,8 +323,8 @@ inline void CircularLavaHazard::drawBubbles(bool pose, float alpha) const {
 		color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 		shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
-		MVPM = Renderer::GenerateMatrix(sortedBubbles[i]->getR(), sortedBubbles[i]->getR(), 0, sortedBubbles[i]->getX()*r + x, sortedBubbles[i]->getY()*r + y);
-		shader->setUniformMat4f("u_MVP", MVPM);
+		modelMatrix = Renderer::GenerateModelMatrix(sortedBubbles[i]->getR(), sortedBubbles[i]->getR(), 0, sortedBubbles[i]->getX()*r + x, sortedBubbles[i]->getY()*r + y);
+		shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 		Renderer::Draw(*bubble_va, *shader, GL_LINE_LOOP, 1, Circle::numOfSides);
 	}

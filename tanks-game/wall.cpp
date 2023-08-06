@@ -141,14 +141,14 @@ void Wall::poseDraw(DrawingLayers layer) const {
 
 void Wall::ghostDraw(float alpha) const {
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM;
+	glm::mat4 modelMatrix;
 
 	ColorValueHolder c = color;
 	c = ColorMixer::mix(BackgroundRect::getBackColor(), c, alpha);
 	shader->setUniform4f("u_color", c.getRf(), c.getGf(), c.getBf(), c.getAf());
 
-	MVPM = Renderer::GenerateMatrix(w, h, 0, x, y);
-	shader->setUniformMat4f("u_MVP", MVPM);
+	modelMatrix = Renderer::GenerateModelMatrix(w, h, 0, x, y);
+	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 	Renderer::Draw(*va, *ib, *shader);
 }

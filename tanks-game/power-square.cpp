@@ -301,14 +301,14 @@ inline void PowerSquare::drawMain(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM;
+	glm::mat4 modelMatrix;
 
 	ColorValueHolder color = getColor();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
-	MVPM = Renderer::GenerateMatrix(w, h, 0, x, y);
-	shader->setUniformMat4f("u_MVP", MVPM);
+	modelMatrix = Renderer::GenerateModelMatrix(w, h, 0, x, y);
+	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 	Renderer::Draw(*va, *ib_main, *shader);
 }
@@ -317,15 +317,15 @@ inline void PowerSquare::drawOutlineThing(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM;
+	glm::mat4 modelMatrix;
 
 	if (numOfPowers > 1) {
 		ColorValueHolder backgroundMix = ColorMixer::mix(getColor(), BackgroundRect::getBackColor());
 		backgroundMix = ColorMixer::mix(BackgroundRect::getBackColor(), backgroundMix, alpha);
 		shader->setUniform4f("u_color", backgroundMix.getRf(), backgroundMix.getGf(), backgroundMix.getBf(), backgroundMix.getAf());
 
-		MVPM = Renderer::GenerateMatrix(w, h, 0, x, y);
-		shader->setUniformMat4f("u_MVP", MVPM);
+		modelMatrix = Renderer::GenerateModelMatrix(w, h, 0, x, y);
+		shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 		Renderer::Draw(*va, *ib_outline, *shader);
 	}

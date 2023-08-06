@@ -874,7 +874,7 @@ inline void Tank::drawBody(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM;
+	glm::mat4 modelMatrix;
 
 	if (this->dead) {
 		ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
@@ -883,8 +883,8 @@ inline void Tank::drawBody(float alpha) const {
 		color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 		shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
-		MVPM = Renderer::GenerateMatrix(r, r, 0, x, y);
-		shader->setUniformMat4f("u_MVP", MVPM);
+		modelMatrix = Renderer::GenerateModelMatrix(r, r, 0, x, y);
+		shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 		Renderer::Draw(*va, *ib, *shader);
 	} else {
@@ -894,8 +894,8 @@ inline void Tank::drawBody(float alpha) const {
 			color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 			shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
-			MVPM = Renderer::GenerateMatrix(r, r, 0, x, y);
-			shader->setUniformMat4f("u_MVP", MVPM);
+			modelMatrix = Renderer::GenerateModelMatrix(r, r, 0, x, y);
+			shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 			Renderer::Draw(*va, *ib, *shader);
 		} else {
@@ -910,8 +910,8 @@ inline void Tank::drawBody(float alpha) const {
 				double rotatePercent = floor((float(i) / tankPowers.size()) * Circle::numOfSides) / Circle::numOfSides;
 				double nextRotatePercent = floor((float(i+1) / tankPowers.size()) * Circle::numOfSides) / Circle::numOfSides;
 				unsigned int rotateVertices = floor((nextRotatePercent - rotatePercent) * Circle::numOfSides);
-				MVPM = Renderer::GenerateMatrix(r, r, velocity.getAngle() + (rotatePercent * 2*PI), x, y);
-				shader->setUniformMat4f("u_MVP", MVPM);
+				modelMatrix = Renderer::GenerateModelMatrix(r, r, velocity.getAngle() + (rotatePercent * 2*PI), x, y);
+				shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 				Renderer::Draw(*va, *ib, *shader, rotateVertices*3);
 			}
@@ -922,8 +922,8 @@ inline void Tank::drawBody(float alpha) const {
 			color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 			shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
-			MVPM = Renderer::GenerateMatrix(r*.75, r*.75, 0, x, y);
-			shader->setUniformMat4f("u_MVP", MVPM);
+			modelMatrix = Renderer::GenerateModelMatrix(r*.75, r*.75, 0, x, y);
+			shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 			Renderer::Draw(*va, *ib, *shader);
 		}
@@ -940,11 +940,10 @@ inline void Tank::drawOutline(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM;
+	glm::mat4 modelMatrix;
 
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	//glLineWidth(1.0f);
-	Renderer::SetLineWidth(1.0f);
+	glLineWidth(1.0f);
 
 	ColorValueHolder color;
 	if (this->dead) {
@@ -955,8 +954,8 @@ inline void Tank::drawOutline(float alpha) const {
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
-	MVPM = Renderer::GenerateMatrix(r, r, 0, x, y);
-	shader->setUniformMat4f("u_MVP", MVPM);
+	modelMatrix = Renderer::GenerateModelMatrix(r, r, 0, x, y);
+	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 	Renderer::Draw(*va, *shader, GL_LINE_LOOP, 1, Circle::numOfSides);
 
@@ -968,7 +967,7 @@ inline void Tank::drawShootingCooldown(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM;
+	glm::mat4 modelMatrix;
 
 	double shootingOutlinePercent;
 	if (maxShootCount*getShootingSpeedMultiplier() <= 0 || maxShootCount <= 0) {
@@ -983,8 +982,8 @@ inline void Tank::drawShootingCooldown(float alpha) const {
 		color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 		shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
-		MVPM = Renderer::GenerateMatrix(r * 5.0/4.0, r * 5.0/4.0, getAngle(), x, y);
-		shader->setUniformMat4f("u_MVP", MVPM);
+		modelMatrix = Renderer::GenerateModelMatrix(r * 5.0/4.0, r * 5.0/4.0, getAngle(), x, y);
+		shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 		Renderer::Draw(*va, *ib, *shader, shootingOutlineVertices*3);
 	}
@@ -994,7 +993,7 @@ inline void Tank::drawPowerCooldown(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM;
+	glm::mat4 modelMatrix;
 
 	//first, sort by timeLeft/maxTime
 	std::vector<TankPower*> sortedTankPowers; //there shouldn't be more than a few powers, so no need to do anything more complex than an array
@@ -1027,8 +1026,8 @@ inline void Tank::drawPowerCooldown(float alpha) const {
 			c = ColorMixer::mix(BackgroundRect::getBackColor(), c, alpha);
 			shader->setUniform4f("u_color", c.getRf(), c.getGf(), c.getBf(), c.getAf());
 
-			MVPM = Renderer::GenerateMatrix(r * 9.0/8.0, r * 9.0/8.0, getAngle(), x, y);
-			shader->setUniformMat4f("u_MVP", MVPM);
+			modelMatrix = Renderer::GenerateModelMatrix(r * 9.0/8.0, r * 9.0/8.0, getAngle(), x, y);
+			shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 			Renderer::Draw(*va, *ib, *shader, powerOutlineVertices*3);
 		}
@@ -1039,16 +1038,16 @@ inline void Tank::drawMainBarrel(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM;
+	glm::mat4 modelMatrix;
 
-	Renderer::SetLineWidth(2.0f);
+	glLineWidth(2.0f);
 
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
-	MVPM = Renderer::GenerateMatrix(r, 1, getAngle(), x, y);
-	shader->setUniformMat4f("u_MVP", MVPM);
+	modelMatrix = Renderer::GenerateModelMatrix(r, 1, getAngle(), x, y);
+	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 	Renderer::Draw(*cannon_va, *shader, GL_LINES, 0, 2);
 
@@ -1060,11 +1059,10 @@ inline void Tank::drawExtraBarrels(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM;
+	glm::mat4 modelMatrix;
 
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	//glLineWidth(1.0f);
-	Renderer::SetLineWidth(1.0f);
+	glLineWidth(1.0f);
 
 	//shader->setUniform4f("u_color", 0.5f, 0.5f, 0.5f, 0.25f); //CPU color
 	ColorValueHolder color = ColorValueHolder(0.75f, 0.75f, 0.75f);
@@ -1072,8 +1070,8 @@ inline void Tank::drawExtraBarrels(float alpha) const {
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
 	for (int i = 1; i < shootingPoints.size(); i++) {
-		MVPM = Renderer::GenerateMatrix(r, 1, getRealCannonAngle(i), x, y);
-		shader->setUniformMat4f("u_MVP", MVPM);
+		modelMatrix = Renderer::GenerateModelMatrix(r, 1, getRealCannonAngle(i), x, y);
+		shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 		Renderer::Draw(*cannon_va, *shader, GL_LINES, 0, 2);
 	}

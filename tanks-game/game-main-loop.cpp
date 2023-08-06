@@ -1343,6 +1343,8 @@ void GameMainLoop::drawMain() const {
 	Diagnostics::endTiming();
 	*/
 
+	Shader* mainShader = Renderer::getShader("main"); //TODO: not a great option to set the view and projection matrices, but whatever at this point
+
 	Diagnostics::startTiming("background rect");
 	BackgroundRect::draw();
 	Renderer::UnbindAll();
@@ -1351,8 +1353,8 @@ void GameMainLoop::drawMain() const {
 
 	//is this needed? //ehh it can stay, may be needed for emergency CPU drawings
 	// Set up the transformations stack
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
+	//glMatrixMode(GL_MODELVIEW);
+	//glLoadIdentity();
 
 
 	Diagnostics::startTiming("hazards under");

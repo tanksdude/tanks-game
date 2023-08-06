@@ -20,6 +20,11 @@ int Renderer::gamewindow_height = Renderer::window_height;
 RenderingContext* Renderer::renderingMethod = nullptr;
 AvailableRenderingContexts Renderer::renderingMethodType;
 
+float Renderer::current_cameraX = 0, Renderer::current_cameraY = 0, Renderer::current_cameraZ = -1;
+float Renderer::current_targetX = 0, Renderer::current_targetY = 0, Renderer::current_targetZ = 0;
+bool Renderer::viewMatBound = false, Renderer::projectionMatBound = false;
+Shader* Renderer::boundShader = nullptr;
+
 // Handles window resizing (FreeGLUT event function)
 void Renderer::windowResizeFunc(int w, int h) {
 	Renderer::window_width = w;
@@ -181,23 +186,60 @@ void Renderer::Initialize() {
 	shaderCache.insert({ "main", shader });
 	bindShader(shader); //the main shader will be used most often so it gets binded at start
 
-	shader = new Shader("res/shaders/default.vert", "res/shaders/default.frag");
-	shaderCache.insert({ "default", shader });
+	//shader = new Shader("res/shaders/default.vert", "res/shaders/default.frag");
+	//shaderCache.insert({ "default", shader });
 }
 
-glm::mat4 Renderer::GenerateMatrix(float scaleX, float scaleY, float rotateAngle, float transX, float transY) {
-	glm::mat4 trans = glm::translate(proj, glm::vec3(transX, transY, 0.0f));
-	if (rotateAngle == 0) {
-		return glm::scale(trans, glm::vec3(scaleX, scaleY, 0));
-	}
+glm::mat4 Renderer::GenerateModelMatrix(float scaleX, float scaleY, float rotateAngle, float transX, float transY) {
+	//glm::mat4 trans = glm::translate(proj, glm::vec3(transX, transY, 0.0f));
+	glm::mat4 trans = glm::translate(glm::vec3(transX, transY, 0.0f));
+	//if (rotateAngle == 0) {
+	//	return glm::scale(trans, glm::vec3(scaleX, scaleY, 0));
+	//}
 	glm::mat4 rot = glm::rotate(trans, rotateAngle, glm::vec3(0.0f, 0.0f, 1.0f));
 	return glm::scale(rot, glm::vec3(scaleX, scaleY, 0));
+}
+
+void Renderer::SetViewMatrix(float cameraX, float cameraY, float cameraZ, float targetX, float targetY, float targetZ) {
+	/*
+	if ((!viewMatBound) ||
+	    ((cameraX != current_cameraX || cameraY != current_cameraY || cameraZ != current_cameraZ) &&
+	    (targetX != current_targetX || targetY != current_targetY || targetZ != current_targetZ))) {
+			current_cameraX = cameraX;
+			current_cameraY = cameraY;
+			current_cameraZ = cameraZ;
+			current_targetX = targetX;
+			current_targetY = targetY;
+			current_targetZ = targetZ;
+			boundShader->setUniformMat4f("u_ViewMatrix", glm::lookAt(glm::vec3(cameraX, cameraY, cameraZ), glm::vec3(targetX, targetY, targetZ), glm::vec3(0, 1, 0)));
+			viewMatBound = true;
+	}
+	*/
+	if (!viewMatBound) {
+		boundShader->setUniformMat4f("u_ViewMatrix", glm::mat4(1.0f));
+		//note: glm::mat4() is *not* an identity matrix
+		viewMatBound = true;
+	}
+}
+
+void Renderer::SetProjectionMatrix() {
+	if (!projectionMatBound) {
+		boundShader->setUniformMat4f("u_ProjectionMatrix", Renderer::proj);
+		projectionMatBound = true;
+	}
 }
 
 inline void Renderer::bindShader(Shader* shader) {
 	if (currentShader != shader->getRendererID()) {
 		shader->Bind();
 		currentShader = shader->getRendererID();
+		boundShader = shader;
+
+		viewMatBound = false;
+		projectionMatBound = false;
+
+		Renderer::SetViewMatrix(0, 0, -1, 0, 0, 0);
+		Renderer::SetProjectionMatrix();
 	}
 }
 
@@ -228,7 +270,9 @@ Shader* Renderer::getShader(std::string s) {
 	auto get = shaderCache.find(s);
 	if (get != shaderCache.end()) {
 		Shader* shader = shaderCache[s];
-		bindShader(shader);
+		//if (shader != boundShader) {
+			bindShader(shader);
+		//}
 		return shader;
 	}
 	//else shader wasn't found
@@ -345,17 +389,6 @@ void Renderer::Draw(const VertexArray& va, const Shader& shader, GLenum type, GL
 
 void Renderer::Draw(GLenum type, GLint first, GLsizei count) {
 	glDrawArrays(type, first, count);
-}
-
-void Renderer::SetLineWidth(float w) {
-	//so lines (and probably points) aren't native drawing options to most APIs, such as DirectX; OpenGL is the outlier
-	//it's not a good idea to change over to geometry shaders since Metal literally doesn't support them
-	//in conclusion, I don't know how to solve this problem so I won't think about it for now
-	glLineWidth(w);
-}
-
-void Renderer::SetPointSize(float s) {
-	glPointSize(s);
 }
 
 void Renderer::Cleanup() {

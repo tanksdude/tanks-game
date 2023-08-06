@@ -33,6 +33,10 @@ public:
 	static glm::mat4 proj;
 	static glm::mat4 getProj();
 
+	static float current_cameraX, current_cameraY, current_cameraZ, current_targetX, current_targetY, current_targetZ; //view matrix
+	static bool viewMatBound;
+	static bool projectionMatBound;
+
 	static int window_width;
 	static int window_height;
 	static int gamewindow_width; //width of game inside window
@@ -51,6 +55,7 @@ private:
 	static unsigned int currentShader;
 	static unsigned int currentVertexArray;
 	static unsigned int currentIndexBuffer;
+	static Shader* boundShader;
 	static inline void bindShader(Shader*);
 	static inline void bindShader(const Shader&);
 	static inline void bindVertexArray(const VertexArray&);
@@ -75,9 +80,10 @@ public:
 	static void Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader, unsigned int count);
 	static void Draw(const VertexArray& va, const Shader& shader, GLenum type, GLint first, GLsizei count);
 	static void Draw(GLenum type, GLint first, GLsizei count);
-	static void SetLineWidth(float);
-	static void SetPointSize(float);
-	static glm::mat4 GenerateMatrix(float scaleX, float scaleY, float rotateAngle, float transX, float transY);
+	static glm::mat4 GenerateModelMatrix(float scaleX, float scaleY, float rotateAngle, float transX, float transY);
+	static void SetViewMatrix(float cameraX, float cameraY, float cameraZ, float targetX, float targetY, float targetZ);
+	//static void SetProjectionMatrix(float left, float right, float bottom, float top/*, float near, float far*/); //orthographic
+	static void SetProjectionMatrix();
 	static void Unbind(const VertexArray&);
 	static void Unbind(const IndexBuffer&);
 	static void Unbind(const Shader&);

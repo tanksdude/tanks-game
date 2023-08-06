@@ -449,14 +449,14 @@ inline void PatrollingTurretHazard::drawBody(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM;
+	glm::mat4 modelMatrix;
 
 	ColorValueHolder color = getColor();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
-	MVPM = Renderer::GenerateMatrix(r, r, 0, x, y);
-	shader->setUniformMat4f("u_MVP", MVPM);
+	modelMatrix = Renderer::GenerateModelMatrix(r, r, 0, x, y);
+	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 	Renderer::Draw(*va, *ib, *shader);
 }
@@ -465,16 +465,16 @@ inline void PatrollingTurretHazard::drawOutline(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM;
+	glm::mat4 modelMatrix;
 
-	Renderer::SetLineWidth(1.0f);
+	glLineWidth(1.0f);
 
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
-	MVPM = Renderer::GenerateMatrix(r, r, 0, x, y);
-	shader->setUniformMat4f("u_MVP", MVPM);
+	modelMatrix = Renderer::GenerateModelMatrix(r, r, 0, x, y);
+	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 	Renderer::Draw(*va, *shader, GL_LINE_LOOP, 1, Circle::numOfSides);
 
@@ -486,16 +486,16 @@ inline void PatrollingTurretHazard::drawBarrel(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM;
+	glm::mat4 modelMatrix;
 
-	Renderer::SetLineWidth(2.0f);
+	glLineWidth(2.0f);
 
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
-	MVPM = Renderer::GenerateMatrix(r, 1, velocity.getAngle(), x, y);
-	shader->setUniformMat4f("u_MVP", MVPM);
+	modelMatrix = Renderer::GenerateModelMatrix(r, 1, velocity.getAngle(), x, y);
+	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 	Renderer::Draw(*cannon_va, *shader, GL_LINES, 0, 2);
 
@@ -511,9 +511,9 @@ inline void PatrollingTurretHazard::drawReticule(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM;
+	glm::mat4 modelMatrix;
 
-	Renderer::SetLineWidth(2.0f);
+	glLineWidth(2.0f);
 
 	ColorValueHolder color = getReticuleColor();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
@@ -521,13 +521,13 @@ inline void PatrollingTurretHazard::drawReticule(float alpha) const {
 
 	/*
 	if (currentState == 0) {
-		MVPM = Renderer::GenerateMatrix(2*TANK_RADIUS, 2*TANK_RADIUS, -PI/2 * targetingCount/(stateMultiplier[0] * tickCycle), targetingX, targetingY);
+		modelMatrix = Renderer::GenerateMatrix(2*TANK_RADIUS, 2*TANK_RADIUS, -PI/2 * targetingCount/(stateMultiplier[0] * tickCycle), targetingX, targetingY);
 	} else {
-		MVPM = Renderer::GenerateMatrix(2*TANK_RADIUS, 2*TANK_RADIUS, -PI/2, targetingX, targetingY);
+		modelMatrix = Renderer::GenerateMatrix(2*TANK_RADIUS, 2*TANK_RADIUS, -PI/2, targetingX, targetingY);
 	}
 	*/
-	MVPM = Renderer::GenerateMatrix(2*TANK_RADIUS, 2*TANK_RADIUS, 0, targetingX, targetingY);
-	shader->setUniformMat4f("u_MVP", MVPM);
+	modelMatrix = Renderer::GenerateModelMatrix(2*TANK_RADIUS, 2*TANK_RADIUS, 0, targetingX, targetingY);
+	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 	Renderer::Draw(*va, *shader, GL_LINE_LOOP, 1, Circle::numOfSides);
 	Renderer::Draw(*reticule_va, *shader, GL_LINES, 0, 8);
@@ -542,7 +542,7 @@ inline void PatrollingTurretHazard::drawPath(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
-	glm::mat4 MVPM;
+	glm::mat4 modelMatrix;
 
 	//circles
 	ColorValueHolder color = ColorValueHolder(0, 0, 0);
@@ -550,8 +550,8 @@ inline void PatrollingTurretHazard::drawPath(float alpha) const {
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
 	for (int i = 0; i < routePosPairNum; i++) {
-		MVPM = Renderer::GenerateMatrix(r/2, r/2, 0, getRoutePosX(i), getRoutePosY(i));
-		shader->setUniformMat4f("u_MVP", MVPM);
+		modelMatrix = Renderer::GenerateModelMatrix(r/2, r/2, 0, getRoutePosX(i), getRoutePosY(i));
+		shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 		Renderer::Draw(*va, *ib, *shader);
 	}
@@ -559,8 +559,8 @@ inline void PatrollingTurretHazard::drawPath(float alpha) const {
 	//lines
 	for (int i = 0; i < routePosPairNum; i++) {
 		SimpleVector2D dist = SimpleVector2D(getRoutePosX((i+1) % routePosPairNum) - getRoutePosX(i), getRoutePosY((i+1) % routePosPairNum) - getRoutePosY(i));
-		MVPM = Renderer::GenerateMatrix(dist.getMagnitude(), 1, dist.getAngle(), getRoutePosX(i), getRoutePosY(i));
-		shader->setUniformMat4f("u_MVP", MVPM);
+		modelMatrix = Renderer::GenerateModelMatrix(dist.getMagnitude(), 1, dist.getAngle(), getRoutePosX(i), getRoutePosY(i));
+		shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 		Renderer::Draw(*cannon_va, *shader, GL_LINES, 0, 2);
 	}
