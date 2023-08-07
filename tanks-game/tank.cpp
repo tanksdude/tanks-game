@@ -107,12 +107,18 @@ bool Tank::initializeGPU() {
 		return false;
 	}
 
-	float positions[(Circle::numOfSides+1)*2];
+	float positions[(Circle::numOfSides+1)*2 + (Circle::numOfSides+1)*4];
 	positions[0] = 0;
 	positions[1] = 0;
+	positions[2] = positions[3] = positions[4] = 0.5f;
+	positions[5] = 1.0f;
 	for (int i = 1; i < Circle::numOfSides+1; i++) {
-		positions[i*2]   = cos((i-1) * 2*PI / Circle::numOfSides);
-		positions[i*2+1] = sin((i-1) * 2*PI / Circle::numOfSides);
+		positions[i*6]   = cos((i-1) * 2*PI / Circle::numOfSides);
+		positions[i*6+1] = sin((i-1) * 2*PI / Circle::numOfSides);
+		positions[i*6+2] = .5f;
+		positions[i*6+3] = .5f;
+		positions[i*6+4] = .5f;
+		positions[i*6+5] = 1.0f;
 	}
 
 	unsigned int indices[Circle::numOfSides*3];
@@ -131,16 +137,32 @@ bool Tank::initializeGPU() {
 	}
 	*/
 
-	vb = VertexBuffer::MakeVertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float), RenderingHints::dynamic_draw);
-	VertexBufferLayout layout(2);
-	va = VertexArray::MakeVertexArray(*vb, layout);
+	vb = VertexBuffer::MakeVertexBuffer(positions, (Circle::numOfSides+1)*6 * sizeof(float), RenderingHints::dynamic_draw);
+	VertexBufferLayout layout = {
+		{ ShaderDataType::Float2, "a_Position" },
+		{ ShaderDataType::Float4, "a_Color" }
+	};
+	vb->SetLayout(layout);
 
 	ib = IndexBuffer::MakeIndexBuffer(indices, Circle::numOfSides*3);
 
-	float cannon_positions[4] = { 0.0f, 0.0f, 1.0f, 0.0f };
-	cannon_vb = VertexBuffer::MakeVertexBuffer(cannon_positions, 2*2 * sizeof(float));
-	VertexBufferLayout cannon_layout(2);
-	cannon_va = VertexArray::MakeVertexArray(*cannon_vb, cannon_layout);
+	va = VertexArray::MakeVertexArray();
+	va->AddVertexBuffer(vb);
+	va->SetIndexBuffer(ib);
+
+	float cannon_positions[(2+4)*2] = {
+		0.0f, 0.0f,    0.0f, 0.0f, 0.0f, 1.0f,
+		1.0f, 0.0f,    0.0f, 0.0f, 0.0f, 1.0f
+	};
+	cannon_vb = VertexBuffer::MakeVertexBuffer(cannon_positions, (2+4)*2 * sizeof(float));
+	VertexBufferLayout cannon_layout = {
+		{ ShaderDataType::Float2, "a_Position" },
+		{ ShaderDataType::Float4, "a_Color" }
+	};
+	cannon_vb->SetLayout(layout);
+
+	cannon_va = VertexArray::MakeVertexArray();
+	cannon_va->AddVertexBuffer(cannon_vb);
 
 	initialized_GPU = true;
 	return true;
@@ -878,10 +900,10 @@ inline void Tank::drawBody(float alpha) const {
 
 	if (this->dead) {
 		ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
-		//shader->setUniform4f("u_color", 0.0f, 0.0f, 0.0f, 0.5f); //alpha isn't interpreted
 
 		color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 		shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+		//TODO: update the vertex buffer's colors, then draw
 
 		modelMatrix = Renderer::GenerateModelMatrix(r, r, 0, x, y);
 		shader->setUniformMat4f("u_ModelMatrix", modelMatrix);

@@ -368,7 +368,7 @@ void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& 
 	bindVertexArray(va);
 	bindIndexBuffer(ib);
 
-	glDrawElements(GL_TRIANGLES, ib.getCount(), GL_UNSIGNED_INT, nullptr);
+	glDrawElements(GL_TRIANGLES, va.GetIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
 }
 
 void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader, unsigned int count) {

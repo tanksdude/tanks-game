@@ -72,10 +72,17 @@ bool CircularLavaHazard::initializeGPU() {
 	}
 
 	background_vb = VertexBuffer::MakeVertexBuffer(background_positions, (Circle::numOfSides+1)*2 * sizeof(float), RenderingHints::static_draw);
-	VertexBufferLayout background_layout(2);
-	background_va = VertexArray::MakeVertexArray(*background_vb, background_layout);
+	VertexBufferLayout background_layout = {
+		{ ShaderDataType::Float2, "a_Position" },
+		//{ ShaderDataType::Float4, "a_Color" }
+	};
+	background_vb->SetLayout(background_layout);
 
 	background_ib = IndexBuffer::MakeIndexBuffer(background_indices, Circle::numOfSides*3);
+
+	background_va = VertexArray::MakeVertexArray();
+	background_va->AddVertexBuffer(background_vb);
+	background_va->SetIndexBuffer(background_ib);
 
 	//bubble:
 	float bubble_positions[(Circle::numOfSides+1)*2];
@@ -94,10 +101,17 @@ bool CircularLavaHazard::initializeGPU() {
 	}
 
 	bubble_vb = VertexBuffer::MakeVertexBuffer(bubble_positions, (Circle::numOfSides+1)*2 * sizeof(float), RenderingHints::dynamic_draw);
-	VertexBufferLayout bubble_layout(2);
-	bubble_va = VertexArray::MakeVertexArray(*bubble_vb, bubble_layout);
+	VertexBufferLayout bubble_layout = {
+		{ ShaderDataType::Float2, "a_Position" },
+		//{ ShaderDataType::Float4, "a_Color" }
+	};
+	bubble_vb->SetLayout(bubble_layout);
 
 	bubble_ib = IndexBuffer::MakeIndexBuffer(bubble_indices, Circle::numOfSides*3);
+
+	bubble_va = VertexArray::MakeVertexArray();
+	bubble_va->AddVertexBuffer(bubble_vb);
+	bubble_va->SetIndexBuffer(bubble_ib);
 
 	initialized_GPU = true;
 	return true;

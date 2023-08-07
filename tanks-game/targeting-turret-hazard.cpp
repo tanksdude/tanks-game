@@ -88,16 +88,29 @@ bool TargetingTurretHazard::initializeGPU() {
 	}
 
 	vb = VertexBuffer::MakeVertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float), RenderingHints::dynamic_draw);
-	VertexBufferLayout layout(2);
-	va = VertexArray::MakeVertexArray(*vb, layout);
+	VertexBufferLayout layout = {
+		{ ShaderDataType::Float2, "a_Position" },
+		//{ ShaderDataType::Float4, "a_Color" }
+	};
+	vb->SetLayout(layout);
 
 	ib = IndexBuffer::MakeIndexBuffer(indices, Circle::numOfSides*3);
+
+	va = VertexArray::MakeVertexArray();
+	va->AddVertexBuffer(vb);
+	va->SetIndexBuffer(ib);
 
 	//cannon:
 	float cannon_positions[4] = { 0.0f, 0.0f, 1.0f, 0.0f };
 	cannon_vb = VertexBuffer::MakeVertexBuffer(cannon_positions, 2*2 * sizeof(float), RenderingHints::dynamic_draw);
-	VertexBufferLayout cannon_layout(2);
-	cannon_va = VertexArray::MakeVertexArray(*cannon_vb, cannon_layout);
+	VertexBufferLayout cannon_layout = {
+		{ ShaderDataType::Float2, "a_Position" },
+		//{ ShaderDataType::Float4, "a_Color" }
+	};
+	cannon_vb->SetLayout(layout);
+
+	cannon_va = VertexArray::MakeVertexArray();
+	cannon_va->AddVertexBuffer(cannon_vb);
 
 	//targeting reticule:
 	//the circle is the same as the body
@@ -108,8 +121,14 @@ bool TargetingTurretHazard::initializeGPU() {
 		 0.0f,  -0.75f,  0.0f,  -1.25f  //down
 	};
 	reticule_vb = VertexBuffer::MakeVertexBuffer(reticule_positions, 16*2 * sizeof(float));
-	VertexBufferLayout reticule_layout(2);
-	reticule_va = VertexArray::MakeVertexArray(*reticule_vb, reticule_layout);
+	VertexBufferLayout reticule_layout = {
+		{ ShaderDataType::Float2, "a_Position" },
+		//{ ShaderDataType::Float4, "a_Color" }
+	};
+	reticule_vb->SetLayout(layout);
+
+	reticule_va = VertexArray::MakeVertexArray();
+	reticule_va->AddVertexBuffer(reticule_vb);
 
 	initialized_GPU = true;
 	return true;

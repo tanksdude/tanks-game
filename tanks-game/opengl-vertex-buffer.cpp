@@ -22,6 +22,7 @@ OpenGLVertexBuffer::OpenGLVertexBuffer(const void* data, unsigned int size, Rend
 		default:
 			throw std::invalid_argument("ERROR: Unknown rendering hint!");
 	}
+	//layout = VertexBufferLayout({ { ShaderDataType::None, "" } });
 }
 
 OpenGLVertexBuffer::~OpenGLVertexBuffer() {
@@ -39,4 +40,19 @@ void OpenGLVertexBuffer::Bind() const {
 
 void OpenGLVertexBuffer::Unbind() const {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+GLenum OpenGLVertexBuffer::ShaderDataTypeToGLenum(ShaderDataType type) {
+	switch(type) {
+		case ShaderDataType::Float:  return GL_FLOAT;
+		case ShaderDataType::Float2: return GL_FLOAT;
+		case ShaderDataType::Float3: return GL_FLOAT;
+		case ShaderDataType::Float4: return GL_FLOAT;
+		case ShaderDataType::Mat4:   return GL_FLOAT;
+		case ShaderDataType::Int:    return GL_INT;
+		case ShaderDataType::Int2:   return GL_INT;
+		case ShaderDataType::Int3:   return GL_INT;
+		case ShaderDataType::Int4:   return GL_INT;
+	}
+	return 0;
 }

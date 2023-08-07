@@ -81,10 +81,17 @@ bool HorizontalLightningHazard::initializeGPU() {
 	};
 
 	background_vb = VertexBuffer::MakeVertexBuffer(positions, 4*2 * sizeof(float), RenderingHints::dynamic_draw);
-	VertexBufferLayout layout(2);
-	background_va = VertexArray::MakeVertexArray(*background_vb, layout);
+	VertexBufferLayout layout = {
+		{ ShaderDataType::Float2, "a_Position" },
+		//{ ShaderDataType::Float4, "a_Color" }
+	};
+	background_vb->SetLayout(layout);
 
 	background_ib = IndexBuffer::MakeIndexBuffer(indices, 6);
+
+	background_va = VertexArray::MakeVertexArray();
+	background_va->AddVertexBuffer(background_vb);
+	background_va->SetIndexBuffer(background_ib);
 
 	initialized_GPU = true;
 	return true;
@@ -100,8 +107,14 @@ void HorizontalLightningHazard::local_initializeGPU() {
 	bolt_vb_length = bolts[0]->length;
 
 	bolt_vb = VertexBuffer::MakeVertexBuffer(positions, bolts[0]->length*2 * sizeof(float), RenderingHints::stream_draw);
-	VertexBufferLayout layout(2);
-	bolt_va = VertexArray::MakeVertexArray(*bolt_vb, layout);
+	VertexBufferLayout layout = {
+		{ ShaderDataType::Float2, "a_Position" },
+		//{ ShaderDataType::Float4, "a_Color" }
+	};
+	bolt_vb->SetLayout(layout);
+
+	bolt_va = VertexArray::MakeVertexArray();
+	bolt_va->AddVertexBuffer(bolt_vb);
 
 	delete[] positions;
 }
@@ -114,8 +127,14 @@ void HorizontalLightningHazard::local_reinitializeGPU(int length) { //does not s
 	bolt_vb_length = length;
 
 	bolt_vb = VertexBuffer::MakeVertexBuffer(positions, length*2 * sizeof(float), RenderingHints::stream_draw);
-	VertexBufferLayout layout(2);
-	bolt_va = VertexArray::MakeVertexArray(*bolt_vb, layout);
+	VertexBufferLayout layout = {
+		{ ShaderDataType::Float2, "a_Position" },
+		//{ ShaderDataType::Float4, "a_Color" }
+	};
+	bolt_vb->SetLayout(layout);
+
+	bolt_va = VertexArray::MakeVertexArray();
+	bolt_va->AddVertexBuffer(bolt_vb);
 
 	delete[] positions;
 }

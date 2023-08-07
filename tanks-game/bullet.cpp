@@ -107,10 +107,17 @@ bool Bullet::initializeGPU() {
 	}
 
 	vb = VertexBuffer::MakeVertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float), RenderingHints::dynamic_draw);
-	VertexBufferLayout layout(2);
-	va = VertexArray::MakeVertexArray(*vb, layout);
+	VertexBufferLayout layout = {
+		{ ShaderDataType::Float2, "a_Position" },
+		//{ ShaderDataType::Float4, "a_Color" }
+	};
+	vb->SetLayout(layout);
 
 	ib = IndexBuffer::MakeIndexBuffer(indices, Circle::numOfSides*3);
+
+	va = VertexArray::MakeVertexArray();
+	va->AddVertexBuffer(vb);
+	va->SetIndexBuffer(ib);
 
 	initialized_GPU = true;
 	return true;

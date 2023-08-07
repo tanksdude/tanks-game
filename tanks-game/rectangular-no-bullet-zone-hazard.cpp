@@ -64,10 +64,17 @@ bool RectangularNoBulletZoneHazard::initializeGPU() {
 	};
 
 	vb = VertexBuffer::MakeVertexBuffer(positions, 4*2 * sizeof(float), RenderingHints::static_draw);
-	VertexBufferLayout layout(2);
-	va = VertexArray::MakeVertexArray(*vb, layout);
+	VertexBufferLayout layout = {
+		{ ShaderDataType::Float2, "a_Position" },
+		//{ ShaderDataType::Float4, "a_Color" }
+	};
+	vb->SetLayout(layout);
 
 	ib = IndexBuffer::MakeIndexBuffer(indices, 6);
+
+	va = VertexArray::MakeVertexArray();
+	va->AddVertexBuffer(vb);
+	va->SetIndexBuffer(ib);
 
 	//red X:
 	float extra_positions[] = {
@@ -104,10 +111,17 @@ bool RectangularNoBulletZoneHazard::initializeGPU() {
 	};
 
 	extra_vb = VertexBuffer::MakeVertexBuffer(extra_positions, 6*2*2 * sizeof(float), RenderingHints::static_draw);
-	VertexBufferLayout extra_layout(2);
-	extra_va = VertexArray::MakeVertexArray(*extra_vb, layout);
+	VertexBufferLayout extra_layout = {
+		{ ShaderDataType::Float2, "a_Position" },
+		//{ ShaderDataType::Float4, "a_Color" }
+	};
+	extra_vb->SetLayout(layout);
 
-	extra_ib = IndexBuffer::MakeIndexBuffer(extra_indices, 8*3);
+	extra_ib = IndexBuffer::MakeIndexBuffer(indices, 8*3);
+
+	extra_va = VertexArray::MakeVertexArray();
+	extra_va->AddVertexBuffer(extra_vb);
+	extra_va->SetIndexBuffer(extra_ib);
 
 	initialized_GPU = true;
 	return true;

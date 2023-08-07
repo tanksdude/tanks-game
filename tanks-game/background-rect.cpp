@@ -19,30 +19,29 @@ bool BackgroundRect::initializeGPU() {
 		return false;
 	}
 
-	/*
 	float background_positions[] = {
-		0, 0,
-		GAME_WIDTH, 0,
-		GAME_WIDTH, GAME_HEIGHT,
-		0, GAME_HEIGHT
-	};
-	*/
-	float background_positions[] = {
-		0, 0,
-		1, 0,
-		1, 1,
-		0, 1
+		0, 0,   0xDD/255.0, 0xDD/255.0, 0xDD/255.0, 1.0,
+		1, 0,   0xDD/255.0, 0xDD/255.0, 0xDD/255.0, 1.0,
+		1, 1,   0xDD/255.0, 0xDD/255.0, 0xDD/255.0, 1.0,
+		0, 1,   0xDD/255.0, 0xDD/255.0, 0xDD/255.0, 1.0
 	};
 	unsigned int background_indices[] = {
 		0, 1, 2,
 		2, 3, 0
 	};
 
-	vb = VertexBuffer::MakeVertexBuffer(background_positions, 4*2 * sizeof(float), RenderingHints::static_draw);
-	VertexBufferLayout layout(2);
-	va = VertexArray::MakeVertexArray(*vb, layout);
+	vb = VertexBuffer::MakeVertexBuffer(background_positions, sizeof(background_positions), RenderingHints::static_draw);
+	VertexBufferLayout layout = {
+		{ ShaderDataType::Float2, "a_Position" },
+		{ ShaderDataType::Float4, "a_Color" }
+	};
+	vb->SetLayout(layout);
 
 	ib = IndexBuffer::MakeIndexBuffer(background_indices, 6);
+
+	va = VertexArray::MakeVertexArray();
+	va->AddVertexBuffer(vb);
+	va->SetIndexBuffer(ib);
 
 	initialized_GPU = true;
 	return true;
@@ -75,8 +74,7 @@ void BackgroundRect::drawCPU() {
 
 void BackgroundRect::draw() {
 	Shader* shader = Renderer::getShader("main");
-	shader->setUniform4f("u_color", backColor.getRf(), backColor.getGf(), backColor.getBf(), backColor.getAf());
-	//shader->setUniformMat4f("u_ModelMatrix", Renderer::GenerateModelMatrix(1, 1, 0, 0, 0));
+	va->Bind();
 	shader->setUniformMat4f("u_ModelMatrix", Renderer::GenerateModelMatrix(GAME_WIDTH, GAME_HEIGHT, 0, 0, 0));
 
 	Renderer::Draw(*va, *ib, *shader);

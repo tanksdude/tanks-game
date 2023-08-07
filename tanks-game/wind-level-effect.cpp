@@ -268,16 +268,30 @@ bool WindLevelEffect::initializeGPU() {
 	};
 
 	vb = VertexBuffer::MakeVertexBuffer(positions, sizeof(positions), RenderingHints::dynamic_draw);
-	VertexBufferLayout layout(2);
-	va = VertexArray::MakeVertexArray(*vb, layout);
+	VertexBufferLayout layout = {
+		{ ShaderDataType::Float2, "a_Position" },
+		//{ ShaderDataType::Float4, "a_Color" }
+	};
+	vb->SetLayout(layout);
 
 	ib = IndexBuffer::MakeIndexBuffer(indices, sizeof(indices)/sizeof(unsigned int));
 
+	va = VertexArray::MakeVertexArray();
+	va->AddVertexBuffer(vb);
+	va->SetIndexBuffer(ib);
+
 	vb_extra = VertexBuffer::MakeVertexBuffer(positions_extra, sizeof(positions_extra), RenderingHints::dynamic_draw);
-	VertexBufferLayout layout_extra(2);
-	va_extra = VertexArray::MakeVertexArray(*vb_extra, layout_extra);
+	VertexBufferLayout layout_extra = {
+		{ ShaderDataType::Float2, "a_Position" },
+		//{ ShaderDataType::Float4, "a_Color" }
+	};
+	vb_extra->SetLayout(layout);
 
 	ib_extra = IndexBuffer::MakeIndexBuffer(indices_extra, sizeof(indices_extra)/sizeof(unsigned int));
+
+	va_extra = VertexArray::MakeVertexArray();
+	va_extra->AddVertexBuffer(vb_extra);
+	va_extra->SetIndexBuffer(ib_extra);
 
 	initialized_GPU = true;
 	return true;

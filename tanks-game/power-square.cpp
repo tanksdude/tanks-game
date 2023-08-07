@@ -146,11 +146,18 @@ bool PowerSquare::initializeGPU() {
 	};
 
 	vb = VertexBuffer::MakeVertexBuffer(positions, 12*2 * sizeof(float), RenderingHints::dynamic_draw);
-	VertexBufferLayout layout(2);
-	va = VertexArray::MakeVertexArray(*vb, layout);
+	VertexBufferLayout layout = {
+		{ ShaderDataType::Float2, "a_Position" },
+		//{ ShaderDataType::Float4, "a_Color" }
+	};
+	vb->SetLayout(layout);
 
+	ib_outline = IndexBuffer::MakeIndexBuffer(outline_indices, 6*4); //TODO
 	ib_main = IndexBuffer::MakeIndexBuffer(main_indices, 6*4);
-	ib_outline = IndexBuffer::MakeIndexBuffer(outline_indices, 6*4);
+
+	va = VertexArray::MakeVertexArray();
+	va->AddVertexBuffer(vb);
+	va->SetIndexBuffer(ib_main);
 
 	initialized_GPU = true;
 	return true;
@@ -319,6 +326,7 @@ inline void PowerSquare::drawOutlineThing(float alpha) const {
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 modelMatrix;
 
+	/*
 	if (numOfPowers > 1) {
 		ColorValueHolder backgroundMix = ColorMixer::mix(getColor(), BackgroundRect::getBackColor());
 		backgroundMix = ColorMixer::mix(BackgroundRect::getBackColor(), backgroundMix, alpha);
@@ -329,6 +337,7 @@ inline void PowerSquare::drawOutlineThing(float alpha) const {
 
 		Renderer::Draw(*va, *ib_outline, *shader);
 	}
+	*/
 }
 
 /*

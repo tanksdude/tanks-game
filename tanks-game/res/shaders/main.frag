@@ -2,8 +2,8 @@
 
 layout(location = 0) out vec4 color;
 
-uniform vec4 u_color; //TODO: replace with color in the vertex
+in vec4 v_Color;
 
 void main() {
-	color = u_color;
+	color = v_Color;
 }

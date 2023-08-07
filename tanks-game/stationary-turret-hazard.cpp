@@ -84,15 +84,28 @@ bool StationaryTurretHazard::initializeGPU() {
 	}
 
 	vb = VertexBuffer::MakeVertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float), RenderingHints::dynamic_draw);
-	VertexBufferLayout layout(2);
-	va = VertexArray::MakeVertexArray(*vb, layout);
+	VertexBufferLayout layout = {
+		{ ShaderDataType::Float2, "a_Position" },
+		//{ ShaderDataType::Float4, "a_Color" }
+	};
+	vb->SetLayout(layout);
 
 	ib = IndexBuffer::MakeIndexBuffer(indices, Circle::numOfSides*3);
 
+	va = VertexArray::MakeVertexArray();
+	va->AddVertexBuffer(vb);
+	va->SetIndexBuffer(ib);
+
 	float cannon_positions[4] = { 0.0f, 0.0f, 1.0f, 0.0f };
 	cannon_vb = VertexBuffer::MakeVertexBuffer(cannon_positions, 2*2 * sizeof(float));
-	VertexBufferLayout cannon_layout(2);
-	cannon_va = VertexArray::MakeVertexArray(*cannon_vb, cannon_layout);
+	VertexBufferLayout cannon_layout = {
+		{ ShaderDataType::Float2, "a_Position" },
+		//{ ShaderDataType::Float4, "a_Color" }
+	};
+	cannon_vb->SetLayout(layout);
+
+	cannon_va = VertexArray::MakeVertexArray();
+	cannon_va->AddVertexBuffer(cannon_vb);
 
 	initialized_GPU = true;
 	return true;

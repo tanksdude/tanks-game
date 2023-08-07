@@ -99,11 +99,14 @@ bool Diagnostics::initializeGPU() {
 	*/
 
 	graph_vb = VertexBuffer::MakeVertexBuffer(graph_positions, 4*2 * sizeof(float), RenderingHints::dynamic_draw);
-	VertexBufferLayout graph_layout(2);
-	graph_va = VertexArray::MakeVertexArray(*graph_vb, graph_layout);
+	VertexBufferLayout graph_layout = {
+		{ ShaderDataType::Float2, "a_Position" },
+		//{ ShaderDataType::Float4, "a_Color" }
+	};
+	graph_vb->SetLayout(graph_layout);
 
-	//unused:
-	//graph_ib = IndexBuffer::MakeIndexBuffer(graph_indices, 4);
+	graph_va = VertexArray::MakeVertexArray();
+	graph_va->AddVertexBuffer(graph_vb);
 
 	//eh
 	float* data_positions = new float[maxGraphTimes*2];
@@ -121,8 +124,14 @@ bool Diagnostics::initializeGPU() {
 	data_vb_length = maxGraphTimes;
 
 	data_vb = VertexBuffer::MakeVertexBuffer(data_positions, maxGraphTimes*2 * sizeof(float), RenderingHints::stream_draw);
-	VertexBufferLayout data_layout(2);
-	data_va = VertexArray::MakeVertexArray(*data_vb, data_layout);
+	VertexBufferLayout data_layout = {
+		{ ShaderDataType::Float2, "a_Position" },
+		//{ ShaderDataType::Float4, "a_Color" }
+	};
+	data_vb->SetLayout(data_layout);
+
+	data_va = VertexArray::MakeVertexArray();
+	data_va->AddVertexBuffer(data_vb);
 
 	delete[] data_positions;
 	initialized_GPU = true;
@@ -160,8 +169,13 @@ void Diagnostics::streamDataGPU(const std::vector<long double>& graphData) {
 		delete data_va;
 
 		data_vb = VertexBuffer::MakeVertexBuffer(positions.data(), graphData.size()*2 * sizeof(float), RenderingHints::stream_draw);
-		VertexBufferLayout layout(2);
-		data_va = VertexArray::MakeVertexArray(*data_vb, layout);
+		VertexBufferLayout layout = {
+			{ ShaderDataType::Float2, "a_Position" },
+			//{ ShaderDataType::Float4, "a_Color" }
+		};
+		data_vb->SetLayout(layout);
+		data_va = VertexArray::MakeVertexArray();
+		data_va->AddVertexBuffer(data_vb);
 		data_vb_length = graphData.size();
 	} else {
 		data_vb->modifyData(positions.data(), graphData.size()*2 * sizeof(float));
