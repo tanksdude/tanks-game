@@ -107,7 +107,7 @@ bool Tank::initializeGPU() {
 		return false;
 	}
 
-	float positions[(Circle::numOfSides+1)*2 + (Circle::numOfSides+1)*4];
+	float positions[(Circle::numOfSides+1) * (2+4)];
 	positions[0] = 0;
 	positions[1] = 0;
 	positions[2] = positions[3] = positions[4] = 0.5f;
@@ -115,9 +115,9 @@ bool Tank::initializeGPU() {
 	for (int i = 1; i < Circle::numOfSides+1; i++) {
 		positions[i*6]   = cos((i-1) * 2*PI / Circle::numOfSides);
 		positions[i*6+1] = sin((i-1) * 2*PI / Circle::numOfSides);
-		positions[i*6+2] = .5f;
-		positions[i*6+3] = .5f;
-		positions[i*6+4] = .5f;
+		positions[i*6+2] = 0.5f;
+		positions[i*6+3] = 0.5f;
+		positions[i*6+4] = 0.5f;
 		positions[i*6+5] = 1.0f;
 	}
 
@@ -137,7 +137,7 @@ bool Tank::initializeGPU() {
 	}
 	*/
 
-	vb = VertexBuffer::MakeVertexBuffer(positions, (Circle::numOfSides+1)*6 * sizeof(float), RenderingHints::dynamic_draw);
+	vb = VertexBuffer::MakeVertexBuffer(positions, (Circle::numOfSides+1)*(2+4) * sizeof(float), RenderingHints::dynamic_draw);
 	VertexBufferLayout layout = {
 		{ ShaderDataType::Float2, "a_Position" },
 		{ ShaderDataType::Float4, "a_Color" }
@@ -903,7 +903,6 @@ inline void Tank::drawBody(float alpha) const {
 
 		color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 		shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-		//TODO: update the vertex buffer's colors, then draw
 
 		modelMatrix = Renderer::GenerateModelMatrix(r, r, 0, x, y);
 		shader->setUniformMat4f("u_ModelMatrix", modelMatrix);

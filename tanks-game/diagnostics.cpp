@@ -86,10 +86,10 @@ bool Diagnostics::initializeGPU() {
 
 	//x-axis and y-axis
 	float graph_positions[] = {
-		0, 0,
-		1, 0,
-		1, 1, //maybe an outline is wanted instead of just axes
-		0, 1
+		0, 0,   0.75f, 0.75f, 0.75f, 1.0f,
+		1, 0,   0.75f, 0.75f, 0.75f, 1.0f,
+		1, 1,   0.75f, 0.75f, 0.75f, 1.0f,
+		0, 1,   0.75f, 0.75f, 0.75f, 1.0f
 	};
 	/*
 	unsigned int graph_indices[] = {
@@ -98,10 +98,10 @@ bool Diagnostics::initializeGPU() {
 	};
 	*/
 
-	graph_vb = VertexBuffer::MakeVertexBuffer(graph_positions, 4*2 * sizeof(float), RenderingHints::dynamic_draw);
+	graph_vb = VertexBuffer::MakeVertexBuffer(graph_positions, sizeof(graph_positions), RenderingHints::dynamic_draw);
 	VertexBufferLayout graph_layout = {
 		{ ShaderDataType::Float2, "a_Position" },
-		//{ ShaderDataType::Float4, "a_Color" }
+		{ ShaderDataType::Float4, "a_Color" }
 	};
 	graph_vb->SetLayout(graph_layout);
 

@@ -70,20 +70,20 @@ bool HorizontalLightningHazard::initializeGPU() {
 	}
 
 	float positions[] = {
-		0, 0,
-		1, 0,
-		1, 1,
-		0, 1
+		0, 0,   0.5f, 0.5f, 0.5f, 1.0f,
+		1, 0,   0.5f, 0.5f, 0.5f, 1.0f,
+		1, 1,   0.5f, 0.5f, 0.5f, 1.0f,
+		0, 1,   0.5f, 0.5f, 0.5f, 1.0f
 	};
 	unsigned int indices[] = {
 		0, 1, 2,
 		2, 3, 0
 	};
 
-	background_vb = VertexBuffer::MakeVertexBuffer(positions, 4*2 * sizeof(float), RenderingHints::dynamic_draw);
+	background_vb = VertexBuffer::MakeVertexBuffer(positions, sizeof(positions), RenderingHints::dynamic_draw);
 	VertexBufferLayout layout = {
 		{ ShaderDataType::Float2, "a_Position" },
-		//{ ShaderDataType::Float4, "a_Color" }
+		{ ShaderDataType::Float4, "a_Color" }
 	};
 	background_vb->SetLayout(layout);
 

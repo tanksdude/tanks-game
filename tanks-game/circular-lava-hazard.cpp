@@ -56,12 +56,20 @@ bool CircularLavaHazard::initializeGPU() {
 	}
 
 	//background:
-	float background_positions[(Circle::numOfSides+1)*2];
+	float background_positions[(Circle::numOfSides+1)*(2+4)];
 	background_positions[0] = 0;
 	background_positions[1] = 0;
+	background_positions[2] = 1.0f;
+	background_positions[3] = 0.5f;
+	background_positions[4] = 0.0f;
+	background_positions[5] = 1.0f;
 	for (int i = 1; i < Circle::numOfSides+1; i++) {
-		background_positions[i*2]   = cos((i-1) * 2*PI / Circle::numOfSides);
-		background_positions[i*2+1] = sin((i-1) * 2*PI / Circle::numOfSides);
+		background_positions[i*6]   = cos((i-1) * 2*PI / Circle::numOfSides);
+		background_positions[i*6+1] = sin((i-1) * 2*PI / Circle::numOfSides);
+		background_positions[i*6+2] = 1.0f;
+		background_positions[i*6+3] = 0.5f;
+		background_positions[i*6+4] = 0.0f;
+		background_positions[i*6+5] = 1.0f;
 	}
 
 	unsigned int background_indices[Circle::numOfSides*3];
@@ -71,10 +79,10 @@ bool CircularLavaHazard::initializeGPU() {
 		background_indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
 	}
 
-	background_vb = VertexBuffer::MakeVertexBuffer(background_positions, (Circle::numOfSides+1)*2 * sizeof(float), RenderingHints::static_draw);
+	background_vb = VertexBuffer::MakeVertexBuffer(background_positions, (Circle::numOfSides+1)*(2+4) * sizeof(float), RenderingHints::static_draw);
 	VertexBufferLayout background_layout = {
 		{ ShaderDataType::Float2, "a_Position" },
-		//{ ShaderDataType::Float4, "a_Color" }
+		{ ShaderDataType::Float4, "a_Color" }
 	};
 	background_vb->SetLayout(background_layout);
 
@@ -85,12 +93,20 @@ bool CircularLavaHazard::initializeGPU() {
 	background_va->SetIndexBuffer(background_ib);
 
 	//bubble:
-	float bubble_positions[(Circle::numOfSides+1)*2];
+	float bubble_positions[(Circle::numOfSides+1)*(2+4)];
 	bubble_positions[0] = 0;
 	bubble_positions[1] = 0;
+	bubble_positions[2] = 1.0f;
+	bubble_positions[3] = 1.0f;
+	bubble_positions[4] = 1.0f;
+	bubble_positions[5] = 1.0f;
 	for (int i = 1; i < Circle::numOfSides+1; i++) {
-		bubble_positions[i*2]   = cos((i-1) * 2*PI / Circle::numOfSides);
-		bubble_positions[i*2+1] = sin((i-1) * 2*PI / Circle::numOfSides);
+		bubble_positions[i*6]   = cos((i-1) * 2*PI / Circle::numOfSides);
+		bubble_positions[i*6+1] = sin((i-1) * 2*PI / Circle::numOfSides);
+		bubble_positions[i*6+2] = 1.0f;
+		bubble_positions[i*6+3] = 1.0f;
+		bubble_positions[i*6+4] = 1.0f;
+		bubble_positions[i*6+5] = 1.0f;
 	}
 
 	unsigned int bubble_indices[Circle::numOfSides*3];
@@ -100,10 +116,10 @@ bool CircularLavaHazard::initializeGPU() {
 		bubble_indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
 	}
 
-	bubble_vb = VertexBuffer::MakeVertexBuffer(bubble_positions, (Circle::numOfSides+1)*2 * sizeof(float), RenderingHints::dynamic_draw);
+	bubble_vb = VertexBuffer::MakeVertexBuffer(bubble_positions, (Circle::numOfSides+1)*(2+4) * sizeof(float), RenderingHints::dynamic_draw);
 	VertexBufferLayout bubble_layout = {
 		{ ShaderDataType::Float2, "a_Position" },
-		//{ ShaderDataType::Float4, "a_Color" }
+		{ ShaderDataType::Float4, "a_Color" }
 	};
 	bubble_vb->SetLayout(bubble_layout);
 

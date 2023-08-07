@@ -51,12 +51,20 @@ bool CircularNoBulletZoneHazard::initializeGPU() {
 	}
 
 	//background:
-	float positions[(Circle::numOfSides+1)*2];
+	float positions[(Circle::numOfSides+1)*(2+4)];
 	positions[0] = 0;
 	positions[1] = 0;
+	positions[2] = 0xCC/255.0;
+	positions[3] = 0xCC/255.0;
+	positions[4] = 0xCC/255.0;
+	positions[5] = 1.0f;
 	for (int i = 1; i < Circle::numOfSides+1; i++) {
-		positions[i*2]   = cos((i-1) * 2*PI / Circle::numOfSides);
-		positions[i*2+1] = sin((i-1) * 2*PI / Circle::numOfSides);
+		positions[i*6]   = cos((i-1) * 2*PI / Circle::numOfSides);
+		positions[i*6+1] = sin((i-1) * 2*PI / Circle::numOfSides);
+		positions[i*6+2] = 0xCC/255.0;
+		positions[i*6+3] = 0xCC/255.0;
+		positions[i*6+4] = 0xCC/255.0;
+		positions[i*6+5] = 1.0f;
 	}
 
 	unsigned int indices[Circle::numOfSides*3];
@@ -66,10 +74,10 @@ bool CircularNoBulletZoneHazard::initializeGPU() {
 		indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
 	}
 
-	vb = VertexBuffer::MakeVertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float), RenderingHints::static_draw);
+	vb = VertexBuffer::MakeVertexBuffer(positions, (Circle::numOfSides+1)*(2+4) * sizeof(float), RenderingHints::static_draw);
 	VertexBufferLayout layout = {
 		{ ShaderDataType::Float2, "a_Position" },
-		//{ ShaderDataType::Float4, "a_Color" }
+		{ ShaderDataType::Float4, "a_Color" }
 	};
 	vb->SetLayout(layout);
 

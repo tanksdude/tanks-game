@@ -243,19 +243,19 @@ bool WindLevelEffect::initializeGPU() {
 
 	//spike:
 	float positions[] = {
-		-1.0f, -0.125f,
-		-1.0f,  0.125f,
-		 1.0f,  0.0f
+		-1.0f, -0.125f,   0.4f, 0.4f, 0.4f, 1.0f,
+		-1.0f,  0.125f,   0.4f, 0.4f, 0.4f, 1.0f,
+		 1.0f,  0.0f,     0.4f, 0.4f, 0.4f, 1.0f
 	};
 	//arrow:
 	float positions_extra[] = {
-		-1.0f, -0.125f, //bottom left  //0
-		-1.0f,  0.125f, //top left     //1
-		 0.5f,  0.125f, //top right    //2
-		 0.5f,  0.5f,                  //3
-		 1.0f,  0.0f,   //arrow tip    //4
-		 0.5f, -0.5f,                  //5
-		 0.5f, -0.125f  //bottom right //6
+		-1.0f, -0.125f,   0.4f, 0.4f, 0.4f, 1.0f, //bottom left  //0
+		-1.0f,  0.125f,   0.4f, 0.4f, 0.4f, 1.0f, //top left     //1
+		 0.5f,  0.125f,   0.4f, 0.4f, 0.4f, 1.0f, //top right    //2
+		 0.5f,  0.5f,     0.4f, 0.4f, 0.4f, 1.0f,                //3
+		 1.0f,  0.0f,     0.4f, 0.4f, 0.4f, 1.0f, //arrow tip    //4
+		 0.5f, -0.5f,     0.4f, 0.4f, 0.4f, 1.0f,                //5
+		 0.5f, -0.125f,   0.4f, 0.4f, 0.4f, 1.0f  //bottom right //6
 	};
 
 	unsigned int indices[] = {
@@ -270,7 +270,7 @@ bool WindLevelEffect::initializeGPU() {
 	vb = VertexBuffer::MakeVertexBuffer(positions, sizeof(positions), RenderingHints::dynamic_draw);
 	VertexBufferLayout layout = {
 		{ ShaderDataType::Float2, "a_Position" },
-		//{ ShaderDataType::Float4, "a_Color" }
+		{ ShaderDataType::Float4, "a_Color" }
 	};
 	vb->SetLayout(layout);
 
@@ -283,7 +283,7 @@ bool WindLevelEffect::initializeGPU() {
 	vb_extra = VertexBuffer::MakeVertexBuffer(positions_extra, sizeof(positions_extra), RenderingHints::dynamic_draw);
 	VertexBufferLayout layout_extra = {
 		{ ShaderDataType::Float2, "a_Position" },
-		//{ ShaderDataType::Float4, "a_Color" }
+		{ ShaderDataType::Float4, "a_Color" }
 	};
 	vb_extra->SetLayout(layout);
 
