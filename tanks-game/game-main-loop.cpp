@@ -1405,6 +1405,7 @@ void GameMainLoop::drawMain() const {
 	for (int i = 0; i < BulletManager::getNumBullets(); i++) {
 		BulletManager::getBullet(i)->draw(DrawingLayers::normal);
 	}
+	Renderer::BatchedFlush();
 	Renderer::UnbindAll();
 	Diagnostics::endTiming();
 

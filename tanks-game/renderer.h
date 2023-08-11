@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <unordered_map>
+#include <vector>
 #include "rendering-context.h"
 #include "vertex-array.h"
 #include "vertex-buffer.h"
@@ -63,27 +64,53 @@ private:
 
 	static std::string getErrorString(GLenum err);
 
+private:
+	static std::vector<float> verticesData; //should probably use a raw pointer for efficiency, don't care
+	static int maxVerticesDataLength;
+	//static int currentVerticesDataLength;
+	static inline bool enoughRoomForMoreVertices(int pushLength);
+	static std::vector<unsigned int> indicesData;
+	static int maxIndicesDataLength;
+	//static int currentIndicesDataLength;
+	static inline bool enoughRoomForMoreIndices(int pushLength);
+
+	static VertexArray* batched_va;
+	static VertexBuffer* batched_vb;
+	static IndexBuffer* batched_ib;
+	static bool initialized_GPU;
+
+	static bool initializeGPU();
+	static bool uninitializeGPU();
+
 public:
 	static Shader* getShader(std::string);
 	static void BeginningStuff();
 	static void Clear();
 	static void Clear(int bits);
 	static void Flush();
+
 	static void SetContext(AvailableRenderingContexts);
 	static void SetContext(std::string);
 	static AvailableRenderingContexts GetContext() { return renderingMethodType; }
+
 	static void PreInitialize(int* argc, char** argv, std::string windowName); //initialize freeglut and GLEW
 	static void PreInitialize(int* argc, char** argv, std::string windowName, int startX, int startY);
 	static void PreInitialize(int* argc, char** argv, std::string windowName, int startX, int startY, int sizeX, int sizeY);
 	static void Initialize();
+
 	static void Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader);
 	static void Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader, unsigned int count);
 	static void Draw(const VertexArray& va, const Shader& shader, GLenum type, GLint first, GLsizei count);
 	static void Draw(GLenum type, GLint first, GLsizei count);
+
+	static void SubmitBatchedDraw(const float* posAndColor, int posAndColorLength, const unsigned int* indices, int indicesLength);
+	static void BatchedFlush();
+
 	static glm::mat4 GenerateModelMatrix(float scaleX, float scaleY, float rotateAngle, float transX, float transY);
 	static void SetViewMatrix(float cameraX, float cameraY, float cameraZ, float targetX, float targetY, float targetZ);
 	//static void SetProjectionMatrix(float left, float right, float bottom, float top/*, float near, float far*/); //orthographic
 	static void SetProjectionMatrix();
+
 	static void Unbind(const VertexArray&);
 	static void Unbind(const IndexBuffer&);
 	static void Unbind(const Shader&);

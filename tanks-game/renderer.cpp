@@ -7,6 +7,7 @@
 #include "opengl-rendering-context.h"
 #include "software-rendering-context.h"
 #include "null-rendering-context.h"
+#include <algorithm> //std::fill
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 #include <iostream>
@@ -24,6 +25,17 @@ float Renderer::current_cameraX = 0, Renderer::current_cameraY = 0, Renderer::cu
 float Renderer::current_targetX = 0, Renderer::current_targetY = 0, Renderer::current_targetZ = 0;
 bool Renderer::viewMatBound = false, Renderer::projectionMatBound = false;
 Shader* Renderer::boundShader = nullptr;
+
+VertexArray* Renderer::batched_va;
+VertexBuffer* Renderer::batched_vb;
+IndexBuffer* Renderer::batched_ib;
+bool Renderer::initialized_GPU = false;
+int Renderer::maxVerticesDataLength = (2 << 20) / (2+4);
+//int Renderer::currentVerticesDataLength = 0;
+std::vector<float> Renderer::verticesData;
+int Renderer::maxIndicesDataLength = (2 << 20) / (2+4); //TODO: size
+//int Renderer::currentIndicesDataLength = 0;
+std::vector<unsigned int> Renderer::indicesData;
 
 // Handles window resizing (FreeGLUT event function)
 void Renderer::windowResizeFunc(int w, int h) {
@@ -188,6 +200,10 @@ void Renderer::Initialize() {
 
 	//shader = new Shader("res/shaders/default.vert", "res/shaders/default.frag");
 	//shaderCache.insert({ "default", shader });
+
+	verticesData.reserve(maxVerticesDataLength);
+	indicesData.reserve(maxIndicesDataLength);
+	initializeGPU();
 }
 
 glm::mat4 Renderer::GenerateModelMatrix(float scaleX, float scaleY, float rotateAngle, float transX, float transY) {
@@ -360,6 +376,7 @@ void Renderer::Clear(int flags) {
 }
 
 void Renderer::Flush() {
+	BatchedFlush();
 	glFlush();
 }
 
@@ -393,4 +410,90 @@ void Renderer::Draw(GLenum type, GLint first, GLsizei count) {
 
 void Renderer::Cleanup() {
 	glDisableVertexAttribArray(0); //disable vertex attribute to avoid issues
+}
+
+bool Renderer::initializeGPU() {
+	if (initialized_GPU) {
+		return false;
+	}
+
+	float* positions = new float[maxVerticesDataLength * (2+4)];
+	std::fill(positions, positions + maxVerticesDataLength * (2+4), 0);
+
+	unsigned int* indices = new unsigned int[maxIndicesDataLength * (2+4)];
+	std::fill(indices, indices + maxIndicesDataLength * (2+4), 0);
+
+	batched_vb = VertexBuffer::MakeVertexBuffer(positions, maxVerticesDataLength * (2+4) * sizeof(float), RenderingHints::stream_draw);
+	VertexBufferLayout layout = {
+		{ ShaderDataType::Float2, "a_Position" },
+		{ ShaderDataType::Float4, "a_Color" }
+	};
+	batched_vb->SetLayout(layout);
+
+	batched_ib = IndexBuffer::MakeIndexBuffer(indices, maxIndicesDataLength * (2+4));
+
+	batched_va = VertexArray::MakeVertexArray();
+	batched_va->AddVertexBuffer(batched_vb);
+	batched_va->SetIndexBuffer(batched_ib);
+
+	delete[] positions;
+	delete[] indices;
+	initialized_GPU = true;
+	return true;
+}
+
+bool Renderer::uninitializeGPU() {
+	if (!initialized_GPU) {
+		return false;
+	}
+
+	delete batched_va;
+	delete batched_vb;
+	delete batched_ib;
+
+	initialized_GPU = false;
+	return true;
+}
+
+inline bool Renderer::enoughRoomForMoreVertices(int pushLength) {
+	return (verticesData.size() + pushLength <= maxVerticesDataLength);
+}
+inline bool Renderer::enoughRoomForMoreIndices(int pushLength) {
+	return (indicesData.size() + pushLength <= maxIndicesDataLength);
+}
+
+void Renderer::SubmitBatchedDraw(const float* posAndColor, int posAndColorLength, const unsigned int* indices, int indicesLength) {
+	if (!enoughRoomForMoreVertices(posAndColorLength) || !enoughRoomForMoreIndices(indicesLength)) {
+		BatchedFlush();
+	}
+
+	unsigned int currVerticesLength = verticesData.size();
+	verticesData.insert(verticesData.end(), posAndColor, posAndColor + posAndColorLength);
+
+	unsigned int currIndicesLength = indicesData.size();
+	indicesData.insert(indicesData.end(), indices, indices + indicesLength);
+	for (unsigned int i = currIndicesLength; i < indicesData.size(); i++) {
+		//indicesData[i] += currIndicesLength/3; //close, but not quite right
+		indicesData[i] += currVerticesLength/(2+4);
+	}
+}
+
+void Renderer::BatchedFlush() {
+	if (verticesData.empty()) {
+		return;
+	}
+
+	batched_vb->modifyData(verticesData.data(), verticesData.size() * sizeof(float));
+	batched_ib->modifyData(indicesData.data(), indicesData.size() * sizeof(unsigned int));
+
+	bindShader(Renderer::getShader("main"));
+	Renderer::getShader("main")->setUniformMat4f("u_ModelMatrix", glm::mat4(1.0f));
+	bindVertexArray(*batched_va);
+	bindIndexBuffer(*batched_ib);
+
+	//glDrawElements(GL_TRIANGLES, batched_va->GetIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
+	glDrawElements(GL_TRIANGLES, indicesData.size(), GL_UNSIGNED_INT, nullptr);
+
+	verticesData.clear();
+	indicesData.clear();
 }
