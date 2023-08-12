@@ -2,6 +2,7 @@
 #include "game-manager.h"
 #include "constants.h"
 #include "color-mixer.h"
+#include "mylib.h"
 #include "background-rect.h"
 #include "renderer.h"
 #include <iostream>
@@ -147,9 +148,12 @@ void Wall::poseDraw(DrawingLayers layer) const {
 }
 
 void Wall::ghostDraw(float alpha) const {
+	alpha = constrain<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 modelMatrix;
 
+	/*
 	ColorValueHolder c = color;
 	c = ColorMixer::mix(BackgroundRect::getBackColor(), c, alpha);
 	shader->setUniform4f("u_color", c.getRf(), c.getGf(), c.getBf(), c.getAf());
@@ -158,6 +162,23 @@ void Wall::ghostDraw(float alpha) const {
 	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 	Renderer::Draw(*va, *ib, *shader);
+	*/
+
+	ColorValueHolder c = this->color;
+	c = ColorMixer::mix(BackgroundRect::getBackColor(), c, alpha);
+
+	float coordsAndColor[] = {
+		x,   y,     c.getRf(), c.getGf(), c.getBf(), c.getAf(),
+		x+w, y,     c.getRf(), c.getGf(), c.getBf(), c.getAf(),
+		x+w, y+h,   c.getRf(), c.getGf(), c.getBf(), c.getAf(),
+		x,   y+h,   c.getRf(), c.getGf(), c.getBf(), c.getAf()
+	};
+	unsigned int indices[] = {
+		0, 1, 2,
+		2, 3, 0
+	};
+
+	Renderer::SubmitBatchedDraw(coordsAndColor, 4 * (2+4), indices, 2 * 3);
 }
 
 void Wall::ghostDraw(DrawingLayers layer, float alpha) const {
