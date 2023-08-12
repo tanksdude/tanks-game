@@ -1391,6 +1391,7 @@ void GameMainLoop::drawMain() const {
 	for (int i = 0; i < HazardManager::getNumRectHazards(); i++) {
 		HazardManager::getRectHazard(i)->draw(DrawingLayers::normal);
 	}
+	Renderer::BatchedFlush();
 	Renderer::UnbindAll();
 	Diagnostics::endTiming();
 
@@ -1420,6 +1421,7 @@ void GameMainLoop::drawMain() const {
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
 		TankManager::getTank(i)->draw(DrawingLayers::normal);
 	}
+	Renderer::BatchedFlush();
 	Renderer::UnbindAll();
 	Diagnostics::endTiming();
 

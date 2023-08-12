@@ -247,6 +247,7 @@ void RectangularNoBulletZoneHazard::ghostDraw(float alpha) const {
 	glm::mat4 modelMatrix;
 
 	//background:
+	/*
 	ColorValueHolder color = GeneralizedNoBulletZone::getColor();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
@@ -255,8 +256,25 @@ void RectangularNoBulletZoneHazard::ghostDraw(float alpha) const {
 	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 	Renderer::Draw(*va, *ib, *shader);
+	*/
+	ColorValueHolder color_background = GeneralizedNoBulletZone::getColor();
+	color_background = ColorMixer::mix(BackgroundRect::getBackColor(), color_background, alpha);
+
+	float coordsAndColor_background[] = {
+		x,   y,     color_background.getRf(), color_background.getGf(), color_background.getBf(), color_background.getAf(),
+		x+w, y,     color_background.getRf(), color_background.getGf(), color_background.getBf(), color_background.getAf(),
+		x+w, y+h,   color_background.getRf(), color_background.getGf(), color_background.getBf(), color_background.getAf(),
+		x,   y+h,   color_background.getRf(), color_background.getGf(), color_background.getBf(), color_background.getAf()
+	};
+	unsigned int indices_background[] = {
+		0, 1, 2,
+		2, 3, 0
+	};
+
+	Renderer::SubmitBatchedDraw(coordsAndColor_background, 4 * (2+4), indices_background, 2 * 3);
 
 	//red X:
+	/*
 	color = X_COLOR;
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, .75);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
@@ -266,6 +284,45 @@ void RectangularNoBulletZoneHazard::ghostDraw(float alpha) const {
 	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 	Renderer::Draw(*extra_va, *extra_ib, *shader);
+	*/
+	//red X:
+	ColorValueHolder color_extra = X_COLOR;
+	color_extra = ColorMixer::mix(BackgroundRect::getBackColor(), color_extra, .75); //TODO: why?
+	color_extra = ColorMixer::mix(BackgroundRect::getBackColor(), color_extra, alpha);
+	float coordsAndColor_extra[] = {
+		//bottom left:
+		x,               y,                 color_extra.getRf(), color_extra.getGf(), color_extra.getBf(), color_extra.getAf(), //0
+		x + w*X_WIDTH,   y,                 color_extra.getRf(), color_extra.getGf(), color_extra.getBf(), color_extra.getAf(),
+		x,               y + h*X_WIDTH,     color_extra.getRf(), color_extra.getGf(), color_extra.getBf(), color_extra.getAf(),
+
+		//top right:
+		x+w,             y+h,               color_extra.getRf(), color_extra.getGf(), color_extra.getBf(), color_extra.getAf(), //3
+		x+w - w*X_WIDTH, y+h,               color_extra.getRf(), color_extra.getGf(), color_extra.getBf(), color_extra.getAf(),
+		x+w,             y+h - h*X_WIDTH,   color_extra.getRf(), color_extra.getGf(), color_extra.getBf(), color_extra.getAf(),
+
+		//top left:
+		x,               y+h,               color_extra.getRf(), color_extra.getGf(), color_extra.getBf(), color_extra.getAf(), //6
+		x,               y+h - h*X_WIDTH,   color_extra.getRf(), color_extra.getGf(), color_extra.getBf(), color_extra.getAf(),
+		x + w*X_WIDTH,   y+h,               color_extra.getRf(), color_extra.getGf(), color_extra.getBf(), color_extra.getAf(),
+
+		//bottom right:
+		x+w,             y,                 color_extra.getRf(), color_extra.getGf(), color_extra.getBf(), color_extra.getAf(), //9
+		x+w,             y + h*X_WIDTH,     color_extra.getRf(), color_extra.getGf(), color_extra.getBf(), color_extra.getAf(),
+		x+w - w*X_WIDTH, y,                 color_extra.getRf(), color_extra.getGf(), color_extra.getBf(), color_extra.getAf()
+	};
+	unsigned int indices_extra[] = {
+		0,  1,  2,  //bottom left tip
+		3,  4,  5,  //top right tip
+		1,  5,  4,  //rect between
+		4,  2,  1,
+
+		6,  7,  8,  //top left tip
+		9,  10, 11, //bottom right tip
+		8,  7,  11, //rect between
+		11, 10, 8
+	};
+
+	Renderer::SubmitBatchedDraw(coordsAndColor_extra, (3*4) * (2+4), indices_extra, (4+4) * 3);
 }
 
 void RectangularNoBulletZoneHazard::ghostDraw(DrawingLayers layer, float alpha) const {

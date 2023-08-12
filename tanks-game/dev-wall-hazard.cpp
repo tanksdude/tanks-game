@@ -5,11 +5,6 @@
 #include "color-mixer.h"
 #include "background-rect.h"
 #include "mylib.h"
-#include "point.h"
-#include "tank.h"
-#include "tank-manager.h"
-#include "bullet-manager.h"
-#include "wall-manager.h"
 #include "hazard-manager.h"
 #include "level-manager.h"
 #include "collision-handler.h"
@@ -198,9 +193,12 @@ void DevWallHazard::poseDraw(DrawingLayers layer) const {
 }
 
 void DevWallHazard::ghostDraw(float alpha) const {
+	alpha = constrain<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 modelMatrix;
 
+	/*
 	ColorValueHolder c = color;
 	c = ColorMixer::mix(BackgroundRect::getBackColor(), c, alpha);
 	shader->setUniform4f("u_color", c.getRf(), c.getGf(), c.getBf(), c.getAf());
@@ -209,6 +207,23 @@ void DevWallHazard::ghostDraw(float alpha) const {
 	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 	Renderer::Draw(*va, *ib, *shader);
+	*/
+
+	ColorValueHolder c = this->color;
+	c = ColorMixer::mix(BackgroundRect::getBackColor(), c, alpha);
+
+	float coordsAndColor[] = {
+		x,   y,     c.getRf(), c.getGf(), c.getBf(), c.getAf(),
+		x+w, y,     c.getRf(), c.getGf(), c.getBf(), c.getAf(),
+		x+w, y+h,   c.getRf(), c.getGf(), c.getBf(), c.getAf(),
+		x,   y+h,   c.getRf(), c.getGf(), c.getBf(), c.getAf()
+	};
+	unsigned int indices[] = {
+		0, 1, 2,
+		2, 3, 0
+	};
+
+	Renderer::SubmitBatchedDraw(coordsAndColor, 4 * (2+4), indices, 2 * 3);
 }
 
 void DevWallHazard::ghostDraw(DrawingLayers layer, float alpha) const {

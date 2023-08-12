@@ -294,6 +294,7 @@ inline void RectangularLavaHazard::drawBackground(bool pose, float alpha) const 
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 modelMatrix;
 
+	/*
 	ColorValueHolder color = (pose ? getBackgroundColor_Pose() : getBackgroundColor());
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
@@ -302,6 +303,23 @@ inline void RectangularLavaHazard::drawBackground(bool pose, float alpha) const 
 	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 	Renderer::Draw(*background_va, *background_ib, *shader);
+	*/
+
+	ColorValueHolder color = (pose ? getBackgroundColor_Pose() : getBackgroundColor());
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
+
+	float coordsAndColor[] = {
+		x,   y,     color.getRf(), color.getGf(), color.getBf(), color.getAf(),
+		x+w, y,     color.getRf(), color.getGf(), color.getBf(), color.getAf(),
+		x+w, y+h,   color.getRf(), color.getGf(), color.getBf(), color.getAf(),
+		x,   y+h,   color.getRf(), color.getGf(), color.getBf(), color.getAf()
+	};
+	unsigned int indices[] = {
+		0, 1, 2,
+		2, 3, 0
+	};
+
+	Renderer::SubmitBatchedDraw(coordsAndColor, 4 * (2+4), indices, 2 * 3);
 }
 
 inline void RectangularLavaHazard::drawBubbles(bool pose, float alpha) const {
