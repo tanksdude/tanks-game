@@ -42,6 +42,7 @@
 * level effects:
     * ?
 * minor things:
+    * fullscreen toggle key changed to F11
     * overhaul priority handling (again)
     * [dev] power: wall sparks, makes extra bullets when it hits a wall
     * attempted: make static classes (mainly managers) not static; didn't work, everything is too interconnected, need to learn how structure games

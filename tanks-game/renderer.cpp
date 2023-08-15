@@ -106,9 +106,9 @@ unsigned int Renderer::currentVertexArray = -1;
 unsigned int Renderer::currentIndexBuffer = -1;
 
 void Renderer::BeginningStuff() {
-	if (KeypressManager::getSpecialKey(GLUT_KEY_F1)) {
+	if (KeypressManager::getSpecialKey(GLUT_KEY_F11)) {
 		glutFullScreenToggle();
-		KeypressManager::unsetSpecialKey(GLUT_KEY_F1, 0, 0);
+		KeypressManager::unsetSpecialKey(GLUT_KEY_F11, 0, 0);
 	}
 }
 
