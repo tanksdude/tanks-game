@@ -285,7 +285,7 @@ void RectangularNoBulletZoneHazard::ghostDraw(float alpha) const {
 
 	Renderer::Draw(*extra_va, *extra_ib, *shader);
 	*/
-	//red X:
+
 	ColorValueHolder color_extra = X_COLOR;
 	color_extra = ColorMixer::mix(BackgroundRect::getBackColor(), color_extra, .75); //TODO: why?
 	color_extra = ColorMixer::mix(BackgroundRect::getBackColor(), color_extra, alpha);

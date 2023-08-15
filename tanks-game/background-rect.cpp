@@ -78,4 +78,21 @@ void BackgroundRect::draw() {
 	shader->setUniformMat4f("u_ModelMatrix", Renderer::GenerateModelMatrix(GAME_WIDTH, GAME_HEIGHT, 0, 0, 0));
 
 	Renderer::Draw(*va, *ib, *shader);
+
+	/*
+	ColorValueHolder color = BackgroundRect::getBackColor();
+
+	float background_positions[] = {
+		0,          0,             color.getRf(), color.getGf(), color.getBf(), color.getAf(),
+		GAME_WIDTH, 0,             color.getRf(), color.getGf(), color.getBf(), color.getAf(),
+		GAME_WIDTH, GAME_HEIGHT,   color.getRf(), color.getGf(), color.getBf(), color.getAf(),
+		0,          GAME_HEIGHT,   color.getRf(), color.getGf(), color.getBf(), color.getAf()
+	};
+	unsigned int background_indices[] = {
+		0, 1, 2,
+		2, 3, 0
+	};
+
+	Renderer::SubmitBatchedDraw(background_positions, 4 * (2+4), background_indices, 2 * 3);
+	*/
 }

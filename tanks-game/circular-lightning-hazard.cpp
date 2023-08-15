@@ -479,6 +479,7 @@ inline void CircularLightningHazard::drawBackground(bool pose, float alpha) cons
 	scale = scale * scale;
 
 	//main background:
+	/*
 	//ColorValueHolder color = (pose ? getBackgroundColor_Pose() : getBackgroundColor());
 	ColorValueHolder color = getBackgroundColor_Pose();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
@@ -488,6 +489,36 @@ inline void CircularLightningHazard::drawBackground(bool pose, float alpha) cons
 	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 	Renderer::Draw(*background_va, *background_ib, *shader);
+	*/
+
+	//ColorValueHolder color = (pose ? getBackgroundColor_Pose() : getBackgroundColor());
+	ColorValueHolder color = getBackgroundColor_Pose();
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
+
+	float coordsAndColor[(Circle::numOfSides+1)*(2+4)];
+	coordsAndColor[0] = x;
+	coordsAndColor[1] = y;
+	coordsAndColor[2] = color.getRf();
+	coordsAndColor[3] = color.getGf();
+	coordsAndColor[4] = color.getBf();
+	coordsAndColor[5] = color.getAf();
+	for (int i = 1; i < Circle::numOfSides+1; i++) {
+		coordsAndColor[i*6]   = x + (r*scale) * cos((i-1) * 2*PI / Circle::numOfSides);
+		coordsAndColor[i*6+1] = y + (r*scale) * sin((i-1) * 2*PI / Circle::numOfSides);
+		coordsAndColor[i*6+2] = color.getRf();
+		coordsAndColor[i*6+3] = color.getGf();
+		coordsAndColor[i*6+4] = color.getBf();
+		coordsAndColor[i*6+5] = color.getAf();
+	}
+
+	unsigned int indices[Circle::numOfSides*3];
+	for (int i = 0; i < Circle::numOfSides; i++) {
+		indices[i*3]   = 0;
+		indices[i*3+1] = i+1;
+		indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
+	}
+
+	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::numOfSides+1)*(2+4), indices, Circle::numOfSides*3);
 
 	//outline:
 	glLineWidth(1.0f);

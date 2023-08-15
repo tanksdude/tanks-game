@@ -288,6 +288,7 @@ inline void GinormousTurretHazard::drawBody(float alpha) const {
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 modelMatrix;
 
+	/*
 	ColorValueHolder color = getColor();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
@@ -296,9 +297,40 @@ inline void GinormousTurretHazard::drawBody(float alpha) const {
 	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 	Renderer::Draw(*va, *ib, *shader);
+	*/
+
+	ColorValueHolder color = getColor();
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
+
+	float coordsAndColor[(Circle::numOfSides+1)*(2+4)];
+	coordsAndColor[0] = x;
+	coordsAndColor[1] = y;
+	coordsAndColor[2] = color.getRf();
+	coordsAndColor[3] = color.getGf();
+	coordsAndColor[4] = color.getBf();
+	coordsAndColor[5] = color.getAf();
+	for (int i = 1; i < Circle::numOfSides+1; i++) {
+		coordsAndColor[i*6]   = x + r * cos((i-1) * 2*PI / Circle::numOfSides);
+		coordsAndColor[i*6+1] = y + r * sin((i-1) * 2*PI / Circle::numOfSides);
+		coordsAndColor[i*6+2] = color.getRf();
+		coordsAndColor[i*6+3] = color.getGf();
+		coordsAndColor[i*6+4] = color.getBf();
+		coordsAndColor[i*6+5] = color.getAf();
+	}
+
+	unsigned int indices[Circle::numOfSides*3];
+	for (int i = 0; i < Circle::numOfSides; i++) {
+		indices[i*3]   = 0;
+		indices[i*3+1] = i+1;
+		indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
+	}
+
+	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::numOfSides+1)*(2+4), indices, Circle::numOfSides*3);
 }
 
 inline void GinormousTurretHazard::drawOutline(float alpha) const {
+	return;
+
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
