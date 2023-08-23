@@ -1391,7 +1391,6 @@ void GameMainLoop::drawMain() const {
 	for (int i = 0; i < HazardManager::getNumRectHazards(); i++) {
 		HazardManager::getRectHazard(i)->draw(DrawingLayers::normal);
 	}
-	Renderer::BatchedFlush();
 	Renderer::UnbindAll();
 	Diagnostics::endTiming();
 
@@ -1405,8 +1404,8 @@ void GameMainLoop::drawMain() const {
 	Diagnostics::startTiming("bullets");
 	for (int i = 0; i < BulletManager::getNumBullets(); i++) {
 		BulletManager::getBullet(i)->draw(DrawingLayers::normal);
+		//Renderer::BatchedFlush();
 	}
-	Renderer::BatchedFlush();
 	Renderer::UnbindAll();
 	Diagnostics::endTiming();
 
@@ -1421,7 +1420,6 @@ void GameMainLoop::drawMain() const {
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
 		TankManager::getTank(i)->draw(DrawingLayers::normal);
 	}
-	Renderer::BatchedFlush();
 	Renderer::UnbindAll();
 	Diagnostics::endTiming();
 
@@ -1459,6 +1457,8 @@ void GameMainLoop::drawMain() const {
 
 	//Diagnostics::startTiming("flush");
 	Renderer::Cleanup();
+	Renderer::BatchedFlush();
+	//std::cout << std::endl;
 
 	//moved to Renderer:
 	/*

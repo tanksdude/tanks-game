@@ -33,7 +33,7 @@ bool Renderer::initialized_GPU = false;
 int Renderer::maxVerticesDataLength = (2 << 20) / (2+4);
 //int Renderer::currentVerticesDataLength = 0;
 std::vector<float> Renderer::verticesData;
-int Renderer::maxIndicesDataLength = (2 << 20) / (2+4); //TODO: size
+int Renderer::maxIndicesDataLength = (2 << 20) / (2+4); //TODO: size (fills up faster)
 //int Renderer::currentIndicesDataLength = 0;
 std::vector<unsigned int> Renderer::indicesData;
 
@@ -179,8 +179,9 @@ void Renderer::PreInitialize(int* argc, char** argv, std::string windowName, int
 	glEnable(GL_POINT_SMOOTH);
 	glEnable(GL_LINE_SMOOTH);
 	glDisable(GL_DEPTH_TEST);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	//transparency:
+	//glEnable(GL_BLEND);
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	//initialize glew
 	glewExperimental = GL_TRUE;
@@ -464,6 +465,7 @@ inline bool Renderer::enoughRoomForMoreIndices(int pushLength) {
 
 void Renderer::SubmitBatchedDraw(const float* posAndColor, int posAndColorLength, const unsigned int* indices, int indicesLength) {
 	if (!enoughRoomForMoreVertices(posAndColorLength) || !enoughRoomForMoreIndices(indicesLength)) {
+		//std::cout << enoughRoomForMoreVertices(posAndColorLength) << enoughRoomForMoreIndices(indicesLength);
 		BatchedFlush();
 	}
 

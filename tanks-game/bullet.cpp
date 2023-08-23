@@ -521,14 +521,14 @@ inline void Bullet::drawBody(float alpha) const {
 	coordsAndColor[2] = color.getRf();
 	coordsAndColor[3] = color.getGf();
 	coordsAndColor[4] = color.getBf();
-	coordsAndColor[5] = .5f;
+	coordsAndColor[5] = color.getAf();
 	for (int i = 1; i < Circle::numOfSides+1; i++) {
 		coordsAndColor[i*6]   = x + r * cos((i-1) * 2*PI / Circle::numOfSides);
 		coordsAndColor[i*6+1] = y + r * sin((i-1) * 2*PI / Circle::numOfSides);
 		coordsAndColor[i*6+2] = color.getRf();
 		coordsAndColor[i*6+3] = color.getGf();
 		coordsAndColor[i*6+4] = color.getBf();
-		coordsAndColor[i*6+5] = .5f;
+		coordsAndColor[i*6+5] = color.getAf();
 	}
 
 	unsigned int indices[Circle::numOfSides*3];
@@ -595,11 +595,11 @@ inline void Bullet::drawDeathCooldown(float alpha) const {
 	//}
 	*/
 
-	//if (this->opaqueness < 100) {
+	if (this->opaqueness < 100) {
 		double deathPercent = constrain<double>(this->opaqueness/100, 0, 1);
-		unsigned int deathVertices = Circle::numOfSides * deathPercent;
+		unsigned int deathTriangles = Circle::numOfSides * deathPercent;
 
-		if (deathVertices > 0) {
+		if (deathTriangles > 0) {
 			ColorValueHolder color = ColorValueHolder(1.0f, 1.0f, 1.0f);
 			color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 
@@ -611,7 +611,7 @@ inline void Bullet::drawDeathCooldown(float alpha) const {
 			coordsAndColor[3] = color.getGf();
 			coordsAndColor[4] = color.getBf();
 			coordsAndColor[5] = color.getAf();
-			for (int i = 1; i < deathVertices+1; i++) {
+			for (int i = 1; i < deathTriangles+1; i++) {
 				coordsAndColor[i*6]   = x + ((r+2)*(9.0/8.0)) * cos(PI/2 + (i-1) * 2*PI / Circle::numOfSides);
 				coordsAndColor[i*6+1] = y + ((r+2)*(9.0/8.0)) * sin(PI/2 + (i-1) * 2*PI / Circle::numOfSides);
 				coordsAndColor[i*6+2] = color.getRf();
@@ -621,7 +621,7 @@ inline void Bullet::drawDeathCooldown(float alpha) const {
 			}
 
 			unsigned int indices[Circle::numOfSides*3];
-			for (int i = 0; i < deathVertices; i++) {
+			for (int i = 0; i < deathTriangles; i++) {
 				indices[i*3]   = 0;
 				indices[i*3+1] = i+1;
 				indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
@@ -630,39 +630,33 @@ inline void Bullet::drawDeathCooldown(float alpha) const {
 			std::vector<float> coordsAndColor;
 			std::vector<unsigned int> indices;
 
-			coordsAndColor.push_back(x-r);
+			coordsAndColor.push_back(x);
 			coordsAndColor.push_back(y);
 			coordsAndColor.push_back(color.getRf());
 			coordsAndColor.push_back(color.getGf());
 			coordsAndColor.push_back(color.getBf());
-			coordsAndColor.push_back(.5f);
-			for (int i = 1; i < deathVertices+1; i++) {
-				coordsAndColor.push_back(x + ((r+2)*(9.0/8.0)) * cos(PI/2 + (i-1) * 2*PI / Circle::numOfSides));
-				coordsAndColor.push_back(y + ((r+2)*(9.0/8.0)) * sin(PI/2 + (i-1) * 2*PI / Circle::numOfSides));
+			coordsAndColor.push_back(color.getAf());
+			for (int i = 0; i <= deathTriangles+1 && i <= Circle::numOfSides; i++) {
+				//the final triangle shares its last vertex with the first triangle, which is why this loop condition is a bit strange (second conditional only false for that last triangle)
+				//with wrong condition: two verts on an old bullet's death outline to the center of a new bullet's center body or death outline, though sometimes even a tank or rarely the bottom left corner (why)
+				//to be more specific: with the old conditional, think it was happening when deathTriangles==1, leading to pushing only two total verts but pushing three indices; but that would mean it was always pushing insufficient verts for the indices, why wasn't it showing up before?
+				coordsAndColor.push_back(x + ((r+2)*(9.0/8.0)) * cos(PI/2 + i * 2*PI / Circle::numOfSides));
+				coordsAndColor.push_back(y + ((r+2)*(9.0/8.0)) * sin(PI/2 + i * 2*PI / Circle::numOfSides));
 				coordsAndColor.push_back(color.getRf());
 				coordsAndColor.push_back(color.getGf());
 				coordsAndColor.push_back(color.getBf());
-				coordsAndColor.push_back(.5f);
+				coordsAndColor.push_back(color.getAf());
 			}
 
-			for (int i = 0; i < deathVertices; i++) {
+			for (int i = 0; i < deathTriangles; i++) {
 				indices.push_back(0);
 				indices.push_back(i+1);
 				indices.push_back((i+1) % Circle::numOfSides + 1);
-				//TODO: give tanks multishot and grenade, have them fire as much as possible, wait and see
-				//two verts on the white outline connect to a random bullet's body center (more specifically, new grenade to other bullet); suggests the problem is here
-				//sometimes it's white to white instead of white to color; can also go to a tank's center
-				//try fixes: if that ^^^ succeeds, try adding a batch flush after every bullet's draw
-				//other try fix: don't draw the bullet body, see if problem still occurs
-				//more try fix: do alpha, add a sleep after uploading vertices to GPU, reduce size of GPU buffer
-
-				//notes: goes away when adding a batched flush after every bullet
-				//it's two verts on an old bullet's death outline to the center of a new bullet's center (body or death outline, sometimes even a tank?)
 			}
 
 			Renderer::SubmitBatchedDraw(coordsAndColor.data(), coordsAndColor.size(), indices.data(), indices.size());
 		}
-	//}
+	}
 }
 
 bool Bullet::kill() {
