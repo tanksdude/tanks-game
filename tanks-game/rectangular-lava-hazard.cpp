@@ -370,7 +370,7 @@ inline void RectangularLavaHazard::drawBubbles(bool pose, float alpha) const {
 
 		ColorValueHolder color = (pose ? getBubbleColor_Pose(sortedBubbles[j]) : getBubbleColor(sortedBubbles[j]));
 		color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-		const float lineWidth = 0.75f; //TODO: 1.0f too much, 0.5f feels generic
+		const float lineWidth = 0.75f;
 
 		float coordsAndColor[(Circle::numOfSides*2)*(2+4)];
 		for (int i = 0; i < Circle::numOfSides; i++) {

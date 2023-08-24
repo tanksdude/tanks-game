@@ -230,6 +230,7 @@ void Diagnostics::drawGraphTimes_graph() {
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 modelMatrix;
 
+	/*
 	glLineWidth(4.0f); //TODO: change?
 
 	ColorValueHolder color = ColorValueHolder(0.75f, 0.75f, 0.75f);
@@ -243,6 +244,44 @@ void Diagnostics::drawGraphTimes_graph() {
 
 	//cleanup
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	*/
+
+	ColorValueHolder color = ColorValueHolder(0.75f, 0.75f, 0.75f);
+	const float lineWidth = 1.0f;
+
+	float coordsAndColor[] = {
+		//outer
+		(graphXOffset)             - lineWidth, (graphYOffset)             - lineWidth,   color.getRf(), color.getGf(), color.getBf(), color.getAf(), //0
+		(graphXOffset+graphLength) + lineWidth, (graphYOffset)             - lineWidth,   color.getRf(), color.getGf(), color.getBf(), color.getAf(), //1
+		(graphXOffset+graphLength) + lineWidth, (graphYOffset+graphHeight) + lineWidth,   color.getRf(), color.getGf(), color.getBf(), color.getAf(), //2
+		(graphXOffset)             - lineWidth, (graphYOffset+graphHeight) + lineWidth,   color.getRf(), color.getGf(), color.getBf(), color.getAf(), //3
+
+		//inner
+		(graphXOffset)             + lineWidth, (graphYOffset)             + lineWidth,   color.getRf(), color.getGf(), color.getBf(), color.getAf(), //4
+		(graphXOffset+graphLength) - lineWidth, (graphYOffset)             + lineWidth,   color.getRf(), color.getGf(), color.getBf(), color.getAf(), //5
+		(graphXOffset+graphLength) - lineWidth, (graphYOffset+graphHeight) - lineWidth,   color.getRf(), color.getGf(), color.getBf(), color.getAf(), //6
+		(graphXOffset)             + lineWidth, (graphYOffset+graphHeight) - lineWidth,   color.getRf(), color.getGf(), color.getBf(), color.getAf()  //7
+	};
+	unsigned int indices[] = { //trapezoids
+		//bottom
+		//0, 1, 5,
+		//5, 4, 0,
+
+		//right
+		1, 2, 6,
+		6, 5, 1,
+
+		//left
+		4, 7, 3,
+		3, 0, 4,
+
+		//top
+		2, 3, 7,
+		7, 6, 2
+	};
+
+	Renderer::SubmitBatchedDraw(coordsAndColor, (4+4) * (2+4), indices, (3*2) * 3);
+	//would look better using rectangles but it's fine
 }
 
 void Diagnostics::drawGraphTimes_data(std::string name) {

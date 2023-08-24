@@ -552,6 +552,7 @@ inline void RectangularLightningHazard::drawBackground(bool pose, float alpha) c
 	Renderer::SubmitBatchedDraw(coordsAndColor, 4 * (2+4), indices, 2 * 3);
 
 	//outline:
+	/*
 	glLineWidth(1.0f);
 
 	color = ColorValueHolder(0, 0, 0);
@@ -562,6 +563,46 @@ inline void RectangularLightningHazard::drawBackground(bool pose, float alpha) c
 	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 	Renderer::Draw(*background_va, *shader, GL_LINE_LOOP, 0, 4);
+	*/
+
+	//ColorValueHolder color_outline = ColorValueHolder(0.0f, 0.0f, 0.0f); //black is a bit too strong for a lightning's outline
+	ColorValueHolder color_outline = ColorValueHolder(0.5f, 0.5f, 0.5f);
+	color_outline = ColorMixer::mix(BackgroundRect::getBackColor(), color_outline, alpha);
+	const float lineWidth = 0.5f;
+	//using the same color for the background works well, though it's not used because the outline was added to make the lightning's boundary obvious
+
+	float coordsAndColor_outline[] = {
+		//outer
+		(x)   - lineWidth, (y)   - lineWidth,   color_outline.getRf(), color_outline.getGf(), color_outline.getBf(), color_outline.getAf(), //0
+		(x+w) + lineWidth, (y)   - lineWidth,   color_outline.getRf(), color_outline.getGf(), color_outline.getBf(), color_outline.getAf(), //1
+		(x+w) + lineWidth, (y+h) + lineWidth,   color_outline.getRf(), color_outline.getGf(), color_outline.getBf(), color_outline.getAf(), //2
+		(x)   - lineWidth, (y+h) + lineWidth,   color_outline.getRf(), color_outline.getGf(), color_outline.getBf(), color_outline.getAf(), //3
+
+		//inner
+		(x)   + lineWidth, (y)   + lineWidth,   color_outline.getRf(), color_outline.getGf(), color_outline.getBf(), color_outline.getAf(), //4
+		(x+w) - lineWidth, (y)   + lineWidth,   color_outline.getRf(), color_outline.getGf(), color_outline.getBf(), color_outline.getAf(), //5
+		(x+w) - lineWidth, (y+h) - lineWidth,   color_outline.getRf(), color_outline.getGf(), color_outline.getBf(), color_outline.getAf(), //6
+		(x)   + lineWidth, (y+h) - lineWidth,   color_outline.getRf(), color_outline.getGf(), color_outline.getBf(), color_outline.getAf()  //7
+	};
+	unsigned int indices_outline[] = { //trapezoids
+		//bottom
+		0, 1, 5,
+		5, 4, 0,
+
+		//right
+		1, 2, 6,
+		6, 5, 1,
+
+		//left
+		4, 7, 3,
+		3, 0, 4,
+
+		//top
+		2, 3, 7,
+		7, 6, 2
+	};
+
+	Renderer::SubmitBatchedDraw(coordsAndColor_outline, (4+4) * (2+4), indices_outline, (4*2) * 3);
 }
 
 inline void RectangularLightningHazard::drawBolts(float alpha) const {
