@@ -7,6 +7,7 @@
 #include "color-mixer.h"
 #include "background-rect.h"
 #include "renderer.h"
+#include <algorithm> //std::copy
 
 VertexArray* WindLevelEffect::va;
 VertexBuffer* WindLevelEffect::vb;
@@ -15,6 +16,12 @@ VertexArray* WindLevelEffect::va_extra;
 VertexBuffer* WindLevelEffect::vb_extra;
 IndexBuffer* WindLevelEffect::ib_extra;
 bool WindLevelEffect::initialized_GPU = false;
+
+SimpleVector2D WindLevelEffect::vertices_spike[3];
+SimpleVector2D WindLevelEffect::vertices_arrow[7];
+unsigned int WindLevelEffect::indices_spike[1*3];
+unsigned int WindLevelEffect::indices_arrow[3*3];
+bool WindLevelEffect::initialized_vertices = false;
 
 std::unordered_map<std::string, float> WindLevelEffect::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -91,6 +98,7 @@ void WindLevelEffect::draw() const {
 		return;
 	}
 
+	/*
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 modelMatrix;
 
@@ -112,6 +120,51 @@ void WindLevelEffect::draw() const {
 				Renderer::Draw(*va_extra, *ib_extra, *shader);
 			} else {
 				Renderer::Draw(*va, *ib, *shader);
+			}
+		}
+	}
+	*/
+
+	ColorValueHolder color = ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(0.0f, 0.0f, 0.0f));
+
+	const double length = 16 * pushDirection.getMagnitude() * getWindStrengthMultiplier(); //normal
+	//const double length = 16 * sqrt(pushDirection.getMagnitude() * getWindStrengthMultiplier()); //ez way to make small values more visible
+	//sqrt is not a big deal to compute: https://stackoverflow.com/questions/41582376/fast-approximation-of-square-rootx-with-known-0-x-1
+	//const double length = 16 * sqrt(1 - pow(pushDirection.getMagnitude()*getWindStrengthMultiplier()-1, 2)); //(circle) //too big
+	const double x_offset = 64; //JS x offset: (528-112)/7 (it's the distance between the main walls) = 59.42857
+	const double y_offset = 64; //JS y offset: (320)/5 = 64
+	for (int i = -3; i <= 3; i++) {
+		for (int j = -2; j <= 2; j++) {
+			if (i == 0 && j == 0) {
+				float coordsAndColor_arrow[7*(2+4)];
+				for (int k = 0; k < 7; k++) {
+					SimpleVector2D vertex = SimpleVector2D(vertices_arrow[k]);
+					vertex.setMagnitude(vertex.getMagnitude() * length);
+					vertex.changeAngle(pushDirection.getAngle());
+					coordsAndColor_arrow[k*6]   = (GAME_WIDTH/2  + i*x_offset) + vertex.getXComp();
+					coordsAndColor_arrow[k*6+1] = (GAME_HEIGHT/2 + j*y_offset) + vertex.getYComp();
+					coordsAndColor_arrow[k*6+2] = color.getRf();
+					coordsAndColor_arrow[k*6+3] = color.getGf();
+					coordsAndColor_arrow[k*6+4] = color.getBf();
+					coordsAndColor_arrow[k*6+5] = color.getAf();
+				}
+
+				Renderer::SubmitBatchedDraw(coordsAndColor_arrow, 7*(2+4), indices_arrow, 3*3);
+			} else {
+				float coordsAndColor_spike[3*(2+4)];
+				for (int k = 0; k < 3; k++) {
+					SimpleVector2D vertex = SimpleVector2D(vertices_spike[k]);
+					vertex.setMagnitude(vertex.getMagnitude() * length);
+					vertex.changeAngle(pushDirection.getAngle());
+					coordsAndColor_spike[k*6]   = (GAME_WIDTH/2  + i*x_offset) + vertex.getXComp();
+					coordsAndColor_spike[k*6+1] = (GAME_HEIGHT/2 + j*y_offset) + vertex.getYComp();
+					coordsAndColor_spike[k*6+2] = color.getRf();
+					coordsAndColor_spike[k*6+3] = color.getGf();
+					coordsAndColor_spike[k*6+4] = color.getBf();
+					coordsAndColor_spike[k*6+5] = color.getAf();
+				}
+
+				Renderer::SubmitBatchedDraw(coordsAndColor_spike, 3*(2+4), indices_spike, 1*3);
 			}
 		}
 	}
@@ -313,6 +366,39 @@ bool WindLevelEffect::uninitializeGPU() {
 	return true;
 }
 
+bool WindLevelEffect::initializeVertices() {
+	if (initialized_vertices) {
+		return false;
+	}
+
+	//an arrow was originally intended to be the main indicator of direction, but was complex to implement (when doing bad code), so a spike was used
+
+	vertices_spike[0] = SimpleVector2D(-1.0f, -0.125f);
+	vertices_spike[1] = SimpleVector2D(-1.0f,  0.125f);
+	vertices_spike[2] = SimpleVector2D( 1.0f,  0.0f  );
+
+	unsigned int spike_temp[] = { 0, 1, 2 };
+	std::copy(spike_temp, spike_temp + (1*3), indices_spike);
+
+	vertices_arrow[0] = SimpleVector2D(-1.0f, -0.125f); //bottom left
+	vertices_arrow[1] = SimpleVector2D(-1.0f,  0.125f); //top left
+	vertices_arrow[2] = SimpleVector2D( 0.5f,  0.125f); //top right
+	vertices_arrow[3] = SimpleVector2D( 0.5f,  0.5f  );
+	vertices_arrow[4] = SimpleVector2D( 1.0f,  0.0f  ); //arrow tip
+	vertices_arrow[5] = SimpleVector2D( 0.5f, -0.5f  );
+	vertices_arrow[6] = SimpleVector2D( 0.5f, -0.125f); //bottom right
+
+	unsigned int arrow_temp[] = {
+		0, 1, 2,
+		2, 6, 0,
+		3, 4, 5
+	};
+	std::copy(arrow_temp, arrow_temp + (3*3), indices_arrow);
+
+	initialized_vertices = true;
+	return true;
+}
+
 WindLevelEffect::WindLevelEffect(bool transitionWind) {
 	tickCount = 0;
 	tickCycle = 200;
@@ -327,6 +413,7 @@ WindLevelEffect::WindLevelEffect(bool transitionWind) {
 	}
 
 	initializeGPU();
+	initializeVertices();
 }
 
 WindLevelEffect::WindLevelEffect() : WindLevelEffect(false) {}

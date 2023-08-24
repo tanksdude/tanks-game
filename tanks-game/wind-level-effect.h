@@ -29,6 +29,14 @@ private:
 	static bool initializeGPU();
 	static bool uninitializeGPU();
 
+	static SimpleVector2D vertices_spike[3];
+	static SimpleVector2D vertices_arrow[7];
+	static unsigned int indices_spike[1*3];
+	static unsigned int indices_arrow[3*3];
+	static bool initialized_vertices;
+
+	static bool initializeVertices();
+
 public:
 	virtual std::string getName() const override { return "wind"; }
 	virtual std::vector<std::string> getLevelEffectTypes() const override {
