@@ -715,8 +715,9 @@ inline void MotherTurretHazard::drawShootingTimer(float alpha) const {
 	} else {
 		shootingOutlinePercent = constrain<double>(targetingCount / (stateMultiplier[1] * tickCycle), 0, 1);
 	}
-	unsigned int shootingOutlineVertices = Circle::numOfSides * shootingOutlinePercent;
+	unsigned int shootingOutlineTriangles = Circle::numOfSides * shootingOutlinePercent;
 
+	/*
 	if (shootingOutlineVertices > 0) {
 		ColorValueHolder color = ColorValueHolder(1.0f, 1.0f, 1.0f);
 		color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
@@ -727,6 +728,38 @@ inline void MotherTurretHazard::drawShootingTimer(float alpha) const {
 		shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 		Renderer::Draw(*va, *ib, *shader, shootingOutlineVertices*3);
+	}
+	*/
+
+	if (shootingOutlineTriangles > 0) {
+		ColorValueHolder color = ColorValueHolder(1.0f, 1.0f, 1.0f);
+		color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
+		double rotateAngle = velocity.getAngle() + (2*PI)*(1 - double(shootingOutlineTriangles)/Circle::numOfSides)/2;
+
+		float coordsAndColor[(Circle::numOfSides+1)*(2+4)];
+		coordsAndColor[0] = x;
+		coordsAndColor[1] = y;
+		coordsAndColor[2] = color.getRf();
+		coordsAndColor[3] = color.getGf();
+		coordsAndColor[4] = color.getBf();
+		coordsAndColor[5] = color.getAf();
+		for (int i = 0; i <= shootingOutlineTriangles && i < Circle::numOfSides; i++) {
+			coordsAndColor[(i+1)*6]   = x + (r*(5.0/4.0)) * cos(rotateAngle + i * 2*PI / Circle::numOfSides);
+			coordsAndColor[(i+1)*6+1] = y + (r*(5.0/4.0)) * sin(rotateAngle + i * 2*PI / Circle::numOfSides);
+			coordsAndColor[(i+1)*6+2] = color.getRf();
+			coordsAndColor[(i+1)*6+3] = color.getGf();
+			coordsAndColor[(i+1)*6+4] = color.getBf();
+			coordsAndColor[(i+1)*6+5] = color.getAf();
+		}
+
+		unsigned int indices[Circle::numOfSides*3];
+		for (int i = 0; i < shootingOutlineTriangles; i++) {
+			indices[i*3]   = 0;
+			indices[i*3+1] = i+1;
+			indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
+		}
+
+		Renderer::SubmitBatchedDraw(coordsAndColor, (shootingOutlineTriangles < Circle::numOfSides ? (shootingOutlineTriangles+2)*(2+4) : (shootingOutlineTriangles+1)*(2+4)), indices, shootingOutlineTriangles*3);
 	}
 }
 

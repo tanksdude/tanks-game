@@ -480,28 +480,6 @@ inline void Bullet::drawBody(float alpha) const {
 	glm::mat4 modelMatrix;
 
 	/*
-	if (glIsEnabled(GL_BLEND)) {
-		shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), this->opaqueness/100);
-	} else {
-		if (this->opaqueness < 100) {
-			double deathPercent = constrain<double>(this->opaqueness/100, 0, 1);
-			unsigned int deathVertices = Circle::numOfSides * deathPercent;
-
-			if (deathVertices > 0) {
-				glm::mat4 modelMatrix_deathOutline = Renderer::GenerateModelMatrix((r+2) * 9.0/8.0, (r+2) * 9.0/8.0, PI/2, x, y);
-
-				shader->setUniform4f("u_color", 1.0f, 1.0f, 1.0f, 1.0f);
-				shader->setUniformMat4f("u_ModelMatrix", modelMatrix_deathOutline);
-
-				Renderer::Draw(*va, *ib, *shader, deathVertices*3);
-			}
-		}
-
-		shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), 1.0f);
-	}
-	*/
-
-	/*
 	ColorValueHolder color = getColor();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
@@ -603,7 +581,6 @@ inline void Bullet::drawDeathCooldown(float alpha) const {
 			ColorValueHolder color = ColorValueHolder(1.0f, 1.0f, 1.0f);
 			color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 
-			/*
 			float coordsAndColor[(Circle::numOfSides+1)*(2+4)];
 			coordsAndColor[0] = x;
 			coordsAndColor[1] = y;
@@ -611,13 +588,16 @@ inline void Bullet::drawDeathCooldown(float alpha) const {
 			coordsAndColor[3] = color.getGf();
 			coordsAndColor[4] = color.getBf();
 			coordsAndColor[5] = color.getAf();
-			for (int i = 1; i < deathTriangles+1; i++) {
-				coordsAndColor[i*6]   = x + ((r+2)*(9.0/8.0)) * cos(PI/2 + (i-1) * 2*PI / Circle::numOfSides);
-				coordsAndColor[i*6+1] = y + ((r+2)*(9.0/8.0)) * sin(PI/2 + (i-1) * 2*PI / Circle::numOfSides);
-				coordsAndColor[i*6+2] = color.getRf();
-				coordsAndColor[i*6+3] = color.getGf();
-				coordsAndColor[i*6+4] = color.getBf();
-				coordsAndColor[i*6+5] = color.getAf();
+			for (int i = 0; i <= deathTriangles && i < Circle::numOfSides; i++) {
+				//the final triangle shares its last vertex with the first triangle, which is why this loop condition is a bit strange (second conditional only false for that last triangle)
+				//with wrong condition: two verts on an old bullet's death outline to the center of a new bullet's center body or death outline, though sometimes even a tank or rarely the bottom left corner (why)
+				//to be more specific: with the old conditional, think it was happening when deathTriangles==1, leading to pushing only two total verts but pushing three indices; but that would mean it was always pushing insufficient verts for the indices, why wasn't it showing up before?
+				coordsAndColor[(i+1)*6]   = x + ((r+2)*(9.0/8.0)) * cos(PI/2 + i * 2*PI / Circle::numOfSides);
+				coordsAndColor[(i+1)*6+1] = y + ((r+2)*(9.0/8.0)) * sin(PI/2 + i * 2*PI / Circle::numOfSides);
+				coordsAndColor[(i+1)*6+2] = color.getRf();
+				coordsAndColor[(i+1)*6+3] = color.getGf();
+				coordsAndColor[(i+1)*6+4] = color.getBf();
+				coordsAndColor[(i+1)*6+5] = color.getAf();
 			}
 
 			unsigned int indices[Circle::numOfSides*3];
@@ -626,35 +606,8 @@ inline void Bullet::drawDeathCooldown(float alpha) const {
 				indices[i*3+1] = i+1;
 				indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
 			}
-			*/
-			std::vector<float> coordsAndColor;
-			std::vector<unsigned int> indices;
 
-			coordsAndColor.push_back(x);
-			coordsAndColor.push_back(y);
-			coordsAndColor.push_back(color.getRf());
-			coordsAndColor.push_back(color.getGf());
-			coordsAndColor.push_back(color.getBf());
-			coordsAndColor.push_back(color.getAf());
-			for (int i = 0; i <= deathTriangles+1 && i <= Circle::numOfSides; i++) {
-				//the final triangle shares its last vertex with the first triangle, which is why this loop condition is a bit strange (second conditional only false for that last triangle)
-				//with wrong condition: two verts on an old bullet's death outline to the center of a new bullet's center body or death outline, though sometimes even a tank or rarely the bottom left corner (why)
-				//to be more specific: with the old conditional, think it was happening when deathTriangles==1, leading to pushing only two total verts but pushing three indices; but that would mean it was always pushing insufficient verts for the indices, why wasn't it showing up before?
-				coordsAndColor.push_back(x + ((r+2)*(9.0/8.0)) * cos(PI/2 + i * 2*PI / Circle::numOfSides));
-				coordsAndColor.push_back(y + ((r+2)*(9.0/8.0)) * sin(PI/2 + i * 2*PI / Circle::numOfSides));
-				coordsAndColor.push_back(color.getRf());
-				coordsAndColor.push_back(color.getGf());
-				coordsAndColor.push_back(color.getBf());
-				coordsAndColor.push_back(color.getAf());
-			}
-
-			for (int i = 0; i < deathTriangles; i++) {
-				indices.push_back(0);
-				indices.push_back(i+1);
-				indices.push_back((i+1) % Circle::numOfSides + 1);
-			}
-
-			Renderer::SubmitBatchedDraw(coordsAndColor.data(), coordsAndColor.size(), indices.data(), indices.size());
+			Renderer::SubmitBatchedDraw(coordsAndColor, (deathTriangles < Circle::numOfSides ? (deathTriangles+2)*(2+4) : (deathTriangles+1)*(2+4)), indices, deathTriangles*3);
 		}
 	}
 }
