@@ -521,6 +521,7 @@ inline void CircularLightningHazard::drawBackground(bool pose, float alpha) cons
 	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::numOfSides+1)*(2+4), indices, Circle::numOfSides*3);
 
 	//outline:
+	/*
 	glLineWidth(1.0f);
 
 	color = ColorValueHolder(0, 0, 0);
@@ -531,6 +532,42 @@ inline void CircularLightningHazard::drawBackground(bool pose, float alpha) cons
 	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 	Renderer::Draw(*background_va, *shader, GL_LINE_LOOP, 1, Circle::numOfSides);
+	*/
+
+	//ColorValueHolder color_outline = ColorValueHolder(0.0f, 0.0f, 0.0f); //black is a bit too strong for a lightning's outline
+	ColorValueHolder color_outline = ColorValueHolder(0.5f, 0.5f, 0.5f);
+	color_outline = ColorMixer::mix(BackgroundRect::getBackColor(), color_outline, alpha);
+	const float lineWidth = 0.5f;
+	//using the same color for the background works well, though it's not used because the outline was added to make the lightning's boundary obvious
+
+	float coordsAndColor_outline[(Circle::numOfSides*2)*(2+4)];
+	for (int i = 0; i < Circle::numOfSides; i++) {
+		coordsAndColor_outline[(i*2)  *6]   = x + (r-lineWidth) * cos(i * 2*PI / Circle::numOfSides);
+		coordsAndColor_outline[(i*2)  *6+1] = y + (r-lineWidth) * sin(i * 2*PI / Circle::numOfSides);
+		coordsAndColor_outline[(i*2+1)*6]   = x + (r+lineWidth) * cos(i * 2*PI / Circle::numOfSides);
+		coordsAndColor_outline[(i*2+1)*6+1] = y + (r+lineWidth) * sin(i * 2*PI / Circle::numOfSides);
+
+		coordsAndColor_outline[(i*2)  *6+2] = color_outline.getRf();
+		coordsAndColor_outline[(i*2)  *6+3] = color_outline.getGf();
+		coordsAndColor_outline[(i*2)  *6+4] = color_outline.getBf();
+		coordsAndColor_outline[(i*2)  *6+5] = color_outline.getAf();
+		coordsAndColor_outline[(i*2+1)*6+2] = color_outline.getRf();
+		coordsAndColor_outline[(i*2+1)*6+3] = color_outline.getGf();
+		coordsAndColor_outline[(i*2+1)*6+4] = color_outline.getBf();
+		coordsAndColor_outline[(i*2+1)*6+5] = color_outline.getAf();
+	}
+
+	unsigned int indices_outline[Circle::numOfSides*6];
+	for (int i = 0; i < Circle::numOfSides; i++) {
+		indices_outline[i*6]   =  i*2;
+		indices_outline[i*6+1] =  i*2+1;
+		indices_outline[i*6+2] = (i*2+3) % (Circle::numOfSides*2);
+		indices_outline[i*6+3] = (i*2+3) % (Circle::numOfSides*2);
+		indices_outline[i*6+4] = (i*2+2) % (Circle::numOfSides*2);
+		indices_outline[i*6+5] =  i*2;
+	}
+
+	Renderer::SubmitBatchedDraw(coordsAndColor_outline, (Circle::numOfSides*2)*(2+4), indices_outline, Circle::numOfSides*6);
 }
 
 inline void CircularLightningHazard::drawBolts(float alpha) const {

@@ -9,6 +9,7 @@
 #include "hazard-manager.h"
 #include "collision-handler.h"
 #include "rng.h"
+#include <algorithm> //std::sort
 
 VertexArray* RectangularLavaHazard::background_va;
 VertexBuffer* RectangularLavaHazard::background_vb;
@@ -332,9 +333,10 @@ inline void RectangularLavaHazard::drawBubbles(bool pose, float alpha) const {
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 modelMatrix;
 
-	glLineWidth(2.0f);
+	//glLineWidth(2.0f);
 
 	//first, sort by alpha: lowest to highest (this makes the bubbles less weird-looking when drawn over each other)
+	/*
 	std::vector<LavaBubble*> sortedBubbles;
 	sortedBubbles.reserve(bubbles.size());
 	for (int i = 0; i < bubbles.size(); i++) {
@@ -348,17 +350,56 @@ inline void RectangularLavaHazard::drawBubbles(bool pose, float alpha) const {
 			}
 		}
 	}
+	*/
+	std::vector<LavaBubble*> sortedBubbles(bubbles);
+	std::sort(sortedBubbles.begin(), sortedBubbles.end(),
+		[](const LavaBubble* lhs, const LavaBubble* rhs) { return (lhs->getAlpha() < rhs->getAlpha()); });
 
 	//second, draw the bubbles
-	for (int i = 0; i < sortedBubbles.size(); i++) {
-		ColorValueHolder color = (pose ? getBubbleColor_Pose(sortedBubbles[i]) : getBubbleColor(sortedBubbles[i]));
+	for (int j = 0; j < sortedBubbles.size(); j++) {
+		/*
+		ColorValueHolder color = (pose ? getBubbleColor_Pose(sortedBubbles[j]) : getBubbleColor(sortedBubbles[j]));
 		color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 		shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
-		modelMatrix = Renderer::GenerateModelMatrix(sortedBubbles[i]->getR(), sortedBubbles[i]->getR(), 0, sortedBubbles[i]->getX()*w + x, sortedBubbles[i]->getY()*h + y);
+		modelMatrix = Renderer::GenerateModelMatrix(sortedBubbles[j]->getR(), sortedBubbles[j]->getR(), 0, sortedBubbles[j]->getX()*w + x, sortedBubbles[j]->getY()*h + y);
 		shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 		Renderer::Draw(*bubble_va, *shader, GL_LINE_LOOP, 1, Circle::numOfSides);
+		*/
+
+		ColorValueHolder color = (pose ? getBubbleColor_Pose(sortedBubbles[j]) : getBubbleColor(sortedBubbles[j]));
+		color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
+		const float lineWidth = 0.75f; //TODO: 1.0f too much, 0.5f feels generic
+
+		float coordsAndColor[(Circle::numOfSides*2)*(2+4)];
+		for (int i = 0; i < Circle::numOfSides; i++) {
+			coordsAndColor[(i*2)  *6]   = (sortedBubbles[j]->getX()*this->w + this->x) + (sortedBubbles[j]->getR() - lineWidth) * cos(i * 2*PI / Circle::numOfSides);
+			coordsAndColor[(i*2)  *6+1] = (sortedBubbles[j]->getY()*this->h + this->y) + (sortedBubbles[j]->getR() - lineWidth) * sin(i * 2*PI / Circle::numOfSides);
+			coordsAndColor[(i*2+1)*6]   = (sortedBubbles[j]->getX()*this->w + this->x) + (sortedBubbles[j]->getR() + lineWidth) * cos(i * 2*PI / Circle::numOfSides);
+			coordsAndColor[(i*2+1)*6+1] = (sortedBubbles[j]->getY()*this->h + this->y) + (sortedBubbles[j]->getR() + lineWidth) * sin(i * 2*PI / Circle::numOfSides);
+
+			coordsAndColor[(i*2)  *6+2] = color.getRf();
+			coordsAndColor[(i*2)  *6+3] = color.getGf();
+			coordsAndColor[(i*2)  *6+4] = color.getBf();
+			coordsAndColor[(i*2)  *6+5] = color.getAf();
+			coordsAndColor[(i*2+1)*6+2] = color.getRf();
+			coordsAndColor[(i*2+1)*6+3] = color.getGf();
+			coordsAndColor[(i*2+1)*6+4] = color.getBf();
+			coordsAndColor[(i*2+1)*6+5] = color.getAf();
+		}
+
+		unsigned int indices[Circle::numOfSides*6];
+		for (int i = 0; i < Circle::numOfSides; i++) {
+			indices[i*6]   =  i*2;
+			indices[i*6+1] =  i*2+1;
+			indices[i*6+2] = (i*2+3) % (Circle::numOfSides*2);
+			indices[i*6+3] = (i*2+3) % (Circle::numOfSides*2);
+			indices[i*6+4] = (i*2+2) % (Circle::numOfSides*2);
+			indices[i*6+5] =  i*2;
+		}
+
+		Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::numOfSides*2)*(2+4), indices, Circle::numOfSides*6);
 	}
 
 	//cleanup

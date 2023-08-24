@@ -1095,13 +1095,12 @@ inline void Tank::drawDead(float alpha) const {
 }
 
 inline void Tank::drawOutline(float alpha) const {
-	return;
-
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 modelMatrix;
 
+	/*
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glLineWidth(1.0f);
 
@@ -1121,6 +1120,44 @@ inline void Tank::drawOutline(float alpha) const {
 
 	//cleanup
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	*/
+
+	if (this->dead) {
+		return;
+	}
+
+	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
+	const float lineWidth = 0.5f;
+
+	float coordsAndColor[(Circle::numOfSides*2)*(2+4)];
+	for (int i = 0; i < Circle::numOfSides; i++) {
+		coordsAndColor[(i*2)  *6]   = x + (r-lineWidth) * cos(i * 2*PI / Circle::numOfSides);
+		coordsAndColor[(i*2)  *6+1] = y + (r-lineWidth) * sin(i * 2*PI / Circle::numOfSides);
+		coordsAndColor[(i*2+1)*6]   = x + (r+lineWidth) * cos(i * 2*PI / Circle::numOfSides);
+		coordsAndColor[(i*2+1)*6+1] = y + (r+lineWidth) * sin(i * 2*PI / Circle::numOfSides);
+
+		coordsAndColor[(i*2)  *6+2] = color.getRf();
+		coordsAndColor[(i*2)  *6+3] = color.getGf();
+		coordsAndColor[(i*2)  *6+4] = color.getBf();
+		coordsAndColor[(i*2)  *6+5] = color.getAf();
+		coordsAndColor[(i*2+1)*6+2] = color.getRf();
+		coordsAndColor[(i*2+1)*6+3] = color.getGf();
+		coordsAndColor[(i*2+1)*6+4] = color.getBf();
+		coordsAndColor[(i*2+1)*6+5] = color.getAf();
+	}
+
+	unsigned int indices[Circle::numOfSides*6];
+	for (int i = 0; i < Circle::numOfSides; i++) {
+		indices[i*6]   =  i*2;
+		indices[i*6+1] =  i*2+1;
+		indices[i*6+2] = (i*2+3) % (Circle::numOfSides*2);
+		indices[i*6+3] = (i*2+3) % (Circle::numOfSides*2);
+		indices[i*6+4] = (i*2+2) % (Circle::numOfSides*2);
+		indices[i*6+5] =  i*2;
+	}
+
+	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::numOfSides*2)*(2+4), indices, Circle::numOfSides*6);
 }
 
 inline void Tank::drawShootingCooldown(float alpha) const {
