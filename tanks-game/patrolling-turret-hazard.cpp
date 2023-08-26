@@ -610,19 +610,18 @@ inline void PatrollingTurretHazard::drawReticule(float alpha) const {
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 modelMatrix;
 
-	glLineWidth(2.0f);
+	//glLineWidth(2.0f);
 
+	/*
 	ColorValueHolder color = getReticuleColor();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
-	/*
-	if (currentState == 0) {
-		modelMatrix = Renderer::GenerateMatrix(2*TANK_RADIUS, 2*TANK_RADIUS, -PI/2 * targetingCount/(stateMultiplier[0] * tickCycle), targetingX, targetingY);
-	} else {
-		modelMatrix = Renderer::GenerateMatrix(2*TANK_RADIUS, 2*TANK_RADIUS, -PI/2, targetingX, targetingY);
-	}
-	*/
+	//if (currentState == 0) {
+	//	modelMatrix = Renderer::GenerateMatrix(2*TANK_RADIUS, 2*TANK_RADIUS, -PI/2 * targetingCount/(stateMultiplier[0] * tickCycle), targetingX, targetingY);
+	//} else {
+	//	modelMatrix = Renderer::GenerateMatrix(2*TANK_RADIUS, 2*TANK_RADIUS, -PI/2, targetingX, targetingY);
+	//}
 	modelMatrix = Renderer::GenerateModelMatrix(2*TANK_RADIUS, 2*TANK_RADIUS, 0, targetingX, targetingY);
 	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
@@ -631,16 +630,104 @@ inline void PatrollingTurretHazard::drawReticule(float alpha) const {
 
 	//cleanup
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	*/
+
+	ColorValueHolder color_outline = getReticuleColor();
+	color_outline = ColorMixer::mix(BackgroundRect::getBackColor(), color_outline, alpha);
+	const float lineWidth = 1.0f;
+	//optional rotate angle: -PI/2 * targetingCount/(stateMultiplier[0] * tickCycle)
+
+	float coordsAndColor_outline[(Circle::numOfSides*2 + 4*4*2)*(2+4)];
+	for (int i = 0; i < Circle::numOfSides; i++) {
+		coordsAndColor_outline[(i*2)  *6]   = targetingX + ((2*TANK_RADIUS) - lineWidth) * cos(i * 2*PI / Circle::numOfSides);
+		coordsAndColor_outline[(i*2)  *6+1] = targetingY + ((2*TANK_RADIUS) - lineWidth) * sin(i * 2*PI / Circle::numOfSides);
+		coordsAndColor_outline[(i*2+1)*6]   = targetingX + ((2*TANK_RADIUS) + lineWidth) * cos(i * 2*PI / Circle::numOfSides);
+		coordsAndColor_outline[(i*2+1)*6+1] = targetingY + ((2*TANK_RADIUS) + lineWidth) * sin(i * 2*PI / Circle::numOfSides);
+
+		coordsAndColor_outline[(i*2)  *6+2] = color_outline.getRf();
+		coordsAndColor_outline[(i*2)  *6+3] = color_outline.getGf();
+		coordsAndColor_outline[(i*2)  *6+4] = color_outline.getBf();
+		coordsAndColor_outline[(i*2)  *6+5] = color_outline.getAf();
+		coordsAndColor_outline[(i*2+1)*6+2] = color_outline.getRf();
+		coordsAndColor_outline[(i*2+1)*6+3] = color_outline.getGf();
+		coordsAndColor_outline[(i*2+1)*6+4] = color_outline.getBf();
+		coordsAndColor_outline[(i*2+1)*6+5] = color_outline.getAf();
+	}
+
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*0))  *6]   = targetingX + ( .75*(2*TANK_RADIUS) - lineWidth);
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*0))  *6+1] = targetingY - lineWidth;
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*0+1))*6]   = targetingX + (1.25*(2*TANK_RADIUS) + lineWidth);
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*0+1))*6+1] = targetingY - lineWidth;
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*0+2))*6]   = targetingX + (1.25*(2*TANK_RADIUS) + lineWidth);
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*0+2))*6+1] = targetingY + lineWidth;
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*0+3))*6]   = targetingX + ( .75*(2*TANK_RADIUS) - lineWidth);
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*0+3))*6+1] = targetingY + lineWidth;
+
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*1))  *6]   = targetingX + lineWidth;
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*1))  *6+1] = targetingY + ( .75*(2*TANK_RADIUS) - lineWidth);
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*1+1))*6]   = targetingX + lineWidth;
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*1+1))*6+1] = targetingY + (1.25*(2*TANK_RADIUS) + lineWidth);
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*1+2))*6]   = targetingX - lineWidth;
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*1+2))*6+1] = targetingY + (1.25*(2*TANK_RADIUS) + lineWidth);
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*1+3))*6]   = targetingX - lineWidth;
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*1+3))*6+1] = targetingY + ( .75*(2*TANK_RADIUS) - lineWidth);
+
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*2))  *6]   = targetingX - ( .75*(2*TANK_RADIUS) - lineWidth);
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*2))  *6+1] = targetingY - lineWidth;
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*2+1))*6]   = targetingX - (1.25*(2*TANK_RADIUS) + lineWidth);
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*2+1))*6+1] = targetingY - lineWidth;
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*2+2))*6]   = targetingX - (1.25*(2*TANK_RADIUS) + lineWidth);
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*2+2))*6+1] = targetingY + lineWidth;
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*2+3))*6]   = targetingX - ( .75*(2*TANK_RADIUS) - lineWidth);
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*2+3))*6+1] = targetingY + lineWidth;
+
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*3))  *6]   = targetingX - lineWidth;
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*3))  *6+1] = targetingY - ( .75*(2*TANK_RADIUS) - lineWidth);
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*3+1))*6]   = targetingX - lineWidth;
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*3+1))*6+1] = targetingY - (1.25*(2*TANK_RADIUS) + lineWidth);
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*3+2))*6]   = targetingX + lineWidth;
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*3+2))*6+1] = targetingY - (1.25*(2*TANK_RADIUS) + lineWidth);
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*3+3))*6]   = targetingX + lineWidth;
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*3+3))*6+1] = targetingY - ( .75*(2*TANK_RADIUS) - lineWidth);
+
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			coordsAndColor_outline[(Circle::numOfSides*2 + (4*i+j))*6+2] = color_outline.getRf();
+			coordsAndColor_outline[(Circle::numOfSides*2 + (4*i+j))*6+3] = color_outline.getGf();
+			coordsAndColor_outline[(Circle::numOfSides*2 + (4*i+j))*6+4] = color_outline.getBf();
+			coordsAndColor_outline[(Circle::numOfSides*2 + (4*i+j))*6+5] = color_outline.getAf();
+		}
+	}
+
+	unsigned int indices_outline[Circle::numOfSides*6 + 4*6];
+	for (int i = 0; i < Circle::numOfSides; i++) {
+		indices_outline[i*6]   =  i*2;
+		indices_outline[i*6+1] =  i*2+1;
+		indices_outline[i*6+2] = (i*2+3) % (Circle::numOfSides*2);
+		indices_outline[i*6+3] = (i*2+3) % (Circle::numOfSides*2);
+		indices_outline[i*6+4] = (i*2+2) % (Circle::numOfSides*2);
+		indices_outline[i*6+5] =  i*2;
+	}
+
+	for (int i = 0; i < 4; i++) {
+		indices_outline[Circle::numOfSides*6 + i*6]   = (Circle::numOfSides*2 + 4*i);
+		indices_outline[Circle::numOfSides*6 + i*6+1] = (Circle::numOfSides*2 + 4*i+1);
+		indices_outline[Circle::numOfSides*6 + i*6+2] = (Circle::numOfSides*2 + 4*i+2);
+		indices_outline[Circle::numOfSides*6 + i*6+3] = (Circle::numOfSides*2 + 4*i+2);
+		indices_outline[Circle::numOfSides*6 + i*6+4] = (Circle::numOfSides*2 + 4*i+3);
+		indices_outline[Circle::numOfSides*6 + i*6+5] = (Circle::numOfSides*2 + 4*i);
+	}
+
+	Renderer::SubmitBatchedDraw(coordsAndColor_outline, (Circle::numOfSides*2 + 4*4*2)*(2+4), indices_outline, Circle::numOfSides*6 + 4*6);
 }
 
 inline void PatrollingTurretHazard::drawPath(float alpha) const {
-	//TODO: this is temporary; the path should have its own VA/VB/IB (not stealing the barrel's stuff)
-
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 modelMatrix;
 
+	/*
 	//circles
 	ColorValueHolder color = ColorValueHolder(0, 0, 0);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
@@ -660,6 +747,75 @@ inline void PatrollingTurretHazard::drawPath(float alpha) const {
 		shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 		Renderer::Draw(*cannon_va, *shader, GL_LINES, 0, 2);
+	}
+	*/
+
+	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
+	const float radius = this->r / 2;
+	const float lineWidth = 1.0f;
+
+	//float* coordsAndColor = new float[((Circle::numOfSides+1 + 4) * routePosPairNum)*(2+4)];
+	//unsigned int* indices = new unsigned int[(Circle::numOfSides*3 + 6) * routePosPairNum];
+	//int startVertex = (Circle::numOfSides+1+4)*6 * i;
+	//int startIndex  = (Circle::numOfSides*3+6) * i;
+
+	for (int i = 0; i < routePosPairNum; i++) {
+		float coordsAndColor[(Circle::numOfSides+1 + 4)*(2+4)];
+		unsigned int indices[Circle::numOfSides*3 + 6];
+
+		//circle
+		coordsAndColor[0] = getRoutePosX(i);
+		coordsAndColor[1] = getRoutePosY(i);
+		coordsAndColor[2] = color.getRf();
+		coordsAndColor[3] = color.getGf();
+		coordsAndColor[4] = color.getBf();
+		coordsAndColor[5] = color.getAf();
+		for (int j = 1; j < Circle::numOfSides+1; j++) {
+			coordsAndColor[j*6]   = getRoutePosX(i) + radius * cos((j-1) * 2*PI / Circle::numOfSides);
+			coordsAndColor[j*6+1] = getRoutePosY(i) + radius * sin((j-1) * 2*PI / Circle::numOfSides);
+			coordsAndColor[j*6+2] = color.getRf();
+			coordsAndColor[j*6+3] = color.getGf();
+			coordsAndColor[j*6+4] = color.getBf();
+			coordsAndColor[j*6+5] = color.getAf();
+		}
+
+		for (int j = 0; j < Circle::numOfSides; j++) {
+			indices[j*3]   = 0;
+			indices[j*3+1] = j+1;
+			indices[j*3+2] = (j+1) % Circle::numOfSides + 1;
+		}
+
+		//line
+		SimpleVector2D dist = SimpleVector2D(getRoutePosX((i+1) % routePosPairNum) - getRoutePosX(i), getRoutePosY((i+1) % routePosPairNum) - getRoutePosY(i));
+		SimpleVector2D distCW  = SimpleVector2D(dist.getAngle() - PI/2, lineWidth, true);
+		//SimpleVector2D distCCW = SimpleVector2D(dist.getAngle() + PI/2, lineWidth, true);
+
+		coordsAndColor[(Circle::numOfSides+1)    *6]   = getRoutePosX(i)                   + distCW.getXComp();
+		coordsAndColor[(Circle::numOfSides+1)    *6+1] = getRoutePosY(i)                   + distCW.getYComp();
+		coordsAndColor[(Circle::numOfSides+1 + 1)*6]   = getRoutePosX(i) + dist.getXComp() + distCW.getXComp();
+		coordsAndColor[(Circle::numOfSides+1 + 1)*6+1] = getRoutePosY(i) + dist.getYComp() + distCW.getYComp();
+		coordsAndColor[(Circle::numOfSides+1 + 2)*6]   = getRoutePosX(i) + dist.getXComp() - distCW.getXComp();
+		coordsAndColor[(Circle::numOfSides+1 + 2)*6+1] = getRoutePosY(i) + dist.getYComp() - distCW.getYComp();
+		coordsAndColor[(Circle::numOfSides+1 + 3)*6]   = getRoutePosX(i)                   - distCW.getXComp();
+		coordsAndColor[(Circle::numOfSides+1 + 3)*6+1] = getRoutePosY(i)                   - distCW.getYComp();
+
+		for (int j = 0; j < 4; j++) {
+			coordsAndColor[(Circle::numOfSides+1 + j)*6+2] = color.getRf();
+			coordsAndColor[(Circle::numOfSides+1 + j)*6+3] = color.getGf();
+			coordsAndColor[(Circle::numOfSides+1 + j)*6+4] = color.getBf();
+			coordsAndColor[(Circle::numOfSides+1 + j)*6+5] = color.getAf();
+		}
+
+		indices[Circle::numOfSides*3]     = (Circle::numOfSides+1);
+		indices[Circle::numOfSides*3 + 1] = (Circle::numOfSides+1) + 1;
+		indices[Circle::numOfSides*3 + 2] = (Circle::numOfSides+1) + 2;
+		indices[Circle::numOfSides*3 + 3] = (Circle::numOfSides+1) + 2;
+		indices[Circle::numOfSides*3 + 4] = (Circle::numOfSides+1) + 3;
+		indices[Circle::numOfSides*3 + 5] = (Circle::numOfSides+1);
+
+		Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::numOfSides+1 + 4)*(2+4), indices, Circle::numOfSides*3 + 6);
+		//would it make more sense to separate the circle and line draw calls? would it make more sense to group everything together for one call? dunno, but this seems easiest and cleanest
 	}
 }
 
