@@ -1306,8 +1306,9 @@ inline void Tank::drawMainBarrel(float alpha) const {
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 modelMatrix;
 
-	glLineWidth(2.0f);
+	//glLineWidth(2.0f);
 
+	/*
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
@@ -1319,6 +1320,42 @@ inline void Tank::drawMainBarrel(float alpha) const {
 
 	//cleanup
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	*/
+
+	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
+	const float lineWidth = 0.75f;
+
+	float coordsAndColor[4*(2+4)];
+	unsigned int indices[6];
+
+	SimpleVector2D dist = SimpleVector2D(velocity.getAngle(), r, true);
+	SimpleVector2D distCW = SimpleVector2D(velocity.getAngle() - PI/2, lineWidth, true);
+
+	coordsAndColor[0*6]   = x                   + distCW.getXComp();
+	coordsAndColor[0*6+1] = y                   + distCW.getYComp();
+	coordsAndColor[1*6]   = x + dist.getXComp() + distCW.getXComp();
+	coordsAndColor[1*6+1] = y + dist.getYComp() + distCW.getYComp();
+	coordsAndColor[2*6]   = x + dist.getXComp() - distCW.getXComp();
+	coordsAndColor[2*6+1] = y + dist.getYComp() - distCW.getYComp();
+	coordsAndColor[3*6]   = x                   - distCW.getXComp();
+	coordsAndColor[3*6+1] = y                   - distCW.getYComp();
+
+	for (int i = 0; i < 4; i++) {
+		coordsAndColor[i*6+2] = color.getRf();
+		coordsAndColor[i*6+3] = color.getGf();
+		coordsAndColor[i*6+4] = color.getBf();
+		coordsAndColor[i*6+5] = color.getAf();
+	}
+
+	indices[0] = 0;
+	indices[1] = 1;
+	indices[2] = 2;
+	indices[3] = 2;
+	indices[4] = 3;
+	indices[5] = 0;
+
+	Renderer::SubmitBatchedDraw(coordsAndColor, 4*(2+4), indices, 6);
 }
 
 inline void Tank::drawExtraBarrels(float alpha) const {
@@ -1328,8 +1365,9 @@ inline void Tank::drawExtraBarrels(float alpha) const {
 	glm::mat4 modelMatrix;
 
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glLineWidth(1.0f);
+	//glLineWidth(1.0f);
 
+	/*
 	//shader->setUniform4f("u_color", 0.5f, 0.5f, 0.5f, 0.25f); //CPU color
 	ColorValueHolder color = ColorValueHolder(0.75f, 0.75f, 0.75f);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
@@ -1344,6 +1382,48 @@ inline void Tank::drawExtraBarrels(float alpha) const {
 
 	//cleanup
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	*/
+
+	ColorValueHolder color = ColorValueHolder(0.75f, 0.75f, 0.75f);
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
+	const float lineWidth = 0.375f; //unsure what to put this at; .25 too thin, .5 too thick, .375 looks a bit off from aliasing
+
+	float* coordsAndColor = new float[(shootingPoints.size()-1)*4*(2+4)];
+	unsigned int* indices = new unsigned int[(shootingPoints.size()-1)*6];
+
+	for (int i = 0; i < shootingPoints.size()-1; i++) {
+		const int startVertex = (i*4) * 6;
+		const int startIndex = i*6;
+
+		SimpleVector2D dist = SimpleVector2D(getRealCannonAngle(i+1), r, true);
+		SimpleVector2D distCW = SimpleVector2D(getRealCannonAngle(i+1) - PI/2, lineWidth, true);
+
+		coordsAndColor[startVertex + 0*6]   = x                   + distCW.getXComp();
+		coordsAndColor[startVertex + 0*6+1] = y                   + distCW.getYComp();
+		coordsAndColor[startVertex + 1*6]   = x + dist.getXComp() + distCW.getXComp();
+		coordsAndColor[startVertex + 1*6+1] = y + dist.getYComp() + distCW.getYComp();
+		coordsAndColor[startVertex + 2*6]   = x + dist.getXComp() - distCW.getXComp();
+		coordsAndColor[startVertex + 2*6+1] = y + dist.getYComp() - distCW.getYComp();
+		coordsAndColor[startVertex + 3*6]   = x                   - distCW.getXComp();
+		coordsAndColor[startVertex + 3*6+1] = y                   - distCW.getYComp();
+
+		for (int j = 0; j < 4; j++) {
+			coordsAndColor[startVertex + j*6+2] = color.getRf();
+			coordsAndColor[startVertex + j*6+3] = color.getGf();
+			coordsAndColor[startVertex + j*6+4] = color.getBf();
+			coordsAndColor[startVertex + j*6+5] = color.getAf();
+		}
+
+		indices[startIndex + 0] = startVertex/6 + 0;
+		indices[startIndex + 1] = startVertex/6 + 1;
+		indices[startIndex + 2] = startVertex/6 + 2;
+		indices[startIndex + 3] = startVertex/6 + 2;
+		indices[startIndex + 4] = startVertex/6 + 3;
+		indices[startIndex + 5] = startVertex/6 + 0;
+	}
+
+	Renderer::SubmitBatchedDraw(coordsAndColor, (shootingPoints.size()-1)*4*(2+4), indices, (shootingPoints.size()-1)*6);
+	delete[] coordsAndColor, indices;
 }
 
 bool Tank::kill() {

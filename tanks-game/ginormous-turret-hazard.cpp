@@ -352,7 +352,7 @@ inline void GinormousTurretHazard::drawOutline(float alpha) const {
 
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	const float lineWidth = 0.5f;
+	const float lineWidth = 2.0f;
 
 	float coordsAndColor[(Circle::numOfSides*2)*(2+4)];
 	for (int i = 0; i < Circle::numOfSides; i++) {
@@ -390,8 +390,9 @@ inline void GinormousTurretHazard::drawBarrel(float alpha) const {
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 modelMatrix;
 
-	glLineWidth(2.0f);
+	//glLineWidth(2.0f);
 
+	/*
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
@@ -403,6 +404,42 @@ inline void GinormousTurretHazard::drawBarrel(float alpha) const {
 
 	//cleanup
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	*/
+
+	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
+	const float lineWidth = 3.0f;
+
+	float coordsAndColor[4*(2+4)];
+	unsigned int indices[6];
+
+	SimpleVector2D dist = SimpleVector2D(velocity.getAngle(), r, true);
+	SimpleVector2D distCW = SimpleVector2D(velocity.getAngle() - PI/2, lineWidth, true);
+
+	coordsAndColor[0*6]   = x                   + distCW.getXComp();
+	coordsAndColor[0*6+1] = y                   + distCW.getYComp();
+	coordsAndColor[1*6]   = x + dist.getXComp() + distCW.getXComp();
+	coordsAndColor[1*6+1] = y + dist.getYComp() + distCW.getYComp();
+	coordsAndColor[2*6]   = x + dist.getXComp() - distCW.getXComp();
+	coordsAndColor[2*6+1] = y + dist.getYComp() - distCW.getYComp();
+	coordsAndColor[3*6]   = x                   - distCW.getXComp();
+	coordsAndColor[3*6+1] = y                   - distCW.getYComp();
+
+	for (int i = 0; i < 4; i++) {
+		coordsAndColor[i*6+2] = color.getRf();
+		coordsAndColor[i*6+3] = color.getGf();
+		coordsAndColor[i*6+4] = color.getBf();
+		coordsAndColor[i*6+5] = color.getAf();
+	}
+
+	indices[0] = 0;
+	indices[1] = 1;
+	indices[2] = 2;
+	indices[3] = 2;
+	indices[4] = 3;
+	indices[5] = 0;
+
+	Renderer::SubmitBatchedDraw(coordsAndColor, 4*(2+4), indices, 6);
 }
 
 CircleHazard* GinormousTurretHazard::randomizingFactory(double x_start, double y_start, double area_width, double area_height, GenericFactoryConstructionData& args) {
