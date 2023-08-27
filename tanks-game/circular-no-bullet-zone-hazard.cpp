@@ -371,7 +371,7 @@ void CircularNoBulletZoneHazard::ghostDraw(float alpha) const {
 	//these draw over each other but that's easier than adding more vertices
 
 	Renderer::SubmitBatchedDraw(coordsAndColor_extra.data(), coordsAndColor_extra.size(), indices_extra.data(), indices_extra.size());
-	//delete[] coordsAndColor_extra, indices_extra;
+	//delete[] coordsAndColor_extra; delete[] indices_extra;
 }
 
 void CircularNoBulletZoneHazard::ghostDraw(DrawingLayers layer, float alpha) const {

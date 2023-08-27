@@ -274,7 +274,7 @@ void HorizontalLightningHazard::specialEffectCircleCollision(Circle* c) {
 	pushBolt(new LightningBolt(0, h/2, intersectionXL-x, intersectionYL-y, boltPointsL), false);
 	pushBolt(new LightningBolt(intersectionXL-x, intersectionYL-y, intersectionXR-x, intersectionYR-y, 2), false);
 	pushBolt(new LightningBolt(intersectionXR-x, intersectionYR-y, w, h/2, boltPointsR), false);
-	delete leftPoint, rightPoint, circleCenter;
+	delete leftPoint; delete rightPoint; delete circleCenter;
 
 	//TODO: refactor? (it's done, right?)
 }
@@ -696,7 +696,7 @@ inline void HorizontalLightningHazard::drawBolts(float alpha) const {
 		}
 
 		Renderer::SubmitBatchedDraw(coordsAndColor, (bolts[i]->length-1)*4*(2+4), indices, (bolts[i]->length-1)*6);
-		delete[] coordsAndColor, indices;
+		delete[] coordsAndColor; delete[] indices;
 	}
 }
 
@@ -780,7 +780,7 @@ inline void HorizontalLightningHazard::drawBolts_Pose(float alpha) const {
 		}
 
 		Renderer::SubmitBatchedDraw(coordsAndColor, (poseBolts[i]->length-1)*4*(2+4), indices, (poseBolts[i]->length-1)*6);
-		delete[] coordsAndColor, indices;
+		delete[] coordsAndColor; delete[] indices;
 	}
 
 	for (int i = 0; i < poseBolts.size(); i++) {

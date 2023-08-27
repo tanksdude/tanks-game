@@ -644,7 +644,7 @@ inline void CircularLightningHazard::drawBolts(float alpha) const {
 		}
 
 		Renderer::SubmitBatchedDraw(coordsAndColor, (bolts[i]->length-1)*4*(2+4), indices, (bolts[i]->length-1)*6);
-		delete[] coordsAndColor, indices;
+		delete[] coordsAndColor; delete[] indices;
 	}
 }
 
@@ -732,7 +732,7 @@ inline void CircularLightningHazard::drawBolts_Pose(float alpha) const {
 		}
 
 		Renderer::SubmitBatchedDraw(coordsAndColor, (poseBolts[i]->length-1)*4*(2+4), indices, (poseBolts[i]->length-1)*6);
-		delete[] coordsAndColor, indices;
+		delete[] coordsAndColor; delete[] indices;
 	}
 
 	for (int i = 0; i < poseBolts.size(); i++) {

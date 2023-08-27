@@ -1423,7 +1423,7 @@ inline void Tank::drawExtraBarrels(float alpha) const {
 	}
 
 	Renderer::SubmitBatchedDraw(coordsAndColor, (shootingPoints.size()-1)*4*(2+4), indices, (shootingPoints.size()-1)*6);
-	delete[] coordsAndColor, indices;
+	delete[] coordsAndColor; delete[] indices;
 }
 
 bool Tank::kill() {

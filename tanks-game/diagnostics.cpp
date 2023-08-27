@@ -355,7 +355,9 @@ void Diagnostics::drawGraphTimes_data(std::string name) {
 	}
 
 	Renderer::SubmitBatchedDraw(coordsAndColor, (graphData.size()-1)*4*(2+4), indices, (graphData.size()-1)*6);
-	delete[] coordsAndColor, indices;
+	delete[] coordsAndColor; delete[] indices;
+	//IMPORTANT: delete[] does not work on comma-separated pointers: https://cplusplus.com/forum/general/270369/#msg1164735
+	//IMPORTANT: delete is the same: https://stackoverflow.com/questions/3037655/c-delete-syntax/3037675#3037675
 }
 
 inline void Diagnostics::drawGraphTimes_data() {
