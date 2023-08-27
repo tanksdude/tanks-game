@@ -33,7 +33,7 @@ private:
 
 	static void drawGraphTimes_graph();
 	static void drawGraphTimes_data(std::string name);
-	static void drawGraphTimes_data();
+	static inline void drawGraphTimes_data();
 
 private:
 	static VertexArray* graph_va;

@@ -2,6 +2,7 @@
 #include <iostream>
 #include "renderer.h"
 #include "constants.h"
+#include "simple-vector-2d.h"
 #include <algorithm> //std::min, std::max
 
 std::vector<std::chrono::time_point<std::chrono::steady_clock>> Diagnostics::times;
@@ -288,8 +289,9 @@ void Diagnostics::drawGraphTimes_data(std::string name) {
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 modelMatrix;
 
-	glLineWidth(4.0f); //TODO: change?
+	//glLineWidth(4.0f); //TODO: change?
 
+	/*
 	ColorValueHolder color = graphTimes[graphNameToIndex[name]].color;
 	//ColorValueHolder color = ColorValueHolder(1.0f, 1.0f, 1.0f);
 	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
@@ -302,14 +304,67 @@ void Diagnostics::drawGraphTimes_data(std::string name) {
 
 	//cleanup
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	*/
+
+	std::vector<long double>& graphData = graphTimes[graphNameToIndex[name]].data;
+	if (graphData.size() < 2) {
+		return;
+	}
+
+	ColorValueHolder color = graphTimes[graphNameToIndex[name]].color;
+	const float lineWidth = 1.0f; //TODO: too thick?
+
+	std::vector<float> positions; positions.reserve(graphData.size()*2);
+	for (int i = 0; i < graphData.size(); i++) {
+		positions.push_back(graphLength * (float(i)/float(maxGraphTimes-1)));
+		positions.push_back(graphHeight * (graphData[i] * (1.0 / 10))); //==1 means it took a full frame (10ms)
+	}
+
+	float* coordsAndColor = new float[(graphData.size()-1)*4*(2+4)];
+	unsigned int* indices = new unsigned int[(graphData.size()-1)*6];
+
+	for (int j = 0; j < graphData.size()-1; j++) {
+		const int startVertex = (j*4) * 6;
+		const int startIndex = j*6;
+
+		SimpleVector2D dist = SimpleVector2D(positions[(j+1)*2] - positions[j*2], positions[(j+1)*2+1] - positions[j*2+1]);
+		SimpleVector2D distCW = SimpleVector2D(dist.getAngle() - PI/2, lineWidth, true);
+
+		coordsAndColor[startVertex + 0*6]   = graphXOffset + positions[j*2]                     + distCW.getXComp();
+		coordsAndColor[startVertex + 0*6+1] = graphYOffset + positions[j*2+1]                   + distCW.getYComp();
+		coordsAndColor[startVertex + 1*6]   = graphXOffset + positions[j*2]   + dist.getXComp() + distCW.getXComp();
+		coordsAndColor[startVertex + 1*6+1] = graphYOffset + positions[j*2+1] + dist.getYComp() + distCW.getYComp();
+		coordsAndColor[startVertex + 2*6]   = graphXOffset + positions[j*2]   + dist.getXComp() - distCW.getXComp();
+		coordsAndColor[startVertex + 2*6+1] = graphYOffset + positions[j*2+1] + dist.getYComp() - distCW.getYComp();
+		coordsAndColor[startVertex + 3*6]   = graphXOffset + positions[j*2]                     - distCW.getXComp();
+		coordsAndColor[startVertex + 3*6+1] = graphYOffset + positions[j*2+1]                   - distCW.getYComp();
+
+		for (int k = 0; k < 4; k++) {
+			coordsAndColor[startVertex + k*6+2] = color.getRf();
+			coordsAndColor[startVertex + k*6+3] = color.getGf();
+			coordsAndColor[startVertex + k*6+4] = color.getBf();
+			coordsAndColor[startVertex + k*6+5] = color.getAf();
+		}
+
+		indices[startIndex + 0] = startVertex/6 + 0;
+		indices[startIndex + 1] = startVertex/6 + 1;
+		indices[startIndex + 2] = startVertex/6 + 2;
+		indices[startIndex + 3] = startVertex/6 + 2;
+		indices[startIndex + 4] = startVertex/6 + 3;
+		indices[startIndex + 5] = startVertex/6 + 0;
+	}
+
+	Renderer::SubmitBatchedDraw(coordsAndColor, (graphData.size()-1)*4*(2+4), indices, (graphData.size()-1)*6);
+	delete[] coordsAndColor, indices;
 }
 
-void Diagnostics::drawGraphTimes_data() {
+inline void Diagnostics::drawGraphTimes_data() {
 	Shader* shader = Renderer::getShader("main");
 	glm::mat4 modelMatrix;
 
-	glLineWidth(4.0f); //TODO: change?
+	//glLineWidth(4.0f); //TODO: change?
 
+	/*
 	modelMatrix = Renderer::GenerateModelMatrix(graphLength, graphHeight, 0, graphXOffset, graphYOffset);
 	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
@@ -324,4 +379,9 @@ void Diagnostics::drawGraphTimes_data() {
 
 	//cleanup
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	*/
+
+	for (int i = 0; i < graphTimes.size(); i++) {
+		drawGraphTimes_data(graphTimes[i].name);
+	}
 }
