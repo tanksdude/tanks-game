@@ -3,10 +3,6 @@
 #include "generalized-lightning.h"
 #include "constants.h"
 
-#include "vertex-array.h"
-#include "vertex-buffer.h"
-#include "index-buffer.h"
-
 class RectangularLightningHazard : public RectHazard, public GeneralizedLightning {
 	//called LightningZone in JS Tanks
 protected:
@@ -17,23 +13,6 @@ protected:
 	virtual void pushDefaultBolt(int num, bool randomize) override; //randomize should be true all of the time
 
 	inline Circle* getCenterPoint() const; //for checks when a bullet/tank collides (needs to be a function in case the lightning changes size or position)
-
-private:
-	static VertexArray* background_va;
-	static VertexBuffer* background_vb;
-	static IndexBuffer* background_ib;
-	VertexArray* bolt_va;
-	VertexBuffer* bolt_vb;
-	//the bolt is just lines so only the length is needed when drawing (meaning no IndexBuffer needed)
-	int bolt_vb_length;
-	static bool initialized_GPU;
-	void local_reinitializeGPU(int length);
-	void streamBoltVertices(const LightningBolt*) const; //(stream to bolt_vb)
-
-	static bool initializeGPU();
-	void local_initializeGPU();
-	static bool uninitializeGPU();
-	void local_uninitializeGPU();
 
 public:
 	virtual std::vector<std::string> getHazardTypes() const override {
@@ -79,11 +58,10 @@ public:
 
 private:
 	inline void drawBackground(bool pose, float alpha = 1.0f) const;
+	inline void drawBackgroundOutline(float alpha) const; //called by drawBackground()
 	inline void drawBolts(float alpha = 1.0f) const;
 	inline void drawBolts_Pose(float alpha = 1.0f) const;
 
-protected:
-	RectangularLightningHazard(double xpos, double ypos, double width, double height, bool noGPU); //doesn't initialize GPU
 public:
 	RectangularLightningHazard(double xpos, double ypos, double width, double height);
 	virtual ~RectangularLightningHazard();

@@ -1,10 +1,6 @@
 #pragma once
 #include "targeting-turret-hazard.h"
 
-#include "vertex-array.h"
-#include "vertex-buffer.h"
-#include "index-buffer.h"
-
 //TODO: patrolling turrets should be affected by walls
 class PatrollingTurretHazard : public TargetingTurretHazard {
 protected:
@@ -46,20 +42,6 @@ protected:
 	virtual bool isWaitingAtPoint() const;
 	virtual void turnTowardsPoint();
 	virtual bool isPointedAtPoint() const;
-
-private:
-	static VertexArray* va;
-	static VertexBuffer* vb;
-	static IndexBuffer* ib;
-	static VertexArray* cannon_va;
-	static VertexBuffer* cannon_vb;
-	static VertexArray* reticule_va;
-	static VertexBuffer* reticule_vb;
-	//TODO: draw the patrol path in debug layer
-	static bool initialized_GPU;
-
-	static bool initializeGPU();
-	static bool uninitializeGPU();
 
 public:
 	virtual std::vector<std::string> getHazardTypes() const override {

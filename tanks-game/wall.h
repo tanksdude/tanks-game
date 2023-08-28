@@ -7,25 +7,12 @@ struct WallUpdateStruct;
 #include "drawable-thing.h"
 #include "color-value-holder.h"
 
-#include "vertex-array.h"
-#include "vertex-buffer.h"
-#include "index-buffer.h"
-
 class Wall : public GameThing, public Rect, public DrawableThing {
 	friend class ResetThings; //not really needed
 	friend class PowerFunctionHelper;
 
 public: //TODO: shouldn't be public
 	ColorValueHolder color;
-
-private:
-	static VertexArray* va;
-	static VertexBuffer* vb;
-	static IndexBuffer* ib;
-	static bool initialized_GPU;
-
-	static bool initializeGPU();
-	static bool uninitializeGPU();
 
 public:
 	void draw() const override;
@@ -34,7 +21,6 @@ public:
 	void poseDraw(DrawingLayers) const override;
 	void ghostDraw(float alpha) const override;
 	void ghostDraw(DrawingLayers, float alpha) const override;
-	//void drawCPU() const;
 
 	void update(const WallUpdateStruct*);
 

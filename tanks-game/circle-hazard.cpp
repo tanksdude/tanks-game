@@ -99,33 +99,6 @@ double CircleHazard::getDefenseTier() const {
 	return getHighestDefenseTier(getHighestDefenseImportance());
 }
 
-/*
-void CircleHazard::initializeGPU() {
-	float positions[(Circle::numOfSides+1)*2];
-	for (int i = 0; i < Circle::numOfSides; i++) {
-		positions[i*2]   = cos(i * 2*PI / Circle::numOfSides);
-		positions[i*2+1] = sin(i * 2*PI / Circle::numOfSides);
-	}
-	positions[Circle::numOfSides*2]   = 0;
-	positions[Circle::numOfSides*2+1] = 0;
-
-	unsigned int indices[Circle::numOfSides*3];
-	for (int i = 0; i < Circle::numOfSides; i++) {
-		indices[i*3]   = Circle::numOfSides;
-		indices[i*3+1] = i;
-		indices[i*3+2] = (i+1) % Circle::numOfSides;
-	}
-
-	//va = new VertexArray();
-	vb = new VertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float));
-
-	VertexBufferLayout layout(2);
-	va = new VertexArray(*vb, layout);
-
-	ib = new IndexBuffer(indices, Circle::numOfSides*3);
-}
-*/
-
 //hazard notes:
 /*
 some hazards aren't bad
@@ -162,6 +135,6 @@ JS hazard numbers (with names updated):
 0 = targeting turret, 1 = horizontal lightning, 2 = lava (rectangular), 3 = stationary turret, 4 = vertical lightning, 5 = rectangular lightning, 6 = no bullet zone, 7 = patrolling turret (unimplemented)
 quite the lack of circular hazards
 C++ order of creating the JS hazards (probably):
-stationary turret, horizontal lightning, lava, rectangular lightning, vertical lightning, no bullet zone, targeting turret
+stationary turret, horizontal lightning, lava, rectangular lightning, vertical lightning, no bullet zone, targeting turret, patrolling turret
 
 */

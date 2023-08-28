@@ -8,18 +8,8 @@
 #include "background-rect.h"
 #include <iostream>
 
-//for CPU drawing, in case other #includes go wrong:
-#include <GL/glew.h>
-#include <GL/freeglut.h>
-
-VertexArray* Bullet::va;
-VertexBuffer* Bullet::vb;
-IndexBuffer* Bullet::ib;
-bool Bullet::initialized_GPU = false;
-
 const double Bullet::default_radius = 4;
 Bullet::Bullet(double x_, double y_, double angle, Team_ID teamID, BulletParentType parentType, Game_ID parentID) : GameThing(teamID) { //every bullet constructor does this stuff
-	initializeGPU();
 	this->x = x_;
 	this->y = y_;
 	this->velocity = SimpleVector2D(angle, 0, true);
@@ -76,70 +66,6 @@ Bullet::~Bullet() {
 		delete bulletPowers[i];
 	}
 	bulletPowers.clear();
-
-	//uninitializeGPU();
-}
-
-/*
-bool Bullet::isDead() const {
-	return (opaqueness <= 0);
-}
-*/
-
-bool Bullet::initializeGPU() {
-	if (initialized_GPU) {
-		return false;
-	}
-
-	float positions[(Circle::numOfSides+1)*(2+4)];
-	positions[0] = 0;
-	positions[1] = 0;
-	positions[2] = positions[3] = positions[4] = 0.5f;
-	positions[5] = 1.0f;
-	for (int i = 1; i < Circle::numOfSides+1; i++) {
-		positions[i*6]   = cos((i-1) * 2*PI / Circle::numOfSides);
-		positions[i*6+1] = sin((i-1) * 2*PI / Circle::numOfSides);
-		positions[i*6+2] = 0.5f;
-		positions[i*6+3] = 0.5f;
-		positions[i*6+4] = 0.5f;
-		positions[i*6+5] = 1.0f;
-	}
-
-	unsigned int indices[Circle::numOfSides*3];
-	for (int i = 0; i < Circle::numOfSides; i++) {
-		indices[i*3]   = 0;
-		indices[i*3+1] = i+1;
-		indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
-	}
-
-	vb = VertexBuffer::MakeVertexBuffer(positions, (Circle::numOfSides+1)*(2+4) * sizeof(float), RenderingHints::dynamic_draw);
-	VertexBufferLayout layout = {
-		{ ShaderDataType::Float2, "a_Position" },
-		{ ShaderDataType::Float4, "a_Color" }
-	};
-	vb->SetLayout(layout);
-
-	ib = IndexBuffer::MakeIndexBuffer(indices, Circle::numOfSides*3);
-
-	va = VertexArray::MakeVertexArray();
-	va->AddVertexBuffer(vb);
-	va->SetIndexBuffer(ib);
-
-	initialized_GPU = true;
-	return true;
-}
-
-bool Bullet::uninitializeGPU() {
-	if (!initialized_GPU) {
-		return false;
-	}
-
-	delete va;
-	delete vb;
-	delete ib;
-
-	initialized_GPU = false;
-	return true;
 }
 
 bool Bullet::canCollideWith(const GameThing* thing) const {
@@ -346,38 +272,6 @@ ColorValueHolder Bullet::getColor() const {
 	}
 }
 
-/*
-void Bullet::drawCPU() const {
-	drawCPU(x, y);
-}
-
-void Bullet::drawCPU(double xpos, double ypos) const {
-	//main body:
-	ColorValueHolder color = getColor();
-	glColor3f(color.getRf(), color.getGf(), color.getBf());
-
-	glBegin(GL_POLYGON);
-
-	for (int i = 0; i < Circle::numOfSides; i++) {
-		glVertex3f(xpos + r*cos(i * 2*PI / Circle::numOfSides), ypos + r*sin(i * 2*PI / Circle::numOfSides), 0);
-	}
-
-	glEnd();
-
-	//outline:
-	glColor3f(0, 0, 0);
-	glLineWidth(1);
-
-	glBegin(GL_LINE_LOOP);
-
-	for (int i = 0; i < Circle::numOfSides; i++) {
-		glVertex2f(xpos + r*cos(i * 2*PI / Circle::numOfSides), ypos + r*sin(i * 2*PI / Circle::numOfSides));
-	}
-
-	glEnd();
-}
-*/
-
 void Bullet::draw() const {
 	drawDeathCooldown();
 	drawBody();
@@ -476,19 +370,6 @@ void Bullet::ghostDraw(DrawingLayers layer, float alpha) const {
 inline void Bullet::drawBody(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 modelMatrix;
-
-	/*
-	ColorValueHolder color = getColor();
-	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-
-	modelMatrix = Renderer::GenerateModelMatrix(r, r, 0, x, y);
-	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
-
-	Renderer::Draw(*va, *ib, *shader);
-	*/
 
 	ColorValueHolder color = getColor();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
@@ -501,8 +382,8 @@ inline void Bullet::drawBody(float alpha) const {
 	coordsAndColor[4] = color.getBf();
 	coordsAndColor[5] = color.getAf();
 	for (int i = 1; i < Circle::numOfSides+1; i++) {
-		coordsAndColor[i*6]   = x + r * cos((i-1) * 2*PI / Circle::numOfSides);
-		coordsAndColor[i*6+1] = y + r * sin((i-1) * 2*PI / Circle::numOfSides);
+		coordsAndColor[i*6]   = x + r * cos((i-1) * (2*PI / Circle::numOfSides));
+		coordsAndColor[i*6+1] = y + r * sin((i-1) * (2*PI / Circle::numOfSides));
 		coordsAndColor[i*6+2] = color.getRf();
 		coordsAndColor[i*6+3] = color.getGf();
 		coordsAndColor[i*6+4] = color.getBf();
@@ -522,27 +403,6 @@ inline void Bullet::drawBody(float alpha) const {
 inline void Bullet::drawOutline(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 modelMatrix;
-
-	/*
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glLineWidth(1.0f); //lines still look ugly even with glEnable(GL_LINE_SMOOTH), so I don't know what to set it at
-
-	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
-	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-
-	modelMatrix = Renderer::GenerateModelMatrix(r, r, 0, x, y);
-	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
-
-	Renderer::Draw(GL_LINE_LOOP, 1, Circle::numOfSides);
-
-	//cleanup:
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-	//drawing an outline: use a geometry shader (ugh) or another VAO+IBO (lesser ugh), the CPU (big ugh), or glDrawArrays with GL_LINE_LOOP (yay!)
-	*/
 
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
@@ -550,10 +410,10 @@ inline void Bullet::drawOutline(float alpha) const {
 
 	float coordsAndColor[(Circle::numOfSides*2)*(2+4)];
 	for (int i = 0; i < Circle::numOfSides; i++) {
-		coordsAndColor[(i*2)  *6]   = x + (r-lineWidth) * cos(i * 2*PI / Circle::numOfSides);
-		coordsAndColor[(i*2)  *6+1] = y + (r-lineWidth) * sin(i * 2*PI / Circle::numOfSides);
-		coordsAndColor[(i*2+1)*6]   = x + (r+lineWidth) * cos(i * 2*PI / Circle::numOfSides);
-		coordsAndColor[(i*2+1)*6+1] = y + (r+lineWidth) * sin(i * 2*PI / Circle::numOfSides);
+		coordsAndColor[(i*2)  *6]   = x + (r-lineWidth) * cos(i * (2*PI / Circle::numOfSides));
+		coordsAndColor[(i*2)  *6+1] = y + (r-lineWidth) * sin(i * (2*PI / Circle::numOfSides));
+		coordsAndColor[(i*2+1)*6]   = x + (r+lineWidth) * cos(i * (2*PI / Circle::numOfSides));
+		coordsAndColor[(i*2+1)*6+1] = y + (r+lineWidth) * sin(i * (2*PI / Circle::numOfSides));
 
 		coordsAndColor[(i*2)  *6+2] = color.getRf();
 		coordsAndColor[(i*2)  *6+3] = color.getGf();
@@ -581,30 +441,8 @@ inline void Bullet::drawOutline(float alpha) const {
 inline void Bullet::drawDeathCooldown(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-	Shader* shader = Renderer::getShader("main");
-	//glm::mat4 modelMatrix;
 
-	/*
-	//if (glIsEnabled(GL_BLEND)) {
-	//	//skip
-	//} else {
-		if (this->opaqueness < 100) {
-			double deathPercent = constrain<double>(this->opaqueness/100, 0, 1);
-			unsigned int deathVertices = Circle::numOfSides * deathPercent;
-
-			if (deathVertices > 0) {
-				ColorValueHolder color = ColorValueHolder(1.0f, 1.0f, 1.0f);
-				color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-				shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-
-				glm::mat4 modelMatrix_deathOutline = Renderer::GenerateModelMatrix((r+2) * 9.0/8.0, (r+2) * 9.0/8.0, PI/2, x, y);
-				shader->setUniformMat4f("u_ModelMatrix", modelMatrix_deathOutline);
-
-				Renderer::Draw(*va, *ib, *shader, deathVertices*3);
-			}
-		}
-	//}
-	*/
+	//checking glIsEnabled(GL_BLEND) to skip is an option (though the result should be stored somewhere to avoid GL calls)
 
 	if (this->opaqueness < 100) {
 		double deathPercent = constrain<double>(this->opaqueness/100, 0, 1);
@@ -625,8 +463,8 @@ inline void Bullet::drawDeathCooldown(float alpha) const {
 				//the final triangle shares its last vertex with the first triangle, which is why this loop condition is a bit strange (second conditional only false for that last triangle)
 				//with wrong condition: two verts on an old bullet's death outline to the center of a new bullet's center body or death outline, though sometimes even a tank or rarely the bottom left corner (why)
 				//to be more specific: with the old conditional, think it was happening when deathTriangles==1, leading to pushing only two total verts but pushing three indices; but that would mean it was always pushing insufficient verts for the indices, why wasn't it showing up before?
-				coordsAndColor[(i+1)*6]   = x + ((r+2)*(9.0/8.0)) * cos(PI/2 + i * 2*PI / Circle::numOfSides);
-				coordsAndColor[(i+1)*6+1] = y + ((r+2)*(9.0/8.0)) * sin(PI/2 + i * 2*PI / Circle::numOfSides);
+				coordsAndColor[(i+1)*6]   = x + ((r+2)*(9.0/8.0)) * cos(PI/2 + i * (2*PI / Circle::numOfSides));
+				coordsAndColor[(i+1)*6+1] = y + ((r+2)*(9.0/8.0)) * sin(PI/2 + i * (2*PI / Circle::numOfSides));
 				coordsAndColor[(i+1)*6+2] = color.getRf();
 				coordsAndColor[(i+1)*6+3] = color.getGf();
 				coordsAndColor[(i+1)*6+4] = color.getBf();

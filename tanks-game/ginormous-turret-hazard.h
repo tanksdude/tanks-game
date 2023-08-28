@@ -1,10 +1,6 @@
 #pragma once
 #include "targeting-turret-hazard.h"
 
-#include "vertex-array.h"
-#include "vertex-buffer.h"
-#include "index-buffer.h"
-
 class GinormousTurretHazard : public TargetingTurretHazard {
 	//was thinking about calling it "god turret," but this turret just doesn't do enough
 	//could probably extend stationary turret
@@ -30,17 +26,6 @@ protected:
 	virtual ColorValueHolder getColor() const override;
 	virtual ColorValueHolder getColor(int state) const override;
 
-private:
-	static VertexArray* va;
-	static VertexBuffer* vb;
-	static IndexBuffer* ib;
-	static VertexArray* cannon_va;
-	static VertexBuffer* cannon_vb;
-	static bool initialized_GPU;
-
-	static bool initializeGPU();
-	static bool uninitializeGPU();
-
 public:
 	virtual std::vector<std::string> getHazardTypes() const override {
 		std::vector<std::string> types = std::vector<std::string>{ "dev", "random-dev" };
@@ -50,7 +35,7 @@ public:
 
 protected:
 	virtual double getDefaultOffense() const override { return 0; }
-	virtual double getDefaultDefense() const override { return DESTRUCTION_TIER + .5; }
+	virtual double getDefaultDefense() const override { return DESTRUCTION_TIER + 1.0; }
 
 public:
 	//virtual bool validLocation() const override { return true; }

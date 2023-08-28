@@ -174,10 +174,6 @@ void Renderer::PreInitialize(int* argc, char** argv, std::string windowName, int
 	glutInitWindowSize(Renderer::window_width, Renderer::window_height);
 	glutCreateWindow(windowName.c_str());
 
-	// Setup some OpenGL options
-	glPointSize(2);
-	glEnable(GL_POINT_SMOOTH);
-	glEnable(GL_LINE_SMOOTH);
 	glDisable(GL_DEPTH_TEST);
 	//transparency:
 	//glEnable(GL_BLEND);
@@ -378,7 +374,11 @@ void Renderer::Clear(int flags) {
 
 void Renderer::Flush() {
 	BatchedFlush();
+
+	//for single framebuffer, use glFlush; for double framebuffer, swap the buffers
+	//swapping buffers is limited to monitor refresh rate, so I use glFlush
 	glFlush();
+	//glutSwapBuffers();
 }
 
 void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader) {

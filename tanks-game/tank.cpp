@@ -12,10 +12,6 @@
 #include <algorithm> //std::sort
 #include <iostream>
 
-//for CPU drawing, in case other #includes go wrong:
-#include <GL/glew.h>
-#include <GL/freeglut.h>
-
 /*
 struct TankInputChar {
 protected:
@@ -54,13 +50,6 @@ bool TankInputChar::getKeyState() const {
 }
 */
 
-VertexArray* Tank::va;
-VertexBuffer* Tank::vb;
-IndexBuffer* Tank::ib;
-VertexArray* Tank::cannon_va;
-VertexBuffer* Tank::cannon_vb;
-bool Tank::initialized_GPU = false;
-
 const double Tank::default_maxSpeed = 1;
 const double Tank::default_acceleration = 1.0/16;
 const double Tank::default_turningIncrement = 64;
@@ -90,8 +79,6 @@ Tank::Tank(double x_, double y_, double angle, Team_ID teamID, std::string name_
 	} else {
 		defaultColor = ColorValueHolder(0.5f, 0.5f, 0.5f);
 	}
-
-	initializeGPU();
 }
 
 Tank::~Tank() {
@@ -99,89 +86,6 @@ Tank::~Tank() {
 		delete tankPowers[i];
 	}
 	tankPowers.clear();
-
-	//uninitializeGPU();
-}
-
-bool Tank::initializeGPU() {
-	if (initialized_GPU) {
-		return false;
-	}
-
-	float positions[(Circle::numOfSides+1) * (2+4)];
-	positions[0] = 0;
-	positions[1] = 0;
-	positions[2] = positions[3] = positions[4] = 0.5f;
-	positions[5] = 1.0f;
-	for (int i = 1; i < Circle::numOfSides+1; i++) {
-		positions[i*6]   = cos((i-1) * 2*PI / Circle::numOfSides);
-		positions[i*6+1] = sin((i-1) * 2*PI / Circle::numOfSides);
-		positions[i*6+2] = 0.5f;
-		positions[i*6+3] = 0.5f;
-		positions[i*6+4] = 0.5f;
-		positions[i*6+5] = 1.0f;
-	}
-
-	unsigned int indices[Circle::numOfSides*3];
-	for (int i = 0; i < Circle::numOfSides; i++) {
-		indices[i*3]   = 0;
-		indices[i*3+1] = i+1;
-		indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
-	}
-
-	/*
-	for (int i = 0; i < Circle::numOfSides+1; i++) {
-		std::cout << i << ": " << positions[i*2] << " " << positions[i*2+1] << std::endl;
-	}
-	for (int i = 0; i < Circle::numOfSides; i++) {
-		std::cout << i << ": " << indices[i*3] << " " << indices[i*3+1] << " " << indices[i*3+2] << std::endl;
-	}
-	*/
-
-	vb = VertexBuffer::MakeVertexBuffer(positions, (Circle::numOfSides+1)*(2+4) * sizeof(float), RenderingHints::dynamic_draw);
-	VertexBufferLayout layout = {
-		{ ShaderDataType::Float2, "a_Position" },
-		{ ShaderDataType::Float4, "a_Color" }
-	};
-	vb->SetLayout(layout);
-
-	ib = IndexBuffer::MakeIndexBuffer(indices, Circle::numOfSides*3);
-
-	va = VertexArray::MakeVertexArray();
-	va->AddVertexBuffer(vb);
-	va->SetIndexBuffer(ib);
-
-	float cannon_positions[(2+4)*2] = {
-		0.0f, 0.0f,    0.0f, 0.0f, 0.0f, 1.0f,
-		1.0f, 0.0f,    0.0f, 0.0f, 0.0f, 1.0f
-	};
-	cannon_vb = VertexBuffer::MakeVertexBuffer(cannon_positions, (2+4)*2 * sizeof(float));
-	VertexBufferLayout cannon_layout = {
-		{ ShaderDataType::Float2, "a_Position" },
-		{ ShaderDataType::Float4, "a_Color" }
-	};
-	cannon_vb->SetLayout(layout);
-
-	cannon_va = VertexArray::MakeVertexArray();
-	cannon_va->AddVertexBuffer(cannon_vb);
-
-	initialized_GPU = true;
-	return true;
-}
-
-bool Tank::uninitializeGPU() {
-	if (!initialized_GPU) {
-		return false;
-	}
-
-	delete va;
-	delete vb;
-	delete ib;
-	delete cannon_va;
-	delete cannon_vb;
-
-	initialized_GPU = false;
-	return true;
 }
 
 bool Tank::move(bool forward, bool turnL, bool turnR, bool specialKey) {
@@ -670,107 +574,6 @@ double Tank::getRealCannonAngle(int i) const {
 	return fmod(fmod(shootingPoints[i].angle + velocity.getAngle(), 2*PI) + 2*PI, 2*PI);
 }
 
-/*
-void Tank::drawCPU() const {
-	//TODO: need ability for more special drawing
-	drawCPU(x, y);
-}
-
-void Tank::drawCPU(double xpos, double ypos) const {
-	//shooting cooldown outline:
-	glColor3f(1.0f, 1.0f, 1.0f);
-	glBegin(GL_POLYGON);
-
-	glVertex3f(xpos, ypos, 0);
-	for (int i = 0; i < Circle::numOfSides, (double)i / Circle::numOfSides < shootCount/(maxShootCount*getShootingSpeedMultiplier()); i++) {
-		glVertex3f(xpos + r*cos(i * 2*PI / Circle::numOfSides + velocity.getAngle()) * 5/4, ypos + r*sin(i * 2*PI / Circle::numOfSides + velocity.getAngle()) * 5/4, 0);
-	}
-	glVertex3f(xpos, ypos, 0);
-
-	glEnd();
-
-	//power cooldown outlines:
-	//first, sort by timeLeft/maxTime
-	std::vector<TankPower*> sortedTankPowers; //there shouldn't be more than a few powers, so no need to do anything more complex than an array
-	sortedTankPowers.reserve(tankPowers.size());
-	for (int i = 0; i < tankPowers.size(); i++) {
-		//insertion sort because I don't want to think about something more complex for something this small
-		//insertion sort has best case O(n) when the list is mostly/entirely sorted, which is possible to get but I don't because it's reversed (easy fix, do later)
-		sortedTankPowers.push_back(tankPowers[i]);
-		for (int j = sortedTankPowers.size() - 1; j >= 1; j--) {
-			if (sortedTankPowers[j]->timeLeft/sortedTankPowers[j]->maxTime > sortedTankPowers[j-1]->timeLeft/sortedTankPowers[j-1]->maxTime) {
-				std::swap(sortedTankPowers[j], sortedTankPowers[j-1]);
-			} else {
-				break;
-			}
-		}
-	}
-	//second, actually draw them
-	for (int i = 0; i < sortedTankPowers.size(); i++) {
-		ColorValueHolder c = sortedTankPowers[i]->getColor();
-
-		glColor3f(c.getRf(), c.getGf(), c.getBf());
-		glBegin(GL_POLYGON);
-
-		glVertex3f(xpos, ypos, 0);
-		for (int j = 0; j < Circle::numOfSides, (double)j / Circle::numOfSides < sortedTankPowers[i]->timeLeft/sortedTankPowers[i]->maxTime; j++) {
-			glVertex3f(xpos + r*cos(j * 2*PI / Circle::numOfSides + velocity.getAngle()) * 9/8, ypos + r*sin(j * 2*PI / Circle::numOfSides + velocity.getAngle()) * 9/8, 0);
-		}
-		glVertex3f(xpos, ypos, 0);
-
-		glEnd();
-	}
-
-	//main body:
-	ColorValueHolder color = getBodyColor();
-	glColor3f(color.getRf(), color.getGf(), color.getBf());
-
-	glBegin(GL_POLYGON);
-
-	for (int i = 0; i < Circle::numOfSides; i++) {
-		glVertex3f(xpos + r*cos(i * 2*PI / Circle::numOfSides), ypos + r*sin(i * 2*PI / Circle::numOfSides), 0);
-	}
-
-	glEnd();
-
-	//other barrels:
-	glColor4f(.5, .5, .5, .25);
-	glLineWidth(2);
-
-	glBegin(GL_LINES);
-
-	for (int i = 1; i < shootingPoints->size(); i++) {
-		glVertex2f(x, y);
-		glVertex2f(x + r*cos(velocity.getAngle() + shootingPoints->at(i).angle), y + r*sin(velocity.getAngle() + shootingPoints->at(i).angle));
-	}
-
-	glEnd();
-
-	//outline:
-	glColor3f(0, 0, 0);
-	glLineWidth(2);
-
-	glBegin(GL_LINE_LOOP);
-
-	for (int i = 0; i < Circle::numOfSides; i++) {
-		glVertex2f(xpos + r*cos(i * 2*PI / Circle::numOfSides), ypos + r*sin(i * 2*PI / Circle::numOfSides));
-	}
-
-	glEnd();
-
-	//barrel:
-	glColor3f(0, 0, 0);
-	glLineWidth(2);
-
-	glBegin(GL_LINES);
-
-	glVertex2f(x, y);
-	glVertex2f(x + r*cos(velocity.getAngle()), y + r*sin(velocity.getAngle()));
-
-	glEnd();
-}
-*/
-
 void Tank::draw() const {
 	if (this->dead) {
 		drawDead();
@@ -896,22 +699,8 @@ void Tank::ghostDraw(DrawingLayers layer, float alpha) const {
 inline void Tank::drawBody(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 modelMatrix;
 
 	if (this->dead) {
-		/*
-		ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
-
-		color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-		shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-
-		modelMatrix = Renderer::GenerateModelMatrix(r, r, 0, x, y);
-		shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
-
-		Renderer::Draw(*va, *ib, *shader);
-		*/
-
 		ColorValueHolder deadColor = ColorValueHolder(0.0f, 0.0f, 0.0f);
 		ColorValueHolder outerColor = ColorValueHolder(1.0f, 1.0f, 1.0f);
 		deadColor = ColorMixer::mix(BackgroundRect::getBackColor(), deadColor, alpha);
@@ -925,8 +714,8 @@ inline void Tank::drawBody(float alpha) const {
 		coordsAndColor[4] = deadColor.getBf();
 		coordsAndColor[5] = deadColor.getAf();
 		for (int i = 1; i < Circle::numOfSides+1; i++) {
-			coordsAndColor[i*6]   = x + r * cos((i-1) * 2*PI / Circle::numOfSides);
-			coordsAndColor[i*6+1] = y + r * sin((i-1) * 2*PI / Circle::numOfSides);
+			coordsAndColor[i*6]   = x + r * cos((i-1) * (2*PI / Circle::numOfSides));
+			coordsAndColor[i*6+1] = y + r * sin((i-1) * (2*PI / Circle::numOfSides));
 			coordsAndColor[i*6+2] = outerColor.getRf();
 			coordsAndColor[i*6+3] = outerColor.getGf();
 			coordsAndColor[i*6+4] = outerColor.getBf();
@@ -943,18 +732,6 @@ inline void Tank::drawBody(float alpha) const {
 		Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::numOfSides+1)*(2+4), indices, Circle::numOfSides*3);
 	} else {
 		if (tankPowers.size() <= 1) {
-			/*
-			ColorValueHolder color = getBodyColor();
-
-			color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-			shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-
-			modelMatrix = Renderer::GenerateModelMatrix(r, r, 0, x, y);
-			shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
-
-			Renderer::Draw(*va, *ib, *shader);
-			*/
-
 			ColorValueHolder color = getBodyColor();
 			color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 
@@ -966,8 +743,8 @@ inline void Tank::drawBody(float alpha) const {
 			coordsAndColor[4] = color.getBf();
 			coordsAndColor[5] = color.getAf();
 			for (int i = 1; i < Circle::numOfSides+1; i++) {
-				coordsAndColor[i*6]   = x + r * cos((i-1) * 2*PI / Circle::numOfSides);
-				coordsAndColor[i*6+1] = y + r * sin((i-1) * 2*PI / Circle::numOfSides);
+				coordsAndColor[i*6]   = x + r * cos((i-1) * (2*PI / Circle::numOfSides));
+				coordsAndColor[i*6+1] = y + r * sin((i-1) * (2*PI / Circle::numOfSides));
 				coordsAndColor[i*6+2] = color.getRf();
 				coordsAndColor[i*6+3] = color.getGf();
 				coordsAndColor[i*6+4] = color.getBf();
@@ -984,26 +761,8 @@ inline void Tank::drawBody(float alpha) const {
 			Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::numOfSides+1)*(2+4), indices, Circle::numOfSides*3);
 		} else {
 			//main color split:
-			/*
-			ColorValueHolder color;
-			for (int i = 0; i < tankPowers.size(); i++) {
-				color = tankPowers[i]->getColor();
-
-				color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-				shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-
-				double rotatePercent = floor((float(i) / tankPowers.size()) * Circle::numOfSides) / Circle::numOfSides;
-				double nextRotatePercent = floor((float(i+1) / tankPowers.size()) * Circle::numOfSides) / Circle::numOfSides;
-				unsigned int rotateVertices = floor((nextRotatePercent - rotatePercent) * Circle::numOfSides);
-				modelMatrix = Renderer::GenerateModelMatrix(r, r, velocity.getAngle() + (rotatePercent * 2*PI), x, y);
-				shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
-
-				Renderer::Draw(*va, *ib, *shader, rotateVertices*3);
-			}
-			*/
 
 			ColorValueHolder color;
-
 			for (int i = 0; i < tankPowers.size(); i++) {
 				std::vector<float> coordsAndColor_colorSplit;
 				std::vector<unsigned int> indices_colorSplit;
@@ -1026,8 +785,8 @@ inline void Tank::drawBody(float alpha) const {
 				coordsAndColor_colorSplit.push_back(color.getBf());
 				coordsAndColor_colorSplit.push_back(color.getAf());
 				for (int i = rotateVertexStart; i <= rotateVertexEnd; i++) {
-					coordsAndColor_colorSplit.push_back(x + r * cos(velocity.getAngle() + (i * 2*PI / Circle::numOfSides)));
-					coordsAndColor_colorSplit.push_back(y + r * sin(velocity.getAngle() + (i * 2*PI / Circle::numOfSides)));
+					coordsAndColor_colorSplit.push_back(x + r * cos(velocity.getAngle() + i * (2*PI / Circle::numOfSides)));
+					coordsAndColor_colorSplit.push_back(y + r * sin(velocity.getAngle() + i * (2*PI / Circle::numOfSides)));
 					coordsAndColor_colorSplit.push_back(color.getRf());
 					coordsAndColor_colorSplit.push_back(color.getGf());
 					coordsAndColor_colorSplit.push_back(color.getBf());
@@ -1045,17 +804,6 @@ inline void Tank::drawBody(float alpha) const {
 			}
 
 			//center colors mix:
-			/*
-			color = getBodyColor();
-
-			color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-			shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-
-			modelMatrix = Renderer::GenerateModelMatrix(r*.75, r*.75, 0, x, y);
-			shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
-
-			Renderer::Draw(*va, *ib, *shader);
-			*/
 
 			color = getBodyColor();
 			color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
@@ -1068,8 +816,8 @@ inline void Tank::drawBody(float alpha) const {
 			coordsAndColor[4] = color.getBf();
 			coordsAndColor[5] = color.getAf();
 			for (int i = 1; i < Circle::numOfSides+1; i++) {
-				coordsAndColor[i*6]   = x + (r*.75) * cos((i-1) * 2*PI / Circle::numOfSides);
-				coordsAndColor[i*6+1] = y + (r*.75) * sin((i-1) * 2*PI / Circle::numOfSides);
+				coordsAndColor[i*6]   = x + (r*.75) * cos((i-1) * (2*PI / Circle::numOfSides));
+				coordsAndColor[i*6+1] = y + (r*.75) * sin((i-1) * (2*PI / Circle::numOfSides));
 				coordsAndColor[i*6+2] = color.getRf();
 				coordsAndColor[i*6+3] = color.getGf();
 				coordsAndColor[i*6+4] = color.getBf();
@@ -1090,6 +838,7 @@ inline void Tank::drawBody(float alpha) const {
 
 inline void Tank::drawDead(float alpha) const {
 	//TODO: draw X like no bullet zone
+	//TODO: still want that? now with the gradient color for a death, that seems unnecessary
 	drawBody(alpha);
 	drawOutline(alpha);
 }
@@ -1097,30 +846,6 @@ inline void Tank::drawDead(float alpha) const {
 inline void Tank::drawOutline(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 modelMatrix;
-
-	/*
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glLineWidth(1.0f);
-
-	ColorValueHolder color;
-	if (this->dead) {
-		color = ColorValueHolder(1.0f, 1.0f, 1.0f);
-	} else {
-		color = ColorValueHolder(0.0f, 0.0f, 0.0f);
-	}
-	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-
-	modelMatrix = Renderer::GenerateModelMatrix(r, r, 0, x, y);
-	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
-
-	Renderer::Draw(*va, *shader, GL_LINE_LOOP, 1, Circle::numOfSides);
-
-	//cleanup
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	*/
 
 	if (this->dead) {
 		return;
@@ -1132,10 +857,10 @@ inline void Tank::drawOutline(float alpha) const {
 
 	float coordsAndColor[(Circle::numOfSides*2)*(2+4)];
 	for (int i = 0; i < Circle::numOfSides; i++) {
-		coordsAndColor[(i*2)  *6]   = x + (r-lineWidth) * cos(i * 2*PI / Circle::numOfSides);
-		coordsAndColor[(i*2)  *6+1] = y + (r-lineWidth) * sin(i * 2*PI / Circle::numOfSides);
-		coordsAndColor[(i*2+1)*6]   = x + (r+lineWidth) * cos(i * 2*PI / Circle::numOfSides);
-		coordsAndColor[(i*2+1)*6+1] = y + (r+lineWidth) * sin(i * 2*PI / Circle::numOfSides);
+		coordsAndColor[(i*2)  *6]   = x + (r-lineWidth) * cos(i * (2*PI / Circle::numOfSides));
+		coordsAndColor[(i*2)  *6+1] = y + (r-lineWidth) * sin(i * (2*PI / Circle::numOfSides));
+		coordsAndColor[(i*2+1)*6]   = x + (r+lineWidth) * cos(i * (2*PI / Circle::numOfSides));
+		coordsAndColor[(i*2+1)*6+1] = y + (r+lineWidth) * sin(i * (2*PI / Circle::numOfSides));
 
 		coordsAndColor[(i*2)  *6+2] = color.getRf();
 		coordsAndColor[(i*2)  *6+3] = color.getGf();
@@ -1163,8 +888,6 @@ inline void Tank::drawOutline(float alpha) const {
 inline void Tank::drawShootingCooldown(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 modelMatrix;
 
 	double shootingOutlinePercent;
 	if (maxShootCount*getShootingSpeedMultiplier() <= 0 || maxShootCount <= 0) {
@@ -1173,19 +896,6 @@ inline void Tank::drawShootingCooldown(float alpha) const {
 		shootingOutlinePercent = constrain<double>(shootCount/(maxShootCount*getShootingSpeedMultiplier()), 0, 1);
 	}
 	unsigned int shootingOutlineTriangles = Circle::numOfSides * shootingOutlinePercent;
-
-	/*
-	if (shootingOutlineVertices > 0) {
-		ColorValueHolder color = ColorValueHolder(1.0f, 1.0f, 1.0f);
-		color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-		shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-
-		modelMatrix = Renderer::GenerateModelMatrix(r * 5.0/4.0, r * 5.0/4.0, getAngle(), x, y);
-		shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
-
-		Renderer::Draw(*va, *ib, *shader, shootingOutlineVertices*3);
-	}
-	*/
 
 	if (shootingOutlineTriangles > 0) {
 		ColorValueHolder color = ColorValueHolder(1.0f, 1.0f, 1.0f);
@@ -1199,8 +909,8 @@ inline void Tank::drawShootingCooldown(float alpha) const {
 		coordsAndColor[4] = color.getBf();
 		coordsAndColor[5] = color.getAf();
 		for (int i = 0; i <= shootingOutlineTriangles && i < Circle::numOfSides; i++) {
-			coordsAndColor[(i+1)*6]   = x + (r*(5.0/4.0)) * cos(velocity.getAngle() + i * 2*PI / Circle::numOfSides);
-			coordsAndColor[(i+1)*6+1] = y + (r*(5.0/4.0)) * sin(velocity.getAngle() + i * 2*PI / Circle::numOfSides);
+			coordsAndColor[(i+1)*6]   = x + (r*(5.0/4.0)) * cos(velocity.getAngle() + i * (2*PI / Circle::numOfSides));
+			coordsAndColor[(i+1)*6+1] = y + (r*(5.0/4.0)) * sin(velocity.getAngle() + i * (2*PI / Circle::numOfSides));
 			coordsAndColor[(i+1)*6+2] = color.getRf();
 			coordsAndColor[(i+1)*6+3] = color.getGf();
 			coordsAndColor[(i+1)*6+4] = color.getBf();
@@ -1221,26 +931,8 @@ inline void Tank::drawShootingCooldown(float alpha) const {
 inline void Tank::drawPowerCooldown(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 modelMatrix;
 
 	//first, sort by timeLeft/maxTime
-	/*
-	std::vector<TankPower*> sortedTankPowers; //there shouldn't be more than a few powers, so no need to do anything more complex than an array
-	sortedTankPowers.reserve(tankPowers.size());
-	for (int i = 0; i < tankPowers.size(); i++) {
-		//insertion sort because I don't want to think about something more complex for something this small
-		//insertion sort has best case O(n) when the list is mostly/entirely sorted, which is possible to obtain but that doesn't happen because it's reversed (easy fix, do later)
-		sortedTankPowers.push_back(tankPowers[i]);
-		for (int j = sortedTankPowers.size() - 1; j >= 1; j--) {
-			if (sortedTankPowers[j]->timeLeft/sortedTankPowers[j]->maxTime > sortedTankPowers[j-1]->timeLeft/sortedTankPowers[j-1]->maxTime) {
-				std::swap(sortedTankPowers[j], sortedTankPowers[j-1]);
-			} else {
-				break;
-			}
-		}
-	}
-	*/
 	std::vector<TankPower*> sortedTankPowers(tankPowers);
 	std::sort(sortedTankPowers.begin(), sortedTankPowers.end(),
 		[](const TankPower* lhs, const TankPower* rhs) { return (lhs->timeLeft/lhs->maxTime > rhs->timeLeft/rhs->maxTime); });
@@ -1255,19 +947,6 @@ inline void Tank::drawPowerCooldown(float alpha) const {
 		}
 		unsigned int powerOutlineTriangles = Circle::numOfSides * powerOutlinePercent;
 
-		/*
-		if (powerOutlineVertices > 0) {
-			ColorValueHolder c = sortedTankPowers[i]->getColor();
-			c = ColorMixer::mix(BackgroundRect::getBackColor(), c, alpha);
-			shader->setUniform4f("u_color", c.getRf(), c.getGf(), c.getBf(), c.getAf());
-
-			modelMatrix = Renderer::GenerateModelMatrix(r * 9.0/8.0, r * 9.0/8.0, getAngle(), x, y);
-			shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
-
-			Renderer::Draw(*va, *ib, *shader, powerOutlineVertices*3);
-		}
-		*/
-
 		if (powerOutlineTriangles > 0) {
 			ColorValueHolder color = sortedTankPowers[i]->getColor();
 			color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
@@ -1280,8 +959,8 @@ inline void Tank::drawPowerCooldown(float alpha) const {
 			coordsAndColor[4] = color.getBf();
 			coordsAndColor[5] = color.getAf();
 			for (int i = 0; i <= powerOutlineTriangles && i < Circle::numOfSides; i++) {
-				coordsAndColor[(i+1)*6]   = x + (r*(9.0/8.0)) * cos(velocity.getAngle() + i * 2*PI / Circle::numOfSides);
-				coordsAndColor[(i+1)*6+1] = y + (r*(9.0/8.0)) * sin(velocity.getAngle() + i * 2*PI / Circle::numOfSides);
+				coordsAndColor[(i+1)*6]   = x + (r*(9.0/8.0)) * cos(velocity.getAngle() + i * (2*PI / Circle::numOfSides));
+				coordsAndColor[(i+1)*6+1] = y + (r*(9.0/8.0)) * sin(velocity.getAngle() + i * (2*PI / Circle::numOfSides));
 				coordsAndColor[(i+1)*6+2] = color.getRf();
 				coordsAndColor[(i+1)*6+3] = color.getGf();
 				coordsAndColor[(i+1)*6+4] = color.getBf();
@@ -1303,24 +982,6 @@ inline void Tank::drawPowerCooldown(float alpha) const {
 inline void Tank::drawMainBarrel(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 modelMatrix;
-
-	//glLineWidth(2.0f);
-
-	/*
-	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
-	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-
-	modelMatrix = Renderer::GenerateModelMatrix(r, 1, getAngle(), x, y);
-	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
-
-	Renderer::Draw(*cannon_va, *shader, GL_LINES, 0, 2);
-
-	//cleanup
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	*/
 
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
@@ -1361,32 +1022,10 @@ inline void Tank::drawMainBarrel(float alpha) const {
 inline void Tank::drawExtraBarrels(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 modelMatrix;
-
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	//glLineWidth(1.0f);
-
-	/*
-	//shader->setUniform4f("u_color", 0.5f, 0.5f, 0.5f, 0.25f); //CPU color
-	ColorValueHolder color = ColorValueHolder(0.75f, 0.75f, 0.75f);
-	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-
-	for (int i = 1; i < shootingPoints.size(); i++) {
-		modelMatrix = Renderer::GenerateModelMatrix(r, 1, getRealCannonAngle(i), x, y);
-		shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
-
-		Renderer::Draw(*cannon_va, *shader, GL_LINES, 0, 2);
-	}
-
-	//cleanup
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	*/
 
 	ColorValueHolder color = ColorValueHolder(0.75f, 0.75f, 0.75f);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	const float lineWidth = 0.375f; //unsure what to put this at; .25 too thin, .5 too thick, .375 looks a bit off from aliasing
+	const float lineWidth = 0.375f; //TODO: unsure what to put this at; .25 too thin, .5 too thick, .375 looks a bit off from aliasing
 
 	float* coordsAndColor = new float[(shootingPoints.size()-1)*4*(2+4)];
 	unsigned int* indices = new unsigned int[(shootingPoints.size()-1)*6];
@@ -1465,31 +1104,6 @@ bool Tank::kill() {
 void Tank::kill_hard() {
 	this->dead = true;
 }
-
-/*
-void Tank::resetThings(double x, double y, double angle, Team_ID teamID) {
-	this->powerReset();
-	determineShootingAngles();
-	updateAllValues(); //powerReset doesn't reset the level's doings
-
-	this->dead = false;
-	this->x = x;
-	this->y = y;
-	this->velocity = SimpleVector2D(angle, 0, true);
-	this->gameID = GameManager::getNextID();
-	this->teamID = teamID;
-	//this->r = TANK_RADIUS;
-	shootCount = 0;
-	//don't update maxShootCount
-
-	if (RNG::randFunc() < 1.0/4096) {
-		//shiny tank (yes, 1/8192 is the chance before Sword/Shield)
-		defaultColor = ColorValueHolder(0.75f, 0.75f, 0.75f);
-	} else {
-		defaultColor = ColorValueHolder(0.5f, 0.5f, 0.5f);
-	}
-}
-*/
 
 double Tank::getHighestOffenseImportance() const {
 	double highest = LOW_IMPORTANCE;

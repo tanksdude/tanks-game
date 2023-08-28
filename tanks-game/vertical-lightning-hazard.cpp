@@ -14,11 +14,6 @@
 #include "rng.h"
 #include <iostream>
 
-VertexArray* VerticalLightningHazard::background_va;
-VertexBuffer* VerticalLightningHazard::background_vb;
-IndexBuffer* VerticalLightningHazard::background_ib;
-bool VerticalLightningHazard::initialized_GPU = false;
-
 std::unordered_map<std::string, float> VerticalLightningHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", 1.0f });
@@ -29,13 +24,12 @@ std::unordered_map<std::string, float> VerticalLightningHazard::getWeights() con
 	return weights;
 }
 
-VerticalLightningHazard::VerticalLightningHazard(double xpos, double ypos, double width, double height) : RectangularLightningHazard(xpos,ypos,width,height,true) {
+VerticalLightningHazard::VerticalLightningHazard(double xpos, double ypos, double width, double height) : RectangularLightningHazard(xpos,ypos,width,height) {
 	//flexible = false;
 
 	maxBolts = 2;
 	//lengthOfBolt = 4;
 	bolts.reserve(maxBolts);
-	pushDefaultBolt(maxBolts, true);
 
 	//canAcceptPowers = false;
 
@@ -43,9 +37,6 @@ VerticalLightningHazard::VerticalLightningHazard(double xpos, double ypos, doubl
 	//hasSpecialEffectTankCollision = true;
 	//modifiesBulletCollision = true;
 	//hasSpecialEffectBulletCollision = true;
-
-	local_initializeGPU();
-	initializeGPU();
 }
 
 inline Circle* VerticalLightningHazard::getTopPoint() const {
@@ -59,106 +50,6 @@ inline Circle* VerticalLightningHazard::getBottomPoint() const {
 VerticalLightningHazard::~VerticalLightningHazard() {
 	//calls ~RectangularLightningHazard(), so this doesn't need to do anything extra
 	//clearBolts();
-
-	local_uninitializeGPU(); //I don't know if this is okay, but there isn't an error...
-	//uninitializeGPU();
-}
-
-bool VerticalLightningHazard::initializeGPU() {
-	if (initialized_GPU) {
-		return false;
-	}
-
-	float positions[] = {
-		0, 0,   0.5f, 0.5f, 0.5f, 1.0f,
-		1, 0,   0.5f, 0.5f, 0.5f, 1.0f,
-		1, 1,   0.5f, 0.5f, 0.5f, 1.0f,
-		0, 1,   0.5f, 0.5f, 0.5f, 1.0f
-	};
-	unsigned int indices[] = {
-		0, 1, 2,
-		2, 3, 0
-	};
-
-	background_vb = VertexBuffer::MakeVertexBuffer(positions, sizeof(positions), RenderingHints::dynamic_draw);
-	VertexBufferLayout layout = {
-		{ ShaderDataType::Float2, "a_Position" },
-		{ ShaderDataType::Float4, "a_Color" }
-	};
-	background_vb->SetLayout(layout);
-
-	background_ib = IndexBuffer::MakeIndexBuffer(indices, 6);
-
-	background_va = VertexArray::MakeVertexArray();
-	background_va->AddVertexBuffer(background_vb);
-	background_va->SetIndexBuffer(background_ib);
-
-	initialized_GPU = true;
-	return true;
-}
-
-//requires a bolt to initialize:
-void VerticalLightningHazard::local_initializeGPU() {
-	float* positions = new float[bolts[0]->length*2];
-	for (int i = 0; i < bolts[0]->length; i++) {
-		positions[i*2]   = bolts[0]->positions[i*2];
-		positions[i*2+1] = bolts[0]->positions[i*2+1];
-	}
-	bolt_vb_length = bolts[0]->length;
-
-	bolt_vb = VertexBuffer::MakeVertexBuffer(positions, bolts[0]->length*2 * sizeof(float), RenderingHints::stream_draw);
-	VertexBufferLayout layout = {
-		{ ShaderDataType::Float2, "a_Position" },
-		//{ ShaderDataType::Float4, "a_Color" }
-	};
-	bolt_vb->SetLayout(layout);
-
-	bolt_va = VertexArray::MakeVertexArray();
-	bolt_va->AddVertexBuffer(bolt_vb);
-
-	delete[] positions;
-}
-
-void VerticalLightningHazard::local_reinitializeGPU(int length) { //does not seed the VertexBuffer with values
-	delete bolt_va;
-	delete bolt_vb;
-
-	float* positions = new float[length*2];
-	bolt_vb_length = length;
-
-	bolt_vb = VertexBuffer::MakeVertexBuffer(positions, length*2 * sizeof(float), RenderingHints::stream_draw);
-	VertexBufferLayout layout = {
-		{ ShaderDataType::Float2, "a_Position" },
-		//{ ShaderDataType::Float4, "a_Color" }
-	};
-	bolt_vb->SetLayout(layout);
-
-	bolt_va = VertexArray::MakeVertexArray();
-	bolt_va->AddVertexBuffer(bolt_vb);
-
-	delete[] positions;
-}
-
-bool VerticalLightningHazard::uninitializeGPU() {
-	if (!initialized_GPU) {
-		return false;
-	}
-
-	delete background_va;
-	delete background_vb;
-	delete background_ib;
-
-	initialized_GPU = false;
-	return true;
-}
-
-void VerticalLightningHazard::local_uninitializeGPU() {
-	delete bolt_va;
-	delete bolt_vb;
-}
-
-void VerticalLightningHazard::streamBoltVertices(const LightningBolt* l) const {
-	bolt_vb->modifyData(l->positions.data(), l->length*2 * sizeof(float));
 }
 
 RectHazard* VerticalLightningHazard::factory(GenericFactoryConstructionData& args) {
@@ -280,9 +171,6 @@ void VerticalLightningHazard::specialEffectCircleCollision(Circle* c) {
 }
 
 void VerticalLightningHazard::pushBolt(LightningBolt* l, bool simpleRefresh) {
-	if (l->length > bolt_vb_length) {
-		local_reinitializeGPU(l->length);
-	}
 	bolts.push_back(l);
 	if (simpleRefresh) {
 		simpleRefreshBolt(l);
@@ -297,9 +185,6 @@ void VerticalLightningHazard::pushDefaultBolt(int num, bool randomize) {
 		if (randomize) {
 			pushBolt(l, true);
 		} else {
-			if (l->length > bolt_vb_length) {
-				local_reinitializeGPU(l->length);
-			}
 			bolts.push_back(l);
 		}
 	}
@@ -518,8 +403,6 @@ void VerticalLightningHazard::ghostDraw(DrawingLayers layer, float alpha) const 
 inline void VerticalLightningHazard::drawBackground(bool pose, float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 modelMatrix;
 
 	double scale;
 	if (pose || currentlyActive) {
@@ -529,18 +412,6 @@ inline void VerticalLightningHazard::drawBackground(bool pose, float alpha) cons
 	}
 	//scale = scale * scale;
 
-	//main background:
-	/*
-	//ColorValueHolder color = (pose ? getBackgroundColor_Pose() : getBackgroundColor());
-	ColorValueHolder color = getBackgroundColor_Pose();
-	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-
-	modelMatrix = Renderer::GenerateModelMatrix(w, h*scale, 0, x, y + (h*(1-scale))/2);
-	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
-
-	Renderer::Draw(*background_va, *background_ib, *shader);
-	*/
 	//ColorValueHolder color = (pose ? getBackgroundColor_Pose() : getBackgroundColor());
 	ColorValueHolder color = getBackgroundColor_Pose();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
@@ -558,20 +429,11 @@ inline void VerticalLightningHazard::drawBackground(bool pose, float alpha) cons
 
 	Renderer::SubmitBatchedDraw(coordsAndColor, 4 * (2+4), indices, 2 * 3);
 
-	//outline:
-	/*
-	glLineWidth(1.0f);
+	drawBackgroundOutline(alpha);
+}
 
-	color = ColorValueHolder(0, 0, 0);
-	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-
-	modelMatrix = Renderer::GenerateModelMatrix(w, h, 0, x, y);
-	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
-
-	Renderer::Draw(*background_va, *shader, GL_LINES, 1, 4); //not sure if this is actually okay, but at least it works
-	//TODO: doesn't quite work; first vertex (bottom left) loses its color
-	*/
+inline void VerticalLightningHazard::drawBackgroundOutline(float alpha) const {
+	//alpha set by drawBackground()
 
 	//ColorValueHolder color_outline = ColorValueHolder(0.0f, 0.0f, 0.0f); //black is a bit too strong for a lightning's outline
 	ColorValueHolder color_outline = ColorValueHolder(0.5f, 0.5f, 0.5f);
@@ -608,36 +470,10 @@ inline void VerticalLightningHazard::drawBackground(bool pose, float alpha) cons
 inline void VerticalLightningHazard::drawBolts(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 modelMatrix;
 
 	if (!currentlyActive) {
 		return;
 	}
-
-	//glLineWidth(2.0f);
-
-	/*
-	ColorValueHolder color = getBoltColor();
-	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-
-	modelMatrix = Renderer::GenerateModelMatrix(1, 1, 0, x, y);
-	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
-
-	for (int i = 0; i < bolts.size(); i++) {
-		//I think the VertexBuffer resizing should happen here, but there would probably be less strain if it happens only when a bullet/tank collides
-		//TODO: that ^ should be the preferred way, since only draw() (and initializeGPU()) should do GPU stuff
-		//if (bolts[i]->length > bolt_vb_length) {
-		//	local_reinitializeGPU(bolts[i]->length);
-		//}
-		streamBoltVertices(bolts[i]); //TODO: fix
-		Renderer::Draw(*bolt_va, *shader, GL_LINE_STRIP, 0, bolts[i]->length);
-	}
-
-	//cleanup
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	*/
 
 	ColorValueHolder color = getBoltColor();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
@@ -686,42 +522,15 @@ inline void VerticalLightningHazard::drawBolts(float alpha) const {
 inline void VerticalLightningHazard::drawBolts_Pose(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 modelMatrix;
-
-	//glLineWidth(2.0f);
-
-	/*
-	ColorValueHolder color = getBoltColor();
-	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-
-	modelMatrix = Renderer::GenerateModelMatrix(1, 1, 0, x, y);
-	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
-	*/
 
 	//generate bolts
 	std::vector<LightningBolt*> poseBolts;
 	//from pushDefaultBolt(), mostly
 	LightningBolt* l = new LightningBolt(w/2, 0, w/2, h, getDefaultNumBoltPoints(h));
-
-	if (l->length > bolt_vb_length) {
-		//cut off the parts that won't fit; shouldn't happen though
-		l->length = bolt_vb_length;
-	}
 	refreshBolt(l);
+	poseBolts.push_back(l);
 
 	//draw
-	/*
-	for (int i = 0; i < poseBolts.size(); i++) {
-		//match with drawBolts()
-		streamBoltVertices(poseBolts[i]);
-		Renderer::Draw(*bolt_va, *shader, GL_LINE_STRIP, 0, poseBolts[i]->length);
-	}
-
-	//cleanup
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	*/
 	ColorValueHolder color = getBoltColor();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	const float lineWidth = 0.75f; //TODO: too thick?

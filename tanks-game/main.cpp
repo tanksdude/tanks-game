@@ -8,10 +8,6 @@
 #include <stdexcept>
 
 //GPU rendering:
-#include "vertex-array.h"
-#include "vertex-buffer.h"
-#include "index-buffer.h"
-#include "shader.h"
 #include "renderer.h"
 #include <glm.hpp> //GLM is overkill but that's okay
 #include <gtc/matrix_transform.hpp>
@@ -341,10 +337,9 @@ int main(int argc, char** argv) {
 	WallManager::initialize();
 	LevelManager::initialize();
 	HazardManager::initialize();
-	Renderer::Initialize(); //static VAO, VBO, and IBO has better performance
-	BackgroundRect::initializeGPU();
 	Diagnostics::Initialize();
 	GameSceneManager::Initialize();
+	Renderer::Initialize();
 
 	Diagnostics::declareGraph("tick", ColorValueHolder(1.0f, 0.0f, 0.0f));
 	Diagnostics::declareGraph("draw", ColorValueHolder(0.0f, 0.0f, 1.0f));
@@ -389,12 +384,13 @@ int main(int argc, char** argv) {
 	ResetThings::firstGameInitialize("\"WASD 4 Life\"", "\"Arrow Keys R WINZ\"", *game);
 	//they're good team names, deal with it
 #if _DEBUG
-	LevelManager::pushLevel("dev", "dev3");
+	//LevelManager::pushLevel("dev", "dev3");
 	//LevelManager::pushLevel("vanilla", "default_random");
 	//LevelManager::pushLevel("random-vanilla", "sneaky_reward");
 	//LevelManager::pushLevel("vanilla-extra", "tricky_maneuvering");
 	//LevelManager::pushLevel("random-vanilla", "tight_patrolling_corridor");
 	//LevelManager::pushLevel("dev", "unnamed3");
+	ResetThings::firstLevelPush();
 #else
 	ResetThings::firstLevelPush();
 #endif

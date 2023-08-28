@@ -7,7 +7,7 @@ class GeneralizedLightning {
 protected:
 	//see notes in GeneralizedLava about nested classes
 	struct LightningBolt {
-		std::vector<float> positions; //positions is array of (x,y) points (for easy vertex streaming)
+		std::vector<float> positions; //positions is array of (x,y) points
 		int length; //positions.size()/2, unless it's uninitialized
 		LightningBolt(int l) { //try not to use
 			length = l;

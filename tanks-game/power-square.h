@@ -8,10 +8,6 @@ class PowerSquare;
 #include "color-value-holder.h"
 #include "power.h"
 
-#include "vertex-array.h"
-#include "vertex-buffer.h"
-#include "index-buffer.h"
-
 class PowerSquare : public GameThing, public Rect, public DrawableThing {
 protected:
 	Power** heldPowers; //array of pointers (can do a vector for simplicity but I don't foresee a powersquare getting more powers)
@@ -22,16 +18,6 @@ public:
 	static const double POWER_HEIGHT;
 	static const double POWER_LINE_WIDTH;
 	static const double POWER_OUTLINE_MULTIPLIER;
-
-private:
-	static VertexArray* va;
-	static VertexBuffer* vb;
-	static IndexBuffer* ib_main; //the main thing
-	static IndexBuffer* ib_outline; //the extra bit when numOfPowers >= 2
-	static bool initialized_GPU;
-
-	static bool initializeGPU();
-	static bool uninitializeGPU();
 
 public:
 	ColorValueHolder getColor() const;
@@ -45,7 +31,6 @@ public:
 	void poseDraw(DrawingLayers) const override;
 	void ghostDraw(float alpha) const override;
 	void ghostDraw(DrawingLayers, float alpha) const override;
-	//void drawCPU() const;
 
 private:
 	inline void drawMain(float alpha = 1.0f) const;

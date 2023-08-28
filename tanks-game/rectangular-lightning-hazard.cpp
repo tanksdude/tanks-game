@@ -14,11 +14,6 @@
 #include "rng.h"
 #include <iostream>
 
-VertexArray* RectangularLightningHazard::background_va;
-VertexBuffer* RectangularLightningHazard::background_vb;
-IndexBuffer* RectangularLightningHazard::background_ib;
-bool RectangularLightningHazard::initialized_GPU = false;
-
 std::unordered_map<std::string, float> RectangularLightningHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", 1.0f });
@@ -29,7 +24,7 @@ std::unordered_map<std::string, float> RectangularLightningHazard::getWeights() 
 	return weights;
 }
 
-RectangularLightningHazard::RectangularLightningHazard(double xpos, double ypos, double width, double height, bool) : RectHazard(HAZARD_TEAM) {
+RectangularLightningHazard::RectangularLightningHazard(double xpos, double ypos, double width, double height) : RectHazard(HAZARD_TEAM) {
 	x = xpos;
 	y = ypos;
 	w = width;
@@ -56,120 +51,12 @@ RectangularLightningHazard::RectangularLightningHazard(double xpos, double ypos,
 	hasSpecialEffectBulletCollision = true;
 }
 
-RectangularLightningHazard::RectangularLightningHazard(double xpos, double ypos, double width, double height)
-: RectangularLightningHazard(xpos, ypos, width, height, true) {
-	pushDefaultBolt(maxBolts, true); //there isn't really a default bolt...
-
-	local_initializeGPU();
-	initializeGPU();
-}
-
 inline Circle* RectangularLightningHazard::getCenterPoint() const {
 	return new Point(x + w/2, y + h/2);
 }
 
 RectangularLightningHazard::~RectangularLightningHazard() {
 	//clearBolts(); //handled by ~GeneralizedLightning
-
-	local_uninitializeGPU();
-	//uninitializeGPU();
-}
-
-bool RectangularLightningHazard::initializeGPU() {
-	if (initialized_GPU) {
-		return false;
-	}
-
-	float positions[] = {
-		0, 0,   0.5f, 0.5f, 0.5f, 1.0f,
-		1, 0,   0.5f, 0.5f, 0.5f, 1.0f,
-		1, 1,   0.5f, 0.5f, 0.5f, 1.0f,
-		0, 1,   0.5f, 0.5f, 0.5f, 1.0f
-	};
-	unsigned int indices[] = {
-		0, 1, 2,
-		2, 3, 0
-	};
-
-	background_vb = VertexBuffer::MakeVertexBuffer(positions, sizeof(positions), RenderingHints::dynamic_draw);
-	VertexBufferLayout layout = {
-		{ ShaderDataType::Float2, "a_Position" },
-		{ ShaderDataType::Float4, "a_Color" }
-	};
-	background_vb->SetLayout(layout);
-
-	background_ib = IndexBuffer::MakeIndexBuffer(indices, 6);
-
-	background_va = VertexArray::MakeVertexArray();
-	background_va->AddVertexBuffer(background_vb);
-	background_va->SetIndexBuffer(background_ib);
-
-	initialized_GPU = true;
-	return true;
-}
-
-//requires a bolt to initialize:
-void RectangularLightningHazard::local_initializeGPU() {
-	float* positions = new float[bolts[0]->length*2];
-	for (int i = 0; i < bolts[0]->length; i++) {
-		positions[i*2]   = bolts[0]->positions[i*2];
-		positions[i*2+1] = bolts[0]->positions[i*2+1];
-	}
-	bolt_vb_length = bolts[0]->length;
-
-	bolt_vb = VertexBuffer::MakeVertexBuffer(positions, bolts[0]->length*2 * sizeof(float), RenderingHints::stream_draw);
-	VertexBufferLayout layout = {
-		{ ShaderDataType::Float2, "a_Position" },
-		//{ ShaderDataType::Float4, "a_Color" }
-	};
-	bolt_vb->SetLayout(layout);
-
-	bolt_va = VertexArray::MakeVertexArray();
-	bolt_va->AddVertexBuffer(bolt_vb);
-
-	delete[] positions;
-}
-
-void RectangularLightningHazard::local_reinitializeGPU(int length) { //does not seed the VertexBuffer with values
-	delete bolt_va;
-	delete bolt_vb;
-
-	float* positions = new float[length*2];
-	bolt_vb_length = length;
-
-	bolt_vb = VertexBuffer::MakeVertexBuffer(positions, length*2 * sizeof(float), RenderingHints::stream_draw);
-	VertexBufferLayout layout = {
-		{ ShaderDataType::Float2, "a_Position" },
-		//{ ShaderDataType::Float4, "a_Color" }
-	};
-	bolt_vb->SetLayout(layout);
-
-	bolt_va = VertexArray::MakeVertexArray();
-	bolt_va->AddVertexBuffer(bolt_vb);
-
-	delete[] positions;
-}
-
-bool RectangularLightningHazard::uninitializeGPU() {
-	if (!initialized_GPU) {
-		return false;
-	}
-
-	delete background_va;
-	delete background_vb;
-	delete background_ib;
-
-	initialized_GPU = false;
-	return true;
-}
-
-void RectangularLightningHazard::local_uninitializeGPU() {
-	delete bolt_va;
-	delete bolt_vb;
-}
-
-void RectangularLightningHazard::streamBoltVertices(const LightningBolt* l) const {
-	bolt_vb->modifyData(l->positions.data(), l->length*2 * sizeof(float));
 }
 
 RectHazard* RectangularLightningHazard::factory(GenericFactoryConstructionData& args) {
@@ -300,9 +187,6 @@ void RectangularLightningHazard::specialEffectBulletCollision(Bullet* b) {
 }
 
 void RectangularLightningHazard::pushBolt(LightningBolt* l) {
-	if (l->length > bolt_vb_length) {
-		local_reinitializeGPU(l->length);
-	}
 	bolts.push_back(l);
 	refreshBolt(l);
 }
@@ -315,9 +199,6 @@ void RectangularLightningHazard::pushDefaultBolt(int num, bool randomize) {
 		if (randomize) {
 			pushBolt(l);
 		} else {
-			if (l->length > bolt_vb_length) {
-				local_reinitializeGPU(l->length);
-			}
 			bolts.push_back(l);
 		}
 	}
@@ -511,8 +392,6 @@ void RectangularLightningHazard::ghostDraw(DrawingLayers layer, float alpha) con
 inline void RectangularLightningHazard::drawBackground(bool pose, float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 modelMatrix;
 
 	double scale;
 	if (pose || currentlyActive) {
@@ -522,18 +401,6 @@ inline void RectangularLightningHazard::drawBackground(bool pose, float alpha) c
 	}
 	scale = scale * scale;
 
-	//main background:
-	/*
-	//ColorValueHolder color = (pose ? getBackgroundColor_Pose() : getBackgroundColor());
-	ColorValueHolder color = getBackgroundColor_Pose();
-	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-
-	modelMatrix = Renderer::GenerateModelMatrix(w*scale, h*scale, 0, x + (w*(1-scale))/2, y + (h*(1-scale))/2);
-	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
-
-	Renderer::Draw(*background_va, *background_ib, *shader);
-	*/
 	//ColorValueHolder color = (pose ? getBackgroundColor_Pose() : getBackgroundColor());
 	ColorValueHolder color = getBackgroundColor_Pose();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
@@ -551,19 +418,11 @@ inline void RectangularLightningHazard::drawBackground(bool pose, float alpha) c
 
 	Renderer::SubmitBatchedDraw(coordsAndColor, 4 * (2+4), indices, 2 * 3);
 
-	//outline:
-	/*
-	glLineWidth(1.0f);
+	drawBackgroundOutline(alpha);
+}
 
-	color = ColorValueHolder(0, 0, 0);
-	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-
-	modelMatrix = Renderer::GenerateModelMatrix(w, h, 0, x, y);
-	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
-
-	Renderer::Draw(*background_va, *shader, GL_LINE_LOOP, 0, 4);
-	*/
+inline void RectangularLightningHazard::drawBackgroundOutline(float alpha) const {
+	//alpha set by drawBackground()
 
 	//ColorValueHolder color_outline = ColorValueHolder(0.0f, 0.0f, 0.0f); //black is a bit too strong for a lightning's outline
 	ColorValueHolder color_outline = ColorValueHolder(0.5f, 0.5f, 0.5f);
@@ -608,36 +467,10 @@ inline void RectangularLightningHazard::drawBackground(bool pose, float alpha) c
 inline void RectangularLightningHazard::drawBolts(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 modelMatrix;
 
 	if (!currentlyActive) {
 		return;
 	}
-
-	//glLineWidth(2.0f);
-
-	/*
-	ColorValueHolder color = getBoltColor();
-	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-
-	modelMatrix = Renderer::GenerateModelMatrix(1, 1, 0, x, y);
-	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
-
-	for (int i = 0; i < bolts.size(); i++) {
-		//I think the VertexBuffer resizing should happen here, but there would probably be less strain if it happens only when a bullet/tank collides
-		//TODO: that ^ should be the preferred way, since only draw() (and initializeGPU()) should do GPU stuff
-		//if (bolts[i]->length > bolt_vb_length) {
-		//	local_reinitializeGPU(bolts[i]->length);
-		//}
-		streamBoltVertices(bolts[i]); //TODO: fix (but better)
-		Renderer::Draw(*bolt_va, *shader, GL_LINE_STRIP, 0, bolts[i]->length);
-	}
-
-	//cleanup
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	*/
 
 	ColorValueHolder color = getBoltColor();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
@@ -686,19 +519,6 @@ inline void RectangularLightningHazard::drawBolts(float alpha) const {
 inline void RectangularLightningHazard::drawBolts_Pose(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 modelMatrix;
-
-	//glLineWidth(2.0f);
-
-	/*
-	ColorValueHolder color = getBoltColor();
-	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-
-	modelMatrix = Renderer::GenerateModelMatrix(1, 1, 0, x, y);
-	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
-	*/
 
 	//generate bolts
 	std::vector<LightningBolt*> poseBolts;
@@ -707,24 +527,11 @@ inline void RectangularLightningHazard::drawBolts_Pose(float alpha) const {
 		double xEnd = (i%2==0) * w/2*.75, yEnd = (i/2==0) * h/2*.75;
 		LightningBolt* l = new LightningBolt(w/2, h/2, xEnd, yEnd, getDefaultNumBoltPoints(sqrt(pow(xEnd - w/2, 2) + pow(yEnd - h/2, 2))));
 
-		if (l->length > bolt_vb_length) {
-			//cut off the parts that won't fit; shouldn't happen though
-			l->length = bolt_vb_length;
-		}
 		refreshBolt(l);
+		poseBolts.push_back(l);
 	}
 
 	//draw
-	/*
-	for (int i = 0; i < poseBolts.size(); i++) {
-		//match with drawBolts()
-		streamBoltVertices(poseBolts[i]);
-		Renderer::Draw(*bolt_va, *shader, GL_LINE_STRIP, 0, poseBolts[i]->length);
-	}
-
-	//cleanup
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	*/
 	ColorValueHolder color = getBoltColor();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	const float lineWidth = 0.75f;

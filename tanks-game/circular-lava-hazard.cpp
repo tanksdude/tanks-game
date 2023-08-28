@@ -11,14 +11,6 @@
 #include "rng.h"
 #include <algorithm> //std::sort
 
-VertexArray* CircularLavaHazard::background_va;
-VertexBuffer* CircularLavaHazard::background_vb;
-IndexBuffer* CircularLavaHazard::background_ib;
-VertexArray* CircularLavaHazard::bubble_va;
-VertexBuffer* CircularLavaHazard::bubble_vb;
-IndexBuffer* CircularLavaHazard::bubble_ib;
-bool CircularLavaHazard::initialized_GPU = false;
-
 std::unordered_map<std::string, float> CircularLavaHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", 1.0f });
@@ -43,111 +35,10 @@ CircularLavaHazard::CircularLavaHazard(double xpos, double ypos, double radius) 
 
 	modifiesTankCollision = true;
 	modifiesBulletCollision = true;
-
-	initializeGPU();
 }
 
 CircularLavaHazard::~CircularLavaHazard() {
-	//uninitializeGPU();
-}
-
-bool CircularLavaHazard::initializeGPU() {
-	if (initialized_GPU) {
-		return false;
-	}
-
-	//background:
-	float background_positions[(Circle::numOfSides+1)*(2+4)];
-	background_positions[0] = 0;
-	background_positions[1] = 0;
-	background_positions[2] = 1.0f;
-	background_positions[3] = 0.5f;
-	background_positions[4] = 0.0f;
-	background_positions[5] = 1.0f;
-	for (int i = 1; i < Circle::numOfSides+1; i++) {
-		background_positions[i*6]   = cos((i-1) * 2*PI / Circle::numOfSides);
-		background_positions[i*6+1] = sin((i-1) * 2*PI / Circle::numOfSides);
-		background_positions[i*6+2] = 1.0f;
-		background_positions[i*6+3] = 0.5f;
-		background_positions[i*6+4] = 0.0f;
-		background_positions[i*6+5] = 1.0f;
-	}
-
-	unsigned int background_indices[Circle::numOfSides*3];
-	for (int i = 0; i < Circle::numOfSides; i++) {
-		background_indices[i*3]   = 0;
-		background_indices[i*3+1] = i+1;
-		background_indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
-	}
-
-	background_vb = VertexBuffer::MakeVertexBuffer(background_positions, (Circle::numOfSides+1)*(2+4) * sizeof(float), RenderingHints::static_draw);
-	VertexBufferLayout background_layout = {
-		{ ShaderDataType::Float2, "a_Position" },
-		{ ShaderDataType::Float4, "a_Color" }
-	};
-	background_vb->SetLayout(background_layout);
-
-	background_ib = IndexBuffer::MakeIndexBuffer(background_indices, Circle::numOfSides*3);
-
-	background_va = VertexArray::MakeVertexArray();
-	background_va->AddVertexBuffer(background_vb);
-	background_va->SetIndexBuffer(background_ib);
-
-	//bubble:
-	float bubble_positions[(Circle::numOfSides+1)*(2+4)];
-	bubble_positions[0] = 0;
-	bubble_positions[1] = 0;
-	bubble_positions[2] = 1.0f;
-	bubble_positions[3] = 1.0f;
-	bubble_positions[4] = 1.0f;
-	bubble_positions[5] = 1.0f;
-	for (int i = 1; i < Circle::numOfSides+1; i++) {
-		bubble_positions[i*6]   = cos((i-1) * 2*PI / Circle::numOfSides);
-		bubble_positions[i*6+1] = sin((i-1) * 2*PI / Circle::numOfSides);
-		bubble_positions[i*6+2] = 1.0f;
-		bubble_positions[i*6+3] = 1.0f;
-		bubble_positions[i*6+4] = 1.0f;
-		bubble_positions[i*6+5] = 1.0f;
-	}
-
-	unsigned int bubble_indices[Circle::numOfSides*3];
-	for (int i = 0; i < Circle::numOfSides; i++) {
-		bubble_indices[i*3]   = 0;
-		bubble_indices[i*3+1] = i+1;
-		bubble_indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
-	}
-
-	bubble_vb = VertexBuffer::MakeVertexBuffer(bubble_positions, (Circle::numOfSides+1)*(2+4) * sizeof(float), RenderingHints::dynamic_draw);
-	VertexBufferLayout bubble_layout = {
-		{ ShaderDataType::Float2, "a_Position" },
-		{ ShaderDataType::Float4, "a_Color" }
-	};
-	bubble_vb->SetLayout(bubble_layout);
-
-	bubble_ib = IndexBuffer::MakeIndexBuffer(bubble_indices, Circle::numOfSides*3);
-
-	bubble_va = VertexArray::MakeVertexArray();
-	bubble_va->AddVertexBuffer(bubble_vb);
-	bubble_va->SetIndexBuffer(bubble_ib);
-
-	initialized_GPU = true;
-	return true;
-}
-
-bool CircularLavaHazard::uninitializeGPU() {
-	if (!initialized_GPU) {
-		return false;
-	}
-
-	delete background_va;
-	delete background_vb;
-	delete background_ib;
-	delete bubble_va;
-	delete bubble_vb;
-	delete bubble_ib;
-
-	initialized_GPU = false;
-	return true;
+	//nothing
 }
 
 CircleHazard* CircularLavaHazard::factory(GenericFactoryConstructionData& args) {
@@ -308,19 +199,6 @@ void CircularLavaHazard::ghostDraw(DrawingLayers layer, float alpha) const {
 inline void CircularLavaHazard::drawBackground(bool pose, float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 modelMatrix;
-
-	/*
-	ColorValueHolder color = (pose ? getBackgroundColor_Pose() : getBackgroundColor());
-	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-
-	modelMatrix = Renderer::GenerateModelMatrix(r, r, 0, x, y);
-	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
-
-	Renderer::Draw(*background_va, *background_ib, *shader);
-	*/
 
 	ColorValueHolder color = (pose ? getBackgroundColor_Pose() : getBackgroundColor());
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
@@ -333,8 +211,8 @@ inline void CircularLavaHazard::drawBackground(bool pose, float alpha) const {
 	coordsAndColor[4] = color.getBf();
 	coordsAndColor[5] = color.getAf();
 	for (int i = 1; i < Circle::numOfSides+1; i++) {
-		coordsAndColor[i*6]   = x + r * cos((i-1) * 2*PI / Circle::numOfSides);
-		coordsAndColor[i*6+1] = y + r * sin((i-1) * 2*PI / Circle::numOfSides);
+		coordsAndColor[i*6]   = x + r * cos((i-1) * (2*PI / Circle::numOfSides));
+		coordsAndColor[i*6+1] = y + r * sin((i-1) * (2*PI / Circle::numOfSides));
 		coordsAndColor[i*6+2] = color.getRf();
 		coordsAndColor[i*6+3] = color.getGf();
 		coordsAndColor[i*6+4] = color.getBf();
@@ -358,54 +236,24 @@ inline void CircularLavaHazard::drawBubbles(bool pose, float alpha) const {
 
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 modelMatrix;
-
-	//glLineWidth(2.0f);
 
 	//first, sort by alpha: lowest to highest (this makes the bubbles less weird-looking when drawn over each other)
-	/*
-	std::vector<LavaBubble*> sortedBubbles;
-	sortedBubbles.reserve(bubbles.size());
-	for (int i = 0; i < bubbles.size(); i++) {
-		//insertion sort because laziness
-		sortedBubbles.push_back(bubbles[i]);
-		for (int j = sortedBubbles.size()-1; j >= 1; j--) {
-			if (sortedBubbles[j]->getAlpha() < sortedBubbles[j-1]->getAlpha()) {
-				std::swap(sortedBubbles[j], sortedBubbles[j-1]);
-			} else {
-				break;
-			}
-		}
-	}
-	*/
 	std::vector<LavaBubble*> sortedBubbles(bubbles);
 	std::sort(sortedBubbles.begin(), sortedBubbles.end(),
 		[](const LavaBubble* lhs, const LavaBubble* rhs) { return (lhs->getAlpha() < rhs->getAlpha()); });
 
 	//second, draw the bubbles
 	for (int j = 0; j < sortedBubbles.size(); j++) {
-		/*
-		ColorValueHolder color = (pose ? getBubbleColor_Pose(sortedBubbles[j]) : getBubbleColor(sortedBubbles[j]));
-		color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-		shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-
-		modelMatrix = Renderer::GenerateModelMatrix(sortedBubbles[j]->getR(), sortedBubbles[j]->getR(), 0, sortedBubbles[j]->getX()*r + x, sortedBubbles[j]->getY()*r + y);
-		shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
-
-		Renderer::Draw(*bubble_va, *shader, GL_LINE_LOOP, 1, Circle::numOfSides);
-		*/
-
 		ColorValueHolder color = (pose ? getBubbleColor_Pose(sortedBubbles[j]) : getBubbleColor(sortedBubbles[j]));
 		color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 		const float lineWidth = 0.75f;
 
 		float coordsAndColor[(Circle::numOfSides*2)*(2+4)];
 		for (int i = 0; i < Circle::numOfSides; i++) {
-			coordsAndColor[(i*2)  *6]   = (sortedBubbles[j]->getX()*this->r + this->x) + (sortedBubbles[j]->getR() - lineWidth) * cos(i * 2*PI / Circle::numOfSides);
-			coordsAndColor[(i*2)  *6+1] = (sortedBubbles[j]->getY()*this->r + this->y) + (sortedBubbles[j]->getR() - lineWidth) * sin(i * 2*PI / Circle::numOfSides);
-			coordsAndColor[(i*2+1)*6]   = (sortedBubbles[j]->getX()*this->r + this->x) + (sortedBubbles[j]->getR() + lineWidth) * cos(i * 2*PI / Circle::numOfSides);
-			coordsAndColor[(i*2+1)*6+1] = (sortedBubbles[j]->getY()*this->r + this->y) + (sortedBubbles[j]->getR() + lineWidth) * sin(i * 2*PI / Circle::numOfSides);
+			coordsAndColor[(i*2)  *6]   = (sortedBubbles[j]->getX()*this->r + this->x) + (sortedBubbles[j]->getR() - lineWidth) * cos(i * (2*PI / Circle::numOfSides));
+			coordsAndColor[(i*2)  *6+1] = (sortedBubbles[j]->getY()*this->r + this->y) + (sortedBubbles[j]->getR() - lineWidth) * sin(i * (2*PI / Circle::numOfSides));
+			coordsAndColor[(i*2+1)*6]   = (sortedBubbles[j]->getX()*this->r + this->x) + (sortedBubbles[j]->getR() + lineWidth) * cos(i * (2*PI / Circle::numOfSides));
+			coordsAndColor[(i*2+1)*6+1] = (sortedBubbles[j]->getY()*this->r + this->y) + (sortedBubbles[j]->getR() + lineWidth) * sin(i * (2*PI / Circle::numOfSides));
 
 			coordsAndColor[(i*2)  *6+2] = color.getRf();
 			coordsAndColor[(i*2)  *6+3] = color.getGf();
@@ -429,9 +277,6 @@ inline void CircularLavaHazard::drawBubbles(bool pose, float alpha) const {
 
 		Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::numOfSides*2)*(2+4), indices, Circle::numOfSides*6);
 	}
-
-	//cleanup
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 CircleHazard* CircularLavaHazard::randomizingFactory(double x_start, double y_start, double area_width, double area_height, GenericFactoryConstructionData& args) {

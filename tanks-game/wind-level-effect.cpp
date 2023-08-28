@@ -9,14 +9,6 @@
 #include "renderer.h"
 #include <algorithm> //std::copy
 
-VertexArray* WindLevelEffect::va;
-VertexBuffer* WindLevelEffect::vb;
-IndexBuffer* WindLevelEffect::ib;
-VertexArray* WindLevelEffect::va_extra;
-VertexBuffer* WindLevelEffect::vb_extra;
-IndexBuffer* WindLevelEffect::ib_extra;
-bool WindLevelEffect::initialized_GPU = false;
-
 SimpleVector2D WindLevelEffect::vertices_spike[3];
 SimpleVector2D WindLevelEffect::vertices_arrow[7];
 unsigned int WindLevelEffect::indices_spike[1*3];
@@ -97,33 +89,6 @@ void WindLevelEffect::draw() const {
 	if (getWindStrengthMultiplier() <= 0) {
 		return;
 	}
-
-	/*
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 modelMatrix;
-
-	ColorValueHolder color = ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(0.0f, 0.0f, 0.0f));
-	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-
-	const double length = 16 * pushDirection.getMagnitude() * getWindStrengthMultiplier(); //normal
-	//const double length = 16 * sqrt(pushDirection.getMagnitude() * getWindStrengthMultiplier()); //ez way to make small values more visible
-	//sqrt is not a big deal to compute: https://stackoverflow.com/questions/41582376/fast-approximation-of-square-rootx-with-known-0-x-1
-	//const double length = 16 * sqrt(1 - pow(pushDirection.getMagnitude()*getWindStrengthMultiplier()-1, 2)); //(circle) //too big
-	const double x_offset = 64; //JS x offset: (528-112)/7 (it's the distance between the main walls) = 59.42857
-	const double y_offset = 64; //JS y offset: (320)/5 = 64
-	for (int i = -3; i <= 3; i++) {
-		for (int j = -2; j <= 2; j++) {
-			modelMatrix = Renderer::GenerateModelMatrix(length, length, pushDirection.getAngle(), GAME_WIDTH/2 + i*x_offset, GAME_HEIGHT/2 + j*y_offset);
-			shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
-
-			if (i == 0 && j == 0) {
-				Renderer::Draw(*va_extra, *ib_extra, *shader);
-			} else {
-				Renderer::Draw(*va, *ib, *shader);
-			}
-		}
-	}
-	*/
 
 	ColorValueHolder color = ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(0.0f, 0.0f, 0.0f));
 
@@ -229,11 +194,8 @@ void WindLevelEffect::poseDraw(DrawingLayers layer) const {
 void WindLevelEffect::ghostDraw(float alpha) const {
 	//from draw() (maybe copy-pasting isn't a good idea)
 	//7 x 5 arrows
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 modelMatrix;
 
 	ColorValueHolder color = ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(0.0f, 0.0f, 0.0f));
-	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
 	const double length = 16 * pushDirection.getMagnitude();
 	const double x_offset = 64;
@@ -247,16 +209,26 @@ void WindLevelEffect::ghostDraw(float alpha) const {
 			double angle;
 			if (i < -j) {
 				//bottom left
-				angle = -3*PI/4;
+				angle = -3*(PI/4);
 			} else {
 				//top right
 				angle = PI/4;
 			}
 
-			modelMatrix = Renderer::GenerateModelMatrix(length, length, angle, GAME_WIDTH/2 + i*x_offset, GAME_HEIGHT/2 + j*y_offset);
-			shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
+			float coordsAndColor_spike[3*(2+4)];
+			for (int k = 0; k < 3; k++) {
+				SimpleVector2D vertex = SimpleVector2D(vertices_spike[k]);
+				vertex.setMagnitude(vertex.getMagnitude() * length);
+				vertex.changeAngle(pushDirection.getAngle());
+				coordsAndColor_spike[k*6]   = (GAME_WIDTH/2  + i*x_offset) + vertex.getXComp();
+				coordsAndColor_spike[k*6+1] = (GAME_HEIGHT/2 + j*y_offset) + vertex.getYComp();
+				coordsAndColor_spike[k*6+2] = color.getRf();
+				coordsAndColor_spike[k*6+3] = color.getGf();
+				coordsAndColor_spike[k*6+4] = color.getBf();
+				coordsAndColor_spike[k*6+5] = color.getAf();
+			}
 
-			Renderer::Draw(*va, *ib, *shader);
+			Renderer::SubmitBatchedDraw(coordsAndColor_spike, 3*(2+4), indices_spike, 1*3);
 		}
 	}
 }
@@ -285,85 +257,6 @@ void WindLevelEffect::ghostDraw(DrawingLayers layer, float alpha) const {
 			//later
 			break;
 	}
-}
-
-bool WindLevelEffect::initializeGPU() {
-	if (initialized_GPU) {
-		return false;
-	}
-
-	//I think an arrow was originally intended but complex to implement, so a spike was used
-
-	//spike:
-	float positions[] = {
-		-1.0f, -0.125f,   0.4f, 0.4f, 0.4f, 1.0f,
-		-1.0f,  0.125f,   0.4f, 0.4f, 0.4f, 1.0f,
-		 1.0f,  0.0f,     0.4f, 0.4f, 0.4f, 1.0f
-	};
-	//arrow:
-	float positions_extra[] = {
-		-1.0f, -0.125f,   0.4f, 0.4f, 0.4f, 1.0f, //bottom left  //0
-		-1.0f,  0.125f,   0.4f, 0.4f, 0.4f, 1.0f, //top left     //1
-		 0.5f,  0.125f,   0.4f, 0.4f, 0.4f, 1.0f, //top right    //2
-		 0.5f,  0.5f,     0.4f, 0.4f, 0.4f, 1.0f,                //3
-		 1.0f,  0.0f,     0.4f, 0.4f, 0.4f, 1.0f, //arrow tip    //4
-		 0.5f, -0.5f,     0.4f, 0.4f, 0.4f, 1.0f,                //5
-		 0.5f, -0.125f,   0.4f, 0.4f, 0.4f, 1.0f  //bottom right //6
-	};
-
-	unsigned int indices[] = {
-		0, 1, 2
-	};
-	unsigned int indices_extra[] = {
-		0, 1, 2,
-		2, 6, 0,
-		3, 4, 5
-	};
-
-	vb = VertexBuffer::MakeVertexBuffer(positions, sizeof(positions), RenderingHints::dynamic_draw);
-	VertexBufferLayout layout = {
-		{ ShaderDataType::Float2, "a_Position" },
-		{ ShaderDataType::Float4, "a_Color" }
-	};
-	vb->SetLayout(layout);
-
-	ib = IndexBuffer::MakeIndexBuffer(indices, sizeof(indices)/sizeof(unsigned int));
-
-	va = VertexArray::MakeVertexArray();
-	va->AddVertexBuffer(vb);
-	va->SetIndexBuffer(ib);
-
-	vb_extra = VertexBuffer::MakeVertexBuffer(positions_extra, sizeof(positions_extra), RenderingHints::dynamic_draw);
-	VertexBufferLayout layout_extra = {
-		{ ShaderDataType::Float2, "a_Position" },
-		{ ShaderDataType::Float4, "a_Color" }
-	};
-	vb_extra->SetLayout(layout);
-
-	ib_extra = IndexBuffer::MakeIndexBuffer(indices_extra, sizeof(indices_extra)/sizeof(unsigned int));
-
-	va_extra = VertexArray::MakeVertexArray();
-	va_extra->AddVertexBuffer(vb_extra);
-	va_extra->SetIndexBuffer(ib_extra);
-
-	initialized_GPU = true;
-	return true;
-}
-
-bool WindLevelEffect::uninitializeGPU() {
-	if (!initialized_GPU) {
-		return false;
-	}
-
-	delete va;
-	delete vb;
-	delete ib;
-	delete va_extra;
-	delete vb_extra;
-	delete ib_extra;
-
-	initialized_GPU = false;
-	return true;
 }
 
 bool WindLevelEffect::initializeVertices() {
@@ -412,7 +305,6 @@ WindLevelEffect::WindLevelEffect(bool transitionWind) {
 		stateMultiplier = new double[maxState]{1, 0, 1, 0};
 	}
 
-	initializeGPU();
 	initializeVertices();
 }
 

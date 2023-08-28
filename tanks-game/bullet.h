@@ -10,10 +10,6 @@ struct BulletUpdateStruct;
 #include "simple-vector-2d.h"
 #include "bullet-power.h"
 
-#include "vertex-array.h"
-#include "vertex-buffer.h"
-#include "index-buffer.h"
-
 enum class BulletParentType {
 	team, //tanks
 	individual, //hazards
@@ -66,16 +62,6 @@ public:
 
 	static const double default_radius;
 
-private:
-	//IMPORTANT: GLEW must be initialized before these are set
-	static VertexArray* va;
-	static VertexBuffer* vb;
-	static IndexBuffer* ib;
-	static bool initialized_GPU;
-
-	static bool initializeGPU(); //returns whether it successfully initialized (false if it was already initialized)
-	static bool uninitializeGPU();
-
 public:
 	bool move();
 	void powerCalculate();
@@ -91,8 +77,6 @@ public:
 	void poseDraw(DrawingLayers) const override;
 	void ghostDraw(float alpha) const override;
 	void ghostDraw(DrawingLayers, float alpha) const override;
-	//void drawCPU() const;
-	//void drawCPU(double, double) const;
 
 private:
 	inline void drawBody(float alpha = 1.0f) const;

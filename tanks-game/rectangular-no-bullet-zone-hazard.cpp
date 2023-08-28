@@ -10,14 +10,6 @@
 #include "collision-handler.h"
 #include "rng.h"
 
-VertexArray* RectangularNoBulletZoneHazard::va;
-VertexBuffer* RectangularNoBulletZoneHazard::vb;
-IndexBuffer* RectangularNoBulletZoneHazard::ib;
-VertexArray* RectangularNoBulletZoneHazard::extra_va;
-VertexBuffer* RectangularNoBulletZoneHazard::extra_vb;
-IndexBuffer* RectangularNoBulletZoneHazard::extra_ib;
-bool RectangularNoBulletZoneHazard::initialized_GPU = false;
-
 std::unordered_map<std::string, float> RectangularNoBulletZoneHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", 1.0f });
@@ -38,106 +30,10 @@ RectangularNoBulletZoneHazard::RectangularNoBulletZoneHazard(double xpos, double
 
 	modifiesTankCollision = true;
 	modifiesBulletCollision = true;
-
-	initializeGPU();
 }
 
 RectangularNoBulletZoneHazard::~RectangularNoBulletZoneHazard() {
-	//uninitializeGPU();
-}
-
-bool RectangularNoBulletZoneHazard::initializeGPU() {
-	if (initialized_GPU) {
-		return false;
-	}
-
-	//background:
-	float positions[] = {
-		0, 0,   0xCC/255.0, 0xCC/255.0, 0xCC/255.0, 1.0f,
-		1, 0,   0xCC/255.0, 0xCC/255.0, 0xCC/255.0, 1.0f,
-		1, 1,   0xCC/255.0, 0xCC/255.0, 0xCC/255.0, 1.0f,
-		0, 1,   0xCC/255.0, 0xCC/255.0, 0xCC/255.0, 1.0f
-	};
-	unsigned int indices[] = {
-		0, 1, 2,
-		2, 3, 0
-	};
-
-	vb = VertexBuffer::MakeVertexBuffer(positions, sizeof(positions), RenderingHints::static_draw);
-	VertexBufferLayout layout = {
-		{ ShaderDataType::Float2, "a_Position" },
-		{ ShaderDataType::Float4, "a_Color" }
-	};
-	vb->SetLayout(layout);
-
-	ib = IndexBuffer::MakeIndexBuffer(indices, 6);
-
-	va = VertexArray::MakeVertexArray();
-	va->AddVertexBuffer(vb);
-	va->SetIndexBuffer(ib);
-
-	//red X:
-	float extra_positions[] = {
-		//forward slash:
-		0.0,           0.0, //0
-		0.0 + X_WIDTH, 0.0,
-		0.0,           0.0 + X_WIDTH,
-
-		1.0,           1.0, //3
-		1.0 - X_WIDTH, 1.0,
-		1.0,           1.0 - X_WIDTH,
-
-		//backslash:
-		0.0,           1.0, //6
-		0.0,           1.0 - X_WIDTH,
-		0.0 + X_WIDTH, 1.0,
-
-		1.0,           0.0, //9
-		1.0,           0.0 + X_WIDTH,
-		1.0 - X_WIDTH, 0.0
-	};
-	unsigned int extra_indices[] = {
-		//forward slash:
-		0, 1, 2, //bottom left
-		3, 4, 5, //top right
-		1, 5, 4,
-		4, 2, 1,
-
-		//backslash:
-		6, 7, 8, //top left
-		9, 10, 11, //bottom right
-		8, 7, 11,
-		11, 10, 8
-	};
-
-	extra_vb = VertexBuffer::MakeVertexBuffer(extra_positions, 6*2*2 * sizeof(float), RenderingHints::static_draw);
-	VertexBufferLayout extra_layout = {
-		{ ShaderDataType::Float2, "a_Position" },
-		//{ ShaderDataType::Float4, "a_Color" }
-	};
-	extra_vb->SetLayout(extra_layout);
-
-	extra_ib = IndexBuffer::MakeIndexBuffer(extra_indices, 8*3);
-
-	extra_va = VertexArray::MakeVertexArray();
-	extra_va->AddVertexBuffer(extra_vb);
-	extra_va->SetIndexBuffer(extra_ib);
-
-	initialized_GPU = true;
-	return true;
-}
-
-bool RectangularNoBulletZoneHazard::uninitializeGPU() {
-	if (!initialized_GPU) {
-		return false;
-	}
-
-	delete va;
-	delete vb;
-	delete ib;
-
-	initialized_GPU = false;
-	return true;
+	//nothing
 }
 
 RectHazard* RectangularNoBulletZoneHazard::factory(GenericFactoryConstructionData& args) {
@@ -243,20 +139,8 @@ void RectangularNoBulletZoneHazard::poseDraw(DrawingLayers layer) const {
 void RectangularNoBulletZoneHazard::ghostDraw(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 modelMatrix;
 
 	//background:
-	/*
-	ColorValueHolder color = GeneralizedNoBulletZone::getColor();
-	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-
-	modelMatrix = Renderer::GenerateModelMatrix(w, h, 0, x, y);
-	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
-
-	Renderer::Draw(*va, *ib, *shader);
-	*/
 	ColorValueHolder color_background = GeneralizedNoBulletZone::getColor();
 	color_background = ColorMixer::mix(BackgroundRect::getBackColor(), color_background, alpha);
 
@@ -274,18 +158,6 @@ void RectangularNoBulletZoneHazard::ghostDraw(float alpha) const {
 	Renderer::SubmitBatchedDraw(coordsAndColor_background, 4 * (2+4), indices_background, 2 * 3);
 
 	//red X:
-	/*
-	color = X_COLOR;
-	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, .75);
-	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-
-	modelMatrix = Renderer::GenerateModelMatrix(w, h, 0, x, y);
-	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
-
-	Renderer::Draw(*extra_va, *extra_ib, *shader);
-	*/
-
 	ColorValueHolder color_extra = X_COLOR;
 	color_extra = ColorMixer::mix(BackgroundRect::getBackColor(), color_extra, .75); //TODO: why?
 	color_extra = ColorMixer::mix(BackgroundRect::getBackColor(), color_extra, alpha);

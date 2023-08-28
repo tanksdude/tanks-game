@@ -20,9 +20,10 @@
     * allows for some customization
     * now it's possible to view certain levels/whatever that exist but aren't playable
         * should probably make a list of some sort to know what exists...
-* gifs and images in the README
+* graphics: batched rendering
 * slight multithreading!
     * set number of threads in the ini
+* gifs and images in the README
 * mild QoL improvements to displaying things
     * tank multi-powers are more obvious
     * lightning hazards and no bullet zones are significantly easier to spot

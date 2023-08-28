@@ -3,25 +3,9 @@
 #include "generalized-lava.h"
 #include "constants.h"
 
-#include "vertex-array.h"
-#include "vertex-buffer.h"
-#include "index-buffer.h"
-
 class RectangularLavaHazard : public RectHazard, public GeneralizedLava {
 protected:
 	virtual void pushNewBubble(double radius) override;
-
-private:
-	static VertexArray* background_va;
-	static VertexBuffer* background_vb;
-	static IndexBuffer* background_ib;
-	static VertexArray* bubble_va;
-	static VertexBuffer* bubble_vb;
-	static IndexBuffer* bubble_ib;
-	static bool initialized_GPU;
-
-	static bool initializeGPU();
-	static bool uninitializeGPU();
 
 public:
 	virtual std::vector<std::string> getHazardTypes() const override {

@@ -4,7 +4,7 @@
 #include <cmath>
 #include "color-mixer.h"
 #include "background-rect.h"
-#include <algorithm>
+#include <algorithm> //std::copy
 #include "mylib.h"
 #include "tank.h"
 #include "tank-manager.h"
@@ -14,15 +14,6 @@
 #include "collision-handler.h"
 #include "rng.h"
 #include <iostream>
-
-VertexArray* TargetingTurretHazard::va;
-VertexBuffer* TargetingTurretHazard::vb;
-IndexBuffer* TargetingTurretHazard::ib;
-VertexArray* TargetingTurretHazard::cannon_va;
-VertexBuffer* TargetingTurretHazard::cannon_vb;
-VertexArray* TargetingTurretHazard::reticule_va;
-VertexBuffer* TargetingTurretHazard::reticule_vb;
-bool TargetingTurretHazard::initialized_GPU = false;
 
 std::unordered_map<std::string, float> TargetingTurretHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -34,7 +25,7 @@ std::unordered_map<std::string, float> TargetingTurretHazard::getWeights() const
 	return weights;
 }
 
-TargetingTurretHazard::TargetingTurretHazard(double xpos, double ypos, double angle, bool) : StationaryTurretHazard(xpos, ypos, angle, true) {
+TargetingTurretHazard::TargetingTurretHazard(double xpos, double ypos, double angle) : StationaryTurretHazard(xpos, ypos, angle) {
 	//x = xpos;
 	//y = ypos;
 	//velocity = SimpleVector2D(angle, 0, true);
@@ -51,10 +42,6 @@ TargetingTurretHazard::TargetingTurretHazard(double xpos, double ypos, double an
 	canAcceptPowers = false; //... true?
 }
 
-TargetingTurretHazard::TargetingTurretHazard(double xpos, double ypos, double angle) : TargetingTurretHazard(xpos, ypos, angle, true) {
-	initializeGPU();
-}
-
 TargetingTurretHazard::TargetingTurretHazard(double xpos, double ypos, double angle, double radius) : TargetingTurretHazard(xpos, ypos, angle) {
 	r = radius;
 }
@@ -62,104 +49,6 @@ TargetingTurretHazard::TargetingTurretHazard(double xpos, double ypos, double an
 TargetingTurretHazard::~TargetingTurretHazard() {
 	//delete[] stateMultiplier;
 	//delete[] stateColors;
-
-	//uninitializeGPU();
-}
-
-bool TargetingTurretHazard::initializeGPU() {
-	if (initialized_GPU) {
-		return false;
-	}
-
-	//body:
-	float positions[(Circle::numOfSides+1)*(2+4)];
-	positions[0] = 0;
-	positions[1] = 0;
-	positions[2] = 0.5f;
-	positions[3] = 0.5f;
-	positions[4] = 0.5f;
-	positions[5] = 1.0f;
-	for (int i = 1; i < Circle::numOfSides+1; i++) {
-		positions[i*6]   = cos((i-1) * 2*PI / Circle::numOfSides);
-		positions[i*6+1] = sin((i-1) * 2*PI / Circle::numOfSides);
-		positions[i*6+2] = 0.5f;
-		positions[i*6+3] = 0.5f;
-		positions[i*6+4] = 0.5f;
-		positions[i*6+5] = 1.0f;
-	}
-
-	unsigned int indices[Circle::numOfSides*3];
-	for (int i = 0; i < Circle::numOfSides; i++) {
-		indices[i*3]   = 0;
-		indices[i*3+1] = i+1;
-		indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
-	}
-
-	vb = VertexBuffer::MakeVertexBuffer(positions, (Circle::numOfSides+1)*(2+4) * sizeof(float), RenderingHints::dynamic_draw);
-	VertexBufferLayout layout = {
-		{ ShaderDataType::Float2, "a_Position" },
-		{ ShaderDataType::Float4, "a_Color" }
-	};
-	vb->SetLayout(layout);
-
-	ib = IndexBuffer::MakeIndexBuffer(indices, Circle::numOfSides*3);
-
-	va = VertexArray::MakeVertexArray();
-	va->AddVertexBuffer(vb);
-	va->SetIndexBuffer(ib);
-
-	//cannon:
-	float cannon_positions[(2+4)*2] = {
-		0.0f, 0.0f,    0.0f, 0.0f, 0.0f, 1.0f,
-		1.0f, 0.0f,    0.0f, 0.0f, 0.0f, 1.0f
-	};
-	cannon_vb = VertexBuffer::MakeVertexBuffer(cannon_positions, (2+4)*2 * sizeof(float));
-	VertexBufferLayout cannon_layout = {
-		{ ShaderDataType::Float2, "a_Position" },
-		{ ShaderDataType::Float4, "a_Color" }
-	};
-	cannon_vb->SetLayout(layout);
-
-	cannon_va = VertexArray::MakeVertexArray();
-	cannon_va->AddVertexBuffer(cannon_vb);
-
-	//targeting reticule:
-	//the circle is the same as the body
-	float reticule_positions[] = {
-		 0.75f,  0.0f,    1.0f, 0.0f, 0.0f, 1.0f,    1.25f,  0.0f,    1.0f, 0.0f, 0.0f, 1.0f, //right
-		 0.0f,   0.75f,   1.0f, 0.0f, 0.0f, 1.0f,    0.0f,   1.25f,   1.0f, 0.0f, 0.0f, 1.0f, //up
-		-0.75f,  0.0f,    1.0f, 0.0f, 0.0f, 1.0f,   -1.25f,  0.0f,    1.0f, 0.0f, 0.0f, 1.0f, //left
-		 0.0f,  -0.75f,   1.0f, 0.0f, 0.0f, 1.0f,    0.0f,  -1.25f,   1.0f, 0.0f, 0.0f, 1.0f  //down
-	};
-	reticule_vb = VertexBuffer::MakeVertexBuffer(reticule_positions, sizeof(reticule_positions));
-	VertexBufferLayout reticule_layout = {
-		{ ShaderDataType::Float2, "a_Position" },
-		{ ShaderDataType::Float4, "a_Color" }
-	};
-	reticule_vb->SetLayout(layout);
-
-	reticule_va = VertexArray::MakeVertexArray();
-	reticule_va->AddVertexBuffer(reticule_vb);
-
-	initialized_GPU = true;
-	return true;
-}
-
-bool TargetingTurretHazard::uninitializeGPU() {
-	if (!initialized_GPU) {
-		return false;
-	}
-
-	delete va;
-	delete vb;
-	delete ib;
-	delete cannon_va;
-	delete cannon_vb;
-	delete reticule_va;
-	delete reticule_vb;
-
-	initialized_GPU = false;
-	return true;
 }
 
 CircleHazard* TargetingTurretHazard::factory(GenericFactoryConstructionData& args) {
@@ -421,14 +310,12 @@ void TargetingTurretHazard::draw(DrawingLayers layer) const {
 }
 
 void TargetingTurretHazard::poseDraw() const {
-	//TODO: adjust so drawBody will only draw with the normal color?
 	drawBody();
 	drawOutline();
 	drawBarrel();
 }
 
 void TargetingTurretHazard::poseDraw(DrawingLayers layer) const {
-	//TODO: adjust so drawBody will only draw with the normal color?
 	switch (layer) {
 		case DrawingLayers::under:
 			//nothing
@@ -457,14 +344,12 @@ void TargetingTurretHazard::poseDraw(DrawingLayers layer) const {
 }
 
 void TargetingTurretHazard::ghostDraw(float alpha) const {
-	//TODO: adjust so drawBody will only draw with the normal color?
 	drawBody(alpha);
 	drawOutline(alpha);
 	drawBarrel(alpha);
 }
 
 void TargetingTurretHazard::ghostDraw(DrawingLayers layer, float alpha) const {
-	//TODO: adjust so drawBody will only draw with the normal color?
 	switch (layer) {
 		case DrawingLayers::under:
 			//nothing
@@ -495,19 +380,6 @@ void TargetingTurretHazard::ghostDraw(DrawingLayers layer, float alpha) const {
 inline void TargetingTurretHazard::drawBody(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 modelMatrix;
-
-	/*
-	ColorValueHolder color = getColor();
-	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-
-	modelMatrix = Renderer::GenerateModelMatrix(r, r, 0, x, y);
-	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
-
-	Renderer::Draw(*va, *ib, *shader);
-	*/
 
 	ColorValueHolder color = getColor();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
@@ -520,8 +392,8 @@ inline void TargetingTurretHazard::drawBody(float alpha) const {
 	coordsAndColor[4] = color.getBf();
 	coordsAndColor[5] = color.getAf();
 	for (int i = 1; i < Circle::numOfSides+1; i++) {
-		coordsAndColor[i*6]   = x + r * cos((i-1) * 2*PI / Circle::numOfSides);
-		coordsAndColor[i*6+1] = y + r * sin((i-1) * 2*PI / Circle::numOfSides);
+		coordsAndColor[i*6]   = x + r * cos((i-1) * (2*PI / Circle::numOfSides));
+		coordsAndColor[i*6+1] = y + r * sin((i-1) * (2*PI / Circle::numOfSides));
 		coordsAndColor[i*6+2] = color.getRf();
 		coordsAndColor[i*6+3] = color.getGf();
 		coordsAndColor[i*6+4] = color.getBf();
@@ -541,24 +413,6 @@ inline void TargetingTurretHazard::drawBody(float alpha) const {
 inline void TargetingTurretHazard::drawOutline(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 modelMatrix;
-
-	/*
-	glLineWidth(1.0f);
-
-	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
-	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-
-	modelMatrix = Renderer::GenerateModelMatrix(r, r, 0, x, y);
-	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
-
-	Renderer::Draw(*va, *shader, GL_LINE_LOOP, 1, Circle::numOfSides);
-
-	//cleanup
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	*/
 
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
@@ -566,10 +420,10 @@ inline void TargetingTurretHazard::drawOutline(float alpha) const {
 
 	float coordsAndColor[(Circle::numOfSides*2)*(2+4)];
 	for (int i = 0; i < Circle::numOfSides; i++) {
-		coordsAndColor[(i*2)  *6]   = x + (r-lineWidth) * cos(i * 2*PI / Circle::numOfSides);
-		coordsAndColor[(i*2)  *6+1] = y + (r-lineWidth) * sin(i * 2*PI / Circle::numOfSides);
-		coordsAndColor[(i*2+1)*6]   = x + (r+lineWidth) * cos(i * 2*PI / Circle::numOfSides);
-		coordsAndColor[(i*2+1)*6+1] = y + (r+lineWidth) * sin(i * 2*PI / Circle::numOfSides);
+		coordsAndColor[(i*2)  *6]   = x + (r-lineWidth) * cos(i * (2*PI / Circle::numOfSides));
+		coordsAndColor[(i*2)  *6+1] = y + (r-lineWidth) * sin(i * (2*PI / Circle::numOfSides));
+		coordsAndColor[(i*2+1)*6]   = x + (r+lineWidth) * cos(i * (2*PI / Circle::numOfSides));
+		coordsAndColor[(i*2+1)*6+1] = y + (r+lineWidth) * sin(i * (2*PI / Circle::numOfSides));
 
 		coordsAndColor[(i*2)  *6+2] = color.getRf();
 		coordsAndColor[(i*2)  *6+3] = color.getGf();
@@ -597,24 +451,6 @@ inline void TargetingTurretHazard::drawOutline(float alpha) const {
 inline void TargetingTurretHazard::drawBarrel(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 modelMatrix;
-
-	//glLineWidth(2.0f);
-
-	/*
-	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
-	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-
-	modelMatrix = Renderer::GenerateModelMatrix(r, 1, velocity.getAngle(), x, y);
-	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
-
-	Renderer::Draw(*cannon_va, *shader, GL_LINES, 0, 2);
-
-	//cleanup
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	*/
 
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
@@ -653,48 +489,25 @@ inline void TargetingTurretHazard::drawBarrel(float alpha) const {
 }
 
 inline void TargetingTurretHazard::drawReticule(float alpha) const {
-	if (!targeting) {
-		return;
-	}
-
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 modelMatrix;
 
-	//glLineWidth(2.0f);
-
-	/*
-	ColorValueHolder color = getReticuleColor();
-	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-
-	//if (currentState == 0) {
-	//	modelMatrix = Renderer::GenerateMatrix(2*TANK_RADIUS, 2*TANK_RADIUS, -PI/2 * targetingCount/(stateMultiplier[0] * tickCycle), targetingX, targetingY);
-	//} else {
-	//	modelMatrix = Renderer::GenerateMatrix(2*TANK_RADIUS, 2*TANK_RADIUS, -PI/2, targetingX, targetingY);
-	//}
-	modelMatrix = Renderer::GenerateModelMatrix(2*TANK_RADIUS, 2*TANK_RADIUS, 0, targetingX, targetingY);
-	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
-
-	Renderer::Draw(*va, *shader, GL_LINE_LOOP, 1, Circle::numOfSides);
-	Renderer::Draw(*reticule_va, *shader, GL_LINES, 0, 8);
-
-	//cleanup
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	*/
+	if (!targeting) {
+		return;
+		//does it make sense to put this check after the alpha fixing? no, but consistency is also important
+	}
 
 	ColorValueHolder color_outline = getReticuleColor();
 	color_outline = ColorMixer::mix(BackgroundRect::getBackColor(), color_outline, alpha);
 	const float lineWidth = 1.0f;
-	//optional rotate angle: -PI/2 * targetingCount/(stateMultiplier[0] * tickCycle)
+	//optional rotate angle: (-PI/2) * (targetingCount/(stateMultiplier[0] * tickCycle))
 
 	float coordsAndColor_outline[(Circle::numOfSides*2 + 4*4*2)*(2+4)];
 	for (int i = 0; i < Circle::numOfSides; i++) {
-		coordsAndColor_outline[(i*2)  *6]   = targetingX + ((2*TANK_RADIUS) - lineWidth) * cos(i * 2*PI / Circle::numOfSides);
-		coordsAndColor_outline[(i*2)  *6+1] = targetingY + ((2*TANK_RADIUS) - lineWidth) * sin(i * 2*PI / Circle::numOfSides);
-		coordsAndColor_outline[(i*2+1)*6]   = targetingX + ((2*TANK_RADIUS) + lineWidth) * cos(i * 2*PI / Circle::numOfSides);
-		coordsAndColor_outline[(i*2+1)*6+1] = targetingY + ((2*TANK_RADIUS) + lineWidth) * sin(i * 2*PI / Circle::numOfSides);
+		coordsAndColor_outline[(i*2)  *6]   = targetingX + ((2*TANK_RADIUS) - lineWidth) * cos(i * (2*PI / Circle::numOfSides));
+		coordsAndColor_outline[(i*2)  *6+1] = targetingY + ((2*TANK_RADIUS) - lineWidth) * sin(i * (2*PI / Circle::numOfSides));
+		coordsAndColor_outline[(i*2+1)*6]   = targetingX + ((2*TANK_RADIUS) + lineWidth) * cos(i * (2*PI / Circle::numOfSides));
+		coordsAndColor_outline[(i*2+1)*6+1] = targetingY + ((2*TANK_RADIUS) + lineWidth) * sin(i * (2*PI / Circle::numOfSides));
 
 		coordsAndColor_outline[(i*2)  *6+2] = color_outline.getRf();
 		coordsAndColor_outline[(i*2)  *6+3] = color_outline.getGf();
@@ -772,12 +585,6 @@ inline void TargetingTurretHazard::drawReticule(float alpha) const {
 
 	Renderer::SubmitBatchedDraw(coordsAndColor_outline, (Circle::numOfSides*2 + 4*4*2)*(2+4), indices_outline, Circle::numOfSides*6 + 4*6);
 }
-
-/*
-void TargetingTurretHazard::drawCPU() const {
-	//nah
-}
-*/
 
 CircleHazard* TargetingTurretHazard::randomizingFactory(double x_start, double y_start, double area_width, double area_height, GenericFactoryConstructionData& args) {
 	int attempts = 0;
