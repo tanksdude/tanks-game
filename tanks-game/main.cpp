@@ -342,7 +342,8 @@ int main(int argc, char** argv) {
 	Renderer::Initialize();
 
 	Diagnostics::declareGraph("tick", ColorValueHolder(1.0f, 0.0f, 0.0f));
-	Diagnostics::declareGraph("draw", ColorValueHolder(0.0f, 0.0f, 1.0f));
+	Diagnostics::declareGraph("upload", ColorValueHolder(0.0f, 0.0f, 1.0f));
+	//Diagnostics::declareGraph("draw", ColorValueHolder(0.0f, 1.0f, 0.0f));
 
 #if _DEBUG
 	Diagnostics::setGraphYOffset(0);

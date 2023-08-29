@@ -1330,6 +1330,7 @@ void GameMainLoop::drawMain() const {
 	//currentlyDrawing = true;
 
 	auto start = Diagnostics::getTime();
+	Renderer::BeginScene("draw");
 
 	Diagnostics::startTiming("background rect");
 	BackgroundRect::draw();
@@ -1418,11 +1419,11 @@ void GameMainLoop::drawMain() const {
 	Diagnostics::endTiming();
 
 	auto end = Diagnostics::getTime();
-	Diagnostics::pushGraphTime("draw", Diagnostics::getDiff(start, end));
+	Diagnostics::pushGraphTime("upload", Diagnostics::getDiff(start, end));
 	Diagnostics::drawGraphTimes();
 
 	//Diagnostics::startTiming("flush");
-	Renderer::BatchedFlush();
+	Renderer::EndScene();
 	//Diagnostics::endTiming();
 
 	//end = Diagnostics::getTime();
@@ -1439,6 +1440,7 @@ void GameMainLoop::drawLayer(DrawingLayers layer) const {
 	//currentlyDrawing = true;
 
 	//auto start = Diagnostics::getTime();
+	Renderer::BeginScene("draw"); //TODO: different name
 
 	Diagnostics::startTiming("powerups");
 	for (int i = 0; i < PowerupManager::getNumPowerups(); i++) {
@@ -1483,7 +1485,7 @@ void GameMainLoop::drawLayer(DrawingLayers layer) const {
 	Diagnostics::endTiming();
 
 	//Diagnostics::startTiming("flush");
-	Renderer::BatchedFlush();
+	Renderer::EndScene();
 	//Diagnostics::endTiming();
 
 	//auto end = Diagnostics::getTime();

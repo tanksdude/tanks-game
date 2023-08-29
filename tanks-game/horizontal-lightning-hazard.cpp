@@ -421,8 +421,6 @@ void HorizontalLightningHazard::ghostDraw(DrawingLayers layer, float alpha) cons
 inline void HorizontalLightningHazard::drawBackground(bool pose, float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 modelMatrix;
 
 	double scale;
 	if (pose || currentlyActive) {
