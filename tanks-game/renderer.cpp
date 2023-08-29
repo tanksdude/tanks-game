@@ -445,6 +445,13 @@ inline bool Renderer::enoughRoomForMoreIndices(int pushLength) {
 
 inline void Renderer::pushAnotherDataList() {
 	sceneData[currentSceneName].push_back({});
+
+	#if _DEBUG
+	//performance is awful
+	#else
+	sceneData[currentSceneName][sceneData[currentSceneName].size()-1].first.reserve(maxVerticesDataLength);
+	sceneData[currentSceneName][sceneData[currentSceneName].size()-1].second.reserve(maxIndicesDataLength);
+	#endif
 }
 
 void Renderer::SubmitBatchedDraw(const float* posAndColor, int posAndColorLength, const unsigned int* indices, int indicesLength) {
@@ -492,14 +499,7 @@ void Renderer::BeginScene(std::string name) {
 	//TODO: gets locked when flush is called
 	currentSceneName = name;
 	sceneList.push_back(name);
-	sceneData[name].push_back({});
-
-	#if _DEBUG
-	//performance is awful
-	#else
-	sceneData[name][sceneData[name].size()-1].first.reserve(maxVerticesDataLength);
-	sceneData[name][sceneData[name].size()-1].second.reserve(maxIndicesDataLength);
-	#endif
+	pushAnotherDataList();
 }
 
 void Renderer::EndScene() {
