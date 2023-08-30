@@ -372,7 +372,7 @@
     <ClCompile Include="mother-turret-hazard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="unnamed-level-3.cpp">
+    <ClCompile Include="dangerous-center-level.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ginormous-turret-hazard.cpp">
@@ -806,7 +806,7 @@
     <ClInclude Include="mother-turret-hazard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="unnamed-level-3.h">
+    <ClInclude Include="dangerous-center-level.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ginormous-turret-hazard.h">

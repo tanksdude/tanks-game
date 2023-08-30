@@ -74,10 +74,10 @@
 #include "developer-level-3.h"
 #include "unnamed-level-1.h"
 #include "unnamed-level-2.h"
-#include "unnamed-level-3.h"
 #include "dev-no-walls-level-1.h"
 #include "timed-reward-level.h"
 #include "tight-patrolling-corridor-level.h"
+#include "dangerous-center-level.h"
 
 //level effects:
 #include "wind-level-effect.h"
@@ -323,10 +323,10 @@ int main(int argc, char** argv) {
 	LevelManager::addLevelFactory(DeveloperLevel3::factory);
 	LevelManager::addLevelFactory(UnnamedLevel1::factory);
 	LevelManager::addLevelFactory(UnnamedLevel2::factory);
-	LevelManager::addLevelFactory(UnnamedLevel3::factory);
 	LevelManager::addLevelFactory(DevNoWallsLevel1::factory);
 	LevelManager::addLevelFactory(TimedRewardLevel::factory);
 	LevelManager::addLevelFactory(TightPatrollingCorridorLevel::factory);
+	LevelManager::addLevelFactory(DangerousCenterLevel::factory);
 
 	//initialize managers and stuff:
 	GameManager::Initialize();

@@ -49,7 +49,7 @@ public:
 
 protected:
 	virtual double getDefaultOffense() const override { return 0; }
-	virtual double getDefaultDefense() const override { return DESTRUCTION_TIER + .5; }
+	virtual double getDefaultDefense() const override { return DESTRUCTION_TIER + .5; } //TODO: double big bullets should be able to destroy this
 
 public:
 	//virtual bool validLocation() const override { return true; }

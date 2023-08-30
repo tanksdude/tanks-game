@@ -252,7 +252,7 @@
     <ClCompile Include="ultra-bounce-power.cpp" />
     <ClCompile Include="unnamed-level-1.cpp" />
     <ClCompile Include="unnamed-level-2.cpp" />
-    <ClCompile Include="unnamed-level-3.cpp" />
+    <ClCompile Include="dangerous-center-level.cpp" />
     <ClCompile Include="vertex-array.cpp" />
     <ClCompile Include="vertex-buffer.cpp" />
     <ClCompile Include="vertical-lightning-hazard.cpp" />
@@ -396,7 +396,7 @@
     <ClInclude Include="ultra-bounce-power.h" />
     <ClInclude Include="unnamed-level-1.h" />
     <ClInclude Include="unnamed-level-2.h" />
-    <ClInclude Include="unnamed-level-3.h" />
+    <ClInclude Include="dangerous-center-level.h" />
     <ClInclude Include="vertex-array.h" />
     <ClInclude Include="vertex-buffer.h" />
     <ClInclude Include="vertex-buffer-layout.h" />

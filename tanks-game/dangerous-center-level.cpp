@@ -1,4 +1,4 @@
-#include "unnamed-level-3.h"
+#include "dangerous-center-level.h"
 #include "constants.h"
 #include "level-helper.h"
 #include "tank-manager.h"
@@ -9,18 +9,22 @@
 #include "reset-things.h"
 #include "rng.h"
 #include "level-manager.h"
-#include "respawning-powerups-level-effect.h"
 #include <iostream>
+#include "respawning-powerups-level-effect.h"
 
-std::unordered_map<std::string, float> UnnamedLevel3::getWeights() const {
+ColorValueHolder DangerousCenterLevel::getDefaultColor() const {
+	//return ColorValueHolder(0xE6/255.0, 0xE6/255.0, 0xFA/255.0); //lavender
+	return ColorValueHolder(0xE6/255.0, 0x91/255.0, 0xA9/255.0);
+}
+
+std::unordered_map<std::string, float> DangerousCenterLevel::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "dev", 0.5f });
-	weights.insert({ "random-dev", 0.5f });
-	//TODO: it's a complete level (mostly), just lacking a name and a color
+	weights.insert({ "vanilla-extra", .25f });
+	weights.insert({ "random-vanilla", .5f }); //should this even appear?
 	return weights;
 }
 
-void UnnamedLevel3::initialize() {
+void DangerousCenterLevel::initialize() {
 	//ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40);
 	int randNum = RNG::randFunc() * 3;
 	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), ResetThings::default_tankToEdgeDist, (randNum+1) * (GAME_HEIGHT/5) + (GAME_HEIGHT/10));
@@ -43,7 +47,7 @@ void UnnamedLevel3::initialize() {
 		}
 	}
 	if (le == nullptr) {
-		throw std::logic_error("ERROR: \"sneaky_reward\" level does not have \"respawning_powerups\" level effect!");
+		throw std::logic_error("ERROR: \"dangerous_center\" level does not have \"respawning_powerups\" level effect!");
 	}
 	RespawningPowerupsLevelEffect* respawning = (RespawningPowerupsLevelEffect*)le;
 	//TODO: should this be the preferred way of getting specific level effects?
@@ -152,6 +156,7 @@ void UnnamedLevel3::initialize() {
 	for (int i = 0; i < 4; i++) {
 		pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, (GAME_HEIGHT/2+40)-(top_gap+side_length)+(side_length/2), GAME_HEIGHT/2-(top_gap+side_length)+(side_length/2));
 		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, paras, names, 2));
+		//TODO: should these be switched with the invincible powers?
 	}
 	delete[] paras; delete[] names;
 
@@ -166,11 +171,11 @@ void UnnamedLevel3::initialize() {
 	//delete[] paras; delete[] names;
 }
 
-Level* UnnamedLevel3::factory() {
-	return new UnnamedLevel3();
+Level* DangerousCenterLevel::factory() {
+	return new DangerousCenterLevel();
 }
 
-UnnamedLevel3::UnnamedLevel3() {
+DangerousCenterLevel::DangerousCenterLevel() {
 	bool temp[1] = { false };
 	GenericFactoryConstructionData constructionData(1, temp);
 	effects.push_back(LevelManager::getLevelEffectFactory("vanilla", "respawning_powerups")(constructionData));
