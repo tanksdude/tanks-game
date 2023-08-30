@@ -20,6 +20,7 @@ public:
 	static std::string getClassName() { return "shield"; }
 	virtual ColorValueHolder getColor() const override { return ShieldPower::getClassColor(); }
 	static ColorValueHolder getClassColor() { return ColorValueHolder(0xB6/255.0, 0xE6/255.0, 0x9D/255.0); } //approximately barrier but yellow, gray, and light
+	//TODO: color blends in too much with background, hard to see
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;

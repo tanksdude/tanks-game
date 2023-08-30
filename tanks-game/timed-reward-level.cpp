@@ -73,6 +73,12 @@ void TimedRewardLevel::initialize() {
 		delete[] posArr;
 	}
 
+	//some extra walls
+	for (int i = 0; i < 4; i++) {
+		pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 120+40, 40+20, 40, 20);
+		WallManager::pushWall(new Wall(pos.x, pos.y, 40, 20, color));
+	}
+
 	for (int i = 0; i < 4; i++) {
 		pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 120 + 60, GAME_HEIGHT/2 - (40+40)/2);
 		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "vanilla-extra", "shield"));
