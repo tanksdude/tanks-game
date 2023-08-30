@@ -12,6 +12,10 @@
 #include "color-value-holder.h"
 #include <glm.hpp>
 
+//#include <thread>
+//#include <atomic>
+//#include <mutex>
+
 enum class AvailableRenderingContexts {
 	OpenGL,
 	software,
@@ -30,7 +34,13 @@ class Renderer {
 	friend class DeveloperManager;
 
 public:
-	//public until I rewrite rendering
+	static void windowResizeFunc(int w, int h);
+	//static void thread_func();
+
+	//static std::mutex drawingDataLock;
+	//static std::atomic_bool thread_workExists;
+
+private:
 	static glm::mat4 proj;
 	static glm::mat4 getProj();
 
@@ -42,10 +52,12 @@ public:
 	static int window_height;
 	static int gamewindow_width; //width of game inside window
 	static int gamewindow_height;
-	static void windowResizeFunc(int w, int h);
 
 	static AvailableRenderingContexts renderingMethodType;
 	static RenderingContext* renderingMethod;
+
+	//static std::thread graphicsThread;
+	//static std::atomic_bool thread_keepRunning;
 
 private:
 	static std::unordered_map<std::string, Shader*> shaderCache;
@@ -76,6 +88,7 @@ private:
 	static inline bool enoughRoomForMoreVertices(int pushLength);
 	static inline bool enoughRoomForMoreIndices(int pushLength);
 	static inline void pushAnotherDataList();
+	static void ActuallyFlush();
 	static void BatchedFlush(std::vector<float>& vertices, std::vector<unsigned int>& indices);
 
 	static VertexArray* batched_va;
@@ -95,6 +108,7 @@ public:
 	static void PreInitialize(int* argc, char** argv, std::string windowName, int startX, int startY);
 	static void PreInitialize(int* argc, char** argv, std::string windowName, int startX, int startY, int sizeX, int sizeY);
 	static void Initialize();
+	static void Uninitialize();
 
 	static void BeginningStuff();
 	static void Clear();

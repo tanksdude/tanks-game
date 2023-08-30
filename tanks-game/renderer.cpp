@@ -12,6 +12,11 @@
 #include <GL/freeglut.h>
 #include <iostream>
 
+//std::mutex Renderer::drawingDataLock;
+//std::thread Renderer::graphicsThread;
+//std::atomic_bool Renderer::thread_keepRunning;
+//std::atomic_bool Renderer::thread_workExists;
+
 glm::mat4 Renderer::proj = glm::ortho(0.0f, (float)GAME_WIDTH, 0.0f, (float)GAME_HEIGHT);
 glm::mat4 Renderer::getProj() { return proj; }
 int Renderer::window_width = GAME_WIDTH*2 * 1.25;
@@ -108,6 +113,12 @@ unsigned int Renderer::currentVertexArray = -1;
 unsigned int Renderer::currentIndexBuffer = -1;
 
 void Renderer::BeginningStuff() {
+	//while (thread_workExists.load()) {
+	//	//spin
+	//	std::cout << "thread1 waiting\n";
+	//}
+	//drawingDataLock.lock();
+
 	if (KeypressManager::getSpecialKey(GLUT_KEY_F11)) {
 		glutFullScreenToggle();
 		KeypressManager::unsetSpecialKey(GLUT_KEY_F11, 0, 0);
@@ -201,7 +212,40 @@ void Renderer::Initialize() {
 	//shaderCache.insert({ "default", shader });
 
 	initializeGPU();
+
+	//thread_keepRunning.store(true);
+	//thread_workExists.store(false);
+	//graphicsThread = std::thread(thread_func);
 }
+
+void Renderer::Uninitialize() {
+	//thread_keepRunning.store(false);
+	//thread_workExists.store(true);
+	//graphicsThread.join();
+	////uninitializeGPU();
+}
+
+/*
+void Renderer::thread_func() {
+	while (thread_keepRunning.load()) {
+		while (!thread_workExists.load()) {
+			//spin
+			//std::cout << "thread2 waiting\n";
+		}
+		drawingDataLock.lock();
+
+		if (!thread_keepRunning.load()) {
+			drawingDataLock.unlock();
+			break;
+		}
+
+		Renderer::ActuallyFlush();
+		//std::cout << "thread2 did work\n";
+		thread_workExists.store(false);
+		drawingDataLock.unlock();
+	}
+}
+*/
 
 glm::mat4 Renderer::GenerateModelMatrix(float scaleX, float scaleY, float rotateAngle, float transX, float transY) {
 	//glm::mat4 trans = glm::translate(proj, glm::vec3(transX, transY, 0.0f));
@@ -368,7 +412,7 @@ void Renderer::Clear() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void Renderer::Flush() {
+void Renderer::ActuallyFlush() {
 	for (int i = 0; i < sceneList.size(); i++) {
 		const std::string& name = sceneList[i];
 		std::vector<std::pair<std::vector<float>, std::vector<unsigned int>>>& sceneDrawCalls = sceneData[name];
@@ -385,6 +429,13 @@ void Renderer::Flush() {
 	//glutSwapBuffers();
 
 	UnbindAll();
+}
+
+void Renderer::Flush() {
+	//thread_workExists.store(true);
+
+	ActuallyFlush();
+	//drawingDataLock.unlock();
 }
 
 void Renderer::Cleanup() {
@@ -496,7 +547,6 @@ void Renderer::BatchedFlush(std::vector<float>& verticesData, std::vector<unsign
 }
 
 void Renderer::BeginScene(std::string name) {
-	//TODO: gets locked when flush is called
 	currentSceneName = name;
 	sceneList.push_back(name);
 	pushAnotherDataList();

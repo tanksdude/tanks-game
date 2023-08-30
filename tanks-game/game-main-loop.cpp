@@ -1420,7 +1420,7 @@ void GameMainLoop::drawMain() const {
 
 	auto end = Diagnostics::getTime();
 	Diagnostics::pushGraphTime("upload", Diagnostics::getDiff(start, end));
-	Diagnostics::drawGraphTimes();
+	Diagnostics::drawGraphTimes(); //TODO: don't draw diagnostics here; do it in Renderer... once the threading is figured out
 
 	//Diagnostics::startTiming("flush");
 	Renderer::EndScene();
