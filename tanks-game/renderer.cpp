@@ -10,6 +10,7 @@
 #include <algorithm> //std::fill
 #include <GL/glew.h>
 #include <GL/freeglut.h>
+#include "diagnostics.h"
 #include <iostream>
 
 //std::mutex Renderer::drawingDataLock;
@@ -413,6 +414,7 @@ void Renderer::Clear() {
 }
 
 void Renderer::ActuallyFlush() {
+	auto start = Diagnostics::getTime();
 	for (int i = 0; i < sceneList.size(); i++) {
 		const std::string& name = sceneList[i];
 		std::vector<std::pair<std::vector<float>, std::vector<unsigned int>>>& sceneDrawCalls = sceneData[name];
@@ -422,6 +424,10 @@ void Renderer::ActuallyFlush() {
 		sceneDrawCalls.clear();
 	}
 	sceneList.clear();
+	auto end = Diagnostics::getTime();
+
+	Diagnostics::pushGraphTime("draw", Diagnostics::getDiff(start, end));
+	Diagnostics::drawGraphTimes();
 
 	//for single framebuffer, use glFlush; for double framebuffer, swap the buffers
 	//swapping buffers is limited to monitor refresh rate, so I use glFlush
@@ -506,23 +512,30 @@ inline void Renderer::pushAnotherDataList() {
 }
 
 void Renderer::SubmitBatchedDraw(const float* posAndColor, int posAndColorLength, const unsigned int* indices, int indicesLength) {
-	if (!enoughRoomForMoreVertices(posAndColorLength) || !enoughRoomForMoreIndices(indicesLength)) {
-		//std::cout << enoughRoomForMoreVertices(posAndColorLength) << enoughRoomForMoreIndices(indicesLength);
-		pushAnotherDataList();
-	}
+	if (currentSceneName == "") {
+		//only happens for Diagnostics
+		std::vector<float> verticesData = std::vector<float>(posAndColor, posAndColor + posAndColorLength);
+		std::vector<unsigned int> indicesData = std::vector<unsigned int>(indices, indices + indicesLength);
+		BatchedFlush(verticesData, indicesData);
+	} else {
+		if (!enoughRoomForMoreVertices(posAndColorLength) || !enoughRoomForMoreIndices(indicesLength)) {
+			//std::cout << enoughRoomForMoreVertices(posAndColorLength) << enoughRoomForMoreIndices(indicesLength);
+			pushAnotherDataList();
+		}
 
-	std::pair<std::vector<float>, std::vector<unsigned int>>& currentSceneData = sceneData[currentSceneName][sceneData[currentSceneName].size()-1];
-	std::vector<float>& verticesData = currentSceneData.first;
-	std::vector<unsigned int>& indicesData = currentSceneData.second;
+		std::pair<std::vector<float>, std::vector<unsigned int>>& currentSceneData = sceneData[currentSceneName][sceneData[currentSceneName].size()-1];
+		std::vector<float>& verticesData = currentSceneData.first;
+		std::vector<unsigned int>& indicesData = currentSceneData.second;
 
-	unsigned int currVerticesLength = verticesData.size();
-	verticesData.insert(verticesData.end(), posAndColor, posAndColor + posAndColorLength);
+		unsigned int currVerticesLength = verticesData.size();
+		verticesData.insert(verticesData.end(), posAndColor, posAndColor + posAndColorLength);
 
-	unsigned int currIndicesLength = indicesData.size();
-	indicesData.insert(indicesData.end(), indices, indices + indicesLength);
-	for (unsigned int i = currIndicesLength; i < indicesData.size(); i++) {
-		//indicesData[i] += currIndicesLength/3; //close, but not quite right
-		indicesData[i] += currVerticesLength/(2+4);
+		unsigned int currIndicesLength = indicesData.size();
+		indicesData.insert(indicesData.end(), indices, indices + indicesLength);
+		for (unsigned int i = currIndicesLength; i < indicesData.size(); i++) {
+			//indicesData[i] += currIndicesLength/3; //close, but not quite right
+			indicesData[i] += currVerticesLength/(2+4);
+		}
 	}
 }
 
