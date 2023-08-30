@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
 #include <unordered_map>
+#include <vector>
+#include <utility>
 #include "rendering-context.h"
 #include "vertex-array.h"
 #include "vertex-buffer.h"
@@ -9,7 +11,10 @@
 #include "drawable-thing.h"
 #include "color-value-holder.h"
 #include <glm.hpp>
-#include <GL/glew.h>
+
+//#include <thread>
+//#include <atomic>
+//#include <mutex>
 
 enum class AvailableRenderingContexts {
 	OpenGL,
@@ -29,7 +34,13 @@ class Renderer {
 	friend class DeveloperManager;
 
 public:
-	//public until I rewrite rendering
+	static void windowResizeFunc(int w, int h);
+	//static void thread_func();
+
+	//static std::mutex drawingDataLock;
+	//static std::atomic_bool thread_workExists;
+
+private:
 	static glm::mat4 proj;
 	static glm::mat4 getProj();
 
@@ -41,14 +52,12 @@ public:
 	static int window_height;
 	static int gamewindow_width; //width of game inside window
 	static int gamewindow_height;
-	static void windowResizeFunc(int w, int h);
 
 	static AvailableRenderingContexts renderingMethodType;
 	static RenderingContext* renderingMethod;
 
-	static void Draw(RenderingDrawTypes, VertexArray*, IndexBuffer*, glm::mat4 matrix, ColorValueHolder) { return; } //main
-	static void Draw(RenderingDrawTypes, VertexArray*, int count, glm::mat4 matrix, ColorValueHolder) { return; } //cooldowns and stuff
-	static void Draw(RenderingDrawTypes, VertexArray*, IndexBuffer*, int count, glm::mat4 matrix, ColorValueHolder) { return; } //cooldowns and stuff
+	//static std::thread graphicsThread;
+	//static std::atomic_bool thread_keepRunning;
 
 private:
 	static std::unordered_map<std::string, Shader*> shaderCache;
@@ -60,35 +69,58 @@ private:
 	static inline void bindShader(const Shader&);
 	static inline void bindVertexArray(const VertexArray&);
 	static inline void bindIndexBuffer(const IndexBuffer&);
-
-	static std::string getErrorString(GLenum err);
-
-public:
 	static Shader* getShader(std::string);
-	static void BeginningStuff();
-	static void Clear();
-	static void Clear(int bits);
-	static void Flush();
-	static void SetContext(AvailableRenderingContexts);
-	static void SetContext(std::string);
-	static AvailableRenderingContexts GetContext() { return renderingMethodType; }
-	static void PreInitialize(int* argc, char** argv, std::string windowName); //initialize freeglut and GLEW
-	static void PreInitialize(int* argc, char** argv, std::string windowName, int startX, int startY);
-	static void PreInitialize(int* argc, char** argv, std::string windowName, int startX, int startY, int sizeX, int sizeY);
-	static void Initialize();
-	static void Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader);
-	static void Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader, unsigned int count);
-	static void Draw(const VertexArray& va, const Shader& shader, GLenum type, GLint first, GLsizei count);
-	static void Draw(GLenum type, GLint first, GLsizei count);
-	static glm::mat4 GenerateModelMatrix(float scaleX, float scaleY, float rotateAngle, float transX, float transY);
-	static void SetViewMatrix(float cameraX, float cameraY, float cameraZ, float targetX, float targetY, float targetZ);
-	//static void SetProjectionMatrix(float left, float right, float bottom, float top/*, float near, float far*/); //orthographic
-	static void SetProjectionMatrix();
+
 	static void Unbind(const VertexArray&);
 	static void Unbind(const IndexBuffer&);
 	static void Unbind(const Shader&);
 	static void UnbindAll();
 	static void Cleanup();
+
+	static std::string getErrorString(GLenum err);
+
+private:
+	static std::unordered_map<std::string, std::vector<std::pair<std::vector<float>, std::vector<unsigned int>>>> sceneData; //<vertices, indices>
+	static std::vector<std::string> sceneList;
+	static std::string currentSceneName;
+	static int maxVerticesDataLength;
+	static int maxIndicesDataLength;
+	static inline bool enoughRoomForMoreVertices(int pushLength);
+	static inline bool enoughRoomForMoreIndices(int pushLength);
+	static inline void pushAnotherDataList();
+	static void ActuallyFlush();
+	static void BatchedFlush(std::vector<float>& vertices, std::vector<unsigned int>& indices);
+
+	static VertexArray* batched_va;
+	static VertexBuffer* batched_vb;
+	static IndexBuffer* batched_ib;
+	static bool initialized_GPU;
+
+	static bool initializeGPU();
+	static bool uninitializeGPU();
+
+public:
+	static void SetContext(AvailableRenderingContexts);
+	static void SetContext(std::string);
+	static AvailableRenderingContexts GetContext() { return renderingMethodType; }
+
+	static void PreInitialize(int* argc, char** argv, std::string windowName); //initialize freeglut and GLEW
+	static void PreInitialize(int* argc, char** argv, std::string windowName, int startX, int startY);
+	static void PreInitialize(int* argc, char** argv, std::string windowName, int startX, int startY, int sizeX, int sizeY);
+	static void Initialize();
+	static void Uninitialize();
+
+	static void BeginningStuff();
+	static void Clear();
+	static void BeginScene(std::string name); //name of scene, to push timing to diagnostics
+	static void SubmitBatchedDraw(const float* posAndColor, int posAndColorLength, const unsigned int* indices, int indicesLength);
+	static void EndScene();
+	static void Flush();
+
+	static glm::mat4 GenerateModelMatrix(float scaleX, float scaleY, float rotateAngle, float transX, float transY);
+	static void SetViewMatrix(float cameraX, float cameraY, float cameraZ, float targetX, float targetY, float targetZ);
+	//static void SetProjectionMatrix(float left, float right, float bottom, float top/*, float near, float far*/); //orthographic
+	static void SetProjectionMatrix(); //should this be public?
 
 	static void printGLError();
 

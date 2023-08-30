@@ -3,10 +3,6 @@
 #include "simple-vector-2d.h"
 #include "constants.h"
 
-#include "vertex-array.h"
-#include "vertex-buffer.h"
-#include "index-buffer.h"
-
 class StationaryTurretHazard : public CircleHazard {
 	//just called Stationary in JS Tanks
 protected:
@@ -19,21 +15,9 @@ protected:
 	ColorValueHolder* stateColors;
 
 protected:
-	//double getAngle() const;
 	virtual bool canSeeTank(const Tank*) const; //true if pointing at tank with no wall obstructions
 	virtual ColorValueHolder getColor() const; //needed because turret doesn't use tickCount, instead using targetingCount (should change this)
 	virtual ColorValueHolder getColor(int state) const;
-
-private:
-	static VertexArray* va;
-	static VertexBuffer* vb;
-	static IndexBuffer* ib;
-	static VertexArray* cannon_va;
-	static VertexBuffer* cannon_vb;
-	static bool initialized_GPU;
-
-	static bool initializeGPU();
-	static bool uninitializeGPU();
 
 public:
 	virtual std::vector<std::string> getHazardTypes() const override {
@@ -62,15 +46,12 @@ public:
 	virtual void poseDraw(DrawingLayers) const override;
 	virtual void ghostDraw(float alpha) const override;
 	virtual void ghostDraw(DrawingLayers, float alpha) const override;
-	//virtual void drawCPU() const;
 
 private:
 	inline void drawBody(float alpha = 1.0f) const;
 	inline void drawOutline(float alpha = 1.0f) const;
 	inline void drawBarrel(float alpha = 1.0f) const;
 
-protected:
-	StationaryTurretHazard(double xpos, double ypos, double angle, bool noGPU); //doesn't initialize GPU
 public:
 	StationaryTurretHazard(double xpos, double ypos, double angle);
 	StationaryTurretHazard(double xpos, double ypos, double angle, double radius);

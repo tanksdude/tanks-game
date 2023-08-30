@@ -9,10 +9,6 @@
 #include <stdexcept>
 
 //GPU rendering:
-#include "vertex-array.h"
-#include "vertex-buffer.h"
-#include "index-buffer.h"
-#include "shader.h"
 #include "renderer.h"
 #include <glm.hpp> //GLM is overkill but that's okay
 #include <gtc/matrix_transform.hpp>
@@ -1334,28 +1330,11 @@ void GameMainLoop::drawMain() const {
 	//currentlyDrawing = true;
 
 	auto start = Diagnostics::getTime();
-
-	//moved to GameSceneManager:
-	/*
-	Diagnostics::startTiming("clear");
-	Renderer::BeginningStuff();
-	Renderer::Clear();
-	Diagnostics::endTiming();
-	*/
-
-	Shader* mainShader = Renderer::getShader("main"); //TODO: not a great option to set the view and projection matrices, but whatever at this point
+	Renderer::BeginScene("draw");
 
 	Diagnostics::startTiming("background rect");
 	BackgroundRect::draw();
-	Renderer::UnbindAll();
 	Diagnostics::endTiming();
-
-
-	//is this needed? //ehh it can stay, may be needed for emergency CPU drawings
-	// Set up the transformations stack
-	//glMatrixMode(GL_MODELVIEW);
-	//glLoadIdentity();
-
 
 	Diagnostics::startTiming("hazards under");
 	for (int i = 0; i < HazardManager::getNumCircleHazards(); i++) {
@@ -1364,7 +1343,6 @@ void GameMainLoop::drawMain() const {
 	for (int i = 0; i < HazardManager::getNumRectHazards(); i++) {
 		HazardManager::getRectHazard(i)->draw(DrawingLayers::under);
 	}
-	Renderer::UnbindAll();
 	Diagnostics::endTiming();
 
 	Diagnostics::startTiming("level under");
@@ -1374,14 +1352,12 @@ void GameMainLoop::drawMain() const {
 	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
 		LevelManager::getLevel(i)->drawLevelEffects(DrawingLayers::under);
 	}
-	Renderer::UnbindAll();
 	Diagnostics::endTiming();
 
 	Diagnostics::startTiming("powerups");
 	for (int i = 0; i < PowerupManager::getNumPowerups(); i++) {
 		PowerupManager::getPowerup(i)->draw(DrawingLayers::normal);
 	}
-	Renderer::UnbindAll();
 	Diagnostics::endTiming();
 
 	Diagnostics::startTiming("hazards");
@@ -1391,21 +1367,18 @@ void GameMainLoop::drawMain() const {
 	for (int i = 0; i < HazardManager::getNumRectHazards(); i++) {
 		HazardManager::getRectHazard(i)->draw(DrawingLayers::normal);
 	}
-	Renderer::UnbindAll();
 	Diagnostics::endTiming();
 
 	Diagnostics::startTiming("walls");
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		WallManager::getWall(i)->draw(DrawingLayers::normal);
 	}
-	Renderer::UnbindAll();
 	Diagnostics::endTiming();
 
 	Diagnostics::startTiming("bullets");
 	for (int i = 0; i < BulletManager::getNumBullets(); i++) {
 		BulletManager::getBullet(i)->draw(DrawingLayers::normal);
 	}
-	Renderer::UnbindAll();
 	Diagnostics::endTiming();
 
 	//drawing text on the GPU will need a library, so names don't get drawn anymore
@@ -1419,7 +1392,6 @@ void GameMainLoop::drawMain() const {
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
 		TankManager::getTank(i)->draw(DrawingLayers::normal);
 	}
-	Renderer::UnbindAll();
 	Diagnostics::endTiming();
 
 	Diagnostics::startTiming("hazards effects");
@@ -1429,7 +1401,6 @@ void GameMainLoop::drawMain() const {
 	for (int i = 0; i < HazardManager::getNumRectHazards(); i++) {
 		HazardManager::getRectHazard(i)->draw(DrawingLayers::effects);
 	}
-	Renderer::UnbindAll();
 	Diagnostics::endTiming();
 
 	Diagnostics::startTiming("level effects");
@@ -1439,31 +1410,19 @@ void GameMainLoop::drawMain() const {
 	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
 		LevelManager::getLevel(i)->drawLevelEffects(DrawingLayers::effects);
 	}
-	Renderer::UnbindAll();
 	Diagnostics::endTiming();
 
 	Diagnostics::startTiming("tanks dead");
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
 		TankManager::getTank(i)->draw(DrawingLayers::top);
 	}
-	Renderer::UnbindAll();
 	Diagnostics::endTiming();
 
 	auto end = Diagnostics::getTime();
-	Diagnostics::pushGraphTime("draw", Diagnostics::getDiff(start, end));
-	Diagnostics::drawGraphTimes();
-	Renderer::UnbindAll(); //needed
+	Diagnostics::pushGraphTime("upload", Diagnostics::getDiff(start, end));
 
 	//Diagnostics::startTiming("flush");
-	Renderer::Cleanup();
-
-	//moved to Renderer:
-	/*
-	//for single framebuffer, use glFlush; for double framebuffer, swap the buffers
-	//swapping buffers is limited to monitor refresh rate, so I use glFlush
-	glFlush();
-	//glutSwapBuffers();
-	*/
+	Renderer::EndScene();
 	//Diagnostics::endTiming();
 
 	//end = Diagnostics::getTime();
@@ -1479,13 +1438,13 @@ void GameMainLoop::drawMain() const {
 void GameMainLoop::drawLayer(DrawingLayers layer) const {
 	//currentlyDrawing = true;
 
-	auto start = Diagnostics::getTime();
+	//auto start = Diagnostics::getTime();
+	Renderer::BeginScene("draw"); //TODO: different name
 
 	Diagnostics::startTiming("powerups");
 	for (int i = 0; i < PowerupManager::getNumPowerups(); i++) {
 		PowerupManager::getPowerup(i)->draw(layer);
 	}
-	Renderer::UnbindAll();
 	Diagnostics::endTiming();
 
 	Diagnostics::startTiming("hazards");
@@ -1495,28 +1454,24 @@ void GameMainLoop::drawLayer(DrawingLayers layer) const {
 	for (int i = 0; i < HazardManager::getNumRectHazards(); i++) {
 		HazardManager::getRectHazard(i)->draw(layer);
 	}
-	Renderer::UnbindAll();
 	Diagnostics::endTiming();
 
 	Diagnostics::startTiming("walls");
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		WallManager::getWall(i)->draw(layer);
 	}
-	Renderer::UnbindAll();
 	Diagnostics::endTiming();
 
 	Diagnostics::startTiming("bullets");
 	for (int i = 0; i < BulletManager::getNumBullets(); i++) {
 		BulletManager::getBullet(i)->draw(layer);
 	}
-	Renderer::UnbindAll();
 	Diagnostics::endTiming();
 
 	Diagnostics::startTiming("tanks");
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
 		TankManager::getTank(i)->draw(layer);
 	}
-	Renderer::UnbindAll();
 	Diagnostics::endTiming();
 
 	Diagnostics::startTiming("level");
@@ -1526,16 +1481,13 @@ void GameMainLoop::drawLayer(DrawingLayers layer) const {
 	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
 		LevelManager::getLevel(i)->drawLevelEffects(layer);
 	}
-	Renderer::UnbindAll();
 	Diagnostics::endTiming();
 
-	Diagnostics::startTiming("flush");
-	Renderer::Cleanup();
-	glFlush();
-	//glutSwapBuffers();
-	Diagnostics::endTiming();
+	//Diagnostics::startTiming("flush");
+	Renderer::EndScene();
+	//Diagnostics::endTiming();
 
-	auto end = Diagnostics::getTime();
+	//auto end = Diagnostics::getTime();
 
 	//Diagnostics::printPreciseTimings();
 	Diagnostics::clearTimes();
@@ -1546,15 +1498,6 @@ void GameMainLoop::drawLayer(DrawingLayers layer) const {
 }
 
 void GameMainLoop::drawAllLayers() const {
-	Renderer::BeginningStuff();
-	Renderer::Clear();
-	BackgroundRect::draw();
-	Renderer::UnbindAll();
-	/*
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	*/
-
 	drawLayer(DrawingLayers::under);
 	drawLayer(DrawingLayers::normal);
 	drawLayer(DrawingLayers::effects);

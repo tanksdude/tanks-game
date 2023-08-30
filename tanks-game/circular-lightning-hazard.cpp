@@ -14,11 +14,6 @@
 #include "rng.h"
 #include <iostream>
 
-VertexArray* CircularLightningHazard::background_va;
-VertexBuffer* CircularLightningHazard::background_vb;
-IndexBuffer* CircularLightningHazard::background_ib;
-bool CircularLightningHazard::initialized_GPU = false;
-
 std::unordered_map<std::string, float> CircularLightningHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", 1.0f });
@@ -44,7 +39,6 @@ CircularLightningHazard::CircularLightningHazard(double xpos, double ypos, doubl
 	maxBolts = 1;
 	lengthOfBolt = 4;
 	bolts.reserve(maxBolts);
-	pushDefaultBolt(maxBolts, true); //there isn't really a default bolt...
 	boltTick = 0;
 	boltCycle = 4;
 	boltsNeeded = false;
@@ -55,9 +49,6 @@ CircularLightningHazard::CircularLightningHazard(double xpos, double ypos, doubl
 	hasSpecialEffectTankCollision = true;
 	modifiesBulletCollision = true;
 	hasSpecialEffectBulletCollision = true;
-
-	local_initializeGPU();
-	initializeGPU();
 }
 
 inline Circle* CircularLightningHazard::getCenterPoint() const {
@@ -65,92 +56,7 @@ inline Circle* CircularLightningHazard::getCenterPoint() const {
 }
 
 CircularLightningHazard::~CircularLightningHazard() {
-	//clearBolts();
-
-	local_uninitializeGPU();
-	//uninitializeGPU();
-}
-
-bool CircularLightningHazard::initializeGPU() {
-	if (initialized_GPU) {
-		return false;
-	}
-
-	float positions[(Circle::numOfSides+1)*2];
-	positions[0] = 0;
-	positions[1] = 0;
-	for (int i = 1; i < Circle::numOfSides+1; i++) {
-		positions[i*2]   = cos((i-1) * 2*PI / Circle::numOfSides);
-		positions[i*2+1] = sin((i-1) * 2*PI / Circle::numOfSides);
-	}
-
-	unsigned int indices[Circle::numOfSides*3];
-	for (int i = 0; i < Circle::numOfSides; i++) {
-		indices[i*3]   = 0;
-		indices[i*3+1] = i+1;
-		indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
-	}
-
-	background_vb = VertexBuffer::MakeVertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float), RenderingHints::dynamic_draw);
-	VertexBufferLayout layout(2);
-	background_va = VertexArray::MakeVertexArray(*background_vb, layout);
-
-	background_ib = IndexBuffer::MakeIndexBuffer(indices, Circle::numOfSides*3);
-
-	initialized_GPU = true;
-	return true;
-}
-
-//requires a bolt to initialize:
-void CircularLightningHazard::local_initializeGPU() {
-	float* positions = new float[bolts[0]->length*2];
-	for (int i = 0; i < bolts[0]->length; i++) {
-		positions[i*2]   = bolts[0]->positions[i*2];
-		positions[i*2+1] = bolts[0]->positions[i*2+1];
-	}
-	bolt_vb_length = bolts[0]->length;
-
-	bolt_vb = VertexBuffer::MakeVertexBuffer(positions, bolts[0]->length*2 * sizeof(float), RenderingHints::stream_draw);
-	VertexBufferLayout layout(2);
-	bolt_va = VertexArray::MakeVertexArray(*bolt_vb, layout);
-
-	delete[] positions;
-}
-
-void CircularLightningHazard::local_reinitializeGPU(int length) { //does not seed the VertexBuffer with values
-	delete bolt_va;
-	delete bolt_vb;
-
-	float* positions = new float[length*2];
-	bolt_vb_length = length;
-
-	bolt_vb = VertexBuffer::MakeVertexBuffer(positions, length*2 * sizeof(float), RenderingHints::stream_draw);
-	VertexBufferLayout layout(2);
-	bolt_va = VertexArray::MakeVertexArray(*bolt_vb, layout);
-
-	delete[] positions;
-}
-
-bool CircularLightningHazard::uninitializeGPU() {
-	if (!initialized_GPU) {
-		return false;
-	}
-
-	delete background_va;
-	delete background_vb;
-	delete background_ib;
-
-	initialized_GPU = false;
-	return true;
-}
-
-void CircularLightningHazard::local_uninitializeGPU() {
-	delete bolt_va;
-	delete bolt_vb;
-}
-
-void CircularLightningHazard::streamBoltVertices(const LightningBolt* l) const {
-	bolt_vb->modifyData(l->positions.data(), l->length*2 * sizeof(float));
+	//clearBolts(); //handled by ~GeneralizedLightning
 }
 
 CircleHazard* CircularLightningHazard::factory(GenericFactoryConstructionData& args) {
@@ -229,9 +135,6 @@ void CircularLightningHazard::specialEffectBulletCollision(Bullet* b) {
 }
 
 void CircularLightningHazard::pushBolt(LightningBolt* l) {
-	if (l->length > bolt_vb_length) {
-		local_reinitializeGPU(l->length);
-	}
 	bolts.push_back(l);
 	refreshBolt(l);
 }
@@ -245,9 +148,6 @@ void CircularLightningHazard::pushDefaultBolt(int num, bool randomize) {
 		if (randomize) {
 			pushBolt(l);
 		} else {
-			if (l->length > bolt_vb_length) {
-				local_reinitializeGPU(l->length);
-			}
 			bolts.push_back(l);
 		}
 	}
@@ -440,8 +340,6 @@ void CircularLightningHazard::ghostDraw(DrawingLayers layer, float alpha) const 
 inline void CircularLightningHazard::drawBackground(bool pose, float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 modelMatrix;
 
 	double scale;
 	if (pose || currentlyActive) {
@@ -451,79 +349,132 @@ inline void CircularLightningHazard::drawBackground(bool pose, float alpha) cons
 	}
 	scale = scale * scale;
 
-	//main background:
 	//ColorValueHolder color = (pose ? getBackgroundColor_Pose() : getBackgroundColor());
 	ColorValueHolder color = getBackgroundColor_Pose();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
-	modelMatrix = Renderer::GenerateModelMatrix(r*scale, r*scale, 0, x, y);
-	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
+	float coordsAndColor[(Circle::numOfSides+1)*(2+4)];
+	coordsAndColor[0] = x;
+	coordsAndColor[1] = y;
+	coordsAndColor[2] = color.getRf();
+	coordsAndColor[3] = color.getGf();
+	coordsAndColor[4] = color.getBf();
+	coordsAndColor[5] = color.getAf();
+	for (int i = 1; i < Circle::numOfSides+1; i++) {
+		coordsAndColor[i*6]   = x + (r*scale) * cos((i-1) * (2*PI / Circle::numOfSides));
+		coordsAndColor[i*6+1] = y + (r*scale) * sin((i-1) * (2*PI / Circle::numOfSides));
+		coordsAndColor[i*6+2] = color.getRf();
+		coordsAndColor[i*6+3] = color.getGf();
+		coordsAndColor[i*6+4] = color.getBf();
+		coordsAndColor[i*6+5] = color.getAf();
+	}
 
-	Renderer::Draw(*background_va, *background_ib, *shader);
+	unsigned int indices[Circle::numOfSides*3];
+	for (int i = 0; i < Circle::numOfSides; i++) {
+		indices[i*3]   = 0;
+		indices[i*3+1] = i+1;
+		indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
+	}
 
-	//outline:
-	glLineWidth(1.0f);
+	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::numOfSides+1)*(2+4), indices, Circle::numOfSides*3);
 
-	color = ColorValueHolder(0, 0, 0);
-	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+	drawBackgroundOutline(alpha);
+}
 
-	modelMatrix = Renderer::GenerateModelMatrix(r, r, 0, x, y);
-	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
+inline void CircularLightningHazard::drawBackgroundOutline(float alpha) const {
+	//alpha set by drawBackground()
 
-	Renderer::Draw(*background_va, *shader, GL_LINE_LOOP, 1, Circle::numOfSides);
+	//ColorValueHolder color_outline = ColorValueHolder(0.0f, 0.0f, 0.0f); //black is a bit too strong for a lightning's outline
+	ColorValueHolder color_outline = ColorValueHolder(0.5f, 0.5f, 0.5f);
+	color_outline = ColorMixer::mix(BackgroundRect::getBackColor(), color_outline, alpha);
+	const float lineWidth = 0.5f;
+	//using the same color for the background works well, though it's not used because the outline was added to make the lightning's boundary obvious
+
+	float coordsAndColor_outline[(Circle::numOfSides*2)*(2+4)];
+	for (int i = 0; i < Circle::numOfSides; i++) {
+		coordsAndColor_outline[(i*2)  *6]   = x + (r-lineWidth) * cos(i * (2*PI / Circle::numOfSides));
+		coordsAndColor_outline[(i*2)  *6+1] = y + (r-lineWidth) * sin(i * (2*PI / Circle::numOfSides));
+		coordsAndColor_outline[(i*2+1)*6]   = x + (r+lineWidth) * cos(i * (2*PI / Circle::numOfSides));
+		coordsAndColor_outline[(i*2+1)*6+1] = y + (r+lineWidth) * sin(i * (2*PI / Circle::numOfSides));
+
+		coordsAndColor_outline[(i*2)  *6+2] = color_outline.getRf();
+		coordsAndColor_outline[(i*2)  *6+3] = color_outline.getGf();
+		coordsAndColor_outline[(i*2)  *6+4] = color_outline.getBf();
+		coordsAndColor_outline[(i*2)  *6+5] = color_outline.getAf();
+		coordsAndColor_outline[(i*2+1)*6+2] = color_outline.getRf();
+		coordsAndColor_outline[(i*2+1)*6+3] = color_outline.getGf();
+		coordsAndColor_outline[(i*2+1)*6+4] = color_outline.getBf();
+		coordsAndColor_outline[(i*2+1)*6+5] = color_outline.getAf();
+	}
+
+	unsigned int indices_outline[Circle::numOfSides*6];
+	for (int i = 0; i < Circle::numOfSides; i++) {
+		indices_outline[i*6]   =  i*2;
+		indices_outline[i*6+1] =  i*2+1;
+		indices_outline[i*6+2] = (i*2+3) % (Circle::numOfSides*2);
+		indices_outline[i*6+3] = (i*2+3) % (Circle::numOfSides*2);
+		indices_outline[i*6+4] = (i*2+2) % (Circle::numOfSides*2);
+		indices_outline[i*6+5] =  i*2;
+	}
+
+	Renderer::SubmitBatchedDraw(coordsAndColor_outline, (Circle::numOfSides*2)*(2+4), indices_outline, Circle::numOfSides*6);
 }
 
 inline void CircularLightningHazard::drawBolts(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 modelMatrix;
 
 	if (!currentlyActive) {
 		return;
 	}
 
-	glLineWidth(2.0f);
-
 	ColorValueHolder color = getBoltColor();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-
-	modelMatrix = Renderer::GenerateModelMatrix(1, 1, 0, x, y);
-	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
+	const float lineWidth = 0.75f; //TODO: too thick?
 
 	for (int i = 0; i < bolts.size(); i++) {
-		//I think the VertexBuffer resizing should happen here, but there would probably be less strain if it happens only when a bullet/tank collides
-		//TODO: that ^ should be the preferred way, since only draw() (and initializeGPU()) should do GPU stuff
-		/*
-		if (bolts[i]->length > bolt_vb_length) {
-			local_reinitializeGPU(bolts[i]->length);
-		}
-		*/
-		streamBoltVertices(bolts[i]); //TODO: fix
-		Renderer::Draw(*bolt_va, *shader, GL_LINE_STRIP, 0, bolts[i]->length);
-	}
+		float* coordsAndColor = new float[(bolts[i]->length-1)*4*(2+4)];
+		unsigned int* indices = new unsigned int[(bolts[i]->length-1)*6];
 
-	//cleanup
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		for (int j = 0; j < bolts[i]->length-1; j++) {
+			const int startVertex = (j*4) * 6;
+			const int startIndex = j*6;
+
+			SimpleVector2D dist = SimpleVector2D(bolts[i]->positions[(j+1)*2] - bolts[i]->positions[j*2], bolts[i]->positions[(j+1)*2+1] - bolts[i]->positions[j*2+1]);
+			SimpleVector2D distCW = SimpleVector2D(dist.getAngle() - PI/2, lineWidth, true);
+
+			coordsAndColor[startVertex + 0*6]   = x + bolts[i]->positions[j*2]                     + distCW.getXComp();
+			coordsAndColor[startVertex + 0*6+1] = y + bolts[i]->positions[j*2+1]                   + distCW.getYComp();
+			coordsAndColor[startVertex + 1*6]   = x + bolts[i]->positions[j*2]   + dist.getXComp() + distCW.getXComp();
+			coordsAndColor[startVertex + 1*6+1] = y + bolts[i]->positions[j*2+1] + dist.getYComp() + distCW.getYComp();
+			coordsAndColor[startVertex + 2*6]   = x + bolts[i]->positions[j*2]   + dist.getXComp() - distCW.getXComp();
+			coordsAndColor[startVertex + 2*6+1] = y + bolts[i]->positions[j*2+1] + dist.getYComp() - distCW.getYComp();
+			coordsAndColor[startVertex + 3*6]   = x + bolts[i]->positions[j*2]                     - distCW.getXComp();
+			coordsAndColor[startVertex + 3*6+1] = y + bolts[i]->positions[j*2+1]                   - distCW.getYComp();
+
+			for (int k = 0; k < 4; k++) {
+				coordsAndColor[startVertex + k*6+2] = color.getRf();
+				coordsAndColor[startVertex + k*6+3] = color.getGf();
+				coordsAndColor[startVertex + k*6+4] = color.getBf();
+				coordsAndColor[startVertex + k*6+5] = color.getAf();
+			}
+
+			indices[startIndex + 0] = startVertex/6 + 0;
+			indices[startIndex + 1] = startVertex/6 + 1;
+			indices[startIndex + 2] = startVertex/6 + 2;
+			indices[startIndex + 3] = startVertex/6 + 2;
+			indices[startIndex + 4] = startVertex/6 + 3;
+			indices[startIndex + 5] = startVertex/6 + 0;
+		}
+
+		Renderer::SubmitBatchedDraw(coordsAndColor, (bolts[i]->length-1)*4*(2+4), indices, (bolts[i]->length-1)*6);
+		delete[] coordsAndColor; delete[] indices;
+	}
 }
 
 inline void CircularLightningHazard::drawBolts_Pose(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 modelMatrix;
-
-	glLineWidth(2.0f);
-
-	ColorValueHolder color = getBoltColor();
-	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-
-	modelMatrix = Renderer::GenerateModelMatrix(1, 1, 0, x, y);
-	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
 	//generate bolts
 	std::vector<LightningBolt*> poseBolts;
@@ -533,22 +484,58 @@ inline void CircularLightningHazard::drawBolts_Pose(float alpha) const {
 		double xEnd = dist*cos(angle), yEnd = dist*sin(angle);
 		LightningBolt* l = new LightningBolt(0, 0, xEnd, yEnd, getDefaultNumBoltPoints(sqrt(pow(xEnd - 0, 2) + pow(yEnd - 0, 2))));
 
-		if (l->length > bolt_vb_length) {
-			//cut off the parts that won't fit; shouldn't happen though
-			l->length = bolt_vb_length;
-		}
 		refreshBolt(l);
+		poseBolts.push_back(l);
 	}
 
 	//draw
+	ColorValueHolder color = getBoltColor();
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
+	const float lineWidth = 0.75f;
+
 	for (int i = 0; i < poseBolts.size(); i++) {
 		//match with drawBolts()
-		streamBoltVertices(poseBolts[i]);
-		Renderer::Draw(*bolt_va, *shader, GL_LINE_STRIP, 0, poseBolts[i]->length);
+		float* coordsAndColor = new float[(poseBolts[i]->length-1)*4*(2+4)];
+		unsigned int* indices = new unsigned int[(poseBolts[i]->length-1)*6];
+
+		for (int j = 0; j < poseBolts[i]->length-1; j++) {
+			const int startVertex = (j*4) * 6;
+			const int startIndex = j*6;
+
+			SimpleVector2D dist = SimpleVector2D(poseBolts[i]->positions[(j+1)*2] - poseBolts[i]->positions[j*2], poseBolts[i]->positions[(j+1)*2+1] - poseBolts[i]->positions[j*2+1]);
+			SimpleVector2D distCW = SimpleVector2D(dist.getAngle() - PI/2, lineWidth, true);
+
+			coordsAndColor[startVertex + 0*6]   = x + poseBolts[i]->positions[j*2]                     + distCW.getXComp();
+			coordsAndColor[startVertex + 0*6+1] = y + poseBolts[i]->positions[j*2+1]                   + distCW.getYComp();
+			coordsAndColor[startVertex + 1*6]   = x + poseBolts[i]->positions[j*2]   + dist.getXComp() + distCW.getXComp();
+			coordsAndColor[startVertex + 1*6+1] = y + poseBolts[i]->positions[j*2+1] + dist.getYComp() + distCW.getYComp();
+			coordsAndColor[startVertex + 2*6]   = x + poseBolts[i]->positions[j*2]   + dist.getXComp() - distCW.getXComp();
+			coordsAndColor[startVertex + 2*6+1] = y + poseBolts[i]->positions[j*2+1] + dist.getYComp() - distCW.getYComp();
+			coordsAndColor[startVertex + 3*6]   = x + poseBolts[i]->positions[j*2]                     - distCW.getXComp();
+			coordsAndColor[startVertex + 3*6+1] = y + poseBolts[i]->positions[j*2+1]                   - distCW.getYComp();
+
+			for (int k = 0; k < 4; k++) {
+				coordsAndColor[startVertex + k*6+2] = color.getRf();
+				coordsAndColor[startVertex + k*6+3] = color.getGf();
+				coordsAndColor[startVertex + k*6+4] = color.getBf();
+				coordsAndColor[startVertex + k*6+5] = color.getAf();
+			}
+
+			indices[startIndex + 0] = startVertex/6 + 0;
+			indices[startIndex + 1] = startVertex/6 + 1;
+			indices[startIndex + 2] = startVertex/6 + 2;
+			indices[startIndex + 3] = startVertex/6 + 2;
+			indices[startIndex + 4] = startVertex/6 + 3;
+			indices[startIndex + 5] = startVertex/6 + 0;
+		}
+
+		Renderer::SubmitBatchedDraw(coordsAndColor, (poseBolts[i]->length-1)*4*(2+4), indices, (poseBolts[i]->length-1)*6);
+		delete[] coordsAndColor; delete[] indices;
 	}
 
-	//cleanup
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	for (int i = 0; i < poseBolts.size(); i++) {
+		delete poseBolts[i];
+	}
 }
 
 CircleHazard* CircularLightningHazard::randomizingFactory(double x_start, double y_start, double area_width, double area_height, GenericFactoryConstructionData& args) {

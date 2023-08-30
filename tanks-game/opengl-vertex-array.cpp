@@ -1,16 +1,12 @@
 #include "opengl-vertex-array.h"
 #include <GL/glew.h>
 #include <stdexcept>
+#include "opengl-vertex-buffer.h"
+#include "opengl-index-buffer.h"
 
-OpenGLVertexArray::OpenGLVertexArray(const VertexBuffer& vb, const VertexBufferLayout& layout) {
+OpenGLVertexArray::OpenGLVertexArray() {
 	glGenVertexArrays(1, &rendererID);
-
-	Bind();
-	vb.Bind();
-
-	const auto& element = layout.getElement();
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, element.count, element.type, element.normalized, layout.getStride(), (const void*)0);
+	indexBuffer = nullptr;
 }
 
 OpenGLVertexArray::~OpenGLVertexArray() {
@@ -23,4 +19,31 @@ void OpenGLVertexArray::Bind() const {
 
 void OpenGLVertexArray::Unbind() const {
 	glBindVertexArray(0);
+}
+
+void OpenGLVertexArray::AddVertexBuffer(const VertexBuffer* vb) {
+	glBindVertexArray(rendererID);
+	vb->Bind();
+	vertexBuffers.push_back(vb);
+
+	const VertexBufferLayout& layout = vb->GetLayout();
+	for (int i = 0; i < layout.getElements().size(); i++) {
+		const VertexBufferElement& element = layout.getElements()[i];
+		glEnableVertexAttribArray(i);
+		glVertexAttribPointer(i,
+			element.getComponentCount(element.type),
+			OpenGLVertexBuffer::ShaderDataTypeToGLenum(element.type),
+			element.normalized ? GL_TRUE : GL_FALSE,
+			layout.getStride(),
+			(const void*) element.offset);
+	}
+}
+
+void OpenGLVertexArray::SetIndexBuffer(const IndexBuffer* ib) {
+	glBindVertexArray(rendererID);
+	ib->Bind();
+	if (indexBuffer != nullptr) {
+		delete indexBuffer;
+	}
+	indexBuffer = ib;
 }

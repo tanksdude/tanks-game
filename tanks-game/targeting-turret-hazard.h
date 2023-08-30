@@ -1,10 +1,6 @@
 #pragma once
 #include "stationary-turret-hazard.h"
 
-#include "vertex-array.h"
-#include "vertex-buffer.h"
-#include "index-buffer.h"
-
 class TargetingTurretHazard : public StationaryTurretHazard {
 	//just called Turret in JS Tanks
 protected:
@@ -33,19 +29,6 @@ protected:
 	virtual ColorValueHolder getColor(int state) const override;
 	virtual ColorValueHolder getReticuleColor() const;
 
-private:
-	static VertexArray* va;
-	static VertexBuffer* vb;
-	static IndexBuffer* ib;
-	static VertexArray* cannon_va;
-	static VertexBuffer* cannon_vb;
-	static VertexArray* reticule_va;
-	static VertexBuffer* reticule_vb;
-	static bool initialized_GPU;
-
-	static bool initializeGPU();
-	static bool uninitializeGPU();
-
 public:
 	virtual std::vector<std::string> getHazardTypes() const override {
 		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "old", "random-old", "random" };
@@ -67,7 +50,6 @@ public:
 	virtual void poseDraw(DrawingLayers) const override;
 	virtual void ghostDraw(float alpha) const override;
 	virtual void ghostDraw(DrawingLayers, float alpha) const override;
-	//virtual void drawCPU() const override;
 
 protected:
 	virtual inline void tick_continueTracking();
@@ -81,8 +63,6 @@ private:
 	inline void drawBarrel(float alpha = 1.0f) const;
 	inline void drawReticule(float alpha = 1.0f) const;
 
-protected:
-	TargetingTurretHazard(double xpos, double ypos, double angle, bool noGPU);
 public:
 	TargetingTurretHazard(double xpos, double ypos, double angle);
 	TargetingTurretHazard(double xpos, double ypos, double angle, double radius);

@@ -11,10 +11,6 @@ class Tank;
 #include "cannon-point.h"
 #include "tank-power.h"
 
-#include "vertex-array.h"
-#include "vertex-buffer.h"
-#include "index-buffer.h"
-
 class Tank : public GameThing, public Circle, public DrawableThing {
 	friend class ResetThings;
 	friend class PowerFunctionHelper;
@@ -30,7 +26,9 @@ public:
 	double shootCount;
 	double maxShootCount;
 	bool dead = false; //only kill() should modify this
+	std::string name;
 
+public:
 	double getOffenseTier() const;
 	double getDefenseTier() const;
 
@@ -41,11 +39,6 @@ protected:
 	double getHighestDefenseTier(double importance) const;
 
 public:
-	//double shootingSpeedMultiplier = 1;
-	double getShootingSpeedMultiplier() const;
-	//double powerMultiplier; //would be used for an ini
-
-public:
 	void determineShootingAngles();
 	void updateAllValues(); //this is supposed to update all values that can get affected by powers, such as maxSpeed and acceleration
 	void updateMaxSpeed();
@@ -53,8 +46,8 @@ public:
 	void updateRadius();
 	void updateTurningIncrement();
 
-protected:
-	std::string name;
+	double getShootingSpeedMultiplier() const;
+	//double powerMultiplier; //would be used for an ini
 
 protected:
 	void makeBulletCommon(double x, double y, double angle, double radius, double speed);
@@ -64,7 +57,7 @@ public:
 	void regularMakeBullet(double x_offset, double y_offset, double angle); //make bullet x and y dist from tank, moving with angle
 
 protected:
-	ColorValueHolder defaultColor = ColorValueHolder(0.5f, 0.5f, 0.5f); //JS: #888888
+	ColorValueHolder defaultColor; // = ColorValueHolder(0.5f, 0.5f, 0.5f); //JS: #888888
 	ColorValueHolder defaultNameFill = ColorValueHolder(1.0f, 1.0f, 1.0f);
 	ColorValueHolder defaultNameStroke = ColorValueHolder(0.0f, 0.0f, 0.0f);
 
@@ -72,7 +65,6 @@ protected:
 	void kill_hard(); //kills without accounting for extra lives
 	inline void terminalVelocity(bool forward);
 	inline void move_base(bool forward, bool turnL, bool turnR);
-	//void resetThings(double x, double y, double angle, Team_ID teamID);
 
 public:
 	//helper stuff:
@@ -87,17 +79,6 @@ public:
 	static const double default_acceleration;
 	static const double default_turningIncrement;
 
-private:
-	static VertexArray* va;
-	static VertexBuffer* vb;
-	static IndexBuffer* ib;
-	static VertexArray* cannon_va;
-	static VertexBuffer* cannon_vb;
-	static bool initialized_GPU;
-
-	static bool initializeGPU();
-	static bool uninitializeGPU();
-
 public:
 	bool move(bool forward, bool turnL, bool turnR, bool specialKey);
 	void shoot(bool shooting);
@@ -111,8 +92,6 @@ public:
 	void poseDraw(DrawingLayers) const override;
 	void ghostDraw(float alpha) const override;
 	void ghostDraw(DrawingLayers, float alpha) const override;
-	//void drawCPU() const;
-	//void drawCPU(double, double) const;
 
 private:
 	inline void drawBody(float alpha = 1.0f) const;

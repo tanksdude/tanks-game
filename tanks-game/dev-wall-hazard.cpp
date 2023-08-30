@@ -5,20 +5,10 @@
 #include "color-mixer.h"
 #include "background-rect.h"
 #include "mylib.h"
-#include "point.h"
-#include "tank.h"
-#include "tank-manager.h"
-#include "bullet-manager.h"
-#include "wall-manager.h"
 #include "hazard-manager.h"
 #include "level-manager.h"
 #include "collision-handler.h"
 #include "rng.h"
-
-VertexArray* DevWallHazard::va;
-VertexBuffer* DevWallHazard::vb;
-IndexBuffer* DevWallHazard::ib;
-bool DevWallHazard::initialized_GPU = false;
 
 std::unordered_map<std::string, float> DevWallHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -41,51 +31,10 @@ DevWallHazard::DevWallHazard(double xpos, double ypos, double width, double heig
 	canAcceptPowers = false;
 
 	//modifiesBulletCollision = true;
-
-	initializeGPU();
 }
 
 DevWallHazard::~DevWallHazard() {
-	//uninitializeGPU();
-}
-
-bool DevWallHazard::initializeGPU() {
-	if (initialized_GPU) {
-		return false;
-	}
-
-	float positions[] = {
-		0, 0,
-		1, 0,
-		1, 1,
-		0, 1
-	};
-	unsigned int indices[] = {
-		0, 1, 2,
-		2, 3, 0
-	};
-
-	vb = VertexBuffer::MakeVertexBuffer(positions, 4*2 * sizeof(float), RenderingHints::dynamic_draw);
-	VertexBufferLayout layout(2);
-	va = VertexArray::MakeVertexArray(*vb, layout);
-
-	ib = IndexBuffer::MakeIndexBuffer(indices, 6);
-
-	initialized_GPU = true;
-	return true;
-}
-
-bool DevWallHazard::uninitializeGPU() {
-	if (!initialized_GPU) {
-		return false;
-	}
-
-	delete va;
-	delete vb;
-	delete ib;
-
-	initialized_GPU = false;
-	return true;
+	//nothing
 }
 
 RectHazard* DevWallHazard::factory(GenericFactoryConstructionData& args) {
@@ -191,17 +140,24 @@ void DevWallHazard::poseDraw(DrawingLayers layer) const {
 }
 
 void DevWallHazard::ghostDraw(float alpha) const {
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 modelMatrix;
+	alpha = constrain<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
 
-	ColorValueHolder c = color;
+	ColorValueHolder c = this->color;
 	c = ColorMixer::mix(BackgroundRect::getBackColor(), c, alpha);
-	shader->setUniform4f("u_color", c.getRf(), c.getGf(), c.getBf(), c.getAf());
 
-	modelMatrix = Renderer::GenerateModelMatrix(w, h, 0, x, y);
-	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
+	float coordsAndColor[] = {
+		x,   y,     c.getRf(), c.getGf(), c.getBf(), c.getAf(),
+		x+w, y,     c.getRf(), c.getGf(), c.getBf(), c.getAf(),
+		x+w, y+h,   c.getRf(), c.getGf(), c.getBf(), c.getAf(),
+		x,   y+h,   c.getRf(), c.getGf(), c.getBf(), c.getAf()
+	};
+	unsigned int indices[] = {
+		0, 1, 2,
+		2, 3, 0
+	};
 
-	Renderer::Draw(*va, *ib, *shader);
+	Renderer::SubmitBatchedDraw(coordsAndColor, 4 * (2+4), indices, 2 * 3);
 }
 
 void DevWallHazard::ghostDraw(DrawingLayers layer, float alpha) const {

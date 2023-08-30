@@ -7,14 +7,13 @@
 #include "color-mixer.h"
 #include "background-rect.h"
 #include "renderer.h"
+#include <algorithm> //std::copy
 
-VertexArray* WindLevelEffect::va;
-VertexBuffer* WindLevelEffect::vb;
-IndexBuffer* WindLevelEffect::ib;
-VertexArray* WindLevelEffect::va_extra;
-VertexBuffer* WindLevelEffect::vb_extra;
-IndexBuffer* WindLevelEffect::ib_extra;
-bool WindLevelEffect::initialized_GPU = false;
+SimpleVector2D WindLevelEffect::vertices_spike[3];
+SimpleVector2D WindLevelEffect::vertices_arrow[7];
+unsigned int WindLevelEffect::indices_spike[1*3];
+unsigned int WindLevelEffect::indices_arrow[3*3];
+bool WindLevelEffect::initialized_vertices = false;
 
 std::unordered_map<std::string, float> WindLevelEffect::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -91,11 +90,7 @@ void WindLevelEffect::draw() const {
 		return;
 	}
 
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 modelMatrix;
-
 	ColorValueHolder color = ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(0.0f, 0.0f, 0.0f));
-	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
 	const double length = 16 * pushDirection.getMagnitude() * getWindStrengthMultiplier(); //normal
 	//const double length = 16 * sqrt(pushDirection.getMagnitude() * getWindStrengthMultiplier()); //ez way to make small values more visible
@@ -105,13 +100,36 @@ void WindLevelEffect::draw() const {
 	const double y_offset = 64; //JS y offset: (320)/5 = 64
 	for (int i = -3; i <= 3; i++) {
 		for (int j = -2; j <= 2; j++) {
-			modelMatrix = Renderer::GenerateModelMatrix(length, length, pushDirection.getAngle(), GAME_WIDTH/2 + i*x_offset, GAME_HEIGHT/2 + j*y_offset);
-			shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
-
 			if (i == 0 && j == 0) {
-				Renderer::Draw(*va_extra, *ib_extra, *shader);
+				float coordsAndColor_arrow[7*(2+4)];
+				for (int k = 0; k < 7; k++) {
+					SimpleVector2D vertex = SimpleVector2D(vertices_arrow[k]);
+					vertex.setMagnitude(vertex.getMagnitude() * length);
+					vertex.changeAngle(pushDirection.getAngle());
+					coordsAndColor_arrow[k*6]   = (GAME_WIDTH/2  + i*x_offset) + vertex.getXComp();
+					coordsAndColor_arrow[k*6+1] = (GAME_HEIGHT/2 + j*y_offset) + vertex.getYComp();
+					coordsAndColor_arrow[k*6+2] = color.getRf();
+					coordsAndColor_arrow[k*6+3] = color.getGf();
+					coordsAndColor_arrow[k*6+4] = color.getBf();
+					coordsAndColor_arrow[k*6+5] = color.getAf();
+				}
+
+				Renderer::SubmitBatchedDraw(coordsAndColor_arrow, 7*(2+4), indices_arrow, 3*3);
 			} else {
-				Renderer::Draw(*va, *ib, *shader);
+				float coordsAndColor_spike[3*(2+4)];
+				for (int k = 0; k < 3; k++) {
+					SimpleVector2D vertex = SimpleVector2D(vertices_spike[k]);
+					vertex.setMagnitude(vertex.getMagnitude() * length);
+					vertex.changeAngle(pushDirection.getAngle());
+					coordsAndColor_spike[k*6]   = (GAME_WIDTH/2  + i*x_offset) + vertex.getXComp();
+					coordsAndColor_spike[k*6+1] = (GAME_HEIGHT/2 + j*y_offset) + vertex.getYComp();
+					coordsAndColor_spike[k*6+2] = color.getRf();
+					coordsAndColor_spike[k*6+3] = color.getGf();
+					coordsAndColor_spike[k*6+4] = color.getBf();
+					coordsAndColor_spike[k*6+5] = color.getAf();
+				}
+
+				Renderer::SubmitBatchedDraw(coordsAndColor_spike, 3*(2+4), indices_spike, 1*3);
 			}
 		}
 	}
@@ -176,11 +194,8 @@ void WindLevelEffect::poseDraw(DrawingLayers layer) const {
 void WindLevelEffect::ghostDraw(float alpha) const {
 	//from draw() (maybe copy-pasting isn't a good idea)
 	//7 x 5 arrows
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 modelMatrix;
 
 	ColorValueHolder color = ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(0.0f, 0.0f, 0.0f));
-	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
 	const double length = 16 * pushDirection.getMagnitude();
 	const double x_offset = 64;
@@ -194,16 +209,26 @@ void WindLevelEffect::ghostDraw(float alpha) const {
 			double angle;
 			if (i < -j) {
 				//bottom left
-				angle = -3*PI/4;
+				angle = -3*(PI/4);
 			} else {
 				//top right
 				angle = PI/4;
 			}
 
-			modelMatrix = Renderer::GenerateModelMatrix(length, length, angle, GAME_WIDTH/2 + i*x_offset, GAME_HEIGHT/2 + j*y_offset);
-			shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
+			float coordsAndColor_spike[3*(2+4)];
+			for (int k = 0; k < 3; k++) {
+				SimpleVector2D vertex = SimpleVector2D(vertices_spike[k]);
+				vertex.setMagnitude(vertex.getMagnitude() * length);
+				vertex.changeAngle(pushDirection.getAngle());
+				coordsAndColor_spike[k*6]   = (GAME_WIDTH/2  + i*x_offset) + vertex.getXComp();
+				coordsAndColor_spike[k*6+1] = (GAME_HEIGHT/2 + j*y_offset) + vertex.getYComp();
+				coordsAndColor_spike[k*6+2] = color.getRf();
+				coordsAndColor_spike[k*6+3] = color.getGf();
+				coordsAndColor_spike[k*6+4] = color.getBf();
+				coordsAndColor_spike[k*6+5] = color.getAf();
+			}
 
-			Renderer::Draw(*va, *ib, *shader);
+			Renderer::SubmitBatchedDraw(coordsAndColor_spike, 3*(2+4), indices_spike, 1*3);
 		}
 	}
 }
@@ -234,68 +259,36 @@ void WindLevelEffect::ghostDraw(DrawingLayers layer, float alpha) const {
 	}
 }
 
-bool WindLevelEffect::initializeGPU() {
-	if (initialized_GPU) {
+bool WindLevelEffect::initializeVertices() {
+	if (initialized_vertices) {
 		return false;
 	}
 
-	//I think an arrow was originally intended but complex to implement, so a spike was used
+	//an arrow was originally intended to be the main indicator of direction, but was complex to implement (when doing bad code), so a spike was used
 
-	//spike:
-	float positions[] = {
-		-1.0f, -0.125f,
-		-1.0f,  0.125f,
-		 1.0f,  0.0f
-	};
-	//arrow:
-	float positions_extra[] = {
-		-1.0f, -0.125f, //bottom left  //0
-		-1.0f,  0.125f, //top left     //1
-		 0.5f,  0.125f, //top right    //2
-		 0.5f,  0.5f,                  //3
-		 1.0f,  0.0f,   //arrow tip    //4
-		 0.5f, -0.5f,                  //5
-		 0.5f, -0.125f  //bottom right //6
-	};
+	vertices_spike[0] = SimpleVector2D(-1.0f, -0.125f);
+	vertices_spike[1] = SimpleVector2D(-1.0f,  0.125f);
+	vertices_spike[2] = SimpleVector2D( 1.0f,  0.0f  );
 
-	unsigned int indices[] = {
-		0, 1, 2
-	};
-	unsigned int indices_extra[] = {
+	unsigned int spike_temp[] = { 0, 1, 2 };
+	std::copy(spike_temp, spike_temp + (1*3), indices_spike);
+
+	vertices_arrow[0] = SimpleVector2D(-1.0f, -0.125f); //bottom left
+	vertices_arrow[1] = SimpleVector2D(-1.0f,  0.125f); //top left
+	vertices_arrow[2] = SimpleVector2D( 0.5f,  0.125f); //top right
+	vertices_arrow[3] = SimpleVector2D( 0.5f,  0.5f  );
+	vertices_arrow[4] = SimpleVector2D( 1.0f,  0.0f  ); //arrow tip
+	vertices_arrow[5] = SimpleVector2D( 0.5f, -0.5f  );
+	vertices_arrow[6] = SimpleVector2D( 0.5f, -0.125f); //bottom right
+
+	unsigned int arrow_temp[] = {
 		0, 1, 2,
 		2, 6, 0,
 		3, 4, 5
 	};
+	std::copy(arrow_temp, arrow_temp + (3*3), indices_arrow);
 
-	vb = VertexBuffer::MakeVertexBuffer(positions, sizeof(positions), RenderingHints::dynamic_draw);
-	VertexBufferLayout layout(2);
-	va = VertexArray::MakeVertexArray(*vb, layout);
-
-	ib = IndexBuffer::MakeIndexBuffer(indices, sizeof(indices)/sizeof(unsigned int));
-
-	vb_extra = VertexBuffer::MakeVertexBuffer(positions_extra, sizeof(positions_extra), RenderingHints::dynamic_draw);
-	VertexBufferLayout layout_extra(2);
-	va_extra = VertexArray::MakeVertexArray(*vb_extra, layout_extra);
-
-	ib_extra = IndexBuffer::MakeIndexBuffer(indices_extra, sizeof(indices_extra)/sizeof(unsigned int));
-
-	initialized_GPU = true;
-	return true;
-}
-
-bool WindLevelEffect::uninitializeGPU() {
-	if (!initialized_GPU) {
-		return false;
-	}
-
-	delete va;
-	delete vb;
-	delete ib;
-	delete va_extra;
-	delete vb_extra;
-	delete ib_extra;
-
-	initialized_GPU = false;
+	initialized_vertices = true;
 	return true;
 }
 
@@ -312,7 +305,7 @@ WindLevelEffect::WindLevelEffect(bool transitionWind) {
 		stateMultiplier = new double[maxState]{1, 0, 1, 0};
 	}
 
-	initializeGPU();
+	initializeVertices();
 }
 
 WindLevelEffect::WindLevelEffect() : WindLevelEffect(false) {}

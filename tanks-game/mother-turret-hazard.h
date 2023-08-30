@@ -1,10 +1,6 @@
 #pragma once
 #include "targeting-turret-hazard.h"
 
-#include "vertex-array.h"
-#include "vertex-buffer.h"
-#include "index-buffer.h"
-
 class MotherTurretHazard : public TargetingTurretHazard {
 	//big TODO: should the child turrets follow the mother's orders? (meaning if the mother sees a tank, every child targets it)
 protected:
@@ -43,17 +39,6 @@ protected:
 
 	virtual void turnTowardsPoint(int turretNum);
 	virtual bool isPointedAt(int turretNum) const;
-
-private:
-	static VertexArray* va;
-	static VertexBuffer* vb;
-	static IndexBuffer* ib;
-	static VertexArray* cannon_va;
-	static VertexBuffer* cannon_vb;
-	static bool initialized_GPU;
-
-	static bool initializeGPU();
-	static bool uninitializeGPU();
 
 public:
 	virtual std::vector<std::string> getHazardTypes() const override {

@@ -67,7 +67,7 @@ void TightPatrollingCorridorLevel::initialize() {
 	constructionData.pushData(1, patrolCount);
 	constructionData.pushData(2*2, patrolRoute2);
 	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "patrolling_turret")(constructionData));
-	delete[] posArr, patrolCount, patrolRoute1, patrolRoute2;
+	delete[] posArr; delete[] patrolCount; delete[] patrolRoute1; delete[] patrolRoute2;
 
 	//inner walls
 	pos = LevelHelper::getSymmetricWallPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 20, (40+40)*2);
@@ -123,7 +123,7 @@ void TightPatrollingCorridorLevel::initialize() {
 	constructionData.pushData(1, patrolCount);
 	constructionData.pushData(2*2, patrolRoute2);
 	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "patrolling_turret")(constructionData));
-	delete[] posArr, patrolCount, patrolRoute1, patrolRoute2;
+	delete[] posArr; delete[] patrolCount; delete[] patrolRoute1; delete[] patrolRoute2;
 
 	//outer walls
 	for (int i = 0; i < 4; i++) {
@@ -168,7 +168,7 @@ void TightPatrollingCorridorLevel::initialize() {
 	constructionData.pushData(1, patrolCount);
 	constructionData.pushData(2*2, patrolRoute2);
 	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "patrolling_turret")(constructionData));
-	delete[] posArr, patrolCount, patrolRoute1, patrolRoute2;
+	delete[] posArr; delete[] patrolCount; delete[] patrolRoute1; delete[] patrolRoute2;
 	//DL and DR turrets
 	posArr = new double[3]{ GAME_WIDTH/2 - ((60+20 + 40) + 80 - 20), ((20) + (GAME_HEIGHT/2 - (20+40)))/2, 0 };
 	patrolCount = new int[1]{ 2 };
@@ -190,7 +190,7 @@ void TightPatrollingCorridorLevel::initialize() {
 	constructionData.pushData(1, patrolCount);
 	constructionData.pushData(2*2, patrolRoute2);
 	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "patrolling_turret")(constructionData));
-	delete[] posArr, patrolCount, patrolRoute1, patrolRoute2;
+	delete[] posArr; delete[] patrolCount; delete[] patrolRoute1; delete[] patrolRoute2;
 
 	//delete[] wallArray;
 

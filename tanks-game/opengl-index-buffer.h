@@ -6,6 +6,8 @@ protected:
 	unsigned int rendererID;
 	unsigned int count;
 public:
+	void modifyData(const void* data, int offset, unsigned int size) override;
+
 	void Bind() const override;
 	void Unbind() const override;
 

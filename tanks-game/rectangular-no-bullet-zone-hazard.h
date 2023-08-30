@@ -3,24 +3,8 @@
 #include "generalized-no-bullet-zone.h"
 #include "constants.h"
 
-#include "vertex-array.h"
-#include "vertex-buffer.h"
-#include "index-buffer.h"
-
 class RectangularNoBulletZoneHazard : public RectHazard, public GeneralizedNoBulletZone {
 	//called NoShotZone in JS Tanks (because bullets were called "shots")
-private:
-	static VertexArray* va;
-	static VertexBuffer* vb;
-	static IndexBuffer* ib;
-	static VertexArray* extra_va; //the red X
-	static VertexBuffer* extra_vb;
-	static IndexBuffer* extra_ib;
-	static bool initialized_GPU;
-
-	static bool initializeGPU();
-	static bool uninitializeGPU();
-
 public:
 	virtual std::vector<std::string> getHazardTypes() const override {
 		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "old", "random-old", "random" };

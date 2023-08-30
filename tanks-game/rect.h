@@ -11,8 +11,8 @@ public:
 	double w;
 	double h;
 
-	double getX() const { return x; }
-	double getY() const { return y; }
-	double getW() const { return w; }
-	double getH() const { return h; }
+	inline double getX() const { return x; }
+	inline double getY() const { return y; }
+	inline double getW() const { return w; }
+	inline double getH() const { return h; }
 };

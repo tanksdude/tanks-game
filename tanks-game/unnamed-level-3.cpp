@@ -16,7 +16,7 @@ std::unordered_map<std::string, float> UnnamedLevel3::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "dev", 0.5f });
 	weights.insert({ "random-dev", 0.5f });
-	//it's a complete level (mostly), just lacking a name and a color
+	//TODO: it's a complete level (mostly), just lacking a name and a color
 	return weights;
 }
 
@@ -53,7 +53,7 @@ void UnnamedLevel3::initialize() {
 	constructionData = GenericFactoryConstructionData(3, posArr);
 	constructionData.pushData(2, childArr);
 	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "mother_turret")(constructionData));
-	delete[] posArr, childArr;
+	delete[] posArr; delete[] childArr;
 
 	//hiding areas from lone turret level, pushed out
 	const double top_gap = TANK_RADIUS*2;
@@ -153,7 +153,7 @@ void UnnamedLevel3::initialize() {
 		pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, (GAME_HEIGHT/2+40)-(top_gap+side_length)+(side_length/2), GAME_HEIGHT/2-(top_gap+side_length)+(side_length/2));
 		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, paras, names, 2));
 	}
-	delete[] paras, names;
+	delete[] paras; delete[] names;
 
 	//not concealed powers:
 	//paras = new std::string[2]{ "vanilla", "vanilla" };
@@ -163,7 +163,7 @@ void UnnamedLevel3::initialize() {
 		pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, (GAME_HEIGHT/2+40)-(top_gap+side_length)-(10), GAME_HEIGHT/2-(top_gap+side_length)-(10));
 		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "vanilla", LevelHelper::powerAlternate(i, tempRand, "fire", "invincible")));
 	}
-	//delete[] paras, names;
+	//delete[] paras; delete[] names;
 }
 
 Level* UnnamedLevel3::factory() {

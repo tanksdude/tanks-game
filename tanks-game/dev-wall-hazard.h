@@ -2,23 +2,10 @@
 #include "rect-hazard.h"
 #include "constants.h"
 
-#include "vertex-array.h"
-#include "vertex-buffer.h"
-#include "index-buffer.h"
-
 class DevWallHazard : public RectHazard {
 	//it's just a rectangular hazard with solid collision
 protected:
 	ColorValueHolder color;
-
-private:
-	static VertexArray* va;
-	static VertexBuffer* vb;
-	static IndexBuffer* ib;
-	static bool initialized_GPU;
-
-	static bool initializeGPU();
-	static bool uninitializeGPU();
 
 public:
 	virtual std::vector<std::string> getHazardTypes() const override {

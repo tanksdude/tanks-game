@@ -70,7 +70,7 @@ void DeveloperLevel3::initialize() {
 	constructionData.pushData(1, patrolCount);
 	constructionData.pushData(4*2, patrolRoute);
 	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "patrolling_turret")(constructionData));
-	delete[] posArr, patrolCount, patrolRoute;
+	delete[] posArr; delete[] patrolCount; delete[] patrolRoute;
 
 	pos = LevelHelper::getSymmetricWallPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 20, 80);
 	posArr = new double[4]{ pos.x - 40, pos.y, 20, 80 };

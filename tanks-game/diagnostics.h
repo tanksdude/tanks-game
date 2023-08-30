@@ -5,10 +5,6 @@
 #include <unordered_map>
 #include "color-value-holder.h"
 
-#include "vertex-array.h"
-#include "vertex-buffer.h"
-#include "index-buffer.h"
-
 class Diagnostics {
 private:
 	static std::vector<std::chrono::time_point<std::chrono::steady_clock>> times;
@@ -17,6 +13,7 @@ private:
 
 	struct GraphData {
 		std::vector<long double> data; //should use a list but iterators are so messy
+		//long doubles are utterly unnecessary, but it's the time difference units from std::chrono
 		std::string name;
 		ColorValueHolder color;
 		GraphData(std::string, ColorValueHolder);
@@ -33,20 +30,7 @@ private:
 
 	static void drawGraphTimes_graph();
 	static void drawGraphTimes_data(std::string name);
-	static void drawGraphTimes_data();
-
-private:
-	static VertexArray* graph_va;
-	static VertexBuffer* graph_vb;
-	//static IndexBuffer* graph_ib;
-	static VertexArray* data_va;
-	static VertexBuffer* data_vb;
-	static int data_vb_length;
-	static bool initialized_GPU;
-
-	static bool initializeGPU();
-	static void streamDataGPU(const std::vector<long double>&);
-	static bool uninitializeGPU();
+	static inline void drawGraphTimes_data();
 
 public:
 	static void Initialize();

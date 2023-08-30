@@ -4,7 +4,7 @@
 #include <cmath>
 #include "color-mixer.h"
 #include "background-rect.h"
-#include <algorithm>
+#include <algorithm> //std::copy
 #include "mylib.h"
 #include "tank.h"
 #include "tank-manager.h"
@@ -14,15 +14,6 @@
 #include "collision-handler.h"
 #include "rng.h"
 #include <iostream>
-
-VertexArray* TargetingTurretHazard::va;
-VertexBuffer* TargetingTurretHazard::vb;
-IndexBuffer* TargetingTurretHazard::ib;
-VertexArray* TargetingTurretHazard::cannon_va;
-VertexBuffer* TargetingTurretHazard::cannon_vb;
-VertexArray* TargetingTurretHazard::reticule_va;
-VertexBuffer* TargetingTurretHazard::reticule_vb;
-bool TargetingTurretHazard::initialized_GPU = false;
 
 std::unordered_map<std::string, float> TargetingTurretHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -34,7 +25,7 @@ std::unordered_map<std::string, float> TargetingTurretHazard::getWeights() const
 	return weights;
 }
 
-TargetingTurretHazard::TargetingTurretHazard(double xpos, double ypos, double angle, bool) : StationaryTurretHazard(xpos, ypos, angle, true) {
+TargetingTurretHazard::TargetingTurretHazard(double xpos, double ypos, double angle) : StationaryTurretHazard(xpos, ypos, angle) {
 	//x = xpos;
 	//y = ypos;
 	//velocity = SimpleVector2D(angle, 0, true);
@@ -51,10 +42,6 @@ TargetingTurretHazard::TargetingTurretHazard(double xpos, double ypos, double an
 	canAcceptPowers = false; //... true?
 }
 
-TargetingTurretHazard::TargetingTurretHazard(double xpos, double ypos, double angle) : TargetingTurretHazard(xpos, ypos, angle, true) {
-	initializeGPU();
-}
-
 TargetingTurretHazard::TargetingTurretHazard(double xpos, double ypos, double angle, double radius) : TargetingTurretHazard(xpos, ypos, angle) {
 	r = radius;
 }
@@ -62,74 +49,6 @@ TargetingTurretHazard::TargetingTurretHazard(double xpos, double ypos, double an
 TargetingTurretHazard::~TargetingTurretHazard() {
 	//delete[] stateMultiplier;
 	//delete[] stateColors;
-
-	//uninitializeGPU();
-}
-
-bool TargetingTurretHazard::initializeGPU() {
-	if (initialized_GPU) {
-		return false;
-	}
-
-	//body:
-	float positions[(Circle::numOfSides+1)*2];
-	positions[0] = 0;
-	positions[1] = 0;
-	for (int i = 1; i < Circle::numOfSides+1; i++) {
-		positions[i*2]   = cos((i-1) * 2*PI / Circle::numOfSides);
-		positions[i*2+1] = sin((i-1) * 2*PI / Circle::numOfSides);
-	}
-
-	unsigned int indices[Circle::numOfSides*3];
-	for (int i = 0; i < Circle::numOfSides; i++) {
-		indices[i*3]   = 0;
-		indices[i*3+1] = i+1;
-		indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
-	}
-
-	vb = VertexBuffer::MakeVertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float), RenderingHints::dynamic_draw);
-	VertexBufferLayout layout(2);
-	va = VertexArray::MakeVertexArray(*vb, layout);
-
-	ib = IndexBuffer::MakeIndexBuffer(indices, Circle::numOfSides*3);
-
-	//cannon:
-	float cannon_positions[4] = { 0.0f, 0.0f, 1.0f, 0.0f };
-	cannon_vb = VertexBuffer::MakeVertexBuffer(cannon_positions, 2*2 * sizeof(float), RenderingHints::dynamic_draw);
-	VertexBufferLayout cannon_layout(2);
-	cannon_va = VertexArray::MakeVertexArray(*cannon_vb, cannon_layout);
-
-	//targeting reticule:
-	//the circle is the same as the body
-	float reticule_positions[16] = {
-		 0.75f,  0.0f,   1.25f,  0.0f,  //right
-		 0.0f,   0.75f,  0.0f,   1.25f, //up
-		-0.75f,  0.0f,  -1.25f,  0.0f,  //left
-		 0.0f,  -0.75f,  0.0f,  -1.25f  //down
-	};
-	reticule_vb = VertexBuffer::MakeVertexBuffer(reticule_positions, 16*2 * sizeof(float));
-	VertexBufferLayout reticule_layout(2);
-	reticule_va = VertexArray::MakeVertexArray(*reticule_vb, reticule_layout);
-
-	initialized_GPU = true;
-	return true;
-}
-
-bool TargetingTurretHazard::uninitializeGPU() {
-	if (!initialized_GPU) {
-		return false;
-	}
-
-	delete va;
-	delete vb;
-	delete ib;
-	delete cannon_va;
-	delete cannon_vb;
-	delete reticule_va;
-	delete reticule_vb;
-
-	initialized_GPU = false;
-	return true;
 }
 
 CircleHazard* TargetingTurretHazard::factory(GenericFactoryConstructionData& args) {
@@ -391,14 +310,12 @@ void TargetingTurretHazard::draw(DrawingLayers layer) const {
 }
 
 void TargetingTurretHazard::poseDraw() const {
-	//TODO: adjust so drawBody will only draw with the normal color?
 	drawBody();
 	drawOutline();
 	drawBarrel();
 }
 
 void TargetingTurretHazard::poseDraw(DrawingLayers layer) const {
-	//TODO: adjust so drawBody will only draw with the normal color?
 	switch (layer) {
 		case DrawingLayers::under:
 			//nothing
@@ -427,14 +344,12 @@ void TargetingTurretHazard::poseDraw(DrawingLayers layer) const {
 }
 
 void TargetingTurretHazard::ghostDraw(float alpha) const {
-	//TODO: adjust so drawBody will only draw with the normal color?
 	drawBody(alpha);
 	drawOutline(alpha);
 	drawBarrel(alpha);
 }
 
 void TargetingTurretHazard::ghostDraw(DrawingLayers layer, float alpha) const {
-	//TODO: adjust so drawBody will only draw with the normal color?
 	switch (layer) {
 		case DrawingLayers::under:
 			//nothing
@@ -465,99 +380,211 @@ void TargetingTurretHazard::ghostDraw(DrawingLayers layer, float alpha) const {
 inline void TargetingTurretHazard::drawBody(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 modelMatrix;
 
 	ColorValueHolder color = getColor();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
-	modelMatrix = Renderer::GenerateModelMatrix(r, r, 0, x, y);
-	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
+	float coordsAndColor[(Circle::numOfSides+1)*(2+4)];
+	coordsAndColor[0] = x;
+	coordsAndColor[1] = y;
+	coordsAndColor[2] = color.getRf();
+	coordsAndColor[3] = color.getGf();
+	coordsAndColor[4] = color.getBf();
+	coordsAndColor[5] = color.getAf();
+	for (int i = 1; i < Circle::numOfSides+1; i++) {
+		coordsAndColor[i*6]   = x + r * cos((i-1) * (2*PI / Circle::numOfSides));
+		coordsAndColor[i*6+1] = y + r * sin((i-1) * (2*PI / Circle::numOfSides));
+		coordsAndColor[i*6+2] = color.getRf();
+		coordsAndColor[i*6+3] = color.getGf();
+		coordsAndColor[i*6+4] = color.getBf();
+		coordsAndColor[i*6+5] = color.getAf();
+	}
 
-	Renderer::Draw(*va, *ib, *shader);
+	unsigned int indices[Circle::numOfSides*3];
+	for (int i = 0; i < Circle::numOfSides; i++) {
+		indices[i*3]   = 0;
+		indices[i*3+1] = i+1;
+		indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
+	}
+
+	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::numOfSides+1)*(2+4), indices, Circle::numOfSides*3);
 }
 
 inline void TargetingTurretHazard::drawOutline(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 modelMatrix;
-
-	glLineWidth(1.0f);
 
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+	const float lineWidth = 0.5f;
 
-	modelMatrix = Renderer::GenerateModelMatrix(r, r, 0, x, y);
-	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
+	float coordsAndColor[(Circle::numOfSides*2)*(2+4)];
+	for (int i = 0; i < Circle::numOfSides; i++) {
+		coordsAndColor[(i*2)  *6]   = x + (r-lineWidth) * cos(i * (2*PI / Circle::numOfSides));
+		coordsAndColor[(i*2)  *6+1] = y + (r-lineWidth) * sin(i * (2*PI / Circle::numOfSides));
+		coordsAndColor[(i*2+1)*6]   = x + (r+lineWidth) * cos(i * (2*PI / Circle::numOfSides));
+		coordsAndColor[(i*2+1)*6+1] = y + (r+lineWidth) * sin(i * (2*PI / Circle::numOfSides));
 
-	Renderer::Draw(*va, *shader, GL_LINE_LOOP, 1, Circle::numOfSides);
+		coordsAndColor[(i*2)  *6+2] = color.getRf();
+		coordsAndColor[(i*2)  *6+3] = color.getGf();
+		coordsAndColor[(i*2)  *6+4] = color.getBf();
+		coordsAndColor[(i*2)  *6+5] = color.getAf();
+		coordsAndColor[(i*2+1)*6+2] = color.getRf();
+		coordsAndColor[(i*2+1)*6+3] = color.getGf();
+		coordsAndColor[(i*2+1)*6+4] = color.getBf();
+		coordsAndColor[(i*2+1)*6+5] = color.getAf();
+	}
 
-	//cleanup
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	unsigned int indices[Circle::numOfSides*6];
+	for (int i = 0; i < Circle::numOfSides; i++) {
+		indices[i*6]   =  i*2;
+		indices[i*6+1] =  i*2+1;
+		indices[i*6+2] = (i*2+3) % (Circle::numOfSides*2);
+		indices[i*6+3] = (i*2+3) % (Circle::numOfSides*2);
+		indices[i*6+4] = (i*2+2) % (Circle::numOfSides*2);
+		indices[i*6+5] =  i*2;
+	}
+
+	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::numOfSides*2)*(2+4), indices, Circle::numOfSides*6);
 }
 
 inline void TargetingTurretHazard::drawBarrel(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 modelMatrix;
-
-	glLineWidth(2.0f);
 
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+	const float lineWidth = 0.75f;
 
-	modelMatrix = Renderer::GenerateModelMatrix(r, 1, velocity.getAngle(), x, y);
-	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
+	float coordsAndColor[4*(2+4)];
+	unsigned int indices[6];
 
-	Renderer::Draw(*cannon_va, *shader, GL_LINES, 0, 2);
+	SimpleVector2D dist = SimpleVector2D(velocity.getAngle(), r, true);
+	SimpleVector2D distCW = SimpleVector2D(velocity.getAngle() - PI/2, lineWidth, true);
 
-	//cleanup
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	coordsAndColor[0*6]   = x                   + distCW.getXComp();
+	coordsAndColor[0*6+1] = y                   + distCW.getYComp();
+	coordsAndColor[1*6]   = x + dist.getXComp() + distCW.getXComp();
+	coordsAndColor[1*6+1] = y + dist.getYComp() + distCW.getYComp();
+	coordsAndColor[2*6]   = x + dist.getXComp() - distCW.getXComp();
+	coordsAndColor[2*6+1] = y + dist.getYComp() - distCW.getYComp();
+	coordsAndColor[3*6]   = x                   - distCW.getXComp();
+	coordsAndColor[3*6+1] = y                   - distCW.getYComp();
+
+	for (int i = 0; i < 4; i++) {
+		coordsAndColor[i*6+2] = color.getRf();
+		coordsAndColor[i*6+3] = color.getGf();
+		coordsAndColor[i*6+4] = color.getBf();
+		coordsAndColor[i*6+5] = color.getAf();
+	}
+
+	indices[0] = 0;
+	indices[1] = 1;
+	indices[2] = 2;
+	indices[3] = 2;
+	indices[4] = 3;
+	indices[5] = 0;
+
+	Renderer::SubmitBatchedDraw(coordsAndColor, 4*(2+4), indices, 6);
 }
 
 inline void TargetingTurretHazard::drawReticule(float alpha) const {
-	if (!targeting) {
-		return;
-	}
-
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 modelMatrix;
 
-	glLineWidth(2.0f);
-
-	ColorValueHolder color = getReticuleColor();
-	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
-
-	/*
-	if (currentState == 0) {
-		modelMatrix = Renderer::GenerateMatrix(2*TANK_RADIUS, 2*TANK_RADIUS, -PI/2 * targetingCount/(stateMultiplier[0] * tickCycle), targetingX, targetingY);
-	} else {
-		modelMatrix = Renderer::GenerateMatrix(2*TANK_RADIUS, 2*TANK_RADIUS, -PI/2, targetingX, targetingY);
+	if (!targeting) {
+		return;
+		//does it make sense to put this check after the alpha fixing? no, but consistency is also important
 	}
-	*/
-	modelMatrix = Renderer::GenerateModelMatrix(2*TANK_RADIUS, 2*TANK_RADIUS, 0, targetingX, targetingY);
-	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
 
-	Renderer::Draw(*va, *shader, GL_LINE_LOOP, 1, Circle::numOfSides);
-	Renderer::Draw(*reticule_va, *shader, GL_LINES, 0, 8);
+	ColorValueHolder color_outline = getReticuleColor();
+	color_outline = ColorMixer::mix(BackgroundRect::getBackColor(), color_outline, alpha);
+	const float lineWidth = 1.0f;
+	//optional rotate angle: (-PI/2) * (targetingCount/(stateMultiplier[0] * tickCycle))
 
-	//cleanup
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	float coordsAndColor_outline[(Circle::numOfSides*2 + 4*4*2)*(2+4)];
+	for (int i = 0; i < Circle::numOfSides; i++) {
+		coordsAndColor_outline[(i*2)  *6]   = targetingX + ((2*TANK_RADIUS) - lineWidth) * cos(i * (2*PI / Circle::numOfSides));
+		coordsAndColor_outline[(i*2)  *6+1] = targetingY + ((2*TANK_RADIUS) - lineWidth) * sin(i * (2*PI / Circle::numOfSides));
+		coordsAndColor_outline[(i*2+1)*6]   = targetingX + ((2*TANK_RADIUS) + lineWidth) * cos(i * (2*PI / Circle::numOfSides));
+		coordsAndColor_outline[(i*2+1)*6+1] = targetingY + ((2*TANK_RADIUS) + lineWidth) * sin(i * (2*PI / Circle::numOfSides));
+
+		coordsAndColor_outline[(i*2)  *6+2] = color_outline.getRf();
+		coordsAndColor_outline[(i*2)  *6+3] = color_outline.getGf();
+		coordsAndColor_outline[(i*2)  *6+4] = color_outline.getBf();
+		coordsAndColor_outline[(i*2)  *6+5] = color_outline.getAf();
+		coordsAndColor_outline[(i*2+1)*6+2] = color_outline.getRf();
+		coordsAndColor_outline[(i*2+1)*6+3] = color_outline.getGf();
+		coordsAndColor_outline[(i*2+1)*6+4] = color_outline.getBf();
+		coordsAndColor_outline[(i*2+1)*6+5] = color_outline.getAf();
+	}
+
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*0))  *6]   = targetingX + ( .75*(2*TANK_RADIUS) - lineWidth);
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*0))  *6+1] = targetingY - lineWidth;
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*0+1))*6]   = targetingX + (1.25*(2*TANK_RADIUS) + lineWidth);
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*0+1))*6+1] = targetingY - lineWidth;
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*0+2))*6]   = targetingX + (1.25*(2*TANK_RADIUS) + lineWidth);
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*0+2))*6+1] = targetingY + lineWidth;
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*0+3))*6]   = targetingX + ( .75*(2*TANK_RADIUS) - lineWidth);
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*0+3))*6+1] = targetingY + lineWidth;
+
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*1))  *6]   = targetingX + lineWidth;
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*1))  *6+1] = targetingY + ( .75*(2*TANK_RADIUS) - lineWidth);
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*1+1))*6]   = targetingX + lineWidth;
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*1+1))*6+1] = targetingY + (1.25*(2*TANK_RADIUS) + lineWidth);
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*1+2))*6]   = targetingX - lineWidth;
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*1+2))*6+1] = targetingY + (1.25*(2*TANK_RADIUS) + lineWidth);
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*1+3))*6]   = targetingX - lineWidth;
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*1+3))*6+1] = targetingY + ( .75*(2*TANK_RADIUS) - lineWidth);
+
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*2))  *6]   = targetingX - ( .75*(2*TANK_RADIUS) - lineWidth);
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*2))  *6+1] = targetingY - lineWidth;
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*2+1))*6]   = targetingX - (1.25*(2*TANK_RADIUS) + lineWidth);
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*2+1))*6+1] = targetingY - lineWidth;
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*2+2))*6]   = targetingX - (1.25*(2*TANK_RADIUS) + lineWidth);
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*2+2))*6+1] = targetingY + lineWidth;
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*2+3))*6]   = targetingX - ( .75*(2*TANK_RADIUS) - lineWidth);
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*2+3))*6+1] = targetingY + lineWidth;
+
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*3))  *6]   = targetingX - lineWidth;
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*3))  *6+1] = targetingY - ( .75*(2*TANK_RADIUS) - lineWidth);
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*3+1))*6]   = targetingX - lineWidth;
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*3+1))*6+1] = targetingY - (1.25*(2*TANK_RADIUS) + lineWidth);
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*3+2))*6]   = targetingX + lineWidth;
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*3+2))*6+1] = targetingY - (1.25*(2*TANK_RADIUS) + lineWidth);
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*3+3))*6]   = targetingX + lineWidth;
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*3+3))*6+1] = targetingY - ( .75*(2*TANK_RADIUS) - lineWidth);
+
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			coordsAndColor_outline[(Circle::numOfSides*2 + (4*i+j))*6+2] = color_outline.getRf();
+			coordsAndColor_outline[(Circle::numOfSides*2 + (4*i+j))*6+3] = color_outline.getGf();
+			coordsAndColor_outline[(Circle::numOfSides*2 + (4*i+j))*6+4] = color_outline.getBf();
+			coordsAndColor_outline[(Circle::numOfSides*2 + (4*i+j))*6+5] = color_outline.getAf();
+		}
+	}
+
+	unsigned int indices_outline[Circle::numOfSides*6 + 4*6];
+	for (int i = 0; i < Circle::numOfSides; i++) {
+		indices_outline[i*6]   =  i*2;
+		indices_outline[i*6+1] =  i*2+1;
+		indices_outline[i*6+2] = (i*2+3) % (Circle::numOfSides*2);
+		indices_outline[i*6+3] = (i*2+3) % (Circle::numOfSides*2);
+		indices_outline[i*6+4] = (i*2+2) % (Circle::numOfSides*2);
+		indices_outline[i*6+5] =  i*2;
+	}
+
+	for (int i = 0; i < 4; i++) {
+		indices_outline[Circle::numOfSides*6 + i*6]   = (Circle::numOfSides*2 + 4*i);
+		indices_outline[Circle::numOfSides*6 + i*6+1] = (Circle::numOfSides*2 + 4*i+1);
+		indices_outline[Circle::numOfSides*6 + i*6+2] = (Circle::numOfSides*2 + 4*i+2);
+		indices_outline[Circle::numOfSides*6 + i*6+3] = (Circle::numOfSides*2 + 4*i+2);
+		indices_outline[Circle::numOfSides*6 + i*6+4] = (Circle::numOfSides*2 + 4*i+3);
+		indices_outline[Circle::numOfSides*6 + i*6+5] = (Circle::numOfSides*2 + 4*i);
+	}
+
+	Renderer::SubmitBatchedDraw(coordsAndColor_outline, (Circle::numOfSides*2 + 4*4*2)*(2+4), indices_outline, Circle::numOfSides*6 + 4*6);
 }
-
-/*
-void TargetingTurretHazard::drawCPU() const {
-	//nah
-}
-*/
 
 CircleHazard* TargetingTurretHazard::randomizingFactory(double x_start, double y_start, double area_width, double area_height, GenericFactoryConstructionData& args) {
 	int attempts = 0;

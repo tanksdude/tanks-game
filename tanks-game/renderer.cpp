@@ -7,9 +7,16 @@
 #include "opengl-rendering-context.h"
 #include "software-rendering-context.h"
 #include "null-rendering-context.h"
+#include <algorithm> //std::fill
 #include <GL/glew.h>
 #include <GL/freeglut.h>
+#include "diagnostics.h"
 #include <iostream>
+
+//std::mutex Renderer::drawingDataLock;
+//std::thread Renderer::graphicsThread;
+//std::atomic_bool Renderer::thread_keepRunning;
+//std::atomic_bool Renderer::thread_workExists;
 
 glm::mat4 Renderer::proj = glm::ortho(0.0f, (float)GAME_WIDTH, 0.0f, (float)GAME_HEIGHT);
 glm::mat4 Renderer::getProj() { return proj; }
@@ -24,6 +31,17 @@ float Renderer::current_cameraX = 0, Renderer::current_cameraY = 0, Renderer::cu
 float Renderer::current_targetX = 0, Renderer::current_targetY = 0, Renderer::current_targetZ = 0;
 bool Renderer::viewMatBound = false, Renderer::projectionMatBound = false;
 Shader* Renderer::boundShader = nullptr;
+
+VertexArray* Renderer::batched_va;
+VertexBuffer* Renderer::batched_vb;
+IndexBuffer* Renderer::batched_ib;
+bool Renderer::initialized_GPU = false;
+
+std::unordered_map<std::string, std::vector<std::pair<std::vector<float>, std::vector<unsigned int>>>> Renderer::sceneData;
+std::vector<std::string> Renderer::sceneList;
+std::string Renderer::currentSceneName = "";
+int Renderer::maxVerticesDataLength = (2 << 22) / sizeof(float);
+int Renderer::maxIndicesDataLength = (2 << 22) / sizeof(unsigned int); //TODO: size (fills up faster)
 
 // Handles window resizing (FreeGLUT event function)
 void Renderer::windowResizeFunc(int w, int h) {
@@ -80,10 +98,12 @@ void Renderer::windowResizeFunc(int w, int h) {
 		*/
 	}
 
+	/*
 	// Now we use glOrtho to set up our viewing frustum (CPU only)
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(winXmin, winXmax, winYmin, winYmax, -1, 1);
+	*/
 }
 
 //actual renderer code:
@@ -94,9 +114,15 @@ unsigned int Renderer::currentVertexArray = -1;
 unsigned int Renderer::currentIndexBuffer = -1;
 
 void Renderer::BeginningStuff() {
-	if (KeypressManager::getSpecialKey(GLUT_KEY_F1)) {
+	//while (thread_workExists.load()) {
+	//	//spin
+	//	std::cout << "thread1 waiting\n";
+	//}
+	//drawingDataLock.lock();
+
+	if (KeypressManager::getSpecialKey(GLUT_KEY_F11)) {
 		glutFullScreenToggle();
-		KeypressManager::unsetSpecialKey(GLUT_KEY_F1, 0, 0);
+		KeypressManager::unsetSpecialKey(GLUT_KEY_F11, 0, 0);
 	}
 }
 
@@ -162,11 +188,8 @@ void Renderer::PreInitialize(int* argc, char** argv, std::string windowName, int
 	glutInitWindowSize(Renderer::window_width, Renderer::window_height);
 	glutCreateWindow(windowName.c_str());
 
-	// Setup some OpenGL options
-	glPointSize(2);
-	glEnable(GL_POINT_SMOOTH);
-	glEnable(GL_LINE_SMOOTH);
 	glDisable(GL_DEPTH_TEST);
+	//transparency:
 	//glEnable(GL_BLEND);
 	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -184,11 +207,46 @@ void Renderer::Initialize() {
 
 	Shader* shader = new Shader("res/shaders/main.vert", "res/shaders/main.frag");
 	shaderCache.insert({ "main", shader });
-	bindShader(shader); //the main shader will be used most often so it gets binded at start
+	//bindShader(shader); //the main shader will be used most often so it gets binded at start
 
 	//shader = new Shader("res/shaders/default.vert", "res/shaders/default.frag");
 	//shaderCache.insert({ "default", shader });
+
+	initializeGPU();
+
+	//thread_keepRunning.store(true);
+	//thread_workExists.store(false);
+	//graphicsThread = std::thread(thread_func);
 }
+
+void Renderer::Uninitialize() {
+	//thread_keepRunning.store(false);
+	//thread_workExists.store(true);
+	//graphicsThread.join();
+	////uninitializeGPU();
+}
+
+/*
+void Renderer::thread_func() {
+	while (thread_keepRunning.load()) {
+		while (!thread_workExists.load()) {
+			//spin
+			//std::cout << "thread2 waiting\n";
+		}
+		drawingDataLock.lock();
+
+		if (!thread_keepRunning.load()) {
+			drawingDataLock.unlock();
+			break;
+		}
+
+		Renderer::ActuallyFlush();
+		//std::cout << "thread2 did work\n";
+		thread_workExists.store(false);
+		drawingDataLock.unlock();
+	}
+}
+*/
 
 glm::mat4 Renderer::GenerateModelMatrix(float scaleX, float scaleY, float rotateAngle, float transX, float transY) {
 	//glm::mat4 trans = glm::translate(proj, glm::vec3(transX, transY, 0.0f));
@@ -355,42 +413,159 @@ void Renderer::Clear() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void Renderer::Clear(int flags) {
-	glClear(flags);
+void Renderer::ActuallyFlush() {
+	auto start = Diagnostics::getTime();
+	for (int i = 0; i < sceneList.size(); i++) {
+		const std::string& name = sceneList[i];
+		std::vector<std::pair<std::vector<float>, std::vector<unsigned int>>>& sceneDrawCalls = sceneData[name];
+		for (int j = 0; j < sceneDrawCalls.size(); j++) {
+			BatchedFlush(sceneDrawCalls[j].first, sceneDrawCalls[j].second);
+		}
+		sceneDrawCalls.clear();
+	}
+	sceneList.clear();
+	auto end = Diagnostics::getTime();
+
+	Diagnostics::pushGraphTime("draw", Diagnostics::getDiff(start, end));
+	Diagnostics::drawGraphTimes();
+
+	//for single framebuffer, use glFlush; for double framebuffer, swap the buffers
+	//swapping buffers is limited to monitor refresh rate, so I use glFlush
+	glFlush();
+	//glutSwapBuffers();
+
+	UnbindAll();
 }
 
 void Renderer::Flush() {
-	glFlush();
-}
+	//thread_workExists.store(true);
 
-void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader) {
-	bindShader(shader);
-	bindVertexArray(va);
-	bindIndexBuffer(ib);
-
-	glDrawElements(GL_TRIANGLES, ib.getCount(), GL_UNSIGNED_INT, nullptr);
-}
-
-void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader, unsigned int count) {
-	bindShader(shader);
-	bindVertexArray(va);
-	bindIndexBuffer(ib);
-
-	glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
-}
-
-void Renderer::Draw(const VertexArray& va, const Shader& shader, GLenum type, GLint first, GLsizei count) {
-	bindShader(shader);
-	bindVertexArray(va);
-	currentIndexBuffer = -1;
-
-	glDrawArrays(type, first, count);
-}
-
-void Renderer::Draw(GLenum type, GLint first, GLsizei count) {
-	glDrawArrays(type, first, count);
+	ActuallyFlush();
+	//drawingDataLock.unlock();
 }
 
 void Renderer::Cleanup() {
-	glDisableVertexAttribArray(0); //disable vertex attribute to avoid issues
+	//glDisableVertexAttribArray(0); //disable vertex attribute to avoid issues
+}
+
+bool Renderer::initializeGPU() {
+	if (initialized_GPU) {
+		return false;
+	}
+
+	float* positions = new float[maxVerticesDataLength];
+	std::fill(positions, positions + maxVerticesDataLength, 0);
+
+	unsigned int* indices = new unsigned int[maxIndicesDataLength];
+	std::fill(indices, indices + maxIndicesDataLength, 0);
+
+	batched_vb = VertexBuffer::MakeVertexBuffer(positions, maxVerticesDataLength * sizeof(float), RenderingHints::stream_draw);
+	VertexBufferLayout layout = {
+		{ ShaderDataType::Float2, "a_Position" },
+		{ ShaderDataType::Float4, "a_Color" }
+	};
+	batched_vb->SetLayout(layout);
+
+	batched_ib = IndexBuffer::MakeIndexBuffer(indices, maxIndicesDataLength);
+
+	batched_va = VertexArray::MakeVertexArray();
+	batched_va->AddVertexBuffer(batched_vb);
+	batched_va->SetIndexBuffer(batched_ib);
+
+	delete[] positions;
+	delete[] indices;
+	initialized_GPU = true;
+	return true;
+}
+
+bool Renderer::uninitializeGPU() {
+	if (!initialized_GPU) {
+		return false;
+	}
+
+	delete batched_va;
+	delete batched_vb;
+	delete batched_ib;
+
+	initialized_GPU = false;
+	return true;
+}
+
+inline bool Renderer::enoughRoomForMoreVertices(int pushLength) {
+	const std::pair<std::vector<float>, std::vector<unsigned int>>& currentSceneData = sceneData[currentSceneName][sceneData[currentSceneName].size()-1];
+	return (currentSceneData.first.size() + pushLength <= maxVerticesDataLength);
+}
+inline bool Renderer::enoughRoomForMoreIndices(int pushLength) {
+	const std::pair<std::vector<float>, std::vector<unsigned int>>& currentSceneData = sceneData[currentSceneName][sceneData[currentSceneName].size()-1];
+	return (currentSceneData.second.size() + pushLength <= maxIndicesDataLength);
+}
+
+inline void Renderer::pushAnotherDataList() {
+	sceneData[currentSceneName].push_back({});
+
+	#if _DEBUG
+	//performance is awful
+	#else
+	sceneData[currentSceneName][sceneData[currentSceneName].size()-1].first.reserve(maxVerticesDataLength);
+	sceneData[currentSceneName][sceneData[currentSceneName].size()-1].second.reserve(maxIndicesDataLength);
+	#endif
+}
+
+void Renderer::SubmitBatchedDraw(const float* posAndColor, int posAndColorLength, const unsigned int* indices, int indicesLength) {
+	if (currentSceneName == "") {
+		//only happens for Diagnostics
+		std::vector<float> verticesData = std::vector<float>(posAndColor, posAndColor + posAndColorLength);
+		std::vector<unsigned int> indicesData = std::vector<unsigned int>(indices, indices + indicesLength);
+		BatchedFlush(verticesData, indicesData);
+	} else {
+		if (!enoughRoomForMoreVertices(posAndColorLength) || !enoughRoomForMoreIndices(indicesLength)) {
+			//std::cout << enoughRoomForMoreVertices(posAndColorLength) << enoughRoomForMoreIndices(indicesLength);
+			pushAnotherDataList();
+		}
+
+		std::pair<std::vector<float>, std::vector<unsigned int>>& currentSceneData = sceneData[currentSceneName][sceneData[currentSceneName].size()-1];
+		std::vector<float>& verticesData = currentSceneData.first;
+		std::vector<unsigned int>& indicesData = currentSceneData.second;
+
+		unsigned int currVerticesLength = verticesData.size();
+		verticesData.insert(verticesData.end(), posAndColor, posAndColor + posAndColorLength);
+
+		unsigned int currIndicesLength = indicesData.size();
+		indicesData.insert(indicesData.end(), indices, indices + indicesLength);
+		for (unsigned int i = currIndicesLength; i < indicesData.size(); i++) {
+			//indicesData[i] += currIndicesLength/3; //close, but not quite right
+			indicesData[i] += currVerticesLength/(2+4);
+		}
+	}
+}
+
+void Renderer::BatchedFlush(std::vector<float>& verticesData, std::vector<unsigned int>& indicesData) {
+	if (verticesData.empty()) {
+		return;
+	}
+
+	batched_vb->modifyData(verticesData.data(), verticesData.size() * sizeof(float));
+	batched_ib->modifyData(indicesData.data(), indicesData.size() * sizeof(unsigned int));
+
+	bindShader(Renderer::getShader("main"));
+	Renderer::getShader("main")->setUniformMat4f("u_ModelMatrix", glm::mat4(1.0f));
+	bindVertexArray(*batched_va);
+	bindIndexBuffer(*batched_ib);
+
+	glDrawElements(GL_TRIANGLES, batched_va->GetIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
+	//glDrawElements(GL_TRIANGLES, indicesData.size(), GL_UNSIGNED_INT, nullptr);
+
+	verticesData.clear();
+	indicesData.clear();
+}
+
+void Renderer::BeginScene(std::string name) {
+	currentSceneName = name;
+	sceneList.push_back(name);
+	pushAnotherDataList();
+}
+
+void Renderer::EndScene() {
+	currentSceneName = "";
+	//not sure what to put...
 }

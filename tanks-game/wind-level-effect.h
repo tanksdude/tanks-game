@@ -2,10 +2,6 @@
 #include "level-effect.h"
 #include "simple-vector-2d.h"
 
-#include "vertex-array.h"
-#include "vertex-buffer.h"
-#include "index-buffer.h"
-
 class WindLevelEffect : public LevelEffect {
 protected:
 	double tickCount;
@@ -18,16 +14,13 @@ protected:
 	virtual double getWindStrengthMultiplier() const;
 
 private:
-	static VertexArray* va; //spike
-	static VertexBuffer* vb;
-	static IndexBuffer* ib;
-	static VertexArray* va_extra; //arrow
-	static VertexBuffer* vb_extra;
-	static IndexBuffer* ib_extra;
-	static bool initialized_GPU;
+	static SimpleVector2D vertices_spike[3];
+	static SimpleVector2D vertices_arrow[7];
+	static unsigned int indices_spike[1*3];
+	static unsigned int indices_arrow[3*3];
+	static bool initialized_vertices;
 
-	static bool initializeGPU();
-	static bool uninitializeGPU();
+	static bool initializeVertices();
 
 public:
 	virtual std::string getName() const override { return "wind"; }

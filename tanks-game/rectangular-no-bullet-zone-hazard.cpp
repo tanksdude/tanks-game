@@ -10,14 +10,6 @@
 #include "collision-handler.h"
 #include "rng.h"
 
-VertexArray* RectangularNoBulletZoneHazard::va;
-VertexBuffer* RectangularNoBulletZoneHazard::vb;
-IndexBuffer* RectangularNoBulletZoneHazard::ib;
-VertexArray* RectangularNoBulletZoneHazard::extra_va;
-VertexBuffer* RectangularNoBulletZoneHazard::extra_vb;
-IndexBuffer* RectangularNoBulletZoneHazard::extra_ib;
-bool RectangularNoBulletZoneHazard::initialized_GPU = false;
-
 std::unordered_map<std::string, float> RectangularNoBulletZoneHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", 1.0f });
@@ -38,92 +30,10 @@ RectangularNoBulletZoneHazard::RectangularNoBulletZoneHazard(double xpos, double
 
 	modifiesTankCollision = true;
 	modifiesBulletCollision = true;
-
-	initializeGPU();
 }
 
 RectangularNoBulletZoneHazard::~RectangularNoBulletZoneHazard() {
-	//uninitializeGPU();
-}
-
-bool RectangularNoBulletZoneHazard::initializeGPU() {
-	if (initialized_GPU) {
-		return false;
-	}
-
-	//background:
-	float positions[] = {
-		0, 0,
-		1, 0,
-		1, 1,
-		0, 1
-	};
-	unsigned int indices[] = {
-		0, 1, 2,
-		2, 3, 0
-	};
-
-	vb = VertexBuffer::MakeVertexBuffer(positions, 4*2 * sizeof(float), RenderingHints::static_draw);
-	VertexBufferLayout layout(2);
-	va = VertexArray::MakeVertexArray(*vb, layout);
-
-	ib = IndexBuffer::MakeIndexBuffer(indices, 6);
-
-	//red X:
-	float extra_positions[] = {
-		//forward slash:
-		0.0,           0.0, //0
-		0.0 + X_WIDTH, 0.0,
-		0.0,           0.0 + X_WIDTH,
-
-		1.0,           1.0, //3
-		1.0 - X_WIDTH, 1.0,
-		1.0,           1.0 - X_WIDTH,
-
-		//backslash:
-		0.0,           1.0, //6
-		0.0,           1.0 - X_WIDTH,
-		0.0 + X_WIDTH, 1.0,
-
-		1.0,           0.0, //9
-		1.0,           0.0 + X_WIDTH,
-		1.0 - X_WIDTH, 0.0
-	};
-	unsigned int extra_indices[] = {
-		//forward slash:
-		0, 1, 2, //bottom left
-		3, 4, 5, //top right
-		1, 5, 4,
-		4, 2, 1,
-
-		//backslash:
-		6, 7, 8, //top left
-		9, 10, 11, //bottom right
-		8, 7, 11,
-		11, 10, 8
-	};
-
-	extra_vb = VertexBuffer::MakeVertexBuffer(extra_positions, 6*2*2 * sizeof(float), RenderingHints::static_draw);
-	VertexBufferLayout extra_layout(2);
-	extra_va = VertexArray::MakeVertexArray(*extra_vb, layout);
-
-	extra_ib = IndexBuffer::MakeIndexBuffer(extra_indices, 8*3);
-
-	initialized_GPU = true;
-	return true;
-}
-
-bool RectangularNoBulletZoneHazard::uninitializeGPU() {
-	if (!initialized_GPU) {
-		return false;
-	}
-
-	delete va;
-	delete vb;
-	delete ib;
-
-	initialized_GPU = false;
-	return true;
+	//nothing
 }
 
 RectHazard* RectangularNoBulletZoneHazard::factory(GenericFactoryConstructionData& args) {
@@ -229,29 +139,62 @@ void RectangularNoBulletZoneHazard::poseDraw(DrawingLayers layer) const {
 void RectangularNoBulletZoneHazard::ghostDraw(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 modelMatrix;
 
 	//background:
-	ColorValueHolder color = GeneralizedNoBulletZone::getColor();
-	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+	ColorValueHolder color_background = GeneralizedNoBulletZone::getColor();
+	color_background = ColorMixer::mix(BackgroundRect::getBackColor(), color_background, alpha);
 
-	modelMatrix = Renderer::GenerateModelMatrix(w, h, 0, x, y);
-	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
+	float coordsAndColor_background[] = {
+		x,   y,     color_background.getRf(), color_background.getGf(), color_background.getBf(), color_background.getAf(),
+		x+w, y,     color_background.getRf(), color_background.getGf(), color_background.getBf(), color_background.getAf(),
+		x+w, y+h,   color_background.getRf(), color_background.getGf(), color_background.getBf(), color_background.getAf(),
+		x,   y+h,   color_background.getRf(), color_background.getGf(), color_background.getBf(), color_background.getAf()
+	};
+	unsigned int indices_background[] = {
+		0, 1, 2,
+		2, 3, 0
+	};
 
-	Renderer::Draw(*va, *ib, *shader);
+	Renderer::SubmitBatchedDraw(coordsAndColor_background, 4 * (2+4), indices_background, 2 * 3);
 
 	//red X:
-	color = X_COLOR;
-	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, .75);
-	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+	ColorValueHolder color_extra = X_COLOR;
+	color_extra = ColorMixer::mix(BackgroundRect::getBackColor(), color_extra, .75); //TODO: why?
+	color_extra = ColorMixer::mix(BackgroundRect::getBackColor(), color_extra, alpha);
+	float coordsAndColor_extra[] = {
+		//bottom left:
+		x,               y,                 color_extra.getRf(), color_extra.getGf(), color_extra.getBf(), color_extra.getAf(), //0
+		x + w*X_WIDTH,   y,                 color_extra.getRf(), color_extra.getGf(), color_extra.getBf(), color_extra.getAf(),
+		x,               y + h*X_WIDTH,     color_extra.getRf(), color_extra.getGf(), color_extra.getBf(), color_extra.getAf(),
 
-	modelMatrix = Renderer::GenerateModelMatrix(w, h, 0, x, y);
-	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
+		//top right:
+		x+w,             y+h,               color_extra.getRf(), color_extra.getGf(), color_extra.getBf(), color_extra.getAf(), //3
+		x+w - w*X_WIDTH, y+h,               color_extra.getRf(), color_extra.getGf(), color_extra.getBf(), color_extra.getAf(),
+		x+w,             y+h - h*X_WIDTH,   color_extra.getRf(), color_extra.getGf(), color_extra.getBf(), color_extra.getAf(),
 
-	Renderer::Draw(*extra_va, *extra_ib, *shader);
+		//top left:
+		x,               y+h,               color_extra.getRf(), color_extra.getGf(), color_extra.getBf(), color_extra.getAf(), //6
+		x,               y+h - h*X_WIDTH,   color_extra.getRf(), color_extra.getGf(), color_extra.getBf(), color_extra.getAf(),
+		x + w*X_WIDTH,   y+h,               color_extra.getRf(), color_extra.getGf(), color_extra.getBf(), color_extra.getAf(),
+
+		//bottom right:
+		x+w,             y,                 color_extra.getRf(), color_extra.getGf(), color_extra.getBf(), color_extra.getAf(), //9
+		x+w,             y + h*X_WIDTH,     color_extra.getRf(), color_extra.getGf(), color_extra.getBf(), color_extra.getAf(),
+		x+w - w*X_WIDTH, y,                 color_extra.getRf(), color_extra.getGf(), color_extra.getBf(), color_extra.getAf()
+	};
+	unsigned int indices_extra[] = {
+		0,  1,  2,  //bottom left tip
+		3,  4,  5,  //top right tip
+		1,  5,  4,  //rect between
+		4,  2,  1,
+
+		6,  7,  8,  //top left tip
+		9,  10, 11, //bottom right tip
+		8,  7,  11, //rect between
+		11, 10, 8
+	};
+
+	Renderer::SubmitBatchedDraw(coordsAndColor_extra, (3*4) * (2+4), indices_extra, (4+4) * 3);
 }
 
 void RectangularNoBulletZoneHazard::ghostDraw(DrawingLayers layer, float alpha) const {

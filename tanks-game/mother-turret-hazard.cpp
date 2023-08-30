@@ -4,7 +4,7 @@
 #include <cmath>
 #include "color-mixer.h"
 #include "background-rect.h"
-#include <algorithm>
+#include <algorithm> //std::copy, std::count
 #include "mylib.h"
 #include "tank.h"
 #include "tank-manager.h"
@@ -16,13 +16,6 @@
 #include "targeting-turret-hazard.h" //in case mother turrets no longer extend targeting turrets
 #include <iostream>
 
-VertexArray* MotherTurretHazard::va;
-VertexBuffer* MotherTurretHazard::vb;
-IndexBuffer* MotherTurretHazard::ib;
-VertexArray* MotherTurretHazard::cannon_va;
-VertexBuffer* MotherTurretHazard::cannon_vb;
-bool MotherTurretHazard::initialized_GPU = false;
-
 std::unordered_map<std::string, float> MotherTurretHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", 0.5f });
@@ -31,7 +24,7 @@ std::unordered_map<std::string, float> MotherTurretHazard::getWeights() const {
 	return weights;
 }
 
-MotherTurretHazard::MotherTurretHazard(double xpos, double ypos, double angle, int maxChildren, int startChildren, double childDistMultiplier) : TargetingTurretHazard(xpos, ypos, angle, true) {
+MotherTurretHazard::MotherTurretHazard(double xpos, double ypos, double angle, int maxChildren, int startChildren, double childDistMultiplier) : TargetingTurretHazard(xpos, ypos, angle) {
 	//x = xpos;
 	//y = ypos;
 	//velocity = SimpleVector2D(angle, 0, true);
@@ -52,8 +45,6 @@ MotherTurretHazard::MotherTurretHazard(double xpos, double ypos, double angle, i
 
 	canAcceptPowers = false; //... true?
 
-	initializeGPU();
-
 	//idea: mitosis turrets; grows for some time, then splits (that'd be hard to program...)
 }
 
@@ -72,60 +63,6 @@ MotherTurretHazard::MotherTurretHazard(double xpos, double ypos, double angle) :
 MotherTurretHazard::~MotherTurretHazard() {
 	//delete[] stateMultiplier;
 	//delete[] stateColors;
-
-	//uninitializeGPU();
-}
-
-bool MotherTurretHazard::initializeGPU() {
-	if (initialized_GPU) {
-		return false;
-	}
-
-	//body:
-	float positions[(Circle::numOfSides+1)*2];
-	positions[0] = 0;
-	positions[1] = 0;
-	for (int i = 1; i < Circle::numOfSides+1; i++) {
-		positions[i*2]   = cos((i-1) * 2*PI / Circle::numOfSides);
-		positions[i*2+1] = sin((i-1) * 2*PI / Circle::numOfSides);
-	}
-
-	unsigned int indices[Circle::numOfSides*3];
-	for (int i = 0; i < Circle::numOfSides; i++) {
-		indices[i*3]   = 0;
-		indices[i*3+1] = i+1;
-		indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
-	}
-
-	vb = VertexBuffer::MakeVertexBuffer(positions, (Circle::numOfSides+1)*2 * sizeof(float), RenderingHints::dynamic_draw);
-	VertexBufferLayout layout(2);
-	va = VertexArray::MakeVertexArray(*vb, layout);
-
-	ib = IndexBuffer::MakeIndexBuffer(indices, Circle::numOfSides*3);
-
-	//cannon:
-	float cannon_positions[4] = { 0.0f, 0.0f, 1.0f, 0.0f };
-	cannon_vb = VertexBuffer::MakeVertexBuffer(cannon_positions, 2*2 * sizeof(float), RenderingHints::dynamic_draw);
-	VertexBufferLayout cannon_layout(2);
-	cannon_va = VertexArray::MakeVertexArray(*cannon_vb, cannon_layout);
-
-	initialized_GPU = true;
-	return true;
-}
-
-bool MotherTurretHazard::uninitializeGPU() {
-	if (!initialized_GPU) {
-		return false;
-	}
-
-	delete va;
-	delete vb;
-	delete ib;
-	delete cannon_va;
-	delete cannon_vb;
-
-	initialized_GPU = false;
-	return true;
 }
 
 CircleHazard* MotherTurretHazard::factory(GenericFactoryConstructionData& args) {
@@ -510,14 +447,12 @@ void MotherTurretHazard::draw(DrawingLayers layer) const {
 }
 
 void MotherTurretHazard::poseDraw() const {
-	//TODO: adjust so drawBody will only draw with the normal color?
 	drawBody();
 	drawOutline();
 	drawBarrel();
 }
 
 void MotherTurretHazard::poseDraw(DrawingLayers layer) const {
-	//TODO: adjust so drawBody will only draw with the normal color?
 	switch (layer) {
 		case DrawingLayers::under:
 			//nothing
@@ -546,7 +481,6 @@ void MotherTurretHazard::poseDraw(DrawingLayers layer) const {
 }
 
 void MotherTurretHazard::ghostDraw(float alpha) const {
-	//TODO: adjust so drawBody will only draw with the normal color?
 	drawShootingTimer(alpha); //TODO: should this happen?
 	drawBody(alpha);
 	drawOutline(alpha);
@@ -554,7 +488,6 @@ void MotherTurretHazard::ghostDraw(float alpha) const {
 }
 
 void MotherTurretHazard::ghostDraw(DrawingLayers layer, float alpha) const {
-	//TODO: adjust so drawBody will only draw with the normal color?
 	switch (layer) {
 		case DrawingLayers::under:
 			//nothing
@@ -586,66 +519,117 @@ void MotherTurretHazard::ghostDraw(DrawingLayers layer, float alpha) const {
 inline void MotherTurretHazard::drawBody(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 modelMatrix;
 
 	ColorValueHolder color = getColor();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
 
-	modelMatrix = Renderer::GenerateModelMatrix(r, r, 0, x, y);
-	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
+	float coordsAndColor[(Circle::numOfSides+1)*(2+4)];
+	coordsAndColor[0] = x;
+	coordsAndColor[1] = y;
+	coordsAndColor[2] = color.getRf();
+	coordsAndColor[3] = color.getGf();
+	coordsAndColor[4] = color.getBf();
+	coordsAndColor[5] = color.getAf();
+	for (int i = 1; i < Circle::numOfSides+1; i++) {
+		coordsAndColor[i*6]   = x + r * cos((i-1) * (2*PI / Circle::numOfSides));
+		coordsAndColor[i*6+1] = y + r * sin((i-1) * (2*PI / Circle::numOfSides));
+		coordsAndColor[i*6+2] = color.getRf();
+		coordsAndColor[i*6+3] = color.getGf();
+		coordsAndColor[i*6+4] = color.getBf();
+		coordsAndColor[i*6+5] = color.getAf();
+	}
 
-	Renderer::Draw(*va, *ib, *shader);
+	unsigned int indices[Circle::numOfSides*3];
+	for (int i = 0; i < Circle::numOfSides; i++) {
+		indices[i*3]   = 0;
+		indices[i*3+1] = i+1;
+		indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
+	}
+
+	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::numOfSides+1)*(2+4), indices, Circle::numOfSides*3);
 }
 
 inline void MotherTurretHazard::drawOutline(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 modelMatrix;
-
-	glLineWidth(1.0f);
 
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+	const float lineWidth = 0.5f;
 
-	modelMatrix = Renderer::GenerateModelMatrix(r, r, 0, x, y);
-	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
+	float coordsAndColor[(Circle::numOfSides*2)*(2+4)];
+	for (int i = 0; i < Circle::numOfSides; i++) {
+		coordsAndColor[(i*2)  *6]   = x + (r-lineWidth) * cos(i * (2*PI / Circle::numOfSides));
+		coordsAndColor[(i*2)  *6+1] = y + (r-lineWidth) * sin(i * (2*PI / Circle::numOfSides));
+		coordsAndColor[(i*2+1)*6]   = x + (r+lineWidth) * cos(i * (2*PI / Circle::numOfSides));
+		coordsAndColor[(i*2+1)*6+1] = y + (r+lineWidth) * sin(i * (2*PI / Circle::numOfSides));
 
-	Renderer::Draw(*va, *shader, GL_LINE_LOOP, 1, Circle::numOfSides);
+		coordsAndColor[(i*2)  *6+2] = color.getRf();
+		coordsAndColor[(i*2)  *6+3] = color.getGf();
+		coordsAndColor[(i*2)  *6+4] = color.getBf();
+		coordsAndColor[(i*2)  *6+5] = color.getAf();
+		coordsAndColor[(i*2+1)*6+2] = color.getRf();
+		coordsAndColor[(i*2+1)*6+3] = color.getGf();
+		coordsAndColor[(i*2+1)*6+4] = color.getBf();
+		coordsAndColor[(i*2+1)*6+5] = color.getAf();
+	}
 
-	//cleanup
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	unsigned int indices[Circle::numOfSides*6];
+	for (int i = 0; i < Circle::numOfSides; i++) {
+		indices[i*6]   =  i*2;
+		indices[i*6+1] =  i*2+1;
+		indices[i*6+2] = (i*2+3) % (Circle::numOfSides*2);
+		indices[i*6+3] = (i*2+3) % (Circle::numOfSides*2);
+		indices[i*6+4] = (i*2+2) % (Circle::numOfSides*2);
+		indices[i*6+5] =  i*2;
+	}
+
+	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::numOfSides*2)*(2+4), indices, Circle::numOfSides*6);
 }
 
 inline void MotherTurretHazard::drawBarrel(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 modelMatrix;
-
-	glLineWidth(2.0f);
 
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+	const float lineWidth = 0.75f;
 
-	modelMatrix = Renderer::GenerateModelMatrix(r, 1, velocity.getAngle(), x, y);
-	shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
+	float coordsAndColor[4*(2+4)];
+	unsigned int indices[6];
 
-	Renderer::Draw(*cannon_va, *shader, GL_LINES, 0, 2);
+	SimpleVector2D dist = SimpleVector2D(velocity.getAngle(), r, true);
+	SimpleVector2D distCW = SimpleVector2D(velocity.getAngle() - PI/2, lineWidth, true);
 
-	//cleanup
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	coordsAndColor[0*6]   = x                   + distCW.getXComp();
+	coordsAndColor[0*6+1] = y                   + distCW.getYComp();
+	coordsAndColor[1*6]   = x + dist.getXComp() + distCW.getXComp();
+	coordsAndColor[1*6+1] = y + dist.getYComp() + distCW.getYComp();
+	coordsAndColor[2*6]   = x + dist.getXComp() - distCW.getXComp();
+	coordsAndColor[2*6+1] = y + dist.getYComp() - distCW.getYComp();
+	coordsAndColor[3*6]   = x                   - distCW.getXComp();
+	coordsAndColor[3*6+1] = y                   - distCW.getYComp();
+
+	for (int i = 0; i < 4; i++) {
+		coordsAndColor[i*6+2] = color.getRf();
+		coordsAndColor[i*6+3] = color.getGf();
+		coordsAndColor[i*6+4] = color.getBf();
+		coordsAndColor[i*6+5] = color.getAf();
+	}
+
+	indices[0] = 0;
+	indices[1] = 1;
+	indices[2] = 2;
+	indices[3] = 2;
+	indices[4] = 3;
+	indices[5] = 0;
+
+	Renderer::SubmitBatchedDraw(coordsAndColor, 4*(2+4), indices, 6);
 }
 
 inline void MotherTurretHazard::drawShootingTimer(float alpha) const {
 	alpha = constrain<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-	Shader* shader = Renderer::getShader("main");
-	glm::mat4 modelMatrix;
 
 	if (currentState != 1) {
 		return;
@@ -657,18 +641,37 @@ inline void MotherTurretHazard::drawShootingTimer(float alpha) const {
 	} else {
 		shootingOutlinePercent = constrain<double>(targetingCount / (stateMultiplier[1] * tickCycle), 0, 1);
 	}
-	unsigned int shootingOutlineVertices = Circle::numOfSides * shootingOutlinePercent;
+	unsigned int shootingOutlineTriangles = Circle::numOfSides * shootingOutlinePercent;
 
-	if (shootingOutlineVertices > 0) {
+	if (shootingOutlineTriangles > 0) {
 		ColorValueHolder color = ColorValueHolder(1.0f, 1.0f, 1.0f);
 		color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-		shader->setUniform4f("u_color", color.getRf(), color.getGf(), color.getBf(), color.getAf());
+		double rotateAngle = velocity.getAngle() + (2*PI)*(1 - double(shootingOutlineTriangles)/Circle::numOfSides)/2;
 
-		double rotateAngle = velocity.getAngle() + 2*PI*(1 - double(shootingOutlineVertices)/Circle::numOfSides)/2;
-		modelMatrix = Renderer::GenerateModelMatrix(r * 5.0/4.0, r * 5.0/4.0, rotateAngle, x, y);
-		shader->setUniformMat4f("u_ModelMatrix", modelMatrix);
+		float coordsAndColor[(Circle::numOfSides+1)*(2+4)];
+		coordsAndColor[0] = x;
+		coordsAndColor[1] = y;
+		coordsAndColor[2] = color.getRf();
+		coordsAndColor[3] = color.getGf();
+		coordsAndColor[4] = color.getBf();
+		coordsAndColor[5] = color.getAf();
+		for (int i = 0; i <= shootingOutlineTriangles && i < Circle::numOfSides; i++) {
+			coordsAndColor[(i+1)*6]   = x + (r*(5.0/4.0)) * cos(rotateAngle + i * (2*PI / Circle::numOfSides));
+			coordsAndColor[(i+1)*6+1] = y + (r*(5.0/4.0)) * sin(rotateAngle + i * (2*PI / Circle::numOfSides));
+			coordsAndColor[(i+1)*6+2] = color.getRf();
+			coordsAndColor[(i+1)*6+3] = color.getGf();
+			coordsAndColor[(i+1)*6+4] = color.getBf();
+			coordsAndColor[(i+1)*6+5] = color.getAf();
+		}
 
-		Renderer::Draw(*va, *ib, *shader, shootingOutlineVertices*3);
+		unsigned int indices[Circle::numOfSides*3];
+		for (int i = 0; i < shootingOutlineTriangles; i++) {
+			indices[i*3]   = 0;
+			indices[i*3+1] = i+1;
+			indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
+		}
+
+		Renderer::SubmitBatchedDraw(coordsAndColor, (shootingOutlineTriangles < Circle::numOfSides ? (shootingOutlineTriangles+2)*(2+4) : (shootingOutlineTriangles+1)*(2+4)), indices, shootingOutlineTriangles*3);
 	}
 }
 
