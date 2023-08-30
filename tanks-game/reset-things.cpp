@@ -49,17 +49,22 @@ void ResetThings::reset(int) {
 #if _DEBUG
 	LevelManager::pushLevel("dev", "dev0");
 #else
+	std::string levelPlaylist = "random-vanilla";
+	if (ini_data.exists("GAME_OPTIONS", "GameLevelPlaylist")) {
+		levelPlaylist = ini_data.get("GAME_OPTIONS", "GameLevelPlaylist");
+	}
+
 	std::vector<float> levelWeights;
-	levelWeights.reserve(LevelManager::getNumLevelTypes("random-vanilla"));
-	for (int i = 0; i < LevelManager::getNumLevelTypes("random-vanilla"); i++) {
-		std::string n = LevelManager::getLevelName("random-vanilla", i);
-		Level* l = LevelManager::getLevelFactory("random-vanilla", n)();
-		levelWeights.push_back(l->getWeights()["random-vanilla"]);
+	levelWeights.reserve(LevelManager::getNumLevelTypes(levelPlaylist));
+	for (int i = 0; i < LevelManager::getNumLevelTypes(levelPlaylist); i++) {
+		std::string n = LevelManager::getLevelName(levelPlaylist, i);
+		Level* l = LevelManager::getLevelFactory(levelPlaylist, n)();
+		levelWeights.push_back(l->getWeights()[levelPlaylist]);
 		delete l;
 	}
 	int levelIndex = weightedSelect<float>(levelWeights.data(), levelWeights.size());
-	std::string levelName = LevelManager::getLevelName("random-vanilla", levelIndex);
-	LevelManager::pushLevel("random-vanilla", levelName);
+	std::string levelName = LevelManager::getLevelName(levelPlaylist, levelIndex);
+	LevelManager::pushLevel(levelPlaylist, levelName);
 
 	/*
 	for (int i = 0; i < levelWeights.size(); i++) {
