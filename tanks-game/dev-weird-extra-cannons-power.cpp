@@ -43,24 +43,11 @@ BulletPower* DevWeirdExtraCannonsTankPower::makeBulletPower() const {
 	return new DevWeirdExtraCannonsBulletPower();
 }
 
-void DevWeirdExtraCannonsTankPower::addShootingPoints(Tank* t, std::vector<CannonPoint>* cannonPoints) {
-	for (int i = cannonPoints->size() - 1; i >= 0; i--) {
-		int end = (i + 1) % cannonPoints->size();
-		double angle_diff;
-		if (end == 0) {
-			angle_diff = 2*PI - (cannonPoints->at(i).angle - cannonPoints->at(end).angle);
-		} else {
-			angle_diff = cannonPoints->at(end).angle - cannonPoints->at(i).angle;
-		}
-
-		double newAngle1 = (angle_diff * (1.0/4)); //90deg
-		CannonPoint temp1 = CannonPoint(newAngle1 + cannonPoints->at(i).angle);
-		cannonPoints->insert(cannonPoints->begin() + i + 1, temp1);
-
-		double newAngle2 = (angle_diff * (5.0/8)); //180+45deg
-		CannonPoint temp2 = CannonPoint(newAngle2 + cannonPoints->at(i).angle);
-		cannonPoints->insert(cannonPoints->begin() + i + 2, temp2);
-	}
+std::vector<double>* DevWeirdExtraCannonsTankPower::addShootingPoints() const {
+	std::vector<double>* newCannonPoints = new std::vector<double>;
+	newCannonPoints->push_back(1.0/4); //90deg
+	newCannonPoints->push_back(5.0/8); //180+45deg
+	return newCannonPoints;
 }
 
 DevWeirdExtraCannonsTankPower::DevWeirdExtraCannonsTankPower() {

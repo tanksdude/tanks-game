@@ -142,26 +142,13 @@ std::pair<bool, BulletUpdateStruct> PowerFunctionHelper::superbounceEdgeGenericY
 	return { bounced, BulletUpdateStruct(b_xDelta, b_yDelta, 0,0, b_angleDelta, 0) };
 }
 
-void PowerFunctionHelper::equallySpacedCannonPoints(Tank*, std::vector<CannonPoint>* cannonPoints, int num) {
-	for (int i = cannonPoints->size() - 1; i >= 0; i--) {
-		int end = (i + 1) % cannonPoints->size();
-		double angle_diff;
-		if (end == 0) {
-			angle_diff = 2*PI - (cannonPoints->at(i).angle - cannonPoints->at(end).angle);
-		} else {
-			angle_diff = cannonPoints->at(end).angle - cannonPoints->at(i).angle;
-		}
-
-		for (int j = 0; j < num - 1; j++) {
-			double newAngle = angle_diff/num * (j+1);
-			CannonPoint temp = CannonPoint(newAngle + cannonPoints->at(i).angle);
-			cannonPoints->insert(cannonPoints->begin() + i + j + 1, temp);
-
-			if (end != 0) {
-				end++;
-			}
-		}
+std::vector<double>* PowerFunctionHelper::equallySpacedCannonPoints(int count) {
+	std::vector<double>* newCannonPoints = new std::vector<double>;
+	newCannonPoints->reserve(count-1);
+	for (int i = 1; i < count; i++) {
+		newCannonPoints->push_back(i / double(count));
 	}
+	return newCannonPoints;
 }
 
 Game_ID PowerFunctionHelper::homingGenericTarget(const Bullet* b, bool targetUsingAngleDiff) {

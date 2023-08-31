@@ -271,9 +271,29 @@ void Tank::determineShootingAngles() {
 				noMoreAdditionalShootingSpecials = true;
 			}
 
-			tankPowers[i]->addShootingPoints(this, &shootingPoints);
+			determineShootingAngles_helper(tankPowers[i]->addShootingPoints());
 		}
 	}
+}
+
+inline void Tank::determineShootingAngles_helper(std::vector<double>* newCannonPoints) {
+	for (int i = shootingPoints.size() - 1; i >= 0; i--) {
+		const int end = (i + 1) % shootingPoints.size();
+		double angle_diff;
+		if (end == 0) {
+			angle_diff = 2*PI - (shootingPoints[i].angle - shootingPoints[end].angle);
+		} else {
+			angle_diff = shootingPoints[end].angle - shootingPoints[i].angle;
+		}
+
+		for (int j = 0; j < newCannonPoints->size(); j++) {
+			const double newAngle = angle_diff * newCannonPoints->at(j);
+			CannonPoint temp = CannonPoint(newAngle + shootingPoints[i].angle);
+			shootingPoints.insert(shootingPoints.begin() + i + j + 1, temp);
+		}
+	}
+
+	delete newCannonPoints;
 }
 
 double Tank::getShootingSpeedMultiplier() const {

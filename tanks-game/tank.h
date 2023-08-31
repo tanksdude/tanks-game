@@ -65,6 +65,7 @@ protected:
 	void kill_hard(); //kills without accounting for extra lives
 	inline void terminalVelocity(bool forward);
 	inline void move_base(bool forward, bool turnL, bool turnR);
+	inline void determineShootingAngles_helper(std::vector<double>* newCannonPoints);
 
 public:
 	//helper stuff:

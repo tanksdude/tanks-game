@@ -93,11 +93,13 @@ public:
 	virtual InteractionBoolHolder modifiedDeathHandling(Bullet* parent) { return { true, false }; } //first is bullet, second is bulletpower
 	//it's first come, first served
 
+	/*
 	bool modifiesBulletDrawings = false;
 	virtual void modifiedBulletDrawings(Bullet* parent) { return; } //probably not going to be used
 	bool overridesBulletDrawings = false;
 	bool modifiedBulletDrawingsCanWorkWithOthers = true;
 	bool modifiedBulletDrawingsCanOnlyWorkIndividually = false;
+	*/
 
 	virtual double getBulletSpeedMultiplier() const { return 1; }
 	bool bulletSpeedStacks = false;

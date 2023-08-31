@@ -27,7 +27,7 @@ public:
 	static std::pair<bool, BulletUpdateStruct> superbounceEdgeGenericX(const Bullet* b, double strength = 0); //strength not needed since an edge can't be pushed
 	static std::pair<bool, BulletUpdateStruct> superbounceEdgeGenericY(const Bullet* b, double strength = 0);
 
-	static void equallySpacedCannonPoints(Tank*, std::vector<CannonPoint>*, int); //fix?
+	static std::vector<double>* equallySpacedCannonPoints(int count);
 
 private:
 	PowerFunctionHelper() {}

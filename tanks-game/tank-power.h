@@ -105,16 +105,18 @@ public:
 	bool additionalShootingCanOnlyWorkIndividually = false;
 
 	bool addsShootingPoints = false;
-	virtual void addShootingPoints(Tank*, std::vector<CannonPoint>*) { return; } //shouldn't need the Tank*
+	virtual std::vector<double>* addShootingPoints() const { return nullptr; } //list of angles to put new cannons at; angle range: [0,1)
 	//bool overridesAddShootingPoints = false; //makes no sense to be true
 	bool addShootingPointsCanWorkWithOthers = true; //should only be true
 	bool addShootingPointsCanOnlyWorkIndividually = false;
 
+	/*
 	bool modifiesTankDrawings = false;
 	virtual void modifiedTankDrawings(Tank* parent) { return; }
 	bool overridesTankDrawings = false;
 	bool modifiedTankDrawingsCanWorkWithOthers = true;
 	bool modifiedTankDrawingsCanOnlyWorkIndividually = false;
+	*/
 
 	virtual double getTankMaxSpeedMultiplier() const { return 1; }
 	bool tankMaxSpeedStacks = false;
