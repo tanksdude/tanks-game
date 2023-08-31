@@ -64,7 +64,7 @@ void DevColorChangingTankPower::tick(Tank* parent) {
 	} else {
 		colorDist = dist;
 	}
-	std::cout << colorDist << std::endl;
+	//std::cout << colorDist << std::endl;
 }
 
 ColorValueHolder DevColorChangingTankPower::getColor() const {

@@ -139,6 +139,7 @@
 #include "dev-other-stuff-is-poison-power.h" //kills tank when touching normally-safe stuff
 #include "dev-backwards-movement-power.h" //self-explanatory
 #include "wall-sparks-power.h" //create some extra bullets when hitting a wall
+#include "dev-weird-extra-cannons-power.h" //adds some extra cannons at weird angles
 
 //a lot of the includes aren't needed anymore thanks to GameMainLoop, but may as well keep them
 #include "game-main-loop.h"
@@ -262,6 +263,7 @@ int main(int argc, char** argv) {
 	PowerupManager::addPowerFactory(DevOtherStuffIsPoisonPower::factory);
 	PowerupManager::addPowerFactory(DevBackwardsMovementPower::factory);
 	PowerupManager::addPowerFactory(WallSparksPower::factory);
+	PowerupManager::addPowerFactory(DevWeirdExtraCannonsPower::factory);
 
 	//hazards
 	//vanilla (some are also "old"):
