@@ -5,8 +5,6 @@
     * have fun!
 * some unit tests
     * finally...
-* rudimentary custom levels
-    * turns out, DLLs were too complicated
 * variable physics rate?
 * lots and lots of new stuff
 * powerups:
@@ -23,7 +21,9 @@
 * graphics: batched rendering
 * slight multithreading!
     * set number of threads in the ini
-* gifs and images in the README
+* rudimentary custom powers and levels
+    * turns out, DLLs were too complicated
+    * TODO: documentation
 * mild QoL improvements to displaying things
     * tank multi-powers are more obvious
     * lightning hazards and no bullet zones are significantly easier to spot
@@ -43,6 +43,7 @@
 * level effects:
     * ?
 * minor things:
+    * update to VS2022
     * fullscreen toggle key changed to F11
     * overhaul priority handling (again)
     * [dev] power: wall sparks, makes extra bullets when it hits a wall

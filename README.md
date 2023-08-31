@@ -10,7 +10,7 @@ TODO: maybe a gif later
 
 ### Prerequisites
 
-* If compiling from source, you'll want Visual Studio (2019)
+* If compiling from source, you'll want Visual Studio 2022
     * [pre-compiled executables](https://github.com/tanksdude/tanks-game/releases) are provided if that's not an option for you
 * OpenGL 3.3 or later
     * Earlier versions probably work if you update the shaders
