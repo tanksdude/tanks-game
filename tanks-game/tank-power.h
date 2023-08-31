@@ -105,7 +105,7 @@ public:
 	bool additionalShootingCanOnlyWorkIndividually = false;
 
 	bool addsShootingPoints = false;
-	virtual std::vector<double>* addShootingPoints() const { return nullptr; } //list of angles to put new cannons at; angle range: [0,1)
+	virtual std::vector<double>* addShootingPoints() const { return nullptr; } //list of angles to put new cannons at; angle range: (0,1)
 	//bool overridesAddShootingPoints = false; //makes no sense to be true
 	bool addShootingPointsCanWorkWithOthers = true; //should only be true
 	bool addShootingPointsCanOnlyWorkIndividually = false;
