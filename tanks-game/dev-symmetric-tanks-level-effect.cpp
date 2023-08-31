@@ -24,7 +24,7 @@ DevSymmetricTanksLevelEffect::DevSymmetricTanksLevelEffect(bool alsoDoAngle) {
 
 DevSymmetricTanksLevelEffect::DevSymmetricTanksLevelEffect() : DevSymmetricTanksLevelEffect(false) {}
 
-LevelEffect* DevSymmetricTanksLevelEffect::factory(GenericFactoryConstructionData& args) {
+LevelEffect* DevSymmetricTanksLevelEffect::factory(const GenericFactoryConstructionData& args) {
 	if (args.getDataCount() >= 1) {
 		int count = args.getDataPortionLength(0);
 

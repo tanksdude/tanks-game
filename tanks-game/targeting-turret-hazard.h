@@ -67,8 +67,8 @@ public:
 	TargetingTurretHazard(double xpos, double ypos, double angle);
 	TargetingTurretHazard(double xpos, double ypos, double angle, double radius);
 	virtual ~TargetingTurretHazard();
-	static CircleHazard* factory(GenericFactoryConstructionData&);
-	static CircleHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, GenericFactoryConstructionData&);
+	static CircleHazard* factory(const GenericFactoryConstructionData&);
+	static CircleHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, const GenericFactoryConstructionData&);
 	//virtual int getFactoryArgumentCount() const override { return 3; }
 	//virtual CircleHazardConstructionTypes getConstructionType() const override { return CircleHazardConstructionTypes::angleRequired; }
 	//virtual CircleFactoryInformation getFactoryInformation() const override { return { false, false, false, false, false }; }

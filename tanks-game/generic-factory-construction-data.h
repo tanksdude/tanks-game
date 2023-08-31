@@ -3,18 +3,19 @@
 
 struct GenericFactoryConstructionData {
 protected:
-	std::vector<void*> data;
+	std::vector<const void*> data;
 	std::vector<int> lengths;
 
 public:
-	void pushData(int length, void* dataPortion);
+	void pushData(int length, const void* dataPortion);
 
 	int getDataCount() const;
-	int getDataPortionLength(int i);
-	void* getDataPortion(int i);
+	int getDataPortionLength(int i) const;
+	const void* getDataPortion(int i) const;
 
 	GenericFactoryConstructionData();
-	GenericFactoryConstructionData(int length, void* dataPortion);
+	GenericFactoryConstructionData(int length, const void* dataPortion); //start with one element
+
 	~GenericFactoryConstructionData();
 
 private:

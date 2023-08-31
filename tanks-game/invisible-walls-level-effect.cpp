@@ -42,6 +42,6 @@ InvisibleWallsLevelEffect::~InvisibleWallsLevelEffect() {
 	//nothing
 }
 
-LevelEffect* InvisibleWallsLevelEffect::factory(GenericFactoryConstructionData& args) {
+LevelEffect* InvisibleWallsLevelEffect::factory(const GenericFactoryConstructionData& args) {
 	return new InvisibleWallsLevelEffect();
 }

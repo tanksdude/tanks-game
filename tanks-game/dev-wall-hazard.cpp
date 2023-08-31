@@ -37,7 +37,7 @@ DevWallHazard::~DevWallHazard() {
 	//nothing
 }
 
-RectHazard* DevWallHazard::factory(GenericFactoryConstructionData& args) {
+RectHazard* DevWallHazard::factory(const GenericFactoryConstructionData& args) {
 	if (args.getDataCount() >= 1) {
 		int count = args.getDataPortionLength(0);
 
@@ -186,7 +186,7 @@ void DevWallHazard::ghostDraw(DrawingLayers layer, float alpha) const {
 	}
 }
 
-RectHazard* DevWallHazard::randomizingFactory(double x_start, double y_start, double area_width, double area_height, GenericFactoryConstructionData& args) {
+RectHazard* DevWallHazard::randomizingFactory(double x_start, double y_start, double area_width, double area_height, const GenericFactoryConstructionData& args) {
 	int attempts = 0;
 	RectHazard* randomized = nullptr;
 	double width, height;

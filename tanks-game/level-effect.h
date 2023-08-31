@@ -35,5 +35,5 @@ public:
 	virtual void ghostDraw(DrawingLayers, float alpha) const override { return; }
 
 	virtual ~LevelEffect() { return; }
-	static LevelEffect* factory(GenericFactoryConstructionData&);
+	static LevelEffect* factory(const GenericFactoryConstructionData&);
 };

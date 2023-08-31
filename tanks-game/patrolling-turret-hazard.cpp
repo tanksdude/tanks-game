@@ -73,7 +73,7 @@ PatrollingTurretHazard::~PatrollingTurretHazard() {
 	}
 }
 
-CircleHazard* PatrollingTurretHazard::factory(GenericFactoryConstructionData& args) {
+CircleHazard* PatrollingTurretHazard::factory(const GenericFactoryConstructionData& args) {
 	if (args.getDataCount() >= 3) {
 		int count_basic = args.getDataPortionLength(0);
 		int count_num = args.getDataPortionLength(1);
@@ -643,7 +643,7 @@ inline void PatrollingTurretHazard::drawPath(float alpha) const {
 	}
 }
 
-CircleHazard* PatrollingTurretHazard::randomizingFactory(double x_start, double y_start, double area_width, double area_height, GenericFactoryConstructionData& args) {
+CircleHazard* PatrollingTurretHazard::randomizingFactory(double x_start, double y_start, double area_width, double area_height, const GenericFactoryConstructionData& args) {
 	//TODO
 	return nullptr;
 

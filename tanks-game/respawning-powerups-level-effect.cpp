@@ -209,7 +209,7 @@ RespawningPowerupsLevelEffect::~RespawningPowerupsLevelEffect() {
 	watching.clear(); //not really necessary
 }
 
-LevelEffect* RespawningPowerupsLevelEffect::factory(GenericFactoryConstructionData& args) {
+LevelEffect* RespawningPowerupsLevelEffect::factory(const GenericFactoryConstructionData& args) {
 	if (args.getDataCount() >= 1) {
 		int count = args.getDataPortionLength(0);
 

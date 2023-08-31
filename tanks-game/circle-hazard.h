@@ -102,8 +102,8 @@ public:
 	virtual void ghostDraw(DrawingLayers, float alpha) const override = 0;
 
 	virtual ~CircleHazard() { return; }
-	static CircleHazard* factory(GenericFactoryConstructionData&);
-	static CircleHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, GenericFactoryConstructionData&);
+	static CircleHazard* factory(const GenericFactoryConstructionData&);
+	static CircleHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, const GenericFactoryConstructionData&);
 	virtual int getFactoryArgumentCount() const = 0;
 	virtual CircleHazardConstructionTypes getConstructionType() const = 0;
 	virtual CircleFactoryInformation getFactoryInformation() const = 0;

@@ -35,7 +35,7 @@ CircularNoBulletZoneHazard::~CircularNoBulletZoneHazard() {
 	//nothing
 }
 
-CircleHazard* CircularNoBulletZoneHazard::factory(GenericFactoryConstructionData& args) {
+CircleHazard* CircularNoBulletZoneHazard::factory(const GenericFactoryConstructionData& args) {
 	if (args.getDataCount() >= 1) {
 		int count = args.getDataPortionLength(0);
 
@@ -248,7 +248,7 @@ void CircularNoBulletZoneHazard::ghostDraw(DrawingLayers layer, float alpha) con
 	}
 }
 
-CircleHazard* CircularNoBulletZoneHazard::randomizingFactory(double x_start, double y_start, double area_width, double area_height, GenericFactoryConstructionData& args) {
+CircleHazard* CircularNoBulletZoneHazard::randomizingFactory(double x_start, double y_start, double area_width, double area_height, const GenericFactoryConstructionData& args) {
 	int attempts = 0;
 	CircleHazard* randomized = nullptr;
 	double xpos, ypos, radius;

@@ -51,7 +51,7 @@ TargetingTurretHazard::~TargetingTurretHazard() {
 	//delete[] stateColors;
 }
 
-CircleHazard* TargetingTurretHazard::factory(GenericFactoryConstructionData& args) {
+CircleHazard* TargetingTurretHazard::factory(const GenericFactoryConstructionData& args) {
 	if (args.getDataCount() >= 1) {
 		int count = args.getDataPortionLength(0);
 
@@ -586,7 +586,7 @@ inline void TargetingTurretHazard::drawReticule(float alpha) const {
 	Renderer::SubmitBatchedDraw(coordsAndColor_outline, (Circle::numOfSides*2 + 4*4*2)*(2+4), indices_outline, Circle::numOfSides*6 + 4*6);
 }
 
-CircleHazard* TargetingTurretHazard::randomizingFactory(double x_start, double y_start, double area_width, double area_height, GenericFactoryConstructionData& args) {
+CircleHazard* TargetingTurretHazard::randomizingFactory(double x_start, double y_start, double area_width, double area_height, const GenericFactoryConstructionData& args) {
 	int attempts = 0;
 	CircleHazard* randomized = nullptr;
 	double xpos, ypos, angle;

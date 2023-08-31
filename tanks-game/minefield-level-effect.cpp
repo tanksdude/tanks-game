@@ -170,7 +170,7 @@ MinefieldLevelEffect::~MinefieldLevelEffect() {
 	delete ghostMine;
 }
 
-LevelEffect* MinefieldLevelEffect::factory(GenericFactoryConstructionData& args) {
+LevelEffect* MinefieldLevelEffect::factory(const GenericFactoryConstructionData& args) {
 	if (args.getDataCount() >= 1) {
 		int count = args.getDataPortionLength(0);
 

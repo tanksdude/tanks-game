@@ -33,7 +33,7 @@ IceLevelEffect::~IceLevelEffect() {
 	//nothing
 }
 
-LevelEffect* IceLevelEffect::factory(GenericFactoryConstructionData& args) {
+LevelEffect* IceLevelEffect::factory(const GenericFactoryConstructionData& args) {
 	if (args.getDataCount() >= 1) {
 		int count = args.getDataPortionLength(0);
 

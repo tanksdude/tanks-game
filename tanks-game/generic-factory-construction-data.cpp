@@ -4,22 +4,16 @@ GenericFactoryConstructionData::GenericFactoryConstructionData() {
 	//nothing
 }
 
-GenericFactoryConstructionData::GenericFactoryConstructionData(int length, void* dataPortion)
+GenericFactoryConstructionData::GenericFactoryConstructionData(int length, const void* dataPortion)
 : GenericFactoryConstructionData() {
 	pushData(length, dataPortion);
 }
 
 GenericFactoryConstructionData::~GenericFactoryConstructionData() {
-	//TODO: is this supposed to free memory?
-	/*
-	for (int i = 0; i < data.size(); i++) {
-		delete[] data[i];
-	}
-	*/
-	//data.clear();
+	//nothing
 }
 
-void GenericFactoryConstructionData::pushData(int length, void* dataPortion) {
+void GenericFactoryConstructionData::pushData(int length, const void* dataPortion) {
 	lengths.push_back(length);
 	data.push_back(dataPortion);
 }
@@ -29,10 +23,10 @@ int GenericFactoryConstructionData::getDataCount() const {
 	return lengths.size();
 }
 
-int GenericFactoryConstructionData::getDataPortionLength(int i) {
+int GenericFactoryConstructionData::getDataPortionLength(int i) const {
 	return lengths[i];
 }
 
-void* GenericFactoryConstructionData::getDataPortion(int i) {
+const void* GenericFactoryConstructionData::getDataPortion(int i) const {
 	return data[i];
 }

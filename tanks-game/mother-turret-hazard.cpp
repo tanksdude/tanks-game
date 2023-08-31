@@ -65,7 +65,7 @@ MotherTurretHazard::~MotherTurretHazard() {
 	//delete[] stateColors;
 }
 
-CircleHazard* MotherTurretHazard::factory(GenericFactoryConstructionData& args) {
+CircleHazard* MotherTurretHazard::factory(const GenericFactoryConstructionData& args) {
 	if (args.getDataCount() >= 1) {
 		int count_basic = args.getDataPortionLength(0);
 
@@ -675,7 +675,7 @@ inline void MotherTurretHazard::drawShootingTimer(float alpha) const {
 	}
 }
 
-CircleHazard* MotherTurretHazard::randomizingFactory(double x_start, double y_start, double area_width, double area_height, GenericFactoryConstructionData& args) {
+CircleHazard* MotherTurretHazard::randomizingFactory(double x_start, double y_start, double area_width, double area_height, const GenericFactoryConstructionData& args) {
 	int attempts = 0;
 	CircleHazard* randomized = nullptr;
 	double xpos, ypos, angle;

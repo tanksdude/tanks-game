@@ -38,6 +38,6 @@ public:
 	void drawLevelEffects(DrawingLayers) const;
 
 	virtual ~Level();
-	//static Level* factory(GenericFactoryConstructionData&); //not necessary
+	//static Level* factory(const GenericFactoryConstructionData&); //not necessary
 	static Level* factory();
 };

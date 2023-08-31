@@ -52,7 +52,7 @@ HorizontalLightningHazard::~HorizontalLightningHazard() {
 	//clearBolts();
 }
 
-RectHazard* HorizontalLightningHazard::factory(GenericFactoryConstructionData& args) {
+RectHazard* HorizontalLightningHazard::factory(const GenericFactoryConstructionData& args) {
 	if (args.getDataCount() >= 1) {
 		int count = args.getDataPortionLength(0);
 
@@ -598,7 +598,7 @@ inline void HorizontalLightningHazard::drawBolts_Pose(float alpha) const {
 	}
 }
 
-RectHazard* HorizontalLightningHazard::randomizingFactory(double x_start, double y_start, double area_width, double area_height, GenericFactoryConstructionData& args) {
+RectHazard* HorizontalLightningHazard::randomizingFactory(double x_start, double y_start, double area_width, double area_height, const GenericFactoryConstructionData& args) {
 	//minimum/maximum width and height not in argv
 	if (WallManager::getNumWalls() == 0) {
 		return nullptr; //don't bother trying to see if a horizontal lightning could go from edge to edge

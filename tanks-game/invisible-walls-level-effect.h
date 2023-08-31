@@ -20,5 +20,5 @@ public:
 
 	InvisibleWallsLevelEffect();
 	virtual ~InvisibleWallsLevelEffect();
-	static LevelEffect* factory(GenericFactoryConstructionData&);
+	static LevelEffect* factory(const GenericFactoryConstructionData&);
 };

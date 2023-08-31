@@ -314,7 +314,7 @@ WindLevelEffect::~WindLevelEffect() {
 	delete[] stateMultiplier;
 }
 
-LevelEffect* WindLevelEffect::factory(GenericFactoryConstructionData& args) {
+LevelEffect* WindLevelEffect::factory(const GenericFactoryConstructionData& args) {
 	//TODO: modify stateMultiplier
 	if (args.getDataCount() >= 1) {
 		int count = args.getDataPortionLength(0);

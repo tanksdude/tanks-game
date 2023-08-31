@@ -100,8 +100,8 @@ public:
 	virtual void ghostDraw(DrawingLayers, float alpha) const override = 0;
 
 	virtual ~RectHazard() { return; }
-	static RectHazard* factory(GenericFactoryConstructionData&);
-	static RectHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, GenericFactoryConstructionData&);
+	static RectHazard* factory(const GenericFactoryConstructionData&);
+	static RectHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, const GenericFactoryConstructionData&);
 	virtual int getFactoryArgumentCount() const = 0;
 	virtual RectHazardConstructionTypes getConstructionType() const = 0;
 	virtual RectFactoryInformation getFactoryInformation() const = 0;

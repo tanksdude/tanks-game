@@ -41,8 +41,8 @@ public:
 public:
 	DevWallHazard(double xpos, double ypos, double width, double height);
 	~DevWallHazard();
-	static RectHazard* factory(GenericFactoryConstructionData&);
-	static RectHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, GenericFactoryConstructionData&);
+	static RectHazard* factory(const GenericFactoryConstructionData&);
+	static RectHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, const GenericFactoryConstructionData&);
 	virtual int getFactoryArgumentCount() const override { return 4; }
 	virtual RectHazardConstructionTypes getConstructionType() const override { return RectHazardConstructionTypes::standardConstruction; }
 	virtual RectFactoryInformation getFactoryInformation() const override { return { false, false, false, false, false }; }

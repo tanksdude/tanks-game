@@ -44,5 +44,5 @@ public:
 	WindLevelEffect();
 	WindLevelEffect(bool transitionWind);
 	virtual ~WindLevelEffect();
-	static LevelEffect* factory(GenericFactoryConstructionData&);
+	static LevelEffect* factory(const GenericFactoryConstructionData&);
 };

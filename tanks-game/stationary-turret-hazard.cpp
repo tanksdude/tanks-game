@@ -49,7 +49,7 @@ StationaryTurretHazard::~StationaryTurretHazard() {
 	delete[] stateColors;
 }
 
-CircleHazard* StationaryTurretHazard::factory(GenericFactoryConstructionData& args) {
+CircleHazard* StationaryTurretHazard::factory(const GenericFactoryConstructionData& args) {
 	if (args.getDataCount() >= 1) {
 		int count = args.getDataPortionLength(0);
 
@@ -357,7 +357,7 @@ inline void StationaryTurretHazard::drawBarrel(float alpha) const {
 	Renderer::SubmitBatchedDraw(coordsAndColor, 4*(2+4), indices, 6);
 }
 
-CircleHazard* StationaryTurretHazard::randomizingFactory(double x_start, double y_start, double area_width, double area_height, GenericFactoryConstructionData& args) {
+CircleHazard* StationaryTurretHazard::randomizingFactory(double x_start, double y_start, double area_width, double area_height, const GenericFactoryConstructionData& args) {
 	int attempts = 0;
 	CircleHazard* randomized = nullptr;
 	double xpos, ypos, angle;

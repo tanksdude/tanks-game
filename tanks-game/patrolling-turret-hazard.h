@@ -85,8 +85,8 @@ private:
 public:
 	PatrollingTurretHazard(double xpos, double ypos, double angle, int pairNum, double* posList, double* waitList);
 	virtual ~PatrollingTurretHazard();
-	static CircleHazard* factory(GenericFactoryConstructionData&);
-	static CircleHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, GenericFactoryConstructionData&);
+	static CircleHazard* factory(const GenericFactoryConstructionData&);
+	static CircleHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, const GenericFactoryConstructionData&);
 	virtual int getFactoryArgumentCount() const override { return 5; }
 	virtual CircleHazardConstructionTypes getConstructionType() const override { return CircleHazardConstructionTypes::constructionIsTooComplex; }
 	virtual CircleFactoryInformation getFactoryInformation() const override { return { false, false, false, false, false }; }

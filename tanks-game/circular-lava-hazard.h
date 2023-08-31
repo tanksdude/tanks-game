@@ -51,8 +51,8 @@ private:
 public:
 	CircularLavaHazard(double xpos, double ypos, double radius);
 	~CircularLavaHazard();
-	static CircleHazard* factory(GenericFactoryConstructionData&);
-	static CircleHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, GenericFactoryConstructionData&);
+	static CircleHazard* factory(const GenericFactoryConstructionData&);
+	static CircleHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, const GenericFactoryConstructionData&);
 	virtual int getFactoryArgumentCount() const override { return 3; }
 	virtual CircleHazardConstructionTypes getConstructionType() const override { return CircleHazardConstructionTypes::radiusRequired; }
 	virtual CircleFactoryInformation getFactoryInformation() const override { return { false, false, false, false, false }; }

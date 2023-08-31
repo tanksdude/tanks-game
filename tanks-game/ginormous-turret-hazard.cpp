@@ -42,7 +42,7 @@ GinormousTurretHazard::~GinormousTurretHazard() {
 	//nothing
 }
 
-CircleHazard* GinormousTurretHazard::factory(GenericFactoryConstructionData& args) {
+CircleHazard* GinormousTurretHazard::factory(const GenericFactoryConstructionData& args) {
 	if (args.getDataCount() >= 1) {
 		int count = args.getDataPortionLength(0);
 
@@ -304,7 +304,7 @@ inline void GinormousTurretHazard::drawBarrel(float alpha) const {
 	Renderer::SubmitBatchedDraw(coordsAndColor, 4*(2+4), indices, 6);
 }
 
-CircleHazard* GinormousTurretHazard::randomizingFactory(double x_start, double y_start, double area_width, double area_height, GenericFactoryConstructionData& args) {
+CircleHazard* GinormousTurretHazard::randomizingFactory(double x_start, double y_start, double area_width, double area_height, const GenericFactoryConstructionData& args) {
 	int attempts = 0;
 	CircleHazard* randomized = nullptr;
 	double xpos, ypos, angle;

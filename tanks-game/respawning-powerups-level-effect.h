@@ -63,5 +63,5 @@ public:
 	RespawningPowerupsLevelEffect();
 	RespawningPowerupsLevelEffect(bool watchEverything);
 	virtual ~RespawningPowerupsLevelEffect();
-	static LevelEffect* factory(GenericFactoryConstructionData&);
+	static LevelEffect* factory(const GenericFactoryConstructionData&);
 };

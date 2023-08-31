@@ -59,7 +59,7 @@ CircularLightningHazard::~CircularLightningHazard() {
 	//clearBolts(); //handled by ~GeneralizedLightning
 }
 
-CircleHazard* CircularLightningHazard::factory(GenericFactoryConstructionData& args) {
+CircleHazard* CircularLightningHazard::factory(const GenericFactoryConstructionData& args) {
 	if (args.getDataCount() >= 1) {
 		int count = args.getDataPortionLength(0);
 
@@ -538,7 +538,7 @@ inline void CircularLightningHazard::drawBolts_Pose(float alpha) const {
 	}
 }
 
-CircleHazard* CircularLightningHazard::randomizingFactory(double x_start, double y_start, double area_width, double area_height, GenericFactoryConstructionData& args) {
+CircleHazard* CircularLightningHazard::randomizingFactory(double x_start, double y_start, double area_width, double area_height, const GenericFactoryConstructionData& args) {
 	int attempts = 0;
 	CircleHazard* randomized = nullptr;
 	double xpos, ypos, radius;
