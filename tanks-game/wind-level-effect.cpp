@@ -104,8 +104,7 @@ void WindLevelEffect::draw() const {
 				float coordsAndColor_arrow[7*(2+4)];
 				for (int k = 0; k < 7; k++) {
 					SimpleVector2D vertex = SimpleVector2D(vertices_arrow[k]);
-					vertex.setMagnitude(vertex.getMagnitude() * length);
-					vertex.changeAngle(pushDirection.getAngle());
+					vertex.scaleAndRotate(length, pushDirection.getAngle());
 					coordsAndColor_arrow[k*6]   = (GAME_WIDTH/2  + i*x_offset) + vertex.getXComp();
 					coordsAndColor_arrow[k*6+1] = (GAME_HEIGHT/2 + j*y_offset) + vertex.getYComp();
 					coordsAndColor_arrow[k*6+2] = color.getRf();
@@ -119,8 +118,7 @@ void WindLevelEffect::draw() const {
 				float coordsAndColor_spike[3*(2+4)];
 				for (int k = 0; k < 3; k++) {
 					SimpleVector2D vertex = SimpleVector2D(vertices_spike[k]);
-					vertex.setMagnitude(vertex.getMagnitude() * length);
-					vertex.changeAngle(pushDirection.getAngle());
+					vertex.scaleAndRotate(length, pushDirection.getAngle());
 					coordsAndColor_spike[k*6]   = (GAME_WIDTH/2  + i*x_offset) + vertex.getXComp();
 					coordsAndColor_spike[k*6+1] = (GAME_HEIGHT/2 + j*y_offset) + vertex.getYComp();
 					coordsAndColor_spike[k*6+2] = color.getRf();
@@ -218,8 +216,7 @@ void WindLevelEffect::ghostDraw(float alpha) const {
 			float coordsAndColor_spike[3*(2+4)];
 			for (int k = 0; k < 3; k++) {
 				SimpleVector2D vertex = SimpleVector2D(vertices_spike[k]);
-				vertex.setMagnitude(vertex.getMagnitude() * length);
-				vertex.changeAngle(pushDirection.getAngle());
+				vertex.scaleAndRotate(length, pushDirection.getAngle());
 				coordsAndColor_spike[k*6]   = (GAME_WIDTH/2  + i*x_offset) + vertex.getXComp();
 				coordsAndColor_spike[k*6+1] = (GAME_HEIGHT/2 + j*y_offset) + vertex.getYComp();
 				coordsAndColor_spike[k*6+2] = color.getRf();

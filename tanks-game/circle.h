@@ -13,7 +13,7 @@ public:
 	double y;
 	double r;
 
-	inline double getX() const { return x; }
-	inline double getY() const { return y; }
-	inline double getR() const { return r; }
+	double getX() const { return x; }
+	double getY() const { return y; }
+	double getR() const { return r; }
 };

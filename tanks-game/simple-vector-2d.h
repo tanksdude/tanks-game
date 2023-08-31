@@ -20,6 +20,7 @@ public:
 	void setAngle(float angle);
 	void changeMagnitude(float delta);
 	void changeAngle(float delta);
+	void scaleAndRotate(float scale, float angle);
 
 	float getXComp() const { return xComp; }
 	float getYComp() const { return yComp; }

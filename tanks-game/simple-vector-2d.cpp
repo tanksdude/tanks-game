@@ -7,6 +7,8 @@ SimpleVector2D::SimpleVector2D(float xComp, float yComp) {
 	this->yComp = yComp;
 	this->angle = atan2(yComp, xComp);
 	this->magnitude = sqrt(xComp*xComp + yComp*yComp);
+	//hypot() is slow, don't use it (unless you're dealing with massive values that could overflow)
+	//https://stackoverflow.com/questions/32435796/when-to-use-stdhypotx-y-over-stdsqrtxx-yy
 }
 
 SimpleVector2D::SimpleVector2D(float angle, float magnitude, bool angle_magnitude) {
@@ -14,6 +16,7 @@ SimpleVector2D::SimpleVector2D(float angle, float magnitude, bool angle_magnitud
 	this->magnitude = magnitude;
 	this->xComp = magnitude * cos(angle);
 	this->yComp = magnitude * sin(angle);
+	//TODO: maybe add a static factory, like MakeVectorComponents() and MakeVectorAngle() to more easily differentiate these constructors
 }
 
 SimpleVector2D::SimpleVector2D(const SimpleVector2D& other) {
@@ -21,15 +24,19 @@ SimpleVector2D::SimpleVector2D(const SimpleVector2D& other) {
 	this->yComp = other.yComp;
 	this->angle = other.angle;
 	this->magnitude = other.magnitude;
+	//could use =default but whatever
 }
 
 void SimpleVector2D::setMagnitude(float magnitude) {
-	if (magnitude < 0) {
-		magnitude = 0;
+	if (magnitude <= 0) {
+		this->magnitude = 0;
+		this->xComp = 0;
+		this->yComp = 0;
+	} else {
+		this->magnitude = magnitude;
+		this->xComp = magnitude * cos(angle);
+		this->yComp = magnitude * sin(angle);
 	}
-	this->magnitude = magnitude;
-	this->xComp = magnitude * cos(angle);
-	this->yComp = magnitude * sin(angle);
 }
 
 void SimpleVector2D::setAngle(float angle) {
@@ -46,21 +53,30 @@ void SimpleVector2D::changeAngle(float delta) {
 	this->setAngle(this->angle + delta);
 }
 
+void SimpleVector2D::scaleAndRotate(float scale, float a) {
+	this->angle += a;
+	this->magnitude *= scale;
+	this->xComp = this->magnitude * cos(this->angle);
+	this->yComp = this->magnitude * sin(this->angle);
+
+	//would it be more efficient to use a scale and rotate matrix? probably not, there are more sines and cosines
+	/*
+	const double oldxComp = this->xComp;
+	const double oldyComp = this->yComp;
+	this->xComp = cos(a) * (scale*oldxComp) - sin(a) * (scale*oldyComp);
+	this->yComp = sin(a) * (scale*oldxComp) + cos(a) * (scale*oldyComp);
+	this->angle += a;
+	this->magnitude *= scale;
+	*/
+}
+
 SimpleVector2D SimpleVector2D::operator+(const SimpleVector2D& other) {
 	SimpleVector2D result(xComp + other.xComp, yComp + other.yComp);
-	//if (result.magnitude < 0) {
-	//	result.magnitude *= -1;
-	//	result.angle += PI;
-	//}
 	return result;
 }
 
 SimpleVector2D SimpleVector2D::operator-(const SimpleVector2D& other) {
 	SimpleVector2D result(xComp - other.xComp, yComp - other.yComp);
-	//if (result.magnitude < 0) {
-	//	result.magnitude *= -1;
-	//	result.angle += PI;
-	//}
 	return result;
 }
 

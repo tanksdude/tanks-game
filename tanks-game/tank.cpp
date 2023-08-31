@@ -132,10 +132,10 @@ inline void Tank::move_base(bool forward, bool turnL, bool turnR) {
 	//TODO: ini settings vvv
 	//if (!forward || !document.getElementById("moveturn").checked) { //change && to || and remove second ! to flip playstyle
 		if (turnL) {
-			velocity.changeAngle(PI / turningIncrement);
+			velocity.changeAngle(PI/turningIncrement);
 		}
 		if (turnR) {
-			velocity.changeAngle(-PI / turningIncrement);
+			velocity.changeAngle(-PI/turningIncrement);
 		}
 	//}
 	//if (!document.getElementById("acceleration").checked) {
