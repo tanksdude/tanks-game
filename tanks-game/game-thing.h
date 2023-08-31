@@ -17,6 +17,6 @@ protected:
 	GameThing(Team_ID t_id);
 
 private:
-	GameThing() {}
-	GameThing(const GameThing&) {}
+	GameThing() = delete;
+	GameThing(const GameThing&) = delete;
 };

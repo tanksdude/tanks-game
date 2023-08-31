@@ -26,6 +26,6 @@ public:
 	static void DrawScenes();
 
 private:
-	GameSceneManager() {}
-	GameSceneManager(const GameSceneManager&) {}
+	GameSceneManager() = delete;
+	GameSceneManager(const GameSceneManager&) = delete;
 };

@@ -11,6 +11,6 @@ public:
 	static void draw();
 
 private:
-	BackgroundRect() {}
-	BackgroundRect(const BackgroundRect&) {}
+	BackgroundRect() = delete;
+	BackgroundRect(const BackgroundRect&) = delete;
 };

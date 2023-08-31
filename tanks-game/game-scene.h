@@ -15,5 +15,5 @@ protected:
 	GameScene();
 
 private:
-	GameScene(const GameScene&) {}
+	GameScene(const GameScene&) = delete;
 };

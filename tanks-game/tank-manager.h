@@ -21,6 +21,6 @@ public:
 	static std::vector<Circle*> getTankCollisionList();
 
 private:
-	TankManager() {}
-	TankManager(const TankManager&) {}
+	TankManager() = delete;
+	TankManager(const TankManager&) = delete;
 };

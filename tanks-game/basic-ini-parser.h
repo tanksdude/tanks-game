@@ -38,6 +38,6 @@ public:
 	static BasicINIData readFile(std::string path);
 
 private:
-	BasicINIParser() {}
-	BasicINIParser(const BasicINIParser&) {}
+	BasicINIParser() = delete;
+	BasicINIParser(const BasicINIParser&) = delete;
 };

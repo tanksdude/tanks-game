@@ -37,7 +37,6 @@ private:
 	inline void drawOutlineThing(float alpha = 1.0f) const;
 
 private:
-	PowerSquare() : GameThing(0) {} //don't use
 	PowerSquare(double x, double y); //common
 public:
 	PowerSquare(double x, double y, std::string name);
@@ -47,4 +46,7 @@ public:
 	PowerSquare(double x, double y, std::string* types, std::string* names, int num);
 	PowerSquare(const PowerSquare&);
 	~PowerSquare();
+
+private:
+	PowerSquare() = delete;
 };

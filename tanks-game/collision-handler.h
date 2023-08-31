@@ -94,6 +94,6 @@ public: //other stuff
 	static bool lineRectCollision(double line1X, double line1Y, double line2X, double line2Y, const Rect* r);
 
 private:
-	CollisionHandler() {}
-	CollisionHandler(const CollisionHandler&) {}
+	CollisionHandler() = delete;
+	CollisionHandler(const CollisionHandler&) = delete;
 };

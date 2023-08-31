@@ -28,8 +28,8 @@ protected:
 		virtual ~PowerSquareWatcher();
 
 	private:
-		PowerSquareWatcher() {} //make powerupCopy nullptr and check for it in the destructor if this is wanted
-		PowerSquareWatcher(const PowerSquareWatcher&) {} //honestly not that hard, but I just don't care
+		PowerSquareWatcher() = delete; //make powerupCopy nullptr and check for it in the destructor if this is wanted
+		PowerSquareWatcher(const PowerSquareWatcher&) = delete; //honestly not that hard, but I just don't care
 	};
 
 protected:

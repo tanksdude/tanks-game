@@ -27,6 +27,6 @@ public:
 	static void mouseWheelFunc(int wheel, int dir, int x, int y);
 
 private:
-	DeveloperManager() {}
-	DeveloperManager(const DeveloperManager&) {}
+	DeveloperManager() = delete;
+	DeveloperManager(const DeveloperManager&) = delete;
 };

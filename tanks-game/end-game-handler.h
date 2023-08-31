@@ -58,6 +58,6 @@ public: //note: these kill tanks and bullets
 	static void clearWatchingTeams();
 
 private:
-	EndGameHandler() {}
-	EndGameHandler(const EndGameHandler&) {}
+	EndGameHandler() = delete;
+	EndGameHandler(const EndGameHandler&) = delete;
 };

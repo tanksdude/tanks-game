@@ -23,6 +23,6 @@ public:
 	static PriorityResult determinePriority(const Bullet* a, const RectHazard* b);
 
 private:
-	PriorityHandler() {}
-	PriorityHandler(const PriorityHandler&) {}
+	PriorityHandler() = delete;
+	PriorityHandler(const PriorityHandler&) = delete;
 };

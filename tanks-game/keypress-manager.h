@@ -23,6 +23,6 @@ public:
 	static void Initialize();
 
 private:
-	KeypressManager() {}
-	KeypressManager(const KeypressManager&) {}
+	KeypressManager() = delete;
+	KeypressManager(const KeypressManager&) = delete;
 };

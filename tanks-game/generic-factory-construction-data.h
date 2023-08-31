@@ -19,5 +19,5 @@ public:
 	~GenericFactoryConstructionData();
 
 private:
-	GenericFactoryConstructionData(const GenericFactoryConstructionData&) {} //not super important to disable
+	GenericFactoryConstructionData(const GenericFactoryConstructionData&) = delete; //not super important to disable
 };

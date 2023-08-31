@@ -18,6 +18,6 @@ public:
 	static void tankPositionReset(Tank* first, Tank* second, double x, double y); //x and y are first's position; second is opposite first
 
 private:
-	ResetThings() {}
-	ResetThings(const ResetThings&) {}
+	ResetThings() = delete;
+	ResetThings(const ResetThings&) = delete;
 };

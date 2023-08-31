@@ -32,6 +32,6 @@ public:
 	static PositionHolder getSymmetricWallPositions_DiagBackwardSlash(int position, double x_center, double y_center, double x_offset, double y_offset, double wallWidth, double wallHeight); //position: {0,1}
 
 private:
-	LevelHelper() {}
-	LevelHelper(const LevelHelper&) {}
+	LevelHelper() = delete;
+	LevelHelper(const LevelHelper&) = delete;
 };

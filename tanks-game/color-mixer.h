@@ -11,6 +11,6 @@ public:
 	static ColorValueHolder CMYKtoRGB(float cyan, float magenta, float yellow, float black); //[0,1]
 
 private:
-	ColorMixer() {}
-	ColorMixer(const ColorMixer&) {}
+	ColorMixer() = delete;
+	ColorMixer(const ColorMixer&) = delete;
 };

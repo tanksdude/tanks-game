@@ -119,5 +119,5 @@ public:
 	void drawLayer(DrawingLayers) const;
 
 private:
-	GameMainLoop(const GameMainLoop&) {}
+	GameMainLoop(const GameMainLoop&) = delete;
 };

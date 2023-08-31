@@ -41,7 +41,7 @@ protected:
 		virtual ~LavaBubble();
 
 	private:
-		LavaBubble() {}
+		LavaBubble() = delete;
 	};
 
 protected:

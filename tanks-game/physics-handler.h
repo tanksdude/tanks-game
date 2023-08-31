@@ -44,6 +44,6 @@ public:
 	////https://stackoverflow.com/a/48384354
 
 private:
-	PhysicsHandler() {}
-	PhysicsHandler(const PhysicsHandler&) {}
+	PhysicsHandler() = delete;
+	PhysicsHandler(const PhysicsHandler&) = delete;
 };

@@ -33,6 +33,6 @@ public:
 	static int getNumPowerTypes(std::string type);
 
 private:
-	PowerupManager() {}
-	PowerupManager(const PowerupManager&) {}
+	PowerupManager() = delete;
+	PowerupManager(const PowerupManager&) = delete;
 };

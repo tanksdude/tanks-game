@@ -39,6 +39,6 @@ public:
 	static int getNumLevelEffectTypes(std::string type);
 
 private:
-	LevelManager() {}
-	LevelManager(const LevelManager&) {}
+	LevelManager() = delete;
+	LevelManager(const LevelManager&) = delete;
 };

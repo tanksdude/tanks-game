@@ -125,6 +125,6 @@ public:
 	static void printGLError();
 
 private:
-	Renderer() {}
-	Renderer(const Renderer&) {}
+	Renderer() = delete;
+	Renderer(const Renderer&) = delete;
 };

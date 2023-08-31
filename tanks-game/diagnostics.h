@@ -54,6 +54,6 @@ public:
 	static void setGraphYOffset(double);
 
 private:
-	Diagnostics() {}
-	Diagnostics(const Diagnostics&) {}
+	Diagnostics() = delete;
+	Diagnostics(const Diagnostics&) = delete;
 };

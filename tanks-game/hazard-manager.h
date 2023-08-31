@@ -121,6 +121,6 @@ public:
 	static int getNumRectHazardTypes(std::string type);
 
 private:
-	HazardManager() {}
-	HazardManager(const HazardManager&) {}
+	HazardManager() = delete;
+	HazardManager(const HazardManager&) = delete;
 };

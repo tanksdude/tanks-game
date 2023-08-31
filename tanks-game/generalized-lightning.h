@@ -25,7 +25,7 @@ protected:
 		}
 		//LightningBolt(const LightningBolt&); //no need
 	private:
-		LightningBolt() {}
+		LightningBolt() = delete;
 	};
 
 protected:

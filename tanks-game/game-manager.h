@@ -25,6 +25,6 @@ public:
 	static const BasicINIParser::BasicINIData& get_INI();
 
 private:
-	GameManager() {}
-	GameManager(const GameManager&) {}
+	GameManager() = delete;
+	GameManager(const GameManager&) = delete;
 };

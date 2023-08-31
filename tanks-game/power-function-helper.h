@@ -30,6 +30,6 @@ public:
 	static std::vector<double>* equallySpacedCannonPoints(int count);
 
 private:
-	PowerFunctionHelper() {}
-	PowerFunctionHelper(const PowerFunctionHelper&) {}
+	PowerFunctionHelper() = delete;
+	PowerFunctionHelper(const PowerFunctionHelper&) = delete;
 };

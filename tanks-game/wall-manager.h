@@ -21,6 +21,6 @@ public:
 	static std::vector<Rect*> getWallCollisionList();
 
 private:
-	WallManager() {}
-	WallManager(const WallManager&) {}
+	WallManager() = delete;
+	WallManager(const WallManager&) = delete;
 };

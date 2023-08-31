@@ -25,6 +25,6 @@ public:
 	static std::vector<Circle*> getBulletCollisionList();
 
 private:
-	BulletManager() {}
-	BulletManager(const BulletManager&) {}
+	BulletManager() = delete;
+	BulletManager(const BulletManager&) = delete;
 };
