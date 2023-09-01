@@ -2,11 +2,11 @@
 #include "renderer.h"
 #include "background-rect.h"
 #include "color-mixer.h"
-#include "mylib.h"
+#include "mylib.h" //pointInPolygon
 #include "constants.h"
 #include <cmath>
 #include <stdexcept>
-#include <algorithm> //std::copy
+#include <algorithm> //std::copy, std::clamp
 #include "point.h"
 #include "wall-manager.h"
 #include "hazard-manager.h"
@@ -338,7 +338,7 @@ void CircularLightningHazard::ghostDraw(DrawingLayers layer, float alpha) const 
 }
 
 inline void CircularLightningHazard::drawBackground(bool pose, float alpha) const {
-	alpha = constrain<float>(alpha, 0, 1);
+	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	double scale;
@@ -421,12 +421,12 @@ inline void CircularLightningHazard::drawBackgroundOutline(float alpha) const {
 }
 
 inline void CircularLightningHazard::drawBolts(float alpha) const {
-	alpha = constrain<float>(alpha, 0, 1);
-	alpha = alpha * alpha;
-
 	if (!currentlyActive) {
 		return;
 	}
+
+	alpha = std::clamp<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
 
 	ColorValueHolder color = getBoltColor();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
@@ -473,7 +473,7 @@ inline void CircularLightningHazard::drawBolts(float alpha) const {
 }
 
 inline void CircularLightningHazard::drawBolts_Pose(float alpha) const {
-	alpha = constrain<float>(alpha, 0, 1);
+	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	//generate bolts

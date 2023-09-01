@@ -2,7 +2,7 @@
 #include "game-manager.h"
 #include "constants.h"
 #include "color-mixer.h"
-#include "mylib.h"
+#include <algorithm> //std::clamp
 #include "background-rect.h"
 #include "renderer.h"
 #include <iostream>
@@ -91,7 +91,7 @@ void Wall::poseDraw(DrawingLayers layer) const {
 }
 
 void Wall::ghostDraw(float alpha) const {
-	alpha = constrain<float>(alpha, 0, 1);
+	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	ColorValueHolder c = this->color;

@@ -7,7 +7,7 @@ OpenGLIndexBuffer::OpenGLIndexBuffer(const unsigned int* data, unsigned int coun
 
 	glGenBuffers(1, &rendererID);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, rendererID);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(unsigned int), data, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(unsigned int), data, GL_STREAM_DRAW);
 }
 
 OpenGLIndexBuffer::~OpenGLIndexBuffer() {

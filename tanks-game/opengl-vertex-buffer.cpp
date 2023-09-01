@@ -2,7 +2,7 @@
 #include <GL/glew.h>
 #include <stdexcept>
 
-OpenGLVertexBuffer::OpenGLVertexBuffer(const void* data, unsigned int size) : OpenGLVertexBuffer(data, size, RenderingHints::dynamic_draw) {
+OpenGLVertexBuffer::OpenGLVertexBuffer(const void* data, unsigned int size) : OpenGLVertexBuffer(data, size, RenderingHints::stream_draw) {
 	//nothing
 }
 

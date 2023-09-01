@@ -3,8 +3,8 @@
 #include <stdexcept>
 #include "opengl-vertex-buffer.h"
 
-VertexBuffer* VertexBuffer::MakeVertexBuffer(const void* data, unsigned int size) {
-	return MakeVertexBuffer(data, size, RenderingHints::dynamic_draw);
+inline VertexBuffer* VertexBuffer::MakeVertexBuffer(const void* data, unsigned int size) {
+	return MakeVertexBuffer(data, size, RenderingHints::stream_draw);
 }
 
 VertexBuffer* VertexBuffer::MakeVertexBuffer(const void* data, unsigned int size, RenderingHints hint) {

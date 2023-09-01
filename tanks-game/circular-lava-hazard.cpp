@@ -4,12 +4,11 @@
 #include <cmath>
 #include "color-mixer.h"
 #include "background-rect.h"
-#include "mylib.h"
 #include "wall-manager.h"
 #include "hazard-manager.h"
 #include "collision-handler.h"
 #include "rng.h"
-#include <algorithm> //std::sort
+#include <algorithm> //std::sort, std::clamp
 
 std::unordered_map<std::string, float> CircularLavaHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -197,7 +196,7 @@ void CircularLavaHazard::ghostDraw(DrawingLayers layer, float alpha) const {
 }
 
 inline void CircularLavaHazard::drawBackground(bool pose, float alpha) const {
-	alpha = constrain<float>(alpha, 0, 1);
+	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	ColorValueHolder color = (pose ? getBackgroundColor_Pose() : getBackgroundColor());
@@ -234,7 +233,7 @@ inline void CircularLavaHazard::drawBubbles(bool pose, float alpha) const {
 		return;
 	}
 
-	alpha = constrain<float>(alpha, 0, 1);
+	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	//first, sort by alpha: lowest to highest (this makes the bubbles less weird-looking when drawn over each other)

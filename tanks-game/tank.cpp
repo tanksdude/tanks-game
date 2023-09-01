@@ -2,14 +2,13 @@
 #include "game-manager.h"
 #include "constants.h"
 #include <cmath>
-#include "mylib.h"
 #include "color-mixer.h"
 #include "background-rect.h"
 #include "renderer.h"
 #include "bullet-manager.h"
 #include "rng.h"
 #include "level-manager.h"
-#include <algorithm> //std::sort
+#include <algorithm> //std::sort, std::clamp
 #include <iostream>
 
 /*
@@ -540,10 +539,10 @@ void Tank::powerCalculate() {
 	//TODO: separate into power tick and power count down
 	for (int i = tankPowers.size() - 1; i >= 0; i--) {
 		tankPowers[i]->tick(this); //I don't think any power will use this, but whatever
-		if (tankPowers[i]->isDone()) {
+		if (tankPowers[i]->isDone()) { [[unlikely]]
 			removePower(i);
 		} else { //to make each power last its full length, not n-1 length
-			tankPowers[i]->powerTick(this);
+			tankPowers[i]->powerTick();
 		}
 	}
 }
@@ -717,7 +716,7 @@ void Tank::ghostDraw(DrawingLayers layer, float alpha) const {
 }
 
 inline void Tank::drawBody(float alpha) const {
-	alpha = constrain<float>(alpha, 0, 1);
+	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	if (this->dead) {
@@ -857,19 +856,17 @@ inline void Tank::drawBody(float alpha) const {
 }
 
 inline void Tank::drawDead(float alpha) const {
-	//TODO: draw X like no bullet zone
-	//TODO: still want that? now with the gradient color for a death, that seems unnecessary
 	drawBody(alpha);
 	drawOutline(alpha);
 }
 
 inline void Tank::drawOutline(float alpha) const {
-	alpha = constrain<float>(alpha, 0, 1);
-	alpha = alpha * alpha;
-
 	if (this->dead) {
 		return;
 	}
+
+	alpha = std::clamp<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
 
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
@@ -906,14 +903,14 @@ inline void Tank::drawOutline(float alpha) const {
 }
 
 inline void Tank::drawShootingCooldown(float alpha) const {
-	alpha = constrain<float>(alpha, 0, 1);
+	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	double shootingOutlinePercent;
 	if (maxShootCount*getShootingSpeedMultiplier() <= 0 || maxShootCount <= 0) {
 		shootingOutlinePercent = 0;
 	} else {
-		shootingOutlinePercent = constrain<double>(shootCount/(maxShootCount*getShootingSpeedMultiplier()), 0, 1);
+		shootingOutlinePercent = std::clamp<double>(shootCount/(maxShootCount*getShootingSpeedMultiplier()), 0, 1);
 	}
 	unsigned int shootingOutlineTriangles = Circle::numOfSides * shootingOutlinePercent;
 
@@ -949,7 +946,7 @@ inline void Tank::drawShootingCooldown(float alpha) const {
 }
 
 inline void Tank::drawPowerCooldown(float alpha) const {
-	alpha = constrain<float>(alpha, 0, 1);
+	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	//first, sort by timeLeft/maxTime
@@ -960,10 +957,10 @@ inline void Tank::drawPowerCooldown(float alpha) const {
 	//second, actually draw them
 	for (int i = 0; i < sortedTankPowers.size(); i++) {
 		double powerOutlinePercent;
-		if (sortedTankPowers[i]->maxTime <= 0) {
+		if (sortedTankPowers[i]->maxTime <= 0) { [[unlikely]]
 			powerOutlinePercent = 0;
 		} else {
-			powerOutlinePercent = constrain<double>(sortedTankPowers[i]->timeLeft/sortedTankPowers[i]->maxTime, 0, 1);
+			powerOutlinePercent = std::clamp<double>(sortedTankPowers[i]->timeLeft/sortedTankPowers[i]->maxTime, 0, 1);
 		}
 		unsigned int powerOutlineTriangles = Circle::numOfSides * powerOutlinePercent;
 
@@ -1000,7 +997,7 @@ inline void Tank::drawPowerCooldown(float alpha) const {
 }
 
 inline void Tank::drawMainBarrel(float alpha) const {
-	alpha = constrain<float>(alpha, 0, 1);
+	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
@@ -1040,7 +1037,11 @@ inline void Tank::drawMainBarrel(float alpha) const {
 }
 
 inline void Tank::drawExtraBarrels(float alpha) const {
-	alpha = constrain<float>(alpha, 0, 1);
+	if (shootingPoints.size() <= 1) {
+		return;
+	}
+
+	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	ColorValueHolder color = ColorValueHolder(0.75f, 0.75f, 0.75f);
@@ -1136,6 +1137,9 @@ double Tank::getHighestOffenseImportance() const {
 }
 
 double Tank::getHighestOffenseTier(double importance) const {
+	if (tankPowers.size() == 0) {
+		return 0;
+	}
 	double highest = LOW_TIER;
 	for (int i = 0; i < tankPowers.size(); i++) {
 		if (tankPowers[i]->getOffenseImportance() == importance) {
@@ -1143,9 +1147,6 @@ double Tank::getHighestOffenseTier(double importance) const {
 				highest = tankPowers[i]->getOffenseTier(this);
 			}
 		}
-	}
-	if (tankPowers.size() == 0) {
-		return 0;
 	}
 	return highest;
 }
@@ -1165,6 +1166,9 @@ double Tank::getHighestDefenseImportance() const {
 }
 
 double Tank::getHighestDefenseTier(double importance) const {
+	if (tankPowers.size() == 0) {
+		return 0;
+	}
 	double highest = LOW_TIER;
 	for (int i = 0; i < tankPowers.size(); i++) {
 		if (tankPowers[i]->getDefenseImportance() == importance) {
@@ -1172,9 +1176,6 @@ double Tank::getHighestDefenseTier(double importance) const {
 				highest = tankPowers[i]->getDefenseTier(this);
 			}
 		}
-	}
-	if (tankPowers.size() == 0) {
-		return 0;
 	}
 	return highest;
 }

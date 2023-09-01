@@ -5,7 +5,7 @@
 #include "color-mixer.h"
 #include "renderer.h"
 #include "powerup-manager.h"
-#include "mylib.h"
+#include <algorithm> //std::clamp
 
 const double PowerSquare::POWER_WIDTH = 6;
 const double PowerSquare::POWER_HEIGHT = 6;
@@ -198,7 +198,7 @@ void PowerSquare::ghostDraw(DrawingLayers layer, float alpha) const {
 }
 
 inline void PowerSquare::drawMain(float alpha) const {
-	alpha = constrain<float>(alpha, 0, 1);
+	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	ColorValueHolder color = getColor();
@@ -239,7 +239,7 @@ inline void PowerSquare::drawMain(float alpha) const {
 }
 
 inline void PowerSquare::drawOutlineThing(float alpha) const {
-	alpha = constrain<float>(alpha, 0, 1);
+	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	if (numOfPowers > 1) {

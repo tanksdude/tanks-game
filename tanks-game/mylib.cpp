@@ -77,6 +77,7 @@ int findMinIndex(double* arr, int len) { //precondition: length of array > 0
 	return index;
 }
 
+/*
 template<typename T>
 T constrain(T value, T min, T max) {
 	if (value < min) {
@@ -93,8 +94,9 @@ template float constrain<float>(float, float, float);
 template double constrain<double>(double, double, double);
 //normally, these template specializations should go in the header, but for some reason they're allowed here
 //(behind the scenes, I understand what's happening, mostly, but it's still moderately cool)
+*/
 
-bool XOR(bool a, bool b) {
+inline bool XOR(bool a, bool b) {
 	return (a != b);
 	//return ((a || b) && !(a && b));
 }

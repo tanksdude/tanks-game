@@ -154,7 +154,7 @@ void Diagnostics::drawGraphTimes_graph() {
 
 void Diagnostics::drawGraphTimes_data(std::string name) {
 	std::vector<long double>& graphData = graphTimes[graphNameToIndex[name]].data;
-	if (graphData.size() < 2) {
+	if (graphData.size() < 2) { [[unlikely]]
 		return;
 	}
 

@@ -77,14 +77,14 @@ bool KeypressManager::keyIsSpecialFromString(std::string key) {
 		KeypressManager::specialKeyFromString(key);
 		return true;
 	}
-	catch (std::invalid_argument& e) {
+	catch (std::invalid_argument&) {
 		return false;
 	}
 	return false;
 }
 
 unsigned char KeypressManager::normalKeyFromString(std::string key) {
-	if (key.size() == 0) {
+	if (key.size() == 0) { [[unlikely]]
 		throw std::invalid_argument("ERROR: zero-length key!");
 	}
 
@@ -106,7 +106,7 @@ unsigned char KeypressManager::normalKeyFromString(std::string key) {
 }
 
 int KeypressManager::specialKeyFromString(std::string key) {
-	if (key.size() == 0) {
+	if (key.size() == 0) { [[unlikely]]
 		throw std::invalid_argument("ERROR: zero-length key!");
 	}
 

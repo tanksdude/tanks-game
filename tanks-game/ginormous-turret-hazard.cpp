@@ -4,8 +4,7 @@
 #include <cmath>
 #include "color-mixer.h"
 #include "background-rect.h"
-//#include <algorithm>
-#include "mylib.h"
+#include <algorithm> //std::clamp
 #include "tank.h"
 #include "tank-manager.h"
 #include "bullet-manager.h"
@@ -194,7 +193,7 @@ void GinormousTurretHazard::ghostDraw(DrawingLayers layer, float alpha) const {
 }
 
 inline void GinormousTurretHazard::drawBody(float alpha) const {
-	alpha = constrain<float>(alpha, 0, 1);
+	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	ColorValueHolder color = getColor();
@@ -227,7 +226,7 @@ inline void GinormousTurretHazard::drawBody(float alpha) const {
 }
 
 inline void GinormousTurretHazard::drawOutline(float alpha) const {
-	alpha = constrain<float>(alpha, 0, 1);
+	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
@@ -265,7 +264,7 @@ inline void GinormousTurretHazard::drawOutline(float alpha) const {
 }
 
 inline void GinormousTurretHazard::drawBarrel(float alpha) const {
-	alpha = constrain<float>(alpha, 0, 1);
+	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);

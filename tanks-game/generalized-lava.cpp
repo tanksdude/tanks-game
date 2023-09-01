@@ -1,9 +1,8 @@
 #include "generalized-lava.h"
-#include <limits> //for std::numeric_limits<float>::infinity();
-#include <algorithm> //for std::copy
+#include <limits> //std::numeric_limits<float>::infinity();
+#include <algorithm> //std::copy
 #include "constants.h"
 #include <cmath>
-#include "mylib.h"
 #include "color-mixer.h"
 #include "rng.h"
 
@@ -98,7 +97,7 @@ ColorValueHolder GeneralizedLava::getBubbleColor_Pose(LavaBubble* bubble) const 
 }
 
 void GeneralizedLava::tick() {
-	if (++tickCount >= tickCycle) {
+	if (++tickCount >= tickCycle) { [[unlikely]]
 		tickCount = 0;
 	}
 

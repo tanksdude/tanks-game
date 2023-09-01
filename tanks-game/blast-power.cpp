@@ -41,7 +41,6 @@ BlastPower::BlastPower() {
 
 
 
-#include "mylib.h"
 #include "constants.h"
 #include <cmath>
 #include "rng.h"

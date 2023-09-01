@@ -4,7 +4,7 @@
 #include <cmath>
 #include "color-mixer.h"
 #include "background-rect.h"
-#include "mylib.h"
+#include <algorithm> //std::clamp
 #include "point.h"
 #include "tank.h"
 #include "tank-manager.h"
@@ -140,7 +140,7 @@ bool StationaryTurretHazard::reasonableLocation() const {
 }
 
 ColorValueHolder StationaryTurretHazard::getColor() const {
-	return ColorMixer::mix(stateColors[currentState], stateColors[(currentState+1)%maxState], constrain<double>(tickCount/(tickCycle*stateMultiplier[currentState]), 0, 1));
+	return ColorMixer::mix(stateColors[currentState], stateColors[(currentState+1)%maxState], std::clamp<double>(tickCount/(tickCycle*stateMultiplier[currentState]), 0, 1));
 }
 
 ColorValueHolder StationaryTurretHazard::getColor(int state) const {
@@ -247,7 +247,7 @@ void StationaryTurretHazard::ghostDraw(DrawingLayers layer, float alpha) const {
 }
 
 inline void StationaryTurretHazard::drawBody(float alpha) const {
-	alpha = constrain<float>(alpha, 0, 1);
+	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	ColorValueHolder color = getColor();
@@ -280,7 +280,7 @@ inline void StationaryTurretHazard::drawBody(float alpha) const {
 }
 
 inline void StationaryTurretHazard::drawOutline(float alpha) const {
-	alpha = constrain<float>(alpha, 0, 1);
+	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
@@ -318,7 +318,7 @@ inline void StationaryTurretHazard::drawOutline(float alpha) const {
 }
 
 inline void StationaryTurretHazard::drawBarrel(float alpha) const {
-	alpha = constrain<float>(alpha, 0, 1);
+	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);

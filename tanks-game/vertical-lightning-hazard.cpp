@@ -2,11 +2,10 @@
 #include "renderer.h"
 #include "background-rect.h"
 #include "color-mixer.h"
-#include "mylib.h"
 #include "constants.h"
 #include <cmath>
 #include <stdexcept>
-#include <algorithm> //std::copy
+#include <algorithm> //std::copy, std::clamp
 #include "point.h"
 #include "wall-manager.h"
 #include "hazard-manager.h"
@@ -115,11 +114,11 @@ void VerticalLightningHazard::specialEffectCircleCollision(Circle* c) {
 
 		if (intersectionXD < x || intersectionXD > x+w) {
 			std::cerr << "WARNING: vertical lightning endpoint X (bottom half) out of range!" << std::endl;
-			intersectionXD = constrain<double>(intersectionXD, x, x+w);
+			intersectionXD = std::clamp<double>(intersectionXD, x, x+w);
 		}
 		if (intersectionYD < y || intersectionYD > y+h) {
 			std::cerr << "WARNING: vertical lightning endpoint Y (bottom half) out of range!" << std::endl;
-			intersectionYD = constrain<double>(intersectionYD, y, y+h);
+			intersectionYD = std::clamp<double>(intersectionYD, y, y+h);
 		}
 		boltPointsD = getDefaultNumBoltPoints(sqrt(pow(intersectionXD - bottomPoint->x, 2) + pow(intersectionYD - bottomPoint->y, 2)));
 
@@ -144,11 +143,11 @@ void VerticalLightningHazard::specialEffectCircleCollision(Circle* c) {
 
 		if (intersectionXU < x || intersectionXU > x+w) {
 			std::cerr << "WARNING: vertical lightning endpoint X (top half) out of range!" << std::endl;
-			intersectionXU = constrain<double>(intersectionXU, x, x+w);
+			intersectionXU = std::clamp<double>(intersectionXU, x, x+w);
 		}
 		if (intersectionYU < y || intersectionYU > y+h) {
 			std::cerr << "WARNING: vertical lightning endpoint Y (top half) out of range!" << std::endl;
-			intersectionYU = constrain<double>(intersectionYU, y, y+h);
+			intersectionYU = std::clamp<double>(intersectionYU, y, y+h);
 		}
 		boltPointsU = getDefaultNumBoltPoints(sqrt(pow(intersectionXU - topPoint->x, 2) + pow(intersectionYU - topPoint->y, 2)));
 
@@ -401,7 +400,7 @@ void VerticalLightningHazard::ghostDraw(DrawingLayers layer, float alpha) const 
 }
 
 inline void VerticalLightningHazard::drawBackground(bool pose, float alpha) const {
-	alpha = constrain<float>(alpha, 0, 1);
+	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	double scale;
@@ -468,12 +467,12 @@ inline void VerticalLightningHazard::drawBackgroundOutline(float alpha) const {
 }
 
 inline void VerticalLightningHazard::drawBolts(float alpha) const {
-	alpha = constrain<float>(alpha, 0, 1);
-	alpha = alpha * alpha;
-
 	if (!currentlyActive) {
 		return;
 	}
+
+	alpha = std::clamp<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
 
 	ColorValueHolder color = getBoltColor();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
@@ -520,7 +519,7 @@ inline void VerticalLightningHazard::drawBolts(float alpha) const {
 }
 
 inline void VerticalLightningHazard::drawBolts_Pose(float alpha) const {
-	alpha = constrain<float>(alpha, 0, 1);
+	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	//generate bolts
@@ -596,7 +595,7 @@ RectHazard* VerticalLightningHazard::randomizingFactory(double x_start, double y
 		//TODO: ability to use an edge
 		for (int i = 0; i < WallManager::getNumWalls(); i++) {
 			Wall* wa = WallManager::getWall(i);
-			xpos = wa->x + RNG::randFunc() * constrain<double>(wa->w - width, 0, wa->w);
+			xpos = wa->x + RNG::randFunc() * std::clamp<double>(wa->w - width, 0, wa->w);
 			ypos = wa->y + wa->h;
 			int j, wallAttempts = 0;
 			do {

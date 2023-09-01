@@ -4,8 +4,7 @@
 #include <cmath>
 #include "color-mixer.h"
 #include "background-rect.h"
-#include <algorithm> //std::copy
-#include "mylib.h"
+#include <algorithm> //std::copy, std::clamp
 #include "tank.h"
 #include "tank-manager.h"
 #include "bullet-manager.h"
@@ -254,7 +253,7 @@ bool TargetingTurretHazard::reasonableLocation() const {
 }
 
 ColorValueHolder TargetingTurretHazard::getColor() const {
-	return ColorMixer::mix(stateColors[currentState], stateColors[(currentState+1)%maxState], constrain<double>(targetingCount/(tickCycle*stateMultiplier[currentState]), 0, 1));
+	return ColorMixer::mix(stateColors[currentState], stateColors[(currentState+1)%maxState], std::clamp<double>(targetingCount/(tickCycle*stateMultiplier[currentState]), 0, 1));
 }
 
 ColorValueHolder TargetingTurretHazard::getColor(int state) const {
@@ -378,7 +377,7 @@ void TargetingTurretHazard::ghostDraw(DrawingLayers layer, float alpha) const {
 }
 
 inline void TargetingTurretHazard::drawBody(float alpha) const {
-	alpha = constrain<float>(alpha, 0, 1);
+	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	ColorValueHolder color = getColor();
@@ -411,7 +410,7 @@ inline void TargetingTurretHazard::drawBody(float alpha) const {
 }
 
 inline void TargetingTurretHazard::drawOutline(float alpha) const {
-	alpha = constrain<float>(alpha, 0, 1);
+	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
@@ -449,7 +448,7 @@ inline void TargetingTurretHazard::drawOutline(float alpha) const {
 }
 
 inline void TargetingTurretHazard::drawBarrel(float alpha) const {
-	alpha = constrain<float>(alpha, 0, 1);
+	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
@@ -489,13 +488,12 @@ inline void TargetingTurretHazard::drawBarrel(float alpha) const {
 }
 
 inline void TargetingTurretHazard::drawReticule(float alpha) const {
-	alpha = constrain<float>(alpha, 0, 1);
-	alpha = alpha * alpha;
-
 	if (!targeting) {
 		return;
-		//does it make sense to put this check after the alpha fixing? no, but consistency is also important
 	}
+
+	alpha = std::clamp<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
 
 	ColorValueHolder color_outline = getReticuleColor();
 	color_outline = ColorMixer::mix(BackgroundRect::getBackColor(), color_outline, alpha);

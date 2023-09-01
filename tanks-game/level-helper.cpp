@@ -1,5 +1,5 @@
 #include "level-helper.h"
-#include "mylib.h"
+#include "mylib.h" //isInArray, weightedSelect
 #include "rng.h"
 #include "powerup-manager.h"
 

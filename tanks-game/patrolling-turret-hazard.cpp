@@ -4,8 +4,7 @@
 #include <cmath>
 #include "color-mixer.h"
 #include "background-rect.h"
-#include <algorithm> //std::copy
-#include "mylib.h"
+#include <algorithm> //std::copy, std::clamp
 #include "tank.h"
 #include "tank-manager.h"
 #include "bullet-manager.h"
@@ -363,7 +362,7 @@ void PatrollingTurretHazard::ghostDraw(DrawingLayers layer, float alpha) const {
 }
 
 inline void PatrollingTurretHazard::drawBody(float alpha) const {
-	alpha = constrain<float>(alpha, 0, 1);
+	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	ColorValueHolder color = getColor();
@@ -396,7 +395,7 @@ inline void PatrollingTurretHazard::drawBody(float alpha) const {
 }
 
 inline void PatrollingTurretHazard::drawOutline(float alpha) const {
-	alpha = constrain<float>(alpha, 0, 1);
+	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
@@ -434,7 +433,7 @@ inline void PatrollingTurretHazard::drawOutline(float alpha) const {
 }
 
 inline void PatrollingTurretHazard::drawBarrel(float alpha) const {
-	alpha = constrain<float>(alpha, 0, 1);
+	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
@@ -474,12 +473,12 @@ inline void PatrollingTurretHazard::drawBarrel(float alpha) const {
 }
 
 inline void PatrollingTurretHazard::drawReticule(float alpha) const {
-	alpha = constrain<float>(alpha, 0, 1);
-	alpha = alpha * alpha;
-
 	if (!targeting) {
 		return;
 	}
+
+	alpha = std::clamp<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
 
 	ColorValueHolder color_outline = getReticuleColor();
 	color_outline = ColorMixer::mix(BackgroundRect::getBackColor(), color_outline, alpha);
@@ -571,7 +570,7 @@ inline void PatrollingTurretHazard::drawReticule(float alpha) const {
 }
 
 inline void PatrollingTurretHazard::drawPath(float alpha) const {
-	alpha = constrain<float>(alpha, 0, 1);
+	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);

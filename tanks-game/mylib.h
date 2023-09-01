@@ -11,12 +11,18 @@ int findMaxIndex(double*, int len);
 int findMinIndex(double*, int len);
 //std::max_element and std::min_element exist
 
+/*
 template<typename T>
 T constrain(T value, T min, T max);
 //as of C++17, <algorithm> contains std::clamp, which does what I need
 //however, I don't know how to change the C++ version in Visual Studio, if it's even possible, and also it's not vital to the project
+*/
+//update: so there is a way, and I feel like this wasn't always possible which is why I never investigated further:
+//C++ Language Standard under General Properties, previously set to "Default (ISO C++14 Standard)", can be changed
+//changed to C++20 ("ISO C++20 Standard (/std:c++20)") because I want attributes (mainly [[likely]] and [[unlikely]])
+//apparently it's been possible since VS2017, wish I knew https://learn.microsoft.com/en-us/cpp/build/reference/std-specify-language-standard-version?view=msvc-170
 
-bool XOR(bool, bool);
+inline bool XOR(bool, bool);
 
 //algorithm from https://wrf.ecse.rpi.edu/Research/Short_Notes/pnpoly.html
 bool pointInPolygon(int vertNum, double* vertX, double* vertY, double testX, double testY);

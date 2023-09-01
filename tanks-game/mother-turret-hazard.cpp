@@ -4,8 +4,8 @@
 #include <cmath>
 #include "color-mixer.h"
 #include "background-rect.h"
-#include <algorithm> //std::copy, std::count
-#include "mylib.h"
+#include <algorithm> //std::copy, std::count, std::clamp
+#include "mylib.h" //findMaxIndex
 #include "tank.h"
 #include "tank-manager.h"
 #include "bullet-manager.h"
@@ -517,7 +517,7 @@ void MotherTurretHazard::ghostDraw(DrawingLayers layer, float alpha) const {
 }
 
 inline void MotherTurretHazard::drawBody(float alpha) const {
-	alpha = constrain<float>(alpha, 0, 1);
+	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	ColorValueHolder color = getColor();
@@ -550,7 +550,7 @@ inline void MotherTurretHazard::drawBody(float alpha) const {
 }
 
 inline void MotherTurretHazard::drawOutline(float alpha) const {
-	alpha = constrain<float>(alpha, 0, 1);
+	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
@@ -588,7 +588,7 @@ inline void MotherTurretHazard::drawOutline(float alpha) const {
 }
 
 inline void MotherTurretHazard::drawBarrel(float alpha) const {
-	alpha = constrain<float>(alpha, 0, 1);
+	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
@@ -628,18 +628,18 @@ inline void MotherTurretHazard::drawBarrel(float alpha) const {
 }
 
 inline void MotherTurretHazard::drawShootingTimer(float alpha) const {
-	alpha = constrain<float>(alpha, 0, 1);
-	alpha = alpha * alpha;
-
 	if (currentState != 1) {
 		return;
 	}
+
+	alpha = std::clamp<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
 
 	double shootingOutlinePercent;
 	if (tickCycle <= 0) {
 		shootingOutlinePercent = 0;
 	} else {
-		shootingOutlinePercent = constrain<double>(targetingCount / (stateMultiplier[1] * tickCycle), 0, 1);
+		shootingOutlinePercent = std::clamp<double>(targetingCount / (stateMultiplier[1] * tickCycle), 0, 1);
 	}
 	unsigned int shootingOutlineTriangles = Circle::numOfSides * shootingOutlinePercent;
 

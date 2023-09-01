@@ -8,7 +8,8 @@
 #include "powerup-manager.h"
 #include "hazard-manager.h"
 #include "level-manager.h"
-#include "mylib.h"
+#include "mylib.h" //weightedSelect
+#include <algorithm> //std::clamp
 #include "rng.h"
 #include "diagnostics.h"
 #include <iostream>
@@ -194,7 +195,7 @@ void ResetThings::tankPositionReset(Tank* first, Tank* second) {
 }
 
 void ResetThings::tankPositionReset(Tank* first, Tank* second, double x) {
-	x = constrain<double>(x, 0, GAME_WIDTH); //trolls begone
+	x = std::clamp<double>(x, 0, GAME_WIDTH); //trolls begone
 	first->x = x;
 	second->x = GAME_WIDTH - x;
 
@@ -204,8 +205,8 @@ void ResetThings::tankPositionReset(Tank* first, Tank* second, double x) {
 }
 
 void ResetThings::tankPositionReset(Tank* first, Tank* second, double x, double y) {
-	x = constrain<double>(x, 0, GAME_WIDTH); //no trolls here
-	y = constrain<double>(y, 0, GAME_HEIGHT); //trolls begone
+	x = std::clamp<double>(x, 0, GAME_WIDTH); //no trolls here
+	y = std::clamp<double>(y, 0, GAME_HEIGHT); //trolls begone
 	first->x = x;
 	second->x = GAME_WIDTH - x;
 	first->y = y;

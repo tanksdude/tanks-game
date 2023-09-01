@@ -4,11 +4,11 @@
 #include <cmath>
 #include "color-mixer.h"
 #include "background-rect.h"
-#include "mylib.h"
 #include "hazard-manager.h"
 #include "level-manager.h"
 #include "collision-handler.h"
 #include "rng.h"
+#include <algorithm> //std::clamp
 
 std::unordered_map<std::string, float> DevWallHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -140,7 +140,7 @@ void DevWallHazard::poseDraw(DrawingLayers layer) const {
 }
 
 void DevWallHazard::ghostDraw(float alpha) const {
-	alpha = constrain<float>(alpha, 0, 1);
+	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	ColorValueHolder c = this->color;

@@ -2,7 +2,7 @@
 #include "collision-handler.h"
 #include "constants.h"
 #include <cmath>
-#include "mylib.h"
+#include "mylib.h" //findMinIndex
 #include "tank-manager.h"
 #include <iostream>
 

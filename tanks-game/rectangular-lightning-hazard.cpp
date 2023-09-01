@@ -2,11 +2,11 @@
 #include "renderer.h"
 #include "background-rect.h"
 #include "color-mixer.h"
-#include "mylib.h"
+#include "mylib.h" //pointInPolygon
 #include "constants.h"
 #include <cmath>
 #include <stdexcept>
-#include <algorithm> //std::copy
+#include <algorithm> //std::copy, std::clamp
 #include "point.h"
 #include "wall-manager.h"
 #include "hazard-manager.h"
@@ -133,11 +133,11 @@ void RectangularLightningHazard::specialEffectCircleCollision(Circle* c) {
 
 			if (intersectionX < x || intersectionX > x+w) {
 				std::cerr << "WARNING: rectangular lightning endpoint X out of range!" << std::endl;
-				intersectionX = constrain<double>(intersectionX, x, x+w);
+				intersectionX = std::clamp<double>(intersectionX, x, x+w);
 			}
 			if (intersectionY < y || intersectionY > y+h) {
 				std::cerr << "WARNING: rectangular lightning endpoint Y out of range!" << std::endl;
-				intersectionY = constrain<double>(intersectionY, y, y+h);
+				intersectionY = std::clamp<double>(intersectionY, y, y+h);
 			}
 			boltPoints = getDefaultNumBoltPoints(sqrt(pow(intersectionX - centerPoint->x, 2) + pow(intersectionY - centerPoint->y, 2)));
 
@@ -390,7 +390,7 @@ void RectangularLightningHazard::ghostDraw(DrawingLayers layer, float alpha) con
 }
 
 inline void RectangularLightningHazard::drawBackground(bool pose, float alpha) const {
-	alpha = constrain<float>(alpha, 0, 1);
+	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	double scale;
@@ -465,12 +465,12 @@ inline void RectangularLightningHazard::drawBackgroundOutline(float alpha) const
 }
 
 inline void RectangularLightningHazard::drawBolts(float alpha) const {
-	alpha = constrain<float>(alpha, 0, 1);
-	alpha = alpha * alpha;
-
 	if (!currentlyActive) {
 		return;
 	}
+
+	alpha = std::clamp<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
 
 	ColorValueHolder color = getBoltColor();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
@@ -517,7 +517,7 @@ inline void RectangularLightningHazard::drawBolts(float alpha) const {
 }
 
 inline void RectangularLightningHazard::drawBolts_Pose(float alpha) const {
-	alpha = constrain<float>(alpha, 0, 1);
+	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	//generate bolts

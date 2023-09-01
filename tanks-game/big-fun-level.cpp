@@ -4,7 +4,7 @@
 #include "tank-manager.h"
 #include "powerup-manager.h"
 #include "wall-manager.h"
-#include "mylib.h"
+#include "mylib.h" //weightedSelect
 #include "rng.h"
 #include "reset-things.h"
 

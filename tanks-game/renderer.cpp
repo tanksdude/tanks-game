@@ -357,14 +357,16 @@ void Renderer::Unbind(const VertexArray& va) {
 }
 
 void Renderer::Unbind(const IndexBuffer& ib) {
-	if (currentVertexArray == ib.getRendererID()) {
+	//if (currentVertexArray == ib.getRendererID()) {
+	if (currentIndexBuffer == ib.getRendererID()) {
 		ib.Unbind();
 		currentIndexBuffer = -1;
 	}
 }
 
 void Renderer::Unbind(const Shader& s) {
-	if (currentVertexArray == s.getRendererID()) {
+	//if (currentVertexArray == s.getRendererID()) {
+	if (currentShader == s.getRendererID()) {
 		s.Unbind();
 		currentShader = -1;
 	}
@@ -540,7 +542,7 @@ void Renderer::SubmitBatchedDraw(const float* posAndColor, int posAndColorLength
 }
 
 void Renderer::BatchedFlush(std::vector<float>& verticesData, std::vector<unsigned int>& indicesData) {
-	if (verticesData.empty()) {
+	if (verticesData.empty()) { [[unlikely]]
 		return;
 	}
 

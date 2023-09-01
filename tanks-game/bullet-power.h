@@ -1,7 +1,6 @@
 #pragma once
 class BulletPower;
 
-#include "interaction-bool-holder.h"
 #include "inherited-power-common.h"
 #include "color-value-holder.h"
 #include "tank.h"
@@ -12,8 +11,6 @@ class BulletPower;
 #include "tank-power.h"
 
 class BulletPower : public InheritedPowerCommon {
-	friend class PowerFunctionHelper;
-
 protected:
 	//double timeLeft = 0;
 	//double maxTime = -1; //bullet powers typically last forever; setting this to -1 treats it as lasting forever
@@ -23,16 +20,18 @@ public:
 	virtual void removeEffects(Bullet* parent) = 0; //not really needed
 
 	virtual void tick(Bullet*) { return; } //most will be doing a lot, though they shouldn't need this, but just in case
-	virtual void powerTick(Bullet*) {
+	void powerTick() {
 		timeLeft--;
-		//should this really be virtual?
+		//should not be virtual
 	}
-	bool isDone() const { //will usually be false
-		if (maxTime < 0) {
+	bool isDone() const {
+		/*
+		if (maxTime < 0) { [[likely]]
 			return false;
 		}
 		return (timeLeft <= 0);
-		//probably shouldn't be virtual
+		*/
+		return ((maxTime >= 0) && (timeLeft <= 0));
 	}
 	virtual ColorValueHolder getColor() const = 0;
 	virtual double getColorImportance() const { return 0; }

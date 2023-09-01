@@ -1,11 +1,11 @@
 #include "bullet.h"
 #include "game-manager.h"
-#include "mylib.h"
 #include "constants.h"
 #include <cmath>
 #include "color-mixer.h"
 #include "renderer.h"
 #include "background-rect.h"
+#include <algorithm> //std::clamp
 #include <iostream>
 
 const double Bullet::default_radius = 4;
@@ -238,10 +238,10 @@ double Bullet::getBulletAcceleration() const {
 void Bullet::powerCalculate() {
 	for (int i = bulletPowers.size() - 1; i >= 0; i--) {
 		bulletPowers[i]->tick(this); //I don't think any power will use this, but whatever
-		if (bulletPowers[i]->isDone()) {
+		if (bulletPowers[i]->isDone()) { [[unlikely]]
 			removePower(i);
 		} else { //to make each power last its full length, not n-1 length
-			bulletPowers[i]->powerTick(this);
+			bulletPowers[i]->powerTick();
 		}
 	}
 }
@@ -368,7 +368,7 @@ void Bullet::ghostDraw(DrawingLayers layer, float alpha) const {
 }
 
 inline void Bullet::drawBody(float alpha) const {
-	alpha = constrain<float>(alpha, 0, 1);
+	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	ColorValueHolder color = getColor();
@@ -401,7 +401,7 @@ inline void Bullet::drawBody(float alpha) const {
 }
 
 inline void Bullet::drawOutline(float alpha) const {
-	alpha = constrain<float>(alpha, 0, 1);
+	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
@@ -439,13 +439,13 @@ inline void Bullet::drawOutline(float alpha) const {
 }
 
 inline void Bullet::drawDeathCooldown(float alpha) const {
-	alpha = constrain<float>(alpha, 0, 1);
+	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	//checking glIsEnabled(GL_BLEND) to skip is an option (though the result should be stored somewhere to avoid GL calls)
 
 	if (this->opaqueness < 100) {
-		double deathPercent = constrain<double>(this->opaqueness/100, 0, 1);
+		double deathPercent = std::clamp<double>(this->opaqueness/100, 0, 1);
 		unsigned int deathTriangles = Circle::numOfSides * deathPercent;
 
 		if (deathTriangles > 0) {
@@ -525,6 +525,9 @@ double Bullet::getHighestOffenseImportance() const {
 }
 
 double Bullet::getHighestOffenseTier(double importance) const {
+	if (bulletPowers.size() == 0) {
+		return 0;
+	}
 	double highest = LOW_TIER;
 	for (int i = 0; i < bulletPowers.size(); i++) {
 		if (bulletPowers[i]->getOffenseImportance() == importance) {
@@ -532,9 +535,6 @@ double Bullet::getHighestOffenseTier(double importance) const {
 				highest = bulletPowers[i]->getOffenseTier(this);
 			}
 		}
-	}
-	if (bulletPowers.size() == 0) {
-		return 0;
 	}
 	return highest;
 }
@@ -554,6 +554,9 @@ double Bullet::getHighestDefenseImportance() const {
 }
 
 double Bullet::getHighestDefenseTier(double importance) const {
+	if (bulletPowers.size() == 0) {
+		return 0;
+	}
 	double highest = LOW_TIER;
 	for (int i = 0; i < bulletPowers.size(); i++) {
 		if (bulletPowers[i]->getDefenseImportance() == importance) {
@@ -561,9 +564,6 @@ double Bullet::getHighestDefenseTier(double importance) const {
 				highest = bulletPowers[i]->getDefenseTier(this);
 			}
 		}
-	}
-	if (bulletPowers.size() == 0) {
-		return 0;
 	}
 	return highest;
 }

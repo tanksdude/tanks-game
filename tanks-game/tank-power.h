@@ -21,16 +21,18 @@ public:
 	virtual void removeEffects(Tank* parent) = 0;
 
 	virtual void tick(Tank*) { return; } //most shouldn't be doing anything
-	virtual void powerTick(Tank*) {
+	void powerTick() {
 		timeLeft--;
-		//should this really be virtual?
+		//should not be virtual
 	}
 	bool isDone() const {
-		if (maxTime < 0) {
+		/*
+		if (maxTime < 0) { [[unlikely]]
 			return false;
 		}
 		return (timeLeft <= 0);
-		//probably shouldn't be virtual
+		*/
+		return ((maxTime >= 0) && (timeLeft <= 0));
 	}
 	virtual ColorValueHolder getColor() const = 0;
 	virtual double getColorImportance() const { return 0; }
@@ -105,6 +107,7 @@ public:
 	bool additionalShootingCanOnlyWorkIndividually = false;
 
 	bool addsShootingPoints = false;
+	[[nodiscard]]
 	virtual std::vector<double>* addShootingPoints() const { return nullptr; } //list of angles to put new cannons at; angle range: (0,1)
 	//bool overridesAddShootingPoints = false; //makes no sense to be true
 	bool addShootingPointsCanWorkWithOthers = true; //should only be true

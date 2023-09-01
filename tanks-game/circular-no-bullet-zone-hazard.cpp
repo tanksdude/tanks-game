@@ -4,11 +4,11 @@
 #include <cmath>
 #include "color-mixer.h"
 #include "background-rect.h"
-#include "mylib.h"
 #include "wall-manager.h"
 #include "hazard-manager.h"
 #include "collision-handler.h"
 #include "rng.h"
+#include <algorithm> //std::clamp
 
 std::unordered_map<std::string, float> CircularNoBulletZoneHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -135,7 +135,7 @@ void CircularNoBulletZoneHazard::poseDraw(DrawingLayers layer) const {
 }
 
 void CircularNoBulletZoneHazard::ghostDraw(float alpha) const {
-	alpha = constrain<float>(alpha, 0, 1);
+	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	//background:

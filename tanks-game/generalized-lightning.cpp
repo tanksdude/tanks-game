@@ -1,11 +1,10 @@
 #include "generalized-lightning.h"
 #include "background-rect.h"
 #include "color-mixer.h"
-#include "mylib.h"
 #include "constants.h"
 #include <cmath>
 //#include <stdexcept>
-#include <algorithm> //std::copy
+#include <algorithm> //std::copy, std::clamp
 #include <iostream>
 
 int GeneralizedLightning::getDefaultNumBoltPoints(double horzDist) const {
@@ -27,8 +26,8 @@ void GeneralizedLightning::tick() {
 	}
 
 	tickCount++;
-	if (tickCount >= tickCycle * stateMultiplier[currentlyActive]) {
-		if (tickCycle * stateMultiplier[currentlyActive] <= 0) {
+	if (tickCount >= tickCycle * stateMultiplier[currentlyActive]) { [[unlikely]]
+		if (tickCycle * stateMultiplier[currentlyActive] <= 0) { [[unlikely]]
 			tickCount = 0;
 			currentlyActive = true;
 		} else {
@@ -38,7 +37,7 @@ void GeneralizedLightning::tick() {
 	}
 
 	if (currentlyActive) {
-		if (boltTick >= boltCycle) {
+		if (++boltTick >= boltCycle) {
 			//hazard tick comes before collision, therefore there will be more bolt refreshes after this if a bullet/tank collides
 			targetedObjects.clear();
 			boltsNeeded = false;
@@ -46,7 +45,6 @@ void GeneralizedLightning::tick() {
 			pushDefaultBolt(maxBolts, true);
 			boltTick = 0;
 		}
-		boltTick++;
 	} else {
 		boltTick = boltCycle; //start at boltCycle to force a refresh as soon as possible
 	}
@@ -63,7 +61,7 @@ ColorValueHolder GeneralizedLightning::getBackgroundColor() const {
 	if (currentlyActive) {
 		return ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(0.75f, 0.75f, 0.75f), .25);
 	}
-	return ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(0.75f, 0.75f, 0.75f), .25*constrain<double>(tickCount/(tickCycle*stateMultiplier[currentlyActive]), 0, 1));
+	return ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(0.75f, 0.75f, 0.75f), .25*std::clamp<double>(tickCount/(tickCycle*stateMultiplier[currentlyActive]), 0, 1));
 }
 
 ColorValueHolder GeneralizedLightning::getBackgroundColor_Pose() const {

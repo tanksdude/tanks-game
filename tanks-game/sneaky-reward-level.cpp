@@ -6,7 +6,6 @@
 #include "powerup-manager.h"
 #include "wall-manager.h"
 #include "hazard-manager.h"
-#include "mylib.h"
 #include "reset-things.h"
 #include "rng.h"
 #include <iostream>
