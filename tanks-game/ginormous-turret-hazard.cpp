@@ -27,7 +27,7 @@ GinormousTurretHazard::GinormousTurretHazard(double xpos, double ypos, double an
 	//velocity = SimpleVector2D(angle, 0, true);
 	r = TANK_RADIUS * 4; // MotherTurretHazard radius * 2 //... should it be bigger?
 
-	for (int i = 0; i < maxState; i++) {
+	for (unsigned int i = 0; i < maxState; i++) {
 		stateMultiplier[i] *= 2;
 	}
 	turningIncrement *= 4;

@@ -791,8 +791,8 @@ inline void Tank::drawBody(float alpha) const {
 				color = tankPowers[i]->getColor();
 				color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 
-				double rotatePercent = floor((float(i) / tankPowers.size()) * Circle::numOfSides) / Circle::numOfSides;
-				double nextRotatePercent = floor((float(i+1) / tankPowers.size()) * Circle::numOfSides) / Circle::numOfSides;
+				float rotatePercent = floor((float(i) / tankPowers.size()) * Circle::numOfSides) / Circle::numOfSides;
+				float nextRotatePercent = floor((float(i+1) / tankPowers.size()) * Circle::numOfSides) / Circle::numOfSides;
 				//unsigned int rotateVertices = floor((nextRotatePercent - rotatePercent) * Circle::numOfSides);
 				unsigned int rotateVertexStart = floor(rotatePercent * Circle::numOfSides);
 				unsigned int rotateVertexEnd = floor(nextRotatePercent * Circle::numOfSides);
@@ -803,7 +803,7 @@ inline void Tank::drawBody(float alpha) const {
 				coordsAndColor_colorSplit.push_back(color.getGf());
 				coordsAndColor_colorSplit.push_back(color.getBf());
 				coordsAndColor_colorSplit.push_back(color.getAf());
-				for (int i = rotateVertexStart; i <= rotateVertexEnd; i++) {
+				for (unsigned int i = rotateVertexStart; i <= rotateVertexEnd; i++) {
 					coordsAndColor_colorSplit.push_back(x + r * cos(velocity.getAngle() + i * (2*PI / Circle::numOfSides)));
 					coordsAndColor_colorSplit.push_back(y + r * sin(velocity.getAngle() + i * (2*PI / Circle::numOfSides)));
 					coordsAndColor_colorSplit.push_back(color.getRf());
@@ -812,7 +812,7 @@ inline void Tank::drawBody(float alpha) const {
 					coordsAndColor_colorSplit.push_back(color.getAf());
 				}
 
-				for (int i = 0; i < (rotateVertexEnd - rotateVertexStart); i++) {
+				for (unsigned int i = 0; i < (rotateVertexEnd - rotateVertexStart); i++) {
 					indices_colorSplit.push_back(0);
 					indices_colorSplit.push_back(i+1);
 					indices_colorSplit.push_back(i+2);
@@ -925,7 +925,7 @@ inline void Tank::drawShootingCooldown(float alpha) const {
 		coordsAndColor[3] = color.getGf();
 		coordsAndColor[4] = color.getBf();
 		coordsAndColor[5] = color.getAf();
-		for (int i = 0; i <= shootingOutlineTriangles && i < Circle::numOfSides; i++) {
+		for (unsigned int i = 0; i <= shootingOutlineTriangles && i < Circle::numOfSides; i++) {
 			coordsAndColor[(i+1)*6]   = x + (r*(5.0/4.0)) * cos(velocity.getAngle() + i * (2*PI / Circle::numOfSides));
 			coordsAndColor[(i+1)*6+1] = y + (r*(5.0/4.0)) * sin(velocity.getAngle() + i * (2*PI / Circle::numOfSides));
 			coordsAndColor[(i+1)*6+2] = color.getRf();
@@ -935,7 +935,7 @@ inline void Tank::drawShootingCooldown(float alpha) const {
 		}
 
 		unsigned int indices[Circle::numOfSides*3];
-		for (int i = 0; i < shootingOutlineTriangles; i++) {
+		for (unsigned int i = 0; i < shootingOutlineTriangles; i++) {
 			indices[i*3]   = 0;
 			indices[i*3+1] = i+1;
 			indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
@@ -975,7 +975,7 @@ inline void Tank::drawPowerCooldown(float alpha) const {
 			coordsAndColor[3] = color.getGf();
 			coordsAndColor[4] = color.getBf();
 			coordsAndColor[5] = color.getAf();
-			for (int i = 0; i <= powerOutlineTriangles && i < Circle::numOfSides; i++) {
+			for (unsigned int i = 0; i <= powerOutlineTriangles && i < Circle::numOfSides; i++) {
 				coordsAndColor[(i+1)*6]   = x + (r*(9.0/8.0)) * cos(velocity.getAngle() + i * (2*PI / Circle::numOfSides));
 				coordsAndColor[(i+1)*6+1] = y + (r*(9.0/8.0)) * sin(velocity.getAngle() + i * (2*PI / Circle::numOfSides));
 				coordsAndColor[(i+1)*6+2] = color.getRf();
@@ -985,7 +985,7 @@ inline void Tank::drawPowerCooldown(float alpha) const {
 			}
 
 			unsigned int indices[Circle::numOfSides*3];
-			for (int i = 0; i < powerOutlineTriangles; i++) {
+			for (unsigned int i = 0; i < powerOutlineTriangles; i++) {
 				indices[i*3]   = 0;
 				indices[i*3+1] = i+1;
 				indices[i*3+2] = (i+1) % Circle::numOfSides + 1;

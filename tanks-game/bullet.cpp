@@ -459,7 +459,7 @@ inline void Bullet::drawDeathCooldown(float alpha) const {
 			coordsAndColor[3] = color.getGf();
 			coordsAndColor[4] = color.getBf();
 			coordsAndColor[5] = color.getAf();
-			for (int i = 0; i <= deathTriangles && i < Circle::numOfSides; i++) {
+			for (unsigned int i = 0; i <= deathTriangles && i < Circle::numOfSides; i++) {
 				//the final triangle shares its last vertex with the first triangle, which is why this loop condition is a bit strange (second conditional only false for that last triangle)
 				//with wrong condition: two verts on an old bullet's death outline to the center of a new bullet's center body or death outline, though sometimes even a tank or rarely the bottom left corner (why)
 				//to be more specific: with the old conditional, think it was happening when deathTriangles==1, leading to pushing only two total verts but pushing three indices; but that would mean it was always pushing insufficient verts for the indices, why wasn't it showing up before?
@@ -472,7 +472,7 @@ inline void Bullet::drawDeathCooldown(float alpha) const {
 			}
 
 			unsigned int indices[Circle::numOfSides*3];
-			for (int i = 0; i < deathTriangles; i++) {
+			for (unsigned int i = 0; i < deathTriangles; i++) {
 				indices[i*3]   = 0;
 				indices[i*3+1] = i+1;
 				indices[i*3+2] = (i+1) % Circle::numOfSides + 1;

@@ -78,6 +78,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\freeglut\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\glew\include;$(ProjectDir)res\vendor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <DisableSpecificWarnings>4244;4267;4305;4838;26819;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -93,6 +94,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\freeglut\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\glew\include;$(ProjectDir)res\vendor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <DisableSpecificWarnings>4244;4267;4305;4838;26819;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -110,6 +112,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\freeglut\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\glew\include;$(ProjectDir)res\vendor;</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <DisableSpecificWarnings>4244;4267;4305;4838;26819;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -129,6 +132,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\freeglut\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\glew\include;$(ProjectDir)res\vendor;</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <DisableSpecificWarnings>4244;4267;4305;4838;26819;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

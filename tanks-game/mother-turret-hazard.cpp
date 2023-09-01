@@ -655,7 +655,7 @@ inline void MotherTurretHazard::drawShootingTimer(float alpha) const {
 		coordsAndColor[3] = color.getGf();
 		coordsAndColor[4] = color.getBf();
 		coordsAndColor[5] = color.getAf();
-		for (int i = 0; i <= shootingOutlineTriangles && i < Circle::numOfSides; i++) {
+		for (unsigned int i = 0; i <= shootingOutlineTriangles && i < Circle::numOfSides; i++) {
 			coordsAndColor[(i+1)*6]   = x + (r*(5.0/4.0)) * cos(rotateAngle + i * (2*PI / Circle::numOfSides));
 			coordsAndColor[(i+1)*6+1] = y + (r*(5.0/4.0)) * sin(rotateAngle + i * (2*PI / Circle::numOfSides));
 			coordsAndColor[(i+1)*6+2] = color.getRf();
@@ -665,7 +665,7 @@ inline void MotherTurretHazard::drawShootingTimer(float alpha) const {
 		}
 
 		unsigned int indices[Circle::numOfSides*3];
-		for (int i = 0; i < shootingOutlineTriangles; i++) {
+		for (unsigned int i = 0; i < shootingOutlineTriangles; i++) {
 			indices[i*3]   = 0;
 			indices[i*3+1] = i+1;
 			indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
