@@ -286,8 +286,9 @@ void PatrollingTurretHazard::draw(DrawingLayers layer) const {
 			break;
 
 		case DrawingLayers::debug:
-			//later
-			drawPath();
+			if (Renderer::isDebugDrawingEnabled(this->getName())) {
+				drawPath();
+			}
 			break;
 	}
 }
@@ -321,8 +322,9 @@ void PatrollingTurretHazard::poseDraw(DrawingLayers layer) const {
 			break;
 
 		case DrawingLayers::debug:
-			//later
-			drawPath();
+			if (Renderer::isDebugDrawingEnabled(this->getName())) {
+				drawPath();
+			}
 			break;
 	}
 }

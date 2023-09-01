@@ -80,6 +80,7 @@ private:
 	inline void drawOutline(float alpha = 1.0f) const;
 	inline void drawBarrel(float alpha = 1.0f) const;
 	inline void drawShootingTimer(float alpha = 1.0f) const;
+	inline void drawChildTurretLocations(float alpha = 1.0f) const; //debug
 
 public:
 	MotherTurretHazard(double xpos, double ypos, double angle);

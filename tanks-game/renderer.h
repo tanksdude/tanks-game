@@ -116,6 +116,7 @@ public:
 	static void SubmitBatchedDraw(const float* posAndColor, int posAndColorLength, const unsigned int* indices, int indicesLength);
 	static void EndScene();
 	static void Flush();
+	static bool isDebugDrawingEnabled(std::string name); //should this really be here?
 
 	static glm::mat4 GenerateModelMatrix(float scaleX, float scaleY, float rotateAngle, float transX, float transY);
 	static void SetViewMatrix(float cameraX, float cameraY, float cameraZ, float targetX, float targetY, float targetZ);

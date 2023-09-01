@@ -12,6 +12,7 @@
 #include <GL/freeglut.h>
 #include "diagnostics.h"
 #include <iostream>
+#include "game-manager.h" //for isDebugDrawingEnabled()
 
 //std::mutex Renderer::drawingDataLock;
 //std::thread Renderer::graphicsThread;
@@ -570,4 +571,31 @@ void Renderer::BeginScene(std::string name) {
 void Renderer::EndScene() {
 	currentSceneName = "";
 	//not sure what to put...
+}
+
+bool Renderer::isDebugDrawingEnabled(std::string name) {
+	const BasicINIParser::BasicINIData& ini_data = GameManager::get_INI();
+
+	//checked by GameMainLoop:
+	/*
+	if (ini_data.exists("DEBUG", "EnableDebugDrawing")) {
+		if (!std::stoi(ini_data.get("DEBUG", "EnableDebugDrawing"))) {
+			return false;
+		}
+	} else {
+		return false;
+	}
+	*/
+
+	bool drawingEnabled = false;
+	if (ini_data.exists("DEBUG", "EnableDebugDrawingObjects")) {
+		int length = ini_data.length("DEBUG", "EnableDebugDrawingObjects");
+		for (int i = 0; i < length; i++) {
+			if (ini_data.get("DEBUG", "EnableDebugDrawingObjects", i) == name) {
+				drawingEnabled = true;
+				break;
+			}
+		}
+	}
+	return drawingEnabled;
 }

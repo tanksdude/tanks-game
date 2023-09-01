@@ -1420,10 +1420,12 @@ void GameMainLoop::drawMain() const {
 
 	auto end = Diagnostics::getTime();
 	Diagnostics::pushGraphTime("upload", Diagnostics::getDiff(start, end));
-
-	//Diagnostics::startTiming("flush");
 	Renderer::EndScene();
-	//Diagnostics::endTiming();
+
+	const BasicINIParser::BasicINIData& ini_data = GameManager::get_INI();
+	if (ini_data.exists("DEBUG", "EnableDebugDrawing") && std::stoi(ini_data.get("DEBUG", "EnableDebugDrawing"))) { [[unlikely]]
+		drawLayer(DrawingLayers::debug);
+	}
 
 	//end = Diagnostics::getTime();
 
@@ -1439,58 +1441,55 @@ void GameMainLoop::drawLayer(DrawingLayers layer) const {
 	//currentlyDrawing = true;
 
 	//auto start = Diagnostics::getTime();
-	Renderer::BeginScene("draw"); //TODO: different name
+	Renderer::BeginScene("drawLayer" + std::to_string((int)layer));
 
-	Diagnostics::startTiming("powerups");
+	//Diagnostics::startTiming("powerups");
 	for (int i = 0; i < PowerupManager::getNumPowerups(); i++) {
 		PowerupManager::getPowerup(i)->draw(layer);
 	}
-	Diagnostics::endTiming();
+	//Diagnostics::endTiming();
 
-	Diagnostics::startTiming("hazards");
+	//Diagnostics::startTiming("hazards");
 	for (int i = 0; i < HazardManager::getNumCircleHazards(); i++) {
 		HazardManager::getCircleHazard(i)->draw(layer);
 	}
 	for (int i = 0; i < HazardManager::getNumRectHazards(); i++) {
 		HazardManager::getRectHazard(i)->draw(layer);
 	}
-	Diagnostics::endTiming();
+	//Diagnostics::endTiming();
 
-	Diagnostics::startTiming("walls");
+	//Diagnostics::startTiming("walls");
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		WallManager::getWall(i)->draw(layer);
 	}
-	Diagnostics::endTiming();
+	//Diagnostics::endTiming();
 
-	Diagnostics::startTiming("bullets");
+	//Diagnostics::startTiming("bullets");
 	for (int i = 0; i < BulletManager::getNumBullets(); i++) {
 		BulletManager::getBullet(i)->draw(layer);
 	}
-	Diagnostics::endTiming();
+	//Diagnostics::endTiming();
 
-	Diagnostics::startTiming("tanks");
+	//Diagnostics::startTiming("tanks");
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
 		TankManager::getTank(i)->draw(layer);
 	}
-	Diagnostics::endTiming();
+	//Diagnostics::endTiming();
 
-	Diagnostics::startTiming("level");
+	//Diagnostics::startTiming("level");
 	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
 		LevelManager::getLevel(i)->draw(layer);
 	}
 	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
 		LevelManager::getLevel(i)->drawLevelEffects(layer);
 	}
-	Diagnostics::endTiming();
-
-	//Diagnostics::startTiming("flush");
-	Renderer::EndScene();
 	//Diagnostics::endTiming();
 
+	Renderer::EndScene();
 	//auto end = Diagnostics::getTime();
 
 	//Diagnostics::printPreciseTimings();
-	Diagnostics::clearTimes();
+	//Diagnostics::clearTimes();
 
 	//std::cout << "entire: " << (long long)Diagnostics::getDiff(start, end) << "ms" << std::endl << std::endl;
 
