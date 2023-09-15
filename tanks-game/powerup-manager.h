@@ -16,12 +16,14 @@ private:
 	static std::unordered_map<std::string, std::unordered_map<std::string, PowerFunction>> powerLookup;
 	static std::unordered_map<std::string, std::vector<std::string>> powerNameList;
 
+	static std::vector<std::string> protectedTypes; //types not allowed to be used (by custom powers)
+
 public:
 	static void initialize();
 	static PowerSquare* getPowerup(int index);
 	static PowerSquare* getPowerupByID(Game_ID);
 	static void pushPowerup(PowerSquare*);
-	static int getNumPowerups() { return powerups.size(); }
+	static unsigned int getNumPowerups() { return powerups.size(); }
 	static void deletePowerup(int index);
 	static void deletePowerupByID(Game_ID);
 
@@ -29,8 +31,10 @@ public:
 
 	static void addPowerFactory(PowerFunction);
 	static PowerFunction getPowerFactory(std::string type, std::string name);
-	static std::string getPowerName(std::string type, int index);
-	static int getNumPowerTypes(std::string type);
+	static std::string getPowerName(std::string type, unsigned int index);
+	static unsigned int getNumPowerTypes(std::string type);
+
+	static std::string checkCustomPowerTypesAgainstProtectedTypes(const std::vector<std::string>&) noexcept; //returns first bad type ("" if all good)
 
 private:
 	PowerupManager() = delete;

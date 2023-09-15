@@ -123,37 +123,67 @@ void HazardManager::addRectHazardFactory(RectHazardFunction factory, RectHazardR
 }
 
 CircleHazardFunction HazardManager::getCircleHazardFactory(std::string type, std::string name) {
-	return circleHazardLookup[type][name].getFactory();
+	return getCircleHazardFactoryGroup(type, name).getFactory();
 }
 RectHazardFunction HazardManager::getRectHazardFactory(std::string type, std::string name) {
-	return rectHazardLookup[type][name].getFactory();
+	return getRectHazardFactoryGroup(type, name).getFactory();
 }
 
 CircleHazardRandomizationFunction HazardManager::getCircleHazardRandomizationFunction(std::string type, std::string name) {
-	return circleHazardLookup[type][name].getRandomizationFunction();
+	return getCircleHazardFactoryGroup(type, name).getRandomizationFunction();
 }
 RectHazardRandomizationFunction HazardManager::getRectHazardRandomizationFunction(std::string type, std::string name) {
-	return rectHazardLookup[type][name].getRandomizationFunction();
+	return getRectHazardFactoryGroup(type, name).getRandomizationFunction();
 }
 
 CircleHazardFactoryGroup HazardManager::getCircleHazardFactoryGroup(std::string type, std::string name) {
+	if (circleHazardLookup.find(type) == circleHazardLookup.end()) {
+		throw std::runtime_error("circle hazard type \"" + type + "\" unknown!");
+	}
+	if (circleHazardLookup[type].find(name) == circleHazardLookup[type].end()) {
+		throw std::runtime_error("circle hazard name \"" + name + "\" (with type \"" + type + "\") unknown!");
+	}
 	return circleHazardLookup[type][name];
 }
 RectHazardFactoryGroup HazardManager::getRectHazardFactoryGroup(std::string type, std::string name) {
+	if (rectHazardLookup.find(type) == rectHazardLookup.end()) {
+		throw std::runtime_error("rect hazard type \"" + type + "\" unknown!");
+	}
+	if (rectHazardLookup[type].find(name) == rectHazardLookup[type].end()) {
+		throw std::runtime_error("rect hazard name \"" + name + "\" (with type \"" + type + "\") unknown!");
+	}
 	return rectHazardLookup[type][name];
 }
 
-std::string HazardManager::getCircleHazardName(std::string type, int index) {
+std::string HazardManager::getCircleHazardName(std::string type, unsigned int index) {
+	if (circleHazardLookup.find(type) == circleHazardLookup.end()) {
+		throw std::runtime_error("circle hazard type \"" + type + "\" unknown!");
+	}
+	if (index >= circleHazardNameList[type].size()) {
+		throw std::range_error("circle hazard index " + std::to_string(index) + " is too large!");
+	}
 	return circleHazardNameList[type][index];
 }
-std::string HazardManager::getRectHazardName(std::string type, int index) {
+std::string HazardManager::getRectHazardName(std::string type, unsigned int index) {
+	if (rectHazardLookup.find(type) == rectHazardLookup.end()) {
+		throw std::runtime_error("rect hazard type \"" + type + "\" unknown!");
+	}
+	if (index >= rectHazardNameList[type].size()) {
+		throw std::range_error("rect hazard index " + std::to_string(index) + " is too large!");
+	}
 	return rectHazardNameList[type][index];
 }
 
-int HazardManager::getNumCircleHazardTypes(std::string type) {
+unsigned int HazardManager::getNumCircleHazardTypes(std::string type) {
+	if (circleHazardLookup.find(type) == circleHazardLookup.end()) {
+		throw std::runtime_error("circle hazard type \"" + type + "\" unknown!");
+	}
 	return circleHazardNameList[type].size();
 }
-int HazardManager::getNumRectHazardTypes(std::string type) {
+unsigned int HazardManager::getNumRectHazardTypes(std::string type) {
+	if (rectHazardLookup.find(type) == rectHazardLookup.end()) {
+		throw std::runtime_error("rect hazard type \"" + type + "\" unknown!");
+	}
 	return rectHazardNameList[type].size();
 }
 

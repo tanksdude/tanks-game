@@ -11,7 +11,7 @@ void BasicINIParser::BasicINIData::insert(std::string section, std::string prope
 	}
 }
 
-bool BasicINIParser::BasicINIData::exists(std::string section, std::string property) const {
+bool BasicINIParser::BasicINIData::exists(std::string section, std::string property) const noexcept {
 	if (this->data.find(section) == this->data.end()) {
 		return false;
 	}
@@ -21,7 +21,7 @@ bool BasicINIParser::BasicINIData::exists(std::string section, std::string prope
 	return true;
 }
 
-int BasicINIParser::BasicINIData::length(std::string section, std::string property) const {
+int BasicINIParser::BasicINIData::length(std::string section, std::string property) const noexcept {
 	return this->data.at(section).at(property).size();
 }
 
@@ -33,12 +33,12 @@ std::string BasicINIParser::BasicINIData::get(std::string section, std::string p
 	return this->data.at(section).at(property).at(index);
 }
 
-void BasicINIParser::removeLeftWhitespace(std::string& str) {
+void BasicINIParser::removeLeftWhitespace(std::string& str) noexcept {
 	size_t space_pos = str.find_first_not_of(" \t");
 	str.erase(0, space_pos); //no need to check space_pos != std::string::npos
 }
 
-void BasicINIParser::removeComments(std::string& str) {
+void BasicINIParser::removeComments(std::string& str) noexcept {
 	int comment_index = -1;
 	for (int i = 0; i < str.size(); i++) {
 		if (str[i] == '\\') {
@@ -54,13 +54,13 @@ void BasicINIParser::removeComments(std::string& str) {
 	}
 }
 
-void BasicINIParser::removeRightWhitespace(std::string& str) {
+void BasicINIParser::removeRightWhitespace(std::string& str) noexcept {
 	//this doesn't handle a backslash right before the space, but if a space is needed, use quotes
 	size_t space_pos = str.find_last_not_of(" \t");
 	str.erase(space_pos+1);
 }
 
-int BasicINIParser::findEndSectionIndex(const std::string& str) {
+int BasicINIParser::findEndSectionIndex(const std::string& str) noexcept {
 	bool found_section = false;
 	int section_index;
 	for (int i = 1; i < str.size(); i++) {
@@ -80,7 +80,7 @@ int BasicINIParser::findEndSectionIndex(const std::string& str) {
 	return -1;
 }
 
-int BasicINIParser::findSeparatorIndex(const std::string& str) {
+int BasicINIParser::findSeparatorIndex(const std::string& str) noexcept {
 	bool found_separator = false;
 	int separator_index;
 	for (int i = 1; i < str.size(); i++) {
@@ -100,10 +100,10 @@ int BasicINIParser::findSeparatorIndex(const std::string& str) {
 	return -1;
 }
 
-int BasicINIParser::findSubstringEndIndex(const std::string& str) {
+int BasicINIParser::findSubstringEndIndex(const std::string& str) noexcept {
 	//assumes str[0] is part of the substring (basically, no whitespace on the left)
 	int substr_end = str.size();
-	if (str[0] == '\"') {
+	if (str[0] == '\"') { //safe because operator[] takes a size_t (which is unsigned)
 		//look until a \" is found to finish the substring
 		for (int i = 1; i < str.size(); i++) {
 			if (str[i] == '\\') {
@@ -132,10 +132,10 @@ int BasicINIParser::findSubstringEndIndex(const std::string& str) {
 	return substr_end;
 }
 
-void BasicINIParser::processEscapeSequences_most(std::string& str) {
+void BasicINIParser::processEscapeSequences_most(std::string& str) noexcept {
 	//escape sequences: \, ', ", =, ;, #
 	if (str.size() == 0) {
-		//handles str.size()-1 overflowing
+		//handles str.size()-1 underflowing
 		return;
 	}
 	for (int i = 0; i < str.size()-1; i++) {
@@ -170,10 +170,10 @@ void BasicINIParser::processEscapeSequences_most(std::string& str) {
 	}
 }
 
-void BasicINIParser::processEscapeSequences_all(std::string& str) {
+void BasicINIParser::processEscapeSequences_all(std::string& str) noexcept {
 	//escape sequences: \, ', ", =, ;, #, \t, \n
 	if (str.size() == 0) {
-		//handles str.size()-1 overflowing
+		//handles str.size()-1 underflowing
 		return;
 	}
 	for (int i = 0; i < str.size()-1; i++) {
@@ -214,7 +214,7 @@ void BasicINIParser::processEscapeSequences_all(std::string& str) {
 	}
 }
 
-BasicINIParser::BasicINIData BasicINIParser::readFile(std::string path) {
+BasicINIParser::BasicINIData BasicINIParser::ReadFile(std::string path) {
 	std::ifstream ini_file;
 	ini_file.open(path);
 
@@ -225,16 +225,9 @@ BasicINIParser::BasicINIData BasicINIParser::readFile(std::string path) {
 		std::string line;
 		std::string current_section = "";
 		while (std::getline(ini_file, line)) {
-			/*
-			// pretty sure this doesn't happen
-			if (line[line.size()-1] == '\r') {
-				std::cerr << "\\r AT THE END OF THE LINE" << std::endl;
-			}
-			*/
-
 			removeLeftWhitespace(line);
 			removeComments(line);
-			removeRightWhitespace(line); //should happen here?
+			removeRightWhitespace(line);
 			if (line.size() == 0) {
 				continue;
 			}
@@ -279,10 +272,10 @@ BasicINIParser::BasicINIData BasicINIParser::readFile(std::string path) {
 				}
 			}
 		}
+		ini_file.close();
 	} else {
 		throw std::runtime_error("Could not read file \"" + path + "\"");
 	}
 
-	ini_file.close();
 	return ini_data;
 }

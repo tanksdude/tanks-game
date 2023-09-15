@@ -17,25 +17,25 @@ public:
 		void insert(std::string section, std::string property, std::string value);
 
 	public:
-		bool exists(std::string section, std::string property) const;
-		int length(std::string section, std::string property) const;
+		bool exists(std::string section, std::string property) const noexcept;
+		int length(std::string section, std::string property) const noexcept;
 		std::string get(std::string section, std::string property) const;
 		std::string get(std::string section, std::string property, int index) const;
 	};
 
-private:
-	//actual parsing
-	static void removeLeftWhitespace(std::string&);
-	static void removeComments(std::string&);
-	static void removeRightWhitespace(std::string&);
-	static int findEndSectionIndex(const std::string&);
-	static int findSeparatorIndex(const std::string&);
-	static int findSubstringEndIndex(const std::string&); //returns the index after the last character in the substring
-	static void processEscapeSequences_most(std::string&);
-	static void processEscapeSequences_all(std::string&); //includes \n and \t
+public:
+	static BasicINIData ReadFile(std::string path);
 
 public:
-	static BasicINIData readFile(std::string path);
+	//actual parsing
+	static void removeLeftWhitespace(std::string&) noexcept;
+	static void removeComments(std::string&) noexcept;
+	static void removeRightWhitespace(std::string&) noexcept;
+	static int findEndSectionIndex(const std::string&) noexcept;
+	static int findSeparatorIndex(const std::string&) noexcept;
+	static int findSubstringEndIndex(const std::string&) noexcept; //returns the index after the last character in the substring
+	static void processEscapeSequences_most(std::string&) noexcept;
+	static void processEscapeSequences_all(std::string&) noexcept; //includes \n and \t
 
 private:
 	BasicINIParser() = delete;

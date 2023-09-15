@@ -1,5 +1,7 @@
 #include "level-manager.h"
 #include <stdexcept>
+#include "custom-level-interpreter.h"
+#include "mylib.h" //weightedSelect
 
 std::vector<Level*> LevelManager::levels;
 
@@ -7,6 +9,9 @@ std::unordered_map<std::string, std::unordered_map<std::string, LevelFunction>> 
 std::unordered_map<std::string, std::unordered_map<std::string, LevelEffectFunction>> LevelManager::levelEffectLookup;
 std::unordered_map<std::string, std::vector<std::string>> LevelManager::levelNameList;
 std::unordered_map<std::string, std::vector<std::string>> LevelManager::levelEffectNameList;
+
+std::unordered_map<std::string, std::vector<std::string>> LevelManager::customLevelNameList;
+std::vector<std::string> LevelManager::protectedTypes = { "null", "vanilla", "vanilla-extra", "random-vanilla", "old", "random-old", "dev", "random-dev" };
 
 void LevelManager::initialize() {
 	levelLookup.insert({ "vanilla", std::unordered_map<std::string, LevelFunction>() });
@@ -28,6 +33,25 @@ void LevelManager::initialize() {
 	levelEffectLookup.insert({ "random-dev", std::unordered_map<std::string, LevelEffectFunction>() }); //would this be used?
 }
 
+std::string LevelManager::checkCustomLevelTypesAgainstProtectedTypes(const std::vector<std::string>& types) noexcept {
+	for (int i = 0; i < protectedTypes.size(); i++) {
+		if (std::find(types.begin(), types.end(), protectedTypes[i]) != types.end()) {
+			return protectedTypes[i];
+		}
+	}
+	return "";
+}
+
+void LevelManager::addCustomLevel(std::string name, const std::vector<std::string>& types) {
+	for (int i = 0; i < types.size(); i++) {
+		if (types[i] == "null") {
+			throw std::runtime_error("level " + name + " includes \"null\" type, which is not allowed");
+		} else { [[likely]]
+			customLevelNameList[types[i]].push_back(name);
+		}
+	}
+}
+
 Level* LevelManager::getLevel(int index) {
 	return levels[index];
 }
@@ -37,7 +61,13 @@ LevelEffect* LevelManager::getLevelEffect(int level_index, int index) {
 }
 
 void LevelManager::pushLevel(std::string type, std::string name) {
-	levels.push_back(LevelManager::getLevelFactory(type, name)());
+	if (levelLookup.find(type) == levelLookup.end()) {
+		//custom levels
+		levels.push_back(CustomLevelInterpreter::factory(type, name));
+	} else {
+		//regular levels
+		levels.push_back(LevelManager::getLevelFactory(type, name)());
+	}
 }
 
 /*
@@ -60,37 +90,78 @@ void LevelManager::addLevelFactory(LevelFunction factory) {
 	Level* l = factory();
 	std::vector<std::string> types = l->getLevelTypes();
 	for (int i = 0; i < types.size(); i++) {
-		/*
-		//is this necessary?
-		if (levelLookup.find(types[i]) == levelLookup.end()) {
-			levelLookup.insert({ types[i], std::unordered_map<std::string, LevelFunction>() });
+		if (types[i] == "null") {
+			std::string name = l->getName();
+			delete l;
+			throw std::runtime_error("level " + name + " includes \"null\" type, which is not allowed");
+		} else { [[likely]]
+			levelLookup[types[i]].insert({ l->getName(), factory });
+			levelNameList[types[i]].push_back(l->getName());
 		}
-		*/
-		levelLookup[types[i]].insert({ l->getName(), factory });
-		levelNameList[types[i]].push_back(l->getName());
 	}
 	delete l;
 }
 
 LevelFunction LevelManager::getLevelFactory(std::string type, std::string name) {
 	if (levelLookup.find(type) == levelLookup.end()) {
-		throw std::domain_error("level type \"" + type + "\" unknown!");
+		throw std::runtime_error("level type \"" + type + "\" unknown!");
+	}
+	if (levelLookup[type].find(name) == levelLookup[type].end()) {
+		throw std::runtime_error("level name \"" + name + "\" (with type \"" + type + "\") unknown!");
 	}
 	return levelLookup[type][name];
 }
 
-std::string LevelManager::getLevelName(std::string type, int index) {
+std::string LevelManager::getLevelName(std::string type, unsigned int index) {
 	if (levelLookup.find(type) == levelLookup.end()) {
-		throw std::domain_error("level type \"" + type + "\" unknown!");
+		if (CustomLevelInterpreter::customLevelLookup.find(type) != CustomLevelInterpreter::customLevelLookup.end()) {
+			if (index >= customLevelNameList[type].size()) {
+				throw std::range_error("level index " + std::to_string(index) + " is too large!");
+			}
+			return customLevelNameList[type][index];
+		}
+		throw std::runtime_error("level type \"" + type + "\" unknown!");
+	}
+	if (index >= levelNameList[type].size()) {
+		throw std::range_error("level index " + std::to_string(index) + " is too large!");
 	}
 	return levelNameList[type][index];
 }
 
-int LevelManager::getNumLevelTypes(std::string type) {
+unsigned int LevelManager::getNumLevelTypes(std::string type) {
 	if (levelLookup.find(type) == levelLookup.end()) {
-		throw std::domain_error("level type \"" + type + "\" unknown!");
+		if (CustomLevelInterpreter::customLevelLookup.find(type) != CustomLevelInterpreter::customLevelLookup.end()) {
+			return customLevelNameList[type].size();
+		}
+		throw std::runtime_error("level type \"" + type + "\" unknown!");
 	}
 	return levelNameList[type].size();
+}
+
+std::string LevelManager::levelWeightedSelect(std::string levelPlaylist) {
+	if (CustomLevelInterpreter::customLevelLookup.find(levelPlaylist) == CustomLevelInterpreter::customLevelLookup.end()) {
+		std::vector<float> levelWeights;
+		levelWeights.reserve(LevelManager::getNumLevelTypes(levelPlaylist));
+		for (unsigned int i = 0; i < LevelManager::getNumLevelTypes(levelPlaylist); i++) {
+			std::string n = LevelManager::getLevelName(levelPlaylist, i);
+			Level* l = LevelManager::getLevelFactory(levelPlaylist, n)();
+			levelWeights.push_back(l->getWeights()[levelPlaylist]);
+			delete l;
+		}
+		int levelIndex = weightedSelect<float>(levelWeights.data(), levelWeights.size());
+		return LevelManager::getLevelName(levelPlaylist, levelIndex);
+	} else {
+		std::vector<float> levelWeights;
+		levelWeights.reserve(LevelManager::getNumLevelTypes(levelPlaylist));
+		for (unsigned int i = 0; i < LevelManager::getNumLevelTypes(levelPlaylist); i++) {
+			std::string n = LevelManager::getLevelName(levelPlaylist, i);
+			Level* l = CustomLevelInterpreter::customLevelLookup[levelPlaylist][n];
+			levelWeights.push_back(l->getWeights()[levelPlaylist]);
+			//delete l;
+		}
+		int levelIndex = weightedSelect<float>(levelWeights.data(), levelWeights.size());
+		return LevelManager::getLevelName(levelPlaylist, levelIndex);
+	}
 }
 
 
@@ -99,35 +170,41 @@ void LevelManager::addLevelEffectFactory(LevelEffectFunction factory) {
 	LevelEffect* le = factory(constructionData);
 	std::vector<std::string> types = le->getLevelEffectTypes();
 	for (int i = 0; i < types.size(); i++) {
-		/*
-		//is this necessary?
-		if (levelEffectLookup.find(types[i]) == levelEffectLookup.end()) {
-			levelEffectLookup.insert({ types[i], std::unordered_map<std::string, LevelEffectFunction>() });
+		if (types[i] == "null") {
+			std::string name = le->getName();
+			delete le;
+			throw std::runtime_error("level effect " + name + " includes \"null\" type, which is not allowed");
+		} else { [[likely]]
+			levelEffectLookup[types[i]].insert({ le->getName(), factory });
+			levelEffectNameList[types[i]].push_back(le->getName());
 		}
-		*/
-		levelEffectLookup[types[i]].insert({ le->getName(), factory });
-		levelEffectNameList[types[i]].push_back(le->getName());
 	}
 	delete le;
 }
 
 LevelEffectFunction LevelManager::getLevelEffectFactory(std::string type, std::string name) {
 	if (levelEffectLookup.find(type) == levelEffectLookup.end()) {
-		throw std::domain_error("level effect type \"" + type + "\" unknown!");
+		throw std::runtime_error("level effect type \"" + type + "\" unknown!");
+	}
+	if (levelEffectLookup[type].find(name) == levelEffectLookup[type].end()) {
+		throw std::runtime_error("level effect name \"" + name + "\" (with type \"" + type + "\") unknown!");
 	}
 	return levelEffectLookup[type][name];
 }
 
-std::string LevelManager::getLevelEffectName(std::string type, int index) {
+std::string LevelManager::getLevelEffectName(std::string type, unsigned int index) {
 	if (levelEffectLookup.find(type) == levelEffectLookup.end()) {
-		throw std::domain_error("level effect type \"" + type + "\" unknown!");
+		throw std::runtime_error("level effect type \"" + type + "\" unknown!");
+	}
+	if (index >= levelEffectNameList[type].size()) {
+		throw std::range_error("level effect index " + std::to_string(index) + " is too large!");
 	}
 	return levelEffectNameList[type][index];
 }
 
-int LevelManager::getNumLevelEffectTypes(std::string type) {
+unsigned int LevelManager::getNumLevelEffectTypes(std::string type) {
 	if (levelEffectLookup.find(type) == levelEffectLookup.end()) {
-		throw std::domain_error("level effect type \"" + type + "\" unknown!");
+		throw std::runtime_error("level effect type \"" + type + "\" unknown!");
 	}
 	return levelEffectNameList[type].size();
 }

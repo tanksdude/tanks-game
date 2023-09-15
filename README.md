@@ -29,6 +29,22 @@ Install Visual Studio (2019) and the GitHub extension (I don't know if that's ne
 
 Pre-compiled executables are available under "Releases" in the [GitHub repository](https://github.com/tanksdude/tanks-game).
 
+## Making custom levels
+
+Making your own levels is now a thing! (Although the levels are very simple, and they take a while to make.) How to do so:
+
+1. Navigate to the `mods` folder.
+1. Add a new folder. This will be the name of your mod.
+1. Add a `levels` folder to your mod's folder. Your custom levels go here.
+1. Add some text files and make your custom levels!
+1. Several fields need to be given. I suggest looking at one of the pre-made custom levels and copying it and modifying it.
+1. Every level needs a `Name` (string), `Color` (3 floats in range [0,1] for RGB), `LevelTypes` (at least one string; recommended "modname" and "random-modname"), and `LevelWeights` (1 float for each type; recommended 1.0 is the base weight).
+1. Optionally, levels can contain a `RandomStartPositionCount` (int, default = 5, for number of starting positions), `RandomStartPositionXValue` (float, default = 20, x-distance from edge), and `RandomStartPositionYRange` (float, default = 256=320-2*32, y-range for starting positions).
+1. Once the assignments have been set, `[LEVEL_START]` needs to appear, then you can start adding walls and powers and stuff.
+1. I was going to put some more syntax notes here but you should just look at one of the pre-made ones and learn from it. They contain every operation currently available.
+
+The custom level interpreter is very simple and barebones, so if you want to put something at the center, you have to put the coordinates as `320 160` instead of `GAME_WIDTH/2 GAME_HEIGHT/2`. Also you can't do any math to your numbers; they need to be the raw numbers (no "sqrt(3)" or "20*8", just "5" or whatever). I know this sucks but adding an expression parser is annoying [(although there is a popular library for this task)](https://github.com/ArashPartow/exprtk) and adding Lua (or maybe Python?) would've been a much larger hurdle [(although this Wikipedia list is much larger than the last time I looked at it so maybe it's easier than I thought?)](https://en.wikipedia.org/wiki/List_of_applications_using_Lua).
+
 ## Running the tests
 
 Will come soon™.

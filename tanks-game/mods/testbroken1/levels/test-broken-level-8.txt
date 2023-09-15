@@ -1,0 +1,4 @@
+Name = test-broken-level-8
+Color = 0.0   0.0   0.0
+LevelTypes = 
+LevelWeights = 

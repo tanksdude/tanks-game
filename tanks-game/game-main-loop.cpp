@@ -1,22 +1,21 @@
 #include "game-main-loop.h"
 
-//includes copied from main.cpp
+//STL stuff:
 #include <iostream>
+#include <string>
 #include <vector>
-#include <time.h>
 #include <chrono>
 #include <unordered_map>
 #include <stdexcept>
 
-//GPU rendering:
+//some stuff:
 #include "renderer.h"
-#include <glm.hpp> //GLM is overkill but that's okay
-#include <gtc/matrix_transform.hpp>
-#include <gtx/transform.hpp>
+#include "reset-things.h"
+#include "keypress-manager.h"
+//other:
+#include "diagnostics.h"
 
 //important stuff:
-#include "rng.h"
-#include "color-value-holder.h"
 #include "background-rect.h"
 #include "tank.h"
 #include "wall.h"
@@ -27,28 +26,18 @@
 #include "rect-hazard.h"
 
 //managers:
-#include "game-scene-manager.h"
-#include "developer-manager.h"
 #include "game-manager.h"
-#include "keypress-manager.h"
 #include "tank-manager.h"
 #include "bullet-manager.h"
 #include "powerup-manager.h"
 #include "wall-manager.h"
 #include "level-manager.h"
 #include "hazard-manager.h"
-#include "diagnostics.h"
 
 //classes with important handling functions:
 #include "collision-handler.h"
-#include "reset-things.h"
-#include "priority-handler.h"
-#include "color-mixer.h"
-#include "power-function-helper.h"
 #include "end-game-handler.h"
 #include "physics-handler.h"
-
-#include "diagnostics.h"
 
 //#include <GL/glew.h>
 //#include <GL/freeglut.h>

@@ -157,6 +157,7 @@
     <ClCompile Include="circular-lightning-hazard.cpp" />
     <ClCompile Include="circular-no-bullet-zone-hazard.cpp" />
     <ClCompile Include="concealed-powerups-level.cpp" />
+    <ClCompile Include="custom-level-interpreter.cpp" />
     <ClCompile Include="dev-annoying-power.cpp" />
     <ClCompile Include="dev-backwards-movement-power.cpp" />
     <ClCompile Include="dev-color-changing-power.cpp" />
@@ -288,6 +289,7 @@
     <ClInclude Include="circular-lightning-hazard.h" />
     <ClInclude Include="circular-no-bullet-zone-hazard.h" />
     <ClInclude Include="concealed-powerups-level.h" />
+    <ClInclude Include="custom-level-interpreter.h" />
     <ClInclude Include="dev-annoying-power.h" />
     <ClInclude Include="dev-backwards-movement-power.h" />
     <ClInclude Include="dev-color-changing-power.h" />

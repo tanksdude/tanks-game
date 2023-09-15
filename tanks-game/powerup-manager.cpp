@@ -6,6 +6,8 @@ std::vector<PowerSquare*> PowerupManager::powerups; //active powersquares
 std::unordered_map<std::string, std::unordered_map<std::string, PowerFunction>> PowerupManager::powerLookup;
 std::unordered_map<std::string, std::vector<std::string>> PowerupManager::powerNameList;
 
+std::vector<std::string> PowerupManager::protectedTypes = { "null", "vanilla", "vanilla-extra", "random-vanilla", "old", "random-old", "supermix-vanilla", "ultimate-vanilla", "dev", "random-dev" };
+
 void PowerupManager::initialize() {
 	powerLookup.insert({ "vanilla", std::unordered_map<std::string, PowerFunction>() });
 	powerLookup.insert({ "vanilla-extra", std::unordered_map<std::string, PowerFunction>() }); //shotgun, mines, tracking, fire?, barrier?
@@ -19,6 +21,15 @@ void PowerupManager::initialize() {
 	powerLookup.insert({ "random", std::unordered_map<std::string, PowerFunction>() }); //general random
 	powerLookup.insert({ "dev", std::unordered_map<std::string, PowerFunction>() });
 	powerLookup.insert({ "random-dev", std::unordered_map<std::string, PowerFunction>() }); //would this be used?
+}
+
+std::string PowerupManager::checkCustomPowerTypesAgainstProtectedTypes(const std::vector<std::string>& types) noexcept {
+	for (int i = 0; i < protectedTypes.size(); i++) {
+		if (std::find(types.begin(), types.end(), protectedTypes[i]) != types.end()) {
+			return protectedTypes[i];
+		}
+	}
+	return "";
 }
 
 PowerSquare* PowerupManager::getPowerup(int index) {
@@ -64,35 +75,41 @@ void PowerupManager::addPowerFactory(PowerFunction factory) {
 	Power* p = factory();
 	std::vector<std::string> types = p->getPowerTypes();
 	for (int i = 0; i < types.size(); i++) {
-		/*
-		//is this necessary?
-		if (powerLookup.find(types[i]) == powerLookup.end()) {
-			powerLookup.insert({ types[i], std::unordered_map<std::string, PowerFunction>() });
+		if (types[i] == "null") {
+			std::string name = p->getName();
+			delete p;
+			throw std::runtime_error("power " + name + " includes \"null\" type, which is not allowed");
+		} else { [[likely]]
+			powerLookup[types[i]].insert({ p->getName(), factory });
+			powerNameList[types[i]].push_back(p->getName());
 		}
-		*/
-		powerLookup[types[i]].insert({ p->getName(), factory });
-		powerNameList[types[i]].push_back(p->getName());
 	}
 	delete p;
 }
 
 PowerFunction PowerupManager::getPowerFactory(std::string type, std::string name) {
 	if (powerLookup.find(type) == powerLookup.end()) {
-		throw std::domain_error("power type \"" + type + "\" unknown!");
+		throw std::runtime_error("power type \"" + type + "\" unknown!");
+	}
+	if (powerLookup[type].find(name) == powerLookup[type].end()) {
+		throw std::runtime_error("power name \"" + name + "\" (with type \"" + type + "\") unknown!");
 	}
 	return powerLookup[type][name];
 }
 
-std::string PowerupManager::getPowerName(std::string type, int index) {
+std::string PowerupManager::getPowerName(std::string type, unsigned int index) {
 	if (powerLookup.find(type) == powerLookup.end()) {
-		throw std::domain_error("power type \"" + type + "\" unknown!");
+		throw std::runtime_error("power type \"" + type + "\" unknown!");
+	}
+	if (index >= powerNameList[type].size()) {
+		throw std::range_error("power index " + std::to_string(index) + " is too large!");
 	}
 	return powerNameList[type][index];
 }
 
-int PowerupManager::getNumPowerTypes(std::string type) {
+unsigned int PowerupManager::getNumPowerTypes(std::string type) {
 	if (powerLookup.find(type) == powerLookup.end()) {
-		throw std::domain_error("power type \"" + type + "\" unknown!");
+		throw std::runtime_error("power type \"" + type + "\" unknown!");
 	}
 	return powerNameList[type].size();
 }

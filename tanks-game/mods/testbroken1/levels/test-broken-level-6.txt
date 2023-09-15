@@ -1,0 +1,4 @@
+Name = test-broken-level-6
+Color = 0.0   0.0   0.0
+LevelTypes = "testbroken1"
+LevelWeights = 1.0   1.0

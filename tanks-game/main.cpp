@@ -1,52 +1,31 @@
-#pragma once
-//main stuff
+//STL stuff
 #include <iostream>
+#include <string>
 #include <vector>
-#include <time.h>
 #include <chrono>
-#include <unordered_map>
 #include <stdexcept>
 
-//GPU rendering:
+//needed for callbacks and stuff:
 #include "renderer.h"
-#include <glm.hpp> //GLM is overkill but that's okay
-#include <gtc/matrix_transform.hpp>
-#include <gtx/transform.hpp>
-
-//important stuff:
 #include "rng.h"
 #include "color-value-holder.h"
-#include "background-rect.h"
-#include "tank.h"
-#include "wall.h"
-#include "bullet.h"
-#include "power-square.h"
-#include "level.h"
-#include "circle-hazard.h"
-#include "rect-hazard.h"
+#include "reset-things.h"
+#include "developer-manager.h"
+#include "keypress-manager.h"
+//other:
+#include "diagnostics.h"
+#include "basic-ini-parser.h"
+#include "custom-level-interpreter.h"
 
 //managers:
 #include "game-scene-manager.h"
-#include "developer-manager.h"
 #include "game-manager.h"
-#include "keypress-manager.h"
 #include "tank-manager.h"
 #include "bullet-manager.h"
 #include "powerup-manager.h"
 #include "wall-manager.h"
 #include "level-manager.h"
 #include "hazard-manager.h"
-#include "diagnostics.h"
-#include "basic-ini-parser.h"
-
-//classes with important handling functions:
-#include "collision-handler.h"
-#include "reset-things.h"
-#include "priority-handler.h"
-#include "color-mixer.h"
-#include "power-function-helper.h"
-#include "end-game-handler.h"
-#include "physics-handler.h"
 
 //levels:
 #include "default-random-level.h"
@@ -61,6 +40,8 @@
 #include "sneaky-reward-level.h"
 #include "lightning-corners-level.h"
 #include "lone-turret-level.h"
+#include "tight-patrolling-corridor-level.h"
+#include "dangerous-center-level.h"
 //special levels:
 #include "tricky-maneuvering-level.h"
 #include "mine-heaven-level.h"
@@ -75,9 +56,7 @@
 #include "unnamed-level-1.h"
 #include "unnamed-level-2.h"
 #include "dev-no-walls-level-1.h"
-#include "timed-reward-level.h"
-#include "tight-patrolling-corridor-level.h"
-#include "dangerous-center-level.h"
+#include "timed-reward-level.h" //added to vanilla-extra
 
 //level effects:
 #include "wind-level-effect.h"
@@ -141,7 +120,6 @@
 #include "wall-sparks-power.h" //create some extra bullets when hitting a wall
 #include "dev-weird-extra-cannons-power.h" //adds some extra cannons at weird angles
 
-//a lot of the includes aren't needed anymore thanks to GameMainLoop, but may as well keep them
 #include "game-main-loop.h"
 
 #include <GL/glew.h>
@@ -189,7 +167,7 @@ int main(int argc, char** argv) {
 			Renderer::PreInitialize(&argc, argv, name);
 		}
 	}
-	catch (std::exception& e) {
+	catch (const std::exception& e) {
 		std::cout << e.what() << std::endl;
 		return 1;
 	}
@@ -343,9 +321,11 @@ int main(int argc, char** argv) {
 	GameSceneManager::Initialize();
 	Renderer::Initialize();
 
+	CustomLevelInterpreter::ProcessCustomLevels();
+
 	Diagnostics::declareGraph("tick", ColorValueHolder(1.0f, 0.0f, 0.0f));
-	Diagnostics::declareGraph("upload", ColorValueHolder(0.0f, 0.0f, 1.0f));
-	Diagnostics::declareGraph("draw", ColorValueHolder(0.0f, 1.0f, 0.0f));
+	Diagnostics::declareGraph("upload", ColorValueHolder(0.0f, 1.0f, 0.0f));
+	Diagnostics::declareGraph("draw", ColorValueHolder(0.0f, 0.0f, 1.0f));
 
 #if _DEBUG
 	Diagnostics::setGraphYOffset(0);

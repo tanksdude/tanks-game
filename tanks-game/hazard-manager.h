@@ -97,8 +97,8 @@ public:
 	static RectHazard* getRectHazardByID(Game_ID);
 	static void pushCircleHazard(CircleHazard*);
 	static void pushRectHazard(RectHazard*);
-	static int getNumCircleHazards() { return circleHazards.size(); }
-	static int getNumRectHazards() { return rectHazards.size(); }
+	static unsigned int getNumCircleHazards() { return circleHazards.size(); }
+	static unsigned int getNumRectHazards() { return rectHazards.size(); }
 	static void deleteCircleHazard(int index);
 	static void deleteRectHazard(int index);
 	static void deleteCircleHazardByID(Game_ID);
@@ -115,10 +115,10 @@ public:
 	static RectHazardFactoryGroup getRectHazardFactoryGroup(std::string type, std::string name); //might not get used
 	static CircleHazardRandomizationFunction getCircleHazardRandomizationFunction(std::string type, std::string name);
 	static RectHazardRandomizationFunction getRectHazardRandomizationFunction(std::string type, std::string name);
-	static std::string getCircleHazardName(std::string type, int index);
-	static std::string getRectHazardName(std::string type, int index);
-	static int getNumCircleHazardTypes(std::string type);
-	static int getNumRectHazardTypes(std::string type);
+	static std::string getCircleHazardName(std::string type, unsigned int index);
+	static std::string getRectHazardName(std::string type, unsigned int index);
+	static unsigned int getNumCircleHazardTypes(std::string type);
+	static unsigned int getNumRectHazardTypes(std::string type);
 
 private:
 	HazardManager() = delete;

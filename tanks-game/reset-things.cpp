@@ -54,25 +54,7 @@ void ResetThings::reset(int) {
 	if (ini_data.exists("GAME_OPTIONS", "GameLevelPlaylist")) {
 		levelPlaylist = ini_data.get("GAME_OPTIONS", "GameLevelPlaylist");
 	}
-
-	std::vector<float> levelWeights;
-	levelWeights.reserve(LevelManager::getNumLevelTypes(levelPlaylist));
-	for (int i = 0; i < LevelManager::getNumLevelTypes(levelPlaylist); i++) {
-		std::string n = LevelManager::getLevelName(levelPlaylist, i);
-		Level* l = LevelManager::getLevelFactory(levelPlaylist, n)();
-		levelWeights.push_back(l->getWeights()[levelPlaylist]);
-		delete l;
-	}
-	int levelIndex = weightedSelect<float>(levelWeights.data(), levelWeights.size());
-	std::string levelName = LevelManager::getLevelName(levelPlaylist, levelIndex);
-	LevelManager::pushLevel(levelPlaylist, levelName);
-
-	/*
-	for (int i = 0; i < levelWeights.size(); i++) {
-		std::cout << levelWeights[i] << ", ";
-	}
-	std::cout << levelIndex << ", " << levelName << std::endl;
-	*/
+	LevelManager::pushLevel(levelPlaylist, LevelManager::levelWeightedSelect(levelPlaylist));
 #endif
 
 	//initialize levels from LevelManager level list

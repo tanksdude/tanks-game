@@ -399,6 +399,9 @@
     <ClCompile Include="dev-weird-extra-cannons-power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="custom-level-interpreter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -831,6 +834,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="dev-weird-extra-cannons-power.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="custom-level-interpreter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

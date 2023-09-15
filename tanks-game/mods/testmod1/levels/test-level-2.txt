@@ -1,0 +1,16 @@
+; required
+Name = test-level-2
+Color = 0.0   1.0   1.0
+LevelTypes = "testmod1"   "random-testmod1"
+LevelWeights = 1.0   1.0
+
+
+
+; actual level
+[LEVEL_START]
+
+WALL_Corners   320 160 80 60   40 20
+
+POWER_Corners   320 160 70 50   "vanilla" "invincible"
+
+RHAZARD   "vanilla" "lightning"   320 160   30 30

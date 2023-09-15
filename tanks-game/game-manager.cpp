@@ -12,10 +12,14 @@ void GameManager::Initialize() {
 
 void GameManager::initializeINI(std::string path) {
 	try {
-		INI_file = BasicINIParser::readFile(path);
+		INI_file = BasicINIParser::ReadFile(path);
 	}
-	catch (std::runtime_error& e) {
-		std::cout << e.what() << std::endl;
+	catch (const std::runtime_error& e) {
+		std::cerr << e.what() << std::endl;
+	}
+	catch (const std::exception& e) {
+		std::cerr << "Unexpected error: " << e.what() << std::endl;
+		return;
 	}
 }
 

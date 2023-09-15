@@ -1,0 +1,14 @@
+Name = test-broken-level-12
+Color = 0.0   0.0   0.0
+LevelTypes = "testbroken1"   "random-testbroken1"
+LevelWeights = 1.0   1.0
+
+RandomStartPositionCount = 5
+RandomStartPositionXValue = 20
+RandomStartPositionYRange = 256 ; 320-2*32
+
+
+
+[LEVEL_START]
+WALL_LR   320 160
+

@@ -1,0 +1,9 @@
+Name = test-broken-level-10
+Color = 0.0   0.0   0.0
+LevelTypes = "testbroken1"   "random-testbroken1"
+LevelWeights = 1.0   1.0
+
+RandomStartPositionCount = asdf
+RandomStartPositionXValue = asdf
+RandomStartPositionYRange = asdf
+
