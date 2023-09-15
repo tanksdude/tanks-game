@@ -38,7 +38,7 @@ std::vector<CustomLevelAction*> actions) {
 	this->levelTypes = std::vector<std::string>(types);
 	this->levelWeights = std::unordered_map<std::string, float>(weights);
 
-	this->startPosCount  = (startPosCount  < 0 ? ResetThings::default_tankStartingYCount : startPosCount); //startPosCount==1 handled by ResetThings
+	this->startPosCount  = (startPosCount  < 0 ? ResetThings::default_tankStartingYCount : startPosCount); //startPosCount==0 handled by ResetThings
 	this->startPosXValue = (startPosXValue < 0 ? ResetThings::default_tankToEdgeDist     : startPosXValue);
 	this->startPosYRange = (startPosYRange < 0 ? ResetThings::default_tankStartingYRange : startPosYRange);
 	this->initializationActions = std::vector<CustomLevelAction*>(actions);
