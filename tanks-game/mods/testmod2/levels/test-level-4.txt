@@ -1,0 +1,19 @@
+; required
+Name = test-level-4
+Color = 1.0   1.0   0.0
+LevelTypes = "testmod2"   "random-testmod2"
+LevelWeights = 1.0   1.0
+
+; optional
+RandomStartPositionCount = 0
+RandomStartPositionXValue = 40
+
+
+
+; actual level
+[LEVEL_START]
+
+CLASSIC_WALLS
+
+RANDOM_WALLS   320 160 336 240   16   8 24 16 72
+; numbers from bigfun level and LevelHelper

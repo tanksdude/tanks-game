@@ -84,6 +84,11 @@ CustomLevel::CustomLevelCommands CustomLevel::strToCommand(const std::string& st
 	} else if (str == "POWER_DiagBackwardSlash") {
 		levelCommand = CustomLevel::CustomLevelCommands::POWER_DiagBackwardSlash;
 	}
+	else if (str == "RANDOM_WALLS") {
+		levelCommand = CustomLevel::CustomLevelCommands::RANDOM_WALLS;
+	} else if (str == "CLASSIC_WALLS") {
+		levelCommand = CustomLevel::CustomLevelCommands::CLASSIC_WALLS;
+	}
 	else if (str == "CHAZARD") {
 		levelCommand = CustomLevel::CustomLevelCommands::CHAZARD;
 	} else if (str == "RHAZARD") {
@@ -124,6 +129,13 @@ void CustomLevel::initialize() {
 				initialization_WALL_DiagBackwardSlash(data, color);
 				break;
 
+			case CustomLevelCommands::RANDOM_WALLS:
+				initialization_RANDOM_WALLS(data, color);
+				break;
+			case CustomLevelCommands::CLASSIC_WALLS:
+				initialization_CLASSIC_WALLS(color);
+				break;
+
 			case CustomLevelCommands::POWER:
 				initialization_POWER(data);
 				break;
@@ -147,7 +159,6 @@ void CustomLevel::initialize() {
 				try {
 					initialization_CHAZARD(data);
 				}
-				//catch (const std::exception& e) {
 				catch (const std::runtime_error& e) {
 					std::cerr << "Error initializing circle hazard: " << e.what() << std::endl;
 				}
@@ -156,7 +167,6 @@ void CustomLevel::initialize() {
 				try {
 					initialization_RHAZARD(data);
 				}
-				//catch (const std::exception& e) {
 				catch (const std::runtime_error& e) {
 					std::cerr << "Error initializing rect hazard: " << e.what() << std::endl;
 				}
@@ -250,6 +260,35 @@ inline void CustomLevel::initialization_WALL_DiagBackwardSlash(const GenericFact
 	WallManager::pushWall(new Wall(pos.x, pos.y, width, height, wallColor));
 	pos = LevelHelper::getSymmetricWallPositions_DiagBackwardSlash(1, centerX, centerY, offsetX, offsetY, width, height);
 	WallManager::pushWall(new Wall(pos.x, pos.y, width, height, wallColor));
+}
+
+inline void CustomLevel::initialization_RANDOM_WALLS(const GenericFactoryConstructionData& data, ColorValueHolder wallColor) noexcept {
+	double* dataArr = (double*)data.getDataPortion(0);
+	double area_startX = dataArr[0];
+	double area_startY = dataArr[1];
+	double area_width  = dataArr[2];
+	double area_height = dataArr[3];
+	int wall_count = ((int*)data.getDataPortion(1))[0];
+
+	if (data.getDataCount() > 2) {
+		double* dataArr_optional = (double*)data.getDataPortion(2);
+		double wall_minWidth  = dataArr_optional[0];
+		double wall_maxWidth  = dataArr_optional[1];
+		double wall_minHeight = dataArr_optional[2];
+		double wall_maxHeight = dataArr_optional[3];
+
+		for (int i = 0; i < wall_count; i++) {
+			//yeah, the min/max on width/height are switched, oh well
+			WallManager::pushWall(LevelHelper::makeNewRandomWall(area_startX, area_startY, area_width, area_height, wallColor, wall_minWidth, wall_minHeight, wall_maxWidth, wall_maxHeight));
+		}
+	} else {
+		for (int i = 0; i < wall_count; i++) {
+			WallManager::pushWall(LevelHelper::makeNewRandomWall(area_startX, area_startY, area_width, area_height, wallColor));
+		}
+	}
+}
+inline void CustomLevel::initialization_CLASSIC_WALLS(ColorValueHolder wallColor) noexcept {
+	LevelHelper::pushClassicWalls(wallColor);
 }
 
 inline void CustomLevel::initialization_POWER(const GenericFactoryConstructionData& data) noexcept {
@@ -387,12 +426,6 @@ void CustomLevelInterpreter::ProcessCustomLevels() noexcept {
 		std::cerr << "CustomLevelInterpreter::getListOfUnknownMods() error: " << e.what() << std::endl;
 		//return; //keep going
 	}
-	/*
-	catch (const std::exception& e) {
-		std::cerr << "CustomLevelInterpreter::getListOfKnownMods() Unexpected error: " << e.what() << std::endl;
-		return;
-	}
-	*/
 
 	try {
 		std::vector<std::string> unknownList = getListOfUnknownMods();
@@ -410,12 +443,6 @@ void CustomLevelInterpreter::ProcessCustomLevels() noexcept {
 		std::cerr << "CustomLevelInterpreter::getListOfUnknownMods() filesystem_error: " << e.what() << std::endl;
 		return; //likely some major problem, so quit
 	}
-	/*
-	catch (const std::exception& e) {
-		std::cerr << "CustomLevelInterpreter::getListOfUnknownMods() Unexpected error: " << e.what() << std::endl;
-		return;
-	}
-	*/
 
 	try {
 		std::vector<std::string> ignoreList = getListOfIgnoredMods();
@@ -432,12 +459,6 @@ void CustomLevelInterpreter::ProcessCustomLevels() noexcept {
 		std::cerr << "CustomLevelInterpreter::getListOfIgnoredMods() error: " << e.what() << std::endl;
 		//return; //keep going
 	}
-	/*
-	catch (const std::exception& e) {
-		std::cerr << "CustomLevelInterpreter::getListOfIgnoredMods() Unexpected error: " << e.what() << std::endl;
-		return;
-	}
-	*/
 
 	for (int i = 0; i < modOrder_list.size(); i++) {
 		std::vector<std::string> levelOrder_list;
@@ -460,12 +481,6 @@ void CustomLevelInterpreter::ProcessCustomLevels() noexcept {
 				std::cerr << "ERROR: Unable to process " + levelPath + ", reason: " << e.what() << std::endl;
 				continue;
 			}
-			/*
-			catch (const std::exception& e) {
-				std::cerr << "ERROR: Catastrophic error processing " + levelPath + ", message: " << e.what() << std::endl;
-				continue;
-			}
-			*/
 
 			if (level == nullptr) { [[unlikely]]
 				//std::cerr << "WARNING: Bad path \"" + levelPath + "\"" << std::endl;
@@ -479,13 +494,6 @@ void CustomLevelInterpreter::ProcessCustomLevels() noexcept {
 					delete level;
 					continue;
 				}
-				/*
-				catch (const std::exception& e) {
-					std::cerr << "ERROR: Catastrophic error materializing " + levelPath + ", message: " << e.what() << std::endl;
-					delete level;
-					continue;
-				}
-				*/
 			}
 
 			std::cout << "Processed custom level: " + levelPath << std::endl;
@@ -813,9 +821,11 @@ inline CustomLevel::CustomLevelAction* CustomLevelInterpreter::stringToAction(co
 		//BasicINIParser::processEscapeSequences_all(words[words.size()-1]);
 	}
 
+	/*
 	if (words.size() <= 1) { [[unlikely]]
 		throw std::runtime_error("line " + std::to_string(command.second) + " insufficient parameters");
 	}
+	*/
 
 	CustomLevel::CustomLevelCommands levelCommand = CustomLevel::strToCommand(words[0]);
 	std::string levelCommand_strBackup = words[0]; //for printing error messages
@@ -843,6 +853,13 @@ inline CustomLevel::CustomLevelAction* CustomLevelInterpreter::stringToAction(co
 				break;
 			case CustomLevel::CustomLevelCommands::WALL_DiagBackwardSlash:
 				stringToAction_WALL_DiagBackwardSlash(words, constructionData);
+				break;
+
+			case CustomLevel::CustomLevelCommands::RANDOM_WALLS:
+				stringToAction_RANDOM_WALLS(words, constructionData);
+				break;
+			case CustomLevel::CustomLevelCommands::CLASSIC_WALLS:
+				stringToAction_CLASSIC_WALLS();
 				break;
 
 			case CustomLevel::CustomLevelCommands::POWER:
@@ -971,6 +988,59 @@ inline void CustomLevelInterpreter::stringToAction_WALL_DiagForwardSlash(const s
 }
 inline void CustomLevelInterpreter::stringToAction_WALL_DiagBackwardSlash(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData) {
 	stringToAction_WALL_Corners(words, constructionData);
+}
+
+inline void CustomLevelInterpreter::stringToAction_RANDOM_WALLS(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData) {
+	if (words.size() < 5) {
+		throw std::runtime_error("expected 5 data items but got " + std::to_string(words.size()));
+	}
+
+	if (words.size() > 5 && words.size() < 9) {
+		throw std::runtime_error("expected (5+4) data items but got " + std::to_string(words.size()));
+	}
+
+	double area_centerX, area_centerY, area_width, area_height;
+	int wall_count;
+	double wall_minWidth, wall_maxWidth, wall_minHeight, wall_maxHeight; //optional
+
+	if (words.size() == 5) {
+		try {
+			area_centerX = std::stod(words[0]);
+			area_centerY = std::stod(words[1]);
+			area_width   = std::stod(words[2]);
+			area_height  = std::stod(words[3]);
+			wall_count   = std::stoi(words[4]);
+		}
+		catch (const std::exception&) {
+			throw std::runtime_error("unable to parse values");
+		}
+
+		constructionData.pushData(4, new double[4]{ area_centerX-area_width/2, area_centerY-area_height/2, area_width, area_height });
+		constructionData.pushData(1, new int[1]{ wall_count });
+	} else {
+		try {
+			area_centerX = std::stod(words[0]);
+			area_centerY = std::stod(words[1]);
+			area_width   = std::stod(words[2]);
+			area_height  = std::stod(words[3]);
+			wall_count   = std::stoi(words[4]);
+
+			wall_minWidth  = std::stod(words[5]);
+			wall_maxWidth  = std::stod(words[6]);
+			wall_minHeight = std::stod(words[7]);
+			wall_maxHeight = std::stod(words[8]);
+		}
+		catch (const std::exception&) {
+			throw std::runtime_error("unable to parse values");
+		}
+
+		constructionData.pushData(4, new double[4]{ area_centerX-area_width/2, area_centerY-area_height/2, area_width, area_height });
+		constructionData.pushData(1, new int[1]{ wall_count });
+		constructionData.pushData(4, new double[4]{ wall_minWidth, wall_maxWidth, wall_minHeight, wall_maxHeight });
+	}
+}
+inline void CustomLevelInterpreter::stringToAction_CLASSIC_WALLS() {
+	//nothing...
 }
 
 inline void CustomLevelInterpreter::stringToAction_POWER(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData) {

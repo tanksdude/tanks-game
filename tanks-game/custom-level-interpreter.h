@@ -18,6 +18,9 @@ public:
 		WALL_DiagForwardSlash,
 		WALL_DiagBackwardSlash,
 
+		RANDOM_WALLS,  //area to be placed in, count, width range, height range
+		CLASSIC_WALLS, //no parameters
+
 		POWER,
 		POWER_LR,
 		POWER_UD,
@@ -28,9 +31,6 @@ public:
 
 		CHAZARD,
 		RHAZARD,
-
-		RANDOM_WALLS,  //area to be placed in, count, width range, height range
-		CLASSIC_WALLS, //no parameters
 
 		UNKNOWN //error, don't use
 	};
@@ -70,6 +70,9 @@ protected:
 	static inline void initialization_WALL_Corners(const GenericFactoryConstructionData&, ColorValueHolder wallColor) noexcept;
 	static inline void initialization_WALL_DiagForwardSlash(const GenericFactoryConstructionData&, ColorValueHolder wallColor) noexcept;
 	static inline void initialization_WALL_DiagBackwardSlash(const GenericFactoryConstructionData&, ColorValueHolder wallColor) noexcept;
+
+	static inline void initialization_RANDOM_WALLS(const GenericFactoryConstructionData&, ColorValueHolder wallColor) noexcept;
+	static inline void initialization_CLASSIC_WALLS(ColorValueHolder wallColor) noexcept;
 
 	static inline void initialization_POWER(const GenericFactoryConstructionData&) noexcept;
 	static inline void initialization_POWER_LR(const GenericFactoryConstructionData&) noexcept;
@@ -130,6 +133,9 @@ protected:
 	static inline void stringToAction_WALL_Corners(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData);
 	static inline void stringToAction_WALL_DiagForwardSlash(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData);
 	static inline void stringToAction_WALL_DiagBackwardSlash(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData);
+
+	static inline void stringToAction_RANDOM_WALLS(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData);
+	static inline void stringToAction_CLASSIC_WALLS();
 
 	static inline void stringToAction_POWER(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData);
 	static inline void stringToAction_POWER_LR(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData);
