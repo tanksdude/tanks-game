@@ -1,7 +1,6 @@
 #include "concealed-powerups-level.h"
 #include "constants.h"
 #include "level-helper.h"
-#include "tank-manager.h"
 #include "powerup-manager.h"
 #include "wall-manager.h"
 #include "hazard-manager.h"
@@ -19,7 +18,7 @@ std::unordered_map<std::string, float> ConcealedPowerupsLevel::getWeights() cons
 }
 
 void ConcealedPowerupsLevel::initialize() {
-	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40);
+	ResetThings::tankPositionReset(40);
 
 	//in JS, power mixing was turned off
 	ColorValueHolder color = getDefaultColor();
@@ -28,11 +27,7 @@ void ConcealedPowerupsLevel::initialize() {
 	GenericFactoryConstructionData constructionData;
 	double* posArr;
 
-	for (int i = 0; i < 4; i++) {
-		//classic JS walls
-		pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-40*2-32, GAME_HEIGHT/2-128, 32, 128);
-		WallManager::pushWall(new Wall(pos.x, pos.y, 32, 128, color));
-	}
+	LevelHelper::pushClassicWalls(color);
 
 	pos = LevelHelper::getSymmetricWallPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, 70, 160, 20);
 	posArr = new double[4]{ pos.x, pos.y, 160, 20 };
@@ -64,7 +59,7 @@ void ConcealedPowerupsLevel::initialize() {
 	pos = LevelHelper::getSymmetricPowerupPositions_UD(1, GAME_WIDTH/2, GAME_HEIGHT/2, 20);
 	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, LevelHelper::simplePowerAlternate(1, tempRand, "speed", "invincible")));
 
-	tempRand = RNG::randFunc() * 2;
+	//tempRand = RNG::randFunc() * 2;
 	pos = LevelHelper::getSymmetricPowerupPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 20);
 	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "grenade"));
 	pos = LevelHelper::getSymmetricPowerupPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 20);

@@ -2,7 +2,6 @@
 #include "level-manager.h"
 #include "constants.h"
 #include "level-helper.h"
-#include "tank-manager.h"
 #include "powerup-manager.h"
 #include "wall-manager.h"
 #include "hazard-manager.h"
@@ -23,7 +22,7 @@ void MineHeavenLevel::tick() {
 }
 
 void MineHeavenLevel::initialize() {
-	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40);
+	ResetThings::tankPositionReset(40);
 
 	//in JS, power mixing was turned off
 	ColorValueHolder color = getDefaultColor();
@@ -34,12 +33,7 @@ void MineHeavenLevel::initialize() {
 	std::string* paras;
 	std::string* names;
 
-	PositionHolder* wallArray = new PositionHolder[4];
-	for (int i = 0; i < 4; i++) {
-		//classic JS walls
-		wallArray[i] = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-40*2-32, GAME_HEIGHT/2-128, 32, 128);
-		WallManager::pushWall(new Wall(wallArray[i].x, wallArray[i].y, 32, 128, color));
-	}
+	LevelHelper::pushClassicWalls(color);
 
 	//total of 77 mine powerups
 
@@ -80,8 +74,6 @@ void MineHeavenLevel::initialize() {
 	}
 
 	//it's possible to condense the powerups into the one or two loops, but I don't care
-
-	delete[] wallArray;
 }
 
 Level* MineHeavenLevel::factory() {
@@ -89,12 +81,7 @@ Level* MineHeavenLevel::factory() {
 }
 
 MineHeavenLevel::MineHeavenLevel() {
-	PositionHolder* wallArray = new PositionHolder[4];
-	for (int i = 0; i < 4; i++) {
-		//classic JS walls
-		wallArray[i] = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-40*2-32, GAME_HEIGHT/2-128, 32, 128);
-		//WallManager::pushWall(new Wall(wallArray[i].x, wallArray[i].y, 32, 128, color));
-	}
+	PositionHolder* wallArray = LevelHelper::getClassicWallPositions();
 
 	GenericFactoryConstructionData constructionData;
 	effects.push_back(LevelManager::getLevelEffectFactory("vanilla-extra", "ice")(constructionData));

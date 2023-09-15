@@ -1,7 +1,6 @@
 #include "developer-level-2.h"
 #include "constants.h"
 #include "level-helper.h"
-#include "tank-manager.h"
 #include "powerup-manager.h"
 #include "reset-things.h"
 
@@ -19,7 +18,7 @@ std::unordered_map<std::string, float> DeveloperLevel2::getWeights() const {
 
 void DeveloperLevel2::initialize() {
 	//primary purpose: banana testing
-	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), ResetThings::default_tankToEdgeDist, GAME_HEIGHT/2);
+	ResetThings::tankPositionReset(ResetThings::default_tankToEdgeDist, GAME_HEIGHT/2);
 
 	//int tempRand;
 	PositionHolder pos;

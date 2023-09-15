@@ -2,7 +2,6 @@
 #include "level-manager.h"
 #include "constants.h"
 #include "level-helper.h"
-#include "tank-manager.h"
 #include "powerup-manager.h"
 #include "wall-manager.h"
 #include "hazard-manager.h"
@@ -29,7 +28,7 @@ void WinningPathLevel::tick() {
 }
 
 void WinningPathLevel::initialize() {
-	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40);
+	ResetThings::tankPositionReset(40);
 
 	ColorValueHolder color = getDefaultColor();
 	//int tempRand;
@@ -37,12 +36,8 @@ void WinningPathLevel::initialize() {
 	//GenericFactoryConstructionData constructionData;
 	//double* posArr;
 
-	PositionHolder* wallArray = new PositionHolder[4];
-	for (int i = 0; i < 4; i++) {
-		//classic JS walls
-		wallArray[i] = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-40*2-32, GAME_HEIGHT/2-128, 32, 128);
-		WallManager::pushWall(new Wall(wallArray[i].x, wallArray[i].y, 32, 128, color));
-	}
+	LevelHelper::pushClassicWalls(color);
+	PositionHolder* wallArray = LevelHelper::getClassicWallPositions();
 
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "godmode"));
 

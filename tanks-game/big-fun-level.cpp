@@ -1,7 +1,6 @@
 #include "big-fun-level.h"
 #include "constants.h"
 #include "level-helper.h"
-#include "tank-manager.h"
 #include "powerup-manager.h"
 #include "wall-manager.h"
 #include "mylib.h" //weightedSelect
@@ -23,7 +22,7 @@ ColorValueHolder BigFunLevel::getDefaultColor() const {
 }
 
 void BigFunLevel::initialize() {
-	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40);
+	ResetThings::tankPositionReset(40);
 
 	ColorValueHolder color = getDefaultColor();
 	int tempRand;
@@ -31,11 +30,7 @@ void BigFunLevel::initialize() {
 	//GenericFactoryConstructionData constructionData;
 	//double* posArr;
 
-	for (int i = 0; i < 4; i++) {
-		//classic JS walls
-		pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-40*2-32, GAME_HEIGHT/2-128, 32, 128);
-		WallManager::pushWall(new Wall(pos.x, pos.y, 32, 128, color));
-	}
+	LevelHelper::pushClassicWalls(color);
 
 	for (int i = 0; i < 16; i++) {
 		WallManager::pushWall(LevelHelper::makeNewRandomWall(80+32+40, 40, GAME_WIDTH - 2*(80+32+40), GAME_HEIGHT - 2*40, color));

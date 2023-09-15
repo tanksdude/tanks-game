@@ -10,11 +10,10 @@
 #include <algorithm> //std::find
 
 #include "reset-things.h"
-#include "tank-manager.h"
 #include "wall-manager.h"
 #include "powerup-manager.h"
 #include "hazard-manager.h"
-#include "rng.h"
+//#include "rng.h"
 #include "level-helper.h"
 
 const std::string CustomLevelInterpreter::ModOrderPath = "mods/order.txt";
@@ -39,9 +38,9 @@ std::vector<CustomLevelAction*> actions) {
 	this->levelTypes = std::vector<std::string>(types);
 	this->levelWeights = std::unordered_map<std::string, float>(weights);
 
-	this->startPosCount  = (startPosCount  < 1 ? 5                      : startPosCount);
-	this->startPosXValue = (startPosXValue < 0 ? 20                     : startPosXValue);
-	this->startPosYRange = (startPosYRange < 0 ? (8.0/10 * GAME_HEIGHT) : startPosYRange);
+	this->startPosCount  = (startPosCount  < 0 ? ResetThings::default_tankStartingYCount : startPosCount); //startPosCount==1 handled by ResetThings
+	this->startPosXValue = (startPosXValue < 0 ? ResetThings::default_tankToEdgeDist     : startPosXValue);
+	this->startPosYRange = (startPosYRange < 0 ? ResetThings::default_tankStartingYRange : startPosYRange);
 	this->initializationActions = std::vector<CustomLevelAction*>(actions);
 }
 
@@ -98,9 +97,7 @@ CustomLevel::CustomLevelCommands CustomLevel::strToCommand(const std::string& st
 }
 
 void CustomLevel::initialize() {
-	int randNum = RNG::randFunc() * startPosCount;
-	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), startPosXValue, randNum * (startPosYRange/startPosCount) + (startPosYRange/(2*startPosCount)));
-	//TODO: change this to no longer require TankManager or RNG
+	ResetThings::tankPositionReset(startPosXValue, startPosYRange, startPosCount);
 
 	ColorValueHolder color = getDefaultColor();
 

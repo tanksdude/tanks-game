@@ -2,12 +2,33 @@
 #include "mylib.h" //isInArray, weightedSelect
 #include "rng.h"
 #include "powerup-manager.h"
+#include "wall-manager.h" //only used by pushClassicWalls()
 
 Wall* LevelHelper::makeNewRandomWall(double x_beginning, double y_beginning, double width_ofArea, double height_ofArea, ColorValueHolder c, double minW, double minH, double maxW, double maxH) {
 	double w = RNG::randFunc() * (maxW - minW) + minW;
 	double h = RNG::randFunc() * (maxH - minH) + minH;
 
 	return new Wall(x_beginning + RNG::randFunc() * (width_ofArea - w), y_beginning + RNG::randFunc() * (height_ofArea - h), w, h, c);
+}
+
+void LevelHelper::pushClassicWalls(ColorValueHolder c) {
+	for (int i = 0; i < 4; i++) {
+		//classic JS walls
+		PositionHolder pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-40*2-32, GAME_HEIGHT/2-128, 32, 128);
+		WallManager::pushWall(new Wall(pos.x, pos.y, 32, 128, c));
+	}
+
+	//compiler warning C4506: can't inline a function if it's not defined right away, unless extern is used
+	//that's why this function wasn't declared as inline
+}
+
+PositionHolder* LevelHelper::getClassicWallPositions() {
+	PositionHolder* wallArray = new PositionHolder[4];
+	for (int i = 0; i < 4; i++) {
+		//classic JS walls
+		wallArray[i] = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-40*2-32, GAME_HEIGHT/2-128, 32, 128);
+	}
+	return wallArray;
 }
 
 std::string* LevelHelper::getRandomPowers(int count, std::string type) {

@@ -10,6 +10,9 @@ public:
 	static inline Wall* makeNewRandomWall(double x_beginning, double y_beginning, double width_ofArea, double height_ofArea, ColorValueHolder c) {
 		return LevelHelper::makeNewRandomWall(x_beginning, y_beginning, width_ofArea, height_ofArea, c, 12, 8, 64, 96);
 	}
+	static void pushClassicWalls(ColorValueHolder c);
+	[[nodiscard]] static PositionHolder* getClassicWallPositions();
+
 	static std::string* getRandomPowers(int count, std::string type); //handles stacking and weights for a whole group (use this)
 	static std::string* getRandomPowers(int count, std::string type, std::string* names, int nameCount); //no option for multiple types (it's effort)
 	static std::string* getRandomPowersOld(int count, bool replacement, std::string* names, int nameCount); //equal weight, replacement is an option

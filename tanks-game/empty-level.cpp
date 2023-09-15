@@ -1,6 +1,6 @@
 #include "empty-level.h"
-#include "tank-manager.h"
 #include "reset-things.h"
+#include "constants.h"
 
 std::unordered_map<std::string, float> EmptyLevel::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -12,7 +12,7 @@ std::unordered_map<std::string, float> EmptyLevel::getWeights() const {
 }
 
 void EmptyLevel::initialize() {
-	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), ResetThings::default_tankToEdgeDist, GAME_HEIGHT/2);
+	ResetThings::tankPositionReset(ResetThings::default_tankToEdgeDist, GAME_HEIGHT/2);
 	//positions are also reset in ResetThings, but may as well put this here in case something changes
 }
 

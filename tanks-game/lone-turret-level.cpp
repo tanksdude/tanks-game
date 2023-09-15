@@ -1,7 +1,6 @@
 #include "lone-turret-level.h"
 #include "constants.h"
 #include "level-helper.h"
-#include "tank-manager.h"
 #include "powerup-manager.h"
 #include "wall-manager.h"
 #include "hazard-manager.h"
@@ -19,7 +18,7 @@ std::unordered_map<std::string, float> LoneTurretLevel::getWeights() const {
 }
 
 void LoneTurretLevel::initialize() {
-	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40);
+	ResetThings::tankPositionReset(40);
 
 	ColorValueHolder color = getDefaultColor();
 	int tempRand;
@@ -27,12 +26,7 @@ void LoneTurretLevel::initialize() {
 	GenericFactoryConstructionData constructionData;
 	double* posArr;
 
-	//TODO: should these walls exist?
-	//for (int i = 0; i < 4; i++) {
-	//	//classic JS walls
-	//	pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-40*2-32, GAME_HEIGHT/2-128, 32, 128);
-	//	WallManager::pushWall(new Wall(pos.x, pos.y, 32, 128, color));
-	//}
+	//LevelHelper::pushClassicWalls(color);
 
 	posArr = new double[3]{ GAME_WIDTH/2, GAME_HEIGHT/2, PI/2 * (floor(RNG::randFunc()*2)*2-1) };
 	constructionData = GenericFactoryConstructionData(3, posArr);

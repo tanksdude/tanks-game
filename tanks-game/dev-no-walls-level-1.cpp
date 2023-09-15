@@ -1,7 +1,6 @@
 #include "dev-no-walls-level-1.h"
 #include "constants.h"
 #include "level-helper.h"
-#include "tank-manager.h"
 #include "powerup-manager.h"
 #include "hazard-manager.h"
 #include "reset-things.h"
@@ -20,17 +19,16 @@ std::unordered_map<std::string, float> DevNoWallsLevel1::getWeights() const {
 }
 
 void DevNoWallsLevel1::initialize() {
-	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40);
+	ResetThings::tankPositionReset(40);
 
 	//int tempRand;
 	PositionHolder pos;
 	GenericFactoryConstructionData constructionData;
 	double* posArr;
 
-	PositionHolder* wallArray = new PositionHolder[4];
+	PositionHolder* wallArray = LevelHelper::getClassicWallPositions();
 	for (int i = 0; i < 4; i++) {
 		//classic JS walls, except NoBulletZones
-		wallArray[i] = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-40*2-32, GAME_HEIGHT/2-128, 32, 128);
 		posArr = new double[4]{ wallArray[i].x, wallArray[i].y, 32, 128 };
 		constructionData = GenericFactoryConstructionData(4, posArr);
 		HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "no_bullet_zone")(constructionData));
@@ -50,6 +48,8 @@ void DevNoWallsLevel1::initialize() {
 	//triple, grenade, fire, mines, tracking?
 	//other potential hazards:
 	//none
+
+	delete[] wallArray;
 }
 
 Level* DevNoWallsLevel1::factory() {

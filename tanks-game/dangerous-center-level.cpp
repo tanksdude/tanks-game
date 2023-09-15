@@ -1,7 +1,6 @@
 #include "dangerous-center-level.h"
 #include "constants.h"
 #include "level-helper.h"
-#include "tank-manager.h"
 #include "powerup-manager.h"
 #include "wall-manager.h"
 #include "hazard-manager.h"
@@ -24,10 +23,7 @@ std::unordered_map<std::string, float> DangerousCenterLevel::getWeights() const 
 }
 
 void DangerousCenterLevel::initialize() {
-	//ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40);
-	int randNum = RNG::randFunc() * 3;
-	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), ResetThings::default_tankToEdgeDist, (randNum+1) * (GAME_HEIGHT/5) + (GAME_HEIGHT/10));
-	//from tight patrolling corridor level
+	ResetThings::tankPositionReset(ResetThings::default_tankToEdgeDist, (2.0/5) * GAME_HEIGHT, 3);
 
 	ColorValueHolder color = getDefaultColor();
 	int tempRand;

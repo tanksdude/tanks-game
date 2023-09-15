@@ -22,7 +22,10 @@ T constrain(T value, T min, T max);
 //changed to C++20 ("ISO C++20 Standard (/std:c++20)") because I want attributes (mainly [[likely]] and [[unlikely]])
 //apparently it's been possible since VS2017, wish I knew https://learn.microsoft.com/en-us/cpp/build/reference/std-specify-language-standard-version?view=msvc-170
 
-inline bool XOR(bool, bool);
+constexpr bool XOR(bool a, bool b) {
+	return (a != b);
+	//return ((a || b) && !(a && b));
+}
 
 //algorithm from https://wrf.ecse.rpi.edu/Research/Short_Notes/pnpoly.html
 bool pointInPolygon(int vertNum, double* vertX, double* vertY, double testX, double testY);

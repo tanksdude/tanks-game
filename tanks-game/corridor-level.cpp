@@ -1,7 +1,6 @@
 #include "corridor-level.h"
 #include "constants.h"
 #include "level-helper.h"
-#include "tank-manager.h"
 #include "powerup-manager.h"
 #include "wall-manager.h"
 #include "reset-things.h"
@@ -18,7 +17,7 @@ std::unordered_map<std::string, float> CorridorLevel::getWeights() const {
 }
 
 void CorridorLevel::initialize() {
-	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40);
+	ResetThings::tankPositionReset(40);
 
 	ColorValueHolder color = getDefaultColor();
 	int tempRand;
@@ -26,11 +25,7 @@ void CorridorLevel::initialize() {
 	//GenericFactoryConstructionData constructionData;
 	//double* posArr;
 
-	for (int i = 0; i < 4; i++) {
-		//classic JS walls
-		pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-40*2-32, GAME_HEIGHT/2-128, 32, 128);
-		WallManager::pushWall(new Wall(pos.x, pos.y, 32, 128, color));
-	}
+	LevelHelper::pushClassicWalls(color);
 
 	pos = LevelHelper::getSymmetricWallPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 70, 20, 140);
 	WallManager::pushWall(new Wall(pos.x, pos.y, 20, 140, color));

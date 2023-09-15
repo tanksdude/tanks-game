@@ -2,7 +2,6 @@
 #include "constants.h"
 #include <cmath>
 #include "level-helper.h"
-#include "tank-manager.h"
 #include "wall-manager.h"
 #include "powerup-manager.h"
 #include "hazard-manager.h"
@@ -40,7 +39,7 @@ void TimedRewardLevel::tick() {
 }
 
 void TimedRewardLevel::initialize() {
-	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40);
+	ResetThings::tankPositionReset(40);
 
 	ColorValueHolder color = getDefaultColor();
 	//int tempRand;

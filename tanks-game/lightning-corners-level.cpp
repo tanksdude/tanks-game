@@ -1,7 +1,6 @@
 #include "lightning-corners-level.h"
 #include "constants.h"
 #include "level-helper.h"
-#include "tank-manager.h"
 #include "powerup-manager.h"
 #include "wall-manager.h"
 #include "hazard-manager.h"
@@ -18,7 +17,7 @@ std::unordered_map<std::string, float> LightningCornersLevel::getWeights() const
 }
 
 void LightningCornersLevel::initialize() {
-	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40);
+	ResetThings::tankPositionReset(40);
 
 	ColorValueHolder color = getDefaultColor();
 	//int tempRand;
@@ -27,11 +26,7 @@ void LightningCornersLevel::initialize() {
 	double* posArr;
 	std::string* names;
 
-	for (int i = 0; i < 4; i++) {
-		//classic JS walls
-		pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-40*2-32, GAME_HEIGHT/2-128, 32, 128);
-		WallManager::pushWall(new Wall(pos.x, pos.y, 32, 128, color));
-	}
+	LevelHelper::pushClassicWalls(color);
 
 	for (int i = 0; i < 4; i++) {
 		pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 80-20, 80-20, 20, 20);

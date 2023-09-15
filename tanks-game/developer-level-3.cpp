@@ -1,7 +1,6 @@
 #include "developer-level-3.h"
 #include "constants.h"
 #include "level-helper.h"
-#include "tank-manager.h"
 #include "powerup-manager.h"
 #include "wall-manager.h"
 #include "hazard-manager.h"
@@ -20,7 +19,7 @@ std::unordered_map<std::string, float> DeveloperLevel3::getWeights() const {
 
 void DeveloperLevel3::initialize() {
 	//primary purpose: stupid powerup showcase
-	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), ResetThings::default_tankToEdgeDist, GAME_HEIGHT/2);
+	ResetThings::tankPositionReset(ResetThings::default_tankToEdgeDist, GAME_HEIGHT/2);
 
 	ColorValueHolder color = getDefaultColor();
 	//int tempRand;

@@ -14,7 +14,9 @@
 #include "diagnostics.h"
 #include <iostream>
 
+const int ResetThings::default_tankStartingYCount = 5;
 const double ResetThings::default_tankToEdgeDist = 20;
+const double ResetThings::default_tankStartingYRange = (4.0/5) * GAME_HEIGHT;
 
 void ResetThings::reset(int) {
 	EndGameHandler::finalizeScores();
@@ -47,7 +49,8 @@ void ResetThings::reset(int) {
 	TankManager::pushTank(new Tank(default_tankToEdgeDist, GAME_HEIGHT/2, 0, 1, "WASD", shootCooldown));
 	TankManager::pushTank(new Tank(GAME_WIDTH-default_tankToEdgeDist, GAME_HEIGHT/2, PI, 2, "Arrow Keys", shootCooldown));
 
-#if _DEBUG
+//#if _DEBUG
+#if 0
 	LevelManager::pushLevel("dev", "dev0");
 #else
 	std::string levelPlaylist = "random-vanilla";
@@ -172,25 +175,45 @@ void ResetThings::firstLevelPush() {
 //TODO: tankPositionReset should have a version with no Tank inputs
 //worry about this when there's more than two tanks
 
-void ResetThings::tankPositionReset(Tank* first, Tank* second) {
-	tankPositionReset(first, second, default_tankToEdgeDist);
+void ResetThings::tankPositionReset() {
+	tankPositionReset(default_tankToEdgeDist);
 }
 
-void ResetThings::tankPositionReset(Tank* first, Tank* second, double x) {
-	x = std::clamp<double>(x, 0, GAME_WIDTH); //trolls begone
-	first->x = x;
-	second->x = GAME_WIDTH - x;
-
-	int randNum = RNG::randFunc() * 5;
-	first->y = randNum * (GAME_HEIGHT/5) + (GAME_HEIGHT/10);
-	second->y = (4 - randNum) * (GAME_HEIGHT/5) + (GAME_HEIGHT/10);
+void ResetThings::tankPositionReset(double x) {
+	tankPositionReset(x, default_tankStartingYRange, default_tankStartingYCount);
 }
 
-void ResetThings::tankPositionReset(Tank* first, Tank* second, double x, double y) {
+void ResetThings::tankPositionReset(double x, double y) {
+	Tank* first = TankManager::getTank(0);
+	Tank* second = TankManager::getTank(1);
+
 	x = std::clamp<double>(x, 0, GAME_WIDTH); //no trolls here
 	y = std::clamp<double>(y, 0, GAME_HEIGHT); //trolls begone
+
 	first->x = x;
-	second->x = GAME_WIDTH - x;
 	first->y = y;
+	second->x = GAME_WIDTH - x;
 	second->y = GAME_HEIGHT - y;
+}
+
+void ResetThings::tankPositionReset(double x, double yRange, int yCount) {
+	Tank* first = TankManager::getTank(0);
+	Tank* second = TankManager::getTank(1);
+
+	x = std::clamp<double>(x, 0, GAME_WIDTH);
+	yRange = std::clamp<double>(yRange, 0, GAME_HEIGHT);
+	yCount = std::max(yCount, 1); //I thought std::mix/max was overloaded, but it's actually a template; neat, learning is cool
+
+	int randNum = RNG::randFunc() * yCount; //stays outside the conditional to ensure RNG is called by resetting the level
+	double yVal;
+	if (yCount == 1) {
+		yVal = GAME_HEIGHT/2;
+	} else { [[likely]]
+		yVal = randNum * (yRange/(yCount-1)) + ((GAME_HEIGHT - yRange)/2);
+	}
+
+	first->x = x;
+	first->y = yVal;
+	second->x = GAME_WIDTH - x;
+	second->y = GAME_HEIGHT - yVal;
 }

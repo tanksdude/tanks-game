@@ -1,7 +1,6 @@
 #include "few-obstacles-level.h"
 #include "constants.h"
 #include "level-helper.h"
-#include "tank-manager.h"
 #include "powerup-manager.h"
 #include "wall-manager.h"
 #include "reset-things.h"
@@ -19,7 +18,7 @@ std::unordered_map<std::string, float> FewObstaclesLevel::getWeights() const {
 }
 
 void FewObstaclesLevel::initialize() {
-	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1));
+	ResetThings::tankPositionReset();
 
 	ColorValueHolder color = getDefaultColor();
 	int tempRand;
@@ -27,7 +26,7 @@ void FewObstaclesLevel::initialize() {
 	//GenericFactoryConstructionData constructionData;
 	//double* posArr;
 
-	//classic JS walls removed
+	//LevelHelper::pushClassicWalls(color);
 
 	pos = LevelHelper::getSymmetricWallPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-(80+32+40+20), 20, GAME_HEIGHT-128);
 	WallManager::pushWall(new Wall(pos.x, pos.y, 20, 320-128, color));

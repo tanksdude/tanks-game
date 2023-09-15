@@ -1,7 +1,6 @@
 #include "tight-patrolling-corridor-level.h"
 #include "constants.h"
 #include "level-helper.h"
-#include "tank-manager.h"
 #include "wall-manager.h"
 #include "powerup-manager.h"
 #include "hazard-manager.h"
@@ -24,8 +23,7 @@ std::unordered_map<std::string, float> TightPatrollingCorridorLevel::getWeights(
 }
 
 void TightPatrollingCorridorLevel::initialize() {
-	int randNum = RNG::randFunc() * 3;
-	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), (GAME_WIDTH/2 - ((60+20 + 40) + 80 + 20))/2, (randNum+1) * (GAME_HEIGHT/5) + (GAME_HEIGHT/10));
+	ResetThings::tankPositionReset((GAME_WIDTH/2 - ((60+20 + 40) + 80 + 20))/2, (2.0/5) * GAME_HEIGHT, 3);
 	//starting x determined by outer walls (see below)
 
 	ColorValueHolder color = getDefaultColor();
@@ -38,14 +36,7 @@ void TightPatrollingCorridorLevel::initialize() {
 	double* patrolRoute1;
 	double* patrolRoute2;
 
-	/*
-	PositionHolder* wallArray = new PositionHolder[4];
-	for (int i = 0; i < 4; i++) {
-		//classic JS walls
-		wallArray[i] = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-40*2-32, GAME_HEIGHT/2-128, 32, 128);
-		WallManager::pushWall(new Wall(wallArray[i].x, wallArray[i].y, 32, 128, color));
-	}
-	*/
+	//LevelHelper::pushClassicWalls(color);
 
 	posArr = new double[3]{ GAME_WIDTH/2 - 40, GAME_HEIGHT/2, 0 };
 	patrolCount = new int[1]{ 2 };
@@ -191,8 +182,6 @@ void TightPatrollingCorridorLevel::initialize() {
 	constructionData.pushData(2*2, patrolRoute2);
 	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "patrolling_turret")(constructionData));
 	delete[] posArr; delete[] patrolCount; delete[] patrolRoute1; delete[] patrolRoute2;
-
-	//delete[] wallArray;
 
 	//level idea: N++ X-04-4 (pretty sure there are other levels with similar designs)
 }

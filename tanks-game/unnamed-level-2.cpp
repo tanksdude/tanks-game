@@ -1,7 +1,6 @@
 #include "unnamed-level-2.h"
 #include "constants.h"
 #include "level-helper.h"
-#include "tank-manager.h"
 #include "wall-manager.h"
 #include "powerup-manager.h"
 #include "hazard-manager.h"
@@ -25,7 +24,7 @@ std::unordered_map<std::string, float> UnnamedLevel2::getWeights() const {
 }
 
 void UnnamedLevel2::initialize() {
-	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1));
+	ResetThings::tankPositionReset();
 
 	ColorValueHolder color = getDefaultColor();
 	//int tempRand;

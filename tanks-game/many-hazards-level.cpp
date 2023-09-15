@@ -1,7 +1,6 @@
 #include "many-hazards-level.h"
 #include "constants.h"
 #include "level-helper.h"
-#include "tank-manager.h"
 #include "powerup-manager.h"
 #include "wall-manager.h"
 #include "hazard-manager.h"
@@ -19,7 +18,7 @@ std::unordered_map<std::string, float> ManyHazardsLevel::getWeights() const {
 }
 
 void ManyHazardsLevel::initialize() {
-	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1), 40);
+	ResetThings::tankPositionReset(40);
 
 	//in JS, power mixing was turned off
 	ColorValueHolder color = getDefaultColor();
@@ -28,12 +27,8 @@ void ManyHazardsLevel::initialize() {
 	GenericFactoryConstructionData constructionData;
 	double* posArr;
 
-	PositionHolder* wallArray = new PositionHolder[4];
-	for (int i = 0; i < 4; i++) {
-		//classic JS walls
-		wallArray[i] = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-40*2-32, GAME_HEIGHT/2-128, 32, 128);
-		WallManager::pushWall(new Wall(wallArray[i].x, wallArray[i].y, 32, 128, color));
-	}
+	LevelHelper::pushClassicWalls(color);
+	PositionHolder* wallArray = LevelHelper::getClassicWallPositions();
 
 	posArr = new double[4]{ GAME_WIDTH/2 - 10, 128, 10*2, GAME_HEIGHT - 128*2 };
 	constructionData = GenericFactoryConstructionData(4, posArr);

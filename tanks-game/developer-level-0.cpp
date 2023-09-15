@@ -1,7 +1,6 @@
 #include "developer-level-0.h"
 #include "constants.h"
 #include "level-helper.h"
-#include "tank-manager.h"
 #include "powerup-manager.h"
 #include "wall-manager.h"
 #include "hazard-manager.h"
@@ -9,7 +8,6 @@
 #include "rng.h"
 
 ColorValueHolder DeveloperLevel0::getDefaultColor() const {
-	//return ColorValueHolder(RNG::randFunc(), RNG::randFunc(), RNG::randFunc());
 	return currentColor;
 }
 
@@ -21,7 +19,7 @@ std::unordered_map<std::string, float> DeveloperLevel0::getWeights() const {
 }
 
 void DeveloperLevel0::initialize() {
-	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1));
+	ResetThings::tankPositionReset();
 
 	ColorValueHolder randColor = getDefaultColor();
 	//int tempRand;
@@ -75,6 +73,5 @@ Level* DeveloperLevel0::factory() {
 }
 
 DeveloperLevel0::DeveloperLevel0() {
-	//TODO: should this go in the constructor or initialize()?
 	currentColor = ColorValueHolder(RNG::randFunc(), RNG::randFunc(), RNG::randFunc());
 }

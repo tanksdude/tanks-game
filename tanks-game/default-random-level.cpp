@@ -2,7 +2,6 @@
 #include "constants.h"
 #include "mylib.h" //weightedSelect
 #include "level-helper.h"
-#include "tank-manager.h"
 #include "powerup-manager.h"
 #include "wall-manager.h"
 #include "hazard-manager.h"
@@ -19,12 +18,12 @@ std::unordered_map<std::string, float> DefaultRandomLevel::getWeights() const {
 }
 
 ColorValueHolder DefaultRandomLevel::getDefaultColor() const {
-	//return ColorValueHolder(RNG::randFunc(), RNG::randFunc(), RNG::randFunc());
+	//return ColorValueHolder(RNG::randFunc(), RNG::randFunc(), RNG::randFunc()); //funky mode
 	return currentColor;
 }
 
 void DefaultRandomLevel::initialize() { //still needs a lot of work
-	ResetThings::tankPositionReset(TankManager::getTank(0), TankManager::getTank(1));
+	ResetThings::tankPositionReset();
 
 	ColorValueHolder randColor = getDefaultColor();
 	//int tempRand;
@@ -111,6 +110,5 @@ Level* DefaultRandomLevel::factory() {
 }
 
 DefaultRandomLevel::DefaultRandomLevel() {
-	//TODO: should this go in the constructor or initialize()?
 	currentColor = ColorValueHolder(RNG::randFunc(), RNG::randFunc(), RNG::randFunc());
 }
