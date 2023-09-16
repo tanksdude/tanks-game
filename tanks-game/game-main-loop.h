@@ -32,7 +32,7 @@ enum class ThreadJobType {
 	update_bullets,
 	update_walls,
 	update_circleHazards,
-	update_rectHazards
+	update_rectHazards,
 };
 
 class GameMainLoop : public GameScene {

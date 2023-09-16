@@ -22,13 +22,15 @@ enum class AvailableRenderingContexts {
 	null_rendering
 };
 
+/*
 enum class RenderingDrawTypes {
 	triangles, //main
 	line_loop,
 	line_strip,
 	lines,
-	points //unused
+	points, //unused
 };
+*/
 
 class Renderer {
 	friend class DeveloperManager;
