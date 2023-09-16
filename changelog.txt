@@ -1,29 +1,26 @@
 0.3.0 (obviously definitely not here)
 * new game mode: infinite world!
-    * single-player-only
+    * single-player only
     * the point is just to explore
     * have fun!
-* some unit tests
-    * finally...
-* variable physics rate?
-* lots and lots of new stuff
+* some unit tests?
+* lots of new stuff
 * powerups:
+    * sword
     * hazard powers!
     * growing and degrading powerups mix better
         * megadeath update?
-    * ... sword???
 
 0.2.5 (obviously not here)
 * ini file
     * allows for some customization
     * now it's possible to view certain levels/whatever that exist but aren't playable
         * should probably make a list of some sort to know what exists...
+* rudimentary custom powers and levels
+    * turns out, DLLs were too complicated
 * graphics: batched rendering
 * slight multithreading!
     * set number of threads in the ini
-* rudimentary custom powers and levels
-    * turns out, DLLs were too complicated
-    * TODO: documentation
 * mild QoL improvements to displaying things
     * tank multi-powers are more obvious
     * lightning hazards and no bullet zones are significantly easier to spot
