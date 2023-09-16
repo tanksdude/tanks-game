@@ -70,7 +70,7 @@ CircleHazard* MotherTurretHazard::factory(const GenericFactoryConstructionData& 
 		int count_basic = args.getDataPortionLength(0);
 
 		if (count_basic >= 3) {
-			double* arr_basic = (double*)args.getDataPortion(0);
+			const double* arr_basic = static_cast<const double*>(args.getDataPortion(0).get());
 			double x = arr_basic[0];
 			double y = arr_basic[1];
 			double a = arr_basic[2];
@@ -79,13 +79,13 @@ CircleHazard* MotherTurretHazard::factory(const GenericFactoryConstructionData& 
 				int count_num = args.getDataPortionLength(1);
 
 				if (count_num >= 1) {
-					int* arr_num = (int*)args.getDataPortion(1);
+					const int* arr_num = static_cast<const int*>(args.getDataPortion(1).get());
 
 					int child_max = arr_num[0];
 					int child_start = ((count_num >= 2) ? arr_num[1] : 0);
 
 					if ((args.getDataCount() >= 3) && (args.getDataPortionLength(2) >= 1)) {
-						double* arr_dist = (double*)args.getDataPortion(2);
+						const double* arr_dist = static_cast<const double*>(args.getDataPortion(2).get());
 						return new MotherTurretHazard(x, y, a, child_max, child_start, arr_dist[0]);
 					}
 
@@ -204,7 +204,6 @@ inline CircleHazard* MotherTurretHazard::makeTurret(int turretNum) const {
 	double* posArr = new double[3]{ this->x + (this->r+childDistFromMother) * cos(angle), this->y + (this->r+childDistFromMother) * sin(angle), angle };
 	constructionData = GenericFactoryConstructionData(3, posArr);
 	CircleHazard* childTurret = HazardManager::getCircleHazardFactory("vanilla", "targeting_turret")(constructionData);
-	delete[] posArr;
 	return childTurret;
 }
 
@@ -739,10 +738,10 @@ CircleHazard* MotherTurretHazard::randomizingFactory(double x_start, double y_st
 		int count = args.getDataPortionLength(0);
 	}
 	if (count >= 1) {
-		double* arr = (double*)(args.getDataPortion(0));
+		const double* arr = static_cast<const double*>(args.getDataPortion(0).get());
 		angle = arr[0];
 	} else {
-		angle = RNG::randFunc() * 2*PI;
+		angle = RNG::randFunc() * (2*PI);
 	}
 
 	do {

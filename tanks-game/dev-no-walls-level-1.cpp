@@ -32,7 +32,6 @@ void DevNoWallsLevel1::initialize() {
 		posArr = new double[4]{ wallArray[i].x, wallArray[i].y, 32, 128 };
 		constructionData = GenericFactoryConstructionData(4, posArr);
 		HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "no_bullet_zone")(constructionData));
-		delete[] posArr;
 	}
 
 	const double distFromCorner = 40;

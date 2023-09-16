@@ -22,7 +22,7 @@ std::unordered_map<std::string, float> PatrollingTurretHazard::getWeights() cons
 	return weights;
 }
 
-PatrollingTurretHazard::PatrollingTurretHazard(double xpos, double ypos, double angle, int pairNum, double* posList, double* waitList) : TargetingTurretHazard(xpos, ypos, angle) {
+PatrollingTurretHazard::PatrollingTurretHazard(double xpos, double ypos, double angle, int pairNum, const double* posList, const double* waitList) : TargetingTurretHazard(xpos, ypos, angle) {
 	//x = xpos;
 	//y = ypos;
 	velocity = SimpleVector2D(angle, Tank::default_maxSpeed/2, true);
@@ -78,27 +78,22 @@ CircleHazard* PatrollingTurretHazard::factory(const GenericFactoryConstructionDa
 		int count_num = args.getDataPortionLength(1);
 		int count_list = args.getDataPortionLength(2);
 
-		double x, y, a;
-		int num;
-		double* list;
-
 		if (count_basic >= 3) {
-			double* arr_basic = (double*)args.getDataPortion(0);
-			x = arr_basic[0];
-			y = arr_basic[1];
-			a = arr_basic[2];
+			const double* arr_basic = static_cast<const double*>(args.getDataPortion(0).get());
+			double x = arr_basic[0];
+			double y = arr_basic[1];
+			double a = arr_basic[2];
 
 			if ((count_num >= 1) && (count_list >= 1)) {
-				int* arr_num = (int*)args.getDataPortion(1);
-				double* arr_list = (double*)args.getDataPortion(2);
-				num = arr_num[0];
-				list = arr_list;
+				const int* arr_count = static_cast<const int*>(args.getDataPortion(1).get());
+				const double* arr_list = static_cast<const double*>(args.getDataPortion(2).get());
+				int count = arr_count[0];
 
 				if ((args.getDataCount() >= 4) && (args.getDataPortionLength(3) >= 1)) {
-					double* wait = (double*)args.getDataPortion(3);
-					return new PatrollingTurretHazard(x, y, a, num, list, wait);
+					const double* wait = static_cast<const double*>(args.getDataPortion(3).get());
+					return new PatrollingTurretHazard(x, y, a, count, arr_list, wait);
 				} else {
-					return new PatrollingTurretHazard(x, y, a, num, list, nullptr);
+					return new PatrollingTurretHazard(x, y, a, count, arr_list, nullptr);
 				}
 			} else {
 				return new PatrollingTurretHazard(x, y, a, 0, nullptr, nullptr);

@@ -20,7 +20,7 @@ Bullet* MinefieldLevelEffect::genMine() const {
 	double r = TANK_RADIUS * BULLET_TO_TANK_RADIUS_RATIO;
 	double x = minefield_startX + r + RNG::randFunc() * (minefield_areaWidth - 2*r);
 	double y = minefield_startY + r + RNG::randFunc() * (minefield_areaHeight - 2*r);
-	Bullet* mine = new Bullet(x, y, r, RNG::randFunc() * 2*PI, 0, HAZARD_TEAM, BulletParentType::team, NO_PARENT, &bp);
+	Bullet* mine = new Bullet(x, y, r, RNG::randFunc() * (2*PI), 0, HAZARD_TEAM, BulletParentType::team, NO_PARENT, &bp);
 	return mine;
 }
 
@@ -175,14 +175,14 @@ LevelEffect* MinefieldLevelEffect::factory(const GenericFactoryConstructionData&
 		int count = args.getDataPortionLength(0);
 
 		if (count >= 4) {
-			double* arr = (double*)(args.getDataPortion(0));
+			const double* arr = static_cast<const double*>(args.getDataPortion(0).get());
 			double x_start = arr[0];
 			double y_start = arr[1];
 			double area_width = arr[2];
 			double area_height = arr[3];
 
 			if ((args.getDataCount() >= 2) && (args.getDataPortionLength(1) >= 1)) {
-				int* arr_mine = (int*)(args.getDataPortion(1));
+				const int* arr_mine = static_cast<const int*>(args.getDataPortion(1).get());
 				int mineCount = arr_mine[0];
 				return new MinefieldLevelEffect(x_start, y_start, area_width, area_height, mineCount);
 			}

@@ -83,7 +83,7 @@ private:
 	inline void drawPath(float alpha = 1.0f) const; //debug
 
 public:
-	PatrollingTurretHazard(double xpos, double ypos, double angle, int pairNum, double* posList, double* waitList);
+	PatrollingTurretHazard(double xpos, double ypos, double angle, int pairNum, const double* posList, const double* waitList);
 	virtual ~PatrollingTurretHazard();
 	static CircleHazard* factory(const GenericFactoryConstructionData&);
 	static CircleHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, const GenericFactoryConstructionData&);

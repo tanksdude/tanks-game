@@ -31,28 +31,23 @@ void LoneTurretLevel::initialize() {
 	posArr = new double[3]{ GAME_WIDTH/2, GAME_HEIGHT/2, PI/2 * (floor(RNG::randFunc()*2)*2-1) };
 	constructionData = GenericFactoryConstructionData(3, posArr);
 	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "targeting_turret")(constructionData));
-	delete[] posArr;
 
 	//rectangular lightning surrounding turret:
 	//posArr = new double[4]{ GAME_WIDTH/2 - 80, GAME_HEIGHT/2 - 40, 80*2, 40*2 };
 	//constructionData = GenericFactoryConstructionData(4, posArr);
 	//HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "lightning")(constructionData));
-	//delete[] posArr;
 	//posArr = new double[4]{ GAME_WIDTH/2 - 40, GAME_HEIGHT/2 - 40, 40*2, 40*2 };
 	//constructionData = GenericFactoryConstructionData(4, posArr);
 	//HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "lightning")(constructionData));
-	//delete[] posArr;
 
 	pos = LevelHelper::getSymmetricWallPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 80, 20, 80);
 	posArr = new double[4]{ pos.x, pos.y, 20, 80 };
 	constructionData = GenericFactoryConstructionData(4, posArr);
 	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "no_bullet_zone")(constructionData));
-	delete[] posArr;
 	pos = LevelHelper::getSymmetricWallPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 80, 20, 80);
 	posArr = new double[4]{ pos.x, pos.y, 20, 80 };
 	constructionData = GenericFactoryConstructionData(4, posArr);
 	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "no_bullet_zone")(constructionData));
-	delete[] posArr;
 
 	for (int i = 0; i < 4; i++) {
 		pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 80, 40, 20, 80);

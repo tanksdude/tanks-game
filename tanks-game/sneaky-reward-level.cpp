@@ -95,7 +95,6 @@ void SneakyRewardLevel::initialize() {
 	posArr = new double[4]{ GAME_WIDTH/2-20/2, GAME_HEIGHT/2-80, 20, 80*2 };
 	constructionData = GenericFactoryConstructionData(4, posArr);
 	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "no_bullet_zone")(constructionData));
-	delete[] posArr;
 
 	p = new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "dev", "inversion");
 	PowerupManager::pushPowerup(p);
@@ -109,7 +108,7 @@ Level* SneakyRewardLevel::factory() {
 }
 
 SneakyRewardLevel::SneakyRewardLevel() {
-	bool temp[1] = { false };
+	bool* temp = new bool[1]{ false };
 	GenericFactoryConstructionData constructionData(1, temp);
 	effects.push_back(LevelManager::getLevelEffectFactory("vanilla", "respawning_powerups")(constructionData));
 }

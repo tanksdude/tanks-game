@@ -116,7 +116,7 @@ Level* UnnamedLevel2::factory() {
 UnnamedLevel2::UnnamedLevel2() {
 	GenericFactoryConstructionData constructionData;
 	effects.push_back(LevelManager::getLevelEffectFactory("vanilla", "respawning_powerups")(constructionData));
-	//bool temp[1] = { true };
+	//bool* temp = new bool[1]{ true };
 	//constructionData = GenericFactoryConstructionData(1, temp);
 	//effects.push_back(LevelManager::getLevelEffectFactory("dev", "symmetric_tanks")(constructionData));
 }

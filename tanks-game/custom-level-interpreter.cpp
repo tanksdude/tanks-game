@@ -31,7 +31,7 @@ float colorR, float colorG, float colorB,
 int startPosCount, double startPosXValue, double startPosYRange,
 const std::vector<std::string>& types,
 const std::unordered_map<std::string, float>& weights,
-std::vector<CustomLevelAction*> actions) {
+std::vector<CustomLevelAction*>* actions) {
 
 	this->name = name;
 	this->defaultColor = ColorValueHolder(colorR, colorG, colorB);
@@ -41,16 +41,38 @@ std::vector<CustomLevelAction*> actions) {
 	this->startPosCount  = (startPosCount  < 0 ? ResetThings::default_tankStartingYCount : startPosCount); //startPosCount==0 handled by ResetThings
 	this->startPosXValue = (startPosXValue < 0 ? ResetThings::default_tankToEdgeDist     : startPosXValue);
 	this->startPosYRange = (startPosYRange < 0 ? ResetThings::default_tankStartingYRange : startPosYRange);
-	this->initializationActions = std::vector<CustomLevelAction*>(actions);
+
+	this->initializationActions = std::shared_ptr<std::vector<CustomLevelAction*>>(actions, [](std::vector<CustomLevelAction*>* p) {
+		for (int i = 0; i < p->size(); i++) {
+			delete p->at(i);
+		}
+	});
+}
+
+CustomLevel::CustomLevel(std::string name,
+float colorR, float colorG, float colorB,
+int startPosCount, double startPosXValue, double startPosYRange,
+const std::vector<std::string>& types,
+const std::unordered_map<std::string, float>& weights,
+std::shared_ptr<std::vector<CustomLevelAction*>> actions) {
+
+	this->name = name;
+	this->defaultColor = ColorValueHolder(colorR, colorG, colorB);
+	this->levelTypes = std::vector<std::string>(types);
+	this->levelWeights = std::unordered_map<std::string, float>(weights);
+
+	this->startPosCount  = (startPosCount  < 0 ? ResetThings::default_tankStartingYCount : startPosCount); //startPosCount==0 handled by ResetThings
+	this->startPosXValue = (startPosXValue < 0 ? ResetThings::default_tankToEdgeDist     : startPosXValue);
+	this->startPosYRange = (startPosYRange < 0 ? ResetThings::default_tankStartingYRange : startPosYRange);
+
+	this->initializationActions = actions;
 }
 
 CustomLevel::~CustomLevel() {
-	//TODO: need to delete all the stuff in the GenericFactoryConstructionData
-
-	for (int i = 0; i < initializationActions.size(); i++) {
-		delete initializationActions[i];
-	}
-	//initializationActions.clear();
+	//for (int i = 0; i < initializationActions.size(); i++) {
+	//	delete initializationActions[i];
+	//}
+	////initializationActions.clear();
 }
 
 CustomLevel::CustomLevelCommands CustomLevel::strToCommand(const std::string& str) noexcept {
@@ -106,10 +128,10 @@ void CustomLevel::initialize() {
 
 	ColorValueHolder color = getDefaultColor();
 
-	for (int i = 0; i < initializationActions.size(); i++) {
-		GenericFactoryConstructionData& data = initializationActions[i]->data;
+	for (int i = 0; i < initializationActions->size(); i++) {
+		GenericFactoryConstructionData& data = initializationActions->at(i)->data;
 
-		switch (initializationActions[i]->command) {
+		switch (initializationActions->at(i)->command) {
 			case CustomLevelCommands::WALL:
 				initialization_WALL(data, color);
 				break;
@@ -180,7 +202,7 @@ void CustomLevel::initialize() {
 }
 
 inline void CustomLevel::initialization_WALL(const GenericFactoryConstructionData& data, ColorValueHolder wallColor) noexcept {
-	double* dataArr = (double*)data.getDataPortion(0);
+	const double* dataArr = static_cast<const double*>(data.getDataPortion(0).get());
 	double centerX = dataArr[0];
 	double centerY = dataArr[1];
 	double width   = dataArr[2];
@@ -189,7 +211,7 @@ inline void CustomLevel::initialization_WALL(const GenericFactoryConstructionDat
 	WallManager::pushWall(new Wall(centerX-width/2, centerY-height/2, width, height, wallColor));
 }
 inline void CustomLevel::initialization_WALL_LR(const GenericFactoryConstructionData& data, ColorValueHolder wallColor) noexcept {
-	double* dataArr = (double*)data.getDataPortion(0);
+	const double* dataArr = static_cast<const double*>(data.getDataPortion(0).get());
 	double centerX = dataArr[0];
 	double centerY = dataArr[1];
 	double offsetX = dataArr[2];
@@ -203,7 +225,7 @@ inline void CustomLevel::initialization_WALL_LR(const GenericFactoryConstruction
 	WallManager::pushWall(new Wall(pos.x, pos.y, width, height, wallColor));
 }
 inline void CustomLevel::initialization_WALL_UD(const GenericFactoryConstructionData& data, ColorValueHolder wallColor) noexcept {
-	double* dataArr = (double*)data.getDataPortion(0);
+	const double* dataArr = static_cast<const double*>(data.getDataPortion(0).get());
 	double centerX = dataArr[0];
 	double centerY = dataArr[1];
 	double offsetY = dataArr[2];
@@ -217,7 +239,7 @@ inline void CustomLevel::initialization_WALL_UD(const GenericFactoryConstruction
 	WallManager::pushWall(new Wall(pos.x, pos.y, width, height, wallColor));
 }
 inline void CustomLevel::initialization_WALL_Corners(const GenericFactoryConstructionData& data, ColorValueHolder wallColor) noexcept {
-	double* dataArr = (double*)data.getDataPortion(0);
+	const double* dataArr = static_cast<const double*>(data.getDataPortion(0).get());
 	double centerX = dataArr[0];
 	double centerY = dataArr[1];
 	double offsetX = dataArr[2];
@@ -232,7 +254,7 @@ inline void CustomLevel::initialization_WALL_Corners(const GenericFactoryConstru
 	}
 }
 inline void CustomLevel::initialization_WALL_DiagForwardSlash(const GenericFactoryConstructionData& data, ColorValueHolder wallColor) noexcept {
-	double* dataArr = (double*)data.getDataPortion(0);
+	const double* dataArr = static_cast<const double*>(data.getDataPortion(0).get());
 	double centerX = dataArr[0];
 	double centerY = dataArr[1];
 	double offsetX = dataArr[2];
@@ -247,7 +269,7 @@ inline void CustomLevel::initialization_WALL_DiagForwardSlash(const GenericFacto
 	WallManager::pushWall(new Wall(pos.x, pos.y, width, height, wallColor));
 }
 inline void CustomLevel::initialization_WALL_DiagBackwardSlash(const GenericFactoryConstructionData& data, ColorValueHolder wallColor) noexcept {
-	double* dataArr = (double*)data.getDataPortion(0);
+	const double* dataArr = static_cast<const double*>(data.getDataPortion(0).get());
 	double centerX = dataArr[0];
 	double centerY = dataArr[1];
 	double offsetX = dataArr[2];
@@ -263,15 +285,15 @@ inline void CustomLevel::initialization_WALL_DiagBackwardSlash(const GenericFact
 }
 
 inline void CustomLevel::initialization_RANDOM_WALLS(const GenericFactoryConstructionData& data, ColorValueHolder wallColor) noexcept {
-	double* dataArr = (double*)data.getDataPortion(0);
+	const double* dataArr = static_cast<const double*>(data.getDataPortion(0).get());
 	double area_startX = dataArr[0];
 	double area_startY = dataArr[1];
 	double area_width  = dataArr[2];
 	double area_height = dataArr[3];
-	int wall_count = ((int*)data.getDataPortion(1))[0];
+	int wall_count = (static_cast<const int*>(data.getDataPortion(1).get()))[0];
 
 	if (data.getDataCount() > 2) {
-		double* dataArr_optional = (double*)data.getDataPortion(2);
+		const double* dataArr_optional = static_cast<const double*>(data.getDataPortion(2).get());
 		double wall_minWidth  = dataArr_optional[0];
 		double wall_maxWidth  = dataArr_optional[1];
 		double wall_minHeight = dataArr_optional[2];
@@ -292,23 +314,23 @@ inline void CustomLevel::initialization_CLASSIC_WALLS(ColorValueHolder wallColor
 }
 
 inline void CustomLevel::initialization_POWER(const GenericFactoryConstructionData& data) noexcept {
-	double* posArr = (double*)data.getDataPortion(0);
+	const double* posArr = static_cast<const double*>(data.getDataPortion(0).get());
 	double xpos = posArr[0];
 	double ypos = posArr[1];
 
-	std::string* typesArr = (std::string*)data.getDataPortion(1);
-	std::string* namesArr = (std::string*)data.getDataPortion(2);
+	const std::string* typesArr = static_cast<const std::string*>(data.getDataPortion(1).get());
+	const std::string* namesArr = static_cast<const std::string*>(data.getDataPortion(2).get());
 
 	PowerupManager::pushPowerup(new PowerSquare(xpos, ypos, typesArr, namesArr, data.getDataPortionLength(1)));
 }
 inline void CustomLevel::initialization_POWER_LR(const GenericFactoryConstructionData& data) noexcept {
-	double* posArr = (double*)data.getDataPortion(0);
+	const double* posArr = static_cast<const double*>(data.getDataPortion(0).get());
 	double centerX = posArr[0];
 	double centerY = posArr[1];
 	double offsetX = posArr[2];
 
-	std::string* typesArr = (std::string*)data.getDataPortion(1);
-	std::string* namesArr = (std::string*)data.getDataPortion(2);
+	const std::string* typesArr = static_cast<const std::string*>(data.getDataPortion(1).get());
+	const std::string* namesArr = static_cast<const std::string*>(data.getDataPortion(2).get());
 	PositionHolder pos;
 
 	pos = LevelHelper::getSymmetricPowerupPositions_LR(0, centerX, centerY, offsetX);
@@ -317,13 +339,13 @@ inline void CustomLevel::initialization_POWER_LR(const GenericFactoryConstructio
 	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, typesArr, namesArr, data.getDataPortionLength(1)));
 }
 inline void CustomLevel::initialization_POWER_UD(const GenericFactoryConstructionData& data) noexcept {
-	double* posArr = (double*)data.getDataPortion(0);
+	const double* posArr = static_cast<const double*>(data.getDataPortion(0).get());
 	double centerX = posArr[0];
 	double centerY = posArr[1];
 	double offsetY = posArr[2];
 
-	std::string* typesArr = (std::string*)data.getDataPortion(1);
-	std::string* namesArr = (std::string*)data.getDataPortion(2);
+	const std::string* typesArr = static_cast<const std::string*>(data.getDataPortion(1).get());
+	const std::string* namesArr = static_cast<const std::string*>(data.getDataPortion(2).get());
 	PositionHolder pos;
 
 	pos = LevelHelper::getSymmetricPowerupPositions_UD(0, centerX, centerY, offsetY);
@@ -332,14 +354,14 @@ inline void CustomLevel::initialization_POWER_UD(const GenericFactoryConstructio
 	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, typesArr, namesArr, data.getDataPortionLength(1)));
 }
 inline void CustomLevel::initialization_POWER_Corners(const GenericFactoryConstructionData& data) noexcept {
-	double* posArr = (double*)data.getDataPortion(0);
+	const double* posArr = static_cast<const double*>(data.getDataPortion(0).get());
 	double centerX = posArr[0];
 	double centerY = posArr[1];
 	double offsetX = posArr[2];
 	double offsetY = posArr[3];
 
-	std::string* typesArr = (std::string*)data.getDataPortion(1);
-	std::string* namesArr = (std::string*)data.getDataPortion(2);
+	const std::string* typesArr = static_cast<const std::string*>(data.getDataPortion(1).get());
+	const std::string* namesArr = static_cast<const std::string*>(data.getDataPortion(2).get());
 	PositionHolder pos;
 
 	for (int i = 0; i < 4; i++) {
@@ -348,14 +370,14 @@ inline void CustomLevel::initialization_POWER_Corners(const GenericFactoryConstr
 	}
 }
 inline void CustomLevel::initialization_POWER_DiagForwardSlash(const GenericFactoryConstructionData& data) noexcept {
-	double* posArr = (double*)data.getDataPortion(0);
+	const double* posArr = static_cast<const double*>(data.getDataPortion(0).get());
 	double centerX = posArr[0];
 	double centerY = posArr[1];
 	double offsetX = posArr[2];
 	double offsetY = posArr[3];
 
-	std::string* typesArr = (std::string*)data.getDataPortion(1);
-	std::string* namesArr = (std::string*)data.getDataPortion(2);
+	const std::string* typesArr = static_cast<const std::string*>(data.getDataPortion(1).get());
+	const std::string* namesArr = static_cast<const std::string*>(data.getDataPortion(2).get());
 	PositionHolder pos;
 
 	pos = LevelHelper::getSymmetricPowerupPositions_DiagForwardSlash(0, centerX, centerY, offsetX, offsetY);
@@ -364,14 +386,14 @@ inline void CustomLevel::initialization_POWER_DiagForwardSlash(const GenericFact
 	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, typesArr, namesArr, data.getDataPortionLength(1)));
 }
 inline void CustomLevel::initialization_POWER_DiagBackwardSlash(const GenericFactoryConstructionData& data) noexcept {
-	double* posArr = (double*)data.getDataPortion(0);
+	const double* posArr = static_cast<const double*>(data.getDataPortion(0).get());
 	double centerX = posArr[0];
 	double centerY = posArr[1];
 	double offsetX = posArr[2];
 	double offsetY = posArr[3];
 
-	std::string* typesArr = (std::string*)data.getDataPortion(1);
-	std::string* namesArr = (std::string*)data.getDataPortion(2);
+	const std::string* typesArr = static_cast<const std::string*>(data.getDataPortion(1).get());
+	const std::string* namesArr = static_cast<const std::string*>(data.getDataPortion(2).get());
 	PositionHolder pos;
 
 	pos = LevelHelper::getSymmetricPowerupPositions_DiagBackwardSlash(0, centerX, centerY, offsetX, offsetY);
@@ -382,14 +404,14 @@ inline void CustomLevel::initialization_POWER_DiagBackwardSlash(const GenericFac
 
 inline void CustomLevel::initialization_CHAZARD(const GenericFactoryConstructionData& data) {
 	//should only throw on complex constructions, if the data is badly-formatted
-	std::string* nameArr = (std::string*)data.getDataPortion(0);
+	const std::string* nameArr = static_cast<const std::string*>(data.getDataPortion(0).get());
 	GenericFactoryConstructionData realData; //TODO
 	realData.pushData(data.getDataPortionLength(1), data.getDataPortion(1));
 	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory(nameArr[0], nameArr[1])(realData));
 }
 inline void CustomLevel::initialization_RHAZARD(const GenericFactoryConstructionData& data) {
 	//should only throw on complex constructions, if the data is badly-formatted
-	std::string* nameArr = (std::string*)data.getDataPortion(0);
+	const std::string* nameArr = static_cast<const std::string*>(data.getDataPortion(0).get());
 	GenericFactoryConstructionData realData; //TODO
 	realData.pushData(data.getDataPortionLength(1), data.getDataPortion(1));
 	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory(nameArr[0], nameArr[1])(realData));
@@ -600,7 +622,7 @@ CustomLevel* CustomLevelInterpreter::processCustomLevel(std::string path) {
 	double startPosXValue = -1, startPosYRange = -1;
 	std::vector<std::string> types;
 	std::unordered_map<std::string, float> weights;
-	std::vector<CustomLevel::CustomLevelAction*> actions;
+	std::vector<CustomLevel::CustomLevelAction*>* actions;
 
 	bool name_set = false;
 	bool color_set = false;
@@ -787,12 +809,13 @@ CustomLevel* CustomLevelInterpreter::processCustomLevel(std::string path) {
 		weights.insert({ types[i], weight });
 	}
 
+	actions = new std::vector<CustomLevel::CustomLevelAction*>;
 	for (int i = 0; i < levelAction_list.size(); i++) {
 		try {
-			actions.push_back(stringToAction(levelAction_list[i]));
-			//TODO: need to clear memory
+			actions->push_back(stringToAction(levelAction_list[i]));
 		}
 		catch (const std::runtime_error& e) {
+			delete actions;
 			//throw std::runtime_error("Error parsing level " + path + ": " + e.what()); //no error because left-to-right generates a string
 			//throw std::runtime_error("Error parsing level: " + e.what()); //yes error because that's two const char*, can't add like a string
 			throw std::runtime_error("Error parsing level: " + std::string(e.what()));
@@ -894,6 +917,7 @@ inline CustomLevel::CustomLevelAction* CustomLevelInterpreter::stringToAction(co
 		}
 	}
 	catch (const std::runtime_error& e) {
+		delete levelAction;
 		throw std::runtime_error("line " + std::to_string(command.second) + " command \"" + levelCommand_strBackup + "\": " + e.what());
 	}
 

@@ -25,7 +25,7 @@ PowerSquare::PowerSquare(double x_, double y_, std::string name) : PowerSquare(x
 	heldPowers[0] = PowerupManager::getPowerFactory("vanilla", name)();
 }
 
-PowerSquare::PowerSquare(double x_, double y_, std::string* names, int num) : PowerSquare(x_, y_) {
+PowerSquare::PowerSquare(double x_, double y_, const std::string* names, int num) : PowerSquare(x_, y_) {
 	numOfPowers = num;
 	heldPowers = new Power*[num];
 	for (int i = 0; i < num; i++) {
@@ -39,7 +39,7 @@ PowerSquare::PowerSquare(double x_, double y_, std::string type, std::string nam
 	heldPowers[0] = PowerupManager::getPowerFactory(type, name)();
 }
 
-PowerSquare::PowerSquare(double x_, double y_, std::string type, std::string* names, int num) : PowerSquare(x_, y_) {
+PowerSquare::PowerSquare(double x_, double y_, std::string type, const std::string* names, int num) : PowerSquare(x_, y_) {
 	numOfPowers = num;
 	heldPowers = new Power*[num];
 	for (int i = 0; i < num; i++) {
@@ -47,7 +47,7 @@ PowerSquare::PowerSquare(double x_, double y_, std::string type, std::string* na
 	}
 }
 
-PowerSquare::PowerSquare(double x_, double y_, std::string* types, std::string* names, int num) : PowerSquare(x_, y_) {
+PowerSquare::PowerSquare(double x_, double y_, const std::string* types, const std::string* names, int num) : PowerSquare(x_, y_) {
 	numOfPowers = num;
 	heldPowers = new Power*[num];
 	for (int i = 0; i < num; i++) {

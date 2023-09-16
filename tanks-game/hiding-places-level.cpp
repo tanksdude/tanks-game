@@ -76,7 +76,6 @@ void HidingPlacesLevel::initialize() {
 	posArr = new double[4]{ GAME_WIDTH/2-20/2, GAME_HEIGHT/2-20/2, 20, 20 };
 	constructionData = GenericFactoryConstructionData(4, posArr);
 	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "no_bullet_zone")(constructionData));
-	delete[] posArr;
 }
 
 Level* HidingPlacesLevel::factory() {

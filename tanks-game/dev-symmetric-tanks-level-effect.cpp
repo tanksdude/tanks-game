@@ -29,7 +29,7 @@ LevelEffect* DevSymmetricTanksLevelEffect::factory(const GenericFactoryConstruct
 		int count = args.getDataPortionLength(0);
 
 		if (count >= 1) {
-			bool* arr = (bool*)(args.getDataPortion(0));
+			const bool* arr = static_cast<const bool*>(args.getDataPortion(0).get());
 			bool angle = arr[0];
 			return new DevSymmetricTanksLevelEffect(angle);
 		}

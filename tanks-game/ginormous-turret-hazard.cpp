@@ -46,7 +46,7 @@ CircleHazard* GinormousTurretHazard::factory(const GenericFactoryConstructionDat
 		int count = args.getDataPortionLength(0);
 
 		if (count >= 3) {
-			double* arr = (double*)(args.getDataPortion(0));
+			const double* arr = static_cast<const double*>(args.getDataPortion(0).get());
 			double x = arr[0];
 			double y = arr[1];
 			double a = arr[2];
@@ -77,7 +77,7 @@ void GinormousTurretHazard::tick() {
 	}
 
 	if (mustShoot) {
-		const double angleDiff = 2*PI / bulletCount;
+		const double angleDiff = (2*PI) / bulletCount;
 		for (int i = bulletCount; i >= 0; i--) {
 			BulletManager::pushBullet(new Bullet(x + r*cos(i*angleDiff + velocity.getAngle()), y + r*sin(i*angleDiff + velocity.getAngle()), r*(BULLET_TO_TANK_RADIUS_RATIO*2), i*angleDiff + velocity.getAngle(), Tank::default_maxSpeed*BULLET_TO_TANK_SPEED_RATIO / 8, this->getTeamID(), BulletParentType::individual, this->getGameID()));
 		}
@@ -313,10 +313,10 @@ CircleHazard* GinormousTurretHazard::randomizingFactory(double x_start, double y
 		int count = args.getDataPortionLength(0);
 	}
 	if (count >= 1) {
-		double* arr = (double*)(args.getDataPortion(0));
+		const double* arr = static_cast<const double*>(args.getDataPortion(0).get());
 		angle = arr[0];
 	} else {
-		angle = RNG::randFunc() * 2*PI;
+		angle = RNG::randFunc() * (2*PI);
 	}
 
 	do {

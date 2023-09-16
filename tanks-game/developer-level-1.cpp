@@ -37,35 +37,27 @@ void DeveloperLevel1::initialize() {
 	posArr = new double[4]{ wallPos2.x, wallPos2.y+80, 20, (GAME_HEIGHT-20)-(wallPos2.y+80) };
 	constructionData = GenericFactoryConstructionData(4, posArr);
 	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "vertical_lightning")(constructionData));
-	delete[] posArr;
 	posArr = new double[4]{ wallPos1.x, wallPos1.y+80, 20, GAME_HEIGHT-(wallPos1.y+80) };
 	constructionData = GenericFactoryConstructionData(4, posArr);
 	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "vertical_lightning")(constructionData));
-	delete[] posArr;
 	posArr = new double[4]{ GAME_WIDTH/2 - 80 + 20, GAME_HEIGHT/2 - 40, 60*2, 20*2 - 10 };
 	constructionData = GenericFactoryConstructionData(4, posArr);
 	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "horizontal_lightning")(constructionData));
-	delete[] posArr;
 	posArr = new double[4]{ GAME_WIDTH/2 - 80 + 20, GAME_HEIGHT/2 - 120, 30*2, 30*2 };
 	constructionData = GenericFactoryConstructionData(4, posArr);
 	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "lightning")(constructionData));
-	delete[] posArr;
 	posArr = new double[3]{ GAME_WIDTH/2 + 30, GAME_HEIGHT/2 - 90, 30 };
 	constructionData = GenericFactoryConstructionData(3, posArr);
 	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "lightning")(constructionData));
-	delete[] posArr;
 	posArr = new double[4]{ GAME_WIDTH/2 - 80 + 20, GAME_HEIGHT/2 + 10, 60*2, 20*2 - 10 };
 	constructionData = GenericFactoryConstructionData(4, posArr);
 	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "lava")(constructionData));
-	delete[] posArr;
 	posArr = new double[3]{ GAME_WIDTH/2, GAME_HEIGHT/2 + 100, 40 };
 	constructionData = GenericFactoryConstructionData(3, posArr);
 	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "lava")(constructionData));
-	delete[] posArr;
 	posArr = new double[3]{ GAME_WIDTH/2, GAME_HEIGHT/2, PI/2 };
 	constructionData = GenericFactoryConstructionData(3, posArr);
 	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "targeting_turret")(constructionData));
-	delete[] posArr;
 
 	//assumption: TANK_RADIUS=16 (why it would ever be changed is beyond me)
 	PowerupManager::pushPowerup(new PowerSquare(20, 20, "speed"));

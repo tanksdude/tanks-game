@@ -64,7 +64,7 @@ CircleHazard* CircularLightningHazard::factory(const GenericFactoryConstructionD
 		int count = args.getDataPortionLength(0);
 
 		if (count >= 3) {
-			double* arr = (double*)(args.getDataPortion(0));
+			const double* arr = static_cast<const double*>(args.getDataPortion(0).get());
 			double x = arr[0];
 			double y = arr[1];
 			double r = arr[2];
@@ -141,7 +141,7 @@ void CircularLightningHazard::pushBolt(LightningBolt* l) {
 
 void CircularLightningHazard::pushDefaultBolt(int num, bool randomize) {
 	//the default bolt is from center to a random point
-	double randR = r*RNG::randFunc(), randAngle = 2*PI*RNG::randFunc();
+	double randR = r*RNG::randFunc(), randAngle = (2*PI)*RNG::randFunc();
 	double xEnd = randR*cos(randAngle), yEnd = randR*sin(randAngle);
 	for (int i = 0; i < num; i++) {
 		LightningBolt* l = new LightningBolt(0, 0, xEnd, yEnd, getDefaultNumBoltPoints(sqrt(pow(xEnd - 0, 2) + pow(yEnd - 0, 2))));
@@ -549,7 +549,7 @@ CircleHazard* CircularLightningHazard::randomizingFactory(double x_start, double
 		int count = args.getDataPortionLength(0);
 	}
 	if (count >= 1) {
-		double* arr = (double*)(args.getDataPortion(0));
+		const double* arr = static_cast<const double*>(args.getDataPortion(0).get());
 		radius = arr[0];
 		randomizeR = false;
 	} else {

@@ -55,7 +55,7 @@ CircleHazard* TargetingTurretHazard::factory(const GenericFactoryConstructionDat
 		int count = args.getDataPortionLength(0);
 
 		if (count >= 3) {
-			double* arr = (double*)(args.getDataPortion(0));
+			const double* arr = static_cast<const double*>(args.getDataPortion(0).get());
 			double x = arr[0];
 			double y = arr[1];
 			double a = arr[2];
@@ -594,10 +594,10 @@ CircleHazard* TargetingTurretHazard::randomizingFactory(double x_start, double y
 		int count = args.getDataPortionLength(0);
 	}
 	if (count >= 1) {
-		double* arr = (double*)(args.getDataPortion(0));
+		const double* arr = static_cast<const double*>(args.getDataPortion(0).get());
 		angle = arr[0];
 	} else {
-		angle = RNG::randFunc() * 2*PI;
+		angle = RNG::randFunc() * (2*PI);
 	}
 
 	do {

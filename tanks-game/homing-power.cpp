@@ -1,6 +1,6 @@
 #include "homing-power.h"
 
-const double HomingPower::homingStrength = 2*PI / 512; //old: 2*PI / 256 (it was too strong before)
+const double HomingPower::homingStrength = (2*PI) / 512; //old: 2*PI / 256 (it was too strong before)
 
 std::unordered_map<std::string, float> HomingPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;

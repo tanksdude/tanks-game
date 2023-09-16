@@ -159,7 +159,7 @@ Game_ID PowerFunctionHelper::homingGenericTarget(const Bullet* b, bool targetUsi
 		for (int i = 0; i < TankManager::getNumTanks(); i++) {
 			const Tank* t = TankManager::getTank(i);
 			if (t->getTeamID() == b->getTeamID()) {
-				angleDiffs[i] = 2*PI * 2; //is way more than enough
+				angleDiffs[i] = (2*PI) * 2; //is way more than enough
 			} else {
 				angleDiffs[i] = abs(atan2(b->y - t->y, b->x - t->x));
 			}

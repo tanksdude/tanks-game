@@ -42,7 +42,7 @@ RectHazard* DevWallHazard::factory(const GenericFactoryConstructionData& args) {
 		int count = args.getDataPortionLength(0);
 
 		if (count >= 4) {
-			double* arr = (double*)(args.getDataPortion(0));
+			const double* arr = static_cast<const double*>(args.getDataPortion(0).get());
 			double x = arr[0];
 			double y = arr[1];
 			double w = arr[2];
@@ -197,7 +197,7 @@ RectHazard* DevWallHazard::randomizingFactory(double x_start, double y_start, do
 		int count = args.getDataPortionLength(0);
 	}
 	if (count >= 2) {
-		double* arr = (double*)(args.getDataPortion(0));
+		const double* arr = static_cast<const double*>(args.getDataPortion(0).get());
 		width = arr[0];
 		height = arr[1];
 		randomizeWH = false;

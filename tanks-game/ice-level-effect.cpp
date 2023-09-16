@@ -38,7 +38,7 @@ LevelEffect* IceLevelEffect::factory(const GenericFactoryConstructionData& args)
 		int count = args.getDataPortionLength(0);
 
 		if (count >= 1) {
-			double* arr = (double*)(args.getDataPortion(0));
+			const double* arr = static_cast<const double*>(args.getDataPortion(0).get());
 			double ice = arr[0];
 			return new IceLevelEffect(ice);
 		}

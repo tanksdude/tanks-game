@@ -85,7 +85,7 @@ MineHeavenLevel::MineHeavenLevel() {
 
 	GenericFactoryConstructionData constructionData;
 	effects.push_back(LevelManager::getLevelEffectFactory("vanilla-extra", "ice")(constructionData));
-	double temp[4] = { wallArray[0].x+32, 0, wallArray[3].x - (wallArray[0].x+32), GAME_HEIGHT };
+	double* temp = new double[4]{ wallArray[0].x+32, 0, wallArray[3].x - (wallArray[0].x+32), GAME_HEIGHT };
 	constructionData = GenericFactoryConstructionData(4, temp);
 	effects.push_back(LevelManager::getLevelEffectFactory("vanilla", "minefield")(constructionData));
 

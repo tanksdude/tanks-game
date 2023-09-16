@@ -45,28 +45,22 @@ void TrickyManeuveringLevel::initialize() {
 	posArr = new double[4]{ GAME_WIDTH/2 - 40, GAME_HEIGHT/2 - 40 - 20, 40*2, 20 };
 	constructionData = GenericFactoryConstructionData(4, posArr);
 	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "horizontal_lightning")(constructionData));
-	delete[] posArr;
 	posArr = new double[4]{ GAME_WIDTH/2 - 40, GAME_HEIGHT/2 + 40, 40*2, 20 };
 	constructionData = GenericFactoryConstructionData(4, posArr);
 	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "horizontal_lightning")(constructionData));
-	delete[] posArr;
 	posArr = new double[4]{ GAME_WIDTH/2 - 40 - 20, GAME_HEIGHT/2 - 40, 20, 40*2 };
 	constructionData = GenericFactoryConstructionData(4, posArr);
 	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "vertical_lightning")(constructionData));
-	delete[] posArr;
 	posArr = new double[4]{ GAME_WIDTH/2 + 40, GAME_HEIGHT/2 - 40, 20, 40*2 };
 	constructionData = GenericFactoryConstructionData(4, posArr);
 	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "vertical_lightning")(constructionData));
-	delete[] posArr;
 
 	posArr = new double[4]{ wallArray[0].x+32, 0, wallArray[3].x - (wallArray[0].x+32), 16 };
 	constructionData = GenericFactoryConstructionData(4, posArr);
 	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "lava")(constructionData));
-	delete[] posArr;
 	posArr = new double[4]{ wallArray[0].x+32, GAME_HEIGHT - 16, wallArray[3].x - (wallArray[0].x+32), 16 };
 	constructionData = GenericFactoryConstructionData(4, posArr);
 	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "lava")(constructionData));
-	delete[] posArr;
 
 	//traps:
 	//for (int i = 0; i < 4; i++) {
@@ -126,7 +120,7 @@ Level* TrickyManeuveringLevel::factory() {
 }
 
 TrickyManeuveringLevel::TrickyManeuveringLevel() {
-	bool temp[1] = { true };
+	bool* temp = new bool[1]{ true };
 	GenericFactoryConstructionData constructionData(1, temp);
 	effects.push_back(LevelManager::getLevelEffectFactory("vanilla", "wind")(constructionData));
 }

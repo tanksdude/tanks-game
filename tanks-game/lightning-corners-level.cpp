@@ -37,24 +37,19 @@ void LightningCornersLevel::initialize() {
 	posArr = new double[4]{ GAME_WIDTH/2 - 80 + 20, GAME_HEIGHT/2 - 80 + 20, (80-20)*2, (80-20)*2 };
 	constructionData = GenericFactoryConstructionData(4, posArr);
 	//HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "no_bullet_zone")(constructionData));
-	delete[] posArr;
 
 	posArr = new double[4]{ GAME_WIDTH/2 - 80 + 20, GAME_HEIGHT/2 - 80, (80-20)*2, 20 };
 	constructionData = GenericFactoryConstructionData(4, posArr);
 	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "horizontal_lightning")(constructionData));
-	delete[] posArr;
 	posArr = new double[4]{ GAME_WIDTH/2 - 80 + 20, GAME_HEIGHT/2 + 80 - 20, (80-20)*2, 20 };
 	constructionData = GenericFactoryConstructionData(4, posArr);
 	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "horizontal_lightning")(constructionData));
-	delete[] posArr;
 	posArr = new double[4]{ GAME_WIDTH/2 - 80, GAME_HEIGHT/2 - 80 + 20, 20, (80-20)*2 };
 	constructionData = GenericFactoryConstructionData(4, posArr);
 	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "vertical_lightning")(constructionData));
-	delete[] posArr;
 	posArr = new double[4]{ GAME_WIDTH/2 + 80 - 20, GAME_HEIGHT/2 - 80 + 20, 20, (80-20)*2 };
 	constructionData = GenericFactoryConstructionData(4, posArr);
 	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "vertical_lightning")(constructionData));
-	delete[] posArr;
 
 	//traps:
 	//for (int i = 0; i < 4; i++) {
@@ -88,32 +83,26 @@ void LightningCornersLevel::initialize() {
 	posArr = new double[3]{ pos.x, pos.y, 0 };
 	constructionData = GenericFactoryConstructionData(3, posArr);
 	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(constructionData));
-	delete[] posArr;
 	pos = LevelHelper::getSymmetricPowerupPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 80+20);
 	posArr = new double[3]{ pos.x, pos.y, PI };
 	constructionData = GenericFactoryConstructionData(3, posArr);
 	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(constructionData));
-	delete[] posArr;
 	pos = LevelHelper::getSymmetricPowerupPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, 80+20);
 	posArr = new double[3]{ pos.x, pos.y, PI/2 };
 	constructionData = GenericFactoryConstructionData(3, posArr);
 	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(constructionData));
-	delete[] posArr;
 	pos = LevelHelper::getSymmetricPowerupPositions_UD(1, GAME_WIDTH/2, GAME_HEIGHT/2, 80+20);
 	posArr = new double[3]{ pos.x, pos.y, -PI/2 };
 	constructionData = GenericFactoryConstructionData(3, posArr);
 	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(constructionData));
-	delete[] posArr;
 
 	//just trying stuff
 	//posArr = new double[4]{ wallArray[0].x+32, 0, 16, GAME_HEIGHT };
 	//constructionData = GenericFactoryConstructionData(4, posArr);
 	//HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "vertical_lightning")(constructionData));
-	//delete[] posArr;
 	//posArr = new double[4]{ wallArray[3].x-16, 0, 16, GAME_HEIGHT };
 	//constructionData = GenericFactoryConstructionData(4, posArr);
 	//HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "vertical_lightning")(constructionData));
-	//delete[] posArr;
 }
 
 Level* LightningCornersLevel::factory() {

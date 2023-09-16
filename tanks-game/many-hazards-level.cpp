@@ -33,7 +33,6 @@ void ManyHazardsLevel::initialize() {
 	posArr = new double[4]{ GAME_WIDTH/2 - 10, 128, 10*2, GAME_HEIGHT - 128*2 };
 	constructionData = GenericFactoryConstructionData(4, posArr);
 	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "no_bullet_zone")(constructionData));
-	delete[] posArr;
 
 	const int TURRET_COUNT = 16; //stationary turret count, not regular turret count
 	//const double turretDistance = (wallArray[3].x - (wallArray[0].x+32)) / (TURRET_COUNT+1);
@@ -44,7 +43,6 @@ void ManyHazardsLevel::initialize() {
 		posArr = new double[3]{ wallArray[0].x+32+8/2 + turretDistance * (i+1), 16, PI/2 };
 		constructionData = GenericFactoryConstructionData(3, posArr);
 		HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(constructionData));
-		delete[] posArr;
 	}
 	for (int i = 0; i < TURRET_COUNT; i++) {
 		//top half
@@ -52,7 +50,6 @@ void ManyHazardsLevel::initialize() {
 		posArr = new double[3]{ wallArray[0].x+32+8/2 + turretDistance * (i+1), GAME_HEIGHT-16, -PI/2 };
 		constructionData = GenericFactoryConstructionData(3, posArr);
 		HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(constructionData));
-		delete[] posArr;
 	}
 	//JS x positions: [140, 164, ..., 476, 500]; C++ x positions: [136.471, 160.941, ..., 479.059, 503.529]
 	//positions have been updated to JS version; old version left commented out
@@ -62,13 +59,11 @@ void ManyHazardsLevel::initialize() {
 	//	posArr = new double[3]{ wallArray[0].x+32+8/2 + turretDistance * (i+1) + 4+8, 16, PI/2 };
 	//	constructionData = GenericFactoryConstructionData(3, posArr);
 	//	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "targeting_turret")(constructionData));
-	//	delete[] posArr;
 	//}
 	//for (int i = 0; i < TURRET_COUNT-1; i++) {
 	//	posArr = new double[3]{ wallArray[0].x+32+8/2 + turretDistance * (i+1) + 4+8, GAME_HEIGHT-16, -PI/2 };
 	//	constructionData = GenericFactoryConstructionData(3, posArr);
 	//	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "targeting_turret")(constructionData));
-	//	delete[] posArr;
 	//}
 
 	for (int i = 0; i < 4; i++) {
@@ -77,7 +72,6 @@ void ManyHazardsLevel::initialize() {
 		posArr = new double[3]{ pos.x, pos.y, PI * (i%2) };
 		constructionData = GenericFactoryConstructionData(3, posArr);
 		HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "targeting_turret")(constructionData));
-		delete[] posArr;
 	}
 
 	//useless traps:
@@ -96,7 +90,6 @@ void ManyHazardsLevel::initialize() {
 		posArr = new double[4]{ pos.x, pos.y, GAME_WIDTH/2 - 160/2 - (wallArray[0].x+32), 20 };
 		constructionData = GenericFactoryConstructionData(4, posArr);
 		HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "horizontal_lightning")(constructionData));
-		delete[] posArr;
 	}
 
 	pos = LevelHelper::getSymmetricPowerupPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 160/4 * 1.5);
@@ -108,19 +101,16 @@ void ManyHazardsLevel::initialize() {
 	posArr = new double[4]{ pos.x, pos.y, 160/2, 50 };
 	constructionData = GenericFactoryConstructionData(4, posArr);
 	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "lava")(constructionData));
-	delete[] posArr;
 	pos = LevelHelper::getSymmetricWallPositions_UD(1, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_HEIGHT/2 - wallPos1.y, 160/2, 50);
 	posArr = new double[4]{ pos.x, pos.y, 160/2, 50 };
 	constructionData = GenericFactoryConstructionData(4, posArr);
 	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "lava")(constructionData));
-	delete[] posArr;
 
 	for (int i = 0; i < 4; i++) {
 		pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 160/4, GAME_HEIGHT/2 - wallPos1.y, 160/4, 50);
 		posArr = new double[4]{ pos.x, pos.y, 160/4, 50 };
 		constructionData = GenericFactoryConstructionData(4, posArr);
 		HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "lightning")(constructionData));
-		delete[] posArr;
 	}
 
 	for (int i = 0; i < 4; i++) {

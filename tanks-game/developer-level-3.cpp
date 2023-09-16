@@ -37,17 +37,13 @@ void DeveloperLevel3::initialize() {
 	posArr = new double[4]{ GAME_WIDTH/2 - 80 + 20, GAME_HEIGHT/2 + 10, 60*2, 20*2 - 10 };
 	constructionData = GenericFactoryConstructionData(4, posArr);
 	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "lava")(constructionData));
-	delete[] posArr;
 	posArr = new double[3]{ GAME_WIDTH/2, GAME_HEIGHT/2 + 100, 40 };
 	constructionData = GenericFactoryConstructionData(3, posArr);
 	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "lightning")(constructionData));
-	delete[] posArr;
 	posArr = new double[3]{ GAME_WIDTH/2, GAME_HEIGHT/2, -PI/2 };
 	constructionData = GenericFactoryConstructionData(3, posArr);
-	//HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(constructionData));
 	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "mother_turret")(constructionData));
 	//HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("dev", "ginormous_turret")(constructionData));
-	delete[] posArr;
 
 	//not from dev1
 	pos = LevelHelper::getSymmetricPowerupPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 60+20+40+10);
@@ -69,18 +65,15 @@ void DeveloperLevel3::initialize() {
 	constructionData.pushData(1, patrolCount);
 	constructionData.pushData(4*2, patrolRoute);
 	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "patrolling_turret")(constructionData));
-	delete[] posArr; delete[] patrolCount; delete[] patrolRoute;
 
 	pos = LevelHelper::getSymmetricWallPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 20, 80);
 	posArr = new double[4]{ pos.x - 40, pos.y, 20, 80 };
 	constructionData = GenericFactoryConstructionData(4, posArr);
 	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("dev", "wall")(constructionData));
-	delete[] posArr;
 	pos = LevelHelper::getSymmetricWallPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 20, 80);
 	posArr = new double[4]{ pos.x + 40, pos.y, 20, 80 };
 	constructionData = GenericFactoryConstructionData(4, posArr);
 	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("dev", "wall")(constructionData));
-	delete[] posArr;
 
 	//from dev2
 	PowerupManager::pushPowerup(new PowerSquare(20, 20, "speed"));

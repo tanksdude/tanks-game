@@ -215,7 +215,7 @@ LevelEffect* RespawningPowerupsLevelEffect::factory(const GenericFactoryConstruc
 
 		if (count >= 1) {
 			//don't push the powerups to watch at the start because level construction happens before level initialization
-			bool* arr = (bool*)(args.getDataPortion(0));
+			const bool* arr = static_cast<const bool*>(args.getDataPortion(0).get());
 			bool watch = arr[0];
 			return new RespawningPowerupsLevelEffect(watch);
 		}

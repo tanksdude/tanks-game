@@ -2,6 +2,7 @@
 #include "level.h"
 #include <string>
 #include <vector>
+#include <memory>
 #include "generic-factory-construction-data.h"
 
 //TODO: this should become a "ModInterpreter" (name permanently temporary), which gets a list of mods and sends the power/level/whatever to the relevant interpreter
@@ -49,8 +50,14 @@ protected:
 		int startPosCount, double startPosXValue, double startPosYRange,
 		const std::vector<std::string>& types,
 		const std::unordered_map<std::string, float>& weights,
-		std::vector<CustomLevelAction*> actions);
-	//virtual void pushCommands(CustomLevelAction*); //no; once it's made it's done
+		std::vector<CustomLevelAction*>* actions);
+	//for CustomLevel::factory()
+	CustomLevel(std::string name,
+		float colorR, float colorG, float colorB,
+		int startPosCount, double startPosXValue, double startPosYRange,
+		const std::vector<std::string>& types,
+		const std::unordered_map<std::string, float>& weights,
+		std::shared_ptr<std::vector<CustomLevelAction*>> actions);
 
 protected:
 	std::string name;
@@ -61,7 +68,7 @@ protected:
 	int startPosCount;
 	double startPosXValue;
 	double startPosYRange;
-	std::vector<CustomLevelAction*> initializationActions;
+	std::shared_ptr<std::vector<CustomLevelAction*>> initializationActions; //remember, the vector's elements need to be deleted
 
 protected:
 	static inline void initialization_WALL(const GenericFactoryConstructionData&, ColorValueHolder wallColor) noexcept;

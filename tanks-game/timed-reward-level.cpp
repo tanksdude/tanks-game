@@ -31,8 +31,8 @@ void TimedRewardLevel::tick() {
 	for (int i = 0; i < 4; i++) {
 		Wall* tempWall = WallManager::getWallByID(movingWalls[i]);
 		if (tempWall != nullptr) {
-			//tempWall->y += (10 * sin(2*PI * GameManager::getTickCount() / 200)) * ((i/2 == 0)*2-1);
-			tempWall->y += (2*PI/200 * 10 * cos(2*PI * GameManager::getTickCount() / 200)) * ((i/2 == 0)*2-1); //derivative
+			//tempWall->y += (10 * sin((2*PI) * GameManager::getTickCount() / 200)) * ((i/2 == 0)*2-1);
+			tempWall->y += ((2*PI)/200 * 10 * cos(2*PI * GameManager::getTickCount() / 200)) * ((i/2 == 0)*2-1); //derivative
 			//std::cout << tempWall->y << std::endl;
 		}
 	}
@@ -69,7 +69,6 @@ void TimedRewardLevel::initialize() {
 		posArr = new double[3]{ pos.x, pos.y, distToCenter.getAngle() };
 		constructionData = GenericFactoryConstructionData(3, posArr);
 		HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(constructionData));
-		delete[] posArr;
 	}
 
 	//some extra walls
@@ -87,12 +86,10 @@ void TimedRewardLevel::initialize() {
 	posArr = new double[4]{ pos.x, pos.y, 20, GAME_HEIGHT/2 - (40+40) };
 	constructionData = GenericFactoryConstructionData(4, posArr);
 	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "vertical_lightning")(constructionData));
-	delete[] posArr;
 	pos = LevelHelper::getSymmetricWallPositions_UD(1, GAME_WIDTH/2, GAME_HEIGHT/2, 40+40, 20, (GAME_HEIGHT/2 - (40+40)));
 	posArr = new double[4]{ pos.x, pos.y, 20, GAME_HEIGHT/2 - (40+40) };
 	constructionData = GenericFactoryConstructionData(4, posArr);
 	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "vertical_lightning")(constructionData));
-	delete[] posArr;
 
 	//other potential powers:
 	//homing, tracking, big, speed?, triple?, blast, annoying

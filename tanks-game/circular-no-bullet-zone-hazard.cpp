@@ -40,7 +40,7 @@ CircleHazard* CircularNoBulletZoneHazard::factory(const GenericFactoryConstructi
 		int count = args.getDataPortionLength(0);
 
 		if (count >= 3) {
-			double* arr = (double*)(args.getDataPortion(0));
+			const double* arr = static_cast<const double*>(args.getDataPortion(0).get());
 			double x = arr[0];
 			double y = arr[1];
 			double r = arr[2];
@@ -259,7 +259,7 @@ CircleHazard* CircularNoBulletZoneHazard::randomizingFactory(double x_start, dou
 		int count = args.getDataPortionLength(0);
 	}
 	if (count >= 1) {
-		double* arr = (double*)(args.getDataPortion(0));
+		const double* arr = static_cast<const double*>(args.getDataPortion(0).get());
 		radius = arr[0];
 		randomizeR = false;
 	} else {

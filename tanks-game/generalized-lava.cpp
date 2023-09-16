@@ -79,7 +79,7 @@ float GeneralizedLava::LavaBubble::getY() const {
 ColorValueHolder GeneralizedLava::getBackgroundColor() const {
 	//colors: red (#FF0000) and orange-red (#FFAA00) mixed
 	return ColorMixer::mix(ColorValueHolder(1.0f, 0.0f, 0.0f), ColorValueHolder(1.0f, 0.875f, 0.0f),
-	                       .625 + sin(2*PI * tickCount/tickCycle)/8 + cos(2*PI * tickCount/tickCycle * 8)/8);
+	                       .625 + sin((2*PI) * (tickCount/tickCycle))/8 + cos((2*PI) * (tickCount/tickCycle) * 8)/8);
 }
 
 ColorValueHolder GeneralizedLava::getBackgroundColor_Pose() const {
