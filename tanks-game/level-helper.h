@@ -6,11 +6,11 @@
 
 class LevelHelper { //has stuff for randomizing stuff in levels
 public:
-	static Wall* makeNewRandomWall(double x_beginning, double y_beginning, double width_ofArea, double height_ofArea, ColorValueHolder c, double minW, double minH, double maxW, double maxH);
-	static inline Wall* makeNewRandomWall(double x_beginning, double y_beginning, double width_ofArea, double height_ofArea, ColorValueHolder c) {
+	static Wall* makeNewRandomWall(double x_beginning, double y_beginning, double width_ofArea, double height_ofArea, const ColorValueHolder& c, double minW, double minH, double maxW, double maxH);
+	static inline Wall* makeNewRandomWall(double x_beginning, double y_beginning, double width_ofArea, double height_ofArea, const ColorValueHolder& c) {
 		return LevelHelper::makeNewRandomWall(x_beginning, y_beginning, width_ofArea, height_ofArea, c, 12, 8, 64, 96);
 	}
-	static void pushClassicWalls(ColorValueHolder c);
+	static void pushClassicWalls(const ColorValueHolder& c);
 	[[nodiscard]] static PositionHolder* getClassicWallPositions();
 
 	static std::string* getRandomPowers(int count, std::string type); //handles stacking and weights for a whole group (use this)

@@ -16,7 +16,7 @@ private:
 		//long doubles are utterly unnecessary, but it's the time difference units from std::chrono
 		std::string name;
 		ColorValueHolder color;
-		GraphData(std::string, ColorValueHolder);
+		GraphData(std::string, const ColorValueHolder&);
 		GraphData() { name = ""; color = ColorValueHolder(0, 0, 0); }
 	};
 
@@ -44,7 +44,7 @@ public:
 	static void printTimings(); //plain milliseconds
 	static void printPreciseTimings(); //microsecond accuracy
 
-	static void declareGraph(std::string name, ColorValueHolder color);
+	static void declareGraph(std::string name, const ColorValueHolder& color);
 	static void pushGraphTime(std::string name, long double time);
 	static void clearGraph(std::string name);
 	static void clearGraph(); //all graphs

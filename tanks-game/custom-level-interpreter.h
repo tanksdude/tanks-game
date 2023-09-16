@@ -71,15 +71,15 @@ protected:
 	std::shared_ptr<std::vector<CustomLevelAction*>> initializationActions; //remember, the vector's elements need to be deleted
 
 protected:
-	static inline void initialization_WALL(const GenericFactoryConstructionData&, ColorValueHolder wallColor) noexcept;
-	static inline void initialization_WALL_LR(const GenericFactoryConstructionData&, ColorValueHolder wallColor) noexcept;
-	static inline void initialization_WALL_UD(const GenericFactoryConstructionData&, ColorValueHolder wallColor) noexcept;
-	static inline void initialization_WALL_Corners(const GenericFactoryConstructionData&, ColorValueHolder wallColor) noexcept;
-	static inline void initialization_WALL_DiagForwardSlash(const GenericFactoryConstructionData&, ColorValueHolder wallColor) noexcept;
-	static inline void initialization_WALL_DiagBackwardSlash(const GenericFactoryConstructionData&, ColorValueHolder wallColor) noexcept;
+	static inline void initialization_WALL(const GenericFactoryConstructionData&, const ColorValueHolder& wallColor) noexcept;
+	static inline void initialization_WALL_LR(const GenericFactoryConstructionData&, const ColorValueHolder& wallColor) noexcept;
+	static inline void initialization_WALL_UD(const GenericFactoryConstructionData&, const ColorValueHolder& wallColor) noexcept;
+	static inline void initialization_WALL_Corners(const GenericFactoryConstructionData&, const ColorValueHolder& wallColor) noexcept;
+	static inline void initialization_WALL_DiagForwardSlash(const GenericFactoryConstructionData&, const ColorValueHolder& wallColor) noexcept;
+	static inline void initialization_WALL_DiagBackwardSlash(const GenericFactoryConstructionData&, const ColorValueHolder& wallColor) noexcept;
 
-	static inline void initialization_RANDOM_WALLS(const GenericFactoryConstructionData&, ColorValueHolder wallColor) noexcept;
-	static inline void initialization_CLASSIC_WALLS(ColorValueHolder wallColor) noexcept;
+	static inline void initialization_RANDOM_WALLS(const GenericFactoryConstructionData&, const ColorValueHolder& wallColor) noexcept;
+	static inline void initialization_CLASSIC_WALLS(const ColorValueHolder& wallColor) noexcept;
 
 	static inline void initialization_POWER(const GenericFactoryConstructionData&) noexcept;
 	static inline void initialization_POWER_LR(const GenericFactoryConstructionData&) noexcept;

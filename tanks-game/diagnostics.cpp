@@ -17,7 +17,7 @@ double Diagnostics::graphHeight = GAME_HEIGHT/4;
 double Diagnostics::graphXOffset = 0;
 double Diagnostics::graphYOffset = 0;
 
-Diagnostics::GraphData::GraphData(std::string n, ColorValueHolder c) {
+Diagnostics::GraphData::GraphData(std::string n, const ColorValueHolder& c) {
 	this->name = n;
 	this->color = c;
 }
@@ -71,7 +71,7 @@ void Diagnostics::printPreciseTimings() {
 	}
 }
 
-void Diagnostics::declareGraph(std::string name, ColorValueHolder color) {
+void Diagnostics::declareGraph(std::string name, const ColorValueHolder& color) {
 	graphNameToIndex.insert({ name, graphTimes.size() });
 	graphTimes.push_back(GraphData(name, color));
 }

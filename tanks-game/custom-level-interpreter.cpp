@@ -201,7 +201,7 @@ void CustomLevel::initialize() {
 	}
 }
 
-inline void CustomLevel::initialization_WALL(const GenericFactoryConstructionData& data, ColorValueHolder wallColor) noexcept {
+inline void CustomLevel::initialization_WALL(const GenericFactoryConstructionData& data, const ColorValueHolder& wallColor) noexcept {
 	const double* dataArr = static_cast<const double*>(data.getDataPortion(0).get());
 	double centerX = dataArr[0];
 	double centerY = dataArr[1];
@@ -210,7 +210,7 @@ inline void CustomLevel::initialization_WALL(const GenericFactoryConstructionDat
 
 	WallManager::pushWall(new Wall(centerX-width/2, centerY-height/2, width, height, wallColor));
 }
-inline void CustomLevel::initialization_WALL_LR(const GenericFactoryConstructionData& data, ColorValueHolder wallColor) noexcept {
+inline void CustomLevel::initialization_WALL_LR(const GenericFactoryConstructionData& data, const ColorValueHolder& wallColor) noexcept {
 	const double* dataArr = static_cast<const double*>(data.getDataPortion(0).get());
 	double centerX = dataArr[0];
 	double centerY = dataArr[1];
@@ -224,7 +224,7 @@ inline void CustomLevel::initialization_WALL_LR(const GenericFactoryConstruction
 	pos = LevelHelper::getSymmetricWallPositions_LR(1, centerX, centerY, offsetX, width, height);
 	WallManager::pushWall(new Wall(pos.x, pos.y, width, height, wallColor));
 }
-inline void CustomLevel::initialization_WALL_UD(const GenericFactoryConstructionData& data, ColorValueHolder wallColor) noexcept {
+inline void CustomLevel::initialization_WALL_UD(const GenericFactoryConstructionData& data, const ColorValueHolder& wallColor) noexcept {
 	const double* dataArr = static_cast<const double*>(data.getDataPortion(0).get());
 	double centerX = dataArr[0];
 	double centerY = dataArr[1];
@@ -238,7 +238,7 @@ inline void CustomLevel::initialization_WALL_UD(const GenericFactoryConstruction
 	pos = LevelHelper::getSymmetricWallPositions_UD(1, centerX, centerY, offsetY, width, height);
 	WallManager::pushWall(new Wall(pos.x, pos.y, width, height, wallColor));
 }
-inline void CustomLevel::initialization_WALL_Corners(const GenericFactoryConstructionData& data, ColorValueHolder wallColor) noexcept {
+inline void CustomLevel::initialization_WALL_Corners(const GenericFactoryConstructionData& data, const ColorValueHolder& wallColor) noexcept {
 	const double* dataArr = static_cast<const double*>(data.getDataPortion(0).get());
 	double centerX = dataArr[0];
 	double centerY = dataArr[1];
@@ -253,7 +253,7 @@ inline void CustomLevel::initialization_WALL_Corners(const GenericFactoryConstru
 		WallManager::pushWall(new Wall(pos.x, pos.y, width, height, wallColor));
 	}
 }
-inline void CustomLevel::initialization_WALL_DiagForwardSlash(const GenericFactoryConstructionData& data, ColorValueHolder wallColor) noexcept {
+inline void CustomLevel::initialization_WALL_DiagForwardSlash(const GenericFactoryConstructionData& data, const ColorValueHolder& wallColor) noexcept {
 	const double* dataArr = static_cast<const double*>(data.getDataPortion(0).get());
 	double centerX = dataArr[0];
 	double centerY = dataArr[1];
@@ -268,7 +268,7 @@ inline void CustomLevel::initialization_WALL_DiagForwardSlash(const GenericFacto
 	pos = LevelHelper::getSymmetricWallPositions_DiagForwardSlash(1, centerX, centerY, offsetX, offsetY, width, height);
 	WallManager::pushWall(new Wall(pos.x, pos.y, width, height, wallColor));
 }
-inline void CustomLevel::initialization_WALL_DiagBackwardSlash(const GenericFactoryConstructionData& data, ColorValueHolder wallColor) noexcept {
+inline void CustomLevel::initialization_WALL_DiagBackwardSlash(const GenericFactoryConstructionData& data, const ColorValueHolder& wallColor) noexcept {
 	const double* dataArr = static_cast<const double*>(data.getDataPortion(0).get());
 	double centerX = dataArr[0];
 	double centerY = dataArr[1];
@@ -284,7 +284,7 @@ inline void CustomLevel::initialization_WALL_DiagBackwardSlash(const GenericFact
 	WallManager::pushWall(new Wall(pos.x, pos.y, width, height, wallColor));
 }
 
-inline void CustomLevel::initialization_RANDOM_WALLS(const GenericFactoryConstructionData& data, ColorValueHolder wallColor) noexcept {
+inline void CustomLevel::initialization_RANDOM_WALLS(const GenericFactoryConstructionData& data, const ColorValueHolder& wallColor) noexcept {
 	const double* dataArr = static_cast<const double*>(data.getDataPortion(0).get());
 	double area_startX = dataArr[0];
 	double area_startY = dataArr[1];
@@ -309,7 +309,7 @@ inline void CustomLevel::initialization_RANDOM_WALLS(const GenericFactoryConstru
 		}
 	}
 }
-inline void CustomLevel::initialization_CLASSIC_WALLS(ColorValueHolder wallColor) noexcept {
+inline void CustomLevel::initialization_CLASSIC_WALLS(const ColorValueHolder& wallColor) noexcept {
 	LevelHelper::pushClassicWalls(wallColor);
 }
 

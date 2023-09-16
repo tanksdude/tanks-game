@@ -7,7 +7,7 @@
 #include "renderer.h"
 #include <iostream>
 
-Wall::Wall(double x_, double y_, double w_, double h_, ColorValueHolder c) : GameThing(DEFAULT_TEAM) {
+Wall::Wall(double x_, double y_, double w_, double h_, const ColorValueHolder& c) : GameThing(DEFAULT_TEAM) {
 	this->x = x_;
 	this->y = y_;
 	this->w = w_;
@@ -15,7 +15,7 @@ Wall::Wall(double x_, double y_, double w_, double h_, ColorValueHolder c) : Gam
 	color = c;
 }
 
-//Wall::Wall(double x_, double y_, double w_, double h_, ColorValueHolder c, Team_ID teamID_) : Wall(x_, y_, w_, h_, c) {
+//Wall::Wall(double x_, double y_, double w_, double h_, const ColorValueHolder& c, Team_ID teamID_) : Wall(x_, y_, w_, h_, c) {
 //	this->teamID = teamID_;
 //}
 

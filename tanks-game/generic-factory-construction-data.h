@@ -25,5 +25,6 @@ public:
 	~GenericFactoryConstructionData();
 
 private:
-	GenericFactoryConstructionData(const GenericFactoryConstructionData&) = default;
+	//GenericFactoryConstructionData(const GenericFactoryConstructionData&) = default;
+	//=default is same as doing nothing; not another way of saying the implicit copy constructor
 };
