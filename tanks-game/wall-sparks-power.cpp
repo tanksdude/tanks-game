@@ -1,5 +1,7 @@
 #include "wall-sparks-power.h"
+
 #include "constants.h"
+
 #include "bounce-power.h"
 
 const int WallSparksPower::extraBulletsCount = 4;
@@ -58,10 +60,11 @@ WallSparksTankPower::WallSparksTankPower() {
 
 
 
+#include <vector>
+#include "rng.h"
+
 #include "power-function-helper.h"
 #include "bullet-manager.h"
-#include "rng.h"
-#include <vector>
 
 InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> WallSparksBulletPower::modifiedCollisionWithWall(const Bullet* b, const Wall* w) {
 	std::shared_ptr<BulletUpdateStruct> b_update;

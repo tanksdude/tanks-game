@@ -1,6 +1,8 @@
 #include "opengl-vertex-array.h"
+
+//#include <stdexcept>
+
 #include <GL/glew.h>
-#include <stdexcept>
 #include "opengl-vertex-buffer.h"
 #include "opengl-index-buffer.h"
 

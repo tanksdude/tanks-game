@@ -1,17 +1,20 @@
 #include "vertical-lightning-hazard.h"
-#include "renderer.h"
-#include "background-rect.h"
-#include "color-mixer.h"
+
 #include "constants.h"
 #include <cmath>
 #include <stdexcept>
 #include <algorithm> //std::copy, std::clamp
+#include <iostream>
+#include "rng.h"
+
+#include "renderer.h"
+#include "color-mixer.h"
+#include "background-rect.h"
+
+#include "collision-handler.h"
 #include "point.h"
 #include "wall-manager.h"
 #include "hazard-manager.h"
-#include "collision-handler.h"
-#include "rng.h"
-#include <iostream>
 
 std::unordered_map<std::string, float> VerticalLightningHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;

@@ -1,10 +1,12 @@
 #include "few-obstacles-level.h"
+
 #include "constants.h"
+#include "rng.h"
+
+#include "reset-things.h"
 #include "level-helper.h"
 #include "powerup-manager.h"
 #include "wall-manager.h"
-#include "reset-things.h"
-#include "rng.h"
 
 std::unordered_map<std::string, float> FewObstaclesLevel::getWeights() const {
 	std::unordered_map<std::string, float> weights;

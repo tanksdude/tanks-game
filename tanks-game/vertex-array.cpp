@@ -1,6 +1,8 @@
 #include "vertex-array.h"
-#include "renderer.h"
+
 #include <stdexcept>
+
+#include "renderer.h"
 #include "opengl-vertex-array.h"
 
 VertexArray* VertexArray::MakeVertexArray() {

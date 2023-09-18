@@ -1,7 +1,8 @@
 #pragma once
-#include "game-scene.h"
-#include <vector>
 #include <utility>
+#include <vector>
+
+#include "game-scene.h"
 
 typedef int Scene_ID;
 
@@ -12,13 +13,13 @@ private:
 	static Scene_ID nextSceneID;
 
 public:
-	static void Initialize();
 	//TODO
-	static GameScene* getScene(int index);
+	static void Initialize();
+	static GameScene* getScene(unsigned int index);
 	static GameScene* getSceneByID(Scene_ID);
 	static void pushScene(GameScene*);
-	static int getNumScenes() { return scenes.size(); }
-	static void deleteScene(int index);
+	static unsigned int getNumScenes() { return scenes.size(); }
+	static void deleteScene(unsigned int index);
 	static void deleteSceneByID(Scene_ID);
 
 	static void TickScenes(int UPS);

@@ -51,8 +51,9 @@ TrackingTankPower::TrackingTankPower() {
 
 
 
-#include "power-function-helper.h"
 #include "constants.h"
+
+#include "power-function-helper.h"
 
 InteractionBoolHolder TrackingBulletPower::modifiedMovement(Bullet* b) {
 	Game_ID targetID = PowerFunctionHelper::homingGenericTarget(b, true);

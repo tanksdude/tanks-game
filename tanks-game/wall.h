@@ -5,6 +5,7 @@ struct WallUpdateStruct;
 #include "game-thing.h"
 #include "rect.h"
 #include "drawable-thing.h"
+
 #include "color-value-holder.h"
 
 class Wall : public GameThing, public Rect, public DrawableThing {
@@ -25,7 +26,6 @@ public:
 	void update(const WallUpdateStruct*);
 
 	Wall(double x, double y, double w, double h, const ColorValueHolder& c);
-	//Wall(double x, double y, double w, double h, const ColorValueHolder& c, Team_ID teamID);
 	~Wall();
 };
 

@@ -1,15 +1,17 @@
 #pragma once
 class Tank;
 
+#include <string>
+#include <vector>
+
 #include "game-thing.h"
 #include "circle.h"
 #include "drawable-thing.h"
-#include <string>
-#include <vector>
+#include "tank-power.h"
+
 #include "color-value-holder.h"
 #include "simple-vector-2d.h"
 #include "cannon-point.h"
-#include "tank-power.h"
 
 class Tank : public GameThing, public Circle, public DrawableThing {
 	friend class ResetThings;
@@ -29,14 +31,14 @@ public:
 	std::string name;
 
 public:
-	double getOffenseTier() const;
-	double getDefenseTier() const;
+	float getOffenseTier() const;
+	float getDefenseTier() const;
 
 protected:
-	double getHighestOffenseImportance() const;
-	double getHighestOffenseTier(double importance) const;
-	double getHighestDefenseImportance() const;
-	double getHighestDefenseTier(double importance) const;
+	float getHighestOffenseImportance() const;
+	float getHighestOffenseTier(float importance) const;
+	float getHighestDefenseImportance() const;
+	float getHighestDefenseTier(float importance) const;
 
 public:
 	void determineShootingAngles();
@@ -52,14 +54,14 @@ public:
 protected:
 	void makeBulletCommon(double x, double y, double angle, double radius, double speed);
 public:
-	void makeBullet(double x, double y, double angle, double radius, double speed, double acc); //move to private eventually (does not use makeBulletCommon) (avoid using)
+	void makeBullet(double x, double y, double angle, double radius, double speed, double acc); //does not use makeBulletCommon (avoid using)
 	void defaultMakeBullet(double angle); //simple shoot: bullet points away from tank center at a given angle
 	void regularMakeBullet(double x_offset, double y_offset, double angle); //make bullet x and y dist from tank, moving with angle
 
 protected:
 	ColorValueHolder defaultColor; // = ColorValueHolder(0.5f, 0.5f, 0.5f); //JS: #888888
-	ColorValueHolder defaultNameFill = ColorValueHolder(1.0f, 1.0f, 1.0f);
-	ColorValueHolder defaultNameStroke = ColorValueHolder(0.0f, 0.0f, 0.0f);
+	//ColorValueHolder defaultNameFill = ColorValueHolder(1.0f, 1.0f, 1.0f);
+	//ColorValueHolder defaultNameStroke = ColorValueHolder(0.0f, 0.0f, 0.0f);
 
 	bool kill(); //allows for custom death (a.k.a. something saving the tank from death)
 	void kill_hard(); //kills without accounting for extra lives
@@ -72,6 +74,7 @@ public:
 	ColorValueHolder getBodyColor() const;
 	std::string getName() const { return name; }
 
+	//TODO: remove
 	double getAngle() const;
 	double getCannonAngle(int index) const;
 	double getRealCannonAngle(int index) const;

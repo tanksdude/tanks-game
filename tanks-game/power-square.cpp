@@ -1,11 +1,13 @@
 #include "power-square.h"
-#include "game-manager.h"
+
 #include "constants.h"
-#include "background-rect.h"
-#include "color-mixer.h"
-#include "renderer.h"
-#include "powerup-manager.h"
 #include <algorithm> //std::clamp
+
+#include "renderer.h"
+#include "color-mixer.h"
+#include "background-rect.h"
+
+#include "powerup-manager.h"
 
 const double PowerSquare::POWER_WIDTH = 6;
 const double PowerSquare::POWER_HEIGHT = 6;
@@ -74,7 +76,7 @@ ColorValueHolder PowerSquare::getColor() const {
 	if (numOfPowers == 1) {
 		return heldPowers[0]->getColor();
 	} else {
-		double highest = LOW_IMPORTANCE;
+		float highest = LOW_IMPORTANCE;
 		for (int i = 0; i < numOfPowers; i++) {
 			if (heldPowers[i]->getColorImportance() > highest) {
 				highest = heldPowers[i]->getColorImportance();

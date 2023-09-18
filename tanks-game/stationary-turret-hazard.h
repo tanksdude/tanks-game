@@ -1,7 +1,9 @@
 #pragma once
 #include "circle-hazard.h"
-#include "simple-vector-2d.h"
+
 #include "constants.h"
+
+#include "simple-vector-2d.h"
 
 class StationaryTurretHazard : public CircleHazard {
 	//just called Stationary in JS Tanks
@@ -29,8 +31,8 @@ public:
 	virtual CircleHazardCollisionType getCollisionType() const override { return CircleHazardCollisionType::solid; }
 
 protected:
-	virtual double getDefaultOffense() const override { return 0; }
-	virtual double getDefaultDefense() const override { return DESTRUCTION_TIER; }
+	virtual float getDefaultOffense() const override { return 0; }
+	virtual float getDefaultDefense() const override { return DESTRUCTION_TIER; }
 
 public:
 	//virtual bool validLocation() const override { return true; }

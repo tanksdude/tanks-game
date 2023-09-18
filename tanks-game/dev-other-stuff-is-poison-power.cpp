@@ -63,8 +63,6 @@ DevOtherStuffIsPoisonTankPower::DevOtherStuffIsPoisonTankPower() {
 
 
 
-//#include "constants.h"
-
 void DevOtherStuffIsPoisonBulletPower::initialize(Bullet* parent) {
 	//nothing
 }

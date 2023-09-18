@@ -1,8 +1,11 @@
 #pragma once
 class TankPower;
 
-#include "inherited-power-common.h"
+#include <vector>
+
+#include "interaction-bool-holder.h"
 #include "color-value-holder.h"
+
 #include "tank.h"
 #include "cannon-point.h"
 #include "bullet.h"
@@ -11,10 +14,10 @@ class TankPower;
 #include "rect-hazard.h"
 #include "bullet-power.h"
 
-class TankPower : public InheritedPowerCommon {
-protected:
-	//double timeLeft;
-	//double maxTime;
+class TankPower {
+public:
+	double timeLeft;
+	double maxTime;
 
 public:
 	virtual void initialize(Tank* parent) = 0;
@@ -35,7 +38,7 @@ public:
 		return ((maxTime >= 0) && (timeLeft <= 0));
 	}
 	virtual ColorValueHolder getColor() const = 0;
-	virtual double getColorImportance() const { return 0; }
+	virtual float getColorImportance() const { return 0; }
 
 	virtual TankPower* makeDuplicate() const = 0;
 	virtual BulletPower* makeBulletPower() const = 0;
@@ -132,10 +135,10 @@ public:
 	virtual double getTankTurningIncrementMultiplier() const { return 1; }
 	bool tankTurningIncrementStacks = false;
 
-	virtual double getOffenseImportance() const { return 0; } //"importance" = "override" value (when dealing with other powers)
-	virtual double getOffenseTier(const Tank*) const { return 0; }
-	virtual double getDefenseImportance() const { return 0; }
-	virtual double getDefenseTier(const Tank*) const { return 0; }
+	virtual float getOffenseImportance() const { return 0; } //"importance" = "override" value (when dealing with other powers)
+	virtual float getOffenseTier(const Tank*) const { return 0; }
+	virtual float getDefenseImportance() const { return 0; }
+	virtual float getDefenseTier(const Tank*) const { return 0; }
 
 	virtual ~TankPower() { return; }
 };

@@ -1,4 +1,5 @@
 #include "ice-level-effect.h"
+
 #include "tank-manager.h"
 
 std::unordered_map<std::string, float> IceLevelEffect::getWeights() const {

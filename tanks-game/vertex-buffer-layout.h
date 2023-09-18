@@ -1,7 +1,7 @@
 #pragma once
-#include <GL/glew.h>
 #include <string>
 #include <vector>
+#include <GL/glew.h>
 
 enum class ShaderDataType {
 	None,

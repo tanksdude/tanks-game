@@ -1,14 +1,17 @@
 #include "unnamed-level-2.h"
+
 #include "constants.h"
-#include "level-helper.h"
-#include "wall-manager.h"
-#include "powerup-manager.h"
-#include "hazard-manager.h"
-#include "reset-things.h"
-#include "level-manager.h"
 #include <algorithm> //std::min
-#include "collision-handler.h"
 #include <iostream>
+
+#include "reset-things.h"
+#include "level-helper.h"
+#include "powerup-manager.h"
+#include "wall-manager.h"
+#include "hazard-manager.h"
+
+#include "level-manager.h"
+//#include "collision-handler.h"
 
 ColorValueHolder UnnamedLevel2::getDefaultColor() const {
 	//TODO

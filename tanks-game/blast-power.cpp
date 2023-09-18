@@ -75,12 +75,13 @@ BlastTankPower::BlastTankPower() {
 
 
 
-#include "collision-handler.h"
 #include "rng.h"
+
+#include "collision-handler.h"
 
 InteractionBoolHolder BlastBulletPower::modifiedMovement(Bullet* b) {
 	if (b->velocity.getMagnitude() <= 0) {
-		b->opaqueness -= BlastPower::degradeAmount;
+		b->lifeValue -= BlastPower::degradeAmount;
 	} /*else if (b->velocity < 0) {
 		b->velocity.setMagnitude(0);
 		b->acceleration = 0;
@@ -90,7 +91,7 @@ InteractionBoolHolder BlastBulletPower::modifiedMovement(Bullet* b) {
 
 InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> BlastBulletPower::modifiedCollisionWithWall(const Bullet* b, const Wall* w) {
 	if (b->velocity.getMagnitude() <= 0) {
-		//b->opaqueness -= BlastPower::degradeAmount;
+		//b->lifeValue -= BlastPower::degradeAmount;
 		return { b->isDead(), false, new BulletUpdateStruct(0,0,0,0,0, -BlastPower::degradeAmount), nullptr };
 	} else {
 		if (CollisionHandler::partiallyCollided(b, w)) {

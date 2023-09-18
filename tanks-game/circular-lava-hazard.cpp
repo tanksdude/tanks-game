@@ -1,14 +1,18 @@
 #include "circular-lava-hazard.h"
-#include "renderer.h"
+
 #include "constants.h"
 #include <cmath>
+#include <algorithm> //std::sort, std::clamp
+#include <iostream>
+#include "rng.h"
+
+#include "renderer.h"
 #include "color-mixer.h"
 #include "background-rect.h"
+
+#include "collision-handler.h"
 #include "wall-manager.h"
 #include "hazard-manager.h"
-#include "collision-handler.h"
-#include "rng.h"
-#include <algorithm> //std::sort, std::clamp
 
 std::unordered_map<std::string, float> CircularLavaHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -30,7 +34,7 @@ CircularLavaHazard::CircularLavaHazard(double xpos, double ypos, double radius) 
 	bubbles.reserve(maxBubbles);
 	bubbleChance = 1.0/400;
 
-	canAcceptPowers = false;
+	//canAcceptPowers = false;
 
 	modifiesTankCollision = true;
 	modifiesBulletCollision = true;
@@ -66,7 +70,7 @@ void CircularLavaHazard::pushNewBubble(double radius) {
 	y0 = r0 * sin(a0);
 	do {
 		r1 = RNG::randFunc() * (r - radius);
-		a1 = RNG::randFunc() * (2 * PI);
+		a1 = RNG::randFunc() * (2*PI);
 		x1 = r1 * cos(a1);
 		y1 = r1 * sin(a1);
 		attempts++;

@@ -458,9 +458,6 @@
     <ClInclude Include="wall.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inherited-power-common.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="power-function-helper.h">
       <Filter>Header Files</Filter>
     </ClInclude>

@@ -1,18 +1,22 @@
 #include "stationary-turret-hazard.h"
-#include "renderer.h"
+
 #include "constants.h"
 #include <cmath>
+#include <algorithm> //std::clamp
+#include <iostream>
+#include "rng.h"
+
+#include "renderer.h"
 #include "color-mixer.h"
 #include "background-rect.h"
-#include <algorithm> //std::clamp
+
+#include "collision-handler.h"
 #include "point.h"
 #include "tank.h"
 #include "tank-manager.h"
 #include "bullet-manager.h"
 #include "wall-manager.h"
 #include "hazard-manager.h"
-#include "collision-handler.h"
-#include "rng.h"
 
 std::unordered_map<std::string, float> StationaryTurretHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -34,10 +38,10 @@ StationaryTurretHazard::StationaryTurretHazard(double xpos, double ypos, double 
 	tickCycle = 100; //100 is JS default (because of shooting speed) and 200 just looks weird
 	currentState = 0;
 	maxState = 3;
-	stateMultiplier = new double[maxState]{2, 1, 2};
+	stateMultiplier = new double[maxState]{ 2, 1, 2 };
 	stateColors = new ColorValueHolder[maxState]{ {0.5f, 0.5f, 0.5f}, {1.0f, 0x22/255.0, 0x11/255.0}, {0.0f, 0.5f, 1.0f} };
 
-	canAcceptPowers = false;
+	//canAcceptPowers = false;
 }
 
 StationaryTurretHazard::StationaryTurretHazard(double xpos, double ypos, double angle, double radius) : StationaryTurretHazard(xpos, ypos, angle) {

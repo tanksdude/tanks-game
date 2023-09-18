@@ -68,8 +68,8 @@ UltraBounceTankPower::UltraBounceTankPower() : BounceTankPower() {
 
 
 
-#include "power-function-helper.h"
 #include "collision-handler.h"
+#include "power-function-helper.h"
 
 InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> UltraBounceBulletPower::modifiedCollisionWithWall(const Bullet* b, const Wall* w) {
 	std::shared_ptr<BulletUpdateStruct> b_update;

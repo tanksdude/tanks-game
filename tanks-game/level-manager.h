@@ -1,8 +1,10 @@
 #pragma once
-#include "level.h"
 #include <string>
 #include <vector>
 #include <unordered_map>
+
+#include "level.h"
+#include "custom-level-interpreter.h"
 
 typedef Level* (*LevelFunction)(void);
 typedef LevelEffect* (*LevelEffectFunction)(const GenericFactoryConstructionData&);
@@ -19,17 +21,18 @@ private:
 	static std::unordered_map<std::string, std::vector<std::string>> levelNameList;
 	static std::unordered_map<std::string, std::vector<std::string>> levelEffectNameList;
 
-	static std::unordered_map<std::string, std::vector<std::string>> customLevelNameList;
 	static std::vector<std::string> protectedTypes; //types not allowed to be used (by custom levels)
+	static std::unordered_map<std::string, std::unordered_map<std::string, CustomLevel*>> customLevelLookup;
+	static std::unordered_map<std::string, std::vector<std::string>> customLevelNameList;
 
 public:
 	static void initialize();
-	static Level* getLevel(int index); //why would this be needed
-	static LevelEffect* getLevelEffect(int level_index, int index); //why would this be needed, like, ever?
+	static Level* getLevel(unsigned int index); //why would this be needed
+	static LevelEffect* getLevelEffect(unsigned int level_index, unsigned int index); //why would this be needed, like, ever?
 	static void pushLevel(std::string type, std::string name);
 	static unsigned int getNumLevels() { return levels.size(); }
-	//static unsigned int getLevel_numEffects(int index) { return levels[index]->effects.size(); }
-	//static void deleteLevel(int index);
+	//static unsigned int getLevel_numEffects(unsigned int index) { return levels[index]->effects.size(); }
+	//static void deleteLevel(unsigned int index);
 
 	static void addLevelFactory(LevelFunction); //gets the types from the level
 	static LevelFunction getLevelFactory(std::string type, std::string name); //TODO: remove?
@@ -43,7 +46,7 @@ public:
 	static unsigned int getNumLevelEffectTypes(std::string type);
 
 	static std::string checkCustomLevelTypesAgainstProtectedTypes(const std::vector<std::string>&) noexcept; //returns first bad type ("" if all good)
-	static void addCustomLevel(std::string name, const std::vector<std::string>& types);
+	static void addCustomLevel(std::string name, const std::vector<std::string>& types, CustomLevel* l);
 
 private:
 	LevelManager() = delete;

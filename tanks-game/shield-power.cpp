@@ -81,7 +81,7 @@ ShieldTankPower::ShieldTankPower() : ShieldTankPower(500) {}
 
 ShieldTankPower::ShieldTankPower(double life) {
 	maxTime = life;
-	timeLeft = life; //TODO: this fine?
+	timeLeft = life;
 
 	modifiesDeathHandling = true;
 }
@@ -105,7 +105,6 @@ TankPower* ShieldBulletPower::makeTankPower() const {
 }
 
 InteractionBoolHolder ShieldBulletPower::modifiedDeathHandling(Bullet* parent) {
-	//TODO: should this be the case? //yes
 	return { false, true };
 }
 

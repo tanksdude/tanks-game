@@ -1,6 +1,7 @@
 #pragma once
 #include "rect-hazard.h"
 #include "generalized-lava.h"
+
 #include "constants.h"
 
 class RectangularLavaHazard : public RectHazard, public GeneralizedLava {
@@ -25,8 +26,8 @@ public:
 	virtual void modifiedBulletCollision(Bullet*) override { return; }
 
 protected:
-	virtual double getDefaultOffense() const override { return .5; }
-	virtual double getDefaultDefense() const override { return HIGH_TIER; }
+	virtual float getDefaultOffense() const override { return .5; }
+	virtual float getDefaultDefense() const override { return HIGH_TIER; }
 
 public:
 	//virtual bool validLocation() const override { return true; }

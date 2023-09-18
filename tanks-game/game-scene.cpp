@@ -1,7 +1,8 @@
 #include "game-scene.h"
+
 #include "game-scene-manager.h"
 
-//TODO
+//TODO?
 
 GameScene::GameScene() {
 	//this->sceneID = GameSceneManager::getNextID();

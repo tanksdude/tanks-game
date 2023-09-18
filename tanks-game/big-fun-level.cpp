@@ -1,11 +1,13 @@
 #include "big-fun-level.h"
+
 #include "constants.h"
+#include "rng.h"
+#include "mylib.h" //weightedSelect
+
+#include "reset-things.h"
 #include "level-helper.h"
 #include "powerup-manager.h"
 #include "wall-manager.h"
-#include "mylib.h" //weightedSelect
-#include "rng.h"
-#include "reset-things.h"
 
 std::unordered_map<std::string, float> BigFunLevel::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -48,7 +50,7 @@ void BigFunLevel::initialize() {
 	//regular powers in the corners
 	std::string possiblePowers[] = { "speed", "wallhack", "bounce", "multishot", "big", "shotgun" }; //6
 	//TODO: maybe remove shotgun, maybe remove speed, maybe remove wallhack, maybe add fire
-	//barrier may have existed around this time but not only are they not in yet I think the craziness (fun factor) would lower
+	//barrier may have existed around this time but I think the craziness (fun factor) would lower
 
 	float weights[] = { 3.0f, 2.0f, 1.0f };
 	for (int i = 0; i < 4; i++) {

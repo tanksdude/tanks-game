@@ -1,9 +1,11 @@
 #pragma once
-#include "interaction-bool-holder.h"
 #include <string>
 #include <vector>
 #include <unordered_map>
+
 #include "constants.h"
+
+#include "interaction-bool-holder.h"
 #include "tank.h"
 #include "bullet.h"
 #include "circle-hazard.h"

@@ -1,6 +1,6 @@
 #pragma once
-#include "bullet.h"
 #include <vector>
+#include "bullet.h"
 
 class BulletManager {
 	friend class ResetThings;
@@ -14,11 +14,11 @@ private:
 
 public:
 	static void initialize();
-	static Bullet* getBullet(int index);
+	static Bullet* getBullet(unsigned int index);
 	static Bullet* getBulletByID(Game_ID);
 	static void pushBullet(Bullet*);
-	static int getNumBullets() { return bullets.size(); }
-	static void deleteBullet(int index);
+	static unsigned int getNumBullets() { return bullets.size(); }
+	static void deleteBullet(unsigned int index);
 	static void deleteBulletByID(Game_ID);
 	static void forceLimitBullets();
 

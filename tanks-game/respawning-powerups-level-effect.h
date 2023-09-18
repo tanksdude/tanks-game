@@ -1,8 +1,9 @@
 #pragma once
 #include "level-effect.h"
-#include "power-square.h"
-#include "constants.h"
+
 #include <vector>
+
+#include "power-square.h"
 
 class RespawningPowerupsLevelEffect : public LevelEffect {
 protected:

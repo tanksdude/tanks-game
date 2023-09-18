@@ -1,6 +1,8 @@
 #include "empty-level.h"
-#include "reset-things.h"
+
 #include "constants.h"
+
+#include "reset-things.h"
 
 std::unordered_map<std::string, float> EmptyLevel::getWeights() const {
 	std::unordered_map<std::string, float> weights;

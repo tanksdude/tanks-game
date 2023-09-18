@@ -1,29 +1,20 @@
 #include "game-main-loop.h"
 
 //STL stuff:
-#include <iostream>
+#include <stdexcept>
 #include <string>
 #include <vector>
-#include <chrono>
 #include <unordered_map>
-#include <stdexcept>
+#include <chrono>
+#include <iostream>
 
 //some stuff:
 #include "renderer.h"
 #include "reset-things.h"
 #include "keypress-manager.h"
 //other:
-#include "diagnostics.h"
-
-//important stuff:
 #include "background-rect.h"
-#include "tank.h"
-#include "wall.h"
-#include "bullet.h"
-#include "power-square.h"
-#include "level.h"
-#include "circle-hazard.h"
-#include "rect-hazard.h"
+#include "diagnostics.h"
 
 //managers:
 #include "game-manager.h"
@@ -103,9 +94,6 @@ GameMainLoop::GameMainLoop() : GameScene() {
 		thread_arr[i] = std::thread(thread_func, i, helperThreadCount+1);
 	}
 
-	//currentlyDrawing = false;
-	//frameCount = 0;
-	//ticksUntilFrame = 1;
 	physicsRate = 100;
 	waitCount = 0;
 	maxWaitCount = 1000/physicsRate * 10;
@@ -264,8 +252,6 @@ inline void GameMainLoop::thread_updateRectHazardsFunc(void* updateRectHazardsLi
 }
 
 void GameMainLoop::Tick(int UPS) {
-	//while (currentlyDrawing) {}
-
 	if (EndGameHandler::shouldGameEnd()) {
 		waitCount++;
 		if (waitCount >= maxWaitCount) {
@@ -374,21 +360,6 @@ void GameMainLoop::Tick(int UPS) {
 	//2. bullet-hazard
 	//2. bullet-wall (really depends on how many hazards/walls)
 	//3. power calculate and tank shoot
-
-	//old method of starting new game:
-	/*
-	if (!EndGameHandler::shouldGameEnd()) {
-		glutTimerFunc(1000/physicsUPS, GameMainLoop::Tick, physicsUPS);
-		if (frameCount == 0) {
-			glutPostRedisplay();
-		}
-		++frameCount %= ticksUntilFrame;
-	} else {
-		glutPostRedisplay();
-		glutTimerFunc(1000, ResetThings::reset, 0);
-		glutTimerFunc(1000 + 1000/physicsUPS, GameMainLoop::Tick, physicsUPS);
-	}
-	*/
 }
 
 void GameMainLoop::levelTick() {
@@ -1316,8 +1287,6 @@ void GameMainLoop::bulletToTank() {
 }
 
 void GameMainLoop::drawMain() const {
-	//currentlyDrawing = true;
-
 	auto start = Diagnostics::getTime();
 	Renderer::BeginScene("draw");
 
@@ -1422,13 +1391,9 @@ void GameMainLoop::drawMain() const {
 	Diagnostics::clearTimes();
 
 	//std::cout << "entire: " << (long long)Diagnostics::getDiff(start, end) << "ms" << std::endl << std::endl;
-
-	//currentlyDrawing = false;
 }
 
 void GameMainLoop::drawLayer(DrawingLayers layer) const {
-	//currentlyDrawing = true;
-
 	//auto start = Diagnostics::getTime();
 	Renderer::BeginScene("drawLayer" + std::to_string((int)layer));
 
@@ -1481,8 +1446,6 @@ void GameMainLoop::drawLayer(DrawingLayers layer) const {
 	//Diagnostics::clearTimes();
 
 	//std::cout << "entire: " << (long long)Diagnostics::getDiff(start, end) << "ms" << std::endl << std::endl;
-
-	//currentlyDrawing = false;
 }
 
 void GameMainLoop::drawAllLayers() const {

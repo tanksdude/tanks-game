@@ -58,8 +58,9 @@ HomingTankPower::HomingTankPower() {
 
 
 
-#include "power-function-helper.h"
 #include "constants.h"
+
+#include "power-function-helper.h"
 
 InteractionBoolHolder HomingBulletPower::modifiedMovement(Bullet* b) {
 	Game_ID targetID = PowerFunctionHelper::homingGenericTarget(b, true);

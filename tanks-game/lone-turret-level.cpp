@@ -1,12 +1,13 @@
 #include "lone-turret-level.h"
+
 #include "constants.h"
+#include "rng.h"
+
+#include "reset-things.h"
 #include "level-helper.h"
 #include "powerup-manager.h"
 #include "wall-manager.h"
 #include "hazard-manager.h"
-#include "reset-things.h"
-#include "rng.h"
-#include <iostream>
 
 std::unordered_map<std::string, float> LoneTurretLevel::getWeights() const {
 	std::unordered_map<std::string, float> weights;

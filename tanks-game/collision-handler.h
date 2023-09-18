@@ -1,8 +1,9 @@
 #pragma once
+#include <utility>
+
+#include "position-holder.h"
 #include "circle.h"
 #include "rect.h"
-#include "position-holder.h"
-#include <utility>
 
 class CollisionHandler {
 protected:

@@ -1,11 +1,13 @@
 #pragma once
 class LevelEffect;
 
-#include "drawable-thing.h"
-#include "level.h"
-#include <vector>
 #include <string>
+#include <vector>
 #include <unordered_map>
+
+#include "drawable-thing.h"
+
+#include "level.h"
 #include "generic-factory-construction-data.h"
 
 //TODO: level effects basically need to be powers but for levels (needs to be able to override some things in GameMainLoop, I think)

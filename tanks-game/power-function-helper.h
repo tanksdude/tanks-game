@@ -1,10 +1,10 @@
 #pragma once
-#include "tank.h"
+#include <utility>
 #include <vector>
-#include "cannon-point.h"
+
+//#include "tank.h"
 #include "bullet.h"
 #include "wall.h"
-#include <utility>
 
 class PowerFunctionHelper {
 protected:

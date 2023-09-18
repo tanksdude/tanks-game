@@ -1,5 +1,7 @@
 #include "priority-handler.h"
 
+#include <iostream>
+
 PriorityResult PriorityHandler::determinePriority(const Bullet* a, const Bullet* b) {
 	double a_offense = a->getOffenseTier();
 	double a_defense = a->getDefenseTier();

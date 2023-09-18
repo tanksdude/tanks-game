@@ -1,4 +1,5 @@
 #include "rng.h"
+
 #include <chrono>
 
 std::default_random_engine RNG::generator;

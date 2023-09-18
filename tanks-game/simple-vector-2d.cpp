@@ -1,6 +1,7 @@
 #include "simple-vector-2d.h"
-#include <cmath>
+
 #include "constants.h"
+#include <cmath>
 
 SimpleVector2D::SimpleVector2D(float xComp, float yComp) {
 	this->xComp = xComp;
@@ -24,7 +25,6 @@ SimpleVector2D::SimpleVector2D(const SimpleVector2D& other) {
 	this->yComp = other.yComp;
 	this->angle = other.angle;
 	this->magnitude = other.magnitude;
-	//could use =default but whatever
 }
 
 void SimpleVector2D::setMagnitude(float magnitude) {

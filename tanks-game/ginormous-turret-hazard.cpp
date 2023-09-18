@@ -1,18 +1,21 @@
 #include "ginormous-turret-hazard.h"
-#include "renderer.h"
+
 #include "constants.h"
 #include <cmath>
+#include <algorithm> //std::clamp
+#include <iostream>
+#include "rng.h"
+
+#include "renderer.h"
 #include "color-mixer.h"
 #include "background-rect.h"
-#include <algorithm> //std::clamp
+
+//#include "collision-handler.h"
 #include "tank.h"
-#include "tank-manager.h"
+//#include "tank-manager.h"
 #include "bullet-manager.h"
 #include "wall-manager.h"
 #include "hazard-manager.h"
-//#include "collision-handler.h"
-#include "rng.h"
-#include <iostream>
 
 std::unordered_map<std::string, float> GinormousTurretHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -34,7 +37,7 @@ GinormousTurretHazard::GinormousTurretHazard(double xpos, double ypos, double an
 
 	bulletCount = 8 * 8;
 
-	canAcceptPowers = false;
+	//canAcceptPowers = false;
 }
 
 GinormousTurretHazard::~GinormousTurretHazard() {

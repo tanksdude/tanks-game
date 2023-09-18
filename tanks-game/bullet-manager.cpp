@@ -1,5 +1,6 @@
 #include "bullet-manager.h"
-#include "game-manager.h"
+
+#include "game-manager.h" //INI file
 
 std::vector<Bullet*> BulletManager::bullets;
 int BulletManager::maxBullets = 2048;
@@ -26,7 +27,7 @@ void BulletManager::initialize() {
 	}
 }
 
-Bullet* BulletManager::getBullet(int index) {
+Bullet* BulletManager::getBullet(unsigned int index) {
 	return bullets[index];
 }
 
@@ -56,7 +57,7 @@ void BulletManager::forceLimitBullets() {
 	}
 }
 
-void BulletManager::deleteBullet(int index) {
+void BulletManager::deleteBullet(unsigned int index) {
 	delete bullets[index];
 	bullets.erase(bullets.begin() + index);
 }

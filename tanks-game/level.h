@@ -1,12 +1,14 @@
 #pragma once
 class Level;
 
-#include "level-effect.h"
-#include "color-value-holder.h"
-#include "drawable-thing.h"
-#include <vector>
 #include <string>
+#include <vector>
 #include <unordered_map>
+
+#include "drawable-thing.h"
+#include "level-effect.h"
+
+#include "color-value-holder.h"
 #include "generic-factory-construction-data.h"
 
 class Level : public DrawableThing {
@@ -16,8 +18,8 @@ protected:
 	std::vector<LevelEffect*> effects; //cleared in Level's destructor
 
 public:
-	LevelEffect* getLevelEffect(int i) const { return effects[i]; }
-	int getNumEffects() const { return effects.size(); }
+	LevelEffect* getLevelEffect(unsigned int i) const { return effects[i]; }
+	unsigned int getNumEffects() const { return effects.size(); }
 
 	virtual std::string getName() const = 0;
 	virtual ColorValueHolder getDefaultColor() const = 0;

@@ -1,6 +1,8 @@
 #include "opengl-vertex-buffer.h"
-#include <GL/glew.h>
+
 #include <stdexcept>
+
+#include <GL/glew.h>
 
 OpenGLVertexBuffer::OpenGLVertexBuffer(const void* data, unsigned int size) : OpenGLVertexBuffer(data, size, RenderingHints::stream_draw) {
 	//nothing

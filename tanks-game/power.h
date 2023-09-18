@@ -4,6 +4,7 @@ class Power;
 #include <string>
 #include <vector>
 #include <unordered_map>
+
 #include "color-value-holder.h"
 #include "tank-power.h"
 #include "bullet-power.h"
@@ -18,8 +19,8 @@ public:
 	//static std::string getClassName(); //tankpowers and bulletpowers use this (so they can have the same color), so make sure to define it!
 	virtual ColorValueHolder getColor() const = 0; //should this be const? I dunno; I think getClassColor might have a reason to be not const
 	//static ColorValueHolder getClassColor();
-	virtual double getColorImportance() const { return 0; }
-	//static double getClassColorImportance();
+	virtual float getColorImportance() const { return 0; }
+	//static float getClassColorImportance();
 
 	virtual TankPower* makeTankPower() const = 0;
 	virtual BulletPower* makeBulletPower() const = 0;

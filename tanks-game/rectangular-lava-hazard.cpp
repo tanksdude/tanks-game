@@ -1,14 +1,18 @@
 #include "rectangular-lava-hazard.h"
-#include "renderer.h"
+
 #include "constants.h"
 #include <cmath>
+#include <algorithm> //std::sort, std::clamp
+#include <iostream>
+#include "rng.h"
+
+#include "renderer.h"
 #include "color-mixer.h"
 #include "background-rect.h"
+
+#include "collision-handler.h"
 #include "wall-manager.h"
 #include "hazard-manager.h"
-#include "collision-handler.h"
-#include "rng.h"
-#include <algorithm> //std::sort, std::clamp
 
 std::unordered_map<std::string, float> RectangularLavaHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -31,7 +35,7 @@ RectangularLavaHazard::RectangularLavaHazard(double xpos, double ypos, double wi
 	bubbles.reserve(maxBubbles);
 	bubbleChance = 1.0/400;
 
-	canAcceptPowers = false;
+	//canAcceptPowers = false;
 
 	modifiesTankCollision = true;
 	modifiesBulletCollision = true;

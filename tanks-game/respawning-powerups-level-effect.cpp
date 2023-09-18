@@ -1,4 +1,5 @@
 #include "respawning-powerups-level-effect.h"
+
 #include "powerup-manager.h"
 
 std::unordered_map<std::string, float> RespawningPowerupsLevelEffect::getWeights() const {

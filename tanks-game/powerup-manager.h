@@ -1,8 +1,9 @@
 #pragma once
-#include "power-square.h"
 #include <string>
 #include <vector>
 #include <unordered_map>
+
+#include "power-square.h"
 
 typedef Power* (*PowerFunction)(void);
 
@@ -20,11 +21,11 @@ private:
 
 public:
 	static void initialize();
-	static PowerSquare* getPowerup(int index);
+	static PowerSquare* getPowerup(unsigned int index);
 	static PowerSquare* getPowerupByID(Game_ID);
 	static void pushPowerup(PowerSquare*);
 	static unsigned int getNumPowerups() { return powerups.size(); }
-	static void deletePowerup(int index);
+	static void deletePowerup(unsigned int index);
 	static void deletePowerupByID(Game_ID);
 
 	static std::vector<Rect*> getPowerupCollisionList();

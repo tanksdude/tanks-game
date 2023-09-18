@@ -1,15 +1,17 @@
 #include "tank.h"
-#include "game-manager.h"
+
 #include "constants.h"
 #include <cmath>
-#include "color-mixer.h"
-#include "background-rect.h"
-#include "renderer.h"
-#include "bullet-manager.h"
-#include "rng.h"
-#include "level-manager.h"
 #include <algorithm> //std::sort, std::clamp
 #include <iostream>
+#include "rng.h" //just for shiny tanks
+
+#include "renderer.h"
+#include "color-mixer.h"
+#include "background-rect.h"
+
+#include "bullet-manager.h"
+#include "level-manager.h"
 
 /*
 struct TankInputChar {
@@ -565,7 +567,7 @@ ColorValueHolder Tank::getBodyColor() const {
 	if (tankPowers.size() == 0) {
 		return defaultColor;
 	} else {
-		double highest = LOW_IMPORTANCE;
+		float highest = LOW_IMPORTANCE;
 		for (int i = 0; i < tankPowers.size(); i++) {
 			if (tankPowers[i]->getColorImportance() > highest) {
 				highest = tankPowers[i]->getColorImportance();
@@ -1126,8 +1128,8 @@ void Tank::kill_hard() {
 	this->dead = true;
 }
 
-double Tank::getHighestOffenseImportance() const {
-	double highest = LOW_IMPORTANCE;
+float Tank::getHighestOffenseImportance() const {
+	float highest = LOW_IMPORTANCE;
 	for (int i = 0; i < tankPowers.size(); i++) {
 		if (tankPowers[i]->getOffenseImportance() > highest) {
 			highest = tankPowers[i]->getOffenseImportance();
@@ -1136,11 +1138,11 @@ double Tank::getHighestOffenseImportance() const {
 	return highest;
 }
 
-double Tank::getHighestOffenseTier(double importance) const {
+float Tank::getHighestOffenseTier(float importance) const {
 	if (tankPowers.size() == 0) {
 		return 0;
 	}
-	double highest = LOW_TIER;
+	float highest = LOW_TIER;
 	for (int i = 0; i < tankPowers.size(); i++) {
 		if (tankPowers[i]->getOffenseImportance() == importance) {
 			if (tankPowers[i]->getOffenseTier(this) > highest) {
@@ -1151,12 +1153,12 @@ double Tank::getHighestOffenseTier(double importance) const {
 	return highest;
 }
 
-double Tank::getOffenseTier() const {
+float Tank::getOffenseTier() const {
 	return getHighestOffenseTier(getHighestOffenseImportance());
 }
 
-double Tank::getHighestDefenseImportance() const {
-	double highest = LOW_IMPORTANCE;
+float Tank::getHighestDefenseImportance() const {
+	float highest = LOW_IMPORTANCE;
 	for (int i = 0; i < tankPowers.size(); i++) {
 		if (tankPowers[i]->getDefenseImportance() > highest) {
 			highest = tankPowers[i]->getDefenseImportance();
@@ -1165,11 +1167,11 @@ double Tank::getHighestDefenseImportance() const {
 	return highest;
 }
 
-double Tank::getHighestDefenseTier(double importance) const {
+float Tank::getHighestDefenseTier(float importance) const {
 	if (tankPowers.size() == 0) {
 		return 0;
 	}
-	double highest = LOW_TIER;
+	float highest = LOW_TIER;
 	for (int i = 0; i < tankPowers.size(); i++) {
 		if (tankPowers[i]->getDefenseImportance() == importance) {
 			if (tankPowers[i]->getDefenseTier(this) > highest) {
@@ -1180,6 +1182,6 @@ double Tank::getHighestDefenseTier(double importance) const {
 	return highest;
 }
 
-double Tank::getDefenseTier() const {
+float Tank::getDefenseTier() const {
 	return getHighestDefenseTier(getHighestDefenseImportance());
 }

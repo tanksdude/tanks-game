@@ -1,8 +1,10 @@
 #pragma once
-#include "circle-hazard.h"
-#include "rect-hazard.h"
+#include <string>
 #include <vector>
 #include <unordered_map>
+
+#include "circle-hazard.h"
+#include "rect-hazard.h"
 
 typedef CircleHazard* (*CircleHazardFunction)(const GenericFactoryConstructionData&);
 typedef CircleHazard* (*CircleHazardRandomizationFunction)(double, double, double, double, const GenericFactoryConstructionData&);
@@ -91,16 +93,16 @@ private:
 
 public:
 	static void initialize();
-	static CircleHazard* getCircleHazard(int index);
-	static RectHazard* getRectHazard(int index);
+	static CircleHazard* getCircleHazard(unsigned int index);
+	static RectHazard* getRectHazard(unsigned int index);
 	static CircleHazard* getCircleHazardByID(Game_ID);
 	static RectHazard* getRectHazardByID(Game_ID);
 	static void pushCircleHazard(CircleHazard*);
 	static void pushRectHazard(RectHazard*);
 	static unsigned int getNumCircleHazards() { return circleHazards.size(); }
 	static unsigned int getNumRectHazards() { return rectHazards.size(); }
-	static void deleteCircleHazard(int index);
-	static void deleteRectHazard(int index);
+	static void deleteCircleHazard(unsigned int index);
+	static void deleteRectHazard(unsigned int index);
 	static void deleteCircleHazardByID(Game_ID);
 	static void deleteRectHazardByID(Game_ID);
 

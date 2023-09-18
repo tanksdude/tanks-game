@@ -10,14 +10,14 @@ extern const double TANK_RADIUS;
 extern const double SHOOT_COOLDOWN;
 extern const double POWER_COOLDOWN;
 
-extern const double DESTRUCTION_TIER; //offense tier for destorying walls and turrets & stuff
+extern const float DESTRUCTION_TIER; //offense tier for destorying walls and turrets & stuff
 extern const double BULLET_TO_TANK_RADIUS_RATIO;
 extern const double BULLET_TO_TANK_SPEED_RATIO;
 
-extern const double LOW_TIER;
-extern const double HIGH_TIER;
-extern const double LOW_IMPORTANCE;
-extern const double HIGH_IMPORTANCE;
+extern const float LOW_TIER;
+extern const float HIGH_TIER;
+extern const float LOW_IMPORTANCE;
+extern const float HIGH_IMPORTANCE;
 
 extern const Team_ID DEFAULT_TEAM; //walls and friends are this team
 extern const Team_ID HAZARD_TEAM;  //default team of hazards

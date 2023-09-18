@@ -1,11 +1,13 @@
 #include "tight-patrolling-corridor-level.h"
+
 #include "constants.h"
+#include "rng.h"
+
+#include "reset-things.h"
 #include "level-helper.h"
 #include "wall-manager.h"
 #include "powerup-manager.h"
 #include "hazard-manager.h"
-#include "reset-things.h"
-#include "rng.h"
 
 ColorValueHolder TightPatrollingCorridorLevel::getDefaultColor() const {
 	//return ColorValueHolder(15.0f/16, 15.0f/16, 12.0f/16); //very icky yellow (at least it's unique; it just looks a little disgusting)

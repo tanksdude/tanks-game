@@ -1,4 +1,5 @@
 #include "god-mode-power.h"
+
 #include "color-mixer.h"
 #include "game-manager.h"
 

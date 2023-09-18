@@ -1,6 +1,6 @@
 #include "mega-death-power.h"
 
-const double MegaDeathPower::destroyWallTier = DESTRUCTION_TIER;
+const float MegaDeathPower::destroyWallTier = DESTRUCTION_TIER;
 const double MegaDeathPower::bulletSizeMultiplierPerTick = 65.0/64.0;
 
 std::unordered_map<std::string, float> MegaDeathPower::getWeights() const {
@@ -78,16 +78,16 @@ InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> MegaDeathBulletPow
 	return { false, true, nullptr, nullptr };
 }
 
-double MegaDeathBulletPower::getOffenseTier(const Bullet* b) const {
+float MegaDeathBulletPower::getOffenseTier(const Bullet* b) const {
 	double value = b->r / (Bullet::default_radius*4) * MegaDeathPower::destroyWallTier;
 	//return (value >= MegaDeathPower::destroyWallTier ? floor(value) : 0); //this is what I originally wanted in JS Tanks, I think, but in practice isn't preferable
-	return value;
+	return static_cast<float>(value);
 }
 
-double MegaDeathBulletPower::getDefenseTier(const Bullet* b) const {
+float MegaDeathBulletPower::getDefenseTier(const Bullet* b) const {
 	double value = b->r / (Bullet::default_radius*4) * MegaDeathPower::destroyWallTier;
 	//return (value >= MegaDeathPower::destroyWallTier ? floor(value) : 0);
-	return value;
+	return static_cast<float>(value);
 }
 
 void MegaDeathBulletPower::initialize(Bullet* parent) {

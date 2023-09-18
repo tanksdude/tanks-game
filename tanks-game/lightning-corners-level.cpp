@@ -1,11 +1,12 @@
 #include "lightning-corners-level.h"
+
 #include "constants.h"
+
+#include "reset-things.h"
 #include "level-helper.h"
 #include "powerup-manager.h"
 #include "wall-manager.h"
 #include "hazard-manager.h"
-#include "reset-things.h"
-#include <iostream>
 
 std::unordered_map<std::string, float> LightningCornersLevel::getWeights() const {
 	std::unordered_map<std::string, float> weights;

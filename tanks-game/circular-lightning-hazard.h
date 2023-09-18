@@ -1,6 +1,7 @@
 #pragma once
 #include "circle-hazard.h"
 #include "generalized-lightning.h"
+
 #include "constants.h"
 
 class CircularLightningHazard : public CircleHazard, public GeneralizedLightning {
@@ -10,7 +11,7 @@ protected:
 	virtual void pushBolt(LightningBolt*) override;
 	virtual void pushDefaultBolt(int num, bool randomize) override; //randomize should be true all of the time
 
-	inline Circle* getCenterPoint() const; //for checks when a bullet/tank collides (needs to be a function in case the lightning changes size or position)
+	[[nodiscard]] inline Circle* getCenterPoint() const; //for checks when a bullet/tank collides (needs to be a function in case the lightning changes size or position)
 
 public:
 	virtual std::vector<std::string> getHazardTypes() const override {
@@ -37,9 +38,8 @@ protected:
 	virtual void specialEffectCircleCollision(Circle*); //tanks and bullets are both circles, so calculating the bolt positions would be the same
 
 protected:
-	virtual double getDefaultOffense() const override { return .5; } //1.5?
-	virtual double getDefaultDefense() const override { return HIGH_TIER; }
-
+	virtual float getDefaultOffense() const override { return .5; } //1.5?
+	virtual float getDefaultDefense() const override { return HIGH_TIER; }
 
 public:
 	virtual bool validLocation() const override;

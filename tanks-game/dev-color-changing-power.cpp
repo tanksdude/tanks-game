@@ -1,4 +1,5 @@
 #include "dev-color-changing-power.h"
+
 #include "color-mixer.h"
 #include "tank-manager.h"
 

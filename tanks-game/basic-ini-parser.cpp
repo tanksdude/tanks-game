@@ -1,9 +1,10 @@
 #include "basic-ini-parser.h"
-#include <fstream>
+
 #include <stdexcept>
+#include <fstream>
 #include <iostream>
 
-void BasicINIParser::BasicINIData::insert(std::string section, std::string property, std::string value) {
+void BasicINIParser::BasicINIData::insert(std::string section, std::string property, std::string value) noexcept {
 	if (exists(section, property)) {
 		this->data[section][property].push_back(value);
 	} else {

@@ -1,5 +1,6 @@
 #pragma once
 #include "rect-hazard.h"
+
 #include "constants.h"
 
 class DevWallHazard : public RectHazard {
@@ -20,8 +21,8 @@ public:
 	//virtual void modifiedBulletCollision(Bullet*) override;
 
 protected:
-	virtual double getDefaultOffense() const override { return 0; }
-	virtual double getDefaultDefense() const override { return DESTRUCTION_TIER; }
+	virtual float getDefaultOffense() const override { return 0; }
+	virtual float getDefaultDefense() const override { return DESTRUCTION_TIER; }
 
 public:
 	//virtual bool validLocation() const override { return true; }

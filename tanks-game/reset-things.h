@@ -1,5 +1,4 @@
 #pragma once
-#include "tank.h"
 #include "game-main-loop.h"
 
 class ResetThings {

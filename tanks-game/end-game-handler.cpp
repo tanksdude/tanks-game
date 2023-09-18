@@ -1,9 +1,11 @@
 #include "end-game-handler.h"
-#include "priority-handler.h"
-#include "collision-handler.h"
-#include "tank-manager.h"
+
 #include "constants.h"
 #include <iostream>
+
+#include "collision-handler.h"
+#include "priority-handler.h"
+#include "tank-manager.h"
 
 //TODO?: CircleHazard and RectHazard use CollisionHandler for their modified tank/bullet collision by default
 

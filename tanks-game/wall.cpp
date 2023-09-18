@@ -1,11 +1,12 @@
 #include "wall.h"
-#include "game-manager.h"
+
 #include "constants.h"
-#include "color-mixer.h"
 #include <algorithm> //std::clamp
-#include "background-rect.h"
-#include "renderer.h"
 #include <iostream>
+
+#include "renderer.h"
+#include "color-mixer.h"
+#include "background-rect.h"
 
 Wall::Wall(double x_, double y_, double w_, double h_, const ColorValueHolder& c) : GameThing(DEFAULT_TEAM) {
 	this->x = x_;
@@ -14,10 +15,6 @@ Wall::Wall(double x_, double y_, double w_, double h_, const ColorValueHolder& c
 	this->h = h_;
 	color = c;
 }
-
-//Wall::Wall(double x_, double y_, double w_, double h_, const ColorValueHolder& c, Team_ID teamID_) : Wall(x_, y_, w_, h_, c) {
-//	this->teamID = teamID_;
-//}
 
 Wall::~Wall() {
 	//nothing

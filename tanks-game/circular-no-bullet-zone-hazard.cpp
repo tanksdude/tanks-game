@@ -1,14 +1,18 @@
 #include "circular-no-bullet-zone-hazard.h"
-#include "renderer.h"
+
 #include "constants.h"
 #include <cmath>
+#include <algorithm> //std::clamp
+#include <iostream>
+#include "rng.h"
+
+#include "renderer.h"
 #include "color-mixer.h"
 #include "background-rect.h"
+
+#include "collision-handler.h"
 #include "wall-manager.h"
 #include "hazard-manager.h"
-#include "collision-handler.h"
-#include "rng.h"
-#include <algorithm> //std::clamp
 
 std::unordered_map<std::string, float> CircularNoBulletZoneHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -25,7 +29,7 @@ CircularNoBulletZoneHazard::CircularNoBulletZoneHazard(double xpos, double ypos,
 	y = ypos;
 	r = radius;
 
-	canAcceptPowers = false;
+	//canAcceptPowers = false;
 
 	modifiesTankCollision = true;
 	modifiesBulletCollision = true;

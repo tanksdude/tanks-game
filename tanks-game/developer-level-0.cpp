@@ -1,11 +1,13 @@
 #include "developer-level-0.h"
+
 #include "constants.h"
+#include "rng.h"
+
+#include "reset-things.h"
 #include "level-helper.h"
 #include "powerup-manager.h"
 #include "wall-manager.h"
 #include "hazard-manager.h"
-#include "reset-things.h"
-#include "rng.h"
 
 ColorValueHolder DeveloperLevel0::getDefaultColor() const {
 	return currentColor;

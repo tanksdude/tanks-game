@@ -1,15 +1,18 @@
 #include "sneaky-reward-level.h"
+
 #include "constants.h"
-#include "level-manager.h"
+#include <stdexcept>
+#include <iostream>
+#include "rng.h"
+
+#include "reset-things.h"
 #include "level-helper.h"
 #include "powerup-manager.h"
 #include "wall-manager.h"
 #include "hazard-manager.h"
-#include "reset-things.h"
-#include "rng.h"
-#include <iostream>
-#include <stdexcept>
-#include "respawning-powerups-level-effect.h" //I hope this isn't permanent...
+
+#include "level-manager.h"
+#include "respawning-powerups-level-effect.h"
 
 ColorValueHolder SneakyRewardLevel::getDefaultColor() const {
 	return ColorValueHolder(0x99/255.0, 0x66/255.0, 0xCC/255.0); //amethyst

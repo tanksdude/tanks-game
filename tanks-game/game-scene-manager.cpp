@@ -1,4 +1,5 @@
 #include "game-scene-manager.h"
+
 #include "renderer.h"
 
 #include <GL/glew.h>
@@ -28,7 +29,7 @@ void GameSceneManager::DrawScenes() {
 	Renderer::Flush();
 }
 
-GameScene* GameSceneManager::getScene(int index) {
+GameScene* GameSceneManager::getScene(unsigned int index) {
 	return scenes[index].first;
 }
 
@@ -45,7 +46,7 @@ void GameSceneManager::pushScene(GameScene* gs) {
 	scenes.push_back({ gs, ++nextSceneID });
 }
 
-void GameSceneManager::deleteScene(int index) {
+void GameSceneManager::deleteScene(unsigned int index) {
 	delete scenes[index].first;
 	scenes.erase(scenes.begin() + index);
 }

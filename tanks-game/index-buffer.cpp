@@ -1,6 +1,8 @@
 #include "index-buffer.h"
-#include "renderer.h"
+
 #include <stdexcept>
+
+#include "renderer.h"
 #include "opengl-index-buffer.h"
 
 IndexBuffer* IndexBuffer::MakeIndexBuffer(const unsigned int* data, unsigned int count) {

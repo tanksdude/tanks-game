@@ -1,7 +1,9 @@
 #pragma once
 #include <vector>
-#include "color-value-holder.h"
+
 #include "constants.h"
+
+#include "color-value-holder.h"
 
 class GeneralizedLightning {
 protected:

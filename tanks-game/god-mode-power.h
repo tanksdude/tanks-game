@@ -17,8 +17,8 @@ public:
 	static std::string getClassName() { return "godmode"; } //"godMode" in JS Tanks
 	virtual ColorValueHolder getColor() const override { return GodmodePower::getClassColor(); }
 	static ColorValueHolder getClassColor(); //rainbow!
-	virtual double getColorImportance() const override { return GodmodePower::getClassColorImportance(); }
-	static double getClassColorImportance() { return 1; }
+	virtual float getColorImportance() const override { return GodmodePower::getClassColorImportance(); }
+	static float getClassColorImportance() { return 1; }
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
@@ -38,7 +38,7 @@ public:
 	virtual ColorValueHolder getColor() const override {
 		return GodmodePower::getClassColor();
 	}
-	virtual double getColorImportance() const override {
+	virtual float getColorImportance() const override {
 		return GodmodePower::getClassColorImportance();
 	}
 
@@ -58,7 +58,7 @@ public:
 	virtual ColorValueHolder getColor() const override {
 		return GodmodePower::getClassColor();
 	}
-	virtual double getColorImportance() const override {
+	virtual float getColorImportance() const override {
 		return GodmodePower::getClassColorImportance();
 	}
 

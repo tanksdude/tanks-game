@@ -1,5 +1,6 @@
 #pragma once
 #include "level-effect.h"
+
 #include "simple-vector-2d.h"
 
 class WindLevelEffect : public LevelEffect {

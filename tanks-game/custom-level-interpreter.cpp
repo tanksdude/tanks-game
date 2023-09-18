@@ -1,25 +1,25 @@
 #include "custom-level-interpreter.h"
-#include <filesystem>
+
+#include <stdexcept>
+#include <algorithm> //std::find
+#include <filesystem> //C++17
 #include <fstream>
 #include <iostream>
-#include <string>
 #include <vector>
 #include <unordered_map> //could use a set, not a big deal
-#include "level-manager.h"
+
+#include "level-manager.h" //for adding custom levels to the game
 #include "basic-ini-parser.h" //for processing custom level files
-#include <algorithm> //std::find
 
 #include "reset-things.h"
-#include "wall-manager.h"
-#include "powerup-manager.h"
-#include "hazard-manager.h"
-//#include "rng.h"
 #include "level-helper.h"
+#include "powerup-manager.h"
+#include "wall-manager.h"
+#include "hazard-manager.h"
 
 const std::string CustomLevelInterpreter::ModOrderPath = "mods/order.txt";
 const std::string CustomLevelInterpreter::IgnoreListPath = "mods/ignore.txt";
 const std::string CustomLevelInterpreter::ActionStartPhrase = "[LEVEL_START]";
-std::unordered_map<std::string, std::unordered_map<std::string, CustomLevel*>> CustomLevelInterpreter::customLevelLookup;
 
 CustomLevel::CustomLevelAction::CustomLevelAction(CustomLevel::CustomLevelCommands c) {
 	this->command = c;
@@ -932,14 +932,7 @@ void CustomLevelInterpreter::pushCustomLevel(CustomLevel* level) {
 		throw std::runtime_error("Error pushing level " + level->getName() + ": level includes \"" + result + "\" type, which is not allowed");
 	}
 
-	for (int i = 0; i < types.size(); i++) {
-		customLevelLookup[types[i]].insert({ level->getName(), level });
-	}
-	LevelManager::addCustomLevel(level->getName(), types);
-}
-
-Level* CustomLevelInterpreter::factory(std::string type, std::string name) {
-	return customLevelLookup[type][name]->factory();
+	LevelManager::addCustomLevel(level->getName(), types, level);
 }
 
 inline void CustomLevelInterpreter::stringToAction_WALL(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData) {

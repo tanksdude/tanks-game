@@ -2,13 +2,15 @@
 class Bullet;
 struct BulletUpdateStruct;
 
+#include <vector>
+
 #include "game-thing.h"
 #include "circle.h"
 #include "drawable-thing.h"
-#include <vector>
+#include "bullet-power.h"
+
 #include "color-value-holder.h"
 #include "simple-vector-2d.h"
-#include "bullet-power.h"
 
 enum class BulletParentType {
 	team, //tanks
@@ -29,17 +31,17 @@ public: //hopefully temporary
 	Game_ID parentID; //may not be used, depends on parentType
 	BulletParentType parentType;
 	std::vector<BulletPower*> bulletPowers; //change eventually?
-	double opaqueness; //[0,100] to avoid minor float imprecision //not called "transparency" because that would imply 100% is not visible
+	double lifeValue; //[0,100], controls transparency (0=nothing, 100=opaque)
 
 public:
-	double getOffenseTier() const;
-	double getDefenseTier() const;
+	float getOffenseTier() const;
+	float getDefenseTier() const;
 
 protected:
-	double getHighestOffenseImportance() const;
-	double getHighestOffenseTier(double importance) const;
-	double getHighestDefenseImportance() const;
-	double getHighestDefenseTier(double importance) const;
+	float getHighestOffenseImportance() const;
+	float getHighestOffenseTier(float importance) const;
+	float getHighestDefenseImportance() const;
+	float getHighestDefenseTier(float importance) const;
 
 public:
 	double getBulletSpeedMultiplier() const;
@@ -54,11 +56,11 @@ protected:
 public:
 	//helper functions:
 	ColorValueHolder getColor() const;
-	double getAngle() const;
+	double getAngle() const; //TODO: remove
 	double getInitialVelocity() const { return initial_velocity; }
 	Game_ID getParentID() const { return parentID; }
 	BulletParentType getParentIDType() const { return parentType; }
-	bool isDead() const { return (opaqueness <= 0); }
+	bool isDead() const { return (lifeValue <= 0); }
 
 	static const double default_radius;
 
@@ -67,6 +69,7 @@ public:
 	void powerCalculate();
 	void removePower(int index);
 	//int determineDamage(); //maybe for another day
+
 	bool canCollideWith(const GameThing*) const;
 	bool canCollideWith(const Bullet*) const;
 	void update(const BulletUpdateStruct*);

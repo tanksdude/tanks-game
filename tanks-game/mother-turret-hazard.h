@@ -3,6 +3,7 @@
 
 class MotherTurretHazard : public TargetingTurretHazard {
 	//big TODO: should the child turrets follow the mother's orders? (meaning if the mother sees a tank, every child targets it)
+	//no, make that a different hazard (maybe ginormous turret? then it would have a real purpose)
 protected:
 	//SimpleVector2D velocity; //for stationary and targeting turrets, the magnitude will obviously be 0
 	//double tickCount;
@@ -48,8 +49,8 @@ public:
 	virtual std::unordered_map<std::string, float> getWeights() const override;
 
 protected:
-	virtual double getDefaultOffense() const override { return 0; }
-	virtual double getDefaultDefense() const override { return DESTRUCTION_TIER + .5; } //TODO: double big bullets should be able to destroy this
+	virtual float getDefaultOffense() const override { return 0; }
+	virtual float getDefaultDefense() const override { return DESTRUCTION_TIER + .5; } //TODO: double big bullets should be able to destroy this
 
 public:
 	//virtual bool validLocation() const override { return true; }

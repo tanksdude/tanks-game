@@ -40,8 +40,8 @@ ShotgunPower::ShotgunPower() {
 #include <cmath>
 
 void ShotgunTankPower::additionalShooting(Tank* parent, const CannonPoint& c) {
-	const double angleDiff = PI/2 / ShotgunPower::bulletSpreadCount;
-	for (int i = ShotgunPower::bulletSpreadCount; i >= 1; i--) {
+	const double angleDiff = (PI/2) / ShotgunPower::bulletSpreadCount;
+	for (int i = 1; i <= ShotgunPower::bulletSpreadCount; i++) {
 		parent->regularMakeBullet(parent->r * cos(parent->velocity.getAngle() + c.angle + angleDiff*i), parent->r * sin(parent->velocity.getAngle() + c.angle + angleDiff*i), parent->velocity.getAngle() + c.angle);
 		parent->regularMakeBullet(parent->r * cos(parent->velocity.getAngle() + c.angle - angleDiff*i), parent->r * sin(parent->velocity.getAngle() + c.angle - angleDiff*i), parent->velocity.getAngle() + c.angle);
 	}

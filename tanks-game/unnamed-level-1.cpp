@@ -1,10 +1,12 @@
 #include "unnamed-level-1.h"
+
 #include "constants.h"
-#include "level-helper.h"
-#include "wall-manager.h"
-#include "powerup-manager.h"
-#include "hazard-manager.h"
+
 #include "reset-things.h"
+#include "level-helper.h"
+#include "powerup-manager.h"
+#include "wall-manager.h"
+#include "hazard-manager.h"
 
 ColorValueHolder UnnamedLevel1::getDefaultColor() const {
 	//TODO

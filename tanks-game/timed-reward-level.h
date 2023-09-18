@@ -1,5 +1,6 @@
 #pragma once
 #include "level.h"
+
 #include "constants.h" //Game_ID
 
 class TimedRewardLevel : public Level {

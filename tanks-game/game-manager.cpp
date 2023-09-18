@@ -1,6 +1,7 @@
 #include "game-manager.h"
-#include <iostream>
+
 #include <stdexcept>
+#include <iostream>
 
 Game_ID GameManager::nextID = -1;
 double GameManager::tickCount = 0;

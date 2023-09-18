@@ -1,6 +1,8 @@
 #include "opengl-index-buffer.h"
+
+//#include <stdexcept>
+
 #include <GL/glew.h>
-#include <stdexcept>
 
 OpenGLIndexBuffer::OpenGLIndexBuffer(const unsigned int* data, unsigned int count) {
 	this->count = count;

@@ -1,6 +1,7 @@
 #include "generalized-no-bullet-zone.h"
-#include "background-rect.h"
+
 #include "color-mixer.h"
+#include "background-rect.h"
 
 const float GeneralizedNoBulletZone::X_WIDTH = 0.1;
 const ColorValueHolder GeneralizedNoBulletZone::X_COLOR = ColorValueHolder(1.0f, 0.0f, 0.0f);

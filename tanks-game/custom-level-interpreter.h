@@ -1,8 +1,9 @@
 #pragma once
-#include "level.h"
 #include <string>
 #include <vector>
 #include <memory>
+
+#include "level.h"
 #include "generic-factory-construction-data.h"
 
 //TODO: this should become a "ModInterpreter" (name permanently temporary), which gets a list of mods and sends the power/level/whatever to the relevant interpreter
@@ -110,7 +111,6 @@ public:
 class CustomLevelInterpreter {
 public:
 	static void ProcessCustomLevels() noexcept;
-	static Level* factory(std::string type, std::string name); //TODO: basically need to rewrite how level factories are handled
 
 protected:
 	static const std::string ModOrderPath; // = "mods/order.txt";
@@ -129,9 +129,6 @@ protected:
 	static CustomLevel* processCustomLevel(std::string path);
 	static inline CustomLevel::CustomLevelAction* stringToAction(const std::pair<std::string, int>& command); //throws when action is ill-formatted
 	static void pushCustomLevel(CustomLevel* level); //add it to LevelManager (with some checks)
-
-public:
-	static std::unordered_map<std::string, std::unordered_map<std::string, CustomLevel*>> customLevelLookup; //TODO: should be moved to LevelManager
 
 protected:
 	static inline void stringToAction_WALL(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData);

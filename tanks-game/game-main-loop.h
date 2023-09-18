@@ -1,7 +1,9 @@
 #pragma once
-#include "game-scene.h"
-#include "drawable-thing.h"
 #include <string>
+
+#include "game-scene.h"
+#include "drawable-thing.h" //for DrawingLayers
+
 #include <thread>
 #include <atomic>
 #include <mutex>
@@ -76,9 +78,6 @@ public:
 	static inline void thread_updateRectHazardsFunc(void* updateRectHazardsList, void* updateRectHazardValues, int start, int end);
 
 protected:
-	//bool currentlyDrawing; //look into std::mutex
-	//long frameCount; //doesn't need a long for how it's interpreted...
-	//long ticksUntilFrame; //whatever again
 	int physicsRate; //(in Hz)
 	int waitCount;
 	int maxWaitCount;

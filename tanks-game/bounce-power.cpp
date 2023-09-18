@@ -7,7 +7,6 @@ std::unordered_map<std::string, float> BouncePower::getWeights() const {
 	weights.insert({ "vanilla", 1.0f });
 	weights.insert({ "random-vanilla", 1.0f });
 	weights.insert({ "old", 1.0f });
-	//weights.insert({ "random-old", 1.0f });
 	weights.insert({ "supermix", 1.0f });
 	weights.insert({ "supermix-vanilla", 1.0f });
 	weights.insert({ "random", 1.0f });
@@ -60,8 +59,8 @@ BounceTankPower::BounceTankPower() {
 
 
 
-#include "power-function-helper.h"
 #include "collision-handler.h"
+#include "power-function-helper.h"
 
 InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> BounceBulletPower::modifiedCollisionWithWall(const Bullet* b, const Wall* w) {
 	std::shared_ptr<BulletUpdateStruct> b_update;

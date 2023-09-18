@@ -1,9 +1,12 @@
 #include "dev-no-walls-level-1.h"
+
 #include "constants.h"
+
+#include "reset-things.h"
 #include "level-helper.h"
 #include "powerup-manager.h"
 #include "hazard-manager.h"
-#include "reset-things.h"
+
 #include "level-manager.h"
 
 ColorValueHolder DevNoWallsLevel1::getDefaultColor() const {

@@ -14,7 +14,7 @@ public:
 
 	protected:
 		std::unordered_map<std::string, std::unordered_map<std::string, std::vector<std::string>>> data;
-		void insert(std::string section, std::string property, std::string value);
+		void insert(std::string section, std::string property, std::string value) noexcept;
 
 	public:
 		bool exists(std::string section, std::string property) const noexcept;

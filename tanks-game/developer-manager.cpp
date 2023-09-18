@@ -1,14 +1,17 @@
 #include "developer-manager.h"
-#include "tank-manager.h"
-#include "renderer.h"
+
 #include "constants.h"
-#include "wall-manager.h"
-#include "powerup-manager.h"
-#include "hazard-manager.h"
-#include "level-manager.h"
+#include <iostream>
+
 #include <GL/glew.h> //to avoid potential freeglut before glew issues
 #include <GL/freeglut.h>
-#include <iostream>
+
+#include "renderer.h"
+#include "tank-manager.h"
+#include "powerup-manager.h"
+#include "wall-manager.h"
+#include "hazard-manager.h"
+#include "level-manager.h"
 
 bool DeveloperManager::leftMouse = false;
 bool DeveloperManager::rightMouse = false;

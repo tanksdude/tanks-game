@@ -1,13 +1,17 @@
 #include "wind-level-effect.h"
+
 #include "constants.h"
 #include <cmath>
+#include <algorithm> //std::copy
+#include <iostream>
 #include "rng.h"
-#include "tank-manager.h"
-#include "bullet-manager.h"
+
+#include "renderer.h"
 #include "color-mixer.h"
 #include "background-rect.h"
-#include "renderer.h"
-#include <algorithm> //std::copy
+
+#include "tank-manager.h"
+#include "bullet-manager.h"
 
 SimpleVector2D WindLevelEffect::vertices_spike[3];
 SimpleVector2D WindLevelEffect::vertices_arrow[7];
@@ -84,7 +88,6 @@ void WindLevelEffect::doEffects(Level* parent) {
 void WindLevelEffect::draw() const {
 	//length = 16 * pushDirection.getMagnitude()
 	//7 x 5 arrows
-	//color: ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(0.0f, 0.0f, 0.0f), .5);
 
 	if (getWindStrengthMultiplier() <= 0) {
 		return;

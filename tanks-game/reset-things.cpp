@@ -1,18 +1,21 @@
 #include "reset-things.h"
-#include "game-manager.h"
-#include "end-game-handler.h"
+
 #include "constants.h"
+#include <algorithm> //std::clamp
+#include <iostream>
+#include "rng.h"
+#include "mylib.h" //weightedSelect
+
 #include "tank-manager.h"
 #include "bullet-manager.h"
 #include "wall-manager.h"
 #include "powerup-manager.h"
 #include "hazard-manager.h"
 #include "level-manager.h"
-#include "mylib.h" //weightedSelect
-#include <algorithm> //std::clamp
-#include "rng.h"
+
+#include "game-manager.h"
+#include "end-game-handler.h"
 #include "diagnostics.h"
-#include <iostream>
 
 const int ResetThings::default_tankStartingYCount = 5;
 const double ResetThings::default_tankToEdgeDist = 20;

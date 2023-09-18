@@ -70,7 +70,7 @@ boring levels:
 
 
 other:
-wallless (no walls, only no bullet zones)
+|wallless (no walls, only no bullet zones)
 level that randomly gives powers (that last one second)?
 
 

@@ -1,12 +1,14 @@
 #pragma once
 class PowerSquare;
 
+#include <string>
+
 #include "game-thing.h"
 #include "rect.h"
 #include "drawable-thing.h"
-#include <string>
-#include "color-value-holder.h"
 #include "power.h"
+
+#include "color-value-holder.h"
 
 class PowerSquare : public GameThing, public Rect, public DrawableThing {
 protected:

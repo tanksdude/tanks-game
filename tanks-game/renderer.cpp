@@ -1,17 +1,19 @@
 #include "renderer.h"
-//#include <glm.hpp>
+
+#include "constants.h"
+#include <algorithm> //std::fill
+#include <iostream>
 #include <gtx/transform.hpp>
 #include <gtc/matrix_transform.hpp>
-#include "constants.h"
-#include "keypress-manager.h"
+
+#include <GL/glew.h>
+#include <GL/freeglut.h>
 #include "opengl-rendering-context.h"
 #include "software-rendering-context.h"
 #include "null-rendering-context.h"
-#include <algorithm> //std::fill
-#include <GL/glew.h>
-#include <GL/freeglut.h>
+
 #include "diagnostics.h"
-#include <iostream>
+#include "keypress-manager.h"
 #include "game-manager.h" //for isDebugDrawingEnabled()
 
 //std::mutex Renderer::drawingDataLock;

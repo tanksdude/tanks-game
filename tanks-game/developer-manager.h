@@ -1,8 +1,9 @@
 #pragma once
-#include "circle.h"
-#include "rect.h"
 #include <string>
 #include <vector>
+
+#include "circle.h"
+#include "rect.h"
 
 class DeveloperManager { //interpret as "developer testing manager" or "developer menu manager"
 private:

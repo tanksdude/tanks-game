@@ -1,14 +1,18 @@
 #include "dev-wall-hazard.h"
-#include "renderer.h"
+
 #include "constants.h"
 #include <cmath>
+#include <algorithm> //std::clamp
+#include <iostream>
+#include "rng.h"
+
+#include "renderer.h"
 #include "color-mixer.h"
 #include "background-rect.h"
+
+#include "collision-handler.h"
 #include "hazard-manager.h"
 #include "level-manager.h"
-#include "collision-handler.h"
-#include "rng.h"
-#include <algorithm> //std::clamp
 
 std::unordered_map<std::string, float> DevWallHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -28,7 +32,7 @@ DevWallHazard::DevWallHazard(double xpos, double ypos, double width, double heig
 		color = ColorValueHolder(0, 0, 0);
 	}
 
-	canAcceptPowers = false;
+	//canAcceptPowers = false;
 
 	//modifiesBulletCollision = true;
 }

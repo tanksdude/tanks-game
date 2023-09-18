@@ -360,7 +360,6 @@
     <ClInclude Include="homing-power.h" />
     <ClInclude Include="horizontal-lightning-hazard.h" />
     <ClInclude Include="index-buffer.h" />
-    <ClInclude Include="inherited-power-common.h" />
     <ClInclude Include="invincible-named-power.h" />
     <ClInclude Include="keypress-manager.h" />
     <ClInclude Include="rectangular-lava-hazard.h" />

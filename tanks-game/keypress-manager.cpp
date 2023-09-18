@@ -1,5 +1,7 @@
 #include "keypress-manager.h"
+
 #include <stdexcept>
+
 #include <GL/glew.h> //to avoid potential freeglut before glew issues
 #include <GL/freeglut.h>
 

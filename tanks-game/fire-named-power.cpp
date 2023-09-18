@@ -84,7 +84,7 @@ InteractionBoolHolder FireNamedBulletPower::modifiedMovement(Bullet* b) {
 	if (b->velocity.getMagnitude() > 0) {
 		b->r += FireNamedPower::growAmount;
 	} else if (b->velocity.getMagnitude() <= 0) {
-		b->opaqueness -= FireNamedPower::degradeAmount;
+		b->lifeValue -= FireNamedPower::degradeAmount;
 	} /*else if (b->velocity < 0) {
 		b->velocity.setMagnitude(0);
 		b->acceleration = 0;
@@ -94,7 +94,7 @@ InteractionBoolHolder FireNamedBulletPower::modifiedMovement(Bullet* b) {
 
 InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> FireNamedBulletPower::modifiedCollisionWithWall(const Bullet* b, const Wall* w) {
 	if (b->velocity.getMagnitude() <= 0) {
-		//b->opaqueness -= FireNamedPower::degradeAmount;
+		//b->lifeValue -= FireNamedPower::degradeAmount;
 		return { false, false, new BulletUpdateStruct(0,0,0,0,0, -FireNamedPower::degradeAmount), nullptr };
 	} else {
 		if (b->acceleration < 0) {

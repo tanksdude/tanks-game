@@ -1,6 +1,8 @@
 #include "vertex-buffer.h"
-#include "renderer.h"
+
 #include <stdexcept>
+
+#include "renderer.h"
 #include "opengl-vertex-buffer.h"
 
 inline VertexBuffer* VertexBuffer::MakeVertexBuffer(const void* data, unsigned int size) {

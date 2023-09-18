@@ -1,6 +1,8 @@
 #include "level-helper.h"
-#include "mylib.h" //isInArray, weightedSelect
+
 #include "rng.h"
+#include "mylib.h" //isInArray, weightedSelect
+
 #include "powerup-manager.h"
 #include "wall-manager.h" //only used by pushClassicWalls()
 

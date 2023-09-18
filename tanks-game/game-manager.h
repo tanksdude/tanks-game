@@ -1,5 +1,6 @@
 #pragma once
 #include "constants.h"
+
 #include "basic-ini-parser.h"
 
 class GameManager {

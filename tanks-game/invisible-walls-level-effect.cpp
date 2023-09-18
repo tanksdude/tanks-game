@@ -1,4 +1,5 @@
 #include "invisible-walls-level-effect.h"
+
 #include "wall-manager.h"
 #include "background-rect.h"
 
@@ -16,7 +17,7 @@ void InvisibleWallsLevelEffect::apply() {
 		Wall* w = WallManager::getWall(0);
 		WallManager::pushWall(new Wall(w->getX(), w->getY(), w->getW(), w->getH(), BackgroundRect::getBackColor()));
 		WallManager::deleteWall(0);
-		//this changes the gameID which may not be wanted
+		//this changes the gameID which is not wanted
 	}
 	*/
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {

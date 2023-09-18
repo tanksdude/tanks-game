@@ -1,18 +1,21 @@
 #include "targeting-turret-hazard.h"
-#include "renderer.h"
+
 #include "constants.h"
 #include <cmath>
+#include <algorithm> //std::copy, std::clamp
+#include <iostream>
+#include "rng.h"
+
+#include "renderer.h"
 #include "color-mixer.h"
 #include "background-rect.h"
-#include <algorithm> //std::copy, std::clamp
+
+#include "collision-handler.h"
 #include "tank.h"
 #include "tank-manager.h"
 #include "bullet-manager.h"
 #include "wall-manager.h"
 #include "hazard-manager.h"
-#include "collision-handler.h"
-#include "rng.h"
-#include <iostream>
 
 std::unordered_map<std::string, float> TargetingTurretHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -38,7 +41,7 @@ TargetingTurretHazard::TargetingTurretHazard(double xpos, double ypos, double an
 	ColorValueHolder temp[2] = { {1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f} };
 	std::copy(temp, temp+2, reticuleColors);
 
-	canAcceptPowers = false; //... true?
+	//canAcceptPowers = false; //... true?
 }
 
 TargetingTurretHazard::TargetingTurretHazard(double xpos, double ypos, double angle, double radius) : TargetingTurretHazard(xpos, ypos, angle) {

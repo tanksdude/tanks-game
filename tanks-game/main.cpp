@@ -24,8 +24,8 @@
 #include "bullet-manager.h"
 #include "powerup-manager.h"
 #include "wall-manager.h"
-#include "level-manager.h"
 #include "hazard-manager.h"
+#include "level-manager.h"
 
 //levels:
 #include "default-random-level.h"

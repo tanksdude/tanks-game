@@ -45,10 +45,10 @@ public:
 	virtual double getTankAccelerationMultiplier() const override { return 1; }
 
 	/*
-	virtual double getOffenseImportance() const override { return 0; }
-	virtual double getOffenseTier(const Tank*) const override { return 0; }
-	virtual double getDefenseImportance() const override { return 0; }
-	virtual double getDefenseTier(const Tank*) const override { return 2.5; }
+	virtual float getOffenseImportance() const override { return 0; }
+	virtual float getOffenseTier(const Tank*) const override { return 0; }
+	virtual float getDefenseImportance() const override { return 0; }
+	virtual float getDefenseTier(const Tank*) const override { return 2.5; }
 	*/
 
 	DevLongInvincibleNamedTankPower();
@@ -69,10 +69,10 @@ public:
 	virtual TankPower* makeTankPower() const override;
 
 	/*
-	virtual double getOffenseImportance() const override { return 0; }
-	virtual double getOffenseTier(const Bullet*) const override { return 1; }
-	virtual double getDefenseImportance() const override { return 0; }
-	virtual double getDefenseTier(const Bullet*) const override { return 1; }
+	virtual float getOffenseImportance() const override { return 0; }
+	virtual float getOffenseTier(const Bullet*) const override { return 1; }
+	virtual float getDefenseImportance() const override { return 0; }
+	virtual float getDefenseTier(const Bullet*) const override { return 1; }
 	*/
 
 	DevLongInvincibleNamedBulletPower();

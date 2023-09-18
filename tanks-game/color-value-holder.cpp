@@ -1,4 +1,5 @@
 #include "color-value-holder.h"
+
 #include <algorithm> //std::clamp
 
 ColorValueHolder::ColorValueHolder(float r, float g, float b) : ColorValueHolder(r, g, b, 1) {}

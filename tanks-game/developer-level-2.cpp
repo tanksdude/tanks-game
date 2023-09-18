@@ -1,8 +1,10 @@
 #include "developer-level-2.h"
+
 #include "constants.h"
+
+#include "reset-things.h"
 #include "level-helper.h"
 #include "powerup-manager.h"
-#include "reset-things.h"
 
 ColorValueHolder DeveloperLevel2::getDefaultColor() const {
 	//there are no walls in this level...

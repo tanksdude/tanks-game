@@ -1,6 +1,7 @@
 #pragma once
-#include "wall.h"
 #include <vector>
+
+#include "wall.h"
 
 class WallManager {
 	friend class ResetThings;
@@ -11,11 +12,11 @@ private:
 
 public:
 	static void initialize();
-	static Wall* getWall(int index);
+	static Wall* getWall(unsigned int index);
 	static Wall* getWallByID(Game_ID);
 	static void pushWall(Wall*);
-	static int getNumWalls() { return walls.size(); }
-	static void deleteWall(int index);
+	static unsigned int getNumWalls() { return walls.size(); }
+	static void deleteWall(unsigned int index);
 	static void deleteWallByID(Game_ID);
 
 	static std::vector<Rect*> getWallCollisionList();

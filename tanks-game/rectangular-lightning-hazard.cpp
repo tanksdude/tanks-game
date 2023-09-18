@@ -1,18 +1,21 @@
 #include "rectangular-lightning-hazard.h"
-#include "renderer.h"
-#include "background-rect.h"
-#include "color-mixer.h"
-#include "mylib.h" //pointInPolygon
+
 #include "constants.h"
 #include <cmath>
 #include <stdexcept>
 #include <algorithm> //std::copy, std::clamp
+#include <iostream>
+#include "rng.h"
+#include "mylib.h" //pointInPolygon
+
+#include "renderer.h"
+#include "color-mixer.h"
+#include "background-rect.h"
+
+#include "collision-handler.h"
 #include "point.h"
 #include "wall-manager.h"
 #include "hazard-manager.h"
-#include "collision-handler.h"
-#include "rng.h"
-#include <iostream>
 
 std::unordered_map<std::string, float> RectangularLightningHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -43,7 +46,7 @@ RectangularLightningHazard::RectangularLightningHazard(double xpos, double ypos,
 	boltCycle = 4;
 	boltsNeeded = false;
 
-	canAcceptPowers = false;
+	//canAcceptPowers = false;
 
 	modifiesTankCollision = true;
 	hasSpecialEffectTankCollision = true;

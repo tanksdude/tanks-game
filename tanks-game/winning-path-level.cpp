@@ -1,13 +1,15 @@
 #include "winning-path-level.h"
-#include "level-manager.h"
+
 #include "constants.h"
+#include "rng.h"
+
+#include "reset-things.h"
 #include "level-helper.h"
 #include "powerup-manager.h"
 #include "wall-manager.h"
 #include "hazard-manager.h"
-#include "reset-things.h"
-#include "rng.h"
-#include <iostream>
+
+#include "level-manager.h"
 
 ColorValueHolder WinningPathLevel::getDefaultColor() const {
 	return ColorValueHolder(0.0f, 0.0f, 0.0f);

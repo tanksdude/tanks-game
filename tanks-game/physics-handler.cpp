@@ -1,7 +1,9 @@
 #include "physics-handler.h"
+
 #include <algorithm>
-#include "diagnostics.h"
 #include <iostream>
+
+#include "diagnostics.h"
 
 /*
 template<typename T, typename U>

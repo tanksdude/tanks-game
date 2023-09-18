@@ -1,6 +1,6 @@
 #include "level-manager.h"
+
 #include <stdexcept>
-#include "custom-level-interpreter.h"
 #include "mylib.h" //weightedSelect
 
 std::vector<Level*> LevelManager::levels;
@@ -10,8 +10,9 @@ std::unordered_map<std::string, std::unordered_map<std::string, LevelEffectFunct
 std::unordered_map<std::string, std::vector<std::string>> LevelManager::levelNameList;
 std::unordered_map<std::string, std::vector<std::string>> LevelManager::levelEffectNameList;
 
-std::unordered_map<std::string, std::vector<std::string>> LevelManager::customLevelNameList;
 std::vector<std::string> LevelManager::protectedTypes = { "null", "vanilla", "vanilla-extra", "random-vanilla", "old", "random-old", "dev", "random-dev" };
+std::unordered_map<std::string, std::unordered_map<std::string, CustomLevel*>> LevelManager::customLevelLookup;
+std::unordered_map<std::string, std::vector<std::string>> LevelManager::customLevelNameList;
 
 void LevelManager::initialize() {
 	levelLookup.insert({ "vanilla", std::unordered_map<std::string, LevelFunction>() });
@@ -42,28 +43,29 @@ std::string LevelManager::checkCustomLevelTypesAgainstProtectedTypes(const std::
 	return "";
 }
 
-void LevelManager::addCustomLevel(std::string name, const std::vector<std::string>& types) {
+void LevelManager::addCustomLevel(std::string name, const std::vector<std::string>& types, CustomLevel* l) {
 	for (int i = 0; i < types.size(); i++) {
 		if (types[i] == "null") {
 			throw std::runtime_error("level " + name + " includes \"null\" type, which is not allowed");
 		} else { [[likely]]
+			customLevelLookup[types[i]].insert({ l->getName(), l });
 			customLevelNameList[types[i]].push_back(name);
 		}
 	}
 }
 
-Level* LevelManager::getLevel(int index) {
+Level* LevelManager::getLevel(unsigned int index) {
 	return levels[index];
 }
 
-LevelEffect* LevelManager::getLevelEffect(int level_index, int index) {
+LevelEffect* LevelManager::getLevelEffect(unsigned int level_index, unsigned int index) {
 	return levels[level_index]->effects[index];
 }
 
 void LevelManager::pushLevel(std::string type, std::string name) {
 	if (levelLookup.find(type) == levelLookup.end()) {
 		//custom levels
-		levels.push_back(CustomLevelInterpreter::factory(type, name));
+		levels.push_back(customLevelLookup[type][name]->factory());
 	} else {
 		//regular levels
 		levels.push_back(LevelManager::getLevelFactory(type, name)());
@@ -114,7 +116,7 @@ LevelFunction LevelManager::getLevelFactory(std::string type, std::string name) 
 
 std::string LevelManager::getLevelName(std::string type, unsigned int index) {
 	if (levelLookup.find(type) == levelLookup.end()) {
-		if (CustomLevelInterpreter::customLevelLookup.find(type) != CustomLevelInterpreter::customLevelLookup.end()) {
+		if (customLevelLookup.find(type) != customLevelLookup.end()) {
 			if (index >= customLevelNameList[type].size()) {
 				throw std::range_error("level index " + std::to_string(index) + " is too large!");
 			}
@@ -130,7 +132,7 @@ std::string LevelManager::getLevelName(std::string type, unsigned int index) {
 
 unsigned int LevelManager::getNumLevelTypes(std::string type) {
 	if (levelLookup.find(type) == levelLookup.end()) {
-		if (CustomLevelInterpreter::customLevelLookup.find(type) != CustomLevelInterpreter::customLevelLookup.end()) {
+		if (customLevelLookup.find(type) != customLevelLookup.end()) {
 			return customLevelNameList[type].size();
 		}
 		throw std::runtime_error("level type \"" + type + "\" unknown!");
@@ -139,7 +141,7 @@ unsigned int LevelManager::getNumLevelTypes(std::string type) {
 }
 
 std::string LevelManager::levelWeightedSelect(std::string levelPlaylist) {
-	if (CustomLevelInterpreter::customLevelLookup.find(levelPlaylist) == CustomLevelInterpreter::customLevelLookup.end()) {
+	if (customLevelLookup.find(levelPlaylist) == customLevelLookup.end()) {
 		std::vector<float> levelWeights;
 		levelWeights.reserve(LevelManager::getNumLevelTypes(levelPlaylist));
 		for (unsigned int i = 0; i < LevelManager::getNumLevelTypes(levelPlaylist); i++) {
@@ -155,7 +157,7 @@ std::string LevelManager::levelWeightedSelect(std::string levelPlaylist) {
 		levelWeights.reserve(LevelManager::getNumLevelTypes(levelPlaylist));
 		for (unsigned int i = 0; i < LevelManager::getNumLevelTypes(levelPlaylist); i++) {
 			std::string n = LevelManager::getLevelName(levelPlaylist, i);
-			Level* l = CustomLevelInterpreter::customLevelLookup[levelPlaylist][n];
+			CustomLevel* l = customLevelLookup[levelPlaylist][n];
 			levelWeights.push_back(l->getWeights()[levelPlaylist]);
 			//delete l;
 		}

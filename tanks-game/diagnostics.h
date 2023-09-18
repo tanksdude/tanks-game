@@ -1,8 +1,9 @@
 #pragma once
-#include <chrono>
 #include <vector>
 #include <string>
 #include <unordered_map>
+#include <chrono>
+
 #include "color-value-holder.h"
 
 class Diagnostics {
@@ -12,7 +13,7 @@ private:
 	static bool currentlyTiming;
 
 	struct GraphData {
-		std::vector<long double> data; //should use a list but iterators are so messy
+		std::vector<long double> data; //should use a linked list but iterators are so messy
 		//long doubles are utterly unnecessary, but it's the time difference units from std::chrono
 		std::string name;
 		ColorValueHolder color;

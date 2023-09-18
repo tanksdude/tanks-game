@@ -1,6 +1,7 @@
 #pragma once
-#include "tank.h"
 #include <vector>
+
+#include "tank.h"
 
 class TankManager {
 	friend class ResetThings;
@@ -11,11 +12,11 @@ private:
 
 public:
 	static void initialize();
-	static Tank* getTank(int index);
+	static Tank* getTank(unsigned int index);
 	static Tank* getTankByID(Game_ID);
 	static void pushTank(Tank*);
-	static int getNumTanks() { return tanks.size(); }
-	//static void deleteTank(int index);
+	static unsigned int getNumTanks() { return tanks.size(); }
+	//static void deleteTank(unsigned int index);
 	//static void deleteTankByID(Game_ID);
 
 	static std::vector<Circle*> getTankCollisionList();

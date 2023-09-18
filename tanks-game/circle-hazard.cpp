@@ -1,6 +1,8 @@
 #include "circle-hazard.h"
-#include "collision-handler.h"
+
 #include "constants.h"
+
+#include "collision-handler.h"
 
 /*
 std::vector<std::string> CircleHazard::getHazardTypes() const {
@@ -9,7 +11,6 @@ std::vector<std::string> CircleHazard::getHazardTypes() const {
 }
 
 std::unordered_map<std::string, float> CircleHazard::getWeights() const {
-	//not really sure what the weights mean yet
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", 1.0f });
 	weights.insert({ "random-vanilla", 1.0f });
@@ -26,8 +27,8 @@ void CircleHazard::modifiedBulletCollision(Bullet* b) {
 	CollisionHandler::pushMovableAwayFromImmovable(b, this);
 }
 
-double CircleHazard::getHighestOffenseImportance() const {
-	double highest = LOW_IMPORTANCE;
+float CircleHazard::getHighestOffenseImportance() const {
+	float highest = LOW_IMPORTANCE;
 	/*
 	for (int i = 0; i < hazardPowers.size(); i++) {
 		if (hazardPowers[i]->getOffenseImportance() > highest) {
@@ -38,8 +39,8 @@ double CircleHazard::getHighestOffenseImportance() const {
 	return highest;
 }
 
-double CircleHazard::getHighestOffenseTier(double importance) const {
-	double highest = LOW_TIER;
+float CircleHazard::getHighestOffenseTier(float importance) const {
+	float highest = LOW_TIER;
 	/*
 	for (int i = 0; i < hazardPowers.size(); i++) {
 		if (hazardPowers[i]->getOffenseImportance() == importance) {
@@ -59,12 +60,12 @@ double CircleHazard::getHighestOffenseTier(double importance) const {
 	return highest;
 }
 
-double CircleHazard::getOffenseTier() const {
+float CircleHazard::getOffenseTier() const {
 	return getHighestOffenseTier(getHighestOffenseImportance());
 }
 
-double CircleHazard::getHighestDefenseImportance() const {
-	double highest = LOW_IMPORTANCE;
+float CircleHazard::getHighestDefenseImportance() const {
+	float highest = LOW_IMPORTANCE;
 	/*
 	for (int i = 0; i < hazardPowers.size(); i++) {
 		if (hazardPowers[i]->getDefenseImportance() > highest) {
@@ -75,8 +76,8 @@ double CircleHazard::getHighestDefenseImportance() const {
 	return highest;
 }
 
-double CircleHazard::getHighestDefenseTier(double importance) const {
-	double highest = LOW_TIER;
+float CircleHazard::getHighestDefenseTier(float importance) const {
+	float highest = LOW_TIER;
 	/*
 	for (int i = 0; i < hazardPowers.size(); i++) {
 		if (hazardPowers[i]->getDefenseImportance() == importance) {
@@ -95,7 +96,7 @@ double CircleHazard::getHighestDefenseTier(double importance) const {
 	return highest;
 }
 
-double CircleHazard::getDefenseTier() const {
+float CircleHazard::getDefenseTier() const {
 	return getHighestDefenseTier(getHighestDefenseImportance());
 }
 

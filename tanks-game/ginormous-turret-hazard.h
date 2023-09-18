@@ -34,8 +34,8 @@ public:
 	virtual std::unordered_map<std::string, float> getWeights() const override;
 
 protected:
-	virtual double getDefaultOffense() const override { return 0; }
-	virtual double getDefaultDefense() const override { return DESTRUCTION_TIER + 1.0; }
+	virtual float getDefaultOffense() const override { return 0; }
+	virtual float getDefaultDefense() const override { return DESTRUCTION_TIER + 1.0; }
 
 public:
 	//virtual bool validLocation() const override { return true; }

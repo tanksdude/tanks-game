@@ -61,7 +61,7 @@ GrenadeTankPower::GrenadeTankPower() {
 
 InteractionBoolHolder GrenadeBulletPower::modifiedMovement(Bullet* b) {
 	if (b->velocity.getMagnitude() <= 0) {
-		b->opaqueness -= GrenadePower::degradeAmount;
+		b->lifeValue -= GrenadePower::degradeAmount;
 		b->r *= 65/64.0;
 	} /*else if (b->velocity.getMagnitude() < 0) {
 		b->velocity.setMagnitude(0);
@@ -72,7 +72,7 @@ InteractionBoolHolder GrenadeBulletPower::modifiedMovement(Bullet* b) {
 
 InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> GrenadeBulletPower::modifiedCollisionWithWall(const Bullet* b, const Wall* w) {
 	if (b->velocity.getMagnitude() <= 0) {
-		//b->opaqueness -= GrenadePower::degradeAmount;
+		//b->lifeValue -= GrenadePower::degradeAmount;
 		return { b->isDead(), false, new BulletUpdateStruct(0,0,0,0,0, -GrenadePower::degradeAmount), nullptr };
 	} else {
 		if (b->acceleration < 0) {

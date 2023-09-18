@@ -1,20 +1,23 @@
 #include "mother-turret-hazard.h"
-#include "renderer.h"
+
 #include "constants.h"
 #include <cmath>
+#include <algorithm> //std::copy, std::count, std::clamp
+#include <iostream>
+#include "rng.h"
+#include "mylib.h" //findMaxIndex
+
+#include "renderer.h"
 #include "color-mixer.h"
 #include "background-rect.h"
-#include <algorithm> //std::copy, std::count, std::clamp
-#include "mylib.h" //findMaxIndex
+
+#include "collision-handler.h"
 #include "tank.h"
 #include "tank-manager.h"
 #include "bullet-manager.h"
 #include "wall-manager.h"
 #include "hazard-manager.h"
-#include "collision-handler.h"
-#include "rng.h"
 #include "targeting-turret-hazard.h" //in case mother turrets no longer extend targeting turrets
-#include <iostream>
 
 std::unordered_map<std::string, float> MotherTurretHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -43,7 +46,7 @@ MotherTurretHazard::MotherTurretHazard(double xpos, double ypos, double angle, i
 	//pushInitialChildren(startChildren);
 	initialChildren = startChildren;
 
-	canAcceptPowers = false; //... true?
+	//canAcceptPowers = false; //... true?
 
 	//idea: mitosis turrets; grows for some time, then splits (that'd be hard to program...)
 }
@@ -53,7 +56,6 @@ MotherTurretHazard::MotherTurretHazard(double xpos, double ypos, double angle, i
 	//child distance options: r, r/2, r*.75
 }
 
-//16 or 8 max turrets? 16 max turrets is certainly sizable, 8 is more reasonable...
 MotherTurretHazard::MotherTurretHazard(double xpos, double ypos, double angle) : MotherTurretHazard(xpos, ypos, angle, 8, 4) {
 	//something?
 	//reason for choosing 8 max by default: don't want the randomly-placed ones to be excessive

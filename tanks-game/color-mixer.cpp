@@ -1,4 +1,7 @@
 #include "color-mixer.h"
+
+#include "constants.h"
+#include <cmath> //abs, fmod
 #include <iostream>
 
 //TODO: account for colors to contain alpha

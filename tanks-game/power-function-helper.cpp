@@ -1,10 +1,12 @@
 #include "power-function-helper.h"
-#include "collision-handler.h"
+
 #include "constants.h"
 #include <cmath>
-#include "mylib.h" //findMinIndex
-#include "tank-manager.h"
 #include <iostream>
+#include "mylib.h" //findMinIndex
+
+#include "collision-handler.h"
+#include "tank-manager.h"
 
 std::pair<bool, InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct>> PowerFunctionHelper::superbounceGeneric(const Bullet* b, const Wall* w, double strength) {
 	if (!CollisionHandler::partiallyCollided(b, w)) {

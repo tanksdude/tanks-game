@@ -1,18 +1,21 @@
 #include "patrolling-turret-hazard.h"
-#include "renderer.h"
+
 #include "constants.h"
 #include <cmath>
+#include <algorithm> //std::copy, std::clamp
+#include <iostream>
+#include "rng.h"
+
+#include "renderer.h"
 #include "color-mixer.h"
 #include "background-rect.h"
-#include <algorithm> //std::copy, std::clamp
+
+#include "collision-handler.h"
 #include "tank.h"
 #include "tank-manager.h"
 #include "bullet-manager.h"
 #include "wall-manager.h"
 #include "hazard-manager.h"
-#include "collision-handler.h"
-#include "rng.h"
-#include <iostream>
 
 std::unordered_map<std::string, float> PatrollingTurretHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -60,7 +63,7 @@ PatrollingTurretHazard::PatrollingTurretHazard(double xpos, double ypos, double 
 		}
 	}
 
-	canAcceptPowers = true; //TODO
+	//canAcceptPowers = true; //TODO
 }
 
 PatrollingTurretHazard::~PatrollingTurretHazard() {

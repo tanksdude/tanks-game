@@ -1,4 +1,5 @@
 #include "collision-handler.h"
+
 #include "constants.h"
 #include <cmath>
 #include <stdexcept>

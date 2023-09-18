@@ -69,7 +69,6 @@ DevAnnoyingTankPower::DevAnnoyingTankPower() {
 
 
 #include "collision-handler.h"
-//#include "constants.h"
 
 void DevAnnoyingBulletPower::initialize(Bullet* parent) {
 	//nothing
@@ -93,19 +92,19 @@ InteractionBoolHolder DevAnnoyingBulletPower::modifiedCollisionWithTank(Bullet* 
 //has very low offense, very high defense; can't kill, can't be killed
 //^^^ cancelled but might reinvestigate in the future (TODO)
 
-double DevAnnoyingBulletPower::getOffenseImportance() const {
+float DevAnnoyingBulletPower::getOffenseImportance() const {
 	return .5; //0?
 }
 
-double DevAnnoyingBulletPower::getOffenseTier(const Bullet*) const {
+float DevAnnoyingBulletPower::getOffenseTier(const Bullet*) const {
 	return 0; //-1? //not sure
 }
 
-double DevAnnoyingBulletPower::getDefenseImportance() const {
+float DevAnnoyingBulletPower::getDefenseImportance() const {
 	return 0; //.5?
 }
 
-double DevAnnoyingBulletPower::getDefenseTier(const Bullet*) const {
+float DevAnnoyingBulletPower::getDefenseTier(const Bullet*) const {
 	return 0; //HIGH_TIER? //should be <= 0 so other bullets can kill it... right?
 }
 

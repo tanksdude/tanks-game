@@ -28,10 +28,10 @@ void HazardManager::initialize() {
 	rectHazardLookup.insert({ "random-dev", std::unordered_map<std::string, RectHazardFactoryGroup>() });
 }
 
-CircleHazard* HazardManager::getCircleHazard(int index) {
+CircleHazard* HazardManager::getCircleHazard(unsigned int index) {
 	return circleHazards[index];
 }
-RectHazard* HazardManager::getRectHazard(int index) {
+RectHazard* HazardManager::getRectHazard(unsigned int index) {
 	return rectHazards[index];
 }
 
@@ -61,11 +61,11 @@ void HazardManager::pushRectHazard(RectHazard* rh) {
 	rh->initialize();
 }
 
-void HazardManager::deleteCircleHazard(int index) {
+void HazardManager::deleteCircleHazard(unsigned int index) {
 	delete circleHazards[index];
 	circleHazards.erase(circleHazards.begin() + index);
 }
-void HazardManager::deleteRectHazard(int index) {
+void HazardManager::deleteRectHazard(unsigned int index) {
 	delete rectHazards[index];
 	rectHazards.erase(rectHazards.begin() + index);
 }

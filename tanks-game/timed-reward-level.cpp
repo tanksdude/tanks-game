@@ -1,12 +1,15 @@
 #include "timed-reward-level.h"
+
 #include "constants.h"
 #include <cmath>
+
+#include "reset-things.h"
 #include "level-helper.h"
 #include "wall-manager.h"
 #include "powerup-manager.h"
 #include "hazard-manager.h"
-#include "reset-things.h"
-#include "game-manager.h"
+
+#include "game-manager.h" //getTickCount()
 
 ColorValueHolder TimedRewardLevel::getDefaultColor() const {
 	//return ColorValueHolder(0x97/255.0, 0x5C/255.0, 0x5C/255.0);

@@ -1,5 +1,6 @@
 #pragma once
 #include "level-effect.h"
+
 #include "bullet.h"
 
 class MinefieldLevelEffect : public LevelEffect {

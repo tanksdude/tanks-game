@@ -1,6 +1,7 @@
 #pragma once
 #include "circle-hazard.h"
 #include "generalized-no-bullet-zone.h"
+
 #include "constants.h"
 
 class CircularNoBulletZoneHazard : public CircleHazard, public GeneralizedNoBulletZone {
@@ -23,8 +24,8 @@ public:
 	virtual void modifiedBulletCollision(Bullet*) override { return; } //TODO: should the bullet be destroyed here?
 
 protected:
-	virtual double getDefaultOffense() const override { return HIGH_TIER; }
-	virtual double getDefaultDefense() const override { return HIGH_TIER; }
+	virtual float getDefaultOffense() const override { return HIGH_TIER; }
+	virtual float getDefaultDefense() const override { return HIGH_TIER; }
 
 public:
 	//virtual bool validLocation() const override { return true; }

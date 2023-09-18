@@ -54,8 +54,8 @@ OldBounceTankPower::OldBounceTankPower() : BounceTankPower() {
 
 
 
-#include "power-function-helper.h"
 #include "collision-handler.h"
+#include "power-function-helper.h"
 
 /*
 InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> OldBounceBulletPower::modifiedCollisionWithWall(const Bullet* b, const Wall* w) {

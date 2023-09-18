@@ -1,8 +1,8 @@
 #pragma once
-#include "color-value-holder.h"
 #include <string>
-#include "wall.h"
+
 #include "position-holder.h"
+#include "wall.h"
 
 class LevelHelper { //has stuff for randomizing stuff in levels
 public:

@@ -1,14 +1,15 @@
 #pragma once
 class RectHazard;
 
-#include "game-thing.h"
-#include "rect.h"
-#include "drawable-thing.h"
 #include <string>
 #include <vector>
 #include <unordered_map>
-#include "color-value-holder.h"
+
+#include "game-thing.h"
+#include "rect.h"
+#include "drawable-thing.h"
 //#include "rect-hazard-power.h"
+
 #include "tank.h"
 #include "bullet.h"
 #include "generic-factory-construction-data.h"
@@ -48,18 +49,18 @@ enum class RectHazardCollisionType {
 class RectHazard : public GameThing, public Rect, public DrawableThing {
 public: //protected?
 	//std::vector<RectHazardPower*> hazardPowers;
-	bool canAcceptPowers;
+	//bool canAcceptPowers;
 	//virtual bool getCanAcceptPowers();
 
 public:
-	double getOffenseTier() const;
-	double getDefenseTier() const;
+	float getOffenseTier() const;
+	float getDefenseTier() const;
 
 protected:
-	double getHighestOffenseImportance() const;
-	double getHighestOffenseTier(double importance) const;
-	double getHighestDefenseImportance() const;
-	double getHighestDefenseTier(double importance) const;
+	float getHighestOffenseImportance() const;
+	float getHighestOffenseTier(float importance) const;
+	float getHighestDefenseImportance() const;
+	float getHighestDefenseTier(float importance) const;
 
 public:
 	virtual std::vector<std::string> getHazardTypes() const = 0; //pure virtual to make sure recthazards define it
@@ -80,8 +81,8 @@ public:
 	virtual void specialEffectBulletCollision(Bullet*) { return; } //always activated before modifiedBulletCollision
 
 protected:
-	virtual double getDefaultOffense() const = 0;
-	virtual double getDefaultDefense() const = 0;
+	virtual float getDefaultOffense() const = 0;
+	virtual float getDefaultDefense() const = 0;
 
 public:
 	virtual bool validLocation() const { return true; }

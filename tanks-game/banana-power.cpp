@@ -59,10 +59,11 @@ BananaTankPower::BananaTankPower() {
 
 
 
-#include "bullet-manager.h"
 #include "constants.h"
-#include "rng.h"
 #include <vector>
+#include "rng.h"
+
+#include "bullet-manager.h"
 
 InteractionBoolHolder BananaBulletPower::modifiedMovement(Bullet* b) {
 	if (wasStationary && b->velocity.getMagnitude() <= 0) {

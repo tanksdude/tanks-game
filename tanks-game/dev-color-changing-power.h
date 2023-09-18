@@ -17,8 +17,8 @@ public:
 	static std::string getClassName() { return "color_changing"; }
 	virtual ColorValueHolder getColor() const override; //powersquares don't have a tick() ability...
 	static ColorValueHolder getClassColor() { return ColorValueHolder(0.5f, 0.5f, 0.5f); } //default/fallback
-	virtual double getColorImportance() const override { return DevColorChangingPower::getClassColorImportance(); }
-	static double getClassColorImportance() { return .5; }
+	virtual float getColorImportance() const override { return DevColorChangingPower::getClassColorImportance(); }
+	static float getClassColorImportance() { return .5; }
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
@@ -41,7 +41,7 @@ public:
 	virtual void tick(Tank* t) override; //updates color
 
 	virtual ColorValueHolder getColor() const override;
-	virtual double getColorImportance() const override {
+	virtual float getColorImportance() const override {
 		return DevColorChangingPower::getClassColorImportance();
 	}
 
@@ -64,7 +64,7 @@ public:
 	virtual void tick(Bullet* b) override; //updates color
 
 	virtual ColorValueHolder getColor() const override;
-	virtual double getColorImportance() const override {
+	virtual float getColorImportance() const override {
 		return DevColorChangingPower::getClassColorImportance();
 	}
 

@@ -32,7 +32,7 @@ OldMinesPower::OldMinesPower() : MinesPower() {
 
 
 
-//#include "constants.h"
+#include "constants.h"
 #include <cmath>
 
 /*

@@ -1,11 +1,13 @@
 #include "generalized-lightning.h"
-#include "background-rect.h"
-#include "color-mixer.h"
+
 #include "constants.h"
 #include <cmath>
 //#include <stdexcept>
 #include <algorithm> //std::copy, std::clamp
 #include <iostream>
+
+#include "color-mixer.h"
+#include "background-rect.h"
 
 int GeneralizedLightning::getDefaultNumBoltPoints(double horzDist) const {
 	int boltPoints = ceil(horzDist / lengthOfBolt); //not floor because the last point is the edge of the lightning area

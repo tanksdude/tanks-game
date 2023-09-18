@@ -6,7 +6,7 @@ void TankManager::initialize() {
 	return;
 }
 
-Tank* TankManager::getTank(int index) {
+Tank* TankManager::getTank(unsigned int index) {
 	return tanks[index];
 }
 
@@ -25,7 +25,7 @@ void TankManager::pushTank(Tank* t) {
 }
 
 /*
-void TankManager::deleteTank(int index) {
+void TankManager::deleteTank(unsigned int index) {
 	delete tanks[index];
 	tanks.erase(tanks.begin() + index);
 }

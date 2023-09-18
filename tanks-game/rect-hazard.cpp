@@ -1,4 +1,7 @@
 #include "rect-hazard.h"
+
+#include "constants.h"
+
 #include "collision-handler.h"
 
 /*
@@ -24,8 +27,8 @@ void RectHazard::modifiedBulletCollision(Bullet* b) {
 	CollisionHandler::pushMovableAwayFromImmovable(b, this);
 }
 
-double RectHazard::getHighestOffenseImportance() const {
-	double highest = LOW_IMPORTANCE;
+float RectHazard::getHighestOffenseImportance() const {
+	float highest = LOW_IMPORTANCE;
 	/*
 	for (int i = 0; i < hazardPowers.size(); i++) {
 		if (hazardPowers[i]->getOffenseImportance() > highest) {
@@ -36,8 +39,8 @@ double RectHazard::getHighestOffenseImportance() const {
 	return highest;
 }
 
-double RectHazard::getHighestOffenseTier(double importance) const {
-	double highest = LOW_TIER;
+float RectHazard::getHighestOffenseTier(float importance) const {
+	float highest = LOW_TIER;
 	/*
 	for (int i = 0; i < hazardPowers.size(); i++) {
 		if (hazardPowers[i]->getOffenseImportance() == importance) {
@@ -56,12 +59,12 @@ double RectHazard::getHighestOffenseTier(double importance) const {
 	return highest;
 }
 
-double RectHazard::getOffenseTier() const {
+float RectHazard::getOffenseTier() const {
 	return getHighestOffenseTier(getHighestOffenseImportance());
 }
 
-double RectHazard::getHighestDefenseImportance() const {
-	double highest = LOW_IMPORTANCE;
+float RectHazard::getHighestDefenseImportance() const {
+	float highest = LOW_IMPORTANCE;
 	/*
 	for (int i = 0; i < hazardPowers.size(); i++) {
 		if (hazardPowers[i]->getDefenseImportance() > highest) {
@@ -72,8 +75,8 @@ double RectHazard::getHighestDefenseImportance() const {
 	return highest;
 }
 
-double RectHazard::getHighestDefenseTier(double importance) const {
-	double highest = LOW_TIER;
+float RectHazard::getHighestDefenseTier(float importance) const {
+	float highest = LOW_TIER;
 	/*
 	for (int i = 0; i < hazardPowers.size(); i++) {
 		if (hazardPowers[i]->getDefenseImportance() == importance) {
@@ -92,7 +95,7 @@ double RectHazard::getHighestDefenseTier(double importance) const {
 	return highest;
 }
 
-double RectHazard::getDefenseTier() const {
+float RectHazard::getDefenseTier() const {
 	return getHighestDefenseTier(getHighestDefenseImportance());
 }
 

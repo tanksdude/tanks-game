@@ -1,5 +1,7 @@
 #include "dev-symmetric-tanks-level-effect.h"
+
 #include "constants.h"
+
 #include "tank-manager.h"
 
 std::unordered_map<std::string, float> DevSymmetricTanksLevelEffect::getWeights() const {

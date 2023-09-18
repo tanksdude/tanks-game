@@ -1,16 +1,15 @@
 #pragma once
 #include <string>
-#include <unordered_map>
-#include <vector>
 #include <utility>
+#include <vector>
+#include <unordered_map>
+#include <glm.hpp>
+
 #include "rendering-context.h"
 #include "vertex-array.h"
 #include "vertex-buffer.h"
 #include "index-buffer.h"
 #include "shader.h"
-#include "drawable-thing.h"
-#include "color-value-holder.h"
-#include <glm.hpp>
 
 //#include <thread>
 //#include <atomic>

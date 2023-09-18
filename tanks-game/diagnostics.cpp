@@ -1,9 +1,11 @@
 #include "diagnostics.h"
-#include <iostream>
-#include "renderer.h"
+
 #include "constants.h"
-#include "simple-vector-2d.h"
 #include <algorithm> //std::min, std::max
+#include <iostream>
+
+#include "renderer.h"
+#include "simple-vector-2d.h"
 
 std::vector<std::chrono::time_point<std::chrono::steady_clock>> Diagnostics::times;
 std::vector<std::string> Diagnostics::timeNames;

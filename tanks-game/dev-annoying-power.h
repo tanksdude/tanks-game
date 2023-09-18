@@ -70,10 +70,10 @@ public:
 
 	virtual double getBulletSpeedMultiplier() const override { return .5; }
 
-	virtual double getOffenseImportance() const override;
-	virtual double getOffenseTier(const Bullet*) const override;
-	virtual double getDefenseImportance() const override;
-	virtual double getDefenseTier(const Bullet*) const override;
+	virtual float getOffenseImportance() const override;
+	virtual float getOffenseTier(const Bullet*) const override;
+	virtual float getDefenseImportance() const override;
+	virtual float getDefenseTier(const Bullet*) const override;
 
 	DevAnnoyingBulletPower();
 };

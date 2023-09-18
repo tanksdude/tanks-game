@@ -1,7 +1,9 @@
 #include "old-empty-level.h"
-#include "level-helper.h"
-#include "reset-things.h"
+
 #include "constants.h"
+
+#include "reset-things.h"
+#include "level-helper.h"
 
 std::unordered_map<std::string, float> OldEmptyLevel::getWeights() const {
 	std::unordered_map<std::string, float> weights;

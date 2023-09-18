@@ -19,8 +19,8 @@ public:
 	static std::string getClassName() { return "old_mines"; }
 	virtual ColorValueHolder getColor() const override { return OldMinesPower::getClassColor(); }
 	static ColorValueHolder getClassColor() { return MinesPower::getClassColor(); } //black, so it's hard to see where the tank is pointed
-	virtual double getColorImportance() const override { return OldMinesPower::getClassColorImportance(); }
-	static double getClassColorImportance() { return MinesPower::getClassColorImportance(); } //not supposed to have color importance but whatever
+	virtual float getColorImportance() const override { return OldMinesPower::getClassColorImportance(); }
+	static float getClassColorImportance() { return MinesPower::getClassColorImportance(); } //not supposed to have color importance but whatever
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
@@ -45,7 +45,7 @@ public:
 	virtual ColorValueHolder getColor() const override {
 		return OldMinesPower::getClassColor();
 	}
-	virtual double getColorImportance() const override {
+	virtual float getColorImportance() const override {
 		return OldMinesPower::getClassColorImportance();
 	}
 
@@ -74,7 +74,7 @@ public:
 	virtual ColorValueHolder getColor() const override {
 		return OldMinesPower::getClassColor();
 	}
-	virtual double getColorImportance() const override {
+	virtual float getColorImportance() const override {
 		return OldMinesPower::getClassColorImportance();
 	}
 
@@ -85,7 +85,7 @@ public:
 	virtual double getBulletSpeedMultiplier() const override { return 0; }
 	//bool bulletSpeedStacks = false; //true?
 	virtual double getBulletAcceleration() const override { return 0; }
-	virtual double getBulletAccelerationImportance() const override { return .5; }
+	virtual float getBulletAccelerationImportance() const override { return .5; }
 	*/
 
 	OldMinesBulletPower();

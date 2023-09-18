@@ -1,4 +1,5 @@
 #include "shader.h"
+
 #include <fstream>
 #include <iostream>
 
@@ -14,7 +15,7 @@ Shader::~Shader() {
 	glDeleteProgram(rendererID);
 }
 
-//from Solarian Programmer:
+/* from Solarian Programmer: */
 // Read a shader source from a file
 // store the shader source in a std::vector<char>
 void Shader::read_shader_src(const char* fname, std::vector<char>& buffer) {
@@ -77,7 +78,7 @@ GLuint Shader::create_program(const char* path_vert_shader, const char* path_fra
 
 	return shaderProgram;
 }
-//end Solarian Programmer code
+/* end Solarian Programmer code */
 
 void Shader::Bind() const {
 	glUseProgram(rendererID);

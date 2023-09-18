@@ -1,10 +1,12 @@
 #include "generalized-lava.h"
-#include <limits> //std::numeric_limits<float>::infinity();
-#include <algorithm> //std::copy
+
 #include "constants.h"
 #include <cmath>
-#include "color-mixer.h"
+#include <algorithm> //std::copy
+#include <limits> //std::numeric_limits<float>::infinity();
 #include "rng.h"
+
+#include "color-mixer.h"
 
 //yes, the syntax is a little weird
 GeneralizedLava::LavaBubble::LavaBubble(float radius, float x0, float y0, float x1, float y1, float tickStart) {
@@ -22,7 +24,7 @@ GeneralizedLava::LavaBubble::LavaBubble(float radius, float x0, float y0, float 
 	std::copy(temp, temp+4, stateMultiplier); //screw you, C++
 }
 
-GeneralizedLava::LavaBubble::LavaBubble(float radius, float x0, float y0, float x1, float y1, float tickStart, float* tickMultiplier)
+GeneralizedLava::LavaBubble::LavaBubble(float radius, float x0, float y0, float x1, float y1, float tickStart, const float* tickMultiplier)
 : LavaBubble(radius, x0, y0, x1, y1, tickStart) {
 	std::copy(tickMultiplier, tickMultiplier + 3, stateMultiplier); //the last one isn't supposed to be modified (or used)
 }
@@ -118,5 +120,5 @@ GeneralizedLava::~GeneralizedLava() {
 	for (int i = 0; i < bubbles.size(); i++) {
 		delete bubbles[i];
 	}
-	bubbles.clear(); //not necessary
+	//bubbles.clear(); //not necessary
 }

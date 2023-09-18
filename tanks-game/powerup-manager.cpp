@@ -1,4 +1,5 @@
 #include "powerup-manager.h"
+
 #include <stdexcept>
 
 std::vector<PowerSquare*> PowerupManager::powerups; //active powersquares
@@ -32,7 +33,7 @@ std::string PowerupManager::checkCustomPowerTypesAgainstProtectedTypes(const std
 	return "";
 }
 
-PowerSquare* PowerupManager::getPowerup(int index) {
+PowerSquare* PowerupManager::getPowerup(unsigned int index) {
 	return powerups[index];
 }
 
@@ -49,7 +50,7 @@ void PowerupManager::pushPowerup(PowerSquare* p) {
 	powerups.push_back(p);
 }
 
-void PowerupManager::deletePowerup(int index) {
+void PowerupManager::deletePowerup(unsigned int index) {
 	delete powerups[index];
 	powerups.erase(powerups.begin() + index);
 }

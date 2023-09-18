@@ -1,10 +1,11 @@
 #pragma once
-#include "color-value-holder.h"
 #include <vector>
+
+#include "color-value-holder.h"
 
 class GeneralizedLava {
 protected:
-	//note to anyone deciding to use nested classes: simply "struct LavaBubble;" is enough here
+	//note to anyone deciding to use nested classes: simply "struct LavaBubble;" is enough here (allowed because only pointers to this object are used)
 	//the struct can then be given a header-like definition at the top of the source file, then actual code at the bottom, if that's what you want
 	struct LavaBubble {
 	protected:
@@ -36,7 +37,7 @@ protected:
 		//I don't know what would extend these functions, but whatever, doesn't hurt to make them virtual
 
 		LavaBubble(float radius, float x0, float y0, float x1, float y1, float tickStart);
-		LavaBubble(float radius, float x0, float y0, float x1, float y1, float tickStart, float* tickMultiplier); //tickMultiplier length = 3
+		LavaBubble(float radius, float x0, float y0, float x1, float y1, float tickStart, const float* tickMultiplier); //tickMultiplier length = 3
 		//LavaBubble(const LavaBubble&); //no need
 		virtual ~LavaBubble();
 

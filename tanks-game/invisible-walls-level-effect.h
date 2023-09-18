@@ -2,7 +2,7 @@
 #include "level-effect.h"
 
 class InvisibleWallsLevelEffect : public LevelEffect {
-	//referred to as "invisible" in JS Tanks (wasn't a level effect)
+	//referred to as "invisible" in JS Tanks (and wasn't technically a level effect)
 public:
 	virtual std::string getName() const override { return "invisible_walls"; }
 	virtual std::vector<std::string> getLevelEffectTypes() const override {

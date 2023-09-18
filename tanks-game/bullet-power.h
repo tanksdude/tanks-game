@@ -1,8 +1,9 @@
 #pragma once
 class BulletPower;
 
-#include "inherited-power-common.h"
+#include "interaction-bool-holder.h"
 #include "color-value-holder.h"
+
 #include "tank.h"
 #include "bullet.h"
 #include "wall.h"
@@ -10,10 +11,10 @@ class BulletPower;
 #include "rect-hazard.h"
 #include "tank-power.h"
 
-class BulletPower : public InheritedPowerCommon {
-protected:
-	//double timeLeft = 0;
-	//double maxTime = -1; //bullet powers typically last forever; setting this to -1 treats it as lasting forever
+class BulletPower {
+public:
+	double timeLeft = 0;
+	double maxTime = -1; //bullet powers typically last forever; setting this to -1 treats it as lasting forever
 
 public:
 	virtual void initialize(Bullet* parent) = 0; //unlikely to be used
@@ -34,7 +35,7 @@ public:
 		return ((maxTime >= 0) && (timeLeft <= 0));
 	}
 	virtual ColorValueHolder getColor() const = 0;
-	virtual double getColorImportance() const { return 0; }
+	virtual float getColorImportance() const { return 0; }
 
 	virtual BulletPower* makeDuplicate() const = 0;
 	virtual TankPower* makeTankPower() const = 0;
@@ -105,12 +106,12 @@ public:
 	virtual double getBulletRadiusMultiplier() const { return 1; }
 	bool bulletRadiusStacks = false;
 	virtual double getBulletAcceleration() const { return 0; }
-	virtual double getBulletAccelerationImportance() const { return 0; } //I don't think other functions should get importance values
+	virtual float getBulletAccelerationImportance() const { return 0; } //I don't think other functions should get importance values
 
-	virtual double getOffenseImportance() const { return 0; } //"importance" = "override" value (when dealing with other powers)
-	virtual double getOffenseTier(const Bullet*) const { return 0; }
-	virtual double getDefenseImportance() const { return 0; }
-	virtual double getDefenseTier(const Bullet*) const { return 0; }
+	virtual float getOffenseImportance() const { return 0; } //"importance" = "override" value (when dealing with other powers)
+	virtual float getOffenseTier(const Bullet*) const { return 0; }
+	virtual float getDefenseImportance() const { return 0; }
+	virtual float getDefenseTier(const Bullet*) const { return 0; }
 
 	virtual ~BulletPower() { return; }
 	//need separate offense stuff for different situations: tank vs bullet offense could be different (would it be more effective to have that stuff in modifiedTankCollision?)
