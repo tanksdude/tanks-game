@@ -32,97 +32,97 @@
 #include "level-data-governor.h"
 
 //levels:
-#include "default-random-level.h"
-#include "empty-level.h"
-#include "corridor-level.h"
-#include "big-fun-level.h"
-#include "few-obstacles-level.h"
-#include "concealed-powerups-level.h"
-#include "many-hazards-level.h"
+#include "levels/default-random-level.h"
+#include "levels/empty-level.h"
+#include "levels/corridor-level.h"
+#include "levels/big-fun-level.h"
+#include "levels/few-obstacles-level.h"
+#include "levels/concealed-powerups-level.h"
+#include "levels/many-hazards-level.h"
 //"extra":
-#include "hiding-places-level.h"
-#include "sneaky-reward-level.h"
-#include "lightning-corners-level.h"
-#include "lone-turret-level.h"
-#include "tight-patrolling-corridor-level.h"
-#include "dangerous-center-level.h"
+#include "levels/hiding-places-level.h"
+#include "levels/sneaky-reward-level.h"
+#include "levels/lightning-corners-level.h"
+#include "levels/lone-turret-level.h"
+#include "levels/tight-patrolling-corridor-level.h"
+#include "levels/dangerous-center-level.h"
 //special levels:
-#include "tricky-maneuvering-level.h"
-#include "mine-heaven-level.h"
-#include "winning-path-level.h"
+#include "levels/tricky-maneuvering-level.h"
+#include "levels/mine-heaven-level.h"
+#include "levels/winning-path-level.h"
 //old levels:
-#include "old-empty-level.h"
+#include "levels/old-empty-level.h"
 //dev levels:
-#include "developer-level-0.h"
-#include "developer-level-1.h"
-#include "developer-level-2.h"
-#include "developer-level-3.h"
-#include "unnamed-level-1.h"
-#include "unnamed-level-2.h"
-#include "dev-no-walls-level-1.h"
-#include "timed-reward-level.h" //added to vanilla-extra
+#include "levels/developer-level-0.h"
+#include "levels/developer-level-1.h"
+#include "levels/developer-level-2.h"
+#include "levels/developer-level-3.h"
+#include "levels/unnamed-level-1.h"
+#include "levels/unnamed-level-2.h"
+#include "levels/dev-no-walls-level-1.h"
+#include "levels/timed-reward-level.h" //added to vanilla-extra
 
 //level effects:
-#include "wind-level-effect.h"
-#include "respawning-powerups-level-effect.h"
-#include "minefield-level-effect.h"
-#include "ice-level-effect.h"
-#include "invisible-walls-level-effect.h"
+#include "level-effects/wind-level-effect.h"
+#include "level-effects/respawning-powerups-level-effect.h"
+#include "level-effects/minefield-level-effect.h"
+#include "level-effects/ice-level-effect.h"
+#include "level-effects/invisible-walls-level-effect.h"
 //dev level effects:
-#include "dev-symmetric-tanks-level-effect.h"
+#include "level-effects/dev-symmetric-tanks-level-effect.h"
 
 //hazards:
-#include "stationary-turret-hazard.h"
-#include "targeting-turret-hazard.h"
-#include "patrolling-turret-hazard.h"
-#include "mother-turret-hazard.h"
-#include "ginormous-turret-hazard.h" //currently not used
-#include "rectangular-lightning-hazard.h"
-#include "horizontal-lightning-hazard.h"
-#include "vertical-lightning-hazard.h"
-#include "circular-lightning-hazard.h"
-#include "rectangular-lava-hazard.h"
-#include "circular-lava-hazard.h"
-#include "rectangular-no-bullet-zone-hazard.h"
-#include "circular-no-bullet-zone-hazard.h"
+#include "hazards/stationary-turret-hazard.h"
+#include "hazards/targeting-turret-hazard.h"
+#include "hazards/patrolling-turret-hazard.h"
+#include "hazards/mother-turret-hazard.h"
+#include "hazards/ginormous-turret-hazard.h" //currently not used
+#include "hazards/rectangular-lightning-hazard.h"
+#include "hazards/horizontal-lightning-hazard.h"
+#include "hazards/vertical-lightning-hazard.h"
+#include "hazards/circular-lightning-hazard.h"
+#include "hazards/rectangular-lava-hazard.h"
+#include "hazards/circular-lava-hazard.h"
+#include "hazards/rectangular-no-bullet-zone-hazard.h"
+#include "hazards/circular-no-bullet-zone-hazard.h"
 //dev hazards:
-#include "dev-wall-hazard.h"
+#include "hazards/dev-wall-hazard.h"
 
 //powers:
-#include "speed-power.h"
-#include "wallhack-power.h"
-#include "multishot-power.h"
-#include "bounce-power.h"
-#include "triple-named-power.h"
-#include "homing-power.h"
-#include "invincible-named-power.h"
-#include "big-named-power.h"
-#include "mega-death-power.h"
-#include "grenade-power.h"
-#include "fire-named-power.h"
-#include "blast-power.h"
-#include "banana-power.h"
-#include "god-mode-power.h"
+#include "powers/speed-power.h"
+#include "powers/wallhack-power.h"
+#include "powers/multishot-power.h"
+#include "powers/bounce-power.h"
+#include "powers/triple-named-power.h"
+#include "powers/homing-power.h"
+#include "powers/invincible-named-power.h"
+#include "powers/big-named-power.h"
+#include "powers/mega-death-power.h"
+#include "powers/grenade-power.h"
+#include "powers/fire-named-power.h"
+#include "powers/blast-power.h"
+#include "powers/banana-power.h"
+#include "powers/god-mode-power.h"
 //"extra":
-#include "mines-power.h"
-#include "shotgun-power.h"
-#include "tracking-power.h"
-#include "barrier-power.h"
-#include "shield-power.h"
+#include "powers/mines-power.h"
+#include "powers/shotgun-power.h"
+#include "powers/tracking-power.h"
+#include "powers/barrier-power.h"
+#include "powers/shield-power.h"
 //old powers:
-#include "old-bounce-power.h" //identical to bounce except it makes the tank smaller
-#include "old-big-named-power.h" //big but moves at half speed (not quarter) and the speed stacks
-#include "old-mines-power.h" //firing rate stacks
+#include "powers/old-bounce-power.h" //identical to bounce except it makes the tank smaller
+#include "powers/old-big-named-power.h" //big but moves at half speed (not quarter) and the speed stacks
+#include "powers/old-mines-power.h" //firing rate stacks
 //dev powers:
-#include "dev-long-invincible-named-power.h" //invincible but lasts a long time
-#include "inversion-power.h" //flips left and right turning
-#include "dev-annoying-power.h" //bullet doesn't hurt tank, merely pushes away
-#include "ultra-bounce-power.h" //pushes wall away when it bounces
-#include "dev-color-changing-power.h" //color changes based on tank proximity
-#include "dev-other-stuff-is-poison-power.h" //kills tank when touching normally-safe stuff
-#include "dev-backwards-movement-power.h" //self-explanatory
-#include "wall-sparks-power.h" //create some extra bullets when hitting a wall
-#include "dev-weird-extra-cannons-power.h" //adds some extra cannons at weird angles
+#include "powers/dev-long-invincible-named-power.h" //invincible but lasts a long time
+#include "powers/inversion-power.h" //flips left and right turning
+#include "powers/dev-annoying-power.h" //bullet doesn't hurt tank, merely pushes away
+#include "powers/ultra-bounce-power.h" //pushes wall away when it bounces
+#include "powers/dev-color-changing-power.h" //color changes based on tank proximity
+#include "powers/dev-other-stuff-is-poison-power.h" //kills tank when touching normally-safe stuff
+#include "powers/dev-backwards-movement-power.h" //self-explanatory
+#include "powers/wall-sparks-power.h" //create some extra bullets when hitting a wall
+#include "powers/dev-weird-extra-cannons-power.h" //adds some extra cannons at weird angles
 
 #include "game-main-loop.h"
 
@@ -130,11 +130,12 @@
 #include <GL/freeglut.h>
 
 const std::string GameWindowName = "PowerTanks Battle v0.2.5 NOT FINAL"; //this is not guaranteed to be correct every commit but likely will be
+const std::string INIFilePath = "tanks.ini";
 
 
 
 int main(int argc, char** argv) {
-	GameManager::initializeINI("../tanks.ini");
+	GameManager::initializeINI(INIFilePath);
 	const BasicINIParser::BasicINIData& ini_data = GameManager::get_INI();
 
 	if (ini_data.exists("UNIVERSAL", "RNGSeed")) {

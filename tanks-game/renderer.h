@@ -5,11 +5,11 @@
 #include <unordered_map>
 #include <glm.hpp>
 
-#include "rendering-context.h"
-#include "vertex-array.h"
-#include "vertex-buffer.h"
-#include "index-buffer.h"
-#include "shader.h"
+#include "graphics/rendering-context.h"
+#include "graphics/vertex-array.h"
+#include "graphics/vertex-buffer.h"
+#include "graphics/index-buffer.h"
+#include "graphics/shader.h"
 
 //#include <thread>
 //#include <atomic>

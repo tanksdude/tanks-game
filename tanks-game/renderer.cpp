@@ -8,9 +8,9 @@
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
-#include "opengl-rendering-context.h"
-#include "software-rendering-context.h"
-#include "null-rendering-context.h"
+#include "graphics/opengl-rendering-context.h"
+#include "graphics/software-rendering-context.h"
+#include "graphics/null-rendering-context.h"
 
 #include "diagnostics.h"
 #include "keypress-manager.h"

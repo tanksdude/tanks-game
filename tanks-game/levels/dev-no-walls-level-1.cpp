@@ -1,0 +1,64 @@
+#include "dev-no-walls-level-1.h"
+
+#include "../constants.h"
+
+#include "../reset-things.h"
+#include "../level-helper.h"
+#include "../powerup-manager.h"
+#include "../hazard-manager.h"
+#include "../level-manager.h"
+
+ColorValueHolder DevNoWallsLevel1::getDefaultColor() const {
+	//no walls
+	return ColorValueHolder(0.0f, 0.0f, 0.0f);
+}
+
+std::unordered_map<std::string, float> DevNoWallsLevel1::getWeights() const {
+	std::unordered_map<std::string, float> weights;
+	weights.insert({ "dev", .5f });
+	weights.insert({ "random-dev", .5f });
+	return weights;
+}
+
+void DevNoWallsLevel1::initialize() {
+	ResetThings::tankPositionReset(40);
+
+	//int tempRand;
+	PositionHolder pos;
+	GenericFactoryConstructionData constructionData;
+	double* posArr;
+
+	PositionHolder* wallArray = LevelHelper::getClassicWallPositions();
+	for (int i = 0; i < 4; i++) {
+		//classic JS walls, except NoBulletZones
+		posArr = new double[4]{ wallArray[i].x, wallArray[i].y, 32, 128 };
+		constructionData = GenericFactoryConstructionData(4, posArr);
+		HazardManager::pushRectHazard("vanilla", "no_bullet_zone", constructionData);
+	}
+
+	const double distFromCorner = 40;
+	for (int i = 0; i < 4; i++) {
+		pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2 - ((wallArray[0].x+32) + distFromCorner), GAME_HEIGHT/2 - distFromCorner);
+		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "vanilla-extra", "shield"));
+	}
+
+	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "dev", "inversion")); //this is evil (allowed because it's a dev level)
+	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "wallhack")); //heh
+
+	//other potential powers:
+	//triple, grenade, fire, mines, tracking?
+	//other potential hazards:
+	//none
+
+	delete[] wallArray;
+}
+
+Level* DevNoWallsLevel1::factory() {
+	return new DevNoWallsLevel1();
+}
+
+DevNoWallsLevel1::DevNoWallsLevel1() {
+	GenericFactoryConstructionData constructionData;
+	effects.push_back(LevelManager::makeLevelEffect("vanilla", "respawning_powerups", constructionData));
+	//should probably only affect the shield powerups, not everything, but whatever
+}
