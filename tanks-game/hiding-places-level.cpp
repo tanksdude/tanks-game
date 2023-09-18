@@ -76,7 +76,7 @@ void HidingPlacesLevel::initialize() {
 	//not here in the JS level but I feel it should be here:
 	posArr = new double[4]{ GAME_WIDTH/2-20/2, GAME_HEIGHT/2-20/2, 20, 20 };
 	constructionData = GenericFactoryConstructionData(4, posArr);
-	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "no_bullet_zone")(constructionData));
+	HazardManager::pushRectHazard("vanilla", "no_bullet_zone", constructionData);
 }
 
 Level* HidingPlacesLevel::factory() {

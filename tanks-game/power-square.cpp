@@ -7,7 +7,7 @@
 #include "color-mixer.h"
 #include "background-rect.h"
 
-#include "powerup-manager.h"
+#include "powerup-data-governor.h"
 
 const double PowerSquare::POWER_WIDTH = 6;
 const double PowerSquare::POWER_HEIGHT = 6;
@@ -24,28 +24,28 @@ PowerSquare::PowerSquare(double x_, double y_) : GameThing(DEFAULT_TEAM) {
 PowerSquare::PowerSquare(double x_, double y_, std::string name) : PowerSquare(x_, y_) {
 	numOfPowers = 1;
 	heldPowers = new Power*[1];
-	heldPowers[0] = PowerupManager::getPowerFactory("vanilla", name)();
+	heldPowers[0] = PowerupDataGovernor::getPowerFactory("vanilla", name)();
 }
 
 PowerSquare::PowerSquare(double x_, double y_, const std::string* names, int num) : PowerSquare(x_, y_) {
 	numOfPowers = num;
 	heldPowers = new Power*[num];
 	for (int i = 0; i < num; i++) {
-		heldPowers[i] = PowerupManager::getPowerFactory("vanilla", names[i])();
+		heldPowers[i] = PowerupDataGovernor::getPowerFactory("vanilla", names[i])();
 	}
 }
 
 PowerSquare::PowerSquare(double x_, double y_, std::string type, std::string name) : PowerSquare(x_, y_) {
 	numOfPowers = 1;
 	heldPowers = new Power*[1];
-	heldPowers[0] = PowerupManager::getPowerFactory(type, name)();
+	heldPowers[0] = PowerupDataGovernor::getPowerFactory(type, name)();
 }
 
 PowerSquare::PowerSquare(double x_, double y_, std::string type, const std::string* names, int num) : PowerSquare(x_, y_) {
 	numOfPowers = num;
 	heldPowers = new Power*[num];
 	for (int i = 0; i < num; i++) {
-		heldPowers[i] = PowerupManager::getPowerFactory(type, names[i])();
+		heldPowers[i] = PowerupDataGovernor::getPowerFactory(type, names[i])();
 	}
 }
 
@@ -53,7 +53,7 @@ PowerSquare::PowerSquare(double x_, double y_, const std::string* types, const s
 	numOfPowers = num;
 	heldPowers = new Power*[num];
 	for (int i = 0; i < num; i++) {
-		heldPowers[i] = PowerupManager::getPowerFactory(types[i], names[i])();
+		heldPowers[i] = PowerupDataGovernor::getPowerFactory(types[i], names[i])();
 	}
 }
 
@@ -61,7 +61,7 @@ PowerSquare::PowerSquare(const PowerSquare& other) : PowerSquare(other.x+PowerSq
 	this->numOfPowers = other.numOfPowers;
 	this->heldPowers = new Power*[numOfPowers];
 	for (int i = 0; i < numOfPowers; i++) {
-		heldPowers[i] = PowerupManager::getPowerFactory(other.heldPowers[i]->getPowerTypes()[0], other.heldPowers[i]->getName())();
+		heldPowers[i] = PowerupDataGovernor::getPowerFactory(other.heldPowers[i]->getPowerTypes()[0], other.heldPowers[i]->getName())();
 	}
 }
 

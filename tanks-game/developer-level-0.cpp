@@ -36,7 +36,7 @@ void DeveloperLevel0::initialize() {
 
 	posArr = new double[3]{ GAME_WIDTH/2, GAME_HEIGHT/2, RNG::randFunc() * (2*PI) };
 	constructionData = GenericFactoryConstructionData(3, posArr);
-	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(constructionData));
+	HazardManager::pushCircleHazard("vanilla", "stationary_turret", constructionData);
 
 	//assumption: TANK_RADIUS=16 (why it would ever be changed is beyond me)
 	PowerupManager::pushPowerup(new PowerSquare(20, 20, "speed"));

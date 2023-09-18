@@ -58,7 +58,6 @@ void TimedRewardLevel::initialize() {
 	//moving walls
 	for (int i = 0; i < 4; i++) {
 		pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 120-20, 20/2, 20, 40+20);
-		//Wall* tempWall = new Wall(pos.x, pos.y, 20, 40+20, ColorValueHolder(0, 0, 0));
 		Wall* tempWall = new Wall(pos.x, pos.y, 20, 40+20, color);
 		movingWalls[i] = tempWall->getGameID();
 		WallManager::pushWall(tempWall);
@@ -71,7 +70,7 @@ void TimedRewardLevel::initialize() {
 		SimpleVector2D distToCenter = SimpleVector2D(GAME_WIDTH/2 - pos.x, GAME_HEIGHT/2 - pos.y);
 		posArr = new double[3]{ pos.x, pos.y, distToCenter.getAngle() };
 		constructionData = GenericFactoryConstructionData(3, posArr);
-		HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(constructionData));
+		HazardManager::pushCircleHazard("vanilla", "stationary_turret", constructionData);
 	}
 
 	//some extra walls
@@ -88,11 +87,11 @@ void TimedRewardLevel::initialize() {
 	pos = LevelHelper::getSymmetricWallPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, 40+40, 20, (GAME_HEIGHT/2 - (40+40)));
 	posArr = new double[4]{ pos.x, pos.y, 20, GAME_HEIGHT/2 - (40+40) };
 	constructionData = GenericFactoryConstructionData(4, posArr);
-	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "vertical_lightning")(constructionData));
+	HazardManager::pushRectHazard("vanilla", "vertical_lightning", constructionData);
 	pos = LevelHelper::getSymmetricWallPositions_UD(1, GAME_WIDTH/2, GAME_HEIGHT/2, 40+40, 20, (GAME_HEIGHT/2 - (40+40)));
 	posArr = new double[4]{ pos.x, pos.y, 20, GAME_HEIGHT/2 - (40+40) };
 	constructionData = GenericFactoryConstructionData(4, posArr);
-	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "vertical_lightning")(constructionData));
+	HazardManager::pushRectHazard("vanilla", "vertical_lightning", constructionData);
 
 	//other potential powers:
 	//homing, tracking, big, speed?, triple?, blast, annoying

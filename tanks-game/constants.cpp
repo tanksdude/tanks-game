@@ -22,3 +22,10 @@ const float HIGH_IMPORTANCE = 999;
 const Team_ID DEFAULT_TEAM = 0;
 const Team_ID HAZARD_TEAM = -1;
 const Game_ID NO_PARENT = -1;
+
+//tank team rules:
+//0  = no team or default team
+//-1 = hazard team (hazards can be split up into multiple teams, but by default there's only one)
+//1  = default teamID of tank #1 ("WASD")
+//2  = default teamID of tank #2 ("Arrow Keys")
+//tank teams always > 0

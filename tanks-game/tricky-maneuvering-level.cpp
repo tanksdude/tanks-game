@@ -7,7 +7,6 @@
 #include "powerup-manager.h"
 #include "wall-manager.h"
 #include "hazard-manager.h"
-
 #include "level-manager.h"
 
 std::unordered_map<std::string, float> TrickyManeuveringLevel::getWeights() const {
@@ -46,23 +45,23 @@ void TrickyManeuveringLevel::initialize() {
 
 	posArr = new double[4]{ GAME_WIDTH/2 - 40, GAME_HEIGHT/2 - 40 - 20, 40*2, 20 };
 	constructionData = GenericFactoryConstructionData(4, posArr);
-	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "horizontal_lightning")(constructionData));
+	HazardManager::pushRectHazard("vanilla", "horizontal_lightning", constructionData);
 	posArr = new double[4]{ GAME_WIDTH/2 - 40, GAME_HEIGHT/2 + 40, 40*2, 20 };
 	constructionData = GenericFactoryConstructionData(4, posArr);
-	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "horizontal_lightning")(constructionData));
+	HazardManager::pushRectHazard("vanilla", "horizontal_lightning", constructionData);
 	posArr = new double[4]{ GAME_WIDTH/2 - 40 - 20, GAME_HEIGHT/2 - 40, 20, 40*2 };
 	constructionData = GenericFactoryConstructionData(4, posArr);
-	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "vertical_lightning")(constructionData));
+	HazardManager::pushRectHazard("vanilla", "vertical_lightning", constructionData);
 	posArr = new double[4]{ GAME_WIDTH/2 + 40, GAME_HEIGHT/2 - 40, 20, 40*2 };
 	constructionData = GenericFactoryConstructionData(4, posArr);
-	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "vertical_lightning")(constructionData));
+	HazardManager::pushRectHazard("vanilla", "vertical_lightning", constructionData);
 
 	posArr = new double[4]{ wallArray[0].x+32, 0, wallArray[3].x - (wallArray[0].x+32), 16 };
 	constructionData = GenericFactoryConstructionData(4, posArr);
-	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "lava")(constructionData));
+	HazardManager::pushRectHazard("vanilla", "lava", constructionData);
 	posArr = new double[4]{ wallArray[0].x+32, GAME_HEIGHT - 16, wallArray[3].x - (wallArray[0].x+32), 16 };
 	constructionData = GenericFactoryConstructionData(4, posArr);
-	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "lava")(constructionData));
+	HazardManager::pushRectHazard("vanilla", "lava", constructionData);
 
 	//traps:
 	//for (int i = 0; i < 4; i++) {
@@ -124,5 +123,5 @@ Level* TrickyManeuveringLevel::factory() {
 TrickyManeuveringLevel::TrickyManeuveringLevel() {
 	bool* temp = new bool[1]{ true };
 	GenericFactoryConstructionData constructionData(1, temp);
-	effects.push_back(LevelManager::getLevelEffectFactory("vanilla", "wind")(constructionData));
+	effects.push_back(LevelManager::makeLevelEffect("vanilla", "wind", constructionData));
 }

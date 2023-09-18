@@ -182,10 +182,12 @@
     <ClCompile Include="generic-factory-construction-data.cpp" />
     <ClCompile Include="ginormous-turret-hazard.cpp" />
     <ClCompile Include="god-mode-power.cpp" />
+    <ClCompile Include="hazard-data-governor.cpp" />
     <ClCompile Include="hiding-places-level.cpp" />
     <ClCompile Include="ice-level-effect.cpp" />
     <ClCompile Include="inversion-power.cpp" />
     <ClCompile Include="invisible-walls-level-effect.cpp" />
+    <ClCompile Include="level-data-governor.cpp" />
     <ClCompile Include="level.cpp" />
     <ClCompile Include="lightning-corners-level.cpp" />
     <ClCompile Include="lone-turret-level.cpp" />
@@ -201,6 +203,7 @@
     <ClCompile Include="opengl-vertex-buffer.cpp" />
     <ClCompile Include="patrolling-turret-hazard.cpp" />
     <ClCompile Include="physics-handler.cpp" />
+    <ClCompile Include="powerup-data-governor.cpp" />
     <ClCompile Include="rectangular-no-bullet-zone-hazard.cpp" />
     <ClCompile Include="old-big-named-power.cpp" />
     <ClCompile Include="old-bounce-power.cpp" />
@@ -314,11 +317,13 @@
     <ClInclude Include="generic-factory-construction-data.h" />
     <ClInclude Include="ginormous-turret-hazard.h" />
     <ClInclude Include="god-mode-power.h" />
+    <ClInclude Include="hazard-data-governor.h" />
     <ClInclude Include="hiding-places-level.h" />
     <ClInclude Include="ice-level-effect.h" />
     <ClInclude Include="interaction-bool-holder.h" />
     <ClInclude Include="inversion-power.h" />
     <ClInclude Include="invisible-walls-level-effect.h" />
+    <ClInclude Include="level-data-governor.h" />
     <ClInclude Include="lightning-corners-level.h" />
     <ClInclude Include="lone-turret-level.h" />
     <ClInclude Include="many-hazards-level.h" />
@@ -334,6 +339,7 @@
     <ClInclude Include="opengl-vertex-buffer.h" />
     <ClInclude Include="patrolling-turret-hazard.h" />
     <ClInclude Include="physics-handler.h" />
+    <ClInclude Include="powerup-data-governor.h" />
     <ClInclude Include="rectangular-no-bullet-zone-hazard.h" />
     <ClInclude Include="old-big-named-power.h" />
     <ClInclude Include="old-bounce-power.h" />

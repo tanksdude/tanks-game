@@ -9,8 +9,8 @@
 #include "powerup-manager.h"
 #include "wall-manager.h"
 #include "hazard-manager.h"
-
 #include "level-manager.h"
+
 //#include "collision-handler.h"
 
 ColorValueHolder UnnamedLevel2::getDefaultColor() const {
@@ -118,8 +118,8 @@ Level* UnnamedLevel2::factory() {
 
 UnnamedLevel2::UnnamedLevel2() {
 	GenericFactoryConstructionData constructionData;
-	effects.push_back(LevelManager::getLevelEffectFactory("vanilla", "respawning_powerups")(constructionData));
+	effects.push_back(LevelManager::makeLevelEffect("vanilla", "respawning_powerups", constructionData));
 	//bool* temp = new bool[1]{ true };
 	//constructionData = GenericFactoryConstructionData(1, temp);
-	//effects.push_back(LevelManager::getLevelEffectFactory("dev", "symmetric_tanks")(constructionData));
+	//effects.push_back(LevelManager::makeLevelEffect("dev", "symmetric_tanks", constructionData));
 }

@@ -1,6 +1,5 @@
 #pragma once
 #include <vector>
-
 #include "tank.h"
 
 class TankManager {

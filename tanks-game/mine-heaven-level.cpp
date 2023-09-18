@@ -7,7 +7,6 @@
 #include "powerup-manager.h"
 #include "wall-manager.h"
 #include "hazard-manager.h"
-
 #include "level-manager.h"
 
 std::unordered_map<std::string, float> MineHeavenLevel::getWeights() const {
@@ -86,10 +85,10 @@ MineHeavenLevel::MineHeavenLevel() {
 	PositionHolder* wallArray = LevelHelper::getClassicWallPositions();
 
 	GenericFactoryConstructionData constructionData;
-	effects.push_back(LevelManager::getLevelEffectFactory("vanilla-extra", "ice")(constructionData));
+	effects.push_back(LevelManager::makeLevelEffect("vanilla-extra", "ice", constructionData));
 	double* temp = new double[4]{ wallArray[0].x+32, 0, wallArray[3].x - (wallArray[0].x+32), GAME_HEIGHT };
 	constructionData = GenericFactoryConstructionData(4, temp);
-	effects.push_back(LevelManager::getLevelEffectFactory("vanilla", "minefield")(constructionData));
+	effects.push_back(LevelManager::makeLevelEffect("vanilla", "minefield", constructionData));
 
 	delete[] wallArray;
 }

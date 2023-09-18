@@ -10,8 +10,8 @@
 #include "powerup-manager.h"
 #include "wall-manager.h"
 #include "hazard-manager.h"
-
 #include "level-manager.h"
+
 #include "respawning-powerups-level-effect.h"
 
 ColorValueHolder SneakyRewardLevel::getDefaultColor() const {
@@ -97,7 +97,7 @@ void SneakyRewardLevel::initialize() {
 
 	posArr = new double[4]{ GAME_WIDTH/2-20/2, GAME_HEIGHT/2-80, 20, 80*2 };
 	constructionData = GenericFactoryConstructionData(4, posArr);
-	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "no_bullet_zone")(constructionData));
+	HazardManager::pushRectHazard("vanilla", "no_bullet_zone", constructionData);
 
 	p = new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "dev", "inversion");
 	PowerupManager::pushPowerup(p);
@@ -113,5 +113,5 @@ Level* SneakyRewardLevel::factory() {
 SneakyRewardLevel::SneakyRewardLevel() {
 	bool* temp = new bool[1]{ false };
 	GenericFactoryConstructionData constructionData(1, temp);
-	effects.push_back(LevelManager::getLevelEffectFactory("vanilla", "respawning_powerups")(constructionData));
+	effects.push_back(LevelManager::makeLevelEffect("vanilla", "respawning_powerups", constructionData));
 }

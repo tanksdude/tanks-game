@@ -103,7 +103,7 @@ public:
 	//virtual void tick() override; //no, too complicated
 
 	virtual ~CustomLevel();
-	CustomLevel* factory() const; //makes a copy of itself; used by CustomLevelInterpreter to give LevelManager an actual level
+	CustomLevel* factory() const; //makes a copy of itself; used by CustomLevelInterpreter to give LevelDataGovernor an actual level
 };
 
 
@@ -128,7 +128,7 @@ protected:
 	//needs to print warnings on extra parameters for a command
 	static CustomLevel* processCustomLevel(std::string path);
 	static inline CustomLevel::CustomLevelAction* stringToAction(const std::pair<std::string, int>& command); //throws when action is ill-formatted
-	static void pushCustomLevel(CustomLevel* level); //add it to LevelManager (with some checks)
+	static void addCustomLevel(CustomLevel* level); //add it to LevelDataGovernor (with some checks)
 
 protected:
 	static inline void stringToAction_WALL(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData);

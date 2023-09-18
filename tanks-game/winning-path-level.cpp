@@ -8,7 +8,6 @@
 #include "powerup-manager.h"
 #include "wall-manager.h"
 #include "hazard-manager.h"
-
 #include "level-manager.h"
 
 ColorValueHolder WinningPathLevel::getDefaultColor() const {
@@ -72,5 +71,5 @@ Level* WinningPathLevel::factory() {
 
 WinningPathLevel::WinningPathLevel() {
 	GenericFactoryConstructionData constructionData;
-	effects.push_back(LevelManager::getLevelEffectFactory("vanilla", "invisible_walls")(constructionData));
+	effects.push_back(LevelManager::makeLevelEffect("vanilla", "invisible_walls", constructionData));
 }

@@ -136,7 +136,7 @@ void DeveloperManager::devInsert(int x, int y) {
 		case 13:
 			posArr = new double[3]{ double(x), double(y), 0 };
 			constructionData = GenericFactoryConstructionData(3, posArr);
-			HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "stationary_turret")(constructionData));
+			HazardManager::pushCircleHazard("vanilla", "stationary_turret", constructionData);
 			break;
 		case 14:
 			WallManager::pushWall(new Wall(x, y, 20, 60, LevelManager::getLevel(0)->getDefaultColor()));

@@ -6,7 +6,6 @@
 #include "level-helper.h"
 #include "powerup-manager.h"
 #include "hazard-manager.h"
-
 #include "level-manager.h"
 
 ColorValueHolder DevNoWallsLevel1::getDefaultColor() const {
@@ -34,7 +33,7 @@ void DevNoWallsLevel1::initialize() {
 		//classic JS walls, except NoBulletZones
 		posArr = new double[4]{ wallArray[i].x, wallArray[i].y, 32, 128 };
 		constructionData = GenericFactoryConstructionData(4, posArr);
-		HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "no_bullet_zone")(constructionData));
+		HazardManager::pushRectHazard("vanilla", "no_bullet_zone", constructionData);
 	}
 
 	const double distFromCorner = 40;
@@ -60,6 +59,6 @@ Level* DevNoWallsLevel1::factory() {
 
 DevNoWallsLevel1::DevNoWallsLevel1() {
 	GenericFactoryConstructionData constructionData;
-	effects.push_back(LevelManager::getLevelEffectFactory("vanilla", "respawning_powerups")(constructionData));
+	effects.push_back(LevelManager::makeLevelEffect("vanilla", "respawning_powerups", constructionData));
 	//should probably only affect the shield powerups, not everything, but whatever
 }

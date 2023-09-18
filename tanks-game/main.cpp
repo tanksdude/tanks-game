@@ -26,6 +26,10 @@
 #include "wall-manager.h"
 #include "hazard-manager.h"
 #include "level-manager.h"
+//other:
+#include "powerup-data-governor.h"
+#include "hazard-data-governor.h"
+#include "level-data-governor.h"
 
 //levels:
 #include "default-random-level.h"
@@ -125,12 +129,7 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 
-//tank team rules:
-//0  = no team or default team
-//-1 = hazard team (hazards can be split up into multiple teams, but by default there's only one)
-//1  = default teamID of tank #1 ("WASD")
-//2  = default teamID of tank #2 ("Arrow Keys")
-//tank teams always > 0
+const std::string GameWindowName = "PowerTanks Battle v0.2.5 NOT FINAL"; //this is not guaranteed to be correct every commit but likely will be
 
 
 
@@ -152,7 +151,7 @@ int main(int argc, char** argv) {
 	//std::cout << "GraphisContext: " << ini_data.get("", "GraphicsContext") << std::endl;
 
 	try {
-		std::string name = "PowerTanks Battle v0.2.5 NOT FINAL"; //this is not guaranteed to be correct every commit but likely will be
+		std::string name = GameWindowName;
 		if (ini_data.exists("GRAPHICS_SETTINGS", "Position.StartX") && ini_data.exists("GRAPHICS_SETTINGS", "Position.StartY")) {
 			int startX = std::stoi(ini_data.get("GRAPHICS_SETTINGS", "Position.StartX"));
 			int startY = std::stoi(ini_data.get("GRAPHICS_SETTINGS", "Position.StartY"));
@@ -204,109 +203,114 @@ int main(int argc, char** argv) {
 	// Set callback for the idle function
 	//glutIdleFunc(draw);
 
-	//powers:
+	//prepare for incoming data:
+	PowerupDataGovernor::initialize();
+	HazardDataGovernor::initialize();
+	LevelDataGovernor::initialize();
+
+	//powers
 	//vanilla (some are also "old"):
-	PowerupManager::addPowerFactory(SpeedPower::factory);
-	PowerupManager::addPowerFactory(WallhackPower::factory);
-	PowerupManager::addPowerFactory(BouncePower::factory);
-	PowerupManager::addPowerFactory(MultishotPower::factory);
-	PowerupManager::addPowerFactory(TripleNamedPower::factory);
-	PowerupManager::addPowerFactory(HomingPower::factory);
-	PowerupManager::addPowerFactory(InvincibleNamedPower::factory);
-	PowerupManager::addPowerFactory(BigNamedPower::factory);
-	PowerupManager::addPowerFactory(MegaDeathPower::factory);
-	PowerupManager::addPowerFactory(GrenadePower::factory);
-	PowerupManager::addPowerFactory(FireNamedPower::factory);
-	PowerupManager::addPowerFactory(BlastPower::factory);
-	PowerupManager::addPowerFactory(BananaPower::factory);
-	PowerupManager::addPowerFactory(GodmodePower::factory);
+	PowerupDataGovernor::addPowerFactory(SpeedPower::factory);
+	PowerupDataGovernor::addPowerFactory(WallhackPower::factory);
+	PowerupDataGovernor::addPowerFactory(BouncePower::factory);
+	PowerupDataGovernor::addPowerFactory(MultishotPower::factory);
+	PowerupDataGovernor::addPowerFactory(TripleNamedPower::factory);
+	PowerupDataGovernor::addPowerFactory(HomingPower::factory);
+	PowerupDataGovernor::addPowerFactory(InvincibleNamedPower::factory);
+	PowerupDataGovernor::addPowerFactory(BigNamedPower::factory);
+	PowerupDataGovernor::addPowerFactory(MegaDeathPower::factory);
+	PowerupDataGovernor::addPowerFactory(GrenadePower::factory);
+	PowerupDataGovernor::addPowerFactory(FireNamedPower::factory);
+	PowerupDataGovernor::addPowerFactory(BlastPower::factory);
+	PowerupDataGovernor::addPowerFactory(BananaPower::factory);
+	PowerupDataGovernor::addPowerFactory(GodmodePower::factory);
 	//"extra":
-	PowerupManager::addPowerFactory(MinesPower::factory);
-	PowerupManager::addPowerFactory(ShotgunPower::factory);
-	PowerupManager::addPowerFactory(TrackingPower::factory);
-	PowerupManager::addPowerFactory(BarrierPower::factory);
-	PowerupManager::addPowerFactory(ShieldPower::factory);
+	PowerupDataGovernor::addPowerFactory(MinesPower::factory);
+	PowerupDataGovernor::addPowerFactory(ShotgunPower::factory);
+	PowerupDataGovernor::addPowerFactory(TrackingPower::factory);
+	PowerupDataGovernor::addPowerFactory(BarrierPower::factory);
+	PowerupDataGovernor::addPowerFactory(ShieldPower::factory);
 
 	//old:
-	PowerupManager::addPowerFactory(OldBouncePower::factory);
-	PowerupManager::addPowerFactory(OldBigNamedPower::factory);
-	PowerupManager::addPowerFactory(OldMinesPower::factory);
+	PowerupDataGovernor::addPowerFactory(OldBouncePower::factory);
+	PowerupDataGovernor::addPowerFactory(OldBigNamedPower::factory);
+	PowerupDataGovernor::addPowerFactory(OldMinesPower::factory);
 
 	//dev:
-	PowerupManager::addPowerFactory(DevLongInvincibleNamedPower::factory);
-	PowerupManager::addPowerFactory(InversionPower::factory);
-	PowerupManager::addPowerFactory(DevAnnoyingPower::factory);
-	PowerupManager::addPowerFactory(UltraBouncePower::factory);
-	PowerupManager::addPowerFactory(DevColorChangingPower::factory);
-	PowerupManager::addPowerFactory(DevOtherStuffIsPoisonPower::factory);
-	PowerupManager::addPowerFactory(DevBackwardsMovementPower::factory);
-	PowerupManager::addPowerFactory(WallSparksPower::factory);
-	PowerupManager::addPowerFactory(DevWeirdExtraCannonsPower::factory);
+	PowerupDataGovernor::addPowerFactory(DevLongInvincibleNamedPower::factory);
+	PowerupDataGovernor::addPowerFactory(InversionPower::factory);
+	PowerupDataGovernor::addPowerFactory(DevAnnoyingPower::factory);
+	PowerupDataGovernor::addPowerFactory(UltraBouncePower::factory);
+	PowerupDataGovernor::addPowerFactory(DevColorChangingPower::factory);
+	PowerupDataGovernor::addPowerFactory(DevOtherStuffIsPoisonPower::factory);
+	PowerupDataGovernor::addPowerFactory(DevBackwardsMovementPower::factory);
+	PowerupDataGovernor::addPowerFactory(WallSparksPower::factory);
+	PowerupDataGovernor::addPowerFactory(DevWeirdExtraCannonsPower::factory);
 
 	//hazards
 	//vanilla (some are also "old"):
-	HazardManager::addCircleHazardFactory(StationaryTurretHazard::factory, StationaryTurretHazard::randomizingFactory);
-	HazardManager::addCircleHazardFactory(TargetingTurretHazard::factory, TargetingTurretHazard::randomizingFactory);
-	HazardManager::addCircleHazardFactory(PatrollingTurretHazard::factory, PatrollingTurretHazard::randomizingFactory);
-	HazardManager::addCircleHazardFactory(MotherTurretHazard::factory, MotherTurretHazard::randomizingFactory);
-	HazardManager::addCircleHazardFactory(GinormousTurretHazard::factory, GinormousTurretHazard::randomizingFactory);
-	HazardManager::addRectHazardFactory(RectangularLightningHazard::factory, RectangularLightningHazard::randomizingFactory);
-	HazardManager::addRectHazardFactory(HorizontalLightningHazard::factory, HorizontalLightningHazard::randomizingFactory);
-	HazardManager::addRectHazardFactory(VerticalLightningHazard::factory, VerticalLightningHazard::randomizingFactory);
-	HazardManager::addCircleHazardFactory(CircularLightningHazard::factory, CircularLightningHazard::randomizingFactory);
-	HazardManager::addRectHazardFactory(RectangularLavaHazard::factory, RectangularLavaHazard::randomizingFactory);
-	HazardManager::addCircleHazardFactory(CircularLavaHazard::factory, CircularLavaHazard::randomizingFactory);
-	HazardManager::addRectHazardFactory(RectangularNoBulletZoneHazard::factory, RectangularNoBulletZoneHazard::randomizingFactory);
-	HazardManager::addCircleHazardFactory(CircularNoBulletZoneHazard::factory, CircularNoBulletZoneHazard::randomizingFactory);
+	HazardDataGovernor::addCircleHazardFactory(StationaryTurretHazard::factory, StationaryTurretHazard::randomizingFactory);
+	HazardDataGovernor::addCircleHazardFactory(TargetingTurretHazard::factory, TargetingTurretHazard::randomizingFactory);
+	HazardDataGovernor::addCircleHazardFactory(PatrollingTurretHazard::factory, PatrollingTurretHazard::randomizingFactory);
+	HazardDataGovernor::addCircleHazardFactory(MotherTurretHazard::factory, MotherTurretHazard::randomizingFactory);
+	HazardDataGovernor::addCircleHazardFactory(GinormousTurretHazard::factory, GinormousTurretHazard::randomizingFactory);
+	HazardDataGovernor::addRectHazardFactory(RectangularLightningHazard::factory, RectangularLightningHazard::randomizingFactory);
+	HazardDataGovernor::addRectHazardFactory(HorizontalLightningHazard::factory, HorizontalLightningHazard::randomizingFactory);
+	HazardDataGovernor::addRectHazardFactory(VerticalLightningHazard::factory, VerticalLightningHazard::randomizingFactory);
+	HazardDataGovernor::addCircleHazardFactory(CircularLightningHazard::factory, CircularLightningHazard::randomizingFactory);
+	HazardDataGovernor::addRectHazardFactory(RectangularLavaHazard::factory, RectangularLavaHazard::randomizingFactory);
+	HazardDataGovernor::addCircleHazardFactory(CircularLavaHazard::factory, CircularLavaHazard::randomizingFactory);
+	HazardDataGovernor::addRectHazardFactory(RectangularNoBulletZoneHazard::factory, RectangularNoBulletZoneHazard::randomizingFactory);
+	HazardDataGovernor::addCircleHazardFactory(CircularNoBulletZoneHazard::factory, CircularNoBulletZoneHazard::randomizingFactory);
 	//dev:
-	HazardManager::addRectHazardFactory(DevWallHazard::factory, DevWallHazard::randomizingFactory);
+	HazardDataGovernor::addRectHazardFactory(DevWallHazard::factory, DevWallHazard::randomizingFactory);
 
 	//level effects
 	//vanilla (some are also "old"):
-	LevelManager::addLevelEffectFactory(WindLevelEffect::factory);
-	LevelManager::addLevelEffectFactory(RespawningPowerupsLevelEffect::factory);
-	LevelManager::addLevelEffectFactory(MinefieldLevelEffect::factory);
-	LevelManager::addLevelEffectFactory(IceLevelEffect::factory);
-	LevelManager::addLevelEffectFactory(InvisibleWallsLevelEffect::factory);
+	LevelDataGovernor::addLevelEffectFactory(WindLevelEffect::factory);
+	LevelDataGovernor::addLevelEffectFactory(RespawningPowerupsLevelEffect::factory);
+	LevelDataGovernor::addLevelEffectFactory(MinefieldLevelEffect::factory);
+	LevelDataGovernor::addLevelEffectFactory(IceLevelEffect::factory);
+	LevelDataGovernor::addLevelEffectFactory(InvisibleWallsLevelEffect::factory);
 
 	//dev:
-	LevelManager::addLevelEffectFactory(DevSymmetricTanksLevelEffect::factory);
+	LevelDataGovernor::addLevelEffectFactory(DevSymmetricTanksLevelEffect::factory);
 
 	//levels
 	//vanilla (some are also "old"):
-	LevelManager::addLevelFactory(DefaultRandomLevel::factory);
-	LevelManager::addLevelFactory(EmptyLevel::factory);
-	LevelManager::addLevelFactory(CorridorLevel::factory);
-	LevelManager::addLevelFactory(BigFunLevel::factory);
-	LevelManager::addLevelFactory(FewObstaclesLevel::factory);
-	LevelManager::addLevelFactory(ConcealedPowerupsLevel::factory);
-	LevelManager::addLevelFactory(ManyHazardsLevel::factory);
+	LevelDataGovernor::addLevelFactory(DefaultRandomLevel::factory);
+	LevelDataGovernor::addLevelFactory(EmptyLevel::factory);
+	LevelDataGovernor::addLevelFactory(CorridorLevel::factory);
+	LevelDataGovernor::addLevelFactory(BigFunLevel::factory);
+	LevelDataGovernor::addLevelFactory(FewObstaclesLevel::factory);
+	LevelDataGovernor::addLevelFactory(ConcealedPowerupsLevel::factory);
+	LevelDataGovernor::addLevelFactory(ManyHazardsLevel::factory);
 	//"extra":
-	LevelManager::addLevelFactory(HidingPlacesLevel::factory);
-	LevelManager::addLevelFactory(SneakyRewardLevel::factory);
-	LevelManager::addLevelFactory(LightningCornersLevel::factory);
-	LevelManager::addLevelFactory(LoneTurretLevel::factory);
+	LevelDataGovernor::addLevelFactory(HidingPlacesLevel::factory);
+	LevelDataGovernor::addLevelFactory(SneakyRewardLevel::factory);
+	LevelDataGovernor::addLevelFactory(LightningCornersLevel::factory);
+	LevelDataGovernor::addLevelFactory(LoneTurretLevel::factory);
 
 	//special:
-	LevelManager::addLevelFactory(TrickyManeuveringLevel::factory);
-	LevelManager::addLevelFactory(MineHeavenLevel::factory);
-	LevelManager::addLevelFactory(WinningPathLevel::factory);
+	LevelDataGovernor::addLevelFactory(TrickyManeuveringLevel::factory);
+	LevelDataGovernor::addLevelFactory(MineHeavenLevel::factory);
+	LevelDataGovernor::addLevelFactory(WinningPathLevel::factory);
 
 	//old:
-	LevelManager::addLevelFactory(OldEmptyLevel::factory);
+	LevelDataGovernor::addLevelFactory(OldEmptyLevel::factory);
 	//TODO: add old versions of levels when (if) traps are made (but make sure they're disabled since no one likes them)
 
 	//dev:
-	LevelManager::addLevelFactory(DeveloperLevel0::factory);
-	LevelManager::addLevelFactory(DeveloperLevel1::factory);
-	LevelManager::addLevelFactory(DeveloperLevel2::factory);
-	LevelManager::addLevelFactory(DeveloperLevel3::factory);
-	LevelManager::addLevelFactory(UnnamedLevel1::factory);
-	LevelManager::addLevelFactory(UnnamedLevel2::factory);
-	LevelManager::addLevelFactory(DevNoWallsLevel1::factory);
-	LevelManager::addLevelFactory(TimedRewardLevel::factory);
-	LevelManager::addLevelFactory(TightPatrollingCorridorLevel::factory);
-	LevelManager::addLevelFactory(DangerousCenterLevel::factory);
+	LevelDataGovernor::addLevelFactory(DeveloperLevel0::factory);
+	LevelDataGovernor::addLevelFactory(DeveloperLevel1::factory);
+	LevelDataGovernor::addLevelFactory(DeveloperLevel2::factory);
+	LevelDataGovernor::addLevelFactory(DeveloperLevel3::factory);
+	LevelDataGovernor::addLevelFactory(UnnamedLevel1::factory);
+	LevelDataGovernor::addLevelFactory(UnnamedLevel2::factory);
+	LevelDataGovernor::addLevelFactory(DevNoWallsLevel1::factory);
+	LevelDataGovernor::addLevelFactory(TimedRewardLevel::factory);
+	LevelDataGovernor::addLevelFactory(TightPatrollingCorridorLevel::factory);
+	LevelDataGovernor::addLevelFactory(DangerousCenterLevel::factory);
 
 	//initialize managers and stuff:
 	GameManager::Initialize();

@@ -10,8 +10,8 @@
 #include "powerup-manager.h"
 #include "wall-manager.h"
 #include "hazard-manager.h"
-
 #include "level-manager.h"
+
 #include "respawning-powerups-level-effect.h"
 
 ColorValueHolder DangerousCenterLevel::getDefaultColor() const {
@@ -55,7 +55,7 @@ void DangerousCenterLevel::initialize() {
 	int* childArr = new int[2]{ 16, 8 };
 	constructionData = GenericFactoryConstructionData(3, posArr);
 	constructionData.pushData(2, childArr);
-	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "mother_turret")(constructionData));
+	HazardManager::pushCircleHazard("vanilla", "mother_turret", constructionData);
 
 	//hiding areas from lone turret level, pushed out
 	const double top_gap = TANK_RADIUS*2;
@@ -103,7 +103,7 @@ void DangerousCenterLevel::initialize() {
 		pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, (GAME_HEIGHT/2+40)-(top_gap+side_length), GAME_HEIGHT/2-(top_gap), 20, top_gap);
 		posArr = new double[4]{ pos.x, pos.y, 20, top_gap };
 		constructionData = GenericFactoryConstructionData(4, posArr);
-		HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "vertical_lightning")(constructionData));
+		HazardManager::pushRectHazard("vanilla", "vertical_lightning", constructionData);
 	}
 
 	//top/bottom walls
@@ -175,5 +175,5 @@ Level* DangerousCenterLevel::factory() {
 DangerousCenterLevel::DangerousCenterLevel() {
 	bool* temp = new bool[1]{ false };
 	GenericFactoryConstructionData constructionData(1, temp);
-	effects.push_back(LevelManager::getLevelEffectFactory("vanilla", "respawning_powerups")(constructionData));
+	effects.push_back(LevelManager::makeLevelEffect("vanilla", "respawning_powerups", constructionData));
 }

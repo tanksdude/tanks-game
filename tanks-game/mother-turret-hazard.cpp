@@ -17,6 +17,7 @@
 #include "bullet-manager.h"
 #include "wall-manager.h"
 #include "hazard-manager.h"
+#include "hazard-data-governor.h"
 #include "targeting-turret-hazard.h" //in case mother turrets no longer extend targeting turrets
 
 std::unordered_map<std::string, float> MotherTurretHazard::getWeights() const {
@@ -205,7 +206,7 @@ inline CircleHazard* MotherTurretHazard::makeTurret(int turretNum) const {
 	double angle = getChildTurretAngle(turretNum);
 	double* posArr = new double[3]{ this->x + (this->r+childDistFromMother) * cos(angle), this->y + (this->r+childDistFromMother) * sin(angle), angle };
 	constructionData = GenericFactoryConstructionData(3, posArr);
-	CircleHazard* childTurret = HazardManager::getCircleHazardFactory("vanilla", "targeting_turret")(constructionData);
+	CircleHazard* childTurret = HazardDataGovernor::getCircleHazardFactory("vanilla", "targeting_turret")(constructionData);
 	return childTurret;
 }
 

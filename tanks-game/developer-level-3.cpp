@@ -38,14 +38,14 @@ void DeveloperLevel3::initialize() {
 
 	posArr = new double[4]{ GAME_WIDTH/2 - 80 + 20, GAME_HEIGHT/2 + 10, 60*2, 20*2 - 10 };
 	constructionData = GenericFactoryConstructionData(4, posArr);
-	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "lava")(constructionData));
+	HazardManager::pushRectHazard("vanilla", "lava", constructionData);
 	posArr = new double[3]{ GAME_WIDTH/2, GAME_HEIGHT/2 + 100, 40 };
 	constructionData = GenericFactoryConstructionData(3, posArr);
-	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "lightning")(constructionData));
+	HazardManager::pushCircleHazard("vanilla", "lightning", constructionData);
 	posArr = new double[3]{ GAME_WIDTH/2, GAME_HEIGHT/2, -PI/2 };
 	constructionData = GenericFactoryConstructionData(3, posArr);
-	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "mother_turret")(constructionData));
-	//HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("dev", "ginormous_turret")(constructionData));
+	HazardManager::pushCircleHazard("vanilla", "mother_turret", constructionData);
+	//HazardManager::pushCircleHazard("dev", "ginormous_turret", constructionData);
 
 	//not from dev1
 	pos = LevelHelper::getSymmetricPowerupPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 60+20+40+10);
@@ -66,16 +66,16 @@ void DeveloperLevel3::initialize() {
 	constructionData = GenericFactoryConstructionData(3, posArr);
 	constructionData.pushData(1, patrolCount);
 	constructionData.pushData(4*2, patrolRoute);
-	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "patrolling_turret")(constructionData));
+	HazardManager::pushCircleHazard("vanilla", "patrolling_turret", constructionData);
 
 	pos = LevelHelper::getSymmetricWallPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 20, 80);
 	posArr = new double[4]{ pos.x - 40, pos.y, 20, 80 };
 	constructionData = GenericFactoryConstructionData(4, posArr);
-	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("dev", "wall")(constructionData));
+	HazardManager::pushRectHazard("dev", "wall", constructionData);
 	pos = LevelHelper::getSymmetricWallPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 20, 80);
 	posArr = new double[4]{ pos.x + 40, pos.y, 20, 80 };
 	constructionData = GenericFactoryConstructionData(4, posArr);
-	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("dev", "wall")(constructionData));
+	HazardManager::pushRectHazard("dev", "wall", constructionData);
 
 	//from dev2
 	PowerupManager::pushPowerup(new PowerSquare(20, 20, "speed"));

@@ -402,6 +402,15 @@
     <ClCompile Include="custom-level-interpreter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="level-data-governor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="powerup-data-governor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="hazard-data-governor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -834,6 +843,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="custom-level-interpreter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="level-data-governor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="powerup-data-governor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hazard-data-governor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

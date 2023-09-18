@@ -8,7 +8,9 @@
 #include <vector>
 #include <unordered_map> //could use a set, not a big deal
 
-#include "level-manager.h" //for adding custom levels to the game
+#include "powerup-data-governor.h"
+#include "hazard-data-governor.h"
+#include "level-data-governor.h" //for adding custom levels to the game
 #include "basic-ini-parser.h" //for processing custom level files
 
 #include "reset-things.h"
@@ -407,14 +409,14 @@ inline void CustomLevel::initialization_CHAZARD(const GenericFactoryConstruction
 	const std::string* nameArr = static_cast<const std::string*>(data.getDataPortion(0).get());
 	GenericFactoryConstructionData realData; //TODO
 	realData.pushData(data.getDataPortionLength(1), data.getDataPortion(1));
-	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory(nameArr[0], nameArr[1])(realData));
+	HazardManager::pushCircleHazard(nameArr[0], nameArr[1], realData);
 }
 inline void CustomLevel::initialization_RHAZARD(const GenericFactoryConstructionData& data) {
 	//should only throw on complex constructions, if the data is badly-formatted
 	const std::string* nameArr = static_cast<const std::string*>(data.getDataPortion(0).get());
 	GenericFactoryConstructionData realData; //TODO
 	realData.pushData(data.getDataPortionLength(1), data.getDataPortion(1));
-	HazardManager::pushRectHazard(HazardManager::getRectHazardFactory(nameArr[0], nameArr[1])(realData));
+	HazardManager::pushRectHazard(nameArr[0], nameArr[1], realData);
 }
 
 CustomLevel* CustomLevel::factory() const {
@@ -427,7 +429,7 @@ CustomLevel* CustomLevel::factory() const {
 
 
 void CustomLevelInterpreter::ProcessCustomLevels() noexcept {
-	//get list of mods, interpret them, then add factories to LevelManager
+	//get list of mods, interpret them, then add factories to LevelDataGovernor
 	//should syntax version be a thing? likely features will only be added, but who knows
 
 	std::vector<std::string> modOrder_list;
@@ -509,7 +511,7 @@ void CustomLevelInterpreter::ProcessCustomLevels() noexcept {
 				continue;
 			} else {
 				try {
-					pushCustomLevel(level);
+					addCustomLevel(level);
 				}
 				catch (const std::runtime_error& e) {
 					std::cerr << "ERROR: Unable to materialize " + levelPath + ", reason: " << e.what() << std::endl;
@@ -924,15 +926,15 @@ inline CustomLevel::CustomLevelAction* CustomLevelInterpreter::stringToAction(co
 	return levelAction;
 }
 
-void CustomLevelInterpreter::pushCustomLevel(CustomLevel* level) {
+void CustomLevelInterpreter::addCustomLevel(CustomLevel* level) {
 	std::vector<std::string> types = level->getLevelTypes();
 
-	std::string result = LevelManager::checkCustomLevelTypesAgainstProtectedTypes(types);
+	std::string result = LevelDataGovernor::checkCustomLevelTypesAgainstProtectedTypes(types);
 	if (result != "") {
 		throw std::runtime_error("Error pushing level " + level->getName() + ": level includes \"" + result + "\" type, which is not allowed");
 	}
 
-	LevelManager::addCustomLevel(level->getName(), types, level);
+	LevelDataGovernor::addCustomLevel(level->getName(), types, level);
 }
 
 inline void CustomLevelInterpreter::stringToAction_WALL(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData) {
@@ -1089,7 +1091,7 @@ inline void CustomLevelInterpreter::stringToAction_POWER(const std::vector<std::
 	unsigned int i;
 	try {
 		for (i = 0; i < powerSize; i++) {
-			PowerupManager::getPowerFactory(typesArr[i], namesArr[i]);
+			PowerupDataGovernor::getPowerFactory(typesArr[i], namesArr[i]);
 		}
 	}
 	catch (const std::runtime_error&) {
@@ -1131,7 +1133,7 @@ inline void CustomLevelInterpreter::stringToAction_POWER_LR(const std::vector<st
 	unsigned int i;
 	try {
 		for (i = 0; i < powerSize; i++) {
-			PowerupManager::getPowerFactory(typesArr[i], namesArr[i]);
+			PowerupDataGovernor::getPowerFactory(typesArr[i], namesArr[i]);
 		}
 	}
 	catch (const std::runtime_error&) {
@@ -1177,7 +1179,7 @@ inline void CustomLevelInterpreter::stringToAction_POWER_Corners(const std::vect
 	unsigned int i;
 	try {
 		for (i = 0; i < powerSize; i++) {
-			PowerupManager::getPowerFactory(typesArr[i], namesArr[i]);
+			PowerupDataGovernor::getPowerFactory(typesArr[i], namesArr[i]);
 		}
 	}
 	catch (const std::runtime_error&) {
@@ -1201,13 +1203,13 @@ inline void CustomLevelInterpreter::stringToAction_CHAZARD(const std::vector<std
 	}
 
 	try {
-		HazardManager::getCircleHazardFactory(words[0], words[1]);
+		HazardDataGovernor::getCircleHazardFactory(words[0], words[1]);
 	}
 	catch (const std::runtime_error&) {
 		throw std::runtime_error("circle hazard \"" + words[0] + "\" \"" + words[1] + "\" does not exist");
 	}
 
-	CircleHazardFactoryGroup chazard_factoryGroup = HazardManager::getCircleHazardFactoryGroup(words[0], words[1]);
+	CircleHazardFactoryGroup chazard_factoryGroup = HazardDataGovernor::getCircleHazardFactoryGroup(words[0], words[1]);
 	if ((words.size()-2) < chazard_factoryGroup.getArgCount()) {
 		throw std::runtime_error("expected " + std::to_string(chazard_factoryGroup.getArgCount()) + " parameters but got " + std::to_string(words.size()-2));
 	}
@@ -1285,13 +1287,13 @@ inline void CustomLevelInterpreter::stringToAction_RHAZARD(const std::vector<std
 	}
 
 	try {
-		HazardManager::getRectHazardFactory(words[0], words[1]);
+		HazardDataGovernor::getRectHazardFactory(words[0], words[1]);
 	}
 	catch (const std::runtime_error&) {
 		throw std::runtime_error("rect hazard \"" + words[0] + "\" \"" + words[1] + "\" does not exist");
 	}
 
-	RectHazardFactoryGroup rhazard_factoryGroup = HazardManager::getRectHazardFactoryGroup(words[0], words[1]);
+	RectHazardFactoryGroup rhazard_factoryGroup = HazardDataGovernor::getRectHazardFactoryGroup(words[0], words[1]);
 	if ((words.size()-2) < rhazard_factoryGroup.getArgCount()) {
 		throw std::runtime_error("expected " + std::to_string(rhazard_factoryGroup.getArgCount()) + " parameters but got " + std::to_string(words.size()-2));
 	}

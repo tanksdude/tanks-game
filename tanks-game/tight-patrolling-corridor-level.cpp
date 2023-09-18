@@ -53,12 +53,12 @@ void TightPatrollingCorridorLevel::initialize() {
 	constructionData = GenericFactoryConstructionData(3, posArr);
 	constructionData.pushData(1, patrolCount);
 	constructionData.pushData(2*2, patrolRoute1);
-	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "patrolling_turret")(constructionData));
+	HazardManager::pushCircleHazard("vanilla", "patrolling_turret", constructionData);
 	posArr = new double[3]{ GAME_WIDTH/2 + 40, GAME_HEIGHT/2, PI };
 	constructionData = GenericFactoryConstructionData(3, posArr);
 	constructionData.pushData(1, patrolCount);
 	constructionData.pushData(2*2, patrolRoute2);
-	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "patrolling_turret")(constructionData));
+	HazardManager::pushCircleHazard("vanilla", "patrolling_turret", constructionData);
 
 	//inner walls
 	pos = LevelHelper::getSymmetricWallPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 20, (40+40)*2);
@@ -90,7 +90,7 @@ void TightPatrollingCorridorLevel::initialize() {
 		WallManager::pushWall(new Wall(pos.x, pos.y, 20/2, 40+10*2, color));
 		//posArr = new double[4]{ pos.x, pos.y, 20/2, 40+10*2 };
 		//constructionData = GenericFactoryConstructionData(4, posArr);
-		//HazardManager::pushRectHazard(HazardManager::getRectHazardFactory("vanilla", "no_bullet_zone")(constructionData));
+		//HazardManager::pushRectHazard("vanilla", "no_bullet_zone", constructionData);
 	}
 
 	posArr = new double[3]{ GAME_WIDTH/2, GAME_HEIGHT - 35, -PI/2 };
@@ -106,12 +106,12 @@ void TightPatrollingCorridorLevel::initialize() {
 	constructionData = GenericFactoryConstructionData(3, posArr);
 	constructionData.pushData(1, patrolCount);
 	constructionData.pushData(2*2, patrolRoute1);
-	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "patrolling_turret")(constructionData));
+	HazardManager::pushCircleHazard("vanilla", "patrolling_turret", constructionData);
 	posArr = new double[3]{ GAME_WIDTH/2, 35, PI/2 };
 	constructionData = GenericFactoryConstructionData(3, posArr);
 	constructionData.pushData(1, patrolCount);
 	constructionData.pushData(2*2, patrolRoute2);
-	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "patrolling_turret")(constructionData));
+	HazardManager::pushCircleHazard("vanilla", "patrolling_turret", constructionData);
 
 	//outer walls
 	for (int i = 0; i < 4; i++) {
@@ -149,12 +149,12 @@ void TightPatrollingCorridorLevel::initialize() {
 	constructionData = GenericFactoryConstructionData(3, posArr);
 	constructionData.pushData(1, patrolCount);
 	constructionData.pushData(2*2, patrolRoute1);
-	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "patrolling_turret")(constructionData));
+	HazardManager::pushCircleHazard("vanilla", "patrolling_turret", constructionData);
 	posArr = new double[3]{ GAME_WIDTH/2 + ((60+20 + 40) + 80 - 20), ((GAME_HEIGHT - 20) + (GAME_HEIGHT/2 + 20+40))/2, PI };
 	constructionData = GenericFactoryConstructionData(3, posArr);
 	constructionData.pushData(1, patrolCount);
 	constructionData.pushData(2*2, patrolRoute2);
-	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "patrolling_turret")(constructionData));
+	HazardManager::pushCircleHazard("vanilla", "patrolling_turret", constructionData);
 
 	//DL and DR turrets
 	posArr = new double[3]{ GAME_WIDTH/2 - ((60+20 + 40) + 80 - 20), ((20) + (GAME_HEIGHT/2 - (20+40)))/2, 0 };
@@ -170,12 +170,12 @@ void TightPatrollingCorridorLevel::initialize() {
 	constructionData = GenericFactoryConstructionData(3, posArr);
 	constructionData.pushData(1, patrolCount);
 	constructionData.pushData(2*2, patrolRoute1);
-	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "patrolling_turret")(constructionData));
+	HazardManager::pushCircleHazard("vanilla", "patrolling_turret", constructionData);
 	posArr = new double[3]{ GAME_WIDTH/2 + ((60+20 + 40) + 80 - 20), ((20) + (GAME_HEIGHT/2 - (20+40)))/2, PI };
 	constructionData = GenericFactoryConstructionData(3, posArr);
 	constructionData.pushData(1, patrolCount);
 	constructionData.pushData(2*2, patrolRoute2);
-	HazardManager::pushCircleHazard(HazardManager::getCircleHazardFactory("vanilla", "patrolling_turret")(constructionData));
+	HazardManager::pushCircleHazard("vanilla", "patrolling_turret", constructionData);
 
 	//level idea: N++ X-04-4 (pretty sure there are other levels with similar designs)
 }
