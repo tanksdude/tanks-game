@@ -15,498 +15,498 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="_source\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="bullet.cpp">
+    <ClCompile Include="_source\bullet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="collision-handler.cpp">
+    <ClCompile Include="_source\collision-handler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="color-value-holder.cpp">
+    <ClCompile Include="_source\color-value-holder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="levels\empty-level.cpp">
+    <ClCompile Include="_source\levels\empty-level.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="level-effect.cpp">
+    <ClCompile Include="_source\level-effect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="power-square.cpp">
+    <ClCompile Include="_source\power-square.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="reset-things.cpp">
+    <ClCompile Include="_source\reset-things.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="tank.cpp">
+    <ClCompile Include="_source\tank.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="wall.cpp">
+    <ClCompile Include="_source\wall.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="constants.cpp">
+    <ClCompile Include="_source\constants.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="color-mixer.cpp">
+    <ClCompile Include="_source\color-mixer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="power-function-helper.cpp">
+    <ClCompile Include="_source\power-function-helper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="powers\speed-power.cpp">
+    <ClCompile Include="_source\powers\speed-power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="powers\wallhack-power.cpp">
+    <ClCompile Include="_source\powers\wallhack-power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="powers\multishot-power.cpp">
+    <ClCompile Include="_source\powers\multishot-power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="powers\bounce-power.cpp">
+    <ClCompile Include="_source\powers\bounce-power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="powers\homing-power.cpp">
+    <ClCompile Include="_source\powers\homing-power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="powers\triple-named-power.cpp">
+    <ClCompile Include="_source\powers\triple-named-power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="mylib.cpp">
+    <ClCompile Include="_source\mylib.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\index-buffer.cpp">
+    <ClCompile Include="_source\graphics\index-buffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="renderer.cpp">
+    <ClCompile Include="_source\renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\vertex-buffer.cpp">
+    <ClCompile Include="_source\graphics\vertex-buffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\vertex-array.cpp">
+    <ClCompile Include="_source\graphics\vertex-array.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\shader.cpp">
+    <ClCompile Include="_source\graphics\shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="diagnostics.cpp">
+    <ClCompile Include="_source\diagnostics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="background-rect.cpp">
+    <ClCompile Include="_source\background-rect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="powers\invincible-named-power.cpp">
+    <ClCompile Include="_source\powers\invincible-named-power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="powers\big-named-power.cpp">
+    <ClCompile Include="_source\powers\big-named-power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="powers\mega-death-power.cpp">
+    <ClCompile Include="_source\powers\mega-death-power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="powers\grenade-power.cpp">
+    <ClCompile Include="_source\powers\grenade-power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="levels\corridor-level.cpp">
+    <ClCompile Include="_source\levels\corridor-level.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="powers\fire-named-power.cpp">
+    <ClCompile Include="_source\powers\fire-named-power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="powers\blast-power.cpp">
+    <ClCompile Include="_source\powers\blast-power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="levels\big-fun-level.cpp">
+    <ClCompile Include="_source\levels\big-fun-level.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="circle-hazard.cpp">
+    <ClCompile Include="_source\circle-hazard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="rect-hazard.cpp">
+    <ClCompile Include="_source\rect-hazard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="hazards\stationary-turret-hazard.cpp">
+    <ClCompile Include="_source\hazards\stationary-turret-hazard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="bullet-manager.cpp">
+    <ClCompile Include="_source\bullet-manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="powerup-manager.cpp">
+    <ClCompile Include="_source\powerup-manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="wall-manager.cpp">
+    <ClCompile Include="_source\wall-manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="hazard-manager.cpp">
+    <ClCompile Include="_source\hazard-manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="levels\developer-level-0.cpp">
+    <ClCompile Include="_source\levels\developer-level-0.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="level-helper.cpp">
+    <ClCompile Include="_source\level-helper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="level-manager.cpp">
+    <ClCompile Include="_source\level-manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="keypress-manager.cpp">
+    <ClCompile Include="_source\keypress-manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="tank-manager.cpp">
+    <ClCompile Include="_source\tank-manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="levels\default-random-level.cpp">
+    <ClCompile Include="_source\levels\default-random-level.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="developer-manager.cpp">
+    <ClCompile Include="_source\developer-manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="hazards\horizontal-lightning-hazard.cpp">
+    <ClCompile Include="_source\hazards\horizontal-lightning-hazard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="levels\developer-level-1.cpp">
+    <ClCompile Include="_source\levels\developer-level-1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="priority-handler.cpp">
+    <ClCompile Include="_source\priority-handler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="powers\dev-long-invincible-named-power.cpp">
+    <ClCompile Include="_source\powers\dev-long-invincible-named-power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="game-manager.cpp">
+    <ClCompile Include="_source\game-manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="hazards\circular-lava-hazard.cpp">
+    <ClCompile Include="_source\hazards\circular-lava-hazard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="generalized-lava.cpp">
+    <ClCompile Include="_source\generalized-lava.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="hazards\rectangular-lava-hazard.cpp">
+    <ClCompile Include="_source\hazards\rectangular-lava-hazard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="levels\few-obstacles-level.cpp">
+    <ClCompile Include="_source\levels\few-obstacles-level.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="levels\concealed-powerups-level.cpp">
+    <ClCompile Include="_source\levels\concealed-powerups-level.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="powers\banana-power.cpp">
+    <ClCompile Include="_source\powers\banana-power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="levels\developer-level-2.cpp">
+    <ClCompile Include="_source\levels\developer-level-2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="levels\old-empty-level.cpp">
+    <ClCompile Include="_source\levels\old-empty-level.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="level.cpp">
+    <ClCompile Include="_source\level.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="power.cpp">
+    <ClCompile Include="_source\power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="powers\old-bounce-power.cpp">
+    <ClCompile Include="_source\powers\old-bounce-power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="powers\old-big-named-power.cpp">
+    <ClCompile Include="_source\powers\old-big-named-power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="hazards\rectangular-lightning-hazard.cpp">
+    <ClCompile Include="_source\hazards\rectangular-lightning-hazard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="hazards\circular-lightning-hazard.cpp">
+    <ClCompile Include="_source\hazards\circular-lightning-hazard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="generalized-lightning.cpp">
+    <ClCompile Include="_source\generalized-lightning.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="hazards\vertical-lightning-hazard.cpp">
+    <ClCompile Include="_source\hazards\vertical-lightning-hazard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="powers\inversion-power.cpp">
+    <ClCompile Include="_source\powers\inversion-power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="powers\god-mode-power.cpp">
+    <ClCompile Include="_source\powers\god-mode-power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="end-game-handler.cpp">
+    <ClCompile Include="_source\end-game-handler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="hazards\circular-no-bullet-zone-hazard.cpp">
+    <ClCompile Include="_source\hazards\circular-no-bullet-zone-hazard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="generalized-no-bullet-zone.cpp">
+    <ClCompile Include="_source\generalized-no-bullet-zone.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="hazards\rectangular-no-bullet-zone-hazard.cpp">
+    <ClCompile Include="_source\hazards\rectangular-no-bullet-zone-hazard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="levels\many-hazards-level.cpp">
+    <ClCompile Include="_source\levels\many-hazards-level.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="hazards\targeting-turret-hazard.cpp">
+    <ClCompile Include="_source\hazards\targeting-turret-hazard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="powers\mines-power.cpp">
+    <ClCompile Include="_source\powers\mines-power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="powers\shotgun-power.cpp">
+    <ClCompile Include="_source\powers\shotgun-power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="powers\tracking-power.cpp">
+    <ClCompile Include="_source\powers\tracking-power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="levels\hiding-places-level.cpp">
+    <ClCompile Include="_source\levels\hiding-places-level.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\opengl-rendering-context.cpp">
+    <ClCompile Include="_source\graphics\opengl-rendering-context.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\opengl-vertex-buffer.cpp">
+    <ClCompile Include="_source\graphics\opengl-vertex-buffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\opengl-vertex-array.cpp">
+    <ClCompile Include="_source\graphics\opengl-vertex-array.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\opengl-index-buffer.cpp">
+    <ClCompile Include="_source\graphics\opengl-index-buffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="rng.cpp">
+    <ClCompile Include="_source\rng.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="simple-vector-2d.cpp">
+    <ClCompile Include="_source\simple-vector-2d.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="powers\barrier-power.cpp">
+    <ClCompile Include="_source\powers\barrier-power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="game-main-loop.cpp">
+    <ClCompile Include="_source\game-main-loop.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="powers\shield-power.cpp">
+    <ClCompile Include="_source\powers\shield-power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="powers\dev-annoying-power.cpp">
+    <ClCompile Include="_source\powers\dev-annoying-power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="levels\sneaky-reward-level.cpp">
+    <ClCompile Include="_source\levels\sneaky-reward-level.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="levels\lightning-corners-level.cpp">
+    <ClCompile Include="_source\levels\lightning-corners-level.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="levels\lone-turret-level.cpp">
+    <ClCompile Include="_source\levels\lone-turret-level.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="level-effects\wind-level-effect.cpp">
+    <ClCompile Include="_source\level-effects\wind-level-effect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="levels\tricky-maneuvering-level.cpp">
+    <ClCompile Include="_source\levels\tricky-maneuvering-level.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="level-effects\respawning-powerups-level-effect.cpp">
+    <ClCompile Include="_source\level-effects\respawning-powerups-level-effect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="levels\mine-heaven-level.cpp">
+    <ClCompile Include="_source\levels\mine-heaven-level.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="level-effects\minefield-level-effect.cpp">
+    <ClCompile Include="_source\level-effects\minefield-level-effect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="level-effects\ice-level-effect.cpp">
+    <ClCompile Include="_source\level-effects\ice-level-effect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="powers\old-mines-power.cpp">
+    <ClCompile Include="_source\powers\old-mines-power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="levels\winning-path-level.cpp">
+    <ClCompile Include="_source\levels\winning-path-level.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="level-effects\invisible-walls-level-effect.cpp">
+    <ClCompile Include="_source\level-effects\invisible-walls-level-effect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="powers\ultra-bounce-power.cpp">
+    <ClCompile Include="_source\powers\ultra-bounce-power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="levels\dev-no-walls-level-1.cpp">
+    <ClCompile Include="_source\levels\dev-no-walls-level-1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="levels\timed-reward-level.cpp">
+    <ClCompile Include="_source\levels\timed-reward-level.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="levels\unnamed-level-1.cpp">
+    <ClCompile Include="_source\levels\unnamed-level-1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="levels\unnamed-level-2.cpp">
+    <ClCompile Include="_source\levels\unnamed-level-2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="level-effects\dev-symmetric-tanks-level-effect.cpp">
+    <ClCompile Include="_source\level-effects\dev-symmetric-tanks-level-effect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="powers\dev-color-changing-power.cpp">
+    <ClCompile Include="_source\powers\dev-color-changing-power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="physics-handler.cpp">
+    <ClCompile Include="_source\physics-handler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="levels\developer-level-3.cpp">
+    <ClCompile Include="_source\levels\developer-level-3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="powers\dev-other-stuff-is-poison-power.cpp">
+    <ClCompile Include="_source\powers\dev-other-stuff-is-poison-power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="generic-factory-construction-data.cpp">
+    <ClCompile Include="_source\generic-factory-construction-data.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="hazards\patrolling-turret-hazard.cpp">
+    <ClCompile Include="_source\hazards\patrolling-turret-hazard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="levels\tight-patrolling-corridor-level.cpp">
+    <ClCompile Include="_source\levels\tight-patrolling-corridor-level.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="hazards\dev-wall-hazard.cpp">
+    <ClCompile Include="_source\hazards\dev-wall-hazard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="hazards\mother-turret-hazard.cpp">
+    <ClCompile Include="_source\hazards\mother-turret-hazard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="levels\dangerous-center-level.cpp">
+    <ClCompile Include="_source\levels\dangerous-center-level.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="hazards\ginormous-turret-hazard.cpp">
+    <ClCompile Include="_source\hazards\ginormous-turret-hazard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="game-thing.cpp">
+    <ClCompile Include="_source\game-thing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="game-scene-manager.cpp">
+    <ClCompile Include="_source\game-scene-manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="game-scene.cpp">
+    <ClCompile Include="_source\game-scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="basic-ini-parser.cpp">
+    <ClCompile Include="_source\basic-ini-parser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="powers\dev-backwards-movement-power.cpp">
+    <ClCompile Include="_source\powers\dev-backwards-movement-power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="powers\wall-sparks-power.cpp">
+    <ClCompile Include="_source\powers\wall-sparks-power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="powers\dev-weird-extra-cannons-power.cpp">
+    <ClCompile Include="_source\powers\dev-weird-extra-cannons-power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="custom-level-interpreter.cpp">
+    <ClCompile Include="_source\custom-level-interpreter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="level-data-governor.cpp">
+    <ClCompile Include="_source\level-data-governor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="powerup-data-governor.cpp">
+    <ClCompile Include="_source\powerup-data-governor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="hazard-data-governor.cpp">
+    <ClCompile Include="_source\hazard-data-governor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="bullet.h">
+    <ClInclude Include="_source\bullet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="bullet-power.h">
+    <ClInclude Include="_source\bullet-power.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="circle.h">
+    <ClInclude Include="_source\circle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="collision-handler.h">
+    <ClInclude Include="_source\collision-handler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="color-mixer.h">
+    <ClInclude Include="_source\color-mixer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="color-value-holder.h">
+    <ClInclude Include="_source\color-value-holder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="constants.h">
+    <ClInclude Include="_source\constants.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="levels\empty-level.h">
+    <ClInclude Include="_source\levels\empty-level.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="level.h">
+    <ClInclude Include="_source\level.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="level-effect.h">
+    <ClInclude Include="_source\level-effect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="power.h">
+    <ClInclude Include="_source\power.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="power-square.h">
+    <ClInclude Include="_source\power-square.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="rect.h">
+    <ClInclude Include="_source\rect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="reset-things.h">
+    <ClInclude Include="_source\reset-things.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="powers\speed-power.h">
+    <ClInclude Include="_source\powers\speed-power.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="tank.h">
+    <ClInclude Include="_source\tank.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="tank-power.h">
+    <ClInclude Include="_source\tank-power.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="wall.h">
+    <ClInclude Include="_source\wall.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="power-function-helper.h">
+    <ClInclude Include="_source\power-function-helper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="powers\wallhack-power.h">
+    <ClInclude Include="_source\powers\wallhack-power.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="cannon-point.h">
+    <ClInclude Include="_source\cannon-point.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="powers\multishot-power.h">
+    <ClInclude Include="_source\powers\multishot-power.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="powers\bounce-power.h">
+    <ClInclude Include="_source\powers\bounce-power.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="powers\homing-power.h">
+    <ClInclude Include="_source\powers\homing-power.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="powers\triple-named-power.h">
+    <ClInclude Include="_source\powers\triple-named-power.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="mylib.h">
+    <ClInclude Include="_source\mylib.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\index-buffer.h">
+    <ClInclude Include="_source\graphics\index-buffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="renderer.h">
+    <ClInclude Include="_source\renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\vertex-buffer.h">
+    <ClInclude Include="_source\graphics\vertex-buffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\vertex-array.h">
+    <ClInclude Include="_source\graphics\vertex-array.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\vertex-buffer-layout.h">
+    <ClInclude Include="_source\graphics\vertex-buffer-layout.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\shader.h">
+    <ClInclude Include="_source\graphics\shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="res\vendor\glm\glm.hpp">
@@ -515,343 +515,343 @@
     <ClInclude Include="res\vendor\glm\gtc\matrix_transform.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="diagnostics.h">
+    <ClInclude Include="_source\diagnostics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="background-rect.h">
+    <ClInclude Include="_source\background-rect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="res\vendor\glm\gtx\transform.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="powers\invincible-named-power.h">
+    <ClInclude Include="_source\powers\invincible-named-power.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="powers\big-named-power.h">
+    <ClInclude Include="_source\powers\big-named-power.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="powers\mega-death-power.h">
+    <ClInclude Include="_source\powers\mega-death-power.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="powers\grenade-power.h">
+    <ClInclude Include="_source\powers\grenade-power.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="levels\corridor-level.h">
+    <ClInclude Include="_source\levels\corridor-level.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="powers\fire-named-power.h">
+    <ClInclude Include="_source\powers\fire-named-power.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="powers\blast-power.h">
+    <ClInclude Include="_source\powers\blast-power.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="levels\big-fun-level.h">
+    <ClInclude Include="_source\levels\big-fun-level.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="circle-hazard.h">
+    <ClInclude Include="_source\circle-hazard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="rect-hazard.h">
+    <ClInclude Include="_source\rect-hazard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="hazards\stationary-turret-hazard.h">
+    <ClInclude Include="_source\hazards\stationary-turret-hazard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="bullet-manager.h">
+    <ClInclude Include="_source\bullet-manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="powerup-manager.h">
+    <ClInclude Include="_source\powerup-manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="wall-manager.h">
+    <ClInclude Include="_source\wall-manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="hazard-manager.h">
+    <ClInclude Include="_source\hazard-manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="levels\developer-level-0.h">
+    <ClInclude Include="_source\levels\developer-level-0.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="level-helper.h">
+    <ClInclude Include="_source\level-helper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="level-manager.h">
+    <ClInclude Include="_source\level-manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="keypress-manager.h">
+    <ClInclude Include="_source\keypress-manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="tank-manager.h">
+    <ClInclude Include="_source\tank-manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="levels\default-random-level.h">
+    <ClInclude Include="_source\levels\default-random-level.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="developer-manager.h">
+    <ClInclude Include="_source\developer-manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="hazards\horizontal-lightning-hazard.h">
+    <ClInclude Include="_source\hazards\horizontal-lightning-hazard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="levels\developer-level-1.h">
+    <ClInclude Include="_source\levels\developer-level-1.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="priority-handler.h">
+    <ClInclude Include="_source\priority-handler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="powers\dev-long-invincible-named-power.h">
+    <ClInclude Include="_source\powers\dev-long-invincible-named-power.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="point.h">
+    <ClInclude Include="_source\point.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="game-manager.h">
+    <ClInclude Include="_source\game-manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="game-thing.h">
+    <ClInclude Include="_source\game-thing.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="hazards\circular-lava-hazard.h">
+    <ClInclude Include="_source\hazards\circular-lava-hazard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="generalized-lava.h">
+    <ClInclude Include="_source\generalized-lava.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="hazards\rectangular-lava-hazard.h">
+    <ClInclude Include="_source\hazards\rectangular-lava-hazard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="levels\few-obstacles-level.h">
+    <ClInclude Include="_source\levels\few-obstacles-level.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="position-holder.h">
+    <ClInclude Include="_source\position-holder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="levels\concealed-powerups-level.h">
+    <ClInclude Include="_source\levels\concealed-powerups-level.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="powers\banana-power.h">
+    <ClInclude Include="_source\powers\banana-power.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="levels\developer-level-2.h">
+    <ClInclude Include="_source\levels\developer-level-2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="levels\old-empty-level.h">
+    <ClInclude Include="_source\levels\old-empty-level.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="powers\old-bounce-power.h">
+    <ClInclude Include="_source\powers\old-bounce-power.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="powers\old-big-named-power.h">
+    <ClInclude Include="_source\powers\old-big-named-power.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="hazards\rectangular-lightning-hazard.h">
+    <ClInclude Include="_source\hazards\rectangular-lightning-hazard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="hazards\circular-lightning-hazard.h">
+    <ClInclude Include="_source\hazards\circular-lightning-hazard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="generalized-lightning.h">
+    <ClInclude Include="_source\generalized-lightning.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="hazards\vertical-lightning-hazard.h">
+    <ClInclude Include="_source\hazards\vertical-lightning-hazard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="powers\inversion-power.h">
+    <ClInclude Include="_source\powers\inversion-power.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="powers\god-mode-power.h">
+    <ClInclude Include="_source\powers\god-mode-power.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="end-game-handler.h">
+    <ClInclude Include="_source\end-game-handler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="hazards\circular-no-bullet-zone-hazard.h">
+    <ClInclude Include="_source\hazards\circular-no-bullet-zone-hazard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="generalized-no-bullet-zone.h">
+    <ClInclude Include="_source\generalized-no-bullet-zone.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="hazards\rectangular-no-bullet-zone-hazard.h">
+    <ClInclude Include="_source\hazards\rectangular-no-bullet-zone-hazard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="levels\many-hazards-level.h">
+    <ClInclude Include="_source\levels\many-hazards-level.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="hazards\targeting-turret-hazard.h">
+    <ClInclude Include="_source\hazards\targeting-turret-hazard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="interaction-bool-holder.h">
+    <ClInclude Include="_source\interaction-bool-holder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="powers\mines-power.h">
+    <ClInclude Include="_source\powers\mines-power.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="powers\shotgun-power.h">
+    <ClInclude Include="_source\powers\shotgun-power.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="powers\tracking-power.h">
+    <ClInclude Include="_source\powers\tracking-power.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="levels\hiding-places-level.h">
+    <ClInclude Include="_source\levels\hiding-places-level.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="drawable-thing.h">
+    <ClInclude Include="_source\drawable-thing.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\rendering-context.h">
+    <ClInclude Include="_source\graphics\rendering-context.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\opengl-rendering-context.h">
+    <ClInclude Include="_source\graphics\opengl-rendering-context.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\software-rendering-context.h">
+    <ClInclude Include="_source\graphics\software-rendering-context.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\null-rendering-context.h">
+    <ClInclude Include="_source\graphics\null-rendering-context.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\opengl-vertex-buffer.h">
+    <ClInclude Include="_source\graphics\opengl-vertex-buffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\opengl-vertex-array.h">
+    <ClInclude Include="_source\graphics\opengl-vertex-array.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\opengl-index-buffer.h">
+    <ClInclude Include="_source\graphics\opengl-index-buffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="rng.h">
+    <ClInclude Include="_source\rng.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="simple-vector-2d.h">
+    <ClInclude Include="_source\simple-vector-2d.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="powers\barrier-power.h">
+    <ClInclude Include="_source\powers\barrier-power.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="game-main-loop.h">
+    <ClInclude Include="_source\game-main-loop.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="powers\shield-power.h">
+    <ClInclude Include="_source\powers\shield-power.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="powers\dev-annoying-power.h">
+    <ClInclude Include="_source\powers\dev-annoying-power.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="levels\sneaky-reward-level.h">
+    <ClInclude Include="_source\levels\sneaky-reward-level.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="levels\lightning-corners-level.h">
+    <ClInclude Include="_source\levels\lightning-corners-level.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="levels\lone-turret-level.h">
+    <ClInclude Include="_source\levels\lone-turret-level.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="level-effects\wind-level-effect.h">
+    <ClInclude Include="_source\level-effects\wind-level-effect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="levels\tricky-maneuvering-level.h">
+    <ClInclude Include="_source\levels\tricky-maneuvering-level.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="level-effects\respawning-powerups-level-effect.h">
+    <ClInclude Include="_source\level-effects\respawning-powerups-level-effect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="levels\mine-heaven-level.h">
+    <ClInclude Include="_source\levels\mine-heaven-level.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="level-effects\minefield-level-effect.h">
+    <ClInclude Include="_source\level-effects\minefield-level-effect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="level-effects\ice-level-effect.h">
+    <ClInclude Include="_source\level-effects\ice-level-effect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="powers\old-mines-power.h">
+    <ClInclude Include="_source\powers\old-mines-power.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="levels\winning-path-level.h">
+    <ClInclude Include="_source\levels\winning-path-level.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="level-effects\invisible-walls-level-effect.h">
+    <ClInclude Include="_source\level-effects\invisible-walls-level-effect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="powers\ultra-bounce-power.h">
+    <ClInclude Include="_source\powers\ultra-bounce-power.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="levels\dev-no-walls-level-1.h">
+    <ClInclude Include="_source\levels\dev-no-walls-level-1.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="levels\timed-reward-level.h">
+    <ClInclude Include="_source\levels\timed-reward-level.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="levels\unnamed-level-1.h">
+    <ClInclude Include="_source\levels\unnamed-level-1.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="levels\unnamed-level-2.h">
+    <ClInclude Include="_source\levels\unnamed-level-2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="level-effects\dev-symmetric-tanks-level-effect.h">
+    <ClInclude Include="_source\level-effects\dev-symmetric-tanks-level-effect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="powers\dev-color-changing-power.h">
+    <ClInclude Include="_source\powers\dev-color-changing-power.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="physics-handler.h">
+    <ClInclude Include="_source\physics-handler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="levels\developer-level-3.h">
+    <ClInclude Include="_source\levels\developer-level-3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="powers\dev-other-stuff-is-poison-power.h">
+    <ClInclude Include="_source\powers\dev-other-stuff-is-poison-power.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="generic-factory-construction-data.h">
+    <ClInclude Include="_source\generic-factory-construction-data.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="hazards\patrolling-turret-hazard.h">
+    <ClInclude Include="_source\hazards\patrolling-turret-hazard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="levels\tight-patrolling-corridor-level.h">
+    <ClInclude Include="_source\levels\tight-patrolling-corridor-level.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="hazards\dev-wall-hazard.h">
+    <ClInclude Include="_source\hazards\dev-wall-hazard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="hazards\mother-turret-hazard.h">
+    <ClInclude Include="_source\hazards\mother-turret-hazard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="levels\dangerous-center-level.h">
+    <ClInclude Include="_source\levels\dangerous-center-level.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="hazards\ginormous-turret-hazard.h">
+    <ClInclude Include="_source\hazards\ginormous-turret-hazard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="game-scene-manager.h">
+    <ClInclude Include="_source\game-scene-manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="game-scene.h">
+    <ClInclude Include="_source\game-scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="basic-ini-parser.h">
+    <ClInclude Include="_source\basic-ini-parser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="powers\dev-backwards-movement-power.h">
+    <ClInclude Include="_source\powers\dev-backwards-movement-power.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="powers\wall-sparks-power.h">
+    <ClInclude Include="_source\powers\wall-sparks-power.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="powers\dev-weird-extra-cannons-power.h">
+    <ClInclude Include="_source\powers\dev-weird-extra-cannons-power.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="custom-level-interpreter.h">
+    <ClInclude Include="_source\custom-level-interpreter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="level-data-governor.h">
+    <ClInclude Include="_source\level-data-governor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="powerup-data-governor.h">
+    <ClInclude Include="_source\powerup-data-governor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="hazard-data-governor.h">
+    <ClInclude Include="_source\hazard-data-governor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
