@@ -59,6 +59,10 @@ RespawningPowerupsLevelEffect::PowerSquareWatcher::~PowerSquareWatcher() {
 }
 
 void RespawningPowerupsLevelEffect::watchPowerSquare(const PowerSquare* p) {
+	watchPowerSquare(p, 500);
+}
+
+void RespawningPowerupsLevelEffect::watchPowerSquare(const PowerSquare* p, double timeToRespawn) {
 	bool found = false;
 	for (int i = 0; i < watching.size(); i++) {
 		if (watching[i]->getPowerupID() == p->getGameID()) {
@@ -68,7 +72,17 @@ void RespawningPowerupsLevelEffect::watchPowerSquare(const PowerSquare* p) {
 		}
 	}
 	if (!found) {
-		watching.push_back(new PowerSquareWatcher(p));
+		watching.push_back(new PowerSquareWatcher(p, timeToRespawn));
+	}
+}
+
+void RespawningPowerupsLevelEffect::watchLastPowerSquaresPushed(int count) {
+	watchLastPowerSquaresPushed(count, 500);
+}
+
+void RespawningPowerupsLevelEffect::watchLastPowerSquaresPushed(int count, double timeToRespwan) {
+	for (int i = count; i > 0; i--) {
+		watchPowerSquare(PowerupManager::getPowerup(PowerupManager::getNumPowerups()-i), timeToRespwan);
 	}
 }
 

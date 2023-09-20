@@ -1,7 +1,6 @@
 #include "concealed-powerups-level.h"
 
 #include "../constants.h"
-#include "../rng.h"
 
 #include "../reset-things.h"
 #include "../level-helper.h"
@@ -24,7 +23,6 @@ void ConcealedPowerupsLevel::initialize() {
 
 	//in JS, power mixing was turned off
 	ColorValueHolder color = getDefaultColor();
-	int tempRand;
 	PositionHolder pos;
 	GenericFactoryConstructionData constructionData;
 	double* posArr;
@@ -40,35 +38,19 @@ void ConcealedPowerupsLevel::initialize() {
 	constructionData = GenericFactoryConstructionData(4, posArr);
 	HazardManager::pushRectHazard("vanilla", "horizontal_lightning", constructionData);
 
-	pos = LevelHelper::getSymmetricWallPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 80, 20, GAME_HEIGHT-70*2);
-	WallManager::pushWall(new Wall(pos.x, pos.y, 20, GAME_HEIGHT-70*2, color));
-	pos = LevelHelper::getSymmetricWallPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 80, 20, GAME_HEIGHT-70*2);
-	WallManager::pushWall(new Wall(pos.x, pos.y, 20, GAME_HEIGHT-70*2, color));
+	LevelHelper::pushSymmetricWalls_LR(GAME_WIDTH/2, GAME_HEIGHT/2, 80, 20, GAME_HEIGHT-70*2, color);
 
 	//traps:
-	//pos = LevelHelper::getSymmetricPowerupPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 80+20+20);
-	//PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "speed"));
-	//pos = LevelHelper::getSymmetricPowerupPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 80+20+20);
-	//PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "speed"));
+	//LevelHelper::pushSymmetricPowerups_LR(GAME_WIDTH/2, GAME_HEIGHT/2, 80+20+20, "vanilla", "speed");
 
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "big"));
 
-	tempRand = RNG::randFunc() * 2;
-	pos = LevelHelper::getSymmetricPowerupPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, 20);
-	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, LevelHelper::simplePowerAlternate(0, tempRand, "speed", "invincible")));
-	pos = LevelHelper::getSymmetricPowerupPositions_UD(1, GAME_WIDTH/2, GAME_HEIGHT/2, 20);
-	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, LevelHelper::simplePowerAlternate(1, tempRand, "speed", "invincible")));
+	LevelHelper::pushSymmetricPowerups_UD_Alternate(GAME_WIDTH/2, GAME_HEIGHT/2, 20,
+		"vanilla", "speed", "vanilla", "invincible");
 
-	//tempRand = RNG::randFunc() * 2;
-	pos = LevelHelper::getSymmetricPowerupPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 20);
-	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "grenade"));
-	pos = LevelHelper::getSymmetricPowerupPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 20);
-	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "grenade"));
+	LevelHelper::pushSymmetricPowerups_LR(GAME_WIDTH/2, GAME_HEIGHT/2, 20, "vanilla", "grenade");
 
-	for (int i = 0; i < 4; i++) {
-		pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-(80+32+20), GAME_HEIGHT/2-20);
-		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "homing"));
-	}
+	LevelHelper::pushSymmetricPowerups_Corners(GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-(80+32+20), GAME_HEIGHT/2-20, "vanilla", "homing");
 }
 
 Level* ConcealedPowerupsLevel::factory() {

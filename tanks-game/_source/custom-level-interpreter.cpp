@@ -219,12 +219,8 @@ inline void CustomLevel::initialization_WALL_LR(const GenericFactoryConstruction
 	double offsetX = dataArr[2];
 	double width   = dataArr[3];
 	double height  = dataArr[4];
-	PositionHolder pos;
 
-	pos = LevelHelper::getSymmetricWallPositions_LR(0, centerX, centerY, offsetX, width, height);
-	WallManager::pushWall(new Wall(pos.x, pos.y, width, height, wallColor));
-	pos = LevelHelper::getSymmetricWallPositions_LR(1, centerX, centerY, offsetX, width, height);
-	WallManager::pushWall(new Wall(pos.x, pos.y, width, height, wallColor));
+	LevelHelper::pushSymmetricWalls_LR(centerX, centerY, offsetX, width, height, wallColor);
 }
 inline void CustomLevel::initialization_WALL_UD(const GenericFactoryConstructionData& data, const ColorValueHolder& wallColor) noexcept {
 	const double* dataArr = static_cast<const double*>(data.getDataPortion(0).get());
@@ -233,12 +229,8 @@ inline void CustomLevel::initialization_WALL_UD(const GenericFactoryConstruction
 	double offsetY = dataArr[2];
 	double width   = dataArr[3];
 	double height  = dataArr[4];
-	PositionHolder pos;
 
-	pos = LevelHelper::getSymmetricWallPositions_UD(0, centerX, centerY, offsetY, width, height);
-	WallManager::pushWall(new Wall(pos.x, pos.y, width, height, wallColor));
-	pos = LevelHelper::getSymmetricWallPositions_UD(1, centerX, centerY, offsetY, width, height);
-	WallManager::pushWall(new Wall(pos.x, pos.y, width, height, wallColor));
+	LevelHelper::pushSymmetricWalls_UD(centerX, centerY, offsetY, width, height, wallColor);
 }
 inline void CustomLevel::initialization_WALL_Corners(const GenericFactoryConstructionData& data, const ColorValueHolder& wallColor) noexcept {
 	const double* dataArr = static_cast<const double*>(data.getDataPortion(0).get());
@@ -248,12 +240,8 @@ inline void CustomLevel::initialization_WALL_Corners(const GenericFactoryConstru
 	double offsetY = dataArr[3];
 	double width   = dataArr[4];
 	double height  = dataArr[5];
-	PositionHolder pos;
 
-	for (int i = 0; i < 4; i++) {
-		pos = LevelHelper::getSymmetricWallPositions_Corners(i, centerX, centerY, offsetX, offsetY, width, height);
-		WallManager::pushWall(new Wall(pos.x, pos.y, width, height, wallColor));
-	}
+	LevelHelper::pushSymmetricWalls_Corners(centerX, centerY, offsetX, offsetY, width, height, wallColor);
 }
 inline void CustomLevel::initialization_WALL_DiagForwardSlash(const GenericFactoryConstructionData& data, const ColorValueHolder& wallColor) noexcept {
 	const double* dataArr = static_cast<const double*>(data.getDataPortion(0).get());
@@ -263,12 +251,8 @@ inline void CustomLevel::initialization_WALL_DiagForwardSlash(const GenericFacto
 	double offsetY = dataArr[3];
 	double width   = dataArr[4];
 	double height  = dataArr[5];
-	PositionHolder pos;
 
-	pos = LevelHelper::getSymmetricWallPositions_DiagForwardSlash(0, centerX, centerY, offsetX, offsetY, width, height);
-	WallManager::pushWall(new Wall(pos.x, pos.y, width, height, wallColor));
-	pos = LevelHelper::getSymmetricWallPositions_DiagForwardSlash(1, centerX, centerY, offsetX, offsetY, width, height);
-	WallManager::pushWall(new Wall(pos.x, pos.y, width, height, wallColor));
+	LevelHelper::pushSymmetricWalls_DiagForwardSlash(centerX, centerY, offsetX, offsetY, width, height, wallColor);
 }
 inline void CustomLevel::initialization_WALL_DiagBackwardSlash(const GenericFactoryConstructionData& data, const ColorValueHolder& wallColor) noexcept {
 	const double* dataArr = static_cast<const double*>(data.getDataPortion(0).get());
@@ -278,12 +262,8 @@ inline void CustomLevel::initialization_WALL_DiagBackwardSlash(const GenericFact
 	double offsetY = dataArr[3];
 	double width   = dataArr[4];
 	double height  = dataArr[5];
-	PositionHolder pos;
 
-	pos = LevelHelper::getSymmetricWallPositions_DiagBackwardSlash(0, centerX, centerY, offsetX, offsetY, width, height);
-	WallManager::pushWall(new Wall(pos.x, pos.y, width, height, wallColor));
-	pos = LevelHelper::getSymmetricWallPositions_DiagBackwardSlash(1, centerX, centerY, offsetX, offsetY, width, height);
-	WallManager::pushWall(new Wall(pos.x, pos.y, width, height, wallColor));
+	LevelHelper::pushSymmetricWalls_DiagBackwardSlash(centerX, centerY, offsetX, offsetY, width, height, wallColor);
 }
 
 inline void CustomLevel::initialization_RANDOM_WALLS(const GenericFactoryConstructionData& data, const ColorValueHolder& wallColor) noexcept {
@@ -301,14 +281,9 @@ inline void CustomLevel::initialization_RANDOM_WALLS(const GenericFactoryConstru
 		double wall_minHeight = dataArr_optional[2];
 		double wall_maxHeight = dataArr_optional[3];
 
-		for (int i = 0; i < wall_count; i++) {
-			//yeah, the min/max on width/height are switched, oh well
-			WallManager::pushWall(LevelHelper::makeNewRandomWall(area_startX, area_startY, area_width, area_height, wallColor, wall_minWidth, wall_minHeight, wall_maxWidth, wall_maxHeight));
-		}
+		LevelHelper::pushRandomWalls(wall_count, area_startX, area_startY, area_width, area_height, wallColor, wall_minWidth, wall_maxWidth, wall_minHeight, wall_maxHeight);
 	} else {
-		for (int i = 0; i < wall_count; i++) {
-			WallManager::pushWall(LevelHelper::makeNewRandomWall(area_startX, area_startY, area_width, area_height, wallColor));
-		}
+		LevelHelper::pushRandomWalls(wall_count, area_startX, area_startY, area_width, area_height, wallColor);
 	}
 }
 inline void CustomLevel::initialization_CLASSIC_WALLS(const ColorValueHolder& wallColor) noexcept {
@@ -333,12 +308,8 @@ inline void CustomLevel::initialization_POWER_LR(const GenericFactoryConstructio
 
 	const std::string* typesArr = static_cast<const std::string*>(data.getDataPortion(1).get());
 	const std::string* namesArr = static_cast<const std::string*>(data.getDataPortion(2).get());
-	PositionHolder pos;
 
-	pos = LevelHelper::getSymmetricPowerupPositions_LR(0, centerX, centerY, offsetX);
-	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, typesArr, namesArr, data.getDataPortionLength(1)));
-	pos = LevelHelper::getSymmetricPowerupPositions_LR(1, centerX, centerY, offsetX);
-	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, typesArr, namesArr, data.getDataPortionLength(1)));
+	LevelHelper::pushSymmetricPowerups_LR(centerX, centerY, offsetX, typesArr, namesArr, data.getDataPortionLength(1));
 }
 inline void CustomLevel::initialization_POWER_UD(const GenericFactoryConstructionData& data) noexcept {
 	const double* posArr = static_cast<const double*>(data.getDataPortion(0).get());
@@ -348,12 +319,8 @@ inline void CustomLevel::initialization_POWER_UD(const GenericFactoryConstructio
 
 	const std::string* typesArr = static_cast<const std::string*>(data.getDataPortion(1).get());
 	const std::string* namesArr = static_cast<const std::string*>(data.getDataPortion(2).get());
-	PositionHolder pos;
 
-	pos = LevelHelper::getSymmetricPowerupPositions_UD(0, centerX, centerY, offsetY);
-	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, typesArr, namesArr, data.getDataPortionLength(1)));
-	pos = LevelHelper::getSymmetricPowerupPositions_UD(1, centerX, centerY, offsetY);
-	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, typesArr, namesArr, data.getDataPortionLength(1)));
+	LevelHelper::pushSymmetricPowerups_UD(centerX, centerY, offsetY, typesArr, namesArr, data.getDataPortionLength(1));
 }
 inline void CustomLevel::initialization_POWER_Corners(const GenericFactoryConstructionData& data) noexcept {
 	const double* posArr = static_cast<const double*>(data.getDataPortion(0).get());
@@ -364,12 +331,8 @@ inline void CustomLevel::initialization_POWER_Corners(const GenericFactoryConstr
 
 	const std::string* typesArr = static_cast<const std::string*>(data.getDataPortion(1).get());
 	const std::string* namesArr = static_cast<const std::string*>(data.getDataPortion(2).get());
-	PositionHolder pos;
 
-	for (int i = 0; i < 4; i++) {
-		pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, centerX, centerY, offsetX, offsetY);
-		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, typesArr, namesArr, data.getDataPortionLength(1)));
-	}
+	LevelHelper::pushSymmetricPowerups_Corners(centerX, centerY, offsetX, offsetY, typesArr, namesArr, data.getDataPortionLength(1));
 }
 inline void CustomLevel::initialization_POWER_DiagForwardSlash(const GenericFactoryConstructionData& data) noexcept {
 	const double* posArr = static_cast<const double*>(data.getDataPortion(0).get());
@@ -380,12 +343,8 @@ inline void CustomLevel::initialization_POWER_DiagForwardSlash(const GenericFact
 
 	const std::string* typesArr = static_cast<const std::string*>(data.getDataPortion(1).get());
 	const std::string* namesArr = static_cast<const std::string*>(data.getDataPortion(2).get());
-	PositionHolder pos;
 
-	pos = LevelHelper::getSymmetricPowerupPositions_DiagForwardSlash(0, centerX, centerY, offsetX, offsetY);
-	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, typesArr, namesArr, data.getDataPortionLength(1)));
-	pos = LevelHelper::getSymmetricPowerupPositions_DiagForwardSlash(1, centerX, centerY, offsetX, offsetY);
-	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, typesArr, namesArr, data.getDataPortionLength(1)));
+	LevelHelper::pushSymmetricPowerups_DiagForwardSlash(centerX, centerY, offsetX, offsetY, typesArr, namesArr, data.getDataPortionLength(1));
 }
 inline void CustomLevel::initialization_POWER_DiagBackwardSlash(const GenericFactoryConstructionData& data) noexcept {
 	const double* posArr = static_cast<const double*>(data.getDataPortion(0).get());
@@ -396,12 +355,8 @@ inline void CustomLevel::initialization_POWER_DiagBackwardSlash(const GenericFac
 
 	const std::string* typesArr = static_cast<const std::string*>(data.getDataPortion(1).get());
 	const std::string* namesArr = static_cast<const std::string*>(data.getDataPortion(2).get());
-	PositionHolder pos;
 
-	pos = LevelHelper::getSymmetricPowerupPositions_DiagBackwardSlash(0, centerX, centerY, offsetX, offsetY);
-	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, typesArr, namesArr, data.getDataPortionLength(1)));
-	pos = LevelHelper::getSymmetricPowerupPositions_DiagBackwardSlash(1, centerX, centerY, offsetX, offsetY);
-	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, typesArr, namesArr, data.getDataPortionLength(1)));
+	LevelHelper::pushSymmetricPowerups_DiagBackwardSlash(centerX, centerY, offsetX, offsetY, typesArr, namesArr, data.getDataPortionLength(1));
 }
 
 inline void CustomLevel::initialization_CHAZARD(const GenericFactoryConstructionData& data) {

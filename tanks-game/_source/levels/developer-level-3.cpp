@@ -24,7 +24,6 @@ void DeveloperLevel3::initialize() {
 	ResetThings::tankPositionReset(ResetThings::default_tankToEdgeDist, GAME_HEIGHT/2);
 
 	ColorValueHolder color = getDefaultColor();
-	//int tempRand;
 	PositionHolder pos;
 	GenericFactoryConstructionData constructionData;
 	double* posArr;
@@ -48,10 +47,7 @@ void DeveloperLevel3::initialize() {
 	//HazardManager::pushCircleHazard("dev", "ginormous_turret", constructionData);
 
 	//not from dev1
-	pos = LevelHelper::getSymmetricPowerupPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 60+20+40+10);
-	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "dev", "backwards_movement"));
-	pos = LevelHelper::getSymmetricPowerupPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 60+20+40+10);
-	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "dev", "backwards_movement"));
+	LevelHelper::pushSymmetricPowerups_LR(GAME_WIDTH/2, GAME_HEIGHT/2, 60+20+40+10, "dev", "backwards_movement");
 
 	posArr = new double[3]{ GAME_WIDTH/2, GAME_HEIGHT/2 + 10+30/2, PI/2 };
 	int* patrolCount = new int[1]{ 4 };

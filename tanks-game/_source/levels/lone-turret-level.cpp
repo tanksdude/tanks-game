@@ -22,7 +22,6 @@ void LoneTurretLevel::initialize() {
 	ResetThings::tankPositionReset(40);
 
 	ColorValueHolder color = getDefaultColor();
-	int tempRand;
 	PositionHolder pos;
 	GenericFactoryConstructionData constructionData;
 	double* posArr;
@@ -50,40 +49,22 @@ void LoneTurretLevel::initialize() {
 	constructionData = GenericFactoryConstructionData(4, posArr);
 	HazardManager::pushRectHazard("vanilla", "no_bullet_zone", constructionData);
 
-	for (int i = 0; i < 4; i++) {
-		pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 80, 40, 20, 80);
-		WallManager::pushWall(new Wall(pos.x, pos.y, 20, 80, color));
-	}
-	for (int i = 0; i < 4; i++) {
-		pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 80+20, 40, 80-20, 20);
-		WallManager::pushWall(new Wall(pos.x, pos.y, 80-20, 20, color));
-	}
+	LevelHelper::pushSymmetricWalls_Corners(GAME_WIDTH/2, GAME_HEIGHT/2, 80, 40, 20, 80, color);
+	LevelHelper::pushSymmetricWalls_Corners(GAME_WIDTH/2, GAME_HEIGHT/2, 80+20, 40, 80-20, 20, color);
 
 	//outer powers:
-	tempRand = RNG::randFunc() * 2;
-	for (int i = 0; i < 4; i++) {
-		pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 80+20+(80-20)/2, 40+20+(80-20)/2);
-		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "vanilla-extra", LevelHelper::powerAlternate(i, tempRand, "barrier", "tracking")));
-	}
+	LevelHelper::pushSymmetricPowerups_Corners_Alternate(GAME_WIDTH/2, GAME_HEIGHT/2, 80+20+(80-20)/2, 40+20+(80-20)/2,
+		"vanilla-extra", "barrier", "vanilla-extra", "tracking");
 
 	//inner powers:
-	tempRand = RNG::randFunc() * 2;
-	for (int i = 0; i < 4; i++) {
-		pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 80/2, 40+20+(80-20)/2);
-		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "vanilla", LevelHelper::powerAlternate(i, tempRand, "grenade", "blast")));
-	}
+	LevelHelper::pushSymmetricPowerups_Corners_Alternate(GAME_WIDTH/2, GAME_HEIGHT/2, 80/2, 40+20+(80-20)/2,
+		"vanilla", "grenade", "vanilla", "blast");
 
 	//alternate inner powers:
-	//tempRand = RNG::randFunc() * 2;
-	//pos = LevelHelper::getSymmetricPowerupPositions_DiagForwardSlash(0, GAME_WIDTH/2, GAME_HEIGHT/2, 80/2, 40+20+(80-20)/2);
-	//PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, LevelHelper::simplePowerAlternate(0, tempRand, "fire", "grenade")));
-	//pos = LevelHelper::getSymmetricPowerupPositions_DiagForwardSlash(1, GAME_WIDTH/2, GAME_HEIGHT/2, 80/2, 40+20+(80-20)/2);
-	//PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, LevelHelper::simplePowerAlternate(1, tempRand, "fire", "grenade")));
-	//tempRand = RNG::randFunc() * 2;
-	//pos = LevelHelper::getSymmetricPowerupPositions_DiagBackwardSlash(0, GAME_WIDTH/2, GAME_HEIGHT/2, 80/2, 40+20+(80-20)/2);
-	//PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, LevelHelper::simplePowerAlternate(0, tempRand, "bounce", "blast")));
-	//pos = LevelHelper::getSymmetricPowerupPositions_DiagBackwardSlash(1, GAME_WIDTH/2, GAME_HEIGHT/2, 80/2, 40+20+(80-20)/2);
-	//PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, LevelHelper::simplePowerAlternate(1, tempRand, "bounce", "blast")));
+	//LevelHelper::pushSymmetricPowerups_DiagForwardSlash_Alternate(GAME_WIDTH/2, GAME_HEIGHT/2, 80/2, 40+20+(80-20)/2,
+	//	"vanilla", "fire", "vanilla", "grenade");
+	//LevelHelper::pushSymmetricPowerups_DiagBackwardSlash_Alternate(GAME_WIDTH/2, GAME_HEIGHT/2, 80/2, 40+20+(80-20)/2,
+	//	"vanilla", "bounce", "vanilla", "blast");
 }
 
 Level* LoneTurretLevel::factory() {

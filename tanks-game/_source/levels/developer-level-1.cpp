@@ -24,7 +24,6 @@ void DeveloperLevel1::initialize() {
 	ResetThings::tankPositionReset(ResetThings::default_tankToEdgeDist, GAME_HEIGHT/2);
 
 	ColorValueHolder color = getDefaultColor();
-	//int tempRand;
 	PositionHolder pos;
 	GenericFactoryConstructionData constructionData;
 	double* posArr;

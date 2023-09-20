@@ -24,7 +24,6 @@ void ManyHazardsLevel::initialize() {
 
 	//in JS, power mixing was turned off
 	ColorValueHolder color = getDefaultColor();
-	//int tempRand;
 	PositionHolder pos;
 	GenericFactoryConstructionData constructionData;
 	double* posArr;
@@ -77,10 +76,7 @@ void ManyHazardsLevel::initialize() {
 	}
 
 	//useless traps:
-	//for (int i = 0; i < 4; i++) {
-	//	pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2 - (wallArray[0].x+32 + 20), GAME_HEIGHT/2 - 48);
-	//	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "speed"));
-	//}
+	//LevelHelper::pushSymmetricPowerups_Corners(GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2 - (wallArray[0].x+32 + 20), GAME_HEIGHT/2 - 48, "vanilla", "speed");
 
 	PositionHolder wallPos1 = LevelHelper::getSymmetricWallPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, (GAME_HEIGHT - 128*2)/2, 160, 20);
 	WallManager::pushWall(new Wall(wallPos1.x, wallPos1.y, 160, 20, color));
@@ -115,18 +111,12 @@ void ManyHazardsLevel::initialize() {
 		HazardManager::pushRectHazard("vanilla", "lightning", constructionData);
 	}
 
-	for (int i = 0; i < 4; i++) {
-		pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 160/4 * 1.5, (GAME_HEIGHT - 128*2)/2 + 20 + 50 + 21);
-		//(160 - 32 - 20 - 50 - 16)/2 = 21
-		//(GAME_HEIGHT/2 - (GAME_HEIGHT - 128*2)/2 - [wall height] - [lava height] - [stationary turret distance to edge])/2
-		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "invincible"));
-	}
+	LevelHelper::pushSymmetricPowerups_Corners(GAME_WIDTH/2, GAME_HEIGHT/2, 160/4 * 1.5, (GAME_HEIGHT - 128*2)/2 + 20 + 50 + 21, "vanilla", "invincible");
+	//(160 - 32 - 20 - 50 - 16)/2 = 21
+	//(GAME_HEIGHT/2 - (GAME_HEIGHT - 128*2)/2 - [wall height] - [lava height] - [stationary turret distance to edge])/2
 
 	//traps:
-	//pos = LevelHelper::getSymmetricPowerupPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, (GAME_HEIGHT - 128*2)/2 + 20 + 50 + 21);
-	//PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "speed"));
-	//pos = LevelHelper::getSymmetricPowerupPositions_UD(1, GAME_WIDTH/2, GAME_HEIGHT/2, (GAME_HEIGHT - 128*2)/2 + 20 + 50 + 21);
-	//PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "speed"));
+	//LevelHelper::pushSymmetricPowerups_UD(GAME_WIDTH/2, GAME_HEIGHT/2, (GAME_HEIGHT - 128*2)/2 + 20 + 50 + 21, "vanilla", "speed");
 	//yes, they were evil
 
 	delete[] wallArray;

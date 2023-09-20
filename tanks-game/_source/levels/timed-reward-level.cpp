@@ -45,7 +45,6 @@ void TimedRewardLevel::initialize() {
 	ResetThings::tankPositionReset(40);
 
 	ColorValueHolder color = getDefaultColor();
-	//int tempRand;
 	PositionHolder pos;
 	GenericFactoryConstructionData constructionData;
 	double* posArr;
@@ -74,15 +73,9 @@ void TimedRewardLevel::initialize() {
 	}
 
 	//some extra walls
-	for (int i = 0; i < 4; i++) {
-		pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 120+40, 40+20, 40, 20);
-		WallManager::pushWall(new Wall(pos.x, pos.y, 40, 20, color));
-	}
+	LevelHelper::pushSymmetricWalls_Corners(GAME_WIDTH/2, GAME_HEIGHT/2, 120+40, 40+20, 40, 20, color);
 
-	for (int i = 0; i < 4; i++) {
-		pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 120 + 60, GAME_HEIGHT/2 - (40+40)/2);
-		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "vanilla-extra", "shield"));
-	}
+	LevelHelper::pushSymmetricPowerups_Corners(GAME_WIDTH/2, GAME_HEIGHT/2, 120 + 60, GAME_HEIGHT/2 - (40+40)/2, "vanilla-extra", "shield");
 
 	pos = LevelHelper::getSymmetricWallPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, 40+40, 20, (GAME_HEIGHT/2 - (40+40)));
 	posArr = new double[4]{ pos.x, pos.y, 20, GAME_HEIGHT/2 - (40+40) };

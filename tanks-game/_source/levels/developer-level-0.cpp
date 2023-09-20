@@ -24,15 +24,12 @@ void DeveloperLevel0::initialize() {
 	ResetThings::tankPositionReset();
 
 	ColorValueHolder randColor = getDefaultColor();
-	//int tempRand;
-	PositionHolder pos;
+	//PositionHolder pos;
 	GenericFactoryConstructionData constructionData;
 	double* posArr;
 	std::string* names;
 
-	for (int i = 0; i < 16; i++) {
-		WallManager::pushWall(LevelHelper::makeNewRandomWall(TANK_RADIUS*2.5, TANK_RADIUS*2, GAME_WIDTH - 2*(TANK_RADIUS*2.5), GAME_HEIGHT - 2*(TANK_RADIUS*2), randColor));
-	}
+	LevelHelper::pushRandomWalls(16, TANK_RADIUS*2.5, TANK_RADIUS*2, GAME_WIDTH - 2*(TANK_RADIUS*2.5), GAME_HEIGHT - 2*(TANK_RADIUS*2), randColor);
 
 	posArr = new double[3]{ GAME_WIDTH/2, GAME_HEIGHT/2, RNG::randFunc() * (2*PI) };
 	constructionData = GenericFactoryConstructionData(3, posArr);

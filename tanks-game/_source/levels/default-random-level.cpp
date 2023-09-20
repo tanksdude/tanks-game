@@ -29,15 +29,12 @@ void DefaultRandomLevel::initialize() { //still needs a lot of work
 	ResetThings::tankPositionReset();
 
 	ColorValueHolder randColor = getDefaultColor();
-	//int tempRand;
 	PositionHolder pos;
 	//GenericFactoryConstructionData constructionData;
 	//double* posArr;
 
 	//some random walls
-	for (int i = 0; i < 16; i++) {
-		WallManager::pushWall(LevelHelper::makeNewRandomWall(TANK_RADIUS*2.5*2, TANK_RADIUS*2, GAME_WIDTH - 2*(TANK_RADIUS*2.5*2), GAME_HEIGHT - 2*(TANK_RADIUS*2), randColor));
-	}
+	LevelHelper::pushRandomWalls(16, TANK_RADIUS*2.5*2, TANK_RADIUS*2, GAME_WIDTH - 2*(TANK_RADIUS*2.5*2), GAME_HEIGHT - 2*(TANK_RADIUS*2), randColor);
 
 	//randomize hazards:
 	//get the weight of each hazard

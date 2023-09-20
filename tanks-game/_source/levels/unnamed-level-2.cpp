@@ -20,7 +20,7 @@ ColorValueHolder UnnamedLevel2::getDefaultColor() const {
 
 std::unordered_map<std::string, float> UnnamedLevel2::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "dev", 0.0f });
+	weights.insert({ "dev", 0.125f });
 	weights.insert({ "random-dev", 0.0f });
 	//still testing; once it's named it gets weights
 	return weights;
@@ -30,8 +30,7 @@ void UnnamedLevel2::initialize() {
 	ResetThings::tankPositionReset();
 
 	ColorValueHolder color = getDefaultColor();
-	//int tempRand;
-	PositionHolder pos;
+	//PositionHolder pos;
 	//GenericFactoryConstructionData constructionData;
 	//double* posArr;
 

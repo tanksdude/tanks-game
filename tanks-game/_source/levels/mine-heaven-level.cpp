@@ -27,22 +27,20 @@ void MineHeavenLevel::initialize() {
 
 	//in JS, power mixing was turned off
 	ColorValueHolder color = getDefaultColor();
-	//int tempRand;
 	PositionHolder pos;
 	//GenericFactoryConstructionData constructionData;
 	//double* posArr;
-	std::string* paras;
+	std::string* types;
 	std::string* names;
 
 	LevelHelper::pushClassicWalls(color);
 
 	//total of 77 mine powerups
 
-	paras = new std::string[2]{ "mines", "old_mines" };
-	names = new std::string[2]{ "vanilla-extra", "old" };
-	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, names, paras, 2));
-	delete[] paras;
-	delete[] names;
+	types = new std::string[2]{ "vanilla-extra", "old" };
+	names = new std::string[2]{ "mines", "old_mines" };
+	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, types, names, 2));
+	delete[] types; delete[] names;
 	//the reason there were two was to increase shooting speed
 
 	const double mineSpacing = 16;
@@ -50,31 +48,19 @@ void MineHeavenLevel::initialize() {
 
 	//8*4 on the diagonals from the center
 	for (int i = 1; i <= 8; i++) {
-		for (int j = 0; j < 4; j++) {
-			pos = LevelHelper::getSymmetricPowerupPositions_Corners(j, GAME_WIDTH/2, GAME_HEIGHT/2, i * (GAME_WIDTH/2 - horzDistFromEdge)/8.0, i * (GAME_HEIGHT/2 - mineSpacing)/8.0);
-			PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "vanilla-extra", "mines"));
-		}
+		LevelHelper::pushSymmetricPowerups_Corners(GAME_WIDTH/2, GAME_HEIGHT/2, i * (GAME_WIDTH/2 - horzDistFromEdge)/8.0, i * (GAME_HEIGHT/2 - mineSpacing)/8.0, "vanilla-extra", "mines");
 	}
 
 	//15*2 on the top and bottom
 	for (int i = -7; i <= 7; i++) {
-		pos = LevelHelper::getSymmetricPowerupPositions_UD(0, GAME_WIDTH/2 - i * (GAME_WIDTH/2 - horzDistFromEdge)/8.0, GAME_HEIGHT/2, GAME_HEIGHT/2 - mineSpacing);
-		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "vanilla-extra", "mines"));
-		pos = LevelHelper::getSymmetricPowerupPositions_UD(1, GAME_WIDTH/2 - i * (GAME_WIDTH/2 - horzDistFromEdge)/8.0, GAME_HEIGHT/2, GAME_HEIGHT/2 - mineSpacing);
-		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "vanilla-extra", "mines"));
+		LevelHelper::pushSymmetricPowerups_UD(GAME_WIDTH/2 - i * (GAME_WIDTH/2 - horzDistFromEdge)/8.0, GAME_HEIGHT/2, GAME_HEIGHT/2 - mineSpacing, "vanilla-extra", "mines");
 	}
 
 	//7*2 along the center
 	for (int i = 1; i <= 7; i++) {
-		//if (i == 0) { continue; }
-		pos = LevelHelper::getSymmetricPowerupPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, i * (GAME_HEIGHT/2 - mineSpacing)/8.0);
-		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "vanilla-extra", "mines"));
-		pos = LevelHelper::getSymmetricPowerupPositions_UD(1, GAME_WIDTH/2, GAME_HEIGHT/2, i * (GAME_HEIGHT/2 - mineSpacing)/8.0);
-		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "vanilla-extra", "mines"));
+		LevelHelper::pushSymmetricPowerups_UD(GAME_WIDTH/2, GAME_HEIGHT/2, i * (GAME_HEIGHT/2 - mineSpacing)/8.0, "vanilla-extra", "mines");
 		//JS did just 14 in a row, not 7 pairs
 	}
-
-	//it's possible to condense the powerups into the one or two loops, but I don't care
 }
 
 Level* MineHeavenLevel::factory() {

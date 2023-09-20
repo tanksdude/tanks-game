@@ -23,7 +23,6 @@ std::unordered_map<std::string, float> DevNoWallsLevel1::getWeights() const {
 void DevNoWallsLevel1::initialize() {
 	ResetThings::tankPositionReset(40);
 
-	//int tempRand;
 	PositionHolder pos;
 	GenericFactoryConstructionData constructionData;
 	double* posArr;
@@ -37,10 +36,7 @@ void DevNoWallsLevel1::initialize() {
 	}
 
 	const double distFromCorner = 40;
-	for (int i = 0; i < 4; i++) {
-		pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2 - ((wallArray[0].x+32) + distFromCorner), GAME_HEIGHT/2 - distFromCorner);
-		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "vanilla-extra", "shield"));
-	}
+	LevelHelper::pushSymmetricPowerups_Corners(GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2 - ((wallArray[0].x+32) + distFromCorner), GAME_HEIGHT/2 - distFromCorner, "vanilla-extra", "shield");
 
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "dev", "inversion")); //this is evil (allowed because it's a dev level)
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "wallhack")); //heh

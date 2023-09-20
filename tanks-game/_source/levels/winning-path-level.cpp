@@ -7,7 +7,6 @@
 #include "../level-helper.h"
 #include "../powerup-manager.h"
 #include "../wall-manager.h"
-#include "../hazard-manager.h"
 #include "../level-manager.h"
 
 ColorValueHolder WinningPathLevel::getDefaultColor() const {
@@ -32,7 +31,6 @@ void WinningPathLevel::initialize() {
 	ResetThings::tankPositionReset(40);
 
 	ColorValueHolder color = getDefaultColor();
-	//int tempRand;
 	PositionHolder pos;
 	//GenericFactoryConstructionData constructionData;
 	//double* posArr;
@@ -42,15 +40,13 @@ void WinningPathLevel::initialize() {
 
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "godmode"));
 
-	pos = LevelHelper::getSymmetricWallPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 20, 20, GAME_HEIGHT/2);
-	WallManager::pushWall(new Wall(pos.x, pos.y, 20, GAME_HEIGHT/2, color));
-	pos = LevelHelper::getSymmetricWallPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 20, 20, GAME_HEIGHT/2);
-	WallManager::pushWall(new Wall(pos.x, pos.y, 20, GAME_HEIGHT/2, color));
+	LevelHelper::pushSymmetricWalls_LR(GAME_WIDTH/2, GAME_HEIGHT/2, 20, 20, GAME_HEIGHT/2, color);
 
 	const double WALL_WIDTH = 32;
 	const double WALL_HEIGHT = 16;
 	const int WALL_COUNT = 8;
 
+	//converting this into LevelHelper calls is effort...
 	for (int i = 0; i < 4*WALL_COUNT; i++) {
 		double w = RNG::randFunc() * (WALL_WIDTH - 8) + 8;
 		double h = RNG::randFunc() * (WALL_HEIGHT - 4) + 4;

@@ -21,7 +21,6 @@ void LightningCornersLevel::initialize() {
 	ResetThings::tankPositionReset(40);
 
 	ColorValueHolder color = getDefaultColor();
-	//int tempRand;
 	PositionHolder pos;
 	GenericFactoryConstructionData constructionData;
 	double* posArr;
@@ -29,10 +28,7 @@ void LightningCornersLevel::initialize() {
 
 	LevelHelper::pushClassicWalls(color);
 
-	for (int i = 0; i < 4; i++) {
-		pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 80-20, 80-20, 20, 20);
-		WallManager::pushWall(new Wall(pos.x, pos.y, 20, 20, color));
-	}
+	LevelHelper::pushSymmetricWalls_Corners(GAME_WIDTH/2, GAME_HEIGHT/2, 80-20, 80-20, 20, 20, color);
 
 	//I don't think this should exist
 	posArr = new double[4]{ GAME_WIDTH/2 - 80 + 20, GAME_HEIGHT/2 - 80 + 20, (80-20)*2, (80-20)*2 };
@@ -53,31 +49,18 @@ void LightningCornersLevel::initialize() {
 	HazardManager::pushRectHazard("vanilla", "vertical_lightning", constructionData);
 
 	//traps:
-	//for (int i = 0; i < 4; i++) {
-	//	pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 80-20/2, 80+20/2);
-	//	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "speed"));
-	//}
-	//for (int i = 0; i < 4; i++) {
-	//	pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 80+20/2, 80-20/2);
-	//	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "speed"));
-	//}
+	//LevelHelper::pushSymmetricPowerups_Corners(GAME_WIDTH/2, GAME_HEIGHT/2, 80-20/2, 80+20/2, "vanilla", "speed");
+	//LevelHelper::pushSymmetricPowerups_Corners(GAME_WIDTH/2, GAME_HEIGHT/2, 80+20/2, 80-20/2, "vanilla", "speed");
 
 	//unused:
-	//for (int i = 0; i < 4; i++) {
-	//	pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 80+20/2, 80+20/2);
-	//	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "banana"));
-	//}
+	//LevelHelper::pushSymmetricPowerups_Corners(GAME_WIDTH/2, GAME_HEIGHT/2, 80+20/2, 80+20/2, "vanilla", "banana");
 
 	names = new std::string[5]{ "speed", "speed", "speed", "big", "big" };
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, names, 5));
 	delete[] names;
 	//JS used 4 speed to accomplish the same thing (big bullet speed decrease stacked there) (if using old big power, do what JS does)
-
 	//if the powerup at the center is split, use this:
-	//for (int i = 0; i < 4; i++) {
-	//	pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 10, 10);
-	//	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "speed"));
-	//}
+	//LevelHelper::pushSymmetricPowerups_Corners(GAME_WIDTH/2, GAME_HEIGHT/2, 10, 10, "vanilla", "speed");
 
 	//not here in the JS level but I feel it should be here:
 	pos = LevelHelper::getSymmetricPowerupPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 80+20);

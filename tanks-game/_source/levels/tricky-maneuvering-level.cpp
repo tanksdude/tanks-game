@@ -28,20 +28,16 @@ void TrickyManeuveringLevel::initialize() {
 
 	//in JS, power mixing was turned off
 	ColorValueHolder color = getDefaultColor();
-	//int tempRand;
-	PositionHolder pos;
+	//PositionHolder pos;
 	GenericFactoryConstructionData constructionData;
 	double* posArr;
-	std::string* paras;
+	std::string* types;
 	std::string* names;
 
 	LevelHelper::pushClassicWalls(color);
 	PositionHolder* wallArray = LevelHelper::getClassicWallPositions();
 
-	for (int i = 0; i < 4; i++) {
-		pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 40, 40, 20, 20);
-		WallManager::pushWall(new Wall(pos.x, pos.y, 20, 20, color));
-	}
+	LevelHelper::pushSymmetricWalls_Corners(GAME_WIDTH/2, GAME_HEIGHT/2, 40, 40, 20, 20, color);
 
 	posArr = new double[4]{ GAME_WIDTH/2 - 40, GAME_HEIGHT/2 - 40 - 20, 40*2, 20 };
 	constructionData = GenericFactoryConstructionData(4, posArr);
@@ -64,23 +60,11 @@ void TrickyManeuveringLevel::initialize() {
 	HazardManager::pushRectHazard("vanilla", "lava", constructionData);
 
 	//traps:
-	//for (int i = 0; i < 4; i++) {
-	//	pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 60-20/2, 60+20/2);
-	//	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "speed"));
-	//}
-	//for (int i = 0; i < 4; i++) {
-	//	pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 60+20/2, 60-20/2);
-	//	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "speed"));
-	//}
+	//LevelHelper::pushSymmetricPowerups_Corners(GAME_WIDTH/2, GAME_HEIGHT/2, 60-20/2, 60+20/2, "vanilla", "speed");
+	//LevelHelper::pushSymmetricPowerups_Corners(GAME_WIDTH/2, GAME_HEIGHT/2, 60+20/2, 60-20/2, "vanilla", "speed");
 
-	//for (int i = 0; i < 4; i++) {
-	//	pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 80+20/2, 80+20/2);
-	//	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "banana"));
-	//}
-	//for (int i = 0; i < 4; i++) {
-	//	pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 16/2, 16/2);
-	//	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "speed")); //not trap
-	//}
+	//LevelHelper::pushSymmetricPowerups_Corners(GAME_WIDTH/2, GAME_HEIGHT/2, 80+20/2, 80+20/2, "vanilla", "banana");
+	//LevelHelper::pushSymmetricPowerups_Corners(GAME_WIDTH/2, GAME_HEIGHT/2, 16/2, 16/2, "vanilla", "speed"); //not trap
 
 	//[insert LightningCorner's center powerup here] (JS has it in its comments)
 
@@ -93,25 +77,15 @@ void TrickyManeuveringLevel::initialize() {
 
 	//did this level come first, or did LightningCorners? probably LightningCorners
 
-	for (int i = 0; i < 4; i++) {
-		pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 16, 16);
-		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "invincible"));
-	}
+	LevelHelper::pushSymmetricPowerups_Corners(GAME_WIDTH/2, GAME_HEIGHT/2, 16, 16, "vanilla", "invincible");
 
+	types = new std::string[2]{ "vanilla", "vanilla-extra" };
 	names = new std::string[2]{ "speed", "barrier" };
-	paras = new std::string[2]{ "vanilla", "vanilla-extra" };
-	for (int i = 0; i < 4; i++) {
-		pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, (wallArray[3].x - (wallArray[0].x+32))/2 - 16, GAME_HEIGHT/2 - (16+16));
-		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, paras, names, 2));
-	}
-	delete[] names;
-	delete[] paras;
+	LevelHelper::pushSymmetricPowerups_Corners(GAME_WIDTH/2, GAME_HEIGHT/2, (wallArray[3].x - (wallArray[0].x+32))/2 - 16, GAME_HEIGHT/2 - (16+16), types, names, 2);
+	delete[] types; delete[] names;
 
 	//not here in JS:
-	//pos = LevelHelper::getSymmetricPowerupPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, 80-20/2);
-	//PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "dev", "inversion"));
-	//pos = LevelHelper::getSymmetricPowerupPositions_UD(1, GAME_WIDTH/2, GAME_HEIGHT/2, 80-20/2);
-	//PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "dev", "inversion"));
+	//LevelHelper::pushSymmetricPowerups_UD(GAME_WIDTH/2, GAME_HEIGHT/2, 80-20/2, "dev", "inversion");
 
 	delete[] wallArray;
 }

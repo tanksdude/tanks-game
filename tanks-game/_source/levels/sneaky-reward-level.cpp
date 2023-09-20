@@ -3,7 +3,6 @@
 #include "../constants.h"
 #include <stdexcept>
 #include <iostream>
-#include "../rng.h"
 
 #include "../reset-things.h"
 #include "../level-helper.h"
@@ -30,11 +29,11 @@ void SneakyRewardLevel::initialize() {
 	ResetThings::tankPositionReset(40);
 
 	ColorValueHolder color = getDefaultColor();
-	int tempRand;
 	PositionHolder pos;
 	GenericFactoryConstructionData constructionData;
 	double* posArr;
-	std::string* names;
+	std::string *types1, *types2;
+	std::string *names1, *names2;
 	PowerSquare* p;
 
 	LevelEffect* le = nullptr;
@@ -47,52 +46,31 @@ void SneakyRewardLevel::initialize() {
 	if (le == nullptr) {
 		throw std::logic_error("ERROR: \"sneaky_reward\" level does not have \"respawning_powerups\" level effect!");
 	}
-	RespawningPowerupsLevelEffect* respawning = (RespawningPowerupsLevelEffect*)le;
+	RespawningPowerupsLevelEffect* respawning = static_cast<RespawningPowerupsLevelEffect*>(le);
 	//TODO: should this be the preferred way of getting specific level effects?
 
 	LevelHelper::pushClassicWalls(color);
 
-	for (int i = 0; i < 4; i++) {
-		pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 20, GAME_HEIGHT/2-(40+10), 10, 40+10);
-		WallManager::pushWall(new Wall(pos.x, pos.y, 10, 40+10, color));
-	}
-	for (int i = 0; i < 2; i++) {
-		pos = LevelHelper::getSymmetricWallPositions_UD(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_HEIGHT/2-(40+10), 40, 10);
-		WallManager::pushWall(new Wall(pos.x, pos.y, 40, 10, color));
-	}
+	LevelHelper::pushSymmetricWalls_Corners(GAME_WIDTH/2, GAME_HEIGHT/2, 20, GAME_HEIGHT/2-(40+10), 10, 40+10, color);
+	LevelHelper::pushSymmetricWalls_UD(GAME_WIDTH/2, GAME_HEIGHT/2, GAME_HEIGHT/2-(40+10), 40, 10, color);
 
-	names = new std::string[2]{ "wallhack", "godmode" };
-	tempRand = RNG::randFunc() * 2;
-	//TOOD: better power alternate functions
-	if (tempRand) {
-		pos = LevelHelper::getSymmetricPowerupPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_HEIGHT/2-20);
-		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "vanilla", names, 2));
-		pos = LevelHelper::getSymmetricPowerupPositions_UD(1, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_HEIGHT/2-20);
-		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "vanilla-extra", "tracking"));
-	} else {
-		pos = LevelHelper::getSymmetricPowerupPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_HEIGHT/2-20);
-		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "vanilla-extra", "tracking"));
-		pos = LevelHelper::getSymmetricPowerupPositions_UD(1, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_HEIGHT/2-20);
-		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "vanilla", names, 2));
-	}
-	delete[] names;
+	types1 = new std::string[2]{ "vanilla", "vanilla" };
+	names1 = new std::string[2]{ "wallhack", "godmode" };
+	types2 = new std::string[1]{ "vanilla-extra" };
+	names2 = new std::string[1]{ "tracking" }; //maybe it would be less confusing to switch the numbers on these arrays
+	LevelHelper::pushSymmetricPowerups_UD_Alternate(GAME_WIDTH/2, GAME_HEIGHT/2, GAME_HEIGHT/2-20,
+		types1, names1, 2, types2, names2, 1);
+	delete[] types1; delete[] names1; delete[] types2; delete[] names2;
+	//softlock solution:
+	respawning->watchLastPowerSquaresPushed(2, 1000);
 
-	for (int i = 0; i < 4; i++) {
-		pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 20+40, GAME_HEIGHT/2-20);
-		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "dev", "annoying"));
-	}
+	LevelHelper::pushSymmetricPowerups_Corners(GAME_WIDTH/2, GAME_HEIGHT/2, 20+40, GAME_HEIGHT/2-20, "dev", "annoying");
+	//respawning->watchLastPowerSquaresPushed(4);
 
-	for (int i = 0; i < 4; i++) {
-		pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 240-32-(20), GAME_HEIGHT/2-(20));
-		p = new PowerSquare(pos.x, pos.y, "wallhack");
-		PowerupManager::pushPowerup(p);
-		respawning->watchPowerSquare(p);
-	}
+	LevelHelper::pushSymmetricPowerups_Corners(GAME_WIDTH/2, GAME_HEIGHT/2, 240-32-(20), GAME_HEIGHT/2-(20), "vanilla", "wallhack");
+	respawning->watchLastPowerSquaresPushed(4);
 	/*
-	pos = LevelHelper::getSymmetricPowerupPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_HEIGHT/2-(40+20+10));
-	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "wallhack"));
-	pos = LevelHelper::getSymmetricPowerupPositions_UD(1, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_HEIGHT/2-(40+20+10));
-	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "wallhack"));
+	LevelHelper::pushSymmetricPowerups_UD(GAME_WIDTH/2, GAME_HEIGHT/2, GAME_HEIGHT/2-(40+20+10), "vanilla", "wallhack");
 	*/
 
 	posArr = new double[4]{ GAME_WIDTH/2-20/2, GAME_HEIGHT/2-80, 20, 80*2 };
@@ -102,8 +80,6 @@ void SneakyRewardLevel::initialize() {
 	p = new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "dev", "inversion");
 	PowerupManager::pushPowerup(p);
 	respawning->watchPowerSquare(p);
-
-	//TODO: so technically it's still possible to softlock on this level; should the godmode power be respawning?
 }
 
 Level* SneakyRewardLevel::factory() {

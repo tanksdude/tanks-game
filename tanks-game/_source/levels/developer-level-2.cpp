@@ -22,7 +22,6 @@ void DeveloperLevel2::initialize() {
 	//primary purpose: banana testing
 	ResetThings::tankPositionReset(ResetThings::default_tankToEdgeDist, GAME_HEIGHT/2);
 
-	//int tempRand;
 	PositionHolder pos;
 	//GenericFactoryConstructionData constructionData;
 	//double* posArr;

@@ -1,7 +1,6 @@
 #include "hiding-places-level.h"
 
 #include "../constants.h"
-#include "../rng.h"
 
 #include "../reset-things.h"
 #include "../level-helper.h"
@@ -22,56 +21,30 @@ void HidingPlacesLevel::initialize() {
 	ResetThings::tankPositionReset(40);
 
 	ColorValueHolder color = getDefaultColor();
-	int tempRand;
-	PositionHolder pos;
+	//PositionHolder pos;
 	GenericFactoryConstructionData constructionData;
 	double* posArr;
 
 	LevelHelper::pushClassicWalls(color);
 
-	for (int i = 0; i < 4; i++) {
-		pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-(80+32+48+60), GAME_HEIGHT/2-(40+20), 60, 20);
-		WallManager::pushWall(new Wall(pos.x, pos.y, 60, 20, color));
-	}
-	for (int i = 0; i < 4; i++) {
-		pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-(80+32+48+60), GAME_HEIGHT/2-(40+20+(80-20)), 60, 20);
-		WallManager::pushWall(new Wall(pos.x, pos.y, 60, 20, color));
-	}
-	for (int i = 0; i < 4; i++) {
-		pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-(80+32+48+60+20), GAME_HEIGHT/2-(40+80), 20, 80);
-		WallManager::pushWall(new Wall(pos.x, pos.y, 20, 80, color));
-	}
+	LevelHelper::pushSymmetricWalls_Corners(GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-(80+32+48+60), GAME_HEIGHT/2-(40+20), 60, 20, color);
+	LevelHelper::pushSymmetricWalls_Corners(GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-(80+32+48+60), GAME_HEIGHT/2-(40+20+(80-20)), 60, 20, color);
+	LevelHelper::pushSymmetricWalls_Corners(GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-(80+32+48+60+20), GAME_HEIGHT/2-(40+80), 20, 80, color);
 
 	//traps:
-	//pos = LevelHelper::getSymmetricPowerupPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 80);
-	//PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "speed"));
-	//pos = LevelHelper::getSymmetricPowerupPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 80);
-	//PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "speed"));
+	//LevelHelper::pushSymmetricPowerups_LR(GAME_WIDTH/2, GAME_HEIGHT/2, 80, "vanilla", "speed");
 
-	pos = LevelHelper::getSymmetricPowerupPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, 40);
-	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "vanilla-extra", "mines"));
-	pos = LevelHelper::getSymmetricPowerupPositions_UD(1, GAME_WIDTH/2, GAME_HEIGHT/2, 40);
-	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "vanilla-extra", "mines"));
+	LevelHelper::pushSymmetricPowerups_UD(GAME_WIDTH/2, GAME_HEIGHT/2, 40, "vanilla-extra", "mines");
 
-	tempRand = RNG::randFunc() * 2;
-	pos = LevelHelper::getSymmetricPowerupPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_HEIGHT/2-40);
-	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, LevelHelper::simplePowerAlternate(0, tempRand, "vanilla-extra", "vanilla"), LevelHelper::simplePowerAlternate(0, tempRand, "shotgun", "multishot")));
-	pos = LevelHelper::getSymmetricPowerupPositions_UD(1, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_HEIGHT/2-40);
-	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, LevelHelper::simplePowerAlternate(1, tempRand, "vanilla-extra", "vanilla"), LevelHelper::simplePowerAlternate(1, tempRand, "shotgun", "multishot")));
-	//TODO: better way to randomize power positions when they're in different groups
+	LevelHelper::pushSymmetricPowerups_UD_Alternate(GAME_WIDTH/2, GAME_HEIGHT/2, GAME_HEIGHT/2-40,
+		"vanilla-extra", "shotgun", "vanilla", "multishot");
 
-	tempRand = RNG::randFunc() * 2;
-	for (int i = 0; i < 4; i++) {
-		pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 80);
-		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, LevelHelper::powerAlternate(i, tempRand, "bounce", "speed"))); //JS: speed=barrier
-	}
+	LevelHelper::pushSymmetricPowerups_Corners_Alternate(GAME_WIDTH/2, GAME_HEIGHT/2, 60, 80,
+		"vanilla", "bounce", "vanilla", "speed"); //JS: speed=barrier
 
 	//alternate powers:
-	//tempRand = RNG::randFunc() * 2;
-	//for (int i = 0; i < 4; i++) {
-	//	pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 80);
-	//	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, RandomLevel::powerAlternate(i, tempRand, "vanilla", "vanilla-extra"), LevelHelper::powerAlternate(i, tempRand, "multishot", "shotgun")));
-	//}
+	//LevelHelper::pushSymmetricPowerups_Corners_Alternate(GAME_WIDTH/2, GAME_HEIGHT/2, 60, 80,
+	//	"vanilla", "multishot", "vanilla-extra", "shotgun");
 
 	//not here in the JS level but I feel it should be here:
 	posArr = new double[4]{ GAME_WIDTH/2-20/2, GAME_HEIGHT/2-20/2, 20, 20 };

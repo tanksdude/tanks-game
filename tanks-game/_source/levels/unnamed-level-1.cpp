@@ -15,7 +15,7 @@ ColorValueHolder UnnamedLevel1::getDefaultColor() const {
 
 std::unordered_map<std::string, float> UnnamedLevel1::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "dev", 0.0f });
+	weights.insert({ "dev", 0.125f });
 	weights.insert({ "random-dev", 0.0f });
 	//still testing; once it's named it gets weights
 	return weights;
@@ -25,36 +25,20 @@ void UnnamedLevel1::initialize() {
 	ResetThings::tankPositionReset();
 
 	ColorValueHolder color = getDefaultColor();
-	//int tempRand;
-	PositionHolder pos;
+	//PositionHolder pos;
 	//GenericFactoryConstructionData constructionData;
 	//double* posArr;
 
 	//outer walls
-	for (int i = 0; i < 4; i++) {
-		pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 20, 20+20+40, 160, 20);
-		WallManager::pushWall(new Wall(pos.x, pos.y, 160, 20, color));
-	}
-	pos = LevelHelper::getSymmetricWallPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 20+160-20, 20, (20+20+40)*2);
-	WallManager::pushWall(new Wall(pos.x, pos.y, 20, (20+20+40)*2, color));
-	pos = LevelHelper::getSymmetricWallPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 20+160-20, 20, (20+20+40)*2);
-	WallManager::pushWall(new Wall(pos.x, pos.y, 20, (20+20+40)*2, color));
+	LevelHelper::pushSymmetricWalls_Corners(GAME_WIDTH/2, GAME_HEIGHT/2, 20, 20+20+40, 160, 20, color);
+	LevelHelper::pushSymmetricWalls_LR(GAME_WIDTH/2, GAME_HEIGHT/2, 20+160-20, 20, (20+20+40)*2, color);
 
 	//inner walls
-	pos = LevelHelper::getSymmetricWallPositions_UD(0, GAME_WIDTH/2, GAME_HEIGHT/2, 20, (20+160-20-40)*2, 20);
-	WallManager::pushWall(new Wall(pos.x, pos.y, (20+160-20-40)*2, 20, color));
-	pos = LevelHelper::getSymmetricWallPositions_UD(1, GAME_WIDTH/2, GAME_HEIGHT/2, 20, (20+160-20-40)*2, 20);
-	WallManager::pushWall(new Wall(pos.x, pos.y, (20+160-20-40)*2, 20, color));
+	LevelHelper::pushSymmetricWalls_UD(GAME_WIDTH/2, GAME_HEIGHT/2, 20, (20+160-20-40)*2, 20, color);
 
-	for (int i = 0; i < 4; i++) {
-		pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 20+160+40, (GAME_HEIGHT/2 - (20+20+40+20))/2 + (20+20+40+20));
-		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "multishot"));
-	}
+	LevelHelper::pushSymmetricPowerups_Corners(GAME_WIDTH/2, GAME_HEIGHT/2, 20+160+40, (GAME_HEIGHT/2 - (20+20+40+20))/2 + (20+20+40+20), "vanilla", "multishot");
 
-	for (int i = 0; i < 4; i++) {
-		pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 20+160-20-20, 20+20+20);
-		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "speed"));
-	}
+	LevelHelper::pushSymmetricPowerups_Corners(GAME_WIDTH/2, GAME_HEIGHT/2, 20+160-20-20, 20+20+20, "vanilla", "speed");
 
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "vanilla-extra", "tracking"));
 

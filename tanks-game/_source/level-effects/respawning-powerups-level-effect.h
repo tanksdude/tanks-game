@@ -37,8 +37,11 @@ protected:
 	std::vector<PowerSquareWatcher*> watching;
 
 public:
-	int getNumWatching() const { return watching.size(); }
+	unsigned int getNumWatching() const { return watching.size(); }
 	virtual void watchPowerSquare(const PowerSquare*);
+	virtual void watchPowerSquare(const PowerSquare*, double timeToRespawn);
+	virtual void watchLastPowerSquaresPushed(int count);
+	virtual void watchLastPowerSquaresPushed(int count, double timeToRespawn);
 	virtual void unwatchPowerSquare(Game_ID powerupID);
 
 public:

@@ -1,7 +1,6 @@
 #include "corridor-level.h"
 
 #include "../constants.h"
-#include "../rng.h"
 
 #include "../reset-things.h"
 #include "../level-helper.h"
@@ -22,42 +21,26 @@ void CorridorLevel::initialize() {
 	ResetThings::tankPositionReset(40);
 
 	ColorValueHolder color = getDefaultColor();
-	int tempRand;
-	PositionHolder pos;
+	//PositionHolder pos;
 	//GenericFactoryConstructionData constructionData;
 	//double* posArr;
 
 	LevelHelper::pushClassicWalls(color);
 
-	pos = LevelHelper::getSymmetricWallPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 70, 20, 140);
-	WallManager::pushWall(new Wall(pos.x, pos.y, 20, 140, color));
-	pos = LevelHelper::getSymmetricWallPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 70, 20, 140);
-	WallManager::pushWall(new Wall(pos.x, pos.y, 20, 140, color));
+	LevelHelper::pushSymmetricWalls_LR(GAME_WIDTH/2, GAME_HEIGHT/2, 70, 20, 140, color);
 
-	for (int i = 0; i < 4; i++) {
-		pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 18, GAME_HEIGHT/2-(36+18), GAME_WIDTH/2-(80+32)-18, 18);
-		WallManager::pushWall(new Wall(pos.x, pos.y, GAME_WIDTH/2-(80+32)-18, 18, color));
-	}
+	LevelHelper::pushSymmetricWalls_Corners(GAME_WIDTH/2, GAME_HEIGHT/2, 18, GAME_HEIGHT/2-(36+18), GAME_WIDTH/2-(80+32)-18, 18, color);
 
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "bounce"));
 
 	//traps:
-	//for (int i = 0; i < 4; i++) {
-	//	pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 140/2-16, 140/2-16);
-	//	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "speed"));
-	//}
+	//LevelHelper::pushSymmetricPowerups_Corners(GAME_WIDTH/2, GAME_HEIGHT/2, 140/2-16, 140/2-16, "vanilla", "speed");
 
-	tempRand = RNG::randFunc() * 2;
-	for (int i = 0; i < 4; i++) {
-		pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-(80+32)-18, GAME_HEIGHT/2-18);
-		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, LevelHelper::powerAlternate(i, tempRand, "invincible", "wallhack")));
-	}
+	LevelHelper::pushSymmetricPowerups_Corners_Alternate(GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-(80+32)-18, GAME_HEIGHT/2-18,
+		"vanilla", "invincible", "vanilla", "wallhack");
 
-	tempRand = RNG::randFunc() * 2;
-	for (int i = 0; i < 4; i++) {
-		pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-(80+32)-18, GAME_HEIGHT/2-(140/2));
-		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, LevelHelper::powerAlternate(i, tempRand, "speed", "big"))); //JS: big=barrier
-	}
+	LevelHelper::pushSymmetricPowerups_Corners_Alternate(GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-(80+32)-18, GAME_HEIGHT/2-(140/2),
+		"vanilla", "speed", "vanilla", "big"); //JS: big=barrier
 }
 
 Level* CorridorLevel::factory() {
