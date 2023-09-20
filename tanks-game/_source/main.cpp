@@ -115,6 +115,7 @@
 #include "powers/old-mines-power.h" //firing rate stacks
 //dev powers:
 #include "powers/dev-long-invincible-named-power.h" //invincible but lasts a long time
+#include "powers/dev-colorless-long-invincible-named-power.h" //same but now it's not colored
 #include "powers/inversion-power.h" //flips left and right turning
 #include "powers/dev-annoying-power.h" //bullet doesn't hurt tank, merely pushes away
 #include "powers/ultra-bounce-power.h" //pushes wall away when it bounces
@@ -239,6 +240,7 @@ int main(int argc, char** argv) {
 
 	//dev:
 	PowerupDataGovernor::addPowerFactory(DevLongInvincibleNamedPower::factory);
+	PowerupDataGovernor::addPowerFactory(DevColorlessLongInvincibleNamedPower::factory);
 	PowerupDataGovernor::addPowerFactory(InversionPower::factory);
 	PowerupDataGovernor::addPowerFactory(DevAnnoyingPower::factory);
 	PowerupDataGovernor::addPowerFactory(UltraBouncePower::factory);

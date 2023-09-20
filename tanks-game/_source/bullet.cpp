@@ -263,6 +263,9 @@ ColorValueHolder Bullet::getColor() const {
 				highest = bulletPowers[i]->getColorImportance();
 			}
 		}
+		if (highest < 0) {
+			return defaultColor;
+		}
 		std::vector<ColorValueHolder> mixingColors;
 		for (int i = 0; i < bulletPowers.size(); i++) {
 			if (bulletPowers[i]->getColorImportance() == highest) {

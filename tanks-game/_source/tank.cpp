@@ -2,7 +2,7 @@
 
 #include "constants.h"
 #include <cmath>
-#include <algorithm> //std::sort, std::clamp
+#include <algorithm> //std::sort, std::clamp, std::count_if
 #include <iostream>
 #include "rng.h" //just for shiny tanks
 
@@ -585,6 +585,9 @@ ColorValueHolder Tank::getBodyColor() const {
 				highest = tankPowers[i]->getColorImportance();
 			}
 		}
+		if (highest < 0) {
+			return defaultColor;
+		}
 		std::vector<ColorValueHolder> mixingColors;
 		for (int i = 0; i < tankPowers.size(); i++) {
 			if (tankPowers[i]->getColorImportance() == highest) {
@@ -764,7 +767,10 @@ inline void Tank::drawBody(float alpha) const {
 
 		Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::numOfSides+1)*(2+4), indices, Circle::numOfSides*3);
 	} else {
-		if (tankPowers.size() <= 1) {
+		const int visiblePowerCount = std::count_if(tankPowers.begin(), tankPowers.end(),
+			[](const TankPower* tp) { return (tp->getColorImportance() >= 0); });
+
+		if (visiblePowerCount <= 1) {
 			ColorValueHolder color = getBodyColor();
 			color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 
@@ -797,6 +803,9 @@ inline void Tank::drawBody(float alpha) const {
 
 			ColorValueHolder color;
 			for (int i = 0; i < tankPowers.size(); i++) {
+				if (tankPowers[i]->getColorImportance() < 0) {
+					continue;
+				}
 				std::vector<float> coordsAndColor_colorSplit;
 				std::vector<unsigned int> indices_colorSplit;
 				//could just use an array, since the size should be easy to calculate, but that's effort
@@ -805,8 +814,8 @@ inline void Tank::drawBody(float alpha) const {
 				color = tankPowers[i]->getColor();
 				color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 
-				float rotatePercent = floor((float(i) / tankPowers.size()) * Circle::numOfSides) / Circle::numOfSides;
-				float nextRotatePercent = floor((float(i+1) / tankPowers.size()) * Circle::numOfSides) / Circle::numOfSides;
+				float rotatePercent = floor((float(i) / visiblePowerCount) * Circle::numOfSides) / Circle::numOfSides;
+				float nextRotatePercent = floor((float(i+1) / visiblePowerCount) * Circle::numOfSides) / Circle::numOfSides;
 				//unsigned int rotateVertices = floor((nextRotatePercent - rotatePercent) * Circle::numOfSides);
 				unsigned int rotateVertexStart = floor(rotatePercent * Circle::numOfSides);
 				unsigned int rotateVertexEnd = floor(nextRotatePercent * Circle::numOfSides);
