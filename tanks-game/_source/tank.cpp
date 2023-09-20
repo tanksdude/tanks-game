@@ -10,6 +10,7 @@
 #include "color-mixer.h"
 #include "background-rect.h"
 
+#include "game-manager.h" //INI file
 #include "bullet-manager.h"
 #include "level-manager.h"
 
@@ -130,29 +131,40 @@ bool Tank::move(bool forward, bool turnL, bool turnR, bool specialKey) {
 }
 
 inline void Tank::move_base(bool forward, bool turnL, bool turnR) {
-	//TODO: ini settings vvv
-	//if (!forward || !document.getElementById("moveturn").checked) { //change && to || and remove second ! to flip playstyle
+	const BasicINIParser::BasicINIData& ini_data = GameManager::get_INI();
+
+	if (ini_data.exists("GAME_OPTIONS", "RestrictTankTurning") && std::stoi(ini_data.get("GAME_OPTIONS", "RestrictTankTurning"))) {
+		if (!forward) {
+			if (turnL) {
+				velocity.changeAngle(PI/turningIncrement);
+			}
+			if (turnR) {
+				velocity.changeAngle(-PI/turningIncrement);
+			}
+		}
+	} else { [[likely]]
 		if (turnL) {
 			velocity.changeAngle(PI/turningIncrement);
 		}
 		if (turnR) {
 			velocity.changeAngle(-PI/turningIncrement);
 		}
-	//}
-	//if (!document.getElementById("acceleration").checked) {
+	}
+
+	if (ini_data.exists("GAME_OPTIONS", "NoTankAcceleration") && std::stoi(ini_data.get("GAME_OPTIONS", "NoTankAcceleration"))) {
+		if (forward) {
+			velocity.setMagnitude(maxSpeed);
+		} else {
+			velocity.setMagnitude(0);
+		}
+	} else { [[likely]]
 		if (forward) {
 			velocity.changeMagnitude(acceleration);
 		} else {
 			velocity.changeMagnitude(-acceleration); //can result in negative velocities, fixed by SimpleVector2D just not allowing that
 		}
 		terminalVelocity(forward);
-	//}
-	/*else {
-		if (forward)
-			velocity = maxSpeed;
-		else
-			velocity = 0;
-	}*/
+	}
 
 	x += velocity.getXComp();
 	y += velocity.getYComp();

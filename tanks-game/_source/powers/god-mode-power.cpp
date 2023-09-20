@@ -1,7 +1,7 @@
 #include "god-mode-power.h"
 
 #include "../color-mixer.h"
-#include "../game-manager.h"
+#include "../game-manager.h" //getTickCount()
 
 std::unordered_map<std::string, float> GodmodePower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
