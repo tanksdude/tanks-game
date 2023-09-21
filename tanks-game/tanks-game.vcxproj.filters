@@ -417,6 +417,9 @@
     <ClCompile Include="_source\levels\unnamed-level-3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="_source\levels\unnamed-level-4.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="_source\bullet.h">
@@ -864,6 +867,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="_source\levels\unnamed-level-3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="_source\levels\unnamed-level-4.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
