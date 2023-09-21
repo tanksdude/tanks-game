@@ -15,40 +15,48 @@
 * ini file
     * allows for some customization
     * now it's possible to view certain levels/whatever that exist but aren't playable
-        * should probably make a list of some sort to know what exists...
-* rudimentary custom powers and levels
+        * TODO: make a list to know what exists
+* rudimentary custom powers and levels!
     * turns out, DLLs were too complicated
+    * look at the mods folder for examples
 * graphics: batched rendering
+    * still not very efficient, but it's something
 * slight multithreading!
     * set number of threads in the ini
 * mild QoL improvements to displaying things
     * tank multi-powers are more obvious
+    * old tank death graphic (black to white gradient)
     * lightning hazards and no bullet zones are significantly easier to spot
-    * would make sense to have powerups be identified by an image instead of a color, but that'll happen in a sequel
+    * sorry colorblind people, but powerups are still distinguishable by color only; would make sense to use an image instead, but that'll happen in a sequel
 * overhaul collision
     * two passes for collision (like proper game physics)
     * more efficient
-    * actually proper physics, meaning earlier objects don't get priority over later ones anymore
+    * TODO: actually proper physics, meaning earlier objects don't get priority over later ones anymore
 * powerups:
-    * TODO
-    * megadeath update
+    * TODO: megadeath update
+    * [dev] color changing: changes color based on proximity to other tank
+    * [dev] backwards movement: by pressing the special key (currently e and /), the tank moves backwards
+    * [dev] wall sparks: makes extra bullets when it hits a wall
 * hazards:
-    * patrolling turret
-    * mother turret
-    * ginormous turret
-    * teleporter?
-    * reflecktor?
-    * [dev] selective no bullet zone (doesn't affect a certain teamID)
+    * patrolling turret: moves along its path
+    * mother turret: creates turrets
+    * ginormous turret: tells its turrets where to shoot
+    * TODO: teleporter?, reflecktor?
+    * TODO: [dev] selective no bullet zone (doesn't affect a certain teamID)
 * levels:
-    * more
-    * old versions of some levels (they're barely different but may as well include them)
+    * TODO: old versions of some levels (they're barely different but may as well include them)
+    * "tight patrolling corridor"
+    * "dangerous center"
+    * [dev] "unnamed3" and "unnamed4": tests with mother turret and ginormous turret
 * level effects:
-    * ?
+    * TODO: nothing so far
 * minor things:
     * update to VS2022
     * fullscreen toggle key changed to F11
     * overhaul priority handling (again)
-    * [dev] power: wall sparks, makes extra bullets when it hits a wall
+    * [dev] power, other stuff is poison: walls and hazards kill on contact
+    * [dev] power, "weird extra cannons": just a test of adding extra cannon points at weird angles
+    * [dev] hazard, "wall": it's a "wall," that's it
     * attempted: make static classes (mainly managers) not static; didn't work, everything is too interconnected, need to learn how structure games
 
 0.2.4
@@ -66,6 +74,7 @@
         * wind, ice, minefield, invisible walls
         * portal and invisible walls technically weren't level effects in JS but should be counted as one
     * powerup respawning
+        * likely very useful
 * powerups:
     * all JS powers in!
         * mines, shotgun, tracking
@@ -85,15 +94,16 @@
     * [dev] "unnamed1" and "unnamed2": a generic level and a level with a zig-zag of walls
 * minor things:
     * major cleanup (like massive cleanup, absolutely humongous, gigantically colossal)
+    * [dev] level effect, symmetric tanks: forces tanks to have symmetric positions
     * minor overhaul (oxymoron?) of end game and score handling
-    * inserting stuff through the dev menu is easier
+    * inserting stuff through the dev "menu" is easier
 
 0.2.3 "features"
 * most things from JS Tanks in!!!
 * powerups:
     * banana power!
     * godmode (still needs some work)
-    * [dev power] "inversion": switches turning direction of tank
+    * [dev] "inversion": switches turning direction of tank
 * hazards:
     * all JS hazards in!
         * other lightning hazards

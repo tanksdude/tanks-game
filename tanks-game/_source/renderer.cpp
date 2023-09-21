@@ -76,7 +76,7 @@ void Renderer::windowResizeFunc(int w, int h) {
 		winXmax = center + (appXmax - center) * scale;
 		winYmin = appYmin;
 		winYmax = appYmax;
-		
+
 		Renderer::proj = glm::ortho(0.0f, float(GAME_WIDTH*scale), 0.0f, (float)GAME_HEIGHT); //GPU
 		Renderer::gamewindow_width = Renderer::window_height * (GAME_WIDTH/GAME_HEIGHT);
 		Renderer::gamewindow_height = Renderer::window_height;
