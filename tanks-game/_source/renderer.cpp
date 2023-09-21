@@ -432,7 +432,11 @@ void Renderer::ActuallyFlush() {
 	auto end = Diagnostics::getTime();
 
 	Diagnostics::pushGraphTime("draw", Diagnostics::getDiff(start, end));
-	Diagnostics::drawGraphTimes();
+
+	const BasicINIParser::BasicINIData& ini_data = GameManager::get_INI();
+	if (ini_data.exists("DEBUG", "PerformanceGraphEnable") && std::stoi(ini_data.get("DEBUG", "PerformanceGraphEnable"))) {
+		Diagnostics::drawGraphTimes();
+	}
 
 	//for single framebuffer, use glFlush; for double framebuffer, swap the buffers
 	//swapping buffers is limited to monitor refresh rate, so I use glFlush
