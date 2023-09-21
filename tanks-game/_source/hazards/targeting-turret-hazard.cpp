@@ -91,6 +91,7 @@ void TargetingTurretHazard::tick() {
 			tick_continueTracking();
 		}
 		if (!targeting) { //looking for a tank
+			targetingCount = 0;
 			tick_lookForNewTarget();
 		}
 	}
@@ -136,7 +137,7 @@ inline void TargetingTurretHazard::tick_continueTracking() {
 }
 
 inline void TargetingTurretHazard::tick_lookForNewTarget() {
-	targetingCount = 0;
+	//targetingCount = 0;
 
 	std::vector<bool> tankVisibility; tankVisibility.reserve(TankManager::getNumTanks()); //not using regular arrays so people (including future me) can actually read this
 	std::vector<double> distancesToTank; distancesToTank.reserve(TankManager::getNumTanks()); //TODO: option for angle-based selection (look at homing in PowerFunctionHelper)

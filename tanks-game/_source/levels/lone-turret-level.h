@@ -8,6 +8,7 @@ public:
 	virtual ColorValueHolder getDefaultColor() const override { return ColorValueHolder(0.75f, 0.25f, 0.25f); } //JS: #CC4444
 	virtual std::vector<std::string> getLevelTypes() const override {
 		std::vector<std::string> types = std::vector<std::string>{ "vanilla-extra", "random-vanilla", "old", "random-old" };
+		//TODO: remove from random-vanilla, it's too lame
 		return types;
 	}
 	virtual std::unordered_map<std::string, float> getWeights() const override;

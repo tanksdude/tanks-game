@@ -41,6 +41,7 @@ MotherTurretHazard::MotherTurretHazard(double xpos, double ypos, double angle, i
 	childDistFromMother = r * childDistMultiplier; //probably default: (r/4) * 3 //TODO: r, r/2, r*.75 (3/4*r because child turret diameter + radius)
 	initialAngle = angle;
 	targetingNum = -1;
+	targetingChild = false;
 
 	childTurretIDs = std::vector<Game_ID>(maxChildTurrets, -1);
 	childTurretAlive = std::vector<bool>(maxChildTurrets, false);
@@ -201,7 +202,7 @@ inline void MotherTurretHazard::pushInitialChildren(int childCount) {
 	}
 }
 
-inline CircleHazard* MotherTurretHazard::makeTurret(int turretNum) const {
+CircleHazard* MotherTurretHazard::makeTurret(int turretNum) const {
 	GenericFactoryConstructionData constructionData;
 	double angle = getChildTurretAngle(turretNum);
 	double* posArr = new double[3]{ this->x + (this->r+childDistFromMother) * cos(angle), this->y + (this->r+childDistFromMother) * sin(angle), angle };
@@ -233,7 +234,7 @@ void MotherTurretHazard::pushChild(int turretNum) {
 	HazardManager::pushCircleHazard(childTurret);
 }
 
-double MotherTurretHazard::getChildTurretAngle(int turretNum) const {
+inline double MotherTurretHazard::getChildTurretAngle(int turretNum) const {
 	const double turretAngleDiff = (2*PI) / maxChildTurrets;
 	return initialAngle + turretNum * turretAngleDiff;
 }
@@ -248,10 +249,10 @@ void MotherTurretHazard::tick() {
 	updateChildCount();
 
 	if (currentState == 0) { //either turning to next turret spot or doing nothing
-		if (targeting) { //tracking spot
+		if (targetingChild) { //tracking spot
 			tick_trackSpot();
 		}
-		if (!targeting) { //looking for an open spot
+		if (!targetingChild) { //looking for an open spot
 			tick_chooseSpot();
 		}
 	}
@@ -283,10 +284,10 @@ inline void MotherTurretHazard::tick_chooseSpot() {
 			}
 		}
 		targetingNum = findMaxIndex(angleDiff.data(), maxChildTurrets);
-		targeting = true;
+		targetingChild = true;
 		//delete[] angleDiff;
 	} else {
-		targeting = false;
+		targetingChild = false;
 		targetingCount = 0;
 	}
 }
@@ -314,7 +315,7 @@ inline void MotherTurretHazard::tick_chargeUp() {
 		pushChild(targetingNum);
 		currentState = 2;
 		targetingCount = 0;
-		targeting = false; //allows target to change (also controls whether the reticule is drawn)
+		targetingChild = false; //allows target to change
 		//targetingNum = -1; //needed?
 	}
 }
@@ -689,7 +690,7 @@ inline void MotherTurretHazard::drawChildTurretLocations(float alpha) const {
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 
 	int chosenChild;
-	if (targeting) {
+	if (targetingChild) {
 		chosenChild = targetingNum;
 	} else {
 		chosenChild = -1;

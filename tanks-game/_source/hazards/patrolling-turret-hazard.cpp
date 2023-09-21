@@ -120,6 +120,7 @@ void PatrollingTurretHazard::tick() {
 }
 
 inline void PatrollingTurretHazard::tick_lookForNewTarget() {
+	targetingCount = 0;
 	TargetingTurretHazard::tick_lookForNewTarget();
 
 	if (targeting) {

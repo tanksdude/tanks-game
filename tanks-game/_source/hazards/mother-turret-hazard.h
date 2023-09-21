@@ -2,8 +2,6 @@
 #include "targeting-turret-hazard.h"
 
 class MotherTurretHazard : public TargetingTurretHazard {
-	//big TODO: should the child turrets follow the mother's orders? (meaning if the mother sees a tank, every child targets it)
-	//no, make that a different hazard (maybe ginormous turret? then it would have a real purpose)
 protected:
 	//SimpleVector2D velocity; //for stationary and targeting turrets, the magnitude will obviously be 0
 	//double tickCount;
@@ -24,6 +22,7 @@ protected:
 	std::vector<Game_ID> childTurretIDs; //length = maxChildTurrets (vector for ease of use)
 	std::vector<bool> childTurretAlive;
 	int targetingNum; //[0, maxChildTurrets)
+	bool targetingChild; //basically the targeting bool, but the distinction allows GinormousTurretHazard to work correctly
 
 	double childDistFromMother;
 	double initialAngle;
@@ -34,9 +33,9 @@ protected:
 
 	inline int getChildCount() const; //update child count before using this!
 	int updateChildCount(); //returns alive children
-	inline CircleHazard* makeTurret(int turretNum) const;
-	virtual void pushChild(int turretNum);
-	virtual double getChildTurretAngle(int turretNum) const;
+	virtual CircleHazard* makeTurret(int turretNum) const;
+	void pushChild(int turretNum); //shouldn't need to be virtual
+	inline double getChildTurretAngle(int turretNum) const; //same
 
 	virtual void turnTowardsPoint(int turretNum);
 	virtual bool isPointedAt(int turretNum) const;

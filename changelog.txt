@@ -29,8 +29,13 @@
     * two passes for collision (like proper game physics)
     * more efficient
     * actually proper physics, meaning earlier objects don't get priority over later ones anymore
+* powerups:
+    * TODO
+    * megadeath update
 * hazards:
     * patrolling turret
+    * mother turret
+    * ginormous turret
     * teleporter?
     * reflecktor?
     * [dev] selective no bullet zone (doesn't affect a certain teamID)
