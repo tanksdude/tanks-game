@@ -34,7 +34,7 @@ public:
 	void ghostDraw(float alpha) const override;
 	void ghostDraw(DrawingLayers, float alpha) const override;
 
-private:
+protected:
 	inline void drawMain(float alpha = 1.0f) const;
 	inline void drawOutlineThing(float alpha = 1.0f) const;
 

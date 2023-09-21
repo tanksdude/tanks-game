@@ -309,99 +309,6 @@ void VerticalLightningHazard::refreshBolt(LightningBolt* l) const {
 	RectangularLightningHazard::refreshBolt(l, this->w, this->h);
 }
 
-void VerticalLightningHazard::draw() const {
-	drawBackground(false);
-	drawBolts();
-}
-
-void VerticalLightningHazard::draw(DrawingLayers layer) const {
-	switch (layer) {
-		case DrawingLayers::under:
-			drawBackground(false);
-			break;
-
-		default:
-			std::cerr << "WARNING: unknown DrawingLayer for VerticalLightningHazard::draw!" << std::endl;
-		case DrawingLayers::normal:
-			drawBolts();
-			break;
-
-		case DrawingLayers::effects:
-			//nothing
-			break;
-
-		case DrawingLayers::top:
-			//nothing
-			break;
-
-		case DrawingLayers::debug:
-			//later
-			break;
-	}
-}
-
-void VerticalLightningHazard::poseDraw() const {
-	drawBackground(true);
-	drawBolts_Pose();
-}
-
-void VerticalLightningHazard::poseDraw(DrawingLayers layer) const {
-	switch (layer) {
-		case DrawingLayers::under:
-			drawBackground(true);
-			break;
-
-		default:
-			std::cerr << "WARNING: unknown DrawingLayer for VerticalLightningHazard::poseDraw!" << std::endl;
-		case DrawingLayers::normal:
-			drawBolts_Pose();
-			break;
-
-		case DrawingLayers::effects:
-			//nothing
-			break;
-
-		case DrawingLayers::top:
-			//nothing
-			break;
-
-		case DrawingLayers::debug:
-			//later
-			break;
-	}
-}
-
-void VerticalLightningHazard::ghostDraw(float alpha) const {
-	drawBackground(true, alpha);
-	drawBolts_Pose(alpha);
-}
-
-void VerticalLightningHazard::ghostDraw(DrawingLayers layer, float alpha) const {
-	switch (layer) {
-		case DrawingLayers::under:
-			drawBackground(true, alpha);
-			break;
-
-		default:
-			std::cerr << "WARNING: unknown DrawingLayer for VerticalLightningHazard::ghostDraw!" << std::endl;
-		case DrawingLayers::normal:
-			drawBolts_Pose(alpha);
-			break;
-
-		case DrawingLayers::effects:
-			//nothing
-			break;
-
-		case DrawingLayers::top:
-			//nothing
-			break;
-
-		case DrawingLayers::debug:
-			//later
-			break;
-	}
-}
-
 inline void VerticalLightningHazard::drawBackground(bool pose, float alpha) const {
 	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
@@ -469,58 +376,6 @@ inline void VerticalLightningHazard::drawBackgroundOutline(float alpha) const {
 	Renderer::SubmitBatchedDraw(coordsAndColor_outline, (4+4) * (2+4), indices_outline, (2*2) * 3);
 }
 
-inline void VerticalLightningHazard::drawBolts(float alpha) const {
-	if (!currentlyActive) {
-		return;
-	}
-
-	alpha = std::clamp<float>(alpha, 0, 1);
-	alpha = alpha * alpha;
-
-	ColorValueHolder color = getBoltColor();
-	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	const float lineWidth = 0.75f;
-
-	for (int i = 0; i < bolts.size(); i++) {
-		float* coordsAndColor = new float[(bolts[i]->length-1)*4*(2+4)];
-		unsigned int* indices = new unsigned int[(bolts[i]->length-1)*6];
-
-		for (int j = 0; j < bolts[i]->length-1; j++) {
-			const int startVertex = (j*4) * 6;
-			const int startIndex = j*6;
-
-			SimpleVector2D dist = SimpleVector2D(bolts[i]->positions[(j+1)*2] - bolts[i]->positions[j*2], bolts[i]->positions[(j+1)*2+1] - bolts[i]->positions[j*2+1]);
-			SimpleVector2D distCW = SimpleVector2D(dist.getAngle() - PI/2, lineWidth, true);
-
-			coordsAndColor[startVertex + 0*6]   = x + bolts[i]->positions[j*2]                     + distCW.getXComp();
-			coordsAndColor[startVertex + 0*6+1] = y + bolts[i]->positions[j*2+1]                   + distCW.getYComp();
-			coordsAndColor[startVertex + 1*6]   = x + bolts[i]->positions[j*2]   + dist.getXComp() + distCW.getXComp();
-			coordsAndColor[startVertex + 1*6+1] = y + bolts[i]->positions[j*2+1] + dist.getYComp() + distCW.getYComp();
-			coordsAndColor[startVertex + 2*6]   = x + bolts[i]->positions[j*2]   + dist.getXComp() - distCW.getXComp();
-			coordsAndColor[startVertex + 2*6+1] = y + bolts[i]->positions[j*2+1] + dist.getYComp() - distCW.getYComp();
-			coordsAndColor[startVertex + 3*6]   = x + bolts[i]->positions[j*2]                     - distCW.getXComp();
-			coordsAndColor[startVertex + 3*6+1] = y + bolts[i]->positions[j*2+1]                   - distCW.getYComp();
-
-			for (int k = 0; k < 4; k++) {
-				coordsAndColor[startVertex + k*6+2] = color.getRf();
-				coordsAndColor[startVertex + k*6+3] = color.getGf();
-				coordsAndColor[startVertex + k*6+4] = color.getBf();
-				coordsAndColor[startVertex + k*6+5] = color.getAf();
-			}
-
-			indices[startIndex + 0] = startVertex/6 + 0;
-			indices[startIndex + 1] = startVertex/6 + 1;
-			indices[startIndex + 2] = startVertex/6 + 2;
-			indices[startIndex + 3] = startVertex/6 + 2;
-			indices[startIndex + 4] = startVertex/6 + 3;
-			indices[startIndex + 5] = startVertex/6 + 0;
-		}
-
-		Renderer::SubmitBatchedDraw(coordsAndColor, (bolts[i]->length-1)*4*(2+4), indices, (bolts[i]->length-1)*6);
-		delete[] coordsAndColor; delete[] indices;
-	}
-}
-
 inline void VerticalLightningHazard::drawBolts_Pose(float alpha) const {
 	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
@@ -535,7 +390,7 @@ inline void VerticalLightningHazard::drawBolts_Pose(float alpha) const {
 	//draw
 	ColorValueHolder color = getBoltColor();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	const float lineWidth = 0.75f; //TODO: too thick?
+	const float lineWidth = 0.75f;
 
 	for (int i = 0; i < poseBolts.size(); i++) {
 		//match with drawBolts()

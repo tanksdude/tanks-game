@@ -57,11 +57,8 @@ protected:
 	virtual inline void tick_chargeUp();
 	virtual inline void tick_cooldown();
 
-private:
-	inline void drawBody(float alpha = 1.0f) const;
-	inline void drawOutline(float alpha = 1.0f) const;
-	inline void drawBarrel(float alpha = 1.0f) const;
-	inline void drawReticule(float alpha = 1.0f) const;
+protected:
+	virtual inline void drawReticule(float alpha = 1.0f) const;
 
 public:
 	TargetingTurretHazard(double xpos, double ypos, double angle);

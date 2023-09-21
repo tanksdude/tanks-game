@@ -258,7 +258,7 @@ void CircularLightningHazard::draw(DrawingLayers layer) const {
 			break;
 
 		default:
-			std::cerr << "WARNING: unknown DrawingLayer for CircularLightningHazard::draw!" << std::endl;
+			std::cerr << "WARNING: unknown DrawingLayer for " + getName() + " draw!" << std::endl;
 		case DrawingLayers::normal:
 			drawBolts();
 			break;
@@ -289,7 +289,7 @@ void CircularLightningHazard::poseDraw(DrawingLayers layer) const {
 			break;
 
 		default:
-			std::cerr << "WARNING: unknown DrawingLayer for CircularLightningHazard::poseDraw!" << std::endl;
+			std::cerr << "WARNING: unknown DrawingLayer for " + getName() + " poseDraw!" << std::endl;
 		case DrawingLayers::normal:
 			drawBolts_Pose();
 			break;
@@ -321,7 +321,7 @@ void CircularLightningHazard::ghostDraw(DrawingLayers layer, float alpha) const 
 			break;
 
 		default:
-			std::cerr << "WARNING: unknown DrawingLayer for CircularLightningHazard::ghostDraw!" << std::endl;
+			std::cerr << "WARNING: unknown DrawingLayer for " + getName() + " ghostDraw!" << std::endl;
 		case DrawingLayers::normal:
 			drawBolts_Pose(alpha);
 			break;
@@ -433,7 +433,7 @@ inline void CircularLightningHazard::drawBolts(float alpha) const {
 
 	ColorValueHolder color = getBoltColor();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	const float lineWidth = 0.75f; //TODO: too thick?
+	const float lineWidth = 0.75f;
 
 	for (int i = 0; i < bolts.size(); i++) {
 		float* coordsAndColor = new float[(bolts[i]->length-1)*4*(2+4)];

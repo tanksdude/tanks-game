@@ -311,7 +311,7 @@ void RectangularLightningHazard::draw(DrawingLayers layer) const {
 			break;
 
 		default:
-			std::cerr << "WARNING: unknown DrawingLayer for RectangularLightningHazard::draw!" << std::endl;
+			std::cerr << "WARNING: unknown DrawingLayer for " + getName() + " draw!" << std::endl;
 		case DrawingLayers::normal:
 			drawBolts();
 			break;
@@ -342,7 +342,7 @@ void RectangularLightningHazard::poseDraw(DrawingLayers layer) const {
 			break;
 
 		default:
-			std::cerr << "WARNING: unknown DrawingLayer for RectangularLightningHazard::poseDraw!" << std::endl;
+			std::cerr << "WARNING: unknown DrawingLayer for " + getName() + " poseDraw!" << std::endl;
 		case DrawingLayers::normal:
 			drawBolts_Pose();
 			break;
@@ -373,7 +373,7 @@ void RectangularLightningHazard::ghostDraw(DrawingLayers layer, float alpha) con
 			break;
 
 		default:
-			std::cerr << "WARNING: unknown DrawingLayer for RectangularLightningHazard::ghostDraw!" << std::endl;
+			std::cerr << "WARNING: unknown DrawingLayer for " + getName() + " ghostDraw!" << std::endl;
 		case DrawingLayers::normal:
 			drawBolts_Pose(alpha);
 			break;
@@ -477,7 +477,7 @@ inline void RectangularLightningHazard::drawBolts(float alpha) const {
 
 	ColorValueHolder color = getBoltColor();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	const float lineWidth = 0.75f; //TODO: too thick?
+	const float lineWidth = 0.75f;
 
 	for (int i = 0; i < bolts.size(); i++) {
 		float* coordsAndColor = new float[(bolts[i]->length-1)*4*(2+4)];

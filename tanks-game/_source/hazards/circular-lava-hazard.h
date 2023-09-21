@@ -45,9 +45,9 @@ public:
 	virtual void ghostDraw(float alpha) const override;
 	virtual void ghostDraw(DrawingLayers, float alpha) const override;
 
-private:
-	inline void drawBackground(bool pose, float alpha = 1.0f) const;
-	inline void drawBubbles(bool pose, float alpha = 1.0f) const;
+protected:
+	virtual inline void drawBackground(bool pose, float alpha = 1.0f) const;
+	virtual inline void drawBubbles(bool pose, float alpha = 1.0f) const;
 
 public:
 	CircularLavaHazard(double xpos, double ypos, double radius);

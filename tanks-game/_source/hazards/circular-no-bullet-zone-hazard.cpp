@@ -85,7 +85,7 @@ void CircularNoBulletZoneHazard::draw() const {
 void CircularNoBulletZoneHazard::draw(DrawingLayers layer) const {
 	switch (layer) {
 		default:
-			std::cerr << "WARNING: unknown DrawingLayer for CircularNoBulletZoneHazard::draw!" << std::endl;
+			std::cerr << "WARNING: unknown DrawingLayer for " + getName() + " draw!" << std::endl;
 		case DrawingLayers::under:
 			draw();
 			break;
@@ -115,7 +115,7 @@ void CircularNoBulletZoneHazard::poseDraw() const {
 void CircularNoBulletZoneHazard::poseDraw(DrawingLayers layer) const {
 	switch (layer) {
 		default:
-			std::cerr << "WARNING: unknown DrawingLayer for CircularNoBulletZoneHazard::poseDraw!" << std::endl;
+			std::cerr << "WARNING: unknown DrawingLayer for " + getName() + " poseDraw!" << std::endl;
 		case DrawingLayers::under:
 			poseDraw();
 			break;
@@ -229,7 +229,7 @@ void CircularNoBulletZoneHazard::ghostDraw(float alpha) const {
 void CircularNoBulletZoneHazard::ghostDraw(DrawingLayers layer, float alpha) const {
 	switch (layer) {
 		default:
-			std::cerr << "WARNING: unknown DrawingLayer for CircularNoBulletZoneHazard::ghostDraw!" << std::endl;
+			std::cerr << "WARNING: unknown DrawingLayer for " + getName() + " ghostDraw!" << std::endl;
 		case DrawingLayers::under:
 			ghostDraw(alpha);
 			break;

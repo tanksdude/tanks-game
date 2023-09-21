@@ -115,7 +115,7 @@ void CircularLavaHazard::draw() const {
 void CircularLavaHazard::draw(DrawingLayers layer) const {
 	switch (layer) {
 		default:
-			std::cerr << "WARNING: unknown DrawingLayer for CircularLavaHazard::draw!" << std::endl;
+			std::cerr << "WARNING: unknown DrawingLayer for " + getName() + " draw!" << std::endl;
 		case DrawingLayers::under:
 			drawBackground(false);
 			break;
@@ -145,7 +145,7 @@ void CircularLavaHazard::poseDraw() const {
 void CircularLavaHazard::poseDraw(DrawingLayers layer) const {
 	switch (layer) {
 		default:
-			std::cerr << "WARNING: unknown DrawingLayer for CircularLavaHazard::poseDraw!" << std::endl;
+			std::cerr << "WARNING: unknown DrawingLayer for " + getName() + " poseDraw!" << std::endl;
 		case DrawingLayers::under:
 			drawBackground(true);
 			break;
@@ -176,7 +176,7 @@ void CircularLavaHazard::ghostDraw(float alpha) const {
 void CircularLavaHazard::ghostDraw(DrawingLayers layer, float alpha) const {
 	switch (layer) {
 		default:
-			std::cerr << "WARNING: unknown DrawingLayer for CircularLavaHazard::ghostDraw!" << std::endl;
+			std::cerr << "WARNING: unknown DrawingLayer for " + getName() + " ghostDraw!" << std::endl;
 		case DrawingLayers::under:
 			drawBackground(false, alpha);
 			break;

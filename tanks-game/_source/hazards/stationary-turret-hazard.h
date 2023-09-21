@@ -49,10 +49,10 @@ public:
 	virtual void ghostDraw(float alpha) const override;
 	virtual void ghostDraw(DrawingLayers, float alpha) const override;
 
-private:
-	inline void drawBody(float alpha = 1.0f) const;
-	inline void drawOutline(float alpha = 1.0f) const;
-	inline void drawBarrel(float alpha = 1.0f) const;
+protected:
+	virtual inline void drawBody(float alpha = 1.0f) const;
+	virtual inline void drawOutline(float alpha = 1.0f) const;
+	virtual inline void drawBarrel(float alpha = 1.0f) const;
 
 public:
 	StationaryTurretHazard(double xpos, double ypos, double angle);

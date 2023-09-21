@@ -6,7 +6,6 @@ protected:
 	class MinionTurret : public TargetingTurretHazard {
 		//follows orders from its parent GinormousTurretHazard
 		//name should be MinionTurretHazard, but oh well
-		//friend class GinormousTurretHazard;
 
 	protected:
 		Game_ID parentID;
@@ -31,18 +30,9 @@ protected:
 		static std::string getClassName() { return "minion_turret"; }
 
 		virtual void tick() override;
-		virtual void draw() const override;
-		virtual void draw(DrawingLayers) const override;
-		virtual void poseDraw() const override;
-		virtual void poseDraw(DrawingLayers) const override;
-		virtual void ghostDraw(float alpha) const override;
-		virtual void ghostDraw(DrawingLayers, float alpha) const override;
 
-	private:
-		inline void drawBody(float alpha = 1.0f) const;
-		inline void drawOutline(float alpha = 1.0f) const;
-		inline void drawBarrel(float alpha = 1.0f) const;
-		inline void drawReticule(float alpha = 1.0f) const;
+	protected:
+		virtual inline void drawReticule(float alpha = 1.0f) const;
 
 	public:
 		MinionTurret(double xpos, double ypos, double angle, Game_ID parentID);
@@ -88,22 +78,15 @@ public:
 	static std::string getClassName() { return "ginormous_turret"; }
 
 	virtual void tick() override;
-	virtual void draw() const override;
-	virtual void draw(DrawingLayers) const override;
-	virtual void poseDraw() const override;
-	virtual void poseDraw(DrawingLayers) const override;
-	virtual void ghostDraw(float alpha) const override;
-	virtual void ghostDraw(DrawingLayers, float alpha) const override;
 
 protected:
 	virtual inline void tick_notifyChildren(Game_ID id);
 	virtual inline void tick_stopChildren();
 
-private:
-	inline void drawBody(float alpha = 1.0f) const;
-	inline void drawOutline(float alpha = 1.0f) const;
-	inline void drawBarrel(float alpha = 1.0f) const;
-	inline void drawShootingTimer(float alpha = 1.0f) const;
+protected:
+	//same as StationaryTurretHazard but with a thicker outline
+	virtual inline void drawOutline(float alpha = 1.0f) const;
+	virtual inline void drawBarrel(float alpha = 1.0f) const;
 
 public:
 	GinormousTurretHazard(double xpos, double ypos, double angle);

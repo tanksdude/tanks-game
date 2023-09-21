@@ -75,12 +75,8 @@ protected:
 	virtual inline void tick_moveForward();
 	virtual inline void tick_patrolWait();
 
-private:
-	inline void drawBody(float alpha = 1.0f) const;
-	inline void drawOutline(float alpha = 1.0f) const;
-	inline void drawBarrel(float alpha = 1.0f) const;
-	inline void drawReticule(float alpha = 1.0f) const;
-	inline void drawPath(float alpha = 1.0f) const; //debug
+protected:
+	virtual inline void drawPath(float alpha = 1.0f) const; //debug
 
 public:
 	PatrollingTurretHazard(double xpos, double ypos, double angle, int pairNum, const double* posList, const double* waitList);

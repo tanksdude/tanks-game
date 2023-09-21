@@ -133,7 +133,7 @@ void RespawningPowerupsLevelEffect::draw(DrawingLayers layer) const {
 			break;
 
 		default:
-			std::cerr << "WARNING: unknown DrawingLayer for RespawningPowerupsLevelEffect::draw!" << std::endl;
+			std::cerr << "WARNING: unknown DrawingLayer for " + getName() + " draw!" << std::endl;
 		case DrawingLayers::effects:
 			draw();
 			break;
@@ -164,7 +164,7 @@ void RespawningPowerupsLevelEffect::poseDraw(DrawingLayers layer) const {
 			break;
 
 		default:
-			std::cerr << "WARNING: unknown DrawingLayer for RespawningPowerupsLevelEffect::poseDraw!" << std::endl;
+			std::cerr << "WARNING: unknown DrawingLayer for " + getName() + " poseDraw!" << std::endl;
 		case DrawingLayers::effects:
 			poseDraw();
 			break;
@@ -196,7 +196,7 @@ void RespawningPowerupsLevelEffect::ghostDraw(DrawingLayers layer, float alpha) 
 			break;
 
 		default:
-			std::cerr << "WARNING: unknown DrawingLayer for RespawningPowerupsLevelEffect::ghostDraw!" << std::endl;
+			std::cerr << "WARNING: unknown DrawingLayer for " + getName() + " ghostDraw!" << std::endl;
 		case DrawingLayers::effects:
 			ghostDraw(alpha);
 			break;

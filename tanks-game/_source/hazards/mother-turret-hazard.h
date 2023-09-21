@@ -75,12 +75,9 @@ protected:
 	virtual inline void tick_chargeUp() override;
 	virtual inline void tick_cooldown() override;
 
-private:
-	inline void drawBody(float alpha = 1.0f) const;
-	inline void drawOutline(float alpha = 1.0f) const;
-	inline void drawBarrel(float alpha = 1.0f) const;
-	inline void drawShootingTimer(float alpha = 1.0f) const;
-	inline void drawChildTurretLocations(float alpha = 1.0f) const; //debug
+protected:
+	virtual inline void drawShootingTimer(float alpha = 1.0f) const;
+	virtual inline void drawChildTurretLocations(float alpha = 1.0f) const; //debug
 
 public:
 	MotherTurretHazard(double xpos, double ypos, double angle);

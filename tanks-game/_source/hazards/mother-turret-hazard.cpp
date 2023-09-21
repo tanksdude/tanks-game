@@ -427,7 +427,7 @@ void MotherTurretHazard::draw(DrawingLayers layer) const {
 			break;
 
 		default:
-			std::cerr << "WARNING: unknown DrawingLayer for MotherTurretHazard::draw!" << std::endl;
+			std::cerr << "WARNING: unknown DrawingLayer for " + getName() + " draw!" << std::endl;
 		case DrawingLayers::normal:
 			drawShootingTimer();
 			drawBody();
@@ -464,7 +464,7 @@ void MotherTurretHazard::poseDraw(DrawingLayers layer) const {
 			break;
 
 		default:
-			std::cerr << "WARNING: unknown DrawingLayer for MotherTurretHazard::poseDraw!" << std::endl;
+			std::cerr << "WARNING: unknown DrawingLayer for " + getName() + " poseDraw!" << std::endl;
 		case DrawingLayers::normal:
 			drawBody();
 			drawOutline();
@@ -501,7 +501,7 @@ void MotherTurretHazard::ghostDraw(DrawingLayers layer, float alpha) const {
 			break;
 
 		default:
-			std::cerr << "WARNING: unknown DrawingLayer for MotherTurretHazard::ghostDraw!" << std::endl;
+			std::cerr << "WARNING: unknown DrawingLayer for " + getName() + " ghostDraw!" << std::endl;
 		case DrawingLayers::normal:
 			drawShootingTimer(alpha); //TODO: should this happen?
 			drawBody(alpha);
@@ -521,117 +521,6 @@ void MotherTurretHazard::ghostDraw(DrawingLayers layer, float alpha) const {
 			//later
 			break;
 	}
-}
-
-inline void MotherTurretHazard::drawBody(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
-	alpha = alpha * alpha;
-
-	ColorValueHolder color = getColor();
-	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-
-	float coordsAndColor[(Circle::numOfSides+1)*(2+4)];
-	coordsAndColor[0] = x;
-	coordsAndColor[1] = y;
-	coordsAndColor[2] = color.getRf();
-	coordsAndColor[3] = color.getGf();
-	coordsAndColor[4] = color.getBf();
-	coordsAndColor[5] = color.getAf();
-	for (int i = 1; i < Circle::numOfSides+1; i++) {
-		coordsAndColor[i*6]   = x + r * cos((i-1) * (2*PI / Circle::numOfSides));
-		coordsAndColor[i*6+1] = y + r * sin((i-1) * (2*PI / Circle::numOfSides));
-		coordsAndColor[i*6+2] = color.getRf();
-		coordsAndColor[i*6+3] = color.getGf();
-		coordsAndColor[i*6+4] = color.getBf();
-		coordsAndColor[i*6+5] = color.getAf();
-	}
-
-	unsigned int indices[Circle::numOfSides*3];
-	for (int i = 0; i < Circle::numOfSides; i++) {
-		indices[i*3]   = 0;
-		indices[i*3+1] = i+1;
-		indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
-	}
-
-	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::numOfSides+1)*(2+4), indices, Circle::numOfSides*3);
-}
-
-inline void MotherTurretHazard::drawOutline(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
-	alpha = alpha * alpha;
-
-	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
-	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	const float lineWidth = 0.5f;
-
-	float coordsAndColor[(Circle::numOfSides*2)*(2+4)];
-	for (int i = 0; i < Circle::numOfSides; i++) {
-		coordsAndColor[(i*2)  *6]   = x + (r-lineWidth) * cos(i * (2*PI / Circle::numOfSides));
-		coordsAndColor[(i*2)  *6+1] = y + (r-lineWidth) * sin(i * (2*PI / Circle::numOfSides));
-		coordsAndColor[(i*2+1)*6]   = x + (r+lineWidth) * cos(i * (2*PI / Circle::numOfSides));
-		coordsAndColor[(i*2+1)*6+1] = y + (r+lineWidth) * sin(i * (2*PI / Circle::numOfSides));
-
-		coordsAndColor[(i*2)  *6+2] = color.getRf();
-		coordsAndColor[(i*2)  *6+3] = color.getGf();
-		coordsAndColor[(i*2)  *6+4] = color.getBf();
-		coordsAndColor[(i*2)  *6+5] = color.getAf();
-		coordsAndColor[(i*2+1)*6+2] = color.getRf();
-		coordsAndColor[(i*2+1)*6+3] = color.getGf();
-		coordsAndColor[(i*2+1)*6+4] = color.getBf();
-		coordsAndColor[(i*2+1)*6+5] = color.getAf();
-	}
-
-	unsigned int indices[Circle::numOfSides*6];
-	for (int i = 0; i < Circle::numOfSides; i++) {
-		indices[i*6]   =  i*2;
-		indices[i*6+1] =  i*2+1;
-		indices[i*6+2] = (i*2+3) % (Circle::numOfSides*2);
-		indices[i*6+3] = (i*2+3) % (Circle::numOfSides*2);
-		indices[i*6+4] = (i*2+2) % (Circle::numOfSides*2);
-		indices[i*6+5] =  i*2;
-	}
-
-	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::numOfSides*2)*(2+4), indices, Circle::numOfSides*6);
-}
-
-inline void MotherTurretHazard::drawBarrel(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
-	alpha = alpha * alpha;
-
-	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
-	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	const float lineWidth = 0.75f;
-
-	float coordsAndColor[4*(2+4)];
-	unsigned int indices[6];
-
-	SimpleVector2D dist = SimpleVector2D(velocity.getAngle(), r, true);
-	SimpleVector2D distCW = SimpleVector2D(velocity.getAngle() - PI/2, lineWidth, true);
-
-	coordsAndColor[0*6]   = x                   + distCW.getXComp();
-	coordsAndColor[0*6+1] = y                   + distCW.getYComp();
-	coordsAndColor[1*6]   = x + dist.getXComp() + distCW.getXComp();
-	coordsAndColor[1*6+1] = y + dist.getYComp() + distCW.getYComp();
-	coordsAndColor[2*6]   = x + dist.getXComp() - distCW.getXComp();
-	coordsAndColor[2*6+1] = y + dist.getYComp() - distCW.getYComp();
-	coordsAndColor[3*6]   = x                   - distCW.getXComp();
-	coordsAndColor[3*6+1] = y                   - distCW.getYComp();
-
-	for (int i = 0; i < 4; i++) {
-		coordsAndColor[i*6+2] = color.getRf();
-		coordsAndColor[i*6+3] = color.getGf();
-		coordsAndColor[i*6+4] = color.getBf();
-		coordsAndColor[i*6+5] = color.getAf();
-	}
-
-	indices[0] = 0;
-	indices[1] = 1;
-	indices[2] = 2;
-	indices[3] = 2;
-	indices[4] = 3;
-	indices[5] = 0;
-
-	Renderer::SubmitBatchedDraw(coordsAndColor, 4*(2+4), indices, 6);
 }
 
 inline void MotherTurretHazard::drawShootingTimer(float alpha) const {
