@@ -1,0 +1,29 @@
+; required
+Name = test-level-6
+Color = 0.0   1.0   1.0
+LevelTypes = "testmod3"   "random-testmod3"
+LevelWeights = 1.0   1.0
+
+; optional
+RandomStartPositionCount = 5
+RandomStartPositionXValue = 30
+RandomStartPositionYRange = 128 ; 320*(2/5)
+
+
+
+; actual level
+[LEVEL_START]
+
+WALL_LR   320 160 240   20 240
+
+POWER_Corners   320 160 250 130   "vanilla" "speed"
+POWER   320 160   "vanilla" "godmode"
+POWER_LR   320 160 210   "vanilla" "big"
+
+RHAZARD   "vanilla" "no_bullet_zone"    90 160 20 40
+RHAZARD   "vanilla" "no_bullet_zone"   550 160 20 40
+
+CHAZARD   "vanilla" "ginormous_turret"   235  75   45
+CHAZARD   "vanilla" "ginormous_turret"   405  75   135
+CHAZARD   "vanilla" "ginormous_turret"   235 245   -45
+CHAZARD   "vanilla" "ginormous_turret"   405 245   -135

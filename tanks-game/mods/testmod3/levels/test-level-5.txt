@@ -1,0 +1,25 @@
+; required
+Name = test-level-5
+Color = 0.0   1.0   1.0
+LevelTypes = "testmod3"   "random-testmod3"
+LevelWeights = 1.0   1.0
+
+; optional
+RandomStartPositionCount = 3
+RandomStartPositionXValue = 30
+RandomStartPositionYRange = 128 ; 320*(2/5)
+
+
+
+; actual level
+[LEVEL_START]
+
+WALL_LR   320 160 240   20 240
+
+POWER_Corners   320 160 250 130   "vanilla" "speed"
+POWER   320 160   "vanilla" "godmode" "vanilla" "big"
+
+CHAZARD   "vanilla" "mother_turret"   240  80   45
+CHAZARD   "vanilla" "mother_turret"   400  80   135
+CHAZARD   "vanilla" "mother_turret"   240 240   -45
+CHAZARD   "vanilla" "mother_turret"   400 240   -135
