@@ -1,6 +1,10 @@
 #include "game-scene-manager.h"
 
+#include "constants.h"
+#include <cmath> //ceil
+
 #include "renderer.h"
+#include "diagnostics.h"
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
@@ -13,11 +17,21 @@ void GameSceneManager::Initialize() {
 }
 
 void GameSceneManager::TickScenes(int UPS) {
+	auto start = Diagnostics::getTime();
+
 	for (int i = 0; i < scenes.size(); i++) {
 		scenes[i].first->Tick(UPS);
 	}
 	DrawScenes();
-	glutTimerFunc(1000/UPS, GameSceneManager::TickScenes, UPS);
+
+	auto end = Diagnostics::getTime();
+	auto timeTakenMS = Diagnostics::getDiff(start, end);
+	auto sleepTimeMS = ceil(1000.0/UPS - timeTakenMS);
+	if (sleepTimeMS > 0) {
+		glutTimerFunc(static_cast<unsigned int>(sleepTimeMS), GameSceneManager::TickScenes, UPS);
+	} else {
+		glutTimerFunc(0, GameSceneManager::TickScenes, UPS);
+	}
 }
 
 void GameSceneManager::DrawScenes() {
