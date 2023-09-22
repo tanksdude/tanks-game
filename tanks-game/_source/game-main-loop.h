@@ -13,6 +13,8 @@
 struct TankInputChar {
 protected:
 	std::string key;
+	bool isSpecial;
+	int key_num;
 public:
 	std::string getKey() const { return key; }
 	bool getKeyState() const;

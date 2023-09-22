@@ -23,9 +23,6 @@
     * still not very efficient, but it's something
 * slight multithreading!
     * set number of threads in the ini
-* switch FreeGLUT to GLFW
-    * mainly because FreeGLUT is old and there's far more examples with GLFW
-    * the GLFW DLL is included, though it's not needed
 * mild QoL improvements to displaying things
     * tank multi-powers are more obvious
     * old tank death graphic (black to white gradient)
@@ -61,6 +58,7 @@
     * [dev] power, "weird extra cannons": just a test of adding extra cannon points at weird angles
     * [dev] hazard, "wall": it's a "wall," that's it
     * attempted: make static classes (mainly managers) not static; didn't work, everything is too interconnected, need to learn how structure games
+    * attempted: tried GLFW instead of FreeGLUT, didn't like it
 
 0.2.4
 * changed name from "Tanks" to "PowerTanks" so this game might actually become discoverable
@@ -211,7 +209,7 @@ future notes:
 0.B.0: multithreading? (std::async to start)
 1.0.0: all levels, powers, and other stuff that I want, and AI
 2.0.0: level editor and/or power editor and/or game engine something thing (save for sequel instead?)
-other note: consider SDL instead of GLFW
+other note: consider SDL instead of FreeGLUT
 
 sequel notes:
 draw an image for powerups instead of just a color

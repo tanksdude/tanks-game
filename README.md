@@ -58,8 +58,8 @@ Will add some notes eventually, but nothing major.
 ## Built With
 
 * [Visual Studio (2022)](https://visualstudio.microsoft.com/) - C++ IDE from Microsoft
-* [GFLW](https://www.glfw.org/) - OpenGL Framework (or Graphics Library Framework); for making windows and stuff cross-platform
-* [GLEW](http://glew.sourceforge.net/) - OpenGL Extension Wrangler Library; for getting the latest OpenGL commands on Windows
+* [FreeGLUT](http://freeglut.sourceforge.net/) - OpenGL Utility Toolkit; for making windows and stuff cross-platform
+* [GLEW](http://glew.sourceforge.net/) - OpenGL Extension Wrangler Library; for getting the latest OpenGL commands on Windows (where "latest" is >1.1 or so)
 * [OpenGL Mathematics (GLM)](https://github.com/g-truc/glm) - OpenGL-happy matrix and vector math library
 
 ## Contributing

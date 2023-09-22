@@ -31,7 +31,7 @@
 #include "physics-handler.h"
 
 //#include <GL/glew.h>
-//#include <GLFW/glfw3.h>
+//#include <GL/freeglut.h>
 
 void doThing() {
 	return;
@@ -39,13 +39,25 @@ void doThing() {
 
 TankInputChar::TankInputChar(std::string key_input) {
 	key = key_input;
+	if (KeypressManager::keyIsSpecialFromString(key_input)) {
+		isSpecial = true;
+		key_num = KeypressManager::specialKeyFromString(key_input);
+	} else {
+		isSpecial = false;
+		key_num = KeypressManager::normalKeyFromString(key_input);
+	}
 }
 TankInputChar::TankInputChar() {
 	key = "`";
+	isSpecial = false;
+	key_num = '`';
 }
 
 bool TankInputChar::getKeyState() const {
-	return KeypressManager::getKeyState(key);
+	if (isSpecial) {
+		return KeypressManager::getSpecialKey(key_num);
+	}
+	return KeypressManager::getNormalKey(key_num);
 }
 
 GameMainLoop::ThreadJob::ThreadJob(ThreadJobType j, void* list, void* values, void** newArr, int start, int end) {

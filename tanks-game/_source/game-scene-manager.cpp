@@ -3,7 +3,7 @@
 #include "renderer.h"
 
 #include <GL/glew.h>
-#include <GLFW/glfw3.h>
+#include <GL/freeglut.h>
 
 std::vector<std::pair<GameScene*, Scene_ID>> GameSceneManager::scenes;
 int GameSceneManager::nextSceneID = 0;
@@ -17,6 +17,7 @@ void GameSceneManager::TickScenes(int UPS) {
 		scenes[i].first->Tick(UPS);
 	}
 	DrawScenes();
+	glutTimerFunc(1000/UPS, GameSceneManager::TickScenes, UPS);
 }
 
 void GameSceneManager::DrawScenes() {

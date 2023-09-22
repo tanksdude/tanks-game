@@ -3,7 +3,6 @@
 #include <string>
 #include <vector>
 #include <chrono>
-#include <thread> //sleep (std::this_thread::sleep_for())
 #include <stdexcept>
 
 //needed for callbacks and stuff:
@@ -131,7 +130,7 @@
 #include "game-main-loop.h"
 
 #include <GL/glew.h>
-#include <GLFW/glfw3.h>
+#include <GL/freeglut.h>
 
 const std::string GameWindowName = "PowerTanks Battle v0.2.5 NOT FINAL"; //this is not guaranteed to be correct every commit but likely will be
 const std::string INIFilePath = "tanks.ini";
@@ -176,20 +175,32 @@ int main(int argc, char** argv) {
 		return 1;
 	}
 
+	// Set callback for drawing the scene
+	glutDisplayFunc(GameSceneManager::DrawScenes);
+
 	// Set callback for resizing the window
-	glfwSetFramebufferSizeCallback(Renderer::glfw_window, Renderer::windowResizeFunc);
+	glutReshapeFunc(Renderer::windowResizeFunc);
 
 	//mouse clicking
-	glfwSetMouseButtonCallback(Renderer::glfw_window, DeveloperManager::mouseButtonCallbackFunc);
+	glutMouseFunc(DeveloperManager::mouseClickFunc);
 
 	// Set callback to handle mouse dragging
-	glfwSetCursorPosCallback(Renderer::glfw_window, DeveloperManager::mouseCursorPosCallbackFunc);
+	glutMotionFunc(DeveloperManager::mouseDragFunc);
 
 	// Set callback to handle keyboard events
-	glfwSetKeyCallback(Renderer::glfw_window, KeypressManager::keyCallbackFunc);
+	glutKeyboardFunc(KeypressManager::setNormalKey);
+
+	//callback for keyboard up events
+	glutKeyboardUpFunc(KeypressManager::unsetNormalKey);
+
+	//special keyboard down
+	glutSpecialFunc(KeypressManager::setSpecialKey);
+
+	//special keyboard up
+	glutSpecialUpFunc(KeypressManager::unsetSpecialKey);
 
 	//mousewheel
-	glfwSetScrollCallback(Renderer::glfw_window, DeveloperManager::mouseScrollCallbackFunc);
+	glutMouseWheelFunc(DeveloperManager::mouseWheelFunc);
 
 	//prepare for incoming data:
 	PowerupDataGovernor::initialize();
@@ -381,32 +392,12 @@ int main(int argc, char** argv) {
 	std::cout << "OpenGL vendor: " << glGetString(GL_VENDOR) << std::endl;
 	std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl << std::endl;
 
+	//framelimiter
+	//glutTimerFunc(1000/physicsRate, tick, physicsRate); //see GameMainLoop
+	GameSceneManager::TickScenes(100);
+
 	// Start the main loop
-	//double pastTime = glfwGetTime();
-	while (!glfwWindowShouldClose(Renderer::glfw_window)) {
-		double currTime = glfwGetTime();
-		//std::cout << "time passed: " << (currTime - pastTime)*1000 << "ms";
-
-		glfwPollEvents();
-		GameSceneManager::TickScenes(100);
-		double endTime = glfwGetTime();
-		//pastTime = endTime;
-
-		const double timeDiffMS = (endTime - currTime) * 1000;
-		const double sleepTime = (10 - timeDiffMS) / 1000;
-		//std::cout << " | time took: " << timeDiffMS << "ms | sleep time : " << sleepTime*1000 << "ms" << std::endl;
-		/*
-		if (timeDiffMS < 10) {
-			std::this_thread::sleep_until(std::chrono::steady_clock::now() + std::chrono::duration<double>(sleepTime));
-		}
-		*/
-		//sleeping is not very reliable, so just spin instead (the poor CPU cycles wasted)
-		double temp = glfwGetTime();
-		while (temp - currTime < 10/1000.0) {
-			//spin
-			temp = glfwGetTime();
-		}
-	}
+	glutMainLoop();
 
 	Renderer::Uninitialize();
 

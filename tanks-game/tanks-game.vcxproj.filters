@@ -874,7 +874,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="glfw3.dll" />
+    <None Include="freeglut.dll" />
     <None Include="glew32.dll" />
   </ItemGroup>
 </Project>
