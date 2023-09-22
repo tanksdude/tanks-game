@@ -7,7 +7,7 @@
 #include <gtc/matrix_transform.hpp>
 
 #include <GL/glew.h>
-#include <GL/freeglut.h>
+#include <GLFW/glfw3.h>
 #include "graphics/opengl-rendering-context.h"
 #include "graphics/software-rendering-context.h"
 #include "graphics/null-rendering-context.h"
@@ -15,11 +15,19 @@
 #include "diagnostics.h"
 #include "keypress-manager.h"
 #include "game-manager.h" //for isDebugDrawingEnabled()
+#include "game-scene-manager.h" //to refresh the graphics when the window size changes
 
 //std::mutex Renderer::drawingDataLock;
 //std::thread Renderer::graphicsThread;
 //std::atomic_bool Renderer::thread_keepRunning;
 //std::atomic_bool Renderer::thread_workExists;
+
+GLFWwindow* Renderer::glfw_window = nullptr;
+bool Renderer::currently_fullscreen = false;
+int Renderer::old_window_width = 0;
+int Renderer::old_window_height = 0;
+int Renderer::old_window_xpos = 0;
+int Renderer::old_window_ypos = 0;
 
 glm::mat4 Renderer::proj = glm::ortho(0.0f, (float)GAME_WIDTH, 0.0f, (float)GAME_HEIGHT);
 glm::mat4 Renderer::getProj() { return proj; }
@@ -46,8 +54,8 @@ std::string Renderer::currentSceneName = "";
 int Renderer::maxVerticesDataLength = (2 << 22) / sizeof(float);
 int Renderer::maxIndicesDataLength = (2 << 22) / sizeof(unsigned int); //TODO: size (fills up faster)
 
-// Handles window resizing (FreeGLUT event function)
-void Renderer::windowResizeFunc(int w, int h) {
+// Handles window resizing (GLFW event function)
+void Renderer::windowResizeFunc(GLFWwindow* win, int w, int h) {
 	Renderer::window_width = w;
 	Renderer::window_height = h;
 
@@ -107,6 +115,8 @@ void Renderer::windowResizeFunc(int w, int h) {
 	glLoadIdentity();
 	glOrtho(winXmin, winXmax, winYmin, winYmax, -1, 1);
 	*/
+
+	GameSceneManager::DrawScenes();
 }
 
 //actual renderer code:
@@ -123,10 +133,29 @@ void Renderer::BeginningStuff() {
 	//}
 	//drawingDataLock.lock();
 
-	if (KeypressManager::getSpecialKey(GLUT_KEY_F11)) {
-		glutFullScreenToggle();
-		KeypressManager::unsetSpecialKey(GLUT_KEY_F11, 0, 0);
+	if (KeypressManager::getKeyState("F11")) {
+		const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+		glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+		glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+		glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+		glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+
+		if (currently_fullscreen) {
+			glfwSetWindowMonitor(Renderer::glfw_window, glfwGetPrimaryMonitor(), old_window_xpos, old_window_ypos, old_window_width, old_window_height, mode->refreshRate);
+			//why doesn't this work
+			currently_fullscreen = false;
+		} else {
+			//glfwGetWindowPos(Renderer::glfw_window, &Renderer::old_window_xpos, &Renderer::old_window_ypos);
+			//glfwGetWindowSize(Renderer::glfw_window, &Renderer::old_window_width, &Renderer::old_window_height);
+			//there seems to be a race condition there, so use the initial values instead
+
+			glfwSetWindowMonitor(Renderer::glfw_window, glfwGetPrimaryMonitor(), 0, 0, mode->width, mode->height, GLFW_DONT_CARE);
+			currently_fullscreen = true;
+		}
+
+		KeypressManager::unsetKeyState("F11");
 	}
+	//protip: don't set a breakpoint here; completely locks the game and it refuses to stop drawing on top (had to kill Visual Studio)
 }
 
 void Renderer::SetContext(AvailableRenderingContexts API) {
@@ -172,7 +201,7 @@ void Renderer::SetContext(std::string API) {
 }
 
 void Renderer::PreInitialize(int* argc, char** argv, std::string windowName) {
-	Renderer::PreInitialize(argc, argv, windowName, 60, 60);
+	Renderer::PreInitialize(argc, argv, windowName, 120, 120);
 }
 
 void Renderer::PreInitialize(int* argc, char** argv, std::string windowName, int startX, int startY) {
@@ -180,18 +209,33 @@ void Renderer::PreInitialize(int* argc, char** argv, std::string windowName, int
 }
 
 void Renderer::PreInitialize(int* argc, char** argv, std::string windowName, int startX, int startY, int sizeX, int sizeY) {
-	// Initialize GLUT
-	glutInit(argc, argv);
-	glutInitDisplayMode(GLUT_SINGLE | GLUT_DEPTH);
-	//thanks to https://community.khronos.org/t/wglmakecurrent-issues/62656/3 for solving why a draw call would take ~15ms for no reason (it's just the V-sync time)
+	// Initialize GLFW
+	if (!glfwInit()) {
+		throw "glfw failed";
+	}
 
 	// Setup window position, size, and title
-	glutInitWindowPosition(startX, startY);
+	GLFWwindow* window;
 	Renderer::window_width = sizeX; Renderer::window_height = sizeY;
-	glutInitWindowSize(Renderer::window_width, Renderer::window_height);
-	glutCreateWindow(windowName.c_str());
+	glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_FALSE);
+	glfwWindowHint(GLFW_SAMPLES, 64); //TODO: doesn't seem to work
+	window = glfwCreateWindow(Renderer::window_width, Renderer::window_height, windowName.c_str(), NULL, NULL);
+	glfwSetWindowPos(window, startX, startY);
+	Renderer::glfw_window = window;
+	//glEnable(GL_POLYGON_SMOOTH);
+	//glEnable(GL_MULTISAMPLE);
 
-	glDisable(GL_DEPTH_TEST);
+	Renderer::old_window_width = sizeX;
+	Renderer::old_window_height = sizeY;
+	Renderer::old_window_xpos = startX;
+	Renderer::old_window_ypos = startY;
+
+	glfwMakeContextCurrent(window);
+
+	//thanks to https://community.khronos.org/t/wglmakecurrent-issues/62656/3 for solving why a draw call would take ~15ms for no reason (it's just the V-sync time)
+	//glfwSwapInterval(0);
+
+	//glDisable(GL_DEPTH_TEST);
 	//transparency:
 	//glEnable(GL_BLEND);
 	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -206,7 +250,7 @@ void Renderer::PreInitialize(int* argc, char** argv, std::string windowName, int
 }
 
 void Renderer::Initialize() {
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 	Shader* shader = new Shader("res/shaders/main.vert", "res/shaders/main.frag");
 	shaderCache.insert({ "main", shader });
@@ -227,6 +271,7 @@ void Renderer::Uninitialize() {
 	//thread_workExists.store(true);
 	//graphicsThread.join();
 	////uninitializeGPU();
+	glfwTerminate();
 }
 
 /*
@@ -441,7 +486,7 @@ void Renderer::ActuallyFlush() {
 	//for single framebuffer, use glFlush; for double framebuffer, swap the buffers
 	//swapping buffers is limited to monitor refresh rate, so I use glFlush
 	glFlush();
-	//glutSwapBuffers();
+	//glfwSwapBuffers(glfw_window);
 
 	UnbindAll();
 }

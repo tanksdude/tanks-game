@@ -11,6 +11,9 @@
 #include "graphics/index-buffer.h"
 #include "graphics/shader.h"
 
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+
 //#include <thread>
 //#include <atomic>
 //#include <mutex>
@@ -35,7 +38,8 @@ class Renderer {
 	friend class DeveloperManager;
 
 public:
-	static void windowResizeFunc(int w, int h);
+	static GLFWwindow* glfw_window;
+	static void windowResizeFunc(GLFWwindow*, int w, int h);
 	//static void thread_func();
 
 	//static std::mutex drawingDataLock;
@@ -53,6 +57,12 @@ private:
 	static int window_height;
 	static int gamewindow_width; //width of game inside window
 	static int gamewindow_height;
+
+	static bool currently_fullscreen;
+	static int old_window_width; //for GLFW toggling fullscreen
+	static int old_window_height;
+	static int old_window_xpos;
+	static int old_window_ypos;
 
 	static AvailableRenderingContexts renderingMethodType;
 	static RenderingContext* renderingMethod;
@@ -105,7 +115,7 @@ public:
 	static void SetContext(std::string);
 	static AvailableRenderingContexts GetContext() { return renderingMethodType; }
 
-	static void PreInitialize(int* argc, char** argv, std::string windowName); //initialize freeglut and GLEW
+	static void PreInitialize(int* argc, char** argv, std::string windowName); //initialize GLFW and GLEW
 	static void PreInitialize(int* argc, char** argv, std::string windowName, int startX, int startY);
 	static void PreInitialize(int* argc, char** argv, std::string windowName, int startX, int startY, int sizeX, int sizeY);
 	static void Initialize();

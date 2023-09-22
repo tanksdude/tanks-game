@@ -23,6 +23,9 @@
     * still not very efficient, but it's something
 * slight multithreading!
     * set number of threads in the ini
+* switch FreeGLUT to GLFW
+    * mainly because FreeGLUT is old and there's far more examples with GLFW
+    * the GLFW DLL is included, though it's not needed
 * mild QoL improvements to displaying things
     * tank multi-powers are more obvious
     * old tank death graphic (black to white gradient)
@@ -208,7 +211,7 @@ future notes:
 0.B.0: multithreading? (std::async to start)
 1.0.0: all levels, powers, and other stuff that I want, and AI
 2.0.0: level editor and/or power editor and/or game engine something thing (save for sequel instead?)
-other note: consider SDL instead of FreeGLUT
+other note: consider SDL instead of GLFW
 
 sequel notes:
 draw an image for powerups instead of just a color

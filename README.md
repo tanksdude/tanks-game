@@ -25,7 +25,7 @@ TODO: maybe a gif later
 
 ### Installing
 
-Install Visual Studio (2019) and the GitHub extension (I don't know if that's needed), then clone this project and run x64 Release (or Debug if you want to) (also make sure you're on the solution, not project).
+Install Visual Studio (2022) and the GitHub extension (I don't know if that's needed), then clone this project and run x64 Release (or Debug if you want to) (also make sure you're on the solution, not project).
 
 Pre-compiled executables are available under "Releases" in the [GitHub repository](https://github.com/tanksdude/tanks-game).
 
@@ -57,8 +57,8 @@ Will add some notes eventually, but nothing major.
 
 ## Built With
 
-* [Visual Studio](https://visualstudio.microsoft.com/) - C++ IDE from Microsoft
-* [FreeGLUT](http://freeglut.sourceforge.net/) - OpenGL Utility Toolkit; an updated version of the original GLUT
+* [Visual Studio (2022)](https://visualstudio.microsoft.com/) - C++ IDE from Microsoft
+* [GFLW](https://www.glfw.org/) - OpenGL Framework (or Graphics Library Framework); for making windows and stuff cross-platform
 * [GLEW](http://glew.sourceforge.net/) - OpenGL Extension Wrangler Library; for getting the latest OpenGL commands on Windows
 * [OpenGL Mathematics (GLM)](https://github.com/g-truc/glm) - OpenGL-happy matrix and vector math library
 

@@ -2,24 +2,23 @@
 #include <string>
 #include <unordered_map>
 
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+
 class KeypressManager {
 private:
-	static std::unordered_map<unsigned char, bool> normalKeyStates; //general keyboard
-	static std::unordered_map<int, bool> specialKeyStates; //non-ASCII
+	static std::unordered_map<int, bool> keyStates;
+	static std::unordered_map<std::string, int> keyNames;
 
 public:
-	static bool getNormalKey(unsigned char key);
-	static bool getSpecialKey(int key);
+	static bool getKeyStateFromCode(int key);
+	static int keyFromString(std::string key);
+	static inline bool getKeyState(std::string key) {
+		return getKeyStateFromCode(keyFromString(key));
+	}
+	static void unsetKeyState(std::string key); //used for toggling fullscreen
 
-	//glutKeyboardFunc & friends do not like their functions calling other functions, so KeypressManager has its own functions (so the hashmaps can stay private)
-	static void setNormalKey(unsigned char key, int x, int y);
-	static void unsetNormalKey(unsigned char key, int x, int y);
-	static void setSpecialKey(int key, int x, int y);
-	static void unsetSpecialKey(int key, int x, int y);
-
-	static bool keyIsSpecialFromString(std::string key);
-	static unsigned char normalKeyFromString(std::string key);
-	static int specialKeyFromString(std::string key);
+	static void keyCallbackFunc(GLFWwindow*, int key, int scancode, int action, int mods);
 
 	static void Initialize();
 
