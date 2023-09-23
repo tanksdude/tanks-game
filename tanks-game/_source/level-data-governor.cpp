@@ -1,7 +1,7 @@
 #include "level-data-governor.h"
 
-#include <algorithm> //std::find
 #include <stdexcept>
+#include <algorithm> //std::find
 
 std::unordered_map<std::string, std::unordered_map<std::string, LevelFunction>> LevelDataGovernor::levelLookup;
 std::unordered_map<std::string, std::unordered_map<std::string, LevelEffectFunction>> LevelDataGovernor::levelEffectLookup;

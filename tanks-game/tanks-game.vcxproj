@@ -144,8 +144,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="_source\background-rect.cpp" />
+    <ClCompile Include="_source\custom-power-interpreter.cpp" />
     <ClCompile Include="_source\levels\unnamed-level-3.cpp" />
     <ClCompile Include="_source\levels\unnamed-level-4.cpp" />
+    <ClCompile Include="_source\mod-processor.cpp" />
     <ClCompile Include="_source\powers\banana-power.cpp" />
     <ClCompile Include="_source\powers\barrier-power.cpp" />
     <ClCompile Include="_source\basic-ini-parser.cpp" />
@@ -281,8 +283,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="_source\background-rect.h" />
+    <ClInclude Include="_source\custom-power-interpreter.h" />
     <ClInclude Include="_source\levels\unnamed-level-3.h" />
     <ClInclude Include="_source\levels\unnamed-level-4.h" />
+    <ClInclude Include="_source\mod-processor.h" />
     <ClInclude Include="_source\powers\banana-power.h" />
     <ClInclude Include="_source\powers\barrier-power.h" />
     <ClInclude Include="_source\basic-ini-parser.h" />

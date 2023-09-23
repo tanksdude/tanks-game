@@ -15,7 +15,7 @@
 //other:
 #include "diagnostics.h"
 #include "basic-ini-parser.h"
-#include "custom-level-interpreter.h"
+#include "mod-processor.h"
 
 //managers:
 #include "game-scene-manager.h"
@@ -327,7 +327,7 @@ int main(int argc, char** argv) {
 	GameSceneManager::Initialize();
 	Renderer::Initialize();
 
-	CustomLevelInterpreter::ProcessCustomLevels();
+	ModProcessor::ProcessMods();
 
 	Diagnostics::declareGraph("tick", ColorValueHolder(1.0f, 0.0f, 0.0f));
 	Diagnostics::declareGraph("upload", ColorValueHolder(0.0f, 1.0f, 0.0f));

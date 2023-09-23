@@ -3,11 +3,11 @@
 #include <vector>
 #include <memory>
 
-#include "level.h"
+#include "power.h"
 #include "generic-factory-construction-data.h"
 
-class CustomLevel : public Level {
-	friend class CustomLevelInterpreter;
+class CustomPower : public Power {
+	friend class CustomPowerInterpreter;
 
 public:
 	enum class CustomLevelCommands {
@@ -43,15 +43,15 @@ public:
 	};
 
 protected:
-	//for CustomLevelInterpreter
-	CustomLevel(std::string name,
+	//for CustomPowerInterpreter
+	CustomPower(std::string name,
 		float colorR, float colorG, float colorB,
 		int startPosCount, double startPosXValue, double startPosYRange,
 		const std::vector<std::string>& types,
 		const std::unordered_map<std::string, float>& weights,
 		std::vector<CustomLevelAction*>* actions);
-	//for CustomLevel::factory()
-	CustomLevel(std::string name,
+	//for CustomPower::factory()
+	CustomPower(std::string name,
 		float colorR, float colorG, float colorB,
 		int startPosCount, double startPosXValue, double startPosYRange,
 		const std::vector<std::string>& types,
@@ -59,67 +59,53 @@ protected:
 		std::shared_ptr<std::vector<CustomLevelAction*>> actions);
 
 protected:
+	std::vector<std::string> powerTypes;
+	std::unordered_map<std::string, float> powerWeights;
+	std::vector<std::string> powerAttributes;
 	std::string name;
-	ColorValueHolder defaultColor;
-	std::vector<std::string> levelTypes;
-	std::unordered_map<std::string, float> levelWeights;
+	ColorValueHolder color;
+	float colorImportance;
 
+	//TODO: the various values needed
 	int startPosCount;
 	double startPosXValue;
 	double startPosYRange;
 	std::shared_ptr<std::vector<CustomLevelAction*>> initializationActions; //remember, the vector's elements need to be deleted
 
-protected:
-	static inline void initialization_WALL(const GenericFactoryConstructionData&, const ColorValueHolder& wallColor) noexcept;
-	static inline void initialization_WALL_LR(const GenericFactoryConstructionData&, const ColorValueHolder& wallColor) noexcept;
-	static inline void initialization_WALL_UD(const GenericFactoryConstructionData&, const ColorValueHolder& wallColor) noexcept;
-	static inline void initialization_WALL_Corners(const GenericFactoryConstructionData&, const ColorValueHolder& wallColor) noexcept;
-	static inline void initialization_WALL_DiagForwardSlash(const GenericFactoryConstructionData&, const ColorValueHolder& wallColor) noexcept;
-	static inline void initialization_WALL_DiagBackwardSlash(const GenericFactoryConstructionData&, const ColorValueHolder& wallColor) noexcept;
-
-	static inline void initialization_RANDOM_WALLS(const GenericFactoryConstructionData&, const ColorValueHolder& wallColor) noexcept;
-	static inline void initialization_CLASSIC_WALLS(const ColorValueHolder& wallColor) noexcept;
-
-	static inline void initialization_POWER(const GenericFactoryConstructionData&) noexcept;
-	static inline void initialization_POWER_LR(const GenericFactoryConstructionData&) noexcept;
-	static inline void initialization_POWER_UD(const GenericFactoryConstructionData&) noexcept;
-	static inline void initialization_POWER_Corners(const GenericFactoryConstructionData&) noexcept;
-	static inline void initialization_POWER_DiagForwardSlash(const GenericFactoryConstructionData&) noexcept;
-	static inline void initialization_POWER_DiagBackwardSlash(const GenericFactoryConstructionData&) noexcept;
-
-	static inline void initialization_CHAZARD(const GenericFactoryConstructionData&);
-	static inline void initialization_RHAZARD(const GenericFactoryConstructionData&);
-
 public:
 	//shouldn't be virtual
+	std::vector<std::string> getPowerTypes() const override { return this->powerTypes; }
+	std::unordered_map<std::string, float> getWeights() const override { return this->powerWeights; }
+	std::vector<std::string> getPowerAttributes() const override { return this->powerAttributes; }
+
 	std::string getName() const override { return this->name; }
-	ColorValueHolder getDefaultColor() const override { return this->defaultColor; }
-	std::vector<std::string> getLevelTypes() const override { return this->levelTypes; }
-	std::unordered_map<std::string, float> getWeights() const override { return this->levelWeights; }
+	ColorValueHolder getColor() const override { return this->color; }
+	float getColorImportance() const override { return this->colorImportance; }
 
-	virtual void initialize() override;
-	//virtual void tick() override; //no, too complicated
+	TankPower* makeTankPower() const override;
+	BulletPower* makeBulletPower() const override;
+	//HazardPower* makeHazardPower() const override;
 
-	virtual ~CustomLevel();
-	[[nodiscard]] CustomLevel* factory() const; //makes a copy of itself; used by CustomLevelInterpreter to give LevelDataGovernor an actual level
+	virtual ~CustomPower();
+	[[nodiscard]] CustomPower* factory() const; //makes a copy of itself; used by CustomPowerInterpreter to give PowerDataGovernor an actual power
 };
 
 
 
-class CustomLevelInterpreter {
+class CustomPowerInterpreter {
 public:
-	static void ProcessCustomLevels() noexcept;
+	static void ProcessCustomPowers() noexcept;
 
 protected:
-	static const std::string ActionStartPhrase; // = "[LEVEL_START]"; // (maybe "[BODY]" as a HTML reference? implies there should be a [HEAD] but that's implicit)
+	//static const std::string ActionStartPhrase; // = "[LEVEL_START]"; // (maybe "[BODY]" as a HTML reference? implies there should be a [HEAD] but that's implicit)
 
 protected:
 	//actually read through the file and create the custom level
 	//throws on syntax error, returns nullptr if bad for some reason (currently just path=="")
 	//needs to print warnings on extra parameters for a command
-	static CustomLevel* processCustomLevel(std::string path);
-	static inline CustomLevel::CustomLevelAction* stringToAction(const std::pair<std::string, int>& command); //throws when action is ill-formatted
-	static void addCustomLevel(CustomLevel* level); //add it to LevelDataGovernor (with some checks)
+	static CustomPower* processCustomPower(std::string path);
+	//static inline CustomPower::CustomLevelAction* stringToAction(const std::pair<std::string, int>& command); //throws when action is ill-formatted
+	static void addCustomPower(CustomPower* level); //add it to PowerDataGovernor (with some checks)
 
 protected:
 	static inline void stringToAction_WALL(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData);
@@ -143,6 +129,6 @@ protected:
 	static inline void stringToAction_RHAZARD(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData);
 
 private:
-	CustomLevelInterpreter() = delete;
-	CustomLevelInterpreter(const CustomLevelInterpreter&) = delete;
+	CustomPowerInterpreter() = delete;
+	CustomPowerInterpreter(const CustomPowerInterpreter&) = delete;
 };

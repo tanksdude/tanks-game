@@ -1,7 +1,7 @@
 #include "powerup-data-governor.h"
 
-#include <algorithm> //std::find
 #include <stdexcept>
+#include <algorithm> //std::find
 
 std::unordered_map<std::string, std::unordered_map<std::string, PowerFunction>> PowerupDataGovernor::powerLookup;
 std::unordered_map<std::string, std::vector<std::string>> PowerupDataGovernor::powerNameList;

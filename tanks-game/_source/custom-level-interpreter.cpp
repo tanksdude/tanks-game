@@ -2,12 +2,12 @@
 
 #include <stdexcept>
 #include <algorithm> //std::find
-#include <filesystem> //C++17
+#include <filesystem> //only for catching ModProcessor's exceptions
 #include <fstream>
 #include <iostream>
 #include <vector>
-#include <unordered_map> //could use a set, not a big deal
 
+#include "mod-processor.h"
 #include "powerup-data-governor.h"
 #include "hazard-data-governor.h"
 #include "level-data-governor.h" //for adding custom levels to the game
@@ -19,8 +19,6 @@
 #include "wall-manager.h"
 #include "hazard-manager.h"
 
-const std::string CustomLevelInterpreter::ModOrderPath = "mods/order.txt";
-const std::string CustomLevelInterpreter::IgnoreListPath = "mods/ignore.txt";
 const std::string CustomLevelInterpreter::ActionStartPhrase = "[LEVEL_START]";
 
 CustomLevel::CustomLevelAction::CustomLevelAction(CustomLevel::CustomLevelCommands c) {
@@ -387,65 +385,19 @@ void CustomLevelInterpreter::ProcessCustomLevels() noexcept {
 	//get list of mods, interpret them, then add factories to LevelDataGovernor
 	//should syntax version be a thing? likely features will only be added, but who knows
 
-	std::vector<std::string> modOrder_list;
-	std::unordered_map<std::string, bool> modOrder_set;
-
-	try {
-		std::vector<std::string> knownList = getListOfKnownMods();
-		for (int i = 0; i < knownList.size(); i++) {
-			if (modOrder_set.find(knownList[i]) == modOrder_set.end()) {
-				modOrder_set.insert({ knownList[i], true });
-				modOrder_list.push_back(knownList[i]);
-			} else { [[unlikely]]
-				std::cerr << "Item duplicated in " + ModOrderPath + ":" + std::to_string(i) + ", ignoring (" + knownList[i] + ")" << std::endl;
-			}
-		}
+	auto modOrder_temp = ModProcessor::getListOfMods();
+	if (!modOrder_temp.has_value()) {
+		return;
 	}
-	catch (const std::runtime_error& e) {
-		std::cerr << "CustomLevelInterpreter::getListOfUnknownMods() error: " << e.what() << std::endl;
-		//return; //keep going
-	}
-
-	try {
-		std::vector<std::string> unknownList = getListOfUnknownMods();
-		for (int i = 0; i < unknownList.size(); i++) {
-			if (modOrder_set.find(unknownList[i]) == modOrder_set.end()) {
-				modOrder_set.insert({ unknownList[i], true });
-				modOrder_list.push_back(unknownList[i]);
-			} else {
-				//std::cerr << "Item already in " + ModOrderPath + ":" + std::to_string(i) + ", ignoring (" + unknownList[i] + ")" << std::endl;
-			}
-		}
-		//originally, this was going to push the "new" mods to the order.txt file, but that doesn't feel right
-	}
-	catch (const std::filesystem::filesystem_error& e) {
-		std::cerr << "CustomLevelInterpreter::getListOfUnknownMods() filesystem_error: " << e.what() << std::endl;
-		return; //likely some major problem, so quit
-	}
-
-	try {
-		std::vector<std::string> ignoreList = getListOfIgnoredMods();
-		for (int i = 0; i < ignoreList.size(); i++) {
-			if (modOrder_set.find(ignoreList[i]) != modOrder_set.end()) {
-				modOrder_set.erase(ignoreList[i]);
-				modOrder_list.erase(std::find(modOrder_list.begin(), modOrder_list.end(), ignoreList[i]));
-			} else {
-				std::cerr << "Item not found in " + IgnoreListPath + ":" + std::to_string(i) + ", skipping (" + ignoreList[i] + ")" << std::endl;
-			}
-		}
-	}
-	catch (const std::runtime_error& e) {
-		std::cerr << "CustomLevelInterpreter::getListOfIgnoredMods() error: " << e.what() << std::endl;
-		//return; //keep going
-	}
+	std::vector<std::string>& modOrder_list = modOrder_temp.value();
 
 	for (int i = 0; i < modOrder_list.size(); i++) {
 		std::vector<std::string> levelOrder_list;
 		try {
-			levelOrder_list = getListOfLevels("mods/" + modOrder_list[i] + "/levels");
+			levelOrder_list = ModProcessor::getListOfFiles("mods/" + modOrder_list[i] + "/levels");
 		}
 		catch (const std::filesystem::filesystem_error& e) {
-			std::cerr << "CustomLevelInterpreter::getListOfLevels(" + ("mods/" + modOrder_list[i] + "/levels") + ") filesystem_error: " << e.what() << std::endl;
+			std::cerr << "ModProcessor::getListOfFiles(" + ("mods/" + modOrder_list[i] + "/levels") + ") filesystem_error: " << e.what() << std::endl;
 			continue; //hope things work out on the next mod
 		}
 
@@ -480,92 +432,6 @@ void CustomLevelInterpreter::ProcessCustomLevels() noexcept {
 	}
 
 	std::cout << std::endl;
-}
-
-std::vector<std::string> CustomLevelInterpreter::getListOfKnownMods() {
-	std::ifstream modOrder_file;
-	modOrder_file.open(ModOrderPath);
-
-	std::vector<std::string> modOrder_list;
-
-	if (modOrder_file.is_open()) {
-		std::string line;
-		while (std::getline(modOrder_file, line)) {
-			modOrder_list.push_back(line);
-		}
-		modOrder_file.close();
-	} else {
-		throw std::runtime_error("Could not read file \"" + ModOrderPath + "\"");
-	}
-
-	return modOrder_list;
-}
-
-std::vector<std::string> CustomLevelInterpreter::getListOfUnknownMods() {
-	std::vector<std::string> directory_list;
-
-	for (const auto& dir_entry : std::filesystem::directory_iterator("mods")) {
-		if (std::filesystem::is_directory(dir_entry)) {
-			directory_list.push_back(dir_entry.path().string());
-			//this still has "mod\" in the filepath
-		}
-		//can throw std::filesystem::filesystem_error
-	}
-
-	//scrub parent folders from directory
-	for (std::string& s : directory_list) {
-		size_t slashPos = s.find_last_of("/\\");
-		if (slashPos == std::string::npos) {
-			//is this possible?
-		} else {
-			s = s.substr(slashPos+1);
-		}
-	}
-
-	return directory_list;
-}
-
-std::vector<std::string> CustomLevelInterpreter::getListOfIgnoredMods() {
-	//copied from getListOfKnownMods()
-	std::ifstream ignoreList_file;
-	ignoreList_file.open(IgnoreListPath);
-
-	std::vector<std::string> ignoreList_list;
-
-	if (ignoreList_file.is_open()) {
-		std::string line;
-		while (std::getline(ignoreList_file, line)) {
-			ignoreList_list.push_back(line);
-		}
-		ignoreList_file.close();
-	} else {
-		throw std::runtime_error("Could not read file \"" + IgnoreListPath + "\"");
-	}
-
-	return ignoreList_list;
-}
-
-std::vector<std::string> CustomLevelInterpreter::getListOfLevels(std::string modPath) {
-	//basically the same as getListOfUnknownMods()
-	std::vector<std::string> file_list;
-
-	for (const auto& dir_entry : std::filesystem::directory_iterator(modPath)) {
-		if (std::filesystem::is_regular_file(dir_entry)) {
-			file_list.push_back(dir_entry.path().string());
-		}
-	}
-
-	//scrub parent folders from directory
-	for (std::string& s : file_list) {
-		size_t slashPos = s.find_last_of("/\\");
-		if (slashPos == std::string::npos) {
-			//is this possible?
-		} else {
-			s = s.substr(slashPos+1);
-		}
-	}
-
-	return file_list;
 }
 
 CustomLevel* CustomLevelInterpreter::processCustomLevel(std::string path) {

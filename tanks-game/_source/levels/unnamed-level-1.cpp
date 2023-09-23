@@ -48,7 +48,7 @@ void UnnamedLevel1::initialize() {
 	//potential idea: X-06-2 (run towards that gold at the end, run back fast enough to avoid rocket)
 
 	//other potential powers:
-	//
+	//wall sparks
 	//other potential hazards:
 	//
 }
