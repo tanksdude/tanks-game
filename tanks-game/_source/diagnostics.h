@@ -53,6 +53,7 @@ public:
 	static void drawGraphTimes(); //all graphs
 
 	static void setGraphYOffset(double);
+	static void pushGraphSumTime(std::string name);
 
 private:
 	Diagnostics() = delete;

@@ -105,6 +105,18 @@ void Diagnostics::clearGraph() {
 	}
 }
 
+void Diagnostics::pushGraphSumTime(std::string name) {
+	long double sum = 0;
+	for (int i = 0; i < graphTimes.size(); i++) {
+		if (graphTimes[i].name == name) {
+			continue;
+		}
+		sum += graphTimes[i].data[graphTimes[i].data.size()-1];
+	}
+
+	pushGraphTime(name, sum);
+}
+
 void Diagnostics::drawGraphTimes() {
 	drawGraphTimes_graph();
 	drawGraphTimes_data();

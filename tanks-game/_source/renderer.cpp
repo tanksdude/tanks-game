@@ -432,6 +432,7 @@ void Renderer::ActuallyFlush() {
 	auto end = Diagnostics::getTime();
 
 	Diagnostics::pushGraphTime("draw", Diagnostics::getDiff(start, end));
+	Diagnostics::pushGraphSumTime("all");
 
 	const BasicINIParser::BasicINIData& ini_data = GameManager::get_INI();
 	if (ini_data.exists("DEBUG", "PerformanceGraphEnable") && std::stoi(ini_data.get("DEBUG", "PerformanceGraphEnable"))) {
