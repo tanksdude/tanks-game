@@ -16,6 +16,7 @@
 #include "diagnostics.h"
 #include "basic-ini-parser.h"
 #include "mod-processor.h"
+#include "statistics-handler.h"
 
 //managers:
 #include "game-scene-manager.h"
@@ -201,6 +202,9 @@ int main(int argc, char** argv) {
 
 	//mousewheel
 	glutMouseWheelFunc(DeveloperManager::mouseWheelFunc);
+
+	//window close
+	glutCloseFunc(StatisticsHandler::DumpData);
 
 	//prepare for incoming data:
 	PowerupDataGovernor::initialize();
