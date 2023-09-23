@@ -177,6 +177,14 @@ int main(int argc, char** argv) {
 		return 1;
 	}
 
+	if (ini_data.exists("DEBUG", "DeveloperInsertMenuPowerAdditions")) {
+		for (int i = 0; i < ini_data.length("DEBUG", "DeveloperInsertMenuPowerAdditions") / 3; i++) {
+			DeveloperManager::addInsertPower(ini_data.get("DEBUG", "DeveloperInsertMenuPowerAdditions", i*3),
+			                                 ini_data.get("DEBUG", "DeveloperInsertMenuPowerAdditions", i*3+1),
+			                                 ini_data.get("DEBUG", "DeveloperInsertMenuPowerAdditions", i*3+2));
+		}
+	}
+
 	// Set callback for drawing the scene
 	glutDisplayFunc(GameSceneManager::DrawScenes);
 
@@ -382,17 +390,7 @@ int main(int argc, char** argv) {
 	//main game code initialization stuff:
 	ResetThings::firstGameInitialize("\"WASD 4 Life\"", "\"Arrow Keys R WINZ\"", *game);
 	//they're good team names, deal with it
-#if _DEBUG
-	//LevelManager::pushLevel("dev", "dev3");
-	//LevelManager::pushLevel("vanilla", "default_random");
-	//LevelManager::pushLevel("random-vanilla", "sneaky_reward");
-	//LevelManager::pushLevel("vanilla-extra", "tricky_maneuvering");
-	//LevelManager::pushLevel("random-vanilla", "tight_patrolling_corridor");
-	//LevelManager::pushLevel("dev", "unnamed3");
 	ResetThings::firstLevelPush();
-#else
-	ResetThings::firstLevelPush();
-#endif
 	ResetThings::firstReset();
 
 	std::cout << "OpenGL renderer: " << glGetString(GL_RENDERER) << std::endl;

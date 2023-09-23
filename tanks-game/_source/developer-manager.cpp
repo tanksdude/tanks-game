@@ -84,7 +84,8 @@ void DeveloperManager::mouseWheelFunc(int wheel, int dir, int x, int y) {
 	std::cout << "DeveloperManager insertIdentifier: " << insertListIdentifiers[insertIndex] << std::endl;
 }
 
-std::vector<std::string> DeveloperManager::insertListIdentifiers = { "longinvincible", "temp", "banana", "homing", "barrier", "bounce", "mines", "multishot", "grenade", "godmode", "big", "inversion", "annoying", "stationary_turret", "vert_wall", "horz_wall" };
+std::vector<std::string> DeveloperManager::insertListIdentifiers = { "longinvincible", "temp", "banana", "homing", "barrier", "bounce", "mines", "multishot", "grenade", "blast", "godmode", "big", "inversion", "annoying", "stationary_turret", "vert_wall", "horz_wall" };
+int DeveloperManager::insertListIdentifiers_normalSize = insertListIdentifiers.size();
 void DeveloperManager::devInsert(int x, int y) {
 	GenericFactoryConstructionData constructionData;
 	double* posArr;
@@ -97,7 +98,6 @@ void DeveloperManager::devInsert(int x, int y) {
 			#endif
 			break;
 		case 1:
-			//PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla", "blast"));
 			//PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "ultrabounce"));
 			//PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "other_stuff_is_poison"));
 			//PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "backwards_movement"));
@@ -126,31 +126,40 @@ void DeveloperManager::devInsert(int x, int y) {
 			PowerupManager::pushPowerup(new PowerSquare(x, y, "grenade"));
 			break;
 		case 9:
-			PowerupManager::pushPowerup(new PowerSquare(x, y, "godmode"));
+			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla", "blast"));
 			break;
 		case 10:
-			PowerupManager::pushPowerup(new PowerSquare(x, y, "big"));
+			PowerupManager::pushPowerup(new PowerSquare(x, y, "godmode"));
 			break;
 		case 11:
-			PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "inversion"));
+			PowerupManager::pushPowerup(new PowerSquare(x, y, "big"));
 			break;
 		case 12:
-			PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "annoying"));
+			PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "inversion"));
 			break;
 		case 13:
+			PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "annoying"));
+			break;
+		case 14:
 			posArr = new double[3]{ double(x), double(y), 0 };
 			constructionData = GenericFactoryConstructionData(3, posArr);
 			HazardManager::pushCircleHazard("vanilla", "stationary_turret", constructionData);
 			break;
-		case 14:
+		case 15:
 			WallManager::pushWall(new Wall(x, y, 20, 60, LevelManager::getLevel(0)->getDefaultColor()));
 			break;
-		case 15:
+		case 16:
 			WallManager::pushWall(new Wall(x, y, 60, 20, LevelManager::getLevel(0)->getDefaultColor()));
 			break;
 		default:
-			//better than nothing happening
-			PowerupManager::pushPowerup(new PowerSquare(x, y, "speed"));
+			const std::pair<std::string, std::string>& powerIdentifier = insertList_extra[insertIndex - insertListIdentifiers_normalSize];
+			PowerupManager::pushPowerup(new PowerSquare(x, y, powerIdentifier.first, powerIdentifier.second));
 			break;
 	}
+}
+
+std::vector<std::pair<std::string, std::string>> DeveloperManager::insertList_extra;
+void DeveloperManager::addInsertPower(std::string identifier, std::string type, std::string name) {
+	insertListIdentifiers.push_back(identifier);
+	insertList_extra.push_back({ type, name });
 }

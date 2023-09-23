@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "circle.h"
@@ -11,6 +12,8 @@ private:
 	static bool rightMouse;
 	static int insertIndex;
 	static std::vector<std::string> insertListIdentifiers;
+	static int insertListIdentifiers_normalSize; //before addInsertPower()
+	static std::vector<std::pair<std::string, std::string>> insertList_extra; //before addInsertPower()
 	static void devInsert(int x, int y);
 
 public:
@@ -26,6 +29,8 @@ public:
 	static void mouseDragFunc(int x, int y);
 	static void mouseClickFunc(int button, int state, int x, int y);
 	static void mouseWheelFunc(int wheel, int dir, int x, int y);
+
+	static void addInsertPower(std::string identifier, std::string type, std::string name);
 
 private:
 	DeveloperManager() = delete;
