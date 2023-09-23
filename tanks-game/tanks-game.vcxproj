@@ -208,6 +208,7 @@
     <ClCompile Include="_source\graphics\opengl-vertex-buffer.cpp" />
     <ClCompile Include="_source\hazards\patrolling-turret-hazard.cpp" />
     <ClCompile Include="_source\physics-handler.cpp" />
+    <ClCompile Include="_source\powers\triple-spread-named-power.cpp" />
     <ClCompile Include="_source\powerup-data-governor.cpp" />
     <ClCompile Include="_source\hazards\rectangular-no-bullet-zone-hazard.cpp" />
     <ClCompile Include="_source\powers\old-big-named-power.cpp" />
@@ -350,6 +351,7 @@
     <ClInclude Include="_source\graphics\opengl-vertex-buffer.h" />
     <ClInclude Include="_source\hazards\patrolling-turret-hazard.h" />
     <ClInclude Include="_source\physics-handler.h" />
+    <ClInclude Include="_source\powers\triple-spread-named-power.h" />
     <ClInclude Include="_source\powerup-data-governor.h" />
     <ClInclude Include="_source\hazards\rectangular-no-bullet-zone-hazard.h" />
     <ClInclude Include="_source\powers\old-big-named-power.h" />

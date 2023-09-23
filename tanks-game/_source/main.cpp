@@ -127,6 +127,7 @@
 #include "powers/dev-backwards-movement-power.h" //self-explanatory
 #include "powers/wall-sparks-power.h" //create some extra bullets when hitting a wall
 #include "powers/dev-weird-extra-cannons-power.h" //adds some extra cannons at weird angles
+#include "powers/triple-spread-named-power.h" //triple but bullets spread out instead of being next to each other (the only power that does so)
 
 #include "game-main-loop.h"
 
@@ -250,6 +251,7 @@ int main(int argc, char** argv) {
 	PowerupDataGovernor::addPowerFactory(DevBackwardsMovementPower::factory);
 	PowerupDataGovernor::addPowerFactory(WallSparksPower::factory);
 	PowerupDataGovernor::addPowerFactory(DevWeirdExtraCannonsPower::factory);
+	PowerupDataGovernor::addPowerFactory(TripleSpreadNamedPower::factory);
 
 	//hazards
 	//vanilla (some are also "old"):
