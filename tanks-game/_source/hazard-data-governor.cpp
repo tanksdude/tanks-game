@@ -7,13 +7,13 @@ std::unordered_map<std::string, std::vector<std::string>> HazardDataGovernor::re
 
 void HazardDataGovernor::initialize() {
 	circleHazardLookup.insert({ "vanilla", std::unordered_map<std::string, CircleHazardFactoryGroup>() });
-	circleHazardLookup.insert({ "vanilla-extra", std::unordered_map<std::string, CircleHazardFactoryGroup>() }); //what would this include? no bullet zone?
-	circleHazardLookup.insert({ "random-vanilla", std::unordered_map<std::string, CircleHazardFactoryGroup>() }); //can include vanilla-extra but probably won't
-	circleHazardLookup.insert({ "old", std::unordered_map<std::string, CircleHazardFactoryGroup>() }); //will probably be deleted
+	circleHazardLookup.insert({ "vanilla-extra", std::unordered_map<std::string, CircleHazardFactoryGroup>() }); //what would this include?
+	circleHazardLookup.insert({ "random-vanilla", std::unordered_map<std::string, CircleHazardFactoryGroup>() });
+	circleHazardLookup.insert({ "old", std::unordered_map<std::string, CircleHazardFactoryGroup>() });
 	circleHazardLookup.insert({ "random-old", std::unordered_map<std::string, CircleHazardFactoryGroup>() });
 	circleHazardLookup.insert({ "random", std::unordered_map<std::string, CircleHazardFactoryGroup>() }); //general random
-	circleHazardLookup.insert({ "dev", std::unordered_map<std::string, CircleHazardFactoryGroup>() }); //anything?
-	circleHazardLookup.insert({ "random-dev", std::unordered_map<std::string, CircleHazardFactoryGroup>() }); //would this be used?
+	circleHazardLookup.insert({ "dev", std::unordered_map<std::string, CircleHazardFactoryGroup>() });
+	circleHazardLookup.insert({ "random-dev", std::unordered_map<std::string, CircleHazardFactoryGroup>() });
 
 	rectHazardLookup.insert({ "vanilla", std::unordered_map<std::string, RectHazardFactoryGroup>() });
 	rectHazardLookup.insert({ "vanilla-extra", std::unordered_map<std::string, RectHazardFactoryGroup>() });

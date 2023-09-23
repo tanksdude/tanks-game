@@ -1,5 +1,6 @@
 #include "level-data-governor.h"
 
+#include <algorithm> //std::find
 #include <stdexcept>
 
 std::unordered_map<std::string, std::unordered_map<std::string, LevelFunction>> LevelDataGovernor::levelLookup;
@@ -13,22 +14,22 @@ std::unordered_map<std::string, std::vector<std::string>> LevelDataGovernor::cus
 
 void LevelDataGovernor::initialize() {
 	levelLookup.insert({ "vanilla", std::unordered_map<std::string, LevelFunction>() });
-	levelLookup.insert({ "vanilla-extra", std::unordered_map<std::string, LevelFunction>() }); //... what does this include?
-	levelLookup.insert({ "random-vanilla", std::unordered_map<std::string, LevelFunction>() }); //can include vanilla-extra but probably won't
+	levelLookup.insert({ "vanilla-extra", std::unordered_map<std::string, LevelFunction>() });
+	levelLookup.insert({ "random-vanilla", std::unordered_map<std::string, LevelFunction>() });
 	levelLookup.insert({ "old", std::unordered_map<std::string, LevelFunction>() });
 	levelLookup.insert({ "random-old", std::unordered_map<std::string, LevelFunction>() });
 	levelLookup.insert({ "random", std::unordered_map<std::string, LevelFunction>() }); //general random
 	levelLookup.insert({ "dev", std::unordered_map<std::string, LevelFunction>() });
-	levelLookup.insert({ "random-dev", std::unordered_map<std::string, LevelFunction>() }); //would this be used?
+	levelLookup.insert({ "random-dev", std::unordered_map<std::string, LevelFunction>() });
 
 	levelEffectLookup.insert({ "vanilla", std::unordered_map<std::string, LevelEffectFunction>() });
-	levelEffectLookup.insert({ "vanilla-extra", std::unordered_map<std::string, LevelEffectFunction>() }); //most would probably fall here...
+	levelEffectLookup.insert({ "vanilla-extra", std::unordered_map<std::string, LevelEffectFunction>() });
 	levelEffectLookup.insert({ "random-vanilla", std::unordered_map<std::string, LevelEffectFunction>() });
 	levelEffectLookup.insert({ "old", std::unordered_map<std::string, LevelEffectFunction>() });
 	levelEffectLookup.insert({ "random-old", std::unordered_map<std::string, LevelEffectFunction>() });
 	levelEffectLookup.insert({ "random", std::unordered_map<std::string, LevelEffectFunction>() }); //this could be a little terrifying
 	levelEffectLookup.insert({ "dev", std::unordered_map<std::string, LevelEffectFunction>() });
-	levelEffectLookup.insert({ "random-dev", std::unordered_map<std::string, LevelEffectFunction>() }); //would this be used?
+	levelEffectLookup.insert({ "random-dev", std::unordered_map<std::string, LevelEffectFunction>() });
 }
 
 std::string LevelDataGovernor::checkCustomLevelTypesAgainstProtectedTypes(const std::vector<std::string>& types) noexcept {
@@ -41,13 +42,12 @@ std::string LevelDataGovernor::checkCustomLevelTypesAgainstProtectedTypes(const 
 }
 
 void LevelDataGovernor::addCustomLevel(std::string name, const std::vector<std::string>& types, CustomLevel* l) {
+	if (std::find(types.begin(), types.end(), "null") != types.end()) { [[unlikely]]
+		throw std::runtime_error("level " + name + " includes \"null\" type, which is not allowed");
+	}
 	for (int i = 0; i < types.size(); i++) {
-		if (types[i] == "null") {
-			throw std::runtime_error("level " + name + " includes \"null\" type, which is not allowed");
-		} else { [[likely]]
-			customLevelLookup[types[i]].insert({ l->getName(), l });
-			customLevelNameList[types[i]].push_back(name);
-		}
+		customLevelLookup[types[i]].insert({ l->getName(), l });
+		customLevelNameList[types[i]].push_back(name);
 	}
 }
 
@@ -55,15 +55,14 @@ void LevelDataGovernor::addCustomLevel(std::string name, const std::vector<std::
 void LevelDataGovernor::addLevelFactory(LevelFunction factory) {
 	Level* l = factory();
 	std::vector<std::string> types = l->getLevelTypes();
+	if (std::find(types.begin(), types.end(), "null") != types.end()) {
+		std::string name = l->getName();
+		delete l;
+		throw std::runtime_error("level " + name + " includes \"null\" type, which is not allowed");
+	}
 	for (int i = 0; i < types.size(); i++) {
-		if (types[i] == "null") {
-			std::string name = l->getName();
-			delete l;
-			throw std::runtime_error("level " + name + " includes \"null\" type, which is not allowed");
-		} else { [[likely]]
-			levelLookup[types[i]].insert({ l->getName(), factory });
-			levelNameList[types[i]].push_back(l->getName());
-		}
+		levelLookup[types[i]].insert({ l->getName(), factory });
+		levelNameList[types[i]].push_back(l->getName());
 	}
 	delete l;
 }
@@ -109,15 +108,14 @@ void LevelDataGovernor::addLevelEffectFactory(LevelEffectFunction factory) {
 	GenericFactoryConstructionData constructionData;
 	LevelEffect* le = factory(constructionData);
 	std::vector<std::string> types = le->getLevelEffectTypes();
+	if (std::find(types.begin(), types.end(), "null") != types.end()) {
+		std::string name = le->getName();
+		delete le;
+		throw std::runtime_error("level effect " + name + " includes \"null\" type, which is not allowed");
+	}
 	for (int i = 0; i < types.size(); i++) {
-		if (types[i] == "null") {
-			std::string name = le->getName();
-			delete le;
-			throw std::runtime_error("level effect " + name + " includes \"null\" type, which is not allowed");
-		} else { [[likely]]
-			levelEffectLookup[types[i]].insert({ le->getName(), factory });
-			levelEffectNameList[types[i]].push_back(le->getName());
-		}
+		levelEffectLookup[types[i]].insert({ le->getName(), factory });
+		levelEffectNameList[types[i]].push_back(le->getName());
 	}
 	delete le;
 }

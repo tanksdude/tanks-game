@@ -1,5 +1,6 @@
 #include "powerup-data-governor.h"
 
+#include <algorithm> //std::find
 #include <stdexcept>
 
 std::unordered_map<std::string, std::unordered_map<std::string, PowerFunction>> PowerupDataGovernor::powerLookup;
@@ -19,7 +20,7 @@ void PowerupDataGovernor::initialize() {
 	powerLookup.insert({ "ultimate-vanilla", std::unordered_map<std::string, PowerFunction>() });
 	powerLookup.insert({ "random", std::unordered_map<std::string, PowerFunction>() }); //general random
 	powerLookup.insert({ "dev", std::unordered_map<std::string, PowerFunction>() });
-	powerLookup.insert({ "random-dev", std::unordered_map<std::string, PowerFunction>() }); //would this be used?
+	powerLookup.insert({ "random-dev", std::unordered_map<std::string, PowerFunction>() });
 }
 
 std::string PowerupDataGovernor::checkCustomPowerTypesAgainstProtectedTypes(const std::vector<std::string>& types) noexcept {
@@ -34,15 +35,14 @@ std::string PowerupDataGovernor::checkCustomPowerTypesAgainstProtectedTypes(cons
 void PowerupDataGovernor::addPowerFactory(PowerFunction factory) {
 	Power* p = factory();
 	std::vector<std::string> types = p->getPowerTypes();
+	if (std::find(types.begin(), types.end(), "null") != types.end()) {
+		std::string name = p->getName();
+		delete p;
+		throw std::runtime_error("power " + name + " includes \"null\" type, which is not allowed");
+	}
 	for (int i = 0; i < types.size(); i++) {
-		if (types[i] == "null") {
-			std::string name = p->getName();
-			delete p;
-			throw std::runtime_error("power " + name + " includes \"null\" type, which is not allowed");
-		} else { [[likely]]
-			powerLookup[types[i]].insert({ p->getName(), factory });
-			powerNameList[types[i]].push_back(p->getName());
-		}
+		powerLookup[types[i]].insert({ p->getName(), factory });
+		powerNameList[types[i]].push_back(p->getName());
 	}
 	delete p;
 }

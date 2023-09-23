@@ -1,6 +1,8 @@
 #pragma once
 #include "../power.h"
 
+//TOOD: wall/edge bouncing should probably be a built-in feature, since multiple powers bounce, but they can "double bounce" off stuff which is very wrong
+
 class BouncePower : public Power {
 public: //bullet stuff
 	static const int maxBounces;
