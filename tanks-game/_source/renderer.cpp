@@ -531,6 +531,9 @@ void Renderer::SubmitBatchedDraw(const float* posAndColor, int posAndColorLength
 		if (!enoughRoomForMoreVertices(posAndColorLength) || !enoughRoomForMoreIndices(indicesLength)) {
 			//std::cout << enoughRoomForMoreVertices(posAndColorLength) << enoughRoomForMoreIndices(indicesLength);
 			pushAnotherDataList();
+			if (posAndColorLength > maxVerticesDataLength || indicesLength > maxIndicesDataLength) { [[unlikely]]
+				std::cerr << "GPU buffer overrun!" << std::endl;
+			}
 		}
 
 		std::pair<std::vector<float>, std::vector<unsigned int>>& currentSceneData = sceneData[currentSceneName][sceneData[currentSceneName].size()-1];
