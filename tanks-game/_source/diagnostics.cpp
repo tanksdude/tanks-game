@@ -108,10 +108,11 @@ void Diagnostics::clearGraph() {
 void Diagnostics::pushGraphSumTime(std::string name) {
 	long double sum = 0;
 	for (int i = 0; i < graphTimes.size(); i++) {
-		if (graphTimes[i].name == name) {
+		if ((graphTimes[i].name == name) || (graphTimes[i].data.size() == 0)) {
 			continue;
 		}
 		sum += graphTimes[i].data[graphTimes[i].data.size()-1];
+		//technically not right; the proper implementation is to check everything that got updated and sum those
 	}
 
 	pushGraphTime(name, sum);
