@@ -107,7 +107,7 @@ public:
 
 	static void PreInitialize(int* argc, char** argv, std::string windowName); //initialize FreeGLUT and GLEW
 	static void PreInitialize(int* argc, char** argv, std::string windowName, int startX, int startY);
-	static void PreInitialize(int* argc, char** argv, std::string windowName, int startX, int startY, int sizeX, int sizeY);
+	static void PreInitialize(int* argc, char** argv, std::string windowName, int startX, int startY, double sizeMultiplier);
 	static void Initialize();
 	static void Uninitialize();
 

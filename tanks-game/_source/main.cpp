@@ -161,10 +161,9 @@ int main(int argc, char** argv) {
 		if (ini_data.exists("GRAPHICS_SETTINGS", "Position.StartX") && ini_data.exists("GRAPHICS_SETTINGS", "Position.StartY")) {
 			int startX = std::stoi(ini_data.get("GRAPHICS_SETTINGS", "Position.StartX"));
 			int startY = std::stoi(ini_data.get("GRAPHICS_SETTINGS", "Position.StartY"));
-			if (ini_data.exists("GRAPHICS_SETTINGS", "Position.SizeX") && ini_data.exists("GRAPHICS_SETTINGS", "Position.SizeY")) {
-				int sizeX = std::stoi(ini_data.get("GRAPHICS_SETTINGS", "Position.SizeX"));
-				int sizeY = std::stoi(ini_data.get("GRAPHICS_SETTINGS", "Position.SizeY"));
-				Renderer::PreInitialize(&argc, argv, name, startX, startY, sizeX, sizeY);
+			if (ini_data.exists("GRAPHICS_SETTINGS", "Position.SizeMultiplier")) {
+				double sizeMultiplier = std::stod(ini_data.get("GRAPHICS_SETTINGS", "Position.SizeMultiplier"));
+				Renderer::PreInitialize(&argc, argv, name, startX, startY, sizeMultiplier);
 			} else {
 				Renderer::PreInitialize(&argc, argv, name, startX, startY);
 			}

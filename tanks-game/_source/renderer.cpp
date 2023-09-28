@@ -23,8 +23,8 @@
 
 glm::mat4 Renderer::proj = glm::ortho(0.0f, (float)GAME_WIDTH, 0.0f, (float)GAME_HEIGHT);
 glm::mat4 Renderer::getProj() { return proj; }
-int Renderer::window_width = GAME_WIDTH*2 * 1.25;
-int Renderer::window_height = GAME_HEIGHT*2 * 1.25;
+int Renderer::window_width = GAME_WIDTH * 2.5;
+int Renderer::window_height = GAME_HEIGHT * 2.5;
 int Renderer::gamewindow_width = Renderer::window_width;
 int Renderer::gamewindow_height = Renderer::window_height;
 RenderingContext* Renderer::renderingMethod = nullptr;
@@ -176,10 +176,10 @@ void Renderer::PreInitialize(int* argc, char** argv, std::string windowName) {
 }
 
 void Renderer::PreInitialize(int* argc, char** argv, std::string windowName, int startX, int startY) {
-	Renderer::PreInitialize(argc, argv, windowName, startX, startY, Renderer::window_width, Renderer::window_height);
+	Renderer::PreInitialize(argc, argv, windowName, startX, startY, 2.5);
 }
 
-void Renderer::PreInitialize(int* argc, char** argv, std::string windowName, int startX, int startY, int sizeX, int sizeY) {
+void Renderer::PreInitialize(int* argc, char** argv, std::string windowName, int startX, int startY, double sizeMultiplier) {
 	// Initialize FreeGLUT
 	glutInit(argc, argv);
 	glutInitDisplayMode(GLUT_SINGLE | GLUT_DEPTH);
@@ -187,7 +187,7 @@ void Renderer::PreInitialize(int* argc, char** argv, std::string windowName, int
 
 	// Setup window position, size, and title
 	glutInitWindowPosition(startX, startY);
-	Renderer::window_width = sizeX; Renderer::window_height = sizeY;
+	Renderer::window_width = GAME_WIDTH*sizeMultiplier; Renderer::window_height = GAME_HEIGHT*sizeMultiplier;
 	glutInitWindowSize(Renderer::window_width, Renderer::window_height);
 	glutCreateWindow(windowName.c_str());
 
