@@ -11,6 +11,7 @@
 #include "mod-processor.h"
 #include "powerup-data-governor.h" //for adding custom powers to the game
 #include "basic-ini-parser.h" //for processing custom power files
+#include "game-manager.h" //INI file
 
 #include "collision-handler.h"
 #include "power-function-helper.h"
@@ -1306,11 +1307,14 @@ inline CustomPower::CustomPowerAction_Bullet* CustomPowerInterpreter::stringToAc
 }
 
 void CustomPowerInterpreter::addCustomPower(CustomPower* power) {
-	std::vector<std::string> types = power->getPowerTypes();
+	const BasicINIParser::BasicINIData& ini_data = GameManager::get_INI();
 
-	std::string result = PowerupDataGovernor::checkCustomPowerTypesAgainstProtectedTypes(types);
-	if (result != "") {
-		throw std::runtime_error("Error pushing power " + power->getName() + ": power includes \"" + result + "\" type, which is not allowed");
+	std::vector<std::string> types = power->getPowerTypes();
+	if (ini_data.exists("MODS", "ModSafetyChecks") && std::stoi(ini_data.get("MODS", "ModSafetyChecks"))) {
+		std::string result = PowerupDataGovernor::checkCustomPowerTypesAgainstProtectedTypes(types);
+		if (result != "") {
+			throw std::runtime_error("Error pushing power " + power->getName() + ": power includes \"" + result + "\" type, which is not allowed");
+		}
 	}
 
 	PowerupDataGovernor::addCustomPower(power->getName(), types, power);

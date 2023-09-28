@@ -8,6 +8,7 @@
 #include <vector>
 #include <unordered_map> //could use a set, not a big deal
 
+#include "game-manager.h" //INI file
 #include "custom-power-interpreter.h"
 #include "custom-level-interpreter.h"
 
@@ -15,8 +16,11 @@ const std::string ModProcessor::ModOrderPath = "mods/order.txt";
 const std::string ModProcessor::IgnoreListPath = "mods/ignore.txt";
 
 void ModProcessor::ProcessMods() noexcept {
-	CustomPowerInterpreter::ProcessCustomPowers();
-	CustomLevelInterpreter::ProcessCustomLevels();
+	const BasicINIParser::BasicINIData& ini_data = GameManager::get_INI();
+	if (ini_data.exists("MODS", "LoadMods") && std::stoi(ini_data.get("MODS", "LoadMods"))) {
+		CustomPowerInterpreter::ProcessCustomPowers();
+		CustomLevelInterpreter::ProcessCustomLevels();
+	}
 }
 
 std::vector<std::string> ModProcessor::getListOfKnownMods() {

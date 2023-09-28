@@ -12,6 +12,7 @@
 #include "hazard-data-governor.h"
 #include "level-data-governor.h" //for adding custom levels to the game
 #include "basic-ini-parser.h" //for processing custom level files
+#include "game-manager.h" //INI file
 
 #include "reset-things.h"
 #include "level-helper.h"
@@ -739,11 +740,14 @@ inline CustomLevel::CustomLevelAction* CustomLevelInterpreter::stringToAction(co
 }
 
 void CustomLevelInterpreter::addCustomLevel(CustomLevel* level) {
-	std::vector<std::string> types = level->getLevelTypes();
+	const BasicINIParser::BasicINIData& ini_data = GameManager::get_INI();
 
-	std::string result = LevelDataGovernor::checkCustomLevelTypesAgainstProtectedTypes(types);
-	if (result != "") {
-		throw std::runtime_error("Error pushing level " + level->getName() + ": level includes \"" + result + "\" type, which is not allowed");
+	std::vector<std::string> types = level->getLevelTypes();
+	if (ini_data.exists("MODS", "ModSafetyChecks") && std::stoi(ini_data.get("MODS", "ModSafetyChecks"))) {
+		std::string result = LevelDataGovernor::checkCustomLevelTypesAgainstProtectedTypes(types);
+		if (result != "") {
+			throw std::runtime_error("Error pushing level " + level->getName() + ": level includes \"" + result + "\" type, which is not allowed");
+		}
 	}
 
 	LevelDataGovernor::addCustomLevel(level->getName(), types, level);
