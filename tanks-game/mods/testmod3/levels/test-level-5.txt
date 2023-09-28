@@ -14,12 +14,14 @@ RandomStartPositionYRange = 128 ; 320*(2/5)
 ; actual level
 [LEVEL_START]
 
-WALL_LR   320 160 240   20 240
+WALL_LR   320 160 240   20 220
 
-POWER_Corners   320 160 250 130   "vanilla" "speed"
+POWER_Corners   320 160 250 120   "vanilla" "speed"
 POWER   320 160   "vanilla" "godmode" "vanilla" "big"
 
 CHAZARD   "vanilla" "mother_turret"   240  80   45
 CHAZARD   "vanilla" "mother_turret"   400  80   135
 CHAZARD   "vanilla" "mother_turret"   240 240   -45
 CHAZARD   "vanilla" "mother_turret"   400 240   -135
+
+POWER_LR   320 160 230   "testmod3" "test-power-5"

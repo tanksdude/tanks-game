@@ -70,7 +70,7 @@ InteractionBoolHolder ShieldTankPower::modifiedDeathHandling(Tank* parent) {
 	if (this->maxTime < 0) {
 		return { false, false };
 	}
-	if (this->timeLeft < ShieldPower::barrierStrength) {
+	if (this->timeLeft <= ShieldPower::barrierStrength) {
 		return { false, true };
 	}
 	this->timeLeft -= ShieldPower::barrierStrength;

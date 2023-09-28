@@ -69,10 +69,7 @@ std::shared_ptr<std::vector<CustomLevelAction*>> actions) {
 }
 
 CustomLevel::~CustomLevel() {
-	//for (int i = 0; i < initializationActions.size(); i++) {
-	//	delete initializationActions[i];
-	//}
-	////initializationActions.clear();
+	//nothing
 }
 
 CustomLevel::CustomLevelCommands CustomLevel::strToCommand(const std::string& str) noexcept {
@@ -667,12 +664,6 @@ inline CustomLevel::CustomLevelAction* CustomLevelInterpreter::stringToAction(co
 		//BasicINIParser::processEscapeSequences_all(words[words.size()-1]);
 	}
 
-	/*
-	if (words.size() <= 1) { [[unlikely]]
-		throw std::runtime_error("line " + std::to_string(command.second) + " insufficient parameters");
-	}
-	*/
-
 	CustomLevel::CustomLevelCommands levelCommand = CustomLevel::strToCommand(words[0]);
 	std::string levelCommand_strBackup = words[0]; //for printing error messages
 	words.erase(words.begin()); //remove the command type from the parameter list
@@ -909,14 +900,10 @@ inline void CustomLevelInterpreter::stringToAction_POWER(const std::vector<std::
 		namesArr[i] = words[i*2+1 + 2];
 	}
 
-	unsigned int i;
-	try {
-		for (i = 0; i < powerSize; i++) {
-			PowerupDataGovernor::getPowerFactory(typesArr[i], namesArr[i]);
+	for (unsigned int i = 0; i < powerSize; i++) {
+		if (!PowerupDataGovernor::doesPowerExist(typesArr[i], namesArr[i])) {
+			throw std::runtime_error("power \"" + typesArr[i] + "\" \"" + namesArr[i] + "\" does not exist");
 		}
-	}
-	catch (const std::runtime_error&) {
-		throw std::runtime_error("power \"" + typesArr[i] + "\" \"" + namesArr[i] + "\" does not exist");
 	}
 
 	constructionData.pushData(2, new double[2]{ centerX, centerY });
@@ -951,14 +938,10 @@ inline void CustomLevelInterpreter::stringToAction_POWER_LR(const std::vector<st
 		namesArr[i] = words[i*2+1 + 3];
 	}
 
-	unsigned int i;
-	try {
-		for (i = 0; i < powerSize; i++) {
-			PowerupDataGovernor::getPowerFactory(typesArr[i], namesArr[i]);
+	for (unsigned int i = 0; i < powerSize; i++) {
+		if (!PowerupDataGovernor::doesPowerExist(typesArr[i], namesArr[i])) {
+			throw std::runtime_error("power \"" + typesArr[i] + "\" \"" + namesArr[i] + "\" does not exist");
 		}
-	}
-	catch (const std::runtime_error&) {
-		throw std::runtime_error("power \"" + typesArr[i] + "\" \"" + namesArr[i] + "\" does not exist");
 	}
 
 	constructionData.pushData(3, new double[3]{ centerX, centerY, offsetX });
@@ -997,14 +980,10 @@ inline void CustomLevelInterpreter::stringToAction_POWER_Corners(const std::vect
 		namesArr[i] = words[i*2+1 + 4];
 	}
 
-	unsigned int i;
-	try {
-		for (i = 0; i < powerSize; i++) {
-			PowerupDataGovernor::getPowerFactory(typesArr[i], namesArr[i]);
+	for (unsigned int i = 0; i < powerSize; i++) {
+		if (!PowerupDataGovernor::doesPowerExist(typesArr[i], namesArr[i])) {
+			throw std::runtime_error("power \"" + typesArr[i] + "\" \"" + namesArr[i] + "\" does not exist");
 		}
-	}
-	catch (const std::runtime_error&) {
-		throw std::runtime_error("power \"" + typesArr[i] + "\" \"" + namesArr[i] + "\" does not exist");
 	}
 
 	constructionData.pushData(4, new double[4]{ centerX, centerY, offsetX, offsetY });

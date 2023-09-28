@@ -1,0 +1,28 @@
+; required
+Name = test-power-3
+Color = 0.25   0.25   0.25
+PowerTypes = "testmod2"   "random-testmod2"
+PowerWeights = 1.0   1.0
+
+
+
+; actual power, tank portion
+[TANKPOWER_START]
+
+modifiedCollisionWithEdge_Enable
+modifiedCollisionWithEdge_AdditionalBoundary 16
+
+modifiedDeathHandling_Enable
+modifiedDeathHandling_DurationSubtract 100
+
+tankAccelerationMultiplier .25 ;very icy
+tankTurningIncrementMultiplier .25 ;very hard to control
+
+
+
+; actual power, bullet portion
+[BULLETPOWER_START]
+
+modifiedDeathHandling_Enable
+
+bulletSpeedMultiplier .5

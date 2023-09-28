@@ -277,7 +277,7 @@ std::string* LevelHelper::getRandomPowers(int count, std::string type) {
 	bool* canStack = new bool[powerNum];
 	float* powerWeights = new float[powerNum];
 	for (int i = 0; i < powerNum; i++) {
-		Power* p = PowerupDataGovernor::getPowerFactory(type, possiblePowers[i])();
+		Power* p = PowerupDataGovernor::getPower(type, possiblePowers[i]);
 		std::vector<std::string> attributes = p->getPowerAttributes();
 		canStack[i] = (std::find(attributes.begin(), attributes.end(), "stack") != attributes.end());
 		powerWeights[i] = p->getWeights()[type];
@@ -300,7 +300,7 @@ std::string* LevelHelper::getRandomPowers(int count, std::string type, std::stri
 	bool* canStack = new bool[nameCount];
 	float* powerWeights = new float[nameCount];
 	for (int i = 0; i < nameCount; i++) {
-		Power* p = PowerupDataGovernor::getPowerFactory(type, names[i])();
+		Power* p = PowerupDataGovernor::getPower(type, names[i]);
 		std::vector<std::string> attributes = p->getPowerAttributes();
 		canStack[i] = (std::find(attributes.begin(), attributes.end(), "stack") != attributes.end());
 		powerWeights[i] = p->getWeights()[type];

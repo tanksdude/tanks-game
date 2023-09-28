@@ -7,6 +7,8 @@ std::unordered_map<std::string, std::unordered_map<std::string, PowerFunction>> 
 std::unordered_map<std::string, std::vector<std::string>> PowerupDataGovernor::powerNameList;
 
 std::vector<std::string> PowerupDataGovernor::protectedTypes = { "null", "vanilla", "vanilla-extra", "random-vanilla", "old", "random-old", "supermix-vanilla", "ultimate-vanilla", "dev", "random-dev" };
+std::unordered_map<std::string, std::unordered_map<std::string, CustomPower*>> PowerupDataGovernor::customPowerLookup;
+std::unordered_map<std::string, std::vector<std::string>> PowerupDataGovernor::customPowerNameList;
 
 void PowerupDataGovernor::initialize() {
 	powerLookup.insert({ "vanilla", std::unordered_map<std::string, PowerFunction>() });
@@ -32,6 +34,33 @@ std::string PowerupDataGovernor::checkCustomPowerTypesAgainstProtectedTypes(cons
 	return "";
 }
 
+void PowerupDataGovernor::addCustomPower(std::string name, const std::vector<std::string>& types, CustomPower* p) {
+	if (std::find(types.begin(), types.end(), "null") != types.end()) { [[unlikely]]
+		throw std::runtime_error("power " + name + " includes \"null\" type, which is not allowed");
+	}
+	for (int i = 0; i < types.size(); i++) {
+		customPowerLookup[types[i]].insert({ p->getName(), p });
+		customPowerNameList[types[i]].push_back(name);
+	}
+}
+
+bool PowerupDataGovernor::doesPowerExist(std::string type, std::string name) noexcept {
+	if (powerLookup.find(type) == powerLookup.end()) {
+		if (customPowerLookup.find(type) != customPowerLookup.end()) {
+			if (customPowerLookup[type].find(name) != customPowerLookup[type].end()) {
+				return true;
+			}
+			return false;
+		}
+		return false;
+	}
+	if (powerLookup[type].find(name) != powerLookup[type].end()) {
+		return true;
+	}
+	return false;
+}
+
+
 void PowerupDataGovernor::addPowerFactory(PowerFunction factory) {
 	Power* p = factory();
 	std::vector<std::string> types = p->getPowerTypes();
@@ -47,18 +76,34 @@ void PowerupDataGovernor::addPowerFactory(PowerFunction factory) {
 	delete p;
 }
 
-PowerFunction PowerupDataGovernor::getPowerFactory(std::string type, std::string name) {
+Power* PowerupDataGovernor::getPower(std::string type, std::string name) {
+	//TODO: do doesPowerExist()?
 	if (powerLookup.find(type) == powerLookup.end()) {
+		//custom powers
+		if (customPowerLookup.find(type) != customPowerLookup.end()) {
+			if (customPowerLookup[type].find(name) != customPowerLookup[type].end()) {
+				return customPowerLookup[type][name]->factory();
+			}
+			throw std::runtime_error("power name \"" + name + "\" (with type \"" + type + "\") unknown!");
+		}
 		throw std::runtime_error("power type \"" + type + "\" unknown!");
+	} else {
+		//regular powers
+		if (powerLookup[type].find(name) == powerLookup[type].end()) {
+			throw std::runtime_error("power name \"" + name + "\" (with type \"" + type + "\") unknown!");
+		}
+		return powerLookup[type][name]();
 	}
-	if (powerLookup[type].find(name) == powerLookup[type].end()) {
-		throw std::runtime_error("power name \"" + name + "\" (with type \"" + type + "\") unknown!");
-	}
-	return powerLookup[type][name];
 }
 
 std::string PowerupDataGovernor::getPowerName(std::string type, unsigned int index) {
 	if (powerLookup.find(type) == powerLookup.end()) {
+		if (customPowerLookup.find(type) != customPowerLookup.end()) {
+			if (index >= customPowerNameList[type].size()) {
+				throw std::range_error("power index " + std::to_string(index) + " is too large!");
+			}
+			return customPowerNameList[type][index];
+		}
 		throw std::runtime_error("power type \"" + type + "\" unknown!");
 	}
 	if (index >= powerNameList[type].size()) {
@@ -69,6 +114,9 @@ std::string PowerupDataGovernor::getPowerName(std::string type, unsigned int ind
 
 unsigned int PowerupDataGovernor::getNumPowerTypes(std::string type) {
 	if (powerLookup.find(type) == powerLookup.end()) {
+		if (customPowerLookup.find(type) != customPowerLookup.end()) {
+			return customPowerNameList[type].size();
+		}
 		throw std::runtime_error("power type \"" + type + "\" unknown!");
 	}
 	return powerNameList[type].size();

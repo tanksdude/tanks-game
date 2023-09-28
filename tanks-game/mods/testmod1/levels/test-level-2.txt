@@ -13,4 +13,7 @@ WALL_Corners   320 160 80 60   40 20
 
 POWER_Corners   320 160 70 50   "vanilla" "invincible"
 
+POWER_UD   320 160 100   "testmod1" "test-power-1"
+POWER_UD   320 160 120   "testmod1" "test-power-2"
+
 RHAZARD   "vanilla" "lightning"   320 160   30 30

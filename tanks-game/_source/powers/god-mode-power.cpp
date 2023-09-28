@@ -46,7 +46,7 @@ void GodmodeTankPower::initialize(Tank* parent) {
 	//this follows PowerSquare::givePower(Tank*)
 
 	for (int i = 0; i < PowerupDataGovernor::getNumPowerTypes("supermix-vanilla"); i++) {
-		Power* p = PowerupDataGovernor::getPowerFactory("supermix-vanilla", PowerupDataGovernor::getPowerName("supermix-vanilla", i))();
+		Power* p = PowerupDataGovernor::getPower("supermix-vanilla", PowerupDataGovernor::getPowerName("supermix-vanilla", i));
 		parent->tankPowers.push_back(p->makeTankPower());
 		parent->tankPowers[parent->tankPowers.size()-1]->initialize(parent);
 		delete p;

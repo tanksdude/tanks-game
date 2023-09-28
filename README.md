@@ -41,9 +41,21 @@ Making your own levels is now a thing! (Although the levels are very simple, and
 1. Every level needs a `Name` (string), `Color` (3 floats in range [0,1] for RGB), `LevelTypes` (at least one string; recommended "modname" and "random-modname"), and `LevelWeights` (1 float for each type; recommended 1.0 is the base weight).
 1. Optionally, levels can contain a `RandomStartPositionCount` (int, default = 5, for number of starting positions), `RandomStartPositionXValue` (float, default = 20, x-distance from edge), and `RandomStartPositionYRange` (float, default = 256=320-2*32, y-range for starting positions).
 1. Once the assignments have been set, `[LEVEL_START]` needs to appear, then you can start adding walls and powers and stuff.
-1. I was going to put some more syntax notes here but you should just look at one of the pre-made ones and learn from it. They contain every operation currently available.
+1. I was going to put some more syntax notes here but you should just look at one of the pre-made ones and learn from it. They contain sort of every operation currently available.
 
 The custom level interpreter is very simple and barebones, so if you want to put something at the center, you have to put the coordinates as `320 160` instead of `GAME_WIDTH/2 GAME_HEIGHT/2`. Also you can't do any math to your numbers; they need to be the raw numbers (no "sqrt(3)" or "20*8", just "5" or whatever). I know this sucks but adding an expression parser is annoying [(although there is a popular library for this task)](https://github.com/ArashPartow/exprtk) and adding Lua (or maybe Python?) would've been a much larger hurdle [(although this Wikipedia list is much larger than the last time I looked at it so maybe it's easier than I thought?)](https://en.wikipedia.org/wiki/List_of_applications_using_Lua).
+
+## Making custom powers
+
+Making your own powers is also now a thing! (Although very limited.) How to do so:
+
+1. Follow the same steps as making custom levels, but add a `powers` folder in your mod's folder.
+1. Every power needs a `Name` (string), `Color` (3 floats in range [0,1] for RGB), `PowerTypes` (at least one string; recommended "modname" and "random-modname"), and `PowerWeights` (1 float for each type; recommended 1.0 is the base weight).
+1. Optionally, powers can contain a `PowerTankDuration` (double, default = 500, for duration the tank has the power) and `PowerAttributes` (strings, default = "stack" and "mix", just something to help when randomizing powers)
+1. Once the assignments have been set, do `[TANKPOWER_START]` to set up the tank power, then `[BULLETPOWER_START]` to set up the bullet power.
+1. Check the provided powers for syntax and stuff. They contain basically every operation currently available.
+
+The custom power interpreter is also very simple and barebones.
 
 ## Running the tests
 

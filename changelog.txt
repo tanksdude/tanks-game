@@ -34,9 +34,11 @@
     * TODO: actually proper physics, meaning earlier objects don't get priority over later ones anymore
 * powerups:
     * TODO: megadeath update
+    * custom powers exist!
     * [dev] color changing: changes color based on proximity to other tank
     * [dev] backwards movement: by pressing the special key (currently e and /), the tank moves backwards
     * [dev] wall sparks: makes extra bullets when it hits a wall
+    * [dev] triple spread: the bullets spread out from the point they were shot at instead of being parallel
 * hazards:
     * patrolling turret: moves along its path
     * mother turret: creates turrets
@@ -45,6 +47,7 @@
     * TODO: [dev] selective no bullet zone (doesn't affect a certain teamID)
 * levels:
     * TODO: old versions of some levels (they're barely different but may as well include them)
+    * custom levels exist!
     * "tight patrolling corridor"
     * "dangerous center"
     * [dev] "unnamed3" and "unnamed4": tests with mother turret and ginormous turret
@@ -209,7 +212,7 @@ future notes:
 0.B.0: multithreading? (std::async to start)
 1.0.0: all levels, powers, and other stuff that I want, and AI
 2.0.0: level editor and/or power editor and/or game engine something thing (save for sequel instead?)
-other note: consider SDL instead of FreeGLUT
+other note: consider SDL or SFML instead of FreeGLUT
 
 sequel notes:
 draw an image for powerups instead of just a color
