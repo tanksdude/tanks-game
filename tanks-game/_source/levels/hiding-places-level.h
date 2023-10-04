@@ -8,6 +8,7 @@ public:
 	virtual ColorValueHolder getDefaultColor() const override { return ColorValueHolder(0.375f, 0.75f, 0.125f); } //JS: #66AA22
 	virtual std::vector<std::string> getLevelTypes() const override {
 		std::vector<std::string> types = std::vector<std::string>{ "vanilla-extra", "random-vanilla", "old", "random-old" };
+		//note: keep this in random-vanilla because although it's not a great level, it's always fun to have a level with something "unique" (the mines powerups, since those can't be randomly placed)
 		return types;
 	}
 	virtual std::unordered_map<std::string, float> getWeights() const override;

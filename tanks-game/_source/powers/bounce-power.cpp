@@ -37,9 +37,6 @@ BouncePower::BouncePower() {
 
 
 
-//not reducing size on the bullet or tank in this version because I originally only did that to make it different from others
-//(I think that was literally the only reason)
-
 void BounceTankPower::initialize(Tank* parent) {
 	//nothing
 }
@@ -100,6 +97,9 @@ InteractionBoolHolder BounceBulletPower::modifiedEdgeCollision(Bullet* b) {
 	//therefore, it can lose 2 bounces at once
 	//shouldn't ever have negative bounces, so need to check Y, then X, then Y if Y wasn't already checked, and check bouncesLeft after each edge bounce
 	//I could have different checks for partiallyOutOfBounds() to only require one check each but whatever
+
+	//TODO: this system will only bounce off one edge if it's on the corner and has one bounce left; should be changed to actually bounce off the corner, may as well count it as one bounce
+	//TODO: should store "max bounces" to implement that
 
 	bool bouncedY = false;
 	//bool bouncedX = false;

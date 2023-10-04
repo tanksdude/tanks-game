@@ -108,7 +108,7 @@
     <ClCompile Include="_source\powers\grenade-power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="_source\levels\corridor-level.cpp">
+    <ClCompile Include="_source\levels\evened-corridors-level.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="_source\powers\fire-named-power.cpp">
@@ -557,7 +557,7 @@
     <ClInclude Include="_source\powers\grenade-power.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="_source\levels\corridor-level.h">
+    <ClInclude Include="_source\levels\evened-corridors-level.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="_source\powers\fire-named-power.h">

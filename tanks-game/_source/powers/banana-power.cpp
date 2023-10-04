@@ -1,8 +1,8 @@
 #include "banana-power.h"
 
 const int BananaPower::bananaCount = 8; //TODO: change with INI
-const double BananaPower::maxNewBulletVelocity = 5.0/4.0;
-const double BananaPower::minNewBulletVelocity = 1.0/2.0;
+const double BananaPower::maxNewBulletVelocityMultiplier = 5.0/4.0;
+const double BananaPower::minNewBulletVelocityMultiplier = 1.0/2.0; //JS range: [0,1]
 
 std::unordered_map<std::string, float> BananaPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -79,7 +79,7 @@ InteractionBoolHolder BananaBulletPower::modifiedMovement(Bullet* b) {
 			if (newVelocity == 0) {
 				newVelocity = Tank::default_maxSpeed*BULLET_TO_TANK_SPEED_RATIO; //if bullet's initial speed is zero, it should still explode (TODO: what should the initial speed be?)
 			}
-			newVelocity = newVelocity * ((RNG::randFunc()+RNG::randFunc())/2 * (BananaPower::maxNewBulletVelocity - BananaPower::minNewBulletVelocity) + BananaPower::minNewBulletVelocity);
+			newVelocity = newVelocity * ((RNG::randFunc()+RNG::randFunc())/2 * (BananaPower::maxNewBulletVelocityMultiplier - BananaPower::minNewBulletVelocityMultiplier) + BananaPower::minNewBulletVelocityMultiplier);
 			BulletManager::pushBullet(new Bullet(b->x, b->y, b->r/2, RNG::randFunc() * (2*PI), newVelocity, b->getTeamID(), b->getParentIDType(), b->getParentID(), bp, true));
 			delete bp;
 		}

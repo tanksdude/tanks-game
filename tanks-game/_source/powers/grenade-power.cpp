@@ -1,6 +1,6 @@
 #include "grenade-power.h"
 
-const double GrenadePower::degradeAmount = .875;
+const double GrenadePower::degradeAmount = .875; //JS: .75
 
 std::unordered_map<std::string, float> GrenadePower::getWeights() const {
 	std::unordered_map<std::string, float> weights;

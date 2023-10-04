@@ -1,4 +1,4 @@
-0.3.0 (obviously definitely not here)
+0.3.0 "complete" (obviously definitely not here)
 * new game mode: infinite world!
     * single-player only
     * the point is just to explore
@@ -7,18 +7,19 @@
 * lots of new stuff
 * powerups:
     * sword
-    * hazard powers!
+    * hazard powers?
     * growing and degrading powerups mix better
         * megadeath update?
 
-0.2.5 (obviously not here)
-* ini file
-    * allows for some customization
-    * now it's possible to view certain levels/whatever that exist but aren't playable
-        * TODO: make a list to know what exists
+0.2.5 "done" (obviously not here)
 * rudimentary custom powers and levels!
     * turns out, DLLs were too complicated
     * look at the mods folder for examples
+* ini file
+    * allows for some customization
+    * now it's possible to view certain levels/whatever that exist but aren't playable
+* some documentation
+    * very minimal, but at least there's now an easy-to-read list of everything in the game
 * graphics: batched rendering
     * still not very efficient, but it's something
 * slight multithreading!
@@ -51,16 +52,17 @@
     * "tight patrolling corridor"
     * "dangerous center"
     * [dev] "unnamed3" and "unnamed4": tests with mother turret and ginormous turret
+    * renamed "corridor" level back to "evened corridors" because I realized most levels followed the "adjective_noun" pattern
 * level effects:
     * TODO: nothing so far
 * minor things:
     * update to VS2022
     * fullscreen toggle key changed to F11
     * overhaul priority handling (again)
+    * *massive* cleanup across the entire project, multiple times; no seriously it was a lot
     * [dev] power, other stuff is poison: walls and hazards kill on contact
     * [dev] power, "weird extra cannons": just a test of adding extra cannon points at weird angles
     * [dev] hazard, "wall": it's a "wall," that's it
-    * attempted: make static classes (mainly managers) not static; didn't work, everything is too interconnected, need to learn how structure games
     * attempted: tried GLFW instead of FreeGLUT, didn't like it
 
 0.2.4
@@ -201,17 +203,8 @@
 0.0.7 and before
 * primarily the framework and some powers to test the framework
 
-future notes:
-0.3.0: menu? better renderer abstraction?
-0.4.0: mod support?
-0.4.A: priorities for the power modification functions?
-0.5.0: hazardpowers can special-case some additional functionality to hazards (like turrets knowing about bouncing bullets, or wallhack (this is for AI))?
-0.A.B: graphs for diagnostics
-0.X.0: big change in levels or powers or something else, like bulletpower memory management (std::shared_ptr)
-0.A.0: graphics batching
-0.B.0: multithreading? (std::async to start)
-1.0.0: all levels, powers, and other stuff that I want, and AI
-2.0.0: level editor and/or power editor and/or game engine something thing (save for sequel instead?)
+
+
 other note: consider SDL or SFML instead of FreeGLUT
 
 sequel notes:

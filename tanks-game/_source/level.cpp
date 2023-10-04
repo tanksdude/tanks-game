@@ -88,9 +88,16 @@ team mode! (for two tanks...)
 
 
 JS level numbers (with names updated):
-special: 0 = default random, 1 = empty, 2 = portal level, 3 = winning path, 4 = tricky maneuvering, 5 = mine heaven; not special: 0 = hiding places, 1 = corridor, 2 = few obstacles, 3 = lone turret, 4 = concealed powerups, 5 = many hazards, 6 = lightning corners (but not really since it was cut)
+special: 0 = default random, 1 = empty, 2 = portal level, 3 = winning path, 4 = tricky maneuvering, 5 = mine heaven; not special: 0 = hiding places, 1 = evened corridors, 2 = few obstacles, 3 = lone turret, 4 = concealed powerups, 5 = many hazards, 6 = lightning corners (but not really since it was cut)
 portal will be hard...
 C++ order of creating the JS levels (probably):
-empty, default random, corridor, few obstacles, concealed powerups, many hazards, hiding places, lightning corners, lone turret, tricky maneuvering, mine heaven, winning path
+empty, default random, evened corridors, few obstacles, concealed powerups, many hazards, hiding places, lightning corners, lone turret, tricky maneuvering, mine heaven, winning path
+
+
+random fun facts:
+in JS, most levels were made solely around a new power or other feature existing, and they were typically just a test level with a few walls that got slightly modified into a real level
+the earlier levels (mainly in JS) are far simpler because that was all a power needed to show off
+more levels was one of the most important things I wanted to address in this version, but I never quite delivered on that...
+I think someone once said mines was their favorite powerup, so I made mine heaven level as a joke
 
 */

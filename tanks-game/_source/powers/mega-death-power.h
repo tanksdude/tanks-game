@@ -5,12 +5,13 @@ class MegaDeathPower : public Power {
 public: //bullet stuff
 	static const float destroyWallTier; //(and destroyHazardTier)
 	static const double bulletSizeMultiplierPerTick;
+	//difference from JS: wall degrading (doesn't exist in this version); wall degrading added acceleration again, which is negative for everything but megadeath, so it would pick up extra speed
 
 public:
 	virtual std::vector<std::string> getPowerTypes() const override {
 		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "random" };
-		//should it be in old? (it only sorta existed)
-		//JS: did have supermix (I thought it was impossible for it to exist normally... well, whatever)
+		//not in old
+		//JS: surprisingly, did have supermix (I thought it was impossible for it to exist normally... well, whatever)
 		return types;
 	}
 	virtual std::unordered_map<std::string, float> getWeights() const override;

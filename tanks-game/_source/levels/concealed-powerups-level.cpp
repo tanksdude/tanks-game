@@ -43,7 +43,7 @@ void ConcealedPowerupsLevel::initialize() {
 	//traps:
 	//LevelHelper::pushSymmetricPowerups_LR(GAME_WIDTH/2, GAME_HEIGHT/2, 80+20+20, "vanilla", "speed");
 
-	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "big"));
+	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "old", "old_big"));
 
 	LevelHelper::pushSymmetricPowerups_UD_Alternate(GAME_WIDTH/2, GAME_HEIGHT/2, 20,
 		"vanilla", "speed", "vanilla", "invincible");

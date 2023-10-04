@@ -67,7 +67,7 @@ public:
 	virtual InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> modifiedCollisionWithWall(const Bullet*, const Wall*) override;
 	//bool modifiedCollisionWithWallCanWorkWithOthers = false;
 
-	virtual double getBulletSpeedMultiplier() const override { return .25; }
+	virtual double getBulletSpeedMultiplier() const override { return .25; } //JS: .5
 	virtual double getBulletRadiusMultiplier() const override { return 4; }
 	//bool bulletRadiusStacks = true;
 

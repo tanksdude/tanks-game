@@ -15,7 +15,11 @@ public:
 		return types;
 	}
 	virtual std::unordered_map<std::string, float> getWeights() const override;
-	//virtual std::vector<std::string> getPowerAttributes() const override;
+	virtual std::vector<std::string> getPowerAttributes() const override {
+		//shouldn't stack because it bounces
+		std::vector<std::string> attributes = std::vector<std::string>{ "mix" };
+		return attributes;
+	}
 
 	virtual std::string getName() const override { return WallSparksPower::getClassName(); }
 	static std::string getClassName() { return "wall_sparks"; }

@@ -8,6 +8,9 @@ class LevelManager {
 private:
 	static std::vector<Level*> levels; //active levels
 	static void clearLevels(); //for ResetThings
+	//sequel note: don't use a list of levels, that's stupid; there should only be one level in play; levels should be able to choose their size
+	//a list was used because in JS, you could just keep pushing levels, since they were basically a collection of "push walls here" commands
+	//also I'm not a fan of hard coding "only one level in play", but in this case it *really* makes sense
 
 public:
 	static void initialize();

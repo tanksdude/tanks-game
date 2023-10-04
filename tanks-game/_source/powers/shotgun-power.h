@@ -47,7 +47,7 @@ public:
 	//bool modifiesAdditionalShooting = true;
 	virtual void additionalShooting(Tank* parent, const CannonPoint&) override;
 
-	//virtual double getTankFiringRateMultiplier() const override { return .5; }
+	//virtual double getTankFiringRateMultiplier() const override { return .5; } //JS
 
 	ShotgunTankPower();
 };

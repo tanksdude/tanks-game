@@ -98,11 +98,9 @@ void DeveloperManager::devInsert(int x, int y) {
 			#endif
 			break;
 		case 1:
-			//PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "ultrabounce"));
-			//PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "other_stuff_is_poison"));
 			//PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "backwards_movement"));
 			//PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "wall_sparks"));
-			PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "weird_extra_cannons"));
+			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla", "megadeath"));
 			break;
 		case 2:
 			PowerupManager::pushPowerup(new PowerSquare(x, y, "banana"));

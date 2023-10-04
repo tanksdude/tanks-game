@@ -96,7 +96,7 @@ InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> BlastBulletPower::
 	} else {
 		if (CollisionHandler::partiallyCollided(b, w)) {
 			//CollisionHandler::pushMovableAwayFromImmovable(b, w);
-			//TODO
+			//TODO: add an absolute bool to BulletUpdateStruct to constrain it
 
 			//b->acceleration = 0;
 			//b->velocity.setMagnitude(0);

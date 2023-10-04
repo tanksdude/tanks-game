@@ -65,7 +65,7 @@ void SneakyRewardLevel::initialize() {
 	respawning->watchLastPowerSquaresPushed(2, 1000);
 
 	LevelHelper::pushSymmetricPowerups_Corners(GAME_WIDTH/2, GAME_HEIGHT/2, 20+40, GAME_HEIGHT/2-20, "dev", "annoying");
-	//respawning->watchLastPowerSquaresPushed(4);
+	//respawning->watchLastPowerSquaresPushed(4); //TODO: should this be watched instead of wallhack?
 
 	LevelHelper::pushSymmetricPowerups_Corners(GAME_WIDTH/2, GAME_HEIGHT/2, 240-32-(20), GAME_HEIGHT/2-(20), "vanilla", "wallhack");
 	respawning->watchLastPowerSquaresPushed(4);

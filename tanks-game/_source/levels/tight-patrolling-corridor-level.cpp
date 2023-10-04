@@ -41,15 +41,15 @@ void TightPatrollingCorridorLevel::initialize() {
 	//LevelHelper::pushClassicWalls(color);
 
 	posArr = new double[3]{ GAME_WIDTH/2 - 40, GAME_HEIGHT/2, 0 };
-	patrolCount = std::shared_ptr<int[]>(new int[1]{ 2 });
+	patrolCount = std::shared_ptr<int[]>(new int[1]{ 2 }, GenericFactoryConstructionData::deleteArrFunc);
 	patrolRoute1 = std::shared_ptr<double[]>(new double[2*2]{
 		GAME_WIDTH/2 - 40, GAME_HEIGHT/2 + 40,
 		GAME_WIDTH/2 - 40, GAME_HEIGHT/2 - 40
-	});
+	}, GenericFactoryConstructionData::deleteArrFunc);
 	patrolRoute2 = std::shared_ptr<double[]>(new double[2*2]{
 		GAME_WIDTH/2 + 40, GAME_HEIGHT/2 - 40,
 		GAME_WIDTH/2 + 40, GAME_HEIGHT/2 + 40
-	});
+	}, GenericFactoryConstructionData::deleteArrFunc);
 	constructionData = GenericFactoryConstructionData(3, posArr);
 	constructionData.pushData(1, patrolCount);
 	constructionData.pushData(2*2, patrolRoute1);
@@ -94,15 +94,15 @@ void TightPatrollingCorridorLevel::initialize() {
 	}
 
 	posArr = new double[3]{ GAME_WIDTH/2, GAME_HEIGHT - 35, -PI/2 };
-	patrolCount = std::shared_ptr<int[]>(new int[1]{ 2 });
+	patrolCount = std::shared_ptr<int[]>(new int[1]{ 2 }, GenericFactoryConstructionData::deleteArrFunc);
 	patrolRoute1 = std::shared_ptr<double[]>(new double[2*2]{
 		GAME_WIDTH/2 - (60+20/2), GAME_HEIGHT - 35,
 		GAME_WIDTH/2 + (60+20/2), GAME_HEIGHT - 35
-	});
+	}, GenericFactoryConstructionData::deleteArrFunc);
 	patrolRoute2 = std::shared_ptr<double[]>(new double[2*2]{
 		GAME_WIDTH/2 + (60+20/2), 35,
 		GAME_WIDTH/2 - (60+20/2), 35
-	});
+	}, GenericFactoryConstructionData::deleteArrFunc);
 	constructionData = GenericFactoryConstructionData(3, posArr);
 	constructionData.pushData(1, patrolCount);
 	constructionData.pushData(2*2, patrolRoute1);
@@ -137,15 +137,15 @@ void TightPatrollingCorridorLevel::initialize() {
 
 	//UL and UR turrets
 	posArr = new double[3]{ GAME_WIDTH/2 - ((60+20 + 40) + 80 - 20), ((GAME_HEIGHT - 20) + (GAME_HEIGHT/2 + 20+40))/2, 0 };
-	patrolCount = std::shared_ptr<int[]>(new int[1]{ 2 });
+	patrolCount = std::shared_ptr<int[]>(new int[1]{ 2 }, GenericFactoryConstructionData::deleteArrFunc);
 	patrolRoute1 = std::shared_ptr<double[]>(new double[2*2]{
 		GAME_WIDTH/2 - ((60+20 + 40) + 80 - 20), GAME_HEIGHT - 20,
 		GAME_WIDTH/2 - ((60+20 + 40) + 80 - 20), GAME_HEIGHT/2 + 20+40
-	});
+	}, GenericFactoryConstructionData::deleteArrFunc);
 	patrolRoute2 = std::shared_ptr<double[]>(new double[2*2]{
 		GAME_WIDTH/2 + ((60+20 + 40) + 80 - 20), GAME_HEIGHT - 20,
 		GAME_WIDTH/2 + ((60+20 + 40) + 80 - 20), GAME_HEIGHT/2 + 20+40
-	});
+	}, GenericFactoryConstructionData::deleteArrFunc);
 	constructionData = GenericFactoryConstructionData(3, posArr);
 	constructionData.pushData(1, patrolCount);
 	constructionData.pushData(2*2, patrolRoute1);
@@ -158,15 +158,15 @@ void TightPatrollingCorridorLevel::initialize() {
 
 	//DL and DR turrets
 	posArr = new double[3]{ GAME_WIDTH/2 - ((60+20 + 40) + 80 - 20), ((20) + (GAME_HEIGHT/2 - (20+40)))/2, 0 };
-	patrolCount = std::shared_ptr<int[]>(new int[1]{ 2 });
+	patrolCount = std::shared_ptr<int[]>(new int[1]{ 2 }, GenericFactoryConstructionData::deleteArrFunc);
 	patrolRoute1 = std::shared_ptr<double[]>(new double[2*2]{
 		GAME_WIDTH/2 - ((60+20 + 40) + 80 - 20), 20,
 		GAME_WIDTH/2 - ((60+20 + 40) + 80 - 20), GAME_HEIGHT/2 - (20+40)
-	});
+	}), GenericFactoryConstructionData::deleteArrFunc;
 	patrolRoute2 = std::shared_ptr<double[]>(new double[2*2]{
 		GAME_WIDTH/2 + ((60+20 + 40) + 80 - 20), 20,
 		GAME_WIDTH/2 + ((60+20 + 40) + 80 - 20), GAME_HEIGHT/2 - (20+40)
-	});
+	}, GenericFactoryConstructionData::deleteArrFunc);
 	constructionData = GenericFactoryConstructionData(3, posArr);
 	constructionData.pushData(1, patrolCount);
 	constructionData.pushData(2*2, patrolRoute1);

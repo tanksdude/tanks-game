@@ -35,7 +35,7 @@
 //levels:
 #include "levels/default-random-level.h"
 #include "levels/empty-level.h"
-#include "levels/corridor-level.h"
+#include "levels/evened-corridors-level.h"
 #include "levels/big-fun-level.h"
 #include "levels/few-obstacles-level.h"
 #include "levels/concealed-powerups-level.h"
@@ -79,7 +79,7 @@
 #include "hazards/targeting-turret-hazard.h"
 #include "hazards/patrolling-turret-hazard.h"
 #include "hazards/mother-turret-hazard.h"
-#include "hazards/ginormous-turret-hazard.h" //currently not used
+#include "hazards/ginormous-turret-hazard.h"
 #include "hazards/rectangular-lightning-hazard.h"
 #include "hazards/horizontal-lightning-hazard.h"
 #include "hazards/vertical-lightning-hazard.h"
@@ -293,7 +293,7 @@ int main(int argc, char** argv) {
 	//vanilla (some are also "old"):
 	LevelDataGovernor::addLevelFactory(DefaultRandomLevel::factory);
 	LevelDataGovernor::addLevelFactory(EmptyLevel::factory);
-	LevelDataGovernor::addLevelFactory(CorridorLevel::factory);
+	LevelDataGovernor::addLevelFactory(EvenedCorridorsLevel::factory);
 	LevelDataGovernor::addLevelFactory(BigFunLevel::factory);
 	LevelDataGovernor::addLevelFactory(FewObstaclesLevel::factory);
 	LevelDataGovernor::addLevelFactory(ConcealedPowerupsLevel::factory);
@@ -303,6 +303,8 @@ int main(int argc, char** argv) {
 	LevelDataGovernor::addLevelFactory(SneakyRewardLevel::factory);
 	LevelDataGovernor::addLevelFactory(LightningCornersLevel::factory);
 	LevelDataGovernor::addLevelFactory(LoneTurretLevel::factory);
+	LevelDataGovernor::addLevelFactory(TightPatrollingCorridorLevel::factory);
+	LevelDataGovernor::addLevelFactory(DangerousCenterLevel::factory);
 
 	//special:
 	LevelDataGovernor::addLevelFactory(TrickyManeuveringLevel::factory);
@@ -324,8 +326,6 @@ int main(int argc, char** argv) {
 	LevelDataGovernor::addLevelFactory(UnnamedLevel4::factory);
 	LevelDataGovernor::addLevelFactory(DevNoWallsLevel1::factory);
 	LevelDataGovernor::addLevelFactory(TimedRewardLevel::factory);
-	LevelDataGovernor::addLevelFactory(TightPatrollingCorridorLevel::factory);
-	LevelDataGovernor::addLevelFactory(DangerousCenterLevel::factory);
 
 	//initialize managers and stuff:
 	GameManager::Initialize();

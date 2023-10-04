@@ -42,7 +42,7 @@ public:
 	virtual BulletPower* makeBulletPower() const override;
 
 	virtual double getTankAccelerationMultiplier() const override { return .5; }
-	virtual double getTankRadiusMultiplier() const override { return .5; } //should this stack?
+	virtual double getTankRadiusMultiplier() const override { return .5; } //JS: stacks (as did everything)
 	virtual double getTankFiringRateMultiplier() const override { return .5; }
 
 	OldBounceTankPower();

@@ -1,6 +1,6 @@
 #include "shield-power.h"
 
-const double ShieldPower::barrierStrength = 50; //TODO: this good?
+const double ShieldPower::barrierStrength = 50; //TODO: depend on global power duration
 
 std::unordered_map<std::string, float> ShieldPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;

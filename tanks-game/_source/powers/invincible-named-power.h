@@ -42,7 +42,7 @@ public:
 	virtual BulletPower* makeBulletPower() const override;
 
 	virtual double getTankMaxSpeedMultiplier() const override { return .5; }
-	virtual double getTankAccelerationMultiplier() const override { return .5; }
+	virtual double getTankAccelerationMultiplier() const override { return .5; } //JS: 1
 
 	virtual float getOffenseImportance() const override { return 0; }
 	virtual float getOffenseTier(const Tank*) const override { return 0; }

@@ -221,7 +221,7 @@
     <ClCompile Include="_source\color-mixer.cpp" />
     <ClCompile Include="_source\color-value-holder.cpp" />
     <ClCompile Include="_source\constants.cpp" />
-    <ClCompile Include="_source\levels\corridor-level.cpp" />
+    <ClCompile Include="_source\levels\evened-corridors-level.cpp" />
     <ClCompile Include="_source\levels\default-random-level.cpp" />
     <ClCompile Include="_source\levels\developer-level-1.cpp" />
     <ClCompile Include="_source\developer-manager.cpp" />
@@ -367,7 +367,7 @@
     <ClInclude Include="_source\color-mixer.h" />
     <ClInclude Include="_source\color-value-holder.h" />
     <ClInclude Include="_source\constants.h" />
-    <ClInclude Include="_source\levels\corridor-level.h" />
+    <ClInclude Include="_source\levels\evened-corridors-level.h" />
     <ClInclude Include="_source\levels\default-random-level.h" />
     <ClInclude Include="_source\levels\developer-level-1.h" />
     <ClInclude Include="_source\developer-manager.h" />

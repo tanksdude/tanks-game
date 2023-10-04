@@ -1,4 +1,4 @@
-#include "corridor-level.h"
+#include "evened-corridors-level.h"
 
 #include "../constants.h"
 
@@ -7,7 +7,7 @@
 #include "../powerup-manager.h"
 #include "../wall-manager.h"
 
-std::unordered_map<std::string, float> CorridorLevel::getWeights() const {
+std::unordered_map<std::string, float> EvenedCorridorsLevel::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", 0.5f });
 	weights.insert({ "random-vanilla", 0.5f });
@@ -17,7 +17,7 @@ std::unordered_map<std::string, float> CorridorLevel::getWeights() const {
 	return weights;
 }
 
-void CorridorLevel::initialize() {
+void EvenedCorridorsLevel::initialize() {
 	ResetThings::tankPositionReset(40);
 
 	ColorValueHolder color = getDefaultColor();
@@ -43,8 +43,8 @@ void CorridorLevel::initialize() {
 		"vanilla", "speed", "vanilla", "big"); //JS: big=barrier
 }
 
-Level* CorridorLevel::factory() {
-	return new CorridorLevel();
+Level* EvenedCorridorsLevel::factory() {
+	return new EvenedCorridorsLevel();
 }
 
-CorridorLevel::CorridorLevel() { return; }
+EvenedCorridorsLevel::EvenedCorridorsLevel() { return; }

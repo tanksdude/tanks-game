@@ -1,6 +1,6 @@
 #include "triple-named-power.h"
 
-const double TripleNamedPower::bulletAngleDiff = PI/16;
+const double TripleNamedPower::bulletAngleDiff = PI/16; //JS: PI/8
 
 std::unordered_map<std::string, float> TripleNamedPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;

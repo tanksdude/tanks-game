@@ -138,4 +138,10 @@ quite the lack of circular hazards
 C++ order of creating the JS hazards (probably):
 stationary turret, horizontal lightning, lava, rectangular lightning, vertical lightning, no bullet zone, targeting turret, patrolling turret
 
+
+random fun facts:
+in JS, one day I got the idea for a turret, so I set about to implement it, but then got stuck because there was nowhere to add it; many hours later, the targeting turret finally made its first appearance
+when I first showed off horizontal lightning to others (in JS), they thought it was made from drawing an image because of its grayer background
+surprisingly, I don't think I got the idea for JS to have circular lightning, lava, or no bullet zones
+
 */

@@ -62,5 +62,7 @@ public:
 	virtual BulletPower* makeDuplicate() const override { return new MultishotBulletPower(); }
 	virtual TankPower* makeTankPower() const override;
 
+	//virtual double getBulletSpeedMultiplier() const override { return .5; } //JS
+
 	MultishotBulletPower();
 };

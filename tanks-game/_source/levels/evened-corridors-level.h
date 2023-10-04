@@ -1,10 +1,9 @@
 #pragma once
 #include "../level.h"
 
-class CorridorLevel : public Level {
-	//called "evened corridors" in JS Tanks
+class EvenedCorridorsLevel : public Level {
 public:
-	virtual std::string getName() const override { return "corridor"; }
+	virtual std::string getName() const override { return "evened_corridors"; }
 	virtual ColorValueHolder getDefaultColor() const override { return ColorValueHolder(0.125f, 0.5f, 1.0f); } //JS: #2288FF
 	virtual std::vector<std::string> getLevelTypes() const override {
 		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "old", "random-old", "random" };
@@ -14,7 +13,7 @@ public:
 
 	virtual void initialize() override;
 
-	CorridorLevel();
-	virtual ~CorridorLevel() { return; }
+	EvenedCorridorsLevel();
+	virtual ~EvenedCorridorsLevel() { return; }
 	static Level* factory();
 };

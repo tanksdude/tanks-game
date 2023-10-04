@@ -52,6 +52,10 @@ public:
 	virtual TankPower* makeDuplicate() const override { return new BounceTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
 
+	//virtual double getTankAccelerationMultiplier() const override { return .5; } //JS
+	//virtual double getTankRadiusMultiplier() const override { return .5; } //JS
+	//virtual double getTankFiringRateMultiplier() const override { return .5; } //JS
+
 	BounceTankPower();
 };
 
@@ -78,7 +82,7 @@ public:
 	//bool modifiesCollisionWithEdge = true;
 	virtual InteractionBoolHolder modifiedEdgeCollision(Bullet*) override;
 
-	virtual double getBulletSpeedMultiplier() const override { return .5; }
+	virtual double getBulletSpeedMultiplier() const override { return .5; } //JS: .25
 
 	BounceBulletPower();
 	BounceBulletPower(int bounces);

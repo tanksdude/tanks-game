@@ -4,7 +4,7 @@
 class WallhackPower : public Power {
 public:
 	virtual std::vector<std::string> getPowerTypes() const override {
-		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "ultimate", "ultimate-vanilla", "random" };
+		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "old", "ultimate", "ultimate-vanilla", "random" };
 		return types;
 	}
 	virtual std::unordered_map<std::string, float> getWeights() const override;
