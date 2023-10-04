@@ -67,6 +67,7 @@ public:
 	virtual InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> modifiedCollisionWithWall(const Bullet*, const Wall*) override;
 
 	virtual double getBulletAcceleration() const override { return -1.0/16; }
+	virtual double getBulletDegradeAmount() const override { return GrenadePower::degradeAmount; }
 
 	GrenadeBulletPower();
 };

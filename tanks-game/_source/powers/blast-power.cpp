@@ -79,16 +79,6 @@ BlastTankPower::BlastTankPower() {
 
 #include "../collision-handler.h"
 
-InteractionBoolHolder BlastBulletPower::modifiedMovement(Bullet* b) {
-	if (b->velocity.getMagnitude() <= 0) {
-		b->lifeValue -= BlastPower::degradeAmount;
-	} /*else if (b->velocity < 0) {
-		b->velocity.setMagnitude(0);
-		b->acceleration = 0;
-	}*/
-	return { false };
-}
-
 InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> BlastBulletPower::modifiedCollisionWithWall(const Bullet* b, const Wall* w) {
 	if (b->velocity.getMagnitude() <= 0) {
 		//b->lifeValue -= BlastPower::degradeAmount;
@@ -158,6 +148,5 @@ BlastBulletPower::BlastBulletPower(double acceleration) {
 
 	accelerationAmount = acceleration;
 
-	modifiesMovement = true;
 	modifiesCollisionWithWall = true;
 }

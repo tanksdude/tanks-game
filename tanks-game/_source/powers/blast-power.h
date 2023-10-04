@@ -80,9 +80,6 @@ public:
 	virtual BulletPower* makeDuplicate() const override;
 	virtual TankPower* makeTankPower() const override;
 
-	//bool modifiesMovement = true;
-	virtual InteractionBoolHolder modifiedMovement(Bullet*) override;
-
 	//bool modifiesCollisionWithWall = true;
 	virtual InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> modifiedCollisionWithWall(const Bullet*, const Wall*) override;
 
@@ -94,6 +91,7 @@ public:
 
 	virtual double getBulletRadiusMultiplier() const override { return .25; } //JS: .5
 	virtual double getBulletAcceleration() const override;
+	virtual double getBulletDegradeAmount() const override { return BlastPower::degradeAmount; }
 
 	BlastBulletPower();
 	BlastBulletPower(double acceleration); //protected?

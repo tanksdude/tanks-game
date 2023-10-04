@@ -140,6 +140,9 @@ bool Bullet::move() {
 		move_base();
 	}
 
+	degradeHandle();
+	growHandle();
+
 	return shouldBeKilled;
 }
 
@@ -147,6 +150,20 @@ inline void Bullet::move_base() {
 	velocity.changeMagnitude(acceleration);
 	x += velocity.getXComp();
 	y += velocity.getYComp();
+}
+
+inline void Bullet::degradeHandle() {
+	if (velocity.getMagnitude() <= 0) {
+		this->lifeValue -= getBulletDegradeAmount();
+	}
+}
+
+inline void Bullet::growHandle() {
+	if (velocity.getMagnitude() > 0) {
+		//TODO
+	} else {
+		//TODO
+	}
 }
 
 double Bullet::getBulletSpeedMultiplier() const {
@@ -234,6 +251,35 @@ double Bullet::getBulletAcceleration() const {
 	}
 	return highest + lowest;
 	//return (abs(highest) > abs(lowest) ? highest : lowest);
+}
+
+double Bullet::getBulletDegradeAmount() const {
+	//look at Tank::getTankFiringRateMultiplier()
+	//(this has importance though)
+	//negative degrade values are not valid, so this just finds the highest value
+
+	if (bulletPowers.size() == 0) {
+		return 0;
+	}
+
+	float importance = LOW_IMPORTANCE;
+	for (int i = 0; i < bulletPowers.size(); i++) {
+		float value = bulletPowers[i]->getBulletDegradeImportance();
+		if (value > importance) {
+			importance = value;
+		}
+	}
+
+	double highest = 0;
+	for (int i = 0; i < bulletPowers.size(); i++) {
+		if (bulletPowers[i]->getBulletDegradeImportance() == importance) {
+			double value = bulletPowers[i]->getBulletDegradeAmount();
+			if (value > highest) {
+				highest = value;
+			}
+		}
+	}
+	return highest;
 }
 
 void Bullet::powerCalculate() {

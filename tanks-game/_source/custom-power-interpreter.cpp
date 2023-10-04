@@ -239,8 +239,7 @@ std::shared_ptr<std::vector<CustomPower::CustomPowerAction_Bullet*>> initializat
 	this->bulletRadiusMultiplier = BulletPower::getBulletRadiusMultiplier();
 	this->bulletAcceleration = BulletPower::getBulletAcceleration();
 	this->bulletAccelerationImportance = BulletPower::getBulletAccelerationImportance();
-	this->bulletDeceleration_DegradeAmount = 0;
-	modifiesMovement = true; //TODO: should probably be conditionally toggled when degrade > 0
+	this->bulletDeceleration_DegradeAmount = BulletPower::getBulletDegradeAmount();
 
 	this->offenseImportance = BulletPower::getOffenseImportance();
 	this->offenseTier = BulletPower::getOffenseTier(nullptr);
@@ -663,13 +662,6 @@ void CustomTankPower::additionalShooting(Tank* t, const CannonPoint& c) {
 
 std::vector<double>* CustomTankPower::addShootingPoints() const {
 	return new std::vector<double>(this->addShootingPoints_AngleList);
-}
-
-InteractionBoolHolder CustomBulletPower::modifiedMovement(Bullet* b) {
-	if (b->velocity.getMagnitude() <= 0) {
-		b->lifeValue -= bulletDeceleration_DegradeAmount;
-	}
-	return { false };
 }
 
 InteractionBoolHolder CustomBulletPower::modifiedEdgeCollision(Bullet* b) {

@@ -87,6 +87,7 @@ public:
 
 	virtual double getBulletSpeedMultiplier() const override { return .5; }
 	virtual double getBulletAcceleration() const override;
+	virtual double getBulletDegradeAmount() const override { return FireNamedPower::degradeAmount; }
 
 	FireNamedBulletPower();
 	FireNamedBulletPower(double acceleration); //protected?

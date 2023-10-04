@@ -83,12 +83,7 @@ FireNamedTankPower::FireNamedTankPower() {
 InteractionBoolHolder FireNamedBulletPower::modifiedMovement(Bullet* b) {
 	if (b->velocity.getMagnitude() > 0) {
 		b->r += FireNamedPower::growAmount;
-	} else if (b->velocity.getMagnitude() <= 0) {
-		b->lifeValue -= FireNamedPower::degradeAmount;
-	} /*else if (b->velocity < 0) {
-		b->velocity.setMagnitude(0);
-		b->acceleration = 0;
-	}*/
+	}
 	return { false };
 }
 

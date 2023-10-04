@@ -321,7 +321,7 @@ public:
 	BulletPower* makeDuplicate() const override;
 	TankPower* makeTankPower() const override;
 
-	InteractionBoolHolder modifiedMovement(Bullet*) override;
+	//InteractionBoolHolder modifiedMovement(Bullet*) override;
 
 	InteractionBoolHolder modifiedEdgeCollision(Bullet*) override;
 
@@ -339,6 +339,7 @@ public:
 	double getBulletRadiusMultiplier() const override { return this->bulletRadiusMultiplier; }
 	double getBulletAcceleration() const override { return this->bulletAcceleration; }
 	float getBulletAccelerationImportance() const override { return this->bulletAccelerationImportance; }
+	double getBulletDegradeAmount() const override { return this->bulletDeceleration_DegradeAmount; }
 
 	float getOffenseImportance() const override { return this->offenseImportance; }
 	float getOffenseTier(const Bullet*) const override { return this->offenseTier; }

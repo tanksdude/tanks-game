@@ -47,11 +47,14 @@ public:
 	double getBulletSpeedMultiplier() const;
 	double getBulletRadiusMultiplier() const;
 	double getBulletAcceleration() const;
+	double getBulletDegradeAmount() const;
 
 protected:
 	ColorValueHolder defaultColor = ColorValueHolder(0.5f, 0.5f, 0.5f);
 	bool kill(); //allows for custom death (a.k.a. something saving the bullet from death)
 	inline void move_base();
+	inline void degradeHandle();
+	inline void growHandle();
 
 public:
 	//helper functions:

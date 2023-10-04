@@ -61,12 +61,9 @@ GrenadeTankPower::GrenadeTankPower() {
 
 InteractionBoolHolder GrenadeBulletPower::modifiedMovement(Bullet* b) {
 	if (b->velocity.getMagnitude() <= 0) {
-		b->lifeValue -= GrenadePower::degradeAmount;
+		//b->lifeValue -= GrenadePower::degradeAmount;
 		b->r *= 65/64.0;
-	} /*else if (b->velocity.getMagnitude() < 0) {
-		b->velocity.setMagnitude(0);
-		b->acceleration = 0;
-	}*/
+	}
 	return { false };
 }
 

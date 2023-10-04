@@ -71,9 +71,7 @@ public:
 	virtual double getBulletRadiusMultiplier() const override { return 4; }
 	//bool bulletRadiusStacks = true;
 
-	virtual float getOffenseImportance() const override { return 0; }
 	virtual float getOffenseTier(const Bullet*) const override { return DESTRUCTION_TIER; }
-	virtual float getDefenseImportance() const override { return 0; }
 	virtual float getDefenseTier(const Bullet*) const override { return DESTRUCTION_TIER; }
 
 	BigNamedBulletPower();
