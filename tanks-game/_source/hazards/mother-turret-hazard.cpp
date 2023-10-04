@@ -638,8 +638,8 @@ CircleHazard* MotherTurretHazard::randomizingFactory(double x_start, double y_st
 	}
 
 	do {
-		xpos = RNG::randFunc() * (area_width - 2*TANK_RADIUS*2) + (x_start + TANK_RADIUS*2);
-		ypos = RNG::randFunc() * (area_height - 2*TANK_RADIUS*2) + (y_start + TANK_RADIUS*2);
+		xpos = RNG::randFunc() * (area_width - 2*(TANK_RADIUS*2)) + (x_start + (TANK_RADIUS*2));
+		ypos = RNG::randFunc() * (area_height - 2*(TANK_RADIUS*2)) + (y_start + (TANK_RADIUS*2));
 		CircleHazard* testMotherTurret = new MotherTurretHazard(xpos, ypos, angle);
 		if (testMotherTurret->reasonableLocation()) {
 			randomized = testMotherTurret;

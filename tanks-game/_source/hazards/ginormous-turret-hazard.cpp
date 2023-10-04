@@ -99,8 +99,8 @@ inline void GinormousTurretHazard::MinionTurret::drawReticule(float alpha) const
 std::unordered_map<std::string, float> GinormousTurretHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", 0.25f });
-	weights.insert({ "random-vanilla", 0.125f });
-	weights.insert({ "random", 0.0625f });
+	weights.insert({ "random-vanilla", 0.25f });
+	weights.insert({ "random", 0.125f });
 	return weights;
 }
 
@@ -321,8 +321,8 @@ CircleHazard* GinormousTurretHazard::randomizingFactory(double x_start, double y
 	}
 
 	do {
-		xpos = RNG::randFunc() * (area_width - 2*TANK_RADIUS/4) + (x_start + TANK_RADIUS/4);
-		ypos = RNG::randFunc() * (area_height - 2*TANK_RADIUS/4) + (y_start + TANK_RADIUS/4);
+		xpos = RNG::randFunc() * (area_width - 2*(TANK_RADIUS*4)) + (x_start + (TANK_RADIUS*4));
+		ypos = RNG::randFunc() * (area_height - 2*(TANK_RADIUS*4)) + (y_start + (TANK_RADIUS*4));
 		CircleHazard* testGinormousTurret = new GinormousTurretHazard(xpos, ypos, angle);
 		if (testGinormousTurret->reasonableLocation()) {
 			randomized = testGinormousTurret;
