@@ -1,6 +1,7 @@
 #include "grenade-power.h"
 
 const double GrenadePower::degradeAmount = .875; //JS: .75
+const double GrenadePower::growAmount = 65/64.0;
 
 std::unordered_map<std::string, float> GrenadePower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -59,14 +60,6 @@ GrenadeTankPower::GrenadeTankPower() {
 
 
 
-InteractionBoolHolder GrenadeBulletPower::modifiedMovement(Bullet* b) {
-	if (b->velocity.getMagnitude() <= 0) {
-		//b->lifeValue -= GrenadePower::degradeAmount;
-		b->r *= 65/64.0;
-	}
-	return { false };
-}
-
 InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> GrenadeBulletPower::modifiedCollisionWithWall(const Bullet* b, const Wall* w) {
 	if (b->velocity.getMagnitude() <= 0) {
 		//b->lifeValue -= GrenadePower::degradeAmount;
@@ -96,6 +89,7 @@ GrenadeBulletPower::GrenadeBulletPower() {
 	timeLeft = 0;
 	maxTime = -1;
 
-	modifiesMovement = true;
 	modifiesCollisionWithWall = true;
+
+	bulletRadiusGrowMultiplies_Stationary = true;
 }

@@ -8,8 +8,7 @@
 * powerups:
     * sword
     * hazard powers?
-    * growing and degrading powerups mix better
-        * megadeath update?
+    * megadeath update?
 
 0.2.5 "done" (obviously not here)
 * rudimentary custom powers and levels!
@@ -36,6 +35,7 @@
 * powerups:
     * TODO: megadeath update
     * custom powers exist!
+    * growing and degrading powerups mix better
     * [dev] color changing: changes color based on proximity to other tank
     * [dev] backwards movement: by pressing the special key (currently e and /), the tank moves backwards
     * [dev] wall sparks: makes extra bullets when it hits a wall

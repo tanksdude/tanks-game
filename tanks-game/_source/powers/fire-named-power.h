@@ -79,15 +79,14 @@ public:
 	virtual BulletPower* makeDuplicate() const override;
 	virtual TankPower* makeTankPower() const override;
 
-	//bool modifiesMovement = true;
-	virtual InteractionBoolHolder modifiedMovement(Bullet*) override;
-
 	//bool modifiesCollisionWithWall = true;
 	virtual InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> modifiedCollisionWithWall(const Bullet*, const Wall*) override;
 
 	virtual double getBulletSpeedMultiplier() const override { return .5; }
 	virtual double getBulletAcceleration() const override;
 	virtual double getBulletDegradeAmount() const override { return FireNamedPower::degradeAmount; }
+	virtual double getBulletRadiusGrowNumber_Moving() const override { return FireNamedPower::growAmount; }
+	//bool bulletRadiusGrowMultiplies_Moving = false;
 
 	FireNamedBulletPower();
 	FireNamedBulletPower(double acceleration); //protected?

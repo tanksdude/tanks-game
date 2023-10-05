@@ -109,10 +109,10 @@ public:
 	virtual float getBulletAccelerationImportance() const { return 0; }
 	virtual double getBulletDegradeAmount() const { return 0; }
 	virtual float getBulletDegradeImportance() const { return 0; }
-	//virtual double getBulletRadiusGrowNumber_Stationary() const { return 0; }
-	//bool bulletRadiusGrowMultiplies_Stationary = false; //negative additive values are not processed
-	//virtual double getBulletRadiusGrowNumber_Moving() const { return 0; }
-	//bool bulletRadiusGrowMultiplies_Moving = false; //same
+	virtual double getBulletRadiusGrowNumber_Stationary() const { return 0; }
+	bool bulletRadiusGrowMultiplies_Stationary = false; //negative additive values do not get processed by bullets
+	virtual double getBulletRadiusGrowNumber_Moving() const { return 0; }
+	bool bulletRadiusGrowMultiplies_Moving = false; //same
 
 	virtual float getOffenseImportance() const { return 0; } //"importance" = "override" value (when dealing with other powers)
 	virtual float getOffenseTier(const Bullet*) const { return 0; }

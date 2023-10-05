@@ -68,9 +68,6 @@ public:
 	virtual BulletPower* makeDuplicate() const override { return new MegaDeathBulletPower(); } //should current size be passed on?
 	virtual TankPower* makeTankPower() const override;
 
-	//bool modifiesMovement = true;
-	virtual InteractionBoolHolder modifiedMovement(Bullet*) override;
-
 	//bool modifiesCollisionWithWall = true;
 	virtual InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> modifiedCollisionWithWall(const Bullet*, const Wall*) override;
 	//bool modifiedCollisionWithWallCanWorkWithOthers = false;
@@ -80,6 +77,10 @@ public:
 	//virtual double getBulletRadiusMultiplier() const override { return 1; }
 	virtual double getBulletAcceleration() const override { return 1.0/64; }
 	//with bulletSizeMultiplierPerTick = 257.0/256.0, 1.0/512 or 1.0/1024 (with a smaller radius multiplier per tick) might be closer to what I orignially thought of
+	virtual double getBulletRadiusGrowNumber_Stationary() const override { return MegaDeathPower::bulletSizeMultiplierPerTick; }
+	//bool bulletRadiusGrowMultiplies_Stationary = true;
+	virtual double getBulletRadiusGrowNumber_Moving() const override { return MegaDeathPower::bulletSizeMultiplierPerTick; }
+	//bool bulletRadiusGrowMultiplies_Moving = true; //TODO: should these stack? (radius growing stacking doesn't exist)
 
 	virtual float getOffenseTier(const Bullet*) const override;
 	virtual float getDefenseTier(const Bullet*) const override;

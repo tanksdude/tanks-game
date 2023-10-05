@@ -80,13 +80,6 @@ FireNamedTankPower::FireNamedTankPower() {
 
 #include "../rng.h"
 
-InteractionBoolHolder FireNamedBulletPower::modifiedMovement(Bullet* b) {
-	if (b->velocity.getMagnitude() > 0) {
-		b->r += FireNamedPower::growAmount;
-	}
-	return { false };
-}
-
 InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> FireNamedBulletPower::modifiedCollisionWithWall(const Bullet* b, const Wall* w) {
 	if (b->velocity.getMagnitude() <= 0) {
 		//b->lifeValue -= FireNamedPower::degradeAmount;
@@ -130,6 +123,7 @@ FireNamedBulletPower::FireNamedBulletPower(double acceleration) {
 
 	accelerationAmount = acceleration;
 
-	modifiesMovement = true;
 	modifiesCollisionWithWall = true;
+
+	bulletRadiusGrowMultiplies_Moving = false;
 }

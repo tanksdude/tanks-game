@@ -48,6 +48,10 @@ public:
 	double getBulletRadiusMultiplier() const;
 	double getBulletAcceleration() const;
 	double getBulletDegradeAmount() const;
+	double getBulletRadiusGrowNumber_StationaryAdditive() const;
+	double getBulletRadiusGrowNumber_StationaryMultiplier() const;
+	double getBulletRadiusGrowNumber_MovingAdditive() const;
+	double getBulletRadiusGrowNumber_MovingMultiplier() const;
 
 protected:
 	ColorValueHolder defaultColor = ColorValueHolder(0.5f, 0.5f, 0.5f);

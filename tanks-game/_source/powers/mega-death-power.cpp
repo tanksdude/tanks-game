@@ -68,11 +68,6 @@ void MegaDeathBulletPower::tick(Bullet* b) {
 	}
 }
 
-InteractionBoolHolder MegaDeathBulletPower::modifiedMovement(Bullet* b) {
-	b->r *= MegaDeathPower::bulletSizeMultiplierPerTick;
-	return { false };
-}
-
 InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> MegaDeathBulletPower::modifiedCollisionWithWall(const Bullet* b, const Wall* w) {
 	//tick() happens before this, so modifiesCollisionWithWall will only be set to true if the bullet can destroy walls
 	return { false, true, nullptr, nullptr };
@@ -106,7 +101,9 @@ MegaDeathBulletPower::MegaDeathBulletPower() {
 	timeLeft = 0;
 	maxTime = -1;
 
-	modifiesMovement = true;
 	//modifiesCollisionWithWall = true;
 	//modifiedCollisionWithWallCanWorkWithOthers = false;
+
+	bulletRadiusGrowMultiplies_Stationary = true;
+	bulletRadiusGrowMultiplies_Moving = true;
 }
