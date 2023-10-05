@@ -56,9 +56,8 @@ std::string LevelManager::levelWeightedSelect(std::string levelPlaylist) {
 		levelWeights.reserve(LevelDataGovernor::getNumLevelTypes(levelPlaylist));
 		for (unsigned int i = 0; i < LevelDataGovernor::getNumLevelTypes(levelPlaylist); i++) {
 			std::string n = LevelDataGovernor::getLevelName(levelPlaylist, i);
-			CustomLevel* l = LevelDataGovernor::customLevelLookup[levelPlaylist][n];
+			const std::unique_ptr<CustomLevel>& l = LevelDataGovernor::customLevelLookup[levelPlaylist][n];
 			levelWeights.push_back(l->getWeights()[levelPlaylist]);
-			//delete l;
 		}
 		int levelIndex = weightedSelect<float>(levelWeights.data(), levelWeights.size());
 		return LevelDataGovernor::getLevelName(levelPlaylist, levelIndex);

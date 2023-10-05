@@ -7,7 +7,7 @@ std::unordered_map<std::string, std::unordered_map<std::string, PowerFunction>> 
 std::unordered_map<std::string, std::vector<std::string>> PowerupDataGovernor::powerNameList;
 
 std::vector<std::string> PowerupDataGovernor::protectedTypes = { "null", "vanilla", "vanilla-extra", "random-vanilla", "old", "random-old", "supermix-vanilla", "ultimate-vanilla", "dev", "random-dev" };
-std::unordered_map<std::string, std::unordered_map<std::string, CustomPower*>> PowerupDataGovernor::customPowerLookup;
+std::unordered_map<std::string, std::unordered_map<std::string, std::unique_ptr<CustomPower>>> PowerupDataGovernor::customPowerLookup;
 std::unordered_map<std::string, std::vector<std::string>> PowerupDataGovernor::customPowerNameList;
 
 void PowerupDataGovernor::initialize() {
