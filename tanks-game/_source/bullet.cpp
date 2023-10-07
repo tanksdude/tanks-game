@@ -99,10 +99,6 @@ void Bullet::update(const BulletUpdateStruct* up) {
 	this->lifeValue = std::min(this->lifeValue + up->alpha, 100.0);
 }
 
-double Bullet::getAngle() const {
-	return fmod(fmod(velocity.getAngle(), 2*PI) + 2*PI, 2*PI);
-}
-
 bool Bullet::move() {
 	bool shouldBeKilled = false;
 	bool modifiedMovement = false;
@@ -184,6 +180,8 @@ inline void Bullet::growHandle() {
 		this->r += additiveR;
 		this->r *= multiplierR;
 	}
+
+	//TODO: negative additive values could work, as long as when b->r <= 0 the bullet dies
 }
 
 double Bullet::getBulletSpeedMultiplier() const {

@@ -41,9 +41,9 @@ TripleNamedPower::TripleNamedPower() {
 #include "../constants.h"
 #include <cmath>
 
-void TripleNamedTankPower::additionalShooting(Tank* parent, const CannonPoint& c) {
-	parent->regularMakeBullet(parent->r * cos(parent->velocity.getAngle() + c.angle + TripleNamedPower::bulletAngleDiff), parent->r * sin(parent->velocity.getAngle() + c.angle + TripleNamedPower::bulletAngleDiff), parent->velocity.getAngle() + c.angle);
-	parent->regularMakeBullet(parent->r * cos(parent->velocity.getAngle() + c.angle - TripleNamedPower::bulletAngleDiff), parent->r * sin(parent->velocity.getAngle() + c.angle - TripleNamedPower::bulletAngleDiff), parent->velocity.getAngle() + c.angle);
+std::vector<std::pair<double, double>>* TripleNamedTankPower::addExtraShootingPoints() const {
+	return new std::vector<std::pair<double, double>>{ {TripleNamedPower::bulletAngleDiff, -TripleNamedPower::bulletAngleDiff},
+	                                                   {-TripleNamedPower::bulletAngleDiff, TripleNamedPower::bulletAngleDiff} };
 }
 
 void TripleNamedTankPower::initialize(Tank* parent) {
@@ -64,7 +64,7 @@ TripleNamedTankPower::TripleNamedTankPower() {
 	timeLeft = 500;
 	//JS: maxTime = 1000
 
-	modifiesAdditionalShooting = true;
+	addsExtraShootingPoints = true;
 }
 
 

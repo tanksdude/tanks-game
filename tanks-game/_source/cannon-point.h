@@ -1,12 +1,30 @@
 #pragma once
 
-//TODO: probably need another struct which holds angle relative to tank as well as the angle the bullet will be shot from (think triple or shotgun)
 struct CannonPoint {
-	friend class Tank; //only if, by chance, something makes the other stuff private (which might be me in the future)
+	friend class Tank; //unnecessary
 
-	double angle;
+	double angleFromCenter;
+
 	CannonPoint(double angle) {
-		this->angle = angle;
+		this->angleFromCenter = angle;
 	}
-	CannonPoint() { this->angle = 0; }
+	CannonPoint() { this->angleFromCenter = 0; }
+};
+
+struct ExtraCannonPoint {
+	friend class Tank; //unnecessary
+
+	double angleFromCenter;
+	double angleFromEdge; //0 means straight out from center
+	//note: two doubles don't satisfy std::atomic<T>::is_lock_free(), which doesn't really matter here
+
+	ExtraCannonPoint(double angle) {
+		this->angleFromCenter = angle;
+		this->angleFromEdge = 0;
+	}
+	ExtraCannonPoint(double angleCenter, double angleEdge) {
+		this->angleFromCenter = angleCenter;
+		this->angleFromEdge = angleEdge;
+	}
+	ExtraCannonPoint() { this->angleFromCenter = this->angleFromEdge = 0; }
 };

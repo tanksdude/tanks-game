@@ -72,6 +72,7 @@ Tank::Tank(double x_, double y_, double angle, Team_ID teamID, std::string name_
 	maxShootCount = shootCooldown;
 
 	shootingPoints = std::vector<CannonPoint>();
+	extraShootingPoints = std::vector<ExtraCannonPoint>();
 	determineShootingAngles();
 	updateAllValues();
 
@@ -185,12 +186,13 @@ inline void Tank::terminalVelocity(bool forward) {
 }
 
 void Tank::shoot(bool shooting) {
-	//TODO: allow it to handle multiple shooting cooldowns? (not the point of the game (if it was, shooting cooldown color = mix(white, power color)))
 	if (shootCount > 0) { //check isn't really needed, but it also doesn't decrease performance by a real amount
 		shootCount--;
 	}
 
 	if (shooting && shootCount <= 0) {
+		const BasicINIParser::BasicINIData& ini_data = GameManager::get_INI();
+
 		//determineShootingAngles(); //TODO: is this needed?
 		bool modifiedAdditionalShooting = false;
 		bool overridedShooting = false;
@@ -211,18 +213,33 @@ void Tank::shoot(bool shooting) {
 				if (!tankPowers[j]->additionalShootingCanWorkWithOthers) {
 					noMoreOtherAdditionalShooting = true;
 				}
-				for (int i = 0; i < shootingPoints.size(); i++) {
-					tankPowers[j]->additionalShooting(this, shootingPoints.at(i));
+
+				if (ini_data.exists("GAME_OPTIONS", "FewerExtraShootingBullets") && !std::stoi(ini_data.get("GAME_OPTIONS", "FewerExtraShootingBullets"))) {
+					//more
+					for (int i = shootingPoints.size() - 1; i >= 0; i--) {
+						for (int s2 = extraShootingPoints.size() - 1; s2 >= 0; s2--) {
+							tankPowers[j]->additionalShooting(this, shootingPoints.at(i), extraShootingPoints.at(s2));
+						}
+					}
+				} else {
+					//fewer
+					for (int i = shootingPoints.size() - 1; i >= 0; i--) {
+						for (int s2 = extraShootingPoints.size() - 1; s2 >= 1; s2--) {
+							defaultMakeBullet(velocity.getAngle() + shootingPoints[i].angleFromCenter + extraShootingPoints[s2].angleFromCenter, extraShootingPoints[s2].angleFromEdge);
+						}
+						tankPowers[j]->additionalShooting(this, shootingPoints.at(i), extraShootingPoints.at(0));
+					}
 				}
 			}
 		}
 
 		if (!overridedShooting) {
 			for (int i = shootingPoints.size() - 1; i >= 0; i--) {
-				defaultMakeBullet(shootingPoints[i].angle + velocity.getAngle());
+				for (int s2 = extraShootingPoints.size() - 1; s2 >= 0; s2--) {
+					defaultMakeBullet(velocity.getAngle() + shootingPoints[i].angleFromCenter + extraShootingPoints[s2].angleFromCenter, extraShootingPoints[s2].angleFromEdge);
+				}
 			}
 		}
-		//makeBullet(x + r*cos(angle), y + r*sin(angle), angle, r/4, maxSpeed*2, bp); //should be maxSpeed*4 //this is old, don't look at for too long
 
 		shootCount = maxShootCount * getShootingSpeedMultiplier();
 	}
@@ -259,32 +276,63 @@ void Tank::defaultMakeBullet(double angle) {
 	makeBulletCommon(x + r*cos(angle), y + r*sin(angle), angle, r*BULLET_TO_TANK_RADIUS_RATIO, maxSpeed*BULLET_TO_TANK_SPEED_RATIO);
 }
 
-void Tank::regularMakeBullet(double x, double y, double angle) {
+void Tank::defaultMakeBullet(double angle, double edgeAngleOffset) {
+	makeBulletCommon(x + r*cos(angle), y + r*sin(angle), angle + edgeAngleOffset, r*BULLET_TO_TANK_RADIUS_RATIO, maxSpeed*BULLET_TO_TANK_SPEED_RATIO);
+}
+
+void Tank::preciseMakeBullet(double x, double y, double angle) {
 	makeBulletCommon(this->x + x, this->y + y, angle, r*BULLET_TO_TANK_RADIUS_RATIO, maxSpeed*BULLET_TO_TANK_SPEED_RATIO);
 }
 
 void Tank::determineShootingAngles() {
 	shootingPoints.clear();
 	shootingPoints.push_back(CannonPoint(0));
+	extraShootingPoints.clear();
+	extraShootingPoints.push_back(ExtraCannonPoint(0, 0));
 
-	bool modifiedAdditionalShooting = false;
-	bool noMoreAdditionalShootingSpecials = false;
+	bool modifiedAddsShootingPoints = false;
+	bool noMoreAddsShootingPointsSpecials = false;
 
 	for (int i = 0; i < tankPowers.size(); i++) {
 		if (tankPowers[i]->addsShootingPoints) {
-			if (tankPowers[i]->addShootingPointsCanOnlyWorkIndividually && modifiedAdditionalShooting) {
+			if (tankPowers[i]->addShootingPointsCanOnlyWorkIndividually && modifiedAddsShootingPoints) {
 				continue;
 			}
-			if (noMoreAdditionalShootingSpecials) {
+			if (noMoreAddsShootingPointsSpecials) {
 				continue;
 			}
 
-			modifiedAdditionalShooting = true;
-			if (!tankPowers[i]->additionalShootingCanWorkWithOthers) {
-				noMoreAdditionalShootingSpecials = true;
+			modifiedAddsShootingPoints = true;
+			if (!tankPowers[i]->addExtraShootingPointsCanWorkWithOthers) {
+				noMoreAddsShootingPointsSpecials = true;
 			}
 
 			determineShootingAngles_helper(tankPowers[i]->addShootingPoints());
+		}
+	}
+
+	bool modifiedAddsExtraShootingPoints = false;
+	bool noMoreAddsExtraShootingPointsSpecials = false;
+
+	for (int i = 0; i < tankPowers.size(); i++) {
+		if (tankPowers[i]->addsExtraShootingPoints) {
+			if (tankPowers[i]->addExtraShootingPointsCanOnlyWorkIndividually && modifiedAddsExtraShootingPoints) {
+				continue;
+			}
+			if (noMoreAddsExtraShootingPointsSpecials) {
+				continue;
+			}
+
+			modifiedAddsExtraShootingPoints = true;
+			if (!tankPowers[i]->addExtraShootingPointsCanWorkWithOthers) {
+				noMoreAddsExtraShootingPointsSpecials = true;
+			}
+
+			std::vector<std::pair<double, double>>* extraCannons = tankPowers[i]->addExtraShootingPoints();
+			for (int j = 0; j < extraCannons->size(); j++) {
+				extraShootingPoints.push_back({ extraCannons->at(j).first, extraCannons->at(j).second });
+			}
+			delete extraCannons;
 		}
 	}
 }
@@ -292,16 +340,13 @@ void Tank::determineShootingAngles() {
 inline void Tank::determineShootingAngles_helper(std::vector<double>* newCannonPoints) {
 	for (int i = shootingPoints.size() - 1; i >= 0; i--) {
 		const int end = (i + 1) % shootingPoints.size();
-		double angle_diff;
-		if (end == 0) {
-			angle_diff = 2*PI - (shootingPoints[i].angle - shootingPoints[end].angle);
-		} else {
-			angle_diff = shootingPoints[end].angle - shootingPoints[i].angle;
-		}
+		const double angle_diff = end == 0 ?
+		                          2*PI - (shootingPoints[i].angleFromCenter - shootingPoints[end].angleFromCenter) :
+		                          shootingPoints[end].angleFromCenter - shootingPoints[i].angleFromCenter;
 
 		for (int j = 0; j < newCannonPoints->size(); j++) {
 			const double newAngle = angle_diff * newCannonPoints->at(j);
-			CannonPoint temp = CannonPoint(newAngle + shootingPoints[i].angle);
+			CannonPoint temp = CannonPoint(newAngle + shootingPoints[i].angleFromCenter);
 			shootingPoints.insert(shootingPoints.begin() + i + j + 1, temp);
 		}
 	}
@@ -598,16 +643,13 @@ ColorValueHolder Tank::getBodyColor() const {
 	}
 }
 
-double Tank::getAngle() const {
-	return fmod(fmod(velocity.getAngle(), 2*PI) + 2*PI, 2*PI);
+inline double Tank::getEvaluatedCannonAngle(unsigned int i) const {
+	//return fmod(fmod(shootingPoints[i].angleFromCenter + velocity.getAngle(), 2*PI) + 2*PI, 2*PI);
+	return velocity.getAngle() + shootingPoints[i].angleFromCenter;
 }
 
-double Tank::getCannonAngle(int i) const {
-	return fmod(fmod(shootingPoints[i].angle, 2*PI) + 2*PI, 2*PI);
-}
-
-double Tank::getRealCannonAngle(int i) const {
-	return fmod(fmod(shootingPoints[i].angle + velocity.getAngle(), 2*PI) + 2*PI, 2*PI);
+inline double Tank::getEvaluatedCannonAngleWithEdge(unsigned int i, unsigned int j) const {
+	return velocity.getAngle() + shootingPoints[i].angleFromCenter + extraShootingPoints[j].angleFromCenter + extraShootingPoints[j].angleFromEdge;
 }
 
 void Tank::draw() const {
@@ -1078,8 +1120,8 @@ inline void Tank::drawExtraBarrels(float alpha) const {
 		const int startVertex = (i*4) * 6;
 		const int startIndex = i*6;
 
-		SimpleVector2D dist = SimpleVector2D(getRealCannonAngle(i+1), r, true);
-		SimpleVector2D distCW = SimpleVector2D(getRealCannonAngle(i+1) - PI/2, lineWidth, true);
+		SimpleVector2D dist = SimpleVector2D(getEvaluatedCannonAngle(i+1), r, true);
+		SimpleVector2D distCW = SimpleVector2D(getEvaluatedCannonAngle(i+1) - PI/2, lineWidth, true);
 
 		coordsAndColor[startVertex + 0*6]   = x                   + distCW.getXComp();
 		coordsAndColor[startVertex + 0*6+1] = y                   + distCW.getYComp();

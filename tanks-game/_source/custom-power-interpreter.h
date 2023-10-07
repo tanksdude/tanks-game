@@ -20,6 +20,9 @@ public:
 		addShootingPoints_EquallySpaced,
 		addShootingPoints_Raw,
 
+		addExtraShootingPoints_Enable,
+		addExtraShootingPoints_Raw,
+
 		modifiedCollisionWithEdge_Enable,
 		modifiedCollisionWithEdge_AdditionalBoundary,
 
@@ -172,6 +175,7 @@ protected:
 	int additionalShooting_BulletCount;
 
 	std::vector<double> addShootingPoints_AngleList;
+	std::vector<std::pair<double, double>> addExtraShootingPoints_AngleList;
 
 	double modifiedCollisionWithEdge_AdditionalBoundaryAmount;
 
@@ -188,6 +192,9 @@ protected:
 	inline void initialization_addShootingPoints_Enable(const GenericFactoryConstructionData&) noexcept;
 	inline void initialization_addShootingPoints_EquallySpaced(const GenericFactoryConstructionData&) noexcept;
 	inline void initialization_addShootingPoints_Raw(const GenericFactoryConstructionData&) noexcept;
+
+	inline void initialization_addExtraShootingPoints_Enable(const GenericFactoryConstructionData&) noexcept;
+	inline void initialization_addExtraShootingPoints_Raw(const GenericFactoryConstructionData&) noexcept;
 
 	inline void initialization_modifiedCollisionWithEdge_Enable_tank(const GenericFactoryConstructionData&) noexcept;
 	inline void initialization_modifiedCollisionWithEdge_AdditionalBoundary(const GenericFactoryConstructionData&) noexcept;
@@ -235,9 +242,11 @@ public:
 
 	InteractionBoolHolder modifiedDeathHandling(Tank* parent) override;
 
-	void additionalShooting(Tank* parent, const CannonPoint&) override;
+	void additionalShooting(Tank* parent, const CannonPoint&, const ExtraCannonPoint&) override;
 
 	std::vector<double>* addShootingPoints() const override;
+
+	std::vector<std::pair<double, double>>* addExtraShootingPoints() const override;
 
 	double getTankMaxSpeedMultiplier() const override { return this->tankMaxSpeedMultiplier; }
 	double getTankAccelerationMultiplier() const override { return this->tankAccelerationMultiplier; }
@@ -392,6 +401,9 @@ protected: //tank
 	//static inline void stringToAction_addShootingPoints_Enable(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData);
 	//static inline void stringToAction_addShootingPoints_EquallySpaced(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData);
 	static inline void stringToAction_addShootingPoints_Raw(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData);
+
+	//static inline void stringToAction_addExtraShootingPoints_Enable(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData);
+	static inline void stringToAction_addExtraShootingPoints_Raw(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData);
 
 	//static inline void stringToAction_modifiedCollisionWithEdge_Enable(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData);
 	//static inline void stringToAction_modifiedCollisionWithEdge_AdditionalBoundary(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData);

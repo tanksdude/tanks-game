@@ -199,7 +199,8 @@ void PowerFunctionHelper::homingGenericMove(Bullet* b, Game_ID targetID, double 
 
 	double targetAngle = atan2(t->y - b->y, t->x - b->x);
 	double posTargetAngle = fmod(targetAngle + 2*PI, 2*PI);
-	double bulletAngle = (b->getAngle()>PI ? b->getAngle() - 2*PI : b->getAngle());
+	const double bulletAngleTemp = fmod(fmod(b->velocity.getAngle(), 2*PI) + 2*PI, 2*PI); //TODO: rewrite this logic
+	double bulletAngle = (bulletAngleTemp>PI ? bulletAngleTemp - 2*PI : bulletAngleTemp);
 	//std::cout << targetAngle << " " << bulletAngle << " " << maxAngleChange << std::endl;
 
 	if ((abs(targetAngle - bulletAngle) <= maxAngleChange) || (abs(fmod(targetAngle + PI, 2*PI) - fmod(bulletAngle + PI, 2*PI)) <= maxAngleChange)) {

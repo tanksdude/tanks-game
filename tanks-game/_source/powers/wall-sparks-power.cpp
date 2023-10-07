@@ -98,7 +98,7 @@ InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> WallSparksBulletPo
 			newVelocity = Tank::default_maxSpeed*BULLET_TO_TANK_SPEED_RATIO; //if bullet's initial speed is zero, it should still explode (TODO: what should the initial speed be?)
 		}
 		newVelocity = newVelocity * ((RNG::randFunc()+RNG::randFunc())/2 * (WallSparksPower::maxNewBulletVelocity - WallSparksPower::minNewBulletVelocity) + WallSparksPower::minNewBulletVelocity);
-		double newAngle = (b->getAngle() + b_update->angle) + (RNG::randFunc()+RNG::randFunc() - 1) * WallSparksPower::bulletAngleDeviation;
+		double newAngle = (b->velocity.getAngle() + b_update->angle) + (RNG::randFunc()+RNG::randFunc() - 1) * WallSparksPower::bulletAngleDeviation;
 		BulletManager::pushBullet(new Bullet(b->x + b_update->x, b->y + b_update->y, b->r, newAngle, newVelocity, b->getTeamID(), b->getParentIDType(), b->getParentID(), bp, true));
 		delete bp;
 	}

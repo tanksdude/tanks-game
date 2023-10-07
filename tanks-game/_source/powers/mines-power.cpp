@@ -40,17 +40,21 @@ void MinesTankPower::tick(Tank* t) {
 	for (int i = 0; i < t->tankPowers.size(); i++) {
 		if (t->tankPowers[i] != this) {
 			if (t->tankPowers[i]->modifiesAdditionalShooting) {
-				//might also want to check addsShootingPoints
+				//might also want to check addsShootingPoints and/or addsExtraShootingPoints
 				this->modifiesAdditionalShooting = false;
+				this->overridesAdditionalShooting = false;
 				return;
 			}
 		}
 	}
 	this->modifiesAdditionalShooting = true;
+	this->overridesAdditionalShooting = true;
 }
 
-void MinesTankPower::additionalShooting(Tank* t, const CannonPoint& c) {
-	t->regularMakeBullet(t->r * cos(t->velocity.getAngle() + c.angle) * MinesPower::bulletDistance, t->r * sin(t->velocity.getAngle() + c.angle) * MinesPower::bulletDistance, c.angle + t->velocity.getAngle());
+void MinesTankPower::additionalShooting(Tank* t, const CannonPoint& c, const ExtraCannonPoint& c2) {
+	t->preciseMakeBullet((t->r * MinesPower::bulletDistance) * cos(t->velocity.getAngle() + c.angleFromCenter + c2.angleFromCenter),
+	                     (t->r * MinesPower::bulletDistance) * sin(t->velocity.getAngle() + c.angleFromCenter + c2.angleFromCenter),
+	                     t->velocity.getAngle() + c.angleFromCenter + c2.angleFromCenter + c2.angleFromEdge);
 }
 
 void MinesTankPower::initialize(Tank* parent) {

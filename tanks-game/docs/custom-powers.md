@@ -45,11 +45,17 @@ First, do `additionalShooting_Enable` to enable this feature.
 
 ### Add shooting points
 
-First, do `addShootingPoints_Enable` to enable this feature. This controls how many extra cannons are tacked on to the tank. For example, Multishot adds seven to fire out 8 bullets.
+First, do `addShootingPoints_Enable` to enable this feature. This controls how many cannons are tacked on to the tank. For example, Multishot adds seven to fire out 8 bullets.
 
 `addShootingPoints_EquallySpaced <number>`: If you want the cannons to be equally spaced out, use this. For example, Multishot sets this to 8 to fire out eight bullets at once (and no other vanilla power sets this).
 
 `addShootingPoints_Raw <angle 1> [<angle n>]`: If you want to manually add the cannons, use this. Numbers in range (0,360) only. (Not recommended.) Only used by Weird Extra Cannons power, which was made just to test this.
+
+### Add extra shooting points
+
+First, do `addExtraShootingPoints_Enable` to enable this feature. This controls how many extra cannons are tacked on to the tank. For example, Triple adds two to fire out 3 bullets.
+
+`addExtraShootingPoints_Raw <angle 1> <angle 2> [<angle n1> <angle n2>]`: Adds the extra cannons. Numbers in range (0,360) only. Used by Triple and Shotgun.
 
 ### Modified edge collision
 

@@ -24,6 +24,7 @@ public:
 	double acceleration; // = 1.0/16; //intentional acceleration, not total
 	double turningIncrement; // = 64;
 	std::vector<CannonPoint> shootingPoints;
+	std::vector<ExtraCannonPoint> extraShootingPoints;
 	std::vector<TankPower*> tankPowers;
 	double shootCount;
 	double maxShootCount;
@@ -56,7 +57,8 @@ protected:
 public:
 	void makeBullet(double x, double y, double angle, double radius, double speed, double acc); //does not use makeBulletCommon (avoid using)
 	void defaultMakeBullet(double angle); //simple shoot: bullet points away from tank center at a given angle
-	void regularMakeBullet(double x_offset, double y_offset, double angle); //make bullet x and y dist from tank, moving with angle
+	void defaultMakeBullet(double angle, double edgeAngleOffset); //same but control over the firing angle
+	void preciseMakeBullet(double x_offset, double y_offset, double angle); //make bullet x and y dist from tank, moving with angle; basically just for mines
 
 protected:
 	ColorValueHolder defaultColor; // = ColorValueHolder(0.5f, 0.5f, 0.5f); //JS: #888888
@@ -68,16 +70,13 @@ protected:
 	inline void terminalVelocity(bool forward);
 	inline void move_base(bool forward, bool turnL, bool turnR);
 	inline void determineShootingAngles_helper(std::vector<double>* newCannonPoints);
+	inline double getEvaluatedCannonAngle(unsigned int index) const;
+	inline double getEvaluatedCannonAngleWithEdge(unsigned int indexRegular, unsigned int indexExtra) const;
 
 public:
 	//helper stuff:
 	ColorValueHolder getBodyColor() const;
 	std::string getName() const { return name; }
-
-	//TODO: remove
-	double getAngle() const;
-	double getCannonAngle(int index) const;
-	double getRealCannonAngle(int index) const;
 
 	static const double default_maxSpeed;
 	static const double default_acceleration;

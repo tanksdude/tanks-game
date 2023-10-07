@@ -51,7 +51,7 @@ public:
 	virtual BulletPower* makeBulletPower() const override;
 
 	//bool modifiesAdditionalShooting = true;
-	virtual void additionalShooting(Tank* parent, const CannonPoint&) override;
+	virtual void additionalShooting(Tank* parent, const CannonPoint&, const ExtraCannonPoint&) override;
 	//bool overridesAdditionalShooting = true;
 
 	//virtual double getTankMaxSpeedMultiplier() const override { return .75; } //JS

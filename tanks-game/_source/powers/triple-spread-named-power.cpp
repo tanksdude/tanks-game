@@ -34,9 +34,9 @@ TripleSpreadNamedPower::TripleSpreadNamedPower() : TripleNamedPower() {
 #include "../constants.h"
 #include <cmath>
 
-void TripleSpreadNamedTankPower::additionalShooting(Tank* parent, const CannonPoint& c) {
-	parent->regularMakeBullet(parent->r * cos(parent->velocity.getAngle() + c.angle), parent->r * sin(parent->velocity.getAngle() + c.angle), parent->velocity.getAngle() + c.angle + TripleNamedPower::bulletAngleDiff);
-	parent->regularMakeBullet(parent->r * cos(parent->velocity.getAngle() + c.angle), parent->r * sin(parent->velocity.getAngle() + c.angle), parent->velocity.getAngle() + c.angle - TripleNamedPower::bulletAngleDiff);
+std::vector<std::pair<double, double>>* TripleSpreadNamedTankPower::addExtraShootingPoints() const {
+	return new std::vector<std::pair<double, double>>{ {0,  TripleNamedPower::bulletAngleDiff},
+	                                                   {0, -TripleNamedPower::bulletAngleDiff} };
 }
 
 BulletPower* TripleSpreadNamedTankPower::makeBulletPower() const {
@@ -47,7 +47,7 @@ TripleSpreadNamedTankPower::TripleSpreadNamedTankPower() : TripleNamedTankPower(
 	//maxTime = 500;
 	//timeLeft = 500;
 
-	//modifiesAdditionalShooting = true;
+	addsExtraShootingPoints = true;
 }
 
 

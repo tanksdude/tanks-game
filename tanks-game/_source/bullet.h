@@ -63,7 +63,6 @@ protected:
 public:
 	//helper functions:
 	ColorValueHolder getColor() const;
-	double getAngle() const; //TODO: remove
 	double getInitialVelocity() const { return initial_velocity; }
 	Game_ID getParentID() const { return parentID; }
 	BulletParentType getParentIDType() const { return parentType; }

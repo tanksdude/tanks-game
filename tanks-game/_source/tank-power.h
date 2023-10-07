@@ -1,6 +1,7 @@
 #pragma once
 class TankPower;
 
+#include <utility>
 #include <vector>
 
 #include "interaction-bool-holder.h"
@@ -97,14 +98,14 @@ public:
 
 	/*
 	bool modifiesShooting = false;
-	virtual void modifiedShooting(Tank* parent) { return; } //for melee-class powerups
+	virtual void modifiedShooting(Tank* parent) { return; } //for melee-class powerups (sword)
 	bool overridesShooting = true; //false? dunno
 	bool modifiedShootingCanWorkWithOthers = true;
 	bool modifiedShootingCanOnlyWorkIndividually = false;
 	*/
 
 	bool modifiesAdditionalShooting = false;
-	virtual void additionalShooting(Tank* parent, const CannonPoint&) { return; } //for regular powerups (triple/shotgun, fire/blast, mines(?))
+	virtual void additionalShooting(Tank* parent, const CannonPoint&, const ExtraCannonPoint&) { return; } //for regular powerups (fire/blast, mines(?))
 	bool overridesAdditionalShooting = false; //true if default shooting won't be used
 	bool additionalShootingCanWorkWithOthers = true; //probably should only be true
 	bool additionalShootingCanOnlyWorkIndividually = false;
@@ -115,6 +116,13 @@ public:
 	//bool overridesAddShootingPoints = false; //makes no sense to be true
 	bool addShootingPointsCanWorkWithOthers = true; //should only be true
 	bool addShootingPointsCanOnlyWorkIndividually = false;
+
+	bool addsExtraShootingPoints = false;
+	[[nodiscard]]
+	virtual std::vector<std::pair<double, double>>* addExtraShootingPoints() const { return nullptr; } //list of angles to put "extra" cannons at (triple and shotgun)
+	//bool overridesAddExtraShootingPoints = false; //makes no sense to be true
+	bool addExtraShootingPointsCanWorkWithOthers = true; //should only be true
+	bool addExtraShootingPointsCanOnlyWorkIndividually = false;
 
 	/*
 	bool modifiesTankDrawings = false;

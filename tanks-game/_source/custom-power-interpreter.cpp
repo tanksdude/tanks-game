@@ -492,6 +492,17 @@ inline void CustomTankPower::initialization_addShootingPoints_Raw(const GenericF
 	std::sort(addShootingPoints_AngleList.begin(), addShootingPoints_AngleList.end());
 }
 
+inline void CustomTankPower::initialization_addExtraShootingPoints_Enable(const GenericFactoryConstructionData& data) noexcept {
+	initialization_helper_Enable(addsExtraShootingPoints, data);
+}
+inline void CustomTankPower::initialization_addExtraShootingPoints_Raw(const GenericFactoryConstructionData& data) noexcept {
+	const double* list = static_cast<const double*>(data.getDataPortion(0).get());
+	for (int i = 0; i < data.getDataPortionLength(0)/2; i++) {
+		addExtraShootingPoints_AngleList.push_back({ list[i*2], list[i*2+1] });
+	}
+	//std::sort(addExtraShootingPoints_AngleList.begin(), addExtraShootingPoints_AngleList.end());
+}
+
 inline void CustomTankPower::initialization_modifiedCollisionWithEdge_Enable_tank(const GenericFactoryConstructionData& data) noexcept {
 	initialization_helper_Enable(modifiesEdgeCollision, data);
 }
@@ -652,16 +663,21 @@ InteractionBoolHolder CustomTankPower::modifiedDeathHandling(Tank* parent) {
 	return { false, false };
 }
 
-void CustomTankPower::additionalShooting(Tank* t, const CannonPoint& c) {
+void CustomTankPower::additionalShooting(Tank* t, const CannonPoint& c, const ExtraCannonPoint& c2) {
 	for (int i = 0; i < additionalShooting_BulletCount; i++) {
 		double tempAngle_fromTank = (RNG::randFunc()*2 - 1) * additionalShooting_AngleRelativeToTank;
-		double tempAngle_fromCannon = tempAngle_fromTank + (RNG::randFunc()*2 - 1) * additionalShooting_AngleRelativeToCannon;
-		t->regularMakeBullet(t->r * cos(c.angle + t->velocity.getAngle() + tempAngle_fromTank), t->r * sin(c.angle + t->velocity.getAngle() + tempAngle_fromTank), c.angle + t->velocity.getAngle() + tempAngle_fromCannon);
+		double tempAngle_fromCannon = (RNG::randFunc()*2 - 1) * additionalShooting_AngleRelativeToCannon;
+		t->defaultMakeBullet(t->velocity.getAngle() + c.angleFromCenter + c2.angleFromCenter + tempAngle_fromTank,
+		                     c2.angleFromEdge + tempAngle_fromCannon);
 	}
 }
 
 std::vector<double>* CustomTankPower::addShootingPoints() const {
 	return new std::vector<double>(this->addShootingPoints_AngleList);
+}
+
+std::vector<std::pair<double, double>>* CustomTankPower::addExtraShootingPoints() const {
+	return new std::vector<std::pair<double, double>>(this->addExtraShootingPoints_AngleList);
 }
 
 InteractionBoolHolder CustomBulletPower::modifiedEdgeCollision(Bullet* b) {
@@ -1135,6 +1151,13 @@ inline CustomPower::CustomPowerAction_Tank* CustomPowerInterpreter::stringToActi
 				stringToAction_addShootingPoints_Raw(words, constructionData);
 				break;
 
+			case CustomPower::CustomPowerCommands_TankPower::addExtraShootingPoints_Enable:
+				stringToAction_genericEnable(words, constructionData);
+				break;
+			case CustomPower::CustomPowerCommands_TankPower::addExtraShootingPoints_Raw:
+				stringToAction_addExtraShootingPoints_Raw(words, constructionData);
+				break;
+
 			case CustomPower::CustomPowerCommands_TankPower::modifiedCollisionWithEdge_Enable:
 				stringToAction_genericEnable(words, constructionData);
 				break;
@@ -1381,6 +1404,28 @@ inline void CustomPowerInterpreter::stringToAction_genericSingleValue_d(const st
 inline void CustomPowerInterpreter::stringToAction_addShootingPoints_Raw(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData) {
 	if (words.size() < 1) {
 		throw std::runtime_error("expected at least 1 data item");
+	}
+
+	double* values = new double[words.size()];
+	try {
+		for (int i = 0; i < words.size(); i++) {
+			values[i] = std::stod(words[i]) / 360;
+		}
+	}
+	catch (const std::exception&) {
+		delete[] values;
+		throw std::runtime_error("unable to parse values");
+	}
+
+	constructionData.pushData(words.size(), values);
+}
+
+inline void CustomPowerInterpreter::stringToAction_addExtraShootingPoints_Raw(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData) {
+	if (words.size() < 1) {
+		throw std::runtime_error("expected at least 1 data item");
+	}
+	if (words.size() % 2 == 1) {
+		throw std::runtime_error("expected an even number of data items");
 	}
 
 	double* values = new double[words.size()];

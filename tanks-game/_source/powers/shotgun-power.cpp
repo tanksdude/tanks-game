@@ -39,12 +39,15 @@ ShotgunPower::ShotgunPower() {
 #include "../constants.h"
 #include <cmath>
 
-void ShotgunTankPower::additionalShooting(Tank* parent, const CannonPoint& c) {
+std::vector<std::pair<double, double>>* ShotgunTankPower::addExtraShootingPoints() const {
+	std::vector<std::pair<double, double>>* newExtraCannonPoints = new std::vector<std::pair<double, double>>;
+	newExtraCannonPoints->reserve(ShotgunPower::bulletSpreadCount * 2);
 	const double angleDiff = (PI/2) / ShotgunPower::bulletSpreadCount;
 	for (int i = 1; i <= ShotgunPower::bulletSpreadCount; i++) {
-		parent->regularMakeBullet(parent->r * cos(parent->velocity.getAngle() + c.angle + angleDiff*i), parent->r * sin(parent->velocity.getAngle() + c.angle + angleDiff*i), parent->velocity.getAngle() + c.angle);
-		parent->regularMakeBullet(parent->r * cos(parent->velocity.getAngle() + c.angle - angleDiff*i), parent->r * sin(parent->velocity.getAngle() + c.angle - angleDiff*i), parent->velocity.getAngle() + c.angle);
+		newExtraCannonPoints->push_back({ i *  angleDiff, i * -angleDiff });
+		newExtraCannonPoints->push_back({ i * -angleDiff, i *  angleDiff });
 	}
+	return newExtraCannonPoints;
 }
 
 void ShotgunTankPower::initialize(Tank* parent) {
@@ -63,7 +66,7 @@ ShotgunTankPower::ShotgunTankPower() {
 	maxTime = 500;
 	timeLeft = 500;
 
-	modifiesAdditionalShooting = true;
+	addsExtraShootingPoints = true;
 }
 
 
