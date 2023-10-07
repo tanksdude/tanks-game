@@ -129,6 +129,7 @@
 #include "powers/dev-weird-extra-cannons-power.h" //adds some extra cannons at weird angles
 #include "powers/triple-spread-named-power.h" //triple but bullets spread out instead of being next to each other (the only power that does so)
 #include "powers/ring-shooter-power.h" //multishot if it shot straight ahead
+#include "powers/ancient-mega-death-power.h" //accelerating tracking bullet that goes through walls
 
 #include "game-main-loop.h"
 
@@ -261,6 +262,7 @@ int main(int argc, char** argv) {
 	PowerupDataGovernor::addPowerFactory(DevWeirdExtraCannonsPower::factory);
 	PowerupDataGovernor::addPowerFactory(TripleSpreadNamedPower::factory);
 	PowerupDataGovernor::addPowerFactory(RingShooterPower::factory);
+	PowerupDataGovernor::addPowerFactory(AncientMegaDeathPower::factory);
 
 	//hazards
 	//vanilla (some are also "old"):

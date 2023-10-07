@@ -435,6 +435,9 @@
     <ClCompile Include="_source\powers\ring-shooter-power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClInclude Include="_source\powers\ancient-mega-death-power.cpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="_source\bullet.h">
@@ -900,6 +903,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="_source\powers\ring-shooter-power.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="_source\powers\ancient-mega-death-power.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
