@@ -648,6 +648,10 @@ inline double Tank::getEvaluatedCannonAngle(unsigned int i) const {
 	return velocity.getAngle() + shootingPoints[i].angleFromCenter;
 }
 
+inline double Tank::getEvaluatedCannonAngle(unsigned int i, unsigned int j) const {
+	return velocity.getAngle() + shootingPoints[i].angleFromCenter + extraShootingPoints[j].angleFromCenter;
+}
+
 inline double Tank::getEvaluatedCannonAngleWithEdge(unsigned int i, unsigned int j) const {
 	return velocity.getAngle() + shootingPoints[i].angleFromCenter + extraShootingPoints[j].angleFromCenter + extraShootingPoints[j].angleFromEdge;
 }
@@ -660,6 +664,7 @@ void Tank::draw() const {
 		drawPowerCooldown();
 		drawBody();
 		drawExtraBarrels();
+		drawExtraExtraBarrels();
 		drawOutline();
 		drawMainBarrel();
 	}
@@ -679,6 +684,7 @@ void Tank::draw(DrawingLayers layer) const {
 				drawPowerCooldown();
 				drawBody();
 				drawExtraBarrels();
+				drawExtraExtraBarrels();
 				drawOutline();
 				drawMainBarrel();
 			}
@@ -704,6 +710,7 @@ void Tank::poseDraw() const {
 	//does not have to worry about being dead
 	drawBody();
 	//drawExtraBarrels();
+	//drawExtraExtraBarrels();
 	drawOutline();
 	drawMainBarrel();
 }
@@ -719,6 +726,7 @@ void Tank::poseDraw(DrawingLayers layer) const {
 		case DrawingLayers::normal:
 			drawBody();
 			//drawExtraBarrels();
+			//drawExtraExtraBarrels();
 			drawOutline();
 			drawMainBarrel();
 			break;
@@ -741,6 +749,7 @@ void Tank::ghostDraw(float alpha) const {
 	//does not have to worry about being dead
 	drawBody(alpha);
 	drawExtraBarrels(alpha);
+	drawExtraExtraBarrels(alpha);
 	drawOutline(alpha);
 	drawMainBarrel(alpha);
 }
@@ -756,6 +765,7 @@ void Tank::ghostDraw(DrawingLayers layer, float alpha) const {
 		case DrawingLayers::normal:
 			drawBody(alpha);
 			drawExtraBarrels(alpha);
+			drawExtraExtraBarrels(alpha);
 			drawOutline(alpha);
 			drawMainBarrel(alpha);
 			break;
@@ -1148,6 +1158,58 @@ inline void Tank::drawExtraBarrels(float alpha) const {
 	}
 
 	Renderer::SubmitBatchedDraw(coordsAndColor, (shootingPoints.size()-1)*4*(2+4), indices, (shootingPoints.size()-1)*6);
+	delete[] coordsAndColor; delete[] indices;
+}
+
+inline void Tank::drawExtraExtraBarrels(float alpha) const {
+	if (extraShootingPoints.size() <= 1) {
+		return;
+	}
+
+	alpha = std::clamp<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
+
+	ColorValueHolder color = ColorValueHolder(0.25f, 0.25f, 0.25f);
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
+	const float lineWidth = 0.375f;
+
+	float* coordsAndColor = new float[(extraShootingPoints.size()-1)*4*(2+4)];
+	unsigned int* indices = new unsigned int[(extraShootingPoints.size()-1)*6];
+
+	for (int i = 0; i < extraShootingPoints.size()-1; i++) {
+		const int startVertex = (i*4) * 6;
+		const int startIndex = i*6;
+
+		SimpleVector2D distFromCenter = SimpleVector2D(getEvaluatedCannonAngle(0, i+1), r, true);
+		const float extraCannonLength = r * (pow(sin(shootingPoints[0].angleFromCenter + extraShootingPoints[i+1].angleFromCenter),2) * .25 + .25); //.25 at main cannon, .5 at 90deg //pow instead of abs because 45deg cannon was too long
+		SimpleVector2D dist = SimpleVector2D(getEvaluatedCannonAngleWithEdge(0, i+1), extraCannonLength, true);
+		SimpleVector2D distCW = SimpleVector2D(getEvaluatedCannonAngleWithEdge(0, i+1) - PI/2, lineWidth, true);
+
+		coordsAndColor[startVertex + 0*6]   = x + distFromCenter.getXComp()                   + distCW.getXComp();
+		coordsAndColor[startVertex + 0*6+1] = y + distFromCenter.getYComp()                   + distCW.getYComp();
+		coordsAndColor[startVertex + 1*6]   = x + distFromCenter.getXComp() + dist.getXComp() + distCW.getXComp();
+		coordsAndColor[startVertex + 1*6+1] = y + distFromCenter.getYComp() + dist.getYComp() + distCW.getYComp();
+		coordsAndColor[startVertex + 2*6]   = x + distFromCenter.getXComp() + dist.getXComp() - distCW.getXComp();
+		coordsAndColor[startVertex + 2*6+1] = y + distFromCenter.getYComp() + dist.getYComp() - distCW.getYComp();
+		coordsAndColor[startVertex + 3*6]   = x + distFromCenter.getXComp()                   - distCW.getXComp();
+		coordsAndColor[startVertex + 3*6+1] = y + distFromCenter.getYComp()                   - distCW.getYComp();
+
+		for (int j = 0; j < 4; j++) {
+			coordsAndColor[startVertex + j*6+2] = color.getRf();
+			coordsAndColor[startVertex + j*6+3] = color.getGf();
+			coordsAndColor[startVertex + j*6+4] = color.getBf();
+			coordsAndColor[startVertex + j*6+5] = color.getAf();
+		}
+
+		indices[startIndex + 0] = startVertex/6 + 0;
+		indices[startIndex + 1] = startVertex/6 + 1;
+		indices[startIndex + 2] = startVertex/6 + 2;
+		indices[startIndex + 3] = startVertex/6 + 2;
+		indices[startIndex + 4] = startVertex/6 + 3;
+		indices[startIndex + 5] = startVertex/6 + 0;
+	}
+
+	Renderer::SubmitBatchedDraw(coordsAndColor, (extraShootingPoints.size()-1)*4*(2+4), indices, (extraShootingPoints.size()-1)*6);
 	delete[] coordsAndColor; delete[] indices;
 }
 

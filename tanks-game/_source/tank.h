@@ -71,6 +71,7 @@ protected:
 	inline void move_base(bool forward, bool turnL, bool turnR);
 	inline void determineShootingAngles_helper(std::vector<double>* newCannonPoints);
 	inline double getEvaluatedCannonAngle(unsigned int index) const;
+	inline double getEvaluatedCannonAngle(unsigned int indexRegular, unsigned int indexExtra) const;
 	inline double getEvaluatedCannonAngleWithEdge(unsigned int indexRegular, unsigned int indexExtra) const;
 
 public:
@@ -104,6 +105,7 @@ protected:
 	inline void drawPowerCooldown(float alpha = 1.0f) const;
 	inline void drawMainBarrel(float alpha = 1.0f) const;
 	inline void drawExtraBarrels(float alpha = 1.0f) const;
+	inline void drawExtraExtraBarrels(float alpha = 1.0f) const;
 
 public:
 	Tank(double x, double y, double angle, Team_ID id, std::string name, double shootCooldown);
