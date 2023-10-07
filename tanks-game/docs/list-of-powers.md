@@ -360,6 +360,17 @@ Adds a cannon at 90° and 225°, just to test adding non-symmetric cannons. When a
 
 Sorta like Triple, except the angle variation comes at the cannon point instead of the center. Basically, Triple makes three bullets parallel, while this makes three at the same point that spread out. Got the idea a long time ago, finally decided to implement it once custom powers became a thing.
 
+## [DEV] Ring Shooter
+
+* Types: "dev", "random-dev"
+* Internal name: `ring_shooter`
+* Attributes: "mix"
+* Color: `(0.6, 0.1, 1.0)` (purple but a bit brighter)
+* Tank modifiers: half shooting cooldown
+* Bullet modifiers: half speed
+
+Multishot, but all the bullets face the same way. Inspiration came from my very first implementation of cannon points, where Multishot did that. The error was quickly rectified but the memory lived on, so I made this.
+
 # List of protected power types
 
 These are the types custom powers are not allowed to have, unless `[MODS] ModSafetyChecks` in the INI file is disabled.
@@ -515,6 +526,7 @@ These are the types custom powers are not allowed to have, unless `[MODS] ModSaf
 * Wall Sparks
 * Weird Extra Cannons
 * Triple Spread
+* Ring Shooter
 
 ## random-dev
 
@@ -527,3 +539,4 @@ These are the types custom powers are not allowed to have, unless `[MODS] ModSaf
 * Wall Sparks
 * Weird Extra Cannons
 * Triple Spread
+* Ring Shooter
