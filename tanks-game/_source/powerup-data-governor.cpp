@@ -39,7 +39,7 @@ void PowerupDataGovernor::addCustomPower(std::string name, const std::vector<std
 		throw std::runtime_error("power " + name + " includes \"null\" type, which is not allowed");
 	}
 	for (int i = 0; i < types.size(); i++) {
-		customPowerLookup[types[i]].insert({ p->getName(), p });
+		customPowerLookup[types[i]].insert({ p->getName(), std::unique_ptr<CustomPower>(p) });
 		customPowerNameList[types[i]].push_back(name);
 	}
 }
