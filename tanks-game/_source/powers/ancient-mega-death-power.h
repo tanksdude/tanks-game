@@ -17,7 +17,7 @@ public:
 	virtual std::string getName() const override { return AncientMegaDeathPower::getClassName(); }
 	static std::string getClassName() { return "ancient_megadeath"; }
 	virtual ColorValueHolder getColor() const override { return AncientMegaDeathPower::getClassColor(); }
-	static ColorValueHolder getClassColor() { return ColorValueHolder(0x20/255.0, 0x1A/255.0, 0x1A/255.0); } //JS unused alternate to megadeath
+	static ColorValueHolder getClassColor() { return ColorValueHolder(0x20/255.0, 0x1A/255.0, 0x1A/255.0); } //JS unused alternate for megadeath
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;

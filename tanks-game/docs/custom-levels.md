@@ -109,10 +109,10 @@ Syntax: `POWER_Corners/DiagForwardSlash/DiagBackwardSlash_Alternate   <center x>
 
 ### CHAZARD and RHAZARD
 
-Syntax: `CHAZARD   "hazard type" "hazard name"   <center x> <center y> [<radius or angle> or <radius> <angle>]`
+Syntax: `CHAZARD   <hazard type> <hazard name>   <center x> <center y> [<radius or angle> or <radius> <angle>]`
 
-Syntax: `RHAZARD   "hazard type" "hazard name"   <center x> <center y> [<width> <height>]`
+Syntax: `RHAZARD   <hazard type> <hazard name>   <center x> <center y> [<width> <height>]`
 
-How many parameters to give depends on the hazard. For example, a targeting turret needs an angle while a no bullet zone needs a radius.
+How many parameters to give depends on the hazard. For example, a Targeting Turret needs an angle while a No Bullet Zone needs a radius.
 
 See `docs/list-of-hazards.md` for a list of every hazard, which also gives their construction type (and thus how many parameters are needed). Some hazards can take even more parameters; this is not supported at this time. Some hazards are too complex for this system (Patrolling Turret) and can't be made for the time being.

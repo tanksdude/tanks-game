@@ -128,4 +128,3 @@ See the tank power section "Tank-specific changes" for a note on what "stacking"
 If you want your power to be more important than other powers and *override* the other powers' offense and defense, there is an option for that. `offenseImportance <number>` and `defenseImportance <number>` will decide how "important" your power is. Only Annoying sets this, and only for `offenseImportance`.
 
 Check `list-of-powers.md` to find out what powers have what offense and defense. The important ones to look at are Invincible and Big, since the entire offense and defense system is built around them.
-
