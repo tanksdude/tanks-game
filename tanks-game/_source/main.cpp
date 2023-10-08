@@ -400,6 +400,10 @@ int main(int argc, char** argv) {
 	std::cout << "OpenGL vendor: " << glGetString(GL_VENDOR) << std::endl;
 	std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl << std::endl;
 
+	//framelimiter
+	//glutTimerFunc(1000/physicsRate, tick, physicsRate); //see GameMainLoop
+	GameSceneManager::TickScenes(100);
+
 	// Start the main loop
 	glutMainLoop();
 

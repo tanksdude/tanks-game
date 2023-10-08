@@ -197,27 +197,17 @@ Game_ID PowerFunctionHelper::homingGenericTarget(const Bullet* b, bool targetUsi
 void PowerFunctionHelper::homingGenericMove(Bullet* b, Game_ID targetID, double maxAngleChange) {
 	const Tank* t = TankManager::getTankByID(targetID);
 
-	double targetAngle = atan2(t->y - b->y, t->x - b->x);
-	double posTargetAngle = fmod(targetAngle + 2*PI, 2*PI);
-	const double bulletAngleTemp = fmod(fmod(b->velocity.getAngle(), 2*PI) + 2*PI, 2*PI); //TODO: rewrite this logic
-	double bulletAngle = (bulletAngleTemp>PI ? bulletAngleTemp - 2*PI : bulletAngleTemp);
-	//std::cout << targetAngle << " " << bulletAngle << " " << maxAngleChange << std::endl;
-
-	if ((abs(targetAngle - bulletAngle) <= maxAngleChange) || (abs(fmod(targetAngle + PI, 2*PI) - fmod(bulletAngle + PI, 2*PI)) <= maxAngleChange)) {
-		b->velocity.setAngle(targetAngle);
+	SimpleVector2D distToTank = SimpleVector2D(t->getX() - b->x, t->getY() - b->y);
+	float theta = SimpleVector2D::angleBetween(distToTank, b->velocity);
+	if (abs(theta) <= maxAngleChange) {
+		//small angle adjustment needed
+		b->velocity.setAngle(distToTank.getAngle());
 	} else {
-		SimpleVector2D distToTank = SimpleVector2D(t->getX() - b->x, t->getY() - b->y);
-		float theta = SimpleVector2D::angleBetween(distToTank, b->velocity);
-		if (abs(theta) <= maxAngleChange) {
-			//small angle adjustment needed
-			b->velocity.setAngle(distToTank.getAngle());
+		//large angle adjustment needed
+		if (theta < 0) {
+			b->velocity.changeAngle(maxAngleChange);
 		} else {
-			//large angle adjustment needed
-			if (theta < 0) {
-				b->velocity.changeAngle(maxAngleChange);
-			} else {
-				b->velocity.changeAngle(-maxAngleChange);
-			}
+			b->velocity.changeAngle(-maxAngleChange);
 		}
 	}
 }
