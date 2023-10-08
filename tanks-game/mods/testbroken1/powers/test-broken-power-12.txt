@@ -1,0 +1,13 @@
+Name = test-broken-power-12
+Color = 0.0   0.0   0.0
+PowerTypes = "testbroken1"   "random-testbroken1"
+PowerWeights = 1.0   1.0
+
+PowerTankDuration = 500
+PowerAttributes = "stack" "mix"
+
+
+
+[TANKPOWER_START]
+additionalShooting_Enable
+additionalShooting_AngleRelativeToTank

@@ -1,0 +1,39 @@
+; required
+Name = test-broken-power-2
+Color = 1.0   0.5   1.0
+PowerTypes = "testbroken1"   "random-testbroken1"
+PowerWeights = 1.0   1.0
+
+; optional
+PowerAttributes = "mix"
+
+
+
+; actual power, tank portion
+[TANKPOWER_START]
+
+additionalShooting_Enable
+additionalShooting_AngleRelativeToCannon 30
+additionalShooting_BulletCount 8
+
+addShootingPoints_Enable
+addShootingPoints_Raw 165 195
+
+tankFiringRateMultiplier .5
+
+
+
+; actual power, bullet portion
+[BULLETPOWER_START]
+
+modifiedCollision_BounceCount 3 ; edge only
+
+modifiedCollisionWithEdge_EnableBounce
+
+modifiedCollisionWithWall_DestroyWall
+
+bulletSpeedMultiplier 1.0 1.5
+bulletDeceleration .0625 .125
+bulletDeceleration_DegradeAmount 0.75
+
+offenseTier_FAIL 0.5

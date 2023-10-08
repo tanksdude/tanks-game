@@ -1,0 +1,3 @@
+Name = test-broken-power-5
+Color = 0.0   0.0   0.0
+PowerTypes = "testbroken1"   "random-testbroken1"

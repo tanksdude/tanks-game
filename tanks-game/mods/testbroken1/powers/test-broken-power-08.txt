@@ -1,0 +1,4 @@
+Name = test-broken-power-8
+Color = 0.0   0.0   0.0
+PowerTypes = 
+PowerWeights = 
