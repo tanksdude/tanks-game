@@ -95,6 +95,18 @@ Syntax: `POWER_Corners/DiagForwardSlash/DiagBackwardSlash   <center x> <center y
 
 `POWER_CORNERS` creates four powerups from the specified point, and `POWER_DiagForwardSlash` and `POWER_DiagBackwardSlash` create two opposing powerups in a forward slash (/, bottom left and top right) or backslash (\, top left and bottom right) orientation (don't judge the naming scheme).
 
+### POWER_LR_Alternate and POWER_UD_Alternate
+
+Syntax: `POWER_LR/UD_Alternate   <center x> <center y> <x/y offset from center>   <first power type 1> <first power name 1> [<first power type n> <first power name n>]  |  <second power type 1> <second power name 1> [<second power type n> <second power name n>]`
+
+`POWER_LR/UD` but which powerup is on which side is determined when the level is initialized. This allows for a little bit of randomization while staying mostly fair. The powerups are separated by `|`.
+
+### POWER_Corners_Alternate, POWER_DiagForwardSlash_Alternate, and POWER_DiagBackwardSlash_Alternate
+
+Syntax: `POWER_Corners/DiagForwardSlash/DiagBackwardSlash_Alternate   <center x> <center y> <x offset from center> <y offset from center>   <first power type 1> <first power name 1> [<first power type n> <first power name n>]  |  <second power type 1> <second power name 1> [<second power type n> <second power name n>]`
+
+`POWER_Corners/DiagForwardSlash/DiagBackwardSlash` but which powerup is on which side is determined when the level is initialized. This allows for a little bit of randomization while staying mostly fair. The powerups are separated by `|`.
+
 ### CHAZARD and RHAZARD
 
 Syntax: `CHAZARD   "hazard type" "hazard name"   <center x> <center y> [<radius or angle> or <radius> <angle>]`

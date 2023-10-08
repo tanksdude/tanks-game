@@ -104,6 +104,17 @@ CustomLevel::CustomLevelCommands CustomLevel::strToCommand(const std::string& st
 	} else if (str == "POWER_DiagBackwardSlash") {
 		levelCommand = CustomLevel::CustomLevelCommands::POWER_DiagBackwardSlash;
 	}
+	else if (str == "POWER_LR_Alternate") {
+		levelCommand = CustomLevel::CustomLevelCommands::POWER_LR_Alternate;
+	} else if (str == "POWER_UD_Alternate") {
+		levelCommand = CustomLevel::CustomLevelCommands::POWER_UD_Alternate;
+	} else if (str == "POWER_Corners_Alternate") {
+		levelCommand = CustomLevel::CustomLevelCommands::POWER_Corners_Alternate;
+	} else if (str == "POWER_DiagForwardSlash_Alternate") {
+		levelCommand = CustomLevel::CustomLevelCommands::POWER_DiagForwardSlash_Alternate;
+	} else if (str == "POWER_DiagBackwardSlash_Alternate") {
+		levelCommand = CustomLevel::CustomLevelCommands::POWER_DiagBackwardSlash_Alternate;
+	}
 	else if (str == "RANDOM_WALLS") {
 		levelCommand = CustomLevel::CustomLevelCommands::RANDOM_WALLS;
 	} else if (str == "CLASSIC_WALLS") {
@@ -173,6 +184,22 @@ void CustomLevel::initialize() {
 				break;
 			case CustomLevelCommands::POWER_DiagBackwardSlash:
 				initialization_POWER_DiagBackwardSlash(data);
+				break;
+
+			case CustomLevelCommands::POWER_LR_Alternate:
+				initialization_POWER_LR_Alternate(data);
+				break;
+			case CustomLevelCommands::POWER_UD_Alternate:
+				initialization_POWER_UD_Alternate(data);
+				break;
+			case CustomLevelCommands::POWER_Corners_Alternate:
+				initialization_POWER_Corners_Alternate(data);
+				break;
+			case CustomLevelCommands::POWER_DiagForwardSlash_Alternate:
+				initialization_POWER_DiagForwardSlash_Alternate(data);
+				break;
+			case CustomLevelCommands::POWER_DiagBackwardSlash_Alternate:
+				initialization_POWER_DiagBackwardSlash_Alternate(data);
 				break;
 
 			case CustomLevelCommands::CHAZARD:
@@ -353,6 +380,80 @@ inline void CustomLevel::initialization_POWER_DiagBackwardSlash(const GenericFac
 	const std::string* namesArr = static_cast<const std::string*>(data.getDataPortion(2).get());
 
 	LevelHelper::pushSymmetricPowerups_DiagBackwardSlash(centerX, centerY, offsetX, offsetY, typesArr, namesArr, data.getDataPortionLength(1));
+}
+
+inline void CustomLevel::initialization_POWER_LR_Alternate(const GenericFactoryConstructionData& data) noexcept {
+	const double* posArr = static_cast<const double*>(data.getDataPortion(0).get());
+	double centerX = posArr[0];
+	double centerY = posArr[1];
+	double offsetX = posArr[2];
+
+	const std::string* typesArr1 = static_cast<const std::string*>(data.getDataPortion(1).get());
+	const std::string* namesArr1 = static_cast<const std::string*>(data.getDataPortion(2).get());
+	const std::string* typesArr2 = static_cast<const std::string*>(data.getDataPortion(3).get());
+	const std::string* namesArr2 = static_cast<const std::string*>(data.getDataPortion(4).get());
+
+	LevelHelper::pushSymmetricPowerups_LR_Alternate(centerX, centerY, offsetX,
+		typesArr1, namesArr1, data.getDataPortionLength(1), typesArr2, namesArr2, data.getDataPortionLength(3));
+}
+inline void CustomLevel::initialization_POWER_UD_Alternate(const GenericFactoryConstructionData& data) noexcept {
+	const double* posArr = static_cast<const double*>(data.getDataPortion(0).get());
+	double centerX = posArr[0];
+	double centerY = posArr[1];
+	double offsetY = posArr[2];
+
+	const std::string* typesArr1 = static_cast<const std::string*>(data.getDataPortion(1).get());
+	const std::string* namesArr1 = static_cast<const std::string*>(data.getDataPortion(2).get());
+	const std::string* typesArr2 = static_cast<const std::string*>(data.getDataPortion(3).get());
+	const std::string* namesArr2 = static_cast<const std::string*>(data.getDataPortion(4).get());
+
+	LevelHelper::pushSymmetricPowerups_UD_Alternate(centerX, centerY, offsetY,
+		typesArr1, namesArr1, data.getDataPortionLength(1), typesArr2, namesArr2, data.getDataPortionLength(3));
+}
+inline void CustomLevel::initialization_POWER_Corners_Alternate(const GenericFactoryConstructionData& data) noexcept {
+	const double* posArr = static_cast<const double*>(data.getDataPortion(0).get());
+	double centerX = posArr[0];
+	double centerY = posArr[1];
+	double offsetX = posArr[2];
+	double offsetY = posArr[3];
+
+	const std::string* typesArr1 = static_cast<const std::string*>(data.getDataPortion(1).get());
+	const std::string* namesArr1 = static_cast<const std::string*>(data.getDataPortion(2).get());
+	const std::string* typesArr2 = static_cast<const std::string*>(data.getDataPortion(3).get());
+	const std::string* namesArr2 = static_cast<const std::string*>(data.getDataPortion(4).get());
+
+	LevelHelper::pushSymmetricPowerups_Corners_Alternate(centerX, centerY, offsetX, offsetY,
+		typesArr1, namesArr1, data.getDataPortionLength(1), typesArr2, namesArr2, data.getDataPortionLength(3));
+}
+inline void CustomLevel::initialization_POWER_DiagForwardSlash_Alternate(const GenericFactoryConstructionData& data) noexcept {
+	const double* posArr = static_cast<const double*>(data.getDataPortion(0).get());
+	double centerX = posArr[0];
+	double centerY = posArr[1];
+	double offsetX = posArr[2];
+	double offsetY = posArr[3];
+
+	const std::string* typesArr1 = static_cast<const std::string*>(data.getDataPortion(1).get());
+	const std::string* namesArr1 = static_cast<const std::string*>(data.getDataPortion(2).get());
+	const std::string* typesArr2 = static_cast<const std::string*>(data.getDataPortion(3).get());
+	const std::string* namesArr2 = static_cast<const std::string*>(data.getDataPortion(4).get());
+
+	LevelHelper::pushSymmetricPowerups_DiagForwardSlash_Alternate(centerX, centerY, offsetX, offsetY,
+		typesArr1, namesArr1, data.getDataPortionLength(1), typesArr2, namesArr2, data.getDataPortionLength(3));
+}
+inline void CustomLevel::initialization_POWER_DiagBackwardSlash_Alternate(const GenericFactoryConstructionData& data) noexcept {
+	const double* posArr = static_cast<const double*>(data.getDataPortion(0).get());
+	double centerX = posArr[0];
+	double centerY = posArr[1];
+	double offsetX = posArr[2];
+	double offsetY = posArr[3];
+
+	const std::string* typesArr1 = static_cast<const std::string*>(data.getDataPortion(1).get());
+	const std::string* namesArr1 = static_cast<const std::string*>(data.getDataPortion(2).get());
+	const std::string* typesArr2 = static_cast<const std::string*>(data.getDataPortion(3).get());
+	const std::string* namesArr2 = static_cast<const std::string*>(data.getDataPortion(4).get());
+
+	LevelHelper::pushSymmetricPowerups_DiagBackwardSlash_Alternate(centerX, centerY, offsetX, offsetY,
+		typesArr1, namesArr1, data.getDataPortionLength(1), typesArr2, namesArr2, data.getDataPortionLength(3));
 }
 
 inline void CustomLevel::initialization_CHAZARD(const GenericFactoryConstructionData& data) {
@@ -719,6 +820,22 @@ inline CustomLevel::CustomLevelAction* CustomLevelInterpreter::stringToAction(co
 				stringToAction_POWER_DiagBackwardSlash(words, constructionData);
 				break;
 
+			case CustomLevel::CustomLevelCommands::POWER_LR_Alternate:
+				stringToAction_POWER_LR_Alternate(words, constructionData);
+				break;
+			case CustomLevel::CustomLevelCommands::POWER_UD_Alternate:
+				stringToAction_POWER_UD_Alternate(words, constructionData);
+				break;
+			case CustomLevel::CustomLevelCommands::POWER_Corners_Alternate:
+				stringToAction_POWER_Corners_Alternate(words, constructionData);
+				break;
+			case CustomLevel::CustomLevelCommands::POWER_DiagForwardSlash_Alternate:
+				stringToAction_POWER_DiagForwardSlash_Alternate(words, constructionData);
+				break;
+			case CustomLevel::CustomLevelCommands::POWER_DiagBackwardSlash_Alternate:
+				stringToAction_POWER_DiagBackwardSlash_Alternate(words, constructionData);
+				break;
+
 			case CustomLevel::CustomLevelCommands::CHAZARD:
 				stringToAction_CHAZARD(words, constructionData);
 				break;
@@ -906,7 +1023,10 @@ inline void CustomLevelInterpreter::stringToAction_POWER(const std::vector<std::
 
 	for (unsigned int i = 0; i < powerSize; i++) {
 		if (!PowerupDataGovernor::doesPowerExist(typesArr[i], namesArr[i])) {
-			throw std::runtime_error("power \"" + typesArr[i] + "\" \"" + namesArr[i] + "\" does not exist");
+			std::string type = typesArr[i];
+			std::string name = namesArr[i];
+			delete[] typesArr; delete[] namesArr;
+			throw std::runtime_error("power \"" + type + "\" \"" + name + "\" does not exist");
 		}
 	}
 
@@ -944,7 +1064,10 @@ inline void CustomLevelInterpreter::stringToAction_POWER_LR(const std::vector<st
 
 	for (unsigned int i = 0; i < powerSize; i++) {
 		if (!PowerupDataGovernor::doesPowerExist(typesArr[i], namesArr[i])) {
-			throw std::runtime_error("power \"" + typesArr[i] + "\" \"" + namesArr[i] + "\" does not exist");
+			std::string type = typesArr[i];
+			std::string name = namesArr[i];
+			delete[] typesArr; delete[] namesArr;
+			throw std::runtime_error("power \"" + type + "\" \"" + name + "\" does not exist");
 		}
 	}
 
@@ -986,7 +1109,10 @@ inline void CustomLevelInterpreter::stringToAction_POWER_Corners(const std::vect
 
 	for (unsigned int i = 0; i < powerSize; i++) {
 		if (!PowerupDataGovernor::doesPowerExist(typesArr[i], namesArr[i])) {
-			throw std::runtime_error("power \"" + typesArr[i] + "\" \"" + namesArr[i] + "\" does not exist");
+			std::string type = typesArr[i];
+			std::string name = namesArr[i];
+			delete[] typesArr; delete[] namesArr;
+			throw std::runtime_error("power \"" + type + "\" \"" + name + "\" does not exist");
 		}
 	}
 
@@ -999,6 +1125,163 @@ inline void CustomLevelInterpreter::stringToAction_POWER_DiagForwardSlash(const 
 }
 inline void CustomLevelInterpreter::stringToAction_POWER_DiagBackwardSlash(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData) {
 	stringToAction_POWER_Corners(words, constructionData);
+}
+
+inline void CustomLevelInterpreter::stringToAction_POWER_LR_Alternate(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData) {
+	if (words.size() < 8) {
+		throw std::runtime_error("expected 8 data items but got " + std::to_string(words.size()));
+	}
+	if (std::find(words.begin(), words.end(), "|") == words.end()) {
+		throw std::runtime_error("expected \"|\" to show up");
+	}
+	const unsigned int separatorIndex = std::find(words.begin(), words.end(), "|") - words.begin();
+	if (separatorIndex <= 3) {
+		throw std::runtime_error("expected at least one data item before the \"|\"");
+	}
+	if (separatorIndex == words.size() - 1) {
+		throw std::runtime_error("expected at least one data item after the \"|\"");
+	}
+	if ((separatorIndex - 3) % 2 == 1) {
+		throw std::runtime_error("expected an even number of data items before the \"|\"");
+	}
+	if (((words.size()-1) - separatorIndex) % 2 == 1) {
+		throw std::runtime_error("expected an even number of data items after the \"|\"");
+	}
+
+	double centerX, centerY;
+	double offsetX;
+	try {
+		centerX = std::stod(words[0]);
+		centerY = std::stod(words[1]);
+		offsetX = std::stod(words[2]);
+	}
+	catch (const std::exception&) {
+		throw std::runtime_error("unable to parse values");
+	}
+
+	const unsigned int powerSize1 = (separatorIndex-3) / 2;
+	const unsigned int powerSize2 = (words.size()-1 - separatorIndex) / 2;
+	std::string* typesArr1 = new std::string[powerSize1];
+	std::string* namesArr1 = new std::string[powerSize1];
+	std::string* typesArr2 = new std::string[powerSize2];
+	std::string* namesArr2 = new std::string[powerSize2];
+
+	for (unsigned int i = 0; i < powerSize1; i++) {
+		typesArr1[i] = words[i*2   + 3];
+		namesArr1[i] = words[i*2+1 + 3];
+	}
+	for (unsigned int i = 0; i < powerSize2; i++) {
+		typesArr2[i] = words[i*2   + separatorIndex+1];
+		namesArr2[i] = words[i*2+1 + separatorIndex+1];
+	}
+
+	for (unsigned int i = 0; i < powerSize1; i++) {
+		if (!PowerupDataGovernor::doesPowerExist(typesArr1[i], namesArr1[i])) {
+			std::string type1 = typesArr1[i];
+			std::string name1 = namesArr1[i];
+			delete[] typesArr1; delete[] namesArr1;
+			delete[] typesArr2; delete[] namesArr2;
+			throw std::runtime_error("power \"" + type1 + "\" \"" + name1 + "\" does not exist");
+		}
+	}
+	for (unsigned int i = 0; i < powerSize2; i++) {
+		if (!PowerupDataGovernor::doesPowerExist(typesArr2[i], namesArr2[i])) {
+			std::string type2 = typesArr2[i];
+			std::string name2 = namesArr2[i];
+			delete[] typesArr1; delete[] namesArr1;
+			delete[] typesArr2; delete[] namesArr2;
+			throw std::runtime_error("power \"" + type2 + "\" \"" + name2 + "\" does not exist");
+		}
+	}
+
+	constructionData.pushData(3, new double[3]{ centerX, centerY, offsetX });
+	constructionData.pushData(powerSize1, typesArr1);
+	constructionData.pushData(powerSize1, namesArr1);
+	constructionData.pushData(powerSize2, typesArr2);
+	constructionData.pushData(powerSize2, namesArr2);
+}
+inline void CustomLevelInterpreter::stringToAction_POWER_UD_Alternate(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData) {
+	stringToAction_POWER_LR_Alternate(words, constructionData);
+}
+inline void CustomLevelInterpreter::stringToAction_POWER_Corners_Alternate(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData) {
+	if (words.size() < 9) {
+		throw std::runtime_error("expected 9 data items but got " + std::to_string(words.size()));
+	}
+	if (std::find(words.begin(), words.end(), "|") == words.end()) {
+		throw std::runtime_error("expected \"|\" to show up");
+	}
+	const unsigned int separatorIndex = std::find(words.begin(), words.end(), "|") - words.begin();
+	if (separatorIndex <= 4) {
+		throw std::runtime_error("expected at least one data item before the \"|\"");
+	}
+	if (separatorIndex == words.size() - 1) {
+		throw std::runtime_error("expected at least one data item after the \"|\"");
+	}
+	if ((separatorIndex - 4) % 2 == 1) {
+		throw std::runtime_error("expected an even number of data items before the \"|\"");
+	}
+	if (((words.size()-1) - separatorIndex) % 2 == 1) {
+		throw std::runtime_error("expected an even number of data items after the \"|\"");
+	}
+
+	double centerX, centerY;
+	double offsetX, offsetY;
+	try {
+		centerX = std::stod(words[0]);
+		centerY = std::stod(words[1]);
+		offsetX = std::stod(words[2]);
+		offsetY = std::stod(words[3]);
+	}
+	catch (const std::exception&) {
+		throw std::runtime_error("unable to parse values");
+	}
+
+	const unsigned int powerSize1 = (separatorIndex-4) / 2;
+	const unsigned int powerSize2 = (words.size()-1 - separatorIndex) / 2;
+	std::string* typesArr1 = new std::string[powerSize1];
+	std::string* namesArr1 = new std::string[powerSize1];
+	std::string* typesArr2 = new std::string[powerSize2];
+	std::string* namesArr2 = new std::string[powerSize2];
+
+	for (unsigned int i = 0; i < powerSize1; i++) {
+		typesArr1[i] = words[i*2   + 4];
+		namesArr1[i] = words[i*2+1 + 4];
+	}
+	for (unsigned int i = 0; i < powerSize2; i++) {
+		typesArr2[i] = words[i*2   + separatorIndex+1];
+		namesArr2[i] = words[i*2+1 + separatorIndex+1];
+	}
+
+	for (unsigned int i = 0; i < powerSize1; i++) {
+		if (!PowerupDataGovernor::doesPowerExist(typesArr1[i], namesArr1[i])) {
+			std::string type1 = typesArr1[i];
+			std::string name1 = namesArr1[i];
+			delete[] typesArr1; delete[] namesArr1;
+			delete[] typesArr2; delete[] namesArr2;
+			throw std::runtime_error("power \"" + type1 + "\" \"" + name1 + "\" does not exist");
+		}
+	}
+	for (unsigned int i = 0; i < powerSize2; i++) {
+		if (!PowerupDataGovernor::doesPowerExist(typesArr2[i], namesArr2[i])) {
+			std::string type2 = typesArr2[i];
+			std::string name2 = namesArr2[i];
+			delete[] typesArr1; delete[] namesArr1;
+			delete[] typesArr2; delete[] namesArr2;
+			throw std::runtime_error("power \"" + type2 + "\" \"" + name2 + "\" does not exist");
+		}
+	}
+
+	constructionData.pushData(4, new double[4]{ centerX, centerY, offsetX, offsetY });
+	constructionData.pushData(powerSize1, typesArr1);
+	constructionData.pushData(powerSize1, namesArr1);
+	constructionData.pushData(powerSize2, typesArr2);
+	constructionData.pushData(powerSize2, namesArr2);
+}
+inline void CustomLevelInterpreter::stringToAction_POWER_DiagForwardSlash_Alternate(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData) {
+	stringToAction_POWER_Corners_Alternate(words, constructionData);
+}
+inline void CustomLevelInterpreter::stringToAction_POWER_DiagBackwardSlash_Alternate(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData) {
+	stringToAction_POWER_Corners_Alternate(words, constructionData);
 }
 
 inline void CustomLevelInterpreter::stringToAction_CHAZARD(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData) {

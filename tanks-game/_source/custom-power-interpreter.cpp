@@ -141,6 +141,13 @@ std::shared_ptr<std::vector<CustomPower::CustomPowerAction_Bullet*>> initializat
 				initialization_addShootingPoints_Raw(data);
 				break;
 
+			case CustomPower::CustomPowerCommands_TankPower::addExtraShootingPoints_Enable:
+				initialization_addExtraShootingPoints_Enable(data);
+				break;
+			case CustomPower::CustomPowerCommands_TankPower::addExtraShootingPoints_Raw:
+				initialization_addExtraShootingPoints_Raw(data);
+				break;
+
 			case CustomPower::CustomPowerCommands_TankPower::modifiedCollisionWithEdge_Enable:
 				initialization_modifiedCollisionWithEdge_Enable_tank(data);
 				break;
@@ -359,6 +366,11 @@ CustomPower::CustomPowerCommands_TankPower CustomPower::strToCommand_tank(const 
 	} else if (str == "addShootingPoints_Raw") {
 		powerCommand_tank = CustomPower::CustomPowerCommands_TankPower::addShootingPoints_Raw;
 	}
+	else if (str == "addExtraShootingPoints_Enable") {
+		powerCommand_tank = CustomPower::CustomPowerCommands_TankPower::addExtraShootingPoints_Enable;
+	} else if (str == "addExtraShootingPoints_Raw") {
+		powerCommand_tank = CustomPower::CustomPowerCommands_TankPower::addExtraShootingPoints_Raw;
+	}
 	else if (str == "modifiedCollisionWithEdge_Enable") {
 		powerCommand_tank = CustomPower::CustomPowerCommands_TankPower::modifiedCollisionWithEdge_Enable;
 	} else if (str == "modifiedCollisionWithEdge_AdditionalBoundary") {
@@ -498,7 +510,7 @@ inline void CustomTankPower::initialization_addExtraShootingPoints_Enable(const 
 inline void CustomTankPower::initialization_addExtraShootingPoints_Raw(const GenericFactoryConstructionData& data) noexcept {
 	const double* list = static_cast<const double*>(data.getDataPortion(0).get());
 	for (int i = 0; i < data.getDataPortionLength(0)/2; i++) {
-		addExtraShootingPoints_AngleList.push_back({ list[i*2], list[i*2+1] });
+		addExtraShootingPoints_AngleList.push_back({ list[i*2] * (2*PI), list[i*2+1] * (2*PI) });
 	}
 	//std::sort(addExtraShootingPoints_AngleList.begin(), addExtraShootingPoints_AngleList.end());
 }

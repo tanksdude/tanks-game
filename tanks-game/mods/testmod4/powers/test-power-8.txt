@@ -1,0 +1,20 @@
+; required
+Name = test-power-8
+Color = 0.9   0.15   0.85
+PowerTypes = "testmod4"   "random-testmod4"
+PowerWeights = 1.0   1.0
+
+
+
+; actual power, tank portion
+[TANKPOWER_START]
+
+addExtraShootingPoints_Enable
+addExtraShootingPoints_Raw 135 -45 -135 45
+
+
+
+; actual power, bullet portion
+[BULLETPOWER_START]
+
+bulletSpeedMultiplier .5

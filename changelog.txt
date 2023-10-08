@@ -36,10 +36,13 @@
     * TODO: megadeath update
     * custom powers exist!
     * growing and degrading powerups mix better
+    * option to make "extra cannons" (on triple and shotgun) behave like real cannons
     * [dev] color changing: changes color based on proximity to other tank
     * [dev] backwards movement: by pressing the special key (currently e and /), the tank moves backwards
     * [dev] wall sparks: makes extra bullets when it hits a wall
     * [dev] triple spread: the bullets spread out from the point they were shot at instead of being parallel
+    * [dev] ring shooter: shoots a ring of 8 bullets; like multishot if everything shot the same direction
+    * [dev] "ancient" megadeath: an accelerating, tracking, wallhacking bullet
 * hazards:
     * patrolling turret: moves along its path
     * mother turret: creates turrets

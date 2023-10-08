@@ -25,9 +25,14 @@ public:
 		POWER_LR,
 		POWER_UD,
 		POWER_Corners,
-		//POWER_Corners_PowerAlternate, //TODO: other power alternates
 		POWER_DiagForwardSlash,
 		POWER_DiagBackwardSlash,
+
+		POWER_LR_Alternate, //separate the powers with |
+		POWER_UD_Alternate,
+		POWER_Corners_Alternate,
+		POWER_DiagForwardSlash_Alternate,
+		POWER_DiagBackwardSlash_Alternate,
 
 		CHAZARD,
 		RHAZARD,
@@ -87,6 +92,12 @@ protected:
 	static inline void initialization_POWER_DiagForwardSlash(const GenericFactoryConstructionData&) noexcept;
 	static inline void initialization_POWER_DiagBackwardSlash(const GenericFactoryConstructionData&) noexcept;
 
+	static inline void initialization_POWER_LR_Alternate(const GenericFactoryConstructionData&) noexcept;
+	static inline void initialization_POWER_UD_Alternate(const GenericFactoryConstructionData&) noexcept;
+	static inline void initialization_POWER_Corners_Alternate(const GenericFactoryConstructionData&) noexcept;
+	static inline void initialization_POWER_DiagForwardSlash_Alternate(const GenericFactoryConstructionData&) noexcept;
+	static inline void initialization_POWER_DiagBackwardSlash_Alternate(const GenericFactoryConstructionData&) noexcept;
+
 	static inline void initialization_CHAZARD(const GenericFactoryConstructionData&);
 	static inline void initialization_RHAZARD(const GenericFactoryConstructionData&);
 
@@ -138,6 +149,12 @@ protected:
 	static inline void stringToAction_POWER_Corners(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData);
 	static inline void stringToAction_POWER_DiagForwardSlash(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData);
 	static inline void stringToAction_POWER_DiagBackwardSlash(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData);
+
+	static inline void stringToAction_POWER_LR_Alternate(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData);
+	static inline void stringToAction_POWER_UD_Alternate(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData);
+	static inline void stringToAction_POWER_Corners_Alternate(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData);
+	static inline void stringToAction_POWER_DiagForwardSlash_Alternate(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData);
+	static inline void stringToAction_POWER_DiagBackwardSlash_Alternate(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData);
 
 	static inline void stringToAction_CHAZARD(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData);
 	static inline void stringToAction_RHAZARD(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData);

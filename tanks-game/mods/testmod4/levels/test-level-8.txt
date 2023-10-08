@@ -1,0 +1,18 @@
+; required
+Name = test-level-8
+Color = 0.0   1.0   1.0
+LevelTypes = "testmod4"   "random-testmod4"
+LevelWeights = 1.0   1.0
+
+
+
+; actual level
+[LEVEL_START]
+
+WALL_Corners   320 160 80 60   40 20
+
+POWER_Corners   320 160 70 50   "vanilla" "invincible"
+
+POWER_LR_Alternate   320 160 60   "testmod1" "test-power-1" "testmod1" "test-power-2"  |  "vanilla" "speed"
+POWER_UD_Alternate   320 160 120   "vanilla" "godmode" "dev" "annoying" |  "vanilla" "big" "dev" "annoying"
+POWER_Corners_Alternate   320 160 20 20   "testmod4" "test-power-7"  |  "testmod4" "test-power-8"
