@@ -9,7 +9,13 @@
 #include "color-mixer.h"
 #include "background-rect.h"
 
+SimpleVector2D Bullet::body_vertices[Circle::numOfSides+1];
+unsigned int Bullet::body_indices[Circle::numOfSides*3];
+unsigned int Bullet::outline_indices[Circle::numOfSides*2*3];
+bool Bullet::initialized_vertices = false;
+
 const double Bullet::default_radius = 4;
+
 Bullet::Bullet(double x_, double y_, double angle, Team_ID teamID, BulletParentType parentType, Game_ID parentID) : GameThing(teamID) { //every bullet constructor does this stuff
 	this->x = x_;
 	this->y = y_;
@@ -17,9 +23,11 @@ Bullet::Bullet(double x_, double y_, double angle, Team_ID teamID, BulletParentT
 	this->parentType = parentType;
 	this->parentID = parentID;
 	this->lifeValue = 100;
+
+	initializeVertices();
 }
 
-Bullet::Bullet(double x_, double y_, double angle, Team_ID teamID, BulletParentType parentType, Game_ID parentID, std::vector<BulletPower*>* bp) : Bullet(x_,y_,angle,teamID,parentType,parentID) {
+Bullet::Bullet(double x_, double y_, double angle, Team_ID teamID, BulletParentType parentType, Game_ID parentID, const std::vector<BulletPower*>* bp) : Bullet(x_,y_,angle,teamID,parentType,parentID) {
 	bulletPowers.reserve(bp->size());
 	for (int i = 0; i < bp->size(); i++) {
 		bulletPowers.push_back(bp->at(i));
@@ -31,15 +39,15 @@ Bullet::Bullet(double x_, double y_, double angle, Team_ID teamID, BulletParentT
 }
 
 //probably just for banana bullet creation:
-Bullet::Bullet(double x_, double y_, double r_, double angle, double vel, Team_ID teamID, BulletParentType parentType, Game_ID parentID, std::vector<BulletPower*>* bp, bool) : Bullet(x_,y_,angle,teamID,parentType,parentID,bp) {
+Bullet::Bullet(double x_, double y_, double r_, double angle, double vel, Team_ID teamID, BulletParentType parentType, Game_ID parentID, const std::vector<BulletPower*>* bp, bool) : Bullet(x_,y_,angle,teamID,parentType,parentID,bp) {
 	this->r = r_;
 	this->velocity.setMagnitude(vel); // * getBulletSpeedMultiplier(); //not wanted
-	this->initial_velocity = velocity.getMagnitude();
+	this->initial_velocity = this->velocity.getMagnitude();
 	this->acceleration = getBulletAcceleration();
 }
 
 //avoid using:
-Bullet::Bullet(double x_, double y_, double r_, double angle, double vel, double acc, Team_ID teamID, BulletParentType parentType, Game_ID parentID, std::vector<BulletPower*>* bp, bool) : Bullet(x_,y_,angle,teamID,parentType,parentID,bp) {
+Bullet::Bullet(double x_, double y_, double r_, double angle, double vel, double acc, Team_ID teamID, BulletParentType parentType, Game_ID parentID, const std::vector<BulletPower*>* bp, bool) : Bullet(x_,y_,angle,teamID,parentType,parentID,bp) {
 	this->r = r_ * getBulletRadiusMultiplier();
 	this->velocity.setMagnitude(vel * getBulletSpeedMultiplier());
 	this->initial_velocity = this->velocity.getMagnitude();
@@ -55,7 +63,7 @@ Bullet::Bullet(double x_, double y_, double r_, double angle, double vel, Team_I
 }
 
 //regular 2:
-Bullet::Bullet(double x_, double y_, double r_, double angle, double vel, Team_ID teamID, BulletParentType parentType, Game_ID parentID, std::vector<BulletPower*>* bp) : Bullet(x_,y_,angle,teamID,parentType,parentID,bp) {
+Bullet::Bullet(double x_, double y_, double r_, double angle, double vel, Team_ID teamID, BulletParentType parentType, Game_ID parentID, const std::vector<BulletPower*>* bp) : Bullet(x_,y_,angle,teamID,parentType,parentID,bp) {
 	this->r = r_ * getBulletRadiusMultiplier();
 	this->velocity.setMagnitude(vel * getBulletSpeedMultiplier());
 	this->initial_velocity = this->velocity.getMagnitude();
@@ -66,7 +74,36 @@ Bullet::~Bullet() {
 	for (int i = 0; i < bulletPowers.size(); i++) {
 		delete bulletPowers[i];
 	}
-	bulletPowers.clear();
+	//bulletPowers.clear();
+}
+
+bool Bullet::initializeVertices() {
+	if (initialized_vertices) {
+		return false;
+	}
+
+	body_vertices[0] = SimpleVector2D(0, 0);
+	for (int i = 1; i < Circle::numOfSides+1; i++) {
+		body_vertices[i] = SimpleVector2D(cos((i-1) * (2*PI / Circle::numOfSides)), sin((i-1) * (2*PI / Circle::numOfSides)));
+	}
+
+	for (int i = 0; i < Circle::numOfSides; i++) {
+		body_indices[i*3]   = 0;
+		body_indices[i*3+1] = i+1;
+		body_indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
+	}
+
+	for (int i = 0; i < Circle::numOfSides; i++) {
+		outline_indices[i*6]   =  i*2;
+		outline_indices[i*6+1] =  i*2+1;
+		outline_indices[i*6+2] = (i*2+3) % (Circle::numOfSides*2);
+		outline_indices[i*6+3] = (i*2+3) % (Circle::numOfSides*2);
+		outline_indices[i*6+4] = (i*2+2) % (Circle::numOfSides*2);
+		outline_indices[i*6+5] =  i*2;
+	}
+
+	initialized_vertices = true;
+	return true;
 }
 
 bool Bullet::canCollideWith(const GameThing* thing) const {
@@ -514,22 +551,15 @@ inline void Bullet::drawBody(float alpha) const {
 	coordsAndColor[4] = color.getBf();
 	coordsAndColor[5] = color.getAf();
 	for (int i = 1; i < Circle::numOfSides+1; i++) {
-		coordsAndColor[i*6]   = x + r * cos((i-1) * (2*PI / Circle::numOfSides));
-		coordsAndColor[i*6+1] = y + r * sin((i-1) * (2*PI / Circle::numOfSides));
+		coordsAndColor[i*6]   = x + r * body_vertices[i].getXComp();
+		coordsAndColor[i*6+1] = y + r * body_vertices[i].getYComp();
 		coordsAndColor[i*6+2] = color.getRf();
 		coordsAndColor[i*6+3] = color.getGf();
 		coordsAndColor[i*6+4] = color.getBf();
 		coordsAndColor[i*6+5] = color.getAf();
 	}
 
-	unsigned int indices[Circle::numOfSides*3];
-	for (int i = 0; i < Circle::numOfSides; i++) {
-		indices[i*3]   = 0;
-		indices[i*3+1] = i+1;
-		indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
-	}
-
-	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::numOfSides+1)*(2+4), indices, Circle::numOfSides*3);
+	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::numOfSides+1)*(2+4), body_indices, Circle::numOfSides*3);
 }
 
 inline void Bullet::drawOutline(float alpha) const {
@@ -542,10 +572,10 @@ inline void Bullet::drawOutline(float alpha) const {
 
 	float coordsAndColor[(Circle::numOfSides*2)*(2+4)];
 	for (int i = 0; i < Circle::numOfSides; i++) {
-		coordsAndColor[(i*2)  *6]   = x + (r-lineWidth) * cos(i * (2*PI / Circle::numOfSides));
-		coordsAndColor[(i*2)  *6+1] = y + (r-lineWidth) * sin(i * (2*PI / Circle::numOfSides));
-		coordsAndColor[(i*2+1)*6]   = x + (r+lineWidth) * cos(i * (2*PI / Circle::numOfSides));
-		coordsAndColor[(i*2+1)*6+1] = y + (r+lineWidth) * sin(i * (2*PI / Circle::numOfSides));
+		coordsAndColor[(i*2)  *6]   = x + (r-lineWidth) * body_vertices[i+1].getXComp();
+		coordsAndColor[(i*2)  *6+1] = y + (r-lineWidth) * body_vertices[i+1].getYComp();
+		coordsAndColor[(i*2+1)*6]   = x + (r+lineWidth) * body_vertices[i+1].getXComp();
+		coordsAndColor[(i*2+1)*6+1] = y + (r+lineWidth) * body_vertices[i+1].getYComp();
 
 		coordsAndColor[(i*2)  *6+2] = color.getRf();
 		coordsAndColor[(i*2)  *6+3] = color.getGf();
@@ -557,17 +587,7 @@ inline void Bullet::drawOutline(float alpha) const {
 		coordsAndColor[(i*2+1)*6+5] = color.getAf();
 	}
 
-	unsigned int indices[Circle::numOfSides*6];
-	for (int i = 0; i < Circle::numOfSides; i++) {
-		indices[i*6]   =  i*2;
-		indices[i*6+1] =  i*2+1;
-		indices[i*6+2] = (i*2+3) % (Circle::numOfSides*2);
-		indices[i*6+3] = (i*2+3) % (Circle::numOfSides*2);
-		indices[i*6+4] = (i*2+2) % (Circle::numOfSides*2);
-		indices[i*6+5] =  i*2;
-	}
-
-	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::numOfSides*2)*(2+4), indices, Circle::numOfSides*6);
+	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::numOfSides*2)*(2+4), outline_indices, Circle::numOfSides*6);
 }
 
 inline void Bullet::drawDeathCooldown(float alpha) const {
@@ -595,22 +615,19 @@ inline void Bullet::drawDeathCooldown(float alpha) const {
 				//the final triangle shares its last vertex with the first triangle, which is why this loop condition is a bit strange (second conditional only false for that last triangle)
 				//with wrong condition: two verts on an old bullet's death outline to the center of a new bullet's center body or death outline, though sometimes even a tank or rarely the bottom left corner (why)
 				//to be more specific: with the old conditional, think it was happening when deathTriangles==1, leading to pushing only two total verts but pushing three indices; but that would mean it was always pushing insufficient verts for the indices, why wasn't it showing up before?
-				coordsAndColor[(i+1)*6]   = x + ((r+2)*(9.0/8.0)) * cos(PI/2 + i * (2*PI / Circle::numOfSides));
-				coordsAndColor[(i+1)*6+1] = y + ((r+2)*(9.0/8.0)) * sin(PI/2 + i * (2*PI / Circle::numOfSides));
+				SimpleVector2D vertex = SimpleVector2D(body_vertices[i+1]);
+				//vertex.multiplyMagnitude((r+2)*(9.0/8.0));
+				vertex.scaleAndRotate((r+2)*(9.0/8.0), PI/2);
+
+				coordsAndColor[(i+1)*6]   = x + vertex.getXComp();
+				coordsAndColor[(i+1)*6+1] = y + vertex.getYComp();
 				coordsAndColor[(i+1)*6+2] = color.getRf();
 				coordsAndColor[(i+1)*6+3] = color.getGf();
 				coordsAndColor[(i+1)*6+4] = color.getBf();
 				coordsAndColor[(i+1)*6+5] = color.getAf();
 			}
 
-			unsigned int indices[Circle::numOfSides*3];
-			for (unsigned int i = 0; i < deathTriangles; i++) {
-				indices[i*3]   = 0;
-				indices[i*3+1] = i+1;
-				indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
-			}
-
-			Renderer::SubmitBatchedDraw(coordsAndColor, (deathTriangles < Circle::numOfSides ? (deathTriangles+2)*(2+4) : (deathTriangles+1)*(2+4)), indices, deathTriangles*3);
+			Renderer::SubmitBatchedDraw(coordsAndColor, (deathTriangles < Circle::numOfSides ? (deathTriangles+2)*(2+4) : (deathTriangles+1)*(2+4)), body_indices, deathTriangles*3);
 		}
 	}
 }

@@ -93,14 +93,22 @@ protected:
 	inline void drawDeathCooldown(float alpha = 1.0f) const;
 
 private:
+	static SimpleVector2D body_vertices[Circle::numOfSides+1];
+	static unsigned int body_indices[Circle::numOfSides*3];
+	static unsigned int outline_indices[Circle::numOfSides*2*3];
+	static bool initialized_vertices;
+
+	static bool initializeVertices();
+
+private:
 	Bullet(double x, double y, double angle, Team_ID teamID, BulletParentType parentType, Game_ID parentID); //every bullet uses this
-	Bullet(double x, double y, double angle, Team_ID teamID, BulletParentType parentType, Game_ID parentID, std::vector<BulletPower*>* bp); //most bullets use this
+	Bullet(double x, double y, double angle, Team_ID teamID, BulletParentType parentType, Game_ID parentID, const std::vector<BulletPower*>* bp); //most bullets use this
 public:
-	Bullet(double x, double y, double r, double angle, double vel, Team_ID teamID, BulletParentType parentType, Game_ID parentID, std::vector<BulletPower*>* bp, bool lessOverriding); //basically just for banana
-	Bullet(double x, double y, double r, double angle, double vel, double acc, Team_ID teamID, BulletParentType parentType, Game_ID parentID, std::vector<BulletPower*>* bp, bool manualAcceleration); //avoid using
+	Bullet(double x, double y, double r, double angle, double vel, Team_ID teamID, BulletParentType parentType, Game_ID parentID, const std::vector<BulletPower*>* bp, bool lessOverriding); //basically just for banana
+	Bullet(double x, double y, double r, double angle, double vel, double acc, Team_ID teamID, BulletParentType parentType, Game_ID parentID, const std::vector<BulletPower*>* bp, bool manualAcceleration); //avoid using
 public:
 	Bullet(double x, double y, double r, double angle, double vel, Team_ID teamID, BulletParentType parentType, Game_ID parentID);
-	Bullet(double x, double y, double r, double angle, double vel, Team_ID teamID, BulletParentType parentType, Game_ID parentID, std::vector<BulletPower*>* bp);
+	Bullet(double x, double y, double r, double angle, double vel, Team_ID teamID, BulletParentType parentType, Game_ID parentID, const std::vector<BulletPower*>* bp);
 	~Bullet();
 };
 

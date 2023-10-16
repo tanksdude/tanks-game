@@ -27,30 +27,52 @@ SimpleVector2D::SimpleVector2D(const SimpleVector2D& other) {
 	this->magnitude = other.magnitude;
 }
 
-void SimpleVector2D::setMagnitude(float magnitude) {
-	if (magnitude <= 0) {
+void SimpleVector2D::setMagnitude(float mag) {
+	if (mag <= 0) {
 		this->magnitude = 0;
 		this->xComp = 0;
 		this->yComp = 0;
 	} else {
-		this->magnitude = magnitude;
-		this->xComp = magnitude * cos(angle);
-		this->yComp = magnitude * sin(angle);
+		this->magnitude = mag;
+		this->xComp = mag * cos(this->angle);
+		this->yComp = mag * sin(this->angle);
 	}
 }
 
-void SimpleVector2D::setAngle(float angle) {
-	this->angle = angle;
-	this->xComp = this->magnitude * cos(angle);
-	this->yComp = this->magnitude * sin(angle);
+void SimpleVector2D::setAngle(float ang) {
+	this->angle = ang;
+	this->xComp = this->magnitude * cos(ang);
+	this->yComp = this->magnitude * sin(ang);
 }
 
 void SimpleVector2D::changeMagnitude(float delta) {
-	this->setMagnitude(this->magnitude + delta);
+	if (this->magnitude == 0) { [[unlikely]]
+		setMagnitude(delta);
+	} else if (this->magnitude + delta <= 0) { [[unlikely]]
+		this->magnitude = 0;
+		this->xComp = 0;
+		this->yComp = 0;
+	} else {
+		this->xComp *= (this->magnitude + delta) / this->magnitude;
+		this->yComp *= (this->magnitude + delta) / this->magnitude;
+		this->magnitude += delta;
+	}
 }
 
 void SimpleVector2D::changeAngle(float delta) {
 	this->setAngle(this->angle + delta);
+}
+
+void SimpleVector2D::multiplyMagnitude(float scale) {
+	if (scale <= 0) { [[unlikely]]
+		this->magnitude = 0;
+		this->xComp = 0;
+		this->yComp = 0;
+	} else {
+		this->magnitude *= scale;
+		this->xComp *= scale;
+		this->yComp *= scale;
+	}
 }
 
 void SimpleVector2D::scaleAndRotate(float scale, float a) {

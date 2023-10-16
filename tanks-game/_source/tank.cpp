@@ -180,9 +180,7 @@ inline void Tank::terminalVelocity(bool forward) {
 		}
 	} else if (velocity.getMagnitude() > maxSpeed) {
 		velocity.setMagnitude(maxSpeed);
-	} /*else if (velocity.getMagnitude() < 0) {
-		velocity.setMagnitude(0);
-	}*/
+	}
 }
 
 void Tank::shoot(bool shooting) {
