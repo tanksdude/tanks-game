@@ -53,6 +53,7 @@
 #include "levels/winning-path-level.h"
 //old levels:
 #include "levels/old-empty-level.h"
+#include "levels/old-portal-level.h" //does not have the portal level effect
 //dev levels:
 #include "levels/developer-level-0.h"
 #include "levels/developer-level-1.h"
@@ -317,6 +318,7 @@ int main(int argc, char** argv) {
 
 	//old:
 	LevelDataGovernor::addLevelFactory(OldEmptyLevel::factory);
+	LevelDataGovernor::addLevelFactory(OldPortalLevel::factory);
 	//TODO: add old versions of levels when (if) traps are made (but make sure they're disabled since no one likes them)
 
 	//dev:

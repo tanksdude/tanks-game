@@ -165,6 +165,17 @@ Is this the empty level but with a cool powerup in the center? Nope, sike! The w
 
 Pro tip: since bullets die when hitting walls, you can shoot to see where walls are. No one has ever figured this out by themselves so I still have work to do as a level designer.
 
+## Old Portal Level
+
+* Types: "old"
+* Internal name: `old_portal`
+* Default color: `#AA22FF`
+* Level effects: no portals :(
+
+The only thing going for this level is the portal effect: anything that passes from the top to bottom or vice versa will be transported to the other side. Except that was very complicated to implement, even in a non-hacky way, so the core feature of this level is not here.
+
+I realized I had every level from JS Tanks in this version, including the cut Lightning Corners, *but* I remembered the portal level. The hope was that this C++ version would make the portal level effect far easier to implement, but that clearly didn't work out.
+
 ## [DEV] Developer Level 0
 
 * Types: "dev", "random-dev"
@@ -312,6 +323,7 @@ These are the types custom levels are not allowed to have, unless `[MODS] ModSaf
 * Mine Heaven
 * Winning Path
 * Old Empty
+* Old Portal
 
 ## random-old
 

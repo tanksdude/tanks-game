@@ -145,6 +145,7 @@
   <ItemGroup>
     <ClCompile Include="_source\background-rect.cpp" />
     <ClCompile Include="_source\custom-power-interpreter.cpp" />
+    <ClCompile Include="_source\levels\old-portal-level.cpp" />
     <ClCompile Include="_source\levels\unnamed-level-3.cpp" />
     <ClCompile Include="_source\levels\unnamed-level-4.cpp" />
     <ClCompile Include="_source\mod-processor.cpp" />
@@ -288,6 +289,7 @@
   <ItemGroup>
     <ClInclude Include="_source\background-rect.h" />
     <ClInclude Include="_source\custom-power-interpreter.h" />
+    <ClInclude Include="_source\levels\old-portal-level.h" />
     <ClInclude Include="_source\levels\unnamed-level-3.h" />
     <ClInclude Include="_source\levels\unnamed-level-4.h" />
     <ClInclude Include="_source\mod-processor.h" />

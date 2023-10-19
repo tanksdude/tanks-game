@@ -55,6 +55,7 @@
     * "tight patrolling corridor"
     * "dangerous center"
     * [dev] "unnamed3" and "unnamed4": tests with mother turret and ginormous turret
+    * portal level, without the portals (just so every old level is present)
     * renamed "corridor" level back to "evened corridors" because I realized most levels followed the "adjective_noun" pattern
 * level effects:
     * TODO: nothing so far
