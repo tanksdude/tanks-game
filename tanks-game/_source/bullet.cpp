@@ -78,7 +78,7 @@ Bullet::~Bullet() {
 }
 
 bool Bullet::initializeVertices() {
-	if (initialized_vertices) {
+	if (initialized_vertices) { [[likely]]
 		return false;
 	}
 

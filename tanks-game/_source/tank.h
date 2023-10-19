@@ -107,6 +107,14 @@ protected:
 	inline void drawExtraBarrels(float alpha = 1.0f) const;
 	inline void drawExtraExtraBarrels(float alpha = 1.0f) const;
 
+private:
+	static SimpleVector2D body_vertices[Circle::numOfSides+1];
+	static unsigned int body_indices[Circle::numOfSides*3];
+	static unsigned int outline_indices[Circle::numOfSides*2*3];
+	static bool initialized_vertices;
+
+	static bool initializeVertices();
+
 public:
 	Tank(double x, double y, double angle, Team_ID id, std::string name, double shootCooldown);
 	~Tank();
