@@ -542,7 +542,7 @@ inline void MotherTurretHazard::drawShootingTimer(float alpha) const {
 	if (shootingOutlineTriangles > 0) {
 		ColorValueHolder color = ColorValueHolder(1.0f, 1.0f, 1.0f);
 		color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-		double rotateAngle = velocity.getAngle() + (2*PI)*(1 - double(shootingOutlineTriangles)/Circle::numOfSides)/2;
+		const double rotateAngle = velocity.getAngle() + (2*PI)*(1 - double(shootingOutlineTriangles)/Circle::numOfSides)/2;
 
 		float coordsAndColor[(Circle::numOfSides+1)*(2+4)];
 		coordsAndColor[0] = x;
@@ -552,22 +552,18 @@ inline void MotherTurretHazard::drawShootingTimer(float alpha) const {
 		coordsAndColor[4] = color.getBf();
 		coordsAndColor[5] = color.getAf();
 		for (unsigned int i = 0; i <= shootingOutlineTriangles && i < Circle::numOfSides; i++) {
-			coordsAndColor[(i+1)*6]   = x + (r*(5.0/4.0)) * cos(rotateAngle + i * (2*PI / Circle::numOfSides));
-			coordsAndColor[(i+1)*6+1] = y + (r*(5.0/4.0)) * sin(rotateAngle + i * (2*PI / Circle::numOfSides));
+			SimpleVector2D vertex = SimpleVector2D(body_vertices[i % Circle::numOfSides + 1]);
+			vertex.scaleAndRotate(r*(5.0/4.0), rotateAngle);
+
+			coordsAndColor[(i+1)*6]   = x + vertex.getXComp();
+			coordsAndColor[(i+1)*6+1] = y + vertex.getYComp();
 			coordsAndColor[(i+1)*6+2] = color.getRf();
 			coordsAndColor[(i+1)*6+3] = color.getGf();
 			coordsAndColor[(i+1)*6+4] = color.getBf();
 			coordsAndColor[(i+1)*6+5] = color.getAf();
 		}
 
-		unsigned int indices[Circle::numOfSides*3];
-		for (unsigned int i = 0; i < shootingOutlineTriangles; i++) {
-			indices[i*3]   = 0;
-			indices[i*3+1] = i+1;
-			indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
-		}
-
-		Renderer::SubmitBatchedDraw(coordsAndColor, (shootingOutlineTriangles < Circle::numOfSides ? (shootingOutlineTriangles+2)*(2+4) : (shootingOutlineTriangles+1)*(2+4)), indices, shootingOutlineTriangles*3);
+		Renderer::SubmitBatchedDraw(coordsAndColor, (shootingOutlineTriangles < Circle::numOfSides ? (shootingOutlineTriangles+2)*(2+4) : (shootingOutlineTriangles+1)*(2+4)), body_indices, shootingOutlineTriangles*3);
 	}
 }
 
@@ -585,40 +581,30 @@ inline void MotherTurretHazard::drawChildTurretLocations(float alpha) const {
 		chosenChild = -1;
 	}
 
-	float* coordsAndColor = new float[((Circle::numOfSides+1) * maxChildTurrets)*(2+4)];
-	unsigned int* indices = new unsigned int[(Circle::numOfSides*3) * maxChildTurrets];
+	float coordsAndColor[(Circle::numOfSides+1)*(2+4)];
 
 	for (int i = 0; i < maxChildTurrets; i++) {
-		const int startVertex = (Circle::numOfSides+1)*i * 6;
-		const int startIndex = (Circle::numOfSides*3)*i;
-
-		const TargetingTurretHazard* testChild = (TargetingTurretHazard*) makeTurret(i); //yeah it's super improper but whatever
+		const CircleHazard* testChild = makeTurret(i); //yeah it's super improper but whatever
 		const float radius = (i==chosenChild ? (1.5)*((TANK_RADIUS/2) / 2) : (TANK_RADIUS/2) / 2);
 
-		coordsAndColor[startVertex + 0] = testChild->x;
-		coordsAndColor[startVertex + 1] = testChild->y;
-		coordsAndColor[startVertex + 2] = color.getRf();
-		coordsAndColor[startVertex + 3] = color.getGf();
-		coordsAndColor[startVertex + 4] = color.getBf();
-		coordsAndColor[startVertex + 5] = color.getAf();
+		coordsAndColor[0] = testChild->x;
+		coordsAndColor[1] = testChild->y;
+		coordsAndColor[2] = color.getRf();
+		coordsAndColor[3] = color.getGf();
+		coordsAndColor[4] = color.getBf();
+		coordsAndColor[5] = color.getAf();
 		for (int j = 1; j < Circle::numOfSides+1; j++) {
-			coordsAndColor[startVertex + j*6]   = testChild->x + radius * cos((j-1) * (2*PI / Circle::numOfSides));
-			coordsAndColor[startVertex + j*6+1] = testChild->y + radius * sin((j-1) * (2*PI / Circle::numOfSides));
-			coordsAndColor[startVertex + j*6+2] = color.getRf();
-			coordsAndColor[startVertex + j*6+3] = color.getGf();
-			coordsAndColor[startVertex + j*6+4] = color.getBf();
-			coordsAndColor[startVertex + j*6+5] = color.getAf();
+			coordsAndColor[j*6]   = testChild->x + radius * body_vertices[j].getXComp();
+			coordsAndColor[j*6+1] = testChild->y + radius * body_vertices[j].getYComp();
+			coordsAndColor[j*6+2] = color.getRf();
+			coordsAndColor[j*6+3] = color.getGf();
+			coordsAndColor[j*6+4] = color.getBf();
+			coordsAndColor[j*6+5] = color.getAf();
 		}
+		delete testChild;
 
-		for (int j = 0; j < Circle::numOfSides; j++) {
-			indices[startIndex + j*3]   = startVertex/6 + 0;
-			indices[startIndex + j*3+1] = startVertex/6 + j+1;
-			indices[startIndex + j*3+2] = startVertex/6 + (j+1) % Circle::numOfSides + 1;
-		}
+		Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::numOfSides+1)*(2+4), body_indices, Circle::numOfSides*3);
 	}
-
-	Renderer::SubmitBatchedDraw(coordsAndColor, ((Circle::numOfSides+1) * maxChildTurrets)*(2+4), indices, (Circle::numOfSides*3) * maxChildTurrets);
-	delete[] coordsAndColor; delete[] indices;
 }
 
 CircleHazard* MotherTurretHazard::randomizingFactory(double x_start, double y_start, double area_width, double area_height, const GenericFactoryConstructionData& args) {

@@ -42,6 +42,18 @@ public:
 	virtual void ghostDraw(float alpha) const override;
 	virtual void ghostDraw(DrawingLayers, float alpha) const override;
 
+protected:
+	static SimpleVector2D body_vertices[Circle::numOfSides+1];
+	static unsigned int body_indices[Circle::numOfSides*3];
+	static SimpleVector2D* redX_vertices;
+	static unsigned int* redX_indices; //these don't get deleted but it's fine
+	static int redX_vertices_count;
+	static int redX_indices_count;
+	static bool initialized_vertices;
+
+	static bool initializeVertices();
+
+public:
 	CircularNoBulletZoneHazard(double xpos, double ypos, double radius);
 	~CircularNoBulletZoneHazard();
 	static CircleHazard* factory(const GenericFactoryConstructionData&);

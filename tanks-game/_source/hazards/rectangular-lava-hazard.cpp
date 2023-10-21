@@ -14,6 +14,11 @@
 #include "../wall-manager.h"
 #include "../hazard-manager.h"
 
+SimpleVector2D RectangularLavaHazard::bubble_vertices[Circle::numOfSides+1];
+unsigned int RectangularLavaHazard::bubble_indices[Circle::numOfSides*3];
+unsigned int RectangularLavaHazard::outline_indices[Circle::numOfSides*2*3];
+bool RectangularLavaHazard::initialized_vertices = false;
+
 std::unordered_map<std::string, float> RectangularLavaHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", 1.0f });
@@ -39,10 +44,41 @@ RectangularLavaHazard::RectangularLavaHazard(double xpos, double ypos, double wi
 
 	modifiesTankCollision = true;
 	modifiesBulletCollision = true;
+
+	initializeVertices();
 }
 
 RectangularLavaHazard::~RectangularLavaHazard() {
 	//nothing
+}
+
+bool RectangularLavaHazard::initializeVertices() {
+	if (initialized_vertices) { [[likely]]
+		return false;
+	}
+
+	bubble_vertices[0] = SimpleVector2D(0, 0);
+	for (int i = 1; i < Circle::numOfSides+1; i++) {
+		bubble_vertices[i] = SimpleVector2D(cos((i-1) * (2*PI / Circle::numOfSides)), sin((i-1) * (2*PI / Circle::numOfSides)));
+	}
+
+	for (int i = 0; i < Circle::numOfSides; i++) {
+		bubble_indices[i*3]   = 0;
+		bubble_indices[i*3+1] = i+1;
+		bubble_indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
+	}
+
+	for (int i = 0; i < Circle::numOfSides; i++) {
+		outline_indices[i*6]   =  i*2;
+		outline_indices[i*6+1] =  i*2+1;
+		outline_indices[i*6+2] = (i*2+3) % (Circle::numOfSides*2);
+		outline_indices[i*6+3] = (i*2+3) % (Circle::numOfSides*2);
+		outline_indices[i*6+4] = (i*2+2) % (Circle::numOfSides*2);
+		outline_indices[i*6+5] =  i*2;
+	}
+
+	initialized_vertices = true;
+	return true;
 }
 
 RectHazard* RectangularLavaHazard::factory(const GenericFactoryConstructionData& args) {
@@ -224,7 +260,7 @@ inline void RectangularLavaHazard::drawBubbles(bool pose, float alpha) const {
 	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
-	//first, sort by alpha: lowest to highest (this makes the bubbles less weird-looking when drawn over each other)
+	//first, sort by alpha: lowest to highest (this makes the bubbles less weird-looking when drawn over each other, because the alpha isn't real transparency)
 	std::vector<LavaBubble*> sortedBubbles(bubbles);
 	std::sort(sortedBubbles.begin(), sortedBubbles.end(),
 		[](const LavaBubble* lhs, const LavaBubble* rhs) { return (lhs->getAlpha() < rhs->getAlpha()); });
@@ -237,10 +273,10 @@ inline void RectangularLavaHazard::drawBubbles(bool pose, float alpha) const {
 
 		float coordsAndColor[(Circle::numOfSides*2)*(2+4)];
 		for (int i = 0; i < Circle::numOfSides; i++) {
-			coordsAndColor[(i*2)  *6]   = (sortedBubbles[j]->getX()*this->w + this->x) + (sortedBubbles[j]->getR() - lineWidth) * cos(i * (2*PI / Circle::numOfSides));
-			coordsAndColor[(i*2)  *6+1] = (sortedBubbles[j]->getY()*this->h + this->y) + (sortedBubbles[j]->getR() - lineWidth) * sin(i * (2*PI / Circle::numOfSides));
-			coordsAndColor[(i*2+1)*6]   = (sortedBubbles[j]->getX()*this->w + this->x) + (sortedBubbles[j]->getR() + lineWidth) * cos(i * (2*PI / Circle::numOfSides));
-			coordsAndColor[(i*2+1)*6+1] = (sortedBubbles[j]->getY()*this->h + this->y) + (sortedBubbles[j]->getR() + lineWidth) * sin(i * (2*PI / Circle::numOfSides));
+			coordsAndColor[(i*2)  *6]   = (sortedBubbles[j]->getX()*this->w + this->x) + (sortedBubbles[j]->getR() - lineWidth) * bubble_vertices[i+1].getXComp();
+			coordsAndColor[(i*2)  *6+1] = (sortedBubbles[j]->getY()*this->h + this->y) + (sortedBubbles[j]->getR() - lineWidth) * bubble_vertices[i+1].getYComp();
+			coordsAndColor[(i*2+1)*6]   = (sortedBubbles[j]->getX()*this->w + this->x) + (sortedBubbles[j]->getR() + lineWidth) * bubble_vertices[i+1].getXComp();
+			coordsAndColor[(i*2+1)*6+1] = (sortedBubbles[j]->getY()*this->h + this->y) + (sortedBubbles[j]->getR() + lineWidth) * bubble_vertices[i+1].getYComp();
 
 			coordsAndColor[(i*2)  *6+2] = color.getRf();
 			coordsAndColor[(i*2)  *6+3] = color.getGf();
@@ -252,17 +288,7 @@ inline void RectangularLavaHazard::drawBubbles(bool pose, float alpha) const {
 			coordsAndColor[(i*2+1)*6+5] = color.getAf();
 		}
 
-		unsigned int indices[Circle::numOfSides*6];
-		for (int i = 0; i < Circle::numOfSides; i++) {
-			indices[i*6]   =  i*2;
-			indices[i*6+1] =  i*2+1;
-			indices[i*6+2] = (i*2+3) % (Circle::numOfSides*2);
-			indices[i*6+3] = (i*2+3) % (Circle::numOfSides*2);
-			indices[i*6+4] = (i*2+2) % (Circle::numOfSides*2);
-			indices[i*6+5] =  i*2;
-		}
-
-		Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::numOfSides*2)*(2+4), indices, Circle::numOfSides*6);
+		Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::numOfSides*2)*(2+4), outline_indices, Circle::numOfSides*6);
 	}
 }
 

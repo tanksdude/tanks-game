@@ -18,6 +18,11 @@
 #include "../wall-manager.h"
 #include "../hazard-manager.h"
 
+SimpleVector2D StationaryTurretHazard::body_vertices[Circle::numOfSides+1];
+unsigned int StationaryTurretHazard::body_indices[Circle::numOfSides*3];
+unsigned int StationaryTurretHazard::outline_indices[Circle::numOfSides*2*3];
+bool StationaryTurretHazard::initialized_vertices = false;
+
 std::unordered_map<std::string, float> StationaryTurretHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", 1.0f });
@@ -42,6 +47,8 @@ StationaryTurretHazard::StationaryTurretHazard(double xpos, double ypos, double 
 	stateColors = new ColorValueHolder[maxState]{ {0.5f, 0.5f, 0.5f}, {1.0f, 0x22/255.0, 0x11/255.0}, {0.0f, 0.5f, 1.0f} };
 
 	//canAcceptPowers = false;
+
+	initializeVertices();
 }
 
 StationaryTurretHazard::StationaryTurretHazard(double xpos, double ypos, double angle, double radius) : StationaryTurretHazard(xpos, ypos, angle) {
@@ -51,6 +58,35 @@ StationaryTurretHazard::StationaryTurretHazard(double xpos, double ypos, double 
 StationaryTurretHazard::~StationaryTurretHazard() {
 	delete[] stateMultiplier;
 	delete[] stateColors;
+}
+
+bool StationaryTurretHazard::initializeVertices() {
+	if (initialized_vertices) { [[likely]]
+		return false;
+	}
+
+	body_vertices[0] = SimpleVector2D(0, 0);
+	for (int i = 1; i < Circle::numOfSides+1; i++) {
+		body_vertices[i] = SimpleVector2D(cos((i-1) * (2*PI / Circle::numOfSides)), sin((i-1) * (2*PI / Circle::numOfSides)));
+	}
+
+	for (int i = 0; i < Circle::numOfSides; i++) {
+		body_indices[i*3]   = 0;
+		body_indices[i*3+1] = i+1;
+		body_indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
+	}
+
+	for (int i = 0; i < Circle::numOfSides; i++) {
+		outline_indices[i*6]   =  i*2;
+		outline_indices[i*6+1] =  i*2+1;
+		outline_indices[i*6+2] = (i*2+3) % (Circle::numOfSides*2);
+		outline_indices[i*6+3] = (i*2+3) % (Circle::numOfSides*2);
+		outline_indices[i*6+4] = (i*2+2) % (Circle::numOfSides*2);
+		outline_indices[i*6+5] =  i*2;
+	}
+
+	initialized_vertices = true;
+	return true;
 }
 
 CircleHazard* StationaryTurretHazard::factory(const GenericFactoryConstructionData& args) {
@@ -265,22 +301,15 @@ inline void StationaryTurretHazard::drawBody(float alpha) const {
 	coordsAndColor[4] = color.getBf();
 	coordsAndColor[5] = color.getAf();
 	for (int i = 1; i < Circle::numOfSides+1; i++) {
-		coordsAndColor[i*6]   = x + r * cos((i-1) * (2*PI / Circle::numOfSides));
-		coordsAndColor[i*6+1] = y + r * sin((i-1) * (2*PI / Circle::numOfSides));
+		coordsAndColor[i*6]   = x + r * body_vertices[i].getXComp();
+		coordsAndColor[i*6+1] = y + r * body_vertices[i].getYComp();
 		coordsAndColor[i*6+2] = color.getRf();
 		coordsAndColor[i*6+3] = color.getGf();
 		coordsAndColor[i*6+4] = color.getBf();
 		coordsAndColor[i*6+5] = color.getAf();
 	}
 
-	unsigned int indices[Circle::numOfSides*3];
-	for (int i = 0; i < Circle::numOfSides; i++) {
-		indices[i*3]   = 0;
-		indices[i*3+1] = i+1;
-		indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
-	}
-
-	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::numOfSides+1)*(2+4), indices, Circle::numOfSides*3);
+	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::numOfSides+1)*(2+4), body_indices, Circle::numOfSides*3);
 }
 
 inline void StationaryTurretHazard::drawOutline(float alpha) const {
@@ -293,10 +322,10 @@ inline void StationaryTurretHazard::drawOutline(float alpha) const {
 
 	float coordsAndColor[(Circle::numOfSides*2)*(2+4)];
 	for (int i = 0; i < Circle::numOfSides; i++) {
-		coordsAndColor[(i*2)  *6]   = x + (r-lineWidth) * cos(i * (2*PI / Circle::numOfSides));
-		coordsAndColor[(i*2)  *6+1] = y + (r-lineWidth) * sin(i * (2*PI / Circle::numOfSides));
-		coordsAndColor[(i*2+1)*6]   = x + (r+lineWidth) * cos(i * (2*PI / Circle::numOfSides));
-		coordsAndColor[(i*2+1)*6+1] = y + (r+lineWidth) * sin(i * (2*PI / Circle::numOfSides));
+		coordsAndColor[(i*2)  *6]   = x + (r-lineWidth) * body_vertices[i+1].getXComp();
+		coordsAndColor[(i*2)  *6+1] = y + (r-lineWidth) * body_vertices[i+1].getYComp();
+		coordsAndColor[(i*2+1)*6]   = x + (r+lineWidth) * body_vertices[i+1].getXComp();
+		coordsAndColor[(i*2+1)*6+1] = y + (r+lineWidth) * body_vertices[i+1].getYComp();
 
 		coordsAndColor[(i*2)  *6+2] = color.getRf();
 		coordsAndColor[(i*2)  *6+3] = color.getGf();
@@ -308,17 +337,7 @@ inline void StationaryTurretHazard::drawOutline(float alpha) const {
 		coordsAndColor[(i*2+1)*6+5] = color.getAf();
 	}
 
-	unsigned int indices[Circle::numOfSides*6];
-	for (int i = 0; i < Circle::numOfSides; i++) {
-		indices[i*6]   =  i*2;
-		indices[i*6+1] =  i*2+1;
-		indices[i*6+2] = (i*2+3) % (Circle::numOfSides*2);
-		indices[i*6+3] = (i*2+3) % (Circle::numOfSides*2);
-		indices[i*6+4] = (i*2+2) % (Circle::numOfSides*2);
-		indices[i*6+5] =  i*2;
-	}
-
-	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::numOfSides*2)*(2+4), indices, Circle::numOfSides*6);
+	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::numOfSides*2)*(2+4), outline_indices, Circle::numOfSides*6);
 }
 
 inline void StationaryTurretHazard::drawBarrel(float alpha) const {

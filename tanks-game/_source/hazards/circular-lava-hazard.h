@@ -49,6 +49,14 @@ protected:
 	virtual inline void drawBackground(bool pose, float alpha = 1.0f) const;
 	virtual inline void drawBubbles(bool pose, float alpha = 1.0f) const;
 
+protected:
+	static SimpleVector2D bubble_vertices[Circle::numOfSides+1];
+	static unsigned int bubble_indices[Circle::numOfSides*3];
+	static unsigned int outline_indices[Circle::numOfSides*2*3];
+	static bool initialized_vertices;
+
+	static bool initializeVertices();
+
 public:
 	CircularLavaHazard(double xpos, double ypos, double radius);
 	~CircularLavaHazard();

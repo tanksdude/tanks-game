@@ -376,66 +376,63 @@ inline void PatrollingTurretHazard::drawPath(float alpha) const {
 	//int startIndex  = (Circle::numOfSides*3+6) * i;
 
 	for (int i = 0; i < routePosPairNum; i++) {
-		float coordsAndColor[(Circle::numOfSides+1 + 4)*(2+4)];
-		unsigned int indices[Circle::numOfSides*3 + 6];
+		//float coordsAndColor[(Circle::numOfSides+1 + 4)*(2+4)];
+		//unsigned int indices[Circle::numOfSides*3 + 6];
+		float coordsAndColor_circle[(Circle::numOfSides+1)*(2+4)];
+		float coordsAndColor_line[4*(2+4)];
+		unsigned int indices_line[6];
 
 		//circle
-		coordsAndColor[0] = getRoutePosX(i);
-		coordsAndColor[1] = getRoutePosY(i);
-		coordsAndColor[2] = color.getRf();
-		coordsAndColor[3] = color.getGf();
-		coordsAndColor[4] = color.getBf();
-		coordsAndColor[5] = color.getAf();
+		coordsAndColor_circle[0] = getRoutePosX(i);
+		coordsAndColor_circle[1] = getRoutePosY(i);
+		coordsAndColor_circle[2] = color.getRf();
+		coordsAndColor_circle[3] = color.getGf();
+		coordsAndColor_circle[4] = color.getBf();
+		coordsAndColor_circle[5] = color.getAf();
 		for (int j = 1; j < Circle::numOfSides+1; j++) {
-			coordsAndColor[j*6]   = getRoutePosX(i) + radius * cos((j-1) * (2*PI / Circle::numOfSides));
-			coordsAndColor[j*6+1] = getRoutePosY(i) + radius * sin((j-1) * (2*PI / Circle::numOfSides));
-			coordsAndColor[j*6+2] = color.getRf();
-			coordsAndColor[j*6+3] = color.getGf();
-			coordsAndColor[j*6+4] = color.getBf();
-			coordsAndColor[j*6+5] = color.getAf();
+			coordsAndColor_circle[j*6]   = getRoutePosX(i) + radius * body_vertices[j].getXComp();
+			coordsAndColor_circle[j*6+1] = getRoutePosY(i) + radius * body_vertices[j].getYComp();
+			coordsAndColor_circle[j*6+2] = color.getRf();
+			coordsAndColor_circle[j*6+3] = color.getGf();
+			coordsAndColor_circle[j*6+4] = color.getBf();
+			coordsAndColor_circle[j*6+5] = color.getAf();
 		}
 
-		for (int j = 0; j < Circle::numOfSides; j++) {
-			indices[j*3]   = 0;
-			indices[j*3+1] = j+1;
-			indices[j*3+2] = (j+1) % Circle::numOfSides + 1;
-		}
+		Renderer::SubmitBatchedDraw(coordsAndColor_circle, (Circle::numOfSides+1)*(2+4), body_indices, Circle::numOfSides*3);
 
 		//line
 		SimpleVector2D dist = SimpleVector2D(getRoutePosX((i+1) % routePosPairNum) - getRoutePosX(i), getRoutePosY((i+1) % routePosPairNum) - getRoutePosY(i));
 		SimpleVector2D distCW  = SimpleVector2D(dist.getAngle() - PI/2, lineWidth, true);
 		//SimpleVector2D distCCW = SimpleVector2D(dist.getAngle() + PI/2, lineWidth, true);
 
-		coordsAndColor[(Circle::numOfSides+1)    *6]   = getRoutePosX(i)                   + distCW.getXComp();
-		coordsAndColor[(Circle::numOfSides+1)    *6+1] = getRoutePosY(i)                   + distCW.getYComp();
-		coordsAndColor[(Circle::numOfSides+1 + 1)*6]   = getRoutePosX(i) + dist.getXComp() + distCW.getXComp();
-		coordsAndColor[(Circle::numOfSides+1 + 1)*6+1] = getRoutePosY(i) + dist.getYComp() + distCW.getYComp();
-		coordsAndColor[(Circle::numOfSides+1 + 2)*6]   = getRoutePosX(i) + dist.getXComp() - distCW.getXComp();
-		coordsAndColor[(Circle::numOfSides+1 + 2)*6+1] = getRoutePosY(i) + dist.getYComp() - distCW.getYComp();
-		coordsAndColor[(Circle::numOfSides+1 + 3)*6]   = getRoutePosX(i)                   - distCW.getXComp();
-		coordsAndColor[(Circle::numOfSides+1 + 3)*6+1] = getRoutePosY(i)                   - distCW.getYComp();
+		coordsAndColor_line[0*6]   = getRoutePosX(i)                   + distCW.getXComp();
+		coordsAndColor_line[0*6+1] = getRoutePosY(i)                   + distCW.getYComp();
+		coordsAndColor_line[1*6]   = getRoutePosX(i) + dist.getXComp() + distCW.getXComp();
+		coordsAndColor_line[1*6+1] = getRoutePosY(i) + dist.getYComp() + distCW.getYComp();
+		coordsAndColor_line[2*6]   = getRoutePosX(i) + dist.getXComp() - distCW.getXComp();
+		coordsAndColor_line[2*6+1] = getRoutePosY(i) + dist.getYComp() - distCW.getYComp();
+		coordsAndColor_line[3*6]   = getRoutePosX(i)                   - distCW.getXComp();
+		coordsAndColor_line[3*6+1] = getRoutePosY(i)                   - distCW.getYComp();
 
 		for (int j = 0; j < 4; j++) {
-			coordsAndColor[(Circle::numOfSides+1 + j)*6+2] = color.getRf();
-			coordsAndColor[(Circle::numOfSides+1 + j)*6+3] = color.getGf();
-			coordsAndColor[(Circle::numOfSides+1 + j)*6+4] = color.getBf();
-			coordsAndColor[(Circle::numOfSides+1 + j)*6+5] = color.getAf();
+			coordsAndColor_line[j*6+2] = color.getRf();
+			coordsAndColor_line[j*6+3] = color.getGf();
+			coordsAndColor_line[j*6+4] = color.getBf();
+			coordsAndColor_line[j*6+5] = color.getAf();
 		}
 
-		indices[Circle::numOfSides*3]     = (Circle::numOfSides+1);
-		indices[Circle::numOfSides*3 + 1] = (Circle::numOfSides+1) + 1;
-		indices[Circle::numOfSides*3 + 2] = (Circle::numOfSides+1) + 2;
-		indices[Circle::numOfSides*3 + 3] = (Circle::numOfSides+1) + 2;
-		indices[Circle::numOfSides*3 + 4] = (Circle::numOfSides+1) + 3;
-		indices[Circle::numOfSides*3 + 5] = (Circle::numOfSides+1);
+		indices_line[0] = 0;
+		indices_line[1] = 1;
+		indices_line[2] = 2;
+		indices_line[3] = 2;
+		indices_line[4] = 3;
+		indices_line[5] = 0;
 
-		Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::numOfSides+1 + 4)*(2+4), indices, Circle::numOfSides*3 + 6);
-		//would it make more sense to separate the circle and line draw calls? would it make more sense to group everything together for one call? dunno, but this seems easiest and cleanest
+		Renderer::SubmitBatchedDraw(coordsAndColor_line, 4*(2+4), indices_line, 6);
 	}
 }
 
 CircleHazard* PatrollingTurretHazard::randomizingFactory(double x_start, double y_start, double area_width, double area_height, const GenericFactoryConstructionData& args) {
-	//TODO
 	return nullptr;
 
 	/*

@@ -395,10 +395,10 @@ inline void TargetingTurretHazard::drawReticule(float alpha) const {
 
 	float coordsAndColor_outline[(Circle::numOfSides*2 + 4*4*2)*(2+4)];
 	for (int i = 0; i < Circle::numOfSides; i++) {
-		coordsAndColor_outline[(i*2)  *6]   = targetingX + ((2*TANK_RADIUS) - lineWidth) * cos(i * (2*PI / Circle::numOfSides));
-		coordsAndColor_outline[(i*2)  *6+1] = targetingY + ((2*TANK_RADIUS) - lineWidth) * sin(i * (2*PI / Circle::numOfSides));
-		coordsAndColor_outline[(i*2+1)*6]   = targetingX + ((2*TANK_RADIUS) + lineWidth) * cos(i * (2*PI / Circle::numOfSides));
-		coordsAndColor_outline[(i*2+1)*6+1] = targetingY + ((2*TANK_RADIUS) + lineWidth) * sin(i * (2*PI / Circle::numOfSides));
+		coordsAndColor_outline[(i*2)  *6]   = targetingX + ((2*TANK_RADIUS) - lineWidth) * body_vertices[i+1].getXComp();
+		coordsAndColor_outline[(i*2)  *6+1] = targetingY + ((2*TANK_RADIUS) - lineWidth) * body_vertices[i+1].getYComp();
+		coordsAndColor_outline[(i*2+1)*6]   = targetingX + ((2*TANK_RADIUS) + lineWidth) * body_vertices[i+1].getXComp();
+		coordsAndColor_outline[(i*2+1)*6+1] = targetingY + ((2*TANK_RADIUS) + lineWidth) * body_vertices[i+1].getYComp();
 
 		coordsAndColor_outline[(i*2)  *6+2] = color_outline.getRf();
 		coordsAndColor_outline[(i*2)  *6+3] = color_outline.getGf();
@@ -456,14 +456,7 @@ inline void TargetingTurretHazard::drawReticule(float alpha) const {
 	}
 
 	unsigned int indices_outline[Circle::numOfSides*6 + 4*6];
-	for (int i = 0; i < Circle::numOfSides; i++) {
-		indices_outline[i*6]   =  i*2;
-		indices_outline[i*6+1] =  i*2+1;
-		indices_outline[i*6+2] = (i*2+3) % (Circle::numOfSides*2);
-		indices_outline[i*6+3] = (i*2+3) % (Circle::numOfSides*2);
-		indices_outline[i*6+4] = (i*2+2) % (Circle::numOfSides*2);
-		indices_outline[i*6+5] =  i*2;
-	}
+	std::copy(StationaryTurretHazard::outline_indices, StationaryTurretHazard::outline_indices + Circle::numOfSides*6, indices_outline);
 
 	for (int i = 0; i < 4; i++) {
 		indices_outline[Circle::numOfSides*6 + i*6]   = (Circle::numOfSides*2 + 4*i);

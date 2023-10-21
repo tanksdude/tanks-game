@@ -2,7 +2,7 @@
 
 #include "../constants.h"
 #include <cmath>
-#include <algorithm> //std::clamp
+#include <algorithm> //std::clamp, std::copy
 #include <iostream>
 #include "../rng.h"
 
@@ -13,6 +13,14 @@
 #include "../collision-handler.h"
 #include "../wall-manager.h"
 #include "../hazard-manager.h"
+
+SimpleVector2D CircularNoBulletZoneHazard::body_vertices[Circle::numOfSides+1];
+unsigned int CircularNoBulletZoneHazard::body_indices[Circle::numOfSides*3];
+SimpleVector2D* CircularNoBulletZoneHazard::redX_vertices = nullptr;
+unsigned int* CircularNoBulletZoneHazard::redX_indices = nullptr;
+int CircularNoBulletZoneHazard::redX_vertices_count = 0;
+int CircularNoBulletZoneHazard::redX_indices_count = 0;
+bool CircularNoBulletZoneHazard::initialized_vertices = false;
 
 std::unordered_map<std::string, float> CircularNoBulletZoneHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -33,10 +41,80 @@ CircularNoBulletZoneHazard::CircularNoBulletZoneHazard(double xpos, double ypos,
 
 	modifiesTankCollision = true;
 	modifiesBulletCollision = true;
+
+	initializeVertices();
 }
 
 CircularNoBulletZoneHazard::~CircularNoBulletZoneHazard() {
 	//nothing
+}
+
+bool CircularNoBulletZoneHazard::initializeVertices() {
+	if (initialized_vertices) { [[likely]]
+		return false;
+	}
+
+	body_vertices[0] = SimpleVector2D(0, 0);
+	for (int i = 1; i < Circle::numOfSides+1; i++) {
+		body_vertices[i] = SimpleVector2D(cos((i-1) * (2*PI / Circle::numOfSides)), sin((i-1) * (2*PI / Circle::numOfSides)));
+	}
+
+	for (int i = 0; i < Circle::numOfSides; i++) {
+		body_indices[i*3]   = 0;
+		body_indices[i*3+1] = i+1;
+		body_indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
+	}
+
+	const int num_vertices_fromSlashCenter = floor(Circle::numOfSides/4 * X_WIDTH); //vertices from the center of a slash
+	const int num_vertices_outside = (2*num_vertices_fromSlashCenter + 1) * 4; //all the vertices on the outside
+	//float* coords_extra = new float[(num_vertices_outside+1)*(2+4)];
+	//unsigned int* indices_extra = new unsigned int[num_vertices_fromSlashCenter*3 + 4*3];
+	std::vector<float> coords_extra;
+	std::vector<unsigned int> indices_extra;
+
+	coords_extra.push_back(0);
+	coords_extra.push_back(0);
+
+	for (int k = 0; k < 4; k++) {
+		for (int i = -1*num_vertices_fromSlashCenter; i <= num_vertices_fromSlashCenter; i++) {
+			int val = (k*Circle::numOfSides/4 + Circle::numOfSides/8) + i;
+			coords_extra.push_back(cos(val * (2*PI / Circle::numOfSides)));
+			coords_extra.push_back(sin(val * (2*PI / Circle::numOfSides)));
+		}
+
+		for (int i = 0; i < num_vertices_outside/4-1; i++) {
+			indices_extra.push_back(0);
+			indices_extra.push_back(k*(num_vertices_outside/4) + i+1);
+			indices_extra.push_back(k*(num_vertices_outside/4) + i+2);
+		}
+	}
+
+	indices_extra.push_back(0);
+	indices_extra.push_back(3*(num_vertices_outside/4) + 0);
+	indices_extra.push_back(0*(num_vertices_outside/4) + 1); //DL to UR, DR half
+	indices_extra.push_back(0);
+	indices_extra.push_back(1*(num_vertices_outside/4) + 0);
+	indices_extra.push_back(2*(num_vertices_outside/4) + 1); //DL to UR, UL half
+	indices_extra.push_back(0);
+	indices_extra.push_back(4*(num_vertices_outside/4) + 0);
+	indices_extra.push_back(1*(num_vertices_outside/4) + 1); //UL to DR, UR half
+	indices_extra.push_back(0);
+	indices_extra.push_back(2*(num_vertices_outside/4) + 0);
+	indices_extra.push_back(3*(num_vertices_outside/4) + 1); //UL to DR, DL half
+	//these draw over each other but that's easier than adding more vertices
+
+	redX_vertices = new SimpleVector2D[coords_extra.size() / 2];
+	redX_vertices_count = coords_extra.size() / 2;
+	redX_indices = new unsigned int[indices_extra.size()];
+	redX_indices_count = indices_extra.size() / 3;
+
+	for (int i = 0; i < redX_vertices_count; i++) {
+		redX_vertices[i] = SimpleVector2D(coords_extra[i*2], coords_extra[i*2+1]);
+	}
+	std::copy(indices_extra.begin(), indices_extra.end(), redX_indices);
+
+	initialized_vertices = true;
+	return true;
 }
 
 CircleHazard* CircularNoBulletZoneHazard::factory(const GenericFactoryConstructionData& args) {
@@ -154,76 +232,38 @@ void CircularNoBulletZoneHazard::ghostDraw(float alpha) const {
 	coordsAndColor_background[4] = color_background.getBf();
 	coordsAndColor_background[5] = color_background.getAf();
 	for (int i = 1; i < Circle::numOfSides+1; i++) {
-		coordsAndColor_background[i*6]   = x + r * cos((i-1) * (2*PI / Circle::numOfSides));
-		coordsAndColor_background[i*6+1] = y + r * sin((i-1) * (2*PI / Circle::numOfSides));
+		coordsAndColor_background[i*6]   = x + r * body_vertices[i].getXComp();
+		coordsAndColor_background[i*6+1] = y + r * body_vertices[i].getYComp();
 		coordsAndColor_background[i*6+2] = color_background.getRf();
 		coordsAndColor_background[i*6+3] = color_background.getGf();
 		coordsAndColor_background[i*6+4] = color_background.getBf();
 		coordsAndColor_background[i*6+5] = color_background.getAf();
 	}
 
-	unsigned int indices_background[Circle::numOfSides*3];
-	for (int i = 0; i < Circle::numOfSides; i++) {
-		indices_background[i*3]   = 0;
-		indices_background[i*3+1] = i+1;
-		indices_background[i*3+2] = (i+1) % Circle::numOfSides + 1;
-	}
-
-	Renderer::SubmitBatchedDraw(coordsAndColor_background, (Circle::numOfSides+1)*(2+4), indices_background, Circle::numOfSides*3);
+	Renderer::SubmitBatchedDraw(coordsAndColor_background, (Circle::numOfSides+1)*(2+4), body_indices, Circle::numOfSides*3);
 
 	//red X:
 	ColorValueHolder color_extra = X_COLOR;
-	color_extra = ColorMixer::mix(BackgroundRect::getBackColor(), color_extra, .75); //TODO: why?
 	color_extra = ColorMixer::mix(BackgroundRect::getBackColor(), color_extra, alpha);
 
-	const int num_vertices_fromSlashCenter = floor(Circle::numOfSides/4 * X_WIDTH); //vertices from the center of a slash
-	const int num_vertices_outside = (2*num_vertices_fromSlashCenter + 1) * 4; //all the vertices on the outside
-	//float* coordsAndColor_extra = new float[(num_vertices_outside+1)*(2+4)];
-	//unsigned int* indices_extra = new unsigned int[num_vertices_fromSlashCenter*3 + 4*3];
-	std::vector<float> coordsAndColor_extra;
-	std::vector<unsigned int> indices_extra;
-
-	coordsAndColor_extra.push_back(x);
-	coordsAndColor_extra.push_back(y);
-	coordsAndColor_extra.push_back(color_extra.getRf());
-	coordsAndColor_extra.push_back(color_extra.getGf());
-	coordsAndColor_extra.push_back(color_extra.getBf());
-	coordsAndColor_extra.push_back(color_extra.getAf());
-
-	for (int k = 0; k < 4; k++) {
-		for (int i = -1*num_vertices_fromSlashCenter; i <= num_vertices_fromSlashCenter; i++) {
-			int val = (k*Circle::numOfSides/4 + Circle::numOfSides/8) + i;
-			coordsAndColor_extra.push_back(x + r * cos(val * (2*PI / Circle::numOfSides)));
-			coordsAndColor_extra.push_back(y + r * sin(val * (2*PI / Circle::numOfSides)));
-			coordsAndColor_extra.push_back(color_extra.getRf());
-			coordsAndColor_extra.push_back(color_extra.getGf());
-			coordsAndColor_extra.push_back(color_extra.getBf());
-			coordsAndColor_extra.push_back(color_extra.getAf());
-		}
-
-		for (int i = 0; i < num_vertices_outside/4-1; i++) {
-			indices_extra.push_back(0);
-			indices_extra.push_back(k*(num_vertices_outside/4) + i+1);
-			indices_extra.push_back(k*(num_vertices_outside/4) + i+2);
-		}
+	float* coordsAndColor_extra = new float[redX_vertices_count * (2+4)];
+	coordsAndColor_extra[0] = x;
+	coordsAndColor_extra[1] = y;
+	coordsAndColor_extra[2] = color_extra.getRf();
+	coordsAndColor_extra[3] = color_extra.getGf();
+	coordsAndColor_extra[4] = color_extra.getBf();
+	coordsAndColor_extra[5] = color_extra.getAf();
+	for (int i = 1; i < redX_vertices_count; i++) {
+		coordsAndColor_extra[i*6]   = x + r * redX_vertices[i].getXComp();
+		coordsAndColor_extra[i*6+1] = y + r * redX_vertices[i].getYComp();
+		coordsAndColor_extra[i*6+2] = color_extra.getRf();
+		coordsAndColor_extra[i*6+3] = color_extra.getGf();
+		coordsAndColor_extra[i*6+4] = color_extra.getBf();
+		coordsAndColor_extra[i*6+5] = color_extra.getAf();
 	}
 
-	indices_extra.push_back(0);
-	indices_extra.push_back(3*(num_vertices_outside/4) + 0);
-	indices_extra.push_back(0*(num_vertices_outside/4) + 1); //DL to UR, DR half
-	indices_extra.push_back(0);
-	indices_extra.push_back(1*(num_vertices_outside/4) + 0);
-	indices_extra.push_back(2*(num_vertices_outside/4) + 1); //DL to UR, UL half
-	indices_extra.push_back(0);
-	indices_extra.push_back(4*(num_vertices_outside/4) + 0);
-	indices_extra.push_back(1*(num_vertices_outside/4) + 1); //UL to DR, UR half
-	indices_extra.push_back(0);
-	indices_extra.push_back(2*(num_vertices_outside/4) + 0);
-	indices_extra.push_back(3*(num_vertices_outside/4) + 1); //UL to DR, DL half
-	//these draw over each other but that's easier than adding more vertices
-
-	Renderer::SubmitBatchedDraw(coordsAndColor_extra.data(), coordsAndColor_extra.size(), indices_extra.data(), indices_extra.size());
-	//delete[] coordsAndColor_extra; delete[] indices_extra;
+	Renderer::SubmitBatchedDraw(coordsAndColor_extra, redX_vertices_count*(2+4), redX_indices, redX_indices_count*3);
+	delete[] coordsAndColor_extra;
 }
 
 void CircularNoBulletZoneHazard::ghostDraw(DrawingLayers layer, float alpha) const {
