@@ -1381,7 +1381,7 @@ void GameMainLoop::drawMain() const {
 	Renderer::EndScene();
 
 	const BasicINIParser::BasicINIData& ini_data = GameManager::get_INI();
-	if (ini_data.exists("DEBUG", "EnableDebugDrawing") && std::stoi(ini_data.get("DEBUG", "EnableDebugDrawing"))) { [[unlikely]]
+	if (ini_data.exists("DEBUG", "EnableDebugDrawing") && std::stoi(ini_data.get("DEBUG", "EnableDebugDrawing"))) [[unlikely]] {
 		drawLayer(DrawingLayers::debug);
 	}
 

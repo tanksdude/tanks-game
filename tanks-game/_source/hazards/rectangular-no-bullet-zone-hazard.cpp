@@ -41,10 +41,10 @@ RectangularNoBulletZoneHazard::~RectangularNoBulletZoneHazard() {
 }
 
 RectHazard* RectangularNoBulletZoneHazard::factory(const GenericFactoryConstructionData& args) {
-	if (args.getDataCount() >= 1) {
+	if (args.getDataCount() >= 1) [[likely]] {
 		int count = args.getDataPortionLength(0);
 
-		if (count >= 4) {
+		if (count >= 4) [[likely]] {
 			const double* arr = static_cast<const double*>(args.getDataPortion(0).get());
 			double x = arr[0];
 			double y = arr[1];

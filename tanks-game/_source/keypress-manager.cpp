@@ -86,7 +86,7 @@ bool KeypressManager::keyIsSpecialFromString(std::string key) {
 }
 
 unsigned char KeypressManager::normalKeyFromString(std::string key) {
-	if (key.size() == 0) { [[unlikely]]
+	if (key.size() == 0) [[unlikely]] {
 		throw std::invalid_argument("ERROR: zero-length key!");
 	}
 
@@ -108,7 +108,7 @@ unsigned char KeypressManager::normalKeyFromString(std::string key) {
 }
 
 int KeypressManager::specialKeyFromString(std::string key) {
-	if (key.size() == 0) { [[unlikely]]
+	if (key.size() == 0) [[unlikely]] {
 		throw std::invalid_argument("ERROR: zero-length key!");
 	}
 

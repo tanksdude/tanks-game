@@ -42,7 +42,7 @@ std::string LevelDataGovernor::checkCustomLevelTypesAgainstProtectedTypes(const 
 }
 
 void LevelDataGovernor::addCustomLevel(std::string name, const std::vector<std::string>& types, CustomLevel* l) {
-	if (std::find(types.begin(), types.end(), "null") != types.end()) { [[unlikely]]
+	if (std::find(types.begin(), types.end(), "null") != types.end()) [[unlikely]] {
 		throw std::runtime_error("level " + name + " includes \"null\" type, which is not allowed");
 	}
 	for (int i = 0; i < types.size(); i++) {

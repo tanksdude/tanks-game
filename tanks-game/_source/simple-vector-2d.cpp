@@ -46,9 +46,9 @@ void SimpleVector2D::setAngle(float ang) {
 }
 
 void SimpleVector2D::changeMagnitude(float delta) {
-	if (this->magnitude == 0) { [[unlikely]]
+	if (this->magnitude == 0) [[unlikely]] {
 		setMagnitude(delta);
-	} else if (this->magnitude + delta <= 0) { [[unlikely]]
+	} else if (this->magnitude + delta <= 0) [[unlikely]] {
 		this->magnitude = 0;
 		this->xComp = 0;
 		this->yComp = 0;
@@ -64,7 +64,7 @@ void SimpleVector2D::changeAngle(float delta) {
 }
 
 void SimpleVector2D::multiplyMagnitude(float scale) {
-	if (scale <= 0) { [[unlikely]]
+	if (scale <= 0) [[unlikely]] {
 		this->magnitude = 0;
 		this->xComp = 0;
 		this->yComp = 0;

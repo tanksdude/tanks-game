@@ -44,7 +44,7 @@ void OpenGLVertexArray::AddVertexBuffer(const VertexBuffer* vb) {
 void OpenGLVertexArray::SetIndexBuffer(const IndexBuffer* ib) {
 	glBindVertexArray(rendererID);
 	ib->Bind();
-	if (indexBuffer != nullptr) { [[likely]]
+	if (indexBuffer != nullptr) [[likely]] {
 		delete indexBuffer;
 	}
 	indexBuffer = ib;

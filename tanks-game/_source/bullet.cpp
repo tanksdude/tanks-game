@@ -78,7 +78,7 @@ Bullet::~Bullet() {
 }
 
 bool Bullet::initializeVertices() {
-	if (initialized_vertices) { [[likely]]
+	if (initialized_vertices) [[likely]] {
 		return false;
 	}
 
@@ -404,7 +404,7 @@ double Bullet::getBulletRadiusGrowNumber_MovingMultiplier() const {
 void Bullet::powerCalculate() {
 	for (int i = bulletPowers.size() - 1; i >= 0; i--) {
 		bulletPowers[i]->tick(this); //I don't think any power will use this, but whatever
-		if (bulletPowers[i]->isDone()) { [[unlikely]]
+		if (bulletPowers[i]->isDone()) [[unlikely]] {
 			removePower(i);
 		} else { //to make each power last its full length, not n-1 length
 			bulletPowers[i]->powerTick();

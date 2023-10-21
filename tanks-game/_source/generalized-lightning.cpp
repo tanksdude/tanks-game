@@ -28,8 +28,8 @@ void GeneralizedLightning::tick() {
 	}
 
 	tickCount++;
-	if (tickCount >= tickCycle * stateMultiplier[currentlyActive]) { [[unlikely]]
-		if (tickCycle * stateMultiplier[currentlyActive] <= 0) { [[unlikely]]
+	if (tickCount >= tickCycle * stateMultiplier[currentlyActive]) [[unlikely]] {
+		if (tickCycle * stateMultiplier[currentlyActive] <= 0) [[unlikely]] {
 			tickCount = 0;
 			currentlyActive = true;
 		} else {

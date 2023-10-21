@@ -866,7 +866,7 @@ void CustomPowerInterpreter::ProcessCustomPowers() noexcept {
 				continue;
 			}
 
-			if (power == nullptr) { [[unlikely]]
+			if (power == nullptr) [[unlikely]] {
 				//std::cerr << "WARNING: Bad path \"" + powerPath + "\"" << std::endl;
 				continue;
 			} else {
@@ -888,7 +888,7 @@ void CustomPowerInterpreter::ProcessCustomPowers() noexcept {
 }
 
 CustomPower* CustomPowerInterpreter::processCustomPower(std::string path) {
-	if (path == "") { [[unlikely]]
+	if (path == "") [[unlikely]] {
 		return nullptr;
 	}
 
@@ -933,11 +933,11 @@ CustomPower* CustomPowerInterpreter::processCustomPower(std::string path) {
 				continue;
 			}
 
-			if (line == ActionStartPhrase_TankPower) { [[unlikely]]
+			if (line == ActionStartPhrase_TankPower) [[unlikely]] {
 				powerAction_tankStarted = true;
 				powerAction_bulletStarted = false;
 				continue;
-			} else if (line == ActionStartPhrase_BulletPower) { [[unlikely]]
+			} else if (line == ActionStartPhrase_BulletPower) [[unlikely]] {
 				powerAction_tankStarted = false;
 				powerAction_bulletStarted = true;
 				continue;
@@ -949,7 +949,7 @@ CustomPower* CustomPowerInterpreter::processCustomPower(std::string path) {
 				//code copied from BasicINIParser
 
 				int separator_index = BasicINIParser::findSeparatorIndex(line);
-				if (separator_index == -1) { [[unlikely]]
+				if (separator_index == -1) [[unlikely]] {
 					error_string = "Syntax error on line " + std::to_string(lineNum) + ": no '='";
 					break;
 				} else {
@@ -972,7 +972,7 @@ CustomPower* CustomPowerInterpreter::processCustomPower(std::string path) {
 						BasicINIParser::processEscapeSequences_all(assignmentValues_list[assignmentValues_list.size()-1]);
 					}
 
-					if (assignmentValues_list.size() == 0) { [[unlikely]]
+					if (assignmentValues_list.size() == 0) [[unlikely]] {
 						error_string = "Syntax error on line " + std::to_string(lineNum) + ": no data given for \"" + assignmentName + "\"";
 						break;
 					}
@@ -982,7 +982,7 @@ CustomPower* CustomPowerInterpreter::processCustomPower(std::string path) {
 						name_set = true;
 					}
 					else if (assignmentName == "Color") {
-						if (assignmentValues_list.size() != 3) { [[unlikely]]
+						if (assignmentValues_list.size() != 3) [[unlikely]] {
 							error_string = "Syntax error on line " + std::to_string(lineNum) + ": expected 3 data items for \"Color\" but got " + std::to_string(assignmentValues_list.size());
 							break;
 						}
@@ -1012,7 +1012,7 @@ CustomPower* CustomPowerInterpreter::processCustomPower(std::string path) {
 						//attributes_set = true;
 					}
 					else if (assignmentName == "PowerTankDuration") {
-						if (assignmentValues_list.size() != 1) { [[unlikely]]
+						if (assignmentValues_list.size() != 1) [[unlikely]] {
 							error_string = "Syntax error on line " + std::to_string(lineNum) + ": expected 1 data item for \"PowerTankDuration\" but got " + std::to_string(assignmentValues_list.size());
 							break;
 						}

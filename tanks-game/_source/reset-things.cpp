@@ -170,7 +170,7 @@ void ResetThings::firstLevelPush() {
 
 	if (ini_data.exists("GAME_OPTIONS", "GameFirstLevel") && (ini_data.length("GAME_OPTIONS", "GameFirstLevel") >= 2)) {
 		LevelManager::pushLevel(ini_data.get("GAME_OPTIONS", "GameFirstLevel", 0), ini_data.get("GAME_OPTIONS", "GameFirstLevel", 1));
-	} else {
+	} else [[unlikely]] {
 		LevelManager::pushLevel("vanilla", "default_random");
 	}
 }
@@ -211,7 +211,7 @@ void ResetThings::tankPositionReset(double x, double yRange, int yCount) {
 	double yVal;
 	if (yCount == 1) {
 		yVal = GAME_HEIGHT/2;
-	} else { [[likely]]
+	} else [[likely]] {
 		yVal = randNum * (yRange/(yCount-1)) + ((GAME_HEIGHT - yRange)/2);
 	}
 

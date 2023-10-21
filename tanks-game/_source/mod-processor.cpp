@@ -96,7 +96,7 @@ std::optional<std::vector<std::string>> ModProcessor::getListOfMods() noexcept {
 			if (modOrder_set.find(knownList[i]) == modOrder_set.end()) {
 				modOrder_set.insert({ knownList[i], true });
 				modOrder_list.push_back(knownList[i]);
-			} else { [[unlikely]]
+			} else [[unlikely]] {
 				std::cerr << "Item duplicated in " + ModOrderPath + ":" + std::to_string(i) + ", ignoring (" + knownList[i] + ")" << std::endl;
 			}
 		}

@@ -32,11 +32,11 @@ GinormousTurretHazard::MinionTurret::~MinionTurret() {
 }
 
 CircleHazard* GinormousTurretHazard::MinionTurret::factory(const GenericFactoryConstructionData& args) {
-	if (args.getDataCount() >= 2) {
+	if (args.getDataCount() >= 2) [[likely]] {
 		int count = args.getDataPortionLength(0);
 		int count_id = args.getDataPortionLength(1);
 
-		if (count >= 3 && count_id >= 1) {
+		if (count >= 3 && count_id >= 1) [[likely]] {
 			const double* arr = static_cast<const double*>(args.getDataPortion(0).get());
 			const Game_ID* arr_id = static_cast<const Game_ID*>(args.getDataPortion(1).get());
 			double x = arr[0];
@@ -132,10 +132,10 @@ GinormousTurretHazard::~GinormousTurretHazard() {
 }
 
 CircleHazard* GinormousTurretHazard::factory(const GenericFactoryConstructionData& args) {
-	if (args.getDataCount() >= 1) {
+	if (args.getDataCount() >= 1) [[likely]] {
 		int count = args.getDataPortionLength(0);
 
-		if (count >= 3) {
+		if (count >= 3) [[likely]] {
 			const double* arr = static_cast<const double*>(args.getDataPortion(0).get());
 			double x = arr[0];
 			double y = arr[1];

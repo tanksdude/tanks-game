@@ -31,7 +31,7 @@ public:
 	}
 	bool isDone() const {
 		/*
-		if (maxTime < 0) { [[unlikely]]
+		if (maxTime < 0) [[unlikely]] {
 			return false;
 		}
 		return (timeLeft <= 0);

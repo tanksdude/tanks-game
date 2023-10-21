@@ -35,7 +35,7 @@ std::string PowerupDataGovernor::checkCustomPowerTypesAgainstProtectedTypes(cons
 }
 
 void PowerupDataGovernor::addCustomPower(std::string name, const std::vector<std::string>& types, CustomPower* p) {
-	if (std::find(types.begin(), types.end(), "null") != types.end()) { [[unlikely]]
+	if (std::find(types.begin(), types.end(), "null") != types.end()) [[unlikely]] {
 		throw std::runtime_error("power " + name + " includes \"null\" type, which is not allowed");
 	}
 	for (int i = 0; i < types.size(); i++) {
@@ -87,7 +87,7 @@ Power* PowerupDataGovernor::getPower(std::string type, std::string name) {
 			throw std::runtime_error("power name \"" + name + "\" (with type \"" + type + "\") unknown!");
 		}
 		throw std::runtime_error("power type \"" + type + "\" unknown!");
-	} else {
+	} else [[likely]] {
 		//regular powers
 		if (powerLookup[type].find(name) == powerLookup[type].end()) {
 			throw std::runtime_error("power name \"" + name + "\" (with type \"" + type + "\") unknown!");

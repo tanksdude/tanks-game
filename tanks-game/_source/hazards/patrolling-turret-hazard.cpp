@@ -76,12 +76,12 @@ PatrollingTurretHazard::~PatrollingTurretHazard() {
 }
 
 CircleHazard* PatrollingTurretHazard::factory(const GenericFactoryConstructionData& args) {
-	if (args.getDataCount() >= 3) {
+	if (args.getDataCount() >= 3) [[likely]] {
 		int count_basic = args.getDataPortionLength(0);
 		int count_num = args.getDataPortionLength(1);
 		int count_list = args.getDataPortionLength(2);
 
-		if (count_basic >= 3) {
+		if (count_basic >= 3) [[likely]] {
 			const double* arr_basic = static_cast<const double*>(args.getDataPortion(0).get());
 			double x = arr_basic[0];
 			double y = arr_basic[1];

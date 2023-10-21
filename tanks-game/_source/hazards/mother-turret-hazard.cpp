@@ -70,10 +70,10 @@ MotherTurretHazard::~MotherTurretHazard() {
 }
 
 CircleHazard* MotherTurretHazard::factory(const GenericFactoryConstructionData& args) {
-	if (args.getDataCount() >= 1) {
+	if (args.getDataCount() >= 1) [[likely]] {
 		int count_basic = args.getDataPortionLength(0);
 
-		if (count_basic >= 3) {
+		if (count_basic >= 3) [[likely]] {
 			const double* arr_basic = static_cast<const double*>(args.getDataPortion(0).get());
 			double x = arr_basic[0];
 			double y = arr_basic[1];

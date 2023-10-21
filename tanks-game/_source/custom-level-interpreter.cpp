@@ -512,7 +512,7 @@ void CustomLevelInterpreter::ProcessCustomLevels() noexcept {
 				continue;
 			}
 
-			if (level == nullptr) { [[unlikely]]
+			if (level == nullptr) [[unlikely]] {
 				//std::cerr << "WARNING: Bad path \"" + levelPath + "\"" << std::endl;
 				continue;
 			} else {
@@ -534,7 +534,7 @@ void CustomLevelInterpreter::ProcessCustomLevels() noexcept {
 }
 
 CustomLevel* CustomLevelInterpreter::processCustomLevel(std::string path) {
-	if (path == "") { [[unlikely]]
+	if (path == "") [[unlikely]] {
 		return nullptr;
 	}
 
@@ -576,7 +576,7 @@ CustomLevel* CustomLevelInterpreter::processCustomLevel(std::string path) {
 				continue;
 			}
 
-			if (line == ActionStartPhrase) { [[unlikely]]
+			if (line == ActionStartPhrase) [[unlikely]] {
 				levelAction_started = true;
 				continue;
 			}
@@ -587,7 +587,7 @@ CustomLevel* CustomLevelInterpreter::processCustomLevel(std::string path) {
 				//code copied from BasicINIParser
 
 				int separator_index = BasicINIParser::findSeparatorIndex(line);
-				if (separator_index == -1) { [[unlikely]]
+				if (separator_index == -1) [[unlikely]] {
 					error_string = "Syntax error on line " + std::to_string(lineNum) + ": no '='";
 					break;
 				} else {
@@ -610,7 +610,7 @@ CustomLevel* CustomLevelInterpreter::processCustomLevel(std::string path) {
 						BasicINIParser::processEscapeSequences_all(assignmentValues_list[assignmentValues_list.size()-1]);
 					}
 
-					if (assignmentValues_list.size() == 0) { [[unlikely]]
+					if (assignmentValues_list.size() == 0) [[unlikely]] {
 						error_string = "Syntax error on line " + std::to_string(lineNum) + ": no data given for \"" + assignmentName + "\"";
 						break;
 					}
@@ -620,7 +620,7 @@ CustomLevel* CustomLevelInterpreter::processCustomLevel(std::string path) {
 						name_set = true;
 					}
 					else if (assignmentName == "Color") {
-						if (assignmentValues_list.size() != 3) { [[unlikely]]
+						if (assignmentValues_list.size() != 3) [[unlikely]] {
 							error_string = "Syntax error on line " + std::to_string(lineNum) + ": expected 3 data items for \"Color\" but got " + std::to_string(assignmentValues_list.size());
 							break;
 						}

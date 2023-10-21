@@ -13,8 +13,8 @@ class BulletPower;
 
 class BulletPower {
 public:
-	double timeLeft = 0;
-	double maxTime = -1; //bullet powers typically last forever; setting this to -1 treats it as lasting forever
+	double timeLeft;
+	double maxTime; //set to -1 to last forever (which is normal for bullet powers)
 
 public:
 	virtual void initialize(Bullet* parent) = 0; //unlikely to be used
@@ -27,7 +27,7 @@ public:
 	}
 	bool isDone() const {
 		/*
-		if (maxTime < 0) { [[likely]]
+		if (maxTime < 0) [[likely]] {
 			return false;
 		}
 		return (timeLeft <= 0);

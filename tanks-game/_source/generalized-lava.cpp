@@ -99,7 +99,7 @@ ColorValueHolder GeneralizedLava::getBubbleColor_Pose(LavaBubble* bubble) const 
 }
 
 void GeneralizedLava::tick() {
-	if (++tickCount >= tickCycle) { [[unlikely]]
+	if (++tickCount >= tickCycle) [[unlikely]] {
 		tickCount = 0;
 	}
 

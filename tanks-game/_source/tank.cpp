@@ -99,7 +99,7 @@ Tank::~Tank() {
 }
 
 bool Tank::initializeVertices() {
-	if (initialized_vertices) { [[likely]]
+	if (initialized_vertices) [[likely]] {
 		return false;
 	}
 
@@ -179,7 +179,7 @@ inline void Tank::move_base(bool forward, bool turnL, bool turnR) {
 				velocity.changeAngle(-PI/turningIncrement);
 			}
 		}
-	} else { [[likely]]
+	} else [[likely]] {
 		if (turnL) {
 			velocity.changeAngle(PI/turningIncrement);
 		}
@@ -194,7 +194,7 @@ inline void Tank::move_base(bool forward, bool turnL, bool turnR) {
 		} else {
 			velocity.setMagnitude(0);
 		}
-	} else { [[likely]]
+	} else [[likely]] {
 		if (forward) {
 			velocity.changeMagnitude(acceleration);
 		} else {
@@ -632,7 +632,7 @@ void Tank::powerCalculate() {
 	//TODO: separate into power tick and power count down
 	for (int i = tankPowers.size() - 1; i >= 0; i--) {
 		tankPowers[i]->tick(this); //I don't think any power will use this, but whatever
-		if (tankPowers[i]->isDone()) { [[unlikely]]
+		if (tankPowers[i]->isDone()) [[unlikely]] {
 			removePower(i);
 		} else { //to make each power last its full length, not n-1 length
 			tankPowers[i]->powerTick();
@@ -1027,7 +1027,7 @@ inline void Tank::drawPowerCooldown(float alpha) const {
 	//second, actually draw them
 	for (int i = 0; i < sortedTankPowers.size(); i++) {
 		double powerOutlinePercent;
-		if (sortedTankPowers[i]->maxTime <= 0) { [[unlikely]]
+		if (sortedTankPowers[i]->maxTime <= 0) [[unlikely]] {
 			powerOutlinePercent = 0;
 		} else {
 			powerOutlinePercent = std::clamp<double>(sortedTankPowers[i]->timeLeft/sortedTankPowers[i]->maxTime, 0, 1);
