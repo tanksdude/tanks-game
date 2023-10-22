@@ -374,6 +374,7 @@ int main(int argc, char** argv) {
 		switch (mode) {
 			default:
 				std::cerr << "Unknown GameMode \"" << mode << "\"!" << std::endl;
+				[[fallthrough]];
 			case 0:
 				//normal
 				game = new GameMainLoop();

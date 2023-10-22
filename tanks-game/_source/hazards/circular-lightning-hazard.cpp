@@ -295,6 +295,7 @@ void CircularLightningHazard::draw(DrawingLayers layer) const {
 
 		default:
 			std::cerr << "WARNING: unknown DrawingLayer for " + getName() + " draw!" << std::endl;
+			[[fallthrough]];
 		case DrawingLayers::normal:
 			drawBolts();
 			break;
@@ -326,6 +327,7 @@ void CircularLightningHazard::poseDraw(DrawingLayers layer) const {
 
 		default:
 			std::cerr << "WARNING: unknown DrawingLayer for " + getName() + " poseDraw!" << std::endl;
+			[[fallthrough]];
 		case DrawingLayers::normal:
 			drawBolts_Pose();
 			break;
@@ -358,6 +360,7 @@ void CircularLightningHazard::ghostDraw(DrawingLayers layer, float alpha) const 
 
 		default:
 			std::cerr << "WARNING: unknown DrawingLayer for " + getName() + " ghostDraw!" << std::endl;
+			[[fallthrough]];
 		case DrawingLayers::normal:
 			drawBolts_Pose(alpha);
 			break;

@@ -95,6 +95,7 @@ void DevWallHazard::draw(DrawingLayers layer) const {
 
 		default:
 			std::cerr << "WARNING: unknown DrawingLayer for " + getName() + " draw!" << std::endl;
+			[[fallthrough]];
 		case DrawingLayers::normal:
 			draw();
 			break;
@@ -125,6 +126,7 @@ void DevWallHazard::poseDraw(DrawingLayers layer) const {
 
 		default:
 			std::cerr << "WARNING: unknown DrawingLayer for DevWallHazard::poseDraw!" << std::endl;
+			[[fallthrough]];
 		case DrawingLayers::normal:
 			poseDraw();
 			break;
@@ -172,6 +174,7 @@ void DevWallHazard::ghostDraw(DrawingLayers layer, float alpha) const {
 
 		default:
 			std::cerr << "WARNING: unknown DrawingLayer for DevWallHazard::ghostDraw!" << std::endl;
+			[[fallthrough]];
 		case DrawingLayers::normal:
 			ghostDraw(alpha);
 			break;

@@ -428,6 +428,7 @@ void MotherTurretHazard::draw(DrawingLayers layer) const {
 
 		default:
 			std::cerr << "WARNING: unknown DrawingLayer for " + getName() + " draw!" << std::endl;
+			[[fallthrough]];
 		case DrawingLayers::normal:
 			drawShootingTimer();
 			drawBody();
@@ -465,6 +466,7 @@ void MotherTurretHazard::poseDraw(DrawingLayers layer) const {
 
 		default:
 			std::cerr << "WARNING: unknown DrawingLayer for " + getName() + " poseDraw!" << std::endl;
+			[[fallthrough]];
 		case DrawingLayers::normal:
 			drawBody();
 			drawOutline();
@@ -502,6 +504,7 @@ void MotherTurretHazard::ghostDraw(DrawingLayers layer, float alpha) const {
 
 		default:
 			std::cerr << "WARNING: unknown DrawingLayer for " + getName() + " ghostDraw!" << std::endl;
+			[[fallthrough]];
 		case DrawingLayers::normal:
 			drawShootingTimer(alpha); //TODO: should this happen?
 			drawBody(alpha);

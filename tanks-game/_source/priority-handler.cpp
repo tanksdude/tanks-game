@@ -97,6 +97,7 @@ PriorityResult PriorityHandler::determinePriority(const Bullet* a, const CircleH
 	switch (b->getCollisionType()) {
 		default:
 			std::cerr << "WARNING: unknown CircleHazardCollisionType!" << std::endl;
+			[[fallthrough]];
 		case CircleHazardCollisionType::solid:
 			if (b_offense >= a_defense || b_defense > a_offense) {
 				a_dies = true;
@@ -135,6 +136,7 @@ PriorityResult PriorityHandler::determinePriority(const Bullet* a, const RectHaz
 	switch (b->getCollisionType()) {
 		default:
 			std::cerr << "WARNING: unknown RectHazardCollisionType!" << std::endl;
+			[[fallthrough]];
 		case RectHazardCollisionType::solid:
 			if (b_offense >= a_defense || b_defense > a_offense) {
 				a_dies = true;

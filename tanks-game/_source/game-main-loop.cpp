@@ -142,6 +142,7 @@ void GameMainLoop::thread_func(int thread_id, int numThreads) {
 		switch (job->jobType) {
 			default:
 				std::cerr << "unsupported job type " << int(job->jobType) << std::endl;
+				[[fallthrough]];
 			case ThreadJobType::nothing:
 				didWork = false;
 				break;

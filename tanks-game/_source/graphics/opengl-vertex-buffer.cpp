@@ -45,7 +45,7 @@ void OpenGLVertexBuffer::Unbind() const {
 }
 
 GLenum OpenGLVertexBuffer::ShaderDataTypeToGLenum(ShaderDataType type) {
-	switch(type) {
+	switch (type) {
 		case ShaderDataType::Float:  return GL_FLOAT;
 		case ShaderDataType::Float2: return GL_FLOAT;
 		case ShaderDataType::Float3: return GL_FLOAT;

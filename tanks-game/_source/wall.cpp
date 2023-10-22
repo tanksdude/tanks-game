@@ -39,6 +39,7 @@ void Wall::draw(DrawingLayers layer) const {
 
 		default:
 			std::cerr << "WARNING: unknown DrawingLayer for Wall::draw!" << std::endl;
+			[[fallthrough]];
 		case DrawingLayers::normal:
 			draw();
 			break;
@@ -69,6 +70,7 @@ void Wall::poseDraw(DrawingLayers layer) const {
 
 		default:
 			std::cerr << "WARNING: unknown DrawingLayer for Wall::poseDraw!" << std::endl;
+			[[fallthrough]];
 		case DrawingLayers::normal:
 			poseDraw();
 			break;
@@ -116,6 +118,7 @@ void Wall::ghostDraw(DrawingLayers layer, float alpha) const {
 
 		default:
 			std::cerr << "WARNING: unknown DrawingLayer for Wall::ghostDraw!" << std::endl;
+			[[fallthrough]];
 		case DrawingLayers::normal:
 			ghostDraw(alpha);
 			break;

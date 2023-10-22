@@ -135,40 +135,38 @@ void Renderer::SetContext(AvailableRenderingContexts API) {
 	}
 
 	switch (API) {
+		default:
+			std::cerr << "Rendering context unknown! Defaulting to OpenGL..." << std::endl;
+			[[fallthrough]];
 		case AvailableRenderingContexts::OpenGL:
 			renderingMethod = new OpenGLRenderingContext();
 			renderingMethodType = AvailableRenderingContexts::OpenGL;
-			return;
+			break;
 		case AvailableRenderingContexts::software:
 			renderingMethod = new SoftwareRenderingContext();
 			renderingMethodType = AvailableRenderingContexts::software;
-			return;
+			break;
 		case AvailableRenderingContexts::null_rendering:
 			renderingMethod = new NullRenderingContext();
 			renderingMethodType = AvailableRenderingContexts::null_rendering;
-			return;
-		default:
-			std::cerr << "Rendering context unknown! Defaulting to OpenGL..." << std::endl;
-			renderingMethod = new OpenGLRenderingContext();
-			renderingMethodType = AvailableRenderingContexts::OpenGL;
+			break;
 	}
 }
 
 void Renderer::SetContext(std::string API) {
+	AvailableRenderingContexts context;
 	if (API == "OpenGL") {
-		renderingMethod = new OpenGLRenderingContext();
-		renderingMethodType = AvailableRenderingContexts::OpenGL;
+		context = AvailableRenderingContexts::OpenGL;
 	} else if (API == "software") {
-		renderingMethod = new SoftwareRenderingContext();
-		renderingMethodType = AvailableRenderingContexts::software;
+		context = AvailableRenderingContexts::software;
 	} else if (API == "null" || API == "NULL") {
-		renderingMethod = new NullRenderingContext();
-		renderingMethodType = AvailableRenderingContexts::null_rendering;
+		context = AvailableRenderingContexts::null_rendering;
 	} else {
 		std::cerr << "Rendering context unknown! Defaulting to OpenGL..." << std::endl;
-		renderingMethod = new OpenGLRenderingContext();
-		renderingMethodType = AvailableRenderingContexts::OpenGL;
+		context = AvailableRenderingContexts::OpenGL;
 	}
+
+	SetContext(context);
 }
 
 void Renderer::PreInitialize(int* argc, char** argv, std::string windowName) {

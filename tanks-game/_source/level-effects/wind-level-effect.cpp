@@ -140,6 +140,7 @@ void WindLevelEffect::draw(DrawingLayers layer) const {
 	switch (layer) {
 		default:
 			std::cerr << "WARNING: unknown DrawingLayer for " + getName() + " draw!" << std::endl;
+			[[fallthrough]];
 		case DrawingLayers::under:
 			draw();
 			break;
@@ -170,6 +171,7 @@ void WindLevelEffect::poseDraw(DrawingLayers layer) const {
 	switch (layer) {
 		default:
 			std::cerr << "WARNING: unknown DrawingLayer for " + getName() + " poseDraw!" << std::endl;
+			[[fallthrough]];
 		case DrawingLayers::under:
 			poseDraw();
 			break;
@@ -237,6 +239,7 @@ void WindLevelEffect::ghostDraw(DrawingLayers layer, float alpha) const {
 	switch (layer) {
 		default:
 			std::cerr << "WARNING: unknown DrawingLayer for " + getName() + " ghostDraw!" << std::endl;
+			[[fallthrough]];
 		case DrawingLayers::under:
 			ghostDraw(alpha);
 			break;

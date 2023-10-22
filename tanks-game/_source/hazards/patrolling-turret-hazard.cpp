@@ -269,6 +269,7 @@ void PatrollingTurretHazard::draw(DrawingLayers layer) const {
 
 		default:
 			std::cerr << "WARNING: unknown DrawingLayer for " + getName() + " draw!" << std::endl;
+			[[fallthrough]];
 		case DrawingLayers::normal:
 			drawBody();
 			drawOutline();
@@ -305,6 +306,7 @@ void PatrollingTurretHazard::poseDraw(DrawingLayers layer) const {
 
 		default:
 			std::cerr << "WARNING: unknown DrawingLayer for " + getName() + " poseDraw!" << std::endl;
+			[[fallthrough]];
 		case DrawingLayers::normal:
 			drawBody();
 			drawOutline();
@@ -341,6 +343,7 @@ void PatrollingTurretHazard::ghostDraw(DrawingLayers layer, float alpha) const {
 
 		default:
 			std::cerr << "WARNING: unknown DrawingLayer for " + getName() + " ghostDraw!" << std::endl;
+			[[fallthrough]];
 		case DrawingLayers::normal:
 			drawBody(alpha);
 			drawOutline(alpha);
