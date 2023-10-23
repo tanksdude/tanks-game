@@ -84,7 +84,7 @@ bool Bullet::initializeVertices() {
 
 	body_vertices[0] = SimpleVector2D(0, 0);
 	for (int i = 1; i < Circle::numOfSides+1; i++) {
-		body_vertices[i] = SimpleVector2D(cos((i-1) * (2*PI / Circle::numOfSides)), sin((i-1) * (2*PI / Circle::numOfSides)));
+		body_vertices[i] = SimpleVector2D(cos((i-1) * (2*PI / Circle::numOfSides) + PI/2), sin((i-1) * (2*PI / Circle::numOfSides) + PI/2));
 	}
 
 	for (int i = 0; i < Circle::numOfSides; i++) {
@@ -619,8 +619,8 @@ inline void Bullet::drawDeathCooldown(float alpha) const {
 				//with wrong condition: two verts on an old bullet's death outline to the center of a new bullet's center body or death outline, though sometimes even a tank or rarely the bottom left corner (why)
 				//to be more specific: with the old conditional, think it was happening when deathTriangles==1, leading to pushing only two total verts but pushing three indices; but that would mean it was always pushing insufficient verts for the indices, why wasn't it showing up before?
 				SimpleVector2D vertex = SimpleVector2D(body_vertices[i+1]);
-				//vertex.multiplyMagnitude((r+2)*(9.0/8.0));
-				vertex.scaleAndRotate((r+2)*(9.0/8.0), PI/2);
+				vertex.multiplyMagnitude((r+2)*(9.0/8.0));
+				//vertex.scaleAndRotate((r+2)*(9.0/8.0), PI/2);
 
 				coordsAndColor[(i+1)*6]   = x + vertex.getXComp();
 				coordsAndColor[(i+1)*6+1] = y + vertex.getYComp();
