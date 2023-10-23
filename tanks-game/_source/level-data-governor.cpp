@@ -9,7 +9,7 @@ std::unordered_map<std::string, std::vector<std::string>> LevelDataGovernor::lev
 std::unordered_map<std::string, std::vector<std::string>> LevelDataGovernor::levelEffectNameList;
 
 std::vector<std::string> LevelDataGovernor::protectedTypes = { "null", "vanilla", "vanilla-extra", "random-vanilla", "old", "random-old", "dev", "random-dev" };
-std::unordered_map<std::string, std::unordered_map<std::string, std::unique_ptr<CustomLevel>>> LevelDataGovernor::customLevelLookup;
+std::unordered_map<std::string, std::unordered_map<std::string, CustomLevel*>> LevelDataGovernor::customLevelLookup;
 std::unordered_map<std::string, std::vector<std::string>> LevelDataGovernor::customLevelNameList;
 
 void LevelDataGovernor::initialize() {
@@ -46,7 +46,7 @@ void LevelDataGovernor::addCustomLevel(std::string name, const std::vector<std::
 		throw std::runtime_error("level " + name + " includes \"null\" type, which is not allowed");
 	}
 	for (int i = 0; i < types.size(); i++) {
-		customLevelLookup[types[i]].insert({ l->getName(), std::unique_ptr<CustomLevel>(l) });
+		customLevelLookup[types[i]].insert({ l->getName(), l });
 		customLevelNameList[types[i]].push_back(name);
 	}
 }

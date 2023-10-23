@@ -7,7 +7,7 @@ std::unordered_map<std::string, std::unordered_map<std::string, PowerFunction>> 
 std::unordered_map<std::string, std::vector<std::string>> PowerupDataGovernor::powerNameList;
 
 std::vector<std::string> PowerupDataGovernor::protectedTypes = { "null", "vanilla", "vanilla-extra", "random-vanilla", "old", "random-old", "supermix-vanilla", "ultimate-vanilla", "dev", "random-dev" };
-std::unordered_map<std::string, std::unordered_map<std::string, std::unique_ptr<CustomPower>>> PowerupDataGovernor::customPowerLookup;
+std::unordered_map<std::string, std::unordered_map<std::string, CustomPower*>> PowerupDataGovernor::customPowerLookup;
 std::unordered_map<std::string, std::vector<std::string>> PowerupDataGovernor::customPowerNameList;
 
 void PowerupDataGovernor::initialize() {
@@ -39,7 +39,7 @@ void PowerupDataGovernor::addCustomPower(std::string name, const std::vector<std
 		throw std::runtime_error("power " + name + " includes \"null\" type, which is not allowed");
 	}
 	for (int i = 0; i < types.size(); i++) {
-		customPowerLookup[types[i]].insert({ p->getName(), std::unique_ptr<CustomPower>(p) });
+		customPowerLookup[types[i]].insert({ p->getName(), p });
 		customPowerNameList[types[i]].push_back(name);
 	}
 }

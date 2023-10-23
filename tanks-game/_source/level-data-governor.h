@@ -2,7 +2,6 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
-#include <memory> //std::unique_ptr
 
 #include "level.h"
 #include "custom-level-interpreter.h" //CustomLevel
@@ -20,7 +19,7 @@ private:
 	static std::unordered_map<std::string, std::vector<std::string>> levelEffectNameList;
 
 	static std::vector<std::string> protectedTypes; //types not allowed to be used (by custom levels)
-	static std::unordered_map<std::string, std::unordered_map<std::string, std::unique_ptr<CustomLevel>>> customLevelLookup;
+	static std::unordered_map<std::string, std::unordered_map<std::string, CustomLevel*>> customLevelLookup;
 	static std::unordered_map<std::string, std::vector<std::string>> customLevelNameList;
 
 public:

@@ -2,7 +2,6 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
-#include <memory> //std::unique_ptr
 
 #include "power.h"
 #include "custom-power-interpreter.h" //CustomPower
@@ -15,7 +14,7 @@ private:
 	static std::unordered_map<std::string, std::vector<std::string>> powerNameList;
 
 	static std::vector<std::string> protectedTypes; //types not allowed to be used (by custom powers)
-	static std::unordered_map<std::string, std::unordered_map<std::string, std::unique_ptr<CustomPower>>> customPowerLookup;
+	static std::unordered_map<std::string, std::unordered_map<std::string, CustomPower*>> customPowerLookup;
 	static std::unordered_map<std::string, std::vector<std::string>> customPowerNameList;
 
 public:
