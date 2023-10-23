@@ -96,7 +96,25 @@ void UnnamedLevel5::initialize() {
 
 	posArr = new double[3]{ GAME_WIDTH/2, GAME_HEIGHT/2, 24 };
 	constructionData = GenericFactoryConstructionData(3, posArr);
-	HazardManager::pushCircleHazard("vanilla", "no_bullet_zone", constructionData); //excluding random levels, this is currently the only circular no bullet zone in the game... (also circular lightnings don't exist)
+	HazardManager::pushCircleHazard("vanilla", "no_bullet_zone", constructionData); //excluding random levels, this is currently the only circular no bullet zone in the game...
+
+	//screw it, put down some circular lightnings (because these will currently be the only ones in the game)
+	posArr = new double[3]{ GAME_WIDTH/2, 0, 16 };
+	constructionData = GenericFactoryConstructionData(3, posArr);
+	HazardManager::pushCircleHazard("vanilla", "lightning", constructionData);
+	posArr = new double[3]{ GAME_WIDTH/2, GAME_HEIGHT, 16 };
+	constructionData = GenericFactoryConstructionData(3, posArr);
+	HazardManager::pushCircleHazard("vanilla", "lightning", constructionData); //screw it
+
+	//alternate screw it:
+	/*
+	for (int i = 0; i < 4; i++) {
+		pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 240-20 - 80/2, GAME_HEIGHT/2 - 20);
+		posArr = new double[3]{ pos.x, pos.y, 16 };
+		constructionData = GenericFactoryConstructionData(3, posArr);
+		HazardManager::pushCircleHazard("vanilla", "lightning", constructionData);
+	}
+	*/
 }
 
 Level* UnnamedLevel5::factory() {
