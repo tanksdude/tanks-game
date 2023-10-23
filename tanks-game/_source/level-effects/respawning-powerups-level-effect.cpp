@@ -66,13 +66,13 @@ void RespawningPowerupsLevelEffect::watchPowerSquare(const PowerSquare* p) {
 void RespawningPowerupsLevelEffect::watchPowerSquare(const PowerSquare* p, double timeToRespawn) {
 	bool found = false;
 	for (int i = 0; i < watching.size(); i++) {
-		if (watching[i]->getPowerupID() == p->getGameID()) {
+		if (watching[i]->getPowerupID() == p->getGameID()) [[unlikely]] {
 			found = true;
 			std::cerr << "WARNING: RespawningPowerupsLevelEffect is already watching PowerSquare ID#" << p->getGameID() << std::endl;
 			break;
 		}
 	}
-	if (!found) {
+	if (!found) [[likely]] {
 		watching.push_back(new PowerSquareWatcher(p, timeToRespawn));
 	}
 }

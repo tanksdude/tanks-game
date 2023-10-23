@@ -11,20 +11,37 @@ std::unordered_map<std::string, float> MagnetismLevelEffect::getWeights() const 
 }
 
 void MagnetismLevelEffect::watchPowerSquare(Game_ID p) {
+	watchPowerSquare(p, default_distToStartMoving, default_maxMoveAmount);
+}
+
+void MagnetismLevelEffect::watchPowerSquare(Game_ID p, double distToStartMoving) {
+	watchPowerSquare(p, distToStartMoving, default_maxMoveAmount);
+}
+
+void MagnetismLevelEffect::watchPowerSquare(Game_ID p, double distToStartMoving, double maxMoveAmount) {
 	bool found = false;
 	for (int i = 0; i < watching.size(); i++) {
-		if (watching[i] == p) {
+		if (watching[i] == p) [[unlikely]] {
 			found = true;
 			std::cerr << "WARNING: MagnetismLevelEffect is already watching PowerSquare ID#" << p << std::endl;
 			break;
 		}
 	}
-	if (!found) {
+	if (!found) [[likely]] {
 		watching.push_back(p);
+		watchingData.push_back({ distToStartMoving, maxMoveAmount });
 	}
 }
 
 void MagnetismLevelEffect::watchLastPowerSquaresPushed(int count) {
+	watchLastPowerSquaresPushed(count, default_distToStartMoving, default_maxMoveAmount);
+}
+
+void MagnetismLevelEffect::watchLastPowerSquaresPushed(int count, double distToStartMoving) {
+	watchLastPowerSquaresPushed(count, distToStartMoving, default_maxMoveAmount);
+}
+
+void MagnetismLevelEffect::watchLastPowerSquaresPushed(int count, double distToStartMoving, double maxMoveAmount) {
 	for (int i = count; i > 0; i--) {
 		watchPowerSquare(PowerupManager::getPowerup(PowerupManager::getNumPowerups()-i)->getGameID());
 	}
@@ -34,6 +51,7 @@ void MagnetismLevelEffect::unwatchPowerSquare(Game_ID powerupID) {
 	for (int i = 0; i < watching.size(); i++) {
 		if (watching[i] == powerupID) {
 			watching.erase(watching.begin() + i);
+			watchingData.erase(watchingData.begin() + i);
 			break;
 		}
 	}
@@ -48,12 +66,12 @@ void MagnetismLevelEffect::apply() {
 }
 
 void MagnetismLevelEffect::tick(const Level* parent) {
-	for (int i = 0; i < watching.size(); i++) {
+	for (int i = watching.size() - 1; i >= 0; i--) {
 		PowerSquare* p = PowerupManager::getPowerupByID(watching[i]);
 		if (p == nullptr) {
 			//for now, delete from the list if they can't be found, because this can't refresh the Game_ID of a respawned powerup
 			watching.erase(watching.begin() + i);
-			i--;
+			watchingData.erase(watchingData.begin() + i);
 			continue;
 		}
 	}
@@ -73,6 +91,8 @@ void MagnetismLevelEffect::doEffects(Level* parent) const {
 			for (int j = 0; j < TankManager::getNumTanks(); j++) {
 				const Tank* t = TankManager::getTank(j);
 				const SimpleVector2D distToTank = SimpleVector2D(t->x - p_x, t->y - p_y);
+				const double& distToStartMoving = watchingData[i].first;
+				const double& maxMoveAmount = watchingData[i].second;
 				if (distToTank.getMagnitude() < distToStartMoving) {
 					const double maxMovePercentage = 1 - (distToTank.getMagnitude() / distToStartMoving); //linear interpolation
 					moveDelta[0] += (maxMoveAmount * maxMovePercentage) * cos(distToTank.getAngle());
@@ -89,8 +109,8 @@ void MagnetismLevelEffect::doEffects(Level* parent) const {
 
 MagnetismLevelEffect::MagnetismLevelEffect(bool watchEverything, double distToStartMoving, double maxMagnetismStrength) {
 	this->watchAllPowerups = watchEverything;
-	this->distToStartMoving = distToStartMoving;
-	this->maxMoveAmount = maxMagnetismStrength;
+	this->default_distToStartMoving = distToStartMoving;
+	this->default_maxMoveAmount = maxMagnetismStrength;
 }
 
 MagnetismLevelEffect::MagnetismLevelEffect(bool watchEverything) : MagnetismLevelEffect(watchEverything, 96, 1) {}

@@ -1,20 +1,26 @@
 #pragma once
 #include "../level-effect.h"
 
+#include <utility>
 #include <vector>
 #include "../power-square.h"
 
 class MagnetismLevelEffect : public LevelEffect {
 protected:
 	bool watchAllPowerups;
-	double distToStartMoving; //TODO: should each powerup have these two parameters customizable?
-	double maxMoveAmount; //theoretically, this could be negative...
+	double default_distToStartMoving;
+	double default_maxMoveAmount; //theoretically, this could be negative...
 	std::vector<Game_ID> watching;
+	std::vector<std::pair<double, double>> watchingData; //{distToStartMoving, maxMoveAmount}
 
 public:
 	unsigned int getNumWatching() const { return watching.size(); }
 	virtual void watchPowerSquare(Game_ID);
+	virtual void watchPowerSquare(Game_ID, double distToStartMoving);
+	virtual void watchPowerSquare(Game_ID, double distToStartMoving, double maxMoveAmount);
 	virtual void watchLastPowerSquaresPushed(int count);
+	virtual void watchLastPowerSquaresPushed(int count, double distToStartMoving);
+	virtual void watchLastPowerSquaresPushed(int count, double distToStartMoving, double maxMoveAmount);
 	virtual void unwatchPowerSquare(Game_ID powerupID);
 
 public:
