@@ -12,6 +12,7 @@
 #include "../level-manager.h"
 
 #include "../level-effects/respawning-powerups-level-effect.h"
+#include "../level-effects/magnetism-level-effect.h"
 
 ColorValueHolder UnnamedLevel5::getDefaultColor() const {
 	return ColorValueHolder(0x76/255.0, 0xC6/255.0, 0x7D/255.0); //darker and less red shield color
@@ -46,6 +47,18 @@ void UnnamedLevel5::initialize() {
 		throw std::logic_error("ERROR: \"" + getName() + "\" level does not have \"respawning_powerups\" level effect!");
 	}
 	RespawningPowerupsLevelEffect* respawning = static_cast<RespawningPowerupsLevelEffect*>(le);
+
+	le = nullptr;
+	for (int i = 0; i < effects.size(); i++) {
+		if (effects[i]->getName() == "magnetism") {
+			le = effects[i];
+			break;
+		}
+	}
+	if (le == nullptr) {
+		throw std::logic_error("ERROR: \"" + getName() + "\" level does not have \"magnetism\" level effect!");
+	}
+	MagnetismLevelEffect* magnetism = static_cast<MagnetismLevelEffect*>(le);
 	//TODO: should this be the preferred way of getting specific level effects?
 
 	WallManager::pushWall(new Wall(GAME_WIDTH/2 - 240, GAME_HEIGHT/2 - 10, 240*2, 10*2, color));
@@ -67,7 +80,7 @@ void UnnamedLevel5::initialize() {
 	LevelHelper::pushSymmetricPowerups_Corners(GAME_WIDTH/2, GAME_HEIGHT/2, 240-20 - 80/2, GAME_HEIGHT/2 - 20, types, names, 2);
 	delete[] types; delete[] names;
 	respawning->watchLastPowerSquaresPushed(4, 1000);
-	//TODO: magnetism
+	magnetism->watchLastPowerSquaresPushed(4);
 
 	const int turretCount = 3;
 	for (int j = 0; j < turretCount; j++) {
@@ -104,7 +117,7 @@ void UnnamedLevel5::initialize() {
 	HazardManager::pushCircleHazard("vanilla", "lightning", constructionData);
 	posArr = new double[3]{ GAME_WIDTH/2, GAME_HEIGHT, 16 };
 	constructionData = GenericFactoryConstructionData(3, posArr);
-	HazardManager::pushCircleHazard("vanilla", "lightning", constructionData); //screw it
+	HazardManager::pushCircleHazard("vanilla", "lightning", constructionData);
 
 	//alternate screw it:
 	/*
@@ -122,9 +135,12 @@ Level* UnnamedLevel5::factory() {
 }
 
 UnnamedLevel5::UnnamedLevel5() {
-	bool* temp = new bool[1]{ false };
-	GenericFactoryConstructionData constructionData(1, temp);
+	bool* temp1 = new bool[1]{ false };
+	GenericFactoryConstructionData constructionData(1, temp1);
 	effects.push_back(LevelManager::makeLevelEffect("vanilla", "respawning_powerups", constructionData));
+	bool* temp2 = new bool[1]{ false };
+	constructionData = GenericFactoryConstructionData(1, temp2);
+	effects.push_back(LevelManager::makeLevelEffect("vanilla", "magnetism", constructionData));
 
 	std::shared_ptr<int[]> mineCount = std::shared_ptr<int[]>(new int[2]{ 4, 16 }, GenericFactoryConstructionData::deleteArrFunc);
 	for (int i = 0; i < 4; i++) {

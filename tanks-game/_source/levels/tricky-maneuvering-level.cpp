@@ -18,11 +18,6 @@ std::unordered_map<std::string, float> TrickyManeuveringLevel::getWeights() cons
 	return weights;
 }
 
-void TrickyManeuveringLevel::tick() {
-	//TODO: should this be changed?
-	doLevelEffects();
-}
-
 void TrickyManeuveringLevel::initialize() {
 	ResetThings::tankPositionReset(40);
 

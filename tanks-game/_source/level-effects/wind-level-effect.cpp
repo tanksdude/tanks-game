@@ -22,10 +22,10 @@ bool WindLevelEffect::initialized_vertices = false;
 std::unordered_map<std::string, float> WindLevelEffect::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", 1.0f });
-	weights.insert({ "random-vanilla", 1.0f });
+	weights.insert({ "random-vanilla", 0.5f });
 	weights.insert({ "old", 1.0f });
 	weights.insert({ "random-old", 1.0f });
-	weights.insert({ "random", 1.0f });
+	weights.insert({ "random", 0.5f });
 	return weights;
 }
 
@@ -70,7 +70,7 @@ void WindLevelEffect::tick(const Level* parent) {
 	//std::cout << currentState << " " << getWindStrengthMultiplier() << std::endl;
 }
 
-void WindLevelEffect::doEffects(Level* parent) {
+void WindLevelEffect::doEffects(Level* parent) const {
 	if (getWindStrengthMultiplier() > 0) {
 		for (int i = 0; i < TankManager::getNumTanks(); i++) {
 			Tank* t = TankManager::getTank(i);

@@ -444,6 +444,9 @@
     <ClCompile Include="_source\levels\unnamed-level-5.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="_source\level-effects\magnetism-level-effect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="_source\bullet.h">
@@ -918,6 +921,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="_source\levels\unnamed-level-5.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="_source\level-effects\magnetism-level-effect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

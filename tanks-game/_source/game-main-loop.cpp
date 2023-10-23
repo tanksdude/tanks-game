@@ -367,11 +367,8 @@ void GameMainLoop::levelTick() {
 	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
 		LevelManager::getLevel(i)->tickLevelEffects();
 	}
-	//for (int i = 0; i < LevelManager::getNumLevels(); i++) {
-	//	LevelManager::getLevel(i)->doLevelEffects();
-	//}
-	//TODO: ^^^ handled by level?
 	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
+		LevelManager::getLevel(i)->doLevelEffects();
 		LevelManager::getLevel(i)->tick();
 	}
 }

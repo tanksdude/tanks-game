@@ -20,7 +20,7 @@ public:
 public:
 	virtual void apply() = 0;
 	virtual void tick(const Level* parent) = 0; //update variables and stuff
-	virtual void doEffects(Level* parent) = 0; //do what needs to be done
+	virtual void doEffects(Level* parent) const = 0; //do what needs to be done
 
 	virtual double getTankMaxSpeedMultiplier() const { return 1; }
 	virtual double getTankAccelerationMultiplier() const { return 1; }

@@ -68,8 +68,9 @@
 #include "levels/timed-reward-level.h" //added to vanilla-extra
 
 //level effects:
-#include "level-effects/wind-level-effect.h"
 #include "level-effects/respawning-powerups-level-effect.h"
+#include "level-effects/magnetism-level-effect.h"
+#include "level-effects/wind-level-effect.h"
 #include "level-effects/minefield-level-effect.h"
 #include "level-effects/ice-level-effect.h"
 #include "level-effects/invisible-walls-level-effect.h"
@@ -286,8 +287,9 @@ int main(int argc, char** argv) {
 
 	//level effects
 	//vanilla (some are also "old"):
-	LevelDataGovernor::addLevelEffectFactory(WindLevelEffect::factory);
 	LevelDataGovernor::addLevelEffectFactory(RespawningPowerupsLevelEffect::factory);
+	LevelDataGovernor::addLevelEffectFactory(MagnetismLevelEffect::factory);
+	LevelDataGovernor::addLevelEffectFactory(WindLevelEffect::factory);
 	LevelDataGovernor::addLevelEffectFactory(MinefieldLevelEffect::factory);
 	LevelDataGovernor::addLevelEffectFactory(IceLevelEffect::factory);
 	LevelDataGovernor::addLevelEffectFactory(InvisibleWallsLevelEffect::factory);

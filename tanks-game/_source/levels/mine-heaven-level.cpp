@@ -18,10 +18,6 @@ std::unordered_map<std::string, float> MineHeavenLevel::getWeights() const {
 	return weights;
 }
 
-void MineHeavenLevel::tick() {
-	doLevelEffects();
-}
-
 void MineHeavenLevel::initialize() {
 	ResetThings::tankPositionReset(40);
 

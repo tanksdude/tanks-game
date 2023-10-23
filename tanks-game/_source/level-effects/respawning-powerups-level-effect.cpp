@@ -6,6 +6,7 @@ std::unordered_map<std::string, float> RespawningPowerupsLevelEffect::getWeights
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", 2.0f });
 	weights.insert({ "random-vanilla", 1.0f }); //powerups need to be manually watched when not watching everything
+	weights.insert({ "random", 1.0f });
 	return weights;
 }
 
@@ -110,10 +111,6 @@ void RespawningPowerupsLevelEffect::tick(const Level* parent) {
 	for (int i = 0; i < watching.size(); i++) {
 		watching[i]->tick();
 	}
-}
-
-void RespawningPowerupsLevelEffect::doEffects(Level* parent) {
-	//nothing
 }
 
 void RespawningPowerupsLevelEffect::draw() const {
@@ -224,7 +221,7 @@ RespawningPowerupsLevelEffect::~RespawningPowerupsLevelEffect() {
 	for (int i = 0; i < watching.size(); i++) {
 		delete watching[i];
 	}
-	watching.clear(); //not really necessary
+	//watching.clear(); //not really necessary
 }
 
 LevelEffect* RespawningPowerupsLevelEffect::factory(const GenericFactoryConstructionData& args) {

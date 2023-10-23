@@ -9,6 +9,7 @@
     * sword
     * hazard powers?
     * megadeath update?
+    * bouncing rework
 
 0.2.5 "done" (obviously not here)
 * rudimentary custom powers and levels!
@@ -58,7 +59,7 @@
     * portal level, without the portals (just so every old level is present)
     * renamed "corridor" level back to "evened corridors" because I realized most levels followed the "adjective_noun" pattern
 * level effects:
-    * TODO: nothing so far
+    * magnetism
 * minor things:
     * update to VS2022
     * fullscreen toggle key changed to F11
@@ -83,7 +84,7 @@
     * all JS level effects in! (except portal)
         * wind, ice, minefield, invisible walls
         * portal and invisible walls technically weren't level effects in JS but should be counted as one
-    * powerup respawning
+    * respawning powerups
         * likely very useful
 * powerups:
     * all JS powers in!

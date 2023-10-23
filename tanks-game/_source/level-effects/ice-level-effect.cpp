@@ -20,10 +20,6 @@ void IceLevelEffect::tick(const Level* parent) {
 	//nothing
 }
 
-void IceLevelEffect::doEffects(Level* parent) {
-	//nothing
-}
-
 IceLevelEffect::IceLevelEffect(double iceAmount) {
 	iceFactor = iceAmount;
 }

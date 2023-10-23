@@ -33,7 +33,7 @@ public:
 
 	virtual void apply() override;
 	virtual void tick(const Level* parent) override;
-	virtual void doEffects(Level* parent) override;
+	virtual void doEffects(Level* parent) const override { return; }
 
 	virtual void draw() const override;
 	virtual void draw(DrawingLayers) const override;

@@ -197,7 +197,7 @@ Game_ID PowerFunctionHelper::homingGenericTarget(const Bullet* b, bool targetUsi
 void PowerFunctionHelper::homingGenericMove(Bullet* b, Game_ID targetID, double maxAngleChange) {
 	const Tank* t = TankManager::getTankByID(targetID);
 
-	SimpleVector2D distToTank = SimpleVector2D(t->getX() - b->x, t->getY() - b->y);
+	const SimpleVector2D distToTank = SimpleVector2D(t->getX() - b->x, t->getY() - b->y);
 	float theta = SimpleVector2D::angleBetween(distToTank, b->velocity);
 	if (abs(theta) <= maxAngleChange) {
 		//small angle adjustment needed

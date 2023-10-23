@@ -31,10 +31,6 @@ void InvisibleWallsLevelEffect::tick(const Level* parent) {
 	//nothing
 }
 
-void InvisibleWallsLevelEffect::doEffects(Level* parent) {
-	//nothing
-}
-
 InvisibleWallsLevelEffect::InvisibleWallsLevelEffect() {
 	//nothing
 }

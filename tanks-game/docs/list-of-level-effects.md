@@ -1,18 +1,27 @@
 # List of Every Level Effect
 
+## Respawning Powerups
+
+* Types: "vanilla", "random-vanilla", "random"
+* Internal name: `respawning_powerups`
+
+A very useful effect that allows powerups to respawn after some time.
+
+## Magnetism
+
+* Types: "vanilla", "random-vanilla"
+* Internal name: `magnetism`
+
+Powerups may be pulled towards tanks.
+
+Unfortunately, the "magnetism" on the powerups does not persist if they respawn through Respawning Powerups.
+
 ## Wind
 
 * Types: "vanilla", "random-vanilla", "old", "random-old", "random"
 * Internal name: `wind`
 
 Covers the level in "wind" that pushes tanks and bullets, cycling between on and off states.
-
-## Respawning Powerups
-
-* Types: "vanilla", "random-vanilla"
-* Internal name: `respawning_powerups`
-
-A very useful effect that allows powerups to respawn after some time.
 
 ## Minefield
 
@@ -49,8 +58,9 @@ Forces the tanks to have symmetrical positions. Don't remember why I made it, bu
 
 ## vanilla
 
-* Wind
 * Respawning Powerups
+* Magnetism
+* Wind
 * Minefield
 * Invisible Walls
 
@@ -60,8 +70,9 @@ Forces the tanks to have symmetrical positions. Don't remember why I made it, bu
 
 ## random-vanilla
 
-* Wind
 * Respawning Powerups
+* Magnetism
+* Wind
 * Minefield
 
 ## old
@@ -79,6 +90,7 @@ Forces the tanks to have symmetrical positions. Don't remember why I made it, bu
 ## random
 
 * Wind
+* Respawning Powerups
 
 ## dev
 

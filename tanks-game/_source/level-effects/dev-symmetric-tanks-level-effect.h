@@ -15,7 +15,7 @@ public:
 
 	virtual void apply() override { return; }
 	virtual void tick(const Level* parent) override;
-	virtual void doEffects(Level* parent) override { return; }
+	virtual void doEffects(Level* parent) const override { return; }
 
 	DevSymmetricTanksLevelEffect();
 	DevSymmetricTanksLevelEffect(bool alsoDoAngle);

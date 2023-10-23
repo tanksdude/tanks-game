@@ -56,11 +56,8 @@ void MinefieldLevelEffect::tick(const Level* parent) {
 		pushMine();
 		ghostMine = genMine();
 	}
-}
 
-void MinefieldLevelEffect::doEffects(Level* parent) {
-	//nothing?
-	//might make sense to have the ghost bullet inserting here
+	//might make sense to have the ghost bullet inserting in doEffects()
 }
 
 void MinefieldLevelEffect::updateMineCount() {
