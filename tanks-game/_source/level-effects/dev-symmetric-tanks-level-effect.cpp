@@ -27,10 +27,10 @@ DevSymmetricTanksLevelEffect::DevSymmetricTanksLevelEffect(bool alsoDoAngle) {
 DevSymmetricTanksLevelEffect::DevSymmetricTanksLevelEffect() : DevSymmetricTanksLevelEffect(false) {}
 
 LevelEffect* DevSymmetricTanksLevelEffect::factory(const GenericFactoryConstructionData& args) {
-	if (args.getDataCount() >= 1) {
+	if (args.getDataCount() >= 1) [[likely]] {
 		int count = args.getDataPortionLength(0);
 
-		if (count >= 1) {
+		if (count >= 1) [[likely]] {
 			const bool* arr = static_cast<const bool*>(args.getDataPortion(0).get());
 			bool angle = arr[0];
 			return new DevSymmetricTanksLevelEffect(angle);

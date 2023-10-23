@@ -42,6 +42,7 @@ public:
 	MinefieldLevelEffect();
 	MinefieldLevelEffect(double x_start, double y_start, double area_width, double area_height);
 	MinefieldLevelEffect(double x_start, double y_start, double area_width, double area_height, int initialMineCount);
+	MinefieldLevelEffect(double x_start, double y_start, double area_width, double area_height, int initialMineCount, int maxMineCount);
 	virtual ~MinefieldLevelEffect();
 	static LevelEffect* factory(const GenericFactoryConstructionData&);
 };

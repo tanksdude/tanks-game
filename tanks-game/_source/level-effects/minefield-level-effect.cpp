@@ -152,7 +152,7 @@ void MinefieldLevelEffect::ghostDraw(DrawingLayers layer, float alpha) const {
 	}
 }
 
-MinefieldLevelEffect::MinefieldLevelEffect(double x_start, double y_start, double area_width, double area_height, int initialMineCount) {
+MinefieldLevelEffect::MinefieldLevelEffect(double x_start, double y_start, double area_width, double area_height, int initialMineCount, int maxMineCount) {
 	tickCount = 0;
 	tickCycle = 400; //in JS, 4*powerSpeed
 
@@ -162,9 +162,12 @@ MinefieldLevelEffect::MinefieldLevelEffect(double x_start, double y_start, doubl
 	minefield_areaHeight = area_height;
 	this->initialMineCount = initialMineCount;
 
-	maxNumOfMines = 128; //TODO
+	maxNumOfMines = maxMineCount;
 	ghostMine = genMine();
 }
+
+MinefieldLevelEffect::MinefieldLevelEffect(double x_start, double y_start, double area_width, double area_height, int initialMineCount) :
+	MinefieldLevelEffect(x_start, y_start, area_width, area_height, initialMineCount, 128) {}
 
 MinefieldLevelEffect::MinefieldLevelEffect(double x_start, double y_start, double area_width, double area_height) :
 	MinefieldLevelEffect(x_start, y_start, area_width, area_height, 16) {}
@@ -176,10 +179,10 @@ MinefieldLevelEffect::~MinefieldLevelEffect() {
 }
 
 LevelEffect* MinefieldLevelEffect::factory(const GenericFactoryConstructionData& args) {
-	if (args.getDataCount() >= 1) {
+	if (args.getDataCount() >= 1) [[likely]] {
 		int count = args.getDataPortionLength(0);
 
-		if (count >= 4) {
+		if (count >= 4) [[likely]] {
 			const double* arr = static_cast<const double*>(args.getDataPortion(0).get());
 			double x_start = arr[0];
 			double y_start = arr[1];
@@ -189,11 +192,18 @@ LevelEffect* MinefieldLevelEffect::factory(const GenericFactoryConstructionData&
 			if ((args.getDataCount() >= 2) && (args.getDataPortionLength(1) >= 1)) {
 				const int* arr_mine = static_cast<const int*>(args.getDataPortion(1).get());
 				int mineCount = arr_mine[0];
-				return new MinefieldLevelEffect(x_start, y_start, area_width, area_height, mineCount);
-			}
 
-			return new MinefieldLevelEffect(x_start, y_start, area_width, area_height);
+				if (args.getDataPortionLength(1) >= 2) {
+					int maxMines = arr_mine[1];
+					return new MinefieldLevelEffect(x_start, y_start, area_width, area_height, mineCount, maxMines);
+				} else {
+					return new MinefieldLevelEffect(x_start, y_start, area_width, area_height, mineCount);
+				}
+			} else {
+				return new MinefieldLevelEffect(x_start, y_start, area_width, area_height);
+			}
 		}
 	}
+
 	return new MinefieldLevelEffect();
 }

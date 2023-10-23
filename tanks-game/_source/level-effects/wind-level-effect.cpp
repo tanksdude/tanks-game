@@ -301,11 +301,11 @@ WindLevelEffect::WindLevelEffect(bool transitionWind) {
 	currentState = 0;
 	maxState = 4;
 	if (transitionWind) {
-		//stateMultiplier = new double[maxState]{1, .5, 1, .5};
-		stateMultiplier = new double[maxState]{.75, .25, .75, .25};
+		//stateMultiplier = new double[maxState]{ 1, .5, 1, .5 };
+		stateMultiplier = new double[maxState]{ .75, .25, .75, .25 };
 		//TODO: does this look right? (basing this off tricky_maneuvering)
 	} else {
-		stateMultiplier = new double[maxState]{1, 0, 1, 0};
+		stateMultiplier = new double[maxState]{ 1, 0, 1, 0 };
 	}
 
 	initializeVertices();
@@ -319,10 +319,10 @@ WindLevelEffect::~WindLevelEffect() {
 
 LevelEffect* WindLevelEffect::factory(const GenericFactoryConstructionData& args) {
 	//TODO: modify stateMultiplier
-	if (args.getDataCount() >= 1) {
+	if (args.getDataCount() >= 1) [[likely]] {
 		int count = args.getDataPortionLength(0);
 
-		if (count >= 1) {
+		if (count >= 1) [[likely]] {
 			const bool* arr = static_cast<const bool*>(args.getDataPortion(0).get());
 			bool t = arr[0];
 			return new WindLevelEffect(t);

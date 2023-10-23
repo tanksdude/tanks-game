@@ -44,7 +44,7 @@ void SneakyRewardLevel::initialize() {
 		}
 	}
 	if (le == nullptr) {
-		throw std::logic_error("ERROR: \"sneaky_reward\" level does not have \"respawning_powerups\" level effect!");
+		throw std::logic_error("ERROR: \"" + getName() + "\" level does not have \"respawning_powerups\" level effect!");
 	}
 	RespawningPowerupsLevelEffect* respawning = static_cast<RespawningPowerupsLevelEffect*>(le);
 	//TODO: should this be the preferred way of getting specific level effects?
