@@ -18,7 +18,7 @@ std::unordered_map<std::string, float> MinefieldLevelEffect::getWeights() const 
 
 Bullet* MinefieldLevelEffect::genMine() const {
 	//teamID = HAZARD_TEAM
-	std::vector<BulletPower*> bp = {(BulletPower*)(new MinesBulletPower())};
+	std::vector<BulletPower*> bp = { (BulletPower*)(new MinesBulletPower()) };
 	double r = TANK_RADIUS * BULLET_TO_TANK_RADIUS_RATIO;
 	double x = minefield_startX + r + RNG::randFunc() * (minefield_areaWidth - 2*r);
 	double y = minefield_startY + r + RNG::randFunc() * (minefield_areaHeight - 2*r);
@@ -26,8 +26,15 @@ Bullet* MinefieldLevelEffect::genMine() const {
 	return mine;
 }
 
-inline void MinefieldLevelEffect::pushRandomMine() const {
-	BulletManager::pushBullet(genMine());
+inline void MinefieldLevelEffect::pushRandomMine() {
+	Bullet* b = genMine();
+	BulletManager::pushBullet(b);
+	aliveMinesPushed.push_back(b->getGameID());
+}
+
+inline void MinefieldLevelEffect::pushMine() {
+	BulletManager::pushBullet(ghostMine);
+	aliveMinesPushed.push_back(ghostMine->getGameID());
 }
 
 void MinefieldLevelEffect::apply() {
@@ -37,7 +44,8 @@ void MinefieldLevelEffect::apply() {
 }
 
 void MinefieldLevelEffect::tick(const Level* parent) {
-	if (BulletManager::getNumBullets() >= maxNumOfMines) {
+	updateMineCount();
+	if (aliveMinesPushed.size() >= maxNumOfMines) {
 		tickCount = 0;
 		return;
 	}
@@ -45,7 +53,7 @@ void MinefieldLevelEffect::tick(const Level* parent) {
 	tickCount++;
 	if (tickCount >= tickCycle) {
 		tickCount -= tickCycle;
-		BulletManager::pushBullet(ghostMine);
+		pushMine();
 		ghostMine = genMine();
 	}
 }
@@ -55,8 +63,17 @@ void MinefieldLevelEffect::doEffects(Level* parent) {
 	//might make sense to have the ghost bullet inserting here
 }
 
+void MinefieldLevelEffect::updateMineCount() {
+	for (int i = aliveMinesPushed.size()-1; i >= 0; i--) {
+		const Bullet* b = BulletManager::getBulletByID(aliveMinesPushed[i]);
+		if (b == nullptr) { //not found
+			aliveMinesPushed.erase(aliveMinesPushed.begin() + i);
+		}
+	}
+}
+
 void MinefieldLevelEffect::draw() const {
-	if (BulletManager::getNumBullets() < maxNumOfMines) {
+	if (aliveMinesPushed.size() < maxNumOfMines) {
 		ghostMine->ghostDraw(tickCount / tickCycle);
 	}
 }
@@ -163,6 +180,7 @@ MinefieldLevelEffect::MinefieldLevelEffect(double x_start, double y_start, doubl
 	this->initialMineCount = initialMineCount;
 
 	maxNumOfMines = maxMineCount;
+	aliveMinesPushed.reserve(maxMineCount);
 	ghostMine = genMine();
 }
 

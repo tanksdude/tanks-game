@@ -9,16 +9,19 @@ protected:
 	double tickCount;
 	double tickCycle;
 
+	int initialMineCount;
 	int maxNumOfMines;
 	double minefield_startX;
 	double minefield_startY;
 	double minefield_areaWidth;
 	double minefield_areaHeight;
 
-	int initialMineCount;
 	Bullet* ghostMine;
-	virtual Bullet* genMine() const;
-	virtual inline void pushRandomMine() const;
+	std::vector<Game_ID> aliveMinesPushed;
+	void updateMineCount();
+	[[nodiscard]] virtual Bullet* genMine() const;
+	virtual inline void pushRandomMine();
+	inline void pushMine();
 
 public:
 	virtual std::string getName() const override { return "minefield"; }
