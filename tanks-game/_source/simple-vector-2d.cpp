@@ -2,6 +2,7 @@
 
 #include "constants.h"
 #include <cmath>
+#include <algorithm> //std::clamp
 
 SimpleVector2D::SimpleVector2D(float xComp, float yComp) {
 	this->xComp = xComp;
@@ -150,7 +151,8 @@ float SimpleVector2D::angleBetween(const SimpleVector2D& v1, const SimpleVector2
 	//to account for the fact some vectors have zero magnitude, set magnitude to 1:
 	SimpleVector2D adjusted_v1(v1), adjusted_v2(v2);
 	adjusted_v1.setMagnitude(1); adjusted_v2.setMagnitude(1);
-	float crossAngle = asin(SimpleVector2D::crossProduct(adjusted_v1, adjusted_v2));
-	float dotAngle = acos(SimpleVector2D::dotProduct(adjusted_v1, adjusted_v2));
+	float crossAngle = asin(std::clamp<float>(SimpleVector2D::crossProduct(adjusted_v1, adjusted_v2), -1, 1));
+	float dotAngle = acos(std::clamp<float>(SimpleVector2D::dotProduct(adjusted_v1, adjusted_v2), -1, 1));
+	//clamping is unfortunately needed because float math; example: patrolling turrets could be unable to move forward due to dotAngle being NaN from acos(~1.001)
 	return copysign(dotAngle, crossAngle); //this function is surprisingly helpful!
 }

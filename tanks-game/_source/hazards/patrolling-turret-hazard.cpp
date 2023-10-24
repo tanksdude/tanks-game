@@ -127,8 +127,6 @@ inline void PatrollingTurretHazard::tick_lookForNewTarget() {
 }
 
 inline void PatrollingTurretHazard::tick_patrol() {
-	//TODO: can get stuck at certain parts; happens because angleBetween() is returning NaN from acos(dotProduct>1)
-	//possible repeatable test case: can't see tank at first point, can see tank one turret diameter away from the point, tank moves away, turret completes a full lap back to that point, gets stuck
 	if (isWaitingAtPoint()) {
 		tick_patrolWait();
 	} else {
