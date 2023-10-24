@@ -56,16 +56,6 @@ A level with few obstacles (wow, such an original name). You could rush for the 
 
 In JS Tanks, since power mixing was not very good, the level was not quite as interesting. But now it's my go-to spot to show off how awesome power mixing is!
 
-## Concealed Powerups
-
-* Types: "vanilla", "random-vanilla", "old", "random-old", "random"
-* Internal name: `concealed_powerups`
-* Default color: `#AABB99`
-
-A few good powerups are located in the center, but they are guarded by Lightning. Decide between the reliable Homing or the elusive Grenade and Big.
-
-Not a very fun level, even for JS Tanks. Will be removed from vanilla when there are a few more levels to replace it.
-
 ## Many Hazards
 
 * Types: "vanilla", "random-vanilla", "old", "random-old", "random"
@@ -95,26 +85,6 @@ Two powerups hidden away, with some strange powerups next to them. How will you 
 
 Coincidentally, this was the first new level for this version. Which is a little sad. Especially when it was mostly a test level that I thought was barely passable as a real level.
 
-## Lightning Corners
-
-* Types: "vanilla-extra", "old"
-* Internal name: `lightning_corners`
-* Default color: `(0x77/255, 0x55/255, 0.75)`
-
-An amazing powerup guarded in the center. Blatantly unfinished as a level so it's not in a random playlist.
-
-Was likely originally made to test powerup mixing back in JS Tanks. And since I never figured out how to turn it a real level, I commented it out. But for some reason I ported it to C++, so that's why it's here.
-
-## Lone Turret
-
-* Types: "vanilla-extra", "random-vanilla", "old", "random-old"
-* Internal name: `lone_turret`
-* Default color: `(0.75, 0.25, 0.25)`
-
-A single turret in the center watches for any enemies. Stay too long deciding on the powerup you'll take and you'll be face its small wrath!
-
-Back in JS Tanks, it was the very first level to have a turret! That's why it has nothing else going for it, and it's not very fun. (And surprise surprise, it started as a test level to make sure the Targeting Turret worked.) Will be removed from random-vanilla once a few levels can replace it.
-
 ## Tight Patrolling Corridor
 
 * Types: "vanilla-extra", "random-vanilla"
@@ -141,7 +111,7 @@ This level was partially made from randomly throwing down some walls and really 
 * Types: "vanilla-extra", "random-vanilla"
 * Internal name: `untraditional_divider`
 * Default color: `#76C67D`
-* Level effects: Respawning Powerups, Magnetism, Minefield Ã— 4
+* Level effects: Respawning Powerups, Magnetism, Minefield × 4
 
 Instead of the usual vertical dividers, there's only one horizontal wall?! Keep your wits about you as you try to get a powerup, because all of them are in treacherous locations!
 
@@ -175,6 +145,36 @@ Do you love the Mines power? Of course you do! This level is your dream come tru
 Is this the empty level but with a cool powerup in the center? Nope, sike! The walls are just invisible! If you can make it to the center, you'll be rewarded with the amazing Godmode!
 
 Pro tip: since bullets die when hitting walls, you can shoot to see where walls are. No one has ever figured this out by themselves so I still have work to do as a level designer.
+
+## Concealed Powerups
+
+* Types: "old", "random-old"
+* Internal name: `concealed_powerups`
+* Default color: `#AABB99`
+
+A few good powerups are located in the center, but they are guarded by Lightning. Decide between the reliable Homing or the elusive Grenade and Big.
+
+Not a very fun level, even for JS Tanks. Removed from vanilla for that reason. The only thing going for it was the Homing powerups, which are admittedly a fun addition, but that's it; it's too boring.
+
+## Lightning Corners
+
+* Types: "old"
+* Internal name: `lightning_corners`
+* Default color: `(0x77/255, 0x55/255, 0.75)`
+
+An amazing powerup guarded in the center. Blatantly unfinished as a level.
+
+Was likely originally made to test powerup mixing back in JS Tanks. And since I never figured out how to turn it a real level, I commented it out. But for some reason I ported it to C++, so that's why it's here.
+
+## Lone Turret
+
+* Types: "old", "random-old"
+* Internal name: `lone_turret`
+* Default color: `(0.75, 0.25, 0.25)`
+
+A single turret in the center watches for any enemies. Stay too long deciding on the powerup you'll take and you'll be face its small wrath!
+
+Back in JS Tanks, it was the very first level to have a turret! That's why it has nothing else going for it, and it's not very fun. (And surprise surprise, it started as a test level to make sure the Targeting Turret worked.) Removed from vanilla because of that.
 
 ## Old Portal Level
 
@@ -284,17 +284,15 @@ These are the types custom levels are not allowed to have, unless `[MODS] ModSaf
 * Evened Corridors
 * Big Fun
 * Few Obstacles
-* Concealed Powerups
 * Many Hazards
 
 ## vanilla-extra
 
 * Hiding Places
 * Sneaky Reward
-* Lightning Corners
-* Lone Turret
 * Tight Patrolling Corridor
 * Dangerous Center
+* Untraditional Divider
 * Tricky Maneuvering
 * Mine Heaven
 * Winning Path
@@ -307,13 +305,12 @@ These are the types custom levels are not allowed to have, unless `[MODS] ModSaf
 * Evened Corridors
 * Big Fun
 * Few Obstacles
-* Concealed Powerups
 * Many Hazards
 * Hiding Places
 * Sneaky Reward
-* Lone Turret
 * Tight Patrolling Corridor
 * Dangerous Center
+* Untraditional Divider
 * Tricky Maneuvering
 * Mine Heaven
 * Winning Path
@@ -325,14 +322,14 @@ These are the types custom levels are not allowed to have, unless `[MODS] ModSaf
 * Evened Corridors
 * Big Fun
 * Few Obstacles
-* Concealed Powerups
 * Many Hazards
 * Hiding Places
-* Lightning Corners
-* Lone Turret
 * Tricky Maneuvering
 * Mine Heaven
 * Winning Path
+* Concealed Powerups
+* Lightning Corners
+* Lone Turret
 * Old Empty
 * Old Portal
 
@@ -341,13 +338,13 @@ These are the types custom levels are not allowed to have, unless `[MODS] ModSaf
 * Evened Corridors
 * Big Fun
 * Few Obstacles
-* Concealed Powerups
 * Many Hazards
 * Hiding Places
-* Lone Turret
 * Tricky Maneuvering
 * Mine Heaven
 * Winning Path
+* Concealed Powerups
+* Lone Turret
 * Old Empty
 
 ## random
@@ -357,7 +354,6 @@ These are the types custom levels are not allowed to have, unless `[MODS] ModSaf
 * Evened Corridors
 * Big Fun
 * Few Obstacles
-* Concealed Powerups
 * Many Hazards
 
 ## dev

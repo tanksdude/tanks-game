@@ -11,8 +11,6 @@
 
 std::unordered_map<std::string, float> LoneTurretLevel::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "vanilla-extra", .5f });
-	weights.insert({ "random-vanilla", .25f });
 	weights.insert({ "old", 1.0f });
 	weights.insert({ "random-old", .5f });
 	return weights;
@@ -26,7 +24,7 @@ void LoneTurretLevel::initialize() {
 	GenericFactoryConstructionData constructionData;
 	double* posArr;
 
-	//LevelHelper::pushClassicWalls(color);
+	//LevelHelper::pushClassicWalls(color); //JS
 
 	posArr = new double[3]{ GAME_WIDTH/2, GAME_HEIGHT/2, PI/2 * (floor(RNG::randFunc()*2)*2-1) };
 	constructionData = GenericFactoryConstructionData(3, posArr);

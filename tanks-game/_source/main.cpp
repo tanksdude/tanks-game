@@ -38,13 +38,10 @@
 #include "levels/evened-corridors-level.h"
 #include "levels/big-fun-level.h"
 #include "levels/few-obstacles-level.h"
-#include "levels/concealed-powerups-level.h"
 #include "levels/many-hazards-level.h"
 //"extra":
 #include "levels/hiding-places-level.h"
 #include "levels/sneaky-reward-level.h"
-#include "levels/lightning-corners-level.h"
-#include "levels/lone-turret-level.h"
 #include "levels/tight-patrolling-corridor-level.h"
 #include "levels/dangerous-center-level.h"
 #include "levels/untraditional-divider-level.h" //TODO: some of these should go in regular vanilla, and some of the newer levels should go in random
@@ -53,6 +50,9 @@
 #include "levels/mine-heaven-level.h"
 #include "levels/winning-path-level.h"
 //old levels:
+#include "levels/concealed-powerups-level.h"
+#include "levels/lightning-corners-level.h"
+#include "levels/lone-turret-level.h"
 #include "levels/old-empty-level.h"
 #include "levels/old-portal-level.h" //does not have the portal level effect
 //dev levels:
@@ -304,13 +304,10 @@ int main(int argc, char** argv) {
 	LevelDataGovernor::addLevelFactory(EvenedCorridorsLevel::factory);
 	LevelDataGovernor::addLevelFactory(BigFunLevel::factory);
 	LevelDataGovernor::addLevelFactory(FewObstaclesLevel::factory);
-	LevelDataGovernor::addLevelFactory(ConcealedPowerupsLevel::factory);
 	LevelDataGovernor::addLevelFactory(ManyHazardsLevel::factory);
 	//"extra":
 	LevelDataGovernor::addLevelFactory(HidingPlacesLevel::factory);
 	LevelDataGovernor::addLevelFactory(SneakyRewardLevel::factory);
-	LevelDataGovernor::addLevelFactory(LightningCornersLevel::factory);
-	LevelDataGovernor::addLevelFactory(LoneTurretLevel::factory);
 	LevelDataGovernor::addLevelFactory(TightPatrollingCorridorLevel::factory);
 	LevelDataGovernor::addLevelFactory(DangerousCenterLevel::factory);
 	LevelDataGovernor::addLevelFactory(UntraditionalDividerLevel::factory);
@@ -321,6 +318,9 @@ int main(int argc, char** argv) {
 	LevelDataGovernor::addLevelFactory(WinningPathLevel::factory);
 
 	//old:
+	LevelDataGovernor::addLevelFactory(ConcealedPowerupsLevel::factory);
+	LevelDataGovernor::addLevelFactory(LightningCornersLevel::factory);
+	LevelDataGovernor::addLevelFactory(LoneTurretLevel::factory);
 	LevelDataGovernor::addLevelFactory(OldEmptyLevel::factory);
 	LevelDataGovernor::addLevelFactory(OldPortalLevel::factory);
 	//TODO: add old versions of levels when (if) traps are made (but make sure they're disabled since no one likes them)

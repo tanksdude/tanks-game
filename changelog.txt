@@ -10,6 +10,7 @@
     * hazard powers?
     * megadeath update?
     * bouncing rework
+        * something like bool applyBounceUpdate() to bulletpower?
 
 0.2.5 "done" (obviously not here)
 * rudimentary custom powers and levels!
@@ -52,11 +53,14 @@
     * TODO: [dev] selective no bullet zone (doesn't affect a certain teamID)
 * levels:
     * TODO: old versions of some levels (they're barely different but may as well include them)
+        * evened corridors might be the only one
     * custom levels exist!
     * "tight patrolling corridor"
     * "dangerous center"
+    * "untraditional divider"
     * [dev] "unnamed3" and "unnamed4": tests with mother turret and ginormous turret
     * portal level, without the portals (just so every old level is present)
+    * moved concealed powerups, lightning corners, and lone turret levels out of vanilla because they were boring
     * renamed "corridor" level back to "evened corridors" because I realized most levels followed the "adjective_noun" pattern
 * level effects:
     * magnetism

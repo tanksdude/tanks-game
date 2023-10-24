@@ -26,7 +26,7 @@ void FewObstaclesLevel::initialize() {
 	//GenericFactoryConstructionData constructionData;
 	//double* posArr;
 
-	//LevelHelper::pushClassicWalls(color);
+	//LevelHelper::pushClassicWalls(color); //JS
 
 	LevelHelper::pushSymmetricWalls_LR(GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-(80+32+40+20), 20, GAME_HEIGHT-128, color);
 
