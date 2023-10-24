@@ -92,7 +92,7 @@ void DefaultRandomLevel::initialize() { //still needs a lot of work
 	//randomize powers:
 	float choosingPowerWeights[] = { 1.0f, 1.0f, .25f };
 	for (int i = 0; i < 4; i++) {
-		int count = weightedSelect<float>(choosingPowerWeights, 3) + 1; //{1, 2, 3}
+		int count = 1 + weightedSelect<float>(choosingPowerWeights, 3); //{1, 2, 3}
 		std::string* randPowers = LevelHelper::getRandomPowers(count, "random-vanilla");
 		pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-60, GAME_HEIGHT/2-16);
 		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "random-vanilla", randPowers, count));

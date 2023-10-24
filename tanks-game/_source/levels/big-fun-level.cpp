@@ -47,7 +47,7 @@ void BigFunLevel::initialize() {
 
 	float weights[] = { 3.0f, 2.0f, 1.0f };
 	for (int i = 0; i < 4; i++) {
-		int count = weightedSelect<float>(weights, 3) + 1; //{1, 2, 3}
+		int count = 1 + weightedSelect<float>(weights, 3); //{1, 2, 3}
 		std::string* randPowers = LevelHelper::getRandomPowers(count, "random-vanilla", possiblePowers, 6); //TODO: this used to have equal weight; should that be restored?
 		pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-(80+32+16), GAME_HEIGHT/2-16);
 		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "random-vanilla", randPowers, count));
