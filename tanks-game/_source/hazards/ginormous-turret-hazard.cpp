@@ -109,8 +109,8 @@ GinormousTurretHazard::GinormousTurretHazard(double xpos, double ypos, double an
 	//y = ypos;
 	//velocity = SimpleVector2D(angle, 0, true);
 	r = TANK_RADIUS * 4; // MotherTurretHazard radius * 2 //my vision for this turret was twice as large as this value, but that can barely fit on the screen
-	//future note: my idea for the "god turret" is r = TANK_RADIUS * 64 or 32 (32 might be better for gameplay, 64 is more what I wanted), which is nowhere near being able to fit on the screen; since it's so big it doesn't even recognize the little tanks
-	//lore idea (this is really stupid): since there are turret sizes smaller and larger than the tanks, but not of the same size, does that imply the tanks are turrets (that gained sentience)? what a plot twist!
+	//future note: my idea for the "god turret" is r = TANK_RADIUS * 64 or 32 (32 might be better for gameplay, 64 is more what I wanted), which is nowhere near being able to fit on the screen; since it's so big it doesn't even recognize the little tanks; alternatively, it can immobilize and move tanks around because it's that strong, but maybe this should go to a "demi-god turret" instead
+	//lore idea (this is really stupid): since there are turret sizes smaller and larger than the tanks, but not of the same size, does that imply the tanks are turrets (that gained sentience)? what a plot twist!; doesn't explain why other turrets can handle lightning fine but tanks can't though, but whatever
 	childDistFromMother = r * childDistMultiplier;
 
 	stateMultiplier[1] /= 2;

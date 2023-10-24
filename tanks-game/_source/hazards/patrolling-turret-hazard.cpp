@@ -532,6 +532,7 @@ CircleHazard* PatrollingTurretHazard::randomizingFactory(double x_start, double 
 	if (count >= 1) {
 		const double* arr = static_cast<const double*>(args.getDataPortion(0).get());
 		angle = arr[0];
+		//this array is shared with optional starting position
 	} else {
 		angle = RNG::randFunc() * (2*PI);
 	}
@@ -543,30 +544,37 @@ CircleHazard* PatrollingTurretHazard::randomizingFactory(double x_start, double 
 		double* waitTimes = new double[stoppingLocationCount];
 
 		waitTimes[0] = floor(RNG::randNumInRange(150, 200+1));
-		int location_attempts = 0;
-		bool blockedPosition;
-		do {
-			blockedPosition = false;
-			stoppingLocations[0] = RNG::randFunc() * (area_width - 2*(TANK_RADIUS/2)) + (x_start + (TANK_RADIUS/2));
-			stoppingLocations[1] = RNG::randFunc() * (area_height - 2*(TANK_RADIUS/2)) + (y_start + (TANK_RADIUS/2));
+		if (count >= 3) {
+			stoppingLocations[0] = static_cast<const double*>(args.getDataPortion(0).get())[1];
+			stoppingLocations[1] = static_cast<const double*>(args.getDataPortion(0).get())[2];
+			//assume the starting position is valid
+		} else {
+			int location_attempts = 0;
+			bool blockedPosition;
+			do {
+				blockedPosition = false;
+				stoppingLocations[0] = RNG::randFunc() * (area_width - 2*(TANK_RADIUS/2)) + (x_start + (TANK_RADIUS/2));
+				stoppingLocations[1] = RNG::randFunc() * (area_height - 2*(TANK_RADIUS/2)) + (y_start + (TANK_RADIUS/2));
 
-			Circle* testStop = new Circle();
-			testStop->x = stoppingLocations[0]; testStop->y = stoppingLocations[1]; testStop->r = 0;
-			for (int j = 0; j < WallManager::getNumWalls(); j++) {
-				if (CollisionHandler::partiallyCollided(testStop, WallManager::getWall(j))) {
-					blockedPosition = true;
-					break;
+				Circle* testStop = new Circle();
+				testStop->x = stoppingLocations[0]; testStop->y = stoppingLocations[1]; testStop->r = 0;
+				for (int j = 0; j < WallManager::getNumWalls(); j++) {
+					if (CollisionHandler::partiallyCollided(testStop, WallManager::getWall(j))) {
+						blockedPosition = true;
+						break;
+					}
 				}
-			}
-			delete testStop;
+				delete testStop;
 
-			location_attempts++;
-		} while (blockedPosition && location_attempts < 16);
+				location_attempts++;
+			} while (blockedPosition && location_attempts < 16);
+		}
 
 		bool outOfBounds;
 		for (int i = 1; i < stoppingLocationCount; i++) {
 			waitTimes[i] = floor(RNG::randNumInRange(150, 200+1));
-			location_attempts = 0;
+			int location_attempts = 0;
+			bool blockedPosition;
 			do {
 				blockedPosition = false;
 				outOfBounds = false;
@@ -588,6 +596,7 @@ CircleHazard* PatrollingTurretHazard::randomizingFactory(double x_start, double 
 				    (stoppingLocations[i*2+1] - (TANK_RADIUS/2) < y_start) || (stoppingLocations[i*2+1] + (TANK_RADIUS/2) > y_start+area_height)) {
 					//out of bounds, try again; done this way to avoid a bunch of paths clumping against the border
 					outOfBounds = true;
+					blockedPosition = true; //otherwise it will exit early
 				} else {
 					Circle* testStop = new Circle();
 					testStop->x = stoppingLocations[i*2]; testStop->y = stoppingLocations[i*2+1]; testStop->r = 0;
