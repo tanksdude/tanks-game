@@ -51,16 +51,12 @@ void RespawningPowerupsLevelEffect::PowerSquareWatcher::ghostDraw(float alpha) c
 	powerupCopy->ghostDraw(alpha); //TODO: drawing layer things?
 }
 
-RespawningPowerupsLevelEffect::PowerSquareWatcher::PowerSquareWatcher(const PowerSquare* p) :
-	RespawningPowerupsLevelEffect::PowerSquareWatcher::PowerSquareWatcher(p, 500) {}
-//500 or 1000? dunno
-
 RespawningPowerupsLevelEffect::PowerSquareWatcher::~PowerSquareWatcher() {
 	delete powerupCopy;
 }
 
 void RespawningPowerupsLevelEffect::watchPowerSquare(const PowerSquare* p) {
-	watchPowerSquare(p, 500);
+	watchPowerSquare(p, default_maxTick);
 }
 
 void RespawningPowerupsLevelEffect::watchPowerSquare(const PowerSquare* p, double timeToRespawn) {
@@ -78,7 +74,7 @@ void RespawningPowerupsLevelEffect::watchPowerSquare(const PowerSquare* p, doubl
 }
 
 void RespawningPowerupsLevelEffect::watchLastPowerSquaresPushed(int count) {
-	watchLastPowerSquaresPushed(count, 500);
+	watchLastPowerSquaresPushed(count, default_maxTick);
 }
 
 void RespawningPowerupsLevelEffect::watchLastPowerSquaresPushed(int count, double timeToRespwan) {
@@ -211,9 +207,12 @@ void RespawningPowerupsLevelEffect::ghostDraw(DrawingLayers layer, float alpha) 
 	}
 }
 
-RespawningPowerupsLevelEffect::RespawningPowerupsLevelEffect(bool watchEverything) {
+RespawningPowerupsLevelEffect::RespawningPowerupsLevelEffect(bool watchEverything, double maxTick) {
 	watchAllPowerups = watchEverything;
+	default_maxTick = maxTick;
 }
+
+RespawningPowerupsLevelEffect::RespawningPowerupsLevelEffect(bool watchEverything) : RespawningPowerupsLevelEffect(watchEverything, 500) {}
 
 RespawningPowerupsLevelEffect::RespawningPowerupsLevelEffect() : RespawningPowerupsLevelEffect(true) {}
 
@@ -232,6 +231,15 @@ LevelEffect* RespawningPowerupsLevelEffect::factory(const GenericFactoryConstruc
 			//don't push the powerups to watch at the start because level construction happens before level initialization
 			const bool* arr = static_cast<const bool*>(args.getDataPortion(0).get());
 			bool watch = arr[0];
+
+			if (args.getDataCount() >= 2) {
+				int count_data = args.getDataPortionLength(1);
+				if (count_data >= 1) {
+					const double* arr_data = static_cast<const double*>(args.getDataPortion(1).get());
+					double maxTick = arr_data[0];
+					return new RespawningPowerupsLevelEffect(watch, maxTick);
+				}
+			}
 			return new RespawningPowerupsLevelEffect(watch);
 		}
 	}

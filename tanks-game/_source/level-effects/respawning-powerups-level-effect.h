@@ -23,7 +23,6 @@ protected:
 		virtual void draw() const;
 		virtual void ghostDraw(float alpha) const;
 
-		PowerSquareWatcher(const PowerSquare*);
 		PowerSquareWatcher(const PowerSquare*, double count);
 		virtual ~PowerSquareWatcher();
 
@@ -34,6 +33,7 @@ protected:
 
 protected:
 	bool watchAllPowerups;
+	double default_maxTick;
 	std::vector<PowerSquareWatcher*> watching;
 
 public:
@@ -65,6 +65,7 @@ public:
 
 	RespawningPowerupsLevelEffect();
 	RespawningPowerupsLevelEffect(bool watchEverything);
+	RespawningPowerupsLevelEffect(bool watchEverything, double maxTick);
 	virtual ~RespawningPowerupsLevelEffect();
 	static LevelEffect* factory(const GenericFactoryConstructionData&);
 };
