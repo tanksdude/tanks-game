@@ -47,6 +47,7 @@
 #include "levels/lone-turret-level.h"
 #include "levels/tight-patrolling-corridor-level.h"
 #include "levels/dangerous-center-level.h"
+#include "levels/untraditional-divider-level.h" //TODO: some of these should go in regular vanilla, and some of the newer levels should go in random
 //special levels:
 #include "levels/tricky-maneuvering-level.h"
 #include "levels/mine-heaven-level.h"
@@ -63,7 +64,6 @@
 #include "levels/unnamed-level-2.h"
 #include "levels/unnamed-level-3.h"
 #include "levels/unnamed-level-4.h"
-#include "levels/unnamed-level-5.h"
 #include "levels/dev-no-walls-level-1.h"
 #include "levels/timed-reward-level.h" //added to vanilla-extra
 
@@ -313,6 +313,7 @@ int main(int argc, char** argv) {
 	LevelDataGovernor::addLevelFactory(LoneTurretLevel::factory);
 	LevelDataGovernor::addLevelFactory(TightPatrollingCorridorLevel::factory);
 	LevelDataGovernor::addLevelFactory(DangerousCenterLevel::factory);
+	LevelDataGovernor::addLevelFactory(UntraditionalDividerLevel::factory);
 
 	//special:
 	LevelDataGovernor::addLevelFactory(TrickyManeuveringLevel::factory);
@@ -333,7 +334,6 @@ int main(int argc, char** argv) {
 	LevelDataGovernor::addLevelFactory(UnnamedLevel2::factory);
 	LevelDataGovernor::addLevelFactory(UnnamedLevel3::factory);
 	LevelDataGovernor::addLevelFactory(UnnamedLevel4::factory);
-	LevelDataGovernor::addLevelFactory(UnnamedLevel5::factory);
 	LevelDataGovernor::addLevelFactory(DevNoWallsLevel1::factory);
 	LevelDataGovernor::addLevelFactory(TimedRewardLevel::factory);
 

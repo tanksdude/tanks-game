@@ -136,6 +136,17 @@ Will you take cover from the very hostile center, or will you claim the rewards?
 
 This level was partially made from randomly throwing down some walls and really trying to fit as much as possible in a limited space. Not a great level but good enough.
 
+## Untraditional Divider
+
+* Types: "vanilla-extra", "random-vanilla"
+* Internal name: `untraditional_divider`
+* Default color: `#76C67D`
+* Level effects: Respawning Powerups, Magnetism, Minefield × 4
+
+Instead of the usual vertical dividers, there's only one horizontal wall?! Keep your wits about you as you try to get a powerup, because all of them are in treacherous locations!
+
+The entire inspiration for this level was making the usual vertical wall separators a massive horizontal wall instead. Then adding multiple Minefields because that seemed interesting, finishing up with a few turrets in the lava. I don't think it's good enough for vanilla, but it's too unique to ignore.
+
 ## Tricky Maneuvering
 
 * Types: "vanilla-extra", "random-vanilla"

@@ -1,4 +1,4 @@
-#include "unnamed-level-5.h"
+#include "untraditional-divider-level.h"
 
 #include "../constants.h"
 #include <iostream>
@@ -14,18 +14,18 @@
 #include "../level-effects/respawning-powerups-level-effect.h"
 #include "../level-effects/magnetism-level-effect.h"
 
-ColorValueHolder UnnamedLevel5::getDefaultColor() const {
+ColorValueHolder UntraditionalDividerLevel::getDefaultColor() const {
 	return ColorValueHolder(0x76/255.0, 0xC6/255.0, 0x7D/255.0); //darker and less red shield color
 }
 
-std::unordered_map<std::string, float> UnnamedLevel5::getWeights() const {
+std::unordered_map<std::string, float> UntraditionalDividerLevel::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "dev", 0.0f });
-	weights.insert({ "random-dev", 0.0f });
+	weights.insert({ "vanilla-extra", 0.5f });
+	weights.insert({ "random-vanilla", 0.5f });
 	return weights;
 }
 
-void UnnamedLevel5::initialize() {
+void UntraditionalDividerLevel::initialize() {
 	ResetThings::tankPositionReset(ResetThings::default_tankToEdgeDist, GAME_HEIGHT*(3.0/5), 2);
 
 	ColorValueHolder color = getDefaultColor();
@@ -76,7 +76,7 @@ void UnnamedLevel5::initialize() {
 	}
 
 	types = new std::string[2]{ "vanilla", "vanilla" };
-	names = new std::string[2]{ "invincible", "speed" };
+	names = new std::string[2]{ "invincible", "speed" }; //TODO: this probably needs two speed
 	LevelHelper::pushSymmetricPowerups_Corners(GAME_WIDTH/2, GAME_HEIGHT/2, 240-20 - 80/2, GAME_HEIGHT/2 - 20, types, names, 2);
 	delete[] types; delete[] names;
 	respawning->watchLastPowerSquaresPushed(4, 1000);
@@ -130,11 +130,11 @@ void UnnamedLevel5::initialize() {
 	*/
 }
 
-Level* UnnamedLevel5::factory() {
-	return new UnnamedLevel5();
+Level* UntraditionalDividerLevel::factory() {
+	return new UntraditionalDividerLevel();
 }
 
-UnnamedLevel5::UnnamedLevel5() {
+UntraditionalDividerLevel::UntraditionalDividerLevel() {
 	bool* temp1 = new bool[1]{ false };
 	GenericFactoryConstructionData constructionData(1, temp1);
 	effects.push_back(LevelManager::makeLevelEffect("vanilla", "respawning_powerups", constructionData));
