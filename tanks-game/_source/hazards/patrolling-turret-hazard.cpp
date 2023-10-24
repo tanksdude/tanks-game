@@ -542,7 +542,7 @@ CircleHazard* PatrollingTurretHazard::randomizingFactory(double x_start, double 
 		double* stoppingLocations = new double[stoppingLocationCount*2];
 		double* waitTimes = new double[stoppingLocationCount];
 
-		waitTimes[0] = floor(RNG::randFunc() * (201 - 150) + 150);
+		waitTimes[0] = floor(RNG::randNumInRange(150, 200+1));
 		int location_attempts = 0;
 		bool blockedPosition;
 		do {
@@ -565,13 +565,13 @@ CircleHazard* PatrollingTurretHazard::randomizingFactory(double x_start, double 
 
 		bool outOfBounds;
 		for (int i = 1; i < stoppingLocationCount; i++) {
-			waitTimes[i] = floor(RNG::randFunc() * (201 - 150) + 150);
+			waitTimes[i] = floor(RNG::randNumInRange(150, 200+1));
 			location_attempts = 0;
 			do {
 				blockedPosition = false;
 				outOfBounds = false;
 				const double angleChange = RNG::randFunc() * (2*PI);
-				const double distanceChange = RNG::randFunc() * (150 - 50) + 50;
+				const double distanceChange = RNG::randNumInRange(50, 150);
 				const SimpleVector2D displacement = SimpleVector2D(angleChange, distanceChange, true);
 				/*
 				stoppingLocations[i*2]   = std::clamp<double>(stoppingLocations[(i-1)*2]   + displacement.getXComp(), x_start + (TANK_RADIUS/2), x_start+area_width - 2*(TANK_RADIUS/2));

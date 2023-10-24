@@ -18,6 +18,10 @@ double RNG::randFunc() {
 	return distribution(generator);
 }
 
-int RNG::randNumInRange(int min, int max) {
-	return int(RNG::randFunc() * (max - min)) + min;
+int RNG::randIntInRange(int min, int max) {
+	return int(RNG::randFunc() * (max - min) + min);
+}
+
+double RNG::randNumInRange(double min, double max) {
+	return RNG::randFunc() * (max - min) + min;
 }

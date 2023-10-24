@@ -11,7 +11,8 @@ public:
 	static void Initialize();
 
 	[[nodiscard]] static double randFunc(); //[0,1)
-	[[nodiscard]] static int randNumInRange(int min, int max); //[min, max)
+	[[nodiscard]] static int randIntInRange(int min, int max); //[min, max)
+	[[nodiscard]] static double randNumInRange(double min, double max); //[min, max)
 
 private:
 	RNG() = delete;
