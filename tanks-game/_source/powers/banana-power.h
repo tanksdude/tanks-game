@@ -52,6 +52,8 @@ class BananaBulletPower : public BulletPower {
 protected:
 	bool wasStationary; //must have velocity of zero for one tick before banana-ing
 
+	virtual void bananaExplode(Bullet*);
+
 public:
 	virtual void initialize(Bullet* parent) override;
 	virtual void removeEffects(Bullet* parent) override;

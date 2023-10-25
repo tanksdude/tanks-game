@@ -156,7 +156,7 @@ Shoots four bullets, ±45° from the cannon. The bullets grow a small amount befor
 * Tank modifiers: half speed, half acceleration
 * Bullet modifiers: quarter radius, [-3/16, -1/16] acceleration, .25 degrade
 
-Shoots 16 bullets, ±60° from the cannon. Eventually decays. Used to stick to walls when it touched them, but this no longer happens due to a restructuring.
+Shoots 16 bullets, ±60° from the cannon. Eventually decays. Used to stick to walls when it touched them, but this no longer happens due to a code restructuring.
 
 ## Banana
 
@@ -382,6 +382,16 @@ A recreation of the very first (unseen) implementation of MegaDeath in JS Tanks.
 
 Fun fact: MegaDeath actually did appear in JS Tanks! It only appears in the mixing with Godmode. However, it only existed because power mixing was very bad back then. I probably forgot because Godmode spits out so many bullets and finding the single one behaving differently is a challenge. At best, you might notice 8 slightly larger bullets because it Banana'd. However, if you gave it enough time to grow (which was very difficult given its normal spawning locations (center of Winning Path and the random level)), it would grow very fast (same speed as this version, actually) and pass through walls (because conditionally enabling destroying walls was hard).
 
+## [DEV] Banana Split
+
+* Types: "dev", "random-dev"
+* Internal name: `banana_split`
+* Attributes: "stack", "mix"
+* Color: `#99BB33` (dull gold with more green (because Shotgun is green and this power was loosely based on Banana+Shotgun))
+* Bullet modifiers: -1/8 acceleration
+
+When the bullet comes to a stop, it Bananas into 4 bullets at set angles. Worth investigating further.
+
 # List of protected power types
 
 These are the types custom powers are not allowed to have, unless `[MODS] ModSafetyChecks` in the INI file is disabled.
@@ -538,6 +548,7 @@ These are the types custom powers are not allowed to have, unless `[MODS] ModSaf
 * Weird Extra Cannons
 * Triple Spread
 * Ring Shooter
+* Banana Split
 
 ## random-dev
 
@@ -551,3 +562,4 @@ These are the types custom powers are not allowed to have, unless `[MODS] ModSaf
 * Weird Extra Cannons
 * Triple Spread
 * Ring Shooter
+* Banana Split

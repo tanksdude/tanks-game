@@ -65,24 +65,28 @@ BananaTankPower::BananaTankPower() {
 
 #include "../bullet-manager.h"
 
+void BananaBulletPower::bananaExplode(Bullet* b) {
+	for (int i = 0; i < BananaPower::bananaCount; i++) {
+		std::vector<BulletPower*>* bp = new std::vector<BulletPower*>;
+		bp->reserve(b->bulletPowers.size()-1);
+		for (int i = 0; i < b->bulletPowers.size(); i++) {
+			if (b->bulletPowers[i] != this) {
+				bp->push_back(b->bulletPowers[i]->makeDuplicate());
+			}
+		}
+		double newVelocity = b->getInitialVelocity();
+		if (newVelocity == 0) {
+			newVelocity = Tank::default_maxSpeed*BULLET_TO_TANK_SPEED_RATIO; //if bullet's initial speed is zero, it should still explode (TODO: what should the initial speed be?)
+		}
+		newVelocity = newVelocity * ((RNG::randFunc()+RNG::randFunc())/2 * (BananaPower::maxNewBulletVelocityMultiplier - BananaPower::minNewBulletVelocityMultiplier) + BananaPower::minNewBulletVelocityMultiplier);
+		BulletManager::pushBullet(new Bullet(b->x, b->y, b->r/2, RNG::randFunc() * (2*PI), newVelocity, b->getTeamID(), b->getParentIDType(), b->getParentID(), bp, true));
+		delete bp;
+	}
+}
+
 InteractionBoolHolder BananaBulletPower::modifiedMovement(Bullet* b) {
 	if (wasStationary && b->velocity.getMagnitude() <= 0) {
-		for (int i = 0; i < BananaPower::bananaCount; i++) {
-			std::vector<BulletPower*>* bp = new std::vector<BulletPower*>;
-			bp->reserve(b->bulletPowers.size()-1);
-			for (int i = 0; i < b->bulletPowers.size(); i++) {
-				if (b->bulletPowers[i] != this) {
-					bp->push_back(b->bulletPowers[i]->makeDuplicate());
-				}
-			}
-			double newVelocity = b->getInitialVelocity();
-			if (newVelocity == 0) {
-				newVelocity = Tank::default_maxSpeed*BULLET_TO_TANK_SPEED_RATIO; //if bullet's initial speed is zero, it should still explode (TODO: what should the initial speed be?)
-			}
-			newVelocity = newVelocity * ((RNG::randFunc()+RNG::randFunc())/2 * (BananaPower::maxNewBulletVelocityMultiplier - BananaPower::minNewBulletVelocityMultiplier) + BananaPower::minNewBulletVelocityMultiplier);
-			BulletManager::pushBullet(new Bullet(b->x, b->y, b->r/2, RNG::randFunc() * (2*PI), newVelocity, b->getTeamID(), b->getParentIDType(), b->getParentID(), bp, true));
-			delete bp;
-		}
+		bananaExplode(b);
 		return { true };
 	}
 	if (b->velocity.getMagnitude() <= 0) {

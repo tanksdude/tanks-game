@@ -153,6 +153,7 @@
     <ClCompile Include="_source\mod-processor.cpp" />
     <ClCompile Include="_source\powers\ancient-mega-death-power.cpp" />
     <ClCompile Include="_source\powers\banana-power.cpp" />
+    <ClCompile Include="_source\powers\banana-split-power.cpp" />
     <ClCompile Include="_source\powers\barrier-power.cpp" />
     <ClCompile Include="_source\basic-ini-parser.cpp" />
     <ClCompile Include="_source\levels\big-fun-level.cpp" />
@@ -299,6 +300,7 @@
     <ClInclude Include="_source\mod-processor.h" />
     <ClInclude Include="_source\powers\ancient-mega-death-power.h" />
     <ClInclude Include="_source\powers\banana-power.h" />
+    <ClInclude Include="_source\powers\banana-split-power.h" />
     <ClInclude Include="_source\powers\barrier-power.h" />
     <ClInclude Include="_source\basic-ini-parser.h" />
     <ClInclude Include="_source\levels\big-fun-level.h" />
