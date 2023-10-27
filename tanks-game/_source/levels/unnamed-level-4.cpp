@@ -14,14 +14,13 @@
 #include "../level-effects/respawning-powerups-level-effect.h"
 
 ColorValueHolder UnnamedLevel4::getDefaultColor() const {
-	//TODO
 	return ColorValueHolder(1, 1, 1);
 }
 
 std::unordered_map<std::string, float> UnnamedLevel4::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "dev", 0.0f });
-	weights.insert({ "random-dev", 0.0f });
+	weights.insert({ "dev", 1.0f });
+	weights.insert({ "random-dev", 1.0f });
 	return weights;
 }
 

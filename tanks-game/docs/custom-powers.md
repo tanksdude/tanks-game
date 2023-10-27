@@ -14,6 +14,7 @@ Some general notes:
 * Whitespace between arguments doesn't matter (as long as there is at least one space).
 * Every line can only have one assignment or command. If you have a really long line, sorry, but I recommend turning on word wrap.
 * Sorry, but there's no math parsing when supplying numbers. You can't do something like `(16+8)/2`; you must do `12` instead.
+* Comments can be added by using a semicolon (`;`) or number sign (`#`).
 
 ## Initialization stuff
 

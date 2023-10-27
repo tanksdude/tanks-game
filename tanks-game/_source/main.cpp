@@ -64,6 +64,9 @@
 #include "levels/unnamed-level-2.h"
 #include "levels/unnamed-level-3.h"
 #include "levels/unnamed-level-4.h"
+#include "levels/unnamed-level-5.h"
+#include "levels/unnamed-level-6.h"
+#include "levels/unnamed-level-7.h"
 #include "levels/dev-no-walls-level-1.h"
 #include "levels/timed-reward-level.h" //added to vanilla-extra
 
@@ -336,6 +339,9 @@ int main(int argc, char** argv) {
 	LevelDataGovernor::addLevelFactory(UnnamedLevel2::factory);
 	LevelDataGovernor::addLevelFactory(UnnamedLevel3::factory);
 	LevelDataGovernor::addLevelFactory(UnnamedLevel4::factory);
+	LevelDataGovernor::addLevelFactory(UnnamedLevel5::factory);
+	LevelDataGovernor::addLevelFactory(UnnamedLevel6::factory);
+	LevelDataGovernor::addLevelFactory(UnnamedLevel7::factory);
 	LevelDataGovernor::addLevelFactory(DevNoWallsLevel1::factory);
 	LevelDataGovernor::addLevelFactory(TimedRewardLevel::factory);
 

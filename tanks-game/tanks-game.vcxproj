@@ -149,6 +149,9 @@
     <ClCompile Include="_source\levels\old-portal-level.cpp" />
     <ClCompile Include="_source\levels\unnamed-level-3.cpp" />
     <ClCompile Include="_source\levels\unnamed-level-4.cpp" />
+    <ClCompile Include="_source\levels\unnamed-level-5.cpp" />
+    <ClCompile Include="_source\levels\unnamed-level-6.cpp" />
+    <ClCompile Include="_source\levels\unnamed-level-7.cpp" />
     <ClCompile Include="_source\levels\untraditional-divider-level.cpp" />
     <ClCompile Include="_source\mod-processor.cpp" />
     <ClCompile Include="_source\powers\ancient-mega-death-power.cpp" />
@@ -296,6 +299,9 @@
     <ClInclude Include="_source\levels\old-portal-level.h" />
     <ClInclude Include="_source\levels\unnamed-level-3.h" />
     <ClInclude Include="_source\levels\unnamed-level-4.h" />
+    <ClInclude Include="_source\levels\unnamed-level-5.h" />
+    <ClInclude Include="_source\levels\unnamed-level-6.h" />
+    <ClInclude Include="_source\levels\unnamed-level-7.h" />
     <ClInclude Include="_source\levels\untraditional-divider-level.h" />
     <ClInclude Include="_source\mod-processor.h" />
     <ClInclude Include="_source\powers\ancient-mega-death-power.h" />

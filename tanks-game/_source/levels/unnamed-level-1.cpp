@@ -9,15 +9,13 @@
 #include "../hazard-manager.h"
 
 ColorValueHolder UnnamedLevel1::getDefaultColor() const {
-	//TODO
 	return ColorValueHolder(1, 1, 1);
 }
 
 std::unordered_map<std::string, float> UnnamedLevel1::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "dev", 0.125f });
-	weights.insert({ "random-dev", 0.0f });
-	//still testing; once it's named it gets weights
+	weights.insert({ "dev", 0.5f });
+	weights.insert({ "random-dev", 0.5f });
 	return weights;
 }
 

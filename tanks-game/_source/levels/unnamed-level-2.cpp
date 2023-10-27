@@ -14,15 +14,13 @@
 //#include "../collision-handler.h"
 
 ColorValueHolder UnnamedLevel2::getDefaultColor() const {
-	//TODO
 	return ColorValueHolder(1, 1, 1);
 }
 
 std::unordered_map<std::string, float> UnnamedLevel2::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "dev", 0.125f });
-	weights.insert({ "random-dev", 0.0f });
-	//still testing; once it's named it gets weights
+	weights.insert({ "dev", 0.25f });
+	weights.insert({ "random-dev", 0.25f });
 	return weights;
 }
 
