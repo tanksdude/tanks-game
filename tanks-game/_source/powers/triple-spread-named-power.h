@@ -13,7 +13,7 @@ public:
 	virtual std::string getName() const override { return TripleSpreadNamedPower::getClassName(); }
 	static std::string getClassName() { return "triple_spread"; }
 	virtual ColorValueHolder getColor() const override { return TripleSpreadNamedPower::getClassColor(); }
-	static ColorValueHolder getClassColor() { return ColorValueHolder(0.65f, 0.65f, 0.40f); } //beige but a bit darker; quite close to banana but oh well, it's a dev power
+	static ColorValueHolder getClassColor() { return ColorValueHolder(0.85f, 0.85f, 0.60f); } //beige but a bit brighter
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;

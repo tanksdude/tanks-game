@@ -341,6 +341,15 @@ This game originated from making something with tank-like movement and simple co
 
 When bouncing off a wall, a few bullet "sparks" get created. Actually functional, just kinda boring.
 
+### Edge Sparks
+
+* Types: "dev", "random-dev"
+* Internal name: `edge_sparks`
+* Attributes: "mix"
+* Color: `#BC3828` (same as Wall Sparks for now)
+
+When bouncing off an edge, a few bullet "sparks" get created. Does not bounce off walls.
+
 ## [DEV] Weird Extra Cannons
 
 * Types: "dev", "random-dev"
@@ -356,7 +365,7 @@ Adds a cannon at 90° and 225°, just to test adding non-symmetric cannons. When a
 * Types: "dev", "random-dev"
 * Internal name: `triple_spread`
 * Attributes: "mix"
-* Color: `(0.65, 0.65, 0.40)` (beige but a bit darker; unfortunately close to banana)
+* Color: `(0.85, 0.85, 0.60)` (beige but a bit brighter)
 
 Sorta like Triple, except the angle variation comes at the cannon point instead of the center. Basically, Triple makes three bullets parallel, while this makes three at the same point that spread out. Got the idea a long time ago, finally decided to implement it once custom powers became a thing.
 
@@ -545,6 +554,7 @@ These are the types custom powers are not allowed to have, unless `[MODS] ModSaf
 * Other Stuff is Poison
 * Backwards Movement
 * Wall Sparks
+* Edge Sparks
 * Weird Extra Cannons
 * Triple Spread
 * Ring Shooter
@@ -559,6 +569,7 @@ These are the types custom powers are not allowed to have, unless `[MODS] ModSaf
 * Other Stuff is Poison
 * Backwards Movement
 * Wall Sparks
+* Edge Sparks
 * Weird Extra Cannons
 * Triple Spread
 * Ring Shooter

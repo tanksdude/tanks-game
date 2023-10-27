@@ -140,6 +140,25 @@ CircleHazard* GinormousTurretHazard::factory(const GenericFactoryConstructionDat
 			double x = arr[0];
 			double y = arr[1];
 			double a = arr[2];
+
+			if (args.getDataCount() >= 2) {
+				int count_num = args.getDataPortionLength(1);
+
+				if (count_num >= 1) {
+					const int* arr_num = static_cast<const int*>(args.getDataPortion(1).get());
+
+					int child_max = arr_num[0];
+					int child_start = ((count_num >= 2) ? arr_num[1] : 0);
+
+					if ((args.getDataCount() >= 3) && (args.getDataPortionLength(2) >= 1)) {
+						const double* arr_dist = static_cast<const double*>(args.getDataPortion(2).get());
+						return new GinormousTurretHazard(x, y, a, child_max, child_start, arr_dist[0]);
+					}
+
+					return new GinormousTurretHazard(x, y, a, child_max, child_start);
+				}
+			}
+
 			return new GinormousTurretHazard(x, y, a);
 		}
 	}

@@ -459,6 +459,12 @@
     <ClCompile Include="_source\levels\unnamed-level-7.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="_source\levels\unnamed-level-8.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="_source\powers\edge-sparks-power.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="_source\bullet.h">
@@ -948,6 +954,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="_source\levels\unnamed-level-7.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="_source\levels\unnamed-level-8.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="_source\powers\edge-sparks-power.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

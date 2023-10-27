@@ -67,6 +67,7 @@
 #include "levels/unnamed-level-5.h"
 #include "levels/unnamed-level-6.h"
 #include "levels/unnamed-level-7.h"
+#include "levels/unnamed-level-8.h"
 #include "levels/dev-no-walls-level-1.h"
 #include "levels/timed-reward-level.h" //added to vanilla-extra
 
@@ -132,6 +133,7 @@
 #include "powers/dev-other-stuff-is-poison-power.h" //kills tank when touching normally-safe stuff
 #include "powers/dev-backwards-movement-power.h" //self-explanatory
 #include "powers/wall-sparks-power.h" //create some extra bullets when hitting a wall
+#include "powers/edge-sparks-power.h" //create some extra bullets when hitting an edge
 #include "powers/dev-weird-extra-cannons-power.h" //adds some extra cannons at weird angles
 #include "powers/triple-spread-named-power.h" //triple but bullets spread out instead of being next to each other (the only power that does so)
 #include "powers/ring-shooter-power.h" //multishot if it shot straight ahead
@@ -266,6 +268,7 @@ int main(int argc, char** argv) {
 	PowerupDataGovernor::addPowerFactory(DevOtherStuffIsPoisonPower::factory);
 	PowerupDataGovernor::addPowerFactory(DevBackwardsMovementPower::factory);
 	PowerupDataGovernor::addPowerFactory(WallSparksPower::factory);
+	PowerupDataGovernor::addPowerFactory(EdgeSparksPower::factory);
 	PowerupDataGovernor::addPowerFactory(DevWeirdExtraCannonsPower::factory);
 	PowerupDataGovernor::addPowerFactory(TripleSpreadNamedPower::factory);
 	PowerupDataGovernor::addPowerFactory(RingShooterPower::factory);
@@ -342,6 +345,7 @@ int main(int argc, char** argv) {
 	LevelDataGovernor::addLevelFactory(UnnamedLevel5::factory);
 	LevelDataGovernor::addLevelFactory(UnnamedLevel6::factory);
 	LevelDataGovernor::addLevelFactory(UnnamedLevel7::factory);
+	LevelDataGovernor::addLevelFactory(UnnamedLevel8::factory);
 	LevelDataGovernor::addLevelFactory(DevNoWallsLevel1::factory);
 	LevelDataGovernor::addLevelFactory(TimedRewardLevel::factory);
 

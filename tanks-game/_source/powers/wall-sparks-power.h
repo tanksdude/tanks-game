@@ -57,6 +57,8 @@ class WallSparksBulletPower : public BulletPower {
 protected:
 	int bouncesLeft;
 
+	virtual void sparkExplode(const Bullet*, const BulletUpdateStruct*);
+
 public:
 	virtual void initialize(Bullet* parent) override;
 	virtual void removeEffects(Bullet* parent) override;
@@ -70,6 +72,9 @@ public:
 
 	//bool modifiesCollisionWithWall = true;
 	virtual InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> modifiedCollisionWithWall(const Bullet*, const Wall*) override;
+
+	//bool modifiesCollisionWithEdge = false; //important: not intended for this power; defined so edge sparks can use it
+	virtual InteractionBoolHolder modifiedEdgeCollision(Bullet*) override;
 
 	WallSparksBulletPower();
 	WallSparksBulletPower(int bounces);

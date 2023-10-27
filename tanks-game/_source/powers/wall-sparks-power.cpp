@@ -63,28 +63,12 @@ WallSparksTankPower::WallSparksTankPower() {
 #include <vector>
 #include "../rng.h"
 
+#include "../collision-handler.h"
 #include "../power-function-helper.h"
 #include "../bullet-manager.h"
 
-InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> WallSparksBulletPower::modifiedCollisionWithWall(const Bullet* b, const Wall* w) {
-	std::shared_ptr<BulletUpdateStruct> b_update;
-	std::shared_ptr<WallUpdateStruct> w_update;
-
-	//first, bounce off wall
-
-	auto result = PowerFunctionHelper::bounceGeneric(b, w);
-	b_update = result.second.firstUpdate;
-	w_update = result.second.secondUpdate;
-	if (result.first) {
-		bouncesLeft--;
-	}
-
-	if (bouncesLeft <= 0) {
-		modifiesCollisionWithWall = false;
-	}
-
-	//second, create more bullets (they lose this power, just like banana)
-
+void WallSparksBulletPower::sparkExplode(const Bullet* b, const BulletUpdateStruct* b_update) {
+	//see BananaBulletPower::bananaExplode()
 	for (int i = 0; i < WallSparksPower::extraBulletsCount; i++) {
 		std::vector<BulletPower*>* bp = new std::vector<BulletPower*>;
 		bp->reserve(b->bulletPowers.size()-1);
@@ -102,9 +86,92 @@ InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> WallSparksBulletPo
 		BulletManager::pushBullet(new Bullet(b->x + b_update->x, b->y + b_update->y, b->r, newAngle, newVelocity, b->getTeamID(), b->getParentIDType(), b->getParentID(), bp, true));
 		delete bp;
 	}
+}
+
+InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> WallSparksBulletPower::modifiedCollisionWithWall(const Bullet* b, const Wall* w) {
+	//see BounceBulletPower::modifiedWallCollision()
+
+	std::shared_ptr<BulletUpdateStruct> b_update;
+	std::shared_ptr<WallUpdateStruct> w_update;
+
+	//first, bounce off wall
+
+	auto result = PowerFunctionHelper::bounceGeneric(b, w);
+	b_update = result.second.firstUpdate;
+	w_update = result.second.secondUpdate;
+	if (result.first) {
+		bouncesLeft--;
+	}
+
+	if (bouncesLeft <= 0) {
+		modifiesCollisionWithWall = false;
+		modifiesEdgeCollision = false; //for edge sparks
+	}
+
+	//second, create more bullets (they lose this power, just like banana)
+
+	sparkExplode(b, b_update.get());
 
 	return { (bouncesLeft < 0), false, b_update, w_update };
 	//feels a little overpowered to let the bullet bounce...
+}
+
+InteractionBoolHolder WallSparksBulletPower::modifiedEdgeCollision(Bullet* b) {
+	//see BounceBulletPower::modifiedEdgeCollision()
+
+	bool bouncedY = false;
+	//bool bouncedX = false;
+	BulletUpdateStruct b_update;
+
+	if (CollisionHandler::partiallyOutOfBounds(b)) {
+		auto result = PowerFunctionHelper::bounceEdgeGenericY(b);
+		if (result.first) {
+			bouncesLeft--;
+			bouncedY = true;
+		}
+		//TODO: update modifiedEdgeCollision to also use update structs
+		sparkExplode(b, &result.second);
+		b->update(&result.second);
+		if (bouncesLeft <= 0) {
+			modifiesCollisionWithWall = false; //for wall sparks
+			modifiesEdgeCollision = false;
+			return { CollisionHandler::fullyOutOfBounds(b) };
+		}
+	}
+
+	if (CollisionHandler::partiallyOutOfBounds(b)) {
+		auto result = PowerFunctionHelper::bounceEdgeGenericX(b);
+		if (result.first) {
+			bouncesLeft--;
+			//bouncedX = true;
+		}
+		//TODO: update modifiedEdgeCollision to also use update structs
+		sparkExplode(b, &result.second);
+		b->update(&result.second);
+		if (bouncesLeft <= 0) {
+			modifiesCollisionWithWall = false; //for wall sparks
+			modifiesEdgeCollision = false;
+			return { CollisionHandler::fullyOutOfBounds(b) };
+		}
+	}
+
+	if (!bouncedY && CollisionHandler::partiallyOutOfBounds(b)) {
+		auto result = PowerFunctionHelper::bounceEdgeGenericY(b);
+		if (result.first) {
+			bouncesLeft--;
+			//bouncedY = true;
+		}
+		//TODO: update modifiedEdgeCollision to also use update structs
+		sparkExplode(b, &result.second);
+		b->update(&result.second);
+		if (bouncesLeft <= 0) {
+			modifiesCollisionWithWall = false; //for wall sparks
+			modifiesEdgeCollision = false;
+			//return { CollisionHandler::fullyOutOfBounds(b) };
+		}
+	}
+
+	return { CollisionHandler::fullyOutOfBounds(b) };
 }
 
 void WallSparksBulletPower::initialize(Bullet* parent) {
@@ -128,5 +195,6 @@ WallSparksBulletPower::WallSparksBulletPower(int bounces) {
 	bouncesLeft = bounces;
 	if (bounces > 0) {
 		modifiesCollisionWithWall = true;
+		//modifiesEdgeCollision = true; //TODO: unsure
 	}
 }
