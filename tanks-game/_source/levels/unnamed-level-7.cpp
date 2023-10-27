@@ -52,25 +52,25 @@ void UnnamedLevel7::initialize() {
 
 	posArr = new double[3]{ patrolRoute0[0], patrolRoute0[1], PI/2 * 0 };
 	constructionData = GenericFactoryConstructionData(3, posArr);
-	constructionData.pushData(4, patrolCount);
+	constructionData.pushData(1, patrolCount);
 	constructionData.pushData(4*2, patrolRoute0);
 	HazardManager::pushCircleHazard("vanilla", "patrolling_turret", constructionData);
 
 	posArr = new double[3]{ patrolRoute1[0], patrolRoute1[1], PI/2 * 1 };
 	constructionData = GenericFactoryConstructionData(3, posArr);
-	constructionData.pushData(4, patrolCount);
+	constructionData.pushData(1, patrolCount);
 	constructionData.pushData(4*2, patrolRoute1);
 	HazardManager::pushCircleHazard("vanilla", "patrolling_turret", constructionData);
 
 	posArr = new double[3]{ patrolRoute2[0], patrolRoute2[1], PI/2 * 2 };
 	constructionData = GenericFactoryConstructionData(3, posArr);
-	constructionData.pushData(4, patrolCount);
+	constructionData.pushData(1, patrolCount);
 	constructionData.pushData(4*2, patrolRoute2);
 	HazardManager::pushCircleHazard("vanilla", "patrolling_turret", constructionData);
 
 	posArr = new double[3]{ patrolRoute3[0], patrolRoute3[1], PI/2 * 3 };
 	constructionData = GenericFactoryConstructionData(3, posArr);
-	constructionData.pushData(4, patrolCount);
+	constructionData.pushData(1, patrolCount);
 	constructionData.pushData(4*2, patrolRoute3);
 	HazardManager::pushCircleHazard("vanilla", "patrolling_turret", constructionData);
 
