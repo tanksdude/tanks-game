@@ -123,12 +123,10 @@ bool RectangularLavaHazard::reasonableLocation() const {
 		}
 	}
 
+	//don't allow the other version, it looks weird
 	for (int i = 0; i < HazardManager::getNumCircleHazards(); i++) {
-		const CircleHazard* ch = HazardManager::getCircleHazard(i);
-		if (ch->getName() != this->getName()) {
-			if (CollisionHandler::partiallyCollided(this, ch)) {
-				return false;
-			}
+		if (CollisionHandler::partiallyCollided(this, HazardManager::getCircleHazard(i))) {
+			return false;
 		}
 	}
 	for (int i = 0; i < HazardManager::getNumRectHazards(); i++) {

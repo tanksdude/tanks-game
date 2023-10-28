@@ -134,12 +134,10 @@ bool CircularLavaHazard::reasonableLocation() const {
 			}
 		}
 	}
+	//don't allow the other version, it looks weird
 	for (int i = 0; i < HazardManager::getNumRectHazards(); i++) {
-		const RectHazard* rh = HazardManager::getRectHazard(i);
-		if (rh->getName() != this->getName()) {
-			if (CollisionHandler::partiallyCollided(this, rh)) {
-				return false;
-			}
+		if (CollisionHandler::partiallyCollided(this, HazardManager::getRectHazard(i))) {
+			return false;
 		}
 	}
 
