@@ -92,6 +92,7 @@ CircleHazard* CircularLavaHazard::factory(const GenericFactoryConstructionData& 
 			return new CircularLavaHazard(x, y, r);
 		}
 	}
+
 	return new CircularLavaHazard(0, 0, 0);
 }
 
@@ -113,7 +114,7 @@ void CircularLavaHazard::pushNewBubble(double radius) {
 	} while ((attempts < 8) && (abs(x0-x1) < r/16 || abs(y0-y1) < r/16));
 
 	if (attempts < 8) {
-		double maxTick = floor(RNG::randFunc()*101) + 200;
+		double maxTick = floor(RNG::randNumInRange(200, 300+1));
 		bubbles.push_back(new LavaBubble(radius, x0/r, y0/r, x1/r, y1/r, maxTick));
 	}
 }
@@ -126,17 +127,19 @@ bool CircularLavaHazard::reasonableLocation() const {
 	}
 
 	for (int i = 0; i < HazardManager::getNumCircleHazards(); i++) {
-		CircleHazard* ch = HazardManager::getCircleHazard(i);
-		if ((ch->getGameID() != this->getGameID()) && (ch->getName() != this->getName())) {
-			//TODO: does this care if it's colliding with another version of itself?
+		const CircleHazard* ch = HazardManager::getCircleHazard(i);
+		if (ch->getName() != this->getName()) {
 			if (CollisionHandler::partiallyCollided(this, ch)) {
 				return false;
 			}
 		}
 	}
 	for (int i = 0; i < HazardManager::getNumRectHazards(); i++) {
-		if (CollisionHandler::partiallyCollided(this, HazardManager::getRectHazard(i))) {
-			return false;
+		const RectHazard* rh = HazardManager::getRectHazard(i);
+		if (rh->getName() != this->getName()) {
+			if (CollisionHandler::partiallyCollided(this, rh)) {
+				return false;
+			}
 		}
 	}
 

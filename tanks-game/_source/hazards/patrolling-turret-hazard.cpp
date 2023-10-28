@@ -318,17 +318,17 @@ bool PatrollingTurretHazard::reasonableLocation() const {
 		testBody->y = getRoutePosY(i);
 		testBody->r = this->r;
 		for (int j = 0; j < HazardManager::getNumCircleHazards(); j++) {
-			CircleHazard* ch = HazardManager::getCircleHazard(j);
-			if (ch->getGameID() != this->getGameID()) {
-				if (ch->getCollisionType() != CircleHazardCollisionType::under && CollisionHandler::partiallyCollided(testBody, ch)) {
+			const CircleHazard* ch = HazardManager::getCircleHazard(j);
+			if (ch->getGameID() != this->getGameID()) [[likely]] {
+				if ((ch->getCollisionType() != CircleHazardCollisionType::under) && CollisionHandler::partiallyCollided(testBody, ch)) {
 					delete testBody;
 					return false;
 				}
 			}
 		}
 		for (int j = 0; j < HazardManager::getNumRectHazards(); j++) {
-			RectHazard* rh = HazardManager::getRectHazard(j);
-			if (rh->getCollisionType() != RectHazardCollisionType::under && CollisionHandler::partiallyCollided(testBody, rh)) {
+			const RectHazard* rh = HazardManager::getRectHazard(j);
+			if ((rh->getCollisionType() != RectHazardCollisionType::under) && CollisionHandler::partiallyCollided(testBody, rh)) {
 				delete testBody;
 				return false;
 			}

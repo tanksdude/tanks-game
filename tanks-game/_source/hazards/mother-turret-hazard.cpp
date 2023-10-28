@@ -204,7 +204,7 @@ inline void MotherTurretHazard::pushInitialChildren(int childCount) {
 
 CircleHazard* MotherTurretHazard::makeTurret(int turretNum) const {
 	GenericFactoryConstructionData constructionData;
-	double angle = getChildTurretAngle(turretNum);
+	const double angle = getChildTurretAngle(turretNum);
 	double* posArr = new double[3]{ this->x + (this->r+childDistFromMother) * cos(angle), this->y + (this->r+childDistFromMother) * sin(angle), angle };
 	constructionData = GenericFactoryConstructionData(3, posArr);
 	CircleHazard* childTurret = HazardDataGovernor::getCircleHazardFactory("vanilla", "targeting_turret")(constructionData);

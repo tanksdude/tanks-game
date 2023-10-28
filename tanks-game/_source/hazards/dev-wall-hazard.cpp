@@ -54,6 +54,7 @@ RectHazard* DevWallHazard::factory(const GenericFactoryConstructionData& args) {
 			return new DevWallHazard(x, y, w, h);
 		}
 	}
+
 	return new DevWallHazard(0, 0, 0, 0);
 }
 
@@ -67,13 +68,17 @@ bool DevWallHazard::reasonableLocation() const {
 	*/
 
 	for (int i = 0; i < HazardManager::getNumCircleHazards(); i++) {
-		if (CollisionHandler::partiallyCollided(this, HazardManager::getCircleHazard(i))) {
-			return false;
+		const CircleHazard* ch = HazardManager::getCircleHazard(i);
+		//note: circle wall hazards don't exist, so this check is unnecessary
+		if (ch->getName() != this->getName()) {
+			if (CollisionHandler::partiallyCollided(this, ch)) {
+				return false;
+			}
 		}
 	}
 	for (int i = 0; i < HazardManager::getNumRectHazards(); i++) {
-		RectHazard* rh = HazardManager::getRectHazard(i);
-		if ((rh->getGameID() != this->getGameID()) && (rh->getName() != this->getName())) {
+		const RectHazard* rh = HazardManager::getRectHazard(i);
+		if (rh->getName() != this->getName()) {
 			if (CollisionHandler::partiallyCollided(this, rh)) {
 				return false;
 			}

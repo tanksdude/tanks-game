@@ -67,6 +67,7 @@ RectHazard* VerticalLightningHazard::factory(const GenericFactoryConstructionDat
 			return new VerticalLightningHazard(x, y, w, h);
 		}
 	}
+
 	return new VerticalLightningHazard(0, 0, 0, 0);
 }
 
@@ -195,7 +196,7 @@ void VerticalLightningHazard::pushDefaultBolt(int num, bool randomize) {
 bool VerticalLightningHazard::validLocation() const {
 	bool wallOnTop = false, wallOnBottom = false, wallInMiddle = false;
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
-		Wall* wa = WallManager::getWall(i);
+		const Wall* wa = WallManager::getWall(i);
 		//I'm not sure numerical comparisons are "costly" to the point where short circuiting is needed
 		if (!(wallOnTop && wallOnBottom) && (wa->x <= x) && (wa->x + wa->w >= x + w)) {
 			if (!wallOnTop && (y + h == wa->y)) {
@@ -221,7 +222,7 @@ bool VerticalLightningHazard::validLocation() const {
 bool VerticalLightningHazard::reasonableLocation() const {
 	bool wallOnLeft = false, wallOnRight = false;
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
-		Wall* wa = WallManager::getWall(i);
+		const Wall* wa = WallManager::getWall(i);
 		if ((wa->y <= y) && (wa->y + wa->y >= y + h)) {
 			if (!wallOnLeft && (x == wa->x + wa->w)) {
 				wallOnLeft = true;
@@ -247,7 +248,7 @@ bool VerticalLightningHazard::reasonableLocation() const {
 		}
 	}
 	for (int i = 0; i < HazardManager::getNumRectHazards(); i++) {
-		RectHazard* rh = HazardManager::getRectHazard(i);
+		const RectHazard* rh = HazardManager::getRectHazard(i);
 		if (rh->getName() != this->getName()) {
 			if (CollisionHandler::partiallyCollided(this, rh)) {
 				return false;

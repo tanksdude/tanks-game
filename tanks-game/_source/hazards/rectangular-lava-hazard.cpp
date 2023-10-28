@@ -94,6 +94,7 @@ RectHazard* RectangularLavaHazard::factory(const GenericFactoryConstructionData&
 			return new RectangularLavaHazard(x, y, w, h);
 		}
 	}
+
 	return new RectangularLavaHazard(0, 0, 0, 0);
 }
 
@@ -110,7 +111,7 @@ void RectangularLavaHazard::pushNewBubble(double radius) {
 	} while ((attempts < 8) && (abs(x0-x1) < w/16 || abs(y0-y1) < h/16)); //JS Tanks used w/8 and h/8
 
 	if (attempts < 8) {
-		double maxTick = floor(RNG::randFunc()*101) + 200;
+		double maxTick = floor(RNG::randNumInRange(200, 300+1));
 		bubbles.push_back(new LavaBubble(radius, x0/w, y0/h, x1/w, y1/h, maxTick));
 	}
 }
@@ -123,13 +124,16 @@ bool RectangularLavaHazard::reasonableLocation() const {
 	}
 
 	for (int i = 0; i < HazardManager::getNumCircleHazards(); i++) {
-		if (CollisionHandler::partiallyCollided(this, HazardManager::getCircleHazard(i))) {
-			return false;
+		const CircleHazard* ch = HazardManager::getCircleHazard(i);
+		if (ch->getName() != this->getName()) {
+			if (CollisionHandler::partiallyCollided(this, ch)) {
+				return false;
+			}
 		}
 	}
 	for (int i = 0; i < HazardManager::getNumRectHazards(); i++) {
-		RectHazard* rh = HazardManager::getRectHazard(i);
-		if ((rh->getGameID() != this->getGameID()) && (rh->getName() != this->getName())) {
+		const RectHazard* rh = HazardManager::getRectHazard(i);
+		if (rh->getName() != this->getName()) {
 			if (CollisionHandler::partiallyCollided(this, rh)) {
 				return false;
 			}

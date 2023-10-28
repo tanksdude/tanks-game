@@ -162,6 +162,7 @@ CircleHazard* GinormousTurretHazard::factory(const GenericFactoryConstructionDat
 			return new GinormousTurretHazard(x, y, a);
 		}
 	}
+
 	return new GinormousTurretHazard(0, 0, 0);
 }
 
@@ -171,9 +172,9 @@ void GinormousTurretHazard::turnTowardsTank(const Tank* t) {
 	//this is hacky
 }
 
-inline CircleHazard* GinormousTurretHazard::makeTurret(int turretNum) const {
+CircleHazard* GinormousTurretHazard::makeTurret(int turretNum) const {
 	GenericFactoryConstructionData constructionData;
-	double angle = getChildTurretAngle(turretNum);
+	const double angle = getChildTurretAngle(turretNum);
 	double* posArr = new double[3]{ this->x + (this->r+childDistFromMother) * cos(angle), this->y + (this->r+childDistFromMother) * sin(angle), angle };
 	constructionData = GenericFactoryConstructionData(3, posArr);
 	Game_ID* id = new Game_ID[1]{ this->getGameID() };

@@ -105,6 +105,7 @@ CircleHazard* StationaryTurretHazard::factory(const GenericFactoryConstructionDa
 			return new StationaryTurretHazard(x, y, a);
 		}
 	}
+
 	return new StationaryTurretHazard(0, 0, 0);
 }
 
@@ -163,8 +164,8 @@ bool StationaryTurretHazard::reasonableLocation() const {
 	}
 
 	for (int i = 0; i < HazardManager::getNumCircleHazards(); i++) {
-		CircleHazard* ch = HazardManager::getCircleHazard(i);
-		if (ch->getGameID() != this->getGameID()) {
+		const CircleHazard* ch = HazardManager::getCircleHazard(i);
+		if (ch->getGameID() != this->getGameID()) [[likely]] {
 			if (CollisionHandler::partiallyCollided(this, ch)) {
 				return false;
 			}

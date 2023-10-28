@@ -75,6 +75,7 @@ RectHazard* RectangularLightningHazard::factory(const GenericFactoryConstruction
 			return new RectangularLightningHazard(x, y, w, h);
 		}
 	}
+
 	return new RectangularLightningHazard(0, 0, 0, 0);
 }
 
@@ -209,7 +210,7 @@ void RectangularLightningHazard::pushDefaultBolt(int num, bool randomize) {
 
 bool RectangularLightningHazard::validLocation() const {
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
-		Wall* wa = WallManager::getWall(i);
+		const Wall* wa = WallManager::getWall(i);
 		if (CollisionHandler::partiallyCollidedIgnoreEdge(wa, this)) {
 			return false;
 		}
@@ -219,7 +220,7 @@ bool RectangularLightningHazard::validLocation() const {
 
 bool RectangularLightningHazard::reasonableLocation() const {
 	for (int i = 0; i < HazardManager::getNumCircleHazards(); i++) {
-		CircleHazard* ch = HazardManager::getCircleHazard(i);
+		const CircleHazard* ch = HazardManager::getCircleHazard(i);
 		if (ch->getName() != this->getName()) {
 			if (CollisionHandler::partiallyCollided(this, ch)) {
 				return false;
@@ -227,7 +228,7 @@ bool RectangularLightningHazard::reasonableLocation() const {
 		}
 	}
 	for (int i = 0; i < HazardManager::getNumRectHazards(); i++) {
-		RectHazard* rh = HazardManager::getRectHazard(i);
+		const RectHazard* rh = HazardManager::getRectHazard(i);
 		if (rh->getName() != this->getName()) {
 			if (CollisionHandler::partiallyCollided(this, rh)) {
 				return false;

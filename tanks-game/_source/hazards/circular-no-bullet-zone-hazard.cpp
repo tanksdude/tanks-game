@@ -129,6 +129,7 @@ CircleHazard* CircularNoBulletZoneHazard::factory(const GenericFactoryConstructi
 			return new CircularNoBulletZoneHazard(x, y, r);
 		}
 	}
+
 	return new CircularNoBulletZoneHazard(0, 0, 0);
 }
 
@@ -140,16 +141,19 @@ bool CircularNoBulletZoneHazard::reasonableLocation() const {
 	}
 
 	for (int i = 0; i < HazardManager::getNumCircleHazards(); i++) {
-		CircleHazard* ch = HazardManager::getCircleHazard(i);
-		if ((ch->getGameID() != this->getGameID()) && (ch->getName() != this->getName())) {
+		const CircleHazard* ch = HazardManager::getCircleHazard(i);
+		if (ch->getName() != this->getName()) {
 			if (CollisionHandler::partiallyCollided(this, ch)) {
 				return false;
 			}
 		}
 	}
 	for (int i = 0; i < HazardManager::getNumRectHazards(); i++) {
-		if (CollisionHandler::partiallyCollided(this, HazardManager::getRectHazard(i))) {
-			return false;
+		const RectHazard* rh = HazardManager::getRectHazard(i);
+		if (rh->getName() != this->getName()) {
+			if (CollisionHandler::partiallyCollided(this, rh)) {
+				return false;
+			}
 		}
 	}
 
