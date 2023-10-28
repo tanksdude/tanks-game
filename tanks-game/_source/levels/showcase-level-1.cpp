@@ -1,4 +1,4 @@
-#include "unnamed-level-5.h"
+#include "showcase-level-1.h"
 
 #include "../constants.h"
 #include <iostream>
@@ -10,26 +10,24 @@
 #include "../wall-manager.h"
 #include "../hazard-manager.h"
 
-ColorValueHolder UnnamedLevel5::getDefaultColor() const {
+ColorValueHolder ShowcaseLevel1::getDefaultColor() const {
 	return ColorValueHolder(1, 1, 1);
 }
 
-std::unordered_map<std::string, float> UnnamedLevel5::getWeights() const {
+std::unordered_map<std::string, float> ShowcaseLevel1::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "dev", 0.0f });
 	weights.insert({ "random-dev", 0.0f });
 	return weights;
 }
 
-void UnnamedLevel5::initialize() {
+void ShowcaseLevel1::initialize() {
 	ResetThings::tankPositionReset();
 
 	ColorValueHolder color = getDefaultColor();
 	PositionHolder pos;
 	GenericFactoryConstructionData constructionData;
 	double* posArr;
-	//std::string* types;
-	//std::string* names;
 
 	//simply a test level showing how the old ginormous turret would have worked (its old behavior was so lame it had to be changed)
 
@@ -61,8 +59,8 @@ void UnnamedLevel5::initialize() {
 	HazardManager::pushRectHazard("vanilla", "no_bullet_zone", constructionData);
 }
 
-Level* UnnamedLevel5::factory() {
-	return new UnnamedLevel5();
+Level* ShowcaseLevel1::factory() {
+	return new ShowcaseLevel1();
 }
 
-UnnamedLevel5::UnnamedLevel5() { return; }
+ShowcaseLevel1::ShowcaseLevel1() { return; }

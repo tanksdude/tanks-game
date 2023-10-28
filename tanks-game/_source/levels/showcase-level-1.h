@@ -1,9 +1,9 @@
 #pragma once
 #include "../level.h"
 
-class UnnamedLevel7 : public Level {
+class ShowcaseLevel1 : public Level {
 public:
-	virtual std::string getName() const override { return "unnamed7"; }
+	virtual std::string getName() const override { return "showcase1"; }
 	virtual ColorValueHolder getDefaultColor() const override;
 	virtual std::vector<std::string> getLevelTypes() const override {
 		std::vector<std::string> types = std::vector<std::string>{ "dev", "random-dev" };
@@ -13,7 +13,7 @@ public:
 
 	virtual void initialize() override;
 
-	UnnamedLevel7();
-	virtual ~UnnamedLevel7() { return; }
+	ShowcaseLevel1();
+	virtual ~ShowcaseLevel1() { return; }
 	static Level* factory();
 };

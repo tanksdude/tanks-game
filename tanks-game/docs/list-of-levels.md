@@ -253,14 +253,6 @@ Just a test level with a Ginormous Turret. At least functions as a level, just n
 
 Tested "enclosing" the main part of the level. There's definitely a nugget of something usable here.
 
-## [DEV] Unnamed Level 5
-
-* Types: "dev", "random-dev"
-* Internal name: `unnamed5`
-* Default color: `(1.0, 1.0, 1.0)`
-
-Showcase of something where Ginormous Turret's old behavior made sense. Ginormous Turret, back when it was made solely because "big turret funny" without an actual plan, would shoot out a bunch of big bullets at once that could destroy walls. Since that was objectively bad and unfinished behavior, Ginormous Turret now behaves very differently, but I made this as a reminder to that time.
-
 ## [DEV] Unnamed Level 6
 
 * Types: "dev", "random-dev"
@@ -268,14 +260,6 @@ Showcase of something where Ginormous Turret's old behavior made sense. Ginormou
 * Default color: `(1.0, 1.0, 1.0)`
 
 Very unfinished test level featuring a different starting position.
-
-## [DEV] Unnamed Level 7
-
-* Types: "dev", "random-dev"
-* Internal name: `unnamed7`
-* Default color: `(1.0, 1.0, 1.0)`
-
-Test level with four symmetric Patrolling Turrets. Not worth pursuing further, but it is interesting.
 
 ## [DEV] Unnamed Level 8
 
@@ -292,6 +276,22 @@ Basically finished test level featuring a *very* different starting position. No
 * Default color: `(1.0, 1.0, 1.0)`
 
 Tried a different starting position with some walls good for Wall Sparks. Not a good level.
+
+## [DEV] Showcase Level 1
+
+* Types: "dev", "random-dev"
+* Internal name: `showcase1`
+* Default color: `(1.0, 1.0, 1.0)`
+
+Showcase of something where Ginormous Turret's old behavior made sense. Ginormous Turret, back when it was made solely because "big turret funny" without an actual plan, would shoot out a bunch of big bullets at once that could destroy walls. Since that was objectively bad and unfinished behavior, Ginormous Turret now behaves very differently, but I made this as a reminder to that time.
+
+## [DEV] Showcase Level 2
+
+* Types: "dev", "random-dev"
+* Internal name: `showcase2`
+* Default color: `(1.0, 1.0, 1.0)`
+
+Test level with four symmetric Patrolling Turrets. Not worth pursuing further, but it is interesting.
 
 ## [DEV] No Walls 1
 
@@ -406,11 +406,11 @@ These are the types custom levels are not allowed to have, unless `[MODS] ModSaf
 * Unnamed Level 2
 * Unnamed Level 3
 * Unnamed Level 4
-* Unnamed Level 5
 * Unnamed Level 6
-* Unnamed Level 7
 * Unnamed Level 8
 * Unnamed Level 9
+* Showcase Level 1
+* Showcase Level 2
 * No Walls 1
 * Timed Reward
 
@@ -424,10 +424,10 @@ These are the types custom levels are not allowed to have, unless `[MODS] ModSaf
 * Unnamed Level 2
 * Unnamed Level 3
 * Unnamed Level 4
-* Unnamed Level 5
 * Unnamed Level 6
-* Unnamed Level 7
 * Unnamed Level 8
 * Unnamed Level 9
+* Showcase Level 1
+* Showcase Level 2
 * No Walls 1
 * Timed Reward

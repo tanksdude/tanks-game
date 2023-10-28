@@ -1,4 +1,4 @@
-#include "unnamed-level-7.h"
+#include "showcase-level-2.h"
 
 #include "../constants.h"
 #include <algorithm> //std::rotate_copy
@@ -11,18 +11,18 @@
 #include "../wall-manager.h"
 #include "../hazard-manager.h"
 
-ColorValueHolder UnnamedLevel7::getDefaultColor() const {
+ColorValueHolder ShowcaseLevel2::getDefaultColor() const {
 	return ColorValueHolder(1, 1, 1);
 }
 
-std::unordered_map<std::string, float> UnnamedLevel7::getWeights() const {
+std::unordered_map<std::string, float> ShowcaseLevel2::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "dev", 0.25f });
 	weights.insert({ "random-dev", 0.25f });
 	return weights;
 }
 
-void UnnamedLevel7::initialize() {
+void ShowcaseLevel2::initialize() {
 	//based on unnamed3
 
 	ResetThings::tankPositionReset(ResetThings::default_tankToEdgeDist, GAME_HEIGHT*(3.0/5), 3);
@@ -89,8 +89,8 @@ void UnnamedLevel7::initialize() {
 	LevelHelper::pushSymmetricPowerups_LR(GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-(40+20)-(20)/2, "vanilla", "homing");
 }
 
-Level* UnnamedLevel7::factory() {
-	return new UnnamedLevel7();
+Level* ShowcaseLevel2::factory() {
+	return new ShowcaseLevel2();
 }
 
-UnnamedLevel7::UnnamedLevel7() { return; }
+ShowcaseLevel2::ShowcaseLevel2() { return; }

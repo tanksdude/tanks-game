@@ -147,11 +147,11 @@
     <ClCompile Include="_source\custom-power-interpreter.cpp" />
     <ClCompile Include="_source\level-effects\magnetism-level-effect.cpp" />
     <ClCompile Include="_source\levels\old-portal-level.cpp" />
+    <ClCompile Include="_source\levels\showcase-level-1.cpp" />
+    <ClCompile Include="_source\levels\showcase-level-2.cpp" />
     <ClCompile Include="_source\levels\unnamed-level-3.cpp" />
     <ClCompile Include="_source\levels\unnamed-level-4.cpp" />
-    <ClCompile Include="_source\levels\unnamed-level-5.cpp" />
     <ClCompile Include="_source\levels\unnamed-level-6.cpp" />
-    <ClCompile Include="_source\levels\unnamed-level-7.cpp" />
     <ClCompile Include="_source\levels\unnamed-level-8.cpp" />
     <ClCompile Include="_source\levels\unnamed-level-9.cpp" />
     <ClCompile Include="_source\levels\untraditional-divider-level.cpp" />
@@ -300,11 +300,11 @@
     <ClInclude Include="_source\custom-power-interpreter.h" />
     <ClInclude Include="_source\level-effects\magnetism-level-effect.h" />
     <ClInclude Include="_source\levels\old-portal-level.h" />
+    <ClInclude Include="_source\levels\showcase-level-1.h" />
+    <ClInclude Include="_source\levels\showcase-level-2.h" />
     <ClInclude Include="_source\levels\unnamed-level-3.h" />
     <ClInclude Include="_source\levels\unnamed-level-4.h" />
-    <ClInclude Include="_source\levels\unnamed-level-5.h" />
     <ClInclude Include="_source\levels\unnamed-level-6.h" />
-    <ClInclude Include="_source\levels\unnamed-level-7.h" />
     <ClInclude Include="_source\levels\unnamed-level-8.h" />
     <ClInclude Include="_source\levels\unnamed-level-9.h" />
     <ClInclude Include="_source\levels\untraditional-divider-level.h" />

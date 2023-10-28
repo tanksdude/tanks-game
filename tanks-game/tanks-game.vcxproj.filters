@@ -450,13 +450,13 @@
     <ClCompile Include="_source\powers\banana-split-power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="_source\levels\unnamed-level-5.cpp">
+    <ClCompile Include="_source\levels\showcase-level-1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="_source\levels\unnamed-level-6.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="_source\levels\unnamed-level-7.cpp">
+    <ClCompile Include="_source\levels\showcase-level-2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="_source\levels\unnamed-level-8.cpp">
@@ -950,13 +950,13 @@
     <ClInclude Include="_source\powers\banana-split-power.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="_source\levels\unnamed-level-5.h">
+    <ClInclude Include="_source\levels\showcase-level-1.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="_source\levels\unnamed-level-6.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="_source\levels\unnamed-level-7.h">
+    <ClInclude Include="_source\levels\showcase-level-2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="_source\levels\unnamed-level-8.h">
