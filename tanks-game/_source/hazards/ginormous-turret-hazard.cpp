@@ -329,9 +329,11 @@ CircleHazard* GinormousTurretHazard::randomizingFactory(double x_start, double y
 		angle = RNG::randFunc() * (2*PI);
 	}
 
+	const double realRadius = (TANK_RADIUS*4) * 1.25 + (TANK_RADIUS/2);
+
 	do {
-		xpos = RNG::randFunc() * (area_width - 2*(TANK_RADIUS*4)) + (x_start + (TANK_RADIUS*4));
-		ypos = RNG::randFunc() * (area_height - 2*(TANK_RADIUS*4)) + (y_start + (TANK_RADIUS*4));
+		xpos = RNG::randFunc() * (area_width - 2*realRadius) + (x_start + realRadius);
+		ypos = RNG::randFunc() * (area_height - 2*realRadius) + (y_start + realRadius);
 		CircleHazard* testGinormousTurret = new GinormousTurretHazard(xpos, ypos, angle);
 		if (testGinormousTurret->reasonableLocation()) {
 			randomized = testGinormousTurret;

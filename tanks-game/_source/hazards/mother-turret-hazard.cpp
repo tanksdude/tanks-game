@@ -395,7 +395,7 @@ bool MotherTurretHazard::isPointedAt(int turretNum) const {
 
 bool MotherTurretHazard::reasonableLocation() const {
 	for (int i = 0; i < maxChildTurrets; i++) {
-		TargetingTurretHazard* testChild = (TargetingTurretHazard*)makeTurret(i);
+		CircleHazard* testChild = makeTurret(i);
 		if (!testChild->reasonableLocation()) {
 			delete testChild;
 			return false;
@@ -410,7 +410,7 @@ bool MotherTurretHazard::reasonableLocation() const {
 	}
 	//probably enough
 
-	return TargetingTurretHazard::reasonableLocation();
+	return TargetingTurretHazard::reasonableLocation(); //this tests whether it can see the tank, which is unnecessary, but oh well
 }
 
 void MotherTurretHazard::draw() const {
@@ -626,9 +626,11 @@ CircleHazard* MotherTurretHazard::randomizingFactory(double x_start, double y_st
 		angle = RNG::randFunc() * (2*PI);
 	}
 
+	const double realRadius = (TANK_RADIUS*2) * 1.75 + (TANK_RADIUS/2);
+
 	do {
-		xpos = RNG::randFunc() * (area_width - 2*(TANK_RADIUS*2)) + (x_start + (TANK_RADIUS*2));
-		ypos = RNG::randFunc() * (area_height - 2*(TANK_RADIUS*2)) + (y_start + (TANK_RADIUS*2));
+		xpos = RNG::randFunc() * (area_width - 2*realRadius) + (x_start + realRadius);
+		ypos = RNG::randFunc() * (area_height - 2*realRadius) + (y_start + realRadius);
 		CircleHazard* testMotherTurret = new MotherTurretHazard(xpos, ypos, angle);
 		if (testMotherTurret->reasonableLocation()) {
 			randomized = testMotherTurret;
