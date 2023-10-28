@@ -1,5 +1,4 @@
 #pragma once
-//#include "../power.h"
 #include "dev-long-invincible-named-power.h"
 
 #include "../constants.h"

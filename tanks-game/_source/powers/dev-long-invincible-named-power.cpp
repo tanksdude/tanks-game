@@ -30,14 +30,6 @@ DevLongInvincibleNamedPower::DevLongInvincibleNamedPower() : InvincibleNamedPowe
 
 
 
-void DevLongInvincibleNamedTankPower::initialize(Tank* parent) {
-	//nothing
-}
-
-void DevLongInvincibleNamedTankPower::removeEffects(Tank* parent) {
-	//nothing
-}
-
 BulletPower* DevLongInvincibleNamedTankPower::makeBulletPower() const {
 	return new DevLongInvincibleNamedBulletPower();
 }
@@ -48,14 +40,6 @@ DevLongInvincibleNamedTankPower::DevLongInvincibleNamedTankPower() : InvincibleN
 }
 
 
-
-void DevLongInvincibleNamedBulletPower::initialize(Bullet* parent) {
-	//nothing
-}
-
-void DevLongInvincibleNamedBulletPower::removeEffects(Bullet* parent) {
-	//nothing
-}
 
 TankPower* DevLongInvincibleNamedBulletPower::makeTankPower() const {
 	return new DevLongInvincibleNamedTankPower();

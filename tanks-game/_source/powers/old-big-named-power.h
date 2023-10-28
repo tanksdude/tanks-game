@@ -1,5 +1,4 @@
 #pragma once
-//#include "../power.h"
 #include "big-named-power.h"
 
 class OldBigNamedPower : public BigNamedPower {
@@ -28,9 +27,6 @@ public:
 
 class OldBigNamedTankPower : public BigNamedTankPower {
 public:
-	virtual void initialize(Tank* parent) override;
-	virtual void removeEffects(Tank* parent) override;
-
 	virtual ColorValueHolder getColor() const override {
 		return OldBigNamedPower::getClassColor();
 	}
@@ -48,9 +44,6 @@ public:
 
 class OldBigNamedBulletPower : public BigNamedBulletPower {
 public:
-	virtual void initialize(Bullet* parent) override;
-	virtual void removeEffects(Bullet* parent) override;
-
 	virtual ColorValueHolder getColor() const override {
 		return OldBigNamedPower::getClassColor();
 	}

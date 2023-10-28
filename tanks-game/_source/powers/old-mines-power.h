@@ -1,19 +1,13 @@
 #pragma once
-//#include "../power.h"
 #include "mines-power.h"
 
 class OldMinesPower : public MinesPower {
-public: //tank stuff
-	//static const double bulletDistance; //percentage from center (beginning of cannon) to end of cannon
-
 public:
 	virtual std::vector<std::string> getPowerTypes() const override {
-		std::vector<std::string> types = std::vector<std::string>{ "old" };
-		//no random-old
+		std::vector<std::string> types = std::vector<std::string>{ "old" }; //no random-old
 		return types;
 	}
 	virtual std::unordered_map<std::string, float> getWeights() const override;
-	//virtual std::vector<std::string> getPowerAttributes() const override; //follows MinesPower
 
 	virtual std::string getName() const override { return OldMinesPower::getClassName(); }
 	static std::string getClassName() { return "old_mines"; }
@@ -34,9 +28,6 @@ public:
 
 class OldMinesTankPower : public MinesTankPower {
 public:
-	virtual void initialize(Tank* parent) override;
-	virtual void removeEffects(Tank* parent) override;
-
 	virtual ColorValueHolder getColor() const override {
 		return OldMinesPower::getClassColor();
 	}
@@ -56,9 +47,6 @@ public:
 
 class OldMinesBulletPower : public MinesBulletPower {
 public:
-	virtual void initialize(Bullet* parent) override;
-	virtual void removeEffects(Bullet* parent) override;
-
 	virtual ColorValueHolder getColor() const override {
 		return OldMinesPower::getClassColor();
 	}

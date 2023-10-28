@@ -179,9 +179,8 @@ BounceBulletPower::BounceBulletPower(int bounces) {
 	maxTime = -1;
 
 	this->bouncesLeft = bounces;
-	if (bounces > 0) {
+	if (bounces > 0) [[likely]] {
 		modifiesCollisionWithWall = true;
-		//modifiedCollisionWithWallCanWorkWithOthers = false;
 		modifiesEdgeCollision = true;
 	}
 }

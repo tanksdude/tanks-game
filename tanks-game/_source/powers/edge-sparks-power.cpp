@@ -48,11 +48,7 @@ TankPower* EdgeSparksBulletPower::makeTankPower() const {
 EdgeSparksBulletPower::EdgeSparksBulletPower() : EdgeSparksBulletPower(WallSparksPower::maxBounces) {}
 
 EdgeSparksBulletPower::EdgeSparksBulletPower(int bounces) : WallSparksBulletPower(bounces) {
-	//timeLeft = 0;
-	//maxTime = -1;
-
-	//bouncesLeft = bounces;
-	if (bounces > 0) {
+	if (bounces > 0) [[likely]] {
 		modifiesEdgeCollision = true;
 	}
 	

@@ -193,7 +193,7 @@ WallSparksBulletPower::WallSparksBulletPower(int bounces) {
 	maxTime = -1;
 
 	bouncesLeft = bounces;
-	if (bounces > 0) {
+	if (bounces > 0) [[likely]] {
 		modifiesCollisionWithWall = true;
 		//modifiesEdgeCollision = true; //TODO: unsure
 	}

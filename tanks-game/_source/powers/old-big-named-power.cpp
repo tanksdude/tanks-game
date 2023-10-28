@@ -31,14 +31,6 @@ OldBigNamedPower::OldBigNamedPower() : BigNamedPower() {
 
 
 
-void OldBigNamedTankPower::initialize(Tank* parent) {
-	//nothing
-}
-
-void OldBigNamedTankPower::removeEffects(Tank* parent) {
-	//nothing
-}
-
 BulletPower* OldBigNamedTankPower::makeBulletPower() const {
 	return new OldBigNamedBulletPower();
 }
@@ -48,14 +40,6 @@ OldBigNamedTankPower::OldBigNamedTankPower() : BigNamedTankPower() {
 }
 
 
-
-void OldBigNamedBulletPower::initialize(Bullet* parent) {
-	//nothing
-}
-
-void OldBigNamedBulletPower::removeEffects(Bullet* parent) {
-	//nothing
-}
 
 TankPower* OldBigNamedBulletPower::makeTankPower() const {
 	return new OldBigNamedTankPower();

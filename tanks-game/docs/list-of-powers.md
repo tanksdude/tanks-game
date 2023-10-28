@@ -41,7 +41,7 @@ Bounces off walls and edges. Can bounce a maximum of 16 times.
 * Tank modifiers (new): half acceleration, half radius, half shooting cooldown
 * Bullet modifiers (new): quarter speed
 
-Like Bounce, but the tank's radius is halved. Why? Well, it was one of the first powerups (fourth, right after speed, invincible, and wallhack), and I wanted to make it a little more different and stand out. I think, I dunno, it was a long time ago. Maybe I just thought it was funny seeing a small tank shooting tiny bouncing bullets, maybe I wanted to have a powerup change the radius to test things out. Regardless, this power was made just for that reason.
+Like Bounce, but the tank's radius is halved. Why? Well, it was one of the first powerups (fourth, right after Speed, Invincible, and Wallhack), and I wanted to make it a little more different and stand out. I think, I dunno, it was a long time ago. Maybe I just thought it was funny seeing a small tank shooting tiny bouncing bullets, maybe I wanted to have a powerup change the radius to test things out. Regardless, this power was made just for that reason.
 
 ## Multishot
 
@@ -168,7 +168,7 @@ Shoots 16 bullets, ±60° from the cannon. Eventually decays. Used to stick to wal
 
 When the bullet comes to a stop, it explodes into 8 smaller bullets! Very fun!
 
-Why "banana"? It was named after the [banana bomb from Worms](https://worms.fandom.com/wiki/Banana_Bomb) because I thought every cluster bomb in games were called "banana bombs." Turns out [Worms](https://en.wikipedia.org/wiki/Worms_(series)) is the only place where it's called that, but no way do I want to rename this *awesome* power to "cluster" or something.
+Why "banana"? It was named after the [banana bomb from Worms](https://worms.fandom.com/wiki/Banana_Bomb) because I thought every cluster bomb in games were called "banana bombs." Turns out [Worms](https://en.wikipedia.org/wiki/Worms_(series%29) is the only place where it's called that, but no way do I want to rename this *awesome* power to "cluster" or something.
 
 ## Godmode
 
@@ -202,7 +202,7 @@ Only appears in Hiding Places level and Mine Heaven level because it doesn't rea
 * Internal name: `old_mines`
 * Tank modifiers (new): half shooting cooldown (stacks)
 
-Identical to Mines, except the shooting speed multiplier stacks (because that's how all powers worked in JS Tanks). Was necessary to recreate the feel in the Mine Heaven level.
+Identical to Mines, except the shooting speed multiplier stacks (because that's how all powers worked in JS Tanks). Was necessary to recreate the feel of the center powerup in the Mine Heaven level.
 
 ## Shotgun
 
@@ -378,7 +378,7 @@ Sorta like Triple, except the angle variation comes at the cannon point instead 
 * Tank modifiers: half shooting cooldown
 * Bullet modifiers: half speed
 
-Multishot, but all the bullets face the same way. Inspiration came from my very first implementation of cannon points, where Multishot did that. The error was quickly rectified but the memory lived on, so I made this.
+Multishot, but all the bullets face the same way. Inspiration came from my very first implementation of tank shooting with cannon points, where Multishot did that. The error was quickly rectified but the memory lived on, so I made this.
 
 ## [DEV] "Ancient" MegaDeath
 
@@ -397,7 +397,7 @@ Fun fact: MegaDeath actually did appear in JS Tanks! It only appears in the mixi
 * Internal name: `banana_split`
 * Attributes: "stack", "mix"
 * Color: `#99BB33` (dull gold with more green (because Shotgun is green and this power was loosely based on Banana+Shotgun))
-* Bullet modifiers: -1/8 acceleration
+* Bullet modifiers: -1/8 acceleration (same as Banana)
 
 When the bullet comes to a stop, it Bananas into 4 bullets at set angles. Worth investigating further.
 

@@ -1,7 +1,5 @@
 #include "ultra-bounce-power.h"
 
-//const int UltraBouncePower::maxBounces = 16;
-
 std::unordered_map<std::string, float> UltraBouncePower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "dev", .5f });
@@ -46,14 +44,6 @@ UltraBouncePower::UltraBouncePower() : BouncePower() {
 }
 
 
-
-void UltraBounceTankPower::initialize(Tank* parent) {
-	//nothing
-}
-
-void UltraBounceTankPower::removeEffects(Tank* parent) {
-	//nothing
-}
 
 BulletPower* UltraBounceTankPower::makeBulletPower() const {
 	return new UltraBounceBulletPower();
@@ -151,14 +141,6 @@ InteractionBoolHolder UltraBounceBulletPower::modifiedEdgeCollision(Bullet* b) {
 	}
 
 	return { CollisionHandler::fullyOutOfBounds(b) };
-}
-
-void UltraBounceBulletPower::initialize(Bullet* parent) {
-	//nothing
-}
-
-void UltraBounceBulletPower::removeEffects(Bullet* parent) {
-	//nothing
 }
 
 BulletPower* UltraBounceBulletPower::makeDuplicate() const {

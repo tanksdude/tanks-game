@@ -1,18 +1,13 @@
 #pragma once
-//#include "../power.h"
 #include "bounce-power.h"
 
 class UltraBouncePower : public BouncePower {
-public: //bullet stuff
-	//static const int maxBounces;
-
 public:
 	virtual std::vector<std::string> getPowerTypes() const override {
 		std::vector<std::string> types = std::vector<std::string>{ "dev", "random-dev" };
 		return types;
 	}
 	virtual std::unordered_map<std::string, float> getWeights() const override;
-	//virtual std::vector<std::string> getPowerAttributes() const override;
 
 	virtual std::string getName() const override { return UltraBouncePower::getClassName(); }
 	static std::string getClassName() { return "ultrabounce"; }
@@ -31,9 +26,6 @@ public:
 
 class UltraBounceTankPower : public BounceTankPower {
 public:
-	virtual void initialize(Tank* parent) override;
-	virtual void removeEffects(Tank* parent) override;
-
 	virtual ColorValueHolder getColor() const override {
 		return UltraBouncePower::getClassColor();
 	}
@@ -47,13 +39,7 @@ public:
 
 
 class UltraBounceBulletPower : public BounceBulletPower {
-protected:
-	//int bouncesLeft;
-
 public:
-	virtual void initialize(Bullet* parent) override;
-	virtual void removeEffects(Bullet* parent) override;
-
 	virtual ColorValueHolder getColor() const override {
 		return UltraBouncePower::getClassColor();
 	}

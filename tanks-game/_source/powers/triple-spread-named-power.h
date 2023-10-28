@@ -1,5 +1,4 @@
 #pragma once
-//#include "../power.h"
 #include "triple-named-power.h"
 
 class TripleSpreadNamedPower : public TripleNamedPower {

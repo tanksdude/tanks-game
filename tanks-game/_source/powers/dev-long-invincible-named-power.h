@@ -1,5 +1,4 @@
 #pragma once
-//#include "../power.h"
 #include "invincible-named-power.h"
 
 class DevLongInvincibleNamedPower : public InvincibleNamedPower {
@@ -9,10 +8,6 @@ public:
 		return types;
 	}
 	virtual std::unordered_map<std::string, float> getWeights() const override;
-	virtual std::vector<std::string> getPowerAttributes() const override {
-		std::vector<std::string> attributes = std::vector<std::string>{ "mix" };
-		return attributes;
-	}
 
 	virtual std::string getName() const override { return DevLongInvincibleNamedPower::getClassName(); }
 	static std::string getClassName() { return "longinvincible"; }
@@ -31,9 +26,6 @@ public:
 
 class DevLongInvincibleNamedTankPower : public InvincibleNamedTankPower {
 public:
-	virtual void initialize(Tank* parent) override;
-	virtual void removeEffects(Tank* parent) override;
-
 	virtual ColorValueHolder getColor() const override {
 		return DevLongInvincibleNamedPower::getClassColor();
 	}
@@ -51,9 +43,6 @@ public:
 
 class DevLongInvincibleNamedBulletPower : public InvincibleNamedBulletPower {
 public:
-	virtual void initialize(Bullet* parent) override;
-	virtual void removeEffects(Bullet* parent) override;
-
 	virtual ColorValueHolder getColor() const override {
 		return DevLongInvincibleNamedPower::getClassColor();
 	}

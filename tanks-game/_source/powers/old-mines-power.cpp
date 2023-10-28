@@ -30,15 +30,6 @@ OldMinesPower::OldMinesPower() : MinesPower() {
 
 
 
-void OldMinesTankPower::initialize(Tank* parent) {
-	//nothing
-	//in JS, the tank's shooting cooldown was reset
-}
-
-void OldMinesTankPower::removeEffects(Tank* parent) {
-	//nothing
-}
-
 BulletPower* OldMinesTankPower::makeBulletPower() const {
 	return new OldMinesBulletPower();
 }
@@ -48,14 +39,6 @@ OldMinesTankPower::OldMinesTankPower() : MinesTankPower() {
 }
 
 
-
-void OldMinesBulletPower::initialize(Bullet* parent) {
-	//nothing
-}
-
-void OldMinesBulletPower::removeEffects(Bullet* parent) {
-	//nothing
-}
 
 TankPower* OldMinesBulletPower::makeTankPower() const {
 	return new OldMinesTankPower();

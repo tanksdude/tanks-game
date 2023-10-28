@@ -1,5 +1,4 @@
 #pragma once
-//#include "../power.h"
 #include "bounce-power.h"
 
 class OldBouncePower : public BouncePower {
@@ -31,9 +30,6 @@ public:
 
 class OldBounceTankPower : public BounceTankPower {
 public:
-	virtual void initialize(Tank* parent) override;
-	virtual void removeEffects(Tank* parent) override;
-
 	virtual ColorValueHolder getColor() const override {
 		return OldBouncePower::getClassColor();
 	}
@@ -51,27 +47,13 @@ public:
 
 
 class OldBounceBulletPower : public BounceBulletPower {
-protected:
-	//int bouncesLeft;
-
 public:
-	virtual void initialize(Bullet* parent) override;
-	virtual void removeEffects(Bullet* parent) override;
-
 	virtual ColorValueHolder getColor() const override {
 		return OldBouncePower::getClassColor();
 	}
 
 	virtual BulletPower* makeDuplicate() const override { return new OldBounceBulletPower(); } //I don't think bounces were passed on in JS
 	virtual TankPower* makeTankPower() const override;
-
-	/*
-	//bool modifiesCollisionWithWall = true;
-	virtual InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> modifiedCollisionWithWall(const Bullet*, const Wall*) override;
-
-	//bool modifiesCollisionWithEdge = true;
-	virtual InteractionBoolHolder modifiedEdgeCollision(Bullet*) override;
-	*/
 
 	virtual double getBulletSpeedMultiplier() const override { return .25; }
 
