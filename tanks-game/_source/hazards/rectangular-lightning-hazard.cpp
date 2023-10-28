@@ -79,7 +79,7 @@ RectHazard* RectangularLightningHazard::factory(const GenericFactoryConstruction
 	return new RectangularLightningHazard(0, 0, 0, 0);
 }
 
-void RectangularLightningHazard::specialEffectCircleCollision(Circle* c) {
+void RectangularLightningHazard::specialEffectCircleCollision(const Circle* c) {
 	//TODO: is this done?
 	Circle* centerPoint = getCenterPoint();
 	double intersectionX, intersectionY;
@@ -159,7 +159,7 @@ void RectangularLightningHazard::specialEffectCircleCollision(Circle* c) {
 	delete centerPoint;
 }
 
-void RectangularLightningHazard::specialEffectTankCollision(Tank* t) {
+void RectangularLightningHazard::specialEffectTankCollision(const Tank* t) {
 	//if bolts are being randomized, clear them, and mark that they've been cleared
 	if (!boltsNeeded) {
 		clearBolts();
@@ -175,7 +175,7 @@ void RectangularLightningHazard::specialEffectTankCollision(Tank* t) {
 	specialEffectCircleCollision(t);
 }
 
-void RectangularLightningHazard::specialEffectBulletCollision(Bullet* b) {
+void RectangularLightningHazard::specialEffectBulletCollision(const Bullet* b) {
 	if (!boltsNeeded) {
 		clearBolts();
 	}

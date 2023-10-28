@@ -74,13 +74,13 @@ public:
 	bool modifiesTankCollision = false;
 	virtual void modifiedTankCollision(Tank*);
 	bool hasSpecialEffectTankCollision = false;
-	virtual void specialEffectTankCollision(Tank*) { return; } //always activated before modifiedTankCollision
+	virtual void specialEffectTankCollision(const Tank*) { return; } //always activated before modifiedTankCollision
 
 	virtual bool actuallyCollided(const Bullet*) const { return true; } //precondition: currently and partially collided with bullet
 	bool modifiesBulletCollision = false;
 	virtual void modifiedBulletCollision(Bullet*);
 	bool hasSpecialEffectBulletCollision = false;
-	virtual void specialEffectBulletCollision(Bullet*) { return; } //always activated before modifiedBulletCollision
+	virtual void specialEffectBulletCollision(const Bullet*) { return; } //always activated before modifiedBulletCollision
 
 protected:
 	virtual float getDefaultOffense() const = 0;

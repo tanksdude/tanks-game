@@ -24,7 +24,7 @@ public:
 	virtual std::unordered_map<std::string, float> getWeights() const override;
 
 protected:
-	virtual void specialEffectCircleCollision(Circle*) override;
+	virtual void specialEffectCircleCollision(const Circle*) override;
 
 public:
 	virtual bool validLocation() const override;

@@ -71,7 +71,7 @@ RectHazard* HorizontalLightningHazard::factory(const GenericFactoryConstructionD
 	return new HorizontalLightningHazard(0, 0, 0, 0);
 }
 
-void HorizontalLightningHazard::specialEffectCircleCollision(Circle* c) {
+void HorizontalLightningHazard::specialEffectCircleCollision(const Circle* c) {
 	//TODO: confirm everything is good
 	Circle* leftPoint = getLeftPoint();
 	Circle* rightPoint = getRightPoint();

@@ -27,15 +27,15 @@ public:
 	//bool modifiesTankCollision = true;
 	virtual void modifiedTankCollision(Tank*) override { return; }
 	//bool hasSpecialEffectTankCollision = true;
-	virtual void specialEffectTankCollision(Tank*) override;
+	virtual void specialEffectTankCollision(const Tank*) override;
 
 	virtual bool actuallyCollided(const Bullet*) const override { return currentlyActive; }
 	//bool modifiesBulletCollision = true;
 	virtual void modifiedBulletCollision(Bullet*) override { return; }
 	//bool hasSpecialEffectBulletCollision = true;
-	virtual void specialEffectBulletCollision(Bullet*) override;
+	virtual void specialEffectBulletCollision(const Bullet*) override;
 protected:
-	virtual void specialEffectCircleCollision(Circle*); //tanks and bullets are both circles, so calculating the bolt positions would be the same
+	virtual void specialEffectCircleCollision(const Circle*); //tanks and bullets are both circles, so calculating the bolt positions would be the same
 
 protected:
 	virtual float getDefaultOffense() const override { return .5; } //1.5?

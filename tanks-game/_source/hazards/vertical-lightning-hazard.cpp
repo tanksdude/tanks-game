@@ -71,7 +71,7 @@ RectHazard* VerticalLightningHazard::factory(const GenericFactoryConstructionDat
 	return new VerticalLightningHazard(0, 0, 0, 0);
 }
 
-void VerticalLightningHazard::specialEffectCircleCollision(Circle* c) {
+void VerticalLightningHazard::specialEffectCircleCollision(const Circle* c) {
 	//TODO: confirm everything is good
 	Circle* bottomPoint = getBottomPoint();
 	Circle* topPoint = getTopPoint();
