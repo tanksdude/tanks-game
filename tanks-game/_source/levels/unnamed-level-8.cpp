@@ -13,14 +13,14 @@
 #include "../tank-manager.h"
 
 ColorValueHolder UnnamedLevel8::getDefaultColor() const {
-	//TODO: very dark green
+	//TODO: very dark green?
 	return ColorValueHolder(1, 1, 1);
 }
 
 std::unordered_map<std::string, float> UnnamedLevel8::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "dev", 0.0f });
-	weights.insert({ "random-dev", 0.0f });
+	weights.insert({ "dev", 1.0f });
+	weights.insert({ "random-dev", 1.0f });
 	return weights;
 }
 

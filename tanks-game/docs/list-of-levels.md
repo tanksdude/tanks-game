@@ -285,6 +285,14 @@ Test level with four symmetric Patrolling Turrets. Not worth pursuing further, b
 
 Basically finished test level featuring a *very* different starting position. Not sure if it should be turned into a real level because it's very different, but that alone is enough to push it to random-vanilla...
 
+## [DEV] Unnamed Level 9
+
+* Types: "dev", "random-dev"
+* Internal name: `unnamed9`
+* Default color: `(1.0, 1.0, 1.0)`
+
+Tried a different starting position with some walls good for Wall Sparks. Not a good level.
+
 ## [DEV] No Walls 1
 
 * Types: "dev", "random-dev"
@@ -402,6 +410,7 @@ These are the types custom levels are not allowed to have, unless `[MODS] ModSaf
 * Unnamed Level 6
 * Unnamed Level 7
 * Unnamed Level 8
+* Unnamed Level 9
 * No Walls 1
 * Timed Reward
 
@@ -419,5 +428,6 @@ These are the types custom levels are not allowed to have, unless `[MODS] ModSaf
 * Unnamed Level 6
 * Unnamed Level 7
 * Unnamed Level 8
+* Unnamed Level 9
 * No Walls 1
 * Timed Reward
