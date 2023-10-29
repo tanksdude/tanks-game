@@ -86,6 +86,7 @@ void UnnamedLevel9::initialize() {
 	HazardManager::pushCircleHazard("vanilla", "lightning", constructionData);
 
 	//doesn't feel complete, don't know what to add or change
+	//TODO: the answer is probably to not do the different starting position
 }
 
 Level* UnnamedLevel9::factory() {

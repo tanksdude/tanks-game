@@ -275,7 +275,31 @@ Basically finished test level featuring a *very* different starting position. No
 * Internal name: `unnamed9`
 * Default color: `(1.0, 1.0, 1.0)`
 
-Tried a different starting position with some walls good for Wall Sparks. Not a good level.
+Tried a different starting position with some walls good for Wall Sparks. Not a good level. Might be better without the different starting position.
+
+## [DEV] Unnamed Level 10
+
+* Types: "dev", "random-dev"
+* Internal name: `unnamed10`
+* Default color: `(1.0, 1.0, 1.0)`
+
+Alternate version of Unnamed Level 9.
+
+## [DEV] Unnamed Level 11
+
+* Types: "dev", "random-dev"
+* Internal name: `unnamed11`
+* Default color: `(1.0, 1.0, 1.0)`
+
+Test level aiming to force the tanks to carefully go through corridors with turrets shooting down them. Since Stationary Turrets don't fire very fast, it doesn't work very well. Wouldn't really work as a real level anyway, since the tanks are always going to end up in the center at the same time, which is kinda boring.
+
+## [DEV] Unnamed Level 12
+
+* Types: "dev", "random-dev"
+* Internal name: `unnamed12`
+* Default color: `(1.0, 1.0, 1.0)`
+
+Alternate version of Unnamed Level 6. Much more boring though.
 
 ## [DEV] Showcase Level 1
 
@@ -409,6 +433,9 @@ These are the types custom levels are not allowed to have, unless `[MODS] ModSaf
 * Unnamed Level 6
 * Unnamed Level 8
 * Unnamed Level 9
+* Unnamed Level 10
+* Unnamed Level 11
+* Unnamed Level 12
 * Showcase Level 1
 * Showcase Level 2
 * No Walls 1
@@ -427,6 +454,9 @@ These are the types custom levels are not allowed to have, unless `[MODS] ModSaf
 * Unnamed Level 6
 * Unnamed Level 8
 * Unnamed Level 9
+* Unnamed Level 10
+* Unnamed Level 11
+* Unnamed Level 12
 * Showcase Level 1
 * Showcase Level 2
 * No Walls 1

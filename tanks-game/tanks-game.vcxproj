@@ -149,6 +149,9 @@
     <ClCompile Include="_source\levels\old-portal-level.cpp" />
     <ClCompile Include="_source\levels\showcase-level-1.cpp" />
     <ClCompile Include="_source\levels\showcase-level-2.cpp" />
+    <ClCompile Include="_source\levels\unnamed-level-10.cpp" />
+    <ClCompile Include="_source\levels\unnamed-level-11.cpp" />
+    <ClCompile Include="_source\levels\unnamed-level-12.cpp" />
     <ClCompile Include="_source\levels\unnamed-level-3.cpp" />
     <ClCompile Include="_source\levels\unnamed-level-4.cpp" />
     <ClCompile Include="_source\levels\unnamed-level-6.cpp" />
@@ -302,6 +305,9 @@
     <ClInclude Include="_source\levels\old-portal-level.h" />
     <ClInclude Include="_source\levels\showcase-level-1.h" />
     <ClInclude Include="_source\levels\showcase-level-2.h" />
+    <ClInclude Include="_source\levels\unnamed-level-10.h" />
+    <ClInclude Include="_source\levels\unnamed-level-11.h" />
+    <ClInclude Include="_source\levels\unnamed-level-12.h" />
     <ClInclude Include="_source\levels\unnamed-level-3.h" />
     <ClInclude Include="_source\levels\unnamed-level-4.h" />
     <ClInclude Include="_source\levels\unnamed-level-6.h" />
