@@ -19,7 +19,7 @@ protected:
 	//Game_ID trackingID; //if ==this->getGameID(), then it's not tracking
 
 	int maxChildTurrets; //treated as constant
-	std::vector<Game_ID> childTurretIDs; //length = maxChildTurrets (vector for ease of use)
+	std::vector<Game_ID> childTurretIDs; //length = maxChildTurrets (vector for ease of use, can't use std::array)
 	std::vector<bool> childTurretAlive;
 	int targetingNum; //[0, maxChildTurrets)
 	bool targetingChild; //basically the targeting bool, but the distinction allows GinormousTurretHazard to work correctly

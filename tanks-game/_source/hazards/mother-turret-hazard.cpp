@@ -158,7 +158,7 @@ inline void MotherTurretHazard::pushInitialChildren(int childCount) {
 	 */
 	//after splitting the working area, place the initial children in there, with the same pattern for each part
 
-	if (childCount >= maxChildTurrets) {
+	if (childCount >= maxChildTurrets) [[unlikely]] {
 		for (int i = 0; i < maxChildTurrets; i++) {
 			pushChild(i);
 		}

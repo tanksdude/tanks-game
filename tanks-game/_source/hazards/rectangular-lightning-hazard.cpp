@@ -612,8 +612,8 @@ RectHazard* RectangularLightningHazard::randomizingFactory(double x_start, doubl
 			width = RNG::randFunc() * (80 - 30) + 30; //TODO: where should these constants be?
 			height = RNG::randFunc() * (80 - 30) + 30; //TODO: where should these constants be?
 		}
-		xpos = RNG::randFunc() * (area_width - 2*width) + (x_start + width);
-		ypos = RNG::randFunc() * (area_height - 2*height) + (y_start + height);
+		xpos = RNG::randFunc() * (area_width - width) + x_start;
+		ypos = RNG::randFunc() * (area_height - height) + y_start;
 		RectHazard* testRectangularLightning = new RectangularLightningHazard(xpos, ypos, width, height);
 		if (testRectangularLightning->reasonableLocation()) {
 			randomized = testRectangularLightning;

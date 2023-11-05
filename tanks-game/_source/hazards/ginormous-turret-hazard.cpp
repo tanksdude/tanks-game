@@ -226,7 +226,7 @@ void GinormousTurretHazard::tick_notifyChildren(Game_ID id) {
 			continue;
 		}
 		CircleHazard* ch = HazardManager::getCircleHazardByID(childTurretIDs[i]);
-		if (ch != nullptr) { //sanity check
+		if (ch != nullptr) [[likely]] { //sanity check
 			MinionTurret* mt = static_cast<MinionTurret*>(ch);
 			mt->setTarget(this->getGameID(), id);
 		}
@@ -239,7 +239,7 @@ void GinormousTurretHazard::tick_stopChildren() {
 			continue;
 		}
 		CircleHazard* ch = HazardManager::getCircleHazardByID(childTurretIDs[i]);
-		if (ch != nullptr) { //sanity check
+		if (ch != nullptr) [[likely]] { //sanity check
 			MinionTurret* mt = static_cast<MinionTurret*>(ch);
 			mt->unsetTarget(this->getGameID());
 		}
