@@ -60,6 +60,7 @@
 #include "levels/developer-level-1.h"
 #include "levels/developer-level-2.h"
 #include "levels/developer-level-3.h"
+#include "levels/developer-level-4.h"
 #include "levels/unnamed-level-1.h"
 #include "levels/unnamed-level-2.h"
 #include "levels/unnamed-level-3.h"
@@ -101,6 +102,7 @@
 #include "hazards/circular-no-bullet-zone-hazard.h"
 //dev hazards:
 #include "hazards/dev-wall-hazard.h"
+#include "hazards/spiral-lava-hazard.h"
 
 //powers:
 #include "powers/speed-power.h"
@@ -296,6 +298,7 @@ int main(int argc, char** argv) {
 	HazardDataGovernor::addCircleHazardFactory(CircularNoBulletZoneHazard::factory, CircularNoBulletZoneHazard::randomizingFactory);
 	//dev:
 	HazardDataGovernor::addRectHazardFactory(DevWallHazard::factory, DevWallHazard::randomizingFactory);
+	HazardDataGovernor::addRectHazardFactory(SpiralLavaHazard::factory, SpiralLavaHazard::randomizingFactory);
 
 	//level effects
 	//vanilla (some are also "old"):
@@ -342,6 +345,7 @@ int main(int argc, char** argv) {
 	LevelDataGovernor::addLevelFactory(DeveloperLevel1::factory);
 	LevelDataGovernor::addLevelFactory(DeveloperLevel2::factory);
 	LevelDataGovernor::addLevelFactory(DeveloperLevel3::factory);
+	LevelDataGovernor::addLevelFactory(DeveloperLevel4::factory);
 	LevelDataGovernor::addLevelFactory(UnnamedLevel1::factory);
 	LevelDataGovernor::addLevelFactory(UnnamedLevel2::factory);
 	LevelDataGovernor::addLevelFactory(UnnamedLevel3::factory);

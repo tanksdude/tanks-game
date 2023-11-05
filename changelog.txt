@@ -23,7 +23,7 @@
     * very minimal, but at least there's now an easy-to-read list of everything in the game
 * graphics: batched rendering
     * still not very efficient, but it's something
-* slight multithreading!
+* TODO: slight multithreading!
     * set number of threads in the ini
 * mild QoL improvements to displaying things
     * tank multi-powers are more obvious
@@ -39,9 +39,10 @@
     * custom powers exist!
     * growing and degrading powerups mix better
     * option to make "extra cannons" (on triple and shotgun) behave like real cannons
+    * TODO: swarm
     * [dev] color changing: changes color based on proximity to other tank
     * [dev] backwards movement: by pressing the special key (currently e and /), the tank moves backwards
-    * [dev] wall sparks: makes extra bullets when it hits a wall
+    * [dev] wall sparks and edge sparks: makes extra bullets when it hits a wall or edge (these are different powerups)
     * [dev] triple spread: the bullets spread out from the point they were shot at instead of being parallel
     * [dev] ring shooter: shoots a ring of 8 bullets; like multishot if everything shot the same direction
     * [dev] "ancient" megadeath: an accelerating, tracking, wallhacking bullet
@@ -49,21 +50,26 @@
     * patrolling turret: moves along its path
     * mother turret: creates turrets
     * ginormous turret: tells its turrets where to shoot
+    * spiral lava: lava spirals out from center
+    * TODO: cloud
     * TODO: teleporter?, reflecktor?
     * TODO: [dev] selective no bullet zone (doesn't affect a certain teamID)
 * levels:
     * TODO: old versions of some levels (they're barely different but may as well include them)
         * evened corridors might be the only one
+        * well, the classic walls are technically different
     * custom levels exist!
     * "tight patrolling corridor"
     * "dangerous center"
     * "untraditional divider"
     * [dev] "unnamed3" and "unnamed4": tests with mother turret and ginormous turret
+    * [dev] a bunch of unnamed levels: some decent, some not
     * portal level, without the portals (just so every old level is present)
     * moved concealed powerups, lightning corners, and lone turret levels out of vanilla because they were boring
     * renamed "corridor" level back to "evened corridors" because I realized most levels followed the "adjective_noun" pattern
 * level effects:
-    * magnetism
+    * magnetism (unfortunately doesn't work well with respawning powerups)
+    * TODO: [dev] tiny tanks: makes tanks real small because it's funny and technically allows them to get into smaller gaps
 * minor things:
     * update to VS2022
     * fullscreen toggle key changed to F11
@@ -71,6 +77,7 @@
     * *massive* cleanup across the entire project, multiple times; no seriously it was a lot
     * [dev] power, other stuff is poison: walls and hazards kill on contact
     * [dev] power, "weird extra cannons": just a test of adding extra cannon points at weird angles
+    * [dev] power, colorless long invincible: long invincible but doesn't show
     * [dev] hazard, "wall": it's a "wall," that's it
     * attempted: tried GLFW instead of FreeGLUT, didn't like it
 

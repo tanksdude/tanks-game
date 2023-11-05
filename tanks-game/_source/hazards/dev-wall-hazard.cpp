@@ -26,7 +26,7 @@ DevWallHazard::DevWallHazard(double xpos, double ypos, double width, double heig
 	y = ypos;
 	w = width;
 	h = height;
-	if (LevelManager::getNumLevels() > 0) {
+	if (LevelManager::getNumLevels() > 0) [[likely]] {
 		color = LevelManager::getLevel(0)->getDefaultColor();
 	} else {
 		color = ColorValueHolder(0, 0, 0);
@@ -130,7 +130,7 @@ void DevWallHazard::poseDraw(DrawingLayers layer) const {
 			break;
 
 		default:
-			std::cerr << "WARNING: unknown DrawingLayer for DevWallHazard::poseDraw!" << std::endl;
+			std::cerr << "WARNING: unknown DrawingLayer for " + getName() + " poseDraw!" << std::endl;
 			[[fallthrough]];
 		case DrawingLayers::normal:
 			poseDraw();
@@ -178,7 +178,7 @@ void DevWallHazard::ghostDraw(DrawingLayers layer, float alpha) const {
 			break;
 
 		default:
-			std::cerr << "WARNING: unknown DrawingLayer for DevWallHazard::ghostDraw!" << std::endl;
+			std::cerr << "WARNING: unknown DrawingLayer for " + getName() + " ghostDraw!" << std::endl;
 			[[fallthrough]];
 		case DrawingLayers::normal:
 			ghostDraw(alpha);

@@ -104,6 +104,16 @@ Occasionally, some bubbles may appear, though they are visual-only.
 
 Bullets are unable to even graze this hazard. However, tanks handle it just fine.
 
+## Spiral Lava
+
+* Types: "vanilla", "random-vanilla", "random"
+* Internal name: `spiral_lava`
+* Construction type: standard square
+* Collision type: solid
+* Defense: 2 (`DESTRUCTION_TIER`)
+
+Lava spirals out from the center! Don't get mesmerized, since the lava is made of Lava!
+
 ## [DEV] "Wall"
 
 * Types: "dev", "random-dev"
@@ -130,6 +140,7 @@ It was made because I realized I had no "solid" rectangular hazards. Just a test
 * Vertical Lightning
 * Lava
 * No Bullet Zone
+* Spiral Lava
 * Minion Turret (inaccessible)
 
 ## random-vanilla
@@ -144,6 +155,7 @@ It was made because I realized I had no "solid" rectangular hazards. Just a test
 * Vertical Lightning
 * Lava
 * No Bullet Zone
+* Spiral Lava
 
 ## old
 
@@ -177,6 +189,7 @@ It was made because I realized I had no "solid" rectangular hazards. Just a test
 * Vertical Lightning
 * Lava
 * No Bullet Zone
+* Spiral Lava
 
 ## dev
 

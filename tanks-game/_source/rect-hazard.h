@@ -38,7 +38,8 @@ struct RectFactoryInformation {
 enum class RectHazardConstructionTypes /*: unsigned char */ {
 	constructionIsTooComplex, //I'm thinking pipes would have this
 	simpleConstruction, //only x and y required (what would use this? fake powerups?)
-	standardConstruction //x, y, w, and h required
+	standardConstruction, //x, y, w, and h required
+	standardSquareConstruction, //x, y, and w required
 };
 
 enum class RectHazardCollisionType {

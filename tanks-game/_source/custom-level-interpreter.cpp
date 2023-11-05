@@ -1418,6 +1418,18 @@ inline void CustomLevelInterpreter::stringToAction_RHAZARD(const std::vector<std
 			rhazard_parameters = new double[4]{ centerX-width/2, centerY-height/2, width, height };
 			break;
 
+		case RectHazardConstructionTypes::standardSquareConstruction:
+			try {
+				centerX = std::stod(words[2]);
+				centerY = std::stod(words[3]);
+				width   = std::stod(words[4]);
+			}
+			catch (const std::exception&) {
+				throw std::runtime_error("unable to parse values");
+			}
+			rhazard_parameters = new double[3]{ centerX-width/2, centerY-width/2, width };
+			break;
+
 		default:
 			throw std::runtime_error("unknown rect hazard construction type");
 			//break;

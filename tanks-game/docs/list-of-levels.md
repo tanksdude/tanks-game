@@ -219,6 +219,14 @@ A test level originally made for testing Banana by being very empty. Has *a lot*
 
 Another test level, probably made because I got sick of adding powerups to Dev2 and needed some walls. Features a Mother Turret and a Patrolling Turret.
 
+## [DEV] Developer Level 4
+
+* Types: "dev", "random-dev"
+* Internal name: `dev4`
+* Default color: `(0.25, 0.25, 0.25)`
+
+Needed another empty-ish level to start putting things in.
+
 ## [DEV] Unnamed Level 1
 
 * Types: "dev", "random-dev"
@@ -426,6 +434,7 @@ These are the types custom levels are not allowed to have, unless `[MODS] ModSaf
 * Developer Level 1
 * Developer Level 2
 * Developer Level 3
+* Developer Level 4
 * Unnamed Level 1
 * Unnamed Level 2
 * Unnamed Level 3
@@ -447,6 +456,7 @@ These are the types custom levels are not allowed to have, unless `[MODS] ModSaf
 * Developer Level 1
 * Developer Level 2
 * Developer Level 3
+* Developer Level 4
 * Unnamed Level 1
 * Unnamed Level 2
 * Unnamed Level 3
