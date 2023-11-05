@@ -3,6 +3,7 @@
 
 class GameThing {
 	friend class GameManager;
+	friend struct GameThingComparator;
 
 private:
 	Game_ID gameID;
@@ -19,4 +20,11 @@ protected:
 private:
 	GameThing() = delete;
 	GameThing(const GameThing&) = delete;
+};
+
+struct GameThingComparator {
+	//allows something like an std::map to sort
+	constexpr bool operator()(const GameThing& lhs, const GameThing& rhs) const noexcept {
+		return lhs.gameID < rhs.gameID;
+	}
 };
