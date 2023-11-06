@@ -246,7 +246,7 @@ void CircularNoBulletZoneHazard::ghostDraw(float alpha) const {
 
 	Renderer::SubmitBatchedDraw(coordsAndColor_background, (Circle::numOfSides+1)*(2+4), body_indices, Circle::numOfSides*3);
 
-	//red X:
+	//red X (JS didn't have this, though the circular version didn't exist in JS):
 	ColorValueHolder color_extra = X_COLOR;
 	color_extra = ColorMixer::mix(BackgroundRect::getBackColor(), color_extra, alpha);
 

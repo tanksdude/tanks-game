@@ -48,7 +48,7 @@ SpiralLavaHazard::SpiralLavaHazard(double xpos, double ypos, double width, int c
 
 	//canAcceptPowers = false;
 
-	//future note: "challenges" should be a thing, and one challenge is to touch this hazard (with a small cycle) and get away in time
+	//future note: "challenges" should be a thing, and one challenge is to touch this hazard (with a short cycle) and get away in time
 }
 
 SpiralLavaHazard::SpiralLavaHazard(double xpos, double ypos, double width, int count) : SpiralLavaHazard(xpos, ypos, width, count, 80, PI) {}

@@ -45,10 +45,10 @@ CircularLightningHazard::CircularLightningHazard(double xpos, double ypos, doubl
 	//flexible = false;
 
 	maxBolts = 1;
-	lengthOfBolt = 4;
+	lengthOfBolt = 4; //JS: 2 (though the circular version didn't exist in JS)
 	bolts.reserve(maxBolts);
 	boltTick = 0;
-	boltCycle = 4;
+	boltCycle = 4; //JS: none (though the circular version didn't exist in JS)
 	boltsNeeded = false;
 
 	//canAcceptPowers = false;

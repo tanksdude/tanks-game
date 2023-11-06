@@ -40,10 +40,10 @@ RectangularLightningHazard::RectangularLightningHazard(double xpos, double ypos,
 	currentlyActive = false;
 
 	maxBolts = 1;
-	lengthOfBolt = 4; //TODO: figure out logic for constraining this to make it look pretty
+	lengthOfBolt = 4; //JS: 2 //TODO: figure out logic for constraining this to make it look pretty
 	bolts.reserve(maxBolts);
 	boltTick = 0;
-	boltCycle = 4;
+	boltCycle = 4; //JS: none
 	boltsNeeded = false;
 
 	//canAcceptPowers = false;

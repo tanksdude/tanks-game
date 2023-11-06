@@ -165,7 +165,7 @@ void RectangularNoBulletZoneHazard::ghostDraw(float alpha) const {
 
 	Renderer::SubmitBatchedDraw(coordsAndColor_background, 4 * (2+4), indices_background, 2 * 3);
 
-	//red X:
+	//red X (JS didn't have this):
 	ColorValueHolder color_extra = X_COLOR;
 	color_extra = ColorMixer::mix(BackgroundRect::getBackColor(), color_extra, alpha);
 	float coordsAndColor_extra[] = {
