@@ -33,6 +33,13 @@ void DeveloperLevel4::initialize() {
 	constructionData = GenericFactoryConstructionData(3, posArr);
 	HazardManager::pushRectHazard("vanilla", "spiral_lava", constructionData);
 
+	for (int i = 0; i < 4; i++) {
+		pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 60, 40, 40);
+		posArr = new double[4]{ pos.x, pos.y, 40, 40 };
+		constructionData = GenericFactoryConstructionData(4, posArr);
+		HazardManager::pushRectHazard("dev", "reflecktor", constructionData);
+	}
+
 	//assumption: TANK_RADIUS=16 (why it would ever be changed is beyond me)
 	PowerupManager::pushPowerup(new PowerSquare(20, 20, "speed"));
 	PowerupManager::pushPowerup(new PowerSquare(40, 20, "wallhack"));

@@ -126,6 +126,18 @@ It's just a wall, except bullets can't bounce off it and turrets don't see it.
 
 It was made because I realized I had no "solid" rectangular hazards. Just a test to make sure that collision type works.
 
+## [DEV] The Reflecktor
+
+* Types: "dev", "random-dev"
+* Internal name: `reflecktor`
+* Construction type: standard
+* Collision type: solid
+* Defense: 2 (`DESTRUCTION_TIER`)
+
+It's a wall that reflects tanks that hit it. Pretty amusing, right?
+
+Why the strange name? It's funnier. That's it. Wanted to make this for long time but never got around to it, probably because it is so simple and there are plenty of better things to make.
+
 # Quick list for types
 
 ## vanilla
@@ -194,8 +206,10 @@ It was made because I realized I had no "solid" rectangular hazards. Just a test
 ## dev
 
 * Wall
+* The Reflecktor
 * Minion Turret (inaccessible)
 
 ## random-dev
 
 * Wall
+* The Reflecktor

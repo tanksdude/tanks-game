@@ -483,6 +483,9 @@
     <ClCompile Include="_source\levels\developer-level-4.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="_source\hazards\reflecktor-hazard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="_source\bullet.h">
@@ -996,6 +999,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="_source\levels\developer-level-4.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="_source\hazards\reflecktor-hazard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -20,9 +20,9 @@
 
 std::unordered_map<std::string, float> SpiralLavaHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "vanilla", 0.5f });
-	weights.insert({ "random-vanilla", 0.5f });
-	weights.insert({ "random", 0.25f });
+	weights.insert({ "vanilla", 0.25f });
+	weights.insert({ "random-vanilla", 0.25f });
+	weights.insert({ "random", 0.125f });
 	return weights;
 }
 

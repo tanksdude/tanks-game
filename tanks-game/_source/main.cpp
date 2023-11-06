@@ -103,6 +103,7 @@
 #include "hazards/spiral-lava-hazard.h"
 //dev hazards:
 #include "hazards/dev-wall-hazard.h"
+#include "hazards/reflecktor-hazard.h"
 
 //powers:
 #include "powers/speed-power.h"
@@ -299,6 +300,7 @@ int main(int argc, char** argv) {
 	HazardDataGovernor::addRectHazardFactory(SpiralLavaHazard::factory, SpiralLavaHazard::randomizingFactory);
 	//dev:
 	HazardDataGovernor::addRectHazardFactory(DevWallHazard::factory, DevWallHazard::randomizingFactory);
+	HazardDataGovernor::addRectHazardFactory(ReflecktorHazard::factory, ReflecktorHazard::randomizingFactory);
 
 	//level effects
 	//vanilla (some are also "old"):
