@@ -19,7 +19,7 @@ protected:
 	double lavaAngleRotate; //default 180deg
 
 protected:
-	virtual inline CircleHazard* makeLavaBlob(int blobNum) const;
+	virtual CircleHazard* makeLavaBlob(int blobNum) const;
 	void pushLavaBlob(int blobNum); //shouldn't need to be virtual
 
 	virtual inline double getLavaBlobAngle(int blobNum, double tickValue) const;

@@ -23,7 +23,7 @@ std::unordered_map<std::string, float> ReflecktorHazard::getWeights() const {
 	return weights;
 }
 
-ReflecktorHazard::ReflecktorHazard(double xpos, double ypos, double width, double height) : RectHazard(DEFAULT_TEAM) {
+ReflecktorHazard::ReflecktorHazard(double xpos, double ypos, double width, double height) : RectHazard(HAZARD_TEAM) {
 	x = xpos;
 	y = ypos;
 	w = width;

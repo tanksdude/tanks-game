@@ -26,7 +26,7 @@ std::unordered_map<std::string, float> SpiralLavaHazard::getWeights() const {
 	return weights;
 }
 
-SpiralLavaHazard::SpiralLavaHazard(double xpos, double ypos, double width, int count, double dist, double rotateAngle) : RectHazard(DEFAULT_TEAM) {
+SpiralLavaHazard::SpiralLavaHazard(double xpos, double ypos, double width, int count, double dist, double rotateAngle) : RectHazard(HAZARD_TEAM) {
 	x = xpos;
 	y = ypos;
 	w = h = width;

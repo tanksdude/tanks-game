@@ -51,7 +51,7 @@
     * mother turret: creates turrets
     * ginormous turret: tells its turrets where to shoot
     * spiral lava: lava spirals out from center
-    * TODO: cloud
+    * [dev] cloud: spits out powerups occasionally
     * TODO: teleporter?, reflecktor?
     * TODO: [dev] selective no bullet zone (doesn't affect a certain teamID)
 * levels:

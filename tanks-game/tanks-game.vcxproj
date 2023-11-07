@@ -145,6 +145,7 @@
   <ItemGroup>
     <ClCompile Include="_source\background-rect.cpp" />
     <ClCompile Include="_source\custom-power-interpreter.cpp" />
+    <ClCompile Include="_source\hazards\cloud-hazard.cpp" />
     <ClCompile Include="_source\hazards\reflecktor-hazard.cpp" />
     <ClCompile Include="_source\hazards\spiral-lava-hazard.cpp" />
     <ClCompile Include="_source\level-effects\magnetism-level-effect.cpp" />
@@ -304,6 +305,7 @@
   <ItemGroup>
     <ClInclude Include="_source\background-rect.h" />
     <ClInclude Include="_source\custom-power-interpreter.h" />
+    <ClInclude Include="_source\hazards\cloud-hazard.h" />
     <ClInclude Include="_source\hazards\reflecktor-hazard.h" />
     <ClInclude Include="_source\hazards\spiral-lava-hazard.h" />
     <ClInclude Include="_source\level-effects\magnetism-level-effect.h" />

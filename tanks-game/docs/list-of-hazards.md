@@ -138,6 +138,19 @@ It's a wall that reflects tanks that hit it. Pretty amusing, right?
 
 Why the strange name? It's funnier. That's it. Wanted to make this for long time but never got around to it, probably because it is so simple and there are plenty of better things to make.
 
+## Cloud
+
+* Types: "dev", "random-dev"
+* Internal name: `cloud`
+* Construction type: complex
+* Collision type: under (though "over" makes more sense but that doesn't exist)
+* Offense: 0
+* Defense: 999 (`HIGH_TIER`)
+
+Occasionally spits out some powerups.
+
+Currently a dev hazard because I haven't finished its drawing function, and it's rather underwhelming.
+
 # Quick list for types
 
 ## vanilla
@@ -207,9 +220,11 @@ Why the strange name? It's funnier. That's it. Wanted to make this for long time
 
 * Wall
 * The Reflecktor
+* Cloud
 * Minion Turret (inaccessible)
 
 ## random-dev
 
 * Wall
 * The Reflecktor
+* Cloud

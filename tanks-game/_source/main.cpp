@@ -104,6 +104,7 @@
 //dev hazards:
 #include "hazards/dev-wall-hazard.h"
 #include "hazards/reflecktor-hazard.h"
+#include "hazards/cloud-hazard.h"
 
 //powers:
 #include "powers/speed-power.h"
@@ -301,6 +302,7 @@ int main(int argc, char** argv) {
 	//dev:
 	HazardDataGovernor::addRectHazardFactory(DevWallHazard::factory, DevWallHazard::randomizingFactory);
 	HazardDataGovernor::addRectHazardFactory(ReflecktorHazard::factory, ReflecktorHazard::randomizingFactory);
+	HazardDataGovernor::addCircleHazardFactory(CloudHazard::factory, CloudHazard::randomizingFactory);
 
 	//level effects
 	//vanilla (some are also "old"):
