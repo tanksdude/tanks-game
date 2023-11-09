@@ -44,6 +44,38 @@ void UnnamedLevel10::initialize() {
 	LevelHelper::pushSymmetricPowerups_LR(GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-60/2, types, names, 2);
 	delete[] types; delete[] names;
 
+	const double centerOffset = 30;
+	types = new std::string[3]{ "vanilla", "dev", "vanilla" };
+	names = new std::string[3]{ "multishot", "inversion", "banana" };
+	LevelHelper::pushSymmetricPowerups_LR(GAME_WIDTH/2, GAME_HEIGHT/2, 20/2 + centerOffset, types, names, 3);
+	delete[] types; delete[] names;
+
+	LevelHelper::pushSymmetricWalls_UD(GAME_WIDTH/2, GAME_HEIGHT/2, centerOffset, 20, 20, color);
+	LevelHelper::pushSymmetricWalls_Corners(GAME_WIDTH/2, GAME_HEIGHT/2, 20/2 + 2*centerOffset, centerOffset, 20, 20, color);
+	//WallManager::pushWall(new Wall(GAME_WIDTH/2 - 20/2, GAME_HEIGHT/2 - centerOffset, 20, 2*centerOffset, color));
+
+	pos = LevelHelper::getSymmetricWallPositions_LR(0, GAME_WIDTH/2, GAME_HEIGHT/2, 20/2 + 2*centerOffset, 20, 2*centerOffset);
+	posArr = new double[4]{ pos.x, pos.y, 20, 2*centerOffset };
+	constructionData = GenericFactoryConstructionData(4, posArr);
+	HazardManager::pushRectHazard("vanilla", "vertical_lightning", constructionData);
+	pos = LevelHelper::getSymmetricWallPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 20/2 + 2*centerOffset, 20, 2*centerOffset);
+	posArr = new double[4]{ pos.x, pos.y, 20, 2*centerOffset };
+	constructionData = GenericFactoryConstructionData(4, posArr);
+	HazardManager::pushRectHazard("vanilla", "vertical_lightning", constructionData);
+
+	posArr = new double[4]{ GAME_WIDTH/2 - 20/2, GAME_HEIGHT/2 - centerOffset, 20, 2*centerOffset };
+	constructionData = GenericFactoryConstructionData(4, posArr);
+	HazardManager::pushRectHazard("vanilla", "vertical_lightning", constructionData);
+
+	for (int i = 0; i < 4; i++) {
+		pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 20/2, centerOffset, 2*centerOffset, 20);
+		posArr = new double[4]{ pos.x, pos.y, 2*centerOffset, 20 };
+		constructionData = GenericFactoryConstructionData(4, posArr);
+		HazardManager::pushRectHazard("vanilla", "horizontal_lightning", constructionData);
+	}
+
+	//old:
+	/*
 	types = new std::string[3]{ "vanilla", "dev", "vanilla" };
 	names = new std::string[3]{ "multishot", "inversion", "banana" };
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, types, names, 3));
@@ -69,6 +101,7 @@ void UnnamedLevel10::initialize() {
 	posArr = new double[4]{ pos.x, pos.y, 2*centerOffset, 20 };
 	constructionData = GenericFactoryConstructionData(4, posArr);
 	HazardManager::pushRectHazard("vanilla", "horizontal_lightning", constructionData);
+	*/
 
 	//honestly a bit worse than unnamed 9
 }

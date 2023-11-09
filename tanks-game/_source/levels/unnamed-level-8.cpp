@@ -25,8 +25,8 @@ std::unordered_map<std::string, float> UnnamedLevel8::getWeights() const {
 }
 
 void UnnamedLevel8::initialize() {
-	TankManager::getTank(0)->x = GAME_WIDTH/2;
-	TankManager::getTank(1)->x = GAME_WIDTH/2;
+	TankManager::getTank(0)->x = GAME_WIDTH/2 - 240/4;
+	TankManager::getTank(1)->x = GAME_WIDTH/2 + 240/4;
 	TankManager::getTank(0)->y = GAME_HEIGHT - 20;
 	TankManager::getTank(1)->y = 20;
 	TankManager::getTank(0)->velocity.setAngle(-PI/2);
