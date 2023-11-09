@@ -88,6 +88,7 @@
 #include "level-effects/invisible-walls-level-effect.h"
 //dev level effects:
 #include "level-effects/dev-symmetric-tanks-level-effect.h"
+#include "level-effects/dev-tiny-tanks-level-effect.h"
 
 //hazards:
 #include "hazards/stationary-turret-hazard.h"
@@ -318,6 +319,7 @@ int main(int argc, char** argv) {
 
 	//dev:
 	LevelDataGovernor::addLevelEffectFactory(DevSymmetricTanksLevelEffect::factory);
+	LevelDataGovernor::addLevelEffectFactory(DevTinyTanksLevelEffect::factory);
 
 	//levels
 	//vanilla (some are also "old"):

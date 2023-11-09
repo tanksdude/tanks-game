@@ -148,6 +148,7 @@
     <ClCompile Include="_source\hazards\cloud-hazard.cpp" />
     <ClCompile Include="_source\hazards\reflecktor-hazard.cpp" />
     <ClCompile Include="_source\hazards\spiral-lava-hazard.cpp" />
+    <ClCompile Include="_source\level-effects\dev-tiny-tanks-level-effect.cpp" />
     <ClCompile Include="_source\level-effects\magnetism-level-effect.cpp" />
     <ClCompile Include="_source\levels\developer-level-4.cpp" />
     <ClCompile Include="_source\levels\old-evened-corridors-level.cpp" />
@@ -311,6 +312,7 @@
     <ClInclude Include="_source\hazards\cloud-hazard.h" />
     <ClInclude Include="_source\hazards\reflecktor-hazard.h" />
     <ClInclude Include="_source\hazards\spiral-lava-hazard.h" />
+    <ClInclude Include="_source\level-effects\dev-tiny-tanks-level-effect.h" />
     <ClInclude Include="_source\level-effects\magnetism-level-effect.h" />
     <ClInclude Include="_source\levels\developer-level-4.h" />
     <ClInclude Include="_source\levels\old-evened-corridors-level.h" />

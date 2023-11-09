@@ -67,7 +67,8 @@
     * moved concealed powerups, lightning corners, and lone turret levels out of vanilla because they are boring
 * level effects:
     * magnetism (unfortunately doesn't work well with respawning powerups)
-    * TODO: [dev] tiny tanks: makes tanks real small because it's funny and technically allows them to get into smaller gaps
+    * [dev] tiny tanks: makes tanks real small because it's funny and technically allows them to get into smaller gaps
+        * TODO: when level effects get added to custom levels, there should a level effect for every tank parameter
 * minor things:
     * update to VS2022
     * fullscreen toggle key changed to F11
@@ -76,8 +77,8 @@
     * [dev] power, other stuff is poison: walls and hazards kill on contact
     * [dev] power, "weird extra cannons": just a test of adding extra cannon points at weird angles
     * [dev] power, colorless long invincible: long invincible but doesn't show
-    * [dev] hazard, "wall": it's a "wall," that's it
     * attempted: tried GLFW instead of FreeGLUT, didn't like it
+        * realistically, should move to it eventually; just accept fullscreen toggle will be lost
 
 0.2.4
 * changed name from "Tanks" to "PowerTanks" so this game might actually become discoverable
