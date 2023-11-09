@@ -55,9 +55,6 @@
     * TODO: teleporter?, reflecktor?
     * TODO: [dev] selective no bullet zone (doesn't affect a certain teamID)
 * levels:
-    * TODO: old versions of some levels (they're barely different but may as well include them)
-        * evened corridors might be the only one
-        * well, the classic walls are technically different
     * custom levels exist!
     * "tight patrolling corridor"
     * "dangerous center"
@@ -65,8 +62,9 @@
     * [dev] "unnamed3" and "unnamed4": tests with mother turret and ginormous turret
     * [dev] a bunch of unnamed levels: some decent, some not
     * portal level, without the portals (just so every old level is present)
-    * moved concealed powerups, lightning corners, and lone turret levels out of vanilla because they were boring
     * renamed "corridor" level back to "evened corridors" because I realized most levels followed the "adjective_noun" pattern
+    * old versions of some levels (evened corridors, few obstacles, hiding places)
+    * moved concealed powerups, lightning corners, and lone turret levels out of vanilla because they are boring
 * level effects:
     * magnetism (unfortunately doesn't work well with respawning powerups)
     * TODO: [dev] tiny tanks: makes tanks real small because it's funny and technically allows them to get into smaller gaps

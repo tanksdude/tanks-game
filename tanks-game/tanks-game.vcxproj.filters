@@ -489,6 +489,15 @@
     <ClCompile Include="_source\hazards\cloud-hazard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="_source\levels\old-evened-corridors-level.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="_source\levels\old-few-obstacles-level.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="_source\levels\old-hiding-places-level.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="_source\bullet.h">
@@ -1008,6 +1017,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="_source\hazards\cloud-hazard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="_source\levels\old-evened-corridors-level.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="_source\levels\old-few-obstacles-level.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="_source\levels\old-hiding-places-level.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

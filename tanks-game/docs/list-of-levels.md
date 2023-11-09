@@ -36,6 +36,14 @@ It's Empty, but with the classic JS walls. In some ways it's better since at lea
 
 Not a horribly interesting level. It was originally made to make Bounce look cool, and the main gimmick was the long corridors leading to a good powerup as a risk vs. reward opportunity. Didn't make the transition from JS Tanks very well, or maybe the fact is was one of the first levels ever means is was never very good. Maybe the Big powerups replacing the Barrier powerups contributed to this. Regardless, there will probably come a day when it is removed from vanilla.
 
+### Old Evened Corridors
+
+* Types: "old", "random-old"
+* Internal name: `old_evened_corridors`
+* Default color: `#2288FF`
+
+Changes the Big powerup back to Barrier.
+
 ## Big Fun
 
 * Types: "vanilla", "random-vanilla", "old", "random-old", "random"
@@ -56,6 +64,14 @@ A level with few obstacles (wow, such an original name). You could rush for the 
 
 In JS Tanks, since power mixing was not very good, the level was not quite as interesting. But now it's my go-to spot to show off how awesome power mixing is!
 
+### Old Few Obstacles
+
+* Types: "old", "random-old"
+* Internal name: `old_few_obstacles`
+* Default color: `#44CC99`
+
+Changes the Speed powerups back to Tracking and adds back the classic JS walls. Honestly the classic walls make it feel way too small, but oh well.
+
 ## Many Hazards
 
 * Types: "vanilla", "random-vanilla", "old", "random-old", "random"
@@ -73,6 +89,14 @@ Have you ever wondered what a really dangerous level looks like? A truly hostile
 As the name suggests, there are little cubbies to hide in. Although their effectiveness may be limited if then enemy grabs Bounce and Multishot.
 
 One of the two levels to have a Mines powerup. Arguably fits somewhat decently.
+
+## Old Hiding Places
+
+* Types: "old", "random-old"
+* Internal name: `old_hiding_places`
+* Default color: `#66AA22`
+
+Changes the Speed powerups back to Barrier and removes the No Bullet Zone in the center, though honestly it should stay.
 
 ## Sneaky Reward
 
@@ -404,6 +428,9 @@ These are the types custom levels are not allowed to have, unless `[MODS] ModSaf
 * Lone Turret
 * Old Empty
 * Old Portal
+* Old Evened Corridors
+* Old Few Obstacles
+* Old Hiding Places
 
 ## random-old
 
@@ -418,6 +445,9 @@ These are the types custom levels are not allowed to have, unless `[MODS] ModSaf
 * Concealed Powerups
 * Lone Turret
 * Old Empty
+* Old Evened Corridors
+* Old Few Obstacles
+* Old Hiding Places
 
 ## random
 

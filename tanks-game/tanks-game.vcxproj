@@ -150,6 +150,9 @@
     <ClCompile Include="_source\hazards\spiral-lava-hazard.cpp" />
     <ClCompile Include="_source\level-effects\magnetism-level-effect.cpp" />
     <ClCompile Include="_source\levels\developer-level-4.cpp" />
+    <ClCompile Include="_source\levels\old-evened-corridors-level.cpp" />
+    <ClCompile Include="_source\levels\old-few-obstacles-level.cpp" />
+    <ClCompile Include="_source\levels\old-hiding-places-level.cpp" />
     <ClCompile Include="_source\levels\old-portal-level.cpp" />
     <ClCompile Include="_source\levels\showcase-level-1.cpp" />
     <ClCompile Include="_source\levels\showcase-level-2.cpp" />
@@ -310,6 +313,9 @@
     <ClInclude Include="_source\hazards\spiral-lava-hazard.h" />
     <ClInclude Include="_source\level-effects\magnetism-level-effect.h" />
     <ClInclude Include="_source\levels\developer-level-4.h" />
+    <ClInclude Include="_source\levels\old-evened-corridors-level.h" />
+    <ClInclude Include="_source\levels\old-few-obstacles-level.h" />
+    <ClInclude Include="_source\levels\old-hiding-places-level.h" />
     <ClInclude Include="_source\levels\old-portal-level.h" />
     <ClInclude Include="_source\levels\showcase-level-1.h" />
     <ClInclude Include="_source\levels\showcase-level-2.h" />

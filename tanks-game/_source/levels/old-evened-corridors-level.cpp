@@ -1,4 +1,4 @@
-#include "evened-corridors-level.h"
+#include "old-evened-corridors-level.h"
 
 #include "../constants.h"
 
@@ -7,18 +7,14 @@
 #include "../powerup-manager.h"
 #include "../wall-manager.h"
 
-std::unordered_map<std::string, float> EvenedCorridorsLevel::getWeights() const {
+std::unordered_map<std::string, float> OldEvenedCorridorsLevel::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "vanilla", 0.5f });
-	weights.insert({ "random-vanilla", 0.5f });
-	weights.insert({ "old", 0.5f }); //shared with OldEvenedCorridorsLevel
-	weights.insert({ "random-old", 0.0f }); //OldEvenedCorridorsLevel used instead
-	weights.insert({ "random", 0.25f });
+	weights.insert({ "old", 0.5f }); //shared with EvenedCorridorsLevel
+	weights.insert({ "random-old", 1.0f });
 	return weights;
 }
 
-void EvenedCorridorsLevel::initialize() {
-	//remember to update OldEvenedCorridorsLevel
+void OldEvenedCorridorsLevel::initialize() {
 	ResetThings::tankPositionReset(40);
 
 	ColorValueHolder color = getDefaultColor();
@@ -41,11 +37,11 @@ void EvenedCorridorsLevel::initialize() {
 		"vanilla", "invincible", "vanilla", "wallhack");
 
 	LevelHelper::pushSymmetricPowerups_Corners_Alternate(GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-(80+32)-18, GAME_HEIGHT/2-(140/2),
-		"vanilla", "speed", "vanilla", "big"); //JS: big=barrier
+		"vanilla", "speed", "vanilla-extra", "barrier");
 }
 
-Level* EvenedCorridorsLevel::factory() {
-	return new EvenedCorridorsLevel();
+Level* OldEvenedCorridorsLevel::factory() {
+	return new OldEvenedCorridorsLevel();
 }
 
-EvenedCorridorsLevel::EvenedCorridorsLevel() { return; }
+OldEvenedCorridorsLevel::OldEvenedCorridorsLevel() { return; }

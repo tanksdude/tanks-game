@@ -1,4 +1,4 @@
-#include "hiding-places-level.h"
+#include "old-hiding-places-level.h"
 
 #include "../constants.h"
 
@@ -8,17 +8,14 @@
 #include "../wall-manager.h"
 #include "../hazard-manager.h"
 
-std::unordered_map<std::string, float> HidingPlacesLevel::getWeights() const {
+std::unordered_map<std::string, float> OldHidingPlacesLevel::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "vanilla-extra", 1.0f });
-	weights.insert({ "random-vanilla", 0.5f });
-	weights.insert({ "old", 0.5f }); //shared with OldHidingPlacesLevel
-	weights.insert({ "random-old", 0.25f }); //shared with OldHidingPlacesLevel
+	weights.insert({ "old", 0.5f }); //shared with HidingPlacesLevel
+	weights.insert({ "random-old", 0.25f }); //shared with HidingPlacesLevel
 	return weights;
 }
 
-void HidingPlacesLevel::initialize() {
-	//remember to update OldHidingPlacesLevel
+void OldHidingPlacesLevel::initialize() {
 	ResetThings::tankPositionReset(40);
 
 	ColorValueHolder color = getDefaultColor();
@@ -41,20 +38,22 @@ void HidingPlacesLevel::initialize() {
 		"vanilla-extra", "shotgun", "vanilla", "multishot");
 
 	LevelHelper::pushSymmetricPowerups_Corners_Alternate(GAME_WIDTH/2, GAME_HEIGHT/2, 60, 80,
-		"vanilla", "bounce", "vanilla", "speed"); //JS: speed=barrier
+		"vanilla", "bounce", "vanilla-extra", "barrier");
 
 	//alternate powers:
 	//LevelHelper::pushSymmetricPowerups_Corners_Alternate(GAME_WIDTH/2, GAME_HEIGHT/2, 60, 80,
 	//	"vanilla", "multishot", "vanilla-extra", "shotgun");
 
 	//not here in the JS level but I feel it should be here:
+	/*
 	posArr = new double[4]{ GAME_WIDTH/2-20/2, GAME_HEIGHT/2-20/2, 20, 20 };
 	constructionData = GenericFactoryConstructionData(4, posArr);
 	HazardManager::pushRectHazard("vanilla", "no_bullet_zone", constructionData);
+	*/
 }
 
-Level* HidingPlacesLevel::factory() {
-	return new HidingPlacesLevel();
+Level* OldHidingPlacesLevel::factory() {
+	return new OldHidingPlacesLevel();
 }
 
-HidingPlacesLevel::HidingPlacesLevel() { return; }
+OldHidingPlacesLevel::OldHidingPlacesLevel() { return; }

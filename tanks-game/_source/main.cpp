@@ -55,6 +55,9 @@
 #include "levels/lone-turret-level.h"
 #include "levels/old-empty-level.h"
 #include "levels/old-portal-level.h" //does not have the portal level effect
+#include "levels/old-evened-corridors-level.h"
+#include "levels/old-few-obstacles-level.h"
+#include "levels/old-hiding-places-level.h"
 //dev levels:
 #include "levels/developer-level-0.h"
 #include "levels/developer-level-1.h"
@@ -342,7 +345,11 @@ int main(int argc, char** argv) {
 	LevelDataGovernor::addLevelFactory(LoneTurretLevel::factory);
 	LevelDataGovernor::addLevelFactory(OldEmptyLevel::factory);
 	LevelDataGovernor::addLevelFactory(OldPortalLevel::factory);
-	//TODO: add old versions of levels when (if) traps are made (but make sure they're disabled since no one likes them)
+	LevelDataGovernor::addLevelFactory(OldEvenedCorridorsLevel::factory);
+	LevelDataGovernor::addLevelFactory(OldFewObstaclesLevel::factory);
+	LevelDataGovernor::addLevelFactory(OldHidingPlacesLevel::factory);
+	//TODO: traps don't exist so these "old" levels technically aren't completely identical
+	//also power mixing can't be disabled anymore, but screw keeping that option
 
 	//dev:
 	LevelDataGovernor::addLevelFactory(DeveloperLevel0::factory);
