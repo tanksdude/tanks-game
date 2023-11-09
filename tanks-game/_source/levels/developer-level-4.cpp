@@ -42,7 +42,8 @@ void DeveloperLevel4::initialize() {
 
 	posArr = new double[3]{ GAME_WIDTH/2 - (60+40/2), GAME_HEIGHT/2, 20 };
 	double* speedArr = new double[2]{ 1.0, -1.0/100 };
-	std::vector<std::vector<std::string>>* powerList = new std::vector<std::vector<std::string>>[1]{{ {"vanilla", "speed"}, {"vanilla", "speed", "vanilla", "speed"} }};
+	std::vector<std::vector<std::string>>* powerList = new std::vector<std::vector<std::string>>{ {"vanilla", "speed"}, {"vanilla", "speed", "vanilla", "speed"} };
+	//technically this ^^^ will call delete[] on a new but the destructor throws an error at the delete[] if it's a new[1]
 	constructionData = GenericFactoryConstructionData(3, posArr);
 	constructionData.pushData(2, speedArr);
 	constructionData.pushData(1, powerList);
@@ -50,7 +51,7 @@ void DeveloperLevel4::initialize() {
 
 	posArr = new double[3]{ GAME_WIDTH/2 + (60+40/2), GAME_HEIGHT/2, 20 };
 	speedArr = new double[2]{ 1.0, -1.0/100 };
-	powerList = new std::vector<std::vector<std::string>>[1]{{ {"dev", "inversion"}, {"dev", "ring_shooter", "dev", "ultrabounce"}, {"old", "old_bounce", "vanilla-extra", "shield", "dev", "annoying"} }};
+	powerList = new std::vector<std::vector<std::string>>{ {"dev", "inversion"}, {"dev", "ring_shooter", "dev", "ultrabounce"}, {"old", "old_bounce", "vanilla-extra", "shield", "dev", "annoying"} };
 	constructionData = GenericFactoryConstructionData(3, posArr);
 	constructionData.pushData(2, speedArr);
 	constructionData.pushData(1, powerList);
