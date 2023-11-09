@@ -4,8 +4,8 @@
 
 std::unordered_map<std::string, float> IceLevelEffect::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "vanilla-extra", .5f });
-	weights.insert({ "old", .25f });
+	weights.insert({ "vanilla-extra", 0.5f });
+	weights.insert({ "old", 0.25f });
 	return weights;
 }
 

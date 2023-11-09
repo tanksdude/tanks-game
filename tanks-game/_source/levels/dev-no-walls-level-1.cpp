@@ -15,8 +15,8 @@ ColorValueHolder DevNoWallsLevel1::getDefaultColor() const {
 
 std::unordered_map<std::string, float> DevNoWallsLevel1::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "dev", .5f });
-	weights.insert({ "random-dev", .5f });
+	weights.insert({ "dev", 0.5f });
+	weights.insert({ "random-dev", 0.5f });
 	return weights;
 }
 

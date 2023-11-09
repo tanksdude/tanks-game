@@ -2,8 +2,8 @@
 
 std::unordered_map<std::string, float> AncientMegaDeathPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "dev", .5f });
-	weights.insert({ "random-dev", .125f });
+	weights.insert({ "dev", 0.5f });
+	weights.insert({ "random-dev", 0.125f });
 	return weights;
 }
 

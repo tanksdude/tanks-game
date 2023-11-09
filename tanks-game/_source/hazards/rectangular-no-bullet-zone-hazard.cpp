@@ -17,10 +17,10 @@
 std::unordered_map<std::string, float> RectangularNoBulletZoneHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", 1.0f });
-	weights.insert({ "random-vanilla", .5f });
+	weights.insert({ "random-vanilla", 0.5f });
 	weights.insert({ "old", 1.0f });
-	weights.insert({ "random-old", .5f });
-	weights.insert({ "random", .25f });
+	weights.insert({ "random-old", 0.5f });
+	weights.insert({ "random", 0.25f });
 	return weights;
 }
 

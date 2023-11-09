@@ -21,8 +21,8 @@ ColorValueHolder DangerousCenterLevel::getDefaultColor() const {
 
 std::unordered_map<std::string, float> DangerousCenterLevel::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "vanilla-extra", .25f });
-	weights.insert({ "random-vanilla", .5f }); //TODO: seems too common
+	weights.insert({ "vanilla-extra", 0.25f });
+	weights.insert({ "random-vanilla", 0.5f }); //TODO: seems too common
 	return weights;
 }
 

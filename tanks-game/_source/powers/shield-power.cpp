@@ -4,7 +4,7 @@ const double ShieldPower::barrierStrength = 50; //TODO: depend on global power d
 
 std::unordered_map<std::string, float> ShieldPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "vanilla-extra", .5f });
+	weights.insert({ "vanilla-extra", 0.5f });
 	return weights;
 }
 

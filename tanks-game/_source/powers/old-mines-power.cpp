@@ -2,7 +2,7 @@
 
 std::unordered_map<std::string, float> OldMinesPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "old", .25f });
+	weights.insert({ "old", 0.25f });
 	return weights;
 }
 

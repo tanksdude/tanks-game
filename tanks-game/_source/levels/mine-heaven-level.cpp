@@ -11,10 +11,10 @@
 
 std::unordered_map<std::string, float> MineHeavenLevel::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "vanilla-extra", .25f });
-	weights.insert({ "random-vanilla", .125f }); //people just do not like ice physics
-	weights.insert({ "old", .25f });
-	weights.insert({ "random-old", .125f });
+	weights.insert({ "vanilla-extra", 0.25f });
+	weights.insert({ "random-vanilla", 0.125f }); //people just do not like ice physics
+	weights.insert({ "old", 0.25f });
+	weights.insert({ "random-old", 0.125f });
 	return weights;
 }
 

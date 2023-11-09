@@ -10,7 +10,7 @@
 
 std::unordered_map<std::string, float> LightningCornersLevel::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "old", .25f });
+	weights.insert({ "old", 0.25f });
 	return weights;
 }
 

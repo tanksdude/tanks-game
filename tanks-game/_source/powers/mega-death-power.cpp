@@ -5,11 +5,11 @@ const double MegaDeathPower::bulletSizeMultiplierPerTick = 65.0/64.0;
 
 std::unordered_map<std::string, float> MegaDeathPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "vanilla", .5f });
-	weights.insert({ "random-vanilla", .5f });
-	//weights.insert({ "old", .25f });
-	//weights.insert({ "random-old", .25f });
-	weights.insert({ "random", .25f });
+	weights.insert({ "vanilla", 0.5f });
+	weights.insert({ "random-vanilla", 0.25f });
+	//weights.insert({ "old", 0.25f });
+	//weights.insert({ "random-old", 0.25f });
+	weights.insert({ "random", 0.125f });
 	return weights;
 }
 
