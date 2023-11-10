@@ -53,9 +53,6 @@ public:
 
 class GodmodeBulletPower : public BulletPower {
 public:
-	virtual void initialize(Bullet* parent) override;
-	virtual void removeEffects(Bullet* parent) override;
-
 	virtual ColorValueHolder getColor() const override {
 		return GodmodePower::getClassColor();
 	}

@@ -70,14 +70,6 @@ DevAnnoyingTankPower::DevAnnoyingTankPower() {
 
 #include "../collision-handler.h"
 
-void DevAnnoyingBulletPower::initialize(Bullet* parent) {
-	//nothing
-}
-
-void DevAnnoyingBulletPower::removeEffects(Bullet* parent) {
-	//nothing
-}
-
 TankPower* DevAnnoyingBulletPower::makeTankPower() const {
 	return new DevAnnoyingTankPower();
 }

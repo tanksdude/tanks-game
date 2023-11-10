@@ -31,14 +31,6 @@ DevOtherStuffIsPoisonPower::DevOtherStuffIsPoisonPower() {
 
 
 
-void DevOtherStuffIsPoisonTankPower::initialize(Tank* parent) {
-	//nothing
-}
-
-void DevOtherStuffIsPoisonTankPower::removeEffects(Tank* parent) {
-	//nothing
-}
-
 BulletPower* DevOtherStuffIsPoisonTankPower::makeBulletPower() const {
 	return new DevOtherStuffIsPoisonBulletPower();
 }
@@ -62,14 +54,6 @@ DevOtherStuffIsPoisonTankPower::DevOtherStuffIsPoisonTankPower() {
 }
 
 
-
-void DevOtherStuffIsPoisonBulletPower::initialize(Bullet* parent) {
-	//nothing
-}
-
-void DevOtherStuffIsPoisonBulletPower::removeEffects(Bullet* parent) {
-	//nothing
-}
 
 TankPower* DevOtherStuffIsPoisonBulletPower::makeTankPower() const {
 	return new DevOtherStuffIsPoisonTankPower();

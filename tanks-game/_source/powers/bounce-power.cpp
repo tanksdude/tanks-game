@@ -37,14 +37,6 @@ BouncePower::BouncePower() {
 
 
 
-void BounceTankPower::initialize(Tank* parent) {
-	//nothing
-}
-
-void BounceTankPower::removeEffects(Tank* parent) {
-	//nothing
-}
-
 BulletPower* BounceTankPower::makeBulletPower() const {
 	return new BounceBulletPower();
 }
@@ -154,14 +146,6 @@ InteractionBoolHolder BounceBulletPower::modifiedEdgeCollision(Bullet* b) {
 	}
 
 	return { CollisionHandler::fullyOutOfBounds(b) };
-}
-
-void BounceBulletPower::initialize(Bullet* parent) {
-	//nothing
-}
-
-void BounceBulletPower::removeEffects(Bullet* parent) {
-	//nothing
 }
 
 BulletPower* BounceBulletPower::makeDuplicate() const {

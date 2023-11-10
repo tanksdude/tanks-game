@@ -35,14 +35,6 @@ WallhackPower::WallhackPower() {
 
 
 
-void WallhackTankPower::initialize(Tank* parent) {
-	//nothing
-}
-
-void WallhackTankPower::removeEffects(Tank* parent) {
-	//nothing
-}
-
 BulletPower* WallhackTankPower::makeBulletPower() const {
 	return new WallhackBulletPower();
 }
@@ -60,14 +52,6 @@ WallhackTankPower::WallhackTankPower() {
 }
 
 
-
-void WallhackBulletPower::initialize(Bullet* parent) {
-	//nothing
-}
-
-void WallhackBulletPower::removeEffects(Bullet* parent) {
-	//nothing
-}
 
 TankPower* WallhackBulletPower::makeTankPower() const {
 	return new WallhackTankPower();

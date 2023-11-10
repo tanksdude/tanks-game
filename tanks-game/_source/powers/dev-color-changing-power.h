@@ -35,9 +35,6 @@ protected:
 	double colorDist;
 
 public:
-	virtual void initialize(Tank* parent) override;
-	virtual void removeEffects(Tank* parent) override;
-
 	virtual void tick(Tank* t) override; //updates color
 
 	virtual ColorValueHolder getColor() const override;
@@ -58,9 +55,6 @@ protected:
 	double colorDist;
 
 public:
-	virtual void initialize(Bullet* parent) override;
-	virtual void removeEffects(Bullet* parent) override;
-
 	virtual void tick(Bullet* b) override; //updates color
 
 	virtual ColorValueHolder getColor() const override;

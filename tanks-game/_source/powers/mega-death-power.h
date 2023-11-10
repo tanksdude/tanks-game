@@ -37,9 +37,6 @@ public:
 
 class MegaDeathTankPower : public TankPower {
 public:
-	virtual void initialize(Tank* parent) override;
-	virtual void removeEffects(Tank* parent) override;
-
 	virtual ColorValueHolder getColor() const override {
 		return MegaDeathPower::getClassColor();
 	}
@@ -56,9 +53,6 @@ public:
 
 class MegaDeathBulletPower : public BulletPower {
 public:
-	virtual void initialize(Bullet* parent) override;
-	virtual void removeEffects(Bullet* parent) override;
-
 	virtual void tick(Bullet* b) override; //for updating wall collision bools based on size
 
 	virtual ColorValueHolder getColor() const override {

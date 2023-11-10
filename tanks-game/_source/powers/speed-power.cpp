@@ -36,14 +36,6 @@ SpeedPower::SpeedPower() {
 
 
 
-void SpeedTankPower::initialize(Tank* parent) {
-	//nothing
-}
-
-void SpeedTankPower::removeEffects(Tank* parent) {
-	//nothing
-}
-
 double SpeedTankPower::getTankMaxSpeedMultiplier() const {
 	return 2;
 }
@@ -60,14 +52,6 @@ SpeedTankPower::SpeedTankPower() {
 }
 
 
-
-void SpeedBulletPower::initialize(Bullet* parent) {
-	//nothing
-}
-
-void SpeedBulletPower::removeEffects(Bullet* parent) {
-	//nothing
-}
 
 TankPower* SpeedBulletPower::makeTankPower() const {
 	return new SpeedTankPower();

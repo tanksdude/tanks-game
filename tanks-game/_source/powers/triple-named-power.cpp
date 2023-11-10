@@ -46,15 +46,6 @@ std::vector<std::pair<double, double>>* TripleNamedTankPower::addExtraShootingPo
 	                                                   {-TripleNamedPower::bulletAngleDiff, TripleNamedPower::bulletAngleDiff} };
 }
 
-void TripleNamedTankPower::initialize(Tank* parent) {
-	//nothing
-	//in JS, the tank's shooting cooldown was reset
-}
-
-void TripleNamedTankPower::removeEffects(Tank* parent) {
-	//nothing
-}
-
 BulletPower* TripleNamedTankPower::makeBulletPower() const {
 	return new TripleNamedBulletPower();
 }
@@ -63,19 +54,12 @@ TripleNamedTankPower::TripleNamedTankPower() {
 	maxTime = 500;
 	timeLeft = 500;
 	//JS: maxTime = 1000
+	//in JS, the tank's shooting cooldown was reset
 
 	addsExtraShootingPoints = true;
 }
 
 
-
-void TripleNamedBulletPower::initialize(Bullet* parent) {
-	//nothing
-}
-
-void TripleNamedBulletPower::removeEffects(Bullet* parent) {
-	//nothing
-}
 
 TankPower* TripleNamedBulletPower::makeTankPower() const {
 	return new TripleNamedTankPower();

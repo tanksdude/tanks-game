@@ -31,14 +31,6 @@ DevWeirdExtraCannonsPower::DevWeirdExtraCannonsPower() {
 
 
 
-void DevWeirdExtraCannonsTankPower::initialize(Tank* parent) {
-	//nothing
-}
-
-void DevWeirdExtraCannonsTankPower::removeEffects(Tank* parent) {
-	//nothing
-}
-
 BulletPower* DevWeirdExtraCannonsTankPower::makeBulletPower() const {
 	return new DevWeirdExtraCannonsBulletPower();
 }
@@ -58,14 +50,6 @@ DevWeirdExtraCannonsTankPower::DevWeirdExtraCannonsTankPower() {
 }
 
 
-
-void DevWeirdExtraCannonsBulletPower::initialize(Bullet* parent) {
-	//nothing
-}
-
-void DevWeirdExtraCannonsBulletPower::removeEffects(Bullet* parent) {
-	//nothing
-}
 
 TankPower* DevWeirdExtraCannonsBulletPower::makeTankPower() const {
 	return new DevWeirdExtraCannonsTankPower();

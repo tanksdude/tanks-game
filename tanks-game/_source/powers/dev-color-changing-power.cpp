@@ -39,14 +39,6 @@ DevColorChangingPower::DevColorChangingPower() {
 
 
 
-void DevColorChangingTankPower::initialize(Tank* parent) {
-	//nothing
-}
-
-void DevColorChangingTankPower::removeEffects(Tank* parent) {
-	//nothing
-}
-
 void DevColorChangingTankPower::tick(Tank* parent) {
 	Tank* closest = nullptr;
 	double dist = 2*GAME_WIDTH + 2*GAME_HEIGHT;
@@ -89,14 +81,6 @@ DevColorChangingTankPower::DevColorChangingTankPower() {
 }
 
 
-
-void DevColorChangingBulletPower::initialize(Bullet* parent) {
-	//nothing
-}
-
-void DevColorChangingBulletPower::removeEffects(Bullet* parent) {
-	//nothing
-}
 
 void DevColorChangingBulletPower::tick(Bullet* parent) {
 	Tank* closest = nullptr;

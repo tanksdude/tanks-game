@@ -32,15 +32,6 @@ BarrierPower::BarrierPower() {
 
 
 
-void BarrierTankPower::initialize(Tank* parent) {
-	//nothing
-	//in JS, the tank's shooting cooldown was reset
-}
-
-void BarrierTankPower::removeEffects(Tank* parent) {
-	//nothing
-}
-
 BulletPower* BarrierTankPower::makeBulletPower() const {
 	return new BarrierBulletPower();
 }
@@ -53,19 +44,12 @@ BarrierTankPower::BarrierTankPower() {
 	maxTime = 500;
 	timeLeft = 500;
 	//JS: maxTime = 1000
+	//in JS, the tank's shooting cooldown was reset
 
 	modifiesDeathHandling = true;
 }
 
 
-
-void BarrierBulletPower::initialize(Bullet* parent) {
-	//nothing
-}
-
-void BarrierBulletPower::removeEffects(Bullet* parent) {
-	//nothing
-}
 
 TankPower* BarrierBulletPower::makeTankPower() const {
 	return new BarrierTankPower();

@@ -39,15 +39,6 @@ GrenadePower::GrenadePower() {
 
 
 
-void GrenadeTankPower::initialize(Tank* parent) {
-	//nothing
-	//in JS, the tank's shooting cooldown was reset
-}
-
-void GrenadeTankPower::removeEffects(Tank* parent) {
-	//nothing
-}
-
 BulletPower* GrenadeTankPower::makeBulletPower() const {
 	return new GrenadeBulletPower();
 }
@@ -56,6 +47,7 @@ GrenadeTankPower::GrenadeTankPower() {
 	maxTime = 500;
 	timeLeft = 500;
 	//JS: maxTime = 1000
+	//in JS, the tank's shooting cooldown was reset
 }
 
 
@@ -71,14 +63,6 @@ InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> GrenadeBulletPower
 		}
 		return { false, false, nullptr, nullptr };
 	}
-}
-
-void GrenadeBulletPower::initialize(Bullet* parent) {
-	//nothing
-}
-
-void GrenadeBulletPower::removeEffects(Bullet* parent) {
-	//nothing
 }
 
 TankPower* GrenadeBulletPower::makeTankPower() const {

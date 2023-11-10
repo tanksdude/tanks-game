@@ -33,14 +33,6 @@ RingShooterPower::RingShooterPower() {
 
 //#include "../power-function-helper.h"
 
-void RingShooterTankPower::initialize(Tank* parent) {
-	//nothing
-}
-
-void RingShooterTankPower::removeEffects(Tank* parent) {
-	//nothing
-}
-
 BulletPower* RingShooterTankPower::makeBulletPower() const {
 	return new RingShooterBulletPower();
 }
@@ -63,14 +55,6 @@ RingShooterTankPower::RingShooterTankPower() {
 }
 
 
-
-void RingShooterBulletPower::initialize(Bullet* parent) {
-	//nothing
-}
-
-void RingShooterBulletPower::removeEffects(Bullet* parent) {
-	//nothing
-}
 
 TankPower* RingShooterBulletPower::makeTankPower() const {
 	return new RingShooterTankPower();

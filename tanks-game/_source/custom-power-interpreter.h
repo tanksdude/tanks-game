@@ -219,9 +219,6 @@ protected:
 	inline void initialization_defenseTier_tank(const GenericFactoryConstructionData&) noexcept;
 
 public:
-	void initialize(Tank* parent) override { return; }
-	void removeEffects(Tank* parent) override { return; }
-
 	ColorValueHolder getColor() const override { return this->color; }
 	float getColorImportance() const override { return this->colorImportance; }
 
@@ -321,9 +318,6 @@ protected:
 	inline void initialization_defenseTier_bullet(const GenericFactoryConstructionData&) noexcept;
 
 public:
-	void initialize(Bullet* parent) override { return; }
-	void removeEffects(Bullet* parent) override { return; }
-
 	ColorValueHolder getColor() const override { return this->color; }
 	float getColorImportance() const override { return this->colorImportance; }
 

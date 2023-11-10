@@ -38,15 +38,6 @@ HomingPower::HomingPower() {
 
 
 
-void HomingTankPower::initialize(Tank* parent) {
-	//nothing
-	//in JS, the tank's shooting cooldown was reset
-}
-
-void HomingTankPower::removeEffects(Tank* parent) {
-	//nothing
-}
-
 BulletPower* HomingTankPower::makeBulletPower() const {
 	return new HomingBulletPower();
 }
@@ -54,6 +45,7 @@ BulletPower* HomingTankPower::makeBulletPower() const {
 HomingTankPower::HomingTankPower() {
 	maxTime = 500;
 	timeLeft = 500;
+	//in JS, the tank's shooting cooldown was reset
 }
 
 
@@ -77,14 +69,6 @@ InteractionBoolHolder HomingBulletPower::modifiedEdgeCollision(Bullet* b) {
 	return { ((b->x + b->r <= 0) || (b->x - b->r >= GAME_WIDTH) ||
 	         ((b->velocity.getMagnitude() <= 0) && ((b->y - b->r >= GAME_HEIGHT*2) || (b->y + b->r <= -GAME_HEIGHT)))) };
 	//TODO: wanted?
-}
-
-void HomingBulletPower::initialize(Bullet* parent) {
-	//nothing
-}
-
-void HomingBulletPower::removeEffects(Bullet* parent) {
-	//nothing
 }
 
 TankPower* HomingBulletPower::makeTankPower() const {

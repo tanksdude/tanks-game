@@ -17,8 +17,8 @@ public:
 	double maxTime; //set to -1 to last forever (which is normal for bullet powers)
 
 public:
-	virtual void initialize(Bullet* parent) = 0; //unlikely to be used
-	virtual void removeEffects(Bullet* parent) = 0; //not really needed
+	virtual void initialize(Bullet* parent) { return; } //unlikely to be used
+	virtual void removeEffects(Bullet* parent) { return; } //not really needed
 
 	virtual void tick(Bullet*) { return; } //most will be doing a lot, though they shouldn't need this, but just in case
 	void powerTick() {

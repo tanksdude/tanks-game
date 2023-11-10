@@ -71,14 +71,6 @@ GodmodeTankPower::GodmodeTankPower() {
 
 
 
-void GodmodeBulletPower::initialize(Bullet* parent) {
-	//nothing
-}
-
-void GodmodeBulletPower::removeEffects(Bullet* parent) {
-	//nothing
-}
-
 TankPower* GodmodeBulletPower::makeTankPower() const {
 	return new GodmodeTankPower();
 }

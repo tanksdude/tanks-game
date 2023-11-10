@@ -48,14 +48,6 @@ FireNamedPower::FireNamedPower() {
 #include <cmath>
 #include "../rng.h"
 
-void FireNamedTankPower::initialize(Tank* parent) {
-	//nothing
-}
-
-void FireNamedTankPower::removeEffects(Tank* parent) {
-	//nothing
-}
-
 void FireNamedTankPower::additionalShooting(Tank* t, const CannonPoint& c, const ExtraCannonPoint& c2) {
 	for (int i = 0; i < FireNamedPower::bulletAmount; i++) {
 		double tempAngle = (RNG::randFunc()+RNG::randFunc() - 1) * FireNamedPower::bulletAngleDeviation; //[-1,1) * deviation
@@ -95,14 +87,6 @@ InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> FireNamedBulletPow
 
 double FireNamedBulletPower::getBulletAcceleration() const {
 	return accelerationAmount;
-}
-
-void FireNamedBulletPower::initialize(Bullet* parent) {
-	//nothing
-}
-
-void FireNamedBulletPower::removeEffects(Bullet* parent) {
-	//nothing
 }
 
 BulletPower* FireNamedBulletPower::makeDuplicate() const {

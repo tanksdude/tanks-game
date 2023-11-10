@@ -50,14 +50,6 @@ ShieldPower::ShieldPower() {
 
 
 
-void ShieldTankPower::initialize(Tank* parent) {
-	//nothing
-}
-
-void ShieldTankPower::removeEffects(Tank* parent) {
-	//nothing
-}
-
 TankPower* ShieldTankPower::makeDuplicate() const {
 	return new ShieldTankPower(this->timeLeft);
 }
@@ -87,14 +79,6 @@ ShieldTankPower::ShieldTankPower(double life) {
 }
 
 
-
-void ShieldBulletPower::initialize(Bullet* parent) {
-	//nothing
-}
-
-void ShieldBulletPower::removeEffects(Bullet* parent) {
-	//nothing
-}
 
 BulletPower* ShieldBulletPower::makeDuplicate() const {
 	return new ShieldBulletPower(/*this->timeLeft*/);

@@ -40,14 +40,6 @@ BananaPower::BananaPower() {
 
 
 
-void BananaTankPower::initialize(Tank* parent) {
-	//nothing
-}
-
-void BananaTankPower::removeEffects(Tank* parent) {
-	//nothing
-}
-
 BulletPower* BananaTankPower::makeBulletPower() const {
 	return new BananaBulletPower();
 }
@@ -96,14 +88,6 @@ InteractionBoolHolder BananaBulletPower::modifiedMovement(Bullet* b) {
 		wasStationary = false; //something else changed the bullet's speed
 	}
 	return { false };
-}
-
-void BananaBulletPower::initialize(Bullet* parent) {
-	//nothing
-}
-
-void BananaBulletPower::removeEffects(Bullet* parent) {
-	//nothing
 }
 
 TankPower* BananaBulletPower::makeTankPower() const {

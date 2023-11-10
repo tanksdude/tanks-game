@@ -50,14 +50,6 @@ std::vector<std::pair<double, double>>* ShotgunTankPower::addExtraShootingPoints
 	return newExtraCannonPoints;
 }
 
-void ShotgunTankPower::initialize(Tank* parent) {
-	//nothing
-}
-
-void ShotgunTankPower::removeEffects(Tank* parent) {
-	//nothing
-}
-
 BulletPower* ShotgunTankPower::makeBulletPower() const {
 	return new ShotgunBulletPower();
 }
@@ -70,14 +62,6 @@ ShotgunTankPower::ShotgunTankPower() {
 }
 
 
-
-void ShotgunBulletPower::initialize(Bullet* parent) {
-	//nothing
-}
-
-void ShotgunBulletPower::removeEffects(Bullet* parent) {
-	//nothing
-}
 
 TankPower* ShotgunBulletPower::makeTankPower() const {
 	return new ShotgunTankPower();

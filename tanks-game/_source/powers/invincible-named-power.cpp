@@ -34,14 +34,6 @@ InvincibleNamedPower::InvincibleNamedPower() {
 
 
 
-void InvincibleNamedTankPower::initialize(Tank* parent) {
-	//nothing
-}
-
-void InvincibleNamedTankPower::removeEffects(Tank* parent) {
-	//nothing
-}
-
 BulletPower* InvincibleNamedTankPower::makeBulletPower() const {
 	return new InvincibleNamedBulletPower();
 }
@@ -52,14 +44,6 @@ InvincibleNamedTankPower::InvincibleNamedTankPower() {
 }
 
 
-
-void InvincibleNamedBulletPower::initialize(Bullet* parent) {
-	//nothing
-}
-
-void InvincibleNamedBulletPower::removeEffects(Bullet* parent) {
-	//nothing
-}
 
 TankPower* InvincibleNamedBulletPower::makeTankPower() const {
 	return new InvincibleNamedTankPower();

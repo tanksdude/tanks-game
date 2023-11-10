@@ -57,15 +57,6 @@ void MinesTankPower::additionalShooting(Tank* t, const CannonPoint& c, const Ext
 	                     t->velocity.getAngle() + c.angleFromCenter + c2.angleFromCenter + c2.angleFromEdge);
 }
 
-void MinesTankPower::initialize(Tank* parent) {
-	//nothing
-	//in JS, the tank's shooting cooldown was reset
-}
-
-void MinesTankPower::removeEffects(Tank* parent) {
-	//nothing
-}
-
 BulletPower* MinesTankPower::makeBulletPower() const {
 	return new MinesBulletPower();
 }
@@ -73,20 +64,13 @@ BulletPower* MinesTankPower::makeBulletPower() const {
 MinesTankPower::MinesTankPower() {
 	maxTime = 500;
 	timeLeft = 500;
+	//in JS, the tank's shooting cooldown was reset
 
 	modifiesAdditionalShooting = true;
 	overridesAdditionalShooting = true;
 }
 
 
-
-void MinesBulletPower::initialize(Bullet* parent) {
-	//nothing
-}
-
-void MinesBulletPower::removeEffects(Bullet* parent) {
-	//nothing
-}
 
 TankPower* MinesBulletPower::makeTankPower() const {
 	return new MinesTankPower();

@@ -32,14 +32,6 @@ TrackingPower::TrackingPower() {
 
 
 
-void TrackingTankPower::initialize(Tank* parent) {
-	//nothing
-}
-
-void TrackingTankPower::removeEffects(Tank* parent) {
-	//nothing
-}
-
 BulletPower* TrackingTankPower::makeBulletPower() const {
 	return new TrackingBulletPower();
 }
@@ -68,14 +60,6 @@ InteractionBoolHolder TrackingBulletPower::modifiedMovement(Bullet* b) {
 
 InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> TrackingBulletPower::modifiedCollisionWithWall(const Bullet* b, const Wall* w) {
 	return { false, false, nullptr, nullptr };
-}
-
-void TrackingBulletPower::initialize(Bullet* parent) {
-	//nothing
-}
-
-void TrackingBulletPower::removeEffects(Bullet* parent) {
-	//nothing
 }
 
 TankPower* TrackingBulletPower::makeTankPower() const {

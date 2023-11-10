@@ -41,14 +41,6 @@ WallSparksPower::WallSparksPower() {
 
 
 
-void WallSparksTankPower::initialize(Tank* parent) {
-	//nothing
-}
-
-void WallSparksTankPower::removeEffects(Tank* parent) {
-	//nothing
-}
-
 BulletPower* WallSparksTankPower::makeBulletPower() const {
 	return new WallSparksBulletPower();
 }
@@ -172,14 +164,6 @@ InteractionBoolHolder WallSparksBulletPower::modifiedEdgeCollision(Bullet* b) {
 	}
 
 	return { CollisionHandler::fullyOutOfBounds(b) };
-}
-
-void WallSparksBulletPower::initialize(Bullet* parent) {
-	//nothing
-}
-
-void WallSparksBulletPower::removeEffects(Bullet* parent) {
-	//nothing
 }
 
 TankPower* WallSparksBulletPower::makeTankPower() const {

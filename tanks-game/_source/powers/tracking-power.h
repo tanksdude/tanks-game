@@ -31,9 +31,6 @@ public:
 
 class TrackingTankPower : public TankPower {
 public:
-	virtual void initialize(Tank* parent) override;
-	virtual void removeEffects(Tank* parent) override;
-
 	virtual ColorValueHolder getColor() const override {
 		return TrackingPower::getClassColor();
 	}
@@ -52,9 +49,6 @@ public:
 
 class TrackingBulletPower : public BulletPower {
 public:
-	virtual void initialize(Bullet* parent) override;
-	virtual void removeEffects(Bullet* parent) override;
-
 	virtual ColorValueHolder getColor() const override {
 		return TrackingPower::getClassColor();
 	}

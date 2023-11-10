@@ -31,14 +31,6 @@ AncientMegaDeathPower::AncientMegaDeathPower() {
 
 
 
-void AncientMegaDeathTankPower::initialize(Tank* parent) {
-	//nothing
-}
-
-void AncientMegaDeathTankPower::removeEffects(Tank* parent) {
-	//nothing
-}
-
 BulletPower* AncientMegaDeathTankPower::makeBulletPower() const {
 	return new AncientMegaDeathBulletPower();
 }
@@ -66,14 +58,6 @@ InteractionBoolHolder AncientMegaDeathBulletPower::modifiedMovement(Bullet* b) {
 
 InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> AncientMegaDeathBulletPower::modifiedCollisionWithWall(const Bullet* b, const Wall* w) {
 	return { false, false, nullptr, nullptr };
-}
-
-void AncientMegaDeathBulletPower::initialize(Bullet* parent) {
-	//nothing
-}
-
-void AncientMegaDeathBulletPower::removeEffects(Bullet* parent) {
-	//nothing
 }
 
 TankPower* AncientMegaDeathBulletPower::makeTankPower() const {

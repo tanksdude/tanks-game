@@ -31,14 +31,6 @@ DevBackwardsMovementPower::DevBackwardsMovementPower() {
 
 
 
-void DevBackwardsMovementTankPower::initialize(Tank* parent) {
-	//nothing
-}
-
-void DevBackwardsMovementTankPower::removeEffects(Tank* parent) {
-	//nothing
-}
-
 InteractionBoolHolder DevBackwardsMovementTankPower::modifiedMovement(Tank* t, bool forward, bool turnL, bool turnR, bool specialKey) {
 	if (specialKey) {
 		//TODO: I don't know how this should be implemented (it should do something with acceleration; use the tank's or store a vector?)
@@ -60,14 +52,6 @@ DevBackwardsMovementTankPower::DevBackwardsMovementTankPower() {
 }
 
 
-
-void DevBackwardsMovementBulletPower::initialize(Bullet* parent) {
-	//nothing
-}
-
-void DevBackwardsMovementBulletPower::removeEffects(Bullet* parent) {
-	//nothing
-}
 
 TankPower* DevBackwardsMovementBulletPower::makeTankPower() const {
 	return new DevBackwardsMovementTankPower();

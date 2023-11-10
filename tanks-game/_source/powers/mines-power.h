@@ -40,9 +40,6 @@ public:
 
 class MinesTankPower : public TankPower {
 public:
-	virtual void initialize(Tank* parent) override;
-	virtual void removeEffects(Tank* parent) override;
-
 	virtual void tick(Tank* t) override; //for updating modifiesAdditionalShooting based on whether there are any other powers that modify additionalShooting
 	//might need a secondary tick for this; one tick to do stuff, another tick to update interaction bools
 
@@ -69,9 +66,6 @@ public:
 
 class MinesBulletPower : public BulletPower {
 public:
-	virtual void initialize(Bullet* parent) override;
-	virtual void removeEffects(Bullet* parent) override;
-
 	virtual ColorValueHolder getColor() const override {
 		return MinesPower::getClassColor();
 	}

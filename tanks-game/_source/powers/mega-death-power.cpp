@@ -37,14 +37,6 @@ MegaDeathPower::MegaDeathPower() {
 
 
 
-void MegaDeathTankPower::initialize(Tank* parent) {
-	//nothing
-}
-
-void MegaDeathTankPower::removeEffects(Tank* parent) {
-	//nothing
-}
-
 BulletPower* MegaDeathTankPower::makeBulletPower() const {
 	return new MegaDeathBulletPower();
 }
@@ -83,14 +75,6 @@ float MegaDeathBulletPower::getDefenseTier(const Bullet* b) const {
 	double value = b->r / (Bullet::default_radius*4) * MegaDeathPower::destroyWallTier;
 	//return (value >= MegaDeathPower::destroyWallTier ? floor(value) : 0);
 	return static_cast<float>(value);
-}
-
-void MegaDeathBulletPower::initialize(Bullet* parent) {
-	//nothing
-}
-
-void MegaDeathBulletPower::removeEffects(Bullet* parent) {
-	//nothing
 }
 
 TankPower* MegaDeathBulletPower::makeTankPower() const {

@@ -33,14 +33,6 @@ BigNamedPower::BigNamedPower() {
 
 
 
-void BigNamedTankPower::initialize(Tank* parent) {
-	//nothing
-}
-
-void BigNamedTankPower::removeEffects(Tank* parent) {
-	//nothing
-}
-
 BulletPower* BigNamedTankPower::makeBulletPower() const {
 	return new BigNamedBulletPower();
 }
@@ -54,14 +46,6 @@ BigNamedTankPower::BigNamedTankPower() {
 
 InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> BigNamedBulletPower::modifiedCollisionWithWall(const Bullet* b, const Wall* w) {
 	return { false, true, nullptr, nullptr };
-}
-
-void BigNamedBulletPower::initialize(Bullet* parent) {
-	//nothing
-}
-
-void BigNamedBulletPower::removeEffects(Bullet* parent) {
-	//nothing
 }
 
 TankPower* BigNamedBulletPower::makeTankPower() const {

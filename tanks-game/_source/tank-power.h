@@ -21,8 +21,8 @@ public:
 	double maxTime;
 
 public:
-	virtual void initialize(Tank* parent) = 0;
-	virtual void removeEffects(Tank* parent) = 0;
+	virtual void initialize(Tank* parent) { return; }
+	virtual void removeEffects(Tank* parent) { return; }
 
 	virtual void tick(Tank*) { return; } //most shouldn't be doing anything
 	void powerTick() {

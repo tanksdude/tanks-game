@@ -42,9 +42,6 @@ public:
 
 class BounceTankPower : public TankPower {
 public:
-	virtual void initialize(Tank* parent) override;
-	virtual void removeEffects(Tank* parent) override;
-
 	virtual ColorValueHolder getColor() const override {
 		return BouncePower::getClassColor();
 	}
@@ -66,9 +63,6 @@ protected:
 	int bouncesLeft;
 
 public:
-	virtual void initialize(Bullet* parent) override;
-	virtual void removeEffects(Bullet* parent) override;
-
 	virtual ColorValueHolder getColor() const override {
 		return BouncePower::getClassColor();
 	}

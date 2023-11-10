@@ -30,9 +30,6 @@ public:
 
 class MultishotTankPower : public TankPower {
 public:
-	virtual void initialize(Tank* parent) override;
-	virtual void removeEffects(Tank* parent) override;
-
 	virtual ColorValueHolder getColor() const override {
 		return MultishotPower::getClassColor();
 	}
@@ -52,9 +49,6 @@ public:
 
 class MultishotBulletPower : public BulletPower {
 public:
-	virtual void initialize(Bullet* parent) override;
-	virtual void removeEffects(Bullet* parent) override;
-
 	virtual ColorValueHolder getColor() const override {
 		return MultishotPower::getClassColor();
 	}

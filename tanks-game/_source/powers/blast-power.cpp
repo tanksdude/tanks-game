@@ -45,14 +45,6 @@ BlastPower::BlastPower() {
 #include <cmath>
 #include "../rng.h"
 
-void BlastTankPower::initialize(Tank* parent) {
-	//nothing
-}
-
-void BlastTankPower::removeEffects(Tank* parent) {
-	//nothing
-}
-
 void BlastTankPower::additionalShooting(Tank* t, const CannonPoint& c, const ExtraCannonPoint& c2) {
 	for (int i = 0; i < BlastPower::bulletAmount; i++) {
 		double tempAngle = (RNG::randFunc()*2 - 1) * BlastPower::bulletAngleDeviation; //[-1,1) * deviation
@@ -120,14 +112,6 @@ InteractionBoolHolder BlastBulletPower::modifiedCollisionWithRectHazard(Bullet* 
 
 double BlastBulletPower::getBulletAcceleration() const {
 	return accelerationAmount;
-}
-
-void BlastBulletPower::initialize(Bullet* parent) {
-	//nothing
-}
-
-void BlastBulletPower::removeEffects(Bullet* parent) {
-	//nothing
 }
 
 BulletPower* BlastBulletPower::makeDuplicate() const {

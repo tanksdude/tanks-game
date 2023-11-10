@@ -31,14 +31,6 @@ InversionPower::InversionPower() {
 
 
 
-void InversionTankPower::initialize(Tank* parent) {
-	//parent->turningIncrement *= -1;
-}
-
-void InversionTankPower::removeEffects(Tank* parent) {
-	//parent->turningIncrement /= -1;
-}
-
 BulletPower* InversionTankPower::makeBulletPower() const {
 	return new InversionBulletPower();
 }
@@ -51,14 +43,6 @@ InversionTankPower::InversionTankPower() {
 }
 
 
-
-void InversionBulletPower::initialize(Bullet* parent) {
-	//nothing
-}
-
-void InversionBulletPower::removeEffects(Bullet* parent) {
-	//nothing
-}
 
 TankPower* InversionBulletPower::makeTankPower() const {
 	return new InversionTankPower();
