@@ -140,7 +140,6 @@ bool Bullet::move() {
 	bool shouldBeKilled = false;
 	bool modifiedMovement = false;
 	bool overridedMovement = false;
-	bool noMoreMovementSpecials = false;
 	//TODO: handle killing the bulletpowers
 
 	for (int k = 0; k < bulletPowers.size(); k++) {
@@ -148,22 +147,19 @@ bool Bullet::move() {
 			if (bulletPowers[k]->modifiedMovementCanOnlyWorkIndividually && modifiedMovement) {
 				continue;
 			}
-			if (noMoreMovementSpecials) {
-				continue;
-			}
-
 			modifiedMovement = true;
 			if (bulletPowers[k]->overridesMovement) {
 				overridedMovement = true;
-			}
-			if (!bulletPowers[k]->modifiedMovementCanWorkWithOthers) {
-				noMoreMovementSpecials = true;
 			}
 
 			InteractionBoolHolder check_temp = bulletPowers[k]->modifiedMovement(this);
 			if (check_temp.shouldDie) {
 				shouldBeKilled = true;
 				overridedMovement = true;
+				break;
+			}
+
+			if (!bulletPowers[k]->modifiedMovementCanWorkWithOthers) {
 				break;
 			}
 		}

@@ -131,7 +131,6 @@ bool Tank::move(bool forward, bool turnL, bool turnR, bool specialKey) {
 	bool shouldBeKilled = false;
 	bool modifiedMovement = false;
 	bool overridedMovement = false;
-	bool noMoreMovementSpecials = false;
 	//TODO: handle killing the tankpowers
 
 	for (int k = 0; k < tankPowers.size(); k++) {
@@ -139,22 +138,19 @@ bool Tank::move(bool forward, bool turnL, bool turnR, bool specialKey) {
 			if (tankPowers[k]->modifiedMovementCanOnlyWorkIndividually && modifiedMovement) {
 				continue;
 			}
-			if (noMoreMovementSpecials) {
-				continue;
-			}
-
 			modifiedMovement = true;
 			if (tankPowers[k]->overridesMovement) {
 				overridedMovement = true;
-			}
-			if (!tankPowers[k]->modifiedMovementCanWorkWithOthers) {
-				noMoreMovementSpecials = true;
 			}
 
 			InteractionBoolHolder check_temp = tankPowers[k]->modifiedMovement(this, forward, turnL, turnR, specialKey);
 			if (check_temp.shouldDie) {
 				shouldBeKilled = true;
 				overridedMovement = true;
+				break;
+			}
+
+			if (!tankPowers[k]->modifiedMovementCanWorkWithOthers) {
 				break;
 			}
 		}
@@ -230,22 +226,15 @@ void Tank::shoot(bool shooting) {
 		//determineShootingAngles(); //TODO: is this needed?
 		bool modifiedAdditionalShooting = false;
 		bool overridedShooting = false;
-		bool noMoreOtherAdditionalShooting = false;
 
 		for (int j = 0; j < tankPowers.size(); j++) {
 			if (tankPowers[j]->modifiesAdditionalShooting) {
 				if (tankPowers[j]->additionalShootingCanOnlyWorkIndividually && modifiedAdditionalShooting) {
 					continue;
 				}
-				if (noMoreOtherAdditionalShooting) {
-					continue;
-				}
 				modifiedAdditionalShooting = true;
 				if (tankPowers[j]->overridesAdditionalShooting) {
 					overridedShooting = true;
-				}
-				if (!tankPowers[j]->additionalShootingCanWorkWithOthers) {
-					noMoreOtherAdditionalShooting = true;
 				}
 
 				if (ini_data.exists("GAME_OPTIONS", "FewerExtraShootingBullets") && !std::stoi(ini_data.get("GAME_OPTIONS", "FewerExtraShootingBullets"))) {
@@ -263,6 +252,10 @@ void Tank::shoot(bool shooting) {
 						}
 						tankPowers[j]->additionalShooting(this, shootingPoints.at(i), extraShootingPoints.at(0));
 					}
+				}
+
+				if (!tankPowers[j]->additionalShootingCanWorkWithOthers) {
+					break;
 				}
 			}
 		}
@@ -325,48 +318,40 @@ void Tank::determineShootingAngles() {
 	extraShootingPoints.push_back(ExtraCannonPoint(0, 0));
 
 	bool modifiedAddsShootingPoints = false;
-	bool noMoreAddsShootingPointsSpecials = false;
 
 	for (int i = 0; i < tankPowers.size(); i++) {
 		if (tankPowers[i]->addsShootingPoints) {
 			if (tankPowers[i]->addShootingPointsCanOnlyWorkIndividually && modifiedAddsShootingPoints) {
 				continue;
 			}
-			if (noMoreAddsShootingPointsSpecials) {
-				continue;
-			}
-
 			modifiedAddsShootingPoints = true;
-			if (!tankPowers[i]->addExtraShootingPointsCanWorkWithOthers) {
-				noMoreAddsShootingPointsSpecials = true;
-			}
 
 			determineShootingAngles_helper(tankPowers[i]->addShootingPoints());
+
+			if (!tankPowers[i]->addExtraShootingPointsCanWorkWithOthers) {
+				break;
+			}
 		}
 	}
 
 	bool modifiedAddsExtraShootingPoints = false;
-	bool noMoreAddsExtraShootingPointsSpecials = false;
 
 	for (int i = 0; i < tankPowers.size(); i++) {
 		if (tankPowers[i]->addsExtraShootingPoints) {
 			if (tankPowers[i]->addExtraShootingPointsCanOnlyWorkIndividually && modifiedAddsExtraShootingPoints) {
 				continue;
 			}
-			if (noMoreAddsExtraShootingPointsSpecials) {
-				continue;
-			}
-
 			modifiedAddsExtraShootingPoints = true;
-			if (!tankPowers[i]->addExtraShootingPointsCanWorkWithOthers) {
-				noMoreAddsExtraShootingPointsSpecials = true;
-			}
 
 			std::vector<std::pair<double, double>>* extraCannons = tankPowers[i]->addExtraShootingPoints();
 			for (int j = 0; j < extraCannons->size(); j++) {
 				extraShootingPoints.push_back({ extraCannons->at(j).first, extraCannons->at(j).second });
 			}
 			delete extraCannons;
+
+			if (!tankPowers[i]->addExtraShootingPointsCanWorkWithOthers) {
+				break;
+			}
 		}
 	}
 }

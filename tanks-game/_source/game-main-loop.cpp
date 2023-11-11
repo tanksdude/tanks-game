@@ -492,7 +492,6 @@ void GameMainLoop::tankToWall() {
 		bool killWall = false;
 		bool modifiedWallCollision = false;
 		bool overridedWallCollision = false;
-		bool noMoreWallCollisionSpecials = false;
 
 		if (CollisionHandler::partiallyCollided(t, w)) {
 			for (int k = 0; k < t->tankPowers.size(); k++) {
@@ -500,16 +499,9 @@ void GameMainLoop::tankToWall() {
 					if (t->tankPowers[k]->modifiedCollisionWithWallCanOnlyWorkIndividually && modifiedWallCollision) {
 						continue;
 					}
-					if (noMoreWallCollisionSpecials) {
-						continue;
-					}
-
 					modifiedWallCollision = true;
 					if (t->tankPowers[k]->overridesCollisionWithWall) {
 						overridedWallCollision = true;
-					}
-					if (!t->tankPowers[k]->modifiedEdgeCollisionCanWorkWithOthers) {
-						noMoreWallCollisionSpecials = true;
 					}
 
 					InteractionBoolHolder check_temp = t->tankPowers[k]->modifiedCollisionWithWall(t, w);
@@ -518,6 +510,10 @@ void GameMainLoop::tankToWall() {
 					}
 					if (check_temp.otherShouldDie) {
 						killWall = true;
+					}
+
+					if (!t->tankPowers[k]->modifiedEdgeCollisionCanWorkWithOthers) {
+						break;
 					}
 				}
 			}
@@ -569,7 +565,6 @@ void GameMainLoop::tankToHazard() {
 		bool killCircleHazard = false;
 		bool modifiedCircleHazardCollision = false;
 		bool overridedCircleHazardCollision = false;
-		bool noMoreCircleHazardCollisionSpecials = false;
 
 		if (CollisionHandler::partiallyCollided(t, ch)) {
 			//tankpower decides whether to use the partial collision or the true collision
@@ -578,16 +573,9 @@ void GameMainLoop::tankToHazard() {
 					if (t->tankPowers[k]->modifiedCollisionWithCircleHazardCanOnlyWorkIndividually && modifiedCircleHazardCollision) {
 						continue;
 					}
-					if (noMoreCircleHazardCollisionSpecials) {
-						continue;
-					}
-
 					modifiedCircleHazardCollision = true;
 					if (t->tankPowers[k]->overridesCollisionWithCircleHazard) {
 						overridedCircleHazardCollision = true;
-					}
-					if (!t->tankPowers[k]->modifiedCollisionWithCircleHazardCanWorkWithOthers) {
-						noMoreCircleHazardCollisionSpecials = true;
 					}
 
 					//TODO: this doesn't kill the tank but it should
@@ -597,6 +585,10 @@ void GameMainLoop::tankToHazard() {
 					}
 					if (check_temp.otherShouldDie) {
 						killCircleHazard = true;
+					}
+
+					if (!t->tankPowers[k]->modifiedCollisionWithCircleHazardCanWorkWithOthers) {
+						break;
 					}
 				}
 			}
@@ -639,10 +631,9 @@ void GameMainLoop::tankToHazard() {
 
 		//rectangles:
 		RectHazard* rh = HazardManager::getRectHazard(collisionPair.second);
+		bool killRectHazard = false;
 		bool modifiedRectHazardCollision = false;
 		bool overridedRectHazardCollision = false;
-		bool noMoreRectHazardCollisionSpecials = false;
-		bool killRectHazard = false;
 
 		if (CollisionHandler::partiallyCollided(t, rh)) {
 			for (int k = 0; k < t->tankPowers.size(); k++) {
@@ -650,16 +641,9 @@ void GameMainLoop::tankToHazard() {
 					if (t->tankPowers[k]->modifiedCollisionWithRectHazardCanOnlyWorkIndividually && modifiedRectHazardCollision) {
 						continue;
 					}
-					if (noMoreRectHazardCollisionSpecials) {
-						continue;
-					}
-
 					modifiedRectHazardCollision = true;
 					if (t->tankPowers[k]->overridesCollisionWithRectHazard) {
 						overridedRectHazardCollision = true;
-					}
-					if (!t->tankPowers[k]->modifiedCollisionWithRectHazardCanWorkWithOthers) {
-						noMoreRectHazardCollisionSpecials = true;
 					}
 
 					//TODO: this doesn't kill the tank but it should
@@ -669,6 +653,10 @@ void GameMainLoop::tankToHazard() {
 					}
 					if (check_temp.otherShouldDie) {
 						killRectHazard = true;
+					}
+
+					if (!t->tankPowers[k]->modifiedCollisionWithRectHazardCanWorkWithOthers) {
+						break;
 					}
 				}
 			}
@@ -723,7 +711,6 @@ void GameMainLoop::tankToTank() {
 			bool t_innerShouldDie = false;
 			bool modifiedTankCollision = false;
 			bool overridedTankCollision = false;
-			bool noMoreTankCollisionSpecials = false;
 
 			if (CollisionHandler::partiallyCollided(t_outer, t_inner)) {
 				for (int k = 0; k < t_outer->tankPowers.size(); k++) {
@@ -731,16 +718,9 @@ void GameMainLoop::tankToTank() {
 						if (t_outer->tankPowers[k]->modifiedCollisionWithTankCanOnlyWorkIndividually && modifiedTankCollision) {
 							continue;
 						}
-						if (noMoreTankCollisionSpecials) {
-							continue;
-						}
-
 						modifiedTankCollision = true;
 						if (t_outer->tankPowers[k]->overridesCollisionWithTank) {
 							overridedTankCollision = true;
-						}
-						if (!t_outer->tankPowers[k]->modifiedCollisionWithTankCanWorkWithOthers) {
-							noMoreTankCollisionSpecials = true;
 						}
 
 						InteractionBoolHolder check_temp = t_outer->tankPowers[k]->modifiedCollisionWithTank(t_outer, t_inner);
@@ -751,6 +731,10 @@ void GameMainLoop::tankToTank() {
 							if (t_outer->getTeamID() != t_inner->getTeamID()) {
 								t_innerShouldDie = true;
 							}
+						}
+
+						if (!t_outer->tankPowers[k]->modifiedCollisionWithTankCanWorkWithOthers) {
+							break;
 						}
 					}
 				}
@@ -779,7 +763,6 @@ void GameMainLoop::tankToEdge() {
 		bool shouldBeKilled = false;
 		bool modifiedEdgeCollision = false;
 		bool overridedEdgeCollision = false;
-		bool noMoreEdgeCollisionSpecials = false;
 
 		if (CollisionHandler::partiallyOutOfBounds(t)) {
 			for (int k = 0; k < t->tankPowers.size(); k++) {
@@ -787,21 +770,18 @@ void GameMainLoop::tankToEdge() {
 					if (t->tankPowers[k]->modifiedEdgeCollisionCanOnlyWorkIndividually && modifiedEdgeCollision) {
 						continue;
 					}
-					if (noMoreEdgeCollisionSpecials) {
-						continue;
-					}
-
 					modifiedEdgeCollision = true;
 					if (t->tankPowers[k]->overridesEdgeCollision) {
 						overridedEdgeCollision = true;
-					}
-					if (!t->tankPowers[k]->modifiedEdgeCollisionCanWorkWithOthers) {
-						noMoreEdgeCollisionSpecials = true;
 					}
 
 					InteractionBoolHolder check_temp = t->tankPowers[k]->modifiedEdgeCollision(t);
 					if (check_temp.shouldDie) {
 						shouldBeKilled = true;
+					}
+
+					if (!t->tankPowers[k]->modifiedEdgeCollisionCanWorkWithOthers) {
+						break;
 					}
 				}
 			}
@@ -823,7 +803,6 @@ void GameMainLoop::bulletToEdge() {
 		bool shouldBeKilled = false;
 		bool modifiedEdgeCollision = false;
 		bool overridedEdgeCollision = false;
-		bool noMoreEdgeCollisionSpecials = false;
 
 		if (CollisionHandler::partiallyOutOfBounds(b)) {
 			for (int k = 0; k < b->bulletPowers.size(); k++) {
@@ -831,21 +810,18 @@ void GameMainLoop::bulletToEdge() {
 					if (b->bulletPowers[k]->modifiedEdgeCollisionCanOnlyWorkIndividually && modifiedEdgeCollision) {
 						continue;
 					}
-					if (noMoreEdgeCollisionSpecials) {
-						continue;
-					}
-
 					modifiedEdgeCollision = true;
 					if (b->bulletPowers[k]->overridesEdgeCollision) {
 						overridedEdgeCollision = true;
-					}
-					if (!b->bulletPowers[k]->modifiedEdgeCollisionCanWorkWithOthers) {
-						noMoreEdgeCollisionSpecials = true;
 					}
 
 					InteractionBoolHolder check_temp = b->bulletPowers[k]->modifiedEdgeCollision(b);
 					if (check_temp.shouldDie) {
 						shouldBeKilled = true;
+					}
+
+					if (!b->bulletPowers[k]->modifiedEdgeCollisionCanWorkWithOthers) {
+						break;
 					}
 				}
 			}
@@ -886,7 +862,6 @@ void GameMainLoop::bulletToWall() {
 		bool killWall = false;
 		bool modifiedWallCollision = false;
 		bool overridedWallCollision = false;
-		bool noMoreWallCollisionSpecials = false;
 
 		if (CollisionHandler::partiallyCollided(b, w)) {
 			for (int k = 0; k < b->bulletPowers.size(); k++) {
@@ -894,16 +869,9 @@ void GameMainLoop::bulletToWall() {
 					if (b->bulletPowers[k]->modifiedCollisionWithWallCanOnlyWorkIndividually && modifiedWallCollision) {
 						continue;
 					}
-					if (noMoreWallCollisionSpecials) {
-						continue;
-					}
-
 					modifiedWallCollision = true;
 					if (b->bulletPowers[k]->overridesCollisionWithWall) {
 						overridedWallCollision = true;
-					}
-					if (!b->bulletPowers[k]->modifiedCollisionWithWallCanWorkWithOthers) {
-						noMoreWallCollisionSpecials = true;
 					}
 
 					InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> check_temp = b->bulletPowers[k]->modifiedCollisionWithWall(b, w);
@@ -930,6 +898,10 @@ void GameMainLoop::bulletToWall() {
 						} else {
 							wallUpdates[w->getGameID()].add(WallUpdateStruct(*check_temp.secondUpdate));
 						}
+					}
+
+					if (!b->bulletPowers[k]->modifiedCollisionWithWallCanWorkWithOthers) {
+						break;
 					}
 				}
 			}
@@ -1006,7 +978,6 @@ void GameMainLoop::bulletToHazard() {
 		bool killCircleHazard = false;
 		bool modifiedCircleHazardCollision = false;
 		bool overridedCircleHazardCollision = false;
-		bool noMoreCircleHazardCollisionSpecials = false;
 
 		if (!b->canCollideWith(ch)) {
 			continue;
@@ -1017,16 +988,9 @@ void GameMainLoop::bulletToHazard() {
 					if (b->bulletPowers[k]->modifiedCollisionWithCircleHazardCanOnlyWorkIndividually && modifiedCircleHazardCollision) {
 						continue;
 					}
-					if (noMoreCircleHazardCollisionSpecials) {
-						continue;
-					}
-
 					modifiedCircleHazardCollision = true;
 					if (b->bulletPowers[k]->overridesCollisionWithCircleHazard) {
 						overridedCircleHazardCollision = true;
-					}
-					if (!b->bulletPowers[k]->modifiedCollisionWithCircleHazardCanWorkWithOthers) {
-						noMoreCircleHazardCollisionSpecials = true;
 					}
 
 					InteractionBoolHolder check_temp = b->bulletPowers[k]->modifiedCollisionWithCircleHazard(b, ch);
@@ -1035,6 +999,10 @@ void GameMainLoop::bulletToHazard() {
 					}
 					if (check_temp.otherShouldDie) {
 						killCircleHazard = true;
+					}
+
+					if (!b->bulletPowers[k]->modifiedCollisionWithCircleHazardCanWorkWithOthers) {
+						break;
 					}
 				}
 			}
@@ -1081,7 +1049,6 @@ void GameMainLoop::bulletToHazard() {
 		bool killRectHazard = false;
 		bool modifiedRectHazardCollision = false;
 		bool overridedRectHazardCollision = false;
-		bool noMoreRectHazardCollisionSpecials = false;
 
 		if (!b->canCollideWith(rh)) {
 			continue;
@@ -1092,16 +1059,9 @@ void GameMainLoop::bulletToHazard() {
 					if (b->bulletPowers[k]->modifiedCollisionWithRectHazardCanOnlyWorkIndividually && modifiedRectHazardCollision) {
 						continue;
 					}
-					if (noMoreRectHazardCollisionSpecials) {
-						continue;
-					}
-
 					modifiedRectHazardCollision = true;
 					if (b->bulletPowers[k]->overridesCollisionWithRectHazard) {
 						overridedRectHazardCollision = true;
-					}
-					if (!b->bulletPowers[k]->modifiedCollisionWithRectHazardCanWorkWithOthers) {
-						noMoreRectHazardCollisionSpecials = true;
 					}
 
 					InteractionBoolHolder check_temp = b->bulletPowers[k]->modifiedCollisionWithRectHazard(b, rh);
@@ -1110,6 +1070,10 @@ void GameMainLoop::bulletToHazard() {
 					}
 					if (check_temp.otherShouldDie) {
 						killRectHazard = true;
+					}
+
+					if (!b->bulletPowers[k]->modifiedCollisionWithRectHazardCanWorkWithOthers) {
+						break;
 					}
 				}
 			}
@@ -1224,7 +1188,6 @@ void GameMainLoop::bulletToTank() {
 		bool killTank = false;
 		bool modifiedTankCollision = false;
 		bool overridedTankCollision = false;
-		bool noMoreTankCollisionSpecials = false;
 
 		if (b->canCollideWith(t)) {
 			for (int k = 0; k < b->bulletPowers.size(); k++) {
@@ -1232,16 +1195,9 @@ void GameMainLoop::bulletToTank() {
 					if (b->bulletPowers[k]->modifiedCollisionWithTankCanOnlyWorkIndividually && modifiedTankCollision) {
 						continue;
 					}
-					if (noMoreTankCollisionSpecials) {
-						continue;
-					}
-
 					modifiedTankCollision = true;
 					if (b->bulletPowers[k]->overridesCollisionWithTank) {
 						overridedTankCollision = true;
-					}
-					if (!b->bulletPowers[k]->modifiedCollisionWithTankCanWorkWithOthers) {
-						noMoreTankCollisionSpecials = true;
 					}
 
 					InteractionBoolHolder check_temp = b->bulletPowers[k]->modifiedCollisionWithTank(b, t);
@@ -1250,6 +1206,10 @@ void GameMainLoop::bulletToTank() {
 					}
 					if (check_temp.otherShouldDie) {
 						killTank = true;
+					}
+
+					if (!b->bulletPowers[k]->modifiedCollisionWithTankCanWorkWithOthers) {
+						break;
 					}
 				}
 			}
