@@ -34,7 +34,7 @@ void DefaultRandomLevel::initialize() { //still needs a lot of work
 	//double* posArr;
 
 	//some random walls
-	LevelHelper::pushRandomWalls(16, TANK_RADIUS*2.5*2, TANK_RADIUS*2, GAME_WIDTH - 2*(TANK_RADIUS*2.5*2), GAME_HEIGHT - 2*(TANK_RADIUS*2), randColor);
+	LevelHelper::pushRandomWalls(RNG::randIntInRange(12, 16+1), TANK_RADIUS*2.5*2, TANK_RADIUS*2, GAME_WIDTH - 2*(TANK_RADIUS*2.5*2), GAME_HEIGHT - 2*(TANK_RADIUS*2), randColor);
 
 	//randomize hazards:
 	//get the weight of each hazard

@@ -32,7 +32,7 @@ void BigFunLevel::initialize() {
 
 	LevelHelper::pushClassicWalls(color);
 
-	LevelHelper::pushRandomWalls(16, 80+32+40, 40, GAME_WIDTH - 2*(80+32+40), GAME_HEIGHT - 2*40, color);
+	LevelHelper::pushRandomWalls(12, 80+32+40, 40, GAME_WIDTH - 2*(80+32+40), GAME_HEIGHT - 2*40, color); //JS used 8
 
 	//classic speed/invincible/wallhack
 	LevelHelper::pushSymmetricPowerups_UD_Alternate(GAME_WIDTH/2, GAME_HEIGHT/2, GAME_HEIGHT/2 - 16,
