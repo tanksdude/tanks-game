@@ -183,7 +183,7 @@
     <ClCompile Include="_source\hazards\circular-no-bullet-zone-hazard.cpp" />
     <ClCompile Include="_source\levels\concealed-powerups-level.cpp" />
     <ClCompile Include="_source\custom-level-interpreter.cpp" />
-    <ClCompile Include="_source\powers\dev-annoying-power.cpp" />
+    <ClCompile Include="_source\powers\annoying-power.cpp" />
     <ClCompile Include="_source\powers\dev-backwards-movement-power.cpp" />
     <ClCompile Include="_source\powers\dev-color-changing-power.cpp" />
     <ClCompile Include="_source\powers\dev-colorless-long-invincible-named-power.cpp" />
@@ -352,7 +352,7 @@
     <ClInclude Include="_source\hazards\circular-no-bullet-zone-hazard.h" />
     <ClInclude Include="_source\levels\concealed-powerups-level.h" />
     <ClInclude Include="_source\custom-level-interpreter.h" />
-    <ClInclude Include="_source\powers\dev-annoying-power.h" />
+    <ClInclude Include="_source\powers\annoying-power.h" />
     <ClInclude Include="_source\powers\dev-backwards-movement-power.h" />
     <ClInclude Include="_source\powers\dev-color-changing-power.h" />
     <ClInclude Include="_source\powers\dev-colorless-long-invincible-named-power.h" />

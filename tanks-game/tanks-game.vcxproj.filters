@@ -288,7 +288,7 @@
     <ClCompile Include="_source\powers\shield-power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="_source\powers\dev-annoying-power.cpp">
+    <ClCompile Include="_source\powers\annoying-power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="_source\levels\sneaky-reward-level.cpp">
@@ -836,7 +836,7 @@
     <ClInclude Include="_source\powers\shield-power.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="_source\powers\dev-annoying-power.h">
+    <ClInclude Include="_source\powers\annoying-power.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="_source\levels\sneaky-reward-level.h">
