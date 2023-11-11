@@ -245,10 +245,12 @@ The tank has several extra lives, up to ten! (Though the bullets still only get 
 
 ## Swarm
 
-* Types: "vanilla-extra", "random-vanilla"
+* Types: "vanilla-extra", "random-vanilla", "random"
 * Internal name: `swarm`
 * Attributes: "mix"
 * Color: `#E6C522`
+* Tank modifiers: half shooting cooldown
+* Bullet modifiers: half speed
 
 The bullets orbit around the tank, allowing an intense swarm of bullets to form!
 
@@ -395,10 +397,15 @@ Multishot, but all the bullets face the same way. Inspiration came from my very 
 * Internal name: `ancient_megadeath`
 * Attributes: "mix"
 * Color: `#201A1A`
+* Tank modifiers: double shooting cooldown
+* Bullet modifiers: 1/64 speed, +1/64 acceleration
 
 A recreation of the very first (unseen) implementation of MegaDeath in JS Tanks. It was pretty bad, but it did live up to its name "mega-death" (by being OP). I think it had increasing acceleration ([jerk](https://en.wikipedia.org/wiki/Jerk_(physics%29)) because I remembered it being far more menacing(ly short-lived).
 
 Fun fact: MegaDeath actually did appear in JS Tanks! It only appears in the mixing with Godmode. However, it only existed because power mixing was very bad back then. I probably forgot because Godmode spits out so many bullets and finding the single one behaving differently is a challenge. At best, you might notice 8 slightly larger bullets because it Banana'd. However, if you gave it enough time to grow (which was very difficult given its normal spawning locations (center of Winning Path and the random level)), it would grow very fast (same speed as this version, actually) and pass through walls (because conditionally enabling destroying walls was hard).
+
+* Bullet offense: 2 (`DESTRUCTION_TIER`)
+* Bullet defense: 2 (`DESTRUCTION_TIER`)
 
 ## [DEV] Banana Split
 
@@ -409,6 +416,29 @@ Fun fact: MegaDeath actually did appear in JS Tanks! It only appears in the mixi
 * Bullet modifiers: -1/8 acceleration (same as Banana)
 
 When the bullet comes to a stop, it Bananas into 4 bullets at set angles. Worth investigating further.
+
+## Trickster Circle
+
+* Types: "dev", "random-dev"
+* Internal name: `trickster_circle`
+* Attributes: "mix"
+* Color: `#001659` (really dark blue)
+* Bullet modifiers: half speed
+
+The bullets move in a circle motion (while traveling forward like normal).
+
+The color is loosely based on [Mewtwo's Shadow Ball](https://www.ssbwiki.com/Mewtwo_(SSBU%29), because that's where this power's inspiration comes from.
+
+## Trickster Snake
+
+* Types: "dev", "random-dev"
+* Internal name: `trickster_snake`
+* Attributes: "mix"
+* Color: `#D9B3FF` (really faded purple-ish)
+
+The bullets move up and down (while traveling forward like normal). This is the better version of this power.
+
+The color is loosely based on [Mewtwo's Shadow Ball](https://www.ssbwiki.com/Mewtwo_(SSB4%29), because that's where this power's inspiration comes from.
 
 # List of protected power types
 
@@ -553,6 +583,7 @@ These are the types custom powers are not allowed to have, unless `[MODS] ModSaf
 * Blast
 * Banana
 * Shotgun
+* Swarm
 
 ## dev
 
@@ -570,6 +601,8 @@ These are the types custom powers are not allowed to have, unless `[MODS] ModSaf
 * Triple Spread
 * Ring Shooter
 * Banana Split
+* Trickster Circle
+* Trickster Snake
 
 ## random-dev
 
@@ -585,3 +618,5 @@ These are the types custom powers are not allowed to have, unless `[MODS] ModSaf
 * Triple Spread
 * Ring Shooter
 * Banana Split
+* Trickster Circle
+* Trickster Snake

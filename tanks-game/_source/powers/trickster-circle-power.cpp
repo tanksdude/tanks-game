@@ -1,0 +1,78 @@
+#include "trickster-circle-power.h"
+
+const double TricksterCirclePower::timePeriod = 50;
+const double TricksterCirclePower::movementRadius = 16.0/timePeriod;
+
+std::unordered_map<std::string, float> TricksterCirclePower::getWeights() const {
+	std::unordered_map<std::string, float> weights;
+	weights.insert({ "dev", 0.5f });
+	weights.insert({ "random-dev", 0.5f }); //not as cool as the snake version
+	return weights;
+}
+
+TankPower* TricksterCirclePower::makeTankPower() const {
+	return new TricksterCircleTankPower();
+}
+
+BulletPower* TricksterCirclePower::makeBulletPower() const {
+	return new TricksterCircleBulletPower();
+}
+
+/*
+HazardPower* TricksterCirclePower::makeHazardPower() const {
+	return new TricksterCircleHazardPower();
+}
+*/
+
+Power* TricksterCirclePower::factory() {
+	return new TricksterCirclePower();
+}
+
+TricksterCirclePower::TricksterCirclePower() {
+	return;
+}
+
+
+
+BulletPower* TricksterCircleTankPower::makeBulletPower() const {
+	return new TricksterCircleBulletPower();
+}
+
+TricksterCircleTankPower::TricksterCircleTankPower() {
+	maxTime = 500;
+	timeLeft = 500;
+}
+
+
+
+#include "../constants.h"
+#include <cmath>
+
+InteractionBoolHolder TricksterCircleBulletPower::modifiedMovement(Bullet* b) {
+	//displacement from "center" vector = {TricksterCirclePower::movementRadius * cos((2*PI) * (tickCount / TricksterCirclePower::timePeriod)), y value similar}
+	//derivative = {(TricksterCirclePower::movementRadius * (2*PI)) * -sin((2*PI) * (tickCount / TricksterCirclePower::timePeriod)), y value similar}
+
+	//negative tickCount because it looks cooler
+	const float moveXDiff = (TricksterCirclePower::movementRadius * (2*PI)) * -sin((2*PI) * (-tickCount / TricksterCirclePower::timePeriod));
+	const float moveYDiff = (TricksterCirclePower::movementRadius * (2*PI)) *  cos((2*PI) * (-tickCount / TricksterCirclePower::timePeriod));
+	const SimpleVector2D vectorMoveDiff = SimpleVector2D(b->velocity.getXComp() + moveXDiff, b->velocity.getYComp() + moveYDiff);
+
+	b->x += vectorMoveDiff.getXComp();
+	b->y += vectorMoveDiff.getYComp();
+
+	tickCount++; //not sure whether this should go at the start or end
+	return { false };
+}
+
+TankPower* TricksterCircleBulletPower::makeTankPower() const {
+	return new TricksterCircleTankPower();
+}
+
+TricksterCircleBulletPower::TricksterCircleBulletPower() {
+	timeLeft = 0;
+	maxTime = -1;
+
+	modifiesMovement = true;
+
+	tickCount = 0;
+}

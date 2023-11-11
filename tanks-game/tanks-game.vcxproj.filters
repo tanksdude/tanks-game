@@ -504,6 +504,12 @@
     <ClCompile Include="_source\powers\swarm-power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="_source\powers\trickster-circle-power.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="_source\powers\trickster-snake-power.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="_source\bullet.h">
@@ -1038,6 +1044,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="_source\powers\swarm-power.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="_source\powers\trickster-circle-power.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="_source\powers\trickster-snake-power.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
