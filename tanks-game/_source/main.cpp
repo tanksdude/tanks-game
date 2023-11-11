@@ -131,6 +131,7 @@
 #include "powers/tracking-power.h"
 #include "powers/barrier-power.h"
 #include "powers/shield-power.h"
+#include "powers/swarm-power.h"
 //old powers:
 #include "powers/old-bounce-power.h" //identical to bounce except it makes the tank smaller
 #include "powers/old-big-named-power.h" //big but moves at half speed (not quarter) and the speed stacks
@@ -264,6 +265,7 @@ int main(int argc, char** argv) {
 	PowerupDataGovernor::addPowerFactory(TrackingPower::factory);
 	PowerupDataGovernor::addPowerFactory(BarrierPower::factory);
 	PowerupDataGovernor::addPowerFactory(ShieldPower::factory);
+	PowerupDataGovernor::addPowerFactory(SwarmPower::factory);
 
 	//old:
 	PowerupDataGovernor::addPowerFactory(OldBouncePower::factory);

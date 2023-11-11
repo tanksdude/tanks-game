@@ -243,6 +243,15 @@ The tank and its bullets have an extra life!
 
 The tank has several extra lives, up to ten! (Though the bullets still only get one extra life.)
 
+## Swarm
+
+* Types: "vanilla-extra", "random-vanilla"
+* Internal name: `swarm`
+* Attributes: "mix"
+* Color: `#E6C522`
+
+The bullets orbit around the tank, allowing an intense swarm of bullets to form!
+
 ## [DEV] Long Invincible
 
 * Types: "dev"
@@ -433,6 +442,7 @@ These are the types custom powers are not allowed to have, unless `[MODS] ModSaf
 * Tracking
 * Barrier
 * Shield
+* Swarm
 
 ## random-vanilla
 
@@ -450,6 +460,7 @@ These are the types custom powers are not allowed to have, unless `[MODS] ModSaf
 * Blast
 * Banana
 * Shotgun
+* Swarm
 
 ## old
 

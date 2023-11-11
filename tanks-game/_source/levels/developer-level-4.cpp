@@ -86,6 +86,7 @@ void DeveloperLevel4::initialize() {
 	PowerupManager::pushPowerup(new PowerSquare(120, GAME_HEIGHT-20, "dev", "triple_spread"));
 	PowerupManager::pushPowerup(new PowerSquare(140, GAME_HEIGHT-20, "dev", "ring_shooter"));
 	PowerupManager::pushPowerup(new PowerSquare(160, GAME_HEIGHT-20, "dev", "banana_split"));
+	PowerupManager::pushPowerup(new PowerSquare(180, GAME_HEIGHT-20, "vanilla-extra", "swarm"));
 
 	names = new std::string[2]{ "multishot", "multishot" };
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH-20, GAME_HEIGHT-20, names, 2));

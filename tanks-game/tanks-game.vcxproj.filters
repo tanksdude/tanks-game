@@ -501,6 +501,9 @@
     <ClCompile Include="_source\level-effects\dev-tiny-tanks-level-effect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="_source\powers\swarm-power.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="_source\bullet.h">
@@ -1032,6 +1035,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="_source\level-effects\dev-tiny-tanks-level-effect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="_source\powers\swarm-power.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

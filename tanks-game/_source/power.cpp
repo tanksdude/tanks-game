@@ -67,15 +67,15 @@ trickster (moves in circles around its path; imagine MewTwo's shadow ball)
 
 
 other:
-swarm (bullets circle around tank at a set distance) (modifiedMovementCanOnlyWorkIndividually = true?)
+|swarm (bullets circle around tank at a set distance) (modifiedMovementCanOnlyWorkIndividually = true?)
 sword (melee power) (heck yeah, but would have to let Tank hold an object; shouldn't be too hard?)
 lightsaber (melee power) (sword but can reflect bullets)
 stationary turret superguard? (like multishot but turrets spaced around tank)
 mine layer (shoot a regular bullet, every certain distance a mine is dropped)
 |dev: ultrabounce (bounce but it pushes the walls back)
-dev: spread (triple but shoots at the same point and spreads out)
+|dev: spread (triple but shoots at the same point and spreads out)
 dev: pusher (pushes walls and hazards (tank only))
-dev: ring-shooter (shoots a ring of bullets; just looks amusing) (multishot but all the angles are the same)
+|dev: ring-shooter (shoots a ring of bullets; just looks amusing) (multishot but all the angles are the same)
 
 
 invincibility series notes:

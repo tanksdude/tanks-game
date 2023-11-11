@@ -231,6 +231,7 @@
     <ClCompile Include="_source\hazards\patrolling-turret-hazard.cpp" />
     <ClCompile Include="_source\physics-handler.cpp" />
     <ClCompile Include="_source\powers\ring-shooter-power.cpp" />
+    <ClCompile Include="_source\powers\swarm-power.cpp" />
     <ClCompile Include="_source\powers\triple-spread-named-power.cpp" />
     <ClCompile Include="_source\powerup-data-governor.cpp" />
     <ClCompile Include="_source\hazards\rectangular-no-bullet-zone-hazard.cpp" />
@@ -397,6 +398,7 @@
     <ClInclude Include="_source\hazards\patrolling-turret-hazard.h" />
     <ClInclude Include="_source\physics-handler.h" />
     <ClInclude Include="_source\powers\ring-shooter-power.h" />
+    <ClInclude Include="_source\powers\swarm-power.h" />
     <ClInclude Include="_source\powers\triple-spread-named-power.h" />
     <ClInclude Include="_source\powerup-data-governor.h" />
     <ClInclude Include="_source\hazards\rectangular-no-bullet-zone-hazard.h" />
