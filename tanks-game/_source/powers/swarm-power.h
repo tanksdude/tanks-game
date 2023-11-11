@@ -10,7 +10,7 @@ public: //bullet stuff
 
 public:
 	virtual std::vector<std::string> getPowerTypes() const override {
-		std::vector<std::string> types = std::vector<std::string>{ "vanilla-extra", "random-vanilla" };
+		std::vector<std::string> types = std::vector<std::string>{ "vanilla-extra", "random-vanilla", "random" };
 		//TODO: move to vanilla?
 		return types;
 	}

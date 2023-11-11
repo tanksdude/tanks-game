@@ -20,8 +20,8 @@ void OldHidingPlacesLevel::initialize() {
 
 	ColorValueHolder color = getDefaultColor();
 	//PositionHolder pos;
-	GenericFactoryConstructionData constructionData;
-	double* posArr;
+	//GenericFactoryConstructionData constructionData;
+	//double* posArr;
 
 	LevelHelper::pushClassicWalls(color);
 

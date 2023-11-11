@@ -8,6 +8,7 @@ std::unordered_map<std::string, float> SwarmPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla-extra", 1.0f });
 	weights.insert({ "random-vanilla", 0.25f });
+	weights.insert({ "random", 0.125f });
 	return weights;
 }
 
@@ -63,7 +64,7 @@ SwarmTankPower::SwarmTankPower() {
 #include "../constants.h"
 
 #include "../tank-manager.h"
-#include "../power-function-helper.h"
+//#include "../power-function-helper.h"
 
 InteractionBoolHolder SwarmBulletPower::modifiedMovement(Bullet* b) {
 	const Tank* parentTank = TankManager::getTankByID(b->getParentID());
@@ -104,6 +105,7 @@ InteractionBoolHolder SwarmBulletPower::modifiedMovement(Bullet* b) {
 	const float angleToPoint1 = SimpleVector2D::angleBetween(distToPoint1, b->velocity);
 	const float angleToPoint2 = SimpleVector2D::angleBetween(distToPoint2, b->velocity);
 
+	//copied from PowerFunctionHelper::homingGenericMove()
 	if (abs(angleToPoint1) < abs(angleToPoint2)) {
 		if (abs(angleToPoint1) < SwarmPower::homingStrength) {
 			//small angle adjustment needed
