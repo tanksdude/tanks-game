@@ -63,7 +63,7 @@ poison? (like, another bullet/hazard is hit and it stops) (tank hits poisoned ta
 boomerang (non-refillable? except when the shot is destroyed)
 shurikan (shouldn't be too hard, especially if blast gets in)
 teleport? (will have a teleport hazard, but how would a powerup look like? the longer you hold down shoot the further you'll teleport?)
-trickster (moves in circles around its path; imagine MewTwo's shadow ball)
+|trickster (moves in circles around its path; imagine MewTwo's shadow ball)
 
 
 other:
@@ -74,7 +74,7 @@ stationary turret superguard? (like multishot but turrets spaced around tank)
 mine layer (shoot a regular bullet, every certain distance a mine is dropped)
 |dev: ultrabounce (bounce but it pushes the walls back)
 |dev: spread (triple but shoots at the same point and spreads out)
-dev: pusher (pushes walls and hazards (tank only))
+|dev: pusher (pushes walls and hazards (tank only))
 |dev: ring-shooter (shoots a ring of bullets; just looks amusing) (multishot but all the angles are the same)
 
 
@@ -124,5 +124,6 @@ in JS, I don't think big bullets passing through each other was intentional, it 
 powerups resetting tank shooting cooldown doesn't happen in this version because of a few reasons: mainly I forgot, secondarily it doesn't fit in cleanly (though I could probably add a system to do so), tertiary reason is it's more fun without it
 in JS, powers didn't have color for a *long* time (until fire, I think); after so long, I was running out of shades of gray to represent powers, and I was the only one who could tell them apart (and I think I struggled with big and something else), so colors were finally added... and now I'm starting to run out of colors in this version
 original color choosing: speed is blue because Sonic, invincible is white because I think that's a "generic" invincible color, and wallhack is yellow because Super Saiyan and Super Sonic; everything else did have some thought put into it but nothing as concrete (others with some thought: big is red because red is a "strong" color in games, fire is orange because... fire, and banana is gold because banana is awesome and deserves gold; continued: mines is black to make turning difficult (because I thought it would be a funny balancing mechanism) and godmode is rainbow because why shouldn't it be)
+swarm was one of the first new powerups I thought up for the C++ version, and it ended up being one of the last powerups implemented
 
 */

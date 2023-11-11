@@ -189,6 +189,7 @@
     <ClCompile Include="_source\powers\dev-colorless-long-invincible-named-power.cpp" />
     <ClCompile Include="_source\powers\dev-other-stuff-is-poison-power.cpp" />
     <ClCompile Include="_source\hazards\dev-wall-hazard.cpp" />
+    <ClCompile Include="_source\powers\dev-pusher-power.cpp" />
     <ClCompile Include="_source\powers\dev-weird-extra-cannons-power.cpp" />
     <ClCompile Include="_source\levels\developer-level-2.cpp" />
     <ClCompile Include="_source\powers\dev-long-invincible-named-power.cpp" />
@@ -357,6 +358,7 @@
     <ClInclude Include="_source\powers\dev-colorless-long-invincible-named-power.h" />
     <ClInclude Include="_source\powers\dev-other-stuff-is-poison-power.h" />
     <ClInclude Include="_source\hazards\dev-wall-hazard.h" />
+    <ClInclude Include="_source\powers\dev-pusher-power.h" />
     <ClInclude Include="_source\powers\dev-weird-extra-cannons-power.h" />
     <ClInclude Include="_source\levels\developer-level-2.h" />
     <ClInclude Include="_source\powers\dev-long-invincible-named-power.h" />

@@ -440,6 +440,15 @@ The bullets move up and down (while traveling forward like normal). This is the 
 
 The color is loosely based on [Mewtwo's Shadow Ball](https://www.ssbwiki.com/Mewtwo_(SSB4%29), because that's where this power's inspiration comes from.
 
+## [DEV] Pusher
+
+* Types: "dev", "random-dev"
+* Internal name: `pusher`
+* Attributes: "mix"
+* Color: `#BFBF30` (big construction vehicle yellow (kinda))
+
+Allows the tank to push walls and solid hazards.
+
 # List of protected power types
 
 These are the types custom powers are not allowed to have, unless `[MODS] ModSafetyChecks` in the INI file is disabled.
@@ -603,6 +612,7 @@ These are the types custom powers are not allowed to have, unless `[MODS] ModSaf
 * Banana Split
 * Trickster Circle
 * Trickster Snake
+* Pusher
 
 ## random-dev
 
@@ -620,3 +630,4 @@ These are the types custom powers are not allowed to have, unless `[MODS] ModSaf
 * Banana Split
 * Trickster Circle
 * Trickster Snake
+* Pusher

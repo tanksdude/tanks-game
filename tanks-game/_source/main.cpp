@@ -154,6 +154,7 @@
 #include "powers/banana-split-power.h" //banana but with a fixed angle range
 #include "powers/trickster-circle-power.h" //moves back and forth in a circle motion
 #include "powers/trickster-snake-power.h" //moves back and forth by moving up and down
+#include "powers/dev-pusher-power.h" //moves back and forth by moving up and down
 
 #include "game-main-loop.h"
 
@@ -292,6 +293,7 @@ int main(int argc, char** argv) {
 	PowerupDataGovernor::addPowerFactory(BananaSplitPower::factory);
 	PowerupDataGovernor::addPowerFactory(TricksterCirclePower::factory);
 	PowerupDataGovernor::addPowerFactory(TricksterSnakePower::factory);
+	PowerupDataGovernor::addPowerFactory(DevPusherPower::factory);
 
 	//hazards
 	//vanilla (some are also "old"):

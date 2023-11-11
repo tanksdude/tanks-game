@@ -510,6 +510,9 @@
     <ClCompile Include="_source\powers\trickster-snake-power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="_source\powers\dev-pusher-power.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="_source\bullet.h">
@@ -1050,6 +1053,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="_source\powers\trickster-snake-power.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="_source\powers\dev-pusher-power.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
