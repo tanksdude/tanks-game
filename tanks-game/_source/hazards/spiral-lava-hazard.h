@@ -26,6 +26,8 @@ protected:
 	virtual inline double getLavaBlobDist(double tickValue) const;
 	virtual inline double getLavaBlobRadius() const;
 
+	virtual bool canReachTanks() const; //used during randomization factory (in reasonableLocation())
+
 public:
 	virtual std::vector<std::string> getHazardTypes() const override {
 		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "random" };

@@ -91,6 +91,7 @@ void SpiralLavaHazard::initialize() {
 	for (int i = 0; i < maxLavaBlobs; i++) {
 		pushLavaBlob(i);
 	}
+	//TODO: this should delete its lava blobs when it dies, but that would need an uninitialize() to do properly which would make things complicated
 }
 
 CircleHazard* SpiralLavaHazard::makeLavaBlob(int blobNum) const {
@@ -116,7 +117,24 @@ inline double SpiralLavaHazard::getLavaBlobDist(double tickValue) const {
 }
 
 inline double SpiralLavaHazard::getLavaBlobRadius() const {
-	return std::min(this->w, this->h) / 2;
+	return std::min(this->w, this->h) / 2; //in case it's not a square
+}
+
+bool SpiralLavaHazard::canReachTanks() const {
+	const double reachDist = maxLavaDist + getLavaBlobRadius();
+	Circle* testCircle = new Circle;
+	testCircle->x = this->x + this->w/2;
+	testCircle->y = this->y + this->h/2;
+	testCircle->r = reachDist;
+	for (int i = 0; i < TankManager::getNumTanks(); i++) {
+		const Tank* t = TankManager::getTank(i);
+		if (CollisionHandler::partiallyCollided(testCircle, t)) {
+			delete testCircle;
+			return true;
+		}
+	}
+	delete testCircle;
+	return false;
 }
 
 void SpiralLavaHazard::tick() {
@@ -176,6 +194,10 @@ bool SpiralLavaHazard::reasonableLocation() const {
 				return false;
 			}
 		}
+	}
+
+	if (canReachTanks()) {
+		return false;
 	}
 
 	return validLocation();
