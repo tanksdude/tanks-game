@@ -96,6 +96,32 @@ Have you ever wondered what a really dangerous level looks like? A truly hostile
 
 ![Many Hazards Level](images/many_hazards.jpg)
 
+## Dangerous Center
+
+* Types: "vanilla", "random-vanilla", "random"
+* Internal name: `dangerous_center`
+* Default color: `#E691A9`
+* Level effects: Respawning Powerups
+
+Will you take cover from the very hostile center, or will you claim the rewards? You could always grab a Big to thin the Targeting Turret population, but beware the reduced speed and inevitable destruction of your cover.
+
+This level was partially made from randomly throwing down some walls and really trying to fit as much as possible in a limited space. Not a great level but good enough.
+
+![Dangerous Center Level](images/dangerous_center.jpg)
+
+## Untraditional Divider
+
+* Types: "vanilla", "random-vanilla", "random"
+* Internal name: `untraditional_divider`
+* Default color: `#76C67D`
+* Level effects: Respawning Powerups, Magnetism, Minefield × 4
+
+Instead of the usual vertical dividers, there's only one horizontal wall?! Keep your wits about you as you try to get a powerup, because all of them are in treacherous locations!
+
+The entire inspiration for this level was making the usual vertical wall separators a massive horizontal wall instead. Then adding multiple Minefields because that seemed interesting, finishing up with a few turrets in the lava. I don't think it's good enough for vanilla, but it's too unique to ignore.
+
+![Untraditional Divider Level](images/untraditional_divider.jpg)
+
 ## Hiding Places
 
 * Types: "vanilla-extra", "random-vanilla", "old", "random-old"
@@ -117,55 +143,6 @@ One of the two levels to have a Mines powerup. Arguably fits somewhat decently.
 Changes the Speed powerups back to Barrier and removes the No Bullet Zone in the center, though honestly it should stay. Does not replace Bounce with Old Bounce because making the tank small was an unnecessary feature.
 
 ![Old Hiding Places Level](images/old_hiding_places.jpg)
-
-## Sneaky Reward
-
-* Types: "vanilla-extra", "random-vanilla"
-* Internal name: `sneaky_reward`
-* Default color: `#9966CC` (amethyst)
-* Level effects: Respawning Powerups
-
-Two powerups hidden away, with some strange powerups next to them. How will you get them? And maybe avoid the center.
-
-Coincidentally, this was the first new level for this version. Which is a little sad. Especially when it was mostly a test level that I thought was barely passable as a real level.
-
-![Sneaky Reward Level](images/sneaky_reward.jpg)
-
-## Tight Patrolling Corridor
-
-* Types: "vanilla-extra", "random-vanilla"
-* Internal name: `tight_patrolling_corridor`
-* Default color: `(15/16, 15/16, 14/16)` (very white beige)
-
-Re-enact your favorite spy escaping from the enemy headquarters! Many turrets move around, guarding the elusive powerup in the center. Maybe you could quickly run down a different corridor to grab some speed. Should the enemy's bullets get too close to the starting area, try grabbing some invincibility.
-
-![Tight Patrolling Corridor Level](images/tight_patrolling_corridor.jpg)
-
-## Dangerous Center
-
-* Types: "vanilla-extra", "random-vanilla"
-* Internal name: `dangerous_center`
-* Default color: `#E691A9`
-* Level effects: Respawning Powerups
-
-Will you take cover from the very hostile center, or will you claim the rewards? You could always grab a Big to thin the Targeting Turret population, but beware the reduced speed and inevitable destruction of your cover.
-
-This level was partially made from randomly throwing down some walls and really trying to fit as much as possible in a limited space. Not a great level but good enough.
-
-![Dangerous Center Level](images/dangerous_center.jpg)
-
-## Untraditional Divider
-
-* Types: "vanilla-extra", "random-vanilla"
-* Internal name: `untraditional_divider`
-* Default color: `#76C67D`
-* Level effects: Respawning Powerups, Magnetism, Minefield × 4
-
-Instead of the usual vertical dividers, there's only one horizontal wall?! Keep your wits about you as you try to get a powerup, because all of them are in treacherous locations!
-
-The entire inspiration for this level was making the usual vertical wall separators a massive horizontal wall instead. Then adding multiple Minefields because that seemed interesting, finishing up with a few turrets in the lava. I don't think it's good enough for vanilla, but it's too unique to ignore.
-
-![Untraditional Divider Level](images/untraditional_divider.jpg)
 
 ## Tricky Maneuvering
 
@@ -203,6 +180,29 @@ Pro tip: since bullets die when hitting walls, you can shoot to see where walls 
 ![Winning Path Level](images/winning_path.jpg)
 
 ![Winning Path Level visible](images/winning_path-visible.jpg)
+
+## Sneaky Reward
+
+* Types: "vanilla-extra", "random-vanilla"
+* Internal name: `sneaky_reward`
+* Default color: `#9966CC` (amethyst)
+* Level effects: Respawning Powerups
+
+Two powerups hidden away, with some strange powerups next to them. How will you get them? And maybe avoid the center.
+
+Coincidentally, this was the first new level for this version. Which is a little sad. Especially when it was mostly a test level that I thought was barely passable as a real level.
+
+![Sneaky Reward Level](images/sneaky_reward.jpg)
+
+## Tight Patrolling Corridor
+
+* Types: "vanilla-extra", "random-vanilla"
+* Internal name: `tight_patrolling_corridor`
+* Default color: `(15/16, 15/16, 14/16)` (very white beige)
+
+Re-enact your favorite spy escaping from the enemy headquarters! Many turrets move around, guarding the elusive powerup in the center. Maybe you could quickly run down a different corridor to grab some speed. Should the enemy's bullets get too close to the starting area, try grabbing some invincibility.
+
+![Tight Patrolling Corridor Level](images/tight_patrolling_corridor.jpg)
 
 ## Concealed Powerups
 
@@ -465,17 +465,17 @@ These are the types custom levels are not allowed to have, unless `[MODS] ModSaf
 * Big Fun
 * Few Obstacles
 * Many Hazards
+* Dangerous Center
+* Untraditional Divider
 
 ## vanilla-extra
 
 * Hiding Places
-* Sneaky Reward
-* Tight Patrolling Corridor
-* Dangerous Center
-* Untraditional Divider
 * Tricky Maneuvering
 * Mine Heaven
 * Winning Path
+* Sneaky Reward
+* Tight Patrolling Corridor
 * Timed Reward
 
 ## random-vanilla
@@ -486,14 +486,14 @@ These are the types custom levels are not allowed to have, unless `[MODS] ModSaf
 * Big Fun
 * Few Obstacles
 * Many Hazards
-* Hiding Places
-* Sneaky Reward
-* Tight Patrolling Corridor
 * Dangerous Center
 * Untraditional Divider
+* Hiding Places
 * Tricky Maneuvering
 * Mine Heaven
 * Winning Path
+* Sneaky Reward
+* Tight Patrolling Corridor
 * Timed Reward
 
 ## old
@@ -541,6 +541,8 @@ These are the types custom levels are not allowed to have, unless `[MODS] ModSaf
 * Big Fun
 * Few Obstacles
 * Many Hazards
+* Dangerous Center
+* Untraditional Divider
 
 ## dev
 

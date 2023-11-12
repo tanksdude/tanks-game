@@ -20,8 +20,9 @@ ColorValueHolder UntraditionalDividerLevel::getDefaultColor() const {
 
 std::unordered_map<std::string, float> UntraditionalDividerLevel::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "vanilla-extra", 0.5f });
+	weights.insert({ "vanilla", 0.5f });
 	weights.insert({ "random-vanilla", 0.5f });
+	weights.insert({ "random", 0.25f });
 	return weights;
 }
 

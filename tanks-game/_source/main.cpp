@@ -39,16 +39,15 @@
 #include "levels/big-fun-level.h"
 #include "levels/few-obstacles-level.h"
 #include "levels/many-hazards-level.h"
+#include "levels/dangerous-center-level.h"
+#include "levels/untraditional-divider-level.h"
 //"extra":
 #include "levels/hiding-places-level.h"
-#include "levels/sneaky-reward-level.h"
-#include "levels/tight-patrolling-corridor-level.h"
-#include "levels/dangerous-center-level.h"
-#include "levels/untraditional-divider-level.h" //TODO: some of these should go in regular vanilla, and some of the newer levels should go in random
-//special levels:
 #include "levels/tricky-maneuvering-level.h"
 #include "levels/mine-heaven-level.h"
 #include "levels/winning-path-level.h"
+#include "levels/sneaky-reward-level.h"
+#include "levels/tight-patrolling-corridor-level.h"
 //old levels:
 #include "levels/concealed-powerups-level.h"
 #include "levels/lightning-corners-level.h"
@@ -337,17 +336,15 @@ int main(int argc, char** argv) {
 	LevelDataGovernor::addLevelFactory(BigFunLevel::factory);
 	LevelDataGovernor::addLevelFactory(FewObstaclesLevel::factory);
 	LevelDataGovernor::addLevelFactory(ManyHazardsLevel::factory);
-	//"extra":
-	LevelDataGovernor::addLevelFactory(HidingPlacesLevel::factory);
-	LevelDataGovernor::addLevelFactory(SneakyRewardLevel::factory);
-	LevelDataGovernor::addLevelFactory(TightPatrollingCorridorLevel::factory);
 	LevelDataGovernor::addLevelFactory(DangerousCenterLevel::factory);
 	LevelDataGovernor::addLevelFactory(UntraditionalDividerLevel::factory);
-
-	//special (TODO: these aren't really that special anymore):
+	//"extra":
+	LevelDataGovernor::addLevelFactory(HidingPlacesLevel::factory);
 	LevelDataGovernor::addLevelFactory(TrickyManeuveringLevel::factory);
 	LevelDataGovernor::addLevelFactory(MineHeavenLevel::factory);
 	LevelDataGovernor::addLevelFactory(WinningPathLevel::factory);
+	LevelDataGovernor::addLevelFactory(SneakyRewardLevel::factory);
+	LevelDataGovernor::addLevelFactory(TightPatrollingCorridorLevel::factory);
 
 	//old:
 	LevelDataGovernor::addLevelFactory(ConcealedPowerupsLevel::factory);
