@@ -31,7 +31,7 @@ IceLevelEffect::~IceLevelEffect() {
 }
 
 LevelEffect* IceLevelEffect::factory(const GenericFactoryConstructionData& args) {
-	if (args.getDataCount() >= 1) [[likely]] {
+	if (args.getDataCount() >= 1) [[unlikely]] {
 		int count = args.getDataPortionLength(0);
 
 		if (count >= 1) [[likely]] {

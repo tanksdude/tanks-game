@@ -44,7 +44,7 @@ void UnnamedLevel3::initialize() {
 			break;
 		}
 	}
-	if (le == nullptr) {
+	if (le == nullptr) [[unlikely]] {
 		throw std::logic_error("ERROR: \"" + getName() + "\" level does not have \"respawning_powerups\" level effect!");
 	}
 	RespawningPowerupsLevelEffect* respawning = static_cast<RespawningPowerupsLevelEffect*>(le);
