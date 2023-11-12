@@ -52,16 +52,15 @@ void ResetThings::reset(int) {
 	TankManager::pushTank(new Tank(default_tankToEdgeDist, GAME_HEIGHT/2, 0, 1, "WASD", shootCooldown));
 	TankManager::pushTank(new Tank(GAME_WIDTH-default_tankToEdgeDist, GAME_HEIGHT/2, PI, 2, "Arrow Keys", shootCooldown));
 
-//#if _DEBUG
-#if 0
-	LevelManager::pushLevel("dev", "dev0");
-#else
-	std::string levelPlaylist = "random-vanilla";
-	if (ini_data.exists("GAME_OPTIONS", "GameLevelPlaylist")) {
-		levelPlaylist = ini_data.get("GAME_OPTIONS", "GameLevelPlaylist");
+	if (ini_data.exists("GAME_OPTIONS", "GameForceSameLevel")) {
+		LevelManager::pushLevel(ini_data.get("GAME_OPTIONS", "GameForceSameLevel", 0), ini_data.get("GAME_OPTIONS", "GameForceSameLevel", 1));
+	} else [[likely]] {
+		std::string levelPlaylist = "random-vanilla";
+		if (ini_data.exists("GAME_OPTIONS", "GameLevelPlaylist")) {
+			levelPlaylist = ini_data.get("GAME_OPTIONS", "GameLevelPlaylist");
+		}
+		LevelManager::pushLevel(levelPlaylist, LevelManager::levelWeightedSelect(levelPlaylist));
 	}
-	LevelManager::pushLevel(levelPlaylist, LevelManager::levelWeightedSelect(levelPlaylist));
-#endif
 
 	//initialize levels from LevelManager level list
 	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
