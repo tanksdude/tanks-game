@@ -12,13 +12,14 @@ std::unordered_map<std::string, float> BigFunLevel::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", 1.0f });
 	weights.insert({ "random-vanilla", 1.0f });
-	weights.insert({ "old", 1.0f });
+	weights.insert({ "old", 2.0f });
 	weights.insert({ "random-old", 2.0f });
 	weights.insert({ "random", 1.0f });
 	return weights;
 }
 
 ColorValueHolder BigFunLevel::getDefaultColor() const {
+	//not random likely to clearly differentiate it from DefaultRandomLevel
 	return ColorValueHolder(0.75f, 0.25f, 0.5f);
 }
 

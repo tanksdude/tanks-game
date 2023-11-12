@@ -1,7 +1,5 @@
 # List of Every Level
 
-TODO: images
-
 ## Default Random
 
 * Types: "vanilla", "random-vanilla", "random"
@@ -9,6 +7,8 @@ TODO: images
 * Default color: random
 
 A level with random walls, random powerups, and random hazards. Anything can happen.
+
+TODO: image
 
 ## Empty
 
@@ -20,6 +20,8 @@ It's empty. With no walls, powerups, or hazards to get in the way, this is a tru
 
 As such, it's about as entertaining as no items, Fox only, Final Destination.
 
+![Empty Level](images/empty.png)
+
 ### Old Empty
 
 * Types: "old", "random-old"
@@ -27,6 +29,8 @@ As such, it's about as entertaining as no items, Fox only, Final Destination.
 * Default color: `(0.0, 0.0, 0.0)`
 
 It's Empty, but with the classic JS walls. In some ways it's better since at least there's cover, but that also means corner camping is a very viable strategy.
+
+![Old Empty Level](images/old_empty.png)
 
 ## Evened Corridors
 
@@ -36,6 +40,8 @@ It's Empty, but with the classic JS walls. In some ways it's better since at lea
 
 Not a horribly interesting level. It was originally made to make Bounce look cool, and the main gimmick was the long corridors leading to a good powerup as a risk vs. reward opportunity. Didn't make the transition from JS Tanks very well, or maybe the fact is was one of the first levels ever means is was never very good. Maybe the Big powerups replacing the Barrier powerups contributed to this. Regardless, there will probably come a day when it is removed from vanilla.
 
+![Evened Corridors Level](images/evened_corridors.png)
+
 ### Old Evened Corridors
 
 * Types: "old", "random-old"
@@ -43,6 +49,8 @@ Not a horribly interesting level. It was originally made to make Bounce look coo
 * Default color: `#2288FF`
 
 Changes the Big powerup back to Barrier.
+
+![Old Evened Corridors Level](images/old_evened_corridors.png)
 
 ## Big Fun
 
@@ -54,6 +62,8 @@ A recreation of the JS Tanks random level at a really old point, around when Big
 
 It was very fun to rush to grab a Big powerup and flood the whole level with it (with superfast shooting), so I tried to recreate that experience in this version. Haven't quite nailed the feeling yet. Needs Big bullets to be able to pass through each other to properly recreate the feeling.
 
+TODO: image
+
 ## Few Obstacles
 
 * Types: "vanilla", "random-vanilla", "old", "random-old", "random"
@@ -64,6 +74,8 @@ A level with few obstacles (wow, such an original name). You could rush for the 
 
 In JS Tanks, since power mixing was not very good, the level was not quite as interesting. But now it's my go-to spot to show off how awesome power mixing is!
 
+![Few Obstacles Level](images/few_obstacles.png)
+
 ### Old Few Obstacles
 
 * Types: "old", "random-old"
@@ -71,6 +83,8 @@ In JS Tanks, since power mixing was not very good, the level was not quite as in
 * Default color: `#44CC99`
 
 Changes the Speed powerups back to Tracking and adds back the classic JS walls. Honestly the classic walls make it feel way too small, but oh well.
+
+![Old Few Obstacles Level](images/old_few_obstacles.png)
 
 ## Many Hazards
 
@@ -80,23 +94,29 @@ Changes the Speed powerups back to Tracking and adds back the classic JS walls. 
 
 Have you ever wondered what a really dangerous level looks like? A truly hostile environment unsuited for vulnerable tanks? Look no further than this! Dodge like 40 total hazards for meager rewards, and probably die along the way.
 
+![Many Hazards Level](images/many_hazards.png)
+
 ## Hiding Places
 
 * Types: "vanilla-extra", "random-vanilla", "old", "random-old"
 * Internal name: `hiding_places`
 * Default color: `(0.375, 0.75, 0.125)`
 
-As the name suggests, there are little cubbies to hide in. Although their effectiveness may be limited if then enemy grabs Bounce and Multishot.
+As the name suggests, there are little cubbies to hide in. Although their effectiveness may be limited if the enemy grabs Bounce and Multishot.
 
 One of the two levels to have a Mines powerup. Arguably fits somewhat decently.
 
-## Old Hiding Places
+![Hiding Places Level](images/hiding_places.png)
+
+### Old Hiding Places
 
 * Types: "old", "random-old"
 * Internal name: `old_hiding_places`
 * Default color: `#66AA22`
 
-Changes the Speed powerups back to Barrier and removes the No Bullet Zone in the center, though honestly it should stay.
+Changes the Speed powerups back to Barrier and removes the No Bullet Zone in the center, though honestly it should stay. Does not replace Bounce with Old Bounce because making the tank small was an unnecessary feature.
+
+![Old Hiding Places Level](images/old_hiding_places.png)
 
 ## Sneaky Reward
 
@@ -109,6 +129,8 @@ Two powerups hidden away, with some strange powerups next to them. How will you 
 
 Coincidentally, this was the first new level for this version. Which is a little sad. Especially when it was mostly a test level that I thought was barely passable as a real level.
 
+![Sneaky Reward Level](images/sneaky_reward.png)
+
 ## Tight Patrolling Corridor
 
 * Types: "vanilla-extra", "random-vanilla"
@@ -117,7 +139,7 @@ Coincidentally, this was the first new level for this version. Which is a little
 
 Re-enact your favorite spy escaping from the enemy headquarters! Many turrets move around, guarding the elusive powerup in the center. Maybe you could quickly run down a different corridor to grab some speed. Should the enemy's bullets get too close to the starting area, try grabbing some invincibility.
 
-Currently the only level with Patrolling Turrets because they don't randomize yet.
+![Tight Patrolling Corridor Level](images/tight_patrolling_corridor.png)
 
 ## Dangerous Center
 
@@ -130,6 +152,8 @@ Will you take cover from the very hostile center, or will you claim the rewards?
 
 This level was partially made from randomly throwing down some walls and really trying to fit as much as possible in a limited space. Not a great level but good enough.
 
+![Dangerous Center Level](images/dangerous_center.png)
+
 ## Untraditional Divider
 
 * Types: "vanilla-extra", "random-vanilla"
@@ -141,14 +165,18 @@ Instead of the usual vertical dividers, there's only one horizontal wall?! Keep 
 
 The entire inspiration for this level was making the usual vertical wall separators a massive horizontal wall instead. Then adding multiple Minefields because that seemed interesting, finishing up with a few turrets in the lava. I don't think it's good enough for vanilla, but it's too unique to ignore.
 
+![Untraditional Divider Level](images/untraditional_divider.png)
+
 ## Tricky Maneuvering
 
-* Types: "vanilla-extra", "random-vanilla"
+* Types: "vanilla-extra", "random-vanilla", "old", "random-old"
 * Internal name: `tricky_maneuvering`
 * Default color: `(0.5, 0.75, 1.0)`
 * Level effects: Wind
 
 Useful powerups lurk in the center, but beware sudden wind blowing you off course! Maybe test your luck and carefully grab a powerup by the Lava.
+
+![Tricky Maneuvering Level](images/tricky_maneuvering.png)
 
 ## Mine Heaven
 
@@ -158,6 +186,8 @@ Useful powerups lurk in the center, but beware sudden wind blowing you off cours
 * Level effects: Ice, Minefield
 
 Do you love the Mines power? Of course you do! This level is your dream come true: nothing but Mines powerups as far as the eye can see. But beware, new mines keep showing up, and the battlefield is covered in ice!
+
+![Mine Heaven Level](images/mine_heaven.png)
 
 ## Winning Path
 
@@ -170,6 +200,10 @@ Is this the empty level but with a cool powerup in the center? Nope, sike! The w
 
 Pro tip: since bullets die when hitting walls, you can shoot to see where walls are. No one has ever figured this out by themselves so I still have work to do as a level designer.
 
+![Winning Path Level](images/winning_path.png)
+
+![Winning Path Level visible](images/winning_path-visible.png)
+
 ## Concealed Powerups
 
 * Types: "old", "random-old"
@@ -180,15 +214,19 @@ A few good powerups are located in the center, but they are guarded by Lightning
 
 Not a very fun level, even for JS Tanks. Removed from vanilla for that reason. The only thing going for it was the Homing powerups, which are admittedly a fun addition, but that's it; it's too boring.
 
+![Concealed Powerups Level](images/concealed_powerups.png)
+
 ## Lightning Corners
 
 * Types: "old"
 * Internal name: `lightning_corners`
 * Default color: `(0x77/255, 0x55/255, 0.75)`
 
-An amazing powerup guarded in the center. Blatantly unfinished as a level.
+An amazing powerup guarded in the center. Blatantly unfinished as a level. The Stationary Turrets weren't in the JS version, and I likely added them here in an attempt to make this level more interesting and finished.
 
 Was likely originally made to test powerup mixing back in JS Tanks. And since I never figured out how to turn it a real level, I commented it out. But for some reason I ported it to C++, so that's why it's here.
+
+![Lightning Corners Level](images/lightning_corners.png)
 
 ## Lone Turret
 
@@ -199,6 +237,8 @@ Was likely originally made to test powerup mixing back in JS Tanks. And since I 
 A single turret in the center watches for any enemies. Stay too long deciding on the powerup you'll take and you'll be face its small wrath!
 
 Back in JS Tanks, it was the very first level to have a turret! That's why it has nothing else going for it, and it's not very fun. (And surprise surprise, it started as a test level to make sure the Targeting Turret worked.) Removed from vanilla because of that.
+
+![Lone Turret Level](images/lone_turret.png)
 
 ## Old Portal Level
 
@@ -211,6 +251,8 @@ The only thing going for this level is the portal effect: anything that passes f
 
 I realized I had every level from JS Tanks in this version, including the cut Lightning Corners, *but* I remembered the portal level. The hope was that this C++ version would make the portal level effect far easier to implement, but that clearly didn't work out.
 
+![Old Portal Level](images/old_portal.png)
+
 ## [DEV] Developer Level 0
 
 * Types: "dev", "random-dev"
@@ -218,6 +260,8 @@ I realized I had every level from JS Tanks in this version, including the cut Li
 * Default color: random
 
 The first test level (of this version), which should be obvious from the power placement. Also has a Stationary Turret, likely because I didn't have another test level yet to put down a hazard.
+
+![Developer Level 0](images/dev0.png)
 
 ## [DEV] Developer Level 1
 
@@ -227,6 +271,8 @@ The first test level (of this version), which should be obvious from the power p
 
 A test level with every early hazard (except Stationary Turret, I guess). Also shows off a Vertical Lightning using the edge as an anchor point. An Ultra Bounce powerup was added much later.
 
+![Developer Level 1](images/dev1.png)
+
 ## [DEV] Developer Level 2
 
 * Types: "dev", "random-dev"
@@ -234,6 +280,8 @@ A test level with every early hazard (except Stationary Turret, I guess). Also s
 * Default color: `(0.25, 0.25, 0.25)`
 
 A test level originally made for testing Banana by being very empty. Has *a lot* of powerups.
+
+![Developer Level 2](images/dev2.png)
 
 ## [DEV] Developer Level 3
 
@@ -243,6 +291,8 @@ A test level originally made for testing Banana by being very empty. Has *a lot*
 
 Another test level, probably made because I got sick of adding powerups to Dev2 and needed some walls. Features a Mother Turret and a Patrolling Turret.
 
+![Developer Level 3](images/dev3.png)
+
 ## [DEV] Developer Level 4
 
 * Types: "dev", "random-dev"
@@ -250,6 +300,8 @@ Another test level, probably made because I got sick of adding powerups to Dev2 
 * Default color: `(0.25, 0.25, 0.25)`
 
 Needed another empty-ish level to start putting things in.
+
+TODO: image
 
 ## [DEV] Unnamed Level 1
 
@@ -259,6 +311,8 @@ Needed another empty-ish level to start putting things in.
 
 An unfinished level. The wall placement is mostly fine, but I couldn't figure out how to turn it into a real level.
 
+![Unnamed Level 1](images/unnamed1.png)
+
 ## [DEV] Unnamed Level 2
 
 * Types: "dev", "random-dev"
@@ -266,6 +320,10 @@ An unfinished level. The wall placement is mostly fine, but I couldn't figure ou
 * Default color: `(1.0, 1.0, 1.0)`
 
 A test level featuring a zig-zag, with the jaggedness controllable (at compile-time).
+
+![Unnamed Level 2](images/unnamed2.png)
+
+![Unnamed Level 2 with more zig-zags](images/unnamed2-more.png)
 
 ## [DEV] Unnamed Level 3
 
@@ -276,6 +334,8 @@ A test level featuring a zig-zag, with the jaggedness controllable (at compile-t
 
 Just a test level with a Ginormous Turret. At least functions as a level, just not very interesting.
 
+![Unnamed Level 3](images/unnamed3.png)
+
 ## [DEV] Unnamed Level 4
 
 * Types: "dev", "random-dev"
@@ -285,6 +345,8 @@ Just a test level with a Ginormous Turret. At least functions as a level, just n
 
 Tested "enclosing" the main part of the level. There's definitely a nugget of something usable here.
 
+![Unnamed Level 4](images/unnamed4.png)
+
 ## [DEV] Unnamed Level 6
 
 * Types: "dev", "random-dev"
@@ -292,6 +354,8 @@ Tested "enclosing" the main part of the level. There's definitely a nugget of so
 * Default color: `(1.0, 1.0, 1.0)`
 
 Very unfinished test level featuring a different starting position.
+
+![Unnamed Level 6](images/unnamed6.png)
 
 ## [DEV] Unnamed Level 8
 
@@ -301,6 +365,10 @@ Very unfinished test level featuring a different starting position.
 
 Basically finished test level featuring a *very* different starting position. Not sure if it should be turned into a real level because it's very different, but that alone is enough to push it to random-vanilla...
 
+![Unnamed Level 8](images/unnamed8.png)
+
+![Unnamed Level 8 with hidden powerups visible](images/unnamed8-visible.png)
+
 ## [DEV] Unnamed Level 9
 
 * Types: "dev", "random-dev"
@@ -308,6 +376,8 @@ Basically finished test level featuring a *very* different starting position. No
 * Default color: `(1.0, 1.0, 1.0)`
 
 Tried a different starting position with some walls good for Wall Sparks. Not a good level. Might be better without the different starting position.
+
+![Unnamed Level 9](images/unnamed9.png)
 
 ## [DEV] Unnamed Level 10
 
@@ -317,6 +387,8 @@ Tried a different starting position with some walls good for Wall Sparks. Not a 
 
 Alternate version of Unnamed Level 9.
 
+![Unnamed Level 10](images/unnamed10.png)
+
 ## [DEV] Unnamed Level 11
 
 * Types: "dev", "random-dev"
@@ -324,6 +396,8 @@ Alternate version of Unnamed Level 9.
 * Default color: `(1.0, 1.0, 1.0)`
 
 Test level aiming to force the tanks to carefully go through corridors with turrets shooting down them. Since Stationary Turrets don't fire very fast, it doesn't work very well. Wouldn't really work as a real level anyway, since the tanks are always going to end up in the center at the same time, which is kinda boring.
+
+![Unnamed Level 11](images/unnamed11.png)
 
 ## [DEV] Unnamed Level 12
 
@@ -333,6 +407,8 @@ Test level aiming to force the tanks to carefully go through corridors with turr
 
 Alternate version of Unnamed Level 6. Much more boring though.
 
+![Unnamed Level 12](images/unnamed12.png)
+
 ## [DEV] Showcase Level 1
 
 * Types: "dev", "random-dev"
@@ -341,13 +417,17 @@ Alternate version of Unnamed Level 6. Much more boring though.
 
 Showcase of something where Ginormous Turret's old behavior made sense. Ginormous Turret, back when it was made solely because "big turret funny" without an actual plan, would shoot out a bunch of big bullets at once that could destroy walls. Since that was objectively bad and unfinished behavior, Ginormous Turret now behaves very differently, but I made this as a reminder to that time.
 
+![Showcase Level 1](images/showcase1.png)
+
 ## [DEV] Showcase Level 2
 
 * Types: "dev", "random-dev"
 * Internal name: `showcase2`
 * Default color: `(1.0, 1.0, 1.0)`
 
-Test level with four symmetric Patrolling Turrets. Not worth pursuing further, but it is interesting.
+Test level with four symmetric Patrolling Turrets. Not worth pursuing further, but it is mildly interesting.
+
+![Showcase Level 2](images/showcase2.png)
 
 ## [DEV] No Walls 1
 
@@ -357,6 +437,8 @@ Test level with four symmetric Patrolling Turrets. Not worth pursuing further, b
 
 Tested using No Bullet Zones instead of walls. An idea worth investigating further.
 
+![No Walls Level 1](images/nowalls1.png)
+
 ## Timed Reward
 
 * Types: "vanilla-extra", "random-vanilla", "dev", "random-dev"
@@ -364,6 +446,8 @@ Tested using No Bullet Zones instead of walls. An idea worth investigating furth
 * Default color: `#974646`
 
 Tested having the walls continuously move. Cool! Decided to move it to random-vanilla solely to show off the moving walls. It's not good enough to be called a real level, but on the bright side, there are moving walls, so it was put in random-vanilla.
+
+![Timed Reward Level](images/timed_reward.png)
 
 # List of protected level types
 

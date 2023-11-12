@@ -344,7 +344,7 @@ int main(int argc, char** argv) {
 	LevelDataGovernor::addLevelFactory(DangerousCenterLevel::factory);
 	LevelDataGovernor::addLevelFactory(UntraditionalDividerLevel::factory);
 
-	//special:
+	//special (TODO: these aren't really that special anymore):
 	LevelDataGovernor::addLevelFactory(TrickyManeuveringLevel::factory);
 	LevelDataGovernor::addLevelFactory(MineHeavenLevel::factory);
 	LevelDataGovernor::addLevelFactory(WinningPathLevel::factory);
