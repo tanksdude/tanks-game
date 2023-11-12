@@ -20,7 +20,7 @@ It's empty. With no walls, powerups, or hazards to get in the way, this is a tru
 
 As such, it's about as entertaining as no items, Fox only, Final Destination.
 
-![Empty Level](images/empty.png)
+![Empty Level](images/empty.jpg)
 
 ### Old Empty
 
@@ -30,7 +30,7 @@ As such, it's about as entertaining as no items, Fox only, Final Destination.
 
 It's Empty, but with the classic JS walls. In some ways it's better since at least there's cover, but that also means corner camping is a very viable strategy.
 
-![Old Empty Level](images/old_empty.png)
+![Old Empty Level](images/old_empty.jpg)
 
 ## Evened Corridors
 
@@ -40,7 +40,7 @@ It's Empty, but with the classic JS walls. In some ways it's better since at lea
 
 Not a horribly interesting level. It was originally made to make Bounce look cool, and the main gimmick was the long corridors leading to a good powerup as a risk vs. reward opportunity. Didn't make the transition from JS Tanks very well, or maybe the fact is was one of the first levels ever means is was never very good. Maybe the Big powerups replacing the Barrier powerups contributed to this. Regardless, there will probably come a day when it is removed from vanilla.
 
-![Evened Corridors Level](images/evened_corridors.png)
+![Evened Corridors Level](images/evened_corridors.jpg)
 
 ### Old Evened Corridors
 
@@ -50,7 +50,7 @@ Not a horribly interesting level. It was originally made to make Bounce look coo
 
 Changes the Big powerup back to Barrier.
 
-![Old Evened Corridors Level](images/old_evened_corridors.png)
+![Old Evened Corridors Level](images/old_evened_corridors.jpg)
 
 ## Big Fun
 
@@ -74,7 +74,7 @@ A level with few obstacles (wow, such an original name). You could rush for the 
 
 In JS Tanks, since power mixing was not very good, the level was not quite as interesting. But now it's my go-to spot to show off how awesome power mixing is!
 
-![Few Obstacles Level](images/few_obstacles.png)
+![Few Obstacles Level](images/few_obstacles.jpg)
 
 ### Old Few Obstacles
 
@@ -84,7 +84,7 @@ In JS Tanks, since power mixing was not very good, the level was not quite as in
 
 Changes the Speed powerups back to Tracking and adds back the classic JS walls. Honestly the classic walls make it feel way too small, but oh well.
 
-![Old Few Obstacles Level](images/old_few_obstacles.png)
+![Old Few Obstacles Level](images/old_few_obstacles.jpg)
 
 ## Many Hazards
 
@@ -94,7 +94,7 @@ Changes the Speed powerups back to Tracking and adds back the classic JS walls. 
 
 Have you ever wondered what a really dangerous level looks like? A truly hostile environment unsuited for vulnerable tanks? Look no further than this! Dodge like 40 total hazards for meager rewards, and probably die along the way.
 
-![Many Hazards Level](images/many_hazards.png)
+![Many Hazards Level](images/many_hazards.jpg)
 
 ## Hiding Places
 
@@ -106,7 +106,7 @@ As the name suggests, there are little cubbies to hide in. Although their effect
 
 One of the two levels to have a Mines powerup. Arguably fits somewhat decently.
 
-![Hiding Places Level](images/hiding_places.png)
+![Hiding Places Level](images/hiding_places.jpg)
 
 ### Old Hiding Places
 
@@ -116,7 +116,7 @@ One of the two levels to have a Mines powerup. Arguably fits somewhat decently.
 
 Changes the Speed powerups back to Barrier and removes the No Bullet Zone in the center, though honestly it should stay. Does not replace Bounce with Old Bounce because making the tank small was an unnecessary feature.
 
-![Old Hiding Places Level](images/old_hiding_places.png)
+![Old Hiding Places Level](images/old_hiding_places.jpg)
 
 ## Sneaky Reward
 
@@ -129,7 +129,7 @@ Two powerups hidden away, with some strange powerups next to them. How will you 
 
 Coincidentally, this was the first new level for this version. Which is a little sad. Especially when it was mostly a test level that I thought was barely passable as a real level.
 
-![Sneaky Reward Level](images/sneaky_reward.png)
+![Sneaky Reward Level](images/sneaky_reward.jpg)
 
 ## Tight Patrolling Corridor
 
@@ -139,7 +139,7 @@ Coincidentally, this was the first new level for this version. Which is a little
 
 Re-enact your favorite spy escaping from the enemy headquarters! Many turrets move around, guarding the elusive powerup in the center. Maybe you could quickly run down a different corridor to grab some speed. Should the enemy's bullets get too close to the starting area, try grabbing some invincibility.
 
-![Tight Patrolling Corridor Level](images/tight_patrolling_corridor.png)
+![Tight Patrolling Corridor Level](images/tight_patrolling_corridor.jpg)
 
 ## Dangerous Center
 
@@ -152,7 +152,7 @@ Will you take cover from the very hostile center, or will you claim the rewards?
 
 This level was partially made from randomly throwing down some walls and really trying to fit as much as possible in a limited space. Not a great level but good enough.
 
-![Dangerous Center Level](images/dangerous_center.png)
+![Dangerous Center Level](images/dangerous_center.jpg)
 
 ## Untraditional Divider
 
@@ -165,7 +165,7 @@ Instead of the usual vertical dividers, there's only one horizontal wall?! Keep 
 
 The entire inspiration for this level was making the usual vertical wall separators a massive horizontal wall instead. Then adding multiple Minefields because that seemed interesting, finishing up with a few turrets in the lava. I don't think it's good enough for vanilla, but it's too unique to ignore.
 
-![Untraditional Divider Level](images/untraditional_divider.png)
+![Untraditional Divider Level](images/untraditional_divider.jpg)
 
 ## Tricky Maneuvering
 
@@ -176,7 +176,7 @@ The entire inspiration for this level was making the usual vertical wall separat
 
 Useful powerups lurk in the center, but beware sudden wind blowing you off course! Maybe test your luck and carefully grab a powerup by the Lava.
 
-![Tricky Maneuvering Level](images/tricky_maneuvering.png)
+![Tricky Maneuvering Level](images/tricky_maneuvering.jpg)
 
 ## Mine Heaven
 
@@ -187,7 +187,7 @@ Useful powerups lurk in the center, but beware sudden wind blowing you off cours
 
 Do you love the Mines power? Of course you do! This level is your dream come true: nothing but Mines powerups as far as the eye can see. But beware, new mines keep showing up, and the battlefield is covered in ice!
 
-![Mine Heaven Level](images/mine_heaven.png)
+![Mine Heaven Level](images/mine_heaven.jpg)
 
 ## Winning Path
 
@@ -200,9 +200,9 @@ Is this the empty level but with a cool powerup in the center? Nope, sike! The w
 
 Pro tip: since bullets die when hitting walls, you can shoot to see where walls are. No one has ever figured this out by themselves so I still have work to do as a level designer.
 
-![Winning Path Level](images/winning_path.png)
+![Winning Path Level](images/winning_path.jpg)
 
-![Winning Path Level visible](images/winning_path-visible.png)
+![Winning Path Level visible](images/winning_path-visible.jpg)
 
 ## Concealed Powerups
 
@@ -214,7 +214,7 @@ A few good powerups are located in the center, but they are guarded by Lightning
 
 Not a very fun level, even for JS Tanks. Removed from vanilla for that reason. The only thing going for it was the Homing powerups, which are admittedly a fun addition, but that's it; it's too boring.
 
-![Concealed Powerups Level](images/concealed_powerups.png)
+![Concealed Powerups Level](images/concealed_powerups.jpg)
 
 ## Lightning Corners
 
@@ -226,7 +226,7 @@ An amazing powerup guarded in the center. Blatantly unfinished as a level. The S
 
 Was likely originally made to test powerup mixing back in JS Tanks. And since I never figured out how to turn it a real level, I commented it out. But for some reason I ported it to C++, so that's why it's here.
 
-![Lightning Corners Level](images/lightning_corners.png)
+![Lightning Corners Level](images/lightning_corners.jpg)
 
 ## Lone Turret
 
@@ -238,7 +238,7 @@ A single turret in the center watches for any enemies. Stay too long deciding on
 
 Back in JS Tanks, it was the very first level to have a turret! That's why it has nothing else going for it, and it's not very fun. (And surprise surprise, it started as a test level to make sure the Targeting Turret worked.) Removed from vanilla because of that.
 
-![Lone Turret Level](images/lone_turret.png)
+![Lone Turret Level](images/lone_turret.jpg)
 
 ## Old Portal Level
 
@@ -251,7 +251,7 @@ The only thing going for this level is the portal effect: anything that passes f
 
 I realized I had every level from JS Tanks in this version, including the cut Lightning Corners, *but* I remembered the portal level. The hope was that this C++ version would make the portal level effect far easier to implement, but that clearly didn't work out.
 
-![Old Portal Level](images/old_portal.png)
+![Old Portal Level](images/old_portal.jpg)
 
 ## [DEV] Developer Level 0
 
@@ -261,7 +261,7 @@ I realized I had every level from JS Tanks in this version, including the cut Li
 
 The first test level (of this version), which should be obvious from the power placement. Also has a Stationary Turret, likely because I didn't have another test level yet to put down a hazard.
 
-![Developer Level 0](images/dev0.png)
+![Developer Level 0](images/dev0.jpg)
 
 ## [DEV] Developer Level 1
 
@@ -271,7 +271,7 @@ The first test level (of this version), which should be obvious from the power p
 
 A test level with every early hazard (except Stationary Turret, I guess). Also shows off a Vertical Lightning using the edge as an anchor point. An Ultra Bounce powerup was added much later.
 
-![Developer Level 1](images/dev1.png)
+![Developer Level 1](images/dev1.jpg)
 
 ## [DEV] Developer Level 2
 
@@ -281,7 +281,7 @@ A test level with every early hazard (except Stationary Turret, I guess). Also s
 
 A test level originally made for testing Banana by being very empty. Has *a lot* of powerups.
 
-![Developer Level 2](images/dev2.png)
+![Developer Level 2](images/dev2.jpg)
 
 ## [DEV] Developer Level 3
 
@@ -291,7 +291,7 @@ A test level originally made for testing Banana by being very empty. Has *a lot*
 
 Another test level, probably made because I got sick of adding powerups to Dev2 and needed some walls. Features a Mother Turret and a Patrolling Turret.
 
-![Developer Level 3](images/dev3.png)
+![Developer Level 3](images/dev3.jpg)
 
 ## [DEV] Developer Level 4
 
@@ -311,7 +311,7 @@ TODO: image
 
 An unfinished level. The wall placement is mostly fine, but I couldn't figure out how to turn it into a real level.
 
-![Unnamed Level 1](images/unnamed1.png)
+![Unnamed Level 1](images/unnamed1.jpg)
 
 ## [DEV] Unnamed Level 2
 
@@ -321,9 +321,9 @@ An unfinished level. The wall placement is mostly fine, but I couldn't figure ou
 
 A test level featuring a zig-zag, with the jaggedness controllable (at compile-time).
 
-![Unnamed Level 2](images/unnamed2.png)
+![Unnamed Level 2](images/unnamed2.jpg)
 
-![Unnamed Level 2 with more zig-zags](images/unnamed2-more.png)
+![Unnamed Level 2 with more zig-zags](images/unnamed2-more.jpg)
 
 ## [DEV] Unnamed Level 3
 
@@ -334,7 +334,7 @@ A test level featuring a zig-zag, with the jaggedness controllable (at compile-t
 
 Just a test level with a Ginormous Turret. At least functions as a level, just not very interesting.
 
-![Unnamed Level 3](images/unnamed3.png)
+![Unnamed Level 3](images/unnamed3.jpg)
 
 ## [DEV] Unnamed Level 4
 
@@ -345,7 +345,7 @@ Just a test level with a Ginormous Turret. At least functions as a level, just n
 
 Tested "enclosing" the main part of the level. There's definitely a nugget of something usable here.
 
-![Unnamed Level 4](images/unnamed4.png)
+![Unnamed Level 4](images/unnamed4.jpg)
 
 ## [DEV] Unnamed Level 6
 
@@ -355,7 +355,7 @@ Tested "enclosing" the main part of the level. There's definitely a nugget of so
 
 Very unfinished test level featuring a different starting position.
 
-![Unnamed Level 6](images/unnamed6.png)
+![Unnamed Level 6](images/unnamed6.jpg)
 
 ## [DEV] Unnamed Level 8
 
@@ -365,9 +365,9 @@ Very unfinished test level featuring a different starting position.
 
 Basically finished test level featuring a *very* different starting position. Not sure if it should be turned into a real level because it's very different, but that alone is enough to push it to random-vanilla...
 
-![Unnamed Level 8](images/unnamed8.png)
+![Unnamed Level 8](images/unnamed8.jpg)
 
-![Unnamed Level 8 with hidden powerups visible](images/unnamed8-visible.png)
+![Unnamed Level 8 with hidden powerups visible](images/unnamed8-visible.jpg)
 
 ## [DEV] Unnamed Level 9
 
@@ -377,7 +377,7 @@ Basically finished test level featuring a *very* different starting position. No
 
 Tried a different starting position with some walls good for Wall Sparks. Not a good level. Might be better without the different starting position.
 
-![Unnamed Level 9](images/unnamed9.png)
+![Unnamed Level 9](images/unnamed9.jpg)
 
 ## [DEV] Unnamed Level 10
 
@@ -387,7 +387,7 @@ Tried a different starting position with some walls good for Wall Sparks. Not a 
 
 Alternate version of Unnamed Level 9.
 
-![Unnamed Level 10](images/unnamed10.png)
+![Unnamed Level 10](images/unnamed10.jpg)
 
 ## [DEV] Unnamed Level 11
 
@@ -397,7 +397,7 @@ Alternate version of Unnamed Level 9.
 
 Test level aiming to force the tanks to carefully go through corridors with turrets shooting down them. Since Stationary Turrets don't fire very fast, it doesn't work very well. Wouldn't really work as a real level anyway, since the tanks are always going to end up in the center at the same time, which is kinda boring.
 
-![Unnamed Level 11](images/unnamed11.png)
+![Unnamed Level 11](images/unnamed11.jpg)
 
 ## [DEV] Unnamed Level 12
 
@@ -407,7 +407,7 @@ Test level aiming to force the tanks to carefully go through corridors with turr
 
 Alternate version of Unnamed Level 6. Much more boring though.
 
-![Unnamed Level 12](images/unnamed12.png)
+![Unnamed Level 12](images/unnamed12.jpg)
 
 ## [DEV] Showcase Level 1
 
@@ -417,7 +417,7 @@ Alternate version of Unnamed Level 6. Much more boring though.
 
 Showcase of something where Ginormous Turret's old behavior made sense. Ginormous Turret, back when it was made solely because "big turret funny" without an actual plan, would shoot out a bunch of big bullets at once that could destroy walls. Since that was objectively bad and unfinished behavior, Ginormous Turret now behaves very differently, but I made this as a reminder to that time.
 
-![Showcase Level 1](images/showcase1.png)
+![Showcase Level 1](images/showcase1.jpg)
 
 ## [DEV] Showcase Level 2
 
@@ -427,7 +427,7 @@ Showcase of something where Ginormous Turret's old behavior made sense. Ginormou
 
 Test level with four symmetric Patrolling Turrets. Not worth pursuing further, but it is mildly interesting.
 
-![Showcase Level 2](images/showcase2.png)
+![Showcase Level 2](images/showcase2.jpg)
 
 ## [DEV] No Walls 1
 
@@ -437,7 +437,7 @@ Test level with four symmetric Patrolling Turrets. Not worth pursuing further, b
 
 Tested using No Bullet Zones instead of walls. An idea worth investigating further.
 
-![No Walls Level 1](images/nowalls1.png)
+![No Walls Level 1](images/nowalls1.jpg)
 
 ## Timed Reward
 
@@ -447,7 +447,7 @@ Tested using No Bullet Zones instead of walls. An idea worth investigating furth
 
 Tested having the walls continuously move. Cool! Decided to move it to random-vanilla solely to show off the moving walls. It's not good enough to be called a real level, but on the bright side, there are moving walls, so it was put in random-vanilla.
 
-![Timed Reward Level](images/timed_reward.png)
+![Timed Reward Level](images/timed_reward.jpg)
 
 # List of protected level types
 
