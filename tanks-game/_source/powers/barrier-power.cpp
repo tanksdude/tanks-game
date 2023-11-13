@@ -3,8 +3,10 @@
 std::unordered_map<std::string, float> BarrierPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla-extra", 0.5f });
+	weights.insert({ "random-vanilla", 0.25f });
 	weights.insert({ "old", 0.5f });
 	weights.insert({ "random-old", 0.5f });
+	weights.insert({ "random", 0.125f });
 	return weights;
 }
 

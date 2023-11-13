@@ -1,5 +1,8 @@
 #include "level-helper.h"
 
+#include "constants.h"
+#include <cmath>
+#include <algorithm> //std::find
 #include "rng.h"
 #include "mylib.h" //isInArray, weightedSelect
 
@@ -295,7 +298,7 @@ std::string* LevelHelper::getRandomPowers(int count, std::string type) {
 }
 
 //this can be condensed with the previous function but whatever
-std::string* LevelHelper::getRandomPowers(int count, std::string type, std::string* names, int nameCount) {
+std::string* LevelHelper::getRandomPowers(int count, std::string type, const std::string* names, int nameCount) {
 	//get stacking status and weight of the powers
 	bool* canStack = new bool[nameCount];
 	float* powerWeights = new float[nameCount];
@@ -316,7 +319,7 @@ std::string* LevelHelper::getRandomPowers(int count, std::string type, std::stri
 	return n;
 }
 
-std::string* LevelHelper::getRandomPowersOld(int count, bool replacement, std::string* names, int nameCount) {
+std::string* LevelHelper::getRandomPowersOld(int count, bool replacement, const std::string* names, int nameCount) {
 	std::string* n = new std::string[count];
 	int* used = new int[count];
 
@@ -357,7 +360,7 @@ std::string* LevelHelper::getRandomPowersOld(int count, bool replacement, std::s
 	return n;
 }
 
-std::string* LevelHelper::getRandomPowers(int count, bool* powersCanStack, std::string* names, int nameCount) {
+std::string* LevelHelper::getRandomPowers(int count, const bool* powersCanStack, const std::string* names, int nameCount) {
 	std::string* n = new std::string[count];
 	int* used = new int[count];
 
@@ -394,7 +397,7 @@ std::string* LevelHelper::getRandomPowers(int count, bool* powersCanStack, std::
 }
 
 //this function could become an endless loop if the only stacking power left has a weight of 0
-std::string* LevelHelper::getRandomPowers(int count, bool* powersCanStack, std::string* names, float* weights, int powerCount) {
+std::string* LevelHelper::getRandomPowers(int count, const bool* powersCanStack, const std::string* names, const float* weights, int powerCount) {
 	std::string* n = new std::string[count];
 	int* used = new int[count];
 

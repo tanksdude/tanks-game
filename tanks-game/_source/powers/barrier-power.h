@@ -5,9 +5,8 @@ class BarrierPower : public Power {
 	//called life in JS Tanks
 public:
 	virtual std::vector<std::string> getPowerTypes() const override {
-		std::vector<std::string> types = std::vector<std::string>{ "vanilla-extra", "old", "random-old" };
+		std::vector<std::string> types = std::vector<std::string>{ "vanilla-extra", "random-vanilla", "old", "random-old", "random" };
 		//no supermix; it'd be a little too strong
-		//TODO: should probably go in random-vanilla and random
 		return types;
 	}
 	virtual std::unordered_map<std::string, float> getWeights() const override;

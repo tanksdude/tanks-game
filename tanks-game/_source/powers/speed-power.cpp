@@ -3,7 +3,7 @@
 std::unordered_map<std::string, float> SpeedPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", 1.0f });
-	weights.insert({ "random-vanilla", 1.0f });
+	weights.insert({ "random-vanilla", 0.5f }); //TODO: something like "reduced random-vanilla" to exclude speed, invincible, wallhack
 	weights.insert({ "old", 1.0f });
 	weights.insert({ "random-old", 1.0f });
 	weights.insert({ "supermix", 1.0f });

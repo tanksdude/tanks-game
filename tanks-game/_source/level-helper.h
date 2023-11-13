@@ -66,10 +66,10 @@ public:
 	[[nodiscard]] static PositionHolder* getClassicWallPositions();
 
 	static std::string* getRandomPowers(int count, std::string type); //handles stacking and weights for a whole group (use this)
-	static std::string* getRandomPowers(int count, std::string type, std::string* names, int nameCount); //no option for multiple types (it's effort)
-	static std::string* getRandomPowersOld(int count, bool replacement, std::string* names, int nameCount); //equal weight, replacement is an option
-	static std::string* getRandomPowers(int count, bool* powersCanStack, std::string* names, int nameCount); //equal weight, replaces the non-stacking names
-	static std::string* getRandomPowers(int count, bool* powersCanStack, std::string* names, float* weights, int powerCount); //nonequal weight, replaces the non-stacking names
+	static std::string* getRandomPowers(int count, std::string type, const std::string* names, int nameCount); //no option for multiple types (it's effort)
+	static std::string* getRandomPowersOld(int count, bool replacement, const std::string* names, int nameCount); //equal weight, replacement is an option
+	static std::string* getRandomPowers(int count, const bool* powersCanStack, const std::string* names, int nameCount); //equal weight, replaces the non-stacking names
+	static std::string* getRandomPowers(int count, const bool* powersCanStack, const std::string* names, const float* weights, int powerCount); //nonequal weight, replaces the non-stacking names
 	static std::string powerAlternate(int position, int rand, std::string p1, std::string p2); //position: {0,1,2,3}, rand: {0,1}
 	static std::string simplePowerAlternate(int position, int rand, std::string p1, std::string p2); //position: {0,1}, rand: {0,1}
 	static int powerAlternateNum(int position, int rand); //position: {0,1,2,3}, rand: {0,1}

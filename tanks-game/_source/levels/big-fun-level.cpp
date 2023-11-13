@@ -38,18 +38,26 @@ void BigFunLevel::initialize() {
 	//classic speed/invincible/wallhack
 	LevelHelper::pushSymmetricPowerups_UD_Alternate(GAME_WIDTH/2, GAME_HEIGHT/2, GAME_HEIGHT/2 - 16,
 		"vanilla", "speed", "vanilla", "invincible");
-
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "vanilla", "wallhack"));
+	//note: in JS, speed and invincible didn't alternate; it was possible to get 2 speed or 2 invincible
 
-	//regular powers in the corners
-	std::string possiblePowers[] = { "speed", "wallhack", "bounce", "multishot", "big", "shotgun" }; //6
-	//TODO: maybe remove shotgun, maybe remove speed, maybe remove wallhack, maybe add fire
-	//barrier may have existed around this time but I think the craziness (fun factor) would lower
+	//timeline for what powers existed: this was after color but possibly before power mixing, leaving these powers:
+	//definitely existed: speed, invincible, wallhack, technically trap, bounce, multishot, big
+	//almost certainly existed: barrier, shotgun, mines (but that wasn't on the random level)
+	//not certain if existed: fire, triple, blast
+	//definitely didn't exist: homing, tracking, grenade, banana, godmode
 
-	float weights[] = { 3.0f, 2.0f, 1.0f };
+	//that leaves these powers reasonable for randomization: speed, bounce, multishot, big, barrier, shotgun, fire, maybe triple
+	//fire + big is not good, triple is unnecessary when shotgun is already in, so that leaves these powers:
+	const std::string possiblePowers[] = { "speed", "bounce", "multishot", "big", "barrier", "shotgun" };
+	constexpr int possiblePowersCount = sizeof(possiblePowers) / sizeof(possiblePowers[0]);
+	//TODO: rewrite how powers (and levels and hazards) are called: use a pair of {type, name} instead of separate type and name
+
+	float weights[] = { 6.0f, 3.0f, 1.0f }; //JS: 1/4 chance to get +1 power (so theoretically unlimited amount)
 	for (int i = 0; i < 4; i++) {
 		int count = 1 + weightedSelect<float>(weights, 3); //{1, 2, 3}
-		std::string* randPowers = LevelHelper::getRandomPowers(count, "random-vanilla", possiblePowers, 6); //TODO: this used to have equal weight; should that be restored?
+		std::string* randPowers = LevelHelper::getRandomPowers(count, "random-vanilla", possiblePowers, possiblePowersCount);
+		//std::string* randPowers = LevelHelper::getRandomPowersOld(count, true, possiblePowers, possiblePowersCount);
 		pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-(80+32+16), GAME_HEIGHT/2-16);
 		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "random-vanilla", randPowers, count));
 		delete[] randPowers;

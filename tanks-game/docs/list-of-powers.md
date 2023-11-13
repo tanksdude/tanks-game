@@ -227,7 +227,7 @@ The bullets aim right for the enemy tank, and can even go through walls, althoug
 
 ## Barrier
 
-* Types: "vanilla-extra", "old", "random-old"
+* Types: "vanilla-extra", "random-vanilla", "old", "random-old", "random"
 * Internal name: `barrier`
 * Attributes: "stack", "mix"
 * Color: `(0.0, 0.5, 0.25)` (dark green)
@@ -499,6 +499,7 @@ These are the types custom powers are not allowed to have, unless `[MODS] ModSaf
 * Blast
 * Banana
 * Shotgun
+* Barrier
 * Swarm
 
 ## old
@@ -592,6 +593,7 @@ These are the types custom powers are not allowed to have, unless `[MODS] ModSaf
 * Blast
 * Banana
 * Shotgun
+* Barrier
 * Swarm
 
 ## dev
