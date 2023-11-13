@@ -357,18 +357,6 @@ Very unfinished test level featuring a different starting position.
 
 ![Unnamed Level 6](images/unnamed6.jpg)
 
-## [DEV] Unnamed Level 8
-
-* Types: "dev", "random-dev"
-* Internal name: `unnamed8`
-* Default color: `(1.0, 1.0, 1.0)`
-
-Basically finished test level featuring a *very* different starting position. Not sure if it should be turned into a real level because it's very different, but that alone is enough to push it to random-vanilla...
-
-![Unnamed Level 8](images/unnamed8.jpg)
-
-![Unnamed Level 8 with hidden powerups visible](images/unnamed8-visible.jpg)
-
 ## [DEV] Unnamed Level 9
 
 * Types: "dev", "random-dev"
@@ -449,6 +437,20 @@ Tested having the walls continuously move. Cool! Decided to move it to random-va
 
 ![Timed Reward Level](images/timed_reward.jpg)
 
+## Terrifying Chaos
+
+* Types: "vanilla-extra", "random-vanilla", "dev", "random-dev"
+* Internal name: `terrifying_chaos`
+* Default color: `#00A653`
+
+A level featuring a *very* different starting position, and something terrifying in the center. Try to survive the chaos!
+
+This level doesn't quite deserve its name but it's good enough. Put in random-vanilla mainly to show off the different starting position.
+
+![Terrifying Chaos Level](images/terrifying_chaos.jpg)
+
+![Terrifying Chaos Level with hidden powerups visible](images/terrifying_chaos-visible.jpg)
+
 # List of protected level types
 
 These are the types custom levels are not allowed to have, unless `[MODS] ModSafetyChecks` in the INI file is disabled.
@@ -477,6 +479,7 @@ These are the types custom levels are not allowed to have, unless `[MODS] ModSaf
 * Sneaky Reward
 * Tight Patrolling Corridor
 * Timed Reward
+* Terrifying Chaos
 
 ## random-vanilla
 
@@ -495,6 +498,7 @@ These are the types custom levels are not allowed to have, unless `[MODS] ModSaf
 * Sneaky Reward
 * Tight Patrolling Corridor
 * Timed Reward
+* Terrifying Chaos
 
 ## old
 
@@ -556,7 +560,6 @@ These are the types custom levels are not allowed to have, unless `[MODS] ModSaf
 * Unnamed Level 3
 * Unnamed Level 4
 * Unnamed Level 6
-* Unnamed Level 8
 * Unnamed Level 9
 * Unnamed Level 10
 * Unnamed Level 11
@@ -565,6 +568,7 @@ These are the types custom levels are not allowed to have, unless `[MODS] ModSaf
 * Showcase Level 2
 * No Walls 1
 * Timed Reward
+* Terrifying Chaos
 
 ## random-dev
 
@@ -578,7 +582,6 @@ These are the types custom levels are not allowed to have, unless `[MODS] ModSaf
 * Unnamed Level 3
 * Unnamed Level 4
 * Unnamed Level 6
-* Unnamed Level 8
 * Unnamed Level 9
 * Unnamed Level 10
 * Unnamed Level 11
@@ -587,3 +590,4 @@ These are the types custom levels are not allowed to have, unless `[MODS] ModSaf
 * Showcase Level 2
 * No Walls 1
 * Timed Reward
+* Terrifying Chaos

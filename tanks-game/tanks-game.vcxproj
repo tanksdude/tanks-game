@@ -163,7 +163,7 @@
     <ClCompile Include="_source\levels\unnamed-level-3.cpp" />
     <ClCompile Include="_source\levels\unnamed-level-4.cpp" />
     <ClCompile Include="_source\levels\unnamed-level-6.cpp" />
-    <ClCompile Include="_source\levels\unnamed-level-8.cpp" />
+    <ClCompile Include="_source\levels\terrifying-chaos-level.cpp" />
     <ClCompile Include="_source\levels\unnamed-level-9.cpp" />
     <ClCompile Include="_source\levels\untraditional-divider-level.cpp" />
     <ClCompile Include="_source\mod-processor.cpp" />
@@ -331,7 +331,7 @@
     <ClInclude Include="_source\levels\unnamed-level-3.h" />
     <ClInclude Include="_source\levels\unnamed-level-4.h" />
     <ClInclude Include="_source\levels\unnamed-level-6.h" />
-    <ClInclude Include="_source\levels\unnamed-level-8.h" />
+    <ClInclude Include="_source\levels\terrifying-chaos-level.h" />
     <ClInclude Include="_source\levels\unnamed-level-9.h" />
     <ClInclude Include="_source\levels\untraditional-divider-level.h" />
     <ClInclude Include="_source\mod-processor.h" />

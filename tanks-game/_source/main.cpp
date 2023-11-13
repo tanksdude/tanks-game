@@ -68,7 +68,6 @@
 #include "levels/unnamed-level-3.h"
 #include "levels/unnamed-level-4.h"
 #include "levels/unnamed-level-6.h"
-#include "levels/unnamed-level-8.h"
 #include "levels/unnamed-level-9.h"
 #include "levels/unnamed-level-10.h"
 #include "levels/unnamed-level-11.h"
@@ -77,6 +76,7 @@
 #include "levels/showcase-level-2.h"
 #include "levels/dev-no-walls-level-1.h"
 #include "levels/timed-reward-level.h" //added to vanilla-extra
+#include "levels/terrifying-chaos-level.h" //added to vanilla-extra
 
 //level effects:
 #include "level-effects/respawning-powerups-level-effect.h"
@@ -369,7 +369,6 @@ int main(int argc, char** argv) {
 	LevelDataGovernor::addLevelFactory(UnnamedLevel3::factory);
 	LevelDataGovernor::addLevelFactory(UnnamedLevel4::factory);
 	LevelDataGovernor::addLevelFactory(UnnamedLevel6::factory);
-	LevelDataGovernor::addLevelFactory(UnnamedLevel8::factory);
 	LevelDataGovernor::addLevelFactory(UnnamedLevel9::factory);
 	LevelDataGovernor::addLevelFactory(UnnamedLevel10::factory);
 	LevelDataGovernor::addLevelFactory(UnnamedLevel11::factory);
@@ -378,6 +377,7 @@ int main(int argc, char** argv) {
 	LevelDataGovernor::addLevelFactory(ShowcaseLevel2::factory);
 	LevelDataGovernor::addLevelFactory(DevNoWallsLevel1::factory);
 	LevelDataGovernor::addLevelFactory(TimedRewardLevel::factory);
+	LevelDataGovernor::addLevelFactory(TerrifyingChaosLevel::factory);
 
 	//initialize managers and stuff:
 	GameManager::Initialize();

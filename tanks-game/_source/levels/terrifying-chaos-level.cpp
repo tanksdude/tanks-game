@@ -1,4 +1,4 @@
-#include "unnamed-level-8.h"
+#include "terrifying-chaos-level.h"
 
 #include "../constants.h"
 #include <iostream>
@@ -12,19 +12,21 @@
 #include "../level-manager.h"
 #include "../tank-manager.h"
 
-ColorValueHolder UnnamedLevel8::getDefaultColor() const {
-	//TODO: very dark green?
-	return ColorValueHolder(1, 1, 1);
+ColorValueHolder TerrifyingChaosLevel::getDefaultColor() const {
+	return ColorValueHolder(0x00/255.0, 0xA6/255.0, 0x53/255.0);
 }
 
-std::unordered_map<std::string, float> UnnamedLevel8::getWeights() const {
+std::unordered_map<std::string, float> TerrifyingChaosLevel::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "dev", 1.0f });
-	weights.insert({ "random-dev", 1.0f });
+	weights.insert({ "vanilla-extra", 0.25f });
+	weights.insert({ "random-vanilla", 0.25f });
+	weights.insert({ "dev", 0.5f });
+	weights.insert({ "random-dev", 0.5f });
+	//only semi-finished so it shouldn't really be in a regular group... but it's fine
 	return weights;
 }
 
-void UnnamedLevel8::initialize() {
+void TerrifyingChaosLevel::initialize() {
 	TankManager::getTank(0)->x = GAME_WIDTH/2 - 240/4;
 	TankManager::getTank(1)->x = GAME_WIDTH/2 + 240/4;
 	TankManager::getTank(0)->y = GAME_HEIGHT - 20;
@@ -62,11 +64,11 @@ void UnnamedLevel8::initialize() {
 		"dev", "edge_sparks", "vanilla", "blast"); //maybe homing instead of edge sparks, though homing is very powerful on this level
 }
 
-Level* UnnamedLevel8::factory() {
-	return new UnnamedLevel8();
+Level* TerrifyingChaosLevel::factory() {
+	return new TerrifyingChaosLevel();
 }
 
-UnnamedLevel8::UnnamedLevel8() { 
+TerrifyingChaosLevel::TerrifyingChaosLevel() {
 	GenericFactoryConstructionData constructionData;
 	effects.push_back(LevelManager::makeLevelEffect("vanilla", "respawning_powerups", constructionData));
 }
