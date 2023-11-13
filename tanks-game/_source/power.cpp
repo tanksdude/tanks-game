@@ -20,6 +20,9 @@ std::unordered_map<std::string, float> Power::getWeights() const {
 std::vector<std::string> Power::getPowerAttributes() const {
 	std::vector<std::string> attributes = std::vector<std::string>{ "stack", "mix" };
 	return attributes;
+	//TODO: powers that can't "stack" should be enforced; for example, two fires should only produce 4 bullets, meaning the second one is just ignored
+	//that would require a very large rewrite, so save it for a sequel
+	//also there should be some kind of "mix but not well" attribute for something like swarm + blast (mainly to stop deceleration making things boring)
 }
 
 //power notes:

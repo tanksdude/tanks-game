@@ -6,7 +6,7 @@ const double GrenadePower::growAmount = 65/64.0;
 std::unordered_map<std::string, float> GrenadePower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", 1.0f });
-	weights.insert({ "random-vanilla", 1.0f });
+	weights.insert({ "random-vanilla", 0.5f });
 	weights.insert({ "old", 1.0f });
 	weights.insert({ "random-old", 1.0f });
 	weights.insert({ "supermix", 1.0f });

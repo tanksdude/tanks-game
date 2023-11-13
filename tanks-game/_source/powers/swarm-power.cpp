@@ -7,8 +7,8 @@ const double SwarmPower::homingStrength = (2*PI) / 32;
 std::unordered_map<std::string, float> SwarmPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla-extra", 1.0f });
-	weights.insert({ "random-vanilla", 0.25f });
-	weights.insert({ "random", 0.125f });
+	weights.insert({ "random-vanilla", 0.5f });
+	weights.insert({ "random", 0.25f });
 	return weights;
 }
 

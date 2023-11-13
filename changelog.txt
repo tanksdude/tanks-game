@@ -11,6 +11,10 @@
     * megadeath update?
     * bouncing rework
         * something like bool applyBounceUpdate() to bulletpower?
+    * fix respawning powerups working with magnetism level effect
+* minor things:
+    * switched to GLFW from FreeGLUT for ease of use
+    * fullscreen toggle removed because of that
 
 0.2.5 "done" (obviously not here)
 * rudimentary custom powers and levels!
@@ -39,7 +43,7 @@
     * custom powers exist!
     * growing and degrading powerups mix better
     * option to make "extra cannons" (on triple and shotgun) behave like real cannons
-    * TODO: swarm
+    * swarm: bullets orbit around the tank (it's cool as heck)
     * [dev] color changing: changes color based on proximity to other tank
     * [dev] backwards movement: by pressing the special key (currently e and /), the tank moves backwards
     * [dev] wall sparks and edge sparks: makes extra bullets when it hits a wall or edge (these are different powerups)
@@ -52,7 +56,8 @@
     * ginormous turret: tells its turrets where to shoot
     * spiral lava: lava spirals out from center
     * [dev] cloud: spits out powerups occasionally
-    * TODO: teleporter?, reflecktor?
+    * [dev] reflecktor: bounces tanks
+    * TODO: teleporter?
     * TODO: [dev] selective no bullet zone (doesn't affect a certain teamID)
 * levels:
     * custom levels exist!
@@ -75,7 +80,6 @@
     * overhaul priority handling (again)
     * *massive* cleanup across the entire project, multiple times; no seriously it was a lot
     * [dev] power, other stuff is poison: walls and hazards kill on contact
-    * [dev] power, "weird extra cannons": just a test of adding extra cannon points at weird angles
     * [dev] power, colorless long invincible: long invincible but doesn't show
     * attempted: tried GLFW instead of FreeGLUT, didn't like it
         * realistically, should move to it eventually; just accept fullscreen toggle will be lost
