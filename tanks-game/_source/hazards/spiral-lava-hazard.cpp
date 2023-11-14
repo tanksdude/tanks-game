@@ -333,7 +333,7 @@ RectHazard* SpiralLavaHazard::randomizingFactory(double x_start, double y_start,
 
 	do {
 		if (randomizeW) {
-			width = RNG::randNumInRange(16, 24);
+			width = RNG::randNumInRange(16, 24); //TODO: where should these constants be?
 		}
 		RectHazard* testSpiralLava = new SpiralLavaHazard(x_start + RNG::randFunc() * (area_width - width), y_start + RNG::randFunc() * (area_height - width), width);
 		if (testSpiralLava->reasonableLocation()) {

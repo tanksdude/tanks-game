@@ -20,6 +20,11 @@
 #include "wall-manager.h"
 #include "hazard-manager.h"
 
+//TODO: level effects
+//start is "LevelEffect type name <params?>"
+//to do something with it, action is "LevelEffect n <params>"
+//for that to actually work, level effects need generic "do action on GameID (of specific object type)", as well as "do action on past few object types"
+
 const std::string CustomLevelInterpreter::ActionStartPhrase = "[LEVEL_START]";
 
 CustomLevel::CustomLevelAction::CustomLevelAction(CustomLevel::CustomLevelCommands c) {

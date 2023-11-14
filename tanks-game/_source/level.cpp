@@ -89,9 +89,9 @@ team mode! (for two tanks...)
 
 JS level numbers (with names updated):
 special: 0 = default random, 1 = empty, 2 = portal level, 3 = winning path, 4 = tricky maneuvering, 5 = mine heaven; not special: 0 = hiding places, 1 = evened corridors, 2 = few obstacles, 3 = lone turret, 4 = concealed powerups, 5 = many hazards, 6 = lightning corners (but not really since it was cut)
-portal will be hard...
+the special vs. not special distinction was made so the boring not special levels could appear less often
 C++ order of creating the JS levels (probably):
-empty, default random, evened corridors, few obstacles, concealed powerups, many hazards, hiding places, lightning corners, lone turret, tricky maneuvering, mine heaven, winning path
+empty, default random, evened corridors, few obstacles, concealed powerups, many hazards, hiding places, lightning corners, lone turret, tricky maneuvering, mine heaven, winning path, portal level (kinda)
 
 
 random fun facts:

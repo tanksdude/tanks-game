@@ -263,7 +263,7 @@ void WindLevelEffect::ghostDraw(DrawingLayers layer, float alpha) const {
 }
 
 bool WindLevelEffect::initializeVertices() {
-	if (initialized_vertices) {
+	if (initialized_vertices) [[likely]] {
 		return false;
 	}
 
