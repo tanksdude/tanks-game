@@ -30,7 +30,7 @@ protected:
 
 public:
 	virtual std::vector<std::string> getHazardTypes() const override {
-		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "random" };
+		std::vector<std::string> types = std::vector<std::string>{ "vanilla-extra", "random-vanilla", "random" };
 		return types;
 	}
 	virtual std::unordered_map<std::string, float> getWeights() const override;

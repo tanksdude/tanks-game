@@ -31,7 +31,7 @@ void DeveloperLevel4::initialize() {
 	const double tempWidth = 16;
 	posArr = new double[3]{ GAME_WIDTH/2 - tempWidth/2, GAME_HEIGHT/2 - tempWidth/2, tempWidth };
 	constructionData = GenericFactoryConstructionData(3, posArr);
-	HazardManager::pushRectHazard("vanilla", "spiral_lava", constructionData);
+	HazardManager::pushRectHazard("vanilla-extra", "spiral_lava", constructionData);
 
 	for (int i = 0; i < 4; i++) {
 		pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 60, 30, 30);
@@ -59,13 +59,13 @@ void DeveloperLevel4::initialize() {
 
 	posArr = new double[4]{ GAME_WIDTH/2, GAME_HEIGHT/2 - 80, 20, 60 };
 	constructionData = GenericFactoryConstructionData(4, posArr);
-	HazardManager::pushCircleHazard("vanilla", "gravity_well", constructionData);
+	HazardManager::pushCircleHazard("vanilla-extra", "gravity_well", constructionData);
 
 	posArr = new double[4]{ GAME_WIDTH/2, GAME_HEIGHT/2 + 80, 10, 40 };
 	double* strengthArr = new double[2]{ -.25, -.95 };
 	constructionData = GenericFactoryConstructionData(4, posArr);
 	constructionData.pushData(2, strengthArr);
-	HazardManager::pushCircleHazard("vanilla", "gravity_well", constructionData);
+	HazardManager::pushCircleHazard("vanilla-extra", "gravity_well", constructionData);
 
 	//assumption: TANK_RADIUS=16 (why it would ever be changed is beyond me)
 	PowerupManager::pushPowerup(new PowerSquare(20, 20, "speed"));

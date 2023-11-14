@@ -106,7 +106,7 @@ Bullets are unable to even graze this hazard. However, tanks handle it just fine
 
 ## Spiral Lava
 
-* Types: "vanilla", "random-vanilla", "random"
+* Types: "vanilla-extra", "random-vanilla", "random"
 * Internal name: `spiral_lava`
 * Construction type: standard square
 * Collision type: solid
@@ -116,7 +116,7 @@ Lava spirals out from the center! Don't get mesmerized, since the lava is made o
 
 ## Gravity Well
 
-* Types: "vanilla", "random-vanilla", "random"
+* Types: "vanilla-extra", "random-vanilla", "random"
 * Internal name: `gravity_well`
 * Construction type: radius
 * Collision type: solid
@@ -175,9 +175,12 @@ Currently a dev hazard because I haven't finished its drawing function, and it's
 * Vertical Lightning
 * Lava
 * No Bullet Zone
+* Minion Turret (inaccessible)
+
+## vanilla-extra
+
 * Spiral Lava
 * Gravity Well
-* Minion Turret (inaccessible)
 
 ## random-vanilla
 

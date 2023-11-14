@@ -26,7 +26,7 @@ bool GravityWellHazard::initialized_vertices = false;
 
 std::unordered_map<std::string, float> GravityWellHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "vanilla", 0.5f });
+	weights.insert({ "vanilla-extra", 1.0f });
 	weights.insert({ "random-vanilla", 0.5f });
 	weights.insert({ "random", 0.25f });
 	return weights;
