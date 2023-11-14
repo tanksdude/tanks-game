@@ -35,6 +35,7 @@ void DefaultRandomLevel::initialize() { //still needs a lot of work
 
 	//some random walls
 	LevelHelper::pushRandomWalls(RNG::randIntInRange(12, 16+1), TANK_RADIUS*2.5*2, TANK_RADIUS*2, GAME_WIDTH - 2*(TANK_RADIUS*2.5*2), GAME_HEIGHT - 2*(TANK_RADIUS*2), randColor);
+	//note: hazards' y-gap is TANK_RADIUS*2.5 even though walls' y-gap is TANK_RADIUS*2
 
 	//randomize hazards:
 	//get the weight of each hazard
@@ -66,7 +67,7 @@ void DefaultRandomLevel::initialize() { //still needs a lot of work
 			CircleHazardRandomizationFunction f = HazardDataGovernor::getCircleHazardRandomizationFunction("random-vanilla", HazardDataGovernor::getCircleHazardName("random-vanilla", index));
 			for (int i = 0; i < count; i++) {
 				GenericFactoryConstructionData constructionData;
-				CircleHazard* ch = f(TANK_RADIUS*2.5*2, TANK_RADIUS*2, GAME_WIDTH - 2*(TANK_RADIUS*2.5*2), GAME_HEIGHT - 2*(TANK_RADIUS*2), constructionData);
+				CircleHazard* ch = f(TANK_RADIUS*2.5*2, TANK_RADIUS*2.5, GAME_WIDTH - 2*(TANK_RADIUS*2.5*2), GAME_HEIGHT - 2*(TANK_RADIUS*2.5), constructionData);
 				if (ch != nullptr) {
 					HazardManager::pushCircleHazard(ch);
 				}
@@ -76,7 +77,7 @@ void DefaultRandomLevel::initialize() { //still needs a lot of work
 			RectHazardRandomizationFunction f = HazardDataGovernor::getRectHazardRandomizationFunction("random-vanilla", HazardDataGovernor::getRectHazardName("random-vanilla", index));
 			for (int i = 0; i < count; i++) {
 				GenericFactoryConstructionData constructionData;
-				RectHazard* rh = f(TANK_RADIUS*2.5*2, TANK_RADIUS*2, GAME_WIDTH - 2*(TANK_RADIUS*2.5*2), GAME_HEIGHT - 2*(TANK_RADIUS*2), constructionData);
+				RectHazard* rh = f(TANK_RADIUS*2.5*2, TANK_RADIUS*2.5, GAME_WIDTH - 2*(TANK_RADIUS*2.5*2), GAME_HEIGHT - 2*(TANK_RADIUS*2.5), constructionData);
 				if (rh != nullptr) {
 					HazardManager::pushRectHazard(rh);
 				}

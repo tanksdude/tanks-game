@@ -3,7 +3,7 @@
 std::unordered_map<std::string, float> WallhackPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", 1.0f });
-	weights.insert({ "random-vanilla", 0.5f }); //TODO: something like "reduced random-vanilla" to exclude speed, invincible, wallhack
+	weights.insert({ "random-vanilla", 0.25f }); //TODO: something like "reduced random-vanilla" to exclude speed, invincible, wallhack
 	weights.insert({ "old", 1.0f });
 	weights.insert({ "ultimate", 1.0f });
 	weights.insert({ "ultimate-vanilla", 1.0f });
