@@ -104,6 +104,7 @@
 #include "hazards/rectangular-no-bullet-zone-hazard.h"
 #include "hazards/circular-no-bullet-zone-hazard.h"
 #include "hazards/spiral-lava-hazard.h"
+#include "hazards/gravity-well-hazard.h"
 //dev hazards:
 #include "hazards/dev-wall-hazard.h"
 #include "hazards/reflecktor-hazard.h"
@@ -310,6 +311,7 @@ int main(int argc, char** argv) {
 	HazardDataGovernor::addRectHazardFactory(RectangularNoBulletZoneHazard::factory, RectangularNoBulletZoneHazard::randomizingFactory);
 	HazardDataGovernor::addCircleHazardFactory(CircularNoBulletZoneHazard::factory, CircularNoBulletZoneHazard::randomizingFactory);
 	HazardDataGovernor::addRectHazardFactory(SpiralLavaHazard::factory, SpiralLavaHazard::randomizingFactory);
+	HazardDataGovernor::addCircleHazardFactory(GravityWellHazard::factory, GravityWellHazard::randomizingFactory);
 	//dev:
 	HazardDataGovernor::addRectHazardFactory(DevWallHazard::factory, DevWallHazard::randomizingFactory);
 	HazardDataGovernor::addRectHazardFactory(ReflecktorHazard::factory, ReflecktorHazard::randomizingFactory);

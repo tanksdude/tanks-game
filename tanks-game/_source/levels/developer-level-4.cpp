@@ -34,8 +34,8 @@ void DeveloperLevel4::initialize() {
 	HazardManager::pushRectHazard("vanilla", "spiral_lava", constructionData);
 
 	for (int i = 0; i < 4; i++) {
-		pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 60, 40, 40);
-		posArr = new double[4]{ pos.x, pos.y, 40, 40 };
+		pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 60, 30, 30);
+		posArr = new double[4]{ pos.x, pos.y, 30, 30 };
 		constructionData = GenericFactoryConstructionData(4, posArr);
 		HazardManager::pushRectHazard("dev", "reflecktor", constructionData);
 	}
@@ -56,6 +56,16 @@ void DeveloperLevel4::initialize() {
 	constructionData.pushData(2, speedArr);
 	constructionData.pushData(1, powerList);
 	HazardManager::pushCircleHazard("dev", "cloud", constructionData);
+
+	posArr = new double[4]{ GAME_WIDTH/2, GAME_HEIGHT/2 - 80, 20, 60 };
+	constructionData = GenericFactoryConstructionData(4, posArr);
+	HazardManager::pushCircleHazard("vanilla", "gravity_well", constructionData);
+
+	posArr = new double[4]{ GAME_WIDTH/2, GAME_HEIGHT/2 + 80, 10, 40 };
+	double* strengthArr = new double[2]{ -.25, -.95 };
+	constructionData = GenericFactoryConstructionData(4, posArr);
+	constructionData.pushData(2, strengthArr);
+	HazardManager::pushCircleHazard("vanilla", "gravity_well", constructionData);
 
 	//assumption: TANK_RADIUS=16 (why it would ever be changed is beyond me)
 	PowerupManager::pushPowerup(new PowerSquare(20, 20, "speed"));

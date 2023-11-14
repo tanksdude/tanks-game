@@ -114,6 +114,16 @@ Bullets are unable to even graze this hazard. However, tanks handle it just fine
 
 Lava spirals out from the center! Don't get mesmerized, since the lava is made of Lava!
 
+## Gravity Well
+
+* Types: "vanilla", "random-vanilla", "random"
+* Internal name: `gravity_well`
+* Construction type: radius
+* Collision type: solid
+* Defense: 2 (`DESTRUCTION_TIER`)
+
+Pulls in tanks and bullets, as you would expect from gravity. (Doesn't change angle though, so it's not "real" gravity.)
+
 ## [DEV] "Wall"
 
 * Types: "dev", "random-dev"
@@ -166,6 +176,7 @@ Currently a dev hazard because I haven't finished its drawing function, and it's
 * Lava
 * No Bullet Zone
 * Spiral Lava
+* Gravity Well
 * Minion Turret (inaccessible)
 
 ## random-vanilla
@@ -181,6 +192,7 @@ Currently a dev hazard because I haven't finished its drawing function, and it's
 * Lava
 * No Bullet Zone
 * Spiral Lava
+* Gravity Well
 
 ## old
 
@@ -215,6 +227,7 @@ Currently a dev hazard because I haven't finished its drawing function, and it's
 * Lava
 * No Bullet Zone
 * Spiral Lava
+* Gravity Well
 
 ## dev
 

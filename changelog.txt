@@ -55,6 +55,7 @@
     * mother turret: creates turrets
     * ginormous turret: tells its turrets where to shoot
     * spiral lava: lava spirals out from center
+    * gravity well: pulls in tanks and bullets
     * [dev] cloud: spits out powerups occasionally
     * [dev] reflecktor: bounces tanks
     * TODO: teleporter?

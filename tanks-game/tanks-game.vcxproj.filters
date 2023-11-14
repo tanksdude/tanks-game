@@ -513,6 +513,9 @@
     <ClCompile Include="_source\powers\dev-pusher-power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="_source\hazards\gravity-well-hazard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="_source\bullet.h">
@@ -1056,6 +1059,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="_source\powers\dev-pusher-power.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="_source\hazards\gravity-well-hazard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
