@@ -28,6 +28,7 @@ std::unordered_map<std::string, float> CloudHazard::getWeights() const {
 }
 
 //not the main one
+//TODO: this can work (and put this hazard in vanilla!) if hazards could check the type of the level, then pull powers from that type
 CloudHazard::CloudHazard(double xpos, double ypos, double radius, double speed, double acc) : CircleHazard(HAZARD_TEAM) {
 	x = xpos;
 	y = ypos;
@@ -47,6 +48,8 @@ CloudHazard::CloudHazard(double xpos, double ypos, double radius, double speed, 
 
 	modifiesTankCollision = true;
 	modifiesBulletCollision = true;
+
+	initializeVertices();
 }
 
 CloudHazard::CloudHazard(double xpos, double ypos, double radius) : CloudHazard(xpos, ypos, radius, 1, -1.0/100) {}
@@ -185,8 +188,6 @@ void CloudHazard::tick() {
 }
 
 bool CloudHazard::reasonableLocation() const {
-	//TODO
-
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		if (CollisionHandler::partiallyCollided(this, WallManager::getWall(i))) {
 			return false;
@@ -196,7 +197,7 @@ bool CloudHazard::reasonableLocation() const {
 	for (int i = 0; i < HazardManager::getNumCircleHazards(); i++) {
 		const CircleHazard* ch = HazardManager::getCircleHazard(i);
 		if (ch->getGameID() != this->getGameID()) [[unlikely]] {
-			if (CollisionHandler::partiallyCollided(this, ch)) {
+			if ((ch->getCollisionType() == CircleHazardCollisionType::solid) && (CollisionHandler::partiallyCollided(this, ch))) {
 				return false;
 			}
 		}
@@ -329,6 +330,38 @@ void CloudHazard::ghostDraw(DrawingLayers layer, float alpha) const {
 }
 
 CircleHazard* CloudHazard::randomizingFactory(double x_start, double y_start, double area_width, double area_height, const GenericFactoryConstructionData& args) {
-	//TODO
-	return nullptr;
+	int attempts = 0;
+	CircleHazard* randomized = nullptr;
+	double xpos, ypos, radius;
+
+	bool randomizeR;
+	int count = 0;
+	if (args.getDataCount() >= 1) {
+		int count = args.getDataPortionLength(0);
+	}
+	if (count >= 1) {
+		const double* arr = static_cast<const double*>(args.getDataPortion(0).get());
+		radius = arr[0];
+		randomizeR = false;
+	} else {
+		randomizeR = true;
+	}
+
+	do {
+		if (randomizeR) {
+			radius = RNG::randNumInRange(16, 24); //TODO: where should these constants be?
+		}
+		xpos = RNG::randFunc() * (area_width - 2*radius) + (x_start + radius);
+		ypos = RNG::randFunc() * (area_height - 2*radius) + (y_start + radius);
+		CircleHazard* testCloud = new CloudHazard(xpos, ypos, radius);
+		if (testCloud->reasonableLocation()) {
+			randomized = testCloud;
+			break;
+		} else {
+			delete testCloud;
+		}
+		attempts++;
+	} while (attempts < 64);
+
+	return randomized;
 }

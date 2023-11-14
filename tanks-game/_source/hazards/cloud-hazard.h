@@ -20,8 +20,6 @@ protected:
 	virtual PowerSquare* makePowerup(int powerupIndex) const;
 	void pushPowerup();
 
-	//TODO
-
 public:
 	virtual std::vector<std::string> getHazardTypes() const override {
 		std::vector<std::string> types = std::vector<std::string>{ "dev", "random-dev" };
