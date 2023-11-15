@@ -93,8 +93,10 @@ void DeveloperManager::devInsert(int x, int y) {
 		case 0:
 			#if _DEBUG
 			PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "colorless_longinvincible"));
+			//PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "the_super"));
 			#else
 			PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "longinvincible"));
+			//PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "the_super"));
 			#endif
 			break;
 		case 1:

@@ -37,7 +37,6 @@ list of (eventual) powers:
 |invincibility (tier 1)
 |big (tier 2)
 |megadeath (variable big)
-the super (tier 3) (name WIP) (come on, of course the name isn't going to be temporary!)
 |grenade
 |fire
 |banana
@@ -79,6 +78,7 @@ mine layer (shoot a regular bullet, every certain distance a mine is dropped)
 |dev: spread (triple but shoots at the same point and spreads out)
 |dev: pusher (pushes walls and hazards (tank only))
 |dev: ring-shooter (shoots a ring of bullets; just looks amusing) (multishot but all the angles are the same)
+|dev: the super (tier inf) (name not WIP)
 
 
 invincibility series notes:

@@ -59,7 +59,7 @@ The main reason this was made was because I thought it would be funny to have a 
 
 Note that this hazard is inaccessible. It is the turret that Ginormous Turrets create. Mother Turrets create Targeting Turrets that do their own thing, but Ginormous Turrets force their turrets to follow their commands. As such, the only difference between a Minion Turret and a Targeting Turret is that a Minion Turret can *only* follow orders from its Ginormous Turret.
 
-If the Minion Turret's parent is destroyed, it does nothing. (Which I didn't even think about until now since Ginormous Turrets can't get destroyed.)
+If the Minion Turret's parent is destroyed, it does nothing. Well, it won't receive the order to stop targeting, so it will keep tracking the target tank (even through walls) until it has fired.
 
 ## Lightning
 

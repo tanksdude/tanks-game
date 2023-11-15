@@ -1,5 +1,8 @@
 #include "god-mode-power.h"
 
+#include "../constants.h"
+#include <cmath>
+
 #include "../color-mixer.h"
 #include "../game-manager.h" //getTickCount()
 

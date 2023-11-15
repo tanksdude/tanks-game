@@ -276,6 +276,22 @@ Identical to Invincible, except it lasts forever. Was made to make testing easie
 
 Same as Long Invincible, but this time it cheats to not show any color. Was made to make getting screenshots easier.
 
+## [DEV] The Super
+
+* Types: "dev"
+* Internal name: `the_super`
+* Attributes: "mix"
+* Color: cycle between black and white
+* Duration: double
+
+The strongest power ever. (Though it's still stopped by No Bullet Zones...)
+
+Originally intended to be one step above Big (so two steps above Invincible), now it's the ultimate power.
+
+* Tank defense: 999 (`HIGH_TIER`)
+* Bullet offense: 998.9 (`HIGH_TIER - .1`)
+* Bullet defense: 998.9 (`HIGH_TIER - .1`)
+
 ## Inversion
 
 * Types: "dev", "random-dev"
@@ -618,6 +634,7 @@ These are the types custom powers are not allowed to have, unless `[MODS] ModSaf
 
 * Long Invincible
 * Colorless Long Invincible
+* The Super
 * Inversion
 * Annoying
 * Ultra Bounce
@@ -629,6 +646,7 @@ These are the types custom powers are not allowed to have, unless `[MODS] ModSaf
 * Weird Extra Cannons
 * Triple Spread
 * Ring Shooter
+* Ancient MegaDeath
 * Banana Split
 * Trickster Circle
 * Trickster Snake
@@ -649,6 +667,7 @@ These are the types custom powers are not allowed to have, unless `[MODS] ModSaf
 * Weird Extra Cannons
 * Triple Spread
 * Ring Shooter
+* Ancient MegaDeath
 * Banana Split
 * Trickster Circle
 * Trickster Snake

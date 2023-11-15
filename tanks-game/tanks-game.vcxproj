@@ -237,6 +237,7 @@
     <ClCompile Include="_source\physics-handler.cpp" />
     <ClCompile Include="_source\powers\ring-shooter-power.cpp" />
     <ClCompile Include="_source\powers\swarm-power.cpp" />
+    <ClCompile Include="_source\powers\the-super-named-power.cpp" />
     <ClCompile Include="_source\powers\trickster-circle-power.cpp" />
     <ClCompile Include="_source\powers\trickster-snake-power.cpp" />
     <ClCompile Include="_source\powers\triple-spread-named-power.cpp" />
@@ -411,6 +412,7 @@
     <ClInclude Include="_source\physics-handler.h" />
     <ClInclude Include="_source\powers\ring-shooter-power.h" />
     <ClInclude Include="_source\powers\swarm-power.h" />
+    <ClInclude Include="_source\powers\the-super-named-power.h" />
     <ClInclude Include="_source\powers\trickster-circle-power.h" />
     <ClInclude Include="_source\powers\trickster-snake-power.h" />
     <ClInclude Include="_source\powers\triple-spread-named-power.h" />
