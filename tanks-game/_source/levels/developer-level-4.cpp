@@ -101,6 +101,7 @@ void DeveloperLevel4::initialize() {
 	PowerupManager::pushPowerup(new PowerSquare(200, GAME_HEIGHT-20, "dev", "trickster_snake"));
 	PowerupManager::pushPowerup(new PowerSquare(220, GAME_HEIGHT-20, "dev", "pusher"));
 	PowerupManager::pushPowerup(new PowerSquare(240, GAME_HEIGHT-20, "dev", "movement_restarter"));
+	PowerupManager::pushPowerup(new PowerSquare(260, GAME_HEIGHT-20, "dev", "mine_layer"));
 
 	names = new std::string[2]{ "multishot", "multishot" };
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH-20, GAME_HEIGHT-20, "vanilla", names, 2));

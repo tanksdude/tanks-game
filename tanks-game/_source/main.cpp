@@ -157,6 +157,7 @@
 #include "powers/trickster-snake-power.h" //moves back and forth by moving up and down
 #include "powers/dev-pusher-power.h" //lets the tank push walls and hazards
 #include "powers/dev-movement-restarter-power.h" //makes the bullet start moving again once it stops moving (only happens once)
+#include "powers/mine-layer-power.h" //lays down a bullet every so often
 
 #include "game-main-loop.h"
 
@@ -297,6 +298,7 @@ int main(int argc, char** argv) {
 	PowerupDataGovernor::addPowerFactory(TricksterSnakePower::factory);
 	PowerupDataGovernor::addPowerFactory(DevPusherPower::factory);
 	PowerupDataGovernor::addPowerFactory(DevMovementRestarterPower::factory);
+	PowerupDataGovernor::addPowerFactory(MineLayerPower::factory);
 
 	//hazards
 	//vanilla (some are also "old"):

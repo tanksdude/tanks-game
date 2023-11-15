@@ -456,7 +456,16 @@ Allows the tank to push walls and solid hazards.
 * Attributes: "stack", "mix"
 * Color: `#838996` ("Roman Silver" apparently)
 
-Once the bullet stops moving, it will be kickstarted into moving again. Only happens once.
+Once the bullet stops moving, it will be kickstarted into moving again by multiplying its acceleration by -1.25. Only happens once.
+
+## Mine Layer
+
+* Types: "dev", "random-dev"
+* Internal name: `mine_layer`
+* Attributes: "mix"
+* Color: `(0.25, 0.25, 0.25)` (dark gray)
+
+As the bullet travels along, it will leave behind some (non-moving) bullets.
 
 # List of protected power types
 
@@ -625,6 +634,7 @@ These are the types custom powers are not allowed to have, unless `[MODS] ModSaf
 * Trickster Snake
 * Pusher
 * Movement Restarter
+* Mine Layer
 
 ## random-dev
 
@@ -644,3 +654,4 @@ These are the types custom powers are not allowed to have, unless `[MODS] ModSaf
 * Trickster Snake
 * Pusher
 * Movement Restarter
+* Mine Layer

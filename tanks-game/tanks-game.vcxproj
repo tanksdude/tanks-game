@@ -225,6 +225,7 @@
     <ClCompile Include="_source\levels\many-hazards-level.cpp" />
     <ClCompile Include="_source\level-effects\minefield-level-effect.cpp" />
     <ClCompile Include="_source\levels\mine-heaven-level.cpp" />
+    <ClCompile Include="_source\powers\mine-layer-power.cpp" />
     <ClCompile Include="_source\powers\mines-power.cpp" />
     <ClCompile Include="_source\hazards\mother-turret-hazard.cpp" />
     <ClCompile Include="_source\powers\old-mines-power.cpp" />
@@ -397,6 +398,7 @@
     <ClInclude Include="_source\levels\many-hazards-level.h" />
     <ClInclude Include="_source\level-effects\minefield-level-effect.h" />
     <ClInclude Include="_source\levels\mine-heaven-level.h" />
+    <ClInclude Include="_source\powers\mine-layer-power.h" />
     <ClInclude Include="_source\powers\mines-power.h" />
     <ClInclude Include="_source\hazards\mother-turret-hazard.h" />
     <ClInclude Include="_source\graphics\null-rendering-context.h" />

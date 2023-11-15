@@ -522,6 +522,9 @@
     <ClCompile Include="_source\powers\dev-movement-restarter-power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="_source\powers\mine-layer-power.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="_source\bullet.h">
@@ -1074,6 +1077,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="_source\powers\dev-movement-restarter-power.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="_source\powers\mine-layer-power.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
