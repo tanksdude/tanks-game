@@ -53,7 +53,7 @@ void LightningCornersLevel::initialize() {
 	//LevelHelper::pushSymmetricPowerups_Corners(GAME_WIDTH/2, GAME_HEIGHT/2, 80+20/2, 80+20/2, "vanilla", "banana");
 
 	names = new std::string[5]{ "speed", "speed", "speed", "big", "big" };
-	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, names, 5));
+	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "vanilla", names, 5));
 	delete[] names;
 	//JS used 4 speed to accomplish the same thing (big bullet speed decrease stacked there) (if using old big power, do what JS does)
 	//if the powerup at the center is split, use this:

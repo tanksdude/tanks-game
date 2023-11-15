@@ -100,8 +100,8 @@ void UnnamedLevel2::initialize() {
 	//	std::cout << CollisionHandler::partiallyOutOfBoundsIgnoreEdge(WallManager::getWall(i)) << std::endl;
 	//}
 
-	PowerupManager::pushPowerup(new PowerSquare(20, 20, "wallhack")); //only to avoid softlocks
-	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH - 20, GAME_HEIGHT - 20, "wallhack"));
+	PowerupManager::pushPowerup(new PowerSquare(20, 20, "vanilla", "wallhack")); //only to avoid softlocks
+	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH - 20, GAME_HEIGHT - 20, "vanilla", "wallhack"));
 
 	//other potential powers:
 	//

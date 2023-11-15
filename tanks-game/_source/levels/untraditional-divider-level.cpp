@@ -48,7 +48,6 @@ void UntraditionalDividerLevel::initialize() {
 	if (magnetism->getName() != "magnetism") [[unlikely]] {
 		throw std::logic_error("ERROR: \"" + getName() + "\" level does not have \"magnetism\" level effect!");
 	}
-	//TODO: should this be the preferred way of getting specific level effects?
 
 	WallManager::pushWall(new Wall(GAME_WIDTH/2 - 240, GAME_HEIGHT/2 - 10, 240*2, 10*2, color));
 

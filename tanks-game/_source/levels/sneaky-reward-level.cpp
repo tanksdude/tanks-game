@@ -43,7 +43,6 @@ void SneakyRewardLevel::initialize() {
 	if (respawning->getName() != "respawning_powerups") [[unlikely]] {
 		throw std::logic_error("ERROR: \"" + getName() + "\" level does not have \"respawning_powerups\" level effect!");
 	}
-	//TODO: should this be the preferred way of getting specific level effects?
 
 	LevelHelper::pushClassicWalls(color);
 

@@ -44,7 +44,6 @@ void UnnamedLevel3::initialize() {
 	if (respawning->getName() != "respawning_powerups") [[unlikely]] {
 		throw std::logic_error("ERROR: \"" + getName() + "\" level does not have \"respawning_powerups\" level effect!");
 	}
-	//TODO: should this be the preferred way of getting specific level effects?
 
 	posArr = new double[3]{ GAME_WIDTH/2, GAME_HEIGHT/2, -PI/2 };
 	constructionData = GenericFactoryConstructionData(3, posArr);

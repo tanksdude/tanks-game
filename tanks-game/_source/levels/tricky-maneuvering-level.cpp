@@ -65,7 +65,7 @@ void TrickyManeuveringLevel::initialize() {
 
 	//names = new std::string[3]{ "big", "blast", "banana" }; //JS
 	names = new std::string[3]{ "big", "banana", "banana" };
-	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, names, 3));
+	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "vanilla", names, 3));
 	delete[] names;
 	//in JS, blast's bullet acceleration did not affect banana
 	//TODO: power constructors take arguments, increase second banana's bananaCount to 16

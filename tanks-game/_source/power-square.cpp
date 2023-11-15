@@ -21,20 +21,6 @@ PowerSquare::PowerSquare(double x_, double y_) : GameThing(DEFAULT_TEAM) {
 	h = PowerSquare::POWER_HEIGHT;
 }
 
-PowerSquare::PowerSquare(double x_, double y_, std::string name) : PowerSquare(x_, y_) {
-	numOfPowers = 1;
-	heldPowers = new Power*[1];
-	heldPowers[0] = PowerupDataGovernor::getPower("vanilla", name);
-}
-
-PowerSquare::PowerSquare(double x_, double y_, const std::string* names, int num) : PowerSquare(x_, y_) {
-	numOfPowers = num;
-	heldPowers = new Power*[num];
-	for (int i = 0; i < num; i++) {
-		heldPowers[i] = PowerupDataGovernor::getPower("vanilla", names[i]);
-	}
-}
-
 PowerSquare::PowerSquare(double x_, double y_, std::string type, std::string name) : PowerSquare(x_, y_) {
 	numOfPowers = 1;
 	heldPowers = new Power*[1];

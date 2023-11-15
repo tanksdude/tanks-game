@@ -68,7 +68,7 @@ void TightPatrollingCorridorLevel::initialize() {
 
 	//PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "godmode"));
 	names = new std::string[4]{ "bounce", "homing", "banana", "banana" };
-	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, names, 4));
+	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "vanilla", names, 4));
 	delete[] names;
 
 	//"inner" powers
@@ -127,12 +127,12 @@ void TightPatrollingCorridorLevel::initialize() {
 	//extra powers
 	for (int i = 0; i < 4; i++) {
 		pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2 - 20, GAME_HEIGHT/2 - 20);
-		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "speed"));
+		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "vanilla", "speed"));
 	}
 	//experimental power positions
 	for (int i = 0; i < 4; i++) {
 		pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2 - 10, GAME_HEIGHT/2 - (20+20+20+10));
-		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "invincible"));
+		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "vanilla", "invincible"));
 	}
 
 	//UL and UR turrets

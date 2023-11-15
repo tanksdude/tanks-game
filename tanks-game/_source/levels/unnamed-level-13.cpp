@@ -40,7 +40,6 @@ void UnnamedLevel13::initialize() {
 	if (respawning->getName() != "respawning_powerups") [[unlikely]] {
 		throw std::logic_error("ERROR: \"" + getName() + "\" level does not have \"respawning_powerups\" level effect!");
 	}
-	//TODO: should this be the preferred way of getting specific level effects?
 
 	posArr = new double[4]{ GAME_WIDTH/2, GAME_HEIGHT/2, 16, 64 };
 	double* strengthArr = new double[2]{ .10, .95 };

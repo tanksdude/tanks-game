@@ -61,23 +61,23 @@ void DeveloperLevel1::initialize() {
 	HazardManager::pushCircleHazard("vanilla", "targeting_turret", constructionData);
 
 	//assumption: TANK_RADIUS=16 (why it would ever be changed is beyond me)
-	PowerupManager::pushPowerup(new PowerSquare(20, 20, "speed"));
-	PowerupManager::pushPowerup(new PowerSquare(40, 20, "wallhack"));
-	PowerupManager::pushPowerup(new PowerSquare(60, 20, "invincible"));
-	PowerupManager::pushPowerup(new PowerSquare(80, 20, "multishot"));
-	PowerupManager::pushPowerup(new PowerSquare(100, 20, "big"));
-	PowerupManager::pushPowerup(new PowerSquare(120, 20, "homing"));
-	PowerupManager::pushPowerup(new PowerSquare(140, 20, "grenade"));
-	PowerupManager::pushPowerup(new PowerSquare(160, 20, "banana"));
+	PowerupManager::pushPowerup(new PowerSquare(20, 20, "vanilla", "speed"));
+	PowerupManager::pushPowerup(new PowerSquare(40, 20, "vanilla", "wallhack"));
+	PowerupManager::pushPowerup(new PowerSquare(60, 20, "vanilla", "invincible"));
+	PowerupManager::pushPowerup(new PowerSquare(80, 20, "vanilla", "multishot"));
+	PowerupManager::pushPowerup(new PowerSquare(100, 20, "vanilla", "big"));
+	PowerupManager::pushPowerup(new PowerSquare(120, 20, "vanilla", "homing"));
+	PowerupManager::pushPowerup(new PowerSquare(140, 20, "vanilla", "grenade"));
+	PowerupManager::pushPowerup(new PowerSquare(160, 20, "vanilla", "banana"));
 
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH-20, 20, "dev", "ultrabounce"));
 
 	names = new std::string[3]{ "multishot", "multishot", "invincible" };
-	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH-20, GAME_HEIGHT-20, names, 3));
+	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH-20, GAME_HEIGHT-20, "vanilla", names, 3));
 	names[0] = "multishot", names[1] = "big", names[2] = "big";
-	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH-40, GAME_HEIGHT-20, names, 3));
+	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH-40, GAME_HEIGHT-20, "vanilla", names, 3));
 	names[0] = "bounce", names[1] = "homing";
-	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH-60, GAME_HEIGHT-20, names, 2));
+	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH-60, GAME_HEIGHT-20, "vanilla", names, 2));
 	delete[] names;
 
 	/*

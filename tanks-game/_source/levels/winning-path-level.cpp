@@ -34,7 +34,7 @@ void WinningPathLevel::initialize() {
 	LevelHelper::pushClassicWalls(color);
 	PositionHolder* wallArray = LevelHelper::getClassicWallPositions();
 
-	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "godmode"));
+	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "vanilla", "godmode"));
 
 	LevelHelper::pushSymmetricWalls_LR(GAME_WIDTH/2, GAME_HEIGHT/2, 20, 20, GAME_HEIGHT/2, color);
 

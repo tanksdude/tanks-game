@@ -98,15 +98,16 @@ void DeveloperManager::devInsert(int x, int y) {
 			#endif
 			break;
 		case 1:
-			//PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "backwards_movement"));
-			//PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "wall_sparks"));
-			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla", "megadeath"));
+			//PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla", "megadeath"));
+			//PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla-extra", "shotgun"));
+			//PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "banana_split"));
+			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla-extra", "swarm"));
 			break;
 		case 2:
-			PowerupManager::pushPowerup(new PowerSquare(x, y, "banana"));
+			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla", "banana"));
 			break;
 		case 3:
-			PowerupManager::pushPowerup(new PowerSquare(x, y, "homing"));
+			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla", "homing"));
 			break;
 		case 4:
 			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla-extra", "barrier"));
@@ -118,19 +119,19 @@ void DeveloperManager::devInsert(int x, int y) {
 			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla-extra", "mines"));
 			break;
 		case 7:
-			PowerupManager::pushPowerup(new PowerSquare(x, y, "multishot"));
+			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla", "multishot"));
 			break;
 		case 8:
-			PowerupManager::pushPowerup(new PowerSquare(x, y, "grenade"));
+			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla", "grenade"));
 			break;
 		case 9:
 			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla", "blast"));
 			break;
 		case 10:
-			PowerupManager::pushPowerup(new PowerSquare(x, y, "godmode"));
+			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla", "godmode"));
 			break;
 		case 11:
-			PowerupManager::pushPowerup(new PowerSquare(x, y, "big"));
+			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla", "big"));
 			break;
 		case 12:
 			PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "inversion"));
