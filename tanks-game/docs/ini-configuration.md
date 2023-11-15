@@ -30,7 +30,7 @@ Since I don't have the expertise or willingness to add advanced features like "a
 * `Position.StartX` (default 60): Sets the window's starting x-position (in pixels? not sure).
 * `Position.StartY` (default 60): Sets the window's starting y-position. Remember that this is counted from the top left of your monitor.
 * `Position.SizeMultiplier` (default 2.5): Controls the sizing of the window. The actual game's size is 640×320, so this setting scales it up to 1600×800.
-* `Bullet.PerformanceMode` (default 0): Controls whether to draw a circular outline around the bullet to represent its transparency or whether to draw a bar underneath it (no option for actual transparency because that is hard on performance). Currently does nothing.
+* `Bullet.PerformanceMode` (default 0): Controls whether to draw a circular outline around the bullet to represent its transparency or whether to draw a bar underneath it (no option for actual transparency because that is hard on performance).
 
 Note: Press F11 to toggle fullscreen. (Well, it's borderless fullscreen, but it still fills the whole screen.)
 

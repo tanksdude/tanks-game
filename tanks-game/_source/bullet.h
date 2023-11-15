@@ -91,6 +91,7 @@ protected:
 	inline void drawBody(float alpha = 1.0f) const;
 	inline void drawOutline(float alpha = 1.0f) const;
 	inline void drawDeathCooldown(float alpha = 1.0f) const;
+	inline void drawDeathBar(float alpha = 1.0f) const;
 
 private:
 	static SimpleVector2D body_vertices[Circle::numOfSides+1];

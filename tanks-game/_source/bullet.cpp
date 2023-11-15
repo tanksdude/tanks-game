@@ -2,12 +2,14 @@
 
 #include "constants.h"
 #include <cmath>
-#include <algorithm> //std::clamp, std::min
+#include <algorithm> //std::clamp, std::min, std::max
 #include <iostream>
 
 #include "renderer.h"
 #include "color-mixer.h"
 #include "background-rect.h"
+
+#include "game-manager.h" //INI file
 
 SimpleVector2D Bullet::body_vertices[Circle::numOfSides+1];
 unsigned int Bullet::body_indices[Circle::numOfSides*3];
@@ -438,9 +440,16 @@ ColorValueHolder Bullet::getColor() const {
 }
 
 void Bullet::draw() const {
-	drawDeathCooldown();
-	drawBody();
-	drawOutline();
+	const BasicINIParser::BasicINIData& ini_data = GameManager::get_INI();
+
+	if (ini_data.exists("GRAPHICS_SETTINGS", "Bullet.PerformanceMode") && std::stoi(ini_data.get("GRAPHICS_SETTINGS", "Bullet.PerformanceMode"))) {
+		drawDeathBar();
+		drawBody();
+	} else {
+		drawDeathCooldown();
+		drawBody();
+		drawOutline();
+	}
 }
 
 void Bullet::draw(DrawingLayers layer) const {
@@ -471,6 +480,7 @@ void Bullet::draw(DrawingLayers layer) const {
 }
 
 void Bullet::poseDraw() const {
+	//don't bother checking for Bullet.PerformanceMode
 	drawBody();
 	drawOutline();
 }
@@ -503,9 +513,16 @@ void Bullet::poseDraw(DrawingLayers layer) const {
 }
 
 void Bullet::ghostDraw(float alpha) const {
-	drawDeathCooldown(alpha);
-	drawBody(alpha);
-	drawOutline(alpha);
+	const BasicINIParser::BasicINIData& ini_data = GameManager::get_INI();
+
+	if (ini_data.exists("GRAPHICS_SETTINGS", "Bullet.PerformanceMode") && std::stoi(ini_data.get("GRAPHICS_SETTINGS", "Bullet.PerformanceMode"))) {
+		drawDeathBar(alpha);
+		drawBody(alpha);
+	} else {
+		drawDeathCooldown(alpha);
+		drawBody(alpha);
+		drawOutline(alpha);
+	}
 }
 
 void Bullet::ghostDraw(DrawingLayers layer, float alpha) const {
@@ -596,7 +613,7 @@ inline void Bullet::drawDeathCooldown(float alpha) const {
 	//checking glIsEnabled(GL_BLEND) to skip is an option (though the result should be stored somewhere to avoid GL calls)
 
 	if (this->lifeValue < 100) {
-		double deathPercent = std::clamp<double>(this->lifeValue/100, 0, 1);
+		double deathPercent = std::max<double>(this->lifeValue/100, 0);
 		unsigned int deathTriangles = Circle::numOfSides * deathPercent;
 
 		if (deathTriangles > 0) {
@@ -628,6 +645,72 @@ inline void Bullet::drawDeathCooldown(float alpha) const {
 
 			Renderer::SubmitBatchedDraw(coordsAndColor, (deathTriangles < Circle::numOfSides ? (deathTriangles+2)*(2+4) : (deathTriangles+1)*(2+4)), body_indices, deathTriangles*3);
 		}
+	}
+}
+
+inline void Bullet::drawDeathBar(float alpha) const {
+	alpha = std::clamp<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
+
+	if (this->lifeValue < 100) {
+		double deathPercent = std::max<double>(this->lifeValue/100, 0);
+
+		//fill:
+
+		ColorValueHolder color_extra = ColorValueHolder(1.0f, 1.0f, 1.0f);
+		color_extra = ColorMixer::mix(BackgroundRect::getBackColor(), color_extra, alpha);
+
+		float coordsAndColor_extra[] = {
+			(this->x - this->r),                            (this->y - this->r*(6.0/4)),   color_extra.getRf(), color_extra.getGf(), color_extra.getBf(), color_extra.getAf(), //0
+			(this->x - this->r + deathPercent*(2*this->r)), (this->y - this->r*(6.0/4)),   color_extra.getRf(), color_extra.getGf(), color_extra.getBf(), color_extra.getAf(), //1
+			(this->x - this->r + deathPercent*(2*this->r)), (this->y - this->r*(5.0/4)),   color_extra.getRf(), color_extra.getGf(), color_extra.getBf(), color_extra.getAf(), //2
+			(this->x - this->r),                            (this->y - this->r*(5.0/4)),   color_extra.getRf(), color_extra.getGf(), color_extra.getBf(), color_extra.getAf(), //3
+		};
+		unsigned int indices_extra[] = {
+			0, 1, 2,
+			2, 3, 0,
+		};
+
+		Renderer::SubmitBatchedDraw(coordsAndColor_extra, 4 * (2+4), indices_extra, 2 * 3);
+
+		//outline (from Diagnostics):
+
+		ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
+		color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
+		const float lineWidth = 0.5f;
+
+		float coordsAndColor[] = {
+			//outer
+			(this->x - this->r) - lineWidth, (this->y - this->r*(6.0/4)) - lineWidth,   color.getRf(), color.getGf(), color.getBf(), color.getAf(), //0
+			(this->x + this->r) + lineWidth, (this->y - this->r*(6.0/4)) - lineWidth,   color.getRf(), color.getGf(), color.getBf(), color.getAf(), //1
+			(this->x + this->r) + lineWidth, (this->y - this->r*(5.0/4)) + lineWidth,   color.getRf(), color.getGf(), color.getBf(), color.getAf(), //2
+			(this->x - this->r) - lineWidth, (this->y - this->r*(5.0/4)) + lineWidth,   color.getRf(), color.getGf(), color.getBf(), color.getAf(), //3
+
+			//inner
+			(this->x - this->r),             (this->y - this->r*(6.0/4)),               color.getRf(), color.getGf(), color.getBf(), color.getAf(), //4
+			(this->x + this->r),             (this->y - this->r*(6.0/4)),               color.getRf(), color.getGf(), color.getBf(), color.getAf(), //5
+			(this->x + this->r),             (this->y - this->r*(5.0/4)),               color.getRf(), color.getGf(), color.getBf(), color.getAf(), //6
+			(this->x - this->r),             (this->y - this->r*(5.0/4)),               color.getRf(), color.getGf(), color.getBf(), color.getAf()  //7
+		};
+		unsigned int indices[] = { //trapezoids
+			//bottom
+			0, 1, 5,
+			5, 4, 0,
+
+			//right
+			1, 2, 6,
+			6, 5, 1,
+
+			//left
+			4, 7, 3,
+			3, 0, 4,
+
+			//top
+			2, 3, 7,
+			7, 6, 2
+		};
+
+		Renderer::SubmitBatchedDraw(coordsAndColor, (4+4) * (2+4), indices, (4*2) * 3);
 	}
 }
 
