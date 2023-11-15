@@ -10,6 +10,7 @@ std::unordered_map<std::string, int64_t> StatisticsHandler::data;
 std::shared_mutex StatisticsHandler::rw_lock;
 
 void StatisticsHandler::DumpData() noexcept {
+#if 0
 	rw_lock.lock();
 
 	try {
@@ -41,9 +42,11 @@ void StatisticsHandler::DumpData() noexcept {
 	}
 
 	rw_lock.unlock();
+#endif
 }
 
 void StatisticsHandler::createEntryIfNotPresent(std::string name) {
+#if 0
 	rw_lock.lock_shared();
 	if (data.find(name) != data.end()) {
 		//found
@@ -63,13 +66,16 @@ void StatisticsHandler::createEntryIfNotPresent(std::string name) {
 	//definitely not there, so add it finally
 	data.insert({ name, 0 });
 	rw_lock.unlock();
+#endif
 }
 
 void StatisticsHandler::addData(std::string name, int64_t count) {
+#if 0
 	createEntryIfNotPresent(name);
 
 	rw_lock.lock();
 	data[name] += count;
 	//data[name]->fetch_add(count); //std::atomic_fetch_add(data[name].get(), count);
 	rw_lock.unlock();
+#endif
 }
