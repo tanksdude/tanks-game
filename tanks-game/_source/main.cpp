@@ -72,6 +72,7 @@
 #include "levels/unnamed-level-10.h"
 #include "levels/unnamed-level-11.h"
 #include "levels/unnamed-level-12.h"
+#include "levels/unnamed-level-13.h"
 #include "levels/showcase-level-1.h"
 #include "levels/showcase-level-2.h"
 #include "levels/dev-no-walls-level-1.h"
@@ -375,6 +376,7 @@ int main(int argc, char** argv) {
 	LevelDataGovernor::addLevelFactory(UnnamedLevel10::factory);
 	LevelDataGovernor::addLevelFactory(UnnamedLevel11::factory);
 	LevelDataGovernor::addLevelFactory(UnnamedLevel12::factory);
+	LevelDataGovernor::addLevelFactory(UnnamedLevel13::factory);
 	LevelDataGovernor::addLevelFactory(ShowcaseLevel1::factory);
 	LevelDataGovernor::addLevelFactory(ShowcaseLevel2::factory);
 	LevelDataGovernor::addLevelFactory(DevNoWallsLevel1::factory);

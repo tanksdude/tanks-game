@@ -43,6 +43,7 @@ GravityWellHazard::GravityWellHazard(double xpos, double ypos, double radius, do
 	maxGravityStrength = maxGravity;
 	tickCount = 0;
 	tickCycle = 200;
+	//TODO: should the gravity cycle on/off? maybe transition states?
 
 	//canAcceptPowers = false;
 

@@ -397,6 +397,18 @@ Alternate version of Unnamed Level 6. Much more boring though.
 
 ![Unnamed Level 12](images/unnamed12.jpg)
 
+## [DEV] Unnamed Level 13
+
+* Types: "dev", "random-dev"
+* Internal name: `unnamed13`
+* Default color: `(1.0, 1.0, 1.0)`
+
+A kinda barely okay level featuring Reflecktors and Gravity Wells. Chaotically bounces tanks around.
+
+It's missing *something*, and I don't know what that is. Maybe the Reflecktors force the tanks to be careful and move slowly? If that problem can be solved I might throw it in vanilla for fun.
+
+![Unnamed Level 13](images/unnamed13.jpg)
+
 ## [DEV] Showcase Level 1
 
 * Types: "dev", "random-dev"
@@ -564,6 +576,7 @@ These are the types custom levels are not allowed to have, unless `[MODS] ModSaf
 * Unnamed Level 10
 * Unnamed Level 11
 * Unnamed Level 12
+* Unnamed Level 13
 * Showcase Level 1
 * Showcase Level 2
 * No Walls 1
@@ -586,6 +599,7 @@ These are the types custom levels are not allowed to have, unless `[MODS] ModSaf
 * Unnamed Level 10
 * Unnamed Level 11
 * Unnamed Level 12
+* Unnamed Level 13
 * Showcase Level 1
 * Showcase Level 2
 * No Walls 1
