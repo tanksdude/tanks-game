@@ -74,6 +74,11 @@ void ResetThings::reset(int) {
 		}
 	}
 
+	if (ini_data.exists("GAME_OPTIONS", "ReportCurrentLevel") && std::stoi(ini_data.get("GAME_OPTIONS", "ReportCurrentLevel"))) {
+		std::cout << "> Now playing level \"" + LevelManager::getLevel(0)->getName() + "\"..." << std::endl;
+		//this doesn't print for the first reset; main reason is laziness, secondary reason is the first level should be known
+	}
+
 	GameManager::Reset();
 	Diagnostics::clearGraph();
 }
