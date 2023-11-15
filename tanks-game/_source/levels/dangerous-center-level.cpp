@@ -38,17 +38,13 @@ void DangerousCenterLevel::initialize() {
 	std::string* names;
 	//PowerSquare* p;
 
-	LevelEffect* le = nullptr;
-	for (int i = 0; i < effects.size(); i++) {
-		if (effects[i]->getName() == "respawning_powerups") {
-			le = effects[i];
-			break;
-		}
+	if (effects.size() < 1) [[unlikely]] {
+		throw std::logic_error("ERROR: \"" + getName() + "\" level does not have sufficient level effects!");
 	}
-	if (le == nullptr) [[unlikely]] {
+	RespawningPowerupsLevelEffect* respawning = static_cast<RespawningPowerupsLevelEffect*>(effects[0]);
+	if (respawning->getName() != "respawning_powerups") [[unlikely]] {
 		throw std::logic_error("ERROR: \"" + getName() + "\" level does not have \"respawning_powerups\" level effect!");
 	}
-	RespawningPowerupsLevelEffect* respawning = static_cast<RespawningPowerupsLevelEffect*>(le);
 	//TODO: should this be the preferred way of getting specific level effects?
 
 	posArr = new double[3]{ GAME_WIDTH/2, GAME_HEIGHT/2, PI/2 * (floor(RNG::randFunc()*2)*2-1) };

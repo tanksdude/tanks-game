@@ -37,29 +37,17 @@ void UntraditionalDividerLevel::initialize() {
 	std::string* names;
 	//PowerSquare* p;
 
-	LevelEffect* le = nullptr;
-	for (int i = 0; i < effects.size(); i++) {
-		if (effects[i]->getName() == "respawning_powerups") {
-			le = effects[i];
-			break;
-		}
+	if (effects.size() < 2) [[unlikely]] {
+		throw std::logic_error("ERROR: \"" + getName() + "\" level does not have sufficient level effects!");
 	}
-	if (le == nullptr) [[unlikely]] {
+	RespawningPowerupsLevelEffect* respawning = static_cast<RespawningPowerupsLevelEffect*>(effects[0]);
+	if (respawning->getName() != "respawning_powerups") [[unlikely]] {
 		throw std::logic_error("ERROR: \"" + getName() + "\" level does not have \"respawning_powerups\" level effect!");
 	}
-	RespawningPowerupsLevelEffect* respawning = static_cast<RespawningPowerupsLevelEffect*>(le);
-
-	le = nullptr;
-	for (int i = 0; i < effects.size(); i++) {
-		if (effects[i]->getName() == "magnetism") {
-			le = effects[i];
-			break;
-		}
-	}
-	if (le == nullptr) [[unlikely]] {
+	MagnetismLevelEffect* magnetism = static_cast<MagnetismLevelEffect*>(effects[1]);
+	if (magnetism->getName() != "magnetism") [[unlikely]] {
 		throw std::logic_error("ERROR: \"" + getName() + "\" level does not have \"magnetism\" level effect!");
 	}
-	MagnetismLevelEffect* magnetism = static_cast<MagnetismLevelEffect*>(le);
 	//TODO: should this be the preferred way of getting specific level effects?
 
 	WallManager::pushWall(new Wall(GAME_WIDTH/2 - 240, GAME_HEIGHT/2 - 10, 240*2, 10*2, color));

@@ -318,6 +318,7 @@ An unfinished level. The wall placement is mostly fine, but I couldn't figure ou
 * Types: "dev", "random-dev"
 * Internal name: `unnamed2`
 * Default color: `(1.0, 1.0, 1.0)`
+* Level effects: Respawning Powerups
 
 A test level featuring a zig-zag, with the jaggedness controllable (at compile-time).
 
@@ -402,6 +403,7 @@ Alternate version of Unnamed Level 6. Much more boring though.
 * Types: "dev", "random-dev"
 * Internal name: `unnamed13`
 * Default color: `(1.0, 1.0, 1.0)`
+* Level effects: Respawning Powerups
 
 A kinda barely okay level featuring Reflecktors and Gravity Wells. Chaotically bounces tanks around.
 
@@ -434,6 +436,7 @@ Test level with four symmetric Patrolling Turrets. Not worth pursuing further, b
 * Types: "dev", "random-dev"
 * Internal name: `nowalls1`
 * Default color: `(0.0, 0.0, 0.0)` (unnecessary)
+* Level effects: Respawning Powerups
 
 Tested using No Bullet Zones instead of walls. An idea worth investigating further.
 
@@ -454,6 +457,7 @@ Tested having the walls continuously move. Cool! Decided to move it to random-va
 * Types: "vanilla-extra", "random-vanilla", "dev", "random-dev"
 * Internal name: `terrifying_chaos`
 * Default color: `#00A653`
+* Level effects: Respawning Powerups
 
 A level featuring a *very* different starting position, and something terrifying in the center. Try to survive the chaos!
 
