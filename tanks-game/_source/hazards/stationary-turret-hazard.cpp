@@ -132,21 +132,24 @@ void StationaryTurretHazard::tick() {
 }
 
 bool StationaryTurretHazard::canSeeTank(const Tank* t) const {
-	SimpleVector2D distToTank = SimpleVector2D(t->getX() - x, t->getY() - y);
-	Circle* p = new Point(x + distToTank.getMagnitude()*cos(this->velocity.getAngle()), y + distToTank.getMagnitude()*sin(this->velocity.getAngle()));
-	if (!CollisionHandler::fullyCollided(p, t)) {
-		delete p;
-		return false; //not pointing at tank (it's an approximation but it's good enough)
+	const SimpleVector2D distToTank = SimpleVector2D(t->getX() - x, t->getY() - y);
+
+	//line of sight
+	float angleDiff = SimpleVector2D::angleBetween(distToTank, this->velocity);
+	float projMag = distToTank.getMagnitude() * cos(angleDiff);
+	float distToLineOfSight = sqrt(distToTank.getMagnitude()*distToTank.getMagnitude() - projMag*projMag);
+	if (distToLineOfSight > t->r) {
+		return false;
 	}
+
 	//check walls
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
-		Wall* wa = WallManager::getWall(i);
-		if (CollisionHandler::lineRectCollision(x, y, p->x, p->y, wa)) {
-			delete p;
+		const Wall* wa = WallManager::getWall(i);
+		if (CollisionHandler::lineRectCollision(x, y, x + distToTank.getMagnitude()*cos(this->velocity.getAngle()), y + distToTank.getMagnitude()*sin(this->velocity.getAngle()), wa)) {
 			return false;
 		}
 	}
-	delete p;
+
 	return true;
 }
 
