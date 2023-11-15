@@ -189,6 +189,7 @@
     <ClCompile Include="_source\powers\dev-backwards-movement-power.cpp" />
     <ClCompile Include="_source\powers\dev-color-changing-power.cpp" />
     <ClCompile Include="_source\powers\dev-colorless-long-invincible-named-power.cpp" />
+    <ClCompile Include="_source\powers\dev-movement-restarter-power.cpp" />
     <ClCompile Include="_source\powers\dev-other-stuff-is-poison-power.cpp" />
     <ClCompile Include="_source\hazards\dev-wall-hazard.cpp" />
     <ClCompile Include="_source\powers\dev-pusher-power.cpp" />
@@ -360,6 +361,7 @@
     <ClInclude Include="_source\powers\dev-backwards-movement-power.h" />
     <ClInclude Include="_source\powers\dev-color-changing-power.h" />
     <ClInclude Include="_source\powers\dev-colorless-long-invincible-named-power.h" />
+    <ClInclude Include="_source\powers\dev-movement-restarter-power.h" />
     <ClInclude Include="_source\powers\dev-other-stuff-is-poison-power.h" />
     <ClInclude Include="_source\hazards\dev-wall-hazard.h" />
     <ClInclude Include="_source\powers\dev-pusher-power.h" />

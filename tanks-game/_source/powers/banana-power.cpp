@@ -57,7 +57,7 @@ BananaTankPower::BananaTankPower() {
 
 #include "../bullet-manager.h"
 
-void BananaBulletPower::bananaExplode(Bullet* b) {
+void BananaBulletPower::bananaExplode(const Bullet* b) {
 	for (int i = 0; i < BananaPower::bananaCount; i++) {
 		std::vector<BulletPower*>* bp = new std::vector<BulletPower*>;
 		bp->reserve(b->bulletPowers.size()-1);
@@ -82,7 +82,7 @@ InteractionBoolHolder BananaBulletPower::modifiedMovement(Bullet* b) {
 		return { true };
 	}
 	if (b->velocity.getMagnitude() <= 0) {
-		b->acceleration = 0;
+		//b->acceleration = 0; //why was this ever done
 		wasStationary = true;
 	} else {
 		wasStationary = false; //something else changed the bullet's speed
@@ -98,7 +98,7 @@ BananaBulletPower::BananaBulletPower() {
 	timeLeft = 0;
 	maxTime = -1;
 
-	wasStationary = false;
-
 	modifiesMovement = true;
+
+	wasStationary = false;
 }

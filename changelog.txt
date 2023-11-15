@@ -50,6 +50,7 @@
     * [dev] triple spread: the bullets spread out from the point they were shot at instead of being parallel
     * [dev] ring shooter: shoots a ring of 8 bullets; like multishot if everything shot the same direction
     * [dev] "ancient" megadeath: an accelerating, tracking, wallhacking bullet
+    * [dev] trickster: bullets move back and forth
 * hazards:
     * patrolling turret: moves along its path
     * mother turret: creates turrets
@@ -74,13 +75,12 @@
     * moved concealed powerups, lightning corners, and lone turret levels out of vanilla because they are boring
 * level effects:
     * magnetism (unfortunately doesn't work well with respawning powerups)
-    * [dev] tiny tanks: makes tanks real small because it's funny and technically allows them to get into smaller gaps
-        * TODO: when level effects get added to custom levels, there should a level effect for every tank parameter
 * minor things:
     * update to VS2022
     * fullscreen toggle key changed to F11
     * overhaul priority handling (again)
     * *massive* cleanup across the entire project, multiple times; no seriously it was a lot
+    * old tank death graphic back (gradient black to white)
     * [dev] power, other stuff is poison: walls and hazards kill on contact
     * [dev] power, colorless long invincible: long invincible but doesn't show
     * attempted: tried GLFW instead of FreeGLUT, didn't like it

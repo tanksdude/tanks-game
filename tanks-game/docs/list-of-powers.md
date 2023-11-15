@@ -449,6 +449,15 @@ The color is loosely based on [Mewtwo's Shadow Ball](https://www.ssbwiki.com/Mew
 
 Allows the tank to push walls and solid hazards.
 
+## [DEV] Movement Restarter
+
+* Types: "dev", "random-dev"
+* Internal name: `movement_restarter`
+* Attributes: "stack", "mix"
+* Color: `#838996` ("Roman Silver" apparently)
+
+Once the bullet stops moving, it will be kickstarted into moving again. Only happens once.
+
 # List of protected power types
 
 These are the types custom powers are not allowed to have, unless `[MODS] ModSafetyChecks` in the INI file is disabled.
@@ -615,6 +624,7 @@ These are the types custom powers are not allowed to have, unless `[MODS] ModSaf
 * Trickster Circle
 * Trickster Snake
 * Pusher
+* Movement Restarter
 
 ## random-dev
 
@@ -633,3 +643,4 @@ These are the types custom powers are not allowed to have, unless `[MODS] ModSaf
 * Trickster Circle
 * Trickster Snake
 * Pusher
+* Movement Restarter

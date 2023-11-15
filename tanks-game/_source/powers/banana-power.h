@@ -49,7 +49,7 @@ class BananaBulletPower : public BulletPower {
 protected:
 	bool wasStationary; //must have velocity of zero for one tick before banana-ing
 
-	virtual void bananaExplode(Bullet*);
+	virtual void bananaExplode(const Bullet*);
 
 public:
 	virtual ColorValueHolder getColor() const override {

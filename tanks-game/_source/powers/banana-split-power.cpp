@@ -51,7 +51,7 @@ BananaSplitTankPower::BananaSplitTankPower() : BananaTankPower() {
 
 #include "../bullet-manager.h"
 
-void BananaSplitBulletPower::bananaExplode(Bullet* b) {
+void BananaSplitBulletPower::bananaExplode(const Bullet* b) {
 	//copied from BananaBulletPower::bananaExplode(), *slightly* modified
 	for (int i = 0; i < BananaSplitPower::bananaSplitCount; i++) {
 		std::vector<BulletPower*>* bp = new std::vector<BulletPower*>;

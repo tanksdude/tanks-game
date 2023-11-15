@@ -45,7 +45,7 @@ public:
 
 class BananaSplitBulletPower : public BananaBulletPower {
 protected:
-	virtual void bananaExplode(Bullet*) override;
+	virtual void bananaExplode(const Bullet*) override;
 
 public:
 	virtual ColorValueHolder getColor() const override {
