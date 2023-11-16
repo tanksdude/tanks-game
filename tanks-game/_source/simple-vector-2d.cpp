@@ -18,14 +18,37 @@ SimpleVector2D::SimpleVector2D(float angle, float magnitude, bool angle_magnitud
 	this->magnitude = magnitude;
 	this->xComp = magnitude * cos(angle);
 	this->yComp = magnitude * sin(angle);
-	//TODO: maybe add a static factory, like MakeVectorComponents() and MakeVectorAngle() to more easily differentiate these constructors
 }
 
+SimpleVector2D::SimpleVector2D(float xComp, float yComp, float angle, float magnitude) {
+	this->xComp = xComp;
+	this->yComp = yComp;
+	this->angle = angle;
+	this->magnitude = magnitude;
+}
+
+/*
 SimpleVector2D::SimpleVector2D(const SimpleVector2D& other) {
 	this->xComp = other.xComp;
 	this->yComp = other.yComp;
 	this->angle = other.angle;
 	this->magnitude = other.magnitude;
+}
+*/
+
+SimpleVector2D SimpleVector2D::MakeVector_Components(float xComp, float yComp) {
+	return { xComp, yComp };
+}
+
+SimpleVector2D SimpleVector2D::MakeVector_Angle(float angle, float magnitude) {
+	return { angle, magnitude, true };
+}
+
+SimpleVector2D SimpleVector2D::MakeVector_ComponentsMagnitude(float xComp, float yComp, float magnitude) {
+	float angle = atan2(yComp, xComp);
+	float newXComp = magnitude * cos(angle);
+	float newYComp = magnitude * sin(angle);
+	return { newXComp, newYComp, angle, magnitude };
 }
 
 void SimpleVector2D::setMagnitude(float mag) {
