@@ -78,7 +78,7 @@ inline void TargetingTurretHazard::updateTrackingPos(const Tank* t, bool pointed
 		targetingX = t->x;
 		targetingY = t->y;
 	} else {
-		double dist = sqrt(pow(t->x - x, 2) + pow(t->y - y, 2));
+		double dist = sqrt((t->x - x)*(t->x - x) + (t->y - y)*(t->y - y));
 		targetingX = x + dist * cos(velocity.getAngle());
 		targetingY = y + dist * sin(velocity.getAngle());
 	}
@@ -146,7 +146,7 @@ inline void TargetingTurretHazard::tick_lookForNewTarget() {
 		Tank* t = TankManager::getTank(i);
 		tankVisibility.push_back(canSeeTank(t));
 		if (tankVisibility.at(i)) {
-			distancesToTank.push_back(sqrt(pow(x - t->x, 2) + pow(y - t->y, 2)));
+			distancesToTank.push_back(sqrt((t->x - x)*(t->x - x) + (t->y - y)*(t->y - y)));
 		} else {
 			distancesToTank.push_back(GAME_WIDTH*2 + GAME_HEIGHT*2);
 		}

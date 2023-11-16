@@ -1160,7 +1160,8 @@ inline void Tank::drawExtraExtraBarrels(float alpha) const {
 		const int startIndex = i*6;
 
 		SimpleVector2D distFromCenter = SimpleVector2D(getEvaluatedCannonAngle(0, i+1), r, true);
-		const float extraCannonLength = r * (pow(sin(shootingPoints[0].angleFromCenter + extraShootingPoints[i+1].angleFromCenter),2) * .25 + .25); //.25 at main cannon, .5 at 90deg //pow instead of abs because 45deg cannon was too long
+		const double computedAngle = shootingPoints[0].angleFromCenter + extraShootingPoints[i+1].angleFromCenter;
+		const float extraCannonLength = r * (sin(computedAngle)*sin(computedAngle) * .25 + .25); //.25 at main cannon, .5 at 90deg //x^2 instead of abs because 45deg cannon was too long
 		SimpleVector2D dist = SimpleVector2D(getEvaluatedCannonAngleWithEdge(0, i+1), extraCannonLength, true);
 		SimpleVector2D distCW = SimpleVector2D(getEvaluatedCannonAngleWithEdge(0, i+1) - PI/2, lineWidth, true);
 

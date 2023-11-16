@@ -47,13 +47,13 @@ void DevColorChangingTankPower::tick(Tank* parent) {
 		if (t->getTeamID() == parent->getTeamID()) {
 			continue;
 		}
-		double t_dist = sqrt(pow(t->x - parent->x, 2) + pow(t->y - parent->y, 2));
+		double t_dist = sqrt((t->x - parent->x)*(t->x - parent->x) + (t->y - parent->y)*(t->y - parent->y));
 		if (t_dist < dist) {
 			dist = t_dist;
 			closest = t;
 		}
 	}
-	if (closest == nullptr) {
+	if (closest == nullptr) [[unlikely]] {
 		colorDist = 0;
 	} else {
 		colorDist = dist;
@@ -90,13 +90,13 @@ void DevColorChangingBulletPower::tick(Bullet* parent) {
 		if (t->getTeamID() == parent->getTeamID()) {
 			continue;
 		}
-		double t_dist = sqrt(pow(t->x - parent->x, 2) + pow(t->y - parent->y, 2));
+		double t_dist = sqrt((t->x - parent->x)*(t->x - parent->x) + (t->y - parent->y)*(t->y - parent->y));
 		if (t_dist < dist) {
 			dist = t_dist;
 			closest = t;
 		}
 	}
-	if (closest == nullptr) {
+	if (closest == nullptr) [[unlikely]] {
 		colorDist = 0;
 	} else {
 		colorDist = dist;

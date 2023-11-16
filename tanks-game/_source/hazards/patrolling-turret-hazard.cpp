@@ -154,7 +154,9 @@ inline void PatrollingTurretHazard::tick_patrolWait() {
 bool PatrollingTurretHazard::isCloseAsPossibleToCurrentPoint() const {
 	//find distance from current position to target point
 	//if distance is less than current velocity, not close enough
-	double dist = sqrt(pow(this->x - getRoutePosX(currentPatrolTarget), 2) + pow(this->y - getRoutePosY(currentPatrolTarget), 2));
+	double xDist = this->x - getRoutePosX(currentPatrolTarget);
+	double yDist = this->y - getRoutePosY(currentPatrolTarget);
+	double dist = sqrt(xDist*xDist + yDist*yDist);
 	return (dist < velocity.getMagnitude());
 }
 

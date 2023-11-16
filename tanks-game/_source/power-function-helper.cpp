@@ -75,7 +75,7 @@ std::pair<bool, InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct>> P
 	//it's not exact because intersection points aren't calculated but it's close enough
 
 	if ((abs(x - b->x) <= b->r) && (abs(y - b->y) <= b->r)) {
-		double d = sqrt(pow(x - b->x, 2) + pow(y - b->y, 2));
+		double d = sqrt((x - b->x)*(x - b->x) + (y - b->y)*(y - b->y));
 		if (d <= b->r) {
 			double b_xDelta = 0, b_yDelta = 0, b_angleDelta;
 			double w_xDelta, w_yDelta;
@@ -178,7 +178,7 @@ Game_ID PowerFunctionHelper::homingGenericTarget(const Bullet* b, bool targetUsi
 			if (t->getTeamID() == b->getTeamID()) {
 				distDiffs[i] = GAME_WIDTH*2 + GAME_HEIGHT*2; //should be enough
 			} else {
-				distDiffs[i] = sqrt(pow(b->x - t->x, 2) + pow(b->y - t->y, 2)); //TODO: this an issue?
+				distDiffs[i] = sqrt((b->x - t->x)*(b->x - t->x) + (b->y - t->y)*(b->y - t->y)); //TODO: this an issue?
 			}
 		}
 		targetTankIndex = findMinIndex(distDiffs, TankManager::getNumTanks());
