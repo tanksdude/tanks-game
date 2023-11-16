@@ -138,7 +138,11 @@ inline double GravityWellHazard::getGravityStrength(double dist) const {
 }
 
 inline double GravityWellHazard::getInnerGravityCircleRadius() const {
-	return (1 - (tickCount/tickCycle)) * (gravityRange - r) + r;
+	if (isGravityReversed()) {
+		return ((tickCount/tickCycle))     * (gravityRange - r) + r;
+	} else {
+		return (1 - (tickCount/tickCycle)) * (gravityRange - r) + r;
+	}
 }
 
 inline Circle* GravityWellHazard::getGravityRangeCircle() const {
@@ -403,7 +407,11 @@ inline void GravityWellHazard::drawGravityArrows(float alpha) const {
 		SimpleVector2D translateAmount = SimpleVector2D(rotateAngle, -arrowScale + getInnerGravityCircleRadius(), true);
 		for (int j = 0; j < 7; j++) {
 			SimpleVector2D vertex = SimpleVector2D(vertices_arrow[j]);
-			vertex.scaleAndRotate(arrowScale, rotateAngle + PI); //flip arrow direction
+			if (isGravityReversed()) {
+				vertex.scaleAndRotate(arrowScale, rotateAngle);
+			} else {
+				vertex.scaleAndRotate(arrowScale, rotateAngle + PI); //flip arrow direction
+			}
 
 			coordsAndColor_arrow[j*6]   = this->x + translateAmount.getXComp() + vertex.getXComp();
 			coordsAndColor_arrow[j*6+1] = this->y + translateAmount.getYComp() + vertex.getYComp();
@@ -446,6 +454,10 @@ CircleHazard* GravityWellHazard::randomizingFactory(double x_start, double y_sta
 
 	strengthMin = RNG::randNumInRange(.04, .10);
 	strengthMax = RNG::randNumInRange(.55, .90);
+	if (RNG::randFunc() < .05) {
+		strengthMin *= -1;
+		strengthMax *= -1;
+	}
 
 	do {
 		if (randomizeR) {

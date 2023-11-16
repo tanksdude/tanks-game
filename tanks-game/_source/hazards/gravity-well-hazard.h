@@ -13,6 +13,7 @@ protected:
 	double tickCycle; //only for the "gravity circle"
 
 protected:
+	inline bool isGravityReversed() const { return (minGravityStrength < 0 && maxGravityStrength < 0); }
 	inline double getGravityStrength(double dist) const;
 	virtual inline double getInnerGravityCircleRadius() const;
 	[[nodiscard]] inline Circle* getGravityRangeCircle() const;
