@@ -64,7 +64,6 @@ protected:
 
 public:
 	StationaryTurretHazard(double xpos, double ypos, double angle);
-	StationaryTurretHazard(double xpos, double ypos, double angle, double radius);
 	virtual ~StationaryTurretHazard();
 	static CircleHazard* factory(const GenericFactoryConstructionData&);
 	static CircleHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, const GenericFactoryConstructionData&);

@@ -51,10 +51,6 @@ StationaryTurretHazard::StationaryTurretHazard(double xpos, double ypos, double 
 	initializeVertices();
 }
 
-StationaryTurretHazard::StationaryTurretHazard(double xpos, double ypos, double angle, double radius) : StationaryTurretHazard(xpos, ypos, angle) {
-	r = radius;
-}
-
 StationaryTurretHazard::~StationaryTurretHazard() {
 	delete[] stateMultiplier;
 	delete[] stateColors;
@@ -98,10 +94,6 @@ CircleHazard* StationaryTurretHazard::factory(const GenericFactoryConstructionDa
 			double x = arr[0];
 			double y = arr[1];
 			double a = arr[2];
-			if (count >= 4) {
-				double r = arr[3];
-				return new StationaryTurretHazard(x, y, a, r);
-			}
 			return new StationaryTurretHazard(x, y, a);
 		}
 	}

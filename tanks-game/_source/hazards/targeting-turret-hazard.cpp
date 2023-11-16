@@ -44,10 +44,6 @@ TargetingTurretHazard::TargetingTurretHazard(double xpos, double ypos, double an
 	//canAcceptPowers = false; //... true?
 }
 
-TargetingTurretHazard::TargetingTurretHazard(double xpos, double ypos, double angle, double radius) : TargetingTurretHazard(xpos, ypos, angle) {
-	r = radius;
-}
-
 TargetingTurretHazard::~TargetingTurretHazard() {
 	//delete[] stateMultiplier;
 	//delete[] stateColors;
@@ -62,10 +58,6 @@ CircleHazard* TargetingTurretHazard::factory(const GenericFactoryConstructionDat
 			double x = arr[0];
 			double y = arr[1];
 			double a = arr[2];
-			if (count >= 4) {
-				double r = arr[3];
-				return new TargetingTurretHazard(x, y, a, r);
-			}
 			return new TargetingTurretHazard(x, y, a);
 		}
 	}
