@@ -1,14 +1,15 @@
 #pragma once
 #include <string>
+#include <algorithm> //std::find
 
 std::string numToHex(unsigned char); //not needed anymore
 std::string toUpperCase(std::string);
 std::string toLowerCase(std::string);
 
-double findMax(double*, int len);
-double findMin(double*, int len);
-int findMaxIndex(double*, int len);
-int findMinIndex(double*, int len);
+double findMax(const double*, int len);
+double findMin(const double*, int len);
+int findMaxIndex(const double*, int len);
+int findMinIndex(const double*, int len);
 //std::max_element and std::min_element exist
 
 /*
@@ -28,12 +29,13 @@ constexpr bool XOR(bool a, bool b) {
 }
 
 //algorithm from https://wrf.ecse.rpi.edu/Research/Short_Notes/pnpoly.html
-bool pointInPolygon(int vertNum, double* vertX, double* vertY, double testX, double testY);
-bool pointInPolygon(int vertNum, float* vertX, float* vertY, float testX, float testY);
+bool pointInPolygon(int vertNum, const double* vertX, const double* vertY, double testX, double testY);
+bool pointInPolygon(int vertNum, const float* vertX, const float* vertY, float testX, float testY);
 
 template<typename T>
-bool isInArray(T find, T* arr, int length);
-//it's just a linear search, which could be accomplished by std::find
+inline bool isInArray(T value, const T* arr, int length) {
+	return (std::find(arr, arr + length, value) != (arr + length));
+}
 
 template<typename T>
 int weightedSelect(const T* weights, int num);

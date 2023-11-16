@@ -37,7 +37,7 @@ std::string toLowerCase(std::string stuff) {
 	return letters;
 }
 
-double findMax(double* arr, int len) { //precondition: length of array > 0
+double findMax(const double* arr, int len) { //precondition: length of array > 0
 	double max = arr[0];
 	for (int i = 1; i < len; i++) {
 		if (arr[i] > max) {
@@ -47,7 +47,7 @@ double findMax(double* arr, int len) { //precondition: length of array > 0
 	return max;
 }
 
-double findMin(double* arr, int len) { //precondition: length of array > 0
+double findMin(const double* arr, int len) { //precondition: length of array > 0
 	double min = arr[0];
 	for (int i = 1; i < len; i++) {
 		if (arr[i] < min) {
@@ -57,7 +57,7 @@ double findMin(double* arr, int len) { //precondition: length of array > 0
 	return min;
 }
 
-int findMaxIndex(double* arr, int len) { //precondition: length of array > 0
+int findMaxIndex(const double* arr, int len) { //precondition: length of array > 0
 	int index = 0;
 	for (int i = 1; i < len; i++) {
 		if (arr[i] > arr[index]) {
@@ -67,7 +67,7 @@ int findMaxIndex(double* arr, int len) { //precondition: length of array > 0
 	return index;
 }
 
-int findMinIndex(double* arr, int len) { //precondition: length of array > 0
+int findMinIndex(const double* arr, int len) { //precondition: length of array > 0
 	int index = 0;
 	for (int i = 1; i < len; i++) {
 		if (arr[i] < arr[index]) {
@@ -128,7 +128,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
 */
-bool pointInPolygon(int vertNum, double* vertX, double* vertY, double testX, double testY) {
+bool pointInPolygon(int vertNum, const double* vertX, const double* vertY, double testX, double testY) {
 	int i, j, c = 0;
 	for (i = 0, j = vertNum-1; i < vertNum; j = i++) {
 		if ( ((vertY[i]>testY) != (vertY[j]>testY)) &&
@@ -137,7 +137,7 @@ bool pointInPolygon(int vertNum, double* vertX, double* vertY, double testX, dou
 	}
 	return c;
 }
-bool pointInPolygon(int vertNum, float* vertX, float* vertY, float testX, float testY) {
+bool pointInPolygon(int vertNum, const float* vertX, const float* vertY, float testX, float testY) {
 	int i, j, c = 0;
 	for (i = 0, j = vertNum-1; i < vertNum; j = i++) {
 		if ( ((vertY[i]>testY) != (vertY[j]>testY)) &&
@@ -146,18 +146,6 @@ bool pointInPolygon(int vertNum, float* vertX, float* vertY, float testX, float 
 	}
 	return c;
 }
-
-template<typename T>
-bool isInArray(T find, T* arr, int length) {
-	for (int i = 0; i < length; i++) {
-		if (arr[i] == find) {
-			return true;
-		}
-	}
-	return false;
-}
-template bool isInArray<double>(double, double*, int); //I don't think this one is used
-template bool isInArray<int>(int, int*, int);
 
 //algorithm from https://forum.unity.com/threads/weighted-random-selection.221890/ and https://forum.unity.com/threads/randomising-shuffling-library.29977/
 template<typename T>
