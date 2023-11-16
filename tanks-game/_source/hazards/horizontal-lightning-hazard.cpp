@@ -195,51 +195,56 @@ void HorizontalLightningHazard::pushDefaultBolt(int num, bool randomize) {
 }
 
 bool HorizontalLightningHazard::validLocation() const {
-	bool wallOnLeft = false, wallOnRight = false, wallInMiddle = false;
+	bool wallOnLeft = false, wallOnRight = false; //, wallInMiddle = false;
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		const Wall* wa = WallManager::getWall(i);
-		//I'm not sure numerical comparisons are "costly" to the point where short circuiting is needed
-		if (!(wallOnLeft && wallOnRight) && (wa->y <= y) && (wa->y + wa->h >= y + h)) {
-			if (!wallOnLeft && (x == wa->x + wa->w)) {
+		if (CollisionHandler::partiallyCollidedIgnoreEdge(wa, this)) {
+			//wallInMiddle = true;
+			//break;
+			return false;
+		}
+		//don't short-circuit these comparisons, it's completely unnecessary; though maybe wrap it in (!(wallOnLeft && wallOnRight))
+		if ((wa->y <= y) && (wa->y + wa->h >= y + h)) {
+			if (x == wa->x + wa->w) {
 				wallOnLeft = true;
-			} else if (!wallOnRight && (x + w == wa->x)) {
+			} else if (x + w == wa->x) {
 				wallOnRight = true;
 			}
 		}
-		if (CollisionHandler::partiallyCollidedIgnoreEdge(wa, this)) {
-			wallInMiddle = true;
-			break;
-		}
 	}
-	if (!wallOnLeft && (x == 0)) {
+	if (x == 0) {
 		wallOnLeft = true;
 	}
-	if (!wallOnRight && (x + w == GAME_WIDTH)) {
+	if (x + w == GAME_WIDTH) {
 		wallOnRight = true;
 	}
-	return (wallOnLeft && wallOnRight && !wallInMiddle);
+	return (wallOnLeft && wallOnRight); // && !wallInMiddle);
 }
 
 bool HorizontalLightningHazard::reasonableLocation() const {
-	bool wallOnTop = false, wallOnBottom = false;
+	bool wallOnBottom = false, wallOnTop = false;
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		const Wall* wa = WallManager::getWall(i);
 		if ((wa->x <= x) && (wa->x + wa->w >= x + w)) {
-			if (!wallOnBottom && (y == wa->y + wa->h)) {
+			if (y == wa->y + wa->h) {
 				wallOnBottom = true;
-			} else if (!wallOnTop && (y + h == wa->y)) {
+			} else if (y + h == wa->y) {
 				wallOnTop = true;
 			}
 		}
-		if (wallOnTop && wallOnBottom) {
+		if (wallOnBottom && wallOnTop) {
 			break;
 		}
 	}
-	if (!wallOnBottom && (y <= 0)) { //should this be ==? //also, should this function return false if the lightning is out of bounds?
+	if (y <= 0) { //should this be ==? //also, should this function return false if the lightning is out of bounds?
 		wallOnBottom = true;
 	}
-	if (!wallOnTop && (y + h >= GAME_HEIGHT)) {
+	if (y + h >= GAME_HEIGHT) {
 		wallOnTop = true;
+	}
+
+	if (wallOnBottom && wallOnTop) {
+		return false;
 	}
 
 	//don't check general lightnings
@@ -257,7 +262,7 @@ bool HorizontalLightningHazard::reasonableLocation() const {
 		}
 	}
 
-	return (!(wallOnTop && wallOnBottom) && validLocation());
+	return validLocation();
 }
 
 void HorizontalLightningHazard::simpleRefreshBolt(LightningBolt* l) const {
