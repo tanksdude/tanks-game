@@ -19,9 +19,12 @@ double RNG::randFunc() {
 }
 
 int RNG::randIntInRange(int min, int max) {
-	return int(RNG::randFunc() * (max - min) + min);
+	return static_cast<int>(RNG::randFunc() * (max - min)) + min;
 }
 
 double RNG::randNumInRange(double min, double max) {
 	return RNG::randFunc() * (max - min) + min;
+}
+float RNG::randFloatInRange(float min, float max) {
+	return static_cast<float>(RNG::randFunc()) * (max - min) + min;
 }
