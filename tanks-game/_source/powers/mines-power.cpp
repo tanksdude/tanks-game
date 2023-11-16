@@ -38,7 +38,7 @@ MinesPower::MinesPower() {
 
 void MinesTankPower::tick(Tank* t) {
 	for (int i = 0; i < t->tankPowers.size(); i++) {
-		if (t->tankPowers[i] != this) {
+		if (t->tankPowers[i] != this) [[likely]] {
 			if (t->tankPowers[i]->modifiesAdditionalShooting) {
 				//might also want to check addsShootingPoints and/or addsExtraShootingPoints
 				this->modifiesAdditionalShooting = false;

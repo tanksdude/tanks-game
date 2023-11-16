@@ -62,7 +62,7 @@ void MineLayerBulletPower::layMine(const Bullet* b) {
 	std::vector<BulletPower*>* bp = new std::vector<BulletPower*>;
 	bp->reserve(b->bulletPowers.size()-1);
 	for (int i = 0; i < b->bulletPowers.size(); i++) {
-		if (b->bulletPowers[i] != this) {
+		if (b->bulletPowers[i] != this) [[likely]] {
 			bp->push_back(b->bulletPowers[i]->makeDuplicate());
 		}
 	}
