@@ -116,25 +116,19 @@ CircleHazard* CircularLightningHazard::factory(const GenericFactoryConstructionD
 
 void CircularLightningHazard::specialEffectCircleCollision(const Circle* c) {
 	//it's so nice how simple this is
-	Circle* centerPoint = getCenterPoint();
+	const Circle* centerPoint = getCenterPoint();
 	double intersectionX, intersectionY;
-	int boltPoints = -1;
+	int boltPoints;
 	if (CollisionHandler::fullyCollided(centerPoint, c)) {
 		intersectionX = c->x;
 		intersectionY = c->y;
 		boltPoints = 2;
 	} else {
-		//find angle from center to circle's center
-		double angle = atan2(c->y - centerPoint->y, c->x - centerPoint->x);
-		//find distance from center to center, minus circle's radius
-		double d = sqrt(pow(c->x - centerPoint->x, 2) + pow(c->y - centerPoint->y, 2)) - c->r;
-		if (d < 0) {
-			throw std::domain_error("ERROR: distance on circular lightning is wrong!");
-			//is is really a "domain error?"
-		}
-		intersectionX = centerPoint->x + cos(angle) * d;
-		intersectionY = centerPoint->y + sin(angle) * d;
-		boltPoints = getDefaultNumBoltPoints(d);
+		SimpleVector2D distToCircle = SimpleVector2D(c->x - centerPoint->x, c->y - centerPoint->y);
+		distToCircle.changeMagnitude(-1 * c->r);
+		intersectionX = centerPoint->x + distToCircle.getXComp();
+		intersectionY = centerPoint->y + distToCircle.getYComp();
+		boltPoints = getDefaultNumBoltPoints(distToCircle.getMagnitude());
 	}
 	//double dist = sqrt(pow(intersectionX - centerPoint->x, 2) + pow(intersectionY - centerPoint->y, 2));
 	//std::cout << dist << std::endl;
@@ -184,7 +178,7 @@ void CircularLightningHazard::pushDefaultBolt(int num, bool randomize) {
 	double randR = r*RNG::randFunc(), randAngle = (2*PI)*RNG::randFunc();
 	double xEnd = randR*cos(randAngle), yEnd = randR*sin(randAngle);
 	for (int i = 0; i < num; i++) {
-		LightningBolt* l = new LightningBolt(0, 0, xEnd, yEnd, getDefaultNumBoltPoints(sqrt(pow(xEnd - 0, 2) + pow(yEnd - 0, 2))));
+		LightningBolt* l = new LightningBolt(0, 0, xEnd, yEnd, getDefaultNumBoltPoints(sqrt(xEnd*xEnd + yEnd*yEnd)));
 		if (randomize) {
 			pushBolt(l);
 		} else {
@@ -231,52 +225,51 @@ void CircularLightningHazard::refreshBolt(LightningBolt* l) const {
 		return;
 	}
 
-	float deltaX = l->positions[l->length*2-2] - l->positions[0];
-	float deltaY = l->positions[l->length*2-1] - l->positions[1];
-	double dist = sqrt(pow(deltaX, 2) + pow(deltaY, 2));
-	double rotationAngle = atan2(deltaY, deltaX);
-	double angleSin = sin(rotationAngle);
-	double angleCos = cos(rotationAngle);
-	double newH = dist * 1; //maybe *.5, I dunno
-	double maxVariance = 1.0/4.0 * dist * 1; //(same here)
+	float boltDeltaX = l->positions[l->length*2-2] - l->positions[0];
+	float boltDeltaY = l->positions[l->length*2-1] - l->positions[1];
+	SimpleVector2D boltVec = SimpleVector2D(boltDeltaX, boltDeltaY);
+	float sinAngle = sin(boltVec.getAngle());
+	float cosAngle = cos(boltVec.getAngle()); //to avoid recalculating each time (though it would probably get optimized out)
+	const float newH = boltVec.getMagnitude() * 1.0f; //maybe *.5, I dunno
+	const float maxVariance = (1.0f/4.0f) * boltVec.getMagnitude() * 1.0f; //(same here)
 
-	float polygonX[6] = {
+	const float polygonX[6] = {
 		l->positions[0],
-		l->positions[0] + deltaX * 1.0/4.0 - angleSin * newH * .5,
-		l->positions[0] + deltaX * 3.0/4.0 - angleSin * newH * .5,
-		l->positions[0] + deltaX,
-		l->positions[0] + deltaX * 3.0/4.0 + angleSin * newH * .5,
-		l->positions[0] + deltaX * 1.0/4.0 + angleSin * newH * .5
+		l->positions[0] + boltDeltaX * (1.0f/4.0f) - (newH * .5f) * sinAngle,
+		l->positions[0] + boltDeltaX * (3.0f/4.0f) - (newH * .5f) * sinAngle,
+		l->positions[0] + boltDeltaX,
+		l->positions[0] + boltDeltaX * (3.0f/4.0f) + (newH * .5f) * sinAngle,
+		l->positions[0] + boltDeltaX * (1.0f/4.0f) + (newH * .5f) * sinAngle
 	};
-	float polygonY[6] = {
+	const float polygonY[6] = {
 		l->positions[1],
-		l->positions[1] + deltaY * 1.0/4.0 + angleCos * newH * .5,
-		l->positions[1] + deltaY * 3.0/4.0 + angleCos * newH * .5,
-		l->positions[1] + deltaY,
-		l->positions[1] + deltaY * 3.0/4.0 - angleCos * newH * .5,
-		l->positions[1] + deltaY * 1.0/4.0 - angleCos * newH * .5
+		l->positions[1] + boltDeltaY * (1.0f/4.0f) + (newH * .5f) * cosAngle,
+		l->positions[1] + boltDeltaY * (3.0f/4.0f) + (newH * .5f) * cosAngle,
+		l->positions[1] + boltDeltaY,
+		l->positions[1] + boltDeltaY * (3.0f/4.0f) - (newH * .5f) * cosAngle,
+		l->positions[1] + boltDeltaY * (1.0f/4.0f) - (newH * .5f) * cosAngle
 	};
 
-	//std::cout << "deltaX: " << deltaX << std::endl;
-	//std::cout << "deltaY: " << deltaY << std::endl;
-	//std::cout << "deltaY adj: " << (deltaY * 1/1) << std::endl;
-	//std::cout << "dist: " << dist << std::endl;
-	//std::cout << "angle: " << (rotationAngle * 180/3.1415926535897) << std::endl;
-	//std::cout << "cos(angle): " << angleCos << std::endl;
-	//std::cout << "sin(angle): " << angleSin << std::endl;
+	//std::cout << "deltaX: " << boltDeltaX << std::endl;
+	//std::cout << "deltaY: " << boltDeltaY << std::endl;
+	//std::cout << "deltaY adj: " << (boltDeltaY * 1.0) << std::endl;
+	//std::cout << "dist: " << boltVec.getMagnitude() << std::endl;
+	//std::cout << "angle: " << (boltVec.getAngle() * 180/3.1415926535897) << std::endl;
+	//std::cout << "cos(angle): " << cosAngle << std::endl;
+	//std::cout << "sin(angle): " << sinAngle << std::endl;
 	//for (int i = 0; i < 6; i++) {
 	//	std::cout << i << ": " << polygonX[i] << " " << polygonY[i] << std::endl;
 	//}
 
 	for (int j = 1; j < l->length-1; j++) {
-		double randTemp;
-		float testY, testX;
+		float randTemp;
+		float testX, testY;
 		do {
-			randTemp = (RNG::randFunc()*2-1)*maxVariance;
-			testY = l->positions[j*2 - 1] + (deltaY/(l->length-1)) + randTemp * angleCos;
-			testX = l->positions[j*2 - 2] + (deltaX/(l->length-1)) - randTemp * angleSin;
+			randTemp = maxVariance * static_cast<float>(RNG::randFunc()*2-1);
+			testX = l->positions[j*2 - 2] + (boltDeltaX/(l->length-1)) - randTemp * sinAngle;
+			testY = l->positions[j*2 - 1] + (boltDeltaY/(l->length-1)) + randTemp * cosAngle;
 			//std::cout << testX << " " << testY << std::endl;
-		} while (sqrt(pow(testY,2) + pow(testX,2)) > r || !pointInPolygon(6, polygonX, polygonY, testX, testY));
+		} while ((sqrt(testX*testX + testY*testY) > r) || !pointInPolygon(6, polygonX, polygonY, testX, testY));
 		//the first case is rare, but I'm fairly certain it's a useless check if pointInPolygon is checked first
 		l->positions[j*2]   = testX;
 		l->positions[j*2+1] = testY;
@@ -506,9 +499,9 @@ inline void CircularLightningHazard::drawBolts_Pose(float alpha) const {
 	std::vector<LightningBolt*> poseBolts;
 	for (int i = 0; i < 4; i++) {
 		//from pushDefaultBolt(), mostly
-		double dist = r * .75, angle = PI/4 + i*PI/2;
-		double xEnd = dist*cos(angle), yEnd = dist*sin(angle);
-		LightningBolt* l = new LightningBolt(0, 0, xEnd, yEnd, getDefaultNumBoltPoints(sqrt(pow(xEnd - 0, 2) + pow(yEnd - 0, 2))));
+		float dist = r * .75, angle = PI/4 + i*(PI/2);
+		float xEnd = dist*cos(angle), yEnd = dist*sin(angle);
+		LightningBolt* l = new LightningBolt(0, 0, xEnd, yEnd, getDefaultNumBoltPoints(sqrt(xEnd*xEnd + yEnd*yEnd)));
 
 		refreshBolt(l);
 		poseBolts.push_back(l);

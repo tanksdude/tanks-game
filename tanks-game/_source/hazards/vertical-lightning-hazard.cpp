@@ -73,11 +73,11 @@ RectHazard* VerticalLightningHazard::factory(const GenericFactoryConstructionDat
 
 void VerticalLightningHazard::specialEffectCircleCollision(const Circle* c) {
 	//TODO: confirm everything is good
-	Circle* bottomPoint = getBottomPoint();
-	Circle* topPoint = getTopPoint();
-	Circle* circleCenter = new Point(c->x, c->y);
+	const Circle* bottomPoint = getBottomPoint();
+	const Circle* topPoint = getTopPoint();
+	const Circle* circleCenter = new Point(c->x, c->y);
 	double intersectionXD, intersectionXU, intersectionYD, intersectionYU;
-	int boltPointsD = -1, boltPointsU = -1;
+	int boltPointsD, boltPointsU;
 
 	double xpos, ypos; //circle adjusted x and y
 
@@ -103,6 +103,7 @@ void VerticalLightningHazard::specialEffectCircleCollision(const Circle* c) {
 		}
 		//std::cout << "xpos: " << (xpos-c->x) << ", ypos: " << (ypos-c->y) << std::endl;
 	}
+
 	if (CollisionHandler::fullyCollided(bottomPoint, c)) {
 		intersectionXD = c->x;
 		intersectionYD = c->y;
@@ -116,15 +117,15 @@ void VerticalLightningHazard::specialEffectCircleCollision(const Circle* c) {
 		}
 		intersectionYD = std::min(intersections.first.y, intersections.second.y);
 
-		if (intersectionXD < x || intersectionXD > x+w) {
+		if (intersectionXD < x || intersectionXD > x+w) [[unlikely]] {
 			std::cerr << "WARNING: vertical lightning endpoint X (bottom half) out of range!" << std::endl;
 			intersectionXD = std::clamp<double>(intersectionXD, x, x+w);
 		}
-		if (intersectionYD < y || intersectionYD > y+h) {
+		if (intersectionYD < y || intersectionYD > y+h) [[unlikely]] {
 			std::cerr << "WARNING: vertical lightning endpoint Y (bottom half) out of range!" << std::endl;
 			intersectionYD = std::clamp<double>(intersectionYD, y, y+h);
 		}
-		boltPointsD = getDefaultNumBoltPoints(sqrt(pow(intersectionXD - bottomPoint->x, 2) + pow(intersectionYD - bottomPoint->y, 2)));
+		boltPointsD = getDefaultNumBoltPoints(sqrt((intersectionXD - bottomPoint->x)*(intersectionXD - bottomPoint->x) + (intersectionYD - bottomPoint->y)*(intersectionYD - bottomPoint->y)));
 
 		//pushBolt(new LightningBolt(w/2, 0, intersections.x1 - x, intersections.y1 - y, 2)); //debugging
 		//pushBolt(new LightningBolt(w/2, 0, intersections.x1 - x, intersections.y2 - y, 2));
@@ -145,15 +146,15 @@ void VerticalLightningHazard::specialEffectCircleCollision(const Circle* c) {
 		}
 		intersectionYU = std::max(intersections.first.y, intersections.second.y);
 
-		if (intersectionXU < x || intersectionXU > x+w) {
+		if (intersectionXU < x || intersectionXU > x+w) [[unlikely]] {
 			std::cerr << "WARNING: vertical lightning endpoint X (top half) out of range!" << std::endl;
 			intersectionXU = std::clamp<double>(intersectionXU, x, x+w);
 		}
-		if (intersectionYU < y || intersectionYU > y+h) {
+		if (intersectionYU < y || intersectionYU > y+h) [[unlikely]] {
 			std::cerr << "WARNING: vertical lightning endpoint Y (top half) out of range!" << std::endl;
 			intersectionYU = std::clamp<double>(intersectionYU, y, y+h);
 		}
-		boltPointsU = getDefaultNumBoltPoints(sqrt(pow(intersectionXU - topPoint->x, 2) + pow(intersectionYU - topPoint->y, 2)));
+		boltPointsU = getDefaultNumBoltPoints(sqrt((intersectionXU - topPoint->x)*(intersectionXU - topPoint->x) + (intersectionYU - topPoint->y)*(intersectionYU - topPoint->y)));
 
 		//pushBolt(new LightningBolt(intersections.x1 - x, intersections.y1 - y, w/2, h, 2)); //debugging
 		//pushBolt(new LightningBolt(intersections.x1 - x, intersections.y2 - y, w/2, h, 2));
@@ -260,7 +261,7 @@ bool VerticalLightningHazard::reasonableLocation() const {
 }
 
 void VerticalLightningHazard::simpleRefreshBolt(LightningBolt* l) const {
-	double maxVariance = w/4;
+	const float maxVariance = w/4;
 	/* lightning bolts are allowed to be in an area that looks like this:
 	 * (see HorizontalLightningHazard for a better diagram, then just mentally rotate it)
 	 * +-------- /-\ --------+        <- h
@@ -281,21 +282,21 @@ void VerticalLightningHazard::simpleRefreshBolt(LightningBolt* l) const {
 	 * the region is (from bottom to top) 1/4 triangle, 1/2 rectangle, then 1/4 triangle
 	 */
 
-	double deltaY = (l->positions[l->length*2-1] - l->positions[1]) / (l->length - 1);
+	float deltaY = (l->positions[l->length*2-1] - l->positions[1]) / (l->length - 1);
 	for (int j = 1; j < l->length-1; j++) {
-		double xRangeLower = l->positions[j*2 - 2] - maxVariance;
-		double xRangeUpper = l->positions[j*2 - 2] + maxVariance;
-		double xMin, xMax;
+		float xRangeLower = l->positions[j*2 - 2] - maxVariance;
+		float xRangeUpper = l->positions[j*2 - 2] + maxVariance;
+		float xMin, xMax;
 		if (j < l->length/4) { //bottom quarter
 			//instead of y=ax+b, use x=(y-b)/a
-			xMin = ((deltaY * j) - h/4) / (-.5*h/w);
-			xMax = ((deltaY * j) + h/4) / ( .5*h/w);
-		} else if (j < l->length * 3.0/4.0) { //middle half
+			xMin = ((deltaY * j) - h/4) / (-.5*(h/w));
+			xMax = ((deltaY * j) + h/4) / ( .5*(h/w));
+		} else if (j < l->length * (3.0/4.0)) { //middle half
 			xMin = 0;
 			xMax = w;
 		} else { //top quarter
-			xMin = ((deltaY * j) - 3.0/4.0*h) / ( .5*h/w);
-			xMax = ((deltaY * j) - 5.0/4.0*h) / (-.5*h/w);
+			xMin = ((deltaY * j) - (3.0/4.0)*h) / ( .5*(h/w));
+			xMax = ((deltaY * j) - (5.0/4.0)*h) / (-.5*(h/w));
 			//alternatively:
 			//xMin = ((deltaY * (j - l->length*3.0/4.0)) -   0) / ( .5*h/w);
 			//xMax = ((deltaY * (j - l->length*3.0/4.0)) - h/2) / (-.5*h/w);
@@ -439,21 +440,19 @@ inline void VerticalLightningHazard::drawBolts_Pose(float alpha) const {
 }
 
 RectHazard* VerticalLightningHazard::randomizingFactory(double x_start, double y_start, double area_width, double area_height, const GenericFactoryConstructionData& args) {
-	//minimum/maximum width and height not in argv
-	if (WallManager::getNumWalls() == 0) {
+	if (WallManager::getNumWalls() == 0) [[unlikely]] {
 		return nullptr; //don't bother trying to see if a vertical lightning could go from edge to edge
 	}
 
 	int attempts = 0;
 	RectHazard* randomized = nullptr;
 	double xpos, ypos, width, height;
-	double minHeight = 40, maxHeight = 160;
+	const double minHeight = 40, maxHeight = 160;
 
 	do {
 		width = RNG::randFunc() * (24 - 12) + 12;
-		//TODO: ability to use an edge
 		for (int i = 0; i < WallManager::getNumWalls(); i++) {
-			Wall* wa = WallManager::getWall(i);
+			const Wall* wa = WallManager::getWall(i);
 			xpos = wa->x + RNG::randFunc() * std::clamp<double>(wa->w - width, 0, wa->w);
 			ypos = wa->y + wa->h;
 			int j, wallAttempts = 0;
@@ -462,7 +461,7 @@ RectHazard* VerticalLightningHazard::randomizingFactory(double x_start, double y
 				wallAttempts++;
 			} while ((wallAttempts < 8) && (j == i));
 			if (j != i) {
-				Wall* otherWall = WallManager::getWall(j);
+				const Wall* otherWall = WallManager::getWall(j);
 				height = otherWall->y - ypos;
 			} else {
 				height = RNG::randFunc() * (maxHeight - minHeight) + minHeight;

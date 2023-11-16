@@ -81,29 +81,23 @@ RectHazard* RectangularLightningHazard::factory(const GenericFactoryConstruction
 
 void RectangularLightningHazard::specialEffectCircleCollision(const Circle* c) {
 	//TODO: is this done?
-	Circle* centerPoint = getCenterPoint();
+	const Circle* centerPoint = getCenterPoint();
 	double intersectionX, intersectionY;
-	int boltPoints = -1;
+	int boltPoints;
 	if (CollisionHandler::fullyCollided(centerPoint, c)) {
 		intersectionX = c->x;
 		intersectionY = c->y;
 		boltPoints = 2;
 	} else {
 		//if the circle's center isn't fully in the rectangle area, then the endpoint may not be inside the rectangle
-		Circle* circleCenter = new Point(c->x, c->y);
+		const Circle* circleCenter = new Point(c->x, c->y);
 		if (CollisionHandler::fullyCollided(circleCenter, this)) {
 			//circle center inside rectangle area
-			//find angle from center to circle's center
-			double angle = atan2(c->y - centerPoint->y, c->x - centerPoint->x);
-			//find distance from center to circle's center, minus circle's radius
-			double d = sqrt(pow(centerPoint->x - c->x, 2) + pow(centerPoint->y - c->y, 2)) - c->r;
-			if (d < 0) {
-				throw std::domain_error("ERROR: distance on rectangular lightning is wrong!");
-				//is is really a "domain error?"
-			}
-			intersectionX = centerPoint->x + cos(angle) * d;
-			intersectionY = centerPoint->y + sin(angle) * d;
-			boltPoints = getDefaultNumBoltPoints(d);
+			SimpleVector2D distToCircle = SimpleVector2D(c->x - centerPoint->x, c->y - centerPoint->y);
+			distToCircle.changeMagnitude(-1 * c->r);
+			intersectionX = centerPoint->x + distToCircle.getXComp();
+			intersectionY = centerPoint->y + distToCircle.getYComp();
+			boltPoints = getDefaultNumBoltPoints(distToCircle.getMagnitude());
 		} else {
 			//circle center outside rectangle area
 			double xpos, ypos;
@@ -135,15 +129,15 @@ void RectangularLightningHazard::specialEffectCircleCollision(const Circle* c) {
 				intersectionY = std::min(intersections.first.y, intersections.second.y);
 			}
 
-			if (intersectionX < x || intersectionX > x+w) {
+			if (intersectionX < x || intersectionX > x+w) [[unlikely]] {
 				std::cerr << "WARNING: rectangular lightning endpoint X out of range!" << std::endl;
 				intersectionX = std::clamp<double>(intersectionX, x, x+w);
 			}
-			if (intersectionY < y || intersectionY > y+h) {
+			if (intersectionY < y || intersectionY > y+h) [[unlikely]] {
 				std::cerr << "WARNING: rectangular lightning endpoint Y out of range!" << std::endl;
 				intersectionY = std::clamp<double>(intersectionY, y, y+h);
 			}
-			boltPoints = getDefaultNumBoltPoints(sqrt(pow(intersectionX - centerPoint->x, 2) + pow(intersectionY - centerPoint->y, 2)));
+			boltPoints = getDefaultNumBoltPoints(sqrt((intersectionX - centerPoint->x)*(intersectionX - centerPoint->x) + (intersectionY - centerPoint->y)*(intersectionY - centerPoint->y)));
 
 			//pushBolt(new LightningBolt(w/2, h/2, intersections.x1 - x, intersections.y1 - y, 2)); //debugging
 			//pushBolt(new LightningBolt(w/2, h/2, intersections.x1 - x, intersections.y2 - y, 2));
@@ -197,9 +191,9 @@ void RectangularLightningHazard::pushBolt(LightningBolt* l) {
 
 void RectangularLightningHazard::pushDefaultBolt(int num, bool randomize) {
 	//the default bolt is from center to a random point
-	double xEnd = w*RNG::randFunc(), yEnd = h*RNG::randFunc();
 	for (int i = 0; i < num; i++) {
-		LightningBolt* l = new LightningBolt(w/2, h/2, xEnd, yEnd, getDefaultNumBoltPoints(sqrt(pow(xEnd - w/2, 2) + pow(yEnd - h/2, 2))));
+		float xEnd = w*RNG::randFunc(), yEnd = h*RNG::randFunc();
+		LightningBolt* l = new LightningBolt(w/2, h/2, xEnd, yEnd, getDefaultNumBoltPoints(sqrt((xEnd - w/2)*(xEnd - w/2) + (yEnd - h/2)*(yEnd - h/2))));
 		if (randomize) {
 			pushBolt(l);
 		} else {
@@ -249,52 +243,51 @@ void RectangularLightningHazard::refreshBolt(LightningBolt* l, double smaller, d
 		return;
 	}
 
-	float deltaX = l->positions[l->length*2-2] - l->positions[0];
-	float deltaY = l->positions[l->length*2-1] - l->positions[1];
-	double dist = sqrt(pow(deltaX, 2) + pow(deltaY, 2));
-	double rotationAngle = atan2(deltaY, deltaX);
-	double angleSin = sin(rotationAngle);
-	double angleCos = cos(rotationAngle);
-	double newH = dist * smaller/larger;
-	double maxVariance = 1.0/4.0 * dist * smaller/larger;
+	float boltDeltaX = l->positions[l->length*2-2] - l->positions[0];
+	float boltDeltaY = l->positions[l->length*2-1] - l->positions[1];
+	SimpleVector2D boltVec = SimpleVector2D(boltDeltaX, boltDeltaY);
+	float sinAngle = sin(boltVec.getAngle());
+	float cosAngle = cos(boltVec.getAngle()); //to avoid recalculating each time (though it would probably get optimized out)
+	const float newH = boltVec.getMagnitude() * static_cast<float>(smaller/larger);
+	const float maxVariance = (1.0f/4.0f) * boltVec.getMagnitude() * static_cast<float>(smaller/larger);
 
-	float polygonX[6] = {
+	const float polygonX[6] = {
 		l->positions[0],
-		l->positions[0] + deltaX * 1.0/4.0 - angleSin * newH * .5,
-		l->positions[0] + deltaX * 3.0/4.0 - angleSin * newH * .5,
-		l->positions[0] + deltaX,
-		l->positions[0] + deltaX * 3.0/4.0 + angleSin * newH * .5,
-		l->positions[0] + deltaX * 1.0/4.0 + angleSin * newH * .5
+		l->positions[0] + boltDeltaX * (1.0f/4.0f) - (newH * .5f) * sinAngle,
+		l->positions[0] + boltDeltaX * (3.0f/4.0f) - (newH * .5f) * sinAngle,
+		l->positions[0] + boltDeltaX,
+		l->positions[0] + boltDeltaX * (3.0f/4.0f) + (newH * .5f) * sinAngle,
+		l->positions[0] + boltDeltaX * (1.0f/4.0f) + (newH * .5f) * sinAngle
 	};
-	float polygonY[6] = {
+	const float polygonY[6] = {
 		l->positions[1],
-		l->positions[1] + deltaY * 1.0/4.0 + angleCos * newH * .5,
-		l->positions[1] + deltaY * 3.0/4.0 + angleCos * newH * .5,
-		l->positions[1] + deltaY,
-		l->positions[1] + deltaY * 3.0/4.0 - angleCos * newH * .5,
-		l->positions[1] + deltaY * 1.0/4.0 - angleCos * newH * .5
+		l->positions[1] + boltDeltaY * (1.0f/4.0f) + (newH * .5f) * cosAngle,
+		l->positions[1] + boltDeltaY * (3.0f/4.0f) + (newH * .5f) * cosAngle,
+		l->positions[1] + boltDeltaY,
+		l->positions[1] + boltDeltaY * (3.0f/4.0f) - (newH * .5f) * cosAngle,
+		l->positions[1] + boltDeltaY * (1.0f/4.0f) - (newH * .5f) * cosAngle
 	};
 
-	//std::cout << "deltaX: " << deltaX << std::endl;
-	//std::cout << "deltaY: " << deltaY << std::endl;
-	//std::cout << "deltaY adj: " << (deltaY * smaller/larger) << std::endl;
-	//std::cout << "dist: " << dist << std::endl;
-	//std::cout << "angle: " << (rotationAngle * 180/3.1415926535897) << std::endl;
-	//std::cout << "cos(angle): " << angleCos << std::endl;
-	//std::cout << "sin(angle): " << angleSin << std::endl;
+	//std::cout << "deltaX: " << boltDeltaX << std::endl;
+	//std::cout << "deltaY: " << boltDeltaY << std::endl;
+	//std::cout << "deltaY adj: " << (boltDeltaY * (smaller/larger)) << std::endl;
+	//std::cout << "dist: " << boltVec.getMagnitude() << std::endl;
+	//std::cout << "angle: " << (boltVec.getAngle() * 180/3.1415926535897) << std::endl;
+	//std::cout << "cos(angle): " << cosAngle << std::endl;
+	//std::cout << "sin(angle): " << sinAngle << std::endl;
 	//for (int i = 0; i < 6; i++) {
 	//	std::cout << i << ": " << polygonX[i] << " " << polygonY[i] << std::endl;
 	//}
 
 	for (int j = 1; j < l->length-1; j++) {
-		double randTemp;
-		float testY, testX;
+		float randTemp;
+		float testX, testY;
 		do {
-			randTemp = (RNG::randFunc()*2-1)*maxVariance;
-			testY = l->positions[j*2 - 1] + (deltaY/(l->length-1)) + randTemp * angleCos;
-			testX = l->positions[j*2 - 2] + (deltaX/(l->length-1)) - randTemp * angleSin;
+			randTemp = maxVariance * static_cast<float>(RNG::randFunc()*2-1);
+			testX = l->positions[j*2 - 2] + (boltDeltaX/(l->length-1)) - randTemp * sinAngle;
+			testY = l->positions[j*2 - 1] + (boltDeltaY/(l->length-1)) + randTemp * cosAngle;
 			//std::cout << testX << " " << testY << std::endl;
-		} while (testY < 0 || testY > h || testX < 0 || testX > w || !pointInPolygon(6, polygonX, polygonY, testX, testY));
+		} while ((testX < 0 || testX > w || testY < 0 || testY > h) || !pointInPolygon(6, polygonX, polygonY, testX, testY));
 		l->positions[j*2]   = testX;
 		l->positions[j*2+1] = testY;
 	}
@@ -531,8 +524,8 @@ inline void RectangularLightningHazard::drawBolts_Pose(float alpha) const {
 	std::vector<LightningBolt*> poseBolts;
 	for (int i = 0; i < 4; i++) {
 		//from pushDefaultBolt(), mostly
-		double xEnd = (i%2==0) * w/2*.75, yEnd = (i/2==0) * h/2*.75;
-		LightningBolt* l = new LightningBolt(w/2, h/2, xEnd, yEnd, getDefaultNumBoltPoints(sqrt(pow(xEnd - w/2, 2) + pow(yEnd - h/2, 2))));
+		float xEnd = (i%2==0 ? -1 : 1) * (w*.375), yEnd = (i/2==0 ? -1 : 1) * (h*.375);
+		LightningBolt* l = new LightningBolt(w/2, h/2, xEnd, yEnd, getDefaultNumBoltPoints(sqrt((xEnd - w/2)*(xEnd - w/2) + (yEnd - h/2)*(yEnd - h/2))));
 
 		refreshBolt(l);
 		poseBolts.push_back(l);
