@@ -87,7 +87,10 @@ public: //collision detection and handling (just moving)
 	static void pullMovableNearImmovable(Circle* movable, Circle* immovable); //like a reverse pull (but not a push because one has to stay inside the other)
 	*/
 
-public: //stuff that gives a location of intersection (only use if collision is guranteed) (this should be expanded)
+public:
+	//intersection or tangent happens:
+	static bool circleLineIntersectionHappens(const Circle*, double lineX1, double lineY1, double lineX2, double lineY2);
+	//location of intersection (only use if collision is guranteed):
 	static std::pair<PositionHolder, PositionHolder> circleLineIntersection(const Circle*, double lineX1, double lineY1, double lineX2, double lineY2);
 
 public: //other stuff

@@ -109,15 +109,15 @@ bool CollisionHandler::partiallyCollided(const Rect* a, const Circle* b) {
 //bool CollisionHandler::partiallyCollided(const Circle* a, const Rect* b);
 
 bool CollisionHandler::partiallyCollided(const Circle* a, const Circle* b) {
-	if ((abs(a->x - b->x) <= a->r + b->r) && (abs(a->y - b->y) <= a->r + b->r)) {
-		return (sqrt(pow(a->x - b->x, 2) + pow(a->y - b->y, 2)) <= a->r + b->r);
+	if ((abs(a->x - b->x) <= a->r + b->r) && (abs(a->y - b->y) <= (a->r + b->r))) {
+		return (sqrt((a->x - b->x)*(a->x - b->x) + (a->y - b->y)*(a->y - b->y)) <= (a->r + b->r));
 	}
 	return false;
 }
 
 bool CollisionHandler::cornerCollided(const Circle* a, double x, double y) { //effectively C-C but C2->r = 0
 	if ((abs(x - a->x) <= a->r) && (abs(y - a->y) <= a->r)) {
-		double d = sqrt(pow(x - a->x, 2) + pow(y - a->y, 2));
+		double d = sqrt((x - a->x)*(x - a->x) + (y - a->y)*(y - a->y));
 		return (d <= a->r);
 	}
 	return false;
@@ -144,15 +144,15 @@ bool CollisionHandler::partiallyCollidedIgnoreEdge(const Rect* a, const Circle* 
 //bool CollisionHandler::partiallyCollidedIgnoreEdge(const Circle* a, const Rect* b);
 
 bool CollisionHandler::partiallyCollidedIgnoreEdge(const Circle* a, const Circle* b) {
-	if ((abs(a->x - b->x) < a->r + b->r) && (abs(a->y - b->y) < a->r + b->r)) {
-		return (sqrt(pow(a->x - b->x, 2) + pow(a->y - b->y, 2)) < a->r + b->r);
+	if ((abs(a->x - b->x) < a->r + b->r) && (abs(a->y - b->y) < (a->r + b->r))) {
+		return (sqrt((a->x - b->x)*(a->x - b->x) + (a->y - b->y)*(a->y - b->y)) < (a->r + b->r));
 	}
 	return false;
 }
 
 bool CollisionHandler::cornerCollidedIgnoreEdge(const Circle* a, double x, double y) {
 	if ((abs(x - a->x) < a->r) && (abs(y - a->y) < a->r)) {
-		double d = sqrt(pow(x - a->x, 2) + pow(y - a->y, 2));
+		double d = sqrt((x - a->x)*(x - a->x) + (y - a->y)*(y - a->y));
 		return (d < a->r);
 	}
 	return false;
@@ -163,10 +163,11 @@ bool CollisionHandler::fullyCollided(const Rect* a, const Rect* b) { //a inside 
 }
 bool CollisionHandler::fullyCollided(const Rect* a, const Circle* b) { //rectangle inside circle
 	if ((a->x >= (b->x - b->r)) && ((a->x + a->w) <= (b->x + b->r)) && (a->y >= (b->y - b->r)) && ((a->y + a->h) <= (b->y + b->r))) { //check R-R collision
-		return ((sqrt(pow(a->x - b->x, 2) + pow(a->y - b->y, 2)) <= b->r) && //check distance between each corner to circle center
-		        (sqrt(pow(a->x - b->x, 2) + pow((a->y + a->h) - b->y, 2)) <= b->r) &&
-		        (sqrt(pow((a->x + a->w) - b->x, 2) + pow(a->y - b->y, 2)) <= b->r) &&
-		        (sqrt(pow((a->x + a->w) - b->x, 2) + pow((a->y + a->h) - b->y, 2)) <= b->r));
+		//check distance between each corner to circle center
+		return ((sqrt(( a->x         - b->x)*( a->x         - b->x) + ( a->y         - b->y)*( a->y         - b->y)) <= b->r) &&
+		        (sqrt(( a->x         - b->x)*( a->x         - b->x) + ((a->y + a->h) - b->y)*((a->y + a->h) - b->y)) <= b->r) &&
+		        (sqrt(((a->x + a->w) - b->x)*((a->x + a->w) - b->x) + ( a->y         - b->y)*( a->y         - b->y)) <= b->r) &&
+		        (sqrt(((a->x + a->w) - b->x)*((a->x + a->w) - b->x) + ((a->y + a->h) - b->y)*((a->y + a->h) - b->y)) <= b->r));
 	}
 	return false;
 }
@@ -175,7 +176,7 @@ bool CollisionHandler::fullyCollided(const Circle* a, const Rect* b) { //circle 
 }
 bool CollisionHandler::fullyCollided(const Circle* a, const Circle* b) { //a inside b
 	if (((a->x - a->r) >= (b->x - b->r)) && ((a->x + a->r) <= (b->x + b->r)) && ((a->y - a->r) >= (b->y - b->r)) && ((a->y + a->r) <= (b->y + b->r))) { //check R-R collision
-		return (sqrt(pow(a->x - b->x, 2) + pow(a->y - b->y, 2)) <= b->r - a->r);
+		return (sqrt((a->x - b->x)*(a->x - b->x) + (a->y - b->y)*(a->y - b->y)) <= (b->r - a->r));
 	}
 	return false;
 }
@@ -184,14 +185,14 @@ bool CollisionHandler::fullyCollided(const Circle* a, const Circle* b) { //a ins
 
 //these should only be called if collision was checked (and true) first; they literally move each object to the other's edge
 void CollisionHandler::pushMovableAwayFromImmovable(Rect* movable, Rect* immovable) {
-	if ((movable->y + movable->h / 2) - immovable->y <= (immovable->h / immovable->w) * ((movable->x + movable->w / 2) - immovable->x)) { //I think this is top right
-		if ((movable->y + movable->h / 2) - (immovable->y + immovable->h) <= (-immovable->h / immovable->w) * ((movable->x + movable->w / 2) - immovable->x)) { //top
+	if ((movable->y + movable->h/2) - immovable->y <= (immovable->h / immovable->w) * ((movable->x + movable->w/2) - immovable->x)) { //I think this is top right
+		if ((movable->y + movable->h/2) - (immovable->y + immovable->h) <= (-immovable->h / immovable->w) * ((movable->x + movable->w/2) - immovable->x)) { //top
 			movable->y = immovable->y - movable->h;
 		} else { //right
 			movable->x = immovable->x + immovable->w;
 		}
 	} else { //bottom left?
-		if ((movable->y + movable->h / 2) - (immovable->y + immovable->h) <= (-immovable->h / immovable->w) * ((movable->x + movable->w / 2) - immovable->x)) { //left
+		if ((movable->y + movable->h/2) - (immovable->y + immovable->h) <= (-immovable->h / immovable->w) * ((movable->x + movable->w/2) - immovable->x)) { //left
 			movable->x = immovable->x - movable->w;
 		} else { //bottom
 			movable->y = immovable->y + immovable->h;
@@ -231,8 +232,8 @@ void CollisionHandler::pushMovableAwayFromImmovable(Rect* movable, Rect* immovab
 	*/
 }
 void CollisionHandler::pushMovableAwayFromMovable(Rect* movable1, Rect* movable2) {
-	if ((movable1->y + movable1->h / 2) - movable2->y <= (movable2->h / movable2->w) * ((movable1->x + movable1->w / 2) - movable2->x)) { //I think this is top right
-		if ((movable1->y + movable1->h / 2) - (movable2->y + movable2->h) <= (-movable2->h / movable2->w) * ((movable1->x + movable1->w / 2) - movable2->x)) { //top
+	if ((movable1->y + movable1->h/2) - movable2->y <= (movable2->h / movable2->w) * ((movable1->x + movable1->w/2) - movable2->x)) { //I think this is top right
+		if ((movable1->y + movable1->h/2) - (movable2->y + movable2->h) <= (-movable2->h / movable2->w) * ((movable1->x + movable1->w/2) - movable2->x)) { //top
 			double d = (movable1->y + movable1->h) - movable2->y;
 			movable1->y -= d/2;
 			movable2->y += d/2;
@@ -242,7 +243,7 @@ void CollisionHandler::pushMovableAwayFromMovable(Rect* movable1, Rect* movable2
 			movable2->x -= d/2;
 		}
 	} else { //bottom left?
-		if ((movable1->y + movable1->h / 2) - (movable2->y + movable2->h) <= (-movable2->h / movable2->w) * ((movable1->x + movable1->w / 2) - movable2->x)) { //left
+		if ((movable1->y + movable1->h/2) - (movable2->y + movable2->h) <= (-movable2->h / movable2->w) * ((movable1->x + movable1->w/2) - movable2->x)) { //left
 			double d = (movable1->x + movable1->w) - movable2->x;
 			movable1->x -= d/2;
 			movable2->x += d/2;
@@ -466,56 +467,67 @@ void CollisionHandler::pushMovableAwayFromMovable(Rect* movable1, Circle* movabl
 
 void CollisionHandler::pushMovableAwayFromImmovable(Circle* movable, Circle* immovable) {
 	double angle = atan2((movable->y - immovable->y), (movable->x - immovable->x));
-	double d = sqrt(pow(movable->x - immovable->x, 2) + pow(movable->y - immovable->y, 2)) - (movable->r + immovable->r);
-	movable->y -= sin(angle) * d;
-	movable->x -= cos(angle) * d;
+	double d = sqrt((movable->x - immovable->x)*(movable->x - immovable->x) + (movable->y - immovable->y)*(movable->y - immovable->y)) - (movable->r + immovable->r);
+	movable->y -= d * sin(angle);
+	movable->x -= d * cos(angle);
 }
 void CollisionHandler::pushMovableAwayFromMovable(Circle* movable1, Circle* movable2) {
 	double angle = atan2((movable1->y - movable2->y), (movable1->x - movable2->x));
-	double d = sqrt(pow(movable1->x - movable2->x, 2) + pow(movable1->y - movable2->y, 2)) - (movable1->r + movable2->r);
-	movable1->y -= sin(angle) * d/2;
-	movable1->x -= cos(angle) * d/2;
-	movable2->y += sin(angle) * d/2;
-	movable2->x += cos(angle) * d/2;
+	double d = sqrt((movable1->x - movable2->x)*(movable1->x - movable2->x) + (movable1->y - movable2->y)*(movable1->y - movable2->y)) - (movable1->r + movable2->r);
+	movable1->y -= d/2 * sin(angle);
+	movable1->x -= d/2 * cos(angle);
+	movable2->y += d/2 * sin(angle);
+	movable2->x += d/2 * cos(angle);
 }
 
 void CollisionHandler::cornerPushMovableAwayFromImmovable(Circle* movable, double x, double y) {
 	double angle = atan2((y - movable->y), (x - movable->x));
-	double d = movable->r - sqrt(pow(x - movable->x, 2) + pow(y - movable->y, 2));
-	movable->y -= sin(angle) * d;
-	movable->x -= cos(angle) * d;
+	double d = movable->r - sqrt((x - movable->x)*(x - movable->x) + (y - movable->y)*(y - movable->y));
+	movable->y -= d * sin(angle);
+	movable->x -= d * cos(angle);
 }
 void CollisionHandler::cornerPushMovableAwayFromMovable(Circle* movable1, Rect* movable2, double x, double y) {
 	double angle = atan2((y - movable1->y), (x - movable1->x));
-	double d = movable1->r - sqrt(pow(x - movable1->x, 2) + pow(y - movable1->y, 2));
-	movable1->y -= sin(angle) * d/2;
-	movable1->x -= cos(angle) * d/2;
-	movable2->y += sin(angle) * d/2;
-	movable2->x += cos(angle) * d/2;
+	double d = movable1->r - sqrt((x - movable1->x)*(x - movable1->x) + (y - movable1->y)*(y - movable1->y));
+	movable1->y -= d/2 * sin(angle);
+	movable1->x -= d/2 * cos(angle);
+	movable2->y += d/2 * sin(angle);
+	movable2->x += d/2 * cos(angle);
 }
 void CollisionHandler::cornerPushMovableAwayFromImmovable(Rect* movable, Circle* immovable, double x, double y) {
 	double angle = atan2((immovable->y - y), (immovable->x - x));
-	double d = immovable->r - sqrt(pow(x - immovable->x, 2) + pow(y - immovable->y, 2));
-	movable->y -= sin(angle) * d;
-	movable->x -= cos(angle) * d;
+	double d = immovable->r - sqrt((x - immovable->x)*(x - immovable->x) + (y - immovable->y)*(y - immovable->y));
+	movable->y -= d * sin(angle);
+	movable->x -= d * cos(angle);
 }
 //void CollisionHandler::cornerPushMovableAwayFromMovable(Rect* movable1, Circle* movable2, double x, double y);
 
-std::pair<PositionHolder, PositionHolder> CollisionHandler::circleLineIntersection(const Circle* c, double lineX1, double lineY1, double lineX2, double lineY2) {
-	//circle-line intersection: https://mathworld.wolfram.com/Circle-LineIntersection.html
-	//normally I always use pow(x,2) for clarity, but it's getting repetitive, and also x*x is faster
+bool CollisionHandler::circleLineIntersectionHappens(const Circle* c, double lineX1, double lineY1, double lineX2, double lineY2) {
 	double x1 = lineX1 - c->x, x2 = lineX2 - c->x;
 	double y1 = lineY1 - c->y, y2 = lineY2 - c->y;
 	double dx = x2-x1, dy = y2-y1;
-	double dr = sqrt(pow(dx,2) + pow(dy,2));
+	double dr = sqrt(dx*dx + dy*dy);
+	double D = x1*y2 - x2*y1;
+
+	double discriminant = c->r*c->r * dr*dr - D*D;
+	return (discriminant >= 0);
+}
+
+std::pair<PositionHolder, PositionHolder> CollisionHandler::circleLineIntersection(const Circle* c, double lineX1, double lineY1, double lineX2, double lineY2) {
+	//circle-line intersection: https://mathworld.wolfram.com/Circle-LineIntersection.html
+	double x1 = lineX1 - c->x, x2 = lineX2 - c->x;
+	double y1 = lineY1 - c->y, y2 = lineY2 - c->y;
+	double dx = x2-x1, dy = y2-y1;
+	double dr = sqrt(dx*dx + dy*dy);
 	double D = x1*y2 - x2*y1; //I spent about an hour debugging this, only to find out I did x1*y2 - x1*y1. Don't make the same mistake.
 
 	//check if the user used this incorrectly:
+	/*
 	double discriminant = c->r*c->r * dr*dr - D*D;
-	if (discriminant < 0) {
-		throw std::logic_error("CollisionHandler::circleLineIntersection was not given an intersecting circle and line!");
-		//invalid_argument instead?
+	if (discriminant < 0) [[unlikely]] {
+		throw std::invalid_argument("CollisionHandler::circleLineIntersection was not given an intersecting circle and line!");
 	}
+	*/
 
 	double intersectionX1 = (D*dy - (dy<0 ? -1 : 1) * dx * sqrt(c->r*c->r * dr*dr - D*D)) / (dr*dr);
 	double intersectionX2 = (D*dy + (dy<0 ? -1 : 1) * dx * sqrt(c->r*c->r * dr*dr - D*D)) / (dr*dr);
@@ -530,15 +542,15 @@ std::pair<PositionHolder, PositionHolder> CollisionHandler::circleLineIntersecti
 }
 
 bool CollisionHandler::lineLineCollision(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4) {
-	//line-line intersection: http://jeffreythompson.org/collision-detection/line-line.php
+	//line-line intersection: https://jeffreythompson.org/collision-detection/line-line.php
 	double uA = ((x4-x3)*(y1-y3) - (y4-y3)*(x1-x3)) / ((y4-y3)*(x2-x1) - (x4-x3)*(y2-y1));
 	double uB = ((x2-x1)*(y1-y3) - (y2-y1)*(x1-x3)) / ((y4-y3)*(x2-x1) - (x4-x3)*(y2-y1));
 	return (uA >= 0 && uA <= 1 && uB >= 0 && uB <= 1);
 }
 
 bool CollisionHandler::lineRectCollision(double line1X, double line1Y, double line2X, double line2Y, const Rect* r) {
-	return (lineLineCollision(line1X, line1Y, line2X, line2Y, r->x, r->y, r->x + r->w, r->y) || //bottom left to bottom right
-	        lineLineCollision(line1X, line1Y, line2X, line2Y, r->x, r->y, r->x, r->y + r->h) || //bottom left to top left
-	        lineLineCollision(line1X, line1Y, line2X, line2Y, r->x + r->w, r->y, r->x + r->w, r->y + r->h) || //bottom right to top right
-	        lineLineCollision(line1X, line1Y, line2X, line2Y, r->x, r->y + r->h, r->x + r->w, r->y + r->h)); //top left to top right
+	return (lineLineCollision(line1X, line1Y, line2X, line2Y, r->x,        r->y,        r->x + r->w, r->y)        || //bottom left to bottom right
+	        lineLineCollision(line1X, line1Y, line2X, line2Y, r->x,        r->y,        r->x,        r->y + r->h) || //bottom left to top left
+	        lineLineCollision(line1X, line1Y, line2X, line2Y, r->x + r->w, r->y,        r->x + r->w, r->y + r->h) || //bottom right to top right
+	        lineLineCollision(line1X, line1Y, line2X, line2Y, r->x,        r->y + r->h, r->x + r->w, r->y + r->h));  //top left to top right
 }
