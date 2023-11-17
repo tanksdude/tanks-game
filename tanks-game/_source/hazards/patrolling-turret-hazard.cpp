@@ -529,7 +529,7 @@ CircleHazard* PatrollingTurretHazard::randomizingFactory(double x_start, double 
 
 	int count = 0;
 	if (args.getDataCount() >= 1) {
-		int count = args.getDataPortionLength(0);
+		count = args.getDataPortionLength(0);
 	}
 	if (count >= 1) {
 		const double* arr = static_cast<const double*>(args.getDataPortion(0).get());
@@ -538,6 +538,8 @@ CircleHazard* PatrollingTurretHazard::randomizingFactory(double x_start, double 
 	} else {
 		angle = RNG::randFunc() * (2*PI);
 	}
+
+	const double realRadius = (TANK_RADIUS/2);
 
 	float stoppingLocationWeights[] = { 1.0f, 3.0f, 5.0f };
 	do {
@@ -555,8 +557,8 @@ CircleHazard* PatrollingTurretHazard::randomizingFactory(double x_start, double 
 			bool blockedPosition;
 			do {
 				blockedPosition = false;
-				stoppingLocations[0] = RNG::randFunc() * (area_width - 2*(TANK_RADIUS/2)) + (x_start + (TANK_RADIUS/2));
-				stoppingLocations[1] = RNG::randFunc() * (area_height - 2*(TANK_RADIUS/2)) + (y_start + (TANK_RADIUS/2));
+				stoppingLocations[0] = RNG::randNumInRange(x_start + realRadius, x_start + area_width - realRadius);
+				stoppingLocations[1] = RNG::randNumInRange(y_start + realRadius, y_start + area_height - realRadius);
 
 				Circle* testStop = new Circle();
 				testStop->x = stoppingLocations[0]; testStop->y = stoppingLocations[1]; testStop->r = 0;

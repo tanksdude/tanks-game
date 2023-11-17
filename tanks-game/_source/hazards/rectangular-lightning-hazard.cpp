@@ -589,7 +589,7 @@ RectHazard* RectangularLightningHazard::randomizingFactory(double x_start, doubl
 	bool randomizeWH;
 	int count = 0;
 	if (args.getDataCount() >= 1) {
-		int count = args.getDataPortionLength(0);
+		count = args.getDataPortionLength(0);
 	}
 	if (count >= 2) {
 		const double* arr = static_cast<const double*>(args.getDataPortion(0).get());
@@ -602,11 +602,11 @@ RectHazard* RectangularLightningHazard::randomizingFactory(double x_start, doubl
 
 	do {
 		if (randomizeWH) {
-			width = RNG::randFunc() * (80 - 30) + 30; //TODO: where should these constants be?
-			height = RNG::randFunc() * (80 - 30) + 30; //TODO: where should these constants be?
+			width = RNG::randNumInRange(30, 80); //TODO: where should these constants be?
+			height = RNG::randNumInRange(30, 80); //TODO: where should these constants be?
 		}
-		xpos = RNG::randFunc() * (area_width - width) + x_start;
-		ypos = RNG::randFunc() * (area_height - height) + y_start;
+		xpos = RNG::randNumInRange(x_start, x_start + area_width - width);
+		ypos = RNG::randNumInRange(y_start, y_start + area_height - height);
 		RectHazard* testRectangularLightning = new RectangularLightningHazard(xpos, ypos, width, height);
 		if (testRectangularLightning->reasonableLocation()) {
 			randomized = testRectangularLightning;

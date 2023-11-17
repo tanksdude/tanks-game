@@ -316,12 +316,12 @@ void SpiralLavaHazard::ghostDraw(DrawingLayers layer, float alpha) const {
 RectHazard* SpiralLavaHazard::randomizingFactory(double x_start, double y_start, double area_width, double area_height, const GenericFactoryConstructionData& args) {
 	int attempts = 0;
 	RectHazard* randomized = nullptr;
-	double width;
+	double xpos, ypos, width;
 
 	bool randomizeW;
 	int count = 0;
 	if (args.getDataCount() >= 1) {
-		int count = args.getDataPortionLength(0);
+		count = args.getDataPortionLength(0);
 	}
 	if (count >= 1) {
 		const double* arr = static_cast<const double*>(args.getDataPortion(0).get());
@@ -335,8 +335,10 @@ RectHazard* SpiralLavaHazard::randomizingFactory(double x_start, double y_start,
 		if (randomizeW) {
 			width = RNG::randNumInRange(16, 24); //TODO: where should these constants be?
 		}
-		const double realWidth = 80 + width/2;
-		RectHazard* testSpiralLava = new SpiralLavaHazard(x_start + (realWidth-width/2) + RNG::randFunc() * (area_width - 2*realWidth), y_start + (realWidth-width/2) + RNG::randFunc() * (area_height - 2*realWidth), width);
+		const double realRadius = 80 + width/2; //center of this to furthest reach of lava blobs
+		xpos = RNG::randNumInRange(x_start + (realRadius-width/2), x_start + area_width - (realRadius+width/2));
+		ypos = RNG::randNumInRange(y_start + (realRadius-width/2), y_start + area_height - (realRadius+width/2));
+		RectHazard* testSpiralLava = new SpiralLavaHazard(xpos, ypos, width);
 		if (testSpiralLava->reasonableLocation()) {
 			randomized = testSpiralLava;
 			break;

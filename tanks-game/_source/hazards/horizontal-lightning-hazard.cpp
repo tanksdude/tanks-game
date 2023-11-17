@@ -473,7 +473,7 @@ RectHazard* HorizontalLightningHazard::randomizingFactory(double x_start, double
 	const double minWidth = 40, maxWidth = 160;
 
 	do {
-		height = RNG::randFunc() * (24 - 12) + 12;
+		height = RNG::randNumInRange(12, 24);
 		for (int i = 0; i < WallManager::getNumWalls(); i++) {
 			const Wall* wa = WallManager::getWall(i);
 			xpos = wa->x + wa->w;
@@ -483,14 +483,14 @@ RectHazard* HorizontalLightningHazard::randomizingFactory(double x_start, double
 				j = RNG::randFunc() * WallManager::getNumWalls();
 				wallAttempts++;
 			} while ((wallAttempts < 8) && (j == i));
-			if (j != i) {
+			if (j != i) [[likely]] {
 				const Wall* otherWall = WallManager::getWall(j);
 				width = otherWall->x - xpos;
 			} else {
-				width = RNG::randFunc() * (maxWidth - minWidth) + minWidth;
+				width = 0;
 			}
 		}
-		if ((xpos >= x_start) && (xpos + width <= x_start + area_width) && (ypos >= y_start) && (ypos + height <= y_start + area_height) && (width <= maxWidth) && (width >= minWidth)) {
+		if ((width >= minWidth) && (width <= maxWidth) && (xpos >= x_start) && (xpos + width <= x_start + area_width) && (ypos >= y_start) && (ypos + height <= y_start + area_height)) {
 			RectHazard* testHorizontalLightning = new HorizontalLightningHazard(xpos, ypos, width, height);
 			if (testHorizontalLightning->reasonableLocation()) {
 				randomized = testHorizontalLightning;

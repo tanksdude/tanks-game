@@ -455,7 +455,7 @@ RectHazard* VerticalLightningHazard::randomizingFactory(double x_start, double y
 	const double minHeight = 40, maxHeight = 160;
 
 	do {
-		width = RNG::randFunc() * (24 - 12) + 12;
+		width = RNG::randNumInRange(12, 24);
 		for (int i = 0; i < WallManager::getNumWalls(); i++) {
 			const Wall* wa = WallManager::getWall(i);
 			xpos = wa->x + RNG::randFunc() * std::clamp<double>(wa->w - width, 0, wa->w);
@@ -465,14 +465,14 @@ RectHazard* VerticalLightningHazard::randomizingFactory(double x_start, double y
 				j = RNG::randFunc() * WallManager::getNumWalls();
 				wallAttempts++;
 			} while ((wallAttempts < 8) && (j == i));
-			if (j != i) {
+			if (j != i) [[likely]] {
 				const Wall* otherWall = WallManager::getWall(j);
 				height = otherWall->y - ypos;
 			} else {
-				height = RNG::randFunc() * (maxHeight - minHeight) + minHeight;
+				height = 0;
 			}
 		}
-		if ((xpos >= x_start) && (xpos + width <= x_start + area_width) && (ypos >= y_start) && (ypos + height <= y_start + area_height) && (height <= maxHeight) && (height >= minHeight)) {
+		if ((height >= minHeight) && (height <= maxHeight) && (xpos >= x_start) && (xpos + width <= x_start + area_width) && (ypos >= y_start) && (ypos + height <= y_start + area_height)) {
 			RectHazard* testVerticalLightning = new VerticalLightningHazard(xpos, ypos, width, height);
 			if (testVerticalLightning->reasonableLocation()) {
 				randomized = testVerticalLightning;

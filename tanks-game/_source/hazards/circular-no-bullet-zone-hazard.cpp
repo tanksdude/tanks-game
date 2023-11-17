@@ -305,7 +305,7 @@ CircleHazard* CircularNoBulletZoneHazard::randomizingFactory(double x_start, dou
 	bool randomizeR;
 	int count = 0;
 	if (args.getDataCount() >= 1) {
-		int count = args.getDataPortionLength(0);
+		count = args.getDataPortionLength(0);
 	}
 	if (count >= 1) {
 		const double* arr = static_cast<const double*>(args.getDataPortion(0).get());
@@ -317,10 +317,10 @@ CircleHazard* CircularNoBulletZoneHazard::randomizingFactory(double x_start, dou
 
 	do {
 		if (randomizeR) {
-			radius = RNG::randFunc() * (20 - 10) + 10; //TODO: where should these constants be?
+			radius = RNG::randNumInRange(10, 20); //TODO: where should these constants be?
 		}
-		xpos = RNG::randFunc() * (area_width - 2*radius) + (x_start + radius);
-		ypos = RNG::randFunc() * (area_height - 2*radius) + (y_start + radius);
+		xpos = RNG::randNumInRange(x_start + radius, x_start + area_width - radius);
+		ypos = RNG::randNumInRange(y_start + radius, y_start + area_height - radius);
 		CircleHazard* testCircularNoBulletZone = new CircularNoBulletZoneHazard(xpos, ypos, radius);
 		if (testCircularNoBulletZone->reasonableLocation()) {
 			randomized = testCircularNoBulletZone;

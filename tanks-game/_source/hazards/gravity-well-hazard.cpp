@@ -435,7 +435,7 @@ CircleHazard* GravityWellHazard::randomizingFactory(double x_start, double y_sta
 	bool randomizeGR;
 	int count = 0;
 	if (args.getDataCount() >= 1) {
-		int count = args.getDataPortionLength(0);
+		count = args.getDataPortionLength(0);
 	}
 	if (count >= 1) {
 		const double* arr = static_cast<const double*>(args.getDataPortion(0).get());
@@ -467,8 +467,8 @@ CircleHazard* GravityWellHazard::randomizingFactory(double x_start, double y_sta
 			gravityRange = RNG::randNumInRange(radius*2.5, radius*4);
 		}
 		const double realRadius = gravityRange;
-		xpos = RNG::randFunc() * (area_width - 2*realRadius) + (x_start + realRadius);
-		ypos = RNG::randFunc() * (area_height - 2*realRadius) + (y_start + realRadius);
+		xpos = RNG::randNumInRange(x_start + realRadius, x_start + area_width - realRadius);
+		ypos = RNG::randNumInRange(y_start + realRadius, y_start + area_height - realRadius);
 		CircleHazard* testGravityWell = new GravityWellHazard(xpos, ypos, radius, gravityRange, strengthMin, strengthMax);
 		if (testGravityWell->reasonableLocation()) {
 			randomized = testGravityWell;

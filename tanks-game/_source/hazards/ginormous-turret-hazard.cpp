@@ -321,7 +321,7 @@ CircleHazard* GinormousTurretHazard::randomizingFactory(double x_start, double y
 
 	int count = 0;
 	if (args.getDataCount() >= 1) {
-		int count = args.getDataPortionLength(0);
+		count = args.getDataPortionLength(0);
 	}
 	if (count >= 1) {
 		const double* arr = static_cast<const double*>(args.getDataPortion(0).get());
@@ -333,8 +333,8 @@ CircleHazard* GinormousTurretHazard::randomizingFactory(double x_start, double y
 	const double realRadius = (TANK_RADIUS*4) * 1.25 + (TANK_RADIUS/2);
 
 	do {
-		xpos = RNG::randFunc() * (area_width - 2*realRadius) + (x_start + realRadius);
-		ypos = RNG::randFunc() * (area_height - 2*realRadius) + (y_start + realRadius);
+		xpos = RNG::randNumInRange(x_start + realRadius, x_start + area_width - realRadius);
+		ypos = RNG::randNumInRange(y_start + realRadius, y_start + area_height - realRadius);
 		CircleHazard* testGinormousTurret = new GinormousTurretHazard(xpos, ypos, angle);
 		if (testGinormousTurret->reasonableLocation()) {
 			randomized = testGinormousTurret;

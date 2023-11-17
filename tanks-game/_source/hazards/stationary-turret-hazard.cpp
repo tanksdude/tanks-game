@@ -386,7 +386,7 @@ CircleHazard* StationaryTurretHazard::randomizingFactory(double x_start, double 
 
 	int count = 0;
 	if (args.getDataCount() >= 1) {
-		int count = args.getDataPortionLength(0);
+		count = args.getDataPortionLength(0);
 	}
 	if (count >= 1) {
 		const double* arr = static_cast<const double*>(args.getDataPortion(0).get());
@@ -395,9 +395,11 @@ CircleHazard* StationaryTurretHazard::randomizingFactory(double x_start, double 
 		angle = RNG::randFunc() * (2*PI);
 	}
 
+	const double realRadius = (TANK_RADIUS/4);
+
 	do {
-		xpos = RNG::randFunc() * (area_width - 2*(TANK_RADIUS/4)) + (x_start + (TANK_RADIUS/4));
-		ypos = RNG::randFunc() * (area_height - 2*(TANK_RADIUS/4)) + (y_start + (TANK_RADIUS/4));
+		xpos = RNG::randNumInRange(x_start + realRadius, x_start + area_width - realRadius);
+		ypos = RNG::randNumInRange(y_start + realRadius, y_start + area_height - realRadius);
 		CircleHazard* testStationaryTurret = new StationaryTurretHazard(xpos, ypos, angle);
 		if (testStationaryTurret->reasonableLocation()) {
 			randomized = testStationaryTurret;

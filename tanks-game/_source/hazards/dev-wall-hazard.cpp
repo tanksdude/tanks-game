@@ -201,12 +201,12 @@ void DevWallHazard::ghostDraw(DrawingLayers layer, float alpha) const {
 RectHazard* DevWallHazard::randomizingFactory(double x_start, double y_start, double area_width, double area_height, const GenericFactoryConstructionData& args) {
 	int attempts = 0;
 	RectHazard* randomized = nullptr;
-	double width, height;
+	double xpos, ypos, width, height;
 
 	bool randomizeWH;
 	int count = 0;
 	if (args.getDataCount() >= 1) {
-		int count = args.getDataPortionLength(0);
+		count = args.getDataPortionLength(0);
 	}
 	if (count >= 2) {
 		const double* arr = static_cast<const double*>(args.getDataPortion(0).get());
@@ -219,10 +219,12 @@ RectHazard* DevWallHazard::randomizingFactory(double x_start, double y_start, do
 
 	do {
 		if (randomizeWH) {
-			width = RNG::randFunc() * (64 - 12) + 12; //from LevelHelper::makeNewRandomWall
-			height = RNG::randFunc() * (96 - 8) + 8;
+			width = RNG::randNumInRange(12, 64); //from LevelHelper::makeNewRandomWall
+			height = RNG::randNumInRange(8, 96);
 		}
-		RectHazard* testWall = new DevWallHazard(x_start + RNG::randFunc() * (area_width - width), y_start + RNG::randFunc() * (area_height - height), width, height);
+		xpos = RNG::randNumInRange(x_start, x_start + area_width - width);
+		ypos = RNG::randNumInRange(y_start, y_start + area_height - height);
+		RectHazard* testWall = new DevWallHazard(xpos, ypos, width, height);
 		if (testWall->reasonableLocation()) {
 			randomized = testWall;
 			break;

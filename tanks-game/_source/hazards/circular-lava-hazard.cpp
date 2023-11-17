@@ -313,7 +313,7 @@ CircleHazard* CircularLavaHazard::randomizingFactory(double x_start, double y_st
 	bool randomizeR;
 	int count = 0;
 	if (args.getDataCount() >= 1) {
-		int count = args.getDataPortionLength(0);
+		count = args.getDataPortionLength(0);
 	}
 	if (count >= 1) {
 		const double* arr = static_cast<const double*>(args.getDataPortion(0).get());
@@ -325,10 +325,10 @@ CircleHazard* CircularLavaHazard::randomizingFactory(double x_start, double y_st
 
 	do {
 		if (randomizeR) {
-			radius = RNG::randFunc() * (40 - 20) + 20; //TODO: where should these constants be?
+			radius = RNG::randNumInRange(20, 40); //TODO: where should these constants be?
 		}
-		xpos = RNG::randFunc() * (area_width - 2*radius) + (x_start + radius);
-		ypos = RNG::randFunc() * (area_height - 2*radius) + (y_start + radius);
+		xpos = RNG::randNumInRange(x_start + radius, x_start + area_width - radius);
+		ypos = RNG::randNumInRange(y_start + radius, y_start + area_height - radius);
 		CircleHazard* testCircularLava = new CircularLavaHazard(xpos, ypos, radius);
 		if (testCircularLava->reasonableLocation()) {
 			randomized = testCircularLava;
