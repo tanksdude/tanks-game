@@ -65,5 +65,5 @@ Level* WinningPathLevel::factory() {
 
 WinningPathLevel::WinningPathLevel() {
 	GenericFactoryConstructionData constructionData;
-	effects.push_back(LevelManager::makeLevelEffect("vanilla", "invisible_walls", constructionData));
+	effects.push_back(LevelManager::makeLevelEffect("vanilla-extra", "invisible_walls", constructionData));
 }

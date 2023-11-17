@@ -6,7 +6,7 @@ class InvisibleWallsLevelEffect : public LevelEffect {
 public:
 	virtual std::string getName() const override { return "invisible_walls"; }
 	virtual std::vector<std::string> getLevelEffectTypes() const override {
-		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "old" };
+		std::vector<std::string> types = std::vector<std::string>{ "vanilla-extra", "old" };
 		//no random; it must be intentional
 		return types;
 	}

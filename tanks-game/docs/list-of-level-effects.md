@@ -40,7 +40,7 @@ Makes the level very "slippery" by significantly reducing tank acceleration. (Bu
 
 ## Invisible Walls
 
-* Types: "vanilla", "old"
+* Types: "vanilla-extra", "old"
 * Internal name: `invisible_walls`
 
 Turns all the walls invisible. (By changing their color to be the background's color.)
@@ -70,11 +70,11 @@ Makes the tanks tiny!
 * Magnetism
 * Wind
 * Minefield
-* Invisible Walls
 
 ## vanilla-extra
 
 * Ice
+* Invisible Walls
 
 ## random-vanilla
 

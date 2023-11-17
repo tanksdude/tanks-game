@@ -5,7 +5,7 @@
 
 std::unordered_map<std::string, float> InvisibleWallsLevelEffect::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "vanilla", 0.25f });
+	weights.insert({ "vanilla-extra", 0.25f });
 	weights.insert({ "old", 0.25f });
 	return weights;
 }
