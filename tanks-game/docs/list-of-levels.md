@@ -175,7 +175,7 @@ Do you love the Mines power? Of course you do! This level is your dream come tru
 
 Is this the empty level but with a cool powerup in the center? Nope, sike! The walls are just invisible! If you can make it to the center, you'll be rewarded with the amazing Godmode!
 
-Pro tip: since bullets die when hitting walls, you can shoot to see where walls are. No one has ever figured this out by themselves so I still have work to do as a level designer.
+Pro tip: since bullets die when hitting walls, you can shoot to see where walls are. No one has ever figured this out by themself so I still have work to do as a level designer.
 
 ![Winning Path Level](images/winning_path.jpg)
 
@@ -259,7 +259,7 @@ I realized I had every level from JS Tanks in this version, including the cut Li
 * Internal name: `dev0`
 * Default color: random
 
-The first test level (of this version), which should be obvious from the power placement. Also has a Stationary Turret, likely because I didn't have another test level yet to put down a hazard.
+The first test level (of this version), which should be obvious from the powerup placement. Also has a Stationary Turret, likely because I didn't have another test level yet to put down a hazard.
 
 ![Developer Level 0](images/dev0.jpg)
 

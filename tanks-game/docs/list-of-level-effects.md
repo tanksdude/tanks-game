@@ -45,7 +45,7 @@ Makes the level very "slippery" by significantly reducing tank acceleration. (Bu
 
 Turns all the walls invisible. (By changing their color to be the background's color.)
 
-Pro tip: since bullets die when hitting walls, you can shoot to see where walls are. No one has ever figured this out by themselves so I still have work to do as a level designer.
+Pro tip: since bullets die when hitting walls, you can shoot to see where walls are. No one has ever figured this out by themself so I still have work to do as a level designer.
 
 ## [DEV] Symmetric Tanks
 

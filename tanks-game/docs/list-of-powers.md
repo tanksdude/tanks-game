@@ -82,7 +82,7 @@ If you're sneaky, you can fire this into the up/down out of bounds and have it c
 * Color: `(1.0, 1.0, 1.0)` (white)
 * Tank modifiers: half speed, half acceleration
 
-In exchange for being half as fast, the tank and its bullets are invincible*! (\*Terms and conditions apply. Some things are more invincible than this.)
+In exchange for being half as fast, the tank and its bullets are invincible\*! (\*Terms and conditions apply. Some things are more invincible than this.)
 
 * Tank defense: 2.5 (a little more than a Big bullet)
 * Bullet offense: 1
@@ -168,7 +168,7 @@ Shoots 16 bullets, ±60° from the cannon. Eventually decays. Used to stick to wal
 
 When the bullet comes to a stop, it explodes into 8 smaller bullets! Very fun!
 
-Why "banana"? It was named after the [banana bomb from Worms](https://worms.fandom.com/wiki/Banana_Bomb) because I thought every cluster bomb in games were called "banana bombs." Turns out [Worms](https://en.wikipedia.org/wiki/Worms_(series%29) is the only place where it's called that, but no way do I want to rename this *awesome* power to "cluster" or something.
+Why "banana"? It was named after the [banana bomb from Worms](https://worms.fandom.com/wiki/Banana_Bomb) because I thought every cluster bomb in games were called "banana bombs." Turns out [Worms](https://en.wikipedia.org/wiki/Worms_(series)) is the only place where it's called that, but no way do I want to rename this *awesome* power to "cluster" or something.
 
 ## Godmode
 
@@ -368,7 +368,7 @@ This game originated from making something with tank-like movement and simple co
 
 When bouncing off a wall, a few bullet "sparks" get created. Actually functional, just kinda boring.
 
-### Edge Sparks
+## Edge Sparks
 
 * Types: "dev", "random-dev"
 * Internal name: `edge_sparks`
@@ -416,7 +416,7 @@ Multishot, but all the bullets face the same way. Inspiration came from my very 
 * Tank modifiers: double shooting cooldown
 * Bullet modifiers: 1/64 speed, +1/64 acceleration
 
-A recreation of the very first (unseen) implementation of MegaDeath in JS Tanks. It was pretty bad, but it did live up to its name "mega-death" (by being OP). I think it had increasing acceleration ([jerk](https://en.wikipedia.org/wiki/Jerk_(physics%29)) because I remembered it being far more menacing(ly short-lived).
+A recreation of the very first (unseen) implementation of MegaDeath in JS Tanks. It was pretty bad, but it did live up to its name "mega-death" (by being OP). I think it had increasing acceleration ([jerk](https://en.wikipedia.org/wiki/Jerk_(physics))) because I remembered it being far more menacing(ly short-lived).
 
 Fun fact: MegaDeath actually did appear in JS Tanks! It only appears in the mixing with Godmode. However, it only existed because power mixing was very bad back then. I probably forgot because Godmode spits out so many bullets and finding the single one behaving differently is a challenge. At best, you might notice 8 slightly larger bullets because it Banana'd. However, if you gave it enough time to grow (which was very difficult given its normal spawning locations (center of Winning Path and the random level)), it would grow very fast (same speed as this version, actually) and pass through walls (because conditionally enabling destroying walls was hard).
 
@@ -443,7 +443,7 @@ When the bullet comes to a stop, it Bananas into 4 bullets at set angles. Worth 
 
 The bullets move in a circle motion (while traveling forward like normal).
 
-The color is loosely based on [Mewtwo's Shadow Ball](https://www.ssbwiki.com/Mewtwo_(SSBU%29), because that's where this power's inspiration comes from.
+The color is loosely based on [Mewtwo's Shadow Ball](https://www.ssbwiki.com/Mewtwo_(SSBU)), because that's where this power's inspiration comes from.
 
 ## Trickster Snake
 
@@ -454,7 +454,7 @@ The color is loosely based on [Mewtwo's Shadow Ball](https://www.ssbwiki.com/Mew
 
 The bullets move up and down (while traveling forward like normal). This is the better version of this power.
 
-The color is loosely based on [Mewtwo's Shadow Ball](https://www.ssbwiki.com/Mewtwo_(SSB4%29), because that's where this power's inspiration comes from.
+The color is loosely based on [Mewtwo's Shadow Ball](https://www.ssbwiki.com/Mewtwo_(SSB4)), because that's where this power's inspiration comes from.
 
 ## [DEV] Pusher
 
@@ -554,7 +554,6 @@ These are the types custom powers are not allowed to have, unless `[MODS] ModSaf
 * Shotgun
 * Tracking
 * Barrier
-
 * Old Bounce
 * Old Big
 * Old Mines

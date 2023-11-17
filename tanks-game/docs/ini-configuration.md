@@ -20,7 +20,6 @@ Since I don't have the expertise or willingness to add advanced features like "a
 
 * `PerformanceGraphEnable` (default 1): Controls whether to draw the performance graph.
 * `PerformanceGraphOffset` (default 0.0): Controls the performance graph's y-offset. 0 keeps it at the bottom of the screen, 1 puts it above the screen.
-
 * `EnableDebugDrawing` (default 0): Controls whether to draw "debug drawings" on some objects.
 * `EnableDebugDrawingObjects` (default "patrolling_turret" "mother_turret"): Sets which objects to enable debug drawing for.
 * `DeveloperInsertMenuPowerAdditions` (default "special bounce" "dev" "ultrabounce" "special triple" "dev" "triple_spread" "testpower2" "testmod1" "test-power-2"): Adds certain powerups to the developer "menu". In groups of 3, supply the item's identifier, the power's type, and the power's name.
@@ -39,13 +38,11 @@ Note: Press F11 to toggle fullscreen. (Well, it's borderless fullscreen, but it 
 * `GameFirstLevel` (default "vanilla" "default_random"): Controls the first level of the game. Very useful.
 * `GameLevelPlaylist` (default "random-vanilla"): Controls which level playlist to choose from once the game has started.
 * `GameForceSameLevel`: Forces the game to only play on the same level, which is useful for testing new levels. Set to the name of the level to enable (for example, "vanilla" "default_random").
-
 * `LimitBullets` (default 1): Controls whether to limit the number of bullets on screen. Look, your computer has a limit at some point.
 * `MaxBullets` (default 8192): Controls the maximum number of bullets, assuming `LimitBullets` is true.
 * `FewerExtraShootingBullets` (default 0): Controls whether something like Triple + Fire shoots 7 or 12 bullets. Keeping this setting off is a significant change (and performance hit), so that's why this is an option instead of always doing more bullets. Remember, Shotgun + Blast goes from 4+16 to 5×16 bullets; that's a lot!
 * `ShootingCooldown` (default 100): Controls the tanks' shooting cooldown. Set to 0 for superfast shooting.
 * `PowerupDurationBaseTime` (default 500): Controls the base time of powerups. Currently does nothing.
-
 * `DisableTraps` (default 1): Prevents traps from activating. Does nothing since traps don't exist but might in the future. (They existed in JS Tanks.)
 * `RestrictTankTurning` (default 0): Prevent the tanks from turning while moving. A stupid option, but maybe you like it, I won't judge.
 * `NoTankAcceleration` (default 0): Tanks no longer accelerate. Only added because JS Tanks had this option (which only had the option because there was a time before tank acceleration existed).
@@ -54,9 +51,8 @@ Note: Press F11 to toggle fullscreen. (Well, it's borderless fullscreen, but it 
 
 * `Tank1.Name` (default "WASD"): Sets the left tank's name. Since tank names aren't drawn anymore, this doesn't show up anywhere.
 * `Tank2.Name` (default "Arrow Keys"): Sets the right tank's name.
-* `Tank1.TeamName` (default "\"WASD 4 Life\""): Sets the left tank's team name. Only viewable when scores are printed to the console.
-* `Tank2.TeamName` (default "\"Arrow Keys R WINZ\""): Sets the right tank's team name.
-
+* `Tank1.TeamName` (default "\\"WASD 4 Life\\""): Sets the left tank's team name. Only viewable when scores are printed to the console.
+* `Tank2.TeamName` (default "\\"Arrow Keys R WINZ\\""): Sets the right tank's team name.
 * `Tank1.Forward` (default w): Left tank's forward key. The keyboard key's names are from AHK: https://www.autohotkey.com/docs/commands/Send.htm#keynames
 * `Tank1.Left` (default a): Left tank's turn CCW (counterclockwise) key.
 * `Tank1.Right` (default d): Left tank's turn CW (clockwise) key.

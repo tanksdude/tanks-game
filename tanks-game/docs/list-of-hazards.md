@@ -48,7 +48,7 @@ A large turret that manages making more turrets rather than shooting at enemies.
 * Collision type: solid
 * Defense: 3.0 (`DESTRUCTION_TIER`+1.0)
 
-A ginormous turret that commands its turrets rather than shooting at enemies. If it sees a tank, it commands its children to focus on the target, regardless of whether they can see it. Its "making children" logic is the same as a Mother Turret. If it suddenly sees a tank while charging up (but not after), it will throw away all charging up progress and aim at the tank.
+A ginormous turret that commands its turrets rather than shooting at enemies. If it sees a tank, it commands its children to focus on the target, regardless of whether they can see it. Its "making children" logic is the same as a Mother Turret. If it suddenly sees a tank while charging up (but not after), it will throw away all charging up progress and aim at the tank. Default is 16 children.
 
 The main reason this was made was because I thought it would be funny to have a *really* big turret. And it was. However, it would be funnier to have an even *bigger* turret, which is not feasible with the current game.
 
@@ -154,7 +154,6 @@ Why the strange name? It's funnier. That's it. Wanted to make this for long time
 * Internal name: `cloud`
 * Construction type: complex
 * Collision type: under (though "over" makes more sense but that doesn't exist)
-* Offense: 0
 * Defense: 999 (`HIGH_TIER`)
 
 Occasionally spits out some powerups.

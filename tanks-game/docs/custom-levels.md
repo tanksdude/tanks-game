@@ -55,7 +55,7 @@ Creates two walls from the specified point, offset from the center point to the 
 
 Syntax: `WALL_Corners/DiagForwardSlash/DiagBackwardSlash   <center x> <center y> <x offset from center> <y offset from center>   <width> <height>`
 
-`WALL_CORNERS` creates four walls from the specified point, and `WALL_DiagForwardSlash` and `WALL_DiagBackwardSlash` create two opposing walls in a forward slash (/, bottom left and top right) or backslash (\, top left and bottom right) orientation (don't judge the naming scheme). The offset is the distance from the center point to the walls' corners.
+`WALL_CORNERS` creates four walls from the specified point, and `WALL_DiagForwardSlash` and `WALL_DiagBackwardSlash` create two opposing walls in a forward slash (/, bottom left and top right) or backslash (\\, top left and bottom right) orientation (don't judge the naming scheme). The offset is the distance from the center point to the walls' corners.
 
 ### RANDOM_WALLS
 
@@ -95,7 +95,7 @@ Creates two powerups from the specified location, offset from the center point.
 
 Syntax: `POWER_Corners/DiagForwardSlash/DiagBackwardSlash   <center x> <center y> <x offset from center> <y offset from center>   <power type 1> <power name 1> [<power type n> <power name n>]`
 
-`POWER_CORNERS` creates four powerups from the specified point, and `POWER_DiagForwardSlash` and `POWER_DiagBackwardSlash` create two opposing powerups in a forward slash (/, bottom left and top right) or backslash (\, top left and bottom right) orientation (don't judge the naming scheme).
+`POWER_CORNERS` creates four powerups from the specified point, and `POWER_DiagForwardSlash` and `POWER_DiagBackwardSlash` create two opposing powerups in a forward slash (/, bottom left and top right) or backslash (\\, top left and bottom right) orientation (don't judge the naming scheme).
 
 ### POWER_LR_Alternate and POWER_UD_Alternate
 
