@@ -397,6 +397,7 @@ bool MotherTurretHazard::reasonableLocation() const {
 	for (int i = 0; i < maxChildTurrets; i++) {
 		CircleHazard* testChild = makeTurret(i);
 		if (!testChild->reasonableLocation()) {
+			//note: hazards made after this mother turret don't check for these future child turrets
 			delete testChild;
 			return false;
 		}

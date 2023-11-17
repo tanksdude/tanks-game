@@ -1341,7 +1341,7 @@ void GameMainLoop::drawMain() const {
 	const BasicINIParser::BasicINIData& ini_data = GameManager::get_INI();
 	if (ini_data.exists("DEBUG", "EnableDebugDrawing") && std::stoi(ini_data.get("DEBUG", "EnableDebugDrawing"))) [[unlikely]] {
 		drawLayer(DrawingLayers::debug);
-		//TODO: levels should be able to debug draw their starting tank positions
+		//TODO: levels should be able to debug draw their starting tank positions (color: white?)
 	}
 
 	//end = Diagnostics::getTime();

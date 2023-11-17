@@ -50,6 +50,7 @@ public:
 protected:
 	virtual float getDefaultOffense() const override { return 0; }
 	virtual float getDefaultDefense() const override { return DESTRUCTION_TIER + .5; } //TODO: double big bullets should be able to destroy this
+	//idea: bulletpowers can set a flag for "additive offense/defense for same bulletpower
 
 public:
 	//virtual bool validLocation() const override { return true; }
