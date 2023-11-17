@@ -38,14 +38,16 @@ void WinningPathLevel::initialize() {
 
 	LevelHelper::pushSymmetricWalls_LR(GAME_WIDTH/2, GAME_HEIGHT/2, 20, 20, GAME_HEIGHT/2, color);
 
-	const double WALL_WIDTH = 32;
-	const double WALL_HEIGHT = 16;
+	const double WALL_MIN_WIDTH = 8;
+	const double WALL_MAX_WIDTH = 32;
+	const double WALL_MIN_HEIGHT = 4;
+	const double WALL_MAX_HEIGHT = 16;
 	const int WALL_COUNT = 8;
 
 	//converting this into LevelHelper calls is effort...
 	for (int i = 0; i < 4*WALL_COUNT; i++) {
-		double w = RNG::randFunc() * (WALL_WIDTH - 8) + 8;
-		double h = RNG::randFunc() * (WALL_HEIGHT - 4) + 4;
+		double w = RNG::randNumInRange(WALL_MIN_WIDTH, WALL_MAX_WIDTH);
+		double h = RNG::randNumInRange(WALL_MIN_HEIGHT, WALL_MAX_HEIGHT);
 		//JS floored w and h (also, it didn't allow w=8 or h=4 for some reason)
 		double x_offset = RNG::randFunc() * ((wallArray[3].x - 40) - (GAME_WIDTH/2 + 20+20) - w);
 		double y_offset = RNG::randFunc() * ((GAME_HEIGHT/2 - 40) - (GAME_HEIGHT/4) - h);

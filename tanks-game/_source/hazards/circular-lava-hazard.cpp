@@ -114,8 +114,8 @@ void CircularLavaHazard::pushNewBubble(double radius) {
 	} while ((attempts < 8) && (abs(x0-x1) < r/16 || abs(y0-y1) < r/16));
 
 	if (attempts < 8) {
-		double maxTick = floor(RNG::randNumInRange(200, 300+1));
-		bubbles.push_back(new LavaBubble(radius, x0/r, y0/r, x1/r, y1/r, maxTick));
+		float maxTick = floor(RNG::randFloatInRange(200, 300+1));
+		bubbles.push_back(new LavaBubble(radius, x0/float(r), y0/float(r), x1/float(r), y1/float(r), maxTick));
 	}
 }
 

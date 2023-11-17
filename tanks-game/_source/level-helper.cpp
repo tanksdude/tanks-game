@@ -262,10 +262,12 @@ PositionHolder* LevelHelper::getClassicWallPositions() {
 }
 
 Wall* LevelHelper::makeNewRandomWall(double x_beginning, double y_beginning, double width_ofArea, double height_ofArea, const ColorValueHolder& c, double minW, double maxW, double minH, double maxH) {
-	double w = RNG::randFunc() * (maxW - minW) + minW;
-	double h = RNG::randFunc() * (maxH - minH) + minH;
+	double w = RNG::randNumInRange(minW, maxW);
+	double h = RNG::randNumInRange(minH, maxH);
+	double x = RNG::randNumInRange(x_beginning, x_beginning + width_ofArea - w);
+	double y = RNG::randNumInRange(y_beginning, y_beginning + height_ofArea - h);
 
-	return new Wall(x_beginning + RNG::randFunc() * (width_ofArea - w), y_beginning + RNG::randFunc() * (height_ofArea - h), w, h, c);
+	return new Wall(x, y, w, h, c);
 }
 
 std::string* LevelHelper::getRandomPowers(int count, std::string type) {

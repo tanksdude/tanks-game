@@ -308,7 +308,7 @@ void VerticalLightningHazard::simpleRefreshBolt(LightningBolt* l) const {
 		}
 		xRangeLower = (xRangeLower < xMin ? xMin : xRangeLower);
 		xRangeUpper = (xRangeUpper > xMax ? xMax : xRangeUpper);
-		l->positions[j*2+0] = xRangeLower + (xRangeUpper - xRangeLower) * RNG::randFunc();
+		l->positions[j*2+0] = RNG::randFloatInRange(xRangeLower, xRangeUpper);
 	}
 }
 

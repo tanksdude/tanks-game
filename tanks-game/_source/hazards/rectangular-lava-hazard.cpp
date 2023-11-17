@@ -102,17 +102,17 @@ void RectangularLavaHazard::pushNewBubble(double radius) {
 	float x0, y0, x1, y1;
 	int attempts = 0;
 
-	x0 = RNG::randFunc() * (w - radius*2) + radius;
-	y0 = RNG::randFunc() * (h - radius*2) + radius;
+	x0 = RNG::randFloatInRange(radius, w - radius);
+	y0 = RNG::randFloatInRange(radius, h - radius);
 	do {
-		x1 = RNG::randFunc() * (w - radius*2) + radius;
-		y1 = RNG::randFunc() * (h - radius*2) + radius;
+		x1 = RNG::randFloatInRange(radius, w - radius);
+		y1 = RNG::randFloatInRange(radius, h - radius);
 		attempts++;
 	} while ((attempts < 8) && (abs(x0-x1) < w/16 || abs(y0-y1) < h/16)); //JS Tanks used w/8 and h/8
 
 	if (attempts < 8) {
-		double maxTick = floor(RNG::randNumInRange(200, 300+1));
-		bubbles.push_back(new LavaBubble(radius, x0/w, y0/h, x1/w, y1/h, maxTick));
+		float maxTick = floor(RNG::randFloatInRange(200, 300+1));
+		bubbles.push_back(new LavaBubble(radius, x0/float(w), y0/float(h), x1/float(w), y1/float(h), maxTick));
 	}
 }
 
