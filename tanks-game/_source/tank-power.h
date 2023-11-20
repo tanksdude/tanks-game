@@ -49,28 +49,24 @@ public:
 	virtual InteractionBoolHolder modifiedMovement(Tank*, bool forward, bool turnL, bool turnR, bool specialKey) { return { false }; }
 	bool overridesMovement = false; //set to true if the power completely changes how it moves; regular powers slightly modify movement and still want basic tank move
 	bool modifiedMovementCanWorkWithOthers = true; //stops later powerups in list from activating
-	bool modifiedMovementCanOnlyWorkIndividually = false; //if another power was used previously, this power can't activate
 
 	bool modifiesEdgeCollision = false;
 	//precondition: was out of bounds, is not necessarily out of bounds
 	virtual InteractionBoolHolder modifiedEdgeCollision(Tank*) { return { false }; } //only the first false means something
 	bool overridesEdgeCollision = true;
 	bool modifiedEdgeCollisionCanWorkWithOthers = true;
-	bool modifiedEdgeCollisionCanOnlyWorkIndividually = false;
 
 	bool modifiesCollisionWithTank = false;
 	//precondition: hit tank, is not necessarily inside tank
 	virtual InteractionBoolHolder modifiedCollisionWithTank(Tank* parent, Tank* other) { return { false, false }; }
 	bool overridesCollisionWithTank = true;
 	bool modifiedCollisionWithTankCanWorkWithOthers = true;
-	bool modifiedCollisionWithTankCanOnlyWorkIndividually = false;
 
 	bool modifiesCollisionWithWall = false;
 	//precondition: hit wall, is not necessariliy inside wall
 	virtual InteractionBoolHolder modifiedCollisionWithWall(Tank*, Wall*) { return { false, false }; }
 	bool overridesCollisionWithWall = true;
 	bool modifiedCollisionWithWallCanWorkWithOthers = true;
-	bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;
 
 	//bool modifiesCollisionWithPowerup = false;
 	//virtual void modifiedCollisionWithPowerSquare(Tank*, PowerSquare*) { return; } //probably not going to be used
@@ -83,14 +79,12 @@ public:
 	virtual InteractionBoolHolder modifiedCollisionWithCircleHazard(Tank*, CircleHazard*) { return { false, false }; }
 	bool overridesCollisionWithCircleHazard = true; //false means also use the default, which means destroy the tank if it collides
 	bool modifiedCollisionWithCircleHazardCanWorkWithOthers = true;
-	bool modifiedCollisionWithCircleHazardCanOnlyWorkIndividually = false;
 
 	virtual bool getModifiesCollisionWithRectHazard(const RectHazard*) const { return false; }
 	//precondition: hit recthazard, is not necessarily inside recthazard
 	virtual InteractionBoolHolder modifiedCollisionWithRectHazard(Tank*, RectHazard*) { return { false, false }; }
 	bool overridesCollisionWithRectHazard = true; //false means also use the default, which means destroy the tank if it collides
 	bool modifiedCollisionWithRectHazardCanWorkWithOthers = true;
-	bool modifiedCollisionWithRectHazardCanOnlyWorkIndividually = false;
 
 	bool modifiesDeathHandling = false;
 	virtual InteractionBoolHolder modifiedDeathHandling(Tank* parent) { return { true, false }; } //first is tank, second is tankpower
@@ -101,28 +95,24 @@ public:
 	virtual void modifiedShooting(Tank* parent) { return; } //for melee-class powerups (sword)
 	bool overridesShooting = true; //false? dunno
 	bool modifiedShootingCanWorkWithOthers = true;
-	bool modifiedShootingCanOnlyWorkIndividually = false;
 	*/
 
 	bool modifiesAdditionalShooting = false;
 	virtual void additionalShooting(Tank* parent, const CannonPoint&, const ExtraCannonPoint&) { return; } //for regular powerups (fire/blast, mines(?))
 	bool overridesAdditionalShooting = false; //true if default shooting won't be used
 	bool additionalShootingCanWorkWithOthers = true; //probably should only be true
-	bool additionalShootingCanOnlyWorkIndividually = false;
 
 	bool addsShootingPoints = false;
 	[[nodiscard]]
 	virtual std::vector<double>* addShootingPoints() const { return nullptr; } //list of angles to put new cannons at; angle range: (0,1)
 	//bool overridesAddShootingPoints = false; //makes no sense to be true
 	bool addShootingPointsCanWorkWithOthers = true; //should only be true
-	bool addShootingPointsCanOnlyWorkIndividually = false;
 
 	bool addsExtraShootingPoints = false;
 	[[nodiscard]]
 	virtual std::vector<std::pair<double, double>>* addExtraShootingPoints() const { return nullptr; } //list of angles to put "extra" cannons at (triple and shotgun)
 	//bool overridesAddExtraShootingPoints = false; //makes no sense to be true
 	bool addExtraShootingPointsCanWorkWithOthers = true; //should only be true
-	bool addExtraShootingPointsCanOnlyWorkIndividually = false;
 
 	/*
 	bool modifiesTankDrawings = false;
@@ -130,7 +120,6 @@ public:
 	virtual void modifiedTankDrawings(Tank* parent) { return; }
 	bool overridesTankDrawings = false;
 	bool modifiedTankDrawingsCanWorkWithOthers = true;
-	bool modifiedTankDrawingsCanOnlyWorkIndividually = false;
 	*/
 
 	virtual double getTankMaxSpeedMultiplier() const { return 1; }

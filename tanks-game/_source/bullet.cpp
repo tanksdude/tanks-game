@@ -142,16 +142,11 @@ void Bullet::update(const BulletUpdateStruct* up) {
 
 bool Bullet::move() {
 	bool shouldBeKilled = false;
-	bool modifiedMovement = false;
 	bool overridedMovement = false;
 	//TODO: handle killing the bulletpowers
 
 	for (int k = 0; k < bulletPowers.size(); k++) {
 		if (bulletPowers[k]->modifiesMovement) {
-			if (bulletPowers[k]->modifiedMovementCanOnlyWorkIndividually && modifiedMovement) {
-				continue;
-			}
-			modifiedMovement = true;
 			if (bulletPowers[k]->overridesMovement) {
 				overridedMovement = true;
 			}

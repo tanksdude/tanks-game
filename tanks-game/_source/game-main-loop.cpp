@@ -485,16 +485,11 @@ void GameMainLoop::tankToWall() {
 
 		Wall* w = WallManager::getWall(collisionPair.second);
 		bool killWall = false;
-		bool modifiedWallCollision = false;
 		bool overridedWallCollision = false;
 
 		if (CollisionHandler::partiallyCollided(t, w)) {
 			for (int k = 0; k < t->tankPowers.size(); k++) {
 				if (t->tankPowers[k]->modifiesCollisionWithWall) {
-					if (t->tankPowers[k]->modifiedCollisionWithWallCanOnlyWorkIndividually && modifiedWallCollision) {
-						continue;
-					}
-					modifiedWallCollision = true;
 					if (t->tankPowers[k]->overridesCollisionWithWall) {
 						overridedWallCollision = true;
 					}
@@ -558,17 +553,12 @@ void GameMainLoop::tankToHazard() {
 		//circles:
 		CircleHazard* ch = HazardManager::getCircleHazard(collisionPair.second);
 		bool killCircleHazard = false;
-		bool modifiedCircleHazardCollision = false;
 		bool overridedCircleHazardCollision = false;
 
 		if (CollisionHandler::partiallyCollided(t, ch)) {
 			//tankpower decides whether to use the partial collision or the true collision
 			for (int k = 0; k < t->tankPowers.size(); k++) {
 				if (t->tankPowers[k]->getModifiesCollisionWithCircleHazard(ch)) {
-					if (t->tankPowers[k]->modifiedCollisionWithCircleHazardCanOnlyWorkIndividually && modifiedCircleHazardCollision) {
-						continue;
-					}
-					modifiedCircleHazardCollision = true;
 					if (t->tankPowers[k]->overridesCollisionWithCircleHazard) {
 						overridedCircleHazardCollision = true;
 					}
@@ -627,16 +617,11 @@ void GameMainLoop::tankToHazard() {
 		//rectangles:
 		RectHazard* rh = HazardManager::getRectHazard(collisionPair.second);
 		bool killRectHazard = false;
-		bool modifiedRectHazardCollision = false;
 		bool overridedRectHazardCollision = false;
 
 		if (CollisionHandler::partiallyCollided(t, rh)) {
 			for (int k = 0; k < t->tankPowers.size(); k++) {
 				if (t->tankPowers[k]->getModifiesCollisionWithRectHazard(rh)) {
-					if (t->tankPowers[k]->modifiedCollisionWithRectHazardCanOnlyWorkIndividually && modifiedRectHazardCollision) {
-						continue;
-					}
-					modifiedRectHazardCollision = true;
 					if (t->tankPowers[k]->overridesCollisionWithRectHazard) {
 						overridedRectHazardCollision = true;
 					}
@@ -704,16 +689,11 @@ void GameMainLoop::tankToTank() {
 
 			Tank* t_inner = TankManager::getTank(j);
 			bool t_innerShouldDie = false;
-			bool modifiedTankCollision = false;
 			bool overridedTankCollision = false;
 
 			if (CollisionHandler::partiallyCollided(t_outer, t_inner)) {
 				for (int k = 0; k < t_outer->tankPowers.size(); k++) {
 					if (t_outer->tankPowers[k]->modifiesCollisionWithWall) {
-						if (t_outer->tankPowers[k]->modifiedCollisionWithTankCanOnlyWorkIndividually && modifiedTankCollision) {
-							continue;
-						}
-						modifiedTankCollision = true;
 						if (t_outer->tankPowers[k]->overridesCollisionWithTank) {
 							overridedTankCollision = true;
 						}
@@ -756,16 +736,11 @@ void GameMainLoop::tankToEdge() {
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
 		Tank* t = TankManager::getTank(i);
 		bool shouldBeKilled = false;
-		bool modifiedEdgeCollision = false;
 		bool overridedEdgeCollision = false;
 
 		if (CollisionHandler::partiallyOutOfBounds(t)) {
 			for (int k = 0; k < t->tankPowers.size(); k++) {
 				if (t->tankPowers[k]->modifiesEdgeCollision) {
-					if (t->tankPowers[k]->modifiedEdgeCollisionCanOnlyWorkIndividually && modifiedEdgeCollision) {
-						continue;
-					}
-					modifiedEdgeCollision = true;
 					if (t->tankPowers[k]->overridesEdgeCollision) {
 						overridedEdgeCollision = true;
 					}
@@ -796,16 +771,11 @@ void GameMainLoop::bulletToEdge() {
 	for (int i = BulletManager::getNumBullets() - 1; i >= 0; i--) {
 		Bullet* b = BulletManager::getBullet(i);
 		bool shouldBeKilled = false;
-		bool modifiedEdgeCollision = false;
 		bool overridedEdgeCollision = false;
 
 		if (CollisionHandler::partiallyOutOfBounds(b)) {
 			for (int k = 0; k < b->bulletPowers.size(); k++) {
 				if (b->bulletPowers[k]->modifiesEdgeCollision) {
-					if (b->bulletPowers[k]->modifiedEdgeCollisionCanOnlyWorkIndividually && modifiedEdgeCollision) {
-						continue;
-					}
-					modifiedEdgeCollision = true;
 					if (b->bulletPowers[k]->overridesEdgeCollision) {
 						overridedEdgeCollision = true;
 					}
@@ -855,16 +825,11 @@ void GameMainLoop::bulletToWall() {
 
 		Wall* w = WallManager::getWall(collisionPair.second);
 		bool killWall = false;
-		bool modifiedWallCollision = false;
 		bool overridedWallCollision = false;
 
 		if (CollisionHandler::partiallyCollided(b, w)) {
 			for (int k = 0; k < b->bulletPowers.size(); k++) {
 				if (b->bulletPowers[k]->modifiesCollisionWithWall) {
-					if (b->bulletPowers[k]->modifiedCollisionWithWallCanOnlyWorkIndividually && modifiedWallCollision) {
-						continue;
-					}
-					modifiedWallCollision = true;
 					if (b->bulletPowers[k]->overridesCollisionWithWall) {
 						overridedWallCollision = true;
 					}
@@ -971,7 +936,6 @@ void GameMainLoop::bulletToHazard() {
 		//circles:
 		CircleHazard* ch = HazardManager::getCircleHazard(collisionPair.second);
 		bool killCircleHazard = false;
-		bool modifiedCircleHazardCollision = false;
 		bool overridedCircleHazardCollision = false;
 
 		if (!b->canCollideWith(ch)) {
@@ -980,10 +944,6 @@ void GameMainLoop::bulletToHazard() {
 		if (CollisionHandler::partiallyCollided(b, ch)) {
 			for (int k = 0; k < b->bulletPowers.size(); k++) {
 				if (b->bulletPowers[k]->getModifiesCollisionWithCircleHazard(ch)) {
-					if (b->bulletPowers[k]->modifiedCollisionWithCircleHazardCanOnlyWorkIndividually && modifiedCircleHazardCollision) {
-						continue;
-					}
-					modifiedCircleHazardCollision = true;
 					if (b->bulletPowers[k]->overridesCollisionWithCircleHazard) {
 						overridedCircleHazardCollision = true;
 					}
@@ -1042,7 +1002,6 @@ void GameMainLoop::bulletToHazard() {
 		//rectangles:
 		RectHazard* rh = HazardManager::getRectHazard(collisionPair.second);
 		bool killRectHazard = false;
-		bool modifiedRectHazardCollision = false;
 		bool overridedRectHazardCollision = false;
 
 		if (!b->canCollideWith(rh)) {
@@ -1051,10 +1010,6 @@ void GameMainLoop::bulletToHazard() {
 		if (CollisionHandler::partiallyCollided(b, rh)) {
 			for (int k = 0; k < b->bulletPowers.size(); k++) {
 				if (b->bulletPowers[k]->getModifiesCollisionWithRectHazard(rh)) {
-					if (b->bulletPowers[k]->modifiedCollisionWithRectHazardCanOnlyWorkIndividually && modifiedRectHazardCollision) {
-						continue;
-					}
-					modifiedRectHazardCollision = true;
 					if (b->bulletPowers[k]->overridesCollisionWithRectHazard) {
 						overridedRectHazardCollision = true;
 					}
@@ -1181,16 +1136,11 @@ void GameMainLoop::bulletToTank() {
 
 		Tank* t = TankManager::getTank(collisionPair.second);
 		bool killTank = false;
-		bool modifiedTankCollision = false;
 		bool overridedTankCollision = false;
 
 		if (b->canCollideWith(t)) {
 			for (int k = 0; k < b->bulletPowers.size(); k++) {
 				if (b->bulletPowers[k]->modifiesCollisionWithTank) {
-					if (b->bulletPowers[k]->modifiedCollisionWithTankCanOnlyWorkIndividually && modifiedTankCollision) {
-						continue;
-					}
-					modifiedTankCollision = true;
 					if (b->bulletPowers[k]->overridesCollisionWithTank) {
 						overridedTankCollision = true;
 					}

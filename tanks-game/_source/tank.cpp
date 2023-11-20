@@ -91,16 +91,11 @@ bool Tank::initializeVertices() {
 
 bool Tank::move(bool forward, bool turnL, bool turnR, bool specialKey) {
 	bool shouldBeKilled = false;
-	bool modifiedMovement = false;
 	bool overridedMovement = false;
 	//TODO: handle killing the tankpowers
 
 	for (int k = 0; k < tankPowers.size(); k++) {
 		if (tankPowers[k]->modifiesMovement) {
-			if (tankPowers[k]->modifiedMovementCanOnlyWorkIndividually && modifiedMovement) {
-				continue;
-			}
-			modifiedMovement = true;
 			if (tankPowers[k]->overridesMovement) {
 				overridedMovement = true;
 			}
@@ -183,15 +178,10 @@ void Tank::shoot(bool shooting) {
 	if (shooting && shootCount <= 0) {
 		const BasicINIParser::BasicINIData& ini_data = GameManager::get_INI();
 
-		bool modifiedAdditionalShooting = false;
 		bool overridedShooting = false;
 
 		for (int j = 0; j < tankPowers.size(); j++) {
 			if (tankPowers[j]->modifiesAdditionalShooting) {
-				if (tankPowers[j]->additionalShootingCanOnlyWorkIndividually && modifiedAdditionalShooting) {
-					continue;
-				}
-				modifiedAdditionalShooting = true;
 				if (tankPowers[j]->overridesAdditionalShooting) {
 					overridedShooting = true;
 				}
@@ -255,7 +245,6 @@ void Tank::makeBullet(double x, double y, double angle, double radius, double sp
 	BulletManager::pushBullet(temp);
 
 	delete bp;
-	//bp can be deleted here or in the Bullet constructor, since every bullet should get a different bulletpower vector
 }
 
 void Tank::defaultMakeBullet(double angle) {
@@ -276,15 +265,8 @@ void Tank::determineShootingAngles() {
 	extraShootingPoints.clear();
 	extraShootingPoints.push_back(ExtraCannonPoint(0, 0));
 
-	bool modifiedAddsShootingPoints = false;
-
 	for (int i = 0; i < tankPowers.size(); i++) {
 		if (tankPowers[i]->addsShootingPoints) {
-			if (tankPowers[i]->addShootingPointsCanOnlyWorkIndividually && modifiedAddsShootingPoints) {
-				continue;
-			}
-			modifiedAddsShootingPoints = true;
-
 			determineShootingAngles_helper(tankPowers[i]->addShootingPoints());
 
 			if (!tankPowers[i]->addExtraShootingPointsCanWorkWithOthers) {
@@ -293,15 +275,8 @@ void Tank::determineShootingAngles() {
 		}
 	}
 
-	bool modifiedAddsExtraShootingPoints = false;
-
 	for (int i = 0; i < tankPowers.size(); i++) {
 		if (tankPowers[i]->addsExtraShootingPoints) {
-			if (tankPowers[i]->addExtraShootingPointsCanOnlyWorkIndividually && modifiedAddsExtraShootingPoints) {
-				continue;
-			}
-			modifiedAddsExtraShootingPoints = true;
-
 			std::vector<std::pair<double, double>>* extraCannons = tankPowers[i]->addExtraShootingPoints();
 			for (int j = 0; j < extraCannons->size(); j++) {
 				extraShootingPoints.push_back({ extraCannons->at(j).first, extraCannons->at(j).second });
@@ -354,7 +329,6 @@ double Tank::getShootingSpeedMultiplier() const {
 				highest = value;
 			}
 		}
-		//technically don't need to check value against 1
 	}
 
 	double value = 1;

@@ -45,28 +45,24 @@ public:
 	virtual InteractionBoolHolder modifiedMovement(Bullet*) { return { false }; } //default does nothing, obviously
 	bool overridesMovement = false; //true if the power completely changes how it moves; regular powers slightly modify movement (think homing) and still want basic bullet move
 	bool modifiedMovementCanWorkWithOthers = true; //false stops later powerups in list from activating
-	bool modifiedMovementCanOnlyWorkIndividually = false; //true means that if another power was used previously, this power can't activate
 
 	bool modifiesEdgeCollision = false;
 	//precondition: was out of bounds, is not necessarily out of bounds
 	virtual InteractionBoolHolder modifiedEdgeCollision(Bullet*) { return { false }; } //only the first false means something
 	bool overridesEdgeCollision = true;
 	bool modifiedEdgeCollisionCanWorkWithOthers = false; //options: either it bounces or temporarily stays outside, so it has no need to work with others; that makes the promise of powerup mixing kinda depressing
-	bool modifiedEdgeCollisionCanOnlyWorkIndividually = false;
 
 	bool modifiesCollisionWithTank = false;
 	//precondition: hit tank, is not necessarily inside tank
 	virtual InteractionBoolHolder modifiedCollisionWithTank(Bullet*, Tank*) { return { false, false }; }
 	bool overridesCollisionWithTank = true;
 	bool modifiedCollisionWithTankCanWorkWithOthers = true;
-	bool modifiedCollisionWithTankCanOnlyWorkIndividually = false;
 
 	bool modifiesCollisionWithWall = false;
 	//precondition: hit wall, is not necessarily inside wall
 	virtual InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> modifiedCollisionWithWall(const Bullet*, const Wall*) { return { false, false, {}, {} }; }
 	bool overridesCollisionWithWall = true; //false means also use the default, which is just destroy the bullet if it collides
 	bool modifiedCollisionWithWallCanWorkWithOthers = true;
-	bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;
 
 	//bool modifiesCollisionWithPowerup = false;
 	//virtual void modifiedCollisionWithPowerSquare(Bullet*, PowerSquare*) { return; } //shouldn't be used
@@ -79,14 +75,12 @@ public:
 	virtual InteractionBoolHolder modifiedCollisionWithCircleHazard(Bullet*, CircleHazard*) { return { false, false }; }
 	bool overridesCollisionWithCircleHazard = true; //false means also use the default, which means destroy the bullet if it collides
 	bool modifiedCollisionWithCircleHazardCanWorkWithOthers = true;
-	bool modifiedCollisionWithCircleHazardCanOnlyWorkIndividually = false;
 
 	virtual bool getModifiesCollisionWithRectHazard(const RectHazard*) const { return false; }
 	//precondition: hit recthazard, is not necessarily inside recthazard
 	virtual InteractionBoolHolder modifiedCollisionWithRectHazard(Bullet*, RectHazard*) { return { false, false }; }
 	bool overridesCollisionWithRectHazard = true; //false means also use the default, which means destroy the bullet if it collides
 	bool modifiedCollisionWithRectHazardCanWorkWithOthers = true;
-	bool modifiedCollisionWithRectHazardCanOnlyWorkIndividually = false;
 
 	bool modifiesDeathHandling = false;
 	virtual InteractionBoolHolder modifiedDeathHandling(Bullet* parent) { return { true, false }; } //first is bullet, second is bulletpower
