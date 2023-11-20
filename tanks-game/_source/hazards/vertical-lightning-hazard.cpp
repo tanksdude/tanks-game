@@ -414,7 +414,7 @@ inline void VerticalLightningHazard::drawBolts_Pose(float alpha) const {
 }
 
 RectHazard* VerticalLightningHazard::randomizingFactory(double x_start, double y_start, double area_width, double area_height, const GenericFactoryConstructionData& args) {
-	if (WallManager::getNumWalls() == 0) [[unlikely]] {
+	if (WallManager::getNumWalls() <= 1) [[unlikely]] {
 		return nullptr; //don't bother trying to see if a vertical lightning could go from edge to edge
 	}
 
@@ -425,22 +425,23 @@ RectHazard* VerticalLightningHazard::randomizingFactory(double x_start, double y
 
 	do {
 		width = RNG::randNumInRange(12, 24);
-		for (int i = 0; i < WallManager::getNumWalls(); i++) {
-			const Wall* wa = WallManager::getWall(i);
-			xpos = wa->x + RNG::randFunc() * std::clamp<double>(wa->w - width, 0, wa->w);
-			ypos = wa->y + wa->h;
-			int j, wallAttempts = 0;
-			do {
-				j = RNG::randFunc() * WallManager::getNumWalls();
-				wallAttempts++;
-			} while ((wallAttempts < 8) && (j == i));
-			if (j != i) [[likely]] {
-				const Wall* otherWall = WallManager::getWall(j);
-				height = otherWall->y - ypos;
-			} else {
-				height = 0;
-			}
+		int i = RNG::randFunc() * WallManager::getNumWalls();
+		const Wall* wa = WallManager::getWall(i);
+		xpos = wa->x + RNG::randFunc() * std::clamp<double>(wa->w - width, 0, wa->w);
+		ypos = wa->y + wa->h;
+
+		int j, wallAttempts = 0;
+		do {
+			j = RNG::randFunc() * WallManager::getNumWalls();
+			wallAttempts++;
+		} while ((wallAttempts < 8) && (j == i));
+		if (j != i) [[likely]] {
+			const Wall* otherWall = WallManager::getWall(j);
+			height = otherWall->y - ypos;
+		} else {
+			height = 0;
 		}
+
 		if ((height >= minHeight) && (height <= maxHeight) && (ypos >= y_start) && (ypos + height <= y_start + area_height) && (xpos >= x_start) && (xpos + width <= x_start + area_width)) {
 			RectHazard* testVerticalLightning = new VerticalLightningHazard(xpos, ypos, width, height);
 			if (testVerticalLightning->reasonableLocation()) {
@@ -451,7 +452,7 @@ RectHazard* VerticalLightningHazard::randomizingFactory(double x_start, double y
 			}
 		}
 		attempts++;
-	} while (attempts < 32);
+	} while (attempts < 64);
 
 	return randomized;
 }
