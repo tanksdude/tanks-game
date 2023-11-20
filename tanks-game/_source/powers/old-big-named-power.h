@@ -8,7 +8,6 @@ public:
 		return types;
 	}
 	virtual std::unordered_map<std::string, float> getWeights() const override;
-	//virtual std::vector<std::string> getPowerAttributes() const override;
 
 	virtual std::string getName() const override { return OldBigNamedPower::getClassName(); }
 	static std::string getClassName() { return "old_big"; }
@@ -33,9 +32,6 @@ public:
 
 	virtual TankPower* makeDuplicate() const override { return new OldBigNamedTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
-
-	//virtual double getTankFiringRateMultiplier() const override { return 4; }
-	//bool tankFiringRateStacks = true; //JS always stacked
 
 	OldBigNamedTankPower();
 };

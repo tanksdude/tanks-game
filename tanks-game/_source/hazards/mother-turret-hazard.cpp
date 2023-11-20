@@ -29,44 +29,34 @@ std::unordered_map<std::string, float> MotherTurretHazard::getWeights() const {
 }
 
 MotherTurretHazard::MotherTurretHazard(double xpos, double ypos, double angle, int maxChildren, int startChildren, double childDistMultiplier) : TargetingTurretHazard(xpos, ypos, angle) {
-	//x = xpos;
-	//y = ypos;
-	//velocity = SimpleVector2D(angle, 0, true);
 	r = TANK_RADIUS * 2; // that's a little big
 
 	stateMultiplier[1] *= 4;
 	turningIncrement *= 2;
 
 	maxChildTurrets = (maxChildren/2)*2; //even numbers only
-	childDistFromMother = r * childDistMultiplier; //probably default: (r/4) * 3 //TODO: r, r/2, r*.75 (3/4*r because child turret diameter + radius)
+	childDistFromMother = r * childDistMultiplier;
 	initialAngle = angle;
 	targetingNum = -1;
 	targetingChild = false;
 
 	childTurretIDs = std::vector<Game_ID>(maxChildTurrets, -1);
 	childTurretAlive = std::vector<bool>(maxChildTurrets, false);
-	//pushInitialChildren(startChildren);
 	initialChildren = startChildren;
 
-	//canAcceptPowers = false; //... true?
+	//canAcceptPowers = false; //not sure
 
 	//idea: mitosis turrets; grows for some time, then splits (that'd be hard to program...)
 }
 
 MotherTurretHazard::MotherTurretHazard(double xpos, double ypos, double angle, int maxChildren, int startChildren) : MotherTurretHazard(xpos, ypos, angle, maxChildren, startChildren, .75) {
-	//nothing
 	//child distance options: r, r/2, r*.75
 }
 
-MotherTurretHazard::MotherTurretHazard(double xpos, double ypos, double angle) : MotherTurretHazard(xpos, ypos, angle, 8, 4) {
-	//something?
-	//reason for choosing 8 max by default: don't want the randomly-placed ones to be excessive
-	//other reason: wouldn't it be interesting if there was only one that was different? it's the small details that count
-}
+MotherTurretHazard::MotherTurretHazard(double xpos, double ypos, double angle) : MotherTurretHazard(xpos, ypos, angle, 8, 4) {}
 
 MotherTurretHazard::~MotherTurretHazard() {
-	//delete[] stateMultiplier;
-	//delete[] stateColors;
+	//nothing
 }
 
 CircleHazard* MotherTurretHazard::factory(const GenericFactoryConstructionData& args) {
@@ -104,11 +94,10 @@ CircleHazard* MotherTurretHazard::factory(const GenericFactoryConstructionData& 
 	return new MotherTurretHazard(0, 0, 0, 0, 0);
 }
 
-//probably works
-inline void MotherTurretHazard::pushInitialChildren(int childCount) {
-	childCount = (childCount/2)*2; //even numbers only
+void MotherTurretHazard::pushInitialChildren(int childCount) {
+	//childCount = (childCount/2)*2; //guaranteed to be even already
 
-	if ((maxChildTurrets == 0) || (childCount == 0)) {
+	if ((maxChildTurrets == 0) || (childCount == 0)) [[unlikely]] {
 		return;
 	}
 
@@ -174,25 +163,6 @@ inline void MotherTurretHazard::pushInitialChildren(int childCount) {
 		currentInitialChildren /= 2;
 	}
 
-	/*
-	const double turretAngleDiff = (2*PI) / maxChildTurrets;
-	const double workingAngle = (2*PI) / angleSplit;
-	//angle area to choose turret spots: (workingAngle*i, workingAngle*(i+1)]
-	for (int i = 0; i < angleSplit; i++) {
-		const double currentAngleStart = workingAngle * i;
-		const double currentAngleEnd = workingAngle * (i+1);
-		if (currentInitialChildren >= currentMaxChildren) {
-			for (int j = 1; j <= currentMaxChildren; j++) {
-				pushChild(this->velocity.getAngle() + currentAngleStart + turretAngleDiff*j);
-			}
-		} else {
-			for (int j = 1; j <= currentInitialChildren; j++) {
-				pushChild(this->velocity.getAngle() + currentAngleStart + turretAngleDiff*round((j * workingAngle/double(currentInitialChildren+1)) / turretAngleDiff));
-			}
-		}
-	}
-	*/
-
 	const double turretAngleDiff = (2*PI) / maxChildTurrets;
 	const double workingAngle = (2*PI) / angleSplit;
 	for (int i = 0; i < angleSplit; i++) {
@@ -214,17 +184,6 @@ CircleHazard* MotherTurretHazard::makeTurret(int turretNum) const {
 void MotherTurretHazard::pushChild(int turretNum) {
 	//make turret
 	CircleHazard* childTurret = makeTurret(turretNum);
-
-	/*
-	//find turret position number
-	int turretNum = (int)round(((2*PI) / maxChildTurrets) / abs(angle)) % maxChildTurrets;
-	while (this->childTurretIDs.size() <= turretNum) {
-		this->childTurretIDs.push_back(-1);
-	}
-	while (this->childTurretAlive.size() <= turretNum) {
-		this->childTurretIDs.push_back(false);
-	}
-	*/
 
 	//add turret to child list
 	this->childTurretIDs[turretNum] = childTurret->getGameID();
@@ -271,21 +230,18 @@ void MotherTurretHazard::tick() {
 inline void MotherTurretHazard::tick_chooseSpot() {
 	//choose the spot that will result in the most time spent turning
 	if (getChildCount() < maxChildTurrets) {
-		const double childAngleDiff = (2*PI) / maxChildTurrets;
-		//double* angleDiff = new double[maxChildTurrets];
-		std::vector<double> angleDiff; angleDiff.reserve(maxChildTurrets);
+		const float childAngleDiff = (2*PI) / maxChildTurrets;
+		float* angleDiff = new float[maxChildTurrets];
 		for (int i = 0; i < maxChildTurrets; i++) {
 			if (childTurretAlive[i]) {
-				//angleDiff[i] = -2*PI;
-				angleDiff.push_back(-2*PI);
+				angleDiff[i] = -2*PI;
 			} else {
-				//angleDiff[i] = SimpleVector2D::angleBetween(this->velocity, SimpleVector2D(getChildTurretAngle(i), 0, true));
-				angleDiff.push_back(abs(SimpleVector2D::angleBetween(this->velocity, SimpleVector2D(getChildTurretAngle(i), 0, true))));
+				angleDiff[i] = abs(SimpleVector2D::angleBetween(this->velocity, SimpleVector2D(getChildTurretAngle(i), 0, true)));
 			}
 		}
-		targetingNum = findMaxIndex(angleDiff.data(), maxChildTurrets);
+		targetingNum = findMaxIndex(angleDiff, maxChildTurrets);
 		targetingChild = true;
-		//delete[] angleDiff;
+		delete[] angleDiff;
 	} else {
 		targetingChild = false;
 		targetingCount = 0;
@@ -311,20 +267,11 @@ inline void MotherTurretHazard::tick_trackSpot() {
 inline void MotherTurretHazard::tick_chargeUp() {
 	targetingCount++;
 	if (targetingCount >= stateMultiplier[1] * tickCycle) {
-		//BulletManager::pushBullet(new Bullet(x + r*cos(velocity.getAngle()), y + r*sin(velocity.getAngle()), r*BULLET_TO_TANK_RADIUS_RATIO, velocity.getAngle(), Tank::default_maxSpeed*BULLET_TO_TANK_SPEED_RATIO, this->getTeamID(), BulletParentType::individual, this->getGameID()));
 		pushChild(targetingNum);
 		currentState = 2;
 		targetingCount = 0;
 		targetingChild = false; //allows target to change
 		//targetingNum = -1; //needed?
-	}
-}
-
-inline void MotherTurretHazard::tick_cooldown() {
-	targetingCount++;
-	if (targetingCount >= stateMultiplier[2] * tickCycle) {
-		targetingCount = 0;
-		currentState = 0;
 	}
 }
 
@@ -348,24 +295,6 @@ int MotherTurretHazard::updateChildCount() {
 			//found, alive
 			count++;
 		}
-		/*
-		bool found = false;
-		for (int j = 0; j < HazardManager::getNumCircleHazards(); j++) {
-			CircleHazard* ch = HazardManager::getCircleHazard(j);
-			if (ch->getGameID() == childTurretIDs[i]) {
-				//found, is alive
-				count++;
-				found = true;
-				break;
-			}
-		}
-
-		//not found, isn't alive
-		if (!found) {
-			childTurretIDs[i] = -1;
-			childTurretAlive[i] = false;
-		}
-		*/
 	}
 
 	return count;
@@ -373,7 +302,6 @@ int MotherTurretHazard::updateChildCount() {
 
 void MotherTurretHazard::turnTowardsPoint(int turretNum) {
 	//see TargetingTurretHazard::turnTowardsTank
-	double angle = getChildTurretAngle(turretNum);
 	SimpleVector2D distToChild = SimpleVector2D(getChildTurretAngle(turretNum), this->r+childDistFromMother, true);
 	float theta = SimpleVector2D::angleBetween(distToChild, velocity);
 	if (abs(theta) < PI/turningIncrement) {
@@ -389,7 +317,7 @@ void MotherTurretHazard::turnTowardsPoint(int turretNum) {
 }
 
 bool MotherTurretHazard::isPointedAt(int turretNum) const {
-	double angle = getChildTurretAngle(turretNum);
+	float angle = getChildTurretAngle(turretNum);
 	return (abs(SimpleVector2D::angleBetween(velocity, SimpleVector2D(angle, 0, true))) < PI/turningIncrement);
 }
 
@@ -491,7 +419,6 @@ void MotherTurretHazard::poseDraw(DrawingLayers layer) const {
 }
 
 void MotherTurretHazard::ghostDraw(float alpha) const {
-	drawShootingTimer(alpha); //TODO: should this happen?
 	drawBody(alpha);
 	drawOutline(alpha);
 	drawBarrel(alpha);
@@ -507,7 +434,6 @@ void MotherTurretHazard::ghostDraw(DrawingLayers layer, float alpha) const {
 			std::cerr << "WARNING: unknown DrawingLayer for " + getName() + " ghostDraw!" << std::endl;
 			[[fallthrough]];
 		case DrawingLayers::normal:
-			drawShootingTimer(alpha); //TODO: should this happen?
 			drawBody(alpha);
 			drawOutline(alpha);
 			drawBarrel(alpha);
@@ -559,8 +485,8 @@ inline void MotherTurretHazard::drawShootingTimer(float alpha) const {
 			SimpleVector2D vertex = SimpleVector2D(body_vertices[i % Circle::numOfSides + 1]);
 			vertex.scaleAndRotate(r*(5.0/4.0), rotateAngle);
 
-			coordsAndColor[(i+1)*6]   = x + vertex.getXComp();
-			coordsAndColor[(i+1)*6+1] = y + vertex.getYComp();
+			coordsAndColor[(i+1)*6]   = static_cast<float>(x) + vertex.getXComp();
+			coordsAndColor[(i+1)*6+1] = static_cast<float>(y) + vertex.getYComp();
 			coordsAndColor[(i+1)*6+2] = color.getRf();
 			coordsAndColor[(i+1)*6+3] = color.getGf();
 			coordsAndColor[(i+1)*6+4] = color.getBf();

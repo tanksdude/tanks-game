@@ -41,50 +41,49 @@ public:
 	virtual TankPower* makeTankPower() const = 0;
 
 	bool modifiesMovement = false; //true if it, you know, modifies the movement
-	virtual InteractionBoolHolder modifiedMovement(Bullet*) { return { false }; } //default does nothing, obviously
 	//precondition: nothing
+	virtual InteractionBoolHolder modifiedMovement(Bullet*) { return { false }; } //default does nothing, obviously
 	bool overridesMovement = false; //true if the power completely changes how it moves; regular powers slightly modify movement (think homing) and still want basic bullet move
 	bool modifiedMovementCanWorkWithOthers = true; //false stops later powerups in list from activating
 	bool modifiedMovementCanOnlyWorkIndividually = false; //true means that if another power was used previously, this power can't activate
-	//TODO: have super override value? so the power can ensure that it and only it will activate (I don't think a power should have this kind of authority, but it might be needed)
 
 	bool modifiesEdgeCollision = false;
-	virtual InteractionBoolHolder modifiedEdgeCollision(Bullet*) { return { false }; } //only the first false means something
 	//precondition: was out of bounds, is not necessarily out of bounds
+	virtual InteractionBoolHolder modifiedEdgeCollision(Bullet*) { return { false }; } //only the first false means something
 	bool overridesEdgeCollision = true;
 	bool modifiedEdgeCollisionCanWorkWithOthers = false; //options: either it bounces or temporarily stays outside, so it has no need to work with others; that makes the promise of powerup mixing kinda depressing
 	bool modifiedEdgeCollisionCanOnlyWorkIndividually = false;
 
 	bool modifiesCollisionWithTank = false;
-	virtual InteractionBoolHolder modifiedCollisionWithTank(Bullet*, Tank*) { return { false, false }; }
 	//precondition: hit tank, is not necessarily inside tank
+	virtual InteractionBoolHolder modifiedCollisionWithTank(Bullet*, Tank*) { return { false, false }; }
 	bool overridesCollisionWithTank = true;
 	bool modifiedCollisionWithTankCanWorkWithOthers = true;
 	bool modifiedCollisionWithTankCanOnlyWorkIndividually = false;
 
 	bool modifiesCollisionWithWall = false;
-	virtual InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> modifiedCollisionWithWall(const Bullet*, const Wall*) { return { false, false, {}, {} }; }
 	//precondition: hit wall, is not necessarily inside wall
+	virtual InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> modifiedCollisionWithWall(const Bullet*, const Wall*) { return { false, false, {}, {} }; }
 	bool overridesCollisionWithWall = true; //false means also use the default, which is just destroy the bullet if it collides
 	bool modifiedCollisionWithWallCanWorkWithOthers = true;
 	bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;
 
-	//bool modifiesCollisionWithPower = false;
-	//virtual void modifiedCollisionWithPowerSquare(Bullet*, PowerSquare*) { return; } //probably shouldn't be used
+	//bool modifiesCollisionWithPowerup = false;
+	//virtual void modifiedCollisionWithPowerSquare(Bullet*, PowerSquare*) { return; } //shouldn't be used
 
 	//bool modifiesCollisionWithBullet = false;
 	//virtual void modifiedCollisionWithBullet(Bullet* parent, Bullet* other) { return; } //probably shouldn't be used
 
 	virtual bool getModifiesCollisionWithCircleHazard(const CircleHazard*) const { return false; }
-	virtual InteractionBoolHolder modifiedCollisionWithCircleHazard(Bullet*, CircleHazard*) { return { false, false }; }
 	//precondition: hit circlehazard, is not necessarily inside circlehazard
+	virtual InteractionBoolHolder modifiedCollisionWithCircleHazard(Bullet*, CircleHazard*) { return { false, false }; }
 	bool overridesCollisionWithCircleHazard = true; //false means also use the default, which means destroy the bullet if it collides
 	bool modifiedCollisionWithCircleHazardCanWorkWithOthers = true;
 	bool modifiedCollisionWithCircleHazardCanOnlyWorkIndividually = false;
 
 	virtual bool getModifiesCollisionWithRectHazard(const RectHazard*) const { return false; }
-	virtual InteractionBoolHolder modifiedCollisionWithRectHazard(Bullet*, RectHazard*) { return { false, false }; }
 	//precondition: hit recthazard, is not necessarily inside recthazard
+	virtual InteractionBoolHolder modifiedCollisionWithRectHazard(Bullet*, RectHazard*) { return { false, false }; }
 	bool overridesCollisionWithRectHazard = true; //false means also use the default, which means destroy the bullet if it collides
 	bool modifiedCollisionWithRectHazardCanWorkWithOthers = true;
 	bool modifiedCollisionWithRectHazardCanOnlyWorkIndividually = false;
@@ -93,21 +92,13 @@ public:
 	virtual InteractionBoolHolder modifiedDeathHandling(Bullet* parent) { return { true, false }; } //first is bullet, second is bulletpower
 	//it's first come, first served
 
-	/*
-	bool modifiesBulletDrawings = false;
-	virtual void modifiedBulletDrawings(Bullet* parent) { return; } //probably not going to be used
-	bool overridesBulletDrawings = false;
-	bool modifiedBulletDrawingsCanWorkWithOthers = true;
-	bool modifiedBulletDrawingsCanOnlyWorkIndividually = false;
-	*/
-
 	virtual double getBulletSpeedMultiplier() const { return 1; }
 	bool bulletSpeedStacks = false;
 	virtual double getBulletRadiusMultiplier() const { return 1; }
 	bool bulletRadiusStacks = false;
 	virtual double getBulletAcceleration() const { return 0; }
 	virtual float getBulletAccelerationImportance() const { return 0; }
-	virtual double getBulletDegradeAmount() const { return 0; }
+	virtual double getBulletDegradeAmount() const { return 0; } //negative values are not valid
 	virtual float getBulletDegradeImportance() const { return 0; }
 	virtual double getBulletRadiusGrowNumber_Stationary() const { return 0; }
 	bool bulletRadiusGrowMultiplies_Stationary = false; //negative additive values do not get processed by bullets
@@ -118,7 +109,7 @@ public:
 	virtual float getOffenseTier(const Bullet*) const { return 0; }
 	virtual float getDefenseImportance() const { return 0; }
 	virtual float getDefenseTier(const Bullet*) const { return 0; }
+	//idea: bulletpowers can set a flag for "additive offense/defense for same bulletpower"; allows double big bullets to be even stronger
 
 	virtual ~BulletPower() { return; }
-	//need separate offense stuff for different situations: tank vs bullet offense could be different (would it be more effective to have that stuff in modifiedTankCollision?)
 };

@@ -79,15 +79,6 @@ void DeveloperLevel1::initialize() {
 	names[0] = "bounce", names[1] = "homing";
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH-60, GAME_HEIGHT-20, "vanilla", names, 2));
 	delete[] names;
-
-	/*
-	for (int i = 0; i < WallManager::getNumWalls(); i++) {
-		std::cout << "wall" << i << ": " << WallManager::getWall(i)->x << ", " << WallManager::getWall(i)->y << ", " << WallManager::getWall(i)->w << ", " << WallManager::getWall(i)->h << std::endl;
-	}
-	for (int i = 0; i < PowerupManager::getNumPowerups(); i++) {
-		std::cout << "powerup" << i << ": " << PowerupManager::getPowerup(i)->x << ", " << PowerupManager::getPowerup(i)->y << std::endl;
-	}
-	*/
 }
 
 Level* DeveloperLevel1::factory() {

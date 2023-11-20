@@ -8,5 +8,5 @@ public:
 	static const ColorValueHolder X_COLOR;
 public:
 	virtual ColorValueHolder getColor() const;
-	virtual void tick(); //does nothing...
+	//virtual void tick() { return; } //does nothing...
 };

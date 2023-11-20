@@ -74,7 +74,6 @@ public:
 	bool move();
 	void powerCalculate();
 	void removePower(int index);
-	//int determineDamage(); //maybe for another day
 
 	bool canCollideWith(const GameThing*) const;
 	bool canCollideWith(const Bullet*) const;
@@ -123,7 +122,7 @@ struct BulletUpdateStruct {
 	double alpha;
 	//absolutes:
 	//double acceleration;
-	std::vector<Bullet*> newBullets;
+	std::vector<Bullet*> newBullets; //not implemented, don't use
 
 	void add(const BulletUpdateStruct& other);
 

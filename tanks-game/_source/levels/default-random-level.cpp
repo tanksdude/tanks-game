@@ -25,7 +25,7 @@ ColorValueHolder DefaultRandomLevel::getDefaultColor() const {
 	return currentColor;
 }
 
-void DefaultRandomLevel::initialize() { //still needs a lot of work
+void DefaultRandomLevel::initialize() {
 	ResetThings::tankPositionReset();
 
 	ColorValueHolder randColor = getDefaultColor();
@@ -61,9 +61,9 @@ void DefaultRandomLevel::initialize() { //still needs a lot of work
 	double circleVsRectHazardChoice = double(HazardDataGovernor::getNumCircleHazardTypes("random-vanilla"))/double(HazardDataGovernor::getNumCircleHazardTypes("random-vanilla") + HazardDataGovernor::getNumRectHazardTypes("random-vanilla"));
 	int addHazardCount = RNG::randIntInRange(8, 12+1); //v0.2.4 had 5 circle hazards and 5 rect hazards, meaning there used to be ~10 chances to insert hazards
 	for (int i = 0; i < addHazardCount; i++) {
-		int count = weightedSelect<float>(choosingHazardWeights, 4); //{0, 1, 2, 3}
+		int count = weightedSelect(choosingHazardWeights, 4); //{0, 1, 2, 3}
 		if (RNG::randFunc() < circleVsRectHazardChoice) {
-			int index = weightedSelect<float>(circleHazardWeights, HazardDataGovernor::getNumCircleHazardTypes("random-vanilla")); //randomize which hazard gets chosen (it could be one that was already chosen)
+			int index = weightedSelect(circleHazardWeights, HazardDataGovernor::getNumCircleHazardTypes("random-vanilla")); //randomize which hazard gets chosen (it could be one that was already chosen)
 			CircleHazardRandomizationFunction f = HazardDataGovernor::getCircleHazardRandomizationFunction("random-vanilla", HazardDataGovernor::getCircleHazardName("random-vanilla", index));
 			for (int i = 0; i < count; i++) {
 				GenericFactoryConstructionData constructionData;
@@ -73,7 +73,7 @@ void DefaultRandomLevel::initialize() { //still needs a lot of work
 				}
 			}
 		} else {
-			int index = weightedSelect<float>(rectHazardWeights, HazardDataGovernor::getNumRectHazardTypes("random-vanilla"));
+			int index = weightedSelect(rectHazardWeights, HazardDataGovernor::getNumRectHazardTypes("random-vanilla"));
 			RectHazardRandomizationFunction f = HazardDataGovernor::getRectHazardRandomizationFunction("random-vanilla", HazardDataGovernor::getRectHazardName("random-vanilla", index));
 			for (int i = 0; i < count; i++) {
 				GenericFactoryConstructionData constructionData;
@@ -92,7 +92,7 @@ void DefaultRandomLevel::initialize() { //still needs a lot of work
 	//randomize powers:
 	float choosingPowerWeights[] = { 4.0f, 4.0f, 1.0f, .5f };
 	for (int i = 0; i < 4; i++) {
-		int count = 1 + weightedSelect<float>(choosingPowerWeights, 4); //{1, 2, 3, 4}
+		int count = 1 + weightedSelect(choosingPowerWeights, 4); //{1, 2, 3, 4}
 		std::string* randPowers = LevelHelper::getRandomPowers(count, "random-vanilla");
 		pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2-60, GAME_HEIGHT/2-16);
 		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, "random-vanilla", randPowers, count));

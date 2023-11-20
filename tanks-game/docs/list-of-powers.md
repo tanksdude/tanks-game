@@ -172,7 +172,7 @@ Why "banana"? It was named after the [banana bomb from Worms](https://worms.fand
 
 ## Godmode
 
-* Types: "vanilla", "ultimate", "ultimate-vanilla"
+* Types: "vanilla", "old", "ultimate", "ultimate-vanilla"
 * Internal name: `godmode`
 * Attributes: none
 * Color: rainbow! (changes over time)
@@ -550,6 +550,7 @@ These are the types custom powers are not allowed to have, unless `[MODS] ModSaf
 * Fire
 * Blast
 * Banana
+* Godmode
 * Mines
 * Shotgun
 * Tracking

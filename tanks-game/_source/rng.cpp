@@ -7,7 +7,6 @@ std::uniform_real_distribution<double> RNG::distribution(0, 1);
 
 void RNG::Initialize(long long seed) {
 	generator = std::default_random_engine(seed);
-	//std::uniform_real_distribution<double> distribution(0, 1);
 }
 
 void RNG::Initialize() {

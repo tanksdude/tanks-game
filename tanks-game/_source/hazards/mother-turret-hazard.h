@@ -3,21 +3,6 @@
 
 class MotherTurretHazard : public TargetingTurretHazard {
 protected:
-	//SimpleVector2D velocity; //for stationary and targeting turrets, the magnitude will obviously be 0
-	//double tickCount;
-	//double tickCycle;
-	//unsigned int currentState;
-	//unsigned int maxState;
-	//double* stateMultiplier;
-	//ColorValueHolder* stateColors;
-
-	//double turningIncrement = 128;
-	//bool targeting;
-	//double targetingX, targetingY; //not the x and y of the targeted tank; it's the x and y of the targeting reticule
-	//ColorValueHolder reticuleColors[2];
-	//double targetingCount;
-	//Game_ID trackingID; //if ==this->getGameID(), then it's not tracking
-
 	int maxChildTurrets; //treated as constant
 	std::vector<Game_ID> childTurretIDs; //length = maxChildTurrets (vector for ease of use, can't use std::array)
 	std::vector<bool> childTurretAlive;
@@ -29,7 +14,7 @@ protected:
 	int initialChildren;
 
 protected:
-	virtual inline void pushInitialChildren(int count);
+	virtual void pushInitialChildren(int count);
 
 	inline int getChildCount() const; //update child count before using this!
 	int updateChildCount(); //returns alive children
@@ -49,11 +34,9 @@ public:
 
 protected:
 	virtual float getDefaultOffense() const override { return 0; }
-	virtual float getDefaultDefense() const override { return DESTRUCTION_TIER + .5; } //TODO: double big bullets should be able to destroy this
-	//idea: bulletpowers can set a flag for "additive offense/defense for same bulletpower
+	virtual float getDefaultDefense() const override { return DESTRUCTION_TIER + .5f; } //TODO: double big bullets should be able to destroy this
 
 public:
-	//virtual bool validLocation() const override { return true; }
 	virtual bool reasonableLocation() const override;
 	virtual void initialize() override;
 
@@ -69,12 +52,9 @@ public:
 	virtual void ghostDraw(DrawingLayers, float alpha) const override;
 
 protected:
-	//virtual inline void tick_continueTracking() override;
-	//virtual inline void tick_lookForNewTarget() override;
 	virtual inline void tick_chooseSpot();
 	virtual inline void tick_trackSpot();
 	virtual inline void tick_chargeUp() override;
-	virtual inline void tick_cooldown() override;
 
 protected:
 	virtual inline void drawShootingTimer(float alpha = 1.0f) const;
@@ -87,7 +67,4 @@ public:
 	virtual ~MotherTurretHazard();
 	static CircleHazard* factory(const GenericFactoryConstructionData&);
 	static CircleHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, const GenericFactoryConstructionData&);
-	//virtual int getFactoryArgumentCount() const override { return 3; }
-	//virtual CircleHazardConstructionTypes getConstructionType() const override { return CircleHazardConstructionTypes::angleRequired; }
-	//virtual CircleFactoryInformation getFactoryInformation() const override { return { false, false, false, false, false }; }
 };

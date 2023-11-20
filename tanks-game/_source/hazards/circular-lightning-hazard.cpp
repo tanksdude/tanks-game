@@ -46,7 +46,6 @@ CircularLightningHazard::CircularLightningHazard(double xpos, double ypos, doubl
 
 	maxBolts = 1;
 	lengthOfBolt = 4; //JS: 2 (though the circular version didn't exist in JS)
-	bolts.reserve(maxBolts);
 	boltTick = 0;
 	boltCycle = 4; //JS: none (though the circular version didn't exist in JS)
 	boltsNeeded = false;
@@ -66,7 +65,7 @@ inline Circle* CircularLightningHazard::getCenterPoint() const {
 }
 
 CircularLightningHazard::~CircularLightningHazard() {
-	//clearBolts(); //handled by ~GeneralizedLightning
+	//nothing
 }
 
 bool CircularLightningHazard::initializeVertices() {
@@ -115,7 +114,6 @@ CircleHazard* CircularLightningHazard::factory(const GenericFactoryConstructionD
 }
 
 void CircularLightningHazard::specialEffectCircleCollision(const Circle* c) {
-	//it's so nice how simple this is
 	const Circle* centerPoint = getCenterPoint();
 	double intersectionX, intersectionY;
 	int boltPoints;
@@ -130,10 +128,7 @@ void CircularLightningHazard::specialEffectCircleCollision(const Circle* c) {
 		intersectionY = centerPoint->y + distToCircle.getYComp();
 		boltPoints = getDefaultNumBoltPoints(distToCircle.getMagnitude());
 	}
-	//double dist = sqrt(pow(intersectionX - centerPoint->x, 2) + pow(intersectionY - centerPoint->y, 2));
-	//std::cout << dist << std::endl;
-	//boltPoints = (boltPoints < 2 ? getDefaultNumBoltPoints(dist) : boltPoints); //no need
-	pushBolt(new LightningBolt(0, 0, intersectionX - x, intersectionY - y, boltPoints)); //TODO: is this right? (probably)
+	pushBolt(new LightningBolt(0, 0, intersectionX - x, intersectionY - y, boltPoints));
 	delete centerPoint;
 }
 
@@ -219,7 +214,6 @@ bool CircularLightningHazard::reasonableLocation() const {
 }
 
 void CircularLightningHazard::refreshBolt(LightningBolt* l) const {
-	//TODO: more testing
 	//see RectangularLightningHazard
 	if (l->length <= 2) {
 		return;
@@ -250,17 +244,6 @@ void CircularLightningHazard::refreshBolt(LightningBolt* l) const {
 		l->positions[1] + boltDeltaY * (1.0f/4.0f) - (newH * .5f) * cosAngle
 	};
 
-	//std::cout << "deltaX: " << boltDeltaX << std::endl;
-	//std::cout << "deltaY: " << boltDeltaY << std::endl;
-	//std::cout << "deltaY adj: " << (boltDeltaY * 1.0) << std::endl;
-	//std::cout << "dist: " << boltVec.getMagnitude() << std::endl;
-	//std::cout << "angle: " << (boltVec.getAngle() * 180/3.1415926535897) << std::endl;
-	//std::cout << "cos(angle): " << cosAngle << std::endl;
-	//std::cout << "sin(angle): " << sinAngle << std::endl;
-	//for (int i = 0; i < 6; i++) {
-	//	std::cout << i << ": " << polygonX[i] << " " << polygonY[i] << std::endl;
-	//}
-
 	for (int j = 1; j < l->length-1; j++) {
 		float randTemp;
 		float testX, testY;
@@ -268,7 +251,6 @@ void CircularLightningHazard::refreshBolt(LightningBolt* l) const {
 			randTemp = maxVariance * static_cast<float>(RNG::randFunc()*2-1);
 			testX = l->positions[j*2 - 2] + (boltDeltaX/(l->length-1)) - randTemp * sinAngle;
 			testY = l->positions[j*2 - 1] + (boltDeltaY/(l->length-1)) + randTemp * cosAngle;
-			//std::cout << testX << " " << testY << std::endl;
 		} while ((sqrt(testX*testX + testY*testY) > r) || !pointInPolygon(6, polygonX, polygonY, testX, testY));
 		//the first case is rare, but I'm fairly certain it's a useless check if pointInPolygon is checked first
 		l->positions[j*2]   = testX;
@@ -413,8 +395,7 @@ inline void CircularLightningHazard::drawBackground(bool pose, float alpha) cons
 inline void CircularLightningHazard::drawBackgroundOutline(float alpha) const {
 	//alpha set by drawBackground()
 
-	//ColorValueHolder color_outline = ColorValueHolder(0.0f, 0.0f, 0.0f); //black is a bit too strong for a lightning's outline
-	ColorValueHolder color_outline = ColorValueHolder(0.5f, 0.5f, 0.5f);
+	ColorValueHolder color_outline = ColorValueHolder(0.5f, 0.5f, 0.5f); //use gray; black is a bit too strong for a lightning's outline
 	color_outline = ColorMixer::mix(BackgroundRect::getBackColor(), color_outline, alpha);
 	const float lineWidth = 0.5f;
 	//using the same color for the background works well, though it's not used because the outline was added to make the lightning's boundary obvious
@@ -462,14 +443,14 @@ inline void CircularLightningHazard::drawBolts(float alpha) const {
 			SimpleVector2D dist = SimpleVector2D(bolts[i]->positions[(j+1)*2] - bolts[i]->positions[j*2], bolts[i]->positions[(j+1)*2+1] - bolts[i]->positions[j*2+1]);
 			SimpleVector2D distCW = SimpleVector2D(dist.getAngle() - PI/2, lineWidth, true);
 
-			coordsAndColor[startVertex + 0*6]   = x + bolts[i]->positions[j*2]                     + distCW.getXComp();
-			coordsAndColor[startVertex + 0*6+1] = y + bolts[i]->positions[j*2+1]                   + distCW.getYComp();
-			coordsAndColor[startVertex + 1*6]   = x + bolts[i]->positions[j*2]   + dist.getXComp() + distCW.getXComp();
-			coordsAndColor[startVertex + 1*6+1] = y + bolts[i]->positions[j*2+1] + dist.getYComp() + distCW.getYComp();
-			coordsAndColor[startVertex + 2*6]   = x + bolts[i]->positions[j*2]   + dist.getXComp() - distCW.getXComp();
-			coordsAndColor[startVertex + 2*6+1] = y + bolts[i]->positions[j*2+1] + dist.getYComp() - distCW.getYComp();
-			coordsAndColor[startVertex + 3*6]   = x + bolts[i]->positions[j*2]                     - distCW.getXComp();
-			coordsAndColor[startVertex + 3*6+1] = y + bolts[i]->positions[j*2+1]                   - distCW.getYComp();
+			coordsAndColor[startVertex + 0*6]   = static_cast<float>(x) + bolts[i]->positions[j*2]                     + distCW.getXComp();
+			coordsAndColor[startVertex + 0*6+1] = static_cast<float>(y) + bolts[i]->positions[j*2+1]                   + distCW.getYComp();
+			coordsAndColor[startVertex + 1*6]   = static_cast<float>(x) + bolts[i]->positions[j*2]   + dist.getXComp() + distCW.getXComp();
+			coordsAndColor[startVertex + 1*6+1] = static_cast<float>(y) + bolts[i]->positions[j*2+1] + dist.getYComp() + distCW.getYComp();
+			coordsAndColor[startVertex + 2*6]   = static_cast<float>(x) + bolts[i]->positions[j*2]   + dist.getXComp() - distCW.getXComp();
+			coordsAndColor[startVertex + 2*6+1] = static_cast<float>(y) + bolts[i]->positions[j*2+1] + dist.getYComp() - distCW.getYComp();
+			coordsAndColor[startVertex + 3*6]   = static_cast<float>(x) + bolts[i]->positions[j*2]                     - distCW.getXComp();
+			coordsAndColor[startVertex + 3*6+1] = static_cast<float>(y) + bolts[i]->positions[j*2+1]                   - distCW.getYComp();
 
 			for (int k = 0; k < 4; k++) {
 				coordsAndColor[startVertex + k*6+2] = color.getRf();
@@ -524,14 +505,14 @@ inline void CircularLightningHazard::drawBolts_Pose(float alpha) const {
 			SimpleVector2D dist = SimpleVector2D(poseBolts[i]->positions[(j+1)*2] - poseBolts[i]->positions[j*2], poseBolts[i]->positions[(j+1)*2+1] - poseBolts[i]->positions[j*2+1]);
 			SimpleVector2D distCW = SimpleVector2D(dist.getAngle() - PI/2, lineWidth, true);
 
-			coordsAndColor[startVertex + 0*6]   = x + poseBolts[i]->positions[j*2]                     + distCW.getXComp();
-			coordsAndColor[startVertex + 0*6+1] = y + poseBolts[i]->positions[j*2+1]                   + distCW.getYComp();
-			coordsAndColor[startVertex + 1*6]   = x + poseBolts[i]->positions[j*2]   + dist.getXComp() + distCW.getXComp();
-			coordsAndColor[startVertex + 1*6+1] = y + poseBolts[i]->positions[j*2+1] + dist.getYComp() + distCW.getYComp();
-			coordsAndColor[startVertex + 2*6]   = x + poseBolts[i]->positions[j*2]   + dist.getXComp() - distCW.getXComp();
-			coordsAndColor[startVertex + 2*6+1] = y + poseBolts[i]->positions[j*2+1] + dist.getYComp() - distCW.getYComp();
-			coordsAndColor[startVertex + 3*6]   = x + poseBolts[i]->positions[j*2]                     - distCW.getXComp();
-			coordsAndColor[startVertex + 3*6+1] = y + poseBolts[i]->positions[j*2+1]                   - distCW.getYComp();
+			coordsAndColor[startVertex + 0*6]   = static_cast<float>(x) + poseBolts[i]->positions[j*2]                     + distCW.getXComp();
+			coordsAndColor[startVertex + 0*6+1] = static_cast<float>(y) + poseBolts[i]->positions[j*2+1]                   + distCW.getYComp();
+			coordsAndColor[startVertex + 1*6]   = static_cast<float>(x) + poseBolts[i]->positions[j*2]   + dist.getXComp() + distCW.getXComp();
+			coordsAndColor[startVertex + 1*6+1] = static_cast<float>(y) + poseBolts[i]->positions[j*2+1] + dist.getYComp() + distCW.getYComp();
+			coordsAndColor[startVertex + 2*6]   = static_cast<float>(x) + poseBolts[i]->positions[j*2]   + dist.getXComp() - distCW.getXComp();
+			coordsAndColor[startVertex + 2*6+1] = static_cast<float>(y) + poseBolts[i]->positions[j*2+1] + dist.getYComp() - distCW.getYComp();
+			coordsAndColor[startVertex + 3*6]   = static_cast<float>(x) + poseBolts[i]->positions[j*2]                     - distCW.getXComp();
+			coordsAndColor[startVertex + 3*6+1] = static_cast<float>(y) + poseBolts[i]->positions[j*2+1]                   - distCW.getYComp();
 
 			for (int k = 0; k < 4; k++) {
 				coordsAndColor[startVertex + k*6+2] = color.getRf();

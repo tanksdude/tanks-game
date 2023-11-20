@@ -143,7 +143,6 @@ void BasicINIParser::processEscapeSequences_most(std::string& str) noexcept {
 		if (str[i] == '\\') {
 			switch (str[i+1]) {
 				case '\\':
-					//str.erase(property.begin() + i);
 					str.replace(i, 2, "\\");
 					break;
 				case '\'':
@@ -181,7 +180,6 @@ void BasicINIParser::processEscapeSequences_all(std::string& str) noexcept {
 		if (str[i] == '\\') {
 			switch (str[i+1]) {
 				case '\\':
-					//str.erase(property.begin() + i);
 					str.replace(i, 2, "\\");
 					break;
 				case '\'':

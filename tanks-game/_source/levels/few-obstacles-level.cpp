@@ -18,7 +18,7 @@ std::unordered_map<std::string, float> FewObstaclesLevel::getWeights() const {
 }
 
 void FewObstaclesLevel::initialize() {
-	//remember to update OldFewObstaclesLevel
+	//remember to update with OldFewObstaclesLevel
 	ResetThings::tankPositionReset();
 
 	ColorValueHolder color = getDefaultColor();

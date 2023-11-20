@@ -5,7 +5,7 @@ class MegaDeathPower : public Power {
 public: //bullet stuff
 	static const float destroyWallTier; //(and destroyHazardTier)
 	static const double bulletSizeMultiplierPerTick;
-	//difference from JS: wall degrading (doesn't exist in this version); wall degrading added acceleration again, which is negative for everything but megadeath, so it would pick up extra speed
+	//difference from JS: wall degrading (doesn't exist in this version); wall degrading added acceleration again, which was negative for everything but megadeath, so it would pick up extra speed
 
 public:
 	virtual std::vector<std::string> getPowerTypes() const override {

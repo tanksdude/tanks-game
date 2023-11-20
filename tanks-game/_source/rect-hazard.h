@@ -64,7 +64,7 @@ protected:
 	float getHighestDefenseTier(float importance) const;
 
 public:
-	virtual std::vector<std::string> getHazardTypes() const = 0; //pure virtual to make sure recthazards define it
+	virtual std::vector<std::string> getHazardTypes() const = 0;
 	virtual std::unordered_map<std::string, float> getWeights() const = 0; //intended range: (0,1]
 
 	virtual RectHazardCollisionType getCollisionType() const = 0; // { return RectHazardCollisionType::solid; }
@@ -89,6 +89,7 @@ public:
 	virtual bool validLocation() const { return true; }
 	virtual bool reasonableLocation() const = 0;
 	virtual void initialize() { return; } //called when recthazard is pushed for the first time
+	//virtual void uninitialize() { return; } //called when recthazard is destroyed (TODO)
 
 	virtual std::string getName() const = 0;
 	//static std::string getClassName();
@@ -102,8 +103,8 @@ public:
 	virtual void ghostDraw(DrawingLayers, float alpha) const override = 0;
 
 	virtual ~RectHazard() { return; }
-	static RectHazard* factory(const GenericFactoryConstructionData&);
-	static RectHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, const GenericFactoryConstructionData&);
+	//static RectHazard* factory(const GenericFactoryConstructionData&);
+	//static RectHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, const GenericFactoryConstructionData&);
 	virtual int getFactoryArgumentCount() const = 0;
 	virtual RectHazardConstructionTypes getConstructionType() const = 0;
 	virtual RectFactoryInformation getFactoryInformation() const = 0;

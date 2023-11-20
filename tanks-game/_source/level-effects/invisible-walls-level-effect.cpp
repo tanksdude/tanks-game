@@ -6,29 +6,16 @@
 std::unordered_map<std::string, float> InvisibleWallsLevelEffect::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla-extra", 0.25f });
-	weights.insert({ "old", 0.25f });
+	weights.insert({ "old", 0.125f });
 	return weights;
 }
 
 void InvisibleWallsLevelEffect::apply() {
-	/*
-	int length = WallManager::getNumWalls();
-	for (int i = 0; i < length; i++) {
-		Wall* w = WallManager::getWall(0);
-		WallManager::pushWall(new Wall(w->getX(), w->getY(), w->getW(), w->getH(), BackgroundRect::getBackColor()));
-		WallManager::deleteWall(0);
-		//this changes the gameID which is not wanted
-	}
-	*/
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		WallManager::getWall(i)->color = BackgroundRect::getBackColor();
 	}
 	//TODO: should this fake invisibility method be the intended way?
-}
-
-void InvisibleWallsLevelEffect::tick(const Level* parent) {
-	//TODO: if the background can change color, update this (or doEffects?)
-	//nothing
+	//TODO: if the background can change color, use tick() or doEffects()
 }
 
 InvisibleWallsLevelEffect::InvisibleWallsLevelEffect() {

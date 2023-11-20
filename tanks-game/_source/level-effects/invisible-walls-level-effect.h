@@ -13,7 +13,7 @@ public:
 	virtual std::unordered_map<std::string, float> getWeights() const override;
 
 	virtual void apply() override;
-	virtual void tick(const Level* parent) override;
+	virtual void tick(const Level* parent) override { return; }
 	virtual void doEffects(Level* parent) const override { return; }
 
 	//virtual void draw() const override; //no need

@@ -14,7 +14,6 @@ public:
 		return types;
 	}
 	virtual std::unordered_map<std::string, float> getWeights() const override;
-	//virtual std::vector<std::string> getPowerAttributes() const override;
 
 	virtual std::string getName() const override { return BananaPower::getClassName(); }
 	static std::string getClassName() { return "banana"; }

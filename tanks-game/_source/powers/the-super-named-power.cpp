@@ -1,7 +1,7 @@
 #include "the-super-named-power.h"
 
 #include "../constants.h"
-#include <cmath>
+#include <cmath> //sin
 
 #include "../color-mixer.h"
 #include "../game-manager.h" //getTickCount()

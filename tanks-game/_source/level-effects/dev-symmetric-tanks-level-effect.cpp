@@ -7,7 +7,6 @@
 std::unordered_map<std::string, float> DevSymmetricTanksLevelEffect::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "dev", 0.0f });
-	weights.insert({ "random-dev", 0.0f });
 	//intentional only
 	return weights;
 }
@@ -36,5 +35,6 @@ LevelEffect* DevSymmetricTanksLevelEffect::factory(const GenericFactoryConstruct
 			return new DevSymmetricTanksLevelEffect(angle);
 		}
 	}
+
 	return new DevSymmetricTanksLevelEffect();
 }

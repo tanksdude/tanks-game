@@ -105,7 +105,7 @@ InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> WallSparksBulletPo
 	sparkExplode(b, b_update.get());
 
 	return { (bouncesLeft < 0), false, b_update, w_update };
-	//feels a little overpowered to let the bullet bounce...
+	//feels a little overpowered to let the bullet bounce and live...
 }
 
 InteractionBoolHolder WallSparksBulletPower::modifiedEdgeCollision(Bullet* b) {
@@ -179,6 +179,5 @@ WallSparksBulletPower::WallSparksBulletPower(int bounces) {
 	bouncesLeft = bounces;
 	if (bounces > 0) [[likely]] {
 		modifiesCollisionWithWall = true;
-		//modifiesEdgeCollision = true; //TODO: unsure
 	}
 }

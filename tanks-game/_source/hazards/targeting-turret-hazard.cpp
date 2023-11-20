@@ -28,14 +28,11 @@ std::unordered_map<std::string, float> TargetingTurretHazard::getWeights() const
 }
 
 TargetingTurretHazard::TargetingTurretHazard(double xpos, double ypos, double angle) : StationaryTurretHazard(xpos, ypos, angle) {
-	//x = xpos;
-	//y = ypos;
-	//velocity = SimpleVector2D(angle, 0, true);
 	r = TANK_RADIUS / 2;
 
 	targeting = false;
-	targetingX = this->x;
-	targetingY = this->y;
+	targetingX = xpos;
+	targetingY = ypos;
 	targetingCount = 0;
 	trackingID = this->getGameID();
 	ColorValueHolder temp[2] = { {1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f} };
@@ -45,8 +42,7 @@ TargetingTurretHazard::TargetingTurretHazard(double xpos, double ypos, double an
 }
 
 TargetingTurretHazard::~TargetingTurretHazard() {
-	//delete[] stateMultiplier;
-	//delete[] stateColors;
+	//nothing
 }
 
 CircleHazard* TargetingTurretHazard::factory(const GenericFactoryConstructionData& args) {
@@ -70,9 +66,9 @@ inline void TargetingTurretHazard::updateTrackingPos(const Tank* t, bool pointed
 		targetingX = t->x;
 		targetingY = t->y;
 	} else {
-		double dist = sqrt((t->x - x)*(t->x - x) + (t->y - y)*(t->y - y));
-		targetingX = x + dist * cos(velocity.getAngle());
-		targetingY = y + dist * sin(velocity.getAngle());
+		float dist = sqrt((t->x - x)*(t->x - x) + (t->y - y)*(t->y - y));
+		targetingX = static_cast<float>(x) + dist * cos(velocity.getAngle());
+		targetingY = static_cast<float>(y) + dist * sin(velocity.getAngle());
 	}
 }
 
@@ -135,7 +131,7 @@ inline void TargetingTurretHazard::tick_lookForNewTarget() {
 	std::vector<bool> tankVisibility; tankVisibility.reserve(TankManager::getNumTanks()); //not using regular arrays so people (including future me) can actually read this
 	std::vector<double> distancesToTank; distancesToTank.reserve(TankManager::getNumTanks()); //TODO: option for angle-based selection (look at homing in PowerFunctionHelper)
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
-		Tank* t = TankManager::getTank(i);
+		const Tank* t = TankManager::getTank(i);
 		tankVisibility.push_back(canSeeTank(t));
 		if (tankVisibility.at(i)) {
 			distancesToTank.push_back(sqrt((t->x - x)*(t->x - x) + (t->y - y)*(t->y - y)));
@@ -160,7 +156,7 @@ inline void TargetingTurretHazard::tick_lookForNewTarget() {
 	if (tankIndices.size() == 1) {
 		indexOfTargetedTank = tankIndices[0];
 	} else {
-		indexOfTargetedTank = tankIndices[int(RNG::randFunc() * tankIndices.size())];
+		indexOfTargetedTank = tankIndices[static_cast<int>(RNG::randFunc() * tankIndices.size())];
 	}
 
 	if (tankVisibility[indexOfTargetedTank]) {
@@ -191,7 +187,7 @@ inline void TargetingTurretHazard::tick_cooldown() {
 
 bool TargetingTurretHazard::canSeeTank(const Tank* t) const {
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
-		Wall* wa = WallManager::getWall(i);
+		const Wall* wa = WallManager::getWall(i);
 		if (CollisionHandler::lineRectCollision(x, y, t->x, t->y, wa)) {
 			return false;
 		}
@@ -251,13 +247,6 @@ bool TargetingTurretHazard::reasonableLocation() const {
 
 ColorValueHolder TargetingTurretHazard::getColor() const {
 	return ColorMixer::mix(stateColors[currentState], stateColors[(currentState+1)%maxState], std::clamp<double>(targetingCount/(tickCycle*stateMultiplier[currentState]), 0, 1));
-}
-
-ColorValueHolder TargetingTurretHazard::getColor(int state) const {
-	if (state < 0) {
-		return stateColors[0];
-	}
-	return stateColors[state % maxState];
 }
 
 ColorValueHolder TargetingTurretHazard::getReticuleColor() const {
@@ -387,14 +376,15 @@ inline void TargetingTurretHazard::drawReticule(float alpha) const {
 	ColorValueHolder color_outline = getReticuleColor();
 	color_outline = ColorMixer::mix(BackgroundRect::getBackColor(), color_outline, alpha);
 	const float lineWidth = 1.0f;
+	const float reticuleRadius = (2*TANK_RADIUS);
 	//optional rotate angle: (-PI/2) * (targetingCount/(stateMultiplier[0] * tickCycle))
 
 	float coordsAndColor_outline[(Circle::numOfSides*2 + 4*4*2)*(2+4)];
 	for (int i = 0; i < Circle::numOfSides; i++) {
-		coordsAndColor_outline[(i*2)  *6]   = targetingX + ((2*TANK_RADIUS) - lineWidth) * body_vertices[i+1].getXComp();
-		coordsAndColor_outline[(i*2)  *6+1] = targetingY + ((2*TANK_RADIUS) - lineWidth) * body_vertices[i+1].getYComp();
-		coordsAndColor_outline[(i*2+1)*6]   = targetingX + ((2*TANK_RADIUS) + lineWidth) * body_vertices[i+1].getXComp();
-		coordsAndColor_outline[(i*2+1)*6+1] = targetingY + ((2*TANK_RADIUS) + lineWidth) * body_vertices[i+1].getYComp();
+		coordsAndColor_outline[(i*2)  *6]   = targetingX + (reticuleRadius - lineWidth) * body_vertices[i+1].getXComp();
+		coordsAndColor_outline[(i*2)  *6+1] = targetingY + (reticuleRadius - lineWidth) * body_vertices[i+1].getYComp();
+		coordsAndColor_outline[(i*2+1)*6]   = targetingX + (reticuleRadius + lineWidth) * body_vertices[i+1].getXComp();
+		coordsAndColor_outline[(i*2+1)*6+1] = targetingY + (reticuleRadius + lineWidth) * body_vertices[i+1].getYComp();
 
 		coordsAndColor_outline[(i*2)  *6+2] = color_outline.getRf();
 		coordsAndColor_outline[(i*2)  *6+3] = color_outline.getGf();
@@ -406,41 +396,41 @@ inline void TargetingTurretHazard::drawReticule(float alpha) const {
 		coordsAndColor_outline[(i*2+1)*6+5] = color_outline.getAf();
 	}
 
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*0))  *6]   = targetingX + ( .75*(2*TANK_RADIUS) - lineWidth);
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*0))  *6]   = targetingX + ( .75f*reticuleRadius - lineWidth);
 	coordsAndColor_outline[(Circle::numOfSides*2 + (4*0))  *6+1] = targetingY - lineWidth;
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*0+1))*6]   = targetingX + (1.25*(2*TANK_RADIUS) + lineWidth);
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*0+1))*6]   = targetingX + (1.25f*reticuleRadius + lineWidth);
 	coordsAndColor_outline[(Circle::numOfSides*2 + (4*0+1))*6+1] = targetingY - lineWidth;
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*0+2))*6]   = targetingX + (1.25*(2*TANK_RADIUS) + lineWidth);
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*0+2))*6]   = targetingX + (1.25f*reticuleRadius + lineWidth);
 	coordsAndColor_outline[(Circle::numOfSides*2 + (4*0+2))*6+1] = targetingY + lineWidth;
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*0+3))*6]   = targetingX + ( .75*(2*TANK_RADIUS) - lineWidth);
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*0+3))*6]   = targetingX + ( .75f*reticuleRadius - lineWidth);
 	coordsAndColor_outline[(Circle::numOfSides*2 + (4*0+3))*6+1] = targetingY + lineWidth;
 
 	coordsAndColor_outline[(Circle::numOfSides*2 + (4*1))  *6]   = targetingX + lineWidth;
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*1))  *6+1] = targetingY + ( .75*(2*TANK_RADIUS) - lineWidth);
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*1))  *6+1] = targetingY + ( .75f*reticuleRadius - lineWidth);
 	coordsAndColor_outline[(Circle::numOfSides*2 + (4*1+1))*6]   = targetingX + lineWidth;
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*1+1))*6+1] = targetingY + (1.25*(2*TANK_RADIUS) + lineWidth);
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*1+1))*6+1] = targetingY + (1.25f*reticuleRadius + lineWidth);
 	coordsAndColor_outline[(Circle::numOfSides*2 + (4*1+2))*6]   = targetingX - lineWidth;
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*1+2))*6+1] = targetingY + (1.25*(2*TANK_RADIUS) + lineWidth);
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*1+2))*6+1] = targetingY + (1.25f*reticuleRadius + lineWidth);
 	coordsAndColor_outline[(Circle::numOfSides*2 + (4*1+3))*6]   = targetingX - lineWidth;
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*1+3))*6+1] = targetingY + ( .75*(2*TANK_RADIUS) - lineWidth);
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*1+3))*6+1] = targetingY + ( .75f*reticuleRadius - lineWidth);
 
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*2))  *6]   = targetingX - ( .75*(2*TANK_RADIUS) - lineWidth);
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*2))  *6]   = targetingX - ( .75f*reticuleRadius - lineWidth);
 	coordsAndColor_outline[(Circle::numOfSides*2 + (4*2))  *6+1] = targetingY - lineWidth;
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*2+1))*6]   = targetingX - (1.25*(2*TANK_RADIUS) + lineWidth);
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*2+1))*6]   = targetingX - (1.25f*reticuleRadius + lineWidth);
 	coordsAndColor_outline[(Circle::numOfSides*2 + (4*2+1))*6+1] = targetingY - lineWidth;
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*2+2))*6]   = targetingX - (1.25*(2*TANK_RADIUS) + lineWidth);
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*2+2))*6]   = targetingX - (1.25f*reticuleRadius + lineWidth);
 	coordsAndColor_outline[(Circle::numOfSides*2 + (4*2+2))*6+1] = targetingY + lineWidth;
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*2+3))*6]   = targetingX - ( .75*(2*TANK_RADIUS) - lineWidth);
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*2+3))*6]   = targetingX - ( .75f*reticuleRadius - lineWidth);
 	coordsAndColor_outline[(Circle::numOfSides*2 + (4*2+3))*6+1] = targetingY + lineWidth;
 
 	coordsAndColor_outline[(Circle::numOfSides*2 + (4*3))  *6]   = targetingX - lineWidth;
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*3))  *6+1] = targetingY - ( .75*(2*TANK_RADIUS) - lineWidth);
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*3))  *6+1] = targetingY - ( .75f*reticuleRadius - lineWidth);
 	coordsAndColor_outline[(Circle::numOfSides*2 + (4*3+1))*6]   = targetingX - lineWidth;
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*3+1))*6+1] = targetingY - (1.25*(2*TANK_RADIUS) + lineWidth);
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*3+1))*6+1] = targetingY - (1.25f*reticuleRadius + lineWidth);
 	coordsAndColor_outline[(Circle::numOfSides*2 + (4*3+2))*6]   = targetingX + lineWidth;
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*3+2))*6+1] = targetingY - (1.25*(2*TANK_RADIUS) + lineWidth);
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*3+2))*6+1] = targetingY - (1.25f*reticuleRadius + lineWidth);
 	coordsAndColor_outline[(Circle::numOfSides*2 + (4*3+3))*6]   = targetingX + lineWidth;
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*3+3))*6+1] = targetingY - ( .75*(2*TANK_RADIUS) - lineWidth);
+	coordsAndColor_outline[(Circle::numOfSides*2 + (4*3+3))*6+1] = targetingY - ( .75f*reticuleRadius - lineWidth);
 
 	for (int i = 0; i < 4; i++) {
 		for (int j = 0; j < 4; j++) {

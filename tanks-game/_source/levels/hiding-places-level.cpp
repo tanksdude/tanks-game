@@ -18,7 +18,7 @@ std::unordered_map<std::string, float> HidingPlacesLevel::getWeights() const {
 }
 
 void HidingPlacesLevel::initialize() {
-	//remember to update OldHidingPlacesLevel
+	//remember to update with OldHidingPlacesLevel
 	ResetThings::tankPositionReset(40);
 
 	ColorValueHolder color = getDefaultColor();

@@ -17,22 +17,11 @@ std::unordered_map<std::string, float> LevelEffect::getWeights() const {
 
 //level effect notes:
 /*
-list of (eventual) level effects:
-|wall invisibility
-|wind
-|ice (no one really likes it, as expected)
-|minefield
-|respawning powerups
+level effect ideas:
 gravity/magnet (which is it?)
-
-
-other:
 respawning walls?
 moving walls... of some sort
-ultrafast shooting?
-darkness?
-
-I need more ideas for level effects...
+darkness? (what the heck does this mean? apart from reduced visibility)
 
 
 JS level effect numbers (with names updated):

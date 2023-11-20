@@ -40,11 +40,11 @@ StationaryTurretHazard::StationaryTurretHazard(double xpos, double ypos, double 
 	r = TANK_RADIUS / 4;
 
 	tickCount = 0;
-	tickCycle = 100; //100 is JS default (because of shooting speed) and 200 just looks weird
+	tickCycle = 100; //100 is JS default (because of shooting speed)
 	currentState = 0;
 	maxState = 3;
-	stateMultiplier = new double[maxState]{ 2, 1, 2 };
-	stateColors = new ColorValueHolder[maxState]{ {0.5f, 0.5f, 0.5f}, {1.0f, 0x22/255.0, 0x11/255.0}, {0.0f, 0.5f, 1.0f} };
+	stateMultiplier = new double[3]{ 2, 1, 2 };
+	stateColors = new ColorValueHolder[3]{ {0.5f, 0.5f, 0.5f}, {1.0f, 0x22/255.0, 0x11/255.0}, {0.0f, 0.5f, 1.0f} };
 
 	//canAcceptPowers = false;
 
@@ -179,10 +179,7 @@ ColorValueHolder StationaryTurretHazard::getColor() const {
 	return ColorMixer::mix(stateColors[currentState], stateColors[(currentState+1)%maxState], std::clamp<double>(tickCount/(tickCycle*stateMultiplier[currentState]), 0, 1));
 }
 
-ColorValueHolder StationaryTurretHazard::getColor(int state) const {
-	if (state < 0) {
-		return stateColors[0];
-	}
+ColorValueHolder StationaryTurretHazard::getColor(unsigned int state) const {
 	return stateColors[state % maxState];
 }
 
@@ -353,14 +350,14 @@ inline void StationaryTurretHazard::drawBarrel(float alpha) const {
 	SimpleVector2D dist = SimpleVector2D(velocity.getAngle(), r, true);
 	SimpleVector2D distCW = SimpleVector2D(velocity.getAngle() - PI/2, lineWidth, true);
 
-	coordsAndColor[0*6]   = x                   + distCW.getXComp();
-	coordsAndColor[0*6+1] = y                   + distCW.getYComp();
-	coordsAndColor[1*6]   = x + dist.getXComp() + distCW.getXComp();
-	coordsAndColor[1*6+1] = y + dist.getYComp() + distCW.getYComp();
-	coordsAndColor[2*6]   = x + dist.getXComp() - distCW.getXComp();
-	coordsAndColor[2*6+1] = y + dist.getYComp() - distCW.getYComp();
-	coordsAndColor[3*6]   = x                   - distCW.getXComp();
-	coordsAndColor[3*6+1] = y                   - distCW.getYComp();
+	coordsAndColor[0*6]   = static_cast<float>(x)                   + distCW.getXComp();
+	coordsAndColor[0*6+1] = static_cast<float>(y)                   + distCW.getYComp();
+	coordsAndColor[1*6]   = static_cast<float>(x) + dist.getXComp() + distCW.getXComp();
+	coordsAndColor[1*6+1] = static_cast<float>(y) + dist.getYComp() + distCW.getYComp();
+	coordsAndColor[2*6]   = static_cast<float>(x) + dist.getXComp() - distCW.getXComp();
+	coordsAndColor[2*6+1] = static_cast<float>(y) + dist.getYComp() - distCW.getYComp();
+	coordsAndColor[3*6]   = static_cast<float>(x)                   - distCW.getXComp();
+	coordsAndColor[3*6+1] = static_cast<float>(y)                   - distCW.getYComp();
 
 	for (int i = 0; i < 4; i++) {
 		coordsAndColor[i*6+2] = color.getRf();

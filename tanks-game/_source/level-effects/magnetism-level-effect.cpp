@@ -141,5 +141,6 @@ LevelEffect* MagnetismLevelEffect::factory(const GenericFactoryConstructionData&
 			return new MagnetismLevelEffect(watch);
 		}
 	}
+
 	return new MagnetismLevelEffect();
 }

@@ -84,7 +84,7 @@ public:
 	virtual InteractionBoolHolder modifiedCollisionWithRectHazard(Bullet*, RectHazard*) override;
 
 	virtual double getBulletRadiusMultiplier() const override { return .25; } //JS: .5
-	virtual double getBulletAcceleration() const override;
+	virtual double getBulletAcceleration() const override { return accelerationAmount; }
 	virtual double getBulletDegradeAmount() const override { return BlastPower::degradeAmount; }
 
 	BlastBulletPower();

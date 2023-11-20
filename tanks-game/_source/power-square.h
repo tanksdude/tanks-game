@@ -24,7 +24,6 @@ public:
 public:
 	ColorValueHolder getColor() const;
 	void givePower(Tank*);
-	//void givePower(Bullet*); //don't think about it now, possibly ever; it's weird
 	//void givePower(Hazard*);
 
 	void draw() const override;

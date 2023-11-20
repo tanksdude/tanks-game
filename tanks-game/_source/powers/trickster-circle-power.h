@@ -41,8 +41,6 @@ public:
 	virtual TankPower* makeDuplicate() const override { return new TricksterCircleTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
 
-	//virtual double getTankFiringRateMultiplier() const override { return .5; }
-
 	TricksterCircleTankPower();
 };
 

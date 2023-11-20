@@ -49,7 +49,7 @@ Pro tip: since bullets die when hitting walls, you can shoot to see where walls 
 
 ## [DEV] Symmetric Tanks
 
-* Types: "dev", "random-dev"
+* Types: "dev"
 * Internal name: `symmetric_tanks`
 
 Forces the tanks to have symmetrical positions. Don't remember why I made it, but probably just to test if I could.
@@ -107,5 +107,4 @@ Makes the tanks tiny!
 
 ## random-dev
 
-* Symmetric Tanks
 * Tiny Tanks

@@ -10,10 +10,10 @@ protected:
 	float A;
 
 public:
-	inline float getRf() const { return R; }
-	inline float getGf() const { return G; }
-	inline float getBf() const { return B; }
-	inline float getAf() const { return A; } //no real point
+	inline float getRf() const noexcept { return R; }
+	inline float getGf() const noexcept { return G; }
+	inline float getBf() const noexcept { return B; }
+	inline float getAf() const noexcept { return A; } //transparency not used
 
 	ColorValueHolder(float, float, float);
 	ColorValueHolder(float, float, float, float);

@@ -14,13 +14,13 @@ ColorValueHolder DeveloperLevel3::getDefaultColor() const {
 
 std::unordered_map<std::string, float> DeveloperLevel3::getWeights() const {
 	std::unordered_map<std::string, float> weights;
-	weights.insert({ "dev", 0.5f });
-	weights.insert({ "random-dev", 0.5f });
+	weights.insert({ "dev", 1.0f });
+	weights.insert({ "random-dev", 1.0f });
 	return weights;
 }
 
 void DeveloperLevel3::initialize() {
-	//primary purpose: stupid powerup showcase
+	//primary purpose: stupid powerup showcase with some hazards
 	ResetThings::tankPositionReset(ResetThings::default_tankToEdgeDist, GAME_HEIGHT/2);
 
 	ColorValueHolder color = getDefaultColor();
@@ -44,7 +44,6 @@ void DeveloperLevel3::initialize() {
 	posArr = new double[3]{ GAME_WIDTH/2, GAME_HEIGHT/2, -PI/2 };
 	constructionData = GenericFactoryConstructionData(3, posArr);
 	HazardManager::pushCircleHazard("vanilla", "mother_turret", constructionData);
-	//HazardManager::pushCircleHazard("dev", "ginormous_turret", constructionData);
 
 	//not from dev1
 	LevelHelper::pushSymmetricPowerups_LR(GAME_WIDTH/2, GAME_HEIGHT/2, 60+20+40+10, "dev", "backwards_movement");
@@ -52,8 +51,6 @@ void DeveloperLevel3::initialize() {
 	posArr = new double[3]{ GAME_WIDTH/2, GAME_HEIGHT/2 + 10+30/2, PI/2 };
 	int* patrolCount = new int[1]{ 4 };
 	double* patrolRoute = new double[4*2]{
-		//to maintain consistency, patrolRoute (the array) should be in another array which then gets passed on to the turret
-		//I don't care that much, so I'm doing it the easier way
 		GAME_WIDTH/2 - 40, GAME_HEIGHT/2 + 10+30/2,
 		GAME_WIDTH/2 - 40, GAME_HEIGHT/2 - 10-30/2,
 		GAME_WIDTH/2 + 40, GAME_HEIGHT/2 - 10-30/2,
@@ -94,7 +91,7 @@ void DeveloperLevel3::initialize() {
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH-80, 20, "vanilla-extra", "barrier"));
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH-100, 20, "vanilla-extra", "shield"));
 
-	//PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "godmode"));
+	//PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "vanilla", "godmode"));
 
 	PowerupManager::pushPowerup(new PowerSquare(20, GAME_HEIGHT-20, "vanilla", "speed"));
 	PowerupManager::pushPowerup(new PowerSquare(40, GAME_HEIGHT-20, "vanilla", "speed"));

@@ -34,6 +34,7 @@ DevPusherPower::DevPusherPower() {
 #include "../collision-handler.h"
 
 InteractionBoolHolder DevPusherTankPower::modifiedCollisionWithWall(Tank* t, Wall* w) {
+	//TODO: supposed to check if they're still collided first; don't care, it's a dev power
 	CollisionHandler::pushMovableAwayFromMovable(t, w);
 	return { false, false };
 }
@@ -68,8 +69,6 @@ DevPusherTankPower::DevPusherTankPower() {
 }
 
 
-
-#include "../collision-handler.h"
 
 TankPower* DevPusherBulletPower::makeTankPower() const {
 	return new DevPusherTankPower();

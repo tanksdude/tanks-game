@@ -8,7 +8,6 @@ public:
 		return types;
 	}
 	virtual std::unordered_map<std::string, float> getWeights() const override;
-	//virtual std::vector<std::string> getPowerAttributes() const override;
 
 	virtual std::string getName() const override { return SpeedPower::getClassName(); }
 	static std::string getClassName() { return "speed"; }
@@ -34,7 +33,7 @@ public:
 	virtual TankPower* makeDuplicate() const override { return new SpeedTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
 
-	virtual double getTankMaxSpeedMultiplier() const override;
+	virtual double getTankMaxSpeedMultiplier() const override { return 2; }
 	//bool tankMaxSpeedStacks = true;
 
 	SpeedTankPower();

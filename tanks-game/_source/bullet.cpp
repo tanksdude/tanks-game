@@ -109,25 +109,27 @@ bool Bullet::initializeVertices() {
 }
 
 bool Bullet::canCollideWith(const GameThing* thing) const {
-	if (this->parentType == BulletParentType::team) {
-		return (this->getTeamID() != thing->getTeamID());
+	switch (this->parentType) {
+		case BulletParentType::team:
+			return (this->getTeamID() != thing->getTeamID());
+		case BulletParentType::individual:
+			return (parentID != thing->getGameID());
+		case BulletParentType::name:
+			//TODO
+			[[fallthrough]];
+		case BulletParentType::none:
+			//TODO
+			[[fallthrough]];
+		[[unlikely]] default:
+			return true;
 	}
-	if (this->parentType == BulletParentType::individual) {
-		return (parentID != thing->getGameID());
-	}
-	/*
-	if (this->parentType == BulletParentType::name) {
-		//TODO
-	}
-	*/
-	return true;
 }
 
 bool Bullet::canCollideWith(const Bullet* b_other) const {
 	if (this->parentType == BulletParentType::individual) {
 		return ((parentID != b_other->getGameID()) && (parentID != b_other->getParentID()));
 	}
-	return canCollideWith((const GameThing*)b_other);
+	return canCollideWith(static_cast<const GameThing*>(b_other));
 }
 
 void Bullet::update(const BulletUpdateStruct* up) {
@@ -201,10 +203,6 @@ inline void Bullet::growHandle() {
 
 	//if multiplierR>1, choose whichever is greater; else apply both (add then mult)
 	if (multiplierR > 1) {
-		//if (this->r + additiveR >= this->r * multiplierR) {
-		//if (additiveR >= this->r * abs(multiplierR-1)) {
-		//if (additiveR >= this->r * (multiplierR-1)) {
-
 		if (this->r + additiveR >= this->r * multiplierR) {
 			//this means additiveR > the radius increase multiplierR will bring
 			this->r += additiveR;
@@ -231,9 +229,9 @@ double Bullet::getBulletSpeedMultiplier() const {
 		if (bulletPowers[i]->bulletSpeedStacks) {
 			stackList.push_back(value);
 		} else {
-			if (value < 1 && value < lowest) {
+			if (value < lowest) {
 				lowest = value;
-			} else if (value > 1 && value > highest) {
+			} else if (value > highest) {
 				highest = value;
 			}
 		}
@@ -259,9 +257,9 @@ double Bullet::getBulletRadiusMultiplier() const {
 		if (bulletPowers[i]->bulletRadiusStacks) {
 			stackList.push_back(value);
 		} else {
-			if (value < 1 && value < lowest) {
+			if (value < lowest) {
 				lowest = value;
-			} else if (value > 1 && value > highest) {
+			} else if (value > highest) {
 				highest = value;
 			}
 		}
@@ -295,15 +293,14 @@ double Bullet::getBulletAcceleration() const {
 	for (int i = 0; i < bulletPowers.size(); i++) {
 		if (bulletPowers[i]->getBulletAccelerationImportance() == importance) {
 			double value = bulletPowers[i]->getBulletAcceleration();
-			if (value < 0 && value < lowest) {
+			if (value < lowest) {
 				lowest = value;
-			} else if (value > 0 && value > highest) {
+			} else if (value > highest) {
 				highest = value;
 			}
 		}
 	}
 	return highest + lowest;
-	//return (abs(highest) > abs(lowest) ? highest : lowest);
 }
 
 double Bullet::getBulletDegradeAmount() const {
@@ -355,9 +352,9 @@ double Bullet::getBulletRadiusGrowNumber_StationaryMultiplier() const {
 	for (int i = 0; i < bulletPowers.size(); i++) {
 		if (bulletPowers[i]->bulletRadiusGrowMultiplies_Stationary) {
 			double value = bulletPowers[i]->getBulletRadiusGrowNumber_Stationary();
-			if (value < 1 && value < lowest) {
+			if (value < lowest) {
 				lowest = value;
-			} else if (value > 1 && value > highest) {
+			} else if (value > highest) {
 				highest = value;
 			}
 		}
@@ -389,9 +386,9 @@ double Bullet::getBulletRadiusGrowNumber_MovingMultiplier() const {
 	for (int i = 0; i < bulletPowers.size(); i++) {
 		if (bulletPowers[i]->bulletRadiusGrowMultiplies_Moving) {
 			double value = bulletPowers[i]->getBulletRadiusGrowNumber_Moving();
-			if (value < 1 && value < lowest) {
+			if (value < lowest) {
 				lowest = value;
-			} else if (value > 1 && value > highest) {
+			} else if (value > highest) {
 				highest = value;
 			}
 		}
@@ -635,8 +632,8 @@ inline void Bullet::drawDeathCooldown(float alpha) const {
 				vertex.multiplyMagnitude((r+2)*(9.0/8.0));
 				//vertex.scaleAndRotate((r+2)*(9.0/8.0), PI/2);
 
-				coordsAndColor[(i+1)*6]   = x + vertex.getXComp();
-				coordsAndColor[(i+1)*6+1] = y + vertex.getYComp();
+				coordsAndColor[(i+1)*6]   = static_cast<float>(x) + vertex.getXComp();
+				coordsAndColor[(i+1)*6+1] = static_cast<float>(y) + vertex.getYComp();
 				coordsAndColor[(i+1)*6+2] = color.getRf();
 				coordsAndColor[(i+1)*6+3] = color.getGf();
 				coordsAndColor[(i+1)*6+4] = color.getBf();
@@ -664,7 +661,7 @@ inline void Bullet::drawDeathBar(float alpha) const {
 			(this->x - this->r),                            (this->y - this->r*(6.0/4)),   color_extra.getRf(), color_extra.getGf(), color_extra.getBf(), color_extra.getAf(), //0
 			(this->x - this->r + deathPercent*(2*this->r)), (this->y - this->r*(6.0/4)),   color_extra.getRf(), color_extra.getGf(), color_extra.getBf(), color_extra.getAf(), //1
 			(this->x - this->r + deathPercent*(2*this->r)), (this->y - this->r*(5.0/4)),   color_extra.getRf(), color_extra.getGf(), color_extra.getBf(), color_extra.getAf(), //2
-			(this->x - this->r),                            (this->y - this->r*(5.0/4)),   color_extra.getRf(), color_extra.getGf(), color_extra.getBf(), color_extra.getAf(), //3
+			(this->x - this->r),                            (this->y - this->r*(5.0/4)),   color_extra.getRf(), color_extra.getGf(), color_extra.getBf(), color_extra.getAf()  //3
 		};
 		unsigned int indices_extra[] = {
 			0, 1, 2,

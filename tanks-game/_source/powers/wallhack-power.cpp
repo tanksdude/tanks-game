@@ -7,7 +7,7 @@ std::unordered_map<std::string, float> WallhackPower::getWeights() const {
 	weights.insert({ "old", 1.0f });
 	weights.insert({ "ultimate", 1.0f });
 	weights.insert({ "ultimate-vanilla", 1.0f });
-	weights.insert({ "random", 1.0f });
+	weights.insert({ "random", 0.25f });
 	return weights;
 }
 

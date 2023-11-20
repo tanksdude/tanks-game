@@ -82,7 +82,6 @@ InteractionBoolHolder BananaBulletPower::modifiedMovement(Bullet* b) {
 		return { true };
 	}
 	if (b->velocity.getMagnitude() <= 0) {
-		//b->acceleration = 0; //why was this ever done
 		wasStationary = true;
 	} else {
 		wasStationary = false; //something else changed the bullet's speed

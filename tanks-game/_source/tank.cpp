@@ -14,44 +14,6 @@
 #include "bullet-manager.h"
 #include "level-manager.h"
 
-/*
-struct TankInputChar {
-protected:
-	std::string key;
-	bool isSpecial;
-	int key_num;
-public:
-	std::string getKey() const { return key; }
-	bool getKeyState() const;
-	TankInputChar(std::string);
-	//TankInputChar(bool, int);
-	TankInputChar();
-};
-
-TankInputChar::TankInputChar(std::string key_input) {
-	key = key_input;
-	if (KeypressManager::keyIsSpecialFromString(key_input)) {
-		isSpecial = true;
-		key_num = KeypressManager::specialKeyFromString(key_input);
-	} else {
-		isSpecial = false;
-		key_num = KeypressManager::normalKeyFromString(key_input);
-	}
-}
-TankInputChar::TankInputChar() {
-	key = "`";
-	isSpecial = false;
-	key_num = '`';
-}
-
-bool TankInputChar::getKeyState() const {
-	if (isSpecial) {
-		return KeypressManager::getSpecialKey(key_num);
-	}
-	return KeypressManager::getNormalKey(key_num);
-}
-*/
-
 SimpleVector2D Tank::body_vertices[Circle::numOfSides+1];
 unsigned int Tank::body_indices[Circle::numOfSides*3];
 unsigned int Tank::outline_indices[Circle::numOfSides*2*3];
@@ -216,14 +178,11 @@ inline void Tank::terminalVelocity(bool forward) {
 }
 
 void Tank::shoot(bool shooting) {
-	if (shootCount > 0) { //check isn't really needed, but it also doesn't decrease performance by a real amount
-		shootCount--;
-	}
+	shootCount--; //don't bother checking shootCount>0
 
 	if (shooting && shootCount <= 0) {
 		const BasicINIParser::BasicINIData& ini_data = GameManager::get_INI();
 
-		//determineShootingAngles(); //TODO: is this needed?
 		bool modifiedAdditionalShooting = false;
 		bool overridedShooting = false;
 
@@ -389,13 +348,13 @@ double Tank::getShootingSpeedMultiplier() const {
 		if (tankPowers[i]->tankFiringRateStacks) {
 			stackList.push_back(value);
 		} else {
-			if (value < 1 && value < lowest) {
+			if (value < lowest) {
 				lowest = value;
-			} else if (value > 1 && value > highest) {
+			} else if (value > highest) {
 				highest = value;
 			}
 		}
-		//technically don't need to check value against 1, now do I?
+		//technically don't need to check value against 1
 	}
 
 	double value = 1;
@@ -422,43 +381,6 @@ void Tank::updateAllValues() {
 	updateTurningIncrement();
 }
 
-/*
-// C++ really sucks sometimes
-// this was going to make the copy & pasted code so much cleaner, but C++ gotta be like C sometimes
-typedef double (TankPower::*memberFuncPointer)(void);
-void Tank::updateSpecificValue(double& attribute, double (TankPower::*func)(void), bool (TankPower::*b), double multiplier) {
-	//look at getShootingSpeedMultiplier()
-
-	double highest = 1;
-	double lowest = 1;
-	std::vector<double> stackList;
-
-	memberFuncPointer p = &TankPower::getTankMaxSpeedMultiplier;
-
-	for (int i = 0; i < tankPowers.size(); i++) {
-		double value = func();
-		if (tankPowers[i]->tankMaxSpeedStacks) {
-			stackList.push_back(value);
-		} else {
-			if (value < 1 && value < lowest) {
-				lowest = value;
-			} else if (value > 1 && value > highest) {
-				highest = value;
-			}
-		}
-	}
-
-	double value = 1;
-	for (int i = 0; i < stackList.size(); i++) {
-		value *= stackList[i];
-	}
-
-	//[insert level effect value getting here]
-
-	attribute = highest * lowest * value * multiplier;
-}
-*/
-
 void Tank::updateMaxSpeed() {
 	//look at getShootingSpeedMultiplier()
 
@@ -471,9 +393,9 @@ void Tank::updateMaxSpeed() {
 		if (tankPowers[i]->tankMaxSpeedStacks) {
 			stackList.push_back(value);
 		} else {
-			if (value < 1 && value < lowest) {
+			if (value < lowest) {
 				lowest = value;
-			} else if (value > 1 && value > highest) {
+			} else if (value > highest) {
 				highest = value;
 			}
 		}
@@ -508,9 +430,9 @@ void Tank::updateAcceleration() {
 		if (tankPowers[i]->tankAccelerationStacks) {
 			stackList.push_back(value);
 		} else {
-			if (value < 1 && value < lowest) {
+			if (value < lowest) {
 				lowest = value;
-			} else if (value > 1 && value > highest) {
+			} else if (value > highest) {
 				highest = value;
 			}
 		}
@@ -545,9 +467,9 @@ void Tank::updateRadius() {
 		if (tankPowers[i]->tankRadiusStacks) {
 			stackList.push_back(value);
 		} else {
-			if (value < 1 && value < lowest) {
+			if (value < lowest) {
 				lowest = value;
-			} else if (value > 1 && value > highest) {
+			} else if (value > highest) {
 				highest = value;
 			}
 		}
@@ -587,9 +509,9 @@ void Tank::updateTurningIncrement() {
 		if (tankPowers[i]->tankTurningIncrementStacks) {
 			stackList.push_back(value);
 		} else {
-			if (value < 1 && value < lowest) {
+			if (value < lowest) {
 				lowest = value;
-			} else if (value > 1 && value > highest) {
+			} else if (value > highest) {
 				highest = value;
 			}
 		}
@@ -663,7 +585,6 @@ ColorValueHolder Tank::getBodyColor() const {
 }
 
 inline double Tank::getEvaluatedCannonAngle(unsigned int i) const {
-	//return fmod(fmod(shootingPoints[i].angleFromCenter + velocity.getAngle(), 2*PI) + 2*PI, 2*PI);
 	return velocity.getAngle() + shootingPoints[i].angleFromCenter;
 }
 
@@ -890,8 +811,8 @@ inline void Tank::drawBody(float alpha) const {
 					SimpleVector2D vertex = SimpleVector2D(body_vertices[j % Circle::numOfSides + 1]);
 					vertex.scaleAndRotate(r, velocity.getAngle());
 
-					coordsAndColor_colorSplit.push_back(x + vertex.getXComp());
-					coordsAndColor_colorSplit.push_back(y + vertex.getYComp());
+					coordsAndColor_colorSplit.push_back(static_cast<float>(x) + vertex.getXComp());
+					coordsAndColor_colorSplit.push_back(static_cast<float>(y) + vertex.getYComp());
 					coordsAndColor_colorSplit.push_back(color.getRf());
 					coordsAndColor_colorSplit.push_back(color.getGf());
 					coordsAndColor_colorSplit.push_back(color.getBf());
@@ -991,8 +912,8 @@ inline void Tank::drawShootingCooldown(float alpha) const {
 			SimpleVector2D vertex = SimpleVector2D(body_vertices[i % Circle::numOfSides + 1]);
 			vertex.scaleAndRotate(r*(5.0/4.0), velocity.getAngle());
 
-			coordsAndColor[(i+1)*6]   = x + vertex.getXComp();
-			coordsAndColor[(i+1)*6+1] = y + vertex.getYComp();
+			coordsAndColor[(i+1)*6]   = static_cast<float>(x) + vertex.getXComp();
+			coordsAndColor[(i+1)*6+1] = static_cast<float>(y) + vertex.getYComp();
 			coordsAndColor[(i+1)*6+2] = color.getRf();
 			coordsAndColor[(i+1)*6+3] = color.getGf();
 			coordsAndColor[(i+1)*6+4] = color.getBf();
@@ -1037,8 +958,8 @@ inline void Tank::drawPowerCooldown(float alpha) const {
 				SimpleVector2D vertex = SimpleVector2D(body_vertices[j % Circle::numOfSides + 1]);
 				vertex.scaleAndRotate(r*(9.0/8.0), velocity.getAngle());
 
-				coordsAndColor[(j+1)*6]   = x + vertex.getXComp();
-				coordsAndColor[(j+1)*6+1] = y + vertex.getYComp();
+				coordsAndColor[(j+1)*6]   = static_cast<float>(x) + vertex.getXComp();
+				coordsAndColor[(j+1)*6+1] = static_cast<float>(y) + vertex.getYComp();
 				coordsAndColor[(j+1)*6+2] = color.getRf();
 				coordsAndColor[(j+1)*6+3] = color.getGf();
 				coordsAndColor[(j+1)*6+4] = color.getBf();
@@ -1064,14 +985,14 @@ inline void Tank::drawMainBarrel(float alpha) const {
 	SimpleVector2D dist = SimpleVector2D(velocity.getAngle(), r, true);
 	SimpleVector2D distCW = SimpleVector2D(velocity.getAngle() - PI/2, lineWidth, true);
 
-	coordsAndColor[0*6]   = x                   + distCW.getXComp();
-	coordsAndColor[0*6+1] = y                   + distCW.getYComp();
-	coordsAndColor[1*6]   = x + dist.getXComp() + distCW.getXComp();
-	coordsAndColor[1*6+1] = y + dist.getYComp() + distCW.getYComp();
-	coordsAndColor[2*6]   = x + dist.getXComp() - distCW.getXComp();
-	coordsAndColor[2*6+1] = y + dist.getYComp() - distCW.getYComp();
-	coordsAndColor[3*6]   = x                   - distCW.getXComp();
-	coordsAndColor[3*6+1] = y                   - distCW.getYComp();
+	coordsAndColor[0*6]   = static_cast<float>(x)                   + distCW.getXComp();
+	coordsAndColor[0*6+1] = static_cast<float>(y)                   + distCW.getYComp();
+	coordsAndColor[1*6]   = static_cast<float>(x) + dist.getXComp() + distCW.getXComp();
+	coordsAndColor[1*6+1] = static_cast<float>(y) + dist.getYComp() + distCW.getYComp();
+	coordsAndColor[2*6]   = static_cast<float>(x) + dist.getXComp() - distCW.getXComp();
+	coordsAndColor[2*6+1] = static_cast<float>(y) + dist.getYComp() - distCW.getYComp();
+	coordsAndColor[3*6]   = static_cast<float>(x)                   - distCW.getXComp();
+	coordsAndColor[3*6+1] = static_cast<float>(y)                   - distCW.getYComp();
 
 	for (int i = 0; i < 4; i++) {
 		coordsAndColor[i*6+2] = color.getRf();
@@ -1112,14 +1033,14 @@ inline void Tank::drawExtraBarrels(float alpha) const {
 		SimpleVector2D dist = SimpleVector2D(getEvaluatedCannonAngle(i+1), r, true);
 		SimpleVector2D distCW = SimpleVector2D(getEvaluatedCannonAngle(i+1) - PI/2, lineWidth, true);
 
-		coordsAndColor[startVertex + 0*6]   = x                   + distCW.getXComp();
-		coordsAndColor[startVertex + 0*6+1] = y                   + distCW.getYComp();
-		coordsAndColor[startVertex + 1*6]   = x + dist.getXComp() + distCW.getXComp();
-		coordsAndColor[startVertex + 1*6+1] = y + dist.getYComp() + distCW.getYComp();
-		coordsAndColor[startVertex + 2*6]   = x + dist.getXComp() - distCW.getXComp();
-		coordsAndColor[startVertex + 2*6+1] = y + dist.getYComp() - distCW.getYComp();
-		coordsAndColor[startVertex + 3*6]   = x                   - distCW.getXComp();
-		coordsAndColor[startVertex + 3*6+1] = y                   - distCW.getYComp();
+		coordsAndColor[startVertex + 0*6]   = static_cast<float>(x)                   + distCW.getXComp();
+		coordsAndColor[startVertex + 0*6+1] = static_cast<float>(y)                   + distCW.getYComp();
+		coordsAndColor[startVertex + 1*6]   = static_cast<float>(x) + dist.getXComp() + distCW.getXComp();
+		coordsAndColor[startVertex + 1*6+1] = static_cast<float>(y) + dist.getYComp() + distCW.getYComp();
+		coordsAndColor[startVertex + 2*6]   = static_cast<float>(x) + dist.getXComp() - distCW.getXComp();
+		coordsAndColor[startVertex + 2*6+1] = static_cast<float>(y) + dist.getYComp() - distCW.getYComp();
+		coordsAndColor[startVertex + 3*6]   = static_cast<float>(x)                   - distCW.getXComp();
+		coordsAndColor[startVertex + 3*6+1] = static_cast<float>(y)                   - distCW.getYComp();
 
 		for (int j = 0; j < 4; j++) {
 			coordsAndColor[startVertex + j*6+2] = color.getRf();
@@ -1165,14 +1086,14 @@ inline void Tank::drawExtraExtraBarrels(float alpha) const {
 		SimpleVector2D dist = SimpleVector2D(getEvaluatedCannonAngleWithEdge(0, i+1), extraCannonLength, true);
 		SimpleVector2D distCW = SimpleVector2D(getEvaluatedCannonAngleWithEdge(0, i+1) - PI/2, lineWidth, true);
 
-		coordsAndColor[startVertex + 0*6]   = x + distFromCenter.getXComp()                   + distCW.getXComp();
-		coordsAndColor[startVertex + 0*6+1] = y + distFromCenter.getYComp()                   + distCW.getYComp();
-		coordsAndColor[startVertex + 1*6]   = x + distFromCenter.getXComp() + dist.getXComp() + distCW.getXComp();
-		coordsAndColor[startVertex + 1*6+1] = y + distFromCenter.getYComp() + dist.getYComp() + distCW.getYComp();
-		coordsAndColor[startVertex + 2*6]   = x + distFromCenter.getXComp() + dist.getXComp() - distCW.getXComp();
-		coordsAndColor[startVertex + 2*6+1] = y + distFromCenter.getYComp() + dist.getYComp() - distCW.getYComp();
-		coordsAndColor[startVertex + 3*6]   = x + distFromCenter.getXComp()                   - distCW.getXComp();
-		coordsAndColor[startVertex + 3*6+1] = y + distFromCenter.getYComp()                   - distCW.getYComp();
+		coordsAndColor[startVertex + 0*6]   = static_cast<float>(x) + distFromCenter.getXComp()                   + distCW.getXComp();
+		coordsAndColor[startVertex + 0*6+1] = static_cast<float>(y) + distFromCenter.getYComp()                   + distCW.getYComp();
+		coordsAndColor[startVertex + 1*6]   = static_cast<float>(x) + distFromCenter.getXComp() + dist.getXComp() + distCW.getXComp();
+		coordsAndColor[startVertex + 1*6+1] = static_cast<float>(y) + distFromCenter.getYComp() + dist.getYComp() + distCW.getYComp();
+		coordsAndColor[startVertex + 2*6]   = static_cast<float>(x) + distFromCenter.getXComp() + dist.getXComp() - distCW.getXComp();
+		coordsAndColor[startVertex + 2*6+1] = static_cast<float>(y) + distFromCenter.getYComp() + dist.getYComp() - distCW.getYComp();
+		coordsAndColor[startVertex + 3*6]   = static_cast<float>(x) + distFromCenter.getXComp()                   - distCW.getXComp();
+		coordsAndColor[startVertex + 3*6+1] = static_cast<float>(y) + distFromCenter.getYComp()                   - distCW.getYComp();
 
 		for (int j = 0; j < 4; j++) {
 			coordsAndColor[startVertex + j*6+2] = color.getRf();

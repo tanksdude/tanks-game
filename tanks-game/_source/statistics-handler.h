@@ -19,6 +19,7 @@ protected:
 
 	static std::unordered_map<std::string, int64_t> data;
 	//static std::unordered_map<std::string, std::shared_ptr<std::atomic<int64_t>>> data;
+
 	static void createEntryIfNotPresent(std::string name);
 
 public:

@@ -25,7 +25,7 @@ void OldPortalLevel::initialize() {
 	//double* posArr;
 
 	LevelHelper::pushClassicWalls(color); //in JS, initial walls were given +40 height (to ensure smooth portal transitions)
-	PositionHolder* wallArray = LevelHelper::getClassicWallPositions();
+	const PositionHolder* wallArray = LevelHelper::getClassicWallPositions();
 
 	//LR:
 	LevelHelper::pushRandomWalls(6, wallArray[0].x+32 + 40, 40, 64, GAME_HEIGHT - 40*2, color, 8, 16, 12, 64);

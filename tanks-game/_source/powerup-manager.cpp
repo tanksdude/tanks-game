@@ -24,9 +24,7 @@ PowerSquare* PowerupManager::getPowerupByID(Game_ID gameID) {
 void PowerupManager::pushPowerup(PowerSquare* p) {
 	powerups.push_back(p);
 }
-//static void pushPowerup(double x, double y, std::string name); //TODO: these should probably be added
-//static void pushPowerup(double x, double y, const std::string* names, int num);
-//static void pushPowerup(double x, double y, std::string type, std::string name);
+//static void pushPowerup(double x, double y, std::string type, std::string name); //TODO: these should probably be added
 //static void pushPowerup(double x, double y, std::string type, const std::string* names, int num);
 //static void pushPowerup(double x, double y, const std::string* types, const std::string* names, int num);
 

@@ -1,5 +1,7 @@
 #include "blast-power.h"
 
+#include "../constants.h"
+
 const double BlastPower::bulletAngleDeviation = PI/3;
 const int BlastPower::bulletAmount = 16;
 
@@ -41,8 +43,6 @@ BlastPower::BlastPower() {
 
 
 
-#include "../constants.h"
-#include <cmath>
 #include "../rng.h"
 
 void BlastTankPower::additionalShooting(Tank* t, const CannonPoint& c, const ExtraCannonPoint& c2) {
@@ -73,7 +73,6 @@ BlastTankPower::BlastTankPower() {
 
 InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> BlastBulletPower::modifiedCollisionWithWall(const Bullet* b, const Wall* w) {
 	if (b->velocity.getMagnitude() <= 0) {
-		//b->lifeValue -= BlastPower::degradeAmount;
 		return { b->isDead(), false, new BulletUpdateStruct(0,0,0,0,0, -BlastPower::degradeAmount), nullptr };
 	} else {
 		if (CollisionHandler::partiallyCollided(b, w)) {
@@ -108,10 +107,6 @@ InteractionBoolHolder BlastBulletPower::modifiedCollisionWithRectHazard(Bullet* 
 	b->acceleration = 0;
 	b->velocity.setMagnitude(0);
 	return { false, false };
-}
-
-double BlastBulletPower::getBulletAcceleration() const {
-	return accelerationAmount;
 }
 
 BulletPower* BlastBulletPower::makeDuplicate() const {

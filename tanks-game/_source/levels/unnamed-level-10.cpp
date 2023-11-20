@@ -2,7 +2,6 @@
 
 #include "../constants.h"
 #include <iostream>
-#include "../rng.h"
 
 #include "../reset-things.h"
 #include "../level-helper.h"
@@ -74,7 +73,7 @@ void UnnamedLevel10::initialize() {
 		HazardManager::pushRectHazard("vanilla", "horizontal_lightning", constructionData);
 	}
 
-	//old:
+	//old version with one "center" instead of two:
 	/*
 	types = new std::string[3]{ "vanilla", "dev", "vanilla" };
 	names = new std::string[3]{ "multishot", "inversion", "banana" };

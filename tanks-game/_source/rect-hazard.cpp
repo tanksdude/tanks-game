@@ -42,15 +42,15 @@ float RectHazard::getHighestOffenseImportance() const {
 float RectHazard::getHighestOffenseTier(float importance) const {
 	float highest = LOW_TIER;
 	/*
+	if (hazardPowers.size() == 0) {
+		return 0;
+	}
 	for (int i = 0; i < hazardPowers.size(); i++) {
 		if (hazardPowers[i]->getOffenseImportance() == importance) {
 			if (hazardPowers[i]->getOffenseTier(this) > highest) {
 				highest = hazardPowers[i]->getOffenseTier(this);
 			}
 		}
-	}
-	if (hazardPowers.size() == 0) {
-		return 0;
 	}
 	*/
 	if (importance <= 0) {
@@ -78,15 +78,15 @@ float RectHazard::getHighestDefenseImportance() const {
 float RectHazard::getHighestDefenseTier(float importance) const {
 	float highest = LOW_TIER;
 	/*
+	if (hazardPowers.size() == 0) {
+		return 0;
+	}
 	for (int i = 0; i < hazardPowers.size(); i++) {
 		if (hazardPowers[i]->getDefenseImportance() == importance) {
 			if (hazardPowers[i]->getDefenseTier(this) > highest) {
 				highest = hazardPowers[i]->getDefenseTier(this);
 			}
 		}
-	}
-	if (hazardPowers.size() == 0) {
-		return 0;
 	}
 	*/
 	if (importance <= 0) {

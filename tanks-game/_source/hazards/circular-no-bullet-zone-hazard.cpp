@@ -67,8 +67,6 @@ bool CircularNoBulletZoneHazard::initializeVertices() {
 
 	const int num_vertices_fromSlashCenter = floor(Circle::numOfSides/4 * X_WIDTH); //vertices from the center of a slash
 	const int num_vertices_outside = (2*num_vertices_fromSlashCenter + 1) * 4; //all the vertices on the outside
-	//float* coords_extra = new float[(num_vertices_outside+1)*(2+4)];
-	//unsigned int* indices_extra = new unsigned int[num_vertices_fromSlashCenter*3 + 4*3];
 	std::vector<float> coords_extra;
 	std::vector<unsigned int> indices_extra;
 

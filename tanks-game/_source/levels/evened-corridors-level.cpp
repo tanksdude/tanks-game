@@ -18,7 +18,7 @@ std::unordered_map<std::string, float> EvenedCorridorsLevel::getWeights() const 
 }
 
 void EvenedCorridorsLevel::initialize() {
-	//remember to update OldEvenedCorridorsLevel
+	//remember to update with OldEvenedCorridorsLevel
 	ResetThings::tankPositionReset(40);
 
 	ColorValueHolder color = getDefaultColor();

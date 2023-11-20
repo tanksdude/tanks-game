@@ -29,12 +29,11 @@ protected:
 
 	public:
 		virtual void tick();
-		bool isDead() const;
-		virtual float getAlpha() const;
-		virtual float getR() const;
-		virtual float getX() const;
-		virtual float getY() const;
-		//I don't know what would extend these functions, but whatever, doesn't hurt to make them virtual
+		bool isDead() const noexcept;
+		virtual float getAlpha() const noexcept;
+		virtual float getX() const noexcept;
+		virtual float getY() const noexcept;
+		virtual float getR() const noexcept; //I don't know what would extend these functions, but whatever
 
 		LavaBubble(float radius, float x0, float y0, float x1, float y1, float tickStart);
 		LavaBubble(float radius, float x0, float y0, float x1, float y1, float tickStart, const float* tickMultiplier); //tickMultiplier length = 3

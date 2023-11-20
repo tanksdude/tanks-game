@@ -5,6 +5,7 @@
 #include <iostream>
 
 const std::string StatisticsHandler::StatisticsDirectoryName = "stats";
+
 std::unordered_map<std::string, int64_t> StatisticsHandler::data;
 
 std::shared_mutex StatisticsHandler::rw_lock;

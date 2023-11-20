@@ -37,7 +37,6 @@ ShotgunPower::ShotgunPower() {
 
 
 #include "../constants.h"
-#include <cmath>
 
 std::vector<std::pair<double, double>>* ShotgunTankPower::addExtraShootingPoints() const {
 	std::vector<std::pair<double, double>>* newExtraCannonPoints = new std::vector<std::pair<double, double>>;

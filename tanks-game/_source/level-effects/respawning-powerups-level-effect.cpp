@@ -143,7 +143,6 @@ void RespawningPowerupsLevelEffect::draw(DrawingLayers layer) const {
 }
 
 void RespawningPowerupsLevelEffect::poseDraw() const {
-	//TODO
 	ghostDraw(.5f);
 }
 
@@ -220,7 +219,7 @@ RespawningPowerupsLevelEffect::~RespawningPowerupsLevelEffect() {
 	for (int i = 0; i < watching.size(); i++) {
 		delete watching[i];
 	}
-	//watching.clear(); //not really necessary
+	//watching.clear(); //not necessary
 }
 
 LevelEffect* RespawningPowerupsLevelEffect::factory(const GenericFactoryConstructionData& args) {
@@ -243,5 +242,6 @@ LevelEffect* RespawningPowerupsLevelEffect::factory(const GenericFactoryConstruc
 			return new RespawningPowerupsLevelEffect(watch);
 		}
 	}
+
 	return new RespawningPowerupsLevelEffect();
 }

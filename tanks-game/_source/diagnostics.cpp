@@ -222,7 +222,7 @@ void Diagnostics::drawGraphTimes_data(std::string name) {
 	//IMPORTANT: delete is the same: https://stackoverflow.com/questions/3037655/c-delete-syntax/3037675#3037675
 }
 
-inline void Diagnostics::drawGraphTimes_data() {
+void Diagnostics::drawGraphTimes_data() {
 	for (int i = 0; i < graphTimes.size(); i++) {
 		drawGraphTimes_data(graphTimes[i].name);
 	}

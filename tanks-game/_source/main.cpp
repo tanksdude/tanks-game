@@ -184,8 +184,6 @@ int main(int argc, char** argv) {
 	} else {
 		Renderer::SetContext("OpenGL");
 	}
-	//std::cout << "RNGSeed: " << ini_data.get("", "RNGSeed") << std::endl;
-	//std::cout << "GraphisContext: " << ini_data.get("", "GraphicsContext") << std::endl;
 
 	try {
 		std::string name = GameWindowName;
@@ -396,8 +394,8 @@ int main(int argc, char** argv) {
 	BulletManager::initialize();
 	PowerupManager::initialize();
 	WallManager::initialize();
-	LevelManager::initialize();
 	HazardManager::initialize();
+	LevelManager::initialize();
 	Diagnostics::Initialize();
 	GameSceneManager::Initialize();
 	Renderer::Initialize();
@@ -409,19 +407,11 @@ int main(int argc, char** argv) {
 	Diagnostics::declareGraph("draw", ColorValueHolder(0.0f, 0.0f, 1.0f));
 	Diagnostics::declareGraph("all", ColorValueHolder(1.0f, 1.0f, 1.0f));
 
-#if _DEBUG
-	Diagnostics::setGraphYOffset(0);
-	//Diagnostics::setGraphYOffset(GAME_HEIGHT);
-#else
-	//Diagnostics::setGraphYOffset(0);
-	//Diagnostics::setGraphYOffset(GAME_HEIGHT);
-
 	if (ini_data.exists("DEBUG", "PerformanceGraphOffset")) {
 		Diagnostics::setGraphYOffset(GAME_HEIGHT * std::stod(ini_data.get("DEBUG", "PerformanceGraphOffset")));
 	} else {
 		Diagnostics::setGraphYOffset(GAME_HEIGHT);
 	}
-#endif
 
 	//game mode:
 	GameMainLoop* game;
@@ -474,18 +464,10 @@ int main(int argc, char** argv) {
 /*
  * estimated total completion:
  * 100% required GPU drawing stuff!
- * 20% theoretical GPU stuff (may not attempt)
- * * add a gradient shader
- * * gotta learn how to do batching
- * * make things more efficient (way easier said than done, I suppose)
- * * drawing layers
- * 97.5?% theoretical foundation: no hazard powers
- * * hazard powers: ~50%
- * * levels: ~95%? not too sure
- * 90% actual foundation: not every "modification function" actually does something
- * * almost everything needed is somewhere, so copy-and-paste will be the solution (unless I can figure out member function pointers)
- * ~50% game code:
- * * I don't know what will be final beyond the ideas located in power.cpp, hazard.cpp, level.cpp, and elsewhere
+ * 95% actual foundation
+ * * still want to rewrite collision to be proper, but wow that'd be a lot of work
+ * ~90% game code:
+ * * ideas in power.cpp, circlehazard.cpp, level.cpp, and randomly elsewhere
  * * it's just an estimate
  * * 100% probably won't be "finished" on this scale (it could jump from 60% to 100%)
  */

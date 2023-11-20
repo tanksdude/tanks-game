@@ -1,7 +1,7 @@
 #include "god-mode-power.h"
 
 #include "../constants.h"
-#include <cmath>
+#include <cmath> //fmod
 
 #include "../color-mixer.h"
 #include "../game-manager.h" //getTickCount()
@@ -9,6 +9,7 @@
 std::unordered_map<std::string, float> GodmodePower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", 1.0f });
+	weights.insert({ "old", 0.5f });
 	weights.insert({ "ultimate", 0.125f });
 	weights.insert({ "ultimate-vanilla", 0.125f });
 	return weights;
@@ -70,6 +71,7 @@ GodmodeTankPower::GodmodeTankPower() {
 	maxTime = 500;
 	timeLeft = 500;
 	//TODO: find power with longest time, then set this time to that
+	//future note: it should probably be a fusion of every power instead of all powers separately applied
 }
 
 

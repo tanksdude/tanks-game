@@ -29,7 +29,7 @@ void ManyHazardsLevel::initialize() {
 	double* posArr;
 
 	LevelHelper::pushClassicWalls(color);
-	PositionHolder* wallArray = LevelHelper::getClassicWallPositions();
+	const PositionHolder* wallArray = LevelHelper::getClassicWallPositions();
 
 	posArr = new double[4]{ GAME_WIDTH/2 - 10, 128, 10*2, GAME_HEIGHT - 128*2 };
 	constructionData = GenericFactoryConstructionData(4, posArr);

@@ -25,7 +25,6 @@ void GameManager::initializeINI(std::string path) {
 }
 
 const BasicINIParser::BasicINIData& GameManager::get_INI() {
-	//return (const BasicINIParser::BasicINIData&)INI_file;
 	return INI_file;
 }
 

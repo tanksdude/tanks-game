@@ -11,7 +11,7 @@ protected:
 		Game_ID parentID;
 
 	public:
-		//not sure whether these should be public or not, but there should be some kind of protection
+		//not sure whether these should be public or not, but there needs be some kind of protection
 		virtual void setTarget(Game_ID parentVerification, Game_ID target);
 		virtual void unsetTarget(Game_ID parentVerification);
 
@@ -38,24 +38,7 @@ protected:
 		MinionTurret(double xpos, double ypos, double angle, Game_ID parentID);
 		virtual ~MinionTurret();
 		static CircleHazard* factory(const GenericFactoryConstructionData&);
-		//static CircleHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, const GenericFactoryConstructionData&);
 	};
-
-protected:
-	//SimpleVector2D velocity; //for stationary and targeting turrets, the magnitude will obviously be 0
-	//double tickCount;
-	//double tickCycle;
-	//unsigned int currentState;
-	//unsigned int maxState;
-	//double* stateMultiplier;
-	//ColorValueHolder* stateColors;
-
-	//double turningIncrement = 128;
-	//bool targeting;
-	//double targetingX, targetingY; //not the x and y of the targeted tank; it's the x and y of the targeting reticule
-	//ColorValueHolder reticuleColors[2];
-	//double targetingCount;
-	//Game_ID trackingID; //if ==this->getGameID(), then it's not tracking
 
 protected:
 	virtual void turnTowardsTank(const Tank*) override; //turns twice as fast when not making children (this sounds weird)
@@ -71,9 +54,11 @@ public:
 
 protected:
 	virtual float getDefaultOffense() const override { return 0; }
-	virtual float getDefaultDefense() const override { return DESTRUCTION_TIER + 1.0; }
+	virtual float getDefaultDefense() const override { return DESTRUCTION_TIER + 1.0f; }
 
 public:
+	//virtual void uninitialize() override; //tells children to stop targeting
+
 	virtual std::string getName() const override { return getClassName(); }
 	static std::string getClassName() { return "ginormous_turret"; }
 
@@ -95,7 +80,4 @@ public:
 	virtual ~GinormousTurretHazard();
 	static CircleHazard* factory(const GenericFactoryConstructionData&);
 	static CircleHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, const GenericFactoryConstructionData&);
-	//virtual int getFactoryArgumentCount() const override { return 3; }
-	//virtual CircleHazardConstructionTypes getConstructionType() const override { return CircleHazardConstructionTypes::angleRequired; } //probably doesn't need an angle...
-	//virtual CircleFactoryInformation getFactoryInformation() const override { return { false, false, false, false, false }; }
 };

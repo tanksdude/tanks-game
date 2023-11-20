@@ -43,48 +43,13 @@ Level::~Level() {
 	for (int i = 0; i < getNumEffects(); i++) {
 		delete effects[i];
 	}
-	effects.clear(); //does ~Level happen before ~child_Level?
+	effects.clear(); //in case ~Level happens after ~ChildLevel
 }
 
 /*
-list of (eventual) levels:
-|empty
-|invisible walls
-|wind
-|ice and mines
-
-
-list of potential levels:
-portal? (shouldn't be that hard if I do it correctly this time, right?)
+level ideas:
 maze
-
-
-boring levels:
-|hiding places (has mines?)
-|evened corridors
-|few obstacles (homing level)
-|turret level (kinda boring)
-|concealed powers (needs some spice to become good)
-|many hazards
-|lightning corners (needs spice, but is a kinda fun level)
-
-
-other:
-|wallless (no walls, only no bullet zones)
 level that randomly gives powers (that last one second)?
-
-
-test levels (purpose: to showcase some functionality):
-one wall (corner collision, heck yeah!)
-one room with each powerup, isolated, permanent
-test bullet priorities? level controls tanks for ease of viewing
-one room with each hazard (and necessary other materials, if needed)
-one room with each level effect ('cuz why not at this point)
-turret room: two turrets; one has distance-based targeting (just selection), one has angle-based targeting (just selection)
-
-
-"other":
-team mode! (for two tanks...)
 
 
 JS level numbers (with names updated):

@@ -47,7 +47,7 @@ BulletPower* AnnoyingTankPower::makeBulletPower() const {
 }
 
 InteractionBoolHolder AnnoyingTankPower::modifiedEdgeCollision(Tank* parent) {
-	//this isn't annoying per se, I just wanted to do it
+	//this isn't annoying, I just wanted to do it
 	//keep the tank in-bounds, but move "in-bounds" one tank diameter away
 	CollisionHandler::edgeConstrain(parent, parent->getR() * -2);
 
@@ -85,7 +85,7 @@ InteractionBoolHolder AnnoyingBulletPower::modifiedCollisionWithTank(Bullet* par
 //^^^ cancelled but might reinvestigate in the future (TODO)
 
 float AnnoyingBulletPower::getOffenseImportance() const {
-	return .5; //0?
+	return .5;
 }
 
 float AnnoyingBulletPower::getOffenseTier(const Bullet*) const {

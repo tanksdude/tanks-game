@@ -31,7 +31,7 @@ RingShooterPower::RingShooterPower() {
 
 
 
-//#include "../power-function-helper.h"
+#include "../constants.h"
 
 BulletPower* RingShooterTankPower::makeBulletPower() const {
 	return new RingShooterBulletPower();

@@ -32,6 +32,7 @@ SpiralLavaHazard::SpiralLavaHazard(double xpos, double ypos, double width, int c
 	w = h = width;
 	if (LevelManager::getNumLevels() > 0) [[likely]] {
 		color = LevelManager::getLevel(0)->getDefaultColor();
+		//TODO: should this really be the same color as walls? feels a bit evil
 	} else {
 		color = ColorValueHolder(0, 0, 0);
 	}
@@ -91,7 +92,7 @@ void SpiralLavaHazard::initialize() {
 	for (int i = 0; i < maxLavaBlobs; i++) {
 		pushLavaBlob(i);
 	}
-	//TODO: this should delete its lava blobs when it dies, but that would need an uninitialize() to do properly which would make things complicated
+	//TODO: this should delete its lava blobs when it dies
 }
 
 CircleHazard* SpiralLavaHazard::makeLavaBlob(int blobNum) const {
@@ -153,8 +154,6 @@ void SpiralLavaHazard::tick() {
 	for (int i = 0; i < lavaBlobIDs.size(); i++) {
 		CircleHazard* ch = HazardManager::getCircleHazardByID(lavaBlobIDs[i]);
 		if (ch == nullptr) [[unlikely]] {
-			//lavaBlobIDs.erase(lavaBlobIDs.begin() + i);
-			//i--;
 			//don't erase because the blob's position ID would get changed
 			continue;
 		}

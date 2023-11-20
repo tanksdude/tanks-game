@@ -69,8 +69,8 @@ I didn't find a good way to easily build documentation, so... the documentation 
 ## Built With
 
 * [Visual Studio (2022)](https://visualstudio.microsoft.com/) - C++ IDE from Microsoft
-* [FreeGLUT](http://freeglut.sourceforge.net/) - OpenGL Utility Toolkit; for making windows and stuff cross-platform
-* [GLEW](http://glew.sourceforge.net/) - OpenGL Extension Wrangler Library; for getting the latest OpenGL commands on Windows (where "latest" is >1.1 or so)
+* [FreeGLUT](https://freeglut.sourceforge.net/) - OpenGL Utility Toolkit; for making windows and stuff cross-platform
+* [GLEW](https://glew.sourceforge.net/) - OpenGL Extension Wrangler Library; for getting the latest OpenGL commands on Windows (where "latest" is >1.1 or so)
 * [OpenGL Mathematics (GLM)](https://github.com/g-truc/glm) - OpenGL-happy matrix and vector math library
 
 ## Contributing
@@ -99,7 +99,7 @@ GNU General Public License v3.0
 * [Solarian Programmer](https://solarianprogrammer.com/) has good starter code for hardware rendering
 * [The Coding Train](https://www.youtube.com/@TheCodingTrain/videos) is helpful, but wasn't *specifically* used for this project (probably was used for the JS game, but I don't remember)
 * [Factorio](https://www.factorio.com/)'s Friday Fun Facts are amazing and got me interested in low-level C++ optimizations
-* [Nitronic Rush](http://nitronic-rush.com/) is the other game that made me want to learn C++ in the first place
-* [N++](http://www.nplusplus.org/) for just being a good game (also the developers had some [good GDC talks](https://www.youtube.com/watch?v=VZ4xevskMCI) and have a [useful game development blog](https://www.metanetsoftware.com/technique/tutorialAbak.html))
+* [Nitronic Rush](https://nitronic-rush.com/) is the other game that made me want to learn C++ in the first place
+* [N++](https://www.nplusplus.org/) for just being a good game (also the developers had some [good GDC talks](https://www.youtube.com/watch?v=VZ4xevskMCI) and have a [useful game development blog](https://www.metanetsoftware.com/technique/tutorialAbak.html))
 * [Creeper World](https://knucklecracker.com/creeperworld4/cw4.php) for also just being a good game
 * [Outer Wilds](https://www.mobiusdigitalgames.com/outer-wilds.html) for just being a really good game

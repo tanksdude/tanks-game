@@ -30,7 +30,7 @@ void TrickyManeuveringLevel::initialize() {
 	std::string* names;
 
 	LevelHelper::pushClassicWalls(color);
-	PositionHolder* wallArray = LevelHelper::getClassicWallPositions();
+	const PositionHolder* wallArray = LevelHelper::getClassicWallPositions();
 
 	LevelHelper::pushSymmetricWalls_Corners(GAME_WIDTH/2, GAME_HEIGHT/2, 40, 40, 20, 20, color);
 

@@ -29,7 +29,7 @@ void ShowcaseLevel1::initialize() {
 	GenericFactoryConstructionData constructionData;
 	double* posArr;
 
-	//simply a test level showing how the old ginormous turret would have worked (its old behavior was so lame it had to be changed)
+	//simply a test level showing how the old ginormous turret would have worked (its old behavior was so lame (unfinished) it had to be changed)
 
 	posArr = new double[3]{ GAME_WIDTH/2, GAME_HEIGHT/2, PI/2 * (floor(RNG::randFunc()*2)*2-1) };
 	constructionData = GenericFactoryConstructionData(3, posArr);

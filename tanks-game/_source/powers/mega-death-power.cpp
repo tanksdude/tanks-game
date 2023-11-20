@@ -1,5 +1,7 @@
 #include "mega-death-power.h"
 
+#include "../constants.h"
+
 const float MegaDeathPower::destroyWallTier = DESTRUCTION_TIER;
 const double MegaDeathPower::bulletSizeMultiplierPerTick = 65.0/64.0;
 
@@ -7,8 +9,6 @@ std::unordered_map<std::string, float> MegaDeathPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", 0.5f });
 	weights.insert({ "random-vanilla", 0.25f });
-	//weights.insert({ "old", 0.25f });
-	//weights.insert({ "random-old", 0.25f });
 	weights.insert({ "random", 0.125f });
 	return weights;
 }
@@ -48,8 +48,6 @@ MegaDeathTankPower::MegaDeathTankPower() {
 
 
 
-#include "../constants.h"
-
 void MegaDeathBulletPower::tick(Bullet* b) {
 	if (getOffenseTier(b) >= MegaDeathPower::destroyWallTier) {
 		modifiesCollisionWithWall = true;
@@ -66,15 +64,15 @@ InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> MegaDeathBulletPow
 }
 
 float MegaDeathBulletPower::getOffenseTier(const Bullet* b) const {
-	double value = b->r / (Bullet::default_radius*4) * MegaDeathPower::destroyWallTier;
+	float value = static_cast<float>(b->r / (Bullet::default_radius*4)) * MegaDeathPower::destroyWallTier;
 	//return (value >= MegaDeathPower::destroyWallTier ? floor(value) : 0); //this is what I originally wanted in JS Tanks, I think, but in practice isn't preferable
-	return static_cast<float>(value);
+	return value;
 }
 
 float MegaDeathBulletPower::getDefenseTier(const Bullet* b) const {
-	double value = b->r / (Bullet::default_radius*4) * MegaDeathPower::destroyWallTier;
+	float value = static_cast<float>(b->r / (Bullet::default_radius*4)) * MegaDeathPower::destroyWallTier;
 	//return (value >= MegaDeathPower::destroyWallTier ? floor(value) : 0);
-	return static_cast<float>(value);
+	return value;
 }
 
 TankPower* MegaDeathBulletPower::makeTankPower() const {

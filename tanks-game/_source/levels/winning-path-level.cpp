@@ -32,7 +32,7 @@ void WinningPathLevel::initialize() {
 	//double* posArr;
 
 	LevelHelper::pushClassicWalls(color);
-	PositionHolder* wallArray = LevelHelper::getClassicWallPositions();
+	const PositionHolder* wallArray = LevelHelper::getClassicWallPositions();
 
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "vanilla", "godmode"));
 

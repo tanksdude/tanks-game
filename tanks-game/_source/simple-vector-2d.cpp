@@ -27,15 +27,6 @@ SimpleVector2D::SimpleVector2D(float xComp, float yComp, float angle, float magn
 	this->magnitude = magnitude;
 }
 
-/*
-SimpleVector2D::SimpleVector2D(const SimpleVector2D& other) {
-	this->xComp = other.xComp;
-	this->yComp = other.yComp;
-	this->angle = other.angle;
-	this->magnitude = other.magnitude;
-}
-*/
-
 SimpleVector2D SimpleVector2D::MakeVector_Components(float xComp, float yComp) {
 	return { xComp, yComp };
 }
@@ -130,36 +121,20 @@ std::ostream& operator<<(std::ostream& os, const SimpleVector2D& v) {
 	return os << "<" << v.xComp << ", " << v.yComp << ">";
 }
 
-/*
-//finds the angle between the two vectors by the dot product (can be negative)
-float SimpleVector2D::angleBetween(const SimpleVector2D& v1, const SimpleVector2D& v2) {
-	//dot product: v1.x*v2.x + v1.y*v2.y = |v1||v2|cos(theta)
-	//theta = arccos((v1.x*v2.x + v1.y*v2.y) / (|v1||v2|)))
-	return acos((v1.getXComp()*v2.getXComp() + v1.getYComp()*v2.getYComp()) / (v1.getMagnitude() * v2.getMagnitude()));
+float SimpleVector2D::dotProduct(const SimpleVector2D& v1, const SimpleVector2D& v2) {
+	//dot product definition: v1.x*v2.x + v1.y*v2.y = |v1||v2|cos(theta)
+	//note: arccos cannot be negative
+	return v1.getXComp()*v2.getXComp() + v1.getYComp()*v2.getYComp();
 }
-//problem: arccos cannot be negative, so the returned angle cannot be negative...
-*/
 
-/*
-//finds the angle between the two vectors by the cross product (can be negative)
-float SimpleVector2D::angleBetween(const SimpleVector2D& v1, const SimpleVector2D& v2) {
-	//cross product: |v1 cross v2| = |v1||v2|sin(theta)
+float SimpleVector2D::crossProduct(const SimpleVector2D& v1, const SimpleVector2D& v2) {
+	//cross product definition: |v1 cross v2| = |v1||v2|sin(theta)
+	//note: abs(asin) cannot be > PI/2
 	//|i    j    k   |
 	//|v1.x v1.y v1.z|
 	//|v2.x v2.y v2.z|
 	//v1.z = v2.z = 0, so
 	//det = v1.x*v2.y - v2.x*v1.y
-	//theta = arcsin((v1.x*v2.y - v2.x*v1.y) / (|v1||v2|)))
-	return = asin((v1.getXComp()*v2.getYComp() - v2.getXComp()*v1.getYComp()) / (v1.getMagnitude() * v2.getMagnitude()));
-}
-//problem: does not handle |theta| > PI/2
-*/
-
-float SimpleVector2D::dotProduct(const SimpleVector2D& v1, const SimpleVector2D& v2) {
-	return v1.getXComp()*v2.getXComp() + v1.getYComp()*v2.getYComp();
-}
-
-float SimpleVector2D::crossProduct(const SimpleVector2D& v1, const SimpleVector2D& v2) {
 	return v1.getXComp()*v2.getYComp() - v2.getXComp()*v1.getYComp();
 }
 
@@ -171,11 +146,11 @@ float SimpleVector2D::angleBetween(const SimpleVector2D& v1, const SimpleVector2
 	float crossAngle = asin(SimpleVector2D::crossProduct(v1, v2) / magnitudes);
 	float dotAngle = acos(SimpleVector2D::dotProduct(v1, v2) / magnitudes);
 	*/
-	//to account for the fact some vectors have zero magnitude, set magnitude to 1:
-	SimpleVector2D adjusted_v1(v1), adjusted_v2(v2);
-	adjusted_v1.setMagnitude(1); adjusted_v2.setMagnitude(1);
+	//to account for some vectors having zero magnitude, set magnitude to 1:
+	SimpleVector2D adjusted_v1 = MakeVector_Angle(v1.getAngle(), 1.0f);
+	SimpleVector2D adjusted_v2 = MakeVector_Angle(v2.getAngle(), 1.0f);
 	float crossAngle = asin(std::clamp<float>(SimpleVector2D::crossProduct(adjusted_v1, adjusted_v2), -1, 1));
 	float dotAngle = acos(std::clamp<float>(SimpleVector2D::dotProduct(adjusted_v1, adjusted_v2), -1, 1));
 	//clamping is unfortunately needed because float math; example: patrolling turrets could be unable to move forward due to dotAngle being NaN from acos(~1.001)
-	return copysign(dotAngle, crossAngle); //this function is surprisingly helpful!
+	return copysign(dotAngle, crossAngle);
 }

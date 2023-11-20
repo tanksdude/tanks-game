@@ -55,7 +55,7 @@ void LevelDataGovernor::addCustomLevel(std::string name, const std::vector<std::
 void LevelDataGovernor::addLevelFactory(LevelFunction factory) {
 	Level* l = factory();
 	std::vector<std::string> types = l->getLevelTypes();
-	if (std::find(types.begin(), types.end(), "null") != types.end()) {
+	if (std::find(types.begin(), types.end(), "null") != types.end()) [[unlikely]] {
 		std::string name = l->getName();
 		delete l;
 		throw std::runtime_error("level " + name + " includes \"null\" type, which is not allowed");
@@ -108,7 +108,7 @@ void LevelDataGovernor::addLevelEffectFactory(LevelEffectFunction factory) {
 	GenericFactoryConstructionData constructionData;
 	LevelEffect* le = factory(constructionData);
 	std::vector<std::string> types = le->getLevelEffectTypes();
-	if (std::find(types.begin(), types.end(), "null") != types.end()) {
+	if (std::find(types.begin(), types.end(), "null") != types.end()) [[unlikely]] {
 		std::string name = le->getName();
 		delete le;
 		throw std::runtime_error("level effect " + name + " includes \"null\" type, which is not allowed");

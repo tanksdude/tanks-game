@@ -198,38 +198,6 @@ void CollisionHandler::pushMovableAwayFromImmovable(Rect* movable, Rect* immovab
 			movable->y = immovable->y + immovable->h;
 		}
 	}
-
-	/*
-	if (movable->x <= immovable->x) {
-		movable->x = immovable->x - movable->w;
-	}
-	else if((movable->x + movable->w) >= (immovable->x + immovable->w)) {
-		movable->x = immovable->x + immovable->w;
-	}
-	else { //movable is inside immovable
-		if (abs(movable->x - (immovable->x + immovable->w / 2)) >= abs((movable->x + movable->w / 2) - (immovable->x + immovable->w / 2))) { //left side of movable further from center of immmovable
-			movable->x = immovable->x - movable->w;
-		}
-		else {
-			movable->x = immovable->x + immovable->w;
-		}
-	}
-
-	if (movable->y <= immovable->y) {
-		movable->y = immovable->y - movable->h;
-	}
-	else if ((movable->y + movable->h) >= (immovable->y + immovable->h)) {
-		movable->y = immovable->y + immovable->h;
-	}
-	else { //movable is inside immovable
-		if (abs(movable->y - (immovable->y + immovable->h / 2)) >= abs((movable->y + movable->h) - (immovable->y + immovable->h / 2))) { //could be simplified to only care about x-x and (x+h)-(x+h) distances
-			movable->y = immovable->y - movable->h;
-		}
-		else {
-			movable->y = immovable->y + immovable->h;
-		}
-	}
-	*/
 }
 void CollisionHandler::pushMovableAwayFromMovable(Rect* movable1, Rect* movable2) {
 	if ((movable1->y + movable1->h/2) - movable2->y <= (movable2->h / movable2->w) * ((movable1->x + movable1->w/2) - movable2->x)) { //I think this is top right
@@ -253,54 +221,6 @@ void CollisionHandler::pushMovableAwayFromMovable(Rect* movable1, Rect* movable2
 			movable1->y -= d/2;
 		}
 	}
-
-	/*
-	if (movable1->x <= movable2->x) {
-		double d = (movable1->x + movable1->w) - movable2->x;
-		movable1->x -= d/2;
-		movable2->x += d/2;
-	}
-	else if ((movable1->x + movable1->w) >= (movable2->x + movable2->w)) {
-		double d = (movable2->x + movable2->w) - movable1->x;
-		movable1->x += d/2;
-		movable2->x -= d/2;
-	}
-	else { //movable1 is inside movable2
-		if (abs(movable1->x - (movable2->x + movable2->w / 2)) >= abs((movable1->x + movable1->w) - (movable2->x + movable2->w / 2))) { //left side of movable1 further from center of immmovable1
-			double d = (movable1->x + movable1->w) - movable2->x;
-			movable1->x -= d/2;
-			movable2->x += d/2;
-		}
-		else {
-			double d = (movable2->x + movable2->w) - movable1->x;
-			movable1->x += d/2;
-			movable2->x -= d/2;
-		}
-	}
-
-	if (movable1->y <= movable2->y) {
-		double d = (movable1->y + movable1->h) - movable2->y;
-		movable1->y -= d/2;
-		movable2->y += d/2;
-	}
-	else if ((movable1->y + movable1->h) >= (movable2->y + movable2->h)) {
-		double d = (movable2->y + movable2->h) - movable1->y;
-		movable1->y += d/2;
-		movable2->y -= d/2;
-	}
-	else { //movable1 is inside movable2
-		if (abs(movable1->y - (movable2->y + movable2->h / 2)) >= abs((movable1->y + movable1->h) - (movable2->y + movable2->h / 2))) { //could be simplified to only care about x-x and (x+h)-(x+h) distances
-			double d = (movable1->y + movable1->h) - movable2->y;
-			movable1->y -= d/2;
-			movable2->y += d/2;
-		}
-		else {
-			double d = (movable2->y + movable2->h) - movable1->y;
-			movable1->y += d/2;
-			movable2->y -= d/2;
-		}
-	}
-	*/
 }
 
 void CollisionHandler::pushMovableAwayFromImmovable(Circle* movable, Rect* immovable) {
@@ -366,33 +286,6 @@ void CollisionHandler::pushMovableAwayFromImmovable(Rect* movable, Circle* immov
 		cornerPushMovableAwayFromImmovable(movable, immovable, (movable->x + movable->w), (movable->y + movable->h));
 	}
 
-	/*
-	if (sqrt(pow(movable->x - immovable->x, 2) + pow(movable->y - immovable->y, 2)) <= immovable->r) { //top left rectangle corner
-		double angle = atan2((movable->y - immovable->y), (movable->x - immovable->x));
-		double d = immovable->r - sqrt(pow(movable->x - immovable->x, 2) + pow(movable->y - immovable->y, 2));
-		movable->y -= sin(angle) * d;
-		movable->x -= cos(angle) * d;
-	}
-	if (sqrt(pow((movable->x + movable->w) - immovable->x, 2) + pow(movable->y - immovable->y, 2)) <= immovable->r) { //top right rectangle corner
-		double angle = atan2((movable->y - immovable->y), ((movable->x + movable->w) - immovable->x));
-		double d = immovable->r - sqrt(pow((movable->x + movable->w) - immovable->x, 2) + pow(movable->y - immovable->y, 2));
-		movable->y -= sin(angle) * d;
-		movable->x -= cos(angle) * d;
-	}
-	if (sqrt(pow(movable->x - immovable->x, 2) + pow((movable->y + movable->h) - immovable->y, 2)) <= immovable->r) { //bottom left rectangle corner
-		double angle = atan2(((movable->y + movable->h) - immovable->y), (movable->x - immovable->x));
-		double d = immovable->r - sqrt(pow(movable->x - immovable->x, 2) + pow((movable->y + movable->h) - immovable->y, 2));
-		movable->y -= sin(angle) * d;
-		movable->x -= cos(angle) * d;
-	}
-	if (sqrt(pow((movable->x + movable->w) - immovable->x, 2) + pow((movable->y + movable->h) - immovable->y, 2)) <= immovable->r) { //bottom right rectangle corner
-		double angle = atan2(((movable->y + movable->h) - immovable->y), ((movable->x + movable->w) - immovable->x));
-		double d = immovable->r - sqrt(pow((movable->x + movable->w) - immovable->x, 2) + pow((movable->y + movable->h) - immovable->y, 2));
-		movable->y -= sin(angle) * d;
-		movable->x -= cos(angle) * d;
-	}
-	*/
-
 	//find which side the circle is near
 
 	if (immovable->y - movable->y <= (movable->h / movable->w) * (immovable->x - movable->x)) { //I think this is top right
@@ -408,24 +301,6 @@ void CollisionHandler::pushMovableAwayFromImmovable(Rect* movable, Circle* immov
 			movable->y = immovable->y + immovable->r;
 		}
 	}
-
-
-
-	/*
-	if (immovable->y <= movable->y) {
-		movable->y = immovable->y + immovable->r;
-	}
-	else if (immovable->y >= (movable->y + movable->h)) {
-		movable->y = immovable->y - immovable->r;
-	}
-	else if (immovable->x <= movable->x) {
-		movable->x = immovable->x + immovable->r;
-	}
-	else if (immovable->x >= (movable->x + movable->w)) {
-		movable->x = immovable->x - immovable->r;
-	}
-	//else?
-	*/
 }
 void CollisionHandler::pushMovableAwayFromMovable(Rect* movable1, Circle* movable2) {
 	if ((movable2->x < movable1->x) && (movable2->y < movable1->y)) { //circle in top left
@@ -533,10 +408,6 @@ std::pair<PositionHolder, PositionHolder> CollisionHandler::circleLineIntersecti
 	double intersectionX2 = (D*dy + (dy<0 ? -1 : 1) * dx * sqrt(c->r*c->r * dr*dr - D*D)) / (dr*dr);
 	double intersectionY1 = (-D*dx - abs(dy) * sqrt(c->r*c->r * dr*dr - D*D)) / (dr*dr);
 	double intersectionY2 = (-D*dx + abs(dy) * sqrt(c->r*c->r * dr*dr - D*D)) / (dr*dr);
-	//std::cout << "x1: " << intersectionX1 << ", ";
-	//std::cout << "x2: " << intersectionX2 << ", ";
-	//std::cout << "y1: " << intersectionY1 << ", ";
-	//std::cout << "y2: " << intersectionY2 << std::endl;
 
 	return std::pair<PositionHolder, PositionHolder>{ {intersectionX1 + c->x, intersectionY1 + c->y}, {intersectionX2 + c->x, intersectionY2 + c->y} };
 }

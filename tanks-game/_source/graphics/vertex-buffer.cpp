@@ -5,10 +5,6 @@
 #include "../renderer.h"
 #include "opengl-vertex-buffer.h"
 
-inline VertexBuffer* VertexBuffer::MakeVertexBuffer(const void* data, unsigned int size) {
-	return MakeVertexBuffer(data, size, RenderingHints::stream_draw);
-}
-
 VertexBuffer* VertexBuffer::MakeVertexBuffer(const void* data, unsigned int size, RenderingHints hint) {
 	AvailableRenderingContexts API = Renderer::GetContext();
 	switch (API) {

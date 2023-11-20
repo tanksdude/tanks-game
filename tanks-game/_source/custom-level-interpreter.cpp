@@ -721,9 +721,7 @@ CustomLevel* CustomLevelInterpreter::processCustomLevel(std::string path) {
 		throw std::runtime_error("Error parsing level: more level types than level weights");
 	}
 	if (types.size() != temp_weights.size()) {
-		//std::cerr << "Warning parsing level " + path + ": more level weights than level types" << std::endl;
 		throw std::runtime_error("Error parsing level: more level weights than level types");
-		//TODO: throw or warn?
 	}
 	for (int i = 0; i < types.size(); i++) {
 		float weight;
@@ -1371,7 +1369,7 @@ inline void CustomLevelInterpreter::stringToAction_CHAZARD(const std::vector<std
 	constructionData.pushData(2, new std::string[2]{ words[0], words[1] });
 	constructionData.pushData(chazard_factoryGroup.getArgCount(), chazard_parameters);
 	//TODO: optional parameters
-	//TODO: maybe the constructionIsTooComplex types can have their information separated by "", though the hazards still need a custom factory to handle it
+	//TODO: maybe the constructionIsTooComplex types can have their information separated by "|", though the hazards still need a custom factory to handle it
 }
 inline void CustomLevelInterpreter::stringToAction_RHAZARD(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData) {
 	if (words.size() < 2) {

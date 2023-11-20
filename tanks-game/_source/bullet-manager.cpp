@@ -4,11 +4,7 @@
 
 std::vector<Bullet*> BulletManager::bullets;
 int BulletManager::maxBullets = 2048;
-#if _DEBUG
-bool BulletManager::limitBullets = false;
-#else
 bool BulletManager::limitBullets = true;
-#endif
 bool BulletManager::autoLimitBullets = false;
 
 void BulletManager::initialize() {

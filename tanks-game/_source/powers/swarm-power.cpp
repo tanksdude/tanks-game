@@ -1,5 +1,7 @@
 #include "swarm-power.h"
 
+#include "../constants.h"
+
 const double SwarmPower::initialAngleDiff = 15 * (PI/180);
 
 const double SwarmPower::homingStrength = (2*PI) / 32;
@@ -62,31 +64,21 @@ SwarmTankPower::SwarmTankPower() {
 
 
 #include "../constants.h"
+#include <cmath>
 
 #include "../tank-manager.h"
-//#include "../power-function-helper.h"
 
 InteractionBoolHolder SwarmBulletPower::modifiedMovement(Bullet* b) {
 	const Tank* parentTank = TankManager::getTankByID(b->getParentID());
-	const double interiorRadius = parentTank->r * 2;
+	const float interiorRadius = parentTank->r * 2;
 	const SimpleVector2D distToTank = SimpleVector2D(parentTank->x - b->x, parentTank->y - b->y);
 	if (distToTank.getMagnitude() <= interiorRadius) {
 		//don't do anything
 		return { false };
 	}
 
-	//doesn't quite work:
-	//(pretty sure it does work if you're okay with only going CCW)
-	/*
-	//const SimpleVector2D distToPoint1 = SimpleVector2D(distToTank.getAngle() + PI/2, interiorRadius, true);
-	//const SimpleVector2D distToPoint2 = SimpleVector2D(distToTank.getAngle() - PI/2, interiorRadius, true);
-	const SimpleVector2D distToPoint1 = SimpleVector2D((parentTank->x + interiorRadius * cos(distToTank.getAngle() + PI/2)) - b->x, (parentTank->y + interiorRadius * sin(distToTank.getAngle() + PI/2)) - b->y);
-	const SimpleVector2D distToPoint2 = SimpleVector2D((parentTank->x + interiorRadius * cos(distToTank.getAngle() - PI/2)) - b->x, (parentTank->y + interiorRadius * sin(distToTank.getAngle() - PI/2)) - b->y);
-	const double angleToPoint1 = SimpleVector2D::angleBetween(distToPoint1, b->velocity);
-	const double angleToPoint2 = SimpleVector2D::angleBetween(distToPoint2, b->velocity);
-	//std::cout << distToPoint1 << " " << distToPoint2 << std::endl;
-	//std::cout << angleToPoint1 << " " << angleToPoint2 << std::endl;
-	*/
+	//note: another way of doing this is to aim at the points perpendicular instead of tangent
+	//doesn't work as well so it wasn't done
 
 	//from: https://en.wikipedia.org/wiki/Tangent_lines_to_circles#With_analytic_geometry
 

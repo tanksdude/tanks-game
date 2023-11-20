@@ -9,7 +9,7 @@
 #include "../level-manager.h"
 
 ColorValueHolder DevNoWallsLevel1::getDefaultColor() const {
-	//no walls
+	//no walls...
 	return ColorValueHolder(0.0f, 0.0f, 0.0f);
 }
 
@@ -27,7 +27,7 @@ void DevNoWallsLevel1::initialize() {
 	GenericFactoryConstructionData constructionData;
 	double* posArr;
 
-	PositionHolder* wallArray = LevelHelper::getClassicWallPositions();
+	const PositionHolder* wallArray = LevelHelper::getClassicWallPositions();
 	for (int i = 0; i < 4; i++) {
 		//classic JS walls, except NoBulletZones
 		posArr = new double[4]{ wallArray[i].x, wallArray[i].y, 32, 128 };

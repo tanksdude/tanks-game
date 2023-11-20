@@ -31,9 +31,6 @@ TripleSpreadNamedPower::TripleSpreadNamedPower() : TripleNamedPower() {
 
 
 
-#include "../constants.h"
-#include <cmath>
-
 std::vector<std::pair<double, double>>* TripleSpreadNamedTankPower::addExtraShootingPoints() const {
 	return new std::vector<std::pair<double, double>>{ {0,  TripleNamedPower::bulletAngleDiff},
 	                                                   {0, -TripleNamedPower::bulletAngleDiff} };

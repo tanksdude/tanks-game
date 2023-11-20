@@ -34,7 +34,7 @@ public:
 	virtual std::string getName() const override { return getClassName(); }
 	static std::string getClassName() { return "no_bullet_zone"; }
 
-	virtual void tick() override { GeneralizedNoBulletZone::tick(); }
+	virtual void tick() override { return; }
 	virtual void draw() const override;
 	virtual void draw(DrawingLayers) const override;
 	virtual void poseDraw() const override;

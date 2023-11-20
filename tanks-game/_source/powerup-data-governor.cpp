@@ -64,7 +64,7 @@ bool PowerupDataGovernor::doesPowerExist(std::string type, std::string name) noe
 void PowerupDataGovernor::addPowerFactory(PowerFunction factory) {
 	Power* p = factory();
 	std::vector<std::string> types = p->getPowerTypes();
-	if (std::find(types.begin(), types.end(), "null") != types.end()) {
+	if (std::find(types.begin(), types.end(), "null") != types.end()) [[unlikely]] {
 		std::string name = p->getName();
 		delete p;
 		throw std::runtime_error("power " + name + " includes \"null\" type, which is not allowed");

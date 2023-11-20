@@ -10,7 +10,6 @@ public:
 		return types;
 	}
 	virtual std::unordered_map<std::string, float> getWeights() const override;
-	//virtual std::vector<std::string> getPowerAttributes() const override;
 
 	virtual std::string getName() const override { return BigNamedPower::getClassName(); }
 	static std::string getClassName() { return "big"; }
@@ -39,7 +38,7 @@ public:
 
 	virtual double getTankMaxSpeedMultiplier() const override { return .5; }
 	virtual double getTankAccelerationMultiplier() const override { return .5; }
-	virtual double getTankFiringRateMultiplier() const override { return 4; } //maybe *2?
+	virtual double getTankFiringRateMultiplier() const override { return 4; } //maybe *2? //JS: stacks (as did everything)
 
 	BigNamedTankPower();
 };

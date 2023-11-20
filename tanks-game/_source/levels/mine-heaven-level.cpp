@@ -55,7 +55,7 @@ void MineHeavenLevel::initialize() {
 	//7*2 along the center
 	for (int i = 1; i <= 7; i++) {
 		LevelHelper::pushSymmetricPowerups_UD(GAME_WIDTH/2, GAME_HEIGHT/2, i * (GAME_HEIGHT/2 - mineSpacing)/8.0, "vanilla-extra", "mines");
-		//JS did just 14 in a row, not 7 pairs
+		//JS did 14 in a row, not 7 pairs
 	}
 }
 
@@ -64,7 +64,7 @@ Level* MineHeavenLevel::factory() {
 }
 
 MineHeavenLevel::MineHeavenLevel() {
-	PositionHolder* wallArray = LevelHelper::getClassicWallPositions();
+	const PositionHolder* wallArray = LevelHelper::getClassicWallPositions();
 
 	GenericFactoryConstructionData constructionData;
 	effects.push_back(LevelManager::makeLevelEffect("vanilla-extra", "ice", constructionData));

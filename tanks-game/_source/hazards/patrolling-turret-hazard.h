@@ -4,21 +4,6 @@
 //TODO: patrolling turrets should be affected by walls
 class PatrollingTurretHazard : public TargetingTurretHazard {
 protected:
-	//SimpleVector2D velocity; //for stationary and targeting turrets, the magnitude will obviously be 0
-	//double tickCount;
-	//double tickCycle;
-	//unsigned int currentState;
-	//unsigned int maxState;
-	//double* stateMultiplier;
-	//ColorValueHolder* stateColors;
-
-	//double turningIncrement = 128;
-	//bool targeting;
-	//double targetingX, targetingY; //not the x and y of the targeted tank; it's the x and y of the targeting reticule
-	//ColorValueHolder reticuleColors[2];
-	//double targetingCount;
-	//Game_ID trackingID; //if ==this->getGameID(), then it's not tracking
-
 	double* routePosList;
 	int routePosPairNum;
 	int currentPatrolTarget;
@@ -26,17 +11,8 @@ protected:
 	double* routeWaitCount;
 
 protected:
-	//virtual inline void updateTrackingPos(const Tank*, bool pointedAt);
-
-	//virtual void turnTowardsTank(const Tank*);
-	//virtual bool canSeeTank(const Tank*) const override; //true if no walls obstruct any line of sight to tank
-	//virtual bool isPointedAt(const Tank*) const;
-	//virtual ColorValueHolder getColor() const override;
-	//virtual ColorValueHolder getColor(int state) const override;
-	//virtual ColorValueHolder getReticuleColor() const;
-
-	virtual inline double getRoutePosX(int i) const;
-	virtual inline double getRoutePosY(int i) const;
+	inline double getRoutePosX(int i) const;
+	inline double getRoutePosY(int i) const;
 
 	virtual bool isCloseAsPossibleToCurrentPoint() const;
 	virtual bool isWaitingAtPoint() const;
@@ -51,7 +27,6 @@ public:
 	virtual std::unordered_map<std::string, float> getWeights() const override;
 
 public:
-	//virtual bool validLocation() const override { return true; }
 	virtual bool reasonableLocation() const override;
 
 	virtual std::string getName() const override { return getClassName(); }
@@ -66,10 +41,7 @@ public:
 	virtual void ghostDraw(DrawingLayers, float alpha) const override;
 
 protected:
-	//virtual inline void tick_continueTracking();
 	virtual inline void tick_lookForNewTarget() override;
-	//virtual inline void tick_chargeUp();
-	//virtual inline void tick_cooldown();
 
 	virtual inline void tick_patrol();
 	virtual inline void tick_moveForward();

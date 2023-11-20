@@ -40,7 +40,7 @@ void UnnamedLevel1::initialize() {
 
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "vanilla-extra", "tracking"));
 
-	//this level is basically a combination of hiding places, corridor level, and winning path...
+	//this level is basically a combination of hiding places, evened corridors, and winning path...
 
 	//reminds me of the N++ level X-19-4 (rocket chasing you, no walls, only platforms) or X-18-3 (must let rocket chase you)
 	//potential idea: X-06-2 (run towards that gold at the end, run back fast enough to avoid rocket)

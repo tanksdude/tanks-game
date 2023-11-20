@@ -1,5 +1,7 @@
 #include "banana-split-power.h"
 
+#include "../constants.h"
+
 const int BananaSplitPower::bananaSplitCount = 4;
 const double BananaSplitPower::bananaSplitAngleDeviation = PI/4;
 static_assert(BananaSplitPower::bananaSplitCount > 1);
@@ -45,7 +47,6 @@ BananaSplitTankPower::BananaSplitTankPower() : BananaTankPower() {
 
 
 
-#include "../constants.h"
 #include <vector>
 #include "../rng.h"
 

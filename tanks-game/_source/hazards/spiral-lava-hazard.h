@@ -45,6 +45,7 @@ public:
 	//virtual bool validLocation() const override { return true; }
 	virtual bool reasonableLocation() const override;
 	virtual void initialize() override;
+	//virtual void uninitialize() override;
 
 	virtual std::string getName() const override { return getClassName(); }
 	static std::string getClassName() { return "spiral_lava"; }

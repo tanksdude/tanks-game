@@ -8,7 +8,6 @@ public:
 		return types;
 	}
 	virtual std::unordered_map<std::string, float> getWeights() const override;
-	//virtual std::vector<std::string> getPowerAttributes() const override;
 
 	virtual std::string getName() const override { return InversionPower::getClassName(); }
 	static std::string getClassName() { return "inversion"; }
@@ -33,11 +32,6 @@ public:
 
 	virtual TankPower* makeDuplicate() const override { return new InversionTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
-
-	//maybe use this?:
-	//bool modifiesMovement = true;
-	//virtual InteractionBoolHolder modifiedMovement(Tank*) override;
-	//bool overridesMovement = true;
 
 	virtual double getTankTurningIncrementMultiplier() const override { return -1; }
 	//bool tankTurningIncrementStacks = true;

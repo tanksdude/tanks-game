@@ -4,17 +4,9 @@
 class TargetingTurretHazard : public StationaryTurretHazard {
 	//just called Turret in JS Tanks
 protected:
-	//SimpleVector2D velocity; //for stationary and targeting turrets, the magnitude will obviously be 0
-	//double tickCount;
-	//double tickCycle;
-	//unsigned int currentState;
-	//unsigned int maxState;
-	//double* stateMultiplier;
-	//ColorValueHolder* stateColors;
-
 	double turningIncrement = 128;
 	bool targeting;
-	double targetingX, targetingY; //not the x and y of the targeted tank; it's the x and y of the targeting reticule
+	float targetingX, targetingY; //not the x and y of the targeted tank; it's the x and y of the targeting reticule
 	ColorValueHolder reticuleColors[2];
 	double targetingCount;
 	Game_ID trackingID; //if ==this->getGameID(), then it's not tracking
@@ -26,18 +18,13 @@ protected:
 	virtual bool canSeeTank(const Tank*) const override; //true if no walls obstruct any line of sight to tank
 	virtual bool isPointedAt(const Tank*) const;
 	virtual ColorValueHolder getColor() const override;
-	virtual ColorValueHolder getColor(int state) const override;
 	virtual ColorValueHolder getReticuleColor() const;
 
 public:
-	virtual std::vector<std::string> getHazardTypes() const override {
-		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "old", "random-old", "random" };
-		return types;
-	}
+	//virtual std::vector<std::string> getHazardTypes() const override; //same as StationaryTurretHazard
 	virtual std::unordered_map<std::string, float> getWeights() const override;
 
 public:
-	//virtual bool validLocation() const override { return true; }
 	virtual bool reasonableLocation() const override;
 
 	virtual std::string getName() const override { return getClassName(); }
@@ -65,7 +52,4 @@ public:
 	virtual ~TargetingTurretHazard();
 	static CircleHazard* factory(const GenericFactoryConstructionData&);
 	static CircleHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, const GenericFactoryConstructionData&);
-	//virtual int getFactoryArgumentCount() const override { return 3; }
-	//virtual CircleHazardConstructionTypes getConstructionType() const override { return CircleHazardConstructionTypes::angleRequired; }
-	//virtual CircleFactoryInformation getFactoryInformation() const override { return { false, false, false, false, false }; }
 };

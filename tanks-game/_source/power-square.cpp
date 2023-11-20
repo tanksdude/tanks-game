@@ -88,9 +88,6 @@ void PowerSquare::givePower(Tank* t) {
 	//good enough for now
 }
 
-//void PowerSquare::givePower(Bullet*);
-//void PowerSquare::givePower(Hazard*);
-
 void PowerSquare::draw() const {
 	drawOutlineThing();
 	drawMain();
@@ -100,7 +97,6 @@ void PowerSquare::draw(DrawingLayers layer) const {
 	switch (layer) {
 		case DrawingLayers::under:
 			//nothing
-			//TODO: should drawOutlineThing() be here?
 			break;
 
 		default:

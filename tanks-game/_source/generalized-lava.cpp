@@ -35,17 +35,17 @@ GeneralizedLava::LavaBubble::~LavaBubble() {
 
 void GeneralizedLava::LavaBubble::tick() {
 	tickCount++;
-	while (tickCount >= tickMax * stateMultiplier[state] && state < 3) {
+	while ((tickCount >= tickMax * stateMultiplier[state]) && (state < 3)) {
 		tickCount -= tickMax * stateMultiplier[state];
 		state++;
 	}
 }
 
-bool GeneralizedLava::LavaBubble::isDead() const {
+bool GeneralizedLava::LavaBubble::isDead() const noexcept {
 	return (state >= 3);
 }
 
-float GeneralizedLava::LavaBubble::getAlpha() const {
+float GeneralizedLava::LavaBubble::getAlpha() const noexcept {
 	switch (state) {
 		case 0: return tickCount / (tickMax * stateMultiplier[0]) * .5;
 		case 1: return .5;
@@ -54,11 +54,7 @@ float GeneralizedLava::LavaBubble::getAlpha() const {
 	}
 }
 
-float GeneralizedLava::LavaBubble::getR() const {
-	return r;
-}
-
-float GeneralizedLava::LavaBubble::getX() const {
+float GeneralizedLava::LavaBubble::getX() const noexcept {
 	switch (state) {
 		case 0: return xStart;
 		case 1: return xStart + (xEnd - xStart) * tickCount/(tickMax * stateMultiplier[1]);
@@ -67,13 +63,17 @@ float GeneralizedLava::LavaBubble::getX() const {
 	}
 }
 
-float GeneralizedLava::LavaBubble::getY() const {
+float GeneralizedLava::LavaBubble::getY() const noexcept {
 	switch (state) {
 		case 0: return yStart;
 		case 1: return yStart + (yEnd - yStart) * tickCount/(tickMax * stateMultiplier[1]);
 		case 2: return yEnd;
 		default: return yEnd;
 	}
+}
+
+float GeneralizedLava::LavaBubble::getR() const noexcept {
+	return r;
 }
 
 
@@ -109,7 +109,7 @@ void GeneralizedLava::tick() {
 
 	for (int i = bubbles.size()-1; i >= 0; i--) {
 		bubbles[i]->tick();
-		if (bubbles[i]->isDead()) {
+		if (bubbles[i]->isDead()) [[unlikely]] {
 			delete bubbles[i];
 			bubbles.erase(bubbles.begin() + i);
 		}

@@ -10,8 +10,8 @@ private:
 	Team_ID teamID;
 
 public:
-	Game_ID getGameID() const { return this->gameID; }
-	Team_ID getTeamID() const { return this->teamID; }
+	Game_ID getGameID() const noexcept { return this->gameID; }
+	Team_ID getTeamID() const noexcept { return this->teamID; }
 
 protected:
 	void changeTeamID(Team_ID t_id) { this->teamID = t_id; }

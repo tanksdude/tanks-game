@@ -5,47 +5,6 @@
 
 #include "diagnostics.h"
 
-/*
-template<typename T, typename U>
-std::vector<std::pair<T, U>> PhysicsHandler::sweepAndPrune(const std::vector<T>& collider, const std::vector<U>& collidee) {
-	std::vector<std::pair<T, U>> collisionList;
-
-	//TODO
-
-	return collisionList;
-}
-
-//order from GameMainLoop
-template std::vector<std::pair<Tank*, PowerSquare*>> PhysicsHandler::sweepAndPrune<Tank*, PowerSquare*>
-(const std::vector<Tank*>& collider, const std::vector<PowerSquare*>& collidee);
-
-template std::vector<std::pair<Tank*, Wall*>> PhysicsHandler::sweepAndPrune<Tank*, Wall*>
-(const std::vector<Tank*>& collider, const std::vector<Wall*>& collidee);
-
-template std::vector<std::pair<Tank*, CircleHazard*>> PhysicsHandler::sweepAndPrune<Tank*, CircleHazard*>
-(const std::vector<Tank*>& collider, const std::vector<CircleHazard*>& collidee);
-template std::vector<std::pair<Tank*, RectHazard*>> PhysicsHandler::sweepAndPrune<Tank*, RectHazard*>
-(const std::vector<Tank*>& collider, const std::vector<RectHazard*>& collidee);
-
-template std::vector<std::pair<Tank*, Tank*>> PhysicsHandler::sweepAndPrune<Tank*, Tank*>
-(const std::vector<Tank*>& collider, const std::vector<Tank*>& collidee);
-
-template std::vector<std::pair<Bullet*, Wall*>> PhysicsHandler::sweepAndPrune<Bullet*, Wall*>
-(const std::vector<Bullet*>& collider, const std::vector<Wall*>& collidee);
-
-template std::vector<std::pair<Bullet*, CircleHazard*>> PhysicsHandler::sweepAndPrune<Bullet*, CircleHazard*>
-(const std::vector<Bullet*>& collider, const std::vector<CircleHazard*>& collidee);
-template std::vector<std::pair<Bullet*, RectHazard*>> PhysicsHandler::sweepAndPrune<Bullet*, RectHazard*>
-(const std::vector<Bullet*>& collider, const std::vector<RectHazard*>& collidee);
-
-template std::vector<std::pair<Bullet*, Bullet*>> PhysicsHandler::sweepAndPrune<Bullet*, Bullet*>
-(const std::vector<Bullet*>& collider, const std::vector<Bullet*>& collidee);
-
-template std::vector<std::pair<Bullet*, Tank*>> PhysicsHandler::sweepAndPrune<Bullet*, Tank*>
-(const std::vector<Bullet*>& collider, const std::vector<Tank*>& collidee);
-//end order
-*/
-
 template<typename T, typename U>
 std::vector<std::pair<int, int>>* PhysicsHandler::sweepAndPrune(const std::vector<T>& collider, const std::vector<U>& collidee) {
 	std::vector<std::pair<int, int>>* collisionList = new std::vector<std::pair<int, int>>;

@@ -19,7 +19,7 @@ protected:
 protected:
 	virtual bool canSeeTank(const Tank*) const; //true if pointing at tank with no wall obstructions
 	virtual ColorValueHolder getColor() const; //needed because turret doesn't use tickCount, instead using targetingCount (should change this)
-	virtual ColorValueHolder getColor(int state) const;
+	virtual ColorValueHolder getColor(unsigned int state) const;
 
 public:
 	virtual std::vector<std::string> getHazardTypes() const override {

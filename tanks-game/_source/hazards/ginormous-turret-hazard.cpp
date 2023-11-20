@@ -50,14 +50,14 @@ CircleHazard* GinormousTurretHazard::MinionTurret::factory(const GenericFactoryC
 }
 
 void GinormousTurretHazard::MinionTurret::setTarget(Game_ID parentVerification, Game_ID target) {
-	if (this->parentID == parentVerification) {
+	if (this->parentID == parentVerification) [[likely]] {
 		this->trackingID = target;
 		this->targeting = true;
 	}
 }
 
 void GinormousTurretHazard::MinionTurret::unsetTarget(Game_ID parentVerification) {
-	if (this->parentID == parentVerification) {
+	if (this->parentID == parentVerification) [[likely]] {
 		this->trackingID = this->getGameID();
 		this->targeting = false;
 	}
@@ -105,27 +105,20 @@ std::unordered_map<std::string, float> GinormousTurretHazard::getWeights() const
 }
 
 GinormousTurretHazard::GinormousTurretHazard(double xpos, double ypos, double angle, int maxChildren, int startChildren, double childDistMultiplier) : MotherTurretHazard(xpos, ypos, angle, maxChildren, startChildren, childDistMultiplier) {
-	//x = xpos;
-	//y = ypos;
-	//velocity = SimpleVector2D(angle, 0, true);
 	r = TANK_RADIUS * 4; // MotherTurretHazard radius * 2 //my vision for this turret was twice as large as this value, but that can barely fit on the screen
 	//future note: my idea for the "god turret" is r = TANK_RADIUS * 64 or 32 (32 might be better for gameplay, 64 is more what I wanted), which is nowhere near being able to fit on the screen; since it's so big it doesn't even recognize the little tanks; alternatively, it can immobilize and move tanks around because it's that strong, but maybe this should go to a "demi-god turret" instead
 	//lore idea (this is really stupid): since there are turret sizes smaller and larger than the tanks, but not of the same size, does that imply the tanks are turrets (that gained sentience)? what a plot twist!; doesn't explain why other turrets can handle lightning fine but tanks can't though, but whatever
-	childDistFromMother = r * childDistMultiplier;
+	childDistFromMother = r * childDistMultiplier; //reset because the radius was changed
 
 	stateMultiplier[1] /= 2;
 	//turningIncrement /= 2;
 
-	//canAcceptPowers = false;
+	//canAcceptPowers = false; //not sure
 }
 
-GinormousTurretHazard::GinormousTurretHazard(double xpos, double ypos, double angle, int maxChildren, int startChildren) : GinormousTurretHazard(xpos, ypos, angle, maxChildren, startChildren, .25) {
-	//nothing
-}
+GinormousTurretHazard::GinormousTurretHazard(double xpos, double ypos, double angle, int maxChildren, int startChildren) : GinormousTurretHazard(xpos, ypos, angle, maxChildren, startChildren, .25) {}
 
-GinormousTurretHazard::GinormousTurretHazard(double xpos, double ypos, double angle) : GinormousTurretHazard(xpos, ypos, angle, 16, 8) {
-	//nothing
-}
+GinormousTurretHazard::GinormousTurretHazard(double xpos, double ypos, double angle) : GinormousTurretHazard(xpos, ypos, angle, 16, 8) {}
 
 GinormousTurretHazard::~GinormousTurretHazard() {
 	//nothing
@@ -288,14 +281,14 @@ inline void GinormousTurretHazard::drawBarrel(float alpha) const {
 	SimpleVector2D dist = SimpleVector2D(velocity.getAngle(), r, true);
 	SimpleVector2D distCW = SimpleVector2D(velocity.getAngle() - PI/2, lineWidth, true);
 
-	coordsAndColor[0*6]   = x                   + distCW.getXComp();
-	coordsAndColor[0*6+1] = y                   + distCW.getYComp();
-	coordsAndColor[1*6]   = x + dist.getXComp() + distCW.getXComp();
-	coordsAndColor[1*6+1] = y + dist.getYComp() + distCW.getYComp();
-	coordsAndColor[2*6]   = x + dist.getXComp() - distCW.getXComp();
-	coordsAndColor[2*6+1] = y + dist.getYComp() - distCW.getYComp();
-	coordsAndColor[3*6]   = x                   - distCW.getXComp();
-	coordsAndColor[3*6+1] = y                   - distCW.getYComp();
+	coordsAndColor[0*6]   = static_cast<float>(x)                   + distCW.getXComp();
+	coordsAndColor[0*6+1] = static_cast<float>(y)                   + distCW.getYComp();
+	coordsAndColor[1*6]   = static_cast<float>(x) + dist.getXComp() + distCW.getXComp();
+	coordsAndColor[1*6+1] = static_cast<float>(y) + dist.getYComp() + distCW.getYComp();
+	coordsAndColor[2*6]   = static_cast<float>(x) + dist.getXComp() - distCW.getXComp();
+	coordsAndColor[2*6+1] = static_cast<float>(y) + dist.getYComp() - distCW.getYComp();
+	coordsAndColor[3*6]   = static_cast<float>(x)                   - distCW.getXComp();
+	coordsAndColor[3*6+1] = static_cast<float>(y)                   - distCW.getYComp();
 
 	for (int i = 0; i < 4; i++) {
 		coordsAndColor[i*6+2] = color.getRf();

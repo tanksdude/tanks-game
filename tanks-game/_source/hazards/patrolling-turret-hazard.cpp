@@ -27,18 +27,7 @@ std::unordered_map<std::string, float> PatrollingTurretHazard::getWeights() cons
 }
 
 PatrollingTurretHazard::PatrollingTurretHazard(double xpos, double ypos, double angle, int pairNum, const double* posList, const double* waitList) : TargetingTurretHazard(xpos, ypos, angle) {
-	//x = xpos;
-	//y = ypos;
 	velocity = SimpleVector2D(angle, Tank::default_maxSpeed/2, true);
-	//r = TANK_RADIUS / 2;
-
-	//targeting = false;
-	//targetingX = this->x;
-	//targetingY = this->y;
-	//targetingCount = 0;
-	//trackingID = this->getGameID();
-	//ColorValueHolder temp[2] = { {1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f} };
-	//std::copy(temp, temp+2, reticuleColors);
 
 	currentPatrolTarget = 0;
 	waitCount = 0;
@@ -59,7 +48,7 @@ PatrollingTurretHazard::PatrollingTurretHazard(double xpos, double ypos, double 
 		}
 	}
 
-	//canAcceptPowers = true; //TODO
+	//canAcceptPowers = true;
 }
 
 PatrollingTurretHazard::~PatrollingTurretHazard() {
@@ -156,7 +145,7 @@ bool PatrollingTurretHazard::isCloseAsPossibleToCurrentPoint() const {
 	//if distance is less than current velocity, not close enough
 	double xDist = this->x - getRoutePosX(currentPatrolTarget);
 	double yDist = this->y - getRoutePosY(currentPatrolTarget);
-	double dist = sqrt(xDist*xDist + yDist*yDist);
+	float dist = sqrt(xDist*xDist + yDist*yDist);
 	return (dist < velocity.getMagnitude());
 }
 
@@ -234,64 +223,7 @@ bool PatrollingTurretHazard::reasonableLocation() const {
 		}
 		delete testBody;
 
-		//problem: need to test if the turret can see a tank at any point along its path, which basically needs triangle-rectangle collision detection
-		//solution: CollisionHandler doesn't have that, but it can be emulated using lineRectCollision and mylib's pointInPolygon
-
-		//actually that's very wrong: what's needed isn't "is wall in triangle" but "can tank see the route segment"
-		//simple idea to solve: check if a wall edge "splits" the triangle, meaning an edge collides with both edges of the triangle (no route)
-		//this doesn't account for multiple walls being able to block line-of-sight, but oh well
-
-		//old:
-		/*
-		for (int j = 0; j < WallManager::getNumWalls(); j++) {
-			const Wall* wa = WallManager::getWall(j);
-			//test if wall in the triangle made from the current route segment and a tank:
-			//first check the triangle segments colliding against the wall, then check every wall corner inside the triangle
-			for (int k = 0; k < TankManager::getNumTanks(); k++) {
-				const Tank* t = TankManager::getTank(k);
-				double triangleXCoords[3] = { getRoutePosX(start_pos), t->x, getRoutePosX(end_pos) };
-				double triangleYCoords[3] = { getRoutePosY(start_pos), t->y, getRoutePosY(end_pos) };
-
-				if (CollisionHandler::lineRectCollision(triangleXCoords[0], triangleYCoords[0], triangleXCoords[1], triangleYCoords[1], wa) ||
-				    CollisionHandler::lineRectCollision(triangleXCoords[1], triangleYCoords[1], triangleXCoords[2], triangleYCoords[2], wa) ||
-				    CollisionHandler::lineRectCollision(triangleXCoords[2], triangleYCoords[2], triangleXCoords[0], triangleYCoords[0], wa)) {
-					return false;
-				}
-
-				if (pointInPolygon(3, triangleXCoords, triangleYCoords, wa->x,         wa->y) ||
-				    pointInPolygon(3, triangleXCoords, triangleYCoords, wa->x + wa->w, wa->y) ||
-				    pointInPolygon(3, triangleXCoords, triangleYCoords, wa->x,         wa->y + wa->h) ||
-				    pointInPolygon(3, triangleXCoords, triangleYCoords, wa->x + wa->w, wa->y + wa->h)) {
-					return false;
-				}
-			}
-		}
-		*/
-
-		//actual solution:
-		/*
-		for (int k = 0; k < TankManager::getNumTanks(); k++) {
-			const Tank* t = TankManager::getTank(k);
-			bool wallBlocksSight = false;
-			for (int j = 0; j < WallManager::getNumWalls(); j++) {
-				const Wall* wa = WallManager::getWall(j);
-				double triangleXCoords[3] = { getRoutePosX(start_pos), t->x, getRoutePosX(end_pos) };
-				double triangleYCoords[3] = { getRoutePosY(start_pos), t->y, getRoutePosY(end_pos) };
-
-				if (CollisionHandler::lineRectCollision(triangleXCoords[0], triangleYCoords[0], triangleXCoords[1], triangleYCoords[1], wa) &&
-				    CollisionHandler::lineRectCollision(triangleXCoords[1], triangleYCoords[1], triangleXCoords[2], triangleYCoords[2], wa)) {
-					wallBlocksSight = true;
-					break;
-				}
-			}
-			if (!wallBlocksSight) {
-				return false;
-			}
-		}
-		*/
-
-		//problem: since that didn't consider multiple walls blocking the tank's line-of-sight, it was effectively impossible to get a reasonable location
-		//probably the easiest solution: just accept doing some marching and call it a day
+		//testing if the turret can see the tank at any point along its path: just accept doing some marching and call it a day
 		for (int k = 0; k < TankManager::getNumTanks(); k++) {
 			const Tank* t = TankManager::getTank(k);
 			const SimpleVector2D testVelocity = SimpleVector2D(path.getAngle(), Tank::default_maxSpeed/2, true);
@@ -460,14 +392,7 @@ inline void PatrollingTurretHazard::drawPath(float alpha) const {
 	const float radius = this->r / 2;
 	const float lineWidth = 1.0f;
 
-	//float* coordsAndColor = new float[((Circle::numOfSides+1 + 4) * routePosPairNum)*(2+4)];
-	//unsigned int* indices = new unsigned int[(Circle::numOfSides*3 + 6) * routePosPairNum];
-	//int startVertex = (Circle::numOfSides+1+4)*6 * i;
-	//int startIndex  = (Circle::numOfSides*3+6) * i;
-
 	for (int i = 0; i < routePosPairNum; i++) {
-		//float coordsAndColor[(Circle::numOfSides+1 + 4)*(2+4)];
-		//unsigned int indices[Circle::numOfSides*3 + 6];
 		float coordsAndColor_circle[(Circle::numOfSides+1)*(2+4)];
 		float coordsAndColor_line[4*(2+4)];
 		unsigned int indices_line[6];
@@ -480,8 +405,8 @@ inline void PatrollingTurretHazard::drawPath(float alpha) const {
 		coordsAndColor_circle[4] = color.getBf();
 		coordsAndColor_circle[5] = color.getAf();
 		for (int j = 1; j < Circle::numOfSides+1; j++) {
-			coordsAndColor_circle[j*6]   = getRoutePosX(i) + radius * body_vertices[j].getXComp();
-			coordsAndColor_circle[j*6+1] = getRoutePosY(i) + radius * body_vertices[j].getYComp();
+			coordsAndColor_circle[j*6]   = static_cast<float>(getRoutePosX(i)) + radius * body_vertices[j].getXComp();
+			coordsAndColor_circle[j*6+1] = static_cast<float>(getRoutePosY(i)) + radius * body_vertices[j].getYComp();
 			coordsAndColor_circle[j*6+2] = color.getRf();
 			coordsAndColor_circle[j*6+3] = color.getGf();
 			coordsAndColor_circle[j*6+4] = color.getBf();
@@ -495,14 +420,14 @@ inline void PatrollingTurretHazard::drawPath(float alpha) const {
 		SimpleVector2D distCW  = SimpleVector2D(dist.getAngle() - PI/2, lineWidth, true);
 		//SimpleVector2D distCCW = SimpleVector2D(dist.getAngle() + PI/2, lineWidth, true);
 
-		coordsAndColor_line[0*6]   = getRoutePosX(i)                   + distCW.getXComp();
-		coordsAndColor_line[0*6+1] = getRoutePosY(i)                   + distCW.getYComp();
-		coordsAndColor_line[1*6]   = getRoutePosX(i) + dist.getXComp() + distCW.getXComp();
-		coordsAndColor_line[1*6+1] = getRoutePosY(i) + dist.getYComp() + distCW.getYComp();
-		coordsAndColor_line[2*6]   = getRoutePosX(i) + dist.getXComp() - distCW.getXComp();
-		coordsAndColor_line[2*6+1] = getRoutePosY(i) + dist.getYComp() - distCW.getYComp();
-		coordsAndColor_line[3*6]   = getRoutePosX(i)                   - distCW.getXComp();
-		coordsAndColor_line[3*6+1] = getRoutePosY(i)                   - distCW.getYComp();
+		coordsAndColor_line[0*6]   = static_cast<float>(getRoutePosX(i))                   + distCW.getXComp();
+		coordsAndColor_line[0*6+1] = static_cast<float>(getRoutePosY(i))                   + distCW.getYComp();
+		coordsAndColor_line[1*6]   = static_cast<float>(getRoutePosX(i)) + dist.getXComp() + distCW.getXComp();
+		coordsAndColor_line[1*6+1] = static_cast<float>(getRoutePosY(i)) + dist.getYComp() + distCW.getYComp();
+		coordsAndColor_line[2*6]   = static_cast<float>(getRoutePosX(i)) + dist.getXComp() - distCW.getXComp();
+		coordsAndColor_line[2*6+1] = static_cast<float>(getRoutePosY(i)) + dist.getYComp() - distCW.getYComp();
+		coordsAndColor_line[3*6]   = static_cast<float>(getRoutePosX(i))                   - distCW.getXComp();
+		coordsAndColor_line[3*6+1] = static_cast<float>(getRoutePosY(i))                   - distCW.getYComp();
 
 		for (int j = 0; j < 4; j++) {
 			coordsAndColor_line[j*6+2] = color.getRf();
@@ -571,7 +496,8 @@ CircleHazard* PatrollingTurretHazard::randomizingFactory(double x_start, double 
 				delete testStop;
 
 				location_attempts++;
-			} while (blockedPosition && location_attempts < 16);
+			} while (blockedPosition && (location_attempts < 16));
+			//note: no need to worry if the position is still blocked after all the attempts; reasonableLocation() will figure it out
 		}
 
 		bool outOfBounds;
@@ -585,15 +511,6 @@ CircleHazard* PatrollingTurretHazard::randomizingFactory(double x_start, double 
 				const double angleChange = RNG::randFunc() * (2*PI);
 				const double distanceChange = RNG::randNumInRange(50, 150);
 				const SimpleVector2D displacement = SimpleVector2D(angleChange, distanceChange, true);
-				/*
-				stoppingLocations[i*2]   = std::clamp<double>(stoppingLocations[(i-1)*2]   + displacement.getXComp(), x_start + (TANK_RADIUS/2), x_start+area_width - 2*(TANK_RADIUS/2));
-				stoppingLocations[i*2+1] = std::clamp<double>(stoppingLocations[(i-1)*2+1] + displacement.getYComp(), y_start + (TANK_RADIUS/2), y_start+area_height - 2*(TANK_RADIUS/2));
-				if (sqrt(stoppingLocations[i*2]*stoppingLocations[i*2] + stoppingLocations[i*2+1]*stoppingLocations[i*2+1]) < 50) {
-					//too small movement
-					location_attempts++;
-					continue;
-				}
-				*/
 				stoppingLocations[i*2]   = stoppingLocations[(i-1)*2]   + displacement.getXComp();
 				stoppingLocations[i*2+1] = stoppingLocations[(i-1)*2+1] + displacement.getYComp();
 				if ((stoppingLocations[i*2]   - (TANK_RADIUS/2) < x_start) || (stoppingLocations[i*2]   + (TANK_RADIUS/2) > x_start+area_width) ||
@@ -614,7 +531,7 @@ CircleHazard* PatrollingTurretHazard::randomizingFactory(double x_start, double 
 				}
 
 				location_attempts++;
-			} while (blockedPosition && location_attempts < 32);
+			} while (blockedPosition && (location_attempts < 32));
 			if (outOfBounds) {
 				break;
 			}

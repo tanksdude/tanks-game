@@ -31,10 +31,10 @@ void DeveloperManager::mouseDragFunc(int x, int y) {
 	int real_x = x;
 	int real_y = y - (Renderer::window_height - Renderer::gamewindow_height);
 	if (leftMouse) {
-		if (!rightMouse) { //tank 1
+		if (!rightMouse) {
 			TankManager::getTank(0)->x = (real_x / double(Renderer::gamewindow_width)) * GAME_WIDTH;
 			TankManager::getTank(0)->y = (1 - real_y / double(Renderer::gamewindow_height)) * GAME_HEIGHT;
-		} else { //tank 2
+		} else {
 			TankManager::getTank(1)->x = (real_x / double(Renderer::gamewindow_width)) * GAME_WIDTH;
 			TankManager::getTank(1)->y = (1 - real_y / double(Renderer::gamewindow_height)) * GAME_HEIGHT;
 		}
@@ -79,7 +79,6 @@ void DeveloperManager::mouseWheelFunc(int wheel, int dir, int x, int y) {
 			insertIndex = 0;
 		}
 	}
-	//std::cout << "wheel:" << wheel << ", dir:" << dir << std::endl;
 
 	std::cout << "DeveloperManager insertIdentifier: " << insertListIdentifiers[insertIndex] << std::endl;
 }

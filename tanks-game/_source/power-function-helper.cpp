@@ -104,7 +104,7 @@ std::pair<bool, InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct>> P
 	return { false, { false, false, {}, {} } };
 }
 
-std::pair<bool, BulletUpdateStruct> PowerFunctionHelper::superbounceEdgeGenericX(const Bullet* b, double) {
+std::pair<bool, BulletUpdateStruct> PowerFunctionHelper::bounceEdgeGenericX(const Bullet* b) {
 	bool bounced = 0; //wait, why is this =0? leftover from edge bouncing X and Y being together?
 	double b_xDelta, b_yDelta=0, b_angleDelta;
 
@@ -124,7 +124,7 @@ std::pair<bool, BulletUpdateStruct> PowerFunctionHelper::superbounceEdgeGenericX
 	return { bounced, BulletUpdateStruct(b_xDelta, b_yDelta, 0,0, b_angleDelta, 0) };
 }
 
-std::pair<bool, BulletUpdateStruct> PowerFunctionHelper::superbounceEdgeGenericY(const Bullet* b, double) {
+std::pair<bool, BulletUpdateStruct> PowerFunctionHelper::bounceEdgeGenericY(const Bullet* b) {
 	bool bounced = 0;
 	double b_xDelta=0, b_yDelta, b_angleDelta;
 
@@ -194,7 +194,7 @@ Game_ID PowerFunctionHelper::homingGenericTarget(const Bullet* b, bool targetUsi
 	return TankManager::getTank(targetTankIndex)->getGameID();
 }
 
-void PowerFunctionHelper::homingGenericMove(Bullet* b, Game_ID targetID, double maxAngleChange) {
+void PowerFunctionHelper::homingGenericMove(Bullet* b, Game_ID targetID, float maxAngleChange) {
 	const Tank* t = TankManager::getTankByID(targetID);
 
 	const SimpleVector2D distToTank = SimpleVector2D(t->getX() - b->x, t->getY() - b->y);

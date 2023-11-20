@@ -14,7 +14,7 @@ public:
 	virtual ColorValueHolder getColor() const override { return OldMinesPower::getClassColor(); }
 	static ColorValueHolder getClassColor() { return MinesPower::getClassColor(); } //black, so it's hard to see where the tank is pointed
 	virtual float getColorImportance() const override { return OldMinesPower::getClassColorImportance(); }
-	static float getClassColorImportance() { return MinesPower::getClassColorImportance(); } //not supposed to have color importance but whatever
+	static float getClassColorImportance() { return MinesPower::getClassColorImportance(); } //JS: color importance didn't exist (except for rainbow)
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
@@ -38,7 +38,7 @@ public:
 	virtual TankPower* makeDuplicate() const override { return new OldMinesTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
 
-	//bool tankFiringRateStacks = true;
+	//bool tankFiringRateStacks = true; //this entire power exists only to change this, just so mine heaven level works
 
 	OldMinesTankPower();
 };

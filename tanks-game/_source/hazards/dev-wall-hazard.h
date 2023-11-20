@@ -17,9 +17,6 @@ public:
 
 	virtual RectHazardCollisionType getCollisionType() const override { return RectHazardCollisionType::solid; }
 
-	//bool modifiesBulletCollision = true;
-	//virtual void modifiedBulletCollision(Bullet*) override;
-
 protected:
 	virtual float getDefaultOffense() const override { return 0; }
 	virtual float getDefaultDefense() const override { return DESTRUCTION_TIER; }

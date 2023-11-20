@@ -55,8 +55,5 @@ public:
 	virtual BulletPower* makeDuplicate() const override { return new BananaSplitBulletPower(); }
 	virtual TankPower* makeTankPower() const override;
 
-	//bool modifiesMovement = true;
-	//virtual InteractionBoolHolder modifiedMovement(Bullet*) override;
-
 	BananaSplitBulletPower();
 };

@@ -42,6 +42,9 @@ float CircleHazard::getHighestOffenseImportance() const {
 float CircleHazard::getHighestOffenseTier(float importance) const {
 	float highest = LOW_TIER;
 	/*
+	if (hazardPowers.size() == 0) {
+		return 0;
+	}
 	for (int i = 0; i < hazardPowers.size(); i++) {
 		if (hazardPowers[i]->getOffenseImportance() == importance) {
 			if (hazardPowers[i]->getOffenseTier(this) > highest) {
@@ -49,12 +52,8 @@ float CircleHazard::getHighestOffenseTier(float importance) const {
 			}
 		}
 	}
-	if (hazardPowers.size() == 0) {
-		return 0;
-	}
 	*/
 	if (importance <= 0) {
-		//I'm really glad this works in C++ without massive amounts of copy and pasting code
 		return (highest > getDefaultOffense() ? highest : getDefaultOffense());
 	}
 	return highest;
@@ -79,15 +78,15 @@ float CircleHazard::getHighestDefenseImportance() const {
 float CircleHazard::getHighestDefenseTier(float importance) const {
 	float highest = LOW_TIER;
 	/*
+	if (hazardPowers.size() == 0) {
+		return 0;
+	}
 	for (int i = 0; i < hazardPowers.size(); i++) {
 		if (hazardPowers[i]->getDefenseImportance() == importance) {
 			if (hazardPowers[i]->getDefenseTier(this) > highest) {
 				highest = hazardPowers[i]->getDefenseTier(this);
 			}
 		}
-	}
-	if (hazardPowers.size() == 0) {
-		return 0;
 	}
 	*/
 	if (importance <= 0) {
@@ -102,31 +101,10 @@ float CircleHazard::getDefenseTier() const {
 
 //hazard notes:
 /*
-some hazards aren't bad
-
-list of (eventual) hazards:
-|stationary turret
-|targeting turret
-|patrolling turret
-|rectangular/circular lightning
-|horizontal lightning
-|vertical lightning
-|lava
-|no bullet zone
+hazard ideas:
 teleport zone
-pipes
-trap?
-
-
-other:
-cloud (maybe it could eat a bullet and spit out a powerup)
-flag for capture the flag (base where the tank spawns; bringing it back gives godmode or something)
+pipes?
 magnetic hazard of some kind (when bullet or something is near it, shoots out some electricity (not lightning; there's a difference) and pulls it in)
-tank swapper (swaps tanks every so often) (could also teleport them to some random place)
-
-
-list of possible hazards, joke or not:
-|the reflecktor (bounces/reflects tanks when they hit it)
 
 
 JS hazard numbers (with names updated):

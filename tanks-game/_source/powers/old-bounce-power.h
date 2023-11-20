@@ -2,16 +2,12 @@
 #include "bounce-power.h"
 
 class OldBouncePower : public BouncePower {
-public: //bullet stuff
-	//static const int maxBounces;
-
 public:
 	virtual std::vector<std::string> getPowerTypes() const override {
 		std::vector<std::string> types = std::vector<std::string>{ "old", "random-old" };
 		return types;
 	}
 	virtual std::unordered_map<std::string, float> getWeights() const override;
-	//virtual std::vector<std::string> getPowerAttributes() const override;
 
 	virtual std::string getName() const override { return OldBouncePower::getClassName(); }
 	static std::string getClassName() { return "old_bounce"; }
@@ -52,7 +48,7 @@ public:
 		return OldBouncePower::getClassColor();
 	}
 
-	virtual BulletPower* makeDuplicate() const override { return new OldBounceBulletPower(); } //I don't think bounces were passed on in JS
+	virtual BulletPower* makeDuplicate() const override { return new OldBounceBulletPower(); } //not sure if bounces were passed on in JS
 	virtual TankPower* makeTankPower() const override;
 
 	virtual double getBulletSpeedMultiplier() const override { return .25; }

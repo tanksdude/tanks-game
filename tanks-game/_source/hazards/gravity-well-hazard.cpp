@@ -137,7 +137,7 @@ inline double GravityWellHazard::getGravityStrength(double dist) const {
 	return (1 - dist/(this->gravityRange - this->r)) * (maxGravityStrength - minGravityStrength) + minGravityStrength;
 }
 
-inline double GravityWellHazard::getInnerGravityCircleRadius() const {
+inline float GravityWellHazard::getInnerGravityCircleRadius() const {
 	if (isGravityReversed()) {
 		return ((tickCount/tickCycle))     * (gravityRange - r) + r;
 	} else {
@@ -379,10 +379,10 @@ inline void GravityWellHazard::drawGravityCircle(float alpha) const {
 
 	float coordsAndColor[(Circle::numOfSides*2)*(2+4)];
 	for (int i = 0; i < Circle::numOfSides; i++) {
-		coordsAndColor[(i*2)  *6]   = x + (getInnerGravityCircleRadius()-lineWidth) * body_vertices[i+1].getXComp();
-		coordsAndColor[(i*2)  *6+1] = y + (getInnerGravityCircleRadius()-lineWidth) * body_vertices[i+1].getYComp();
-		coordsAndColor[(i*2+1)*6]   = x + (getInnerGravityCircleRadius())           * body_vertices[i+1].getXComp();
-		coordsAndColor[(i*2+1)*6+1] = y + (getInnerGravityCircleRadius())           * body_vertices[i+1].getYComp();
+		coordsAndColor[(i*2)  *6]   = static_cast<float>(x) + (getInnerGravityCircleRadius()-lineWidth) * body_vertices[i+1].getXComp();
+		coordsAndColor[(i*2)  *6+1] = static_cast<float>(y) + (getInnerGravityCircleRadius()-lineWidth) * body_vertices[i+1].getYComp();
+		coordsAndColor[(i*2+1)*6]   = static_cast<float>(x) + (getInnerGravityCircleRadius())           * body_vertices[i+1].getXComp();
+		coordsAndColor[(i*2+1)*6+1] = static_cast<float>(y) + (getInnerGravityCircleRadius())           * body_vertices[i+1].getYComp();
 
 		coordsAndColor[(i*2)  *6+2] = c.getRf();
 		coordsAndColor[(i*2)  *6+3] = c.getGf();
@@ -413,8 +413,8 @@ inline void GravityWellHazard::drawGravityArrows(float alpha) const {
 				vertex.scaleAndRotate(arrowScale, rotateAngle + PI); //flip arrow direction
 			}
 
-			coordsAndColor_arrow[j*6]   = this->x + translateAmount.getXComp() + vertex.getXComp();
-			coordsAndColor_arrow[j*6+1] = this->y + translateAmount.getYComp() + vertex.getYComp();
+			coordsAndColor_arrow[j*6]   = static_cast<float>(this->x) + translateAmount.getXComp() + vertex.getXComp();
+			coordsAndColor_arrow[j*6+1] = static_cast<float>(this->y) + translateAmount.getYComp() + vertex.getYComp();
 			coordsAndColor_arrow[j*6+2] = color.getRf();
 			coordsAndColor_arrow[j*6+3] = color.getGf();
 			coordsAndColor_arrow[j*6+4] = color.getBf();

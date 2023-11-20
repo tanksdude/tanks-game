@@ -179,8 +179,7 @@ void ResetThings::firstLevelPush() {
 	}
 }
 
-//TODO: tankPositionReset should have a version with no Tank inputs
-//worry about this when there's more than two tanks
+//TODO: tankPositionReset accounting for more than two tanks
 
 void ResetThings::tankPositionReset() {
 	tankPositionReset(default_tankToEdgeDist);
@@ -211,7 +210,7 @@ void ResetThings::tankPositionReset(double x, double yRange, int yCount) {
 	yRange = std::clamp<double>(yRange, 0, GAME_HEIGHT);
 	yCount = std::max(yCount, 1); //I thought std::mix/max was overloaded, but it's actually a template; neat, learning is cool
 
-	int randNum = RNG::randFunc() * yCount; //stays outside the conditional to ensure RNG is called by resetting the level
+	int randNum = RNG::randFunc() * yCount; //stays outside the conditional to ensure RNG is called when resetting the level (unless exact position is used)
 	double yVal;
 	if (yCount == 1) {
 		yVal = GAME_HEIGHT/2;

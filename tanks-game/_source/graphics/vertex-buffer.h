@@ -18,7 +18,9 @@ public:
 	virtual const VertexBufferLayout& GetLayout() const = 0;
 	virtual void SetLayout(const VertexBufferLayout&) = 0;
 
-	static inline VertexBuffer* MakeVertexBuffer(const void* data, unsigned int size);
 	static VertexBuffer* MakeVertexBuffer(const void* data, unsigned int size, RenderingHints hint);
+	static inline VertexBuffer* MakeVertexBuffer(const void* data, unsigned int size) {
+		return MakeVertexBuffer(data, size, RenderingHints::stream_draw);
+	}
 	virtual ~VertexBuffer() { return; }
 };

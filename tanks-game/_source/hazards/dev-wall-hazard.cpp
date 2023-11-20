@@ -17,7 +17,7 @@
 std::unordered_map<std::string, float> DevWallHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "dev", 1.0f });
-	weights.insert({ "random-dev", 1.0f });
+	weights.insert({ "random-dev", 0.5f });
 	return weights;
 }
 
@@ -33,8 +33,6 @@ DevWallHazard::DevWallHazard(double xpos, double ypos, double width, double heig
 	}
 
 	//canAcceptPowers = false;
-
-	//modifiesBulletCollision = true;
 }
 
 DevWallHazard::~DevWallHazard() {

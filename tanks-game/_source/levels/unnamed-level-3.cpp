@@ -2,7 +2,6 @@
 
 #include "../constants.h"
 #include <iostream>
-#include "../rng.h"
 
 #include "../reset-things.h"
 #include "../level-helper.h"
@@ -48,7 +47,6 @@ void UnnamedLevel3::initialize() {
 	posArr = new double[3]{ GAME_WIDTH/2, GAME_HEIGHT/2, -PI/2 };
 	constructionData = GenericFactoryConstructionData(3, posArr);
 	HazardManager::pushCircleHazard("vanilla", "ginormous_turret", constructionData);
-	//HazardManager::pushCircleHazard("vanilla", "mother_turret", constructionData);
 
 	LevelHelper::pushSymmetricPowerups_LR(GAME_WIDTH/2, GAME_HEIGHT/2, 64*1.25+20, "vanilla", "invincible");
 	respawning->watchLastPowerSquaresPushed(2);

@@ -337,12 +337,7 @@ void GameMainLoop::Tick(int UPS) {
 	Diagnostics::startTiming("bullet-tank");
 	bulletToTank();
 	Diagnostics::endTiming();
-
-	//edge constrain tanks again in case bullet decided to move tank
-	//don't edge constrain if said tank is dead //TODO: implement
-	/*
-	tankToEdge();
-	*/
+	//don't bother edge constraining tanks again in case bullet decided to move tank
 
 	//finish up by incrementing the tick count
 	GameManager::Tick();
@@ -848,9 +843,9 @@ void GameMainLoop::bulletToWall() {
 	std::vector<Game_ID> bulletDeletionList;
 	std::vector<Game_ID> wallDeletionList;
 
-	std::unordered_map<Game_ID, BulletUpdateStruct> bulletUpdates; //TODO: what if a bullet wants to make more of itself when it hits a wall?
+	std::unordered_map<Game_ID, BulletUpdateStruct> bulletUpdates;
 	std::vector<Game_ID> bulletUpdateList;
-	std::unordered_map<Game_ID, WallUpdateStruct> wallUpdates; //bullets probably shouldn't be able to hit a wall and make more walls
+	std::unordered_map<Game_ID, WallUpdateStruct> wallUpdates;
 	std::vector<Game_ID> wallUpdateList;
 
 	for (int i = 0; i < collisionList->size(); i++) {

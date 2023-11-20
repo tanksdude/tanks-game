@@ -45,49 +45,49 @@ public:
 	virtual BulletPower* makeBulletPower() const = 0;
 
 	bool modifiesMovement = false;
-	virtual InteractionBoolHolder modifiedMovement(Tank*, bool forward, bool turnL, bool turnR, bool specialKey) { return { false }; }
 	//precondition: nothing
+	virtual InteractionBoolHolder modifiedMovement(Tank*, bool forward, bool turnL, bool turnR, bool specialKey) { return { false }; }
 	bool overridesMovement = false; //set to true if the power completely changes how it moves; regular powers slightly modify movement and still want basic tank move
 	bool modifiedMovementCanWorkWithOthers = true; //stops later powerups in list from activating
 	bool modifiedMovementCanOnlyWorkIndividually = false; //if another power was used previously, this power can't activate
 
 	bool modifiesEdgeCollision = false;
-	virtual InteractionBoolHolder modifiedEdgeCollision(Tank*) { return { false }; } //only the first false means something
 	//precondition: was out of bounds, is not necessarily out of bounds
+	virtual InteractionBoolHolder modifiedEdgeCollision(Tank*) { return { false }; } //only the first false means something
 	bool overridesEdgeCollision = true;
 	bool modifiedEdgeCollisionCanWorkWithOthers = true;
 	bool modifiedEdgeCollisionCanOnlyWorkIndividually = false;
 
 	bool modifiesCollisionWithTank = false;
-	virtual InteractionBoolHolder modifiedCollisionWithTank(Tank* parent, Tank* other) { return { false, false }; }
 	//precondition: hit tank, is not necessarily inside tank
+	virtual InteractionBoolHolder modifiedCollisionWithTank(Tank* parent, Tank* other) { return { false, false }; }
 	bool overridesCollisionWithTank = true;
 	bool modifiedCollisionWithTankCanWorkWithOthers = true;
 	bool modifiedCollisionWithTankCanOnlyWorkIndividually = false;
 
 	bool modifiesCollisionWithWall = false;
-	virtual InteractionBoolHolder modifiedCollisionWithWall(Tank*, Wall*) { return { false, false }; }
 	//precondition: hit wall, is not necessariliy inside wall
+	virtual InteractionBoolHolder modifiedCollisionWithWall(Tank*, Wall*) { return { false, false }; }
 	bool overridesCollisionWithWall = true;
 	bool modifiedCollisionWithWallCanWorkWithOthers = true;
 	bool modifiedCollisionWithWallCanOnlyWorkIndividually = false;
 
-	//bool modifiesCollisionWithPower = false;
+	//bool modifiesCollisionWithPowerup = false;
 	//virtual void modifiedCollisionWithPowerSquare(Tank*, PowerSquare*) { return; } //probably not going to be used
 
 	//bool modifiesCollisionWithBullet = false;
 	//virtual void modifiedCollisionWithBullet(Tank*, Bullet*) { return; } //probably shouldn't be used
 
 	virtual bool getModifiesCollisionWithCircleHazard(const CircleHazard*) const { return false; }
-	virtual InteractionBoolHolder modifiedCollisionWithCircleHazard(Tank*, CircleHazard*) { return { false, false }; }
 	//precondition: hit circlehazard, is not necessarily inside circlehazard
+	virtual InteractionBoolHolder modifiedCollisionWithCircleHazard(Tank*, CircleHazard*) { return { false, false }; }
 	bool overridesCollisionWithCircleHazard = true; //false means also use the default, which means destroy the tank if it collides
 	bool modifiedCollisionWithCircleHazardCanWorkWithOthers = true;
 	bool modifiedCollisionWithCircleHazardCanOnlyWorkIndividually = false;
 
 	virtual bool getModifiesCollisionWithRectHazard(const RectHazard*) const { return false; }
-	virtual InteractionBoolHolder modifiedCollisionWithRectHazard(Tank*, RectHazard*) { return { false, false }; }
 	//precondition: hit recthazard, is not necessarily inside recthazard
+	virtual InteractionBoolHolder modifiedCollisionWithRectHazard(Tank*, RectHazard*) { return { false, false }; }
 	bool overridesCollisionWithRectHazard = true; //false means also use the default, which means destroy the tank if it collides
 	bool modifiedCollisionWithRectHazardCanWorkWithOthers = true;
 	bool modifiedCollisionWithRectHazardCanOnlyWorkIndividually = false;
@@ -126,6 +126,7 @@ public:
 
 	/*
 	bool modifiesTankDrawings = false;
+	//TODO: this can work; maybe pass in tank radius and just the first cannon
 	virtual void modifiedTankDrawings(Tank* parent) { return; }
 	bool overridesTankDrawings = false;
 	bool modifiedTankDrawingsCanWorkWithOthers = true;

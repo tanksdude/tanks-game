@@ -47,11 +47,7 @@ public:
 	virtual BulletPower* makeDuplicate() const override;
 	virtual TankPower* makeTankPower() const override;
 
-	//bool modifiesCollisionWithWall = true;
 	virtual InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> modifiedCollisionWithWall(const Bullet*, const Wall*) override;
-
-	//bool modifiesCollisionWithEdge = true;
-	virtual InteractionBoolHolder modifiedEdgeCollision(Bullet*) override;
 
 	virtual double getBulletSpeedMultiplier() const override { return .25; }
 

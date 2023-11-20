@@ -39,10 +39,6 @@ double WindLevelEffect::getWindStrengthMultiplier() const {
 	}
 }
 
-void WindLevelEffect::apply() {
-	//nothing
-}
-
 void WindLevelEffect::tick(const Level* parent) {
 	tickCount++;
 	bool changeWind = false;
@@ -67,7 +63,6 @@ void WindLevelEffect::tick(const Level* parent) {
 		//pushDirection = SimpleVector2D(RNG::randFunc() * (2*PI), RNG::randFunc(), true); //JS, I think (~90% sure)
 		pushDirection = SimpleVector2D(RNG::randFunc() * (2*PI), RNG::randFloatInRange(.125, 1.0), true);
 	}
-	//std::cout << currentState << " " << getWindStrengthMultiplier() << std::endl;
 }
 
 void WindLevelEffect::doEffects(Level* parent) const {
@@ -95,10 +90,9 @@ void WindLevelEffect::draw() const {
 
 	ColorValueHolder color = ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(0.0f, 0.0f, 0.0f));
 
-	const double length = 16 * pushDirection.getMagnitude() * getWindStrengthMultiplier(); //normal
+	const double length = 16 * (pushDirection.getMagnitude() * getWindStrengthMultiplier()); //normal
 	//const double length = 16 * sqrt(pushDirection.getMagnitude() * getWindStrengthMultiplier()); //ez way to make small values more visible
 	//sqrt is not a big deal to compute: https://stackoverflow.com/questions/41582376/fast-approximation-of-square-rootx-with-known-0-x-1
-	//const double length = 16 * sqrt(1 - pow(pushDirection.getMagnitude()*getWindStrengthMultiplier()-1, 2)); //(circle) //too big
 	const double x_offset = 64; //JS x offset: (528-112)/7 (it's the distance between the main walls) = 59.42857
 	const double y_offset = 64; //JS y offset: (320)/5 = 64
 	for (int i = -3; i <= 3; i++) {
@@ -301,11 +295,9 @@ WindLevelEffect::WindLevelEffect(bool transitionWind) {
 	currentState = 0;
 	maxState = 4;
 	if (transitionWind) {
-		//stateMultiplier = new double[maxState]{ 1, .5, 1, .5 };
-		stateMultiplier = new double[maxState]{ .75, .25, .75, .25 };
-		//TODO: does this look right? (basing this off tricky_maneuvering)
+		stateMultiplier = new double[4]{ .75, .25, .75, .25 };
 	} else {
-		stateMultiplier = new double[maxState]{ 1, 0, 1, 0 };
+		stateMultiplier = new double[4]{ 1, 0, 1, 0 };
 	}
 
 	initializeVertices();
@@ -328,5 +320,6 @@ LevelEffect* WindLevelEffect::factory(const GenericFactoryConstructionData& args
 			return new WindLevelEffect(t);
 		}
 	}
+
 	return new WindLevelEffect();
 }

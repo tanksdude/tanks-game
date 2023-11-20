@@ -3,7 +3,7 @@
 #include "constants.h"
 #include <cmath>
 //#include <stdexcept>
-#include <algorithm> //std::copy, std::clamp
+#include <algorithm> //std::copy, std::clamp, std::max
 #include <iostream>
 
 #include "color-mixer.h"
@@ -11,7 +11,7 @@
 
 int GeneralizedLightning::getDefaultNumBoltPoints(double horzDist) const {
 	int boltPoints = ceil(horzDist / lengthOfBolt); //not floor because the last point is the edge of the lightning area
-	return (boltPoints < 2 ? 2 : boltPoints);
+	return std::max(2, boltPoints);
 }
 
 GeneralizedLightning::~GeneralizedLightning() {

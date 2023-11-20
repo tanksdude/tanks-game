@@ -6,14 +6,14 @@ struct Circle {
 	friend class PowerFunctionHelper;
 
 public:
-	static const unsigned int numOfSides = 64;
+	static constexpr unsigned int numOfSides = 64;
 
 public:
 	double x;
 	double y;
 	double r;
 
-	double getX() const { return x; }
-	double getY() const { return y; }
-	double getR() const { return r; }
+	double getX() const noexcept { return x; }
+	double getY() const noexcept { return y; }
+	double getR() const noexcept { return r; }
 };

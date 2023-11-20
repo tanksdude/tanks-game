@@ -7,7 +7,6 @@
 
 class GeneralizedLightning {
 protected:
-	//see notes in GeneralizedLava about nested classes
 	struct LightningBolt {
 		std::vector<float> positions; //positions is array of (x,y) points
 		int length; //positions.size()/2, unless it's uninitialized
@@ -38,11 +37,12 @@ protected:
 
 	unsigned int maxBolts; //this is maximum amount of normal bolts; the lightning can make any number of bolts when it has to destroy a bullet or tank
 	double lengthOfBolt;
-	std::vector<LightningBolt*> bolts; //is a vector of pointers instead of objects so resizes take less time
-	virtual void clearBolts(); //the vector holds pointers, so memory has to be freed
+	std::vector<LightningBolt*> bolts;
+	virtual void clearBolts();
 	double boltTick;
 	double boltCycle; //= 4; //how often bolts get refreshed
 	bool boltsNeeded; //= false; //if the lightning hits something, this is changed, and no random bolts will be made; resets every boltCycle ticks
+
 	virtual void refreshBolt(LightningBolt*) const = 0; //"redraw" a bolt //this is the hardest thing to generalize, so... copy and paste
 	virtual int getDefaultNumBoltPoints(double horzDist) const; //number of points that make up a bolt
 	virtual void pushBolt(LightningBolt*) = 0;

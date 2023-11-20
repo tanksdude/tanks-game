@@ -2,7 +2,6 @@
 
 #include "../constants.h"
 #include <iostream>
-#include "../rng.h"
 
 #include "../reset-things.h"
 #include "../level-helper.h"
@@ -30,7 +29,7 @@ void UnnamedLevel11::initialize() {
 	double* posArr;
 
 	LevelHelper::pushClassicWalls(color);
-	PositionHolder* wallArray = LevelHelper::getClassicWallPositions();
+	const PositionHolder* wallArray = LevelHelper::getClassicWallPositions();
 
 	const double centerOffset = 40;
 	const double zoneWidth = 10;

@@ -13,7 +13,7 @@ Wall::Wall(double x_, double y_, double w_, double h_, const ColorValueHolder& c
 	this->y = y_;
 	this->w = w_;
 	this->h = h_;
-	color = c;
+	this->color = c;
 }
 
 Wall::~Wall() {

@@ -8,7 +8,7 @@ std::unordered_map<std::string, float> SpeedPower::getWeights() const {
 	weights.insert({ "random-old", 1.0f });
 	weights.insert({ "supermix", 1.0f });
 	weights.insert({ "supermix-vanilla", 1.0f });
-	weights.insert({ "random", 1.0f });
+	weights.insert({ "random", 1.0f }); //TODO: reduce?
 	return weights;
 }
 
@@ -31,14 +31,10 @@ Power* SpeedPower::factory() {
 }
 
 SpeedPower::SpeedPower() {
-	//does nothing
+	return;
 }
 
 
-
-double SpeedTankPower::getTankMaxSpeedMultiplier() const {
-	return 2;
-}
 
 BulletPower* SpeedTankPower::makeBulletPower() const {
 	return new SpeedBulletPower();

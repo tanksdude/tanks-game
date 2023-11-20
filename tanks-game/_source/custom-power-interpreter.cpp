@@ -1070,9 +1070,7 @@ CustomPower* CustomPowerInterpreter::processCustomPower(std::string path) {
 		throw std::runtime_error("Error parsing power: more power types than power weights");
 	}
 	if (types.size() != temp_weights.size()) {
-		//std::cerr << "Warning parsing power " + path + ": more power weights than power types" << std::endl;
 		throw std::runtime_error("Error parsing power: more power weights than power types");
-		//TODO: throw or warn?
 	}
 	for (int i = 0; i < types.size(); i++) {
 		float weight;

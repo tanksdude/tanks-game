@@ -20,7 +20,6 @@ std::unordered_map<std::string, float> TightPatrollingCorridorLevel::getWeights(
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla-extra", 0.5f });
 	weights.insert({ "random-vanilla", 0.5f }); //TODO: seems too common
-	//TODO: update the weights eventually
 	return weights;
 }
 
@@ -66,7 +65,7 @@ void TightPatrollingCorridorLevel::initialize() {
 	pos = LevelHelper::getSymmetricWallPositions_LR(1, GAME_WIDTH/2, GAME_HEIGHT/2, 60, 20, (40+40)*2);
 	WallManager::pushWall(new Wall(pos.x, pos.y, 20, (40+40)*2, color));
 
-	//PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "godmode"));
+	//good center powerup
 	names = new std::string[4]{ "bounce", "homing", "banana", "banana" };
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "vanilla", names, 4));
 	delete[] names;
@@ -88,9 +87,7 @@ void TightPatrollingCorridorLevel::initialize() {
 	for (int i = 0; i < 4; i++) {
 		pos = LevelHelper::getSymmetricWallPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, (60+20 + 40) + 20 + 20/2, 40-10, 20/2, 40+10*2);
 		WallManager::pushWall(new Wall(pos.x, pos.y, 20/2, 40+10*2, color));
-		//posArr = new double[4]{ pos.x, pos.y, 20/2, 40+10*2 };
-		//constructionData = GenericFactoryConstructionData(4, posArr);
-		//HazardManager::pushRectHazard("vanilla", "no_bullet_zone", constructionData);
+		//alternatively: no bullet zones
 	}
 
 	posArr = new double[3]{ GAME_WIDTH/2, GAME_HEIGHT - 35, -PI/2 };

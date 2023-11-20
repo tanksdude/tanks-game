@@ -16,7 +16,6 @@ public:
 	SimpleVector2D(float xComp, float yComp);
 	SimpleVector2D(float angle, float magnitude, bool angle_magnitude); //bool is just there to differentiate the constructors
 	SimpleVector2D() : SimpleVector2D(0, 0) {}
-	//SimpleVector2D(const SimpleVector2D&);
 
 	static SimpleVector2D MakeVector_Components(float xComp, float yComp);
 	static SimpleVector2D MakeVector_Angle(float angle, float magnitude);
@@ -29,10 +28,10 @@ public:
 	void multiplyMagnitude(float scale);
 	void scaleAndRotate(float scale, float angle);
 
-	float getXComp() const { return xComp; }
-	float getYComp() const { return yComp; }
-	float getAngle() const { return angle; }
-	float getMagnitude() const { return magnitude; }
+	float getXComp() const noexcept { return xComp; }
+	float getYComp() const noexcept { return yComp; }
+	float getAngle() const noexcept { return angle; }
+	float getMagnitude() const noexcept { return magnitude; }
 
 	SimpleVector2D operator+(const SimpleVector2D&);
 	SimpleVector2D operator-(const SimpleVector2D&);

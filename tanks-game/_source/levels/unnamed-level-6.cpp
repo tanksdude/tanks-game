@@ -2,7 +2,6 @@
 
 #include "../constants.h"
 #include <iostream>
-#include "../rng.h"
 
 #include "../reset-things.h"
 #include "../level-helper.h"

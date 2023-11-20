@@ -70,8 +70,8 @@ public:
 	virtual InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> modifiedCollisionWithWall(const Bullet*, const Wall*) override;
 	//bool modifiedCollisionWithWallCanWorkWithOthers = false;
 
-	virtual float getOffenseTier(const Bullet*) const override { return HIGH_TIER - .1; }
-	virtual float getDefenseTier(const Bullet*) const override { return HIGH_TIER - .1; }
+	virtual float getOffenseTier(const Bullet*) const override { return HIGH_TIER - .1f; }
+	virtual float getDefenseTier(const Bullet*) const override { return HIGH_TIER - .1f; }
 
 	TheSuperNamedBulletPower();
 };

@@ -50,7 +50,6 @@ public:
 	void updateTurningIncrement();
 
 	double getShootingSpeedMultiplier() const;
-	//double powerMultiplier; //would be used for an ini
 
 protected:
 	void makeBulletCommon(double x, double y, double angle, double radius, double speed);

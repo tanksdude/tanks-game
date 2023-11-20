@@ -544,7 +544,6 @@ void Renderer::SubmitBatchedDraw(const float* posAndColor, int posAndColorLength
 		unsigned int currIndicesLength = indicesData.size();
 		indicesData.insert(indicesData.end(), indices, indices + indicesLength);
 		for (unsigned int i = currIndicesLength; i < indicesData.size(); i++) {
-			//indicesData[i] += currIndicesLength/3; //close, but not quite right
 			indicesData[i] += currVerticesLength/(2+4);
 		}
 	}
@@ -583,17 +582,6 @@ void Renderer::EndScene() {
 
 bool Renderer::isDebugDrawingEnabled(std::string name) {
 	const BasicINIParser::BasicINIData& ini_data = GameManager::get_INI();
-
-	//checked by GameMainLoop:
-	/*
-	if (ini_data.exists("DEBUG", "EnableDebugDrawing")) {
-		if (!std::stoi(ini_data.get("DEBUG", "EnableDebugDrawing"))) {
-			return false;
-		}
-	} else {
-		return false;
-	}
-	*/
 
 	bool drawingEnabled = false;
 	if (ini_data.exists("DEBUG", "EnableDebugDrawingObjects")) {

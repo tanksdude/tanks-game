@@ -4,7 +4,6 @@
 #include <iostream>
 
 Shader::Shader(const std::string& vert_filepath, const std::string& frag_filepath) {
-	//uniformLocationCache; //I don't know if it needs to be initialized
 	this->vert_filepath = vert_filepath;
 	this->frag_filepath = frag_filepath;
 
@@ -103,7 +102,7 @@ int Shader::getUniformLocation(const std::string& name) {
 
 	int location = glGetUniformLocation(rendererID, name.c_str());
 	if (location == -1) {
-		std::cout << "Uniform '" << name << "' doesn't exist!" << std::endl;
+		std::cerr << "Uniform '" << name << "' doesn't exist!" << std::endl;
 	}
 
 	uniformLocationCache.insert({ name, location });

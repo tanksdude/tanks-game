@@ -1,8 +1,6 @@
 #include "unnamed-level-2.h"
 
 #include "../constants.h"
-#include <algorithm> //std::min
-#include <iostream>
 
 #include "../reset-things.h"
 #include "../level-helper.h"
@@ -10,8 +8,6 @@
 #include "../wall-manager.h"
 #include "../hazard-manager.h"
 #include "../level-manager.h"
-
-//#include "../collision-handler.h"
 
 ColorValueHolder UnnamedLevel2::getDefaultColor() const {
 	return ColorValueHolder(1, 1, 1);
@@ -96,17 +92,10 @@ void UnnamedLevel2::initialize() {
 		WallManager::pushWall(new Wall(xpos, ypos, wall_width, wall_height, color));
 	}
 
-	//for (int i = 0; i < WallManager::getNumWalls(); i++) {
-	//	std::cout << CollisionHandler::partiallyOutOfBoundsIgnoreEdge(WallManager::getWall(i)) << std::endl;
-	//}
-
-	PowerupManager::pushPowerup(new PowerSquare(20, 20, "vanilla", "wallhack")); //only to avoid softlocks
+	//only to avoid softlocks:
+	//LevelHelper::pushSymmetricPowerups_DiagForwardSlash(GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH/2 - 20, GAME_HEIGHT/2 - 20, "vanilla", "wallhack");
+	PowerupManager::pushPowerup(new PowerSquare(20, 20, "vanilla", "wallhack"));
 	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH - 20, GAME_HEIGHT - 20, "vanilla", "wallhack"));
-
-	//other potential powers:
-	//
-	//other potential hazards:
-	//wall hazards?
 }
 
 Level* UnnamedLevel2::factory() {

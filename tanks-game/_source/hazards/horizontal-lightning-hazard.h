@@ -16,11 +16,7 @@ protected:
 	[[nodiscard]] inline Circle* getRightPoint() const;
 
 public:
-	virtual std::vector<std::string> getHazardTypes() const override {
-		//should match with RectangularLightning
-		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "random-vanilla", "old", "random-old", "random" };
-		return types;
-	}
+	//virtual std::vector<std::string> getHazardTypes() const override; //matched with RectangularLightningHazard
 	virtual std::unordered_map<std::string, float> getWeights() const override;
 
 protected:
@@ -33,17 +29,13 @@ public:
 	virtual std::string getName() const override { return getClassName(); }
 	static std::string getClassName() { return "horizontal_lightning"; }
 
-	//virtual void tick() override;
-
 protected:
 	virtual inline void drawBackground(bool pose, float alpha = 1.0f) const;
 	virtual inline void drawBackgroundOutline(float alpha) const; //called by drawBackground()
-	//virtual inline void drawBolts(float alpha = 1.0f) const;
 	virtual inline void drawBolts_Pose(float alpha = 1.0f) const;
 
 public:
 	HorizontalLightningHazard(double xpos, double ypos, double width, double height);
-	//HorizontalLightningHazard(double xpos, double ypos, double width, double height, bool flexible);
 	~HorizontalLightningHazard();
 	static RectHazard* factory(const GenericFactoryConstructionData&);
 	static RectHazard* randomizingFactory(double x_start, double y_start, double area_width, double area_height, const GenericFactoryConstructionData&);

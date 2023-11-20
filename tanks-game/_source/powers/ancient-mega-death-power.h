@@ -45,10 +45,10 @@ public:
 
 
 
+#include "../constants.h"
+
 class AncientMegaDeathBulletPower : public BulletPower {
 public:
-	//virtual void tick(Bullet* b) override;
-
 	virtual ColorValueHolder getColor() const override {
 		return AncientMegaDeathPower::getClassColor();
 	}

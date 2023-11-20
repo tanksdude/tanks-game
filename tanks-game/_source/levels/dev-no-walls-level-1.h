@@ -2,7 +2,6 @@
 #include "../level.h"
 
 class DevNoWallsLevel1 : public Level {
-	//not level 0 since it's closer to a real level than just testing
 public:
 	virtual std::string getName() const override { return "nowalls1"; }
 	virtual ColorValueHolder getDefaultColor() const override;

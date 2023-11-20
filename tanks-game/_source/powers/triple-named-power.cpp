@@ -1,5 +1,7 @@
 #include "triple-named-power.h"
 
+#include "../constants.h"
+
 const double TripleNamedPower::bulletAngleDiff = PI/16; //JS: PI/8
 
 std::unordered_map<std::string, float> TripleNamedPower::getWeights() const {
@@ -37,9 +39,6 @@ TripleNamedPower::TripleNamedPower() {
 }
 
 
-
-#include "../constants.h"
-#include <cmath>
 
 std::vector<std::pair<double, double>>* TripleNamedTankPower::addExtraShootingPoints() const {
 	return new std::vector<std::pair<double, double>>{ {TripleNamedPower::bulletAngleDiff, -TripleNamedPower::bulletAngleDiff},

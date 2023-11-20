@@ -19,19 +19,19 @@ protected:
 	CircleFactoryInformation factoryInformation;
 	CircleHazardRandomizationFunction randomizationFunction;
 public:
-	CircleHazardFunction getFactory() {
+	CircleHazardFunction getFactory() const {
 		return circleFactory;
 	}
-	int getArgCount() {
+	int getArgCount() const {
 		return argCount;
 	}
-	CircleHazardConstructionTypes getConstructionType() {
+	CircleHazardConstructionTypes getConstructionType() const {
 		return constructionType;
 	}
-	CircleFactoryInformation getFactoryInformation() {
+	CircleFactoryInformation getFactoryInformation() const {
 		return factoryInformation;
 	}
-	CircleHazardRandomizationFunction getRandomizationFunction() {
+	CircleHazardRandomizationFunction getRandomizationFunction() const {
 		return randomizationFunction;
 	}
 	CircleHazardFactoryGroup(CircleHazardFunction cf, int ac, CircleHazardConstructionTypes ct, CircleFactoryInformation fi, CircleHazardRandomizationFunction random) {
@@ -52,19 +52,19 @@ protected:
 	RectFactoryInformation factoryInformation;
 	RectHazardRandomizationFunction randomizationFunction;
 public:
-	RectHazardFunction getFactory() {
+	RectHazardFunction getFactory() const {
 		return rectFactory;
 	}
-	int getArgCount() {
+	int getArgCount() const {
 		return argCount;
 	}
-	RectHazardConstructionTypes getConstructionType() {
+	RectHazardConstructionTypes getConstructionType() const {
 		return constructionType;
 	}
-	RectFactoryInformation getFactoryInformation() {
+	RectFactoryInformation getFactoryInformation() const {
 		return factoryInformation;
 	}
-	RectHazardRandomizationFunction getRandomizationFunction() {
+	RectHazardRandomizationFunction getRandomizationFunction() const {
 		return randomizationFunction;
 	}
 	RectHazardFactoryGroup(RectHazardFunction rf, int ac, RectHazardConstructionTypes ct, RectFactoryInformation fi, RectHazardRandomizationFunction random) {

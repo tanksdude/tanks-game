@@ -42,6 +42,8 @@ AncientMegaDeathTankPower::AncientMegaDeathTankPower() {
 
 
 
+#include "../constants.h"
+
 #include "../power-function-helper.h"
 
 InteractionBoolHolder AncientMegaDeathBulletPower::modifiedMovement(Bullet* b) {

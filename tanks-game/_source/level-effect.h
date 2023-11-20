@@ -14,7 +14,7 @@ class LevelEffect;
 class LevelEffect : public DrawableThing {
 public:
 	virtual std::string getName() const = 0;
-	virtual std::vector<std::string> getLevelEffectTypes() const = 0; //pure virtual to make sure level effects define it
+	virtual std::vector<std::string> getLevelEffectTypes() const = 0;
 	virtual std::unordered_map<std::string, float> getWeights() const = 0; //intended range: (0,1]
 
 public:
@@ -37,5 +37,5 @@ public:
 	virtual void ghostDraw(DrawingLayers, float alpha) const override { return; }
 
 	virtual ~LevelEffect() { return; }
-	static LevelEffect* factory(const GenericFactoryConstructionData&);
+	//static LevelEffect* factory(const GenericFactoryConstructionData&);
 };

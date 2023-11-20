@@ -31,7 +31,7 @@ private:
 
 	static void drawGraphTimes_graph();
 	static void drawGraphTimes_data(std::string name);
-	static inline void drawGraphTimes_data();
+	static void drawGraphTimes_data();
 
 public:
 	static void Initialize();

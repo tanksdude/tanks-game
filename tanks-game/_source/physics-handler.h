@@ -25,8 +25,6 @@ protected:
 	};
 
 public:
-	//template<typename T, typename U>
-	//static std::vector<std::pair<T, U>> sweepAndPrune(const std::vector<T>& collider, const std::vector<U>& collidee);
 	template<typename T, typename U>
 	static std::vector<std::pair<int, int>>* sweepAndPrune(const std::vector<T>& collider, const std::vector<U>& collidee);
 	template<typename T>
@@ -37,6 +35,7 @@ public:
 	////since bucket sort is a real thing this shouldn't call be called that https://en.wikipedia.org/wiki/Bucket_sort
 	//problem: can't do the bucket thing (spatial partitioning is its official name, I think) because individual elements can't be larger than a cell
 	//solution: quadtrees (I put this off for so long)
+	//idea: quadtree fast path for small stuff, sweep and prune backup for larger stuff
 
 	//template<typename T> /* TODO return type; probably a new class */
 	//static std::unordered_map<std::pair<int, int>, std::vector<T>>* generateQuadtree(const std::vector<T>& collider, double leftBound, double rightBound, double downBound, double upBound, int lrBuckets, int udBuckets);

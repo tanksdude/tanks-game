@@ -5,8 +5,8 @@ std::unordered_map<std::string, float> InvincibleNamedPower::getWeights() const 
 	weights.insert({ "vanilla", 1.0f });
 	weights.insert({ "random-vanilla", 0.5f }); //TODO: something like "reduced random-vanilla" to exclude speed, invincible, wallhack
 	weights.insert({ "old", 1.0f });
-	weights.insert({ "random-old", 1.0f });
-	weights.insert({ "random", 1.0f });
+	weights.insert({ "random-old", 0.5f });
+	weights.insert({ "random", 0.5f });
 	return weights;
 }
 

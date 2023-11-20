@@ -12,6 +12,7 @@
     * bouncing rework
         * something like bool applyBounceUpdate() to bulletpower?
     * fix respawning powerups working with magnetism level effect
+        * level effects need a generic "do action on powerup/hazard/whatever"
 * minor things:
     * switched to GLFW from FreeGLUT for ease of use
     * fullscreen toggle removed because of that
@@ -81,6 +82,7 @@
     * overhaul priority handling (again)
     * *massive* cleanup across the entire project, multiple times; no seriously it was a lot
     * old tank death graphic back (gradient black to white)
+    * fix some long-standing few memory leaks, oops
     * [dev] power, other stuff is poison: walls and hazards kill on contact
     * [dev] power, colorless long invincible: long invincible but doesn't show
     * attempted: tried GLFW instead of FreeGLUT, didn't like it

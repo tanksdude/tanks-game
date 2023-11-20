@@ -1,5 +1,7 @@
 #include "fire-named-power.h"
 
+#include "../constants.h"
+
 const double FireNamedPower::bulletAngleDeviation = PI/4;
 const int FireNamedPower::bulletAmount = 4;
 
@@ -44,8 +46,6 @@ FireNamedPower::FireNamedPower() {
 
 
 
-#include "../constants.h"
-#include <cmath>
 #include "../rng.h"
 
 void FireNamedTankPower::additionalShooting(Tank* t, const CannonPoint& c, const ExtraCannonPoint& c2) {
@@ -74,19 +74,13 @@ FireNamedTankPower::FireNamedTankPower() {
 
 InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> FireNamedBulletPower::modifiedCollisionWithWall(const Bullet* b, const Wall* w) {
 	if (b->velocity.getMagnitude() <= 0) {
-		//b->lifeValue -= FireNamedPower::degradeAmount;
 		return { false, false, new BulletUpdateStruct(0,0,0,0,0, -FireNamedPower::degradeAmount), nullptr };
 	} else {
 		if (b->acceleration < 0) {
-			//b->velocity.changeMagnitude(b->acceleration);
 			return { false, false, new BulletUpdateStruct(0,0,0, b->acceleration, 0,0), nullptr };
 		}
 		return { false, false, nullptr, nullptr };
 	}
-}
-
-double FireNamedBulletPower::getBulletAcceleration() const {
-	return accelerationAmount;
 }
 
 BulletPower* FireNamedBulletPower::makeDuplicate() const {

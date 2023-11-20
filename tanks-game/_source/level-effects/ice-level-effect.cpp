@@ -10,14 +10,10 @@ std::unordered_map<std::string, float> IceLevelEffect::getWeights() const {
 }
 
 void IceLevelEffect::apply() {
+	//TODO: this should not be necessary
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
 		TankManager::getTank(i)->acceleration *= iceFactor;
-		//TODO: should tanks reset themselves if it's the first stage?
 	}
-}
-
-void IceLevelEffect::tick(const Level* parent) {
-	//nothing
 }
 
 IceLevelEffect::IceLevelEffect(double iceAmount) {
@@ -40,5 +36,6 @@ LevelEffect* IceLevelEffect::factory(const GenericFactoryConstructionData& args)
 			return new IceLevelEffect(ice);
 		}
 	}
+
 	return new IceLevelEffect();
 }
