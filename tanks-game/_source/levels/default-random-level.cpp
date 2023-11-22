@@ -21,7 +21,7 @@ std::unordered_map<std::string, float> DefaultRandomLevel::getWeights() const {
 }
 
 ColorValueHolder DefaultRandomLevel::getDefaultColor() const {
-	//return ColorValueHolder(RNG::randFunc(), RNG::randFunc(), RNG::randFunc()); //funky mode
+	//return ColorValueHolder(LevelRNG::randFunc(), LevelRNG::randFunc(), LevelRNG::randFunc()); //funky mode
 	return currentColor;
 }
 
@@ -34,7 +34,7 @@ void DefaultRandomLevel::initialize() {
 	//double* posArr;
 
 	//some random walls
-	LevelHelper::pushRandomWalls(RNG::randIntInRange(12, 16+1), TANK_RADIUS*2.5*2, TANK_RADIUS*2, GAME_WIDTH - 2*(TANK_RADIUS*2.5*2), GAME_HEIGHT - 2*(TANK_RADIUS*2), randColor);
+	LevelHelper::pushRandomWalls(LevelRNG::randIntInRange(12, 16+1), TANK_RADIUS*2.5*2, TANK_RADIUS*2, GAME_WIDTH - 2*(TANK_RADIUS*2.5*2), GAME_HEIGHT - 2*(TANK_RADIUS*2), randColor);
 	//note: hazards' y-gap is TANK_RADIUS*2.5 even though walls' y-gap is TANK_RADIUS*2
 
 	//randomize hazards:
@@ -59,10 +59,10 @@ void DefaultRandomLevel::initialize() {
 	//add the hazards, but randomly based on their weight (if one has a high weight, it can get randomized multiple times)
 	float choosingHazardWeights[] = { 0.5f, 1.5f, 2.0f, 1.0f };
 	double circleVsRectHazardChoice = double(HazardDataGovernor::getNumCircleHazardTypes("random-vanilla"))/double(HazardDataGovernor::getNumCircleHazardTypes("random-vanilla") + HazardDataGovernor::getNumRectHazardTypes("random-vanilla"));
-	int addHazardCount = RNG::randIntInRange(8, 12+1); //v0.2.4 had 5 circle hazards and 5 rect hazards, meaning there used to be ~10 chances to insert hazards
+	int addHazardCount = LevelRNG::randIntInRange(8, 12+1); //v0.2.4 had 5 circle hazards and 5 rect hazards, meaning there used to be ~10 chances to insert hazards
 	for (int i = 0; i < addHazardCount; i++) {
 		int count = weightedSelect(choosingHazardWeights, 4); //{0, 1, 2, 3}
-		if (RNG::randFunc() < circleVsRectHazardChoice) {
+		if (LevelRNG::randFunc() < circleVsRectHazardChoice) {
 			int index = weightedSelect(circleHazardWeights, HazardDataGovernor::getNumCircleHazardTypes("random-vanilla")); //randomize which hazard gets chosen (it could be one that was already chosen)
 			CircleHazardRandomizationFunction f = HazardDataGovernor::getCircleHazardRandomizationFunction("random-vanilla", HazardDataGovernor::getCircleHazardName("random-vanilla", index));
 			for (int i = 0; i < count; i++) {
@@ -106,6 +106,9 @@ void DefaultRandomLevel::initialize() {
 	//semi-classic speed & invincible
 	LevelHelper::pushSymmetricPowerups_UD_Alternate(GAME_WIDTH/2, GAME_HEIGHT/2, GAME_HEIGHT*(3.0/8),
 		"vanilla", "speed", "vanilla", "invincible");
+
+	//TODO: should have more random levels, but not sure how they should be different...
+	//like less hazards? more open area? no idea
 }
 
 Level* DefaultRandomLevel::factory() {
@@ -113,5 +116,5 @@ Level* DefaultRandomLevel::factory() {
 }
 
 DefaultRandomLevel::DefaultRandomLevel() {
-	currentColor = ColorValueHolder(RNG::randFunc(), RNG::randFunc(), RNG::randFunc());
+	currentColor = ColorValueHolder(LevelRNG::randFunc(), LevelRNG::randFunc(), LevelRNG::randFunc());
 }

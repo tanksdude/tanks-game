@@ -148,10 +148,10 @@ PowerSquare* CloudHazard::makePowerup(int powerupIndex) const {
 }
 
 void CloudHazard::pushPowerup() {
-	int powerupIndex = RNG::randFunc() * powerChoices.size();
+	int powerupIndex = GameRNG::randFunc() * powerChoices.size();
 	PowerSquare* powerup = makePowerup(powerupIndex);
 	powerupsToMove.push_back(powerup->getGameID());
-	powerupsVelocity.push_back(SimpleVector2D((2*PI) * RNG::randFunc(), this->initialSpeed, true));
+	powerupsVelocity.push_back(SimpleVector2D((2*PI) * GameRNG::randFunc(), this->initialSpeed, true));
 	PowerupManager::pushPowerup(powerup);
 }
 
@@ -349,10 +349,10 @@ CircleHazard* CloudHazard::randomizingFactory(double x_start, double y_start, do
 
 	do {
 		if (randomizeR) {
-			radius = RNG::randNumInRange(16, 24); //TODO: where should these constants be?
+			radius = LevelRNG::randNumInRange(16, 24); //TODO: where should these constants be?
 		}
-		xpos = RNG::randNumInRange(x_start + radius, x_start + area_width - radius);
-		ypos = RNG::randNumInRange(y_start + radius, y_start + area_height - radius);
+		xpos = LevelRNG::randNumInRange(x_start + radius, x_start + area_width - radius);
+		ypos = LevelRNG::randNumInRange(y_start + radius, y_start + area_height - radius);
 		CircleHazard* testCloud = new CloudHazard(xpos, ypos, radius);
 		if (testCloud->reasonableLocation()) {
 			randomized = testCloud;

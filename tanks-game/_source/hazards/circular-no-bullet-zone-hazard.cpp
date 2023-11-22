@@ -315,10 +315,10 @@ CircleHazard* CircularNoBulletZoneHazard::randomizingFactory(double x_start, dou
 
 	do {
 		if (randomizeR) {
-			radius = RNG::randNumInRange(10, 20); //TODO: where should these constants be?
+			radius = LevelRNG::randNumInRange(10, 20); //TODO: where should these constants be?
 		}
-		xpos = RNG::randNumInRange(x_start + radius, x_start + area_width - radius);
-		ypos = RNG::randNumInRange(y_start + radius, y_start + area_height - radius);
+		xpos = LevelRNG::randNumInRange(x_start + radius, x_start + area_width - radius);
+		ypos = LevelRNG::randNumInRange(y_start + radius, y_start + area_height - radius);
 		CircleHazard* testCircularNoBulletZone = new CircularNoBulletZoneHazard(xpos, ypos, radius);
 		if (testCircularNoBulletZone->reasonableLocation()) {
 			randomized = testCircularNoBulletZone;

@@ -54,7 +54,7 @@ int weightedSelect(const T* weights, int num) {
 	for (int i = 0; i < num; i++) {
 		weightTotal += weights[i];
 	}
-	T targetWeight = RNG::randFunc() * weightTotal;
+	T targetWeight = LevelRNG::randFunc() * weightTotal;
 	T newWeight = 0;
 	int newIndex = 0;
 	while (targetWeight >= newWeight) {

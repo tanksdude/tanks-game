@@ -252,11 +252,11 @@ RectHazard* RectangularNoBulletZoneHazard::randomizingFactory(double x_start, do
 
 	do {
 		if (randomizeWH) {
-			width = RNG::randNumInRange(20, 40); //TODO: where should these constants be?
-			height = RNG::randNumInRange(20, 50); //TODO: where should these constants be?
+			width = LevelRNG::randNumInRange(20, 40); //TODO: where should these constants be?
+			height = LevelRNG::randNumInRange(20, 50); //TODO: where should these constants be?
 		}
-		xpos = RNG::randNumInRange(x_start, x_start + area_width - width);
-		ypos = RNG::randNumInRange(y_start, y_start + area_height - height);
+		xpos = LevelRNG::randNumInRange(x_start, x_start + area_width - width);
+		ypos = LevelRNG::randNumInRange(y_start, y_start + area_height - height);
 		RectHazard* testRectangularNoBulletZone = new RectangularNoBulletZoneHazard(xpos, ypos, width, height);
 		if (testRectangularNoBulletZone->reasonableLocation()) {
 			randomized = testRectangularNoBulletZone;

@@ -31,7 +31,7 @@ void DeveloperLevel0::initialize() {
 
 	LevelHelper::pushRandomWalls(16, TANK_RADIUS*2.5, TANK_RADIUS*2, GAME_WIDTH - 2*(TANK_RADIUS*2.5), GAME_HEIGHT - 2*(TANK_RADIUS*2), randColor);
 
-	posArr = new double[3]{ GAME_WIDTH/2, GAME_HEIGHT/2, RNG::randFunc() * (2*PI) };
+	posArr = new double[3]{ GAME_WIDTH/2, GAME_HEIGHT/2, LevelRNG::randFunc() * (2*PI) };
 	constructionData = GenericFactoryConstructionData(3, posArr);
 	HazardManager::pushCircleHazard("vanilla", "stationary_turret", constructionData);
 
@@ -71,5 +71,5 @@ Level* DeveloperLevel0::factory() {
 }
 
 DeveloperLevel0::DeveloperLevel0() {
-	currentColor = ColorValueHolder(RNG::randFunc(), RNG::randFunc(), RNG::randFunc());
+	currentColor = ColorValueHolder(LevelRNG::randFunc(), LevelRNG::randFunc(), LevelRNG::randFunc());
 }

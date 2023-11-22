@@ -461,7 +461,7 @@ CircleHazard* PatrollingTurretHazard::randomizingFactory(double x_start, double 
 		angle = arr[0];
 		//this array is shared with optional starting position
 	} else {
-		angle = RNG::randFunc() * (2*PI);
+		angle = LevelRNG::randFunc() * (2*PI);
 	}
 
 	const double realRadius = (TANK_RADIUS/2);
@@ -472,7 +472,7 @@ CircleHazard* PatrollingTurretHazard::randomizingFactory(double x_start, double 
 		double* stoppingLocations = new double[stoppingLocationCount*2];
 		double* waitTimes = new double[stoppingLocationCount];
 
-		waitTimes[0] = floor(RNG::randNumInRange(150, 200+1));
+		waitTimes[0] = floor(LevelRNG::randNumInRange(150, 200+1));
 		if (count >= 3) {
 			stoppingLocations[0] = static_cast<const double*>(args.getDataPortion(0).get())[1];
 			stoppingLocations[1] = static_cast<const double*>(args.getDataPortion(0).get())[2];
@@ -482,8 +482,8 @@ CircleHazard* PatrollingTurretHazard::randomizingFactory(double x_start, double 
 			bool blockedPosition;
 			do {
 				blockedPosition = false;
-				stoppingLocations[0] = RNG::randNumInRange(x_start + realRadius, x_start + area_width - realRadius);
-				stoppingLocations[1] = RNG::randNumInRange(y_start + realRadius, y_start + area_height - realRadius);
+				stoppingLocations[0] = LevelRNG::randNumInRange(x_start + realRadius, x_start + area_width - realRadius);
+				stoppingLocations[1] = LevelRNG::randNumInRange(y_start + realRadius, y_start + area_height - realRadius);
 
 				Circle* testStop = new Circle();
 				testStop->x = stoppingLocations[0]; testStop->y = stoppingLocations[1]; testStop->r = 0;
@@ -502,14 +502,14 @@ CircleHazard* PatrollingTurretHazard::randomizingFactory(double x_start, double 
 
 		bool outOfBounds;
 		for (int i = 1; i < stoppingLocationCount; i++) {
-			waitTimes[i] = floor(RNG::randNumInRange(150, 200+1));
+			waitTimes[i] = floor(LevelRNG::randNumInRange(150, 200+1));
 			int location_attempts = 0;
 			bool blockedPosition;
 			do {
 				blockedPosition = false;
 				outOfBounds = false;
-				const double angleChange = RNG::randFunc() * (2*PI);
-				const double distanceChange = RNG::randNumInRange(50, 150);
+				const double angleChange = LevelRNG::randFunc() * (2*PI);
+				const double distanceChange = LevelRNG::randNumInRange(50, 150);
 				const SimpleVector2D displacement = SimpleVector2D(angleChange, distanceChange, true);
 				stoppingLocations[i*2]   = stoppingLocations[(i-1)*2]   + displacement.getXComp();
 				stoppingLocations[i*2+1] = stoppingLocations[(i-1)*2+1] + displacement.getYComp();

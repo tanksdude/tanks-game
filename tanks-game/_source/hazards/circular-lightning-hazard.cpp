@@ -170,7 +170,7 @@ void CircularLightningHazard::pushBolt(LightningBolt* l) {
 
 void CircularLightningHazard::pushDefaultBolt(int num, bool randomize) {
 	//the default bolt is from center to a random point
-	double randR = r*RNG::randFunc(), randAngle = (2*PI)*RNG::randFunc();
+	double randR = r*VisualRNG::randFunc(), randAngle = (2*PI)*VisualRNG::randFunc();
 	double xEnd = randR*cos(randAngle), yEnd = randR*sin(randAngle);
 	for (int i = 0; i < num; i++) {
 		LightningBolt* l = new LightningBolt(0, 0, xEnd, yEnd, getDefaultNumBoltPoints(sqrt(xEnd*xEnd + yEnd*yEnd)));
@@ -248,7 +248,7 @@ void CircularLightningHazard::refreshBolt(LightningBolt* l) const {
 		float randTemp;
 		float testX, testY;
 		do {
-			randTemp = maxVariance * static_cast<float>(RNG::randFunc()*2-1);
+			randTemp = maxVariance * static_cast<float>(VisualRNG::randFunc()*2-1);
 			testX = l->positions[j*2 - 2] + (boltDeltaX/(l->length-1)) - randTemp * sinAngle;
 			testY = l->positions[j*2 - 1] + (boltDeltaY/(l->length-1)) + randTemp * cosAngle;
 		} while ((sqrt(testX*testX + testY*testY) > r) || !pointInPolygon(6, polygonX, polygonY, testX, testY));
@@ -558,10 +558,10 @@ CircleHazard* CircularLightningHazard::randomizingFactory(double x_start, double
 
 	do {
 		if (randomizeR) {
-			radius = RNG::randNumInRange(30, 60); //TODO: where should these constants be?
+			radius = LevelRNG::randNumInRange(30, 60); //TODO: where should these constants be?
 		}
-		xpos = RNG::randNumInRange(x_start + radius, x_start + area_width - radius);
-		ypos = RNG::randNumInRange(y_start + radius, y_start + area_height - radius);
+		xpos = LevelRNG::randNumInRange(x_start + radius, x_start + area_width - radius);
+		ypos = LevelRNG::randNumInRange(y_start + radius, y_start + area_height - radius);
 		CircleHazard* testCircularLightning = new CircularLightningHazard(xpos, ypos, radius);
 		if (testCircularLightning->reasonableLocation()) {
 			randomized = testCircularLightning;

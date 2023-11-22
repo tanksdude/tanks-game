@@ -70,8 +70,8 @@ void BananaBulletPower::bananaExplode(const Bullet* b) {
 		if (newVelocity == 0) {
 			newVelocity = Tank::default_maxSpeed*BULLET_TO_TANK_SPEED_RATIO; //if bullet's initial speed is zero, it should still explode (TODO: what should the initial speed be?)
 		}
-		newVelocity = newVelocity * ((RNG::randFunc()+RNG::randFunc())/2 * (BananaPower::maxNewBulletVelocityMultiplier - BananaPower::minNewBulletVelocityMultiplier) + BananaPower::minNewBulletVelocityMultiplier);
-		BulletManager::pushBullet(new Bullet(b->x, b->y, b->r/2, RNG::randFunc() * (2*PI), newVelocity, b->getTeamID(), b->getParentIDType(), b->getParentID(), bp, true));
+		newVelocity = newVelocity * ((GameRNG::randFunc()+GameRNG::randFunc())/2 * (BananaPower::maxNewBulletVelocityMultiplier - BananaPower::minNewBulletVelocityMultiplier) + BananaPower::minNewBulletVelocityMultiplier);
+		BulletManager::pushBullet(new Bullet(b->x, b->y, b->r/2, GameRNG::randFunc() * (2*PI), newVelocity, b->getTeamID(), b->getParentIDType(), b->getParentID(), bp, true));
 		delete bp;
 	}
 }

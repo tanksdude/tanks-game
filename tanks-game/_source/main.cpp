@@ -175,9 +175,13 @@ int main(int argc, char** argv) {
 	const BasicINIParser::BasicINIData& ini_data = GameManager::get_INI();
 
 	if (ini_data.exists("UNIVERSAL", "RNGSeed")) {
-		RNG::Initialize(std::stoll(ini_data.get("UNIVERSAL", "RNGSeed")));
+		GameRNG::Initialize(std::stoll(ini_data.get("UNIVERSAL", "RNGSeed")));
+		VisualRNG::Initialize(std::stoll(ini_data.get("UNIVERSAL", "RNGSeed")));
+		LevelRNG::Initialize(std::stoll(ini_data.get("UNIVERSAL", "RNGSeed")));
 	} else {
-		RNG::Initialize(std::chrono::high_resolution_clock::now().time_since_epoch().count());
+		GameRNG::Initialize(std::chrono::high_resolution_clock::now().time_since_epoch().count());
+		VisualRNG::Initialize(std::chrono::high_resolution_clock::now().time_since_epoch().count());
+		LevelRNG::Initialize(std::chrono::high_resolution_clock::now().time_since_epoch().count());
 	}
 	if (ini_data.exists("UNIVERSAL", "GraphicsContext")) {
 		Renderer::SetContext(ini_data.get("UNIVERSAL", "GraphicsContext"));

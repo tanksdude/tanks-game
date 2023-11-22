@@ -156,7 +156,7 @@ inline void TargetingTurretHazard::tick_lookForNewTarget() {
 	if (tankIndices.size() == 1) {
 		indexOfTargetedTank = tankIndices[0];
 	} else {
-		indexOfTargetedTank = tankIndices[static_cast<int>(RNG::randFunc() * tankIndices.size())];
+		indexOfTargetedTank = tankIndices[static_cast<int>(GameRNG::randFunc() * tankIndices.size())];
 	}
 
 	if (tankVisibility[indexOfTargetedTank]) {
@@ -469,14 +469,14 @@ CircleHazard* TargetingTurretHazard::randomizingFactory(double x_start, double y
 		const double* arr = static_cast<const double*>(args.getDataPortion(0).get());
 		angle = arr[0];
 	} else {
-		angle = RNG::randFunc() * (2*PI);
+		angle = LevelRNG::randFunc() * (2*PI);
 	}
 
 	const double realRadius = (TANK_RADIUS/2);
 
 	do {
-		xpos = RNG::randNumInRange(x_start + realRadius, x_start + area_width - realRadius);
-		ypos = RNG::randNumInRange(y_start + realRadius, y_start + area_height - realRadius);
+		xpos = LevelRNG::randNumInRange(x_start + realRadius, x_start + area_width - realRadius);
+		ypos = LevelRNG::randNumInRange(y_start + realRadius, y_start + area_height - realRadius);
 		CircleHazard* testTargetingTurret = new TargetingTurretHazard(xpos, ypos, angle);
 		if (testTargetingTurret->reasonableLocation()) {
 			randomized = testTargetingTurret;

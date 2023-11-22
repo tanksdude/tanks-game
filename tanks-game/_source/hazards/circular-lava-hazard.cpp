@@ -101,20 +101,20 @@ void CircularLavaHazard::pushNewBubble(double radius) {
 	int attempts = 0;
 
 	float r0, a0, r1, a1;
-	r0 = RNG::randFunc() * (r - radius);
-	a0 = RNG::randFunc() * (2*PI);
+	r0 = VisualRNG::randFunc() * (r - radius);
+	a0 = VisualRNG::randFunc() * (2*PI);
 	x0 = r0 * cos(a0);
 	y0 = r0 * sin(a0);
 	do {
-		r1 = RNG::randFunc() * (r - radius);
-		a1 = RNG::randFunc() * (2*PI);
+		r1 = VisualRNG::randFunc() * (r - radius);
+		a1 = VisualRNG::randFunc() * (2*PI);
 		x1 = r1 * cos(a1);
 		y1 = r1 * sin(a1);
 		attempts++;
 	} while ((attempts < 8) && (abs(x0-x1) < r/16 || abs(y0-y1) < r/16));
 
 	if (attempts < 8) {
-		float maxTick = floor(RNG::randFloatInRange(200, 300+1));
+		float maxTick = floor(VisualRNG::randFloatInRange(200, 300+1));
 		bubbles.push_back(new LavaBubble(radius, x0/float(r), y0/float(r), x1/float(r), y1/float(r), maxTick));
 	}
 }
@@ -325,10 +325,10 @@ CircleHazard* CircularLavaHazard::randomizingFactory(double x_start, double y_st
 
 	do {
 		if (randomizeR) {
-			radius = RNG::randNumInRange(20, 40); //TODO: where should these constants be?
+			radius = LevelRNG::randNumInRange(20, 40); //TODO: where should these constants be?
 		}
-		xpos = RNG::randNumInRange(x_start + radius, x_start + area_width - radius);
-		ypos = RNG::randNumInRange(y_start + radius, y_start + area_height - radius);
+		xpos = LevelRNG::randNumInRange(x_start + radius, x_start + area_width - radius);
+		ypos = LevelRNG::randNumInRange(y_start + radius, y_start + area_height - radius);
 		CircleHazard* testCircularLava = new CircularLavaHazard(xpos, ypos, radius);
 		if (testCircularLava->reasonableLocation()) {
 			randomized = testCircularLava;

@@ -19,9 +19,9 @@ std::unordered_map<std::string, float> MinefieldLevelEffect::getWeights() const 
 Bullet* MinefieldLevelEffect::genMine() const {
 	std::vector<BulletPower*> bp = { static_cast<BulletPower*>(new MinesBulletPower()) };
 	const double r = TANK_RADIUS * BULLET_TO_TANK_RADIUS_RATIO;
-	double x = RNG::randNumInRange(minefield_startX + r, minefield_startX + minefield_areaWidth - r);
-	double y = RNG::randNumInRange(minefield_startY + r, minefield_startY + minefield_areaHeight - r);
-	Bullet* mine = new Bullet(x, y, r, RNG::randFunc() * (2*PI), 0, HAZARD_TEAM, BulletParentType::team, NO_PARENT, &bp);
+	double x = GameRNG::randNumInRange(minefield_startX + r, minefield_startX + minefield_areaWidth - r);
+	double y = GameRNG::randNumInRange(minefield_startY + r, minefield_startY + minefield_areaHeight - r);
+	Bullet* mine = new Bullet(x, y, r, GameRNG::randFunc() * (2*PI), 0, HAZARD_TEAM, BulletParentType::team, NO_PARENT, &bp);
 	return mine;
 }
 

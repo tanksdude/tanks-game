@@ -47,7 +47,7 @@ BlastPower::BlastPower() {
 
 void BlastTankPower::additionalShooting(Tank* t, const CannonPoint& c, const ExtraCannonPoint& c2) {
 	for (int i = 0; i < BlastPower::bulletAmount; i++) {
-		double tempAngle = (RNG::randFunc()*2 - 1) * BlastPower::bulletAngleDeviation; //[-1,1) * deviation
+		double tempAngle = (GameRNG::randFunc()*2 - 1) * BlastPower::bulletAngleDeviation; //[-1,1) * deviation
 		t->defaultMakeBullet(t->velocity.getAngle() + c.angleFromCenter + c2.angleFromCenter + tempAngle, c2.angleFromEdge);
 	}
 }
@@ -118,7 +118,7 @@ TankPower* BlastBulletPower::makeTankPower() const {
 }
 
 BlastBulletPower::BlastBulletPower()
-: BlastBulletPower(-1 * ((RNG::randFunc()+RNG::randFunc())/2 * (BlastPower::maxBulletAcceleration - BlastPower::minBulletAcceleration) + BlastPower::minBulletAcceleration)) {}
+: BlastBulletPower(-1 * ((GameRNG::randFunc()+GameRNG::randFunc())/2 * (BlastPower::maxBulletAcceleration - BlastPower::minBulletAcceleration) + BlastPower::minBulletAcceleration)) {}
 //acceleration: [0,1) * accDiff + min
 
 BlastBulletPower::BlastBulletPower(double acceleration) {

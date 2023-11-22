@@ -612,7 +612,7 @@ inline void CustomBulletPower::initialization_bulletSpeedMultiplier(const Generi
 	if (bulletSpeedMultiplierMin == bulletSpeedMultiplierMax) {
 		bulletSpeedMultiplier = bulletSpeedMultiplierMin;
 	} else {
-		bulletSpeedMultiplier = (((RNG::randFunc()+RNG::randFunc())/2) * (bulletSpeedMultiplierMax - bulletSpeedMultiplierMin) + bulletSpeedMultiplierMin);
+		bulletSpeedMultiplier = (((GameRNG::randFunc()+GameRNG::randFunc())/2) * (bulletSpeedMultiplierMax - bulletSpeedMultiplierMin) + bulletSpeedMultiplierMin);
 	}
 }
 inline void CustomBulletPower::initialization_bulletSpeedStacks(const GenericFactoryConstructionData& data) noexcept {
@@ -624,7 +624,7 @@ inline void CustomBulletPower::initialization_bulletRadiusMultiplier(const Gener
 	if (bulletRadiusMultiplierMin == bulletRadiusMultiplierMax) {
 		bulletRadiusMultiplier = bulletRadiusMultiplierMin;
 	} else {
-		bulletRadiusMultiplier = (((RNG::randFunc()+RNG::randFunc())/2) * (bulletRadiusMultiplierMax - bulletRadiusMultiplierMin) + bulletRadiusMultiplierMin);
+		bulletRadiusMultiplier = (((GameRNG::randFunc()+GameRNG::randFunc())/2) * (bulletRadiusMultiplierMax - bulletRadiusMultiplierMin) + bulletRadiusMultiplierMin);
 	}
 }
 inline void CustomBulletPower::initialization_bulletRadiusStacks(const GenericFactoryConstructionData& data) noexcept {
@@ -636,7 +636,7 @@ inline void CustomBulletPower::initialization_bulletDeceleration(const GenericFa
 	if (bulletDecelerationMin == bulletDecelerationMax) {
 		bulletAcceleration = -1 * bulletDecelerationMin;
 	} else {
-		bulletAcceleration = -1 * (((RNG::randFunc()+RNG::randFunc())/2) * (bulletDecelerationMax - bulletDecelerationMin) + bulletDecelerationMin);
+		bulletAcceleration = -1 * (((GameRNG::randFunc()+GameRNG::randFunc())/2) * (bulletDecelerationMax - bulletDecelerationMin) + bulletDecelerationMin);
 	}
 }
 inline void CustomBulletPower::initialization_bulletAccelerationImportance(const GenericFactoryConstructionData& data) noexcept {
@@ -677,8 +677,8 @@ InteractionBoolHolder CustomTankPower::modifiedDeathHandling(Tank* parent) {
 
 void CustomTankPower::additionalShooting(Tank* t, const CannonPoint& c, const ExtraCannonPoint& c2) {
 	for (int i = 0; i < additionalShooting_BulletCount; i++) {
-		double tempAngle_fromTank = (RNG::randFunc()*2 - 1) * additionalShooting_AngleRelativeToTank;
-		double tempAngle_fromCannon = (RNG::randFunc()*2 - 1) * additionalShooting_AngleRelativeToCannon;
+		double tempAngle_fromTank = (GameRNG::randFunc()*2 - 1) * additionalShooting_AngleRelativeToTank;
+		double tempAngle_fromCannon = (GameRNG::randFunc()*2 - 1) * additionalShooting_AngleRelativeToCannon;
 		t->defaultMakeBullet(t->velocity.getAngle() + c.angleFromCenter + c2.angleFromCenter + tempAngle_fromTank,
 		                     c2.angleFromEdge + tempAngle_fromCannon);
 	}

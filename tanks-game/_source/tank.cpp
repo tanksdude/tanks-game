@@ -43,7 +43,7 @@ Tank::Tank(double x_, double y_, double angle, Team_ID teamID, std::string name_
 	determineShootingAngles();
 	updateAllValues();
 
-	if (RNG::randFunc() < 1.0/4096) {
+	if (LevelRNG::randFunc() < 1.0/4096) {
 		//shiny tank (yes, 1/8192 is the chance before Sword/Shield)
 		defaultColor = ColorValueHolder(0.75f, 0.75f, 0.75f);
 	} else {

@@ -56,7 +56,7 @@ void UnnamedLevel13::initialize() {
 	constructionData = GenericFactoryConstructionData(4, posArr);
 	HazardManager::pushRectHazard("dev", "reflecktor", constructionData);
 
-	if (RNG::randFunc() < .5) {
+	if (LevelRNG::randFunc() < .5) {
 		LevelHelper::pushSymmetricPowerups_UD(GAME_WIDTH/2, GAME_HEIGHT/2, 64+10, "vanilla-extra", "barrier");
 		LevelHelper::pushSymmetricPowerups_UD(GAME_WIDTH/2, GAME_HEIGHT/2, 64+50, "vanilla", "multishot");
 	} else {

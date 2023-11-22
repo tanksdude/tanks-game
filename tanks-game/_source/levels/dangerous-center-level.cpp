@@ -46,7 +46,7 @@ void DangerousCenterLevel::initialize() {
 		throw std::logic_error("ERROR: \"" + getName() + "\" level does not have \"respawning_powerups\" level effect!");
 	}
 
-	posArr = new double[3]{ GAME_WIDTH/2, GAME_HEIGHT/2, PI/2 * (floor(RNG::randFunc()*2)*2-1) };
+	posArr = new double[3]{ GAME_WIDTH/2, GAME_HEIGHT/2, PI/2 * (floor(LevelRNG::randFunc()*2)*2-1) };
 	int* childArr = new int[2]{ 16, 8 };
 	constructionData = GenericFactoryConstructionData(3, posArr);
 	constructionData.pushData(2, childArr);

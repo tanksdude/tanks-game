@@ -102,16 +102,16 @@ void RectangularLavaHazard::pushNewBubble(double radius) {
 	float x0, y0, x1, y1;
 	int attempts = 0;
 
-	x0 = RNG::randFloatInRange(radius, w - radius);
-	y0 = RNG::randFloatInRange(radius, h - radius);
+	x0 = VisualRNG::randFloatInRange(radius, w - radius);
+	y0 = VisualRNG::randFloatInRange(radius, h - radius);
 	do {
-		x1 = RNG::randFloatInRange(radius, w - radius);
-		y1 = RNG::randFloatInRange(radius, h - radius);
+		x1 = VisualRNG::randFloatInRange(radius, w - radius);
+		y1 = VisualRNG::randFloatInRange(radius, h - radius);
 		attempts++;
 	} while ((attempts < 8) && (abs(x0-x1) < w/16 || abs(y0-y1) < h/16)); //JS Tanks used w/8 and h/8
 
 	if (attempts < 8) {
-		float maxTick = floor(RNG::randFloatInRange(200, 300+1));
+		float maxTick = floor(VisualRNG::randFloatInRange(200, 300+1));
 		bubbles.push_back(new LavaBubble(radius, x0/float(w), y0/float(h), x1/float(w), y1/float(h), maxTick));
 	}
 }
@@ -318,11 +318,11 @@ RectHazard* RectangularLavaHazard::randomizingFactory(double x_start, double y_s
 
 	do {
 		if (randomizeWH) {
-			width = RNG::randNumInRange(30, 120); //TODO: where should these constants be?
-			height = RNG::randNumInRange(20, 80); //TODO: where should these constants be?
+			width = LevelRNG::randNumInRange(30, 120); //TODO: where should these constants be?
+			height = LevelRNG::randNumInRange(20, 80); //TODO: where should these constants be?
 		}
-		xpos = RNG::randNumInRange(x_start, x_start + area_width - width);
-		ypos = RNG::randNumInRange(y_start, y_start + area_height - height);
+		xpos = LevelRNG::randNumInRange(x_start, x_start + area_width - width);
+		ypos = LevelRNG::randNumInRange(y_start, y_start + area_height - height);
 		RectHazard* testRectangularLava = new RectangularLavaHazard(xpos, ypos, width, height);
 		if (testRectangularLava->reasonableLocation()) {
 			randomized = testRectangularLava;

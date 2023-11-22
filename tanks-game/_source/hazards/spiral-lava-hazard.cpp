@@ -332,11 +332,11 @@ RectHazard* SpiralLavaHazard::randomizingFactory(double x_start, double y_start,
 
 	do {
 		if (randomizeW) {
-			width = RNG::randNumInRange(16, 24); //TODO: where should these constants be?
+			width = LevelRNG::randNumInRange(16, 24); //TODO: where should these constants be?
 		}
 		const double realRadius = 80 + width/2; //center of this to furthest reach of lava blobs
-		xpos = RNG::randNumInRange(x_start + (realRadius-width/2), x_start + area_width - (realRadius+width/2));
-		ypos = RNG::randNumInRange(y_start + (realRadius-width/2), y_start + area_height - (realRadius+width/2));
+		xpos = LevelRNG::randNumInRange(x_start + (realRadius-width/2), x_start + area_width - (realRadius+width/2));
+		ypos = LevelRNG::randNumInRange(y_start + (realRadius-width/2), y_start + area_height - (realRadius+width/2));
 		RectHazard* testSpiralLava = new SpiralLavaHazard(xpos, ypos, width);
 		if (testSpiralLava->reasonableLocation()) {
 			randomized = testSpiralLava;

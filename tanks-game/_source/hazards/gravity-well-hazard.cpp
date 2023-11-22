@@ -452,23 +452,23 @@ CircleHazard* GravityWellHazard::randomizingFactory(double x_start, double y_sta
 		randomizeGR = true;
 	}
 
-	strengthMin = RNG::randNumInRange(.04, .10);
-	strengthMax = RNG::randNumInRange(.55, .90);
-	if (RNG::randFunc() < .05) {
+	strengthMin = LevelRNG::randNumInRange(.04, .10);
+	strengthMax = LevelRNG::randNumInRange(.55, .90);
+	if (LevelRNG::randFunc() < .05) {
 		strengthMin *= -1;
 		strengthMax *= -1;
 	}
 
 	do {
 		if (randomizeR) {
-			radius = RNG::randNumInRange(8, 16); //TODO: where should these constants be?
+			radius = LevelRNG::randNumInRange(8, 16); //TODO: where should these constants be?
 		}
 		if (randomizeGR) {
-			gravityRange = RNG::randNumInRange(radius*2.5, radius*4);
+			gravityRange = LevelRNG::randNumInRange(radius*2.5, radius*4);
 		}
 		const double realRadius = gravityRange;
-		xpos = RNG::randNumInRange(x_start + realRadius, x_start + area_width - realRadius);
-		ypos = RNG::randNumInRange(y_start + realRadius, y_start + area_height - realRadius);
+		xpos = LevelRNG::randNumInRange(x_start + realRadius, x_start + area_width - realRadius);
+		ypos = LevelRNG::randNumInRange(y_start + realRadius, y_start + area_height - realRadius);
 		CircleHazard* testGravityWell = new GravityWellHazard(xpos, ypos, radius, gravityRange, strengthMin, strengthMax);
 		if (testGravityWell->reasonableLocation()) {
 			randomized = testGravityWell;

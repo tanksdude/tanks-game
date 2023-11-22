@@ -182,7 +182,7 @@ void RectangularLightningHazard::pushBolt(LightningBolt* l) {
 void RectangularLightningHazard::pushDefaultBolt(int num, bool randomize) {
 	//the default bolt is from center to a random point
 	for (int i = 0; i < num; i++) {
-		float xEnd = w*RNG::randFunc(), yEnd = h*RNG::randFunc();
+		float xEnd = w*VisualRNG::randFunc(), yEnd = h*VisualRNG::randFunc();
 		LightningBolt* l = new LightningBolt(w/2, h/2, xEnd, yEnd, getDefaultNumBoltPoints(sqrt((xEnd - w/2)*(xEnd - w/2) + (yEnd - h/2)*(yEnd - h/2))));
 		if (randomize) {
 			pushBolt(l);
@@ -261,7 +261,7 @@ void RectangularLightningHazard::refreshBolt(LightningBolt* l, double smaller, d
 		float randTemp;
 		float testX, testY;
 		do {
-			randTemp = maxVariance * static_cast<float>(RNG::randFunc()*2-1);
+			randTemp = maxVariance * static_cast<float>(VisualRNG::randFunc()*2-1);
 			testX = l->positions[j*2 - 2] + (boltDeltaX/(l->length-1)) - randTemp * sinAngle;
 			testY = l->positions[j*2 - 1] + (boltDeltaY/(l->length-1)) + randTemp * cosAngle;
 		} while ((testX < 0 || testX > w || testY < 0 || testY > h) || !pointInPolygon(6, polygonX, polygonY, testX, testY));
@@ -578,11 +578,11 @@ RectHazard* RectangularLightningHazard::randomizingFactory(double x_start, doubl
 
 	do {
 		if (randomizeWH) {
-			width = RNG::randNumInRange(30, 80); //TODO: where should these constants be?
-			height = RNG::randNumInRange(30, 80); //TODO: where should these constants be?
+			width = LevelRNG::randNumInRange(30, 80); //TODO: where should these constants be?
+			height = LevelRNG::randNumInRange(30, 80); //TODO: where should these constants be?
 		}
-		xpos = RNG::randNumInRange(x_start, x_start + area_width - width);
-		ypos = RNG::randNumInRange(y_start, y_start + area_height - height);
+		xpos = LevelRNG::randNumInRange(x_start, x_start + area_width - width);
+		ypos = LevelRNG::randNumInRange(y_start, y_start + area_height - height);
 		RectHazard* testRectangularLightning = new RectangularLightningHazard(xpos, ypos, width, height);
 		if (testRectangularLightning->reasonableLocation()) {
 			randomized = testRectangularLightning;

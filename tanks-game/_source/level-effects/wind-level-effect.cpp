@@ -60,8 +60,8 @@ void WindLevelEffect::tick(const Level* parent) {
 		}
 	}
 	if (changeWind) {
-		//pushDirection = SimpleVector2D(RNG::randFunc() * (2*PI), RNG::randFunc(), true); //JS, I think (~90% sure)
-		pushDirection = SimpleVector2D(RNG::randFunc() * (2*PI), RNG::randFloatInRange(.125, 1.0), true);
+		//pushDirection = SimpleVector2D(GameRNG::randFunc() * (2*PI), GameRNG::randFunc(), true); //JS, I think (~90% sure)
+		pushDirection = SimpleVector2D(GameRNG::randFunc() * (2*PI), GameRNG::randFloatInRange(.125, 1.0), true);
 	}
 }
 

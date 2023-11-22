@@ -210,7 +210,7 @@ void ResetThings::tankPositionReset(double x, double yRange, int yCount) {
 	yRange = std::clamp<double>(yRange, 0, GAME_HEIGHT);
 	yCount = std::max(yCount, 1); //I thought std::mix/max was overloaded, but it's actually a template; neat, learning is cool
 
-	int randNum = RNG::randFunc() * yCount; //stays outside the conditional to ensure RNG is called when resetting the level (unless exact position is used)
+	int randNum = LevelRNG::randFunc() * yCount; //stays outside the conditional to ensure RNG is called when resetting the level (unless exact position is used)
 	double yVal;
 	if (yCount == 1) {
 		yVal = GAME_HEIGHT/2;

@@ -50,7 +50,7 @@ FireNamedPower::FireNamedPower() {
 
 void FireNamedTankPower::additionalShooting(Tank* t, const CannonPoint& c, const ExtraCannonPoint& c2) {
 	for (int i = 0; i < FireNamedPower::bulletAmount; i++) {
-		double tempAngle = (RNG::randFunc()+RNG::randFunc() - 1) * FireNamedPower::bulletAngleDeviation; //[-1,1) * deviation
+		double tempAngle = (GameRNG::randFunc()+GameRNG::randFunc() - 1) * FireNamedPower::bulletAngleDeviation; //[-1,1) * deviation
 		t->defaultMakeBullet(t->velocity.getAngle() + c.angleFromCenter + c2.angleFromCenter + tempAngle, c2.angleFromEdge);
 	}
 }
@@ -92,7 +92,7 @@ TankPower* FireNamedBulletPower::makeTankPower() const {
 }
 
 FireNamedBulletPower::FireNamedBulletPower()
-: FireNamedBulletPower(-1 * ((RNG::randFunc()+RNG::randFunc())/2 * (FireNamedPower::maxBulletAcceleration - FireNamedPower::minBulletAcceleration) + FireNamedPower::minBulletAcceleration)) {}
+: FireNamedBulletPower(-1 * ((GameRNG::randFunc()+GameRNG::randFunc())/2 * (FireNamedPower::maxBulletAcceleration - FireNamedPower::minBulletAcceleration) + FireNamedPower::minBulletAcceleration)) {}
 //accleration: [0,1) * accDiff + min
 
 FireNamedBulletPower::FireNamedBulletPower(double acceleration) {

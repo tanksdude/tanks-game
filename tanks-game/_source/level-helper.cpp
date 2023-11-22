@@ -42,7 +42,7 @@ void LevelHelper::pushSymmetricPowerups_LR(double x_center, double y_center, dou
 }
 
 void LevelHelper::pushSymmetricPowerups_LR_Alternate(double x_center, double y_center, double x_offset, std::string type1, std::string name1, std::string type2, std::string name2) {
-	int tempRand = RNG::randFunc() * 2;
+	int tempRand = LevelRNG::randFunc() * 2;
 	PositionHolder pos = LevelHelper::getSymmetricPowerupPositions_LR(0, x_center, y_center, x_offset);
 	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, LevelHelper::simplePowerAlternate(0, tempRand, type1, type2), LevelHelper::simplePowerAlternate(0, tempRand, name1, name2)));
 	pos = LevelHelper::getSymmetricPowerupPositions_LR(1, x_center, y_center, x_offset);
@@ -52,7 +52,7 @@ void LevelHelper::pushSymmetricPowerups_LR_Alternate(double x_center, double y_c
 
 void LevelHelper::pushSymmetricPowerups_LR_Alternate(double x_center, double y_center, double x_offset, const std::string* types1, const std::string* names1, int count1, const std::string* types2, const std::string* names2, int count2) {
 	PositionHolder pos;
-	int tempRand = RNG::randFunc() * 2;
+	int tempRand = LevelRNG::randFunc() * 2;
 	if (tempRand == 0) {
 		pos = LevelHelper::getSymmetricPowerupPositions_LR(0, x_center, y_center, x_offset);
 		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, types1, names1, count1));
@@ -82,7 +82,7 @@ void LevelHelper::pushSymmetricPowerups_UD(double x_center, double y_center, dou
 }
 
 void LevelHelper::pushSymmetricPowerups_UD_Alternate(double x_center, double y_center, double y_offset, std::string type1, std::string name1, std::string type2, std::string name2) {
-	int tempRand = RNG::randFunc() * 2;
+	int tempRand = LevelRNG::randFunc() * 2;
 	PositionHolder pos = LevelHelper::getSymmetricPowerupPositions_UD(0, x_center, y_center, y_offset);
 	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, LevelHelper::simplePowerAlternate(0, tempRand, type1, type2), LevelHelper::simplePowerAlternate(0, tempRand, name1, name2)));
 	pos = LevelHelper::getSymmetricPowerupPositions_UD(1, x_center, y_center, y_offset);
@@ -91,7 +91,7 @@ void LevelHelper::pushSymmetricPowerups_UD_Alternate(double x_center, double y_c
 
 void LevelHelper::pushSymmetricPowerups_UD_Alternate(double x_center, double y_center, double y_offset, const std::string* types1, const std::string* names1, int count1, const std::string* types2, const std::string* names2, int count2) {
 	PositionHolder pos;
-	int tempRand = RNG::randFunc() * 2;
+	int tempRand = LevelRNG::randFunc() * 2;
 	if (tempRand == 0) {
 		pos = LevelHelper::getSymmetricPowerupPositions_UD(0, x_center, y_center, y_offset);
 		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, types1, names1, count1));
@@ -120,7 +120,7 @@ void LevelHelper::pushSymmetricPowerups_Corners(double x_center, double y_center
 }
 
 void LevelHelper::pushSymmetricPowerups_Corners_Alternate(double x_center, double y_center, double x_offset, double y_offset, std::string type1, std::string name1, std::string type2, std::string name2) {
-	int tempRand = RNG::randFunc() * 2;
+	int tempRand = LevelRNG::randFunc() * 2;
 	for (int i = 0; i < 4; i++) {
 		PositionHolder pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, x_center, y_center, x_offset, y_offset);
 		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, LevelHelper::powerAlternate(i, tempRand, type1, type2), LevelHelper::powerAlternate(i, tempRand, name1, name2)));
@@ -128,7 +128,7 @@ void LevelHelper::pushSymmetricPowerups_Corners_Alternate(double x_center, doubl
 }
 
 void LevelHelper::pushSymmetricPowerups_Corners_Alternate(double x_center, double y_center, double x_offset, double y_offset, const std::string* types1, const std::string* names1, int count1, const std::string* types2, const std::string* names2, int count2) {
-	int tempRand = RNG::randFunc() * 2;
+	int tempRand = LevelRNG::randFunc() * 2;
 	for (int i = 0; i < 4; i++) {
 		PositionHolder pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, x_center, y_center, x_offset, y_offset);
 		if (LevelHelper::powerAlternateNum(i, tempRand) == 0) {
@@ -154,7 +154,7 @@ void LevelHelper::pushSymmetricPowerups_DiagForwardSlash(double x_center, double
 }
 
 void LevelHelper::pushSymmetricPowerups_DiagForwardSlash_Alternate(double x_center, double y_center, double x_offset, double y_offset, std::string type1, std::string name1, std::string type2, std::string name2) {
-	int tempRand = RNG::randFunc() * 2;
+	int tempRand = LevelRNG::randFunc() * 2;
 	PositionHolder pos = LevelHelper::getSymmetricPowerupPositions_DiagForwardSlash(0, x_center, y_center, x_offset, y_offset);
 	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, LevelHelper::simplePowerAlternate(0, tempRand, type1, type2), LevelHelper::simplePowerAlternate(0, tempRand, name1, name2)));
 	pos = LevelHelper::getSymmetricPowerupPositions_DiagForwardSlash(1, x_center, y_center, x_offset, y_offset);
@@ -163,7 +163,7 @@ void LevelHelper::pushSymmetricPowerups_DiagForwardSlash_Alternate(double x_cent
 
 void LevelHelper::pushSymmetricPowerups_DiagForwardSlash_Alternate(double x_center, double y_center, double x_offset, double y_offset, const std::string* types1, const std::string* names1, int count1, const std::string* types2, const std::string* names2, int count2) {
 	PositionHolder pos;
-	int tempRand = RNG::randFunc() * 2;
+	int tempRand = LevelRNG::randFunc() * 2;
 	if (tempRand == 0) {
 		pos = LevelHelper::getSymmetricPowerupPositions_DiagForwardSlash(0, x_center, y_center, x_offset, y_offset);
 		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, types1, names1, count1));
@@ -192,7 +192,7 @@ void LevelHelper::pushSymmetricPowerups_DiagBackwardSlash(double x_center, doubl
 }
 
 void LevelHelper::pushSymmetricPowerups_DiagBackwardSlash_Alternate(double x_center, double y_center, double x_offset, double y_offset, std::string type1, std::string name1, std::string type2, std::string name2) {
-	int tempRand = RNG::randFunc() * 2;
+	int tempRand = LevelRNG::randFunc() * 2;
 	PositionHolder pos = LevelHelper::getSymmetricPowerupPositions_DiagBackwardSlash(0, x_center, y_center, x_offset, y_offset);
 	PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, LevelHelper::simplePowerAlternate(0, tempRand, type1, type2), LevelHelper::simplePowerAlternate(0, tempRand, name1, name2)));
 	pos = LevelHelper::getSymmetricPowerupPositions_DiagBackwardSlash(1, x_center, y_center, x_offset, y_offset);
@@ -201,7 +201,7 @@ void LevelHelper::pushSymmetricPowerups_DiagBackwardSlash_Alternate(double x_cen
 
 void LevelHelper::pushSymmetricPowerups_DiagBackwardSlash_Alternate(double x_center, double y_center, double x_offset, double y_offset, const std::string* types1, const std::string* names1, int count1, const std::string* types2, const std::string* names2, int count2) {
 	PositionHolder pos;
-	int tempRand = RNG::randFunc() * 2;
+	int tempRand = LevelRNG::randFunc() * 2;
 	if (tempRand == 0) {
 		pos = LevelHelper::getSymmetricPowerupPositions_DiagBackwardSlash(0, x_center, y_center, x_offset, y_offset);
 		PowerupManager::pushPowerup(new PowerSquare(pos.x, pos.y, types1, names1, count1));
@@ -262,10 +262,10 @@ PositionHolder* LevelHelper::getClassicWallPositions() {
 }
 
 Wall* LevelHelper::makeNewRandomWall(double x_beginning, double y_beginning, double width_ofArea, double height_ofArea, const ColorValueHolder& c, double minW, double maxW, double minH, double maxH) {
-	double w = RNG::randNumInRange(minW, maxW);
-	double h = RNG::randNumInRange(minH, maxH);
-	double x = RNG::randNumInRange(x_beginning, x_beginning + width_ofArea - w);
-	double y = RNG::randNumInRange(y_beginning, y_beginning + height_ofArea - h);
+	double w = LevelRNG::randNumInRange(minW, maxW);
+	double h = LevelRNG::randNumInRange(minH, maxH);
+	double x = LevelRNG::randNumInRange(x_beginning, x_beginning + width_ofArea - w);
+	double y = LevelRNG::randNumInRange(y_beginning, y_beginning + height_ofArea - h);
 
 	return new Wall(x, y, w, h, c);
 }
@@ -340,7 +340,7 @@ std::string* LevelHelper::getRandomPowersOld(int count, bool replacement, const 
 				//there are values that can get chosen
 				int index;
 				do {
-					index = RNG::randFunc() * nameCount;
+					index = LevelRNG::randFunc() * nameCount;
 				} while (isInArray<int>(index, used, i+1));
 				used[i] = index;
 			} else {
@@ -349,7 +349,7 @@ std::string* LevelHelper::getRandomPowersOld(int count, bool replacement, const 
 			}
 		}
 		if (replacement) {
-			int index = RNG::randFunc() * nameCount;
+			int index = LevelRNG::randFunc() * nameCount;
 			used[i] = index;
 		}
 	}
@@ -380,11 +380,11 @@ std::string* LevelHelper::getRandomPowers(int count, const bool* powersCanStack,
 		if (!leftoverPowersCanStack) {
 			//there are values that can get chosen
 			do {
-				index = RNG::randFunc() * nameCount;
+				index = LevelRNG::randFunc() * nameCount;
 			} while (!powersCanStack[index] && isInArray<int>(index, used, i+1));
 		} else {
 			//there aren't values that can get chosen or no stacking problems yet
-			index = RNG::randFunc() * nameCount;
+			index = LevelRNG::randFunc() * nameCount;
 		}
 		//not sure if the comments are right, but the results are (empirically determined)
 		used[i] = index;

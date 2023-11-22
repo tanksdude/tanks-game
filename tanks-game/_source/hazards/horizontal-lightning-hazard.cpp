@@ -273,7 +273,7 @@ void HorizontalLightningHazard::simpleRefreshBolt(LightningBolt* l) const {
 		}
 		yRangeLower = (yRangeLower < yMin ? yMin : yRangeLower);
 		yRangeUpper = (yRangeUpper > yMax ? yMax : yRangeUpper);
-		l->positions[j*2+1] = RNG::randFloatInRange(yRangeLower, yRangeUpper);
+		l->positions[j*2+1] = VisualRNG::randFloatInRange(yRangeLower, yRangeUpper);
 	}
 }
 
@@ -419,15 +419,15 @@ RectHazard* HorizontalLightningHazard::randomizingFactory(double x_start, double
 	const double minWidth = 40, maxWidth = 160;
 
 	do {
-		height = RNG::randNumInRange(12, 24);
-		int i = RNG::randFunc() * WallManager::getNumWalls();
+		height = LevelRNG::randNumInRange(12, 24);
+		int i = LevelRNG::randFunc() * WallManager::getNumWalls();
 		const Wall* wa = WallManager::getWall(i);
 		xpos = wa->x + wa->w;
-		ypos = wa->y + RNG::randFunc() * std::clamp<double>(wa->h - height, 0, wa->h);
+		ypos = wa->y + LevelRNG::randFunc() * std::clamp<double>(wa->h - height, 0, wa->h);
 
 		int j, wallAttempts = 0;
 		do {
-			j = RNG::randFunc() * WallManager::getNumWalls();
+			j = LevelRNG::randFunc() * WallManager::getNumWalls();
 			wallAttempts++;
 		} while ((wallAttempts < 8) && (j == i));
 		if (j != i) [[likely]] {

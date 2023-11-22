@@ -103,7 +103,7 @@ void GeneralizedLava::tick() {
 		tickCount = 0;
 	}
 
-	if ((bubbles.size() < maxBubbles) && (RNG::randFunc() < bubbleChance)) {
+	if ((bubbles.size() < maxBubbles) && (VisualRNG::randFunc() < bubbleChance)) {
 		pushNewBubble(4); //possible radius: sqrt(w * h * 2)/50 or sqrt(r * r * 2)/50
 	}
 

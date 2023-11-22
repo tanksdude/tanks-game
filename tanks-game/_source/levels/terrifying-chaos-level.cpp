@@ -43,7 +43,7 @@ void TerrifyingChaosLevel::initialize() {
 
 	LevelHelper::pushSymmetricWalls_UD(GAME_WIDTH/2, GAME_HEIGHT/2, GAME_HEIGHT/2 - (40+20), 240, 20, color);
 
-	posArr = new double[3]{ GAME_WIDTH/2, GAME_HEIGHT/2, PI/2 * (floor(RNG::randFunc()*2)*2-1) };
+	posArr = new double[3]{ GAME_WIDTH/2, GAME_HEIGHT/2, PI/2 * (floor(LevelRNG::randFunc()*2)*2-1) };
 	int* childArr = new int[2]{ 32, 16 }; //this is a lot
 	constructionData = GenericFactoryConstructionData(3, posArr);
 	constructionData.pushData(2, childArr);
