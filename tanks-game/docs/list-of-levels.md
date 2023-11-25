@@ -439,6 +439,16 @@ Test level with four symmetric Patrolling Turrets. Not worth pursuing further, b
 
 ![Showcase Level 2](images/showcase2.jpg)
 
+## [DEV] Showcase Level 3
+
+* Types: "dev", "random-dev"
+* Internal name: `showcase3`
+* Default color: `(1.0, 1.0, 1.0)`
+
+A level with every turret in the game (Stationary, Targeting, Patrolling, Mother, Ginormous).
+
+![Showcase Level 3](images/showcase3.jpg)
+
 ## [DEV] No Walls 1
 
 * Types: "dev", "random-dev"
@@ -591,6 +601,7 @@ These are the types custom levels are not allowed to have, unless `[MODS] ModSaf
 * Unnamed Level 13
 * Showcase Level 1
 * Showcase Level 2
+* Showcase Level 3
 * No Walls 1
 * Timed Reward
 * Terrifying Chaos
@@ -614,6 +625,7 @@ These are the types custom levels are not allowed to have, unless `[MODS] ModSaf
 * Unnamed Level 13
 * Showcase Level 1
 * Showcase Level 2
+* Showcase Level 3
 * No Walls 1
 * Timed Reward
 * Terrifying Chaos

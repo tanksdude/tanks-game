@@ -75,6 +75,7 @@
 #include "levels/unnamed-level-13.h"
 #include "levels/showcase-level-1.h"
 #include "levels/showcase-level-2.h"
+#include "levels/showcase-level-3.h"
 #include "levels/dev-no-walls-level-1.h"
 #include "levels/timed-reward-level.h" //added to vanilla-extra
 #include "levels/terrifying-chaos-level.h" //added to vanilla-extra
@@ -387,6 +388,7 @@ int main(int argc, char** argv) {
 	LevelDataGovernor::addLevelFactory(UnnamedLevel13::factory);
 	LevelDataGovernor::addLevelFactory(ShowcaseLevel1::factory);
 	LevelDataGovernor::addLevelFactory(ShowcaseLevel2::factory);
+	LevelDataGovernor::addLevelFactory(ShowcaseLevel3::factory);
 	LevelDataGovernor::addLevelFactory(DevNoWallsLevel1::factory);
 	LevelDataGovernor::addLevelFactory(TimedRewardLevel::factory);
 	LevelDataGovernor::addLevelFactory(TerrifyingChaosLevel::factory);

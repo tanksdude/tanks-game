@@ -1,5 +1,7 @@
 # List of Every Hazard
 
+If you want a picture to accompany these descriptions, look at the images of Developer Levels, for they have almost every hazard.
+
 ## Stationary Turret
 
 * Types: "vanilla", "random-vanilla", "old", "random-old", "random"
@@ -60,6 +62,12 @@ The main reason this was made was because I thought it would be funny to have a 
 Note that this hazard is inaccessible. It is the turret that Ginormous Turrets create. Mother Turrets create Targeting Turrets that do their own thing, but Ginormous Turrets force their turrets to follow their commands. As such, the only difference between a Minion Turret and a Targeting Turret is that a Minion Turret can *only* follow orders from its Ginormous Turret.
 
 If the Minion Turret's parent is destroyed, it does nothing. Well, it won't receive the order to stop targeting, so it will keep tracking the target tank (even through walls) until it has fired. Actually, they can keep tracking through walls if the parent suddenly needs to start making more children, since they don't receive a "stop targeting" order; maybe they should automatically stop if their parent can't see the tank?
+
+## turret image
+
+From left to right: Stationary, Targeting, Patrolling, Mother, Ginormous
+
+![every turret](images/turrets.jpg)
 
 ## Lightning
 
