@@ -6,8 +6,6 @@ The C++ upgrade of my [JavaScript game](https://uncreativeusername.neocities.org
 
 ![readme video](readme-video.gif)
 
-![superfast shooting video](readme-video-other.gif)
-
 ### Prerequisites
 
 * If compiling from source, you'll want Visual Studio 2022
@@ -28,6 +26,8 @@ The C++ upgrade of my [JavaScript game](https://uncreativeusername.neocities.org
 Install Visual Studio (2022) and the GitHub extension (I don't know if that's needed), then clone this project and run x64 Release (also make sure you're on the solution, not project).
 
 Pre-compiled executables are available under "Releases" in the [GitHub repository](https://github.com/tanksdude/tanks-game).
+
+![superfast shooting video](readme-video-other.gif)
 
 ## Making custom levels
 
