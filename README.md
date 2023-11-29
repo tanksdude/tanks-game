@@ -66,6 +66,8 @@ The custom power interpreter is also very simple and barebones.
 
 I didn't find a good way to easily build documentation, so... the documentation is quite lacking. However, there is some. Check the `docs` folder.
 
+![readme image](readme-image.png)
+
 ## Built With
 
 * [Visual Studio (2022)](https://visualstudio.microsoft.com/) - C++ IDE from Microsoft
