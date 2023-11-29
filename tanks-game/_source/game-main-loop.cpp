@@ -1064,6 +1064,8 @@ void GameMainLoop::bulletToHazard() {
 		HazardManager::deleteRectHazardByID(rectHazardDeletionList[i]);
 	}
 
+	//TODO: hazard "unitialization" would have to happen before deletion
+
 	delete collisionList;
 }
 

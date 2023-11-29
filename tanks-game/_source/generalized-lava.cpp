@@ -47,9 +47,9 @@ bool GeneralizedLava::LavaBubble::isDead() const noexcept {
 
 float GeneralizedLava::LavaBubble::getAlpha() const noexcept {
 	switch (state) {
-		case 0: return tickCount / (tickMax * stateMultiplier[0]) * .5;
-		case 1: return .5;
-		case 2: return (1 - tickCount / (tickMax * stateMultiplier[2])) * .5;
+		case 0: return tickCount / (tickMax * stateMultiplier[0]) * .5f;
+		case 1: return .5f;
+		case 2: return (1.0f - tickCount / (tickMax * stateMultiplier[2])) * .5f;
 		default: return 0;
 	}
 }
@@ -95,7 +95,7 @@ ColorValueHolder GeneralizedLava::getBubbleColor(LavaBubble* bubble) const {
 }
 
 ColorValueHolder GeneralizedLava::getBubbleColor_Pose(LavaBubble* bubble) const {
-	return ColorMixer::mix(ColorValueHolder(1.0f, 1.0f, 1.0f), getBackgroundColor(), .5); //TODO: allow getting the base alpha from a bubble
+	return ColorMixer::mix(ColorValueHolder(1.0f, 1.0f, 1.0f), getBackgroundColor(), .5f); //TODO: allow getting the base alpha from a bubble
 }
 
 void GeneralizedLava::tick() {

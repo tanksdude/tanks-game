@@ -62,6 +62,8 @@ Forces the tanks to have symmetrical positions. Don't remember why I made it, bu
 
 Makes the tanks tiny!
 
+Kinda pointless... I think I was going to actually use it for a level but forgot.
+
 # Quick list for types
 
 ## vanilla

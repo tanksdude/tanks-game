@@ -73,10 +73,11 @@ void UntraditionalDividerLevel::initialize() {
 	const int turretCount = 3;
 	for (int j = 0; j < turretCount; j++) {
 		for (int i = 0; i < 4; i++) {
-			pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 240-20 - (80+20) + 20/2, (10+50) + j*(GAME_HEIGHT/2 - (10+50) - 20)/(turretCount-1) + 20/2);
+			pos = LevelHelper::getSymmetricPowerupPositions_Corners(i, GAME_WIDTH/2, GAME_HEIGHT/2, 240-20 - (80+20) + 20/2 + .01, (10+50) + j*(GAME_HEIGHT/2 - (10+50) - 20)/(turretCount-1) + 20/2);
 			posArr = new double[3]{ pos.x, pos.y, PI * (i%2) };
 			constructionData = GenericFactoryConstructionData(3, posArr);
 			HazardManager::pushCircleHazard("vanilla", "stationary_turret", constructionData);
+			//TODO: the bullets don't collide with each other because they don't actually hit each other; maybe have a better solution than adjust positioning by .01?
 		}
 	}
 

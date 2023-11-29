@@ -34,8 +34,7 @@ void DefaultRandomLevel::initialize() {
 	//double* posArr;
 
 	//some random walls
-	LevelHelper::pushRandomWalls(LevelRNG::randIntInRange(12, 16+1), TANK_RADIUS*2.5*2, TANK_RADIUS*2, GAME_WIDTH - 2*(TANK_RADIUS*2.5*2), GAME_HEIGHT - 2*(TANK_RADIUS*2), randColor);
-	//note: hazards' y-gap is TANK_RADIUS*2.5 even though walls' y-gap is TANK_RADIUS*2
+	LevelHelper::pushRandomWalls(LevelRNG::randIntInRange(12, 16+1), TANK_RADIUS*2.5*2, TANK_RADIUS*2.5, GAME_WIDTH - 2*(TANK_RADIUS*2.5*2), GAME_HEIGHT - 2*(TANK_RADIUS*2.5), randColor);
 
 	//randomize hazards:
 	//get the weight of each hazard
@@ -84,7 +83,7 @@ void DefaultRandomLevel::initialize() {
 			}
 		}
 	}
-	//std::cout << (HazardManager::getNumCircleHazards() + HazardManager::getNumCircleHazards()) << std::endl;
+	//std::cout << (HazardManager::getNumCircleHazards() + HazardManager::getNumRectHazards()) << std::endl;
 
 	delete[] circleHazardWeights;
 	delete[] rectHazardWeights;

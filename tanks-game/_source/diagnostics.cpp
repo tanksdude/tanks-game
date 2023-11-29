@@ -174,7 +174,7 @@ void Diagnostics::drawGraphTimes_data(std::string name) {
 	}
 
 	ColorValueHolder color = graphTimes[graphNameToIndex[name]].color;
-	const float lineWidth = 1.0f; //TODO: too thick?
+	const float lineWidth = 1.0f;
 
 	std::vector<float> positions; positions.reserve(graphData.size()*2);
 	for (int i = 0; i < graphData.size(); i++) {

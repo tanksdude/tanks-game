@@ -15,17 +15,14 @@ ColorValueHolder ColorMixer::mix(const ColorValueHolder& a, const ColorValueHold
 }
 
 ColorValueHolder ColorMixer::mix(const ColorValueHolder* c, int num) {
-	float* colors = new float[3]{ 0,0,0 };
+	float colors[3] = { 0, 0, 0 };
 	for (int i = 0; i < num; i++) {
 		colors[0] += c[i].getRf();
 		colors[1] += c[i].getGf();
 		colors[2] += c[i].getBf();
 	}
 
-	ColorValueHolder mixed = ColorValueHolder(colors[0]/num, colors[1]/num, colors[2]/num);
-	delete[] colors;
-
-	return mixed;
+	return ColorValueHolder(colors[0]/num, colors[1]/num, colors[2]/num);
 }
 
 ColorValueHolder ColorMixer::HSVtoRGB(float hue, float saturation, float value) {
