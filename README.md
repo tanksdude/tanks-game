@@ -4,28 +4,28 @@ The C++ upgrade of my [JavaScript game](https://uncreativeusername.neocities.org
 
 ## Getting Started
 
-TODO: add an image here
+![readme video](readme-video.gif)
 
-TODO: maybe a gif later
+![superfast shooting video](readme-video-other.gif)
 
 ### Prerequisites
 
 * If compiling from source, you'll want Visual Studio 2022
     * [pre-compiled executables](https://github.com/tanksdude/tanks-game/releases) are provided if that's not an option for you
 * OpenGL 3.3 or later
-    * Earlier versions probably work if you update the shaders
-* 3GHz+ CPU recommended (2GHz is probably fine)
+    * Earlier versions almost certainly work if you update the shaders (change `#version 330 core` to `#version 150 core` or whatever)
+    * Your GPU almost certainly supports this (yes, even if it's an ancient Thinkpad)
+* 3GHz+ CPU recommended
     * Faster CPU -> more bullets on screen
-    * Multithreading possibly coming soon™
-        * I recently realized RNG isn't multithreaded so there's gonna be limits
+    * Multithreading not available, too difficult (also I have no idea how to approach multithreading RNG)
 * RAM requirements unknown, but 100MB is good
     * More bullets -> more RAM needed
-* No audio requirements (unlikely to change in the future)
+* No audio requirements, because there's no audio
 * **Windows-only** (feel free to try your luck with an emulator) and 64-bit-only
 
 ### Installing
 
-Install Visual Studio (2022) and the GitHub extension (I don't know if that's needed), then clone this project and run x64 Release (or Debug if you want to) (also make sure you're on the solution, not project).
+Install Visual Studio (2022) and the GitHub extension (I don't know if that's needed), then clone this project and run x64 Release (also make sure you're on the solution, not project).
 
 Pre-compiled executables are available under "Releases" in the [GitHub repository](https://github.com/tanksdude/tanks-game).
 
@@ -60,7 +60,7 @@ The custom power interpreter is also very simple and barebones.
 
 ## Running the tests
 
-Will come soon™.
+~~Will come soon™.~~
 
 ## Documentation
 
