@@ -105,6 +105,8 @@ hazard ideas:
 teleport zone
 pipes?
 magnetic hazard of some kind (when bullet or something is near it, shoots out some electricity (not lightning; there's a difference) and pulls it in)
+oil spill
+exploding barrel
 
 
 JS hazard numbers (with names updated):

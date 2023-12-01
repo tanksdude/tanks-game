@@ -1,4 +1,4 @@
-0.3.0 "complete" (future)
+0.3.0 "complete" (future, likely won't get here though)
 * new game mode: infinite world!
     * single-player only
     * the point is just to explore
@@ -20,13 +20,14 @@
     * switched to GLFW from FreeGLUT for ease of use
     * fullscreen toggle removed because of that
 
-0.2.5 "done" (in progress)
+0.2.5 "done"
 * rudimentary custom powers and levels!
     * turns out, DLLs were too complicated
     * look at the mods folder for examples
 * ini file
     * allows for some customization
     * now it's possible to view certain levels/whatever that exist but aren't playable
+* diagnostics graph: red for collision, green for vertex upload, blue for drawing, white for combined
 * some documentation: very minimal, but at least there's now an easy-to-read list of everything in the game
 * graphics: batched rendering
     * still not very efficient, but it's something
@@ -69,14 +70,11 @@
 * level effects:
     * magnetism (unfortunately doesn't work well with respawning powerups)
 * minor things:
-    * update to VS2022
+    * update to VS2022 and C++20
     * fullscreen toggle key changed to F11
-    * overhaul priority handling (again)
     * *massive* cleanup across the entire project, multiple times; no seriously it was a lot
     * fix some long-standing memory leaks, oops
     * [dev] power, "ancient" megadeath: fires an accelerating, tracking, wallhacking bullet
-    * attempted: tried GLFW instead of FreeGLUT, didn't like it
-        * moving to it next version because it's easier to work with and less ancient
 
 0.2.4
 * changed name from "Tanks" to "PowerTanks" so this game might actually become discoverable

@@ -6,6 +6,8 @@ The C++ upgrade of my [JavaScript game](https://uncreativeusername.neocities.org
 
 ![readme video](readme-video.gif)
 
+(The video's small size is because GIFs don't have codecs for compression, and GitHub doesn't allow embedding MP4s...)
+
 ### Prerequisites
 
 * If compiling from source, you'll want Visual Studio 2022
@@ -19,7 +21,8 @@ The C++ upgrade of my [JavaScript game](https://uncreativeusername.neocities.org
 * RAM requirements unknown, but 100MB is good
     * More bullets -> more RAM needed
 * No audio requirements, because there's no audio
-* **Windows-only** (feel free to try your luck with an emulator) and 64-bit-only
+* **Windows-only** and 64-bit
+    * But it should be very easy to compile it for another platform
 
 ### Installing
 
@@ -88,7 +91,7 @@ GNU General Public License v3.0
 ## Acknowledgments
 
 * JS Tanks (made by me): [tanks.html](https://uncreativeusername.neocities.org/tanks.html)
-    * C++ version has more stuff
+    * this version has more stuff
 * Many people across the Interwebs who made StackOverflow and other forum posts
 * Lots of YouTube tutorials, GDC talks, and my CS professors providing assistance
 * The vague inspiration I had for this game back when I made it: some top-down Flash tank game. I've tried searching for it multiple times but have never found it, so given my continuously fading memories of that game I played, I'll probably never find out what it actually was. (No, it wasn't Wii Tanks (that's not a Flash game, come on!). I think the game had a more cartoonish than realistic artstyle. I don't remember if there were powerups. My closest guess was some old Atari game remade in Flash, but my searches didn't find anything useful.)
@@ -97,7 +100,7 @@ GNU General Public License v3.0
 
 * [Super Smash Bros.](https://www.smashbros.com/en_US/index.html) for being a very fun game
     * (Smash Bros the *party* game, not the competitive fighting game; use items!)
-* [The Cherno](https://www.youtube.com/user/TheChernoProject/videos) is very helpful for OpenGL
+* [The Cherno](https://www.youtube.com/@TheCherno/videos) is very helpful for OpenGL
 * [Solarian Programmer](https://solarianprogrammer.com/) has good starter code for hardware rendering
 * [The Coding Train](https://www.youtube.com/@TheCodingTrain/videos) is helpful, but wasn't *specifically* used for this project (probably was used for the JS game, but I don't remember)
 * [Factorio](https://www.factorio.com/)'s Friday Fun Facts are amazing and got me interested in low-level C++ optimizations
