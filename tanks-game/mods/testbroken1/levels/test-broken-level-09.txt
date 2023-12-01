@@ -1,0 +1,4 @@
+Name = test-broken-level-9
+Color = asdf asdf asdf
+LevelTypes = "testbroken1"   "random-testbroken1"
+LevelWeights = 1.0   1.0

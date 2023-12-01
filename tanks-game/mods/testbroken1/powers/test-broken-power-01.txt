@@ -1,0 +1,50 @@
+; required
+Name = test-broken-power-1
+Color = 0.5   1.0   0.5
+PowerTypes = "testbroken1"   "random-testbroken1"
+PowerWeights = 1.0   1.0
+
+; optional
+PowerTankDuration = 500 ; default
+PowerAttributes = "stack" "mix" ; this doesn't stack but that's not the point
+
+
+
+; actual power, tank portion
+[TANKPOWER_START]
+
+additionalShooting_Enable_FAIL
+additionalShooting_AngleRelativeToTank 30
+additionalShooting_AngleRelativeToCannon 30
+additionalShooting_BulletCount 3
+
+addShootingPoints_Enable
+addShootingPoints_EquallySpaced 3
+addShootingPoints_Raw 30 330
+
+tankFiringRateMultiplier .5
+tankFiringRateStacks
+
+defenseTier 1.0
+
+
+
+; actual power, bullet portion
+[BULLETPOWER_START]
+
+modifiedCollision_BounceCount 3
+
+modifiedCollisionWithEdge_EnableBounce
+
+modifiedCollisionWithWall_EnableBounce
+modifiedCollisionWithWall_DestroyWall 0
+
+modifiedDeathHandling_Enable 0
+
+bulletSpeedMultiplier .5 1.0
+bulletRadiusMultiplier 1.5 2.0
+bulletRadiusStacks 0
+bulletDeceleration .125
+bulletDeceleration_DegradeAmount 1.0
+
+defenseTier 1.0

@@ -28,26 +28,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -77,6 +77,8 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\freeglut\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\glew\include;$(ProjectDir)res\vendor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <DisableSpecificWarnings>4244;4267;4305;4838;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -91,6 +93,8 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\freeglut\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\glew\include;$(ProjectDir)res\vendor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <DisableSpecificWarnings>4244;4267;4305;4838;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -107,6 +111,8 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\freeglut\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\glew\include;$(ProjectDir)res\vendor;</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <DisableSpecificWarnings>4244;4267;4305;4838;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -125,6 +131,8 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\freeglut\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\glew\include;$(ProjectDir)res\vendor;</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <DisableSpecificWarnings>4244;4267;4305;4838;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -135,255 +143,368 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="backgroundrect.cpp" />
-    <ClCompile Include="bananapower.cpp" />
-    <ClCompile Include="barrierpower.cpp" />
-    <ClCompile Include="bigfunlevel.cpp" />
-    <ClCompile Include="bignamedpower.cpp" />
-    <ClCompile Include="blastpower.cpp" />
-    <ClCompile Include="bouncepower.cpp" />
-    <ClCompile Include="bullet.cpp" />
-    <ClCompile Include="bulletmanager.cpp" />
-    <ClCompile Include="circularlava.cpp" />
-    <ClCompile Include="circularlightning.cpp" />
-    <ClCompile Include="circularnobulletzone.cpp" />
-    <ClCompile Include="concealedpowerupslevel.cpp" />
-    <ClCompile Include="devannoyingpower.cpp" />
-    <ClCompile Include="developerlevel2.cpp" />
-    <ClCompile Include="devlonginvinciblenamedpower.cpp" />
-    <ClCompile Include="devnowallslevel1.cpp" />
-    <ClCompile Include="devsymmetrictanksleveleffect.cpp" />
-    <ClCompile Include="endgamehandler.cpp" />
-    <ClCompile Include="fewobstacleslevel.cpp" />
-    <ClCompile Include="gamemainloop.cpp" />
-    <ClCompile Include="gamemanager.cpp" />
-    <ClCompile Include="generalizedlava.cpp" />
-    <ClCompile Include="generalizedlightning.cpp" />
-    <ClCompile Include="generalizednobulletzone.cpp" />
-    <ClCompile Include="godmodepower.cpp" />
-    <ClCompile Include="hazard.cpp" />
-    <ClCompile Include="hidingplaceslevel.cpp" />
-    <ClCompile Include="iceleveleffect.cpp" />
-    <ClCompile Include="inversionpower.cpp" />
-    <ClCompile Include="invisiblewallsleveleffect.cpp" />
-    <ClCompile Include="level.cpp" />
-    <ClCompile Include="lightningcornerslevel.cpp" />
-    <ClCompile Include="loneturretlevel.cpp" />
-    <ClCompile Include="manyhazardslevel.cpp" />
-    <ClCompile Include="minefieldleveleffect.cpp" />
-    <ClCompile Include="mineheavenlevel.cpp" />
-    <ClCompile Include="minespower.cpp" />
-    <ClCompile Include="oldminespower.cpp" />
-    <ClCompile Include="openglindexbuffer.cpp" />
-    <ClCompile Include="openglrenderingcontext.cpp" />
-    <ClCompile Include="openglvertexarray.cpp" />
-    <ClCompile Include="openglvertexbuffer.cpp" />
-    <ClCompile Include="rectangularnobulletzone.cpp" />
-    <ClCompile Include="oldbignamedpower.cpp" />
-    <ClCompile Include="oldbouncepower.cpp" />
-    <ClCompile Include="oldemptylevel.cpp" />
-    <ClCompile Include="power.cpp" />
-    <ClCompile Include="priorityhandler.cpp" />
-    <ClCompile Include="circlehazard.cpp" />
-    <ClCompile Include="collisionhandler.cpp" />
-    <ClCompile Include="colormixer.cpp" />
-    <ClCompile Include="colorvalueholder.cpp" />
-    <ClCompile Include="constants.cpp" />
-    <ClCompile Include="corridorlevel.cpp" />
-    <ClCompile Include="defaultrandomlevel.cpp" />
-    <ClCompile Include="developerlevel1.cpp" />
-    <ClCompile Include="developermanager.cpp" />
-    <ClCompile Include="diagnostics.cpp" />
-    <ClCompile Include="emptylevel.cpp" />
-    <ClCompile Include="firenamedpower.cpp" />
-    <ClCompile Include="grenadepower.cpp" />
-    <ClCompile Include="hazardmanager.cpp" />
-    <ClCompile Include="homingpower.cpp" />
-    <ClCompile Include="horizontallightning.cpp" />
-    <ClCompile Include="indexbuffer.cpp" />
-    <ClCompile Include="invinciblenamedpower.cpp" />
-    <ClCompile Include="keypressmanager.cpp" />
-    <ClCompile Include="rectangularlava.cpp" />
-    <ClCompile Include="leveleffect.cpp" />
-    <ClCompile Include="levelmanager.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="megadeathpower.cpp" />
-    <ClCompile Include="multishotpower.cpp" />
-    <ClCompile Include="mylib.cpp" />
-    <ClCompile Include="powerfunctionhelper.cpp" />
-    <ClCompile Include="powersquare.cpp" />
-    <ClCompile Include="powerupmanager.cpp" />
-    <ClCompile Include="developerlevel0.cpp" />
-    <ClCompile Include="randomlevel.cpp" />
-    <ClCompile Include="rectangularlightning.cpp" />
-    <ClCompile Include="recthazard.cpp" />
-    <ClCompile Include="renderer.cpp" />
-    <ClCompile Include="resetthings.cpp" />
-    <ClCompile Include="respawningpowerupsleveleffect.cpp" />
-    <ClCompile Include="rng.cpp" />
-    <ClCompile Include="shader.cpp" />
-    <ClCompile Include="shieldpower.cpp" />
-    <ClCompile Include="shotgunpower.cpp" />
-    <ClCompile Include="simplevector2d.cpp" />
-    <ClCompile Include="sneakyrewardlevel.cpp" />
-    <ClCompile Include="speedpower.cpp" />
-    <ClCompile Include="stationaryturret.cpp" />
-    <ClCompile Include="tank.cpp" />
-    <ClCompile Include="tankmanager.cpp" />
-    <ClCompile Include="timedrewardlevel.cpp" />
-    <ClCompile Include="trackingpower.cpp" />
-    <ClCompile Include="trickymaneuveringlevel.cpp" />
-    <ClCompile Include="triplepower.cpp" />
-    <ClCompile Include="targetingturret.cpp" />
-    <ClCompile Include="ultrabouncepower.cpp" />
-    <ClCompile Include="unnamedlevel1.cpp" />
-    <ClCompile Include="unnamedlevel2.cpp" />
-    <ClCompile Include="vertexarray.cpp" />
-    <ClCompile Include="vertexbuffer.cpp" />
-    <ClCompile Include="verticallightning.cpp" />
-    <ClCompile Include="wall.cpp" />
-    <ClCompile Include="wallhackpower.cpp" />
-    <ClCompile Include="wallmanager.cpp" />
-    <ClCompile Include="windleveleffect.cpp" />
-    <ClCompile Include="winningpathlevel.cpp" />
+    <ClCompile Include="_source\background-rect.cpp" />
+    <ClCompile Include="_source\basic-ini-parser.cpp" />
+    <ClCompile Include="_source\bullet-manager.cpp" />
+    <ClCompile Include="_source\bullet.cpp" />
+    <ClCompile Include="_source\circle-hazard.cpp" />
+    <ClCompile Include="_source\collision-handler.cpp" />
+    <ClCompile Include="_source\color-mixer.cpp" />
+    <ClCompile Include="_source\color-value-holder.cpp" />
+    <ClCompile Include="_source\constants.cpp" />
+    <ClCompile Include="_source\custom-level-interpreter.cpp" />
+    <ClCompile Include="_source\custom-power-interpreter.cpp" />
+    <ClCompile Include="_source\developer-manager.cpp" />
+    <ClCompile Include="_source\diagnostics.cpp" />
+    <ClCompile Include="_source\end-game-handler.cpp" />
+    <ClCompile Include="_source\game-main-loop.cpp" />
+    <ClCompile Include="_source\game-manager.cpp" />
+    <ClCompile Include="_source\game-scene-manager.cpp" />
+    <ClCompile Include="_source\game-scene.cpp" />
+    <ClCompile Include="_source\game-thing.cpp" />
+    <ClCompile Include="_source\generalized-lava.cpp" />
+    <ClCompile Include="_source\generalized-lightning.cpp" />
+    <ClCompile Include="_source\generalized-no-bullet-zone.cpp" />
+    <ClCompile Include="_source\generic-factory-construction-data.cpp" />
+    <ClCompile Include="_source\graphics\index-buffer.cpp" />
+    <ClCompile Include="_source\graphics\opengl-index-buffer.cpp" />
+    <ClCompile Include="_source\graphics\opengl-rendering-context.cpp" />
+    <ClCompile Include="_source\graphics\opengl-vertex-array.cpp" />
+    <ClCompile Include="_source\graphics\opengl-vertex-buffer.cpp" />
+    <ClCompile Include="_source\graphics\shader.cpp" />
+    <ClCompile Include="_source\graphics\vertex-array.cpp" />
+    <ClCompile Include="_source\graphics\vertex-buffer.cpp" />
+    <ClCompile Include="_source\hazard-data-governor.cpp" />
+    <ClCompile Include="_source\hazard-manager.cpp" />
+    <ClCompile Include="_source\hazards\circular-lava-hazard.cpp" />
+    <ClCompile Include="_source\hazards\circular-lightning-hazard.cpp" />
+    <ClCompile Include="_source\hazards\circular-no-bullet-zone-hazard.cpp" />
+    <ClCompile Include="_source\hazards\cloud-hazard.cpp" />
+    <ClCompile Include="_source\hazards\dev-wall-hazard.cpp" />
+    <ClCompile Include="_source\hazards\ginormous-turret-hazard.cpp" />
+    <ClCompile Include="_source\hazards\gravity-well-hazard.cpp" />
+    <ClCompile Include="_source\hazards\horizontal-lightning-hazard.cpp" />
+    <ClCompile Include="_source\hazards\mother-turret-hazard.cpp" />
+    <ClCompile Include="_source\hazards\patrolling-turret-hazard.cpp" />
+    <ClCompile Include="_source\hazards\rectangular-lava-hazard.cpp" />
+    <ClCompile Include="_source\hazards\rectangular-lightning-hazard.cpp" />
+    <ClCompile Include="_source\hazards\rectangular-no-bullet-zone-hazard.cpp" />
+    <ClCompile Include="_source\hazards\reflecktor-hazard.cpp" />
+    <ClCompile Include="_source\hazards\spiral-lava-hazard.cpp" />
+    <ClCompile Include="_source\hazards\stationary-turret-hazard.cpp" />
+    <ClCompile Include="_source\hazards\targeting-turret-hazard.cpp" />
+    <ClCompile Include="_source\hazards\vertical-lightning-hazard.cpp" />
+    <ClCompile Include="_source\keypress-manager.cpp" />
+    <ClCompile Include="_source\level-data-governor.cpp" />
+    <ClCompile Include="_source\level-effect.cpp" />
+    <ClCompile Include="_source\level-effects\dev-symmetric-tanks-level-effect.cpp" />
+    <ClCompile Include="_source\level-effects\dev-tiny-tanks-level-effect.cpp" />
+    <ClCompile Include="_source\level-effects\ice-level-effect.cpp" />
+    <ClCompile Include="_source\level-effects\invisible-walls-level-effect.cpp" />
+    <ClCompile Include="_source\level-effects\magnetism-level-effect.cpp" />
+    <ClCompile Include="_source\level-effects\minefield-level-effect.cpp" />
+    <ClCompile Include="_source\level-effects\respawning-powerups-level-effect.cpp" />
+    <ClCompile Include="_source\level-effects\wind-level-effect.cpp" />
+    <ClCompile Include="_source\level-helper.cpp" />
+    <ClCompile Include="_source\level-manager.cpp" />
+    <ClCompile Include="_source\level.cpp" />
+    <ClCompile Include="_source\levels\big-fun-level.cpp" />
+    <ClCompile Include="_source\levels\concealed-powerups-level.cpp" />
+    <ClCompile Include="_source\levels\dangerous-center-level.cpp" />
+    <ClCompile Include="_source\levels\default-random-level.cpp" />
+    <ClCompile Include="_source\levels\dev-no-walls-level-1.cpp" />
+    <ClCompile Include="_source\levels\developer-level-0.cpp" />
+    <ClCompile Include="_source\levels\developer-level-1.cpp" />
+    <ClCompile Include="_source\levels\developer-level-2.cpp" />
+    <ClCompile Include="_source\levels\developer-level-3.cpp" />
+    <ClCompile Include="_source\levels\developer-level-4.cpp" />
+    <ClCompile Include="_source\levels\empty-level.cpp" />
+    <ClCompile Include="_source\levels\evened-corridors-level.cpp" />
+    <ClCompile Include="_source\levels\few-obstacles-level.cpp" />
+    <ClCompile Include="_source\levels\hiding-places-level.cpp" />
+    <ClCompile Include="_source\levels\lightning-corners-level.cpp" />
+    <ClCompile Include="_source\levels\lone-turret-level.cpp" />
+    <ClCompile Include="_source\levels\many-hazards-level.cpp" />
+    <ClCompile Include="_source\levels\mine-heaven-level.cpp" />
+    <ClCompile Include="_source\levels\old-empty-level.cpp" />
+    <ClCompile Include="_source\levels\old-evened-corridors-level.cpp" />
+    <ClCompile Include="_source\levels\old-few-obstacles-level.cpp" />
+    <ClCompile Include="_source\levels\old-hiding-places-level.cpp" />
+    <ClCompile Include="_source\levels\old-portal-level.cpp" />
+    <ClCompile Include="_source\levels\showcase-level-1.cpp" />
+    <ClCompile Include="_source\levels\showcase-level-2.cpp" />
+    <ClCompile Include="_source\levels\showcase-level-3.cpp" />
+    <ClCompile Include="_source\levels\sneaky-reward-level.cpp" />
+    <ClCompile Include="_source\levels\terrifying-chaos-level.cpp" />
+    <ClCompile Include="_source\levels\tight-patrolling-corridor-level.cpp" />
+    <ClCompile Include="_source\levels\timed-reward-level.cpp" />
+    <ClCompile Include="_source\levels\tricky-maneuvering-level.cpp" />
+    <ClCompile Include="_source\levels\unnamed-level-1.cpp" />
+    <ClCompile Include="_source\levels\unnamed-level-10.cpp" />
+    <ClCompile Include="_source\levels\unnamed-level-11.cpp" />
+    <ClCompile Include="_source\levels\unnamed-level-12.cpp" />
+    <ClCompile Include="_source\levels\unnamed-level-13.cpp" />
+    <ClCompile Include="_source\levels\unnamed-level-2.cpp" />
+    <ClCompile Include="_source\levels\unnamed-level-3.cpp" />
+    <ClCompile Include="_source\levels\unnamed-level-4.cpp" />
+    <ClCompile Include="_source\levels\unnamed-level-6.cpp" />
+    <ClCompile Include="_source\levels\unnamed-level-9.cpp" />
+    <ClCompile Include="_source\levels\untraditional-divider-level.cpp" />
+    <ClCompile Include="_source\levels\winning-path-level.cpp" />
+    <ClCompile Include="_source\main.cpp" />
+    <ClCompile Include="_source\mod-processor.cpp" />
+    <ClCompile Include="_source\mylib.cpp" />
+    <ClCompile Include="_source\physics-handler.cpp" />
+    <ClCompile Include="_source\power-function-helper.cpp" />
+    <ClCompile Include="_source\power-square.cpp" />
+    <ClCompile Include="_source\power.cpp" />
+    <ClCompile Include="_source\powers\ancient-mega-death-power.cpp" />
+    <ClCompile Include="_source\powers\annoying-power.cpp" />
+    <ClCompile Include="_source\powers\banana-power.cpp" />
+    <ClCompile Include="_source\powers\banana-split-power.cpp" />
+    <ClCompile Include="_source\powers\barrier-power.cpp" />
+    <ClCompile Include="_source\powers\big-named-power.cpp" />
+    <ClCompile Include="_source\powers\blast-power.cpp" />
+    <ClCompile Include="_source\powers\bounce-power.cpp" />
+    <ClCompile Include="_source\powers\dev-backwards-movement-power.cpp" />
+    <ClCompile Include="_source\powers\dev-color-changing-power.cpp" />
+    <ClCompile Include="_source\powers\dev-colorless-long-invincible-named-power.cpp" />
+    <ClCompile Include="_source\powers\dev-long-invincible-named-power.cpp" />
+    <ClCompile Include="_source\powers\dev-movement-restarter-power.cpp" />
+    <ClCompile Include="_source\powers\dev-other-stuff-is-poison-power.cpp" />
+    <ClCompile Include="_source\powers\dev-pusher-power.cpp" />
+    <ClCompile Include="_source\powers\dev-weird-extra-cannons-power.cpp" />
+    <ClCompile Include="_source\powers\edge-sparks-power.cpp" />
+    <ClCompile Include="_source\powers\fire-named-power.cpp" />
+    <ClCompile Include="_source\powers\god-mode-power.cpp" />
+    <ClCompile Include="_source\powers\grenade-power.cpp" />
+    <ClCompile Include="_source\powers\homing-power.cpp" />
+    <ClCompile Include="_source\powers\inversion-power.cpp" />
+    <ClCompile Include="_source\powers\invincible-named-power.cpp" />
+    <ClCompile Include="_source\powers\mega-death-power.cpp" />
+    <ClCompile Include="_source\powers\mine-layer-power.cpp" />
+    <ClCompile Include="_source\powers\mines-power.cpp" />
+    <ClCompile Include="_source\powers\multishot-power.cpp" />
+    <ClCompile Include="_source\powers\old-big-named-power.cpp" />
+    <ClCompile Include="_source\powers\old-bounce-power.cpp" />
+    <ClCompile Include="_source\powers\old-mines-power.cpp" />
+    <ClCompile Include="_source\powers\ring-shooter-power.cpp" />
+    <ClCompile Include="_source\powers\shield-power.cpp" />
+    <ClCompile Include="_source\powers\shotgun-power.cpp" />
+    <ClCompile Include="_source\powers\speed-power.cpp" />
+    <ClCompile Include="_source\powers\swarm-power.cpp" />
+    <ClCompile Include="_source\powers\the-super-named-power.cpp" />
+    <ClCompile Include="_source\powers\tracking-power.cpp" />
+    <ClCompile Include="_source\powers\trickster-circle-power.cpp" />
+    <ClCompile Include="_source\powers\trickster-snake-power.cpp" />
+    <ClCompile Include="_source\powers\triple-named-power.cpp" />
+    <ClCompile Include="_source\powers\triple-spread-named-power.cpp" />
+    <ClCompile Include="_source\powers\ultra-bounce-power.cpp" />
+    <ClCompile Include="_source\powers\wall-sparks-power.cpp" />
+    <ClCompile Include="_source\powers\wallhack-power.cpp" />
+    <ClCompile Include="_source\powerup-data-governor.cpp" />
+    <ClCompile Include="_source\powerup-manager.cpp" />
+    <ClCompile Include="_source\priority-handler.cpp" />
+    <ClCompile Include="_source\rect-hazard.cpp" />
+    <ClCompile Include="_source\renderer.cpp" />
+    <ClCompile Include="_source\reset-things.cpp" />
+    <ClCompile Include="_source\rng.cpp" />
+    <ClCompile Include="_source\simple-vector-2d.cpp" />
+    <ClCompile Include="_source\statistics-handler.cpp" />
+    <ClCompile Include="_source\tank-manager.cpp" />
+    <ClCompile Include="_source\tank.cpp" />
+    <ClCompile Include="_source\wall-manager.cpp" />
+    <ClCompile Include="_source\wall.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="backgroundrect.h" />
-    <ClInclude Include="bananapower.h" />
-    <ClInclude Include="barrierpower.h" />
-    <ClInclude Include="bigfunlevel.h" />
-    <ClInclude Include="bignamedpower.h" />
-    <ClInclude Include="blastpower.h" />
-    <ClInclude Include="bouncepower.h" />
-    <ClInclude Include="bullet.h" />
-    <ClInclude Include="bulletmanager.h" />
-    <ClInclude Include="bulletpower.h" />
-    <ClInclude Include="circularlava.h" />
-    <ClInclude Include="circularlightning.h" />
-    <ClInclude Include="circularnobulletzone.h" />
-    <ClInclude Include="concealedpowerupslevel.h" />
-    <ClInclude Include="devannoyingpower.h" />
-    <ClInclude Include="developerlevel2.h" />
-    <ClInclude Include="devlonginvinciblenamedpower.h" />
-    <ClInclude Include="devnowallslevel1.h" />
-    <ClInclude Include="devsymmetrictanksleveleffect.h" />
-    <ClInclude Include="endgamehandler.h" />
-    <ClInclude Include="fewobstacleslevel.h" />
-    <ClInclude Include="gamemainloop.h" />
-    <ClInclude Include="gamemanager.h" />
-    <ClInclude Include="gamething.h" />
-    <ClInclude Include="generalizedlava.h" />
-    <ClInclude Include="generalizedlightning.h" />
-    <ClInclude Include="generalizednobulletzone.h" />
-    <ClInclude Include="godmodepower.h" />
-    <ClInclude Include="hidingplaceslevel.h" />
-    <ClInclude Include="iceleveleffect.h" />
-    <ClInclude Include="interactionboolholder.h" />
-    <ClInclude Include="inversionpower.h" />
-    <ClInclude Include="invisiblewallsleveleffect.h" />
-    <ClInclude Include="lightningcornerslevel.h" />
-    <ClInclude Include="loneturretlevel.h" />
-    <ClInclude Include="manyhazardslevel.h" />
-    <ClInclude Include="minefieldleveleffect.h" />
-    <ClInclude Include="mineheavenlevel.h" />
-    <ClInclude Include="minespower.h" />
-    <ClInclude Include="nullrenderingcontext.h" />
-    <ClInclude Include="oldminespower.h" />
-    <ClInclude Include="openglindexbuffer.h" />
-    <ClInclude Include="openglrenderingcontext.h" />
-    <ClInclude Include="openglvertexarray.h" />
-    <ClInclude Include="openglvertexbuffer.h" />
-    <ClInclude Include="rectangularnobulletzone.h" />
-    <ClInclude Include="oldbignamedpower.h" />
-    <ClInclude Include="oldbouncepower.h" />
-    <ClInclude Include="oldemptylevel.h" />
-    <ClInclude Include="point.h" />
-    <ClInclude Include="positionholder.h" />
-    <ClInclude Include="priorityhandler.h" />
-    <ClInclude Include="cannonpoint.h" />
-    <ClInclude Include="circle.h" />
-    <ClInclude Include="circlehazard.h" />
-    <ClInclude Include="collisionhandler.h" />
-    <ClInclude Include="colormixer.h" />
-    <ClInclude Include="colorvalueholder.h" />
-    <ClInclude Include="constants.h" />
-    <ClInclude Include="corridorlevel.h" />
-    <ClInclude Include="defaultrandomlevel.h" />
-    <ClInclude Include="developerlevel1.h" />
-    <ClInclude Include="developermanager.h" />
-    <ClInclude Include="diagnostics.h" />
-    <ClInclude Include="emptylevel.h" />
-    <ClInclude Include="firenamedpower.h" />
-    <ClInclude Include="grenadepower.h" />
-    <ClInclude Include="hazard.h" />
-    <ClInclude Include="hazardmanager.h" />
-    <ClInclude Include="homingpower.h" />
-    <ClInclude Include="horizontallightning.h" />
-    <ClInclude Include="indexbuffer.h" />
-    <ClInclude Include="inheritedpowercommon.h" />
-    <ClInclude Include="invinciblenamedpower.h" />
-    <ClInclude Include="keypressmanager.h" />
-    <ClInclude Include="rectangularlava.h" />
-    <ClInclude Include="level.h" />
-    <ClInclude Include="leveleffect.h" />
-    <ClInclude Include="levelmanager.h" />
-    <ClInclude Include="megadeathpower.h" />
-    <ClInclude Include="multishotpower.h" />
-    <ClInclude Include="mylib.h" />
-    <ClInclude Include="power.h" />
-    <ClInclude Include="powerfunctionhelper.h" />
-    <ClInclude Include="powersquare.h" />
-    <ClInclude Include="powerupmanager.h" />
-    <ClInclude Include="developerlevel0.h" />
-    <ClInclude Include="randomlevel.h" />
-    <ClInclude Include="rect.h" />
-    <ClInclude Include="rectangularlightning.h" />
-    <ClInclude Include="recthazard.h" />
-    <ClInclude Include="drawablething.h" />
-    <ClInclude Include="renderer.h" />
-    <ClInclude Include="renderingcontext.h" />
-    <ClInclude Include="resetthings.h" />
-    <ClInclude Include="respawningpowerupsleveleffect.h" />
-    <ClInclude Include="res\vendor\glm\glm.hpp" />
-    <ClInclude Include="res\vendor\glm\gtc\matrix_transform.hpp" />
-    <ClInclude Include="res\vendor\glm\gtx\transform.hpp" />
-    <ClInclude Include="rng.h" />
-    <ClInclude Include="shader.h" />
-    <ClInclude Include="shieldpower.h" />
-    <ClInclude Include="shotgunpower.h" />
-    <ClInclude Include="simplevector2d.h" />
-    <ClInclude Include="sneakyrewardlevel.h" />
-    <ClInclude Include="softwarerenderingcontext.h" />
-    <ClInclude Include="speedpower.h" />
-    <ClInclude Include="stationaryturret.h" />
-    <ClInclude Include="tank.h" />
-    <ClInclude Include="tankmanager.h" />
-    <ClInclude Include="tankpower.h" />
-    <ClInclude Include="timedrewardlevel.h" />
-    <ClInclude Include="trackingpower.h" />
-    <ClInclude Include="trickymaneuveringlevel.h" />
-    <ClInclude Include="triplepower.h" />
-    <ClInclude Include="targetingturret.h" />
-    <ClInclude Include="ultrabouncepower.h" />
-    <ClInclude Include="unnamedlevel1.h" />
-    <ClInclude Include="unnamedlevel2.h" />
-    <ClInclude Include="vertexarray.h" />
-    <ClInclude Include="vertexbuffer.h" />
-    <ClInclude Include="vertexbufferlayout.h" />
-    <ClInclude Include="verticallightning.h" />
-    <ClInclude Include="wall.h" />
-    <ClInclude Include="wallhackpower.h" />
-    <ClInclude Include="wallmanager.h" />
-    <ClInclude Include="windleveleffect.h" />
-    <ClInclude Include="winningpathlevel.h" />
+    <ClInclude Include="_source\background-rect.h" />
+    <ClInclude Include="_source\basic-ini-parser.h" />
+    <ClInclude Include="_source\bullet-manager.h" />
+    <ClInclude Include="_source\bullet-power.h" />
+    <ClInclude Include="_source\bullet.h" />
+    <ClInclude Include="_source\cannon-point.h" />
+    <ClInclude Include="_source\circle-hazard.h" />
+    <ClInclude Include="_source\circle.h" />
+    <ClInclude Include="_source\collision-handler.h" />
+    <ClInclude Include="_source\color-mixer.h" />
+    <ClInclude Include="_source\color-value-holder.h" />
+    <ClInclude Include="_source\constants.h" />
+    <ClInclude Include="_source\custom-level-interpreter.h" />
+    <ClInclude Include="_source\custom-power-interpreter.h" />
+    <ClInclude Include="_source\developer-manager.h" />
+    <ClInclude Include="_source\diagnostics.h" />
+    <ClInclude Include="_source\drawable-thing.h" />
+    <ClInclude Include="_source\end-game-handler.h" />
+    <ClInclude Include="_source\game-main-loop.h" />
+    <ClInclude Include="_source\game-manager.h" />
+    <ClInclude Include="_source\game-scene-manager.h" />
+    <ClInclude Include="_source\game-scene.h" />
+    <ClInclude Include="_source\game-thing.h" />
+    <ClInclude Include="_source\generalized-lava.h" />
+    <ClInclude Include="_source\generalized-lightning.h" />
+    <ClInclude Include="_source\generalized-no-bullet-zone.h" />
+    <ClInclude Include="_source\generic-factory-construction-data.h" />
+    <ClInclude Include="_source\graphics\index-buffer.h" />
+    <ClInclude Include="_source\graphics\null-rendering-context.h" />
+    <ClInclude Include="_source\graphics\opengl-index-buffer.h" />
+    <ClInclude Include="_source\graphics\opengl-rendering-context.h" />
+    <ClInclude Include="_source\graphics\opengl-vertex-array.h" />
+    <ClInclude Include="_source\graphics\opengl-vertex-buffer.h" />
+    <ClInclude Include="_source\graphics\rendering-context.h" />
+    <ClInclude Include="_source\graphics\shader.h" />
+    <ClInclude Include="_source\graphics\software-rendering-context.h" />
+    <ClInclude Include="_source\graphics\vertex-array.h" />
+    <ClInclude Include="_source\graphics\vertex-buffer-layout.h" />
+    <ClInclude Include="_source\graphics\vertex-buffer.h" />
+    <ClInclude Include="_source\hazard-data-governor.h" />
+    <ClInclude Include="_source\hazard-manager.h" />
+    <ClInclude Include="_source\hazards\circular-lava-hazard.h" />
+    <ClInclude Include="_source\hazards\circular-lightning-hazard.h" />
+    <ClInclude Include="_source\hazards\circular-no-bullet-zone-hazard.h" />
+    <ClInclude Include="_source\hazards\cloud-hazard.h" />
+    <ClInclude Include="_source\hazards\dev-wall-hazard.h" />
+    <ClInclude Include="_source\hazards\ginormous-turret-hazard.h" />
+    <ClInclude Include="_source\hazards\gravity-well-hazard.h" />
+    <ClInclude Include="_source\hazards\horizontal-lightning-hazard.h" />
+    <ClInclude Include="_source\hazards\mother-turret-hazard.h" />
+    <ClInclude Include="_source\hazards\patrolling-turret-hazard.h" />
+    <ClInclude Include="_source\hazards\rectangular-lava-hazard.h" />
+    <ClInclude Include="_source\hazards\rectangular-lightning-hazard.h" />
+    <ClInclude Include="_source\hazards\rectangular-no-bullet-zone-hazard.h" />
+    <ClInclude Include="_source\hazards\reflecktor-hazard.h" />
+    <ClInclude Include="_source\hazards\spiral-lava-hazard.h" />
+    <ClInclude Include="_source\hazards\stationary-turret-hazard.h" />
+    <ClInclude Include="_source\hazards\targeting-turret-hazard.h" />
+    <ClInclude Include="_source\hazards\vertical-lightning-hazard.h" />
+    <ClInclude Include="_source\interaction-bool-holder.h" />
+    <ClInclude Include="_source\keypress-manager.h" />
+    <ClInclude Include="_source\level-data-governor.h" />
+    <ClInclude Include="_source\level-effect.h" />
+    <ClInclude Include="_source\level-effects\dev-symmetric-tanks-level-effect.h" />
+    <ClInclude Include="_source\level-effects\dev-tiny-tanks-level-effect.h" />
+    <ClInclude Include="_source\level-effects\ice-level-effect.h" />
+    <ClInclude Include="_source\level-effects\invisible-walls-level-effect.h" />
+    <ClInclude Include="_source\level-effects\magnetism-level-effect.h" />
+    <ClInclude Include="_source\level-effects\minefield-level-effect.h" />
+    <ClInclude Include="_source\level-effects\respawning-powerups-level-effect.h" />
+    <ClInclude Include="_source\level-effects\wind-level-effect.h" />
+    <ClInclude Include="_source\level-helper.h" />
+    <ClInclude Include="_source\level-manager.h" />
+    <ClInclude Include="_source\level.h" />
+    <ClInclude Include="_source\levels\big-fun-level.h" />
+    <ClInclude Include="_source\levels\concealed-powerups-level.h" />
+    <ClInclude Include="_source\levels\dangerous-center-level.h" />
+    <ClInclude Include="_source\levels\default-random-level.h" />
+    <ClInclude Include="_source\levels\dev-no-walls-level-1.h" />
+    <ClInclude Include="_source\levels\developer-level-0.h" />
+    <ClInclude Include="_source\levels\developer-level-1.h" />
+    <ClInclude Include="_source\levels\developer-level-2.h" />
+    <ClInclude Include="_source\levels\developer-level-3.h" />
+    <ClInclude Include="_source\levels\developer-level-4.h" />
+    <ClInclude Include="_source\levels\empty-level.h" />
+    <ClInclude Include="_source\levels\evened-corridors-level.h" />
+    <ClInclude Include="_source\levels\few-obstacles-level.h" />
+    <ClInclude Include="_source\levels\hiding-places-level.h" />
+    <ClInclude Include="_source\levels\lightning-corners-level.h" />
+    <ClInclude Include="_source\levels\lone-turret-level.h" />
+    <ClInclude Include="_source\levels\many-hazards-level.h" />
+    <ClInclude Include="_source\levels\mine-heaven-level.h" />
+    <ClInclude Include="_source\levels\old-empty-level.h" />
+    <ClInclude Include="_source\levels\old-evened-corridors-level.h" />
+    <ClInclude Include="_source\levels\old-few-obstacles-level.h" />
+    <ClInclude Include="_source\levels\old-hiding-places-level.h" />
+    <ClInclude Include="_source\levels\old-portal-level.h" />
+    <ClInclude Include="_source\levels\showcase-level-1.h" />
+    <ClInclude Include="_source\levels\showcase-level-2.h" />
+    <ClInclude Include="_source\levels\showcase-level-3.h" />
+    <ClInclude Include="_source\levels\sneaky-reward-level.h" />
+    <ClInclude Include="_source\levels\terrifying-chaos-level.h" />
+    <ClInclude Include="_source\levels\tight-patrolling-corridor-level.h" />
+    <ClInclude Include="_source\levels\timed-reward-level.h" />
+    <ClInclude Include="_source\levels\tricky-maneuvering-level.h" />
+    <ClInclude Include="_source\levels\unnamed-level-1.h" />
+    <ClInclude Include="_source\levels\unnamed-level-10.h" />
+    <ClInclude Include="_source\levels\unnamed-level-11.h" />
+    <ClInclude Include="_source\levels\unnamed-level-12.h" />
+    <ClInclude Include="_source\levels\unnamed-level-13.h" />
+    <ClInclude Include="_source\levels\unnamed-level-2.h" />
+    <ClInclude Include="_source\levels\unnamed-level-3.h" />
+    <ClInclude Include="_source\levels\unnamed-level-4.h" />
+    <ClInclude Include="_source\levels\unnamed-level-6.h" />
+    <ClInclude Include="_source\levels\unnamed-level-9.h" />
+    <ClInclude Include="_source\levels\untraditional-divider-level.h" />
+    <ClInclude Include="_source\levels\winning-path-level.h" />
+    <ClInclude Include="_source\mod-processor.h" />
+    <ClInclude Include="_source\mylib.h" />
+    <ClInclude Include="_source\physics-handler.h" />
+    <ClInclude Include="_source\point.h" />
+    <ClInclude Include="_source\position-holder.h" />
+    <ClInclude Include="_source\power-function-helper.h" />
+    <ClInclude Include="_source\power-square.h" />
+    <ClInclude Include="_source\power.h" />
+    <ClInclude Include="_source\powers\ancient-mega-death-power.h" />
+    <ClInclude Include="_source\powers\annoying-power.h" />
+    <ClInclude Include="_source\powers\banana-power.h" />
+    <ClInclude Include="_source\powers\banana-split-power.h" />
+    <ClInclude Include="_source\powers\barrier-power.h" />
+    <ClInclude Include="_source\powers\big-named-power.h" />
+    <ClInclude Include="_source\powers\blast-power.h" />
+    <ClInclude Include="_source\powers\bounce-power.h" />
+    <ClInclude Include="_source\powers\dev-backwards-movement-power.h" />
+    <ClInclude Include="_source\powers\dev-color-changing-power.h" />
+    <ClInclude Include="_source\powers\dev-colorless-long-invincible-named-power.h" />
+    <ClInclude Include="_source\powers\dev-long-invincible-named-power.h" />
+    <ClInclude Include="_source\powers\dev-movement-restarter-power.h" />
+    <ClInclude Include="_source\powers\dev-other-stuff-is-poison-power.h" />
+    <ClInclude Include="_source\powers\dev-pusher-power.h" />
+    <ClInclude Include="_source\powers\dev-weird-extra-cannons-power.h" />
+    <ClInclude Include="_source\powers\edge-sparks-power.h" />
+    <ClInclude Include="_source\powers\fire-named-power.h" />
+    <ClInclude Include="_source\powers\god-mode-power.h" />
+    <ClInclude Include="_source\powers\grenade-power.h" />
+    <ClInclude Include="_source\powers\homing-power.h" />
+    <ClInclude Include="_source\powers\inversion-power.h" />
+    <ClInclude Include="_source\powers\invincible-named-power.h" />
+    <ClInclude Include="_source\powers\mega-death-power.h" />
+    <ClInclude Include="_source\powers\mine-layer-power.h" />
+    <ClInclude Include="_source\powers\mines-power.h" />
+    <ClInclude Include="_source\powers\multishot-power.h" />
+    <ClInclude Include="_source\powers\old-big-named-power.h" />
+    <ClInclude Include="_source\powers\old-bounce-power.h" />
+    <ClInclude Include="_source\powers\old-mines-power.h" />
+    <ClInclude Include="_source\powers\ring-shooter-power.h" />
+    <ClInclude Include="_source\powers\shield-power.h" />
+    <ClInclude Include="_source\powers\shotgun-power.h" />
+    <ClInclude Include="_source\powers\speed-power.h" />
+    <ClInclude Include="_source\powers\swarm-power.h" />
+    <ClInclude Include="_source\powers\the-super-named-power.h" />
+    <ClInclude Include="_source\powers\tracking-power.h" />
+    <ClInclude Include="_source\powers\trickster-circle-power.h" />
+    <ClInclude Include="_source\powers\trickster-snake-power.h" />
+    <ClInclude Include="_source\powers\triple-named-power.h" />
+    <ClInclude Include="_source\powers\triple-spread-named-power.h" />
+    <ClInclude Include="_source\powers\ultra-bounce-power.h" />
+    <ClInclude Include="_source\powers\wall-sparks-power.h" />
+    <ClInclude Include="_source\powers\wallhack-power.h" />
+    <ClInclude Include="_source\powerup-data-governor.h" />
+    <ClInclude Include="_source\powerup-manager.h" />
+    <ClInclude Include="_source\priority-handler.h" />
+    <ClInclude Include="_source\rect-hazard.h" />
+    <ClInclude Include="_source\rect.h" />
+    <ClInclude Include="_source\renderer.h" />
+    <ClInclude Include="_source\reset-things.h" />
+    <ClInclude Include="_source\rng.h" />
+    <ClInclude Include="_source\simple-vector-2d.h" />
+    <ClInclude Include="_source\statistics-handler.h" />
+    <ClInclude Include="_source\tank-manager.h" />
+    <ClInclude Include="_source\tank-power.h" />
+    <ClInclude Include="_source\tank.h" />
+    <ClInclude Include="_source\wall-manager.h" />
+    <ClInclude Include="_source\wall.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="freeglut.dll" />
     <None Include="glew32.dll" />
-    <None Include="res\shaders\default-fragment.shader" />
-    <None Include="res\shaders\default-vertex.shader" />
-    <None Include="res\shaders\main-fragment.shader" />
-    <None Include="res\shaders\main-vertex.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

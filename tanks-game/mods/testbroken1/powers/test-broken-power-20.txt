@@ -1,0 +1,13 @@
+Name = test-broken-power-20
+Color = 0.0   0.0   0.0
+PowerTypes = "testbroken1"   "random-testbroken1"
+PowerWeights = 1.0   1.0
+
+
+
+[BULLETPOWER_START]
+bulletSpeedMultiplier asdf
+bulletDeceleration asdf asdf
+bulletDeceleration_DegradeAmount
+
+offenseTier asdf

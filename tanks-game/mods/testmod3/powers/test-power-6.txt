@@ -1,0 +1,39 @@
+; required
+Name = test-power-6
+Color = 0.875   0.75   0.125
+PowerTypes = "testmod3"   "random-testmod3"
+PowerWeights = 1.0   1.0
+
+; optional
+PowerTankDuration = 1000
+
+
+
+; actual power, tank portion
+[TANKPOWER_START]
+
+addShootingPoints_Enable
+addShootingPoints_EquallySpaced 5
+
+modifiedCollisionWithEdge_Enable
+modifiedCollisionWithEdge_AdditionalBoundary 32
+
+tankAccelerationMultiplier .25
+tankRadiusMultiplier .75
+tankTurningIncrementMultiplier 4.0
+
+
+
+; actual power, bullet portion
+[BULLETPOWER_START]
+
+modifiedCollision_BounceCount 12
+
+modifiedCollisionWithEdge_EnableBounce
+
+modifiedCollisionWithWall_EnableBounce
+
+bulletSpeedMultiplier .75
+
+;offenseTier 1.0
+defenseTier 1.0

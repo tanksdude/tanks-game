@@ -1,38 +1,93 @@
-0.3.0 (obviously definitely not here)
-* lots and lots of new stuff
-
-0.2.5 (obviously not here)
-* hazard powers
+0.3.0 "complete" (future, likely won't get here though)
+* new game mode: infinite world!
+    * single-player only
+    * the point is just to explore
+    * have fun!
+* some unit tests?
+* finish overhauling collision
+    * maybe multithreading?
+* lots of new stuff
+* more random levels
 * powerups:
+    * sword
+    * hazard powers?
+    * megadeath update?
+    * bouncing rework
+        * something like bool applyBounceUpdate() to bulletpower?
+    * fix respawning powerups working with magnetism level effect
+        * level effects need a generic "do action on powerup/hazard/whatever"
+* minor things:
+    * switched to GLFW from FreeGLUT for ease of use
+    * fullscreen toggle removed because of that
+
+0.2.5 "done"
+* rudimentary custom powers and levels!
+    * turns out, DLLs were too complicated
+    * look at the mods folder for examples
+* ini file
+    * allows for some customization
+    * now it's possible to view certain levels/whatever that exist but aren't playable
+* diagnostics graph: red for collision, green for vertex upload, blue for drawing, white for combined
+* some documentation: very minimal, but at least there's now an easy-to-read list of everything in the game
+* graphics: batched rendering
+    * still not very efficient, but it's something
+* mild QoL improvements to displaying things
+    * tank multi-powers are more obvious
+    * old tank death graphic (black to white gradient)
+    * lightning hazards and no bullet zones are significantly easier to spot
+    * sorry colorblind people, but powerups are still distinguishable by color only; would make sense to use an image instead, but that'll happen in a sequel
+* overhaul collision: two passes for collision, more efficient
+* powerups:
+    * custom powers exist!
     * growing and degrading powerups mix better
-        * megadeath update?
-    * ... sword???
+    * option to make "extra cannons" (on triple and shotgun) behave like real cannons
+    * swarm: bullets orbit around the tank (it's cool as heck)
+    * [dev] backwards movement: by pressing the special key (currently e and /), the tank moves backwards
+    * [dev] wall sparks and edge sparks: makes extra bullets when it hits a wall or edge (these are different powerups)
+    * [dev] triple spread: the bullets spread out from the point they were shot at instead of being parallel
+    * [dev] ring shooter: shoots a ring of 8 bullets; like multishot if everything shot the same direction
+    * [dev] trickster: bullets move back and forth
 * hazards:
-    * patrolling turret
-    * teleporter?
-    * reflecktor?
+    * patrolling turret: moves along its path
+    * mother turret: creates turrets
+    * ginormous turret: tells its turrets where to shoot
+    * spiral lava: lava spirals out from center
+    * gravity well: pulls in tanks and bullets
+    * [dev] cloud: spits out powerups occasionally
+    * [dev] reflecktor: bounces tanks
 * levels:
-    * more
-    * old versions of some levels (they're barely different but may as well include them)
+    * custom levels exist!
+    * "tight patrolling corridor"
+    * "dangerous center"
+    * "untraditional divider"
+    * "terrifying chaos": a bit extreme of a name but there's terror and chaos
+    * portal level, without the portals (just so every old level is present)
+    * [dev] a bunch of unnamed levels: 3, 4, 6, 9, 10, 11, 12, 13
+        * decent ones: 4, 6, 9/10, 13
+    * renamed "corridor" level back to "evened corridors" because I realized most levels followed the "adjective_noun" pattern
+    * old versions of some levels ("evened corridors", "few obstacles", "hiding places")
+    * moved "concealed powerups", "lightning corners", and "lone turret" levels out of vanilla because they are boring
 * level effects:
-    * ?
-* ini file?
+    * magnetism (unfortunately doesn't work well with respawning powerups)
+* minor things:
+    * update to VS2022 and C++20
+    * fullscreen toggle key changed to F11
+    * *massive* cleanup across the entire project, multiple times; no seriously it was a lot
+    * fix some long-standing memory leaks, oops
+    * [dev] power, "ancient" megadeath: fires an accelerating, tracking, wallhacking bullet
 
 0.2.4
 * changed name from "Tanks" to "PowerTanks" so this game might actually become discoverable
 * switch to 64-bit because no modern computer should be 32-bit
 * made some changes to the renderer
     * will be better in a later version
-* cleanup: changed file structure somewhat and formatting a lot
-    * normal C++ class and function stuff
-    * replace x-comp, y-comp, angle variables with singular vector variable
-        * fixed edgecases for things that need to detect angles
 * drawing layers: under, normal, effects, top, debug
 * level effects added
     * all JS level effects in! (except portal)
         * wind, ice, minefield, invisible walls
         * portal and invisible walls technically weren't level effects in JS but should be counted as one
-    * powerup respawning
+    * respawning powerups
+        * likely very useful
 * powerups:
     * all JS powers in!
         * mines, shotgun, tracking
@@ -52,20 +107,20 @@
     * [dev] "unnamed1" and "unnamed2": a generic level and a level with a zig-zag of walls
 * minor things:
     * major cleanup (like massive cleanup, absolutely humongous, gigantically colossal)
+        * replace x-comp, y-comp, angle variables with singular vector variable (fixed edge cases for things that need to detect angles)
+    * [dev] level effect, symmetric tanks: forces tanks to have symmetric positions
     * minor overhaul (oxymoron?) of end game and score handling
-    * inserting stuff through the dev menu is easier
+    * inserting stuff through the dev "menu" is easier
 
 0.2.3 "features"
 * most things from JS Tanks in!!!
 * powerups:
     * banana power!
     * godmode (still needs some work)
-    * [dev power] "inversion": switches turning direction of tank
+    * [dev] "inversion": switches turning direction of tank
 * hazards:
     * all JS hazards in!
-        * other lightning hazards
-            * vertical lightning
-            * lightning rectangle and circle
+        * other lightning hazards (vertical, rectangle, circle)
         * no bullet zone (rectangular and circular)
         * targeting turret
     * hazard randomization
@@ -144,29 +199,26 @@
 * invincibility n' stuff (invincibility, big, megadeath)
 * cleaned up how powers interacted
 
-0.1.0:
+0.1.0
 * rendering on GPU!
 * lost the ability to draw tank names but that's okay
 
-0.0.7.1:
+0.0.7.1
 * cleanup for me (very little actual change)
 
-0.0.7 and before:
+0.0.7 and before
 * primarily the framework and some powers to test the framework
 
-future notes:
-0.3.0: menu? better renderer abstraction?
-0.4.0: mod support?
-0.4.A: priorities for the power modification functions?
-0.5.0: hazardpowers can special-case some additional functionality to hazards (like turrets knowing about bouncing bullets, or wallhack (this is for AI))?
-0.A.B: graphs for diagnostics
-0.X.0: big change in levels or powers or something else, like bulletpower memory management (std::shared_ptr)
-0.A.0: batching
-0.B.0: multithreading? (std::async to start)
-1.0.0: all levels, powers, and other stuff that I want
-2.0.0: level editor and/or power editor and/or game engine something thing (save for sequel instead?)
 
-other note: consider SDL instead of FreeGLUT
+
+other note: consider SDL or SFML instead of FreeGLUT
+
+sequel notes:
+draw an image for powerups instead of just a color
+arbitrary convex shapes for walls and hazards (would also allow spinning stuff) and arbitrary game world size
+proper structure, built for unit testing and multithreading
+AI and online play (intended LAN but theoretically anywhere, as long as the input buffer is configurable)
+variable physics rate
 
 GitHub: https://github.com/tanksdude/tanks-game
-JS Tanks: https://uncreativeusername.neocities.org/tanks.html
+JS Tanks (old): https://uncreativeusername.neocities.org/tanks.html

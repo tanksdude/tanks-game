@@ -1,0 +1,44 @@
+Name = test-broken-power-19
+Color = 0.0   0.0   0.0
+PowerTypes = "testbroken1"   "random-testbroken1"
+PowerWeights = 1.0   1.0
+
+PowerTankDuration = 500
+PowerAttributes = "stack" "mix"
+
+
+
+[TANKPOWER_START]
+additionalShooting_Enable
+additionalShooting_AngleRelativeToTank 30
+additionalShooting_AngleRelativeToCannon 30
+additionalShooting_BulletCount 3
+
+addShootingPoints_Enable
+addShootingPoints_EquallySpaced 3
+addShootingPoints_Raw 30 330
+
+tankFiringRateMultiplier .5
+tankFiringRateStacks
+
+defenseTier 1.0
+
+
+
+[BULLETPOWER_START]
+modifiedCollision_BounceCount 3
+
+modifiedCollisionWithEdge_EnableBounce
+
+modifiedCollisionWithWall_EnableBounce
+modifiedCollisionWithWall_DestroyWall 0
+
+modifiedDeathHandling_Enable 0
+
+bulletSpeedMultiplier .5 1.0
+bulletRadiusMultiplier 1.5 2.0
+bulletRadiusStacks 0
+bulletDeceleration .125
+bulletDeceleration_DegradeAmount 1.0
+
+defenseTier

@@ -1,0 +1,22 @@
+; required
+Name = test-level-3
+Color = 1.0   1.0   0.0
+LevelTypes = "testmod2"   "random-testmod2"
+LevelWeights = 1.0   1.0
+
+; optional
+RandomStartPositionCount = 0
+RandomStartPositionXValue = 40
+
+
+
+; actual level
+[LEVEL_START]
+
+CLASSIC_WALLS
+
+RANDOM_WALLS   320 160 336 240   16
+; numbers from bigfun level
+
+POWER_Corners   320 160 188 140   "testmod2" "test-power-3"
+; 336/2 + 20 = 188; 240/2 + 20 = 140

@@ -1,0 +1,2 @@
+Name = test-broken-power-4
+Color = 0.0   0.0   0.0

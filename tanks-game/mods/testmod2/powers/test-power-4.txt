@@ -1,0 +1,32 @@
+; required
+Name = test-power-4
+Color = 0.375   0.125   1.0
+PowerTypes = "testmod2"   "random-testmod2"
+PowerWeights = 1.0   1.0
+
+; optional
+PowerTankDuration = 1000
+
+
+
+; actual power, tank portion
+[TANKPOWER_START]
+
+addShootingPoints_Enable
+addShootingPoints_EquallySpaced 4
+
+tankMaxSpeedMultiplier 2.0
+tankAccelerationMultiplier .5
+tankRadiusMultiplier 2.0
+
+offenseTier 1.0
+
+
+
+; actual power, bullet portion
+[BULLETPOWER_START]
+
+bulletSpeedMultiplier .125 .25
+
+offenseTier 1.0
+defenseTier 1.0
