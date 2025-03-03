@@ -3,7 +3,6 @@
 #include "constants.h"
 #include <algorithm> //std::fill
 #include <iostream>
-#include <gtx/transform.hpp>
 #include <gtc/matrix_transform.hpp>
 
 #include <GL/glew.h>
@@ -251,7 +250,7 @@ void Renderer::thread_func() {
 
 glm::mat4 Renderer::GenerateModelMatrix(float scaleX, float scaleY, float rotateAngle, float transX, float transY) {
 	//glm::mat4 trans = glm::translate(proj, glm::vec3(transX, transY, 0.0f));
-	glm::mat4 trans = glm::translate(glm::vec3(transX, transY, 0.0f));
+	glm::mat4 trans = glm::translate(glm::mat4(), glm::vec3(transX, transY, 0.0f));
 	//if (rotateAngle == 0) {
 	//	return glm::scale(trans, glm::vec3(scaleX, scaleY, 0));
 	//}

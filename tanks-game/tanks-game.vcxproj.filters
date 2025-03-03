@@ -629,19 +629,10 @@
     <ClInclude Include="_source\graphics\shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="res\vendor\glm\glm.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="res\vendor\glm\gtc\matrix_transform.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="_source\diagnostics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="_source\background-rect.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="res\vendor\glm\gtx\transform.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="_source\powers\invincible-named-power.h">
