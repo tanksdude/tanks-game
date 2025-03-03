@@ -1,4 +1,4 @@
-0.3.0 "complete" (future, likely won't get here though)
+0.3.0 "complete" (wishlist, likely won't get here though)
 * new game mode: infinite world!
     * single-player only
     * the point is just to explore
@@ -16,9 +16,14 @@
         * something like bool applyBounceUpdate() to bulletpower?
     * fix respawning powerups working with magnetism level effect
         * level effects need a generic "do action on powerup/hazard/whatever"
-* minor things:
-    * switched to GLFW from FreeGLUT for ease of use
+
+0.2.6 (future)
+* cross-platform!
+* switched to GLFW from FreeGLUT
     * fullscreen toggle removed because of that
+
+0.2.5.1 (WIP)
+* updated dependencies
 
 0.2.5 "done"
 * rudimentary custom powers and levels!
@@ -161,7 +166,6 @@
 * better system for tankpowers adjusting tank values
 * a few things moved out of main.cpp (mostly event handlers)
 * big (and megadeath) bullet can destroy turrets
-* glm moved to Dependencies from res/vendor
 
 0.2.0
 * all objects stream their vertices to VRAM

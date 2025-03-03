@@ -65,7 +65,13 @@
 /* Windows static library */
 #   ifdef FREEGLUT_STATIC
 
-#error Static linking is not supported with this build. Please remove the FREEGLUT_STATIC preprocessor directive, or download the source code from http://freeglut.sf.net/ and build against that.
+#       define FGAPI
+#       define FGAPIENTRY
+
+        /* Link with Win32 static freeglut lib */
+#       if FREEGLUT_LIB_PRAGMAS
+#           pragma comment (lib, "freeglut_static.lib")
+#       endif
 
 /* Windows shared library (DLL) */
 #   else
@@ -78,7 +84,7 @@
 
             /* Link with Win32 shared freeglut lib */
 #           if FREEGLUT_LIB_PRAGMAS
-#             pragma comment (lib, "freeglut.lib")
+#               pragma comment (lib, "freeglut.lib")
 #           endif
 
 #       endif
@@ -123,6 +129,10 @@
 #   include <GLES/gl.h>
 #   include <GLES2/gl2.h>
 #elif __APPLE__
+/* stop MacOSX GL headers for complaining that OpenGL is deprecated */
+#   ifndef GL_SILENCE_DEPRECATION
+#       define GL_SILENCE_DEPRECATION
+#   endif
 #   include <OpenGL/gl.h>
 #   include <OpenGL/glu.h>
 #else
@@ -636,3 +646,4 @@ static int FGAPIENTRY FGUNUSED glutCreateMenu_ATEXIT_HACK(void (* func)(int)) { 
 /*** END OF FILE ***/
 
 #endif /* __FREEGLUT_STD_H__ */
+

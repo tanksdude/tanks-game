@@ -166,7 +166,7 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 
-const std::string GameWindowName = "PowerTanks Battle v0.2.5"; //this is not guaranteed to be correct every commit but likely will be
+const std::string GameWindowName = "PowerTanks Battle v0.2.5.1 NOT FINAL"; //this is not guaranteed to be correct every commit but likely will be
 const std::string INIFilePath = "tanks.ini";
 
 
