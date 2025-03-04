@@ -20,12 +20,17 @@ std::vector<std::pair<int, int>>* PhysicsHandler::sweepAndPrune(const std::vecto
 		objectIntervals.push_back(ObjectIntervalInfo(o, j, false));
 	}
 	std::sort(objectIntervals.begin(), objectIntervals.end(),
-		[](const ObjectIntervalInfo& lhs, const ObjectIntervalInfo& rhs) { return (lhs.xStart < rhs.xStart); }); //lambda
+		[](const ObjectIntervalInfo& lhs, const ObjectIntervalInfo& rhs) { return (lhs.xStart < rhs.xStart); });
 
 	//sweep through
-	std::vector<ObjectIntervalInfo> iteratingObjects;
+	std::vector<ObjectIntervalInfo> iteratingObjects; iteratingObjects.reserve(objectIntervals.size());
+	#if _DEBUG
+	//performance seems about the same with or without reserving
+	#else
+	collisionList->reserve(collider.size()*collidee.size());
+	#endif
 	for (int i = 0; i < objectIntervals.size(); i++) {
-		ObjectIntervalInfo currentObject = objectIntervals[i];
+		const ObjectIntervalInfo& currentObject = objectIntervals[i];
 		for (int j = 0; j < iteratingObjects.size(); j++) {
 			//remove if not in active interval
 			if (iteratingObjects[j].xEnd < currentObject.xStart) {
@@ -64,23 +69,28 @@ std::vector<std::pair<int, int>>* PhysicsHandler::sweepAndPrune(const std::vecto
 
 	//find object intervals
 	//TODO: so this step isn't supposed to be computed every time; information should be stored, then insertion sort can be used to fix the new data
-	auto start = Diagnostics::getTime();
+	//auto start = Diagnostics::getTime();
 	std::vector<ObjectIntervalInfo> objectIntervals; objectIntervals.reserve(collider.size());
 	for (int i = 0; i < collider.size(); i++) {
 		T o = collider[i];
 		objectIntervals.push_back(ObjectIntervalInfo(o, i, true));
 	}
 	std::sort(objectIntervals.begin(), objectIntervals.end(),
-		[](const ObjectIntervalInfo& lhs, const ObjectIntervalInfo& rhs) { return (lhs.xStart < rhs.xStart); }); //lambda
-	auto end = Diagnostics::getTime();
+		[](const ObjectIntervalInfo& lhs, const ObjectIntervalInfo& rhs) { return (lhs.xStart < rhs.xStart); });
+	//auto end = Diagnostics::getTime();
 	//std::cout << "intervals: " << (long double)Diagnostics::getDiff(start, end) << "ms" << std::endl;
 
 	//sweep through
 	//BIG TODO: is it possible to multithread this? because it's the biggest timesink (maybe the inner loop can be parallelized?)
-	start = Diagnostics::getTime();
-	std::vector<ObjectIntervalInfo> iteratingObjects;
+	//start = Diagnostics::getTime();
+	std::vector<ObjectIntervalInfo> iteratingObjects; iteratingObjects.reserve(objectIntervals.size());
+	#if _DEBUG
+	//performance seems about the same with or without reserving
+	#else
+	collisionList->reserve(objectIntervals.size()*objectIntervals.size());
+	#endif
 	for (int i = 0; i < objectIntervals.size(); i++) {
-		ObjectIntervalInfo currentObject = objectIntervals[i];
+		const ObjectIntervalInfo& currentObject = objectIntervals[i];
 		for (int j = 0; j < iteratingObjects.size(); j++) {
 			//prune if not in active interval
 			if (iteratingObjects[j].xEnd < currentObject.xStart) {
@@ -94,7 +104,7 @@ std::vector<std::pair<int, int>>* PhysicsHandler::sweepAndPrune(const std::vecto
 
 		iteratingObjects.push_back(currentObject);
 	}
-	end = Diagnostics::getTime();
+	//end = Diagnostics::getTime();
 	//std::cout << "sweep: " << (long double)Diagnostics::getDiff(start, end) << "ms" << std::endl << std::endl;
 
 	return collisionList;

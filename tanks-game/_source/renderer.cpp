@@ -42,8 +42,8 @@ bool Renderer::initialized_GPU = false;
 std::unordered_map<std::string, std::vector<std::pair<std::vector<float>, std::vector<unsigned int>>>> Renderer::sceneData;
 std::vector<std::string> Renderer::sceneList;
 std::string Renderer::currentSceneName = "";
-int Renderer::maxVerticesDataLength = (2 << 22) / sizeof(float);
-int Renderer::maxIndicesDataLength = (2 << 22) / sizeof(unsigned int); //TODO: size (fills up faster)
+const int Renderer::maxVerticesDataLength = (1 << 24) / sizeof(float);
+const int Renderer::maxIndicesDataLength = (1 << 24) / sizeof(unsigned int); //TODO: size (fills up faster)
 
 // Handles window resizing (FreeGLUT event function)
 void Renderer::windowResizeFunc(int w, int h) {
