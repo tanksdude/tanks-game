@@ -9,7 +9,7 @@
 #include "color-mixer.h"
 #include "background-rect.h"
 
-#include "game-manager.h" //INI file
+#include "game-manager.h" //settings file
 
 SimpleVector2D Bullet::body_vertices[Circle::numOfSides+1];
 unsigned int Bullet::body_indices[Circle::numOfSides*3];
@@ -432,9 +432,9 @@ ColorValueHolder Bullet::getColor() const {
 }
 
 void Bullet::draw() const {
-	const BasicINIParser::BasicINIData& ini_data = GameManager::get_INI();
+	const GameSettings& game_settings = GameManager::get_settings();
 
-	if (ini_data.exists("GRAPHICS_SETTINGS", "Bullet.PerformanceMode") && std::stoi(ini_data.get("GRAPHICS_SETTINGS", "Bullet.PerformanceMode"))) {
+	if (game_settings.Bullet_PerformanceMode) {
 		drawDeathBar();
 		drawBody();
 	} else {
@@ -505,9 +505,9 @@ void Bullet::poseDraw(DrawingLayers layer) const {
 }
 
 void Bullet::ghostDraw(float alpha) const {
-	const BasicINIParser::BasicINIData& ini_data = GameManager::get_INI();
+	const GameSettings& game_settings = GameManager::get_settings();
 
-	if (ini_data.exists("GRAPHICS_SETTINGS", "Bullet.PerformanceMode") && std::stoi(ini_data.get("GRAPHICS_SETTINGS", "Bullet.PerformanceMode"))) {
+	if (game_settings.Bullet_PerformanceMode) {
 		drawDeathBar(alpha);
 		drawBody(alpha);
 	} else {

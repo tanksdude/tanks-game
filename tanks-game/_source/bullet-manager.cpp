@@ -1,26 +1,24 @@
 #include "bullet-manager.h"
 
-#include "game-manager.h" //INI file
+#include "game-manager.h" //settings
 
-std::vector<Bullet*> BulletManager::bullets;
+std::vector<Bullet*> BulletManager::bullets; //TODO: see if std::map could work
 int BulletManager::maxBullets = 2048;
 bool BulletManager::limitBullets = true;
-bool BulletManager::autoLimitBullets = false;
+bool BulletManager::autoLimitBullets = false; //TODO: is this necessary?
 
 void BulletManager::initialize() {
-	const BasicINIParser::BasicINIData& ini_data = GameManager::get_INI();
+	const GameSettings& game_settings = GameManager::get_settings();
 
-	if (ini_data.exists("GAME_OPTIONS", "MaxBullets")) {
-		maxBullets = std::stoi(ini_data.get("GAME_OPTIONS", "MaxBullets"));
+	if (game_settings.MaxBullets >= 0) {
+		maxBullets = game_settings.MaxBullets;
 		bullets.reserve(maxBullets*2);
 	} else {
 		bullets.reserve(4096);
 		//512 is the max I expect to be fired at once (3 multishots); 2048 might get reached, so 4096 should be way more than enough
 	}
 
-	if (ini_data.exists("GAME_OPTIONS", "LimitBullets")) {
-		limitBullets = std::stoi(ini_data.get("GAME_OPTIONS", "LimitBullets"));
-	}
+	limitBullets = game_settings.LimitBullets;
 }
 
 Bullet* BulletManager::getBullet(unsigned int index) {

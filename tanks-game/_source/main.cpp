@@ -15,6 +15,7 @@
 //other:
 #include "diagnostics.h"
 #include "basic-ini-parser.h"
+#include "game-settings.h"
 #include "mod-processor.h"
 #include "statistics-handler.h"
 
@@ -173,6 +174,7 @@ const std::string INIFilePath = "tanks.ini";
 
 int main(int argc, char** argv) {
 	GameManager::initializeINI(INIFilePath);
+	GameManager::initializeSettings();
 	const BasicINIParser::BasicINIData& ini_data = GameManager::get_INI();
 
 	if (ini_data.exists("UNIVERSAL", "RNGSeed")) {

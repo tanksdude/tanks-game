@@ -10,7 +10,7 @@
 #include "color-mixer.h"
 #include "background-rect.h"
 
-#include "game-manager.h" //INI file
+#include "game-manager.h" //settings
 #include "bullet-manager.h"
 #include "level-manager.h"
 
@@ -121,9 +121,9 @@ bool Tank::move(bool forward, bool turnL, bool turnR, bool specialKey) {
 }
 
 inline void Tank::move_base(bool forward, bool turnL, bool turnR) {
-	const BasicINIParser::BasicINIData& ini_data = GameManager::get_INI();
+	const GameSettings& game_settings = GameManager::get_settings();
 
-	if (ini_data.exists("GAME_OPTIONS", "RestrictTankTurning") && std::stoi(ini_data.get("GAME_OPTIONS", "RestrictTankTurning"))) {
+	if (game_settings.RestrictTankTurning) {
 		if (!forward) {
 			if (turnL) {
 				velocity.changeAngle(PI/turningIncrement);
@@ -141,7 +141,7 @@ inline void Tank::move_base(bool forward, bool turnL, bool turnR) {
 		}
 	}
 
-	if (ini_data.exists("GAME_OPTIONS", "NoTankAcceleration") && std::stoi(ini_data.get("GAME_OPTIONS", "NoTankAcceleration"))) {
+	if (game_settings.NoTankAcceleration) {
 		if (forward) {
 			velocity.setMagnitude(maxSpeed);
 		} else {
@@ -176,7 +176,7 @@ void Tank::shoot(bool shooting) {
 	shootCount--; //don't bother checking shootCount>0
 
 	if (shooting && shootCount <= 0) {
-		const BasicINIParser::BasicINIData& ini_data = GameManager::get_INI();
+		const GameSettings& game_settings = GameManager::get_settings();
 
 		bool overridedShooting = false;
 
@@ -186,20 +186,18 @@ void Tank::shoot(bool shooting) {
 					overridedShooting = true;
 				}
 
-				if (ini_data.exists("GAME_OPTIONS", "FewerExtraShootingBullets") && !std::stoi(ini_data.get("GAME_OPTIONS", "FewerExtraShootingBullets"))) {
-					//more
-					for (int i = shootingPoints.size() - 1; i >= 0; i--) {
-						for (int s2 = extraShootingPoints.size() - 1; s2 >= 0; s2--) {
-							tankPowers[j]->additionalShooting(this, shootingPoints.at(i), extraShootingPoints.at(s2));
-						}
-					}
-				} else {
-					//fewer
+				if (game_settings.FewerExtraShootingBullets) {
 					for (int i = shootingPoints.size() - 1; i >= 0; i--) {
 						for (int s2 = extraShootingPoints.size() - 1; s2 >= 1; s2--) {
 							defaultMakeBullet(velocity.getAngle() + shootingPoints[i].angleFromCenter + extraShootingPoints[s2].angleFromCenter, extraShootingPoints[s2].angleFromEdge);
 						}
 						tankPowers[j]->additionalShooting(this, shootingPoints.at(i), extraShootingPoints.at(0));
+					}
+				} else {
+					for (int i = shootingPoints.size() - 1; i >= 0; i--) {
+						for (int s2 = extraShootingPoints.size() - 1; s2 >= 0; s2--) {
+							tankPowers[j]->additionalShooting(this, shootingPoints.at(i), extraShootingPoints.at(s2));
+						}
 					}
 				}
 

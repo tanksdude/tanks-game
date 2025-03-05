@@ -98,6 +98,7 @@
     <ClCompile Include="_source\game-manager.cpp" />
     <ClCompile Include="_source\game-scene-manager.cpp" />
     <ClCompile Include="_source\game-scene.cpp" />
+    <ClCompile Include="_source\game-settings.cpp" />
     <ClCompile Include="_source\game-thing.cpp" />
     <ClCompile Include="_source\generalized-lava.cpp" />
     <ClCompile Include="_source\generalized-lightning.cpp" />
@@ -276,6 +277,7 @@
     <ClInclude Include="_source\game-manager.h" />
     <ClInclude Include="_source\game-scene-manager.h" />
     <ClInclude Include="_source\game-scene.h" />
+    <ClInclude Include="_source\game-settings.h" />
     <ClInclude Include="_source\game-thing.h" />
     <ClInclude Include="_source\generalized-lava.h" />
     <ClInclude Include="_source\generalized-lightning.h" />

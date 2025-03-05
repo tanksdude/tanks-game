@@ -6,9 +6,10 @@
 Game_ID GameManager::nextID = -1;
 double GameManager::tickCount = 0;
 BasicINIParser::BasicINIData GameManager::INI_file;
+GameSettings GameManager::settings_file;
 
 void GameManager::Initialize() {
-	//does not initialize the INI
+	//does not initialize the INI or the settings
 }
 
 void GameManager::initializeINI(std::string path) {
@@ -24,8 +25,15 @@ void GameManager::initializeINI(std::string path) {
 	}
 }
 
+void GameManager::initializeSettings() {
+	settings_file.Initialize(INI_file);
+}
+
 const BasicINIParser::BasicINIData& GameManager::get_INI() {
 	return INI_file;
+}
+const GameSettings& GameManager::get_settings() {
+	return settings_file;
 }
 
 void GameManager::Tick() {

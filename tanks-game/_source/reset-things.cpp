@@ -43,22 +43,16 @@ void ResetThings::reset(int) {
 	TankManager::clearTanks();
 
 	//TODO: maybe GameMainLoop should hold the shooting cooldown? (but the tank still needs to get initialized with it...)
-	const BasicINIParser::BasicINIData& ini_data = GameManager::get_INI();
-	double shootCooldown = SHOOT_COOLDOWN;
-	if (ini_data.exists("GAME_OPTIONS", "ShootingCooldown")) {
-		shootCooldown = std::stod(ini_data.get("GAME_OPTIONS", "ShootingCooldown"));
-	}
+	const GameSettings& game_settings = GameManager::get_settings();
+	double shootCooldown = game_settings.ShootingCooldown;
 
 	TankManager::pushTank(new Tank(default_tankToEdgeDist, GAME_HEIGHT/2, 0, 1, "WASD", shootCooldown));
 	TankManager::pushTank(new Tank(GAME_WIDTH-default_tankToEdgeDist, GAME_HEIGHT/2, PI, 2, "Arrow Keys", shootCooldown));
 
-	if (ini_data.exists("GAME_OPTIONS", "GameForceSameLevel")) {
-		LevelManager::pushLevel(ini_data.get("GAME_OPTIONS", "GameForceSameLevel", 0), ini_data.get("GAME_OPTIONS", "GameForceSameLevel", 1));
+	if (game_settings.GameForceSameLevel) {
+		LevelManager::pushLevel(game_settings.GameForceSameLevel_identifier.first, game_settings.GameForceSameLevel_identifier.second);
 	} else [[likely]] {
-		std::string levelPlaylist = "random-vanilla";
-		if (ini_data.exists("GAME_OPTIONS", "GameLevelPlaylist")) {
-			levelPlaylist = ini_data.get("GAME_OPTIONS", "GameLevelPlaylist");
-		}
+		const std::string levelPlaylist = game_settings.GameLevelPlaylist;
 		LevelManager::pushLevel(levelPlaylist, LevelManager::levelWeightedSelect(levelPlaylist));
 	}
 
@@ -74,7 +68,7 @@ void ResetThings::reset(int) {
 		}
 	}
 
-	if (ini_data.exists("GAME_OPTIONS", "ReportCurrentLevel") && std::stoi(ini_data.get("GAME_OPTIONS", "ReportCurrentLevel"))) {
+	if (game_settings.ReportCurrentLevel) {
 		std::cout << "> Now playing level \"" + LevelManager::getLevel(0)->getName() + "\"..." << std::endl;
 		//this doesn't print for the first reset; main reason is laziness, secondary reason is the first level should be known
 	}
@@ -97,6 +91,7 @@ void ResetThings::firstReset() {
 
 void ResetThings::firstGameInitialize(std::string tank1TeamName, std::string tank2TeamName, GameMainLoop& gameInstance) {
 	const BasicINIParser::BasicINIData& ini_data = GameManager::get_INI();
+	const GameSettings& game_settings = GameManager::get_settings();
 
 	std::string tank1Name = "WASD";
 	std::string tank2Name = "Arrow Keys";
@@ -157,10 +152,7 @@ void ResetThings::firstGameInitialize(std::string tank1TeamName, std::string tan
 	gameInstance.tank2Inputs[3] = TankInputChar(tank2Shoot);
 	gameInstance.tank2Inputs[4] = TankInputChar(tank2Special);
 
-	double shootCooldown = SHOOT_COOLDOWN;
-	if (ini_data.exists("GAME_OPTIONS", "ShootingCooldown")) {
-		shootCooldown = std::stod(ini_data.get("GAME_OPTIONS", "ShootingCooldown"));
-	}
+	double shootCooldown = game_settings.ShootingCooldown;
 
 	TankManager::pushTank(new Tank(20, GAME_HEIGHT/2, 0, 1, tank1Name, shootCooldown));
 	TankManager::pushTank(new Tank(GAME_WIDTH-20, GAME_HEIGHT/2, PI, 2, tank2Name, shootCooldown));
