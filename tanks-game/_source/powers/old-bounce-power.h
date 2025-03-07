@@ -16,7 +16,6 @@ public:
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	OldBouncePower();
 	static Power* factory();
@@ -26,9 +25,7 @@ public:
 
 class OldBounceTankPower : public BounceTankPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return OldBouncePower::getClassColor();
-	}
+	virtual ColorValueHolder getColor() const override { return OldBouncePower::getClassColor(); }
 
 	virtual TankPower* makeDuplicate() const override { return new OldBounceTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -44,9 +41,7 @@ public:
 
 class OldBounceBulletPower : public BounceBulletPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return OldBouncePower::getClassColor();
-	}
+	virtual ColorValueHolder getColor() const override { return OldBouncePower::getClassColor(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new OldBounceBulletPower(); } //not sure if bounces were passed on in JS
 	virtual TankPower* makeTankPower() const override;

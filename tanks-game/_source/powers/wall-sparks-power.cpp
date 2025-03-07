@@ -25,12 +25,6 @@ BulletPower* WallSparksPower::makeBulletPower() const {
 	return new WallSparksBulletPower();
 }
 
-/*
-HazardPower* WallSparksPower::makeHazardPower() const {
-	return new WallSparksHazardPower();
-}
-*/
-
 Power* WallSparksPower::factory() {
 	return new WallSparksPower();
 }

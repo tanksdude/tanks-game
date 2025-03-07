@@ -19,12 +19,6 @@ BulletPower* WallhackPower::makeBulletPower() const {
 	return new WallhackBulletPower();
 }
 
-/*
-HazardPower* WallhackPower::makeHazardPower() const {
-	return new WallhackHazardPower();
-}
-*/
-
 Power* WallhackPower::factory() {
 	return new WallhackPower();
 }

@@ -15,12 +15,6 @@ BulletPower* DevBackwardsMovementPower::makeBulletPower() const {
 	return new DevBackwardsMovementBulletPower();
 }
 
-/*
-HazardPower* DevBackwardsMovementPower::makeHazardPower() const {
-	return new DevBackwardsMovementHazardPower();
-}
-*/
-
 Power* DevBackwardsMovementPower::factory() {
 	return new DevBackwardsMovementPower();
 }

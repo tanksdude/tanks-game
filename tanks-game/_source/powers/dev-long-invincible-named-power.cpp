@@ -14,12 +14,6 @@ BulletPower* DevLongInvincibleNamedPower::makeBulletPower() const {
 	return new DevLongInvincibleNamedBulletPower();
 }
 
-/*
-HazardPower* DevLongInvincibleNamedPower::makeHazardPower() const {
-	return new DevLongInvincibleNamedHazardPower();
-}
-*/
-
 Power* DevLongInvincibleNamedPower::factory() {
 	return new DevLongInvincibleNamedPower();
 }

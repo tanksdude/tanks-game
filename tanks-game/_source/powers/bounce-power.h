@@ -31,7 +31,6 @@ public:
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	BouncePower();
 	//TODO: virtual destructor for OldBouncePower and UltraBouncePower?
@@ -42,9 +41,7 @@ public:
 
 class BounceTankPower : public TankPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return BouncePower::getClassColor();
-	}
+	virtual ColorValueHolder getColor() const override { return BouncePower::getClassColor(); }
 
 	virtual TankPower* makeDuplicate() const override { return new BounceTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -63,9 +60,7 @@ protected:
 	int bouncesLeft;
 
 public:
-	virtual ColorValueHolder getColor() const override {
-		return BouncePower::getClassColor();
-	}
+	virtual ColorValueHolder getColor() const override { return BouncePower::getClassColor(); }
 
 	virtual BulletPower* makeDuplicate() const override;
 	virtual TankPower* makeTankPower() const override;

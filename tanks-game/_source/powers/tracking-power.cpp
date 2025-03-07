@@ -16,12 +16,6 @@ BulletPower* TrackingPower::makeBulletPower() const {
 	return new TrackingBulletPower();
 }
 
-/*
-HazardPower* TrackingPower::makeHazardPower() const {
-	return new TrackingHazardPower();
-}
-*/
-
 Power* TrackingPower::factory() {
 	return new TrackingPower();
 }

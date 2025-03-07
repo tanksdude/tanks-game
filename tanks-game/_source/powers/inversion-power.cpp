@@ -15,12 +15,6 @@ BulletPower* InversionPower::makeBulletPower() const {
 	return new InversionBulletPower();
 }
 
-/*
-HazardPower* InversionPower::makeHazardPower() const {
-	return new InversionHazardPower();
-}
-*/
-
 Power* InversionPower::factory() {
 	return new InversionPower();
 }

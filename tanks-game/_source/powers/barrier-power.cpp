@@ -18,12 +18,6 @@ BulletPower* BarrierPower::makeBulletPower() const {
 	return new BarrierBulletPower();
 }
 
-/*
-HazardPower* BarrierPower::makeHazardPower() const {
-	return new BarrierHazardPower();
-}
-*/
-
 Power* BarrierPower::factory() {
 	return new BarrierPower();
 }

@@ -15,12 +15,6 @@ BulletPower* DevMovementRestarterPower::makeBulletPower() const {
 	return new DevMovementRestarterBulletPower();
 }
 
-/*
-HazardPower* DevMovementRestarterPower::makeHazardPower() const {
-	return new DevMovementRestarterHazardPower();
-}
-*/
-
 Power* DevMovementRestarterPower::factory() {
 	return new DevMovementRestarterPower();
 }

@@ -15,12 +15,6 @@ BulletPower* DevOtherStuffIsPoisonPower::makeBulletPower() const {
 	return new DevOtherStuffIsPoisonBulletPower();
 }
 
-/*
-HazardPower* DevOtherStuffIsPoisonPower::makeHazardPower() const {
-	return new DevOtherStuffIsPoisonHazardPower();
-}
-*/
-
 Power* DevOtherStuffIsPoisonPower::factory() {
 	return new DevOtherStuffIsPoisonPower();
 }

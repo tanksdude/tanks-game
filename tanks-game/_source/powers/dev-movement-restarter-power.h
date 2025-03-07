@@ -16,7 +16,6 @@ public:
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	DevMovementRestarterPower();
 	static Power* factory();
@@ -26,9 +25,7 @@ public:
 
 class DevMovementRestarterTankPower : public TankPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return DevMovementRestarterPower::getClassColor();
-	}
+	virtual ColorValueHolder getColor() const override { return DevMovementRestarterPower::getClassColor(); }
 
 	virtual TankPower* makeDuplicate() const override { return new DevMovementRestarterTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -43,9 +40,7 @@ protected:
 	bool hasRestartedMovement; //only restarts movement once
 
 public:
-	virtual ColorValueHolder getColor() const override {
-		return DevMovementRestarterPower::getClassColor();
-	}
+	virtual ColorValueHolder getColor() const override { return DevMovementRestarterPower::getClassColor(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new DevMovementRestarterBulletPower(); } //don't pass on hasRestartedMovement
 	virtual TankPower* makeTankPower() const override;

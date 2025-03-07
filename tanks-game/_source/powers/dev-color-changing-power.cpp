@@ -23,12 +23,6 @@ BulletPower* DevColorChangingPower::makeBulletPower() const {
 	return new DevColorChangingBulletPower();
 }
 
-/*
-HazardPower* DevColorChangingPower::makeHazardPower() const {
-	return new DevColorChangingHazardPower();
-}
-*/
-
 Power* DevColorChangingPower::factory() {
 	return new DevColorChangingPower();
 }
@@ -40,10 +34,10 @@ DevColorChangingPower::DevColorChangingPower() {
 
 
 void DevColorChangingTankPower::tick(Tank* parent) {
-	Tank* closest = nullptr;
+	const Tank* closest = nullptr;
 	double dist = 2*GAME_WIDTH + 2*GAME_HEIGHT;
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
-		Tank* t = TankManager::getTank(i);
+		const Tank* t = TankManager::getTank(i);
 		if (t->getTeamID() == parent->getTeamID()) {
 			continue;
 		}
@@ -83,10 +77,10 @@ DevColorChangingTankPower::DevColorChangingTankPower() {
 
 
 void DevColorChangingBulletPower::tick(Bullet* parent) {
-	Tank* closest = nullptr;
+	const Tank* closest = nullptr;
 	double dist = 2*GAME_WIDTH + 2*GAME_HEIGHT;
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
-		Tank* t = TankManager::getTank(i);
+		const Tank* t = TankManager::getTank(i);
 		if (t->getTeamID() == parent->getTeamID()) {
 			continue;
 		}

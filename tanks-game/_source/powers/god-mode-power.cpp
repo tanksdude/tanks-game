@@ -28,12 +28,6 @@ BulletPower* GodmodePower::makeBulletPower() const {
 	return new GodmodeBulletPower();
 }
 
-/*
-HazardPower* GodmodePower::makeHazardPower() const {
-	return new GodmodeHazardPower();
-}
-*/
-
 Power* GodmodePower::factory() {
 	return new GodmodePower();
 }

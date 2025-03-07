@@ -15,12 +15,6 @@ BulletPower* AnnoyingPower::makeBulletPower() const {
 	return new AnnoyingBulletPower();
 }
 
-/*
-HazardPower* AnnoyingPower::makeHazardPower() const {
-	return new AnnoyingHazardPower();
-}
-*/
-
 Power* AnnoyingPower::factory() {
 	return new AnnoyingPower();
 }

@@ -22,12 +22,6 @@ BulletPower* SwarmPower::makeBulletPower() const {
 	return new SwarmBulletPower();
 }
 
-/*
-HazardPower* SwarmPower::makeHazardPower() const {
-	return new SwarmHazardPower();
-}
-*/
-
 Power* SwarmPower::factory() {
 	return new SwarmPower();
 }

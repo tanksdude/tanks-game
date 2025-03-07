@@ -15,12 +15,6 @@ BulletPower* DevWeirdExtraCannonsPower::makeBulletPower() const {
 	return new DevWeirdExtraCannonsBulletPower();
 }
 
-/*
-HazardPower* DevWeirdExtraCannonsPower::makeHazardPower() const {
-	return new DevWeirdExtraCannonsHazardPower();
-}
-*/
-
 Power* DevWeirdExtraCannonsPower::factory() {
 	return new DevWeirdExtraCannonsPower();
 }

@@ -27,12 +27,6 @@ BulletPower* BlastPower::makeBulletPower() const {
 	return new BlastBulletPower();
 }
 
-/*
-HazardPower* BlastPower::makeHazardPower() const {
-	return new BlastHazardPower();
-}
-*/
-
 Power* BlastPower::factory() {
 	return new BlastPower();
 }

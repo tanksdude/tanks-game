@@ -24,12 +24,6 @@ BulletPower* TheSuperNamedPower::makeBulletPower() const {
 	return new TheSuperNamedBulletPower();
 }
 
-/*
-HazardPower* TheSuperNamedPower::makeHazardPower() const {
-	return new TheSuperNamedHazardPower();
-}
-*/
-
 Power* TheSuperNamedPower::factory() {
 	return new TheSuperNamedPower();
 }

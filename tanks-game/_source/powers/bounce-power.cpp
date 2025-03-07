@@ -21,12 +21,6 @@ BulletPower* BouncePower::makeBulletPower() const {
 	return new BounceBulletPower();
 }
 
-/*
-HazardPower* BouncePower::makeHazardPower() const {
-	return new BounceHazardPower();
-}
-*/
-
 Power* BouncePower::factory() {
 	return new BouncePower();
 }

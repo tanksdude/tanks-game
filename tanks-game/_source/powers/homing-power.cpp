@@ -24,12 +24,6 @@ BulletPower* HomingPower::makeBulletPower() const {
 	return new HomingBulletPower();
 }
 
-/*
-HazardPower* HomingPower::makeHazardPower() const {
-	return new HomingHazardPower();
-}
-*/
-
 Power* HomingPower::factory() {
 	return new HomingPower();
 }

@@ -20,7 +20,6 @@ public:
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	DevPusherPower();
 	static Power* factory();
@@ -30,9 +29,7 @@ public:
 
 class DevPusherTankPower : public TankPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return DevPusherPower::getClassColor();
-	}
+	virtual ColorValueHolder getColor() const override { return DevPusherPower::getClassColor(); }
 
 	virtual TankPower* makeDuplicate() const override { return new DevPusherTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -53,9 +50,7 @@ public:
 
 class DevPusherBulletPower : public BulletPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return DevPusherPower::getClassColor();
-	}
+	virtual ColorValueHolder getColor() const override { return DevPusherPower::getClassColor(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new DevPusherBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

@@ -22,7 +22,6 @@ public:
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	BananaPower();
 	static Power* factory();
@@ -32,9 +31,7 @@ public:
 
 class BananaTankPower : public TankPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return BananaPower::getClassColor();
-	}
+	virtual ColorValueHolder getColor() const override { return BananaPower::getClassColor(); }
 
 	virtual TankPower* makeDuplicate() const override { return new BananaTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -51,9 +48,7 @@ protected:
 	virtual void bananaExplode(const Bullet*);
 
 public:
-	virtual ColorValueHolder getColor() const override {
-		return BananaPower::getClassColor();
-	}
+	virtual ColorValueHolder getColor() const override { return BananaPower::getClassColor(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new BananaBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

@@ -29,7 +29,6 @@ public:
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	MinesPower();
 	//TODO: virtual destructor for OldMinesPower?
@@ -43,12 +42,8 @@ public:
 	virtual void tick(Tank* t) override; //for updating modifiesAdditionalShooting based on whether there are any other powers that modify additionalShooting
 	//might need a secondary tick for this; one tick to do stuff, another tick to update interaction bools
 
-	virtual ColorValueHolder getColor() const override {
-		return MinesPower::getClassColor();
-	}
-	virtual float getColorImportance() const override {
-		return MinesPower::getClassColorImportance();
-	}
+	virtual ColorValueHolder getColor() const override { return MinesPower::getClassColor(); }
+	virtual float getColorImportance() const override { return MinesPower::getClassColorImportance(); }
 
 	virtual TankPower* makeDuplicate() const override { return new MinesTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -66,12 +61,8 @@ public:
 
 class MinesBulletPower : public BulletPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return MinesPower::getClassColor();
-	}
-	virtual float getColorImportance() const override {
-		return MinesPower::getClassColorImportance();
-	}
+	virtual ColorValueHolder getColor() const override { return MinesPower::getClassColor(); }
+	virtual float getColorImportance() const override { return MinesPower::getClassColorImportance(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new MinesBulletPower(); }
 	virtual TankPower* makeTankPower() const override;
