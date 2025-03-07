@@ -19,12 +19,13 @@ public:
 
 	virtual std::string getName() const override { return ShotgunPower::getClassName(); }
 	static std::string getClassName() { return "shotgun"; }
+	virtual std::string getIdentifier() const override { return ShotgunPower::getClassIdentifier(); }
+	static std::string getClassIdentifier() { return ShotgunPower::getClassName(); }
 	virtual ColorValueHolder getColor() const override { return ShotgunPower::getClassColor(); }
 	static ColorValueHolder getClassColor() { return ColorValueHolder(0.0f, 1.0f, 0.25f); } //green //JS: #00FF44
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	ShotgunPower();
 	static Power* factory();
@@ -34,9 +35,8 @@ public:
 
 class ShotgunTankPower : public TankPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return ShotgunPower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return ShotgunPower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return ShotgunPower::getClassColor(); }
 
 	virtual TankPower* makeDuplicate() const override { return new ShotgunTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -53,9 +53,8 @@ public:
 
 class ShotgunBulletPower : public BulletPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return ShotgunPower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return ShotgunPower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return ShotgunPower::getClassColor(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new ShotgunBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

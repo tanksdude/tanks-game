@@ -11,12 +11,13 @@ public:
 
 	virtual std::string getName() const override { return TripleSpreadNamedPower::getClassName(); }
 	static std::string getClassName() { return "triple_spread"; }
+	virtual std::string getIdentifier() const override { return TripleSpreadNamedPower::getClassIdentifier(); }
+	static std::string getClassIdentifier() { return TripleSpreadNamedPower::getClassName(); }
 	virtual ColorValueHolder getColor() const override { return TripleSpreadNamedPower::getClassColor(); }
 	static ColorValueHolder getClassColor() { return ColorValueHolder(0.85f, 0.85f, 0.60f); } //beige but a bit brighter
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	TripleSpreadNamedPower();
 	static Power* factory();
@@ -26,9 +27,8 @@ public:
 
 class TripleSpreadNamedTankPower : public TripleNamedTankPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return TripleSpreadNamedPower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return TripleSpreadNamedPower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return TripleSpreadNamedPower::getClassColor(); }
 
 	virtual TankPower* makeDuplicate() const override { return new TripleSpreadNamedTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -43,9 +43,8 @@ public:
 
 class TripleSpreadNamedBulletPower : public TripleNamedBulletPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return TripleSpreadNamedPower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return TripleSpreadNamedPower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return TripleSpreadNamedPower::getClassColor(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new TripleSpreadNamedBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

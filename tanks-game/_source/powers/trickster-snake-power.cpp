@@ -18,12 +18,6 @@ BulletPower* TricksterSnakePower::makeBulletPower() const {
 	return new TricksterSnakeBulletPower();
 }
 
-/*
-HazardPower* TricksterSnakePower::makeHazardPower() const {
-	return new TricksterSnakeHazardPower();
-}
-*/
-
 Power* TricksterSnakePower::factory() {
 	return new TricksterSnakePower();
 }

@@ -18,12 +18,6 @@ BulletPower* InvincibleNamedPower::makeBulletPower() const {
 	return new InvincibleNamedBulletPower();
 }
 
-/*
-HazardPower* InvincibleNamedPower::makeHazardPower() const {
-	return new InvincibleNamedHazardPower();
-}
-*/
-
 Power* InvincibleNamedPower::factory() {
 	return new InvincibleNamedPower();
 }

@@ -30,12 +30,6 @@ BulletPower* FireNamedPower::makeBulletPower() const {
 	return new FireNamedBulletPower();
 }
 
-/*
-HazardPower* FireNamedPower::makeHazardPower() const {
-	return new FireNamedHazardPower();
-}
-*/
-
 Power* FireNamedPower::factory() {
 	return new FireNamedPower();
 }

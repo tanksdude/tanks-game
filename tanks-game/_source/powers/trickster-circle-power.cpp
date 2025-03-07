@@ -18,12 +18,6 @@ BulletPower* TricksterCirclePower::makeBulletPower() const {
 	return new TricksterCircleBulletPower();
 }
 
-/*
-HazardPower* TricksterCirclePower::makeHazardPower() const {
-	return new TricksterCircleHazardPower();
-}
-*/
-
 Power* TricksterCirclePower::factory() {
 	return new TricksterCirclePower();
 }

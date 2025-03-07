@@ -15,12 +15,13 @@ public:
 
 	virtual std::string getName() const override { return DevBackwardsMovementPower::getClassName(); }
 	static std::string getClassName() { return "backwards_movement"; }
+	virtual std::string getIdentifier() const override { return DevBackwardsMovementPower::getClassIdentifier(); }
+	static std::string getClassIdentifier() { return DevBackwardsMovementPower::getClassName(); }
 	virtual ColorValueHolder getColor() const override { return DevBackwardsMovementPower::getClassColor(); }
 	static ColorValueHolder getClassColor() { return ColorValueHolder(0x52/255.0, 0xAA/255.0, 0xDD/255.0); } //light blue-ish
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	DevBackwardsMovementPower();
 	static Power* factory();
@@ -30,9 +31,8 @@ public:
 
 class DevBackwardsMovementTankPower : public TankPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return DevBackwardsMovementPower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return DevBackwardsMovementPower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return DevBackwardsMovementPower::getClassColor(); }
 
 	virtual TankPower* makeDuplicate() const override { return new DevBackwardsMovementTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -47,9 +47,8 @@ public:
 
 class DevBackwardsMovementBulletPower : public BulletPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return DevBackwardsMovementPower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return DevBackwardsMovementPower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return DevBackwardsMovementPower::getClassColor(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new DevBackwardsMovementBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

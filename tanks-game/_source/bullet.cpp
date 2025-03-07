@@ -6,6 +6,7 @@
 #include <iostream>
 
 #include "renderer.h"
+#include "color-cache.h"
 #include "color-mixer.h"
 #include "background-rect.h"
 
@@ -408,7 +409,7 @@ void Bullet::removePower(int i) {
 	bulletPowers.erase(bulletPowers.begin() + i);
 }
 
-ColorValueHolder Bullet::getColor() const {
+const ColorValueHolder& Bullet::getColor() const {
 	if (bulletPowers.size() == 0) {
 		return defaultColor;
 	} else {
@@ -421,13 +422,29 @@ ColorValueHolder Bullet::getColor() const {
 		if (highest < 0) {
 			return defaultColor;
 		}
-		std::vector<ColorValueHolder> mixingColors;
+
+		std::string colorIdentifier;
 		for (int i = 0; i < bulletPowers.size(); i++) {
 			if (bulletPowers[i]->getColorImportance() == highest) {
-				mixingColors.push_back(bulletPowers[i]->getColor());
+				if (colorIdentifier.empty()) {
+					colorIdentifier = bulletPowers[i]->getIdentifier();
+				} else {
+					colorIdentifier += "|" + bulletPowers[i]->getIdentifier();
+				}
 			}
 		}
-		return ColorMixer::mix(mixingColors.data(), mixingColors.size());
+
+		if (ColorCacheBullet::colorExists(colorIdentifier)) [[likely]] {
+			return ColorCacheBullet::getColor(colorIdentifier);
+		} else {
+			std::vector<ColorValueHolder> mixingColors; mixingColors.reserve(bulletPowers.size());
+			for (int i = 0; i < bulletPowers.size(); i++) {
+				if (bulletPowers[i]->getColorImportance() == highest) {
+					mixingColors.push_back(bulletPowers[i]->getColor());
+				}
+			}
+			return ColorCacheBullet::insertColor(colorIdentifier, mixingColors.data(), mixingColors.size());
+		}
 	}
 }
 

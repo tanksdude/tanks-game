@@ -522,7 +522,7 @@ void Renderer::SubmitBatchedDraw(const float* posAndColor, int posAndColorLength
 	//idea for multithreading vertex upload: add an int threadID parameter, turn the single list of vertices into a list of lists
 	//would require modifying draw(), so hold off for now
 
-	if (currentSceneName == "") {
+	if (currentSceneName == "") [[unlikely]] {
 		//only happens for Diagnostics
 		std::vector<float> verticesData = std::vector<float>(posAndColor, posAndColor + posAndColorLength);
 		std::vector<unsigned int> indicesData = std::vector<unsigned int>(indices, indices + indicesLength);

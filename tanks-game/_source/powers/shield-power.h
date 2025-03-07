@@ -18,13 +18,14 @@ public:
 
 	virtual std::string getName() const override { return ShieldPower::getClassName(); }
 	static std::string getClassName() { return "shield"; }
+	virtual std::string getIdentifier() const override { return ShieldPower::getClassIdentifier(); }
+	static std::string getClassIdentifier() { return ShieldPower::getClassName(); }
 	virtual ColorValueHolder getColor() const override { return ShieldPower::getClassColor(); }
 	static ColorValueHolder getClassColor() { return ColorValueHolder(0xB6/255.0, 0xE6/255.0, 0x9D/255.0); } //approximately barrier but yellow, gray, and light
 	//TODO: color blends in too much with background, hard to see
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	ShieldPower();
 	static Power* factory();
@@ -34,9 +35,8 @@ public:
 
 class ShieldTankPower : public TankPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return ShieldPower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return ShieldPower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return ShieldPower::getClassColor(); }
 
 	virtual TankPower* makeDuplicate() const override;
 	virtual BulletPower* makeBulletPower() const override;
@@ -52,9 +52,8 @@ public:
 
 class ShieldBulletPower : public BulletPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return ShieldPower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return ShieldPower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return ShieldPower::getClassColor(); }
 
 	virtual BulletPower* makeDuplicate() const override;
 	virtual TankPower* makeTankPower() const override;

@@ -18,12 +18,13 @@ public:
 
 	virtual std::string getName() const override { return MineLayerPower::getClassName(); }
 	static std::string getClassName() { return "mine_layer"; }
+	virtual std::string getIdentifier() const override { return MineLayerPower::getClassIdentifier(); }
+	static std::string getClassIdentifier() { return MineLayerPower::getClassName(); }
 	virtual ColorValueHolder getColor() const override { return MineLayerPower::getClassColor(); }
 	static ColorValueHolder getClassColor() { return ColorValueHolder(0.25f, 0.25f, 0.25f); } //dark gray
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	MineLayerPower();
 	static Power* factory();
@@ -33,9 +34,8 @@ public:
 
 class MineLayerTankPower : public TankPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return MineLayerPower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return MineLayerPower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return MineLayerPower::getClassColor(); }
 
 	virtual TankPower* makeDuplicate() const override { return new MineLayerTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -59,9 +59,8 @@ public:
 	virtual void initialize(Bullet* parent) override;
 	virtual void removeEffects(Bullet* parent) override;
 
-	virtual ColorValueHolder getColor() const override {
-		return MineLayerPower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return MineLayerPower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return MineLayerPower::getClassColor(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new MineLayerBulletPower(); } //don't pass on tickCount
 	virtual TankPower* makeTankPower() const override;

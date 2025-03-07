@@ -6,6 +6,12 @@
 #include "../color-mixer.h"
 #include "../game-manager.h" //getTickCount()
 
+std::string GodmodePower::identifierCache[360];
+
+inline int GodmodePower::getHueValue() {
+	return static_cast<int>(GameManager::getTickCount()) % 360;
+}
+
 std::unordered_map<std::string, float> GodmodePower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", 1.0f });
@@ -15,8 +21,16 @@ std::unordered_map<std::string, float> GodmodePower::getWeights() const {
 	return weights;
 }
 
+std::string GodmodePower::getClassIdentifier() {
+	const int hue = GodmodePower::getHueValue();
+	if (GodmodePower::identifierCache[hue].empty()) [[unlikely]] {
+		GodmodePower::identifierCache[hue] = GodmodePower::getClassName() + "-" + std::to_string(GodmodePower::getHueValue());
+	}
+	return GodmodePower::identifierCache[hue];
+}
+
 ColorValueHolder GodmodePower::getClassColor() {
-	return ColorMixer::HSVtoRGB(fmod(GameManager::getTickCount(), 360), .75, .75);
+	return ColorMixer::HSVtoRGB_int(GodmodePower::getHueValue(), .75f, .75f);
 	//JS just did the tank default color (as a PowerSquare; it was rainbow for tanks and bullets)
 }
 
@@ -27,12 +41,6 @@ TankPower* GodmodePower::makeTankPower() const {
 BulletPower* GodmodePower::makeBulletPower() const {
 	return new GodmodeBulletPower();
 }
-
-/*
-HazardPower* GodmodePower::makeHazardPower() const {
-	return new GodmodeHazardPower();
-}
-*/
 
 Power* GodmodePower::factory() {
 	return new GodmodePower();

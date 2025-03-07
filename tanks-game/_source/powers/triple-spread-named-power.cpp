@@ -15,12 +15,6 @@ BulletPower* TripleSpreadNamedPower::makeBulletPower() const {
 	return new TripleSpreadNamedBulletPower();
 }
 
-/*
-HazardPower* TripleSpreadNamedPower::makeHazardPower() const {
-	return new TripleSpreadNamedHazardPower();
-}
-*/
-
 Power* TripleSpreadNamedPower::factory() {
 	return new TripleSpreadNamedPower();
 }

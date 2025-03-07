@@ -22,12 +22,13 @@ public:
 
 	virtual std::string getName() const override { return SwarmPower::getClassName(); }
 	static std::string getClassName() { return "swarm"; }
+	virtual std::string getIdentifier() const override { return SwarmPower::getClassIdentifier(); }
+	static std::string getClassIdentifier() { return SwarmPower::getClassName(); }
 	virtual ColorValueHolder getColor() const override { return SwarmPower::getClassColor(); }
 	static ColorValueHolder getClassColor() { return ColorValueHolder(0xE6/255.0, 0xC5/255.0, 0x22/255.0); } //maybe it should be a bit brighter
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	SwarmPower();
 	static Power* factory();
@@ -40,9 +41,8 @@ protected:
 	bool leftRightToggle;
 
 public:
-	virtual ColorValueHolder getColor() const override {
-		return SwarmPower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return SwarmPower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return SwarmPower::getClassColor(); }
 
 	virtual TankPower* makeDuplicate() const override { return new SwarmTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -60,9 +60,8 @@ public:
 
 class SwarmBulletPower : public BulletPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return SwarmPower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return SwarmPower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return SwarmPower::getClassColor(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new SwarmBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

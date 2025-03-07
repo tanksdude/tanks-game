@@ -23,12 +23,13 @@ public:
 
 	virtual std::string getName() const override { return WallSparksPower::getClassName(); }
 	static std::string getClassName() { return "wall_sparks"; }
+	virtual std::string getIdentifier() const override { return WallSparksPower::getClassIdentifier(); }
+	static std::string getClassIdentifier() { return WallSparksPower::getClassName(); }
 	virtual ColorValueHolder getColor() const override { return WallSparksPower::getClassColor(); }
 	static ColorValueHolder getClassColor() { return ColorValueHolder(0xBC/255.0, 0x38/255.0, 0x28/255.0); } //blood orange
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	WallSparksPower();
 	static Power* factory();
@@ -38,9 +39,8 @@ public:
 
 class WallSparksTankPower : public TankPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return WallSparksPower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return WallSparksPower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return WallSparksPower::getClassColor(); }
 
 	virtual TankPower* makeDuplicate() const override { return new WallSparksTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -57,9 +57,8 @@ protected:
 	virtual void sparkExplode(const Bullet*, const BulletUpdateStruct*);
 
 public:
-	virtual ColorValueHolder getColor() const override {
-		return WallSparksPower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return WallSparksPower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return WallSparksPower::getClassColor(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new WallSparksBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

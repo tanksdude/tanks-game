@@ -19,12 +19,13 @@ public:
 
 	virtual std::string getName() const override { return GrenadePower::getClassName(); }
 	static std::string getClassName() { return "grenade"; }
+	virtual std::string getIdentifier() const override { return GrenadePower::getClassIdentifier(); }
+	static std::string getClassIdentifier() { return GrenadePower::getClassName(); }
 	virtual ColorValueHolder getColor() const override { return GrenadePower::getClassColor(); }
 	static ColorValueHolder getClassColor() { return ColorValueHolder(0.75f, 1.0f, 0.0f); } //lime green //JS: #CCFF00
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	GrenadePower();
 	static Power* factory();
@@ -34,9 +35,8 @@ public:
 
 class GrenadeTankPower : public TankPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return GrenadePower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return GrenadePower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return GrenadePower::getClassColor(); }
 
 	virtual TankPower* makeDuplicate() const override { return new GrenadeTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -48,9 +48,8 @@ public:
 
 class GrenadeBulletPower : public BulletPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return GrenadePower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return GrenadePower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return GrenadePower::getClassColor(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new GrenadeBulletPower(); } //should current size be passed on?
 	virtual TankPower* makeTankPower() const override;

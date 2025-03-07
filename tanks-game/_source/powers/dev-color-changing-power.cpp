@@ -11,6 +11,10 @@ std::unordered_map<std::string, float> DevColorChangingPower::getWeights() const
 	return weights;
 }
 
+std::string DevColorChangingPower::getIdentifier() const {
+	return DevColorChangingPower::getClassIdentifier();
+}
+
 ColorValueHolder DevColorChangingPower::getColor() const {
 	return DevColorChangingPower::getClassColor();
 }
@@ -23,12 +27,6 @@ BulletPower* DevColorChangingPower::makeBulletPower() const {
 	return new DevColorChangingBulletPower();
 }
 
-/*
-HazardPower* DevColorChangingPower::makeHazardPower() const {
-	return new DevColorChangingHazardPower();
-}
-*/
-
 Power* DevColorChangingPower::factory() {
 	return new DevColorChangingPower();
 }
@@ -39,11 +37,13 @@ DevColorChangingPower::DevColorChangingPower() {
 
 
 
+#include <format>
+
 void DevColorChangingTankPower::tick(Tank* parent) {
-	Tank* closest = nullptr;
+	const Tank* closest = nullptr;
 	double dist = 2*GAME_WIDTH + 2*GAME_HEIGHT;
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
-		Tank* t = TankManager::getTank(i);
+		const Tank* t = TankManager::getTank(i);
 		if (t->getTeamID() == parent->getTeamID()) {
 			continue;
 		}
@@ -59,6 +59,10 @@ void DevColorChangingTankPower::tick(Tank* parent) {
 		colorDist = dist;
 	}
 	//std::cout << colorDist << std::endl;
+}
+
+std::string DevColorChangingTankPower::getIdentifier() const {
+	return DevColorChangingPower::getClassName() + "-" + std::format("{:.2f}", colorDist);
 }
 
 ColorValueHolder DevColorChangingTankPower::getColor() const {
@@ -82,11 +86,13 @@ DevColorChangingTankPower::DevColorChangingTankPower() {
 
 
 
+#include <format>
+
 void DevColorChangingBulletPower::tick(Bullet* parent) {
-	Tank* closest = nullptr;
+	const Tank* closest = nullptr;
 	double dist = 2*GAME_WIDTH + 2*GAME_HEIGHT;
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
-		Tank* t = TankManager::getTank(i);
+		const Tank* t = TankManager::getTank(i);
 		if (t->getTeamID() == parent->getTeamID()) {
 			continue;
 		}
@@ -101,6 +107,10 @@ void DevColorChangingBulletPower::tick(Bullet* parent) {
 	} else {
 		colorDist = dist;
 	}
+}
+
+std::string DevColorChangingBulletPower::getIdentifier() const {
+	return DevColorChangingPower::getClassName() + "-" + std::format("{:.2f}", colorDist);
 }
 
 ColorValueHolder DevColorChangingBulletPower::getColor() const {

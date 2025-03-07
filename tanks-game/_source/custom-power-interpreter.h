@@ -139,16 +139,18 @@ public:
 	std::vector<std::string> getPowerAttributes() const override { return this->powerAttributes; }
 
 	std::string getName() const override { return this->name; }
+	std::string getIdentifier() const override { return this->name; }
 	ColorValueHolder getColor() const override { return this->color; }
 	float getColorImportance() const override { return this->colorImportance; }
 
 	TankPower* makeTankPower() const override;
 	BulletPower* makeBulletPower() const override;
-	//HazardPower* makeHazardPower() const override;
 
 	virtual ~CustomPower();
 	[[nodiscard]] CustomPower* factory() const; //makes a copy of itself; used by CustomPowerInterpreter to give PowerupDataGovernor an actual power
 };
+
+
 
 class CustomTankPower : public TankPower {
 protected:
@@ -219,6 +221,7 @@ protected:
 	inline void initialization_defenseTier_tank(const GenericFactoryConstructionData&) noexcept;
 
 public:
+	virtual std::string getIdentifier() const override { return this->name; }
 	ColorValueHolder getColor() const override { return this->color; }
 	float getColorImportance() const override { return this->colorImportance; }
 
@@ -265,6 +268,8 @@ public:
 		std::shared_ptr<std::vector<CustomPower::CustomPowerAction_Bullet*>> initializationActions_bullet,
 		double old_timeLeft); //for makeDuplicate() to pass on timeLeft for modifiedDeathHandling
 };
+
+
 
 class CustomBulletPower : public BulletPower {
 protected:
@@ -318,6 +323,7 @@ protected:
 	inline void initialization_defenseTier_bullet(const GenericFactoryConstructionData&) noexcept;
 
 public:
+	virtual std::string getIdentifier() const override { return this->name; }
 	ColorValueHolder getColor() const override { return this->color; }
 	float getColorImportance() const override { return this->colorImportance; }
 

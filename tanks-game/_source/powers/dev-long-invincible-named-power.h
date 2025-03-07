@@ -11,12 +11,13 @@ public:
 
 	virtual std::string getName() const override { return DevLongInvincibleNamedPower::getClassName(); }
 	static std::string getClassName() { return "longinvincible"; }
+	virtual std::string getIdentifier() const override { return DevLongInvincibleNamedPower::getClassIdentifier(); }
+	static std::string getClassIdentifier() { return DevLongInvincibleNamedPower::getClassName(); }
 	virtual ColorValueHolder getColor() const override { return DevLongInvincibleNamedPower::getClassColor(); }
 	static ColorValueHolder getClassColor() { return InvincibleNamedPower::getClassColor(); } //white
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	DevLongInvincibleNamedPower();
 	static Power* factory();
@@ -26,9 +27,8 @@ public:
 
 class DevLongInvincibleNamedTankPower : public InvincibleNamedTankPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return DevLongInvincibleNamedPower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return DevLongInvincibleNamedPower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return DevLongInvincibleNamedPower::getClassColor(); }
 
 	virtual TankPower* makeDuplicate() const override { return new DevLongInvincibleNamedTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -43,9 +43,8 @@ public:
 
 class DevLongInvincibleNamedBulletPower : public InvincibleNamedBulletPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return DevLongInvincibleNamedPower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return DevLongInvincibleNamedPower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return DevLongInvincibleNamedPower::getClassColor(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new DevLongInvincibleNamedBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

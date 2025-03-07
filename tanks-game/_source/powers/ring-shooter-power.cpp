@@ -15,12 +15,6 @@ BulletPower* RingShooterPower::makeBulletPower() const {
 	return new RingShooterBulletPower();
 }
 
-/*
-HazardPower* RingShooterPower::makeHazardPower() const {
-	return new RingShooterHazardPower();
-}
-*/
-
 Power* RingShooterPower::factory() {
 	return new RingShooterPower();
 }

@@ -34,6 +34,7 @@ public:
 		*/
 		return ((maxTime >= 0) && (timeLeft <= 0));
 	}
+	virtual std::string getIdentifier() const = 0; //this is used to cache colors; for normal powers, this is just the name, but something like godmode also includes the time variable
 	virtual ColorValueHolder getColor() const = 0;
 	virtual float getColorImportance() const { return 0; }
 

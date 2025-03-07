@@ -14,12 +14,6 @@ BulletPower* OldMinesPower::makeBulletPower() const {
 	return new OldMinesBulletPower();
 }
 
-/*
-HazardPower* OldMinesPower::makeHazardPower() const {
-	return new OldMinesHazardPower();
-}
-*/
-
 Power* OldMinesPower::factory() {
 	return new OldMinesPower();
 }

@@ -19,12 +19,13 @@ public:
 
 	virtual std::string getName() const override { return TricksterCirclePower::getClassName(); }
 	static std::string getClassName() { return "trickster_circle"; }
+	virtual std::string getIdentifier() const override { return TricksterCirclePower::getClassIdentifier(); }
+	static std::string getClassIdentifier() { return TricksterCirclePower::getClassName(); }
 	virtual ColorValueHolder getColor() const override { return TricksterCirclePower::getClassColor(); }
 	static ColorValueHolder getClassColor() { return ColorValueHolder(0x00/255.0, 0x16/255.0, 0x59/255.0); } //really dark blue (too close to annoying)
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	TricksterCirclePower();
 	static Power* factory();
@@ -34,9 +35,8 @@ public:
 
 class TricksterCircleTankPower : public TankPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return TricksterCirclePower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return TricksterCirclePower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return TricksterCirclePower::getClassColor(); }
 
 	virtual TankPower* makeDuplicate() const override { return new TricksterCircleTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -51,9 +51,8 @@ protected:
 	double tickCount;
 
 public:
-	virtual ColorValueHolder getColor() const override {
-		return TricksterCirclePower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return TricksterCirclePower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return TricksterCirclePower::getClassColor(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new TricksterCircleBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

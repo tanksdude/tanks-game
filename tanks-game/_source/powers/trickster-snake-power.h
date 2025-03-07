@@ -19,12 +19,13 @@ public:
 
 	virtual std::string getName() const override { return TricksterSnakePower::getClassName(); }
 	static std::string getClassName() { return "trickster_snake"; }
+	virtual std::string getIdentifier() const override { return TricksterSnakePower::getClassIdentifier(); }
+	static std::string getClassIdentifier() { return TricksterSnakePower::getClassName(); }
 	virtual ColorValueHolder getColor() const override { return TricksterSnakePower::getClassColor(); }
 	static ColorValueHolder getClassColor() { return ColorValueHolder(0xD9/255.0, 0xB3/255.0, 0xFF/255.0); } //really faded purple-ish
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	TricksterSnakePower();
 	static Power* factory();
@@ -34,9 +35,8 @@ public:
 
 class TricksterSnakeTankPower : public TankPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return TricksterSnakePower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return TricksterSnakePower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return TricksterSnakePower::getClassColor(); }
 
 	virtual TankPower* makeDuplicate() const override { return new TricksterSnakeTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -51,9 +51,8 @@ protected:
 	double tickCount;
 
 public:
-	virtual ColorValueHolder getColor() const override {
-		return TricksterSnakePower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return TricksterSnakePower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return TricksterSnakePower::getClassColor(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new TricksterSnakeBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

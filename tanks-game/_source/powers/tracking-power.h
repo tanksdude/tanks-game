@@ -16,12 +16,13 @@ public:
 
 	virtual std::string getName() const override { return TrackingPower::getClassName(); }
 	static std::string getClassName() { return "tracking"; }
+	virtual std::string getIdentifier() const override { return TrackingPower::getClassIdentifier(); }
+	static std::string getClassIdentifier() { return TrackingPower::getClassName(); }
 	virtual ColorValueHolder getColor() const override { return TrackingPower::getClassColor(); }
 	static ColorValueHolder getClassColor() { return ColorValueHolder(0xDD/255.0, 0.25f, 0.25f); } //faded red-orange ("maroon") //JS: #DD4444
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	TrackingPower();
 	static Power* factory();
@@ -31,9 +32,8 @@ public:
 
 class TrackingTankPower : public TankPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return TrackingPower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return TrackingPower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return TrackingPower::getClassColor(); }
 
 	virtual TankPower* makeDuplicate() const override { return new TrackingTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -49,9 +49,8 @@ public:
 
 class TrackingBulletPower : public BulletPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return TrackingPower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return TrackingPower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return TrackingPower::getClassColor(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new TrackingBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

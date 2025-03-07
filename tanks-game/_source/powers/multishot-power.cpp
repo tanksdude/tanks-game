@@ -20,12 +20,6 @@ BulletPower* MultishotPower::makeBulletPower() const {
 	return new MultishotBulletPower();
 }
 
-/*
-HazardPower* MultishotPower::makeHazardPower() const {
-	return new MultishotHazardPower();
-}
-*/
-
 Power* MultishotPower::factory() {
 	return new MultishotPower();
 }

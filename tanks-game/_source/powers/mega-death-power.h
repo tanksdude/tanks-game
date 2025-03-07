@@ -22,12 +22,13 @@ public:
 
 	virtual std::string getName() const override { return MegaDeathPower::getClassName(); }
 	static std::string getClassName() { return "megadeath"; } //"mega-death" in JS Tanks
+	virtual std::string getIdentifier() const override { return MegaDeathPower::getClassIdentifier(); }
+	static std::string getClassIdentifier() { return MegaDeathPower::getClassName(); }
 	virtual ColorValueHolder getColor() const override { return MegaDeathPower::getClassColor(); }
 	static ColorValueHolder getClassColor() { return ColorValueHolder(0x4F/255.0, 0x3E/255.0, 0x3E/255.0); } //brown-ish //JS unused alternate: #201A1A
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	MegaDeathPower();
 	static Power* factory();
@@ -37,9 +38,8 @@ public:
 
 class MegaDeathTankPower : public TankPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return MegaDeathPower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return MegaDeathPower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return MegaDeathPower::getClassColor(); }
 
 	virtual TankPower* makeDuplicate() const override { return new MegaDeathTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -55,9 +55,8 @@ class MegaDeathBulletPower : public BulletPower {
 public:
 	virtual void tick(Bullet* b) override; //for updating wall collision bools based on size
 
-	virtual ColorValueHolder getColor() const override {
-		return MegaDeathPower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return MegaDeathPower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return MegaDeathPower::getClassColor(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new MegaDeathBulletPower(); } //should current size be passed on?
 	virtual TankPower* makeTankPower() const override;

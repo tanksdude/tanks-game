@@ -4,12 +4,8 @@
 
 #include "renderer.h"
 
-ColorValueHolder BackgroundRect::backColor = ColorValueHolder(0xDD/255.0, 0xDD/255.0, 0xDD/255.0);
-//ColorValueHolder BackgroundRect::backColor = ColorValueHolder(0.875f, 0.875f, 0.875f);
-
-ColorValueHolder BackgroundRect::getBackColor() {
-	return backColor;
-}
+const ColorValueHolder BackgroundRect::backColor = ColorValueHolder(0xDD/255.0, 0xDD/255.0, 0xDD/255.0);
+//const ColorValueHolder BackgroundRect::backColor = ColorValueHolder(0.875f, 0.875f, 0.875f);
 
 void BackgroundRect::draw() {
 	ColorValueHolder color = BackgroundRect::getBackColor();

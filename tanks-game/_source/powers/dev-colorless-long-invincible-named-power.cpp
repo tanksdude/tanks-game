@@ -8,12 +8,6 @@ BulletPower* DevColorlessLongInvincibleNamedPower::makeBulletPower() const {
 	return new DevColorlessLongInvincibleNamedBulletPower();
 }
 
-/*
-HazardPower* DevColorlessLongInvincibleNamedPower::makeHazardPower() const {
-	return new DevColorlessLongInvincibleNamedHazardPower();
-}
-*/
-
 Power* DevColorlessLongInvincibleNamedPower::factory() {
 	return new DevColorlessLongInvincibleNamedPower();
 }

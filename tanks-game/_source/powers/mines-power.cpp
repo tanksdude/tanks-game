@@ -17,12 +17,6 @@ BulletPower* MinesPower::makeBulletPower() const {
 	return new MinesBulletPower();
 }
 
-/*
-HazardPower* MinesPower::makeHazardPower() const {
-	return new MinesHazardPower();
-}
-*/
-
 Power* MinesPower::factory() {
 	return new MinesPower();
 }

@@ -62,7 +62,7 @@ protected:
 
 public:
 	//helper functions:
-	ColorValueHolder getColor() const;
+	const ColorValueHolder& getColor() const;
 	double getInitialVelocity() const { return initial_velocity; }
 	Game_ID getParentID() const { return parentID; }
 	BulletParentType getParentIDType() const { return parentType; }

@@ -11,12 +11,13 @@ public:
 
 	virtual std::string getName() const override { return EdgeSparksPower::getClassName(); }
 	static std::string getClassName() { return "edge_sparks"; }
+	virtual std::string getIdentifier() const override { return EdgeSparksPower::getClassIdentifier(); }
+	static std::string getClassIdentifier() { return EdgeSparksPower::getClassName(); }
 	virtual ColorValueHolder getColor() const override { return EdgeSparksPower::getClassColor(); }
 	static ColorValueHolder getClassColor() { return WallSparksPower::getClassColor(); } //same for now
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	EdgeSparksPower();
 	static Power* factory();
@@ -26,9 +27,8 @@ public:
 
 class EdgeSparksTankPower : public WallSparksTankPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return WallSparksPower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return EdgeSparksPower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return EdgeSparksPower::getClassColor(); }
 
 	virtual TankPower* makeDuplicate() const override { return new EdgeSparksTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -40,9 +40,8 @@ public:
 
 class EdgeSparksBulletPower : public WallSparksBulletPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return WallSparksPower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return EdgeSparksPower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return EdgeSparksPower::getClassColor(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new EdgeSparksBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

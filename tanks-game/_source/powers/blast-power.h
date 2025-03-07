@@ -27,12 +27,13 @@ public:
 
 	virtual std::string getName() const override { return BlastPower::getClassName(); }
 	static std::string getClassName() { return "blast"; }
+	virtual std::string getIdentifier() const override { return BlastPower::getClassIdentifier(); }
+	static std::string getClassIdentifier() { return BlastPower::getClassName(); }
 	virtual ColorValueHolder getColor() const override { return BlastPower::getClassColor(); }
 	static ColorValueHolder getClassColor() { return ColorValueHolder(0x44/255.0, 0x66/255.0, 0x88/255.0); } //dark blue
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	BlastPower();
 	static Power* factory();
@@ -42,9 +43,8 @@ public:
 
 class BlastTankPower : public TankPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return BlastPower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return BlastPower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return BlastPower::getClassColor(); }
 
 	virtual TankPower* makeDuplicate() const override { return new BlastTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -67,9 +67,8 @@ protected:
 	double accelerationAmount;
 
 public:
-	virtual ColorValueHolder getColor() const override {
-		return BlastPower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return BlastPower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return BlastPower::getClassColor(); }
 
 	virtual BulletPower* makeDuplicate() const override;
 	virtual TankPower* makeTankPower() const override;

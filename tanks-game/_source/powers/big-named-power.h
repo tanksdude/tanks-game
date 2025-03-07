@@ -13,12 +13,13 @@ public:
 
 	virtual std::string getName() const override { return BigNamedPower::getClassName(); }
 	static std::string getClassName() { return "big"; }
+	virtual std::string getIdentifier() const override { return BigNamedPower::getClassIdentifier(); }
+	static std::string getClassIdentifier() { return BigNamedPower::getClassName(); }
 	virtual ColorValueHolder getColor() const override { return BigNamedPower::getClassColor(); }
 	static ColorValueHolder getClassColor() { return ColorValueHolder(1.0f, 0.0f, 0.0f); } //red
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	BigNamedPower();
 	//TODO: virtual destructor for OldBigNamedPower?
@@ -29,9 +30,8 @@ public:
 
 class BigNamedTankPower : public TankPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return BigNamedPower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return BigNamedPower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return BigNamedPower::getClassColor(); }
 
 	virtual TankPower* makeDuplicate() const override { return new BigNamedTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -49,9 +49,8 @@ public:
 
 class BigNamedBulletPower : public BulletPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return BigNamedPower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return BigNamedPower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return BigNamedPower::getClassColor(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new BigNamedBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

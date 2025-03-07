@@ -34,12 +34,6 @@ BulletPower* ShieldPower::makeBulletPower() const {
 	return new ShieldBulletPower();
 }
 
-/*
-HazardPower* ShieldPower::makeHazardPower() const {
-	return new ShieldHazardPower();
-}
-*/
-
 Power* ShieldPower::factory() {
 	return new ShieldPower();
 }

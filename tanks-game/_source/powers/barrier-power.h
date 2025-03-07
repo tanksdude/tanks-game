@@ -13,12 +13,13 @@ public:
 
 	virtual std::string getName() const override { return BarrierPower::getClassName(); }
 	static std::string getClassName() { return "barrier"; }
+	virtual std::string getIdentifier() const override { return BarrierPower::getClassIdentifier(); }
+	static std::string getClassIdentifier() { return BarrierPower::getClassName(); }
 	virtual ColorValueHolder getColor() const override { return BarrierPower::getClassColor(); }
 	static ColorValueHolder getClassColor() { return ColorValueHolder(0.0f, 0.5f, 0.25f); } //dark green //JS: #008844
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	BarrierPower();
 	static Power* factory();
@@ -28,9 +29,8 @@ public:
 
 class BarrierTankPower : public TankPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return BarrierPower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return BarrierPower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return BarrierPower::getClassColor(); }
 
 	virtual TankPower* makeDuplicate() const override { return new BarrierTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -45,9 +45,8 @@ public:
 
 class BarrierBulletPower : public BulletPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return BarrierPower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return BarrierPower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return BarrierPower::getClassColor(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new BarrierBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

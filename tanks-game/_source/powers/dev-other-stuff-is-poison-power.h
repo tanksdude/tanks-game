@@ -15,12 +15,13 @@ public:
 
 	virtual std::string getName() const override { return DevOtherStuffIsPoisonPower::getClassName(); }
 	static std::string getClassName() { return "other_stuff_is_poison"; }
+	virtual std::string getIdentifier() const override { return DevOtherStuffIsPoisonPower::getClassIdentifier(); }
+	static std::string getClassIdentifier() { return DevOtherStuffIsPoisonPower::getClassName(); }
 	virtual ColorValueHolder getColor() const override { return DevOtherStuffIsPoisonPower::getClassColor(); }
 	static ColorValueHolder getClassColor() { return ColorValueHolder(0xA3/255.0, 0xD6/255.0, 0x3E/255.0); } //greenish-yellow
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	DevOtherStuffIsPoisonPower();
 	static Power* factory();
@@ -30,9 +31,8 @@ public:
 
 class DevOtherStuffIsPoisonTankPower : public TankPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return DevOtherStuffIsPoisonPower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return DevOtherStuffIsPoisonPower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return DevOtherStuffIsPoisonPower::getClassColor(); }
 
 	virtual TankPower* makeDuplicate() const override { return new DevOtherStuffIsPoisonTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -66,9 +66,8 @@ public:
 
 class DevOtherStuffIsPoisonBulletPower : public BulletPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return DevOtherStuffIsPoisonPower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return DevOtherStuffIsPoisonPower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return DevOtherStuffIsPoisonPower::getClassColor(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new DevOtherStuffIsPoisonBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

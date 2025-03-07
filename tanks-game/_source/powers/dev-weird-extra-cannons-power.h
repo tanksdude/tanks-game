@@ -11,12 +11,13 @@ public:
 
 	virtual std::string getName() const override { return DevWeirdExtraCannonsPower::getClassName(); }
 	static std::string getClassName() { return "weird_extra_cannons"; }
+	virtual std::string getIdentifier() const override { return DevWeirdExtraCannonsPower::getClassIdentifier(); }
+	static std::string getClassIdentifier() { return DevWeirdExtraCannonsPower::getClassName(); }
 	virtual ColorValueHolder getColor() const override { return DevWeirdExtraCannonsPower::getClassColor(); }
 	static ColorValueHolder getClassColor() { return ColorValueHolder(0.625f, 0.625f, 0.625f); } //light-ish gray
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	DevWeirdExtraCannonsPower();
 	static Power* factory();
@@ -26,9 +27,8 @@ public:
 
 class DevWeirdExtraCannonsTankPower : public TankPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return DevWeirdExtraCannonsPower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return DevWeirdExtraCannonsPower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return DevWeirdExtraCannonsPower::getClassColor(); }
 
 	virtual TankPower* makeDuplicate() const override { return new DevWeirdExtraCannonsTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -45,9 +45,8 @@ public:
 
 class DevWeirdExtraCannonsBulletPower : public BulletPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return DevWeirdExtraCannonsPower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return DevWeirdExtraCannonsPower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return DevWeirdExtraCannonsPower::getClassColor(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new DevWeirdExtraCannonsBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

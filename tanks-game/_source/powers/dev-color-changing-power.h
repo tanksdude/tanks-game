@@ -15,6 +15,8 @@ public:
 
 	virtual std::string getName() const override { return DevColorChangingPower::getClassName(); }
 	static std::string getClassName() { return "color_changing"; }
+	virtual std::string getIdentifier() const override; //powersquares don't have a tick() ability...
+	static std::string getClassIdentifier() { return DevColorChangingPower::getClassName(); }
 	virtual ColorValueHolder getColor() const override; //powersquares don't have a tick() ability...
 	static ColorValueHolder getClassColor() { return ColorValueHolder(0.5f, 0.5f, 0.5f); } //default/fallback
 	virtual float getColorImportance() const override { return DevColorChangingPower::getClassColorImportance(); }
@@ -22,7 +24,6 @@ public:
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	DevColorChangingPower();
 	static Power* factory();
@@ -37,10 +38,9 @@ protected:
 public:
 	virtual void tick(Tank* t) override; //updates color
 
+	virtual std::string getIdentifier() const override;
 	virtual ColorValueHolder getColor() const override;
-	virtual float getColorImportance() const override {
-		return DevColorChangingPower::getClassColorImportance();
-	}
+	virtual float getColorImportance() const override { return DevColorChangingPower::getClassColorImportance(); }
 
 	virtual TankPower* makeDuplicate() const override { return new DevColorChangingTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -57,10 +57,9 @@ protected:
 public:
 	virtual void tick(Bullet* b) override; //updates color
 
+	virtual std::string getIdentifier() const override;
 	virtual ColorValueHolder getColor() const override;
-	virtual float getColorImportance() const override {
-		return DevColorChangingPower::getClassColorImportance();
-	}
+	virtual float getColorImportance() const override { return DevColorChangingPower::getClassColorImportance(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new DevColorChangingBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

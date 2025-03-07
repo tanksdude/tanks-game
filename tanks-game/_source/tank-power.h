@@ -38,6 +38,7 @@ public:
 		*/
 		return ((maxTime >= 0) && (timeLeft <= 0));
 	}
+	virtual std::string getIdentifier() const = 0;
 	virtual ColorValueHolder getColor() const = 0;
 	virtual float getColorImportance() const { return 0; }
 

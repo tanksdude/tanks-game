@@ -21,12 +21,6 @@ BulletPower* MegaDeathPower::makeBulletPower() const {
 	return new MegaDeathBulletPower();
 }
 
-/*
-HazardPower* MegaDeathPower::makeHazardPower() const {
-	return new MegaDeathHazardPower();
-}
-*/
-
 Power* MegaDeathPower::factory() {
 	return new MegaDeathPower();
 }

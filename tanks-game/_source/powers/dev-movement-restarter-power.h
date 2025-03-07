@@ -11,12 +11,13 @@ public:
 
 	virtual std::string getName() const override { return DevMovementRestarterPower::getClassName(); }
 	static std::string getClassName() { return "movement_restarter"; }
+	virtual std::string getIdentifier() const override { return DevMovementRestarterPower::getClassIdentifier(); }
+	static std::string getClassIdentifier() { return DevMovementRestarterPower::getClassName(); }
 	virtual ColorValueHolder getColor() const override { return DevMovementRestarterPower::getClassColor(); }
 	static ColorValueHolder getClassColor() { return ColorValueHolder(0x83/255.0, 0x89/255.0, 0x96/255.0); } //"roman silver" apparently
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	DevMovementRestarterPower();
 	static Power* factory();
@@ -26,9 +27,8 @@ public:
 
 class DevMovementRestarterTankPower : public TankPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return DevMovementRestarterPower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return DevMovementRestarterPower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return DevMovementRestarterPower::getClassColor(); }
 
 	virtual TankPower* makeDuplicate() const override { return new DevMovementRestarterTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -43,9 +43,8 @@ protected:
 	bool hasRestartedMovement; //only restarts movement once
 
 public:
-	virtual ColorValueHolder getColor() const override {
-		return DevMovementRestarterPower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return DevMovementRestarterPower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return DevMovementRestarterPower::getClassColor(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new DevMovementRestarterBulletPower(); } //don't pass on hasRestartedMovement
 	virtual TankPower* makeTankPower() const override;

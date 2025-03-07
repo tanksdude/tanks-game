@@ -3,10 +3,10 @@
 
 class BackgroundRect {
 private:
-	static ColorValueHolder backColor;
+	static const ColorValueHolder backColor;
 
 public:
-	static ColorValueHolder getBackColor();
+	static const ColorValueHolder& getBackColor() { return backColor; }
 
 	static void draw();
 

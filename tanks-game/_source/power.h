@@ -17,6 +17,8 @@ public:
 
 	virtual std::string getName() const = 0;
 	//static std::string getClassName(); //tankpowers and bulletpowers use this (so they can have the same color)
+	virtual std::string getIdentifier() const = 0; //this is used for caching colors; regular powers just use their name
+	//static std::string getClassIdentifier() { return getClassName(); } //simple color changers only depend on a shared time
 	virtual ColorValueHolder getColor() const = 0;
 	//static ColorValueHolder getClassColor();
 	virtual float getColorImportance() const { return 0; }
@@ -24,7 +26,6 @@ public:
 
 	virtual TankPower* makeTankPower() const = 0;
 	virtual BulletPower* makeBulletPower() const = 0;
-	//virtual HazardPower* makeHazardPower() const = 0;
 
 	virtual ~Power() { return; }
 	//static Power* factory();

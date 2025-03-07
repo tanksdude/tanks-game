@@ -1,10 +1,15 @@
 #include "the-super-named-power.h"
 
 #include "../constants.h"
-#include <cmath> //sin
+#include <cmath> //sin, fmod
+#include <format>
 
 #include "../color-mixer.h"
 #include "../game-manager.h" //getTickCount()
+
+inline float TheSuperNamedPower::getTimeValue() {
+	return static_cast<float>(GameManager::getTickCount()) / 200;
+}
 
 std::unordered_map<std::string, float> TheSuperNamedPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -12,8 +17,12 @@ std::unordered_map<std::string, float> TheSuperNamedPower::getWeights() const {
 	return weights;
 }
 
+std::string TheSuperNamedPower::getClassIdentifier() {
+	return TheSuperNamedPower::getClassName() + "-" + std::format("{:.1f}", fmod(TheSuperNamedPower::getTimeValue(), static_cast<float>(2*PI)));
+}
+
 ColorValueHolder TheSuperNamedPower::getClassColor() {
-	return ColorMixer::mix(ColorValueHolder(0, 0, 0), ColorValueHolder(1, 1, 1), .5 + .5*sin((2*PI) * (GameManager::getTickCount() / 200)));
+	return ColorMixer::mix(ColorValueHolder(0, 0, 0), ColorValueHolder(1, 1, 1), .5f + .5f*sin(static_cast<float>(2*PI) * TheSuperNamedPower::getTimeValue()));
 }
 
 TankPower* TheSuperNamedPower::makeTankPower() const {
@@ -23,12 +32,6 @@ TankPower* TheSuperNamedPower::makeTankPower() const {
 BulletPower* TheSuperNamedPower::makeBulletPower() const {
 	return new TheSuperNamedBulletPower();
 }
-
-/*
-HazardPower* TheSuperNamedPower::makeHazardPower() const {
-	return new TheSuperNamedHazardPower();
-}
-*/
 
 Power* TheSuperNamedPower::factory() {
 	return new TheSuperNamedPower();

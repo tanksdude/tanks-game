@@ -15,12 +15,6 @@ BulletPower* OldBigNamedPower::makeBulletPower() const {
 	return new OldBigNamedBulletPower();
 }
 
-/*
-HazardPower* OldBigNamedPower::makeHazardPower() const {
-	return new OldBigNamedHazardPower();
-}
-*/
-
 Power* OldBigNamedPower::factory() {
 	return new OldBigNamedPower();
 }

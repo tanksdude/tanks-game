@@ -15,12 +15,6 @@ BulletPower* DevPusherPower::makeBulletPower() const {
 	return new DevPusherBulletPower();
 }
 
-/*
-HazardPower* DevPusherPower::makeHazardPower() const {
-	return new DevPusherHazardPower();
-}
-*/
-
 Power* DevPusherPower::factory() {
 	return new DevPusherPower();
 }

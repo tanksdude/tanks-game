@@ -23,12 +23,6 @@ BulletPower* GrenadePower::makeBulletPower() const {
 	return new GrenadeBulletPower();
 }
 
-/*
-HazardPower* GrenadePower::makeHazardPower() const {
-	return new GrenadeHazardPower();
-}
-*/
-
 Power* GrenadePower::factory() {
 	return new GrenadePower();
 }

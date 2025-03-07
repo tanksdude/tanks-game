@@ -86,6 +86,7 @@
     <ClCompile Include="_source\bullet.cpp" />
     <ClCompile Include="_source\circle-hazard.cpp" />
     <ClCompile Include="_source\collision-handler.cpp" />
+    <ClCompile Include="_source\color-cache.cpp" />
     <ClCompile Include="_source\color-mixer.cpp" />
     <ClCompile Include="_source\color-value-holder.cpp" />
     <ClCompile Include="_source\constants.cpp" />
@@ -264,6 +265,7 @@
     <ClInclude Include="_source\circle-hazard.h" />
     <ClInclude Include="_source\circle.h" />
     <ClInclude Include="_source\collision-handler.h" />
+    <ClInclude Include="_source\color-cache.h" />
     <ClInclude Include="_source\color-mixer.h" />
     <ClInclude Include="_source\color-value-holder.h" />
     <ClInclude Include="_source\constants.h" />

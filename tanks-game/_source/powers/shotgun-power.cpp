@@ -20,12 +20,6 @@ BulletPower* ShotgunPower::makeBulletPower() const {
 	return new ShotgunBulletPower();
 }
 
-/*
-HazardPower* ShotgunPower::makeHazardPower() const {
-	return new ShotgunHazardPower();
-}
-*/
-
 Power* ShotgunPower::factory() {
 	return new ShotgunPower();
 }

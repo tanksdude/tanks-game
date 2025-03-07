@@ -11,12 +11,13 @@ public:
 
 	virtual std::string getName() const override { return OldBigNamedPower::getClassName(); }
 	static std::string getClassName() { return "old_big"; }
+	virtual std::string getIdentifier() const override { return OldBigNamedPower::getClassIdentifier(); }
+	static std::string getClassIdentifier() { return OldBigNamedPower::getClassName(); }
 	virtual ColorValueHolder getColor() const override { return OldBigNamedPower::getClassColor(); }
 	static ColorValueHolder getClassColor() { return BigNamedPower::getClassColor(); } //red
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	OldBigNamedPower();
 	static Power* factory();
@@ -26,9 +27,8 @@ public:
 
 class OldBigNamedTankPower : public BigNamedTankPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return OldBigNamedPower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return OldBigNamedPower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return OldBigNamedPower::getClassColor(); }
 
 	virtual TankPower* makeDuplicate() const override { return new OldBigNamedTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -40,9 +40,8 @@ public:
 
 class OldBigNamedBulletPower : public BigNamedBulletPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return OldBigNamedPower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return OldBigNamedPower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return OldBigNamedPower::getClassColor(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new OldBigNamedBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

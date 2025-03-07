@@ -26,12 +26,13 @@ public:
 
 	virtual std::string getName() const override { return BouncePower::getClassName(); }
 	static std::string getClassName() { return "bounce"; }
+	virtual std::string getIdentifier() const override { return BouncePower::getClassIdentifier(); }
+	static std::string getClassIdentifier() { return BouncePower::getClassName(); }
 	virtual ColorValueHolder getColor() const override { return BouncePower::getClassColor(); }
 	static ColorValueHolder getClassColor() { return ColorValueHolder(1.0f, 0.0f, 0.75f); } //pink //JS: #FF00CC
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	BouncePower();
 	//TODO: virtual destructor for OldBouncePower and UltraBouncePower?
@@ -42,9 +43,8 @@ public:
 
 class BounceTankPower : public TankPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return BouncePower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return BouncePower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return BouncePower::getClassColor(); }
 
 	virtual TankPower* makeDuplicate() const override { return new BounceTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -63,9 +63,8 @@ protected:
 	int bouncesLeft;
 
 public:
-	virtual ColorValueHolder getColor() const override {
-		return BouncePower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return BouncePower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return BouncePower::getClassColor(); }
 
 	virtual BulletPower* makeDuplicate() const override;
 	virtual TankPower* makeTankPower() const override;

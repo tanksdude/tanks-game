@@ -22,6 +22,8 @@ public:
 
 	virtual std::string getName() const override { return MinesPower::getClassName(); }
 	static std::string getClassName() { return "mines"; }
+	virtual std::string getIdentifier() const override { return MinesPower::getClassIdentifier(); }
+	static std::string getClassIdentifier() { return MinesPower::getClassName(); }
 	virtual ColorValueHolder getColor() const override { return MinesPower::getClassColor(); }
 	static ColorValueHolder getClassColor() { return ColorValueHolder(0.0f, 0.0f, 0.0f); } //black, so it's hard to see where the tank is pointed
 	virtual float getColorImportance() const override { return MinesPower::getClassColorImportance(); }
@@ -29,7 +31,6 @@ public:
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	MinesPower();
 	//TODO: virtual destructor for OldMinesPower?
@@ -43,12 +44,9 @@ public:
 	virtual void tick(Tank* t) override; //for updating modifiesAdditionalShooting based on whether there are any other powers that modify additionalShooting
 	//might need a secondary tick for this; one tick to do stuff, another tick to update interaction bools
 
-	virtual ColorValueHolder getColor() const override {
-		return MinesPower::getClassColor();
-	}
-	virtual float getColorImportance() const override {
-		return MinesPower::getClassColorImportance();
-	}
+	virtual std::string getIdentifier() const override { return MinesPower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return MinesPower::getClassColor(); }
+	virtual float getColorImportance() const override { return MinesPower::getClassColorImportance(); }
 
 	virtual TankPower* makeDuplicate() const override { return new MinesTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -66,12 +64,9 @@ public:
 
 class MinesBulletPower : public BulletPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return MinesPower::getClassColor();
-	}
-	virtual float getColorImportance() const override {
-		return MinesPower::getClassColorImportance();
-	}
+	virtual std::string getIdentifier() const override { return MinesPower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return MinesPower::getClassColor(); }
+	virtual float getColorImportance() const override { return MinesPower::getClassColorImportance(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new MinesBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

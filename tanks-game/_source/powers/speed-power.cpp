@@ -20,12 +20,6 @@ BulletPower* SpeedPower::makeBulletPower() const {
 	return new SpeedBulletPower();
 }
 
-/*
-HazardPower* SpeedPower::makeHazardPower() const {
-	return new SpeedHazardPower();
-}
-*/
-
 Power* SpeedPower::factory() {
 	return new SpeedPower();
 }

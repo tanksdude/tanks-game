@@ -18,12 +18,13 @@ public:
 
 	virtual std::string getName() const override { return AnnoyingPower::getClassName(); }
 	static std::string getClassName() { return "annoying"; }
+	virtual std::string getIdentifier() const override { return AnnoyingPower::getClassIdentifier(); }
+	static std::string getClassIdentifier() { return AnnoyingPower::getClassName(); }
 	virtual ColorValueHolder getColor() const override { return AnnoyingPower::getClassColor(); } //must be indigo because it's annoying trying to distinguish it from purple and/or blue
 	static ColorValueHolder getClassColor() { return ColorValueHolder(0x4B/255.0, 0x00/255.0, 0x82/255.0); } //indigo (#4E1885 is pretty close)
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	AnnoyingPower();
 	static Power* factory();
@@ -36,9 +37,8 @@ public:
 	virtual void initialize(Tank* parent) override;
 	virtual void removeEffects(Tank* parent) override;
 
-	virtual ColorValueHolder getColor() const override {
-		return AnnoyingPower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return AnnoyingPower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return AnnoyingPower::getClassColor(); }
 
 	virtual TankPower* makeDuplicate() const override { return new AnnoyingTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -55,9 +55,8 @@ public:
 
 class AnnoyingBulletPower : public BulletPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return AnnoyingPower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return AnnoyingPower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return AnnoyingPower::getClassColor(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new AnnoyingBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

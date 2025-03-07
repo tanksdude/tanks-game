@@ -27,7 +27,7 @@ std::vector<std::pair<int, int>>* PhysicsHandler::sweepAndPrune(const std::vecto
 	#if _DEBUG
 	//performance seems about the same with or without reserving
 	#else
-	collisionList->reserve(collider.size()*collidee.size());
+	collisionList->reserve(collider.size()*collidee.size() / 2); //half just to save memory in the very likely scenario everything is not touching everything
 	#endif
 	for (int i = 0; i < objectIntervals.size(); i++) {
 		const ObjectIntervalInfo& currentObject = objectIntervals[i];
@@ -87,7 +87,7 @@ std::vector<std::pair<int, int>>* PhysicsHandler::sweepAndPrune(const std::vecto
 	#if _DEBUG
 	//performance seems about the same with or without reserving
 	#else
-	collisionList->reserve(objectIntervals.size()*objectIntervals.size());
+	collisionList->reserve(objectIntervals.size()*objectIntervals.size() / 2); //half just to save memory in the very likely scenario everything is not touching everything
 	#endif
 	for (int i = 0; i < objectIntervals.size(); i++) {
 		const ObjectIntervalInfo& currentObject = objectIntervals[i];
@@ -115,39 +115,3 @@ template std::vector<std::pair<int, int>>* PhysicsHandler::sweepAndPrune<Rect*>
 (const std::vector<Rect*>& collider);
 template std::vector<std::pair<int, int>>* PhysicsHandler::sweepAndPrune<Circle*>
 (const std::vector<Circle*>& collider);
-
-
-
-/*
-template<typename T>
-static std::unordered_map<std::pair<int, int>, std::vector<T>>* PhysicsHandler::bucketPlacement(const std::vector<T>& collider, double leftBound, double rightBound, double downBound, double upBound, int lrBuckets, int udBuckets) {
-	auto* collisionList = new std::unordered_map<std::pair<int, int>, std::vector<T>>;
-
-	for (int i = 0; i < collider.size(); i++) {
-		T o = collider[i];
-		auto bounds = ObjectIntervalInfo(o, i, true);
-
-		int lr1 = int((bounds.xStart - leftBound) / (rightBound - leftBound) * lrBuckets);
-		int lr2 = int((bounds.xEnd - leftBound) / (rightBound - leftBound) * lrBuckets);
-		int ud1 = int((bounds.yStart - downBound) / (upBound - downBound) * udBuckets);
-		int ud2 = int((bounds.yEnd - downBound) / (upBound - downBound) * udBuckets);
-
-		for (int i = lr1; i <= lr2; i++) {
-			for (int j = ud1; j <= ud2; j++) {
-				if (collisionList->find({ i,j }) == collisionList->end()) {
-					collisionList->insert({ {i, j}, std::vector<T>{o} });
-				} else {
-					collisionList->at( {i, j} ).push_back(o);
-				}
-			}
-		}
-	}
-
-	return collisionList;
-}
-
-template std::unordered_map<std::pair<int, int>, std::vector<Rect*>>* PhysicsHandler::bucketPlacement<Rect*>
-(const std::vector<Rect*>& collider, double leftBound, double rightBound, double downBound, double upBound, int lBuckets, int rBuckets);
-template std::unordered_map<std::pair<int, int>, std::vector<Circle*>>* PhysicsHandler::bucketPlacement<Circle*>
-(const std::vector<Circle*>& collider, double leftBound, double rightBound, double downBound, double upBound, int lBuckets, int rBuckets);
-*/

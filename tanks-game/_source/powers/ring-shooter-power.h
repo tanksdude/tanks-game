@@ -18,12 +18,13 @@ public:
 
 	virtual std::string getName() const override { return RingShooterPower::getClassName(); }
 	static std::string getClassName() { return "ring_shooter"; }
+	virtual std::string getIdentifier() const override { return RingShooterPower::getClassIdentifier(); }
+	static std::string getClassIdentifier() { return RingShooterPower::getClassName(); }
 	virtual ColorValueHolder getColor() const override { return RingShooterPower::getClassColor(); }
 	static ColorValueHolder getClassColor() { return ColorValueHolder(0.6f, 0.1f, 1.0f); } //purple but a bit brighter
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	RingShooterPower();
 	static Power* factory();
@@ -33,9 +34,8 @@ public:
 
 class RingShooterTankPower : public TankPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return RingShooterPower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return RingShooterPower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return RingShooterPower::getClassColor(); }
 
 	virtual TankPower* makeDuplicate() const override { return new RingShooterTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -52,9 +52,8 @@ public:
 
 class RingShooterBulletPower : public BulletPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return RingShooterPower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return RingShooterPower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return RingShooterPower::getClassColor(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new RingShooterBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

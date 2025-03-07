@@ -17,12 +17,13 @@ public:
 
 	virtual std::string getName() const override { return BananaPower::getClassName(); }
 	static std::string getClassName() { return "banana"; }
+	virtual std::string getIdentifier() const override { return BananaPower::getClassIdentifier(); }
+	static std::string getClassIdentifier() { return BananaPower::getClassName(); }
 	virtual ColorValueHolder getColor() const override { return BananaPower::getClassColor(); }
 	static ColorValueHolder getClassColor() { return ColorValueHolder(0x99/255.0, 0x99/255.0, 0x33/255.0); } //dull gold
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	BananaPower();
 	static Power* factory();
@@ -32,9 +33,8 @@ public:
 
 class BananaTankPower : public TankPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return BananaPower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return BananaPower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return BananaPower::getClassColor(); }
 
 	virtual TankPower* makeDuplicate() const override { return new BananaTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -51,9 +51,8 @@ protected:
 	virtual void bananaExplode(const Bullet*);
 
 public:
-	virtual ColorValueHolder getColor() const override {
-		return BananaPower::getClassColor();
-	}
+	virtual std::string getIdentifier() const override { return BananaPower::getClassIdentifier(); }
+	virtual ColorValueHolder getColor() const override { return BananaPower::getClassColor(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new BananaBulletPower(); }
 	virtual TankPower* makeTankPower() const override;
