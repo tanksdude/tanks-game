@@ -259,6 +259,7 @@ void GameMainLoop::Tick(int UPS) {
 			waitCount = 0;
 			ResetThings::reset();
 		}
+		Diagnostics::pushGraphTime("tick", 0); //goes after ResetThings::reset() because a draw call will still happen after this
 		return;
 	}
 

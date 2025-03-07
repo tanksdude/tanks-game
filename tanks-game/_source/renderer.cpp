@@ -106,6 +106,8 @@ void Renderer::windowResizeFunc(int w, int h) {
 	glLoadIdentity();
 	glOrtho(winXmin, winXmax, winYmin, winYmax, -1, 1);
 	*/
+
+	Diagnostics::pushGraphTime("tick", 0); //HACK: since tick will never happen when the window is being resized, add it here; will not double-add when the game is over because that still does a tick
 }
 
 //actual renderer code:
