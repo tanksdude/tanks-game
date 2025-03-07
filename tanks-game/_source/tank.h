@@ -98,7 +98,7 @@ public:
 
 protected:
 	inline void drawBody(float alpha = 1.0f) const;
-	inline void drawDead(float alpha = 1.0f) const; //probably doesn't need alpha
+	inline void drawBodyDead(float alpha = 1.0f) const; //probably doesn't need alpha
 	inline void drawOutline(float alpha = 1.0f) const;
 	inline void drawShootingCooldown(float alpha = 1.0f) const;
 	inline void drawPowerCooldown(float alpha = 1.0f) const;
