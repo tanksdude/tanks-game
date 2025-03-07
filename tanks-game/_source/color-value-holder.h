@@ -18,5 +18,4 @@ public:
 	ColorValueHolder(float, float, float);
 	ColorValueHolder(float, float, float, float);
 	ColorValueHolder() { R = 0; G = 0; B = 0; A = 1; }
-	//ColorValueHolder(const ColorValueHolder&); //implicitly generated
 };

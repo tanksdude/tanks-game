@@ -4,8 +4,6 @@
 #include <cmath> //abs, fmod
 #include <iostream>
 
-//TODO: would switching color to glm::vec4 improve performance?
-
 ColorValueHolder ColorMixer::mix(const ColorValueHolder& a, const ColorValueHolder& b) {
 	return ColorValueHolder((a.getRf() + b.getRf())/2, (a.getGf() + b.getGf())/2, (a.getBf() + b.getBf())/2);
 }

@@ -10,12 +10,3 @@ ColorValueHolder::ColorValueHolder(float r, float g, float b, float a) {
 	B = std::clamp<float>(b, 0.0f, 1.0f);
 	A = std::clamp<float>(a, 0.0f, 1.0f);
 }
-
-/*
-ColorValueHolder::ColorValueHolder(const ColorValueHolder& other) {
-	this->R = other.R;
-	this->G = other.G;
-	this->B = other.B;
-	this->A = other.A;
-}
-*/
