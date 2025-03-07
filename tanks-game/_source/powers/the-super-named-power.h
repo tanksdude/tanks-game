@@ -3,6 +3,9 @@
 
 class TheSuperNamedPower : public Power {
 public:
+	static inline float getTimeValue();
+
+public:
 	virtual std::vector<std::string> getPowerTypes() const override {
 		std::vector<std::string> types = std::vector<std::string>{ "dev" }; //no random-dev
 		return types;

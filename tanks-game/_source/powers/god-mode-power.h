@@ -3,6 +3,9 @@
 
 class GodmodePower : public Power {
 public:
+	static inline int getHueValue();
+
+public:
 	virtual std::vector<std::string> getPowerTypes() const override {
 		std::vector<std::string> types = std::vector<std::string>{ "vanilla", "old", "ultimate", "ultimate-vanilla" };
 		return types;
