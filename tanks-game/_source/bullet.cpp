@@ -421,7 +421,7 @@ ColorValueHolder Bullet::getColor() const {
 		if (highest < 0) {
 			return defaultColor;
 		}
-		std::vector<ColorValueHolder> mixingColors; //mixingColors.reserve(bulletPowers.size());
+		std::vector<ColorValueHolder> mixingColors; mixingColors.reserve(bulletPowers.size()); //dumb preallocating is a bit faster than counting exactly how many
 		for (int i = 0; i < bulletPowers.size(); i++) {
 			if (bulletPowers[i]->getColorImportance() == highest) {
 				mixingColors.push_back(bulletPowers[i]->getColor());
