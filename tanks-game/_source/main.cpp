@@ -167,12 +167,19 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 
+#include <rpmalloc.h>
+//#include <rpnew.h> //only include once!
+#include <rpmalloc.c> //yeah, .c files shouldn't be #include-ed, but it's fine
+//#include <malloc.c> //not used
+
 const std::string GameWindowName = "PowerTanks Battle v0.2.5.1 NOT FINAL"; //this is not guaranteed to be correct every commit but likely will be
 const std::string INIFilePath = "tanks.ini";
 
 
 
 int main(int argc, char** argv) {
+	//rpmalloc initialization has to happen before main, so it's not called here
+
 	GameManager::initializeINI(INIFilePath);
 	GameManager::initializeSettings();
 	const BasicINIParser::BasicINIData& ini_data = GameManager::get_INI();
@@ -466,6 +473,7 @@ int main(int argc, char** argv) {
 
 	Renderer::Uninitialize();
 
+	rpmalloc_finalize();
 	return 0;
 }
 
