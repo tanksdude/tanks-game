@@ -1,4 +1,5 @@
 #include "barrier-power.h"
+#include "../game-manager.h" //settings
 
 std::unordered_map<std::string, float> BarrierPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -37,8 +38,9 @@ InteractionBoolHolder BarrierTankPower::modifiedDeathHandling(Tank* parent) {
 }
 
 BarrierTankPower::BarrierTankPower() {
-	maxTime = 500;
-	timeLeft = 500;
+	const GameSettings& game_settings = GameManager::get_settings();
+	maxTime = game_settings.PowerupDurationBaseTime;
+	timeLeft = game_settings.PowerupDurationBaseTime;
 	//JS: maxTime = 1000
 	//in JS, the tank's shooting cooldown was reset
 

@@ -1,4 +1,5 @@
 #include "dev-pusher-power.h"
+#include "../game-manager.h" //settings
 
 std::unordered_map<std::string, float> DevPusherPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -56,8 +57,9 @@ BulletPower* DevPusherTankPower::makeBulletPower() const {
 }
 
 DevPusherTankPower::DevPusherTankPower() {
-	maxTime = 500;
-	timeLeft = 500;
+	const GameSettings& game_settings = GameManager::get_settings();
+	maxTime = game_settings.PowerupDurationBaseTime;
+	timeLeft = game_settings.PowerupDurationBaseTime;
 
 	modifiesCollisionWithWall = true;
 }

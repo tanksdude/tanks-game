@@ -1,4 +1,5 @@
 #include "annoying-power.h"
+#include "../game-manager.h" //settings
 
 std::unordered_map<std::string, float> AnnoyingPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -54,8 +55,9 @@ double AnnoyingTankPower::getTankAccelerationMultiplier() const {
 }
 
 AnnoyingTankPower::AnnoyingTankPower() {
-	maxTime = 500;
-	timeLeft = 500;
+	const GameSettings& game_settings = GameManager::get_settings();
+	maxTime = game_settings.PowerupDurationBaseTime;
+	timeLeft = game_settings.PowerupDurationBaseTime;
 
 	modifiesEdgeCollision = true;
 }

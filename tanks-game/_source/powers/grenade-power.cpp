@@ -1,4 +1,5 @@
 #include "grenade-power.h"
+#include "../game-manager.h" //settings
 
 const double GrenadePower::degradeAmount = .875; //JS: .75
 const double GrenadePower::growAmount = 65/64.0;
@@ -38,8 +39,9 @@ BulletPower* GrenadeTankPower::makeBulletPower() const {
 }
 
 GrenadeTankPower::GrenadeTankPower() {
-	maxTime = 500;
-	timeLeft = 500;
+	const GameSettings& game_settings = GameManager::get_settings();
+	maxTime = game_settings.PowerupDurationBaseTime;
+	timeLeft = game_settings.PowerupDurationBaseTime;
 	//JS: maxTime = 1000
 	//in JS, the tank's shooting cooldown was reset
 }

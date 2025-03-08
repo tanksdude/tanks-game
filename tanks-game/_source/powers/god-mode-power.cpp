@@ -1,7 +1,7 @@
 #include "god-mode-power.h"
+#include "../game-manager.h" //settings, getTickCount()
 
 #include "../color-mixer.h"
-#include "../game-manager.h" //getTickCount()
 
 inline int GodmodePower::getHueValue() {
 	return static_cast<int>(GameManager::getTickCount()) % 360;
@@ -63,8 +63,9 @@ BulletPower* GodmodeTankPower::makeBulletPower() const {
 }
 
 GodmodeTankPower::GodmodeTankPower() {
-	maxTime = 500;
-	timeLeft = 500;
+	const GameSettings& game_settings = GameManager::get_settings();
+	maxTime = game_settings.PowerupDurationBaseTime;
+	timeLeft = game_settings.PowerupDurationBaseTime;
 	//TODO: find power with longest time, then set this time to that
 	//future note: it should probably be a fusion of every power instead of all powers separately applied
 }

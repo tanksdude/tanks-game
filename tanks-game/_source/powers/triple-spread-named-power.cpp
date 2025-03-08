@@ -35,9 +35,6 @@ BulletPower* TripleSpreadNamedTankPower::makeBulletPower() const {
 }
 
 TripleSpreadNamedTankPower::TripleSpreadNamedTankPower() : TripleNamedTankPower() {
-	//maxTime = 500;
-	//timeLeft = 500;
-
 	addsExtraShootingPoints = true;
 }
 

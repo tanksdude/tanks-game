@@ -1,4 +1,5 @@
 #include "speed-power.h"
+#include "../game-manager.h" //settings
 
 std::unordered_map<std::string, float> SpeedPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -35,8 +36,9 @@ BulletPower* SpeedTankPower::makeBulletPower() const {
 }
 
 SpeedTankPower::SpeedTankPower() {
-	maxTime = 500;
-	timeLeft = 500;
+	const GameSettings& game_settings = GameManager::get_settings();
+	maxTime = game_settings.PowerupDurationBaseTime;
+	timeLeft = game_settings.PowerupDurationBaseTime;
 
 	tankMaxSpeedStacks = true;
 }

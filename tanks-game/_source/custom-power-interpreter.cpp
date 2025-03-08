@@ -11,7 +11,7 @@
 #include "mod-processor.h"
 #include "powerup-data-governor.h" //for adding custom powers to the game
 #include "basic-ini-parser.h" //for processing custom power files
-#include "game-manager.h" //INI file
+#include "game-manager.h" //INI file, settings
 
 #include "collision-handler.h"
 #include "power-function-helper.h"
@@ -894,7 +894,7 @@ CustomPower* CustomPowerInterpreter::processCustomPower(std::string path) {
 
 	std::string name;
 	float colorR, colorG, colorB;
-	double tankDuration = 500;
+	double tankDuration = GameManager::get_settings().PowerupDurationBaseTime;
 	std::vector<std::string> types;
 	std::vector<std::string> attributes = std::vector<std::string>{ "stack", "mix" };
 	std::unordered_map<std::string, float> weights;

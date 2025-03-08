@@ -1,4 +1,5 @@
 #include "shield-power.h"
+#include "../game-manager.h" //settings
 
 const double ShieldPower::barrierStrength = 50; //TODO: depend on global power duration
 
@@ -63,7 +64,7 @@ InteractionBoolHolder ShieldTankPower::modifiedDeathHandling(Tank* parent) {
 	return { false, false };
 }
 
-ShieldTankPower::ShieldTankPower() : ShieldTankPower(500) {}
+ShieldTankPower::ShieldTankPower() : ShieldTankPower(GameManager::get_settings().PowerupDurationBaseTime) {}
 
 ShieldTankPower::ShieldTankPower(double life) {
 	maxTime = life;

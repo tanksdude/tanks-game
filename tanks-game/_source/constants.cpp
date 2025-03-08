@@ -8,7 +8,7 @@ const double GAME_WIDTH = 640;
 const double GAME_HEIGHT = 320;
 const double TANK_RADIUS = 16;
 const double SHOOT_COOLDOWN = 100;
-const double POWER_COOLDOWN = 500; //does nothing
+const double POWER_COOLDOWN = 500;
 
 const float DESTRUCTION_TIER = 2;
 const double BULLET_TO_TANK_RADIUS_RATIO = .25;

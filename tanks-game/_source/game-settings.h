@@ -26,7 +26,7 @@ public: //safe to be public because a const reference is used, and I don't want 
 	int MaxBullets;
 	bool FewerExtraShootingBullets;
 	double ShootingCooldown;
-	//double PowerupDurationBaseTime;
+	double PowerupDurationBaseTime;
 
 	bool RestrictTankTurning;
 	bool NoTankAcceleration;

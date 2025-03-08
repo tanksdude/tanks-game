@@ -29,7 +29,8 @@ void GameSettings::Initialize(const BasicINIParser::BasicINIData& ini_data) {
 	FewerExtraShootingBullets = ini_data.exists("GAME_OPTIONS", "FewerExtraShootingBullets") && std::stoi(ini_data.get("GAME_OPTIONS", "FewerExtraShootingBullets"));
 	ShootingCooldown = ini_data.exists("GAME_OPTIONS", "ShootingCooldown")
 		? std::stod(ini_data.get("GAME_OPTIONS", "ShootingCooldown")) : SHOOT_COOLDOWN;
-	//PowerupDurationBaseTime;
+	PowerupDurationBaseTime = ini_data.exists("GAME_OPTIONS", "PowerupDurationBaseTime")
+		? std::stod(ini_data.get("GAME_OPTIONS", "PowerupDurationBaseTime")) : POWER_COOLDOWN;
 
 	RestrictTankTurning = ini_data.exists("GAME_OPTIONS", "RestrictTankTurning") && std::stoi(ini_data.get("GAME_OPTIONS", "RestrictTankTurning"));
 	NoTankAcceleration = ini_data.exists("GAME_OPTIONS", "NoTankAcceleration") && std::stoi(ini_data.get("GAME_OPTIONS", "NoTankAcceleration"));

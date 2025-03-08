@@ -1,4 +1,5 @@
 #include "swarm-power.h"
+#include "../game-manager.h" //settings
 
 #include "../constants.h"
 
@@ -46,8 +47,9 @@ BulletPower* SwarmTankPower::makeBulletPower() const {
 }
 
 SwarmTankPower::SwarmTankPower() {
-	maxTime = 500;
-	timeLeft = 500;
+	const GameSettings& game_settings = GameManager::get_settings();
+	maxTime = game_settings.PowerupDurationBaseTime;
+	timeLeft = game_settings.PowerupDurationBaseTime;
 
 	modifiesAdditionalShooting = true;
 	overridesAdditionalShooting = true;

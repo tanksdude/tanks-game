@@ -1,4 +1,5 @@
 #include "trickster-snake-power.h"
+#include "../game-manager.h" //settings
 
 const double TricksterSnakePower::timePeriod = 50;
 const double TricksterSnakePower::movementAmplitude = 16.0/timePeriod;
@@ -33,8 +34,9 @@ BulletPower* TricksterSnakeTankPower::makeBulletPower() const {
 }
 
 TricksterSnakeTankPower::TricksterSnakeTankPower() {
-	maxTime = 500;
-	timeLeft = 500;
+	const GameSettings& game_settings = GameManager::get_settings();
+	maxTime = game_settings.PowerupDurationBaseTime;
+	timeLeft = game_settings.PowerupDurationBaseTime;
 }
 
 

@@ -1,10 +1,10 @@
 #include "the-super-named-power.h"
+#include "../game-manager.h" //settings, getTickCount()
 
 #include "../constants.h"
 #include <cmath> //sin
 
 #include "../color-mixer.h"
-#include "../game-manager.h" //getTickCount()
 
 inline float TheSuperNamedPower::getTimeValue() {
 	return static_cast<float>(GameManager::getTickCount()) / 200;
@@ -43,8 +43,9 @@ BulletPower* TheSuperNamedTankPower::makeBulletPower() const {
 }
 
 TheSuperNamedTankPower::TheSuperNamedTankPower() {
-	maxTime = 1000;
-	timeLeft = 1000;
+	const GameSettings& game_settings = GameManager::get_settings();
+	maxTime = game_settings.PowerupDurationBaseTime * 2;
+	timeLeft = game_settings.PowerupDurationBaseTime * 2;
 }
 
 

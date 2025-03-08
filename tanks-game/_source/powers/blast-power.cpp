@@ -1,4 +1,5 @@
 #include "blast-power.h"
+#include "../game-manager.h" //settings
 
 #include "../constants.h"
 
@@ -51,8 +52,9 @@ BulletPower* BlastTankPower::makeBulletPower() const {
 }
 
 BlastTankPower::BlastTankPower() {
-	maxTime = 500;
-	timeLeft = 500;
+	const GameSettings& game_settings = GameManager::get_settings();
+	maxTime = game_settings.PowerupDurationBaseTime;
+	timeLeft = game_settings.PowerupDurationBaseTime;
 	//JS: maxTime = 1000
 
 	modifiesAdditionalShooting = true;

@@ -1,4 +1,5 @@
 #include "multishot-power.h"
+#include "../game-manager.h" //settings
 
 std::unordered_map<std::string, float> MultishotPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -41,8 +42,9 @@ std::vector<double>* MultishotTankPower::addShootingPoints() const {
 }
 
 MultishotTankPower::MultishotTankPower() {
-	maxTime = 500;
-	timeLeft = 500;
+	const GameSettings& game_settings = GameManager::get_settings();
+	maxTime = game_settings.PowerupDurationBaseTime;
+	timeLeft = game_settings.PowerupDurationBaseTime;
 	//JS: maxTime = 1000
 
 	addsShootingPoints = true;
