@@ -3,7 +3,6 @@
 
 class TheSuperNamedPower : public Power {
 public:
-	//TODO: might need an identifierCache
 	static inline float getTimeValue();
 
 public:

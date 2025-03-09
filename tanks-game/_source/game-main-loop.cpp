@@ -15,6 +15,7 @@
 //other:
 #include "background-rect.h"
 #include "diagnostics.h"
+#include "color-cache.h"
 
 //managers:
 #include "game-manager.h"
@@ -1239,6 +1240,7 @@ void GameMainLoop::drawMain() const {
 	Diagnostics::endTiming();
 
 	Diagnostics::startTiming("bullets");
+	ColorCacheBullet::invalidateColors();
 	for (int i = 0; i < BulletManager::getNumBullets(); i++) {
 		BulletManager::getBullet(i)->draw(DrawingLayers::normal);
 	}

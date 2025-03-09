@@ -3,7 +3,6 @@
 
 class GodmodePower : public Power {
 public:
-	static std::string identifierCache[360]; //very needed, or pretty much all the gains from caching colors gets erased by std::to_string
 	static inline int getHueValue();
 
 public:

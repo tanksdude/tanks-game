@@ -6,8 +6,6 @@
 #include "../color-mixer.h"
 #include "../game-manager.h" //getTickCount()
 
-std::string GodmodePower::identifierCache[360];
-
 inline int GodmodePower::getHueValue() {
 	return static_cast<int>(GameManager::getTickCount()) % 360;
 }
@@ -22,11 +20,7 @@ std::unordered_map<std::string, float> GodmodePower::getWeights() const {
 }
 
 std::string GodmodePower::getClassIdentifier() {
-	const int hue = GodmodePower::getHueValue();
-	if (GodmodePower::identifierCache[hue].empty()) [[unlikely]] {
-		GodmodePower::identifierCache[hue] = GodmodePower::getClassName() + "-" + std::to_string(GodmodePower::getHueValue());
-	}
-	return GodmodePower::identifierCache[hue];
+	return GodmodePower::getClassName();
 }
 
 ColorValueHolder GodmodePower::getClassColor() {

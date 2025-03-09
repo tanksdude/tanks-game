@@ -4,52 +4,21 @@
 #include "color-value-holder.h"
 
 //currently, color cache identifiers are separated by "|", so don't put that in your power's name
+//TODO: when powers get added, check through every power's identifier to make sure it doesn't have a "|", exit program if it does (make sure that's only for debug builds)
 
-//TODO: string hashing is awfully slow, to the point where the performance gained from this is practically zero
+//TODO: string hashing is still slow, is there a way around that?
 //probable solution: at startup, give every power a unique int ID, hash based on the int
-//problem: just that approach limits powers to a single global color... but that's an acceptable trade-off; I think properly doing a color changing color requires generating a texture and basically clipping out just where the bullets are
-//another problem: it works well for just one power, but how to mix? does it hash to another hashmap? ID=0 for "no further mixing", but it's not like a hashmap can store both other hashmaps and a color
-//continued: basically a color mixture needs to generate a unique int ID, then hash based on that... so maybe use the string to hash to a unique int, which then hashes to a color? no, because the point is to not hash strings
-
-/*
-class ColorCachePowerSquare {
-protected:
-	static std::unordered_map<std::string, ColorValueHolder> cachedColors;
-
-public:
-	static bool colorExists(const std::string& identifier);
-	static const ColorValueHolder& getColor(const std::string& identifier);
-	[[nodiscard]] static const ColorValueHolder& insertColor(const std::string& identifier, const ColorValueHolder* colors, int num); //returns the inserted color
-
-private:
-	ColorCachePowerSquare() = delete;
-	ColorCachePowerSquare(const ColorCachePowerSquare&) = delete;
-};
-
-
-
-class ColorCacheTank {
-protected:
-	static std::unordered_map<std::string, ColorValueHolder> cachedColors;
-
-public:
-	static bool colorExists(const std::string& identifier);
-	static const ColorValueHolder& getColor(const std::string& identifier);
-	[[nodiscard]] static const ColorValueHolder& insertColor(const std::string& identifier, const ColorValueHolder* colors, int num);
-
-private:
-	ColorCacheTank() = delete;
-	ColorCacheTank(const ColorCacheTank&) = delete;
-};
-*/
-
-
+//problem: how to mix? maybe every color could instead be a set bit, which would need a BigInt library for >64 colors, however this wouldn't account for multiple of the same power
+//continued: so is the only solution then to set a hard limit on the number of powers? if there's a cap of like 8 for a specific power, then bit/int alignment would be pretty easy... yeah, that's probably how it would be done in real optimized software
+//continued continued: if the cap is 2^8 per power, each bullet would need to store <num of powers> bytes just for color... at that point, hashing a string would probably be faster
 
 class ColorCacheBullet {
 protected:
 	static std::unordered_map<std::string, ColorValueHolder> cachedColors;
 
 public:
+	static void invalidateColors(); //called at the start of a new frame
+
 	static bool colorExists(const std::string& identifier);
 	static const ColorValueHolder& getColor(const std::string& identifier);
 	[[nodiscard]] static const ColorValueHolder& insertColor(const std::string& identifier, const ColorValueHolder* colors, int num);

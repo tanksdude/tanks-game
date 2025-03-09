@@ -32,6 +32,7 @@ public: //hopefully temporary
 	BulletParentType parentType;
 	std::vector<BulletPower*> bulletPowers; //change eventually?
 	double lifeValue; //[0,100], controls transparency (0=nothing, 100=opaque)
+	std::string colorIdentifier; //reset on power change
 
 public:
 	float getOffenseTier() const;
@@ -74,6 +75,7 @@ public:
 	bool move();
 	void powerCalculate();
 	void removePower(int index);
+	void updateColorIdentifier();
 
 	bool canCollideWith(const GameThing*) const;
 	bool canCollideWith(const Bullet*) const;

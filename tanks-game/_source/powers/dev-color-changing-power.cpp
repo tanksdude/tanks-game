@@ -37,8 +37,6 @@ DevColorChangingPower::DevColorChangingPower() {
 
 
 
-#include <format>
-
 void DevColorChangingTankPower::tick(Tank* parent) {
 	const Tank* closest = nullptr;
 	double dist = 2*GAME_WIDTH + 2*GAME_HEIGHT;
@@ -62,7 +60,8 @@ void DevColorChangingTankPower::tick(Tank* parent) {
 }
 
 std::string DevColorChangingTankPower::getIdentifier() const {
-	return DevColorChangingPower::getClassName() + "-" + std::format("{:.2f}", colorDist);
+	//only works because tank colors aren't cached
+	return DevColorChangingPower::getClassName(); //+ "-" + std::format("{:.2f}", colorDist);
 }
 
 ColorValueHolder DevColorChangingTankPower::getColor() const {
@@ -86,8 +85,6 @@ DevColorChangingTankPower::DevColorChangingTankPower() {
 
 
 
-#include <format>
-
 void DevColorChangingBulletPower::tick(Bullet* parent) {
 	const Tank* closest = nullptr;
 	double dist = 2*GAME_WIDTH + 2*GAME_HEIGHT;
@@ -110,7 +107,8 @@ void DevColorChangingBulletPower::tick(Bullet* parent) {
 }
 
 std::string DevColorChangingBulletPower::getIdentifier() const {
-	return DevColorChangingPower::getClassName() + "-" + std::format("{:.2f}", colorDist);
+	//does not work
+	return DevColorChangingPower::getClassName(); //+ "-" + std::format("{:.2f}", colorDist);
 }
 
 ColorValueHolder DevColorChangingBulletPower::getColor() const {

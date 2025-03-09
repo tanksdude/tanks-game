@@ -26,6 +26,7 @@ Bullet::Bullet(double x_, double y_, double angle, Team_ID teamID, BulletParentT
 	this->parentType = parentType;
 	this->parentID = parentID;
 	this->lifeValue = 100;
+	colorIdentifier = "";
 
 	initializeVertices();
 }
@@ -39,6 +40,7 @@ Bullet::Bullet(double x_, double y_, double angle, Team_ID teamID, BulletParentT
 		bulletPowers[i]->initialize(this);
 	}
 	//bp not deleted
+	updateColorIdentifier();
 }
 
 //probably just for banana bullet creation:
@@ -407,36 +409,47 @@ void Bullet::removePower(int i) {
 	bulletPowers[i]->removeEffects(this);
 	delete bulletPowers[i];
 	bulletPowers.erase(bulletPowers.begin() + i);
+	updateColorIdentifier();
+}
+
+void Bullet::updateColorIdentifier() {
+	float highest = LOW_IMPORTANCE;
+	for (int i = 0; i < bulletPowers.size(); i++) {
+		if (bulletPowers[i]->getColorImportance() > highest) {
+			highest = bulletPowers[i]->getColorImportance();
+		}
+	}
+	if (highest < 0) {
+		colorIdentifier = "";
+		return;
+	}
+
+	colorIdentifier = "";
+	for (int i = 0; i < bulletPowers.size(); i++) {
+		if (bulletPowers[i]->getColorImportance() == highest) {
+			colorIdentifier += "|" + bulletPowers[i]->getIdentifier();
+		}
+	}
 }
 
 const ColorValueHolder& Bullet::getColor() const {
 	if (bulletPowers.size() == 0) {
 		return defaultColor;
 	} else {
-		float highest = LOW_IMPORTANCE;
-		for (int i = 0; i < bulletPowers.size(); i++) {
-			if (bulletPowers[i]->getColorImportance() > highest) {
-				highest = bulletPowers[i]->getColorImportance();
-			}
-		}
-		if (highest < 0) {
+		if (colorIdentifier.size() == 0) [[unlikely]] {
 			return defaultColor;
-		}
-
-		std::string colorIdentifier;
-		for (int i = 0; i < bulletPowers.size(); i++) {
-			if (bulletPowers[i]->getColorImportance() == highest) {
-				if (colorIdentifier.empty()) {
-					colorIdentifier = bulletPowers[i]->getIdentifier();
-				} else {
-					colorIdentifier += "|" + bulletPowers[i]->getIdentifier();
-				}
-			}
 		}
 
 		if (ColorCacheBullet::colorExists(colorIdentifier)) [[likely]] {
 			return ColorCacheBullet::getColor(colorIdentifier);
 		} else {
+			float highest = LOW_IMPORTANCE;
+			for (int i = 0; i < bulletPowers.size(); i++) {
+				if (bulletPowers[i]->getColorImportance() > highest) {
+					highest = bulletPowers[i]->getColorImportance();
+				}
+			}
+
 			std::vector<ColorValueHolder> mixingColors; mixingColors.reserve(bulletPowers.size());
 			for (int i = 0; i < bulletPowers.size(); i++) {
 				if (bulletPowers[i]->getColorImportance() == highest) {

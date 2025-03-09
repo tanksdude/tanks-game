@@ -2,7 +2,6 @@
 
 #include "../constants.h"
 #include <cmath> //sin, fmod
-#include <format>
 
 #include "../color-mixer.h"
 #include "../game-manager.h" //getTickCount()
@@ -18,7 +17,7 @@ std::unordered_map<std::string, float> TheSuperNamedPower::getWeights() const {
 }
 
 std::string TheSuperNamedPower::getClassIdentifier() {
-	return TheSuperNamedPower::getClassName() + "-" + std::format("{:.1f}", fmod(TheSuperNamedPower::getTimeValue(), static_cast<float>(2*PI)));
+	return TheSuperNamedPower::getClassName();
 }
 
 ColorValueHolder TheSuperNamedPower::getClassColor() {
