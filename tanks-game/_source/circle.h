@@ -6,7 +6,7 @@ struct Circle {
 	friend class PowerFunctionHelper;
 
 public:
-	static constexpr unsigned int numOfSides = 64;
+	static constexpr unsigned int NumOfSides = 64;
 
 public:
 	double x;
@@ -17,3 +17,5 @@ public:
 	double getY() const noexcept { return y; }
 	double getR() const noexcept { return r; }
 };
+
+static_assert(Circle::NumOfSides % 2 == 0);

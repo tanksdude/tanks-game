@@ -49,9 +49,11 @@ protected:
 	virtual inline void drawBubbles(bool pose, float alpha = 1.0f) const;
 
 protected:
-	static SimpleVector2D bubble_vertices[Circle::numOfSides+1];
-	static unsigned int bubble_indices[Circle::numOfSides*3];
-	static unsigned int outline_indices[Circle::numOfSides*2*3];
+	//NOTE: bubbles have half the normal circle vertices
+	static constexpr unsigned int BubbleSideCount = Circle::NumOfSides / 2;
+	static SimpleVector2D bubble_vertices[BubbleSideCount + 1];
+	static unsigned int bubble_indices[BubbleSideCount * 3];
+	static unsigned int outline_indices[BubbleSideCount * 2*3];
 	static bool initialized_vertices;
 
 	static bool initializeVertices();

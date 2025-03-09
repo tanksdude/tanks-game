@@ -17,9 +17,9 @@
 #include "../hazard-manager.h"
 #include "../powerup-manager.h"
 
-SimpleVector2D GravityWellHazard::body_vertices[Circle::numOfSides+1];
-unsigned int GravityWellHazard::body_indices[Circle::numOfSides*3];
-unsigned int GravityWellHazard::outline_indices[Circle::numOfSides*2*3];
+SimpleVector2D GravityWellHazard::body_vertices[Circle::NumOfSides+1];
+unsigned int GravityWellHazard::body_indices[Circle::NumOfSides*3];
+unsigned int GravityWellHazard::outline_indices[Circle::NumOfSides*2*3];
 SimpleVector2D GravityWellHazard::vertices_arrow[7];
 unsigned int GravityWellHazard::indices_arrow[3*3];
 bool GravityWellHazard::initialized_vertices = false;
@@ -64,22 +64,22 @@ bool GravityWellHazard::initializeVertices() {
 	}
 
 	body_vertices[0] = SimpleVector2D(0, 0);
-	for (int i = 1; i < Circle::numOfSides+1; i++) {
-		body_vertices[i] = SimpleVector2D(cos((i-1) * (2*PI / Circle::numOfSides)), sin((i-1) * (2*PI / Circle::numOfSides)));
+	for (int i = 1; i < Circle::NumOfSides+1; i++) {
+		body_vertices[i] = SimpleVector2D(cos((i-1) * (2*PI / Circle::NumOfSides)), sin((i-1) * (2*PI / Circle::NumOfSides)));
 	}
 
-	for (int i = 0; i < Circle::numOfSides; i++) {
+	for (int i = 0; i < Circle::NumOfSides; i++) {
 		body_indices[i*3]   = 0;
 		body_indices[i*3+1] = i+1;
-		body_indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
+		body_indices[i*3+2] = (i+1) % Circle::NumOfSides + 1;
 	}
 
-	for (int i = 0; i < Circle::numOfSides; i++) {
+	for (int i = 0; i < Circle::NumOfSides; i++) {
 		outline_indices[i*6]   =  i*2;
 		outline_indices[i*6+1] =  i*2+1;
-		outline_indices[i*6+2] = (i*2+3) % (Circle::numOfSides*2);
-		outline_indices[i*6+3] = (i*2+3) % (Circle::numOfSides*2);
-		outline_indices[i*6+4] = (i*2+2) % (Circle::numOfSides*2);
+		outline_indices[i*6+2] = (i*2+3) % (Circle::NumOfSides*2);
+		outline_indices[i*6+3] = (i*2+3) % (Circle::NumOfSides*2);
+		outline_indices[i*6+4] = (i*2+2) % (Circle::NumOfSides*2);
 		outline_indices[i*6+5] =  i*2;
 	}
 
@@ -322,14 +322,14 @@ inline void GravityWellHazard::drawBody(float alpha) const {
 	ColorValueHolder cloudColor = color;
 	cloudColor = ColorMixer::mix(BackgroundRect::getBackColor(), cloudColor, alpha);
 
-	float coordsAndColor[(Circle::numOfSides+1)*(2+4)];
+	float coordsAndColor[(Circle::NumOfSides+1)*(2+4)];
 	coordsAndColor[0] = x;
 	coordsAndColor[1] = y;
 	coordsAndColor[2] = cloudColor.getRf();
 	coordsAndColor[3] = cloudColor.getGf();
 	coordsAndColor[4] = cloudColor.getBf();
 	coordsAndColor[5] = cloudColor.getAf();
-	for (int i = 1; i < Circle::numOfSides+1; i++) {
+	for (int i = 1; i < Circle::NumOfSides+1; i++) {
 		coordsAndColor[i*6]   = x + r * body_vertices[i].getXComp();
 		coordsAndColor[i*6+1] = y + r * body_vertices[i].getYComp();
 		coordsAndColor[i*6+2] = cloudColor.getRf();
@@ -338,7 +338,7 @@ inline void GravityWellHazard::drawBody(float alpha) const {
 		coordsAndColor[i*6+5] = cloudColor.getAf();
 	}
 
-	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::numOfSides+1)*(2+4), body_indices, Circle::numOfSides*3);
+	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::NumOfSides+1)*(2+4), body_indices, Circle::NumOfSides*3);
 }
 
 inline void GravityWellHazard::drawOutline(float alpha) const {
@@ -349,8 +349,8 @@ inline void GravityWellHazard::drawOutline(float alpha) const {
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	const float lineWidth = 0.5f;
 
-	float coordsAndColor[(Circle::numOfSides*2)*(2+4)];
-	for (int i = 0; i < Circle::numOfSides; i++) {
+	float coordsAndColor[(Circle::NumOfSides*2)*(2+4)];
+	for (int i = 0; i < Circle::NumOfSides; i++) {
 		coordsAndColor[(i*2)  *6]   = x + (gravityRange-lineWidth) * body_vertices[i+1].getXComp();
 		coordsAndColor[(i*2)  *6+1] = y + (gravityRange-lineWidth) * body_vertices[i+1].getYComp();
 		coordsAndColor[(i*2+1)*6]   = x + (gravityRange+lineWidth) * body_vertices[i+1].getXComp();
@@ -366,7 +366,7 @@ inline void GravityWellHazard::drawOutline(float alpha) const {
 		coordsAndColor[(i*2+1)*6+5] = color.getAf();
 	}
 
-	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::numOfSides*2)*(2+4), outline_indices, Circle::numOfSides*6);
+	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::NumOfSides*2)*(2+4), outline_indices, Circle::NumOfSides*6);
 }
 
 inline void GravityWellHazard::drawGravityCircle(float alpha) const {
@@ -377,8 +377,8 @@ inline void GravityWellHazard::drawGravityCircle(float alpha) const {
 	c = ColorMixer::mix(BackgroundRect::getBackColor(), c, alpha);
 	const float lineWidth = this->r / 4;
 
-	float coordsAndColor[(Circle::numOfSides*2)*(2+4)];
-	for (int i = 0; i < Circle::numOfSides; i++) {
+	float coordsAndColor[(Circle::NumOfSides*2)*(2+4)];
+	for (int i = 0; i < Circle::NumOfSides; i++) {
 		coordsAndColor[(i*2)  *6]   = static_cast<float>(x) + (getInnerGravityCircleRadius()-lineWidth) * body_vertices[i+1].getXComp();
 		coordsAndColor[(i*2)  *6+1] = static_cast<float>(y) + (getInnerGravityCircleRadius()-lineWidth) * body_vertices[i+1].getYComp();
 		coordsAndColor[(i*2+1)*6]   = static_cast<float>(x) + (getInnerGravityCircleRadius())           * body_vertices[i+1].getXComp();
@@ -394,7 +394,7 @@ inline void GravityWellHazard::drawGravityCircle(float alpha) const {
 		coordsAndColor[(i*2+1)*6+5] = c.getAf();
 	}
 
-	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::numOfSides*2)*(2+4), outline_indices, Circle::numOfSides*6);
+	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::NumOfSides*2)*(2+4), outline_indices, Circle::NumOfSides*6);
 }
 
 inline void GravityWellHazard::drawGravityArrows(float alpha) const {

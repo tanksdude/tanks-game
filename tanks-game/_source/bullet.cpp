@@ -11,9 +11,9 @@
 
 #include "game-manager.h" //settings file
 
-SimpleVector2D Bullet::body_vertices[Circle::numOfSides+1];
-unsigned int Bullet::body_indices[Circle::numOfSides*3];
-unsigned int Bullet::outline_indices[Circle::numOfSides*2*3];
+SimpleVector2D Bullet::body_vertices[Bullet::BulletSideCount + 1];
+unsigned int Bullet::body_indices[Bullet::BulletSideCount * 3];
+unsigned int Bullet::outline_indices[Bullet::BulletSideCount * 2*3];
 bool Bullet::initialized_vertices = false;
 
 const double Bullet::default_radius = 4;
@@ -85,22 +85,22 @@ bool Bullet::initializeVertices() {
 	}
 
 	body_vertices[0] = SimpleVector2D(0, 0);
-	for (int i = 1; i < Circle::numOfSides+1; i++) {
-		body_vertices[i] = SimpleVector2D(cos((i-1) * (2*PI / Circle::numOfSides) + PI/2), sin((i-1) * (2*PI / Circle::numOfSides) + PI/2));
+	for (int i = 1; i < Bullet::BulletSideCount+1; i++) {
+		body_vertices[i] = SimpleVector2D(cos((i-1) * (2*PI / Bullet::BulletSideCount) + PI/2), sin((i-1) * (2*PI / Bullet::BulletSideCount) + PI/2));
 	}
 
-	for (int i = 0; i < Circle::numOfSides; i++) {
+	for (int i = 0; i < Bullet::BulletSideCount; i++) {
 		body_indices[i*3]   = 0;
 		body_indices[i*3+1] = i+1;
-		body_indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
+		body_indices[i*3+2] = (i+1) % Bullet::BulletSideCount + 1;
 	}
 
-	for (int i = 0; i < Circle::numOfSides; i++) {
+	for (int i = 0; i < Bullet::BulletSideCount; i++) {
 		outline_indices[i*6]   =  i*2;
 		outline_indices[i*6+1] =  i*2+1;
-		outline_indices[i*6+2] = (i*2+3) % (Circle::numOfSides*2);
-		outline_indices[i*6+3] = (i*2+3) % (Circle::numOfSides*2);
-		outline_indices[i*6+4] = (i*2+2) % (Circle::numOfSides*2);
+		outline_indices[i*6+2] = (i*2+3) % (Bullet::BulletSideCount*2);
+		outline_indices[i*6+3] = (i*2+3) % (Bullet::BulletSideCount*2);
+		outline_indices[i*6+4] = (i*2+2) % (Bullet::BulletSideCount*2);
 		outline_indices[i*6+5] =  i*2;
 	}
 
@@ -551,14 +551,14 @@ inline void Bullet::drawBody(float alpha) const {
 	ColorValueHolder color = getColor();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 
-	float coordsAndColor[(Circle::numOfSides+1)*(2+4)];
+	float coordsAndColor[(Bullet::BulletSideCount+1)*(2+4)];
 	coordsAndColor[0] = x;
 	coordsAndColor[1] = y;
 	coordsAndColor[2] = color.getRf();
 	coordsAndColor[3] = color.getGf();
 	coordsAndColor[4] = color.getBf();
 	coordsAndColor[5] = color.getAf();
-	for (int i = 1; i < Circle::numOfSides+1; i++) {
+	for (int i = 1; i < Bullet::BulletSideCount+1; i++) {
 		coordsAndColor[i*6]   = x + r * body_vertices[i].getXComp();
 		coordsAndColor[i*6+1] = y + r * body_vertices[i].getYComp();
 		coordsAndColor[i*6+2] = color.getRf();
@@ -567,7 +567,7 @@ inline void Bullet::drawBody(float alpha) const {
 		coordsAndColor[i*6+5] = color.getAf();
 	}
 
-	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::numOfSides+1)*(2+4), body_indices, Circle::numOfSides*3);
+	Renderer::SubmitBatchedDraw(coordsAndColor, (Bullet::BulletSideCount+1)*(2+4), body_indices, Bullet::BulletSideCount*3);
 }
 
 inline void Bullet::drawOutline(float alpha) const {
@@ -578,8 +578,8 @@ inline void Bullet::drawOutline(float alpha) const {
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	const float lineWidth = 0.5f;
 
-	float coordsAndColor[(Circle::numOfSides*2)*(2+4)];
-	for (int i = 0; i < Circle::numOfSides; i++) {
+	float coordsAndColor[(Bullet::BulletSideCount*2)*(2+4)];
+	for (int i = 0; i < Bullet::BulletSideCount; i++) {
 		coordsAndColor[(i*2)  *6]   = x + (r-lineWidth) * body_vertices[i+1].getXComp();
 		coordsAndColor[(i*2)  *6+1] = y + (r-lineWidth) * body_vertices[i+1].getYComp();
 		coordsAndColor[(i*2+1)*6]   = x + (r+lineWidth) * body_vertices[i+1].getXComp();
@@ -595,7 +595,7 @@ inline void Bullet::drawOutline(float alpha) const {
 		coordsAndColor[(i*2+1)*6+5] = color.getAf();
 	}
 
-	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::numOfSides*2)*(2+4), outline_indices, Circle::numOfSides*6);
+	Renderer::SubmitBatchedDraw(coordsAndColor, (Bullet::BulletSideCount*2)*(2+4), outline_indices, Bullet::BulletSideCount*6);
 }
 
 inline void Bullet::drawDeathCooldown(float alpha) const {
@@ -606,20 +606,20 @@ inline void Bullet::drawDeathCooldown(float alpha) const {
 
 	if (this->lifeValue < 100) {
 		double deathPercent = std::max<double>(this->lifeValue/100, 0);
-		unsigned int deathTriangles = Circle::numOfSides * deathPercent;
+		unsigned int deathTriangles = Bullet::BulletSideCount * deathPercent;
 
 		if (deathTriangles > 0) {
 			ColorValueHolder color = ColorValueHolder(1.0f, 1.0f, 1.0f);
 			color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 
-			float coordsAndColor[(Circle::numOfSides+1)*(2+4)];
+			float coordsAndColor[(Bullet::BulletSideCount+1)*(2+4)];
 			coordsAndColor[0] = x;
 			coordsAndColor[1] = y;
 			coordsAndColor[2] = color.getRf();
 			coordsAndColor[3] = color.getGf();
 			coordsAndColor[4] = color.getBf();
 			coordsAndColor[5] = color.getAf();
-			for (unsigned int i = 0; i <= deathTriangles && i < Circle::numOfSides; i++) {
+			for (unsigned int i = 0; i <= deathTriangles && i < Bullet::BulletSideCount; i++) {
 				//the final triangle shares its last vertex with the first triangle, which is why this loop condition is a bit strange (second conditional only false for that last triangle)
 				//with wrong condition: two verts on an old bullet's death outline to the center of a new bullet's center body or death outline, though sometimes even a tank or rarely the bottom left corner (why)
 				//to be more specific: with the old conditional, think it was happening when deathTriangles==1, leading to pushing only two total verts but pushing three indices; but that would mean it was always pushing insufficient verts for the indices, why wasn't it showing up before?
@@ -635,7 +635,7 @@ inline void Bullet::drawDeathCooldown(float alpha) const {
 				coordsAndColor[(i+1)*6+5] = color.getAf();
 			}
 
-			Renderer::SubmitBatchedDraw(coordsAndColor, (deathTriangles < Circle::numOfSides ? (deathTriangles+2)*(2+4) : (deathTriangles+1)*(2+4)), body_indices, deathTriangles*3);
+			Renderer::SubmitBatchedDraw(coordsAndColor, (deathTriangles < Bullet::BulletSideCount ? (deathTriangles+2)*(2+4) : (deathTriangles+1)*(2+4)), body_indices, deathTriangles*3);
 		}
 	}
 }

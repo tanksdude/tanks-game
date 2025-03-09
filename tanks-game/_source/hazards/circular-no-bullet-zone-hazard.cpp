@@ -14,8 +14,8 @@
 #include "../wall-manager.h"
 #include "../hazard-manager.h"
 
-SimpleVector2D CircularNoBulletZoneHazard::body_vertices[Circle::numOfSides+1];
-unsigned int CircularNoBulletZoneHazard::body_indices[Circle::numOfSides*3];
+SimpleVector2D CircularNoBulletZoneHazard::body_vertices[Circle::NumOfSides+1];
+unsigned int CircularNoBulletZoneHazard::body_indices[Circle::NumOfSides*3];
 SimpleVector2D* CircularNoBulletZoneHazard::redX_vertices = nullptr;
 unsigned int* CircularNoBulletZoneHazard::redX_indices = nullptr;
 int CircularNoBulletZoneHazard::redX_vertices_count = 0;
@@ -55,17 +55,17 @@ bool CircularNoBulletZoneHazard::initializeVertices() {
 	}
 
 	body_vertices[0] = SimpleVector2D(0, 0);
-	for (int i = 1; i < Circle::numOfSides+1; i++) {
-		body_vertices[i] = SimpleVector2D(cos((i-1) * (2*PI / Circle::numOfSides)), sin((i-1) * (2*PI / Circle::numOfSides)));
+	for (int i = 1; i < Circle::NumOfSides+1; i++) {
+		body_vertices[i] = SimpleVector2D(cos((i-1) * (2*PI / Circle::NumOfSides)), sin((i-1) * (2*PI / Circle::NumOfSides)));
 	}
 
-	for (int i = 0; i < Circle::numOfSides; i++) {
+	for (int i = 0; i < Circle::NumOfSides; i++) {
 		body_indices[i*3]   = 0;
 		body_indices[i*3+1] = i+1;
-		body_indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
+		body_indices[i*3+2] = (i+1) % Circle::NumOfSides + 1;
 	}
 
-	const int num_vertices_fromSlashCenter = floor(Circle::numOfSides/4 * X_WIDTH); //vertices from the center of a slash
+	const int num_vertices_fromSlashCenter = floor(Circle::NumOfSides/4 * X_WIDTH); //vertices from the center of a slash
 	const int num_vertices_outside = (2*num_vertices_fromSlashCenter + 1) * 4; //all the vertices on the outside
 	std::vector<float> coords_extra;
 	std::vector<unsigned int> indices_extra;
@@ -75,9 +75,9 @@ bool CircularNoBulletZoneHazard::initializeVertices() {
 
 	for (int k = 0; k < 4; k++) {
 		for (int i = -1*num_vertices_fromSlashCenter; i <= num_vertices_fromSlashCenter; i++) {
-			int val = (k*Circle::numOfSides/4 + Circle::numOfSides/8) + i;
-			coords_extra.push_back(cos(val * (2*PI / Circle::numOfSides)));
-			coords_extra.push_back(sin(val * (2*PI / Circle::numOfSides)));
+			int val = (k*Circle::NumOfSides/4 + Circle::NumOfSides/8) + i;
+			coords_extra.push_back(cos(val * (2*PI / Circle::NumOfSides)));
+			coords_extra.push_back(sin(val * (2*PI / Circle::NumOfSides)));
 		}
 
 		for (int i = 0; i < num_vertices_outside/4-1; i++) {
@@ -226,14 +226,14 @@ void CircularNoBulletZoneHazard::ghostDraw(float alpha) const {
 	ColorValueHolder color_background = GeneralizedNoBulletZone::getColor();
 	color_background = ColorMixer::mix(BackgroundRect::getBackColor(), color_background, alpha);
 
-	float coordsAndColor_background[(Circle::numOfSides+1)*(2+4)];
+	float coordsAndColor_background[(Circle::NumOfSides+1)*(2+4)];
 	coordsAndColor_background[0] = x;
 	coordsAndColor_background[1] = y;
 	coordsAndColor_background[2] = color_background.getRf();
 	coordsAndColor_background[3] = color_background.getGf();
 	coordsAndColor_background[4] = color_background.getBf();
 	coordsAndColor_background[5] = color_background.getAf();
-	for (int i = 1; i < Circle::numOfSides+1; i++) {
+	for (int i = 1; i < Circle::NumOfSides+1; i++) {
 		coordsAndColor_background[i*6]   = x + r * body_vertices[i].getXComp();
 		coordsAndColor_background[i*6+1] = y + r * body_vertices[i].getYComp();
 		coordsAndColor_background[i*6+2] = color_background.getRf();
@@ -242,7 +242,7 @@ void CircularNoBulletZoneHazard::ghostDraw(float alpha) const {
 		coordsAndColor_background[i*6+5] = color_background.getAf();
 	}
 
-	Renderer::SubmitBatchedDraw(coordsAndColor_background, (Circle::numOfSides+1)*(2+4), body_indices, Circle::numOfSides*3);
+	Renderer::SubmitBatchedDraw(coordsAndColor_background, (Circle::NumOfSides+1)*(2+4), body_indices, Circle::NumOfSides*3);
 
 	//red X (JS didn't have this, though the circular version didn't exist in JS):
 	ColorValueHolder color_extra = X_COLOR;

@@ -55,9 +55,9 @@ protected:
 	virtual inline void drawBarrel(float alpha = 1.0f) const;
 
 protected:
-	static SimpleVector2D body_vertices[Circle::numOfSides+1];
-	static unsigned int body_indices[Circle::numOfSides*3];
-	static unsigned int outline_indices[Circle::numOfSides*2*3];
+	static SimpleVector2D body_vertices[Circle::NumOfSides+1];
+	static unsigned int body_indices[Circle::NumOfSides*3];
+	static unsigned int outline_indices[Circle::NumOfSides*2*3];
 	static bool initialized_vertices;
 
 	static bool initializeVertices();

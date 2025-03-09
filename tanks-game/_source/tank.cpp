@@ -14,9 +14,9 @@
 #include "bullet-manager.h"
 #include "level-manager.h"
 
-SimpleVector2D Tank::body_vertices[Circle::numOfSides+1];
-unsigned int Tank::body_indices[Circle::numOfSides*3];
-unsigned int Tank::outline_indices[Circle::numOfSides*2*3];
+SimpleVector2D Tank::body_vertices[Circle::NumOfSides+1];
+unsigned int Tank::body_indices[Circle::NumOfSides*3];
+unsigned int Tank::outline_indices[Circle::NumOfSides*2*3];
 bool Tank::initialized_vertices = false;
 
 const double Tank::default_maxSpeed = 1;
@@ -66,22 +66,22 @@ bool Tank::initializeVertices() {
 	}
 
 	body_vertices[0] = SimpleVector2D(0, 0);
-	for (int i = 1; i < Circle::numOfSides+1; i++) {
-		body_vertices[i] = SimpleVector2D(cos((i-1) * (2*PI / Circle::numOfSides)), sin((i-1) * (2*PI / Circle::numOfSides)));
+	for (int i = 1; i < Circle::NumOfSides+1; i++) {
+		body_vertices[i] = SimpleVector2D(cos((i-1) * (2*PI / Circle::NumOfSides)), sin((i-1) * (2*PI / Circle::NumOfSides)));
 	}
 
-	for (int i = 0; i < Circle::numOfSides; i++) {
+	for (int i = 0; i < Circle::NumOfSides; i++) {
 		body_indices[i*3]   = 0;
 		body_indices[i*3+1] = i+1;
-		body_indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
+		body_indices[i*3+2] = (i+1) % Circle::NumOfSides + 1;
 	}
 
-	for (int i = 0; i < Circle::numOfSides; i++) {
+	for (int i = 0; i < Circle::NumOfSides; i++) {
 		outline_indices[i*6]   =  i*2;
 		outline_indices[i*6+1] =  i*2+1;
-		outline_indices[i*6+2] = (i*2+3) % (Circle::numOfSides*2);
-		outline_indices[i*6+3] = (i*2+3) % (Circle::numOfSides*2);
-		outline_indices[i*6+4] = (i*2+2) % (Circle::numOfSides*2);
+		outline_indices[i*6+2] = (i*2+3) % (Circle::NumOfSides*2);
+		outline_indices[i*6+3] = (i*2+3) % (Circle::NumOfSides*2);
+		outline_indices[i*6+4] = (i*2+2) % (Circle::NumOfSides*2);
 		outline_indices[i*6+5] =  i*2;
 	}
 
@@ -717,14 +717,14 @@ inline void Tank::drawBody(float alpha) const {
 		ColorValueHolder color = getBodyColor();
 		color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 
-		float coordsAndColor[(Circle::numOfSides+1)*(2+4)];
+		float coordsAndColor[(Circle::NumOfSides+1)*(2+4)];
 		coordsAndColor[0] = x;
 		coordsAndColor[1] = y;
 		coordsAndColor[2] = color.getRf();
 		coordsAndColor[3] = color.getGf();
 		coordsAndColor[4] = color.getBf();
 		coordsAndColor[5] = color.getAf();
-		for (int i = 1; i < Circle::numOfSides+1; i++) {
+		for (int i = 1; i < Circle::NumOfSides+1; i++) {
 			coordsAndColor[i*6]   = x + r * body_vertices[i].getXComp();
 			coordsAndColor[i*6+1] = y + r * body_vertices[i].getYComp();
 			coordsAndColor[i*6+2] = color.getRf();
@@ -733,7 +733,7 @@ inline void Tank::drawBody(float alpha) const {
 			coordsAndColor[i*6+5] = color.getAf();
 		}
 
-		Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::numOfSides+1)*(2+4), body_indices, Circle::numOfSides*3);
+		Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::NumOfSides+1)*(2+4), body_indices, Circle::NumOfSides*3);
 	} else {
 		//main color split:
 
@@ -750,11 +750,11 @@ inline void Tank::drawBody(float alpha) const {
 			color = tankPowers[i]->getColor();
 			color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 
-			float rotatePercent = floor((float(i) / visiblePowerCount) * Circle::numOfSides) / Circle::numOfSides;
-			float nextRotatePercent = floor((float(i+1) / visiblePowerCount) * Circle::numOfSides) / Circle::numOfSides;
-			//unsigned int rotateVertices = floor((nextRotatePercent - rotatePercent) * Circle::numOfSides);
-			unsigned int rotateVertexStart = floor(rotatePercent * Circle::numOfSides);
-			unsigned int rotateVertexEnd = floor(nextRotatePercent * Circle::numOfSides);
+			float rotatePercent = floor((float(i) / visiblePowerCount) * Circle::NumOfSides) / Circle::NumOfSides;
+			float nextRotatePercent = floor((float(i+1) / visiblePowerCount) * Circle::NumOfSides) / Circle::NumOfSides;
+			//unsigned int rotateVertices = floor((nextRotatePercent - rotatePercent) * Circle::NumOfSides);
+			unsigned int rotateVertexStart = floor(rotatePercent * Circle::NumOfSides);
+			unsigned int rotateVertexEnd = floor(nextRotatePercent * Circle::NumOfSides);
 
 			coordsAndColor_colorSplit.push_back(x);
 			coordsAndColor_colorSplit.push_back(y);
@@ -763,7 +763,7 @@ inline void Tank::drawBody(float alpha) const {
 			coordsAndColor_colorSplit.push_back(color.getBf());
 			coordsAndColor_colorSplit.push_back(color.getAf());
 			for (unsigned int j = rotateVertexStart; j <= rotateVertexEnd; j++) {
-				SimpleVector2D vertex = SimpleVector2D(body_vertices[j % Circle::numOfSides + 1]);
+				SimpleVector2D vertex = SimpleVector2D(body_vertices[j % Circle::NumOfSides + 1]);
 				vertex.scaleAndRotate(r, velocity.getAngle());
 
 				coordsAndColor_colorSplit.push_back(static_cast<float>(x) + vertex.getXComp());
@@ -782,14 +782,14 @@ inline void Tank::drawBody(float alpha) const {
 		color = getBodyColor();
 		color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 
-		float coordsAndColor[(Circle::numOfSides+1)*(2+4)];
+		float coordsAndColor[(Circle::NumOfSides+1)*(2+4)];
 		coordsAndColor[0] = x;
 		coordsAndColor[1] = y;
 		coordsAndColor[2] = color.getRf();
 		coordsAndColor[3] = color.getGf();
 		coordsAndColor[4] = color.getBf();
 		coordsAndColor[5] = color.getAf();
-		for (int i = 1; i < Circle::numOfSides+1; i++) {
+		for (int i = 1; i < Circle::NumOfSides+1; i++) {
 			coordsAndColor[i*6]   = x + (r*.75) * body_vertices[i].getXComp();
 			coordsAndColor[i*6+1] = y + (r*.75) * body_vertices[i].getYComp();
 			coordsAndColor[i*6+2] = color.getRf();
@@ -798,7 +798,7 @@ inline void Tank::drawBody(float alpha) const {
 			coordsAndColor[i*6+5] = color.getAf();
 		}
 
-		Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::numOfSides+1)*(2+4), body_indices, Circle::numOfSides*3);
+		Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::NumOfSides+1)*(2+4), body_indices, Circle::NumOfSides*3);
 	}
 }
 
@@ -811,14 +811,14 @@ inline void Tank::drawBodyDead(float alpha) const {
 	deadColor = ColorMixer::mix(BackgroundRect::getBackColor(), deadColor, alpha);
 	outerColor = ColorMixer::mix(BackgroundRect::getBackColor(), outerColor, alpha);
 
-	float coordsAndColor[(Circle::numOfSides+1)*(2+4)];
+	float coordsAndColor[(Circle::NumOfSides+1)*(2+4)];
 	coordsAndColor[0] = x;
 	coordsAndColor[1] = y;
 	coordsAndColor[2] = deadColor.getRf();
 	coordsAndColor[3] = deadColor.getGf();
 	coordsAndColor[4] = deadColor.getBf();
 	coordsAndColor[5] = deadColor.getAf();
-	for (int i = 1; i < Circle::numOfSides+1; i++) {
+	for (int i = 1; i < Circle::NumOfSides+1; i++) {
 		coordsAndColor[i*6]   = x + r * body_vertices[i].getXComp();
 		coordsAndColor[i*6+1] = y + r * body_vertices[i].getYComp();
 		coordsAndColor[i*6+2] = outerColor.getRf();
@@ -827,7 +827,7 @@ inline void Tank::drawBodyDead(float alpha) const {
 		coordsAndColor[i*6+5] = outerColor.getAf();
 	}
 
-	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::numOfSides+1)*(2+4), body_indices, Circle::numOfSides*3);
+	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::NumOfSides+1)*(2+4), body_indices, Circle::NumOfSides*3);
 }
 
 inline void Tank::drawOutline(float alpha) const {
@@ -838,8 +838,8 @@ inline void Tank::drawOutline(float alpha) const {
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	const float lineWidth = 0.5f;
 
-	float coordsAndColor[(Circle::numOfSides*2)*(2+4)];
-	for (int i = 0; i < Circle::numOfSides; i++) {
+	float coordsAndColor[(Circle::NumOfSides*2)*(2+4)];
+	for (int i = 0; i < Circle::NumOfSides; i++) {
 		coordsAndColor[(i*2)  *6]   = x + (r-lineWidth) * body_vertices[i+1].getXComp();
 		coordsAndColor[(i*2)  *6+1] = y + (r-lineWidth) * body_vertices[i+1].getYComp();
 		coordsAndColor[(i*2+1)*6]   = x + (r+lineWidth) * body_vertices[i+1].getXComp();
@@ -855,7 +855,7 @@ inline void Tank::drawOutline(float alpha) const {
 		coordsAndColor[(i*2+1)*6+5] = color.getAf();
 	}
 
-	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::numOfSides*2)*(2+4), outline_indices, Circle::numOfSides*6);
+	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::NumOfSides*2)*(2+4), outline_indices, Circle::NumOfSides*6);
 }
 
 inline void Tank::drawShootingCooldown(float alpha) const {
@@ -868,21 +868,21 @@ inline void Tank::drawShootingCooldown(float alpha) const {
 	} else {
 		shootingOutlinePercent = std::clamp<double>(shootCount/(maxShootCount*getShootingSpeedMultiplier()), 0, 1);
 	}
-	unsigned int shootingOutlineTriangles = Circle::numOfSides * shootingOutlinePercent;
+	unsigned int shootingOutlineTriangles = Circle::NumOfSides * shootingOutlinePercent;
 
 	if (shootingOutlineTriangles > 0) {
 		ColorValueHolder color = ColorValueHolder(1.0f, 1.0f, 1.0f);
 		color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 
-		float coordsAndColor[(Circle::numOfSides+1)*(2+4)];
+		float coordsAndColor[(Circle::NumOfSides+1)*(2+4)];
 		coordsAndColor[0] = x;
 		coordsAndColor[1] = y;
 		coordsAndColor[2] = color.getRf();
 		coordsAndColor[3] = color.getGf();
 		coordsAndColor[4] = color.getBf();
 		coordsAndColor[5] = color.getAf();
-		for (unsigned int i = 0; i <= shootingOutlineTriangles && i < Circle::numOfSides; i++) {
-			SimpleVector2D vertex = SimpleVector2D(body_vertices[i % Circle::numOfSides + 1]);
+		for (unsigned int i = 0; i <= shootingOutlineTriangles && i < Circle::NumOfSides; i++) {
+			SimpleVector2D vertex = SimpleVector2D(body_vertices[i % Circle::NumOfSides + 1]);
 			vertex.scaleAndRotate(r*(5.0/4.0), velocity.getAngle());
 
 			coordsAndColor[(i+1)*6]   = static_cast<float>(x) + vertex.getXComp();
@@ -893,7 +893,7 @@ inline void Tank::drawShootingCooldown(float alpha) const {
 			coordsAndColor[(i+1)*6+5] = color.getAf();
 		}
 
-		Renderer::SubmitBatchedDraw(coordsAndColor, (shootingOutlineTriangles < Circle::numOfSides ? (shootingOutlineTriangles+2)*(2+4) : (shootingOutlineTriangles+1)*(2+4)), body_indices, shootingOutlineTriangles*3);
+		Renderer::SubmitBatchedDraw(coordsAndColor, (shootingOutlineTriangles < Circle::NumOfSides ? (shootingOutlineTriangles+2)*(2+4) : (shootingOutlineTriangles+1)*(2+4)), body_indices, shootingOutlineTriangles*3);
 	}
 }
 
@@ -914,21 +914,21 @@ inline void Tank::drawPowerCooldown(float alpha) const {
 		} else {
 			powerOutlinePercent = std::clamp<double>(sortedTankPowers[i]->timeLeft/sortedTankPowers[i]->maxTime, 0, 1);
 		}
-		unsigned int powerOutlineTriangles = Circle::numOfSides * powerOutlinePercent;
+		unsigned int powerOutlineTriangles = Circle::NumOfSides * powerOutlinePercent;
 
 		if (powerOutlineTriangles > 0) {
 			ColorValueHolder color = sortedTankPowers[i]->getColor();
 			color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 
-			float coordsAndColor[(Circle::numOfSides+1)*(2+4)];
+			float coordsAndColor[(Circle::NumOfSides+1)*(2+4)];
 			coordsAndColor[0] = x;
 			coordsAndColor[1] = y;
 			coordsAndColor[2] = color.getRf();
 			coordsAndColor[3] = color.getGf();
 			coordsAndColor[4] = color.getBf();
 			coordsAndColor[5] = color.getAf();
-			for (unsigned int j = 0; j <= powerOutlineTriangles && j < Circle::numOfSides; j++) {
-				SimpleVector2D vertex = SimpleVector2D(body_vertices[j % Circle::numOfSides + 1]);
+			for (unsigned int j = 0; j <= powerOutlineTriangles && j < Circle::NumOfSides; j++) {
+				SimpleVector2D vertex = SimpleVector2D(body_vertices[j % Circle::NumOfSides + 1]);
 				vertex.scaleAndRotate(r*(9.0/8.0), velocity.getAngle());
 
 				coordsAndColor[(j+1)*6]   = static_cast<float>(x) + vertex.getXComp();
@@ -939,7 +939,7 @@ inline void Tank::drawPowerCooldown(float alpha) const {
 				coordsAndColor[(j+1)*6+5] = color.getAf();
 			}
 
-			Renderer::SubmitBatchedDraw(coordsAndColor, (powerOutlineTriangles < Circle::numOfSides ? (powerOutlineTriangles+2)*(2+4) : (powerOutlineTriangles+1)*(2+4)), body_indices, powerOutlineTriangles*3);
+			Renderer::SubmitBatchedDraw(coordsAndColor, (powerOutlineTriangles < Circle::NumOfSides ? (powerOutlineTriangles+2)*(2+4) : (powerOutlineTriangles+1)*(2+4)), body_indices, powerOutlineTriangles*3);
 		}
 	}
 }

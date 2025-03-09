@@ -247,8 +247,8 @@ inline void GinormousTurretHazard::drawOutline(float alpha) const {
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	const float lineWidth = 2.0f;
 
-	float coordsAndColor[(Circle::numOfSides*2)*(2+4)];
-	for (int i = 0; i < Circle::numOfSides; i++) {
+	float coordsAndColor[(Circle::NumOfSides*2)*(2+4)];
+	for (int i = 0; i < Circle::NumOfSides; i++) {
 		coordsAndColor[(i*2)  *6]   = x + (r-lineWidth) * body_vertices[i+1].getXComp();
 		coordsAndColor[(i*2)  *6+1] = y + (r-lineWidth) * body_vertices[i+1].getYComp();
 		coordsAndColor[(i*2+1)*6]   = x + (r+lineWidth) * body_vertices[i+1].getXComp();
@@ -264,7 +264,7 @@ inline void GinormousTurretHazard::drawOutline(float alpha) const {
 		coordsAndColor[(i*2+1)*6+5] = color.getAf();
 	}
 
-	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::numOfSides*2)*(2+4), outline_indices, Circle::numOfSides*6);
+	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::NumOfSides*2)*(2+4), outline_indices, Circle::NumOfSides*6);
 }
 
 inline void GinormousTurretHazard::drawBarrel(float alpha) const {

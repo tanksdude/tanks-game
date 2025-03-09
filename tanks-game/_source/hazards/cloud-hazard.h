@@ -57,8 +57,8 @@ public:
 	virtual void ghostDraw(DrawingLayers, float alpha) const override;
 
 protected:
-	static SimpleVector2D body_vertices[Circle::numOfSides+1];
-	static unsigned int body_indices[Circle::numOfSides*3];
+	static SimpleVector2D body_vertices[Circle::NumOfSides+1];
+	static unsigned int body_indices[Circle::NumOfSides*3];
 	static bool initialized_vertices;
 
 	static bool initializeVertices();

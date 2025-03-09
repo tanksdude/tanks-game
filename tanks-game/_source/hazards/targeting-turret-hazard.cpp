@@ -379,8 +379,8 @@ inline void TargetingTurretHazard::drawReticule(float alpha) const {
 	const float reticuleRadius = (2*TANK_RADIUS);
 	//optional rotate angle: (-PI/2) * (targetingCount/(stateMultiplier[0] * tickCycle))
 
-	float coordsAndColor_outline[(Circle::numOfSides*2 + 4*4*2)*(2+4)];
-	for (int i = 0; i < Circle::numOfSides; i++) {
+	float coordsAndColor_outline[(Circle::NumOfSides*2 + 4*4*2)*(2+4)];
+	for (int i = 0; i < Circle::NumOfSides; i++) {
 		coordsAndColor_outline[(i*2)  *6]   = targetingX + (reticuleRadius - lineWidth) * body_vertices[i+1].getXComp();
 		coordsAndColor_outline[(i*2)  *6+1] = targetingY + (reticuleRadius - lineWidth) * body_vertices[i+1].getYComp();
 		coordsAndColor_outline[(i*2+1)*6]   = targetingX + (reticuleRadius + lineWidth) * body_vertices[i+1].getXComp();
@@ -396,64 +396,64 @@ inline void TargetingTurretHazard::drawReticule(float alpha) const {
 		coordsAndColor_outline[(i*2+1)*6+5] = color_outline.getAf();
 	}
 
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*0))  *6]   = targetingX + ( .75f*reticuleRadius - lineWidth);
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*0))  *6+1] = targetingY - lineWidth;
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*0+1))*6]   = targetingX + (1.25f*reticuleRadius + lineWidth);
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*0+1))*6+1] = targetingY - lineWidth;
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*0+2))*6]   = targetingX + (1.25f*reticuleRadius + lineWidth);
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*0+2))*6+1] = targetingY + lineWidth;
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*0+3))*6]   = targetingX + ( .75f*reticuleRadius - lineWidth);
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*0+3))*6+1] = targetingY + lineWidth;
+	coordsAndColor_outline[(Circle::NumOfSides*2 + (4*0))  *6]   = targetingX + ( .75f*reticuleRadius - lineWidth);
+	coordsAndColor_outline[(Circle::NumOfSides*2 + (4*0))  *6+1] = targetingY - lineWidth;
+	coordsAndColor_outline[(Circle::NumOfSides*2 + (4*0+1))*6]   = targetingX + (1.25f*reticuleRadius + lineWidth);
+	coordsAndColor_outline[(Circle::NumOfSides*2 + (4*0+1))*6+1] = targetingY - lineWidth;
+	coordsAndColor_outline[(Circle::NumOfSides*2 + (4*0+2))*6]   = targetingX + (1.25f*reticuleRadius + lineWidth);
+	coordsAndColor_outline[(Circle::NumOfSides*2 + (4*0+2))*6+1] = targetingY + lineWidth;
+	coordsAndColor_outline[(Circle::NumOfSides*2 + (4*0+3))*6]   = targetingX + ( .75f*reticuleRadius - lineWidth);
+	coordsAndColor_outline[(Circle::NumOfSides*2 + (4*0+3))*6+1] = targetingY + lineWidth;
 
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*1))  *6]   = targetingX + lineWidth;
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*1))  *6+1] = targetingY + ( .75f*reticuleRadius - lineWidth);
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*1+1))*6]   = targetingX + lineWidth;
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*1+1))*6+1] = targetingY + (1.25f*reticuleRadius + lineWidth);
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*1+2))*6]   = targetingX - lineWidth;
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*1+2))*6+1] = targetingY + (1.25f*reticuleRadius + lineWidth);
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*1+3))*6]   = targetingX - lineWidth;
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*1+3))*6+1] = targetingY + ( .75f*reticuleRadius - lineWidth);
+	coordsAndColor_outline[(Circle::NumOfSides*2 + (4*1))  *6]   = targetingX + lineWidth;
+	coordsAndColor_outline[(Circle::NumOfSides*2 + (4*1))  *6+1] = targetingY + ( .75f*reticuleRadius - lineWidth);
+	coordsAndColor_outline[(Circle::NumOfSides*2 + (4*1+1))*6]   = targetingX + lineWidth;
+	coordsAndColor_outline[(Circle::NumOfSides*2 + (4*1+1))*6+1] = targetingY + (1.25f*reticuleRadius + lineWidth);
+	coordsAndColor_outline[(Circle::NumOfSides*2 + (4*1+2))*6]   = targetingX - lineWidth;
+	coordsAndColor_outline[(Circle::NumOfSides*2 + (4*1+2))*6+1] = targetingY + (1.25f*reticuleRadius + lineWidth);
+	coordsAndColor_outline[(Circle::NumOfSides*2 + (4*1+3))*6]   = targetingX - lineWidth;
+	coordsAndColor_outline[(Circle::NumOfSides*2 + (4*1+3))*6+1] = targetingY + ( .75f*reticuleRadius - lineWidth);
 
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*2))  *6]   = targetingX - ( .75f*reticuleRadius - lineWidth);
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*2))  *6+1] = targetingY - lineWidth;
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*2+1))*6]   = targetingX - (1.25f*reticuleRadius + lineWidth);
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*2+1))*6+1] = targetingY - lineWidth;
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*2+2))*6]   = targetingX - (1.25f*reticuleRadius + lineWidth);
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*2+2))*6+1] = targetingY + lineWidth;
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*2+3))*6]   = targetingX - ( .75f*reticuleRadius - lineWidth);
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*2+3))*6+1] = targetingY + lineWidth;
+	coordsAndColor_outline[(Circle::NumOfSides*2 + (4*2))  *6]   = targetingX - ( .75f*reticuleRadius - lineWidth);
+	coordsAndColor_outline[(Circle::NumOfSides*2 + (4*2))  *6+1] = targetingY - lineWidth;
+	coordsAndColor_outline[(Circle::NumOfSides*2 + (4*2+1))*6]   = targetingX - (1.25f*reticuleRadius + lineWidth);
+	coordsAndColor_outline[(Circle::NumOfSides*2 + (4*2+1))*6+1] = targetingY - lineWidth;
+	coordsAndColor_outline[(Circle::NumOfSides*2 + (4*2+2))*6]   = targetingX - (1.25f*reticuleRadius + lineWidth);
+	coordsAndColor_outline[(Circle::NumOfSides*2 + (4*2+2))*6+1] = targetingY + lineWidth;
+	coordsAndColor_outline[(Circle::NumOfSides*2 + (4*2+3))*6]   = targetingX - ( .75f*reticuleRadius - lineWidth);
+	coordsAndColor_outline[(Circle::NumOfSides*2 + (4*2+3))*6+1] = targetingY + lineWidth;
 
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*3))  *6]   = targetingX - lineWidth;
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*3))  *6+1] = targetingY - ( .75f*reticuleRadius - lineWidth);
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*3+1))*6]   = targetingX - lineWidth;
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*3+1))*6+1] = targetingY - (1.25f*reticuleRadius + lineWidth);
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*3+2))*6]   = targetingX + lineWidth;
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*3+2))*6+1] = targetingY - (1.25f*reticuleRadius + lineWidth);
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*3+3))*6]   = targetingX + lineWidth;
-	coordsAndColor_outline[(Circle::numOfSides*2 + (4*3+3))*6+1] = targetingY - ( .75f*reticuleRadius - lineWidth);
+	coordsAndColor_outline[(Circle::NumOfSides*2 + (4*3))  *6]   = targetingX - lineWidth;
+	coordsAndColor_outline[(Circle::NumOfSides*2 + (4*3))  *6+1] = targetingY - ( .75f*reticuleRadius - lineWidth);
+	coordsAndColor_outline[(Circle::NumOfSides*2 + (4*3+1))*6]   = targetingX - lineWidth;
+	coordsAndColor_outline[(Circle::NumOfSides*2 + (4*3+1))*6+1] = targetingY - (1.25f*reticuleRadius + lineWidth);
+	coordsAndColor_outline[(Circle::NumOfSides*2 + (4*3+2))*6]   = targetingX + lineWidth;
+	coordsAndColor_outline[(Circle::NumOfSides*2 + (4*3+2))*6+1] = targetingY - (1.25f*reticuleRadius + lineWidth);
+	coordsAndColor_outline[(Circle::NumOfSides*2 + (4*3+3))*6]   = targetingX + lineWidth;
+	coordsAndColor_outline[(Circle::NumOfSides*2 + (4*3+3))*6+1] = targetingY - ( .75f*reticuleRadius - lineWidth);
 
 	for (int i = 0; i < 4; i++) {
 		for (int j = 0; j < 4; j++) {
-			coordsAndColor_outline[(Circle::numOfSides*2 + (4*i+j))*6+2] = color_outline.getRf();
-			coordsAndColor_outline[(Circle::numOfSides*2 + (4*i+j))*6+3] = color_outline.getGf();
-			coordsAndColor_outline[(Circle::numOfSides*2 + (4*i+j))*6+4] = color_outline.getBf();
-			coordsAndColor_outline[(Circle::numOfSides*2 + (4*i+j))*6+5] = color_outline.getAf();
+			coordsAndColor_outline[(Circle::NumOfSides*2 + (4*i+j))*6+2] = color_outline.getRf();
+			coordsAndColor_outline[(Circle::NumOfSides*2 + (4*i+j))*6+3] = color_outline.getGf();
+			coordsAndColor_outline[(Circle::NumOfSides*2 + (4*i+j))*6+4] = color_outline.getBf();
+			coordsAndColor_outline[(Circle::NumOfSides*2 + (4*i+j))*6+5] = color_outline.getAf();
 		}
 	}
 
-	unsigned int indices_outline[Circle::numOfSides*6 + 4*6];
-	std::copy(StationaryTurretHazard::outline_indices, StationaryTurretHazard::outline_indices + Circle::numOfSides*6, indices_outline);
+	unsigned int indices_outline[Circle::NumOfSides*6 + 4*6];
+	std::copy(StationaryTurretHazard::outline_indices, StationaryTurretHazard::outline_indices + Circle::NumOfSides*6, indices_outline);
 
 	for (int i = 0; i < 4; i++) {
-		indices_outline[Circle::numOfSides*6 + i*6]   = (Circle::numOfSides*2 + 4*i);
-		indices_outline[Circle::numOfSides*6 + i*6+1] = (Circle::numOfSides*2 + 4*i+1);
-		indices_outline[Circle::numOfSides*6 + i*6+2] = (Circle::numOfSides*2 + 4*i+2);
-		indices_outline[Circle::numOfSides*6 + i*6+3] = (Circle::numOfSides*2 + 4*i+2);
-		indices_outline[Circle::numOfSides*6 + i*6+4] = (Circle::numOfSides*2 + 4*i+3);
-		indices_outline[Circle::numOfSides*6 + i*6+5] = (Circle::numOfSides*2 + 4*i);
+		indices_outline[Circle::NumOfSides*6 + i*6]   = (Circle::NumOfSides*2 + 4*i);
+		indices_outline[Circle::NumOfSides*6 + i*6+1] = (Circle::NumOfSides*2 + 4*i+1);
+		indices_outline[Circle::NumOfSides*6 + i*6+2] = (Circle::NumOfSides*2 + 4*i+2);
+		indices_outline[Circle::NumOfSides*6 + i*6+3] = (Circle::NumOfSides*2 + 4*i+2);
+		indices_outline[Circle::NumOfSides*6 + i*6+4] = (Circle::NumOfSides*2 + 4*i+3);
+		indices_outline[Circle::NumOfSides*6 + i*6+5] = (Circle::NumOfSides*2 + 4*i);
 	}
 
-	Renderer::SubmitBatchedDraw(coordsAndColor_outline, (Circle::numOfSides*2 + 4*4*2)*(2+4), indices_outline, Circle::numOfSides*6 + 4*6);
+	Renderer::SubmitBatchedDraw(coordsAndColor_outline, (Circle::NumOfSides*2 + 4*4*2)*(2+4), indices_outline, Circle::NumOfSides*6 + 4*6);
 }
 
 CircleHazard* TargetingTurretHazard::randomizingFactory(double x_start, double y_start, double area_width, double area_height, const GenericFactoryConstructionData& args) {
