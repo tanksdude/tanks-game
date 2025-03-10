@@ -169,7 +169,7 @@
 
 #include <rpmalloc.h> //reset of rpmalloc stuff is in aaa_first.cpp
 
-const std::string GameWindowName = "PowerTanks Battle v0.2.5.1 NOT FINAL"; //this is not guaranteed to be correct every commit but likely will be
+const std::string GameWindowName = "PowerTanks Battle v0.2.5.1"; //this is not guaranteed to be correct every commit but likely will be
 const std::string INIFilePath = "tanks.ini";
 
 
@@ -475,14 +475,3 @@ int main(int argc, char** argv) {
 	rpmalloc_finalize();
 	return 0;
 }
-
-/*
- * estimated total completion:
- * 100% required GPU drawing stuff!
- * 95% actual foundation
- * * still want to rewrite collision to be proper, but wow that'd be a lot of work
- * ~90% game code:
- * * ideas in power.cpp, circlehazard.cpp, level.cpp, and randomly elsewhere
- * * it's just an estimate
- * * 100% probably won't be "finished" on this scale (it could jump from 60% to 100%)
- */

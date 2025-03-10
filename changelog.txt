@@ -1,4 +1,4 @@
-0.3.0 "complete" (wishlist, likely won't get here though)
+"complete" (wishlist, likely won't get here though)
 * new game mode: infinite world!
     * single-player only
     * the point is just to explore
@@ -22,8 +22,11 @@
 * switched to GLFW from FreeGLUT
     * fullscreen toggle removed because of that
 
-0.2.5.1 (WIP)
+0.2.5.1
 * updated dependencies
+* small performance improvements
+* power duration setting
+* fixed the diagnostics graph not updating collision time when the game ends or on window resizing
 
 0.2.5 "done"
 * rudimentary custom powers and levels!
@@ -42,6 +45,7 @@
     * lightning hazards and no bullet zones are significantly easier to spot
     * sorry colorblind people, but powerups are still distinguishable by color only; would make sense to use an image instead, but that'll happen in a sequel
 * overhaul collision: two passes for collision, more efficient
+* correct delay between frames: previously 10ms from end of previous frame to start of new frame, now 10ms between start of frames (oops)
 * powerups:
     * custom powers exist!
     * growing and degrading powerups mix better
@@ -215,14 +219,13 @@
 
 
 
-other note: consider SDL or SFML instead of FreeGLUT
-
 sequel notes:
 draw an image for powerups instead of just a color
 arbitrary convex shapes for walls and hazards (would also allow spinning stuff) and arbitrary game world size
 proper structure, built for unit testing and multithreading
 AI and online play (intended LAN but theoretically anywhere, as long as the input buffer is configurable)
 variable physics rate
+consider SDL or SFML
 
 GitHub: https://github.com/tanksdude/tanks-game
 JS Tanks (old): https://uncreativeusername.neocities.org/tanks.html
