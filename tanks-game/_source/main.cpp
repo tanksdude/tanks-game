@@ -167,10 +167,7 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 
-#include <rpmalloc.h>
-//#include <rpnew.h> //only include once!
-#include <rpmalloc.c> //yeah, .c files shouldn't be #include-ed, but it's fine
-//#include <malloc.c> //not used
+#include <rpmalloc.h> //reset of rpmalloc stuff is in aaa_first.cpp
 
 const std::string GameWindowName = "PowerTanks Battle v0.2.5.1 NOT FINAL"; //this is not guaranteed to be correct every commit but likely will be
 const std::string INIFilePath = "tanks.ini";
