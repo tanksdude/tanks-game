@@ -26,10 +26,21 @@ void DeveloperManager::setY(Rect* r, double y) { r->y = y; }
 void DeveloperManager::setW(Rect* r, double w) { r->w = w; }
 void DeveloperManager::setH(Rect* r, double h) { r->h = h; }
 
-void DeveloperManager::mouseDragFunc(int x, int y) {
-	//dev tools
-	int real_x = x;
-	int real_y = y - (Renderer::window_height - Renderer::gamewindow_height);
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glut.h"
+#include "imgui/imgui_impl_opengl3.h"
+
+void DeveloperManager::doMouseStuff() {
+	//mouse click (for tank moving)
+	leftMouse = ImGui::IsMouseDown(ImGuiMouseButton_Left);
+	if (ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
+		rightMouse = !rightMouse;
+	}
+
+	//mouse drag (tank moving)
+	auto mousePos = ImGui::GetMousePos();
+	int real_x = mousePos.x;
+	int real_y = mousePos.y - (Renderer::window_height - Renderer::gamewindow_height);
 	if (leftMouse) {
 		if (!rightMouse) {
 			TankManager::getTank(0)->x = (real_x / double(Renderer::gamewindow_width)) * GAME_WIDTH;
@@ -39,48 +50,33 @@ void DeveloperManager::mouseDragFunc(int x, int y) {
 			TankManager::getTank(1)->y = (1 - real_y / double(Renderer::gamewindow_height)) * GAME_HEIGHT;
 		}
 	}
-}
 
-void DeveloperManager::mouseClickFunc(int button, int state, int x, int y) {
-	int real_x = x;
-	int real_y = y - (Renderer::window_height - Renderer::gamewindow_height);
-	if (state == GLUT_DOWN) {
-		if (button == GLUT_LEFT_BUTTON) {
-			leftMouse = true;
-		} else if (button == GLUT_RIGHT_BUTTON) {
-			rightMouse = !rightMouse;
-		} else { //button == GLUT_MIDDLE_BUTTON
-			double true_x = (real_x / double(Renderer::gamewindow_width)) * GAME_WIDTH;
-			double true_y = (1 - real_y / double(Renderer::gamewindow_height)) * GAME_HEIGHT;
-			devInsert(true_x, true_y);
-		}
-	} else {
-		if (button == GLUT_LEFT_BUTTON) {
-			leftMouse = false;
-		}
-	}
-}
-
-void DeveloperManager::mouseWheelFunc(int wheel, int dir, int x, int y) {
-	int real_x = (x / double(Renderer::window_width)) * GAME_WIDTH;
-	int real_y = (1 - y / double(Renderer::window_height)) * GAME_HEIGHT;
-
-	int insertIndexMax = insertListIdentifiers.size();
-	if (dir == 1) { //scroll up
-		if (insertIndexMax > 0) {
-			insertIndex = ((insertIndex % insertIndexMax) + 1 + insertIndexMax) % insertIndexMax; //accounting for potential mistakes/trolls
-		} else {
-			insertIndex = 0;
-		}
-	} else { //scroll down
-		if (insertIndexMax > 0) {
-			insertIndex = ((insertIndex % insertIndexMax) - 1 + insertIndexMax) % insertIndexMax; //accounting for potential mistakes/trolls
-		} else {
-			insertIndex = 0;
-		}
+	//middle click insert stuff
+	if (ImGui::IsMouseClicked(ImGuiMouseButton_Middle)) {
+		double true_x = (real_x / double(Renderer::gamewindow_width)) * GAME_WIDTH;
+		double true_y = (1 - real_y / double(Renderer::gamewindow_height)) * GAME_HEIGHT;
+		devInsert(true_x, true_y);
 	}
 
-	std::cout << "DeveloperManager insertIdentifier: " << insertListIdentifiers[insertIndex] << std::endl;
+	//middle click scroll through available stuff
+	if (ImGui::IsKeyPressed(ImGuiKey_MouseWheelY)) {
+		const int insertIndexMax = insertListIdentifiers.size();
+		const bool scrollUp = ImGui::GetIO().MouseWheel > 0; //does not work, because ImGui stuff is handled during drawing and all physics happens before that (which includes this)
+		if (scrollUp) {
+			if (insertIndexMax > 0) {
+				insertIndex = ((insertIndex % insertIndexMax) + 1 + insertIndexMax) % insertIndexMax; //accounting for potential mistakes/trolls
+			} else {
+				insertIndex = 0;
+			}
+		} else {
+			if (insertIndexMax > 0) {
+				insertIndex = ((insertIndex % insertIndexMax) - 1 + insertIndexMax) % insertIndexMax; //accounting for potential mistakes/trolls
+			} else {
+				insertIndex = 0;
+			}
+		}
+		std::cout << "DeveloperManager insertIdentifier: " << insertListIdentifiers[insertIndex] << std::endl;
+	}
 }
 
 std::vector<std::string> DeveloperManager::insertListIdentifiers = { "longinvincible", "temp", "banana", "homing", "barrier", "bounce", "mines", "multishot", "grenade", "blast", "godmode", "big", "inversion", "annoying", "stationary_turret", "vert_wall", "horz_wall" };
@@ -92,10 +88,8 @@ void DeveloperManager::devInsert(int x, int y) {
 		case 0:
 			#if _DEBUG
 			PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "colorless_longinvincible"));
-			//PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "the_super"));
 			#else
 			PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "longinvincible"));
-			//PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "the_super"));
 			#endif
 			break;
 		case 1:

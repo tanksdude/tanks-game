@@ -45,6 +45,9 @@ std::string Renderer::currentSceneName = "";
 const int Renderer::maxVerticesDataLength = (1 << 24) / sizeof(float);
 const int Renderer::maxIndicesDataLength = (1 << 24) / sizeof(unsigned int); //TODO: size (fills up faster)
 
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glut.h"
+#include "imgui/imgui_impl_opengl3.h"
 // Handles window resizing (FreeGLUT event function)
 void Renderer::windowResizeFunc(int w, int h) {
 	Renderer::window_width = w;
@@ -107,6 +110,7 @@ void Renderer::windowResizeFunc(int w, int h) {
 	glOrtho(winXmin, winXmax, winYmin, winYmax, -1, 1);
 	*/
 
+	ImGui_ImplGLUT_ReshapeFunc(w, h);
 	Diagnostics::pushGraphTime("tick", 0); //HACK: since tick will never happen when the window is being resized, add it here; will not double-add when the game is over because that still does a tick
 }
 
@@ -126,7 +130,7 @@ void Renderer::BeginningStuff() {
 
 	if (KeypressManager::getSpecialKey(GLUT_KEY_F11)) {
 		glutFullScreenToggle();
-		KeypressManager::unsetSpecialKey(GLUT_KEY_F11, 0, 0);
+		//KeypressManager::unsetSpecialKey(GLUT_KEY_F11, 0, 0);
 	}
 }
 
@@ -418,6 +422,7 @@ void Renderer::Clear() {
 }
 
 void Renderer::ActuallyFlush() {
+
 	auto start = Diagnostics::getTime();
 	for (int i = 0; i < sceneList.size(); i++) {
 		const std::string& name = sceneList[i];
@@ -438,12 +443,41 @@ void Renderer::ActuallyFlush() {
 		Diagnostics::drawGraphTimes();
 	}
 
+	UnbindAll();
+
+	// Start the Dear ImGui frame
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGLUT_NewFrame();
+	ImGui::NewFrame();
+	ImGuiIO& io = ImGui::GetIO();
+
+	// 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
+	bool demobool = true;
+	ImGui::ShowDemoWindow(&demobool);
+
+	// 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
+	{
+		ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+
+		ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
+		ImGui::Checkbox("Demo Window", &demobool);      // Edit bools storing our window open/close state
+
+		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+		ImGui::End();
+	}
+
+	// Rendering
+	ImGui::Render();
+	//glViewport(0, 0, (GLsizei)io.DisplaySize.x, (GLsizei)io.DisplaySize.y);
+	//glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	//glClear(GL_COLOR_BUFFER_BIT);
+	//glUseProgram(0); // You may want this if using this code in an OpenGL 3+ context where shaders may be bound, but prefer using the GL3+ code.
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
 	//for single framebuffer, use glFlush; for double framebuffer, swap the buffers
 	//swapping buffers is limited to monitor refresh rate, so I use glFlush
 	glFlush();
 	//glutSwapBuffers();
-
-	UnbindAll();
 }
 
 void Renderer::Flush() {

@@ -10,13 +10,16 @@
 #include <queue>
 #include <condition_variable>
 
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glut.h"
+#include "imgui/imgui_impl_opengl3.h"
+
 struct TankInputChar {
 protected:
-	std::string key;
-	bool isSpecial;
-	int key_num;
+	std::string key_name;
+	ImGuiKey key_num;
 public:
-	std::string getKey() const { return key; }
+	std::string getKey() const { return key_name; }
 	bool getKeyState() const;
 	TankInputChar(std::string);
 	TankInputChar();

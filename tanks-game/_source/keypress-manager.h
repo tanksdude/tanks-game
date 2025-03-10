@@ -12,10 +12,10 @@ public:
 	static bool getSpecialKey(int key);
 
 	//glutKeyboardFunc & friends do not like their functions calling other functions, so KeypressManager has its own functions (so the hashmaps can stay private)
-	static void setNormalKey(unsigned char key, int x, int y);
-	static void unsetNormalKey(unsigned char key, int x, int y);
-	static void setSpecialKey(int key, int x, int y);
-	static void unsetSpecialKey(int key, int x, int y);
+	//static void setNormalKey(unsigned char key, int x, int y);
+	//static void unsetNormalKey(unsigned char key, int x, int y);
+	//static void setSpecialKey(int key, int x, int y);
+	//static void unsetSpecialKey(int key, int x, int y);
 
 	static bool keyIsSpecialFromString(std::string key);
 	static unsigned char normalKeyFromString(std::string key);

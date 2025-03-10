@@ -26,9 +26,10 @@ public:
 	static void setW(Rect*, double);
 	static void setH(Rect*, double);
 
-	static void mouseDragFunc(int x, int y);
-	static void mouseClickFunc(int button, int state, int x, int y);
-	static void mouseWheelFunc(int wheel, int dir, int x, int y);
+	//static void mouseDragFunc(int x, int y);
+	//static void mouseClickFunc(int button, int state, int x, int y);
+	//static void mouseWheelFunc(int wheel, int dir, int x, int y);
+	static void doMouseStuff();
 
 	static void addInsertPower(std::string identifier, std::string type, std::string name);
 

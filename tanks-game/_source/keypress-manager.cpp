@@ -162,15 +162,24 @@ int KeypressManager::specialKeyFromString(std::string key) {
 	throw std::invalid_argument("ERROR: unknown special key!");
 }
 
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glut.h"
+#include "imgui/imgui_impl_opengl3.h"
+/*
 void KeypressManager::setNormalKey(unsigned char key, int x, int y) {
 	normalKeyStates[key] = true;
+	//ImGui_ImplGLUT_KeyboardFunc(key, x, y);
 }
 void KeypressManager::unsetNormalKey(unsigned char key, int x, int y) {
 	normalKeyStates[key] = false;
+	//ImGui_ImplGLUT_KeyboardUpFunc(key, x, y);
 }
 void KeypressManager::setSpecialKey(int key, int x, int y) {
 	specialKeyStates[key] = true;
+	//ImGui_ImplGLUT_SpecialFunc(key, x, y);
 }
 void KeypressManager::unsetSpecialKey(int key, int x, int y) {
 	specialKeyStates[key] = false;
+	//ImGui_ImplGLUT_SpecialUpFunc(key, x, y);
 }
+*/

@@ -38,26 +38,60 @@ void doThing() {
 }
 
 TankInputChar::TankInputChar(std::string key_input) {
-	key = key_input;
-	if (KeypressManager::keyIsSpecialFromString(key_input)) {
-		isSpecial = true;
-		key_num = KeypressManager::specialKeyFromString(key_input);
-	} else {
-		isSpecial = false;
-		key_num = KeypressManager::normalKeyFromString(key_input);
-	}
+	key_name = key_input;
+
+	     if (key_name == "\t")                               key_num = ImGuiKey_Tab;
+	else if (key_name == "Left")                             key_num = ImGuiKey_LeftArrow;
+	else if (key_name == "Right")                            key_num = ImGuiKey_RightArrow;
+	else if (key_name == "Up")                               key_num = ImGuiKey_UpArrow;
+	else if (key_name == "Down")                             key_num = ImGuiKey_DownArrow;
+	else if (key_name == "A" || key_name == "a")             key_num = ImGuiKey_A;
+	else if (key_name == "B" || key_name == "b")             key_num = ImGuiKey_B;
+	else if (key_name == "C" || key_name == "c")             key_num = ImGuiKey_C;
+	else if (key_name == "D" || key_name == "d")             key_num = ImGuiKey_D;
+	else if (key_name == "E" || key_name == "e")             key_num = ImGuiKey_E;
+	else if (key_name == "F" || key_name == "f")             key_num = ImGuiKey_F;
+	else if (key_name == "G" || key_name == "g")             key_num = ImGuiKey_G;
+	else if (key_name == "H" || key_name == "h")             key_num = ImGuiKey_H;
+	else if (key_name == "I" || key_name == "i")             key_num = ImGuiKey_I;
+	else if (key_name == "J" || key_name == "j")             key_num = ImGuiKey_J;
+	else if (key_name == "K" || key_name == "k")             key_num = ImGuiKey_K;
+	else if (key_name == "L" || key_name == "l")             key_num = ImGuiKey_L;
+	else if (key_name == "M" || key_name == "m")             key_num = ImGuiKey_M;
+	else if (key_name == "N" || key_name == "n")             key_num = ImGuiKey_N;
+	else if (key_name == "O" || key_name == "o")             key_num = ImGuiKey_O;
+	else if (key_name == "P" || key_name == "p")             key_num = ImGuiKey_P;
+	else if (key_name == "Q" || key_name == "q")             key_num = ImGuiKey_Q;
+	else if (key_name == "R" || key_name == "r")             key_num = ImGuiKey_R;
+	else if (key_name == "S" || key_name == "s")             key_num = ImGuiKey_S;
+	else if (key_name == "T" || key_name == "t")             key_num = ImGuiKey_T;
+	else if (key_name == "U" || key_name == "u")             key_num = ImGuiKey_U;
+	else if (key_name == "V" || key_name == "v")             key_num = ImGuiKey_V;
+	else if (key_name == "W" || key_name == "w")             key_num = ImGuiKey_W;
+	else if (key_name == "X" || key_name == "x")             key_num = ImGuiKey_X;
+	else if (key_name == "Y" || key_name == "y")             key_num = ImGuiKey_Y;
+	else if (key_name == "Z" || key_name == "z")             key_num = ImGuiKey_Z;
+	else if (key_name == "F1")                               key_num = ImGuiKey_F1;
+	else if (key_name == "F2")                               key_num = ImGuiKey_F2;
+	else if (key_name == "F3")                               key_num = ImGuiKey_F3;
+	else if (key_name == "F4")                               key_num = ImGuiKey_F4;
+	else if (key_name == "F5")                               key_num = ImGuiKey_F5;
+	else if (key_name == "F6")                               key_num = ImGuiKey_F6;
+	else if (key_name == "F7")                               key_num = ImGuiKey_F7;
+	else if (key_name == "F8")                               key_num = ImGuiKey_F8;
+	else if (key_name == "F9")                               key_num = ImGuiKey_F9;
+	else if (key_name == "F10")                              key_num = ImGuiKey_F10;
+	else if (key_name == "F11")                              key_num = ImGuiKey_F11;
+	else if (key_name == "F12")                              key_num = ImGuiKey_F12;
+	else                                                     key_num = ImGuiKey_F12;//key_num = ImGuiKey_None;
 }
 TankInputChar::TankInputChar() {
-	key = "`";
-	isSpecial = false;
-	key_num = '`';
+	key_name = "`";
+	key_num = ImGuiKey_GraveAccent;
 }
 
 bool TankInputChar::getKeyState() const {
-	if (isSpecial) {
-		return KeypressManager::getSpecialKey(key_num);
-	}
-	return KeypressManager::getNormalKey(key_num);
+	return ImGui::IsKeyDown((ImGuiKey)(key_num));
 }
 
 GameMainLoop::ThreadJob::ThreadJob(ThreadJobType j, void* list, void* values, void** newArr, int start, int end) {
@@ -252,6 +286,7 @@ inline void GameMainLoop::thread_updateRectHazardsFunc(void* updateRectHazardsLi
 	*/
 }
 
+#include "developer-manager.h"
 void GameMainLoop::Tick(int UPS) {
 	if (EndGameHandler::shouldGameEnd()) {
 		waitCount++;
@@ -262,6 +297,8 @@ void GameMainLoop::Tick(int UPS) {
 		Diagnostics::pushGraphTime("tick", 0); //goes after ResetThings::reset() because a draw call will still happen after this
 		return;
 	}
+
+	DeveloperManager::doMouseStuff();
 
 	//big problem: I currently don't have the brainpower or willingness to parallelize the broad phase of collision, but I need to multithread something
 	//solution: parallelize the various broad phases!
@@ -1192,12 +1229,15 @@ void GameMainLoop::bulletToTank() {
 	delete collisionList;
 }
 
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glut.h"
+#include "imgui/imgui_impl_opengl3.h"
 void GameMainLoop::drawMain() const {
 	auto start = Diagnostics::getTime();
 	Renderer::BeginScene("draw");
 
 	Diagnostics::startTiming("background rect");
-	BackgroundRect::draw();
+	//BackgroundRect::draw();
 	Diagnostics::endTiming();
 
 	Diagnostics::startTiming("hazards under");

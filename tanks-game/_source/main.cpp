@@ -163,6 +163,9 @@
 #include "powers/mine-layer-power.h" //lays down a bullet every so often
 
 #include "game-main-loop.h"
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glut.h"
+#include "imgui/imgui_impl_opengl3.h"
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
@@ -189,9 +192,10 @@ int main(int argc, char** argv) {
 		VisualRNG::Initialize(std::stoll(ini_data.get("UNIVERSAL", "RNGSeed")));
 		LevelRNG::Initialize(std::stoll(ini_data.get("UNIVERSAL", "RNGSeed")));
 	} else {
-		GameRNG::Initialize(std::chrono::high_resolution_clock::now().time_since_epoch().count());
-		VisualRNG::Initialize(std::chrono::high_resolution_clock::now().time_since_epoch().count());
-		LevelRNG::Initialize(std::chrono::high_resolution_clock::now().time_since_epoch().count());
+		auto currTime = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+		GameRNG::Initialize(currTime);
+		VisualRNG::Initialize(currTime);
+		LevelRNG::Initialize(currTime);
 	}
 	if (ini_data.exists("UNIVERSAL", "GraphicsContext")) {
 		Renderer::SetContext(ini_data.get("UNIVERSAL", "GraphicsContext"));
@@ -234,25 +238,25 @@ int main(int argc, char** argv) {
 	glutReshapeFunc(Renderer::windowResizeFunc);
 
 	//mouse clicking
-	glutMouseFunc(DeveloperManager::mouseClickFunc);
+	glutMouseFunc(ImGui_ImplGLUT_MouseFunc);
 
 	// Set callback to handle mouse dragging
-	glutMotionFunc(DeveloperManager::mouseDragFunc);
+	glutMotionFunc(ImGui_ImplGLUT_MotionFunc);
 
 	// Set callback to handle keyboard events
-	glutKeyboardFunc(KeypressManager::setNormalKey);
+	glutKeyboardFunc(ImGui_ImplGLUT_KeyboardFunc);
 
 	//callback for keyboard up events
-	glutKeyboardUpFunc(KeypressManager::unsetNormalKey);
+	glutKeyboardUpFunc(ImGui_ImplGLUT_KeyboardUpFunc);
 
 	//special keyboard down
-	glutSpecialFunc(KeypressManager::setSpecialKey);
+	glutSpecialFunc(ImGui_ImplGLUT_SpecialFunc);
 
 	//special keyboard up
-	glutSpecialUpFunc(KeypressManager::unsetSpecialKey);
+	glutSpecialUpFunc(ImGui_ImplGLUT_SpecialUpFunc);
 
 	//mousewheel
-	glutMouseWheelFunc(DeveloperManager::mouseWheelFunc);
+	glutMouseWheelFunc(ImGui_ImplGLUT_MouseWheelFunc);
 
 	//window close
 	glutCloseFunc(StatisticsHandler::DumpData);
@@ -464,6 +468,44 @@ int main(int argc, char** argv) {
 	std::cout << "OpenGL vendor: " << glGetString(GL_VENDOR) << std::endl;
 	std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl << std::endl;
 
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+
+    // Setup Dear ImGui style
+    ImGui::StyleColorsDark();
+    //ImGui::StyleColorsLight();
+
+    // Setup Platform/Renderer backends
+    // FIXME: Consider reworking this example to install our own GLUT funcs + forward calls ImGui_ImplGLUT_XXX ones, instead of using ImGui_ImplGLUT_InstallFuncs().
+    ImGui_ImplGLUT_Init();
+    ImGui_ImplOpenGL3_Init();
+	ImGui_ImplGLUT_ReshapeFunc(640 * 2.5, 320 * 2.5);
+
+    // Install GLUT handlers (glutReshapeFunc(), glutMotionFunc(), glutPassiveMotionFunc(), glutMouseFunc(), glutKeyboardFunc() etc.)
+    // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
+    // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application, or clear/overwrite your copy of the mouse data.
+    // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application, or clear/overwrite your copy of the keyboard data.
+    // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
+    //ImGui_ImplGLUT_InstallFuncs();
+
+
+    // Load Fonts
+    // - If no fonts are loaded, dear imgui will use the default font. You can also load multiple fonts and use ImGui::PushFont()/PopFont() to select them.
+    // - AddFontFromFileTTF() will return the ImFont* so you can store it if you need to select the font among multiple.
+    // - If the file cannot be loaded, the function will return a nullptr. Please handle those errors in your application (e.g. use an assertion, or display an error and quit).
+    // - The fonts will be rasterized at a given size (w/ oversampling) and stored into a texture when calling ImFontAtlas::Build()/GetTexDataAsXXXX(), which ImGui_ImplXXXX_NewFrame below will call.
+    // - Use '#define IMGUI_ENABLE_FREETYPE' in your imconfig file to use Freetype for higher quality font rendering.
+    // - Read 'docs/FONTS.md' for more instructions and details.
+    // - Remember that in C/C++ if you want to include a backslash \ in a string literal you need to write a double backslash \\ !
+    io.Fonts->AddFontDefault();
+    //io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\segoeui.ttf", 18.0f);
+    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/DroidSans.ttf", 16.0f);
+    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Roboto-Medium.ttf", 16.0f);
+    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Cousine-Regular.ttf", 15.0f);
+    //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, nullptr, io.Fonts->GetGlyphRangesJapanese());
+    //IM_ASSERT(font != nullptr);
+
 	//framelimiter
 	//glutTimerFunc(1000/physicsRate, tick, physicsRate); //see GameMainLoop
 	GameSceneManager::TickScenes(100);
@@ -472,6 +514,11 @@ int main(int argc, char** argv) {
 	glutMainLoop();
 
 	Renderer::Uninitialize();
+
+    // Cleanup
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGLUT_Shutdown();
+    ImGui::DestroyContext();
 
 	rpmalloc_finalize();
 	return 0;
