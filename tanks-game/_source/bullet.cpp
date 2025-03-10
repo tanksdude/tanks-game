@@ -26,7 +26,7 @@ Bullet::Bullet(double x_, double y_, double angle, Team_ID teamID, BulletParentT
 	this->parentType = parentType;
 	this->parentID = parentID;
 	this->lifeValue = 100;
-	colorIdentifier = "";
+	colorIdentifier = ""; //TODO: this should be passed in, since a bunch of bullets will be created with the same color; would require some amount of rewriting in Tank::makeBullet
 
 	initializeVertices();
 }
