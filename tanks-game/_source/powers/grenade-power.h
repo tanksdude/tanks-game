@@ -24,7 +24,6 @@ public:
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	GrenadePower();
 	static Power* factory();
@@ -34,9 +33,7 @@ public:
 
 class GrenadeTankPower : public TankPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return GrenadePower::getClassColor();
-	}
+	virtual ColorValueHolder getColor() const override { return GrenadePower::getClassColor(); }
 
 	virtual TankPower* makeDuplicate() const override { return new GrenadeTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -48,9 +45,7 @@ public:
 
 class GrenadeBulletPower : public BulletPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return GrenadePower::getClassColor();
-	}
+	virtual ColorValueHolder getColor() const override { return GrenadePower::getClassColor(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new GrenadeBulletPower(); } //should current size be passed on?
 	virtual TankPower* makeTankPower() const override;

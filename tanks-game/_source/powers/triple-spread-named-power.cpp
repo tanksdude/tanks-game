@@ -15,12 +15,6 @@ BulletPower* TripleSpreadNamedPower::makeBulletPower() const {
 	return new TripleSpreadNamedBulletPower();
 }
 
-/*
-HazardPower* TripleSpreadNamedPower::makeHazardPower() const {
-	return new TripleSpreadNamedHazardPower();
-}
-*/
-
 Power* TripleSpreadNamedPower::factory() {
 	return new TripleSpreadNamedPower();
 }
@@ -41,9 +35,6 @@ BulletPower* TripleSpreadNamedTankPower::makeBulletPower() const {
 }
 
 TripleSpreadNamedTankPower::TripleSpreadNamedTankPower() : TripleNamedTankPower() {
-	//maxTime = 500;
-	//timeLeft = 500;
-
 	addsExtraShootingPoints = true;
 }
 

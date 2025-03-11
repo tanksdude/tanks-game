@@ -16,7 +16,6 @@ public:
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	DevWeirdExtraCannonsPower();
 	static Power* factory();
@@ -26,9 +25,7 @@ public:
 
 class DevWeirdExtraCannonsTankPower : public TankPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return DevWeirdExtraCannonsPower::getClassColor();
-	}
+	virtual ColorValueHolder getColor() const override { return DevWeirdExtraCannonsPower::getClassColor(); }
 
 	virtual TankPower* makeDuplicate() const override { return new DevWeirdExtraCannonsTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -45,9 +42,7 @@ public:
 
 class DevWeirdExtraCannonsBulletPower : public BulletPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return DevWeirdExtraCannonsPower::getClassColor();
-	}
+	virtual ColorValueHolder getColor() const override { return DevWeirdExtraCannonsPower::getClassColor(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new DevWeirdExtraCannonsBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

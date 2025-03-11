@@ -1,4 +1,5 @@
 #include "inversion-power.h"
+#include "../game-manager.h" //settings
 
 std::unordered_map<std::string, float> InversionPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -15,12 +16,6 @@ BulletPower* InversionPower::makeBulletPower() const {
 	return new InversionBulletPower();
 }
 
-/*
-HazardPower* InversionPower::makeHazardPower() const {
-	return new InversionHazardPower();
-}
-*/
-
 Power* InversionPower::factory() {
 	return new InversionPower();
 }
@@ -36,8 +31,9 @@ BulletPower* InversionTankPower::makeBulletPower() const {
 }
 
 InversionTankPower::InversionTankPower() {
-	maxTime = 500;
-	timeLeft = 500;
+	const GameSettings& game_settings = GameManager::get_settings();
+	maxTime = game_settings.PowerupDurationBaseTime;
+	timeLeft = game_settings.PowerupDurationBaseTime;
 
 	tankTurningIncrementStacks = true;
 }

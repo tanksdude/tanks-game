@@ -1,4 +1,5 @@
 #include "dev-weird-extra-cannons-power.h"
+#include "../game-manager.h" //settings
 
 std::unordered_map<std::string, float> DevWeirdExtraCannonsPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -14,12 +15,6 @@ TankPower* DevWeirdExtraCannonsPower::makeTankPower() const {
 BulletPower* DevWeirdExtraCannonsPower::makeBulletPower() const {
 	return new DevWeirdExtraCannonsBulletPower();
 }
-
-/*
-HazardPower* DevWeirdExtraCannonsPower::makeHazardPower() const {
-	return new DevWeirdExtraCannonsHazardPower();
-}
-*/
 
 Power* DevWeirdExtraCannonsPower::factory() {
 	return new DevWeirdExtraCannonsPower();
@@ -43,8 +38,9 @@ std::vector<double>* DevWeirdExtraCannonsTankPower::addShootingPoints() const {
 }
 
 DevWeirdExtraCannonsTankPower::DevWeirdExtraCannonsTankPower() {
-	maxTime = 500;
-	timeLeft = 500;
+	const GameSettings& game_settings = GameManager::get_settings();
+	maxTime = game_settings.PowerupDurationBaseTime;
+	timeLeft = game_settings.PowerupDurationBaseTime;
 
 	addsShootingPoints = true;
 }

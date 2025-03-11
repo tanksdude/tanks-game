@@ -18,7 +18,6 @@ public:
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	BigNamedPower();
 	//TODO: virtual destructor for OldBigNamedPower?
@@ -29,9 +28,7 @@ public:
 
 class BigNamedTankPower : public TankPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return BigNamedPower::getClassColor();
-	}
+	virtual ColorValueHolder getColor() const override { return BigNamedPower::getClassColor(); }
 
 	virtual TankPower* makeDuplicate() const override { return new BigNamedTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -49,9 +46,7 @@ public:
 
 class BigNamedBulletPower : public BulletPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return BigNamedPower::getClassColor();
-	}
+	virtual ColorValueHolder getColor() const override { return BigNamedPower::getClassColor(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new BigNamedBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

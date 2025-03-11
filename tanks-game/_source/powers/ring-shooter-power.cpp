@@ -1,4 +1,5 @@
 #include "ring-shooter-power.h"
+#include "../game-manager.h" //settings
 
 std::unordered_map<std::string, float> RingShooterPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -14,12 +15,6 @@ TankPower* RingShooterPower::makeTankPower() const {
 BulletPower* RingShooterPower::makeBulletPower() const {
 	return new RingShooterBulletPower();
 }
-
-/*
-HazardPower* RingShooterPower::makeHazardPower() const {
-	return new RingShooterHazardPower();
-}
-*/
 
 Power* RingShooterPower::factory() {
 	return new RingShooterPower();
@@ -48,8 +43,9 @@ std::vector<std::pair<double, double>>* RingShooterTankPower::addExtraShootingPo
 }
 
 RingShooterTankPower::RingShooterTankPower() {
-	maxTime = 500;
-	timeLeft = 500;
+	const GameSettings& game_settings = GameManager::get_settings();
+	maxTime = game_settings.PowerupDurationBaseTime;
+	timeLeft = game_settings.PowerupDurationBaseTime;
 
 	addsExtraShootingPoints = true;
 }

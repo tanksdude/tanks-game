@@ -16,7 +16,6 @@ public:
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	EdgeSparksPower();
 	static Power* factory();
@@ -26,9 +25,7 @@ public:
 
 class EdgeSparksTankPower : public WallSparksTankPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return WallSparksPower::getClassColor();
-	}
+	virtual ColorValueHolder getColor() const override { return EdgeSparksPower::getClassColor(); }
 
 	virtual TankPower* makeDuplicate() const override { return new EdgeSparksTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -40,9 +37,7 @@ public:
 
 class EdgeSparksBulletPower : public WallSparksBulletPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return WallSparksPower::getClassColor();
-	}
+	virtual ColorValueHolder getColor() const override { return EdgeSparksPower::getClassColor(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new EdgeSparksBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

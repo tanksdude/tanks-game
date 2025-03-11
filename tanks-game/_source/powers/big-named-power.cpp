@@ -1,4 +1,5 @@
 #include "big-named-power.h"
+#include "../game-manager.h" //settings
 
 std::unordered_map<std::string, float> BigNamedPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -17,12 +18,6 @@ BulletPower* BigNamedPower::makeBulletPower() const {
 	return new BigNamedBulletPower();
 }
 
-/*
-HazardPower* BigNamedPower::makeHazardPower() const {
-	return new BigNamedHazardPower();
-}
-*/
-
 Power* BigNamedPower::factory() {
 	return new BigNamedPower();
 }
@@ -38,8 +33,9 @@ BulletPower* BigNamedTankPower::makeBulletPower() const {
 }
 
 BigNamedTankPower::BigNamedTankPower() {
-	maxTime = 500;
-	timeLeft = 500;
+	const GameSettings& game_settings = GameManager::get_settings();
+	maxTime = game_settings.PowerupDurationBaseTime;
+	timeLeft = game_settings.PowerupDurationBaseTime;
 }
 
 

@@ -46,7 +46,7 @@ It's Empty, but with the classic JS walls. In some ways it's better since at lea
 * Internal name: `evened_corridors`
 * Default color: `(0.125, 0.5, 1.0)`
 
-Not a horribly interesting level. It was originally made to make Bounce look cool, and the main gimmick was the long corridors leading to a good powerup as a risk vs. reward opportunity. Didn't make the transition from JS Tanks very well, or maybe the fact is was one of the first levels ever means is was never very good. Maybe the Big powerups replacing the Barrier powerups contributed to this. Regardless, there will probably come a day when it is removed from vanilla.
+Not a horribly interesting level. It was originally made to make Bounce look cool, and the main gimmick was the long corridors leading to a good powerup as a risk vs. reward opportunity. Didn't make the transition from JS Tanks very well, or maybe the fact it was one of the first levels ever means it was never very good. Maybe the Big powerups replacing the Barrier powerups contributed to this. Regardless, there will probably come a day when it is removed from vanilla.
 
 ![Evened Corridors Level](images/evened_corridors.jpg)
 

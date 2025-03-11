@@ -1,4 +1,5 @@
 #include "trickster-circle-power.h"
+#include "../game-manager.h" //settings
 
 const double TricksterCirclePower::timePeriod = 50;
 const double TricksterCirclePower::movementRadius = 16.0/timePeriod;
@@ -18,12 +19,6 @@ BulletPower* TricksterCirclePower::makeBulletPower() const {
 	return new TricksterCircleBulletPower();
 }
 
-/*
-HazardPower* TricksterCirclePower::makeHazardPower() const {
-	return new TricksterCircleHazardPower();
-}
-*/
-
 Power* TricksterCirclePower::factory() {
 	return new TricksterCirclePower();
 }
@@ -39,8 +34,9 @@ BulletPower* TricksterCircleTankPower::makeBulletPower() const {
 }
 
 TricksterCircleTankPower::TricksterCircleTankPower() {
-	maxTime = 500;
-	timeLeft = 500;
+	const GameSettings& game_settings = GameManager::get_settings();
+	maxTime = game_settings.PowerupDurationBaseTime;
+	timeLeft = game_settings.PowerupDurationBaseTime;
 }
 
 

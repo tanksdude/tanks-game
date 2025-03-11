@@ -1,4 +1,5 @@
 #include "dev-color-changing-power.h"
+#include "../game-manager.h" //settings
 
 #include "../constants.h"
 
@@ -23,12 +24,6 @@ BulletPower* DevColorChangingPower::makeBulletPower() const {
 	return new DevColorChangingBulletPower();
 }
 
-/*
-HazardPower* DevColorChangingPower::makeHazardPower() const {
-	return new DevColorChangingHazardPower();
-}
-*/
-
 Power* DevColorChangingPower::factory() {
 	return new DevColorChangingPower();
 }
@@ -40,10 +35,10 @@ DevColorChangingPower::DevColorChangingPower() {
 
 
 void DevColorChangingTankPower::tick(Tank* parent) {
-	Tank* closest = nullptr;
+	const Tank* closest = nullptr;
 	double dist = 2*GAME_WIDTH + 2*GAME_HEIGHT;
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
-		Tank* t = TankManager::getTank(i);
+		const Tank* t = TankManager::getTank(i);
 		if (t->getTeamID() == parent->getTeamID()) {
 			continue;
 		}
@@ -74,8 +69,9 @@ BulletPower* DevColorChangingTankPower::makeBulletPower() const {
 }
 
 DevColorChangingTankPower::DevColorChangingTankPower() {
-	maxTime = 500;
-	timeLeft = 500;
+	const GameSettings& game_settings = GameManager::get_settings();
+	maxTime = game_settings.PowerupDurationBaseTime;
+	timeLeft = game_settings.PowerupDurationBaseTime;
 
 	colorDist = 0;
 }
@@ -83,10 +79,10 @@ DevColorChangingTankPower::DevColorChangingTankPower() {
 
 
 void DevColorChangingBulletPower::tick(Bullet* parent) {
-	Tank* closest = nullptr;
+	const Tank* closest = nullptr;
 	double dist = 2*GAME_WIDTH + 2*GAME_HEIGHT;
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
-		Tank* t = TankManager::getTank(i);
+		const Tank* t = TankManager::getTank(i);
 		if (t->getTeamID() == parent->getTeamID()) {
 			continue;
 		}

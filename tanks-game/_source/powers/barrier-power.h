@@ -18,7 +18,6 @@ public:
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	BarrierPower();
 	static Power* factory();
@@ -28,9 +27,7 @@ public:
 
 class BarrierTankPower : public TankPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return BarrierPower::getClassColor();
-	}
+	virtual ColorValueHolder getColor() const override { return BarrierPower::getClassColor(); }
 
 	virtual TankPower* makeDuplicate() const override { return new BarrierTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -45,9 +42,7 @@ public:
 
 class BarrierBulletPower : public BulletPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return BarrierPower::getClassColor();
-	}
+	virtual ColorValueHolder getColor() const override { return BarrierPower::getClassColor(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new BarrierBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

@@ -16,8 +16,8 @@
 #include "../hazard-manager.h"
 #include "../powerup-manager.h"
 
-SimpleVector2D CloudHazard::body_vertices[Circle::numOfSides+1];
-unsigned int CloudHazard::body_indices[Circle::numOfSides*3];
+SimpleVector2D CloudHazard::body_vertices[Circle::NumOfSides+1];
+unsigned int CloudHazard::body_indices[Circle::NumOfSides*3];
 bool CloudHazard::initialized_vertices = false;
 
 std::unordered_map<std::string, float> CloudHazard::getWeights() const {
@@ -88,14 +88,14 @@ bool CloudHazard::initializeVertices() {
 	}
 
 	body_vertices[0] = SimpleVector2D(0, 0);
-	for (int i = 1; i < Circle::numOfSides+1; i++) {
-		body_vertices[i] = SimpleVector2D(cos((i-1) * (2*PI / Circle::numOfSides)), sin((i-1) * (2*PI / Circle::numOfSides)));
+	for (int i = 1; i < Circle::NumOfSides+1; i++) {
+		body_vertices[i] = SimpleVector2D(cos((i-1) * (2*PI / Circle::NumOfSides)), sin((i-1) * (2*PI / Circle::NumOfSides)));
 	}
 
-	for (int i = 0; i < Circle::numOfSides; i++) {
+	for (int i = 0; i < Circle::NumOfSides; i++) {
 		body_indices[i*3]   = 0;
 		body_indices[i*3+1] = i+1;
-		body_indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
+		body_indices[i*3+2] = (i+1) % Circle::NumOfSides + 1;
 	}
 
 	initialized_vertices = true;
@@ -283,14 +283,14 @@ void CloudHazard::ghostDraw(float alpha) const {
 	ColorValueHolder cloudColor = color;
 	cloudColor = ColorMixer::mix(BackgroundRect::getBackColor(), cloudColor, alpha);
 
-	float coordsAndColor[(Circle::numOfSides+1)*(2+4)];
+	float coordsAndColor[(Circle::NumOfSides+1)*(2+4)];
 	coordsAndColor[0] = x;
 	coordsAndColor[1] = y;
 	coordsAndColor[2] = cloudColor.getRf();
 	coordsAndColor[3] = cloudColor.getGf();
 	coordsAndColor[4] = cloudColor.getBf();
 	coordsAndColor[5] = cloudColor.getAf();
-	for (int i = 1; i < Circle::numOfSides+1; i++) {
+	for (int i = 1; i < Circle::NumOfSides+1; i++) {
 		coordsAndColor[i*6]   = x + r * body_vertices[i].getXComp();
 		coordsAndColor[i*6+1] = y + r * body_vertices[i].getYComp();
 		coordsAndColor[i*6+2] = cloudColor.getRf();
@@ -299,7 +299,7 @@ void CloudHazard::ghostDraw(float alpha) const {
 		coordsAndColor[i*6+5] = cloudColor.getAf();
 	}
 
-	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::numOfSides+1)*(2+4), body_indices, Circle::numOfSides*3);
+	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::NumOfSides+1)*(2+4), body_indices, Circle::NumOfSides*3);
 }
 
 void CloudHazard::ghostDraw(DrawingLayers layer, float alpha) const {

@@ -27,7 +27,6 @@ public:
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	MegaDeathPower();
 	static Power* factory();
@@ -37,9 +36,7 @@ public:
 
 class MegaDeathTankPower : public TankPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return MegaDeathPower::getClassColor();
-	}
+	virtual ColorValueHolder getColor() const override { return MegaDeathPower::getClassColor(); }
 
 	virtual TankPower* makeDuplicate() const override { return new MegaDeathTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -55,9 +52,7 @@ class MegaDeathBulletPower : public BulletPower {
 public:
 	virtual void tick(Bullet* b) override; //for updating wall collision bools based on size
 
-	virtual ColorValueHolder getColor() const override {
-		return MegaDeathPower::getClassColor();
-	}
+	virtual ColorValueHolder getColor() const override { return MegaDeathPower::getClassColor(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new MegaDeathBulletPower(); } //should current size be passed on?
 	virtual TankPower* makeTankPower() const override;

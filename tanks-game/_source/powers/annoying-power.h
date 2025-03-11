@@ -23,7 +23,6 @@ public:
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	AnnoyingPower();
 	static Power* factory();
@@ -36,9 +35,7 @@ public:
 	virtual void initialize(Tank* parent) override;
 	virtual void removeEffects(Tank* parent) override;
 
-	virtual ColorValueHolder getColor() const override {
-		return AnnoyingPower::getClassColor();
-	}
+	virtual ColorValueHolder getColor() const override { return AnnoyingPower::getClassColor(); }
 
 	virtual TankPower* makeDuplicate() const override { return new AnnoyingTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -55,9 +52,7 @@ public:
 
 class AnnoyingBulletPower : public BulletPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return AnnoyingPower::getClassColor();
-	}
+	virtual ColorValueHolder getColor() const override { return AnnoyingPower::getClassColor(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new AnnoyingBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

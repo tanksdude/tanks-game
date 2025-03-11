@@ -53,9 +53,9 @@ protected:
 	virtual inline void drawGravityArrows(float alpha = 1.0f) const;
 
 protected:
-	static SimpleVector2D body_vertices[Circle::numOfSides+1];
-	static unsigned int body_indices[Circle::numOfSides*3];
-	static unsigned int outline_indices[Circle::numOfSides*2*3];
+	static SimpleVector2D body_vertices[Circle::NumOfSides+1];
+	static unsigned int body_indices[Circle::NumOfSides*3];
+	static unsigned int outline_indices[Circle::NumOfSides*2*3];
 	static SimpleVector2D vertices_arrow[7];
 	static unsigned int indices_arrow[3*3]; //from WindLevelEffect
 	static bool initialized_vertices;

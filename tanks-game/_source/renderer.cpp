@@ -3,7 +3,6 @@
 #include "constants.h"
 #include <algorithm> //std::fill
 #include <iostream>
-#include <gtx/transform.hpp>
 #include <gtc/matrix_transform.hpp>
 
 #include <GL/glew.h>
@@ -43,8 +42,8 @@ bool Renderer::initialized_GPU = false;
 std::unordered_map<std::string, std::vector<std::pair<std::vector<float>, std::vector<unsigned int>>>> Renderer::sceneData;
 std::vector<std::string> Renderer::sceneList;
 std::string Renderer::currentSceneName = "";
-int Renderer::maxVerticesDataLength = (2 << 22) / sizeof(float);
-int Renderer::maxIndicesDataLength = (2 << 22) / sizeof(unsigned int); //TODO: size (fills up faster)
+const int Renderer::maxVerticesDataLength = (1 << 24) / sizeof(float);
+const int Renderer::maxIndicesDataLength = (1 << 24) / sizeof(unsigned int); //TODO: size (fills up faster)
 
 // Handles window resizing (FreeGLUT event function)
 void Renderer::windowResizeFunc(int w, int h) {
@@ -107,6 +106,8 @@ void Renderer::windowResizeFunc(int w, int h) {
 	glLoadIdentity();
 	glOrtho(winXmin, winXmax, winYmin, winYmax, -1, 1);
 	*/
+
+	Diagnostics::pushGraphTime("tick", 0); //HACK: since tick will never happen when the window is being resized, add it here; will not double-add when the game is over because that still does a tick
 }
 
 //actual renderer code:
@@ -251,7 +252,7 @@ void Renderer::thread_func() {
 
 glm::mat4 Renderer::GenerateModelMatrix(float scaleX, float scaleY, float rotateAngle, float transX, float transY) {
 	//glm::mat4 trans = glm::translate(proj, glm::vec3(transX, transY, 0.0f));
-	glm::mat4 trans = glm::translate(glm::vec3(transX, transY, 0.0f));
+	glm::mat4 trans = glm::translate(glm::mat4(), glm::vec3(transX, transY, 0.0f));
 	//if (rotateAngle == 0) {
 	//	return glm::scale(trans, glm::vec3(scaleX, scaleY, 0));
 	//}
@@ -432,8 +433,8 @@ void Renderer::ActuallyFlush() {
 	Diagnostics::pushGraphTime("draw", Diagnostics::getDiff(start, end));
 	Diagnostics::pushGraphSumTime("all");
 
-	const BasicINIParser::BasicINIData& ini_data = GameManager::get_INI();
-	if (ini_data.exists("DEBUG", "PerformanceGraphEnable") && std::stoi(ini_data.get("DEBUG", "PerformanceGraphEnable"))) {
+	const GameSettings& game_settings = GameManager::get_settings();
+	if (game_settings.PerformanceGraphEnable) {
 		Diagnostics::drawGraphTimes();
 	}
 
@@ -523,7 +524,7 @@ void Renderer::SubmitBatchedDraw(const float* posAndColor, int posAndColorLength
 	//idea for multithreading vertex upload: add an int threadID parameter, turn the single list of vertices into a list of lists
 	//would require modifying draw(), so hold off for now
 
-	if (currentSceneName == "") {
+	if (currentSceneName == "") [[unlikely]] {
 		//only happens for Diagnostics
 		std::vector<float> verticesData = std::vector<float>(posAndColor, posAndColor + posAndColorLength);
 		std::vector<unsigned int> indicesData = std::vector<unsigned int>(indices, indices + indicesLength);

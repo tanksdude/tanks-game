@@ -21,12 +21,6 @@ BulletPower* BananaSplitPower::makeBulletPower() const {
 	return new BananaSplitBulletPower();
 }
 
-/*
-HazardPower* BananaSplitPower::makeHazardPower() const {
-	return new BananaSplitHazardPower();
-}
-*/
-
 Power* BananaSplitPower::factory() {
 	return new BananaSplitPower();
 }

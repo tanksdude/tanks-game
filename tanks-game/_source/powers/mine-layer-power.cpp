@@ -1,4 +1,5 @@
 #include "mine-layer-power.h"
+#include "../game-manager.h" //settings
 
 const double MineLayerPower::tickCycle = 50;
 
@@ -17,12 +18,6 @@ BulletPower* MineLayerPower::makeBulletPower() const {
 	return new MineLayerBulletPower();
 }
 
-/*
-HazardPower* MineLayerPower::makeHazardPower() const {
-	return new MineLayerHazardPower();
-}
-*/
-
 Power* MineLayerPower::factory() {
 	return new MineLayerPower();
 }
@@ -38,8 +33,9 @@ BulletPower* MineLayerTankPower::makeBulletPower() const {
 }
 
 MineLayerTankPower::MineLayerTankPower() {
-	maxTime = 500;
-	timeLeft = 500;
+	const GameSettings& game_settings = GameManager::get_settings();
+	maxTime = game_settings.PowerupDurationBaseTime;
+	timeLeft = game_settings.PowerupDurationBaseTime;
 }
 
 

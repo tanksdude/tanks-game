@@ -23,7 +23,6 @@ public:
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	MineLayerPower();
 	static Power* factory();
@@ -33,9 +32,7 @@ public:
 
 class MineLayerTankPower : public TankPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return MineLayerPower::getClassColor();
-	}
+	virtual ColorValueHolder getColor() const override { return MineLayerPower::getClassColor(); }
 
 	virtual TankPower* makeDuplicate() const override { return new MineLayerTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -59,9 +56,7 @@ public:
 	virtual void initialize(Bullet* parent) override;
 	virtual void removeEffects(Bullet* parent) override;
 
-	virtual ColorValueHolder getColor() const override {
-		return MineLayerPower::getClassColor();
-	}
+	virtual ColorValueHolder getColor() const override { return MineLayerPower::getClassColor(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new MineLayerBulletPower(); } //don't pass on tickCount
 	virtual TankPower* makeTankPower() const override;

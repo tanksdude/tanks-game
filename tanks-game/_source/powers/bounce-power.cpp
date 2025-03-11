@@ -1,4 +1,5 @@
 #include "bounce-power.h"
+#include "../game-manager.h" //settings
 
 const int BouncePower::maxBounces = 16;
 
@@ -21,12 +22,6 @@ BulletPower* BouncePower::makeBulletPower() const {
 	return new BounceBulletPower();
 }
 
-/*
-HazardPower* BouncePower::makeHazardPower() const {
-	return new BounceHazardPower();
-}
-*/
-
 Power* BouncePower::factory() {
 	return new BouncePower();
 }
@@ -42,8 +37,9 @@ BulletPower* BounceTankPower::makeBulletPower() const {
 }
 
 BounceTankPower::BounceTankPower() {
-	maxTime = 500;
-	timeLeft = 500;
+	const GameSettings& game_settings = GameManager::get_settings();
+	maxTime = game_settings.PowerupDurationBaseTime;
+	timeLeft = game_settings.PowerupDurationBaseTime;
 }
 
 

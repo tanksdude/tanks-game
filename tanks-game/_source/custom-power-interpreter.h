@@ -144,11 +144,12 @@ public:
 
 	TankPower* makeTankPower() const override;
 	BulletPower* makeBulletPower() const override;
-	//HazardPower* makeHazardPower() const override;
 
 	virtual ~CustomPower();
 	[[nodiscard]] CustomPower* factory() const; //makes a copy of itself; used by CustomPowerInterpreter to give PowerupDataGovernor an actual power
 };
+
+
 
 class CustomTankPower : public TankPower {
 protected:
@@ -265,6 +266,8 @@ public:
 		std::shared_ptr<std::vector<CustomPower::CustomPowerAction_Bullet*>> initializationActions_bullet,
 		double old_timeLeft); //for makeDuplicate() to pass on timeLeft for modifiedDeathHandling
 };
+
+
 
 class CustomBulletPower : public BulletPower {
 protected:

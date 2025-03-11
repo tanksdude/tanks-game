@@ -24,7 +24,6 @@ public:
 
 	virtual TankPower* makeTankPower() const = 0;
 	virtual BulletPower* makeBulletPower() const = 0;
-	//virtual HazardPower* makeHazardPower() const = 0;
 
 	virtual ~Power() { return; }
 	//static Power* factory();

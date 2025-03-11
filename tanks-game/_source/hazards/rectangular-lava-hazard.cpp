@@ -14,9 +14,9 @@
 #include "../wall-manager.h"
 #include "../hazard-manager.h"
 
-SimpleVector2D RectangularLavaHazard::bubble_vertices[Circle::numOfSides+1];
-unsigned int RectangularLavaHazard::bubble_indices[Circle::numOfSides*3];
-unsigned int RectangularLavaHazard::outline_indices[Circle::numOfSides*2*3];
+SimpleVector2D RectangularLavaHazard::bubble_vertices[RectangularLavaHazard::BubbleSideCount + 1];
+unsigned int RectangularLavaHazard::bubble_indices[RectangularLavaHazard::BubbleSideCount * 3];
+unsigned int RectangularLavaHazard::outline_indices[RectangularLavaHazard::BubbleSideCount * 2*3];
 bool RectangularLavaHazard::initialized_vertices = false;
 
 std::unordered_map<std::string, float> RectangularLavaHazard::getWeights() const {
@@ -58,22 +58,22 @@ bool RectangularLavaHazard::initializeVertices() {
 	}
 
 	bubble_vertices[0] = SimpleVector2D(0, 0);
-	for (int i = 1; i < Circle::numOfSides+1; i++) {
-		bubble_vertices[i] = SimpleVector2D(cos((i-1) * (2*PI / Circle::numOfSides)), sin((i-1) * (2*PI / Circle::numOfSides)));
+	for (int i = 1; i < RectangularLavaHazard::BubbleSideCount+1; i++) {
+		bubble_vertices[i] = SimpleVector2D(cos((i-1) * (2*PI / RectangularLavaHazard::BubbleSideCount)), sin((i-1) * (2*PI / RectangularLavaHazard::BubbleSideCount)));
 	}
 
-	for (int i = 0; i < Circle::numOfSides; i++) {
+	for (int i = 0; i < RectangularLavaHazard::BubbleSideCount; i++) {
 		bubble_indices[i*3]   = 0;
 		bubble_indices[i*3+1] = i+1;
-		bubble_indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
+		bubble_indices[i*3+2] = (i+1) % RectangularLavaHazard::BubbleSideCount + 1;
 	}
 
-	for (int i = 0; i < Circle::numOfSides; i++) {
+	for (int i = 0; i < RectangularLavaHazard::BubbleSideCount; i++) {
 		outline_indices[i*6]   =  i*2;
 		outline_indices[i*6+1] =  i*2+1;
-		outline_indices[i*6+2] = (i*2+3) % (Circle::numOfSides*2);
-		outline_indices[i*6+3] = (i*2+3) % (Circle::numOfSides*2);
-		outline_indices[i*6+4] = (i*2+2) % (Circle::numOfSides*2);
+		outline_indices[i*6+2] = (i*2+3) % (RectangularLavaHazard::BubbleSideCount*2);
+		outline_indices[i*6+3] = (i*2+3) % (RectangularLavaHazard::BubbleSideCount*2);
+		outline_indices[i*6+4] = (i*2+2) % (RectangularLavaHazard::BubbleSideCount*2);
 		outline_indices[i*6+5] =  i*2;
 	}
 
@@ -276,8 +276,8 @@ inline void RectangularLavaHazard::drawBubbles(bool pose, float alpha) const {
 		color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 		const float lineWidth = 0.75f;
 
-		float coordsAndColor[(Circle::numOfSides*2)*(2+4)];
-		for (int i = 0; i < Circle::numOfSides; i++) {
+		float coordsAndColor[(RectangularLavaHazard::BubbleSideCount*2)*(2+4)];
+		for (int i = 0; i < RectangularLavaHazard::BubbleSideCount; i++) {
 			coordsAndColor[(i*2)  *6]   = (sortedBubbles[j]->getX()*this->w + this->x) + (sortedBubbles[j]->getR() - lineWidth) * bubble_vertices[i+1].getXComp();
 			coordsAndColor[(i*2)  *6+1] = (sortedBubbles[j]->getY()*this->h + this->y) + (sortedBubbles[j]->getR() - lineWidth) * bubble_vertices[i+1].getYComp();
 			coordsAndColor[(i*2+1)*6]   = (sortedBubbles[j]->getX()*this->w + this->x) + (sortedBubbles[j]->getR() + lineWidth) * bubble_vertices[i+1].getXComp();
@@ -293,7 +293,7 @@ inline void RectangularLavaHazard::drawBubbles(bool pose, float alpha) const {
 			coordsAndColor[(i*2+1)*6+5] = color.getAf();
 		}
 
-		Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::numOfSides*2)*(2+4), outline_indices, Circle::numOfSides*6);
+		Renderer::SubmitBatchedDraw(coordsAndColor, (RectangularLavaHazard::BubbleSideCount*2)*(2+4), outline_indices, RectangularLavaHazard::BubbleSideCount*6);
 	}
 }
 

@@ -17,9 +17,9 @@
 #include "../wall-manager.h"
 #include "../hazard-manager.h"
 
-SimpleVector2D CircularLightningHazard::body_vertices[Circle::numOfSides+1];
-unsigned int CircularLightningHazard::body_indices[Circle::numOfSides*3];
-unsigned int CircularLightningHazard::outline_indices[Circle::numOfSides*2*3];
+SimpleVector2D CircularLightningHazard::body_vertices[Circle::NumOfSides+1];
+unsigned int CircularLightningHazard::body_indices[Circle::NumOfSides*3];
+unsigned int CircularLightningHazard::outline_indices[Circle::NumOfSides*2*3];
 bool CircularLightningHazard::initialized_vertices = false;
 
 std::unordered_map<std::string, float> CircularLightningHazard::getWeights() const {
@@ -74,22 +74,22 @@ bool CircularLightningHazard::initializeVertices() {
 	}
 
 	body_vertices[0] = SimpleVector2D(0, 0);
-	for (int i = 1; i < Circle::numOfSides+1; i++) {
-		body_vertices[i] = SimpleVector2D(cos((i-1) * (2*PI / Circle::numOfSides)), sin((i-1) * (2*PI / Circle::numOfSides)));
+	for (int i = 1; i < Circle::NumOfSides+1; i++) {
+		body_vertices[i] = SimpleVector2D(cos((i-1) * (2*PI / Circle::NumOfSides)), sin((i-1) * (2*PI / Circle::NumOfSides)));
 	}
 
-	for (int i = 0; i < Circle::numOfSides; i++) {
+	for (int i = 0; i < Circle::NumOfSides; i++) {
 		body_indices[i*3]   = 0;
 		body_indices[i*3+1] = i+1;
-		body_indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
+		body_indices[i*3+2] = (i+1) % Circle::NumOfSides + 1;
 	}
 
-	for (int i = 0; i < Circle::numOfSides; i++) {
+	for (int i = 0; i < Circle::NumOfSides; i++) {
 		outline_indices[i*6]   =  i*2;
 		outline_indices[i*6+1] =  i*2+1;
-		outline_indices[i*6+2] = (i*2+3) % (Circle::numOfSides*2);
-		outline_indices[i*6+3] = (i*2+3) % (Circle::numOfSides*2);
-		outline_indices[i*6+4] = (i*2+2) % (Circle::numOfSides*2);
+		outline_indices[i*6+2] = (i*2+3) % (Circle::NumOfSides*2);
+		outline_indices[i*6+3] = (i*2+3) % (Circle::NumOfSides*2);
+		outline_indices[i*6+4] = (i*2+2) % (Circle::NumOfSides*2);
 		outline_indices[i*6+5] =  i*2;
 	}
 
@@ -371,14 +371,14 @@ inline void CircularLightningHazard::drawBackground(bool pose, float alpha) cons
 	ColorValueHolder color = getBackgroundColor_Pose();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 
-	float coordsAndColor[(Circle::numOfSides+1)*(2+4)];
+	float coordsAndColor[(Circle::NumOfSides+1)*(2+4)];
 	coordsAndColor[0] = x;
 	coordsAndColor[1] = y;
 	coordsAndColor[2] = color.getRf();
 	coordsAndColor[3] = color.getGf();
 	coordsAndColor[4] = color.getBf();
 	coordsAndColor[5] = color.getAf();
-	for (int i = 1; i < Circle::numOfSides+1; i++) {
+	for (int i = 1; i < Circle::NumOfSides+1; i++) {
 		coordsAndColor[i*6]   = x + (r*scale) * body_vertices[i].getXComp();
 		coordsAndColor[i*6+1] = y + (r*scale) * body_vertices[i].getYComp();
 		coordsAndColor[i*6+2] = color.getRf();
@@ -387,7 +387,7 @@ inline void CircularLightningHazard::drawBackground(bool pose, float alpha) cons
 		coordsAndColor[i*6+5] = color.getAf();
 	}
 
-	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::numOfSides+1)*(2+4), body_indices, Circle::numOfSides*3);
+	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::NumOfSides+1)*(2+4), body_indices, Circle::NumOfSides*3);
 
 	drawBackgroundOutline(alpha);
 }
@@ -400,8 +400,8 @@ inline void CircularLightningHazard::drawBackgroundOutline(float alpha) const {
 	const float lineWidth = 0.5f;
 	//using the same color for the background works well, though it's not used because the outline was added to make the lightning's boundary obvious
 
-	float coordsAndColor_outline[(Circle::numOfSides*2)*(2+4)];
-	for (int i = 0; i < Circle::numOfSides; i++) {
+	float coordsAndColor_outline[(Circle::NumOfSides*2)*(2+4)];
+	for (int i = 0; i < Circle::NumOfSides; i++) {
 		coordsAndColor_outline[(i*2)  *6]   = x + (r-lineWidth) * body_vertices[i+1].getXComp();
 		coordsAndColor_outline[(i*2)  *6+1] = y + (r-lineWidth) * body_vertices[i+1].getYComp();
 		coordsAndColor_outline[(i*2+1)*6]   = x + (r+lineWidth) * body_vertices[i+1].getXComp();
@@ -417,7 +417,7 @@ inline void CircularLightningHazard::drawBackgroundOutline(float alpha) const {
 		coordsAndColor_outline[(i*2+1)*6+5] = color_outline.getAf();
 	}
 
-	Renderer::SubmitBatchedDraw(coordsAndColor_outline, (Circle::numOfSides*2)*(2+4), outline_indices, Circle::numOfSides*6);
+	Renderer::SubmitBatchedDraw(coordsAndColor_outline, (Circle::NumOfSides*2)*(2+4), outline_indices, Circle::NumOfSides*6);
 }
 
 inline void CircularLightningHazard::drawBolts(float alpha) const {

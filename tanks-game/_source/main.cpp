@@ -15,6 +15,7 @@
 //other:
 #include "diagnostics.h"
 #include "basic-ini-parser.h"
+#include "game-settings.h"
 #include "mod-processor.h"
 #include "statistics-handler.h"
 
@@ -166,23 +167,30 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 
-const std::string GameWindowName = "PowerTanks Battle v0.2.5"; //this is not guaranteed to be correct every commit but likely will be
+#include <rpmalloc.h> //rest of rpmalloc stuff is in aaa_first.cpp
+
+const std::string GameWindowName = "PowerTanks Battle v0.2.5.1"; //this is not guaranteed to be correct every commit but likely will be
 const std::string INIFilePath = "tanks.ini";
 
 
 
 int main(int argc, char** argv) {
+	//rpmalloc initialization has to happen before main, so it's not called here
+
 	GameManager::initializeINI(INIFilePath);
+	GameManager::initializeSettings();
 	const BasicINIParser::BasicINIData& ini_data = GameManager::get_INI();
 
 	if (ini_data.exists("UNIVERSAL", "RNGSeed")) {
-		GameRNG::Initialize(std::stoll(ini_data.get("UNIVERSAL", "RNGSeed")));
-		VisualRNG::Initialize(std::stoll(ini_data.get("UNIVERSAL", "RNGSeed")));
-		LevelRNG::Initialize(std::stoll(ini_data.get("UNIVERSAL", "RNGSeed")));
+		long long seed = std::stoll(ini_data.get("UNIVERSAL", "RNGSeed"));
+		GameRNG::Initialize(seed);
+		VisualRNG::Initialize(seed);
+		LevelRNG::Initialize(seed);
 	} else {
-		GameRNG::Initialize(std::chrono::high_resolution_clock::now().time_since_epoch().count());
-		VisualRNG::Initialize(std::chrono::high_resolution_clock::now().time_since_epoch().count());
-		LevelRNG::Initialize(std::chrono::high_resolution_clock::now().time_since_epoch().count());
+		long long currTime = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+		GameRNG::Initialize(currTime);
+		VisualRNG::Initialize(currTime);
+		LevelRNG::Initialize(currTime);
 	}
 	if (ini_data.exists("UNIVERSAL", "GraphicsContext")) {
 		Renderer::SetContext(ini_data.get("UNIVERSAL", "GraphicsContext"));
@@ -464,16 +472,6 @@ int main(int argc, char** argv) {
 
 	Renderer::Uninitialize();
 
+	rpmalloc_finalize();
 	return 0;
 }
-
-/*
- * estimated total completion:
- * 100% required GPU drawing stuff!
- * 95% actual foundation
- * * still want to rewrite collision to be proper, but wow that'd be a lot of work
- * ~90% game code:
- * * ideas in power.cpp, circlehazard.cpp, level.cpp, and randomly elsewhere
- * * it's just an estimate
- * * 100% probably won't be "finished" on this scale (it could jump from 60% to 100%)
- */

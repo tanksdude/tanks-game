@@ -1,4 +1,5 @@
 #include "dev-other-stuff-is-poison-power.h"
+#include "../game-manager.h" //settings
 
 std::unordered_map<std::string, float> DevOtherStuffIsPoisonPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -15,12 +16,6 @@ BulletPower* DevOtherStuffIsPoisonPower::makeBulletPower() const {
 	return new DevOtherStuffIsPoisonBulletPower();
 }
 
-/*
-HazardPower* DevOtherStuffIsPoisonPower::makeHazardPower() const {
-	return new DevOtherStuffIsPoisonHazardPower();
-}
-*/
-
 Power* DevOtherStuffIsPoisonPower::factory() {
 	return new DevOtherStuffIsPoisonPower();
 }
@@ -36,8 +31,9 @@ BulletPower* DevOtherStuffIsPoisonTankPower::makeBulletPower() const {
 }
 
 DevOtherStuffIsPoisonTankPower::DevOtherStuffIsPoisonTankPower() {
-	maxTime = 500;
-	timeLeft = 500;
+	const GameSettings& game_settings = GameManager::get_settings();
+	maxTime = game_settings.PowerupDurationBaseTime;
+	timeLeft = game_settings.PowerupDurationBaseTime;
 
 	//modifiesEdgeCollision = true;
 	//overridesEdgeCollision = false;

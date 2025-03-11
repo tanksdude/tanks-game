@@ -82,8 +82,9 @@ void Diagnostics::pushGraphTime(std::string name, long double time) {
 	std::vector<long double>& currentGraph = graphTimes[graphNameToIndex[name]].data;
 
 	currentGraph.push_back(time);
-	while (currentGraph.size() > maxGraphTimes) {
-		currentGraph.erase(currentGraph.begin());
+	if (currentGraph.size() > maxGraphTimes) {
+		const unsigned int count = currentGraph.size() - maxGraphTimes;
+		currentGraph.erase(currentGraph.begin(), currentGraph.begin() + count);
 	}
 
 	if (maxGraphTimes <= 200) {

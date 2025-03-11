@@ -1,10 +1,11 @@
 #include "god-mode-power.h"
-
-#include "../constants.h"
-#include <cmath> //fmod
+#include "../game-manager.h" //settings, getTickCount()
 
 #include "../color-mixer.h"
-#include "../game-manager.h" //getTickCount()
+
+inline int GodmodePower::getHueValue() {
+	return static_cast<int>(GameManager::getTickCount()) % 360;
+}
 
 std::unordered_map<std::string, float> GodmodePower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -16,7 +17,7 @@ std::unordered_map<std::string, float> GodmodePower::getWeights() const {
 }
 
 ColorValueHolder GodmodePower::getClassColor() {
-	return ColorMixer::HSVtoRGB(fmod(GameManager::getTickCount(), 360), .75, .75);
+	return ColorMixer::HSVtoRGB_int(GodmodePower::getHueValue(), .75f, .75f);
 	//JS just did the tank default color (as a PowerSquare; it was rainbow for tanks and bullets)
 }
 
@@ -27,12 +28,6 @@ TankPower* GodmodePower::makeTankPower() const {
 BulletPower* GodmodePower::makeBulletPower() const {
 	return new GodmodeBulletPower();
 }
-
-/*
-HazardPower* GodmodePower::makeHazardPower() const {
-	return new GodmodeHazardPower();
-}
-*/
 
 Power* GodmodePower::factory() {
 	return new GodmodePower();
@@ -68,8 +63,9 @@ BulletPower* GodmodeTankPower::makeBulletPower() const {
 }
 
 GodmodeTankPower::GodmodeTankPower() {
-	maxTime = 500;
-	timeLeft = 500;
+	const GameSettings& game_settings = GameManager::get_settings();
+	maxTime = game_settings.PowerupDurationBaseTime;
+	timeLeft = game_settings.PowerupDurationBaseTime;
 	//TODO: find power with longest time, then set this time to that
 	//future note: it should probably be a fusion of every power instead of all powers separately applied
 }

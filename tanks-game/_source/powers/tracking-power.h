@@ -21,7 +21,6 @@ public:
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	TrackingPower();
 	static Power* factory();
@@ -31,9 +30,7 @@ public:
 
 class TrackingTankPower : public TankPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return TrackingPower::getClassColor();
-	}
+	virtual ColorValueHolder getColor() const override { return TrackingPower::getClassColor(); }
 
 	virtual TankPower* makeDuplicate() const override { return new TrackingTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -49,9 +46,7 @@ public:
 
 class TrackingBulletPower : public BulletPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return TrackingPower::getClassColor();
-	}
+	virtual ColorValueHolder getColor() const override { return TrackingPower::getClassColor(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new TrackingBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

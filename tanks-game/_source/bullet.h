@@ -93,9 +93,11 @@ protected:
 	inline void drawDeathBar(float alpha = 1.0f) const;
 
 private:
-	static SimpleVector2D body_vertices[Circle::numOfSides+1];
-	static unsigned int body_indices[Circle::numOfSides*3];
-	static unsigned int outline_indices[Circle::numOfSides*2*3];
+	//NOTE: bullets have half the normal circle vertices
+	static constexpr unsigned int BulletSideCount = Circle::NumOfSides / 2;
+	static SimpleVector2D body_vertices[BulletSideCount + 1];
+	static unsigned int body_indices[BulletSideCount * 3];
+	static unsigned int outline_indices[BulletSideCount * 2*3];
 	static bool initialized_vertices;
 
 	static bool initializeVertices();

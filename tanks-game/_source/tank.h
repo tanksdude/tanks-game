@@ -98,7 +98,7 @@ public:
 
 protected:
 	inline void drawBody(float alpha = 1.0f) const;
-	inline void drawDead(float alpha = 1.0f) const; //probably doesn't need alpha
+	inline void drawBodyDead(float alpha = 1.0f) const; //probably doesn't need alpha
 	inline void drawOutline(float alpha = 1.0f) const;
 	inline void drawShootingCooldown(float alpha = 1.0f) const;
 	inline void drawPowerCooldown(float alpha = 1.0f) const;
@@ -107,9 +107,9 @@ protected:
 	inline void drawExtraExtraBarrels(float alpha = 1.0f) const;
 
 private:
-	static SimpleVector2D body_vertices[Circle::numOfSides+1];
-	static unsigned int body_indices[Circle::numOfSides*3];
-	static unsigned int outline_indices[Circle::numOfSides*2*3];
+	static SimpleVector2D body_vertices[Circle::NumOfSides+1];
+	static unsigned int body_indices[Circle::NumOfSides*3];
+	static unsigned int outline_indices[Circle::NumOfSides*2*3];
 	static bool initialized_vertices;
 
 	static bool initializeVertices();

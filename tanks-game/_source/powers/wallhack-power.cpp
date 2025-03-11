@@ -1,4 +1,5 @@
 #include "wallhack-power.h"
+#include "../game-manager.h" //settings
 
 std::unordered_map<std::string, float> WallhackPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -19,12 +20,6 @@ BulletPower* WallhackPower::makeBulletPower() const {
 	return new WallhackBulletPower();
 }
 
-/*
-HazardPower* WallhackPower::makeHazardPower() const {
-	return new WallhackHazardPower();
-}
-*/
-
 Power* WallhackPower::factory() {
 	return new WallhackPower();
 }
@@ -44,8 +39,9 @@ InteractionBoolHolder WallhackTankPower::modifiedCollisionWithWall(Tank* t, Wall
 }
 
 WallhackTankPower::WallhackTankPower() {
-	maxTime = 250;
-	timeLeft = 250;
+	const GameSettings& game_settings = GameManager::get_settings();
+	maxTime = game_settings.PowerupDurationBaseTime / 2;
+	timeLeft = game_settings.PowerupDurationBaseTime / 2;
 
 	modifiesCollisionWithWall = true;
 	modifiedCollisionWithWallCanWorkWithOthers = false;

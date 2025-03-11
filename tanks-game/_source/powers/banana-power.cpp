@@ -1,4 +1,5 @@
 #include "banana-power.h"
+#include "../game-manager.h" //settings
 
 const int BananaPower::bananaCount = 8; //TODO: change with INI
 const double BananaPower::maxNewBulletVelocityMultiplier = 5.0/4.0;
@@ -24,12 +25,6 @@ BulletPower* BananaPower::makeBulletPower() const {
 	return new BananaBulletPower();
 }
 
-/*
-HazardPower* BananaPower::makeHazardPower() const {
-	return new BananaHazardPower();
-}
-*/
-
 Power* BananaPower::factory() {
 	return new BananaPower();
 }
@@ -45,8 +40,9 @@ BulletPower* BananaTankPower::makeBulletPower() const {
 }
 
 BananaTankPower::BananaTankPower() {
-	maxTime = 500;
-	timeLeft = 500;
+	const GameSettings& game_settings = GameManager::get_settings();
+	maxTime = game_settings.PowerupDurationBaseTime;
+	timeLeft = game_settings.PowerupDurationBaseTime;
 }
 
 

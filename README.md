@@ -74,9 +74,10 @@ I didn't find a good way to easily build documentation, so... the documentation 
 ## Built With
 
 * [Visual Studio (2022)](https://visualstudio.microsoft.com/) - C++ IDE from Microsoft
-* [FreeGLUT](https://freeglut.sourceforge.net/) - OpenGL Utility Toolkit; for making windows and stuff cross-platform
+* [FreeGLUT](https://freeglut.sourceforge.net/) - OpenGL Utility Toolkit; cross-platform way to make windows and get inputs
 * [GLEW](https://glew.sourceforge.net/) - OpenGL Extension Wrangler Library; for getting the latest OpenGL commands on Windows (where "latest" is >1.1 or so)
 * [OpenGL Mathematics (GLM)](https://github.com/g-truc/glm) - OpenGL-happy matrix and vector math library
+* [rpmalloc](https://github.com/mjansson/rpmalloc) - Memory allocator, for some extra performance
 
 ## Contributing
 
@@ -91,7 +92,7 @@ GNU General Public License v3.0
 ## Acknowledgments
 
 * JS Tanks (made by me): [tanks.html](https://uncreativeusername.neocities.org/tanks.html)
-    * this version has more stuff
+    * the JS version has significantly less stuff and way worse power mixing, so play this C++ version instead!
 * Many people across the Interwebs who made StackOverflow and other forum posts
 * Lots of YouTube tutorials, GDC talks, and my CS professors providing assistance
 * The vague inspiration I had for this game back when I made it: some top-down Flash tank game. I've tried searching for it multiple times but have never found it, so given my continuously fading memories of that game I played, I'll probably never find out what it actually was. (No, it wasn't Wii Tanks (that's not a Flash game, come on!). I think the game had a more cartoonish than realistic artstyle. I don't remember if there were powerups. My closest guess was some old Atari game remade in Flash, but my searches didn't find anything useful.)

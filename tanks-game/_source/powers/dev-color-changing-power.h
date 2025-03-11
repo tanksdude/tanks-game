@@ -22,7 +22,6 @@ public:
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	DevColorChangingPower();
 	static Power* factory();
@@ -38,9 +37,7 @@ public:
 	virtual void tick(Tank* t) override; //updates color
 
 	virtual ColorValueHolder getColor() const override;
-	virtual float getColorImportance() const override {
-		return DevColorChangingPower::getClassColorImportance();
-	}
+	virtual float getColorImportance() const override { return DevColorChangingPower::getClassColorImportance(); }
 
 	virtual TankPower* makeDuplicate() const override { return new DevColorChangingTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -58,9 +55,7 @@ public:
 	virtual void tick(Bullet* b) override; //updates color
 
 	virtual ColorValueHolder getColor() const override;
-	virtual float getColorImportance() const override {
-		return DevColorChangingPower::getClassColorImportance();
-	}
+	virtual float getColorImportance() const override { return DevColorChangingPower::getClassColorImportance(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new DevColorChangingBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

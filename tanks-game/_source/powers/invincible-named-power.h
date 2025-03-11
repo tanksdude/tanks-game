@@ -20,7 +20,6 @@ public:
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	InvincibleNamedPower();
 	//TODO: virtual destructor for DevLongInvincibleNamedPower?
@@ -31,9 +30,7 @@ public:
 
 class InvincibleNamedTankPower : public TankPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return InvincibleNamedPower::getClassColor();
-	}
+	virtual ColorValueHolder getColor() const override { return InvincibleNamedPower::getClassColor(); }
 
 	virtual TankPower* makeDuplicate() const override { return new InvincibleNamedTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -51,9 +48,7 @@ public:
 
 class InvincibleNamedBulletPower : public BulletPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return InvincibleNamedPower::getClassColor();
-	}
+	virtual ColorValueHolder getColor() const override { return InvincibleNamedPower::getClassColor(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new InvincibleNamedBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

@@ -24,7 +24,6 @@ public:
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	TricksterSnakePower();
 	static Power* factory();
@@ -34,9 +33,7 @@ public:
 
 class TricksterSnakeTankPower : public TankPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return TricksterSnakePower::getClassColor();
-	}
+	virtual ColorValueHolder getColor() const override { return TricksterSnakePower::getClassColor(); }
 
 	virtual TankPower* makeDuplicate() const override { return new TricksterSnakeTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -51,9 +48,7 @@ protected:
 	double tickCount;
 
 public:
-	virtual ColorValueHolder getColor() const override {
-		return TricksterSnakePower::getClassColor();
-	}
+	virtual ColorValueHolder getColor() const override { return TricksterSnakePower::getClassColor(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new TricksterSnakeBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

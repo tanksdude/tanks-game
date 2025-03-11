@@ -18,7 +18,6 @@ public:
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	OldMinesPower();
 	static Power* factory();
@@ -28,12 +27,8 @@ public:
 
 class OldMinesTankPower : public MinesTankPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return OldMinesPower::getClassColor();
-	}
-	virtual float getColorImportance() const override {
-		return OldMinesPower::getClassColorImportance();
-	}
+	virtual ColorValueHolder getColor() const override { return OldMinesPower::getClassColor(); }
+	virtual float getColorImportance() const override { return OldMinesPower::getClassColorImportance(); }
 
 	virtual TankPower* makeDuplicate() const override { return new OldMinesTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -47,12 +42,8 @@ public:
 
 class OldMinesBulletPower : public MinesBulletPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return OldMinesPower::getClassColor();
-	}
-	virtual float getColorImportance() const override {
-		return OldMinesPower::getClassColorImportance();
-	}
+	virtual ColorValueHolder getColor() const override { return OldMinesPower::getClassColor(); }
+	virtual float getColorImportance() const override { return OldMinesPower::getClassColorImportance(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new OldMinesBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

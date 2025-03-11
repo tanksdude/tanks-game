@@ -15,12 +15,6 @@ BulletPower* EdgeSparksPower::makeBulletPower() const {
 	return new EdgeSparksBulletPower();
 }
 
-/*
-HazardPower* EdgeSparksPower::makeHazardPower() const {
-	return new EdgeSparksHazardPower();
-}
-*/
-
 Power* EdgeSparksPower::factory() {
 	return new EdgeSparksPower();
 }

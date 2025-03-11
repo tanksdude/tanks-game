@@ -1,4 +1,5 @@
 #include "homing-power.h"
+#include "../game-manager.h" //settings
 
 #include "../constants.h"
 
@@ -24,12 +25,6 @@ BulletPower* HomingPower::makeBulletPower() const {
 	return new HomingBulletPower();
 }
 
-/*
-HazardPower* HomingPower::makeHazardPower() const {
-	return new HomingHazardPower();
-}
-*/
-
 Power* HomingPower::factory() {
 	return new HomingPower();
 }
@@ -45,8 +40,9 @@ BulletPower* HomingTankPower::makeBulletPower() const {
 }
 
 HomingTankPower::HomingTankPower() {
-	maxTime = 500;
-	timeLeft = 500;
+	const GameSettings& game_settings = GameManager::get_settings();
+	maxTime = game_settings.PowerupDurationBaseTime;
+	timeLeft = game_settings.PowerupDurationBaseTime;
 	//in JS, the tank's shooting cooldown was reset
 }
 

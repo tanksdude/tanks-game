@@ -1,4 +1,5 @@
 #include "fire-named-power.h"
+#include "../game-manager.h" //settings
 
 #include "../constants.h"
 
@@ -30,12 +31,6 @@ BulletPower* FireNamedPower::makeBulletPower() const {
 	return new FireNamedBulletPower();
 }
 
-/*
-HazardPower* FireNamedPower::makeHazardPower() const {
-	return new FireNamedHazardPower();
-}
-*/
-
 Power* FireNamedPower::factory() {
 	return new FireNamedPower();
 }
@@ -60,8 +55,9 @@ BulletPower* FireNamedTankPower::makeBulletPower() const {
 }
 
 FireNamedTankPower::FireNamedTankPower() {
-	maxTime = 500;
-	timeLeft = 500;
+	const GameSettings& game_settings = GameManager::get_settings();
+	maxTime = game_settings.PowerupDurationBaseTime;
+	timeLeft = game_settings.PowerupDurationBaseTime;
 	//JS: maxTime = 1000
 
 	modifiesAdditionalShooting = true;

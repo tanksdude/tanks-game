@@ -22,7 +22,7 @@ Treated as the generic placeholder power, mainly because it was first (in JS and
 
 Ignores walls, not interacting with them at all. Do not pass GO, do not collect $200.
 
-In the C++ version, this is the only power to have a non-standard duration. Never got around to making powers have longer durations and nothing really fits to have a shorter duration.
+In the C++ version, this is the only power to have a non-standard duration (excluding The Super). Never got around to making powers have longer durations.
 
 ## Bounce
 

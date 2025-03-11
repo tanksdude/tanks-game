@@ -1,4 +1,5 @@
 #include "invincible-named-power.h"
+#include "../game-manager.h" //settings
 
 std::unordered_map<std::string, float> InvincibleNamedPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -18,12 +19,6 @@ BulletPower* InvincibleNamedPower::makeBulletPower() const {
 	return new InvincibleNamedBulletPower();
 }
 
-/*
-HazardPower* InvincibleNamedPower::makeHazardPower() const {
-	return new InvincibleNamedHazardPower();
-}
-*/
-
 Power* InvincibleNamedPower::factory() {
 	return new InvincibleNamedPower();
 }
@@ -39,8 +34,9 @@ BulletPower* InvincibleNamedTankPower::makeBulletPower() const {
 }
 
 InvincibleNamedTankPower::InvincibleNamedTankPower() {
-	maxTime = 500;
-	timeLeft = 500;
+	const GameSettings& game_settings = GameManager::get_settings();
+	maxTime = game_settings.PowerupDurationBaseTime;
+	timeLeft = game_settings.PowerupDurationBaseTime;
 }
 
 

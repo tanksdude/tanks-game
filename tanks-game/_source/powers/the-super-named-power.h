@@ -3,6 +3,9 @@
 
 class TheSuperNamedPower : public Power {
 public:
+	static inline float getTimeValue();
+
+public:
 	virtual std::vector<std::string> getPowerTypes() const override {
 		std::vector<std::string> types = std::vector<std::string>{ "dev" }; //no random-dev
 		return types;
@@ -22,7 +25,6 @@ public:
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	TheSuperNamedPower();
 	static Power* factory();
@@ -34,12 +36,8 @@ public:
 
 class TheSuperNamedTankPower : public TankPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return TheSuperNamedPower::getClassColor();
-	}
-	virtual float getColorImportance() const override {
-		return TheSuperNamedPower::getClassColorImportance();
-	}
+	virtual ColorValueHolder getColor() const override { return TheSuperNamedPower::getClassColor(); }
+	virtual float getColorImportance() const override { return TheSuperNamedPower::getClassColorImportance(); }
 
 	virtual TankPower* makeDuplicate() const override { return new TheSuperNamedTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -56,12 +54,8 @@ public:
 
 class TheSuperNamedBulletPower : public BulletPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return TheSuperNamedPower::getClassColor();
-	}
-	virtual float getColorImportance() const override {
-		return TheSuperNamedPower::getClassColorImportance();
-	}
+	virtual ColorValueHolder getColor() const override { return TheSuperNamedPower::getClassColor(); }
+	virtual float getColorImportance() const override { return TheSuperNamedPower::getClassColorImportance(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new TheSuperNamedBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

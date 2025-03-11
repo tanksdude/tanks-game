@@ -259,6 +259,7 @@ void GameMainLoop::Tick(int UPS) {
 			waitCount = 0;
 			ResetThings::reset();
 		}
+		Diagnostics::pushGraphTime("tick", 0); //goes after ResetThings::reset() because a draw call will still happen after this
 		return;
 	}
 
@@ -1285,8 +1286,8 @@ void GameMainLoop::drawMain() const {
 	Diagnostics::pushGraphTime("upload", Diagnostics::getDiff(start, end));
 	Renderer::EndScene();
 
-	const BasicINIParser::BasicINIData& ini_data = GameManager::get_INI();
-	if (ini_data.exists("DEBUG", "EnableDebugDrawing") && std::stoi(ini_data.get("DEBUG", "EnableDebugDrawing"))) [[unlikely]] {
+	const GameSettings& game_settings = GameManager::get_settings();
+	if (game_settings.EnableDebugDrawing) [[unlikely]] {
 		drawLayer(DrawingLayers::debug);
 		//TODO: levels should be able to debug draw their starting tank positions (color: white?)
 	}

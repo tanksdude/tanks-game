@@ -27,7 +27,6 @@ public:
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	SwarmPower();
 	static Power* factory();
@@ -40,9 +39,7 @@ protected:
 	bool leftRightToggle;
 
 public:
-	virtual ColorValueHolder getColor() const override {
-		return SwarmPower::getClassColor();
-	}
+	virtual ColorValueHolder getColor() const override { return SwarmPower::getClassColor(); }
 
 	virtual TankPower* makeDuplicate() const override { return new SwarmTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -60,9 +57,7 @@ public:
 
 class SwarmBulletPower : public BulletPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return SwarmPower::getClassColor();
-	}
+	virtual ColorValueHolder getColor() const override { return SwarmPower::getClassColor(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new SwarmBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

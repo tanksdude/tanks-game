@@ -1,4 +1,5 @@
 #include "wall-sparks-power.h"
+#include "../game-manager.h" //settings
 
 #include "../constants.h"
 
@@ -25,12 +26,6 @@ BulletPower* WallSparksPower::makeBulletPower() const {
 	return new WallSparksBulletPower();
 }
 
-/*
-HazardPower* WallSparksPower::makeHazardPower() const {
-	return new WallSparksHazardPower();
-}
-*/
-
 Power* WallSparksPower::factory() {
 	return new WallSparksPower();
 }
@@ -46,8 +41,9 @@ BulletPower* WallSparksTankPower::makeBulletPower() const {
 }
 
 WallSparksTankPower::WallSparksTankPower() {
-	maxTime = 500;
-	timeLeft = 500;
+	const GameSettings& game_settings = GameManager::get_settings();
+	maxTime = game_settings.PowerupDurationBaseTime;
+	timeLeft = game_settings.PowerupDurationBaseTime;
 }
 
 

@@ -393,7 +393,7 @@ inline void PatrollingTurretHazard::drawPath(float alpha) const {
 	const float lineWidth = 1.0f;
 
 	for (int i = 0; i < routePosPairNum; i++) {
-		float coordsAndColor_circle[(Circle::numOfSides+1)*(2+4)];
+		float coordsAndColor_circle[(Circle::NumOfSides+1)*(2+4)];
 		float coordsAndColor_line[4*(2+4)];
 		unsigned int indices_line[6];
 
@@ -404,7 +404,7 @@ inline void PatrollingTurretHazard::drawPath(float alpha) const {
 		coordsAndColor_circle[3] = color.getGf();
 		coordsAndColor_circle[4] = color.getBf();
 		coordsAndColor_circle[5] = color.getAf();
-		for (int j = 1; j < Circle::numOfSides+1; j++) {
+		for (int j = 1; j < Circle::NumOfSides+1; j++) {
 			coordsAndColor_circle[j*6]   = static_cast<float>(getRoutePosX(i)) + radius * body_vertices[j].getXComp();
 			coordsAndColor_circle[j*6+1] = static_cast<float>(getRoutePosY(i)) + radius * body_vertices[j].getYComp();
 			coordsAndColor_circle[j*6+2] = color.getRf();
@@ -413,7 +413,7 @@ inline void PatrollingTurretHazard::drawPath(float alpha) const {
 			coordsAndColor_circle[j*6+5] = color.getAf();
 		}
 
-		Renderer::SubmitBatchedDraw(coordsAndColor_circle, (Circle::numOfSides+1)*(2+4), body_indices, Circle::numOfSides*3);
+		Renderer::SubmitBatchedDraw(coordsAndColor_circle, (Circle::NumOfSides+1)*(2+4), body_indices, Circle::NumOfSides*3);
 
 		//line
 		SimpleVector2D dist = SimpleVector2D(getRoutePosX((i+1) % routePosPairNum) - getRoutePosX(i), getRoutePosY((i+1) % routePosPairNum) - getRoutePosY(i));

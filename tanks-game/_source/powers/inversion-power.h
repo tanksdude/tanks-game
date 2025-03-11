@@ -16,7 +16,6 @@ public:
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	InversionPower();
 	static Power* factory();
@@ -26,9 +25,7 @@ public:
 
 class InversionTankPower : public TankPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return InversionPower::getClassColor();
-	}
+	virtual ColorValueHolder getColor() const override { return InversionPower::getClassColor(); }
 
 	virtual TankPower* makeDuplicate() const override { return new InversionTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -43,9 +40,7 @@ public:
 
 class InversionBulletPower : public BulletPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return InversionPower::getClassColor();
-	}
+	virtual ColorValueHolder getColor() const override { return InversionPower::getClassColor(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new InversionBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

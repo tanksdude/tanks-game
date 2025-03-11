@@ -100,7 +100,7 @@ unsigned char KeypressManager::normalKeyFromString(std::string key) {
 		return 0x7F;
 	}
 
-	if (normalKeyStates.find(key[0]) != normalKeyStates.end()) {
+	if (normalKeyStates.find(key[0]) != normalKeyStates.end()) [[likely]] {
 		return key[0];
 	}
 
@@ -115,49 +115,27 @@ int KeypressManager::specialKeyFromString(std::string key) {
 	//follows key names from https://www.autohotkey.com/docs/commands/Send.htm#keynames
 	//full list: https://www.autohotkey.com/docs/KeyList.htm#general
 
-	if (key == "Up") {
-		return GLUT_KEY_UP;
-	} else if (key == "Left") {
-		return GLUT_KEY_LEFT;
-	} else if (key == "Right") {
-		return GLUT_KEY_RIGHT;
-	} else if (key == "Down") {
-		return GLUT_KEY_DOWN;
-	} else if (key == "F1") {
-		return GLUT_KEY_F1;
-	} else if (key == "F2") {
-		return GLUT_KEY_F2;
-	} else if (key == "F3") {
-		return GLUT_KEY_F3;
-	} else if (key == "F4") {
-		return GLUT_KEY_F4;
-	} else if (key == "F5") {
-		return GLUT_KEY_F5;
-	} else if (key == "F6") {
-		return GLUT_KEY_F6;
-	} else if (key == "F7") {
-		return GLUT_KEY_F7;
-	} else if (key == "F8") {
-		return GLUT_KEY_F8;
-	} else if (key == "F9") {
-		return GLUT_KEY_F9;
-	} else if (key == "F10") {
-		return GLUT_KEY_F10;
-	} else if (key == "F11") {
-		return GLUT_KEY_F11;
-	} else if (key == "F12") {
-		return GLUT_KEY_F12;
-	} else if (key == "PgUp") {
-		return GLUT_KEY_PAGE_UP;
-	} else if (key == "PgDn") {
-		return GLUT_KEY_PAGE_DOWN;
-	} else if (key == "Home") {
-		return GLUT_KEY_HOME;
-	} else if (key == "End") {
-		return GLUT_KEY_END;
-	} else if (key == "Insert" || key == "Ins") {
-		return GLUT_KEY_INSERT;
-	}
+	if (key == "Up")           return GLUT_KEY_UP;
+	else if (key == "Left")    return GLUT_KEY_LEFT;
+	else if (key == "Right")   return GLUT_KEY_RIGHT;
+	else if (key == "Down")    return GLUT_KEY_DOWN;
+	else if (key == "F1")      return GLUT_KEY_F1;
+	else if (key == "F2")      return GLUT_KEY_F2;
+	else if (key == "F3")      return GLUT_KEY_F3;
+	else if (key == "F4")      return GLUT_KEY_F4;
+	else if (key == "F5")      return GLUT_KEY_F5;
+	else if (key == "F6")      return GLUT_KEY_F6;
+	else if (key == "F7")      return GLUT_KEY_F7;
+	else if (key == "F8")      return GLUT_KEY_F8;
+	else if (key == "F9")      return GLUT_KEY_F9;
+	else if (key == "F10")     return GLUT_KEY_F10;
+	else if (key == "F11")     return GLUT_KEY_F11;
+	else if (key == "F12")     return GLUT_KEY_F12;
+	else if (key == "PgUp")    return GLUT_KEY_PAGE_UP;
+	else if (key == "PgDn")    return GLUT_KEY_PAGE_DOWN;
+	else if (key == "Home")    return GLUT_KEY_HOME;
+	else if (key == "End")     return GLUT_KEY_END;
+	else if (key == "Insert" || key == "Ins")   return GLUT_KEY_INSERT;
 
 	throw std::invalid_argument("ERROR: unknown special key!");
 }

@@ -30,7 +30,6 @@ public:
 
 	virtual TankPower* makeTankPower() const override;
 	virtual BulletPower* makeBulletPower() const override;
-	//virtual HazardPower* makeHazardPower() const override;
 
 	FireNamedPower();
 	static Power* factory();
@@ -40,9 +39,7 @@ public:
 
 class FireNamedTankPower : public TankPower {
 public:
-	virtual ColorValueHolder getColor() const override {
-		return FireNamedPower::getClassColor();
-	}
+	virtual ColorValueHolder getColor() const override { return FireNamedPower::getClassColor(); }
 
 	virtual TankPower* makeDuplicate() const override { return new FireNamedTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
@@ -66,9 +63,7 @@ protected:
 	double accelerationAmount;
 
 public:
-	virtual ColorValueHolder getColor() const override {
-		return FireNamedPower::getClassColor();
-	}
+	virtual ColorValueHolder getColor() const override { return FireNamedPower::getClassColor(); }
 
 	virtual BulletPower* makeDuplicate() const override;
 	virtual TankPower* makeTankPower() const override;

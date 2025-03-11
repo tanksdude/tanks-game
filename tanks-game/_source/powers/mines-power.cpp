@@ -1,4 +1,5 @@
 #include "mines-power.h"
+#include "../game-manager.h" //settings
 
 const double MinesPower::bulletDistance = 1.0/8;
 
@@ -16,12 +17,6 @@ TankPower* MinesPower::makeTankPower() const {
 BulletPower* MinesPower::makeBulletPower() const {
 	return new MinesBulletPower();
 }
-
-/*
-HazardPower* MinesPower::makeHazardPower() const {
-	return new MinesHazardPower();
-}
-*/
 
 Power* MinesPower::factory() {
 	return new MinesPower();
@@ -62,8 +57,9 @@ BulletPower* MinesTankPower::makeBulletPower() const {
 }
 
 MinesTankPower::MinesTankPower() {
-	maxTime = 500;
-	timeLeft = 500;
+	const GameSettings& game_settings = GameManager::get_settings();
+	maxTime = game_settings.PowerupDurationBaseTime;
+	timeLeft = game_settings.PowerupDurationBaseTime;
 	//in JS, the tank's shooting cooldown was reset
 
 	modifiesAdditionalShooting = true;

@@ -18,9 +18,9 @@
 #include "../wall-manager.h"
 #include "../hazard-manager.h"
 
-SimpleVector2D StationaryTurretHazard::body_vertices[Circle::numOfSides+1];
-unsigned int StationaryTurretHazard::body_indices[Circle::numOfSides*3];
-unsigned int StationaryTurretHazard::outline_indices[Circle::numOfSides*2*3];
+SimpleVector2D StationaryTurretHazard::body_vertices[Circle::NumOfSides+1];
+unsigned int StationaryTurretHazard::body_indices[Circle::NumOfSides*3];
+unsigned int StationaryTurretHazard::outline_indices[Circle::NumOfSides*2*3];
 bool StationaryTurretHazard::initialized_vertices = false;
 
 std::unordered_map<std::string, float> StationaryTurretHazard::getWeights() const {
@@ -62,22 +62,22 @@ bool StationaryTurretHazard::initializeVertices() {
 	}
 
 	body_vertices[0] = SimpleVector2D(0, 0);
-	for (int i = 1; i < Circle::numOfSides+1; i++) {
-		body_vertices[i] = SimpleVector2D(cos((i-1) * (2*PI / Circle::numOfSides)), sin((i-1) * (2*PI / Circle::numOfSides)));
+	for (int i = 1; i < Circle::NumOfSides+1; i++) {
+		body_vertices[i] = SimpleVector2D(cos((i-1) * (2*PI / Circle::NumOfSides)), sin((i-1) * (2*PI / Circle::NumOfSides)));
 	}
 
-	for (int i = 0; i < Circle::numOfSides; i++) {
+	for (int i = 0; i < Circle::NumOfSides; i++) {
 		body_indices[i*3]   = 0;
 		body_indices[i*3+1] = i+1;
-		body_indices[i*3+2] = (i+1) % Circle::numOfSides + 1;
+		body_indices[i*3+2] = (i+1) % Circle::NumOfSides + 1;
 	}
 
-	for (int i = 0; i < Circle::numOfSides; i++) {
+	for (int i = 0; i < Circle::NumOfSides; i++) {
 		outline_indices[i*6]   =  i*2;
 		outline_indices[i*6+1] =  i*2+1;
-		outline_indices[i*6+2] = (i*2+3) % (Circle::numOfSides*2);
-		outline_indices[i*6+3] = (i*2+3) % (Circle::numOfSides*2);
-		outline_indices[i*6+4] = (i*2+2) % (Circle::numOfSides*2);
+		outline_indices[i*6+2] = (i*2+3) % (Circle::NumOfSides*2);
+		outline_indices[i*6+3] = (i*2+3) % (Circle::NumOfSides*2);
+		outline_indices[i*6+4] = (i*2+2) % (Circle::NumOfSides*2);
 		outline_indices[i*6+5] =  i*2;
 	}
 
@@ -289,14 +289,14 @@ inline void StationaryTurretHazard::drawBody(float alpha) const {
 	ColorValueHolder color = getColor();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 
-	float coordsAndColor[(Circle::numOfSides+1)*(2+4)];
+	float coordsAndColor[(Circle::NumOfSides+1)*(2+4)];
 	coordsAndColor[0] = x;
 	coordsAndColor[1] = y;
 	coordsAndColor[2] = color.getRf();
 	coordsAndColor[3] = color.getGf();
 	coordsAndColor[4] = color.getBf();
 	coordsAndColor[5] = color.getAf();
-	for (int i = 1; i < Circle::numOfSides+1; i++) {
+	for (int i = 1; i < Circle::NumOfSides+1; i++) {
 		coordsAndColor[i*6]   = x + r * body_vertices[i].getXComp();
 		coordsAndColor[i*6+1] = y + r * body_vertices[i].getYComp();
 		coordsAndColor[i*6+2] = color.getRf();
@@ -305,7 +305,7 @@ inline void StationaryTurretHazard::drawBody(float alpha) const {
 		coordsAndColor[i*6+5] = color.getAf();
 	}
 
-	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::numOfSides+1)*(2+4), body_indices, Circle::numOfSides*3);
+	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::NumOfSides+1)*(2+4), body_indices, Circle::NumOfSides*3);
 }
 
 inline void StationaryTurretHazard::drawOutline(float alpha) const {
@@ -316,8 +316,8 @@ inline void StationaryTurretHazard::drawOutline(float alpha) const {
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	const float lineWidth = 0.5f;
 
-	float coordsAndColor[(Circle::numOfSides*2)*(2+4)];
-	for (int i = 0; i < Circle::numOfSides; i++) {
+	float coordsAndColor[(Circle::NumOfSides*2)*(2+4)];
+	for (int i = 0; i < Circle::NumOfSides; i++) {
 		coordsAndColor[(i*2)  *6]   = x + (r-lineWidth) * body_vertices[i+1].getXComp();
 		coordsAndColor[(i*2)  *6+1] = y + (r-lineWidth) * body_vertices[i+1].getYComp();
 		coordsAndColor[(i*2+1)*6]   = x + (r+lineWidth) * body_vertices[i+1].getXComp();
@@ -333,7 +333,7 @@ inline void StationaryTurretHazard::drawOutline(float alpha) const {
 		coordsAndColor[(i*2+1)*6+5] = color.getAf();
 	}
 
-	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::numOfSides*2)*(2+4), outline_indices, Circle::numOfSides*6);
+	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::NumOfSides*2)*(2+4), outline_indices, Circle::NumOfSides*6);
 }
 
 inline void StationaryTurretHazard::drawBarrel(float alpha) const {

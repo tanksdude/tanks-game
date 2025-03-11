@@ -1,4 +1,5 @@
 #include "dev-backwards-movement-power.h"
+#include "../game-manager.h" //settings
 
 std::unordered_map<std::string, float> DevBackwardsMovementPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -14,12 +15,6 @@ TankPower* DevBackwardsMovementPower::makeTankPower() const {
 BulletPower* DevBackwardsMovementPower::makeBulletPower() const {
 	return new DevBackwardsMovementBulletPower();
 }
-
-/*
-HazardPower* DevBackwardsMovementPower::makeHazardPower() const {
-	return new DevBackwardsMovementHazardPower();
-}
-*/
 
 Power* DevBackwardsMovementPower::factory() {
 	return new DevBackwardsMovementPower();
@@ -45,8 +40,9 @@ BulletPower* DevBackwardsMovementTankPower::makeBulletPower() const {
 }
 
 DevBackwardsMovementTankPower::DevBackwardsMovementTankPower() {
-	maxTime = 500;
-	timeLeft = 500;
+	const GameSettings& game_settings = GameManager::get_settings();
+	maxTime = game_settings.PowerupDurationBaseTime;
+	timeLeft = game_settings.PowerupDurationBaseTime;
 
 	modifiesMovement = true;
 }

@@ -28,8 +28,8 @@ void DeveloperManager::setH(Rect* r, double h) { r->h = h; }
 
 void DeveloperManager::mouseDragFunc(int x, int y) {
 	//dev tools
-	int real_x = x;
-	int real_y = y - (Renderer::window_height - Renderer::gamewindow_height);
+	const int real_x = x;
+	const int real_y = y - (Renderer::window_height - Renderer::gamewindow_height);
 	if (leftMouse) {
 		if (!rightMouse) {
 			TankManager::getTank(0)->x = (real_x / double(Renderer::gamewindow_width)) * GAME_WIDTH;
@@ -42,8 +42,8 @@ void DeveloperManager::mouseDragFunc(int x, int y) {
 }
 
 void DeveloperManager::mouseClickFunc(int button, int state, int x, int y) {
-	int real_x = x;
-	int real_y = y - (Renderer::window_height - Renderer::gamewindow_height);
+	const int real_x = x;
+	const int real_y = y - (Renderer::window_height - Renderer::gamewindow_height);
 	if (state == GLUT_DOWN) {
 		if (button == GLUT_LEFT_BUTTON) {
 			leftMouse = true;
@@ -62,10 +62,7 @@ void DeveloperManager::mouseClickFunc(int button, int state, int x, int y) {
 }
 
 void DeveloperManager::mouseWheelFunc(int wheel, int dir, int x, int y) {
-	int real_x = (x / double(Renderer::window_width)) * GAME_WIDTH;
-	int real_y = (1 - y / double(Renderer::window_height)) * GAME_HEIGHT;
-
-	int insertIndexMax = insertListIdentifiers.size();
+	const int insertIndexMax = insertListIdentifiers.size();
 	if (dir == 1) { //scroll up
 		if (insertIndexMax > 0) {
 			insertIndex = ((insertIndex % insertIndexMax) + 1 + insertIndexMax) % insertIndexMax; //accounting for potential mistakes/trolls
@@ -92,10 +89,8 @@ void DeveloperManager::devInsert(int x, int y) {
 		case 0:
 			#if _DEBUG
 			PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "colorless_longinvincible"));
-			//PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "the_super"));
 			#else
 			PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "longinvincible"));
-			//PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "the_super"));
 			#endif
 			break;
 		case 1:

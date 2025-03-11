@@ -1,4 +1,5 @@
 #include "shotgun-power.h"
+#include "../game-manager.h" //settings
 
 const int ShotgunPower::bulletSpreadCount = 2;
 
@@ -19,12 +20,6 @@ TankPower* ShotgunPower::makeTankPower() const {
 BulletPower* ShotgunPower::makeBulletPower() const {
 	return new ShotgunBulletPower();
 }
-
-/*
-HazardPower* ShotgunPower::makeHazardPower() const {
-	return new ShotgunHazardPower();
-}
-*/
 
 Power* ShotgunPower::factory() {
 	return new ShotgunPower();
@@ -54,8 +49,9 @@ BulletPower* ShotgunTankPower::makeBulletPower() const {
 }
 
 ShotgunTankPower::ShotgunTankPower() {
-	maxTime = 500;
-	timeLeft = 500;
+	const GameSettings& game_settings = GameManager::get_settings();
+	maxTime = game_settings.PowerupDurationBaseTime;
+	timeLeft = game_settings.PowerupDurationBaseTime;
 
 	addsExtraShootingPoints = true;
 }

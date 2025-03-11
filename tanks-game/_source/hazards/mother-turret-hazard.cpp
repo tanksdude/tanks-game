@@ -467,22 +467,22 @@ inline void MotherTurretHazard::drawShootingTimer(float alpha) const {
 	} else {
 		shootingOutlinePercent = std::clamp<double>(targetingCount / (stateMultiplier[1] * tickCycle), 0, 1);
 	}
-	unsigned int shootingOutlineTriangles = Circle::numOfSides * shootingOutlinePercent;
+	unsigned int shootingOutlineTriangles = Circle::NumOfSides * shootingOutlinePercent;
 
 	if (shootingOutlineTriangles > 0) {
 		ColorValueHolder color = ColorValueHolder(1.0f, 1.0f, 1.0f);
 		color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-		const double rotateAngle = velocity.getAngle() + (2*PI)*(1 - double(shootingOutlineTriangles)/Circle::numOfSides)/2;
+		const double rotateAngle = velocity.getAngle() + (2*PI)*(1 - double(shootingOutlineTriangles)/Circle::NumOfSides)/2;
 
-		float coordsAndColor[(Circle::numOfSides+1)*(2+4)];
+		float coordsAndColor[(Circle::NumOfSides+1)*(2+4)];
 		coordsAndColor[0] = x;
 		coordsAndColor[1] = y;
 		coordsAndColor[2] = color.getRf();
 		coordsAndColor[3] = color.getGf();
 		coordsAndColor[4] = color.getBf();
 		coordsAndColor[5] = color.getAf();
-		for (unsigned int i = 0; i <= shootingOutlineTriangles && i < Circle::numOfSides; i++) {
-			SimpleVector2D vertex = SimpleVector2D(body_vertices[i % Circle::numOfSides + 1]);
+		for (unsigned int i = 0; i <= shootingOutlineTriangles && i < Circle::NumOfSides; i++) {
+			SimpleVector2D vertex = SimpleVector2D(body_vertices[i % Circle::NumOfSides + 1]);
 			vertex.scaleAndRotate(r*(5.0/4.0), rotateAngle);
 
 			coordsAndColor[(i+1)*6]   = static_cast<float>(x) + vertex.getXComp();
@@ -493,7 +493,7 @@ inline void MotherTurretHazard::drawShootingTimer(float alpha) const {
 			coordsAndColor[(i+1)*6+5] = color.getAf();
 		}
 
-		Renderer::SubmitBatchedDraw(coordsAndColor, (shootingOutlineTriangles < Circle::numOfSides ? (shootingOutlineTriangles+2)*(2+4) : (shootingOutlineTriangles+1)*(2+4)), body_indices, shootingOutlineTriangles*3);
+		Renderer::SubmitBatchedDraw(coordsAndColor, (shootingOutlineTriangles < Circle::NumOfSides ? (shootingOutlineTriangles+2)*(2+4) : (shootingOutlineTriangles+1)*(2+4)), body_indices, shootingOutlineTriangles*3);
 	}
 }
 
@@ -511,7 +511,7 @@ inline void MotherTurretHazard::drawChildTurretLocations(float alpha) const {
 		chosenChild = -1;
 	}
 
-	float coordsAndColor[(Circle::numOfSides+1)*(2+4)];
+	float coordsAndColor[(Circle::NumOfSides+1)*(2+4)];
 
 	for (int i = 0; i < maxChildTurrets; i++) {
 		const CircleHazard* testChild = makeTurret(i); //yeah it's super improper but whatever
@@ -523,7 +523,7 @@ inline void MotherTurretHazard::drawChildTurretLocations(float alpha) const {
 		coordsAndColor[3] = color.getGf();
 		coordsAndColor[4] = color.getBf();
 		coordsAndColor[5] = color.getAf();
-		for (int j = 1; j < Circle::numOfSides+1; j++) {
+		for (int j = 1; j < Circle::NumOfSides+1; j++) {
 			coordsAndColor[j*6]   = testChild->x + radius * body_vertices[j].getXComp();
 			coordsAndColor[j*6+1] = testChild->y + radius * body_vertices[j].getYComp();
 			coordsAndColor[j*6+2] = color.getRf();
@@ -533,7 +533,7 @@ inline void MotherTurretHazard::drawChildTurretLocations(float alpha) const {
 		}
 		delete testChild;
 
-		Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::numOfSides+1)*(2+4), body_indices, Circle::numOfSides*3);
+		Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::NumOfSides+1)*(2+4), body_indices, Circle::NumOfSides*3);
 	}
 }
 
