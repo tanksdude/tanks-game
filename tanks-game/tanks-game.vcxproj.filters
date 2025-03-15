@@ -1098,8 +1098,4 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="freeglut.dll" />
-    <None Include="glew32.dll" />
-  </ItemGroup>
 </Project>

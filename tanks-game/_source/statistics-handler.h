@@ -9,9 +9,12 @@
 #include <mutex>
 #include <shared_mutex>
 
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+
 class StatisticsHandler {
 public:
-	static void DumpData() noexcept;
+	static void DumpData(GLFWwindow* window) noexcept;
 
 protected:
 	static const std::string StatisticsDirectoryName; // = "stats";

@@ -74,7 +74,7 @@ I didn't find a good way to easily build documentation, so... the documentation 
 ## Built With
 
 * [Visual Studio (2022)](https://visualstudio.microsoft.com/) - C++ IDE from Microsoft
-* [FreeGLUT](https://freeglut.sourceforge.net/) - OpenGL Utility Toolkit; cross-platform way to make windows and get inputs
+* [GFLW](https://www.glfw.org/) - OpenGL Framework (or Graphics Library Framework); cross-platform way to make windows and get inputs
 * [GLEW](https://glew.sourceforge.net/) - OpenGL Extension Wrangler Library; for getting the latest OpenGL commands on Windows (where "latest" is >1.1 or so)
 * [OpenGL Mathematics (GLM)](https://github.com/g-truc/glm) - OpenGL-happy matrix and vector math library
 * [rpmalloc](https://github.com/mjansson/rpmalloc) - Memory allocator, for some extra performance

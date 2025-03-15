@@ -6,7 +6,7 @@
 #include <gtc/matrix_transform.hpp>
 
 #include <GL/glew.h>
-#include <GL/freeglut.h>
+#include <GLFW/glfw3.h>
 #include "graphics/opengl-rendering-context.h"
 #include "graphics/software-rendering-context.h"
 #include "graphics/null-rendering-context.h"
@@ -14,18 +14,26 @@
 #include "diagnostics.h"
 #include "keypress-manager.h"
 #include "game-manager.h" //for isDebugDrawingEnabled()
+#include "game-scene-manager.h" //to refresh the graphics when the window size changes
 
 //std::mutex Renderer::drawingDataLock;
 //std::thread Renderer::graphicsThread;
 //std::atomic_bool Renderer::thread_keepRunning;
 //std::atomic_bool Renderer::thread_workExists;
 
+GLFWwindow* Renderer::glfw_window = nullptr;
+bool Renderer::currently_fullscreen = false;
+int Renderer::old_window_width;
+int Renderer::old_window_height;
+int Renderer::old_window_xpos;
+int Renderer::old_window_ypos;
+
 glm::mat4 Renderer::proj = glm::ortho(0.0f, (float)GAME_WIDTH, 0.0f, (float)GAME_HEIGHT);
 glm::mat4 Renderer::getProj() { return proj; }
-int Renderer::window_width = GAME_WIDTH * 2.5;
-int Renderer::window_height = GAME_HEIGHT * 2.5;
-int Renderer::gamewindow_width = Renderer::window_width;
-int Renderer::gamewindow_height = Renderer::window_height;
+int Renderer::window_width;
+int Renderer::window_height;
+int Renderer::gamewindow_width;
+int Renderer::gamewindow_height;
 RenderingContext* Renderer::renderingMethod = nullptr;
 AvailableRenderingContexts Renderer::renderingMethodType;
 
@@ -45,8 +53,7 @@ std::string Renderer::currentSceneName = "";
 const int Renderer::maxVerticesDataLength = (1 << 24) / sizeof(float);
 const int Renderer::maxIndicesDataLength = (1 << 24) / sizeof(unsigned int); //TODO: size (fills up faster)
 
-// Handles window resizing (FreeGLUT event function)
-void Renderer::windowResizeFunc(int w, int h) {
+void Renderer::windowResizeFunc(GLFWwindow*, int w, int h) {
 	Renderer::window_width = w;
 	Renderer::window_height = h;
 
@@ -100,14 +107,8 @@ void Renderer::windowResizeFunc(int w, int h) {
 		*/
 	}
 
-	/*
-	// Now we use glOrtho to set up our viewing frustum (CPU only)
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(winXmin, winXmax, winYmin, winYmax, -1, 1);
-	*/
-
 	Diagnostics::pushGraphTime("tick", 0); //HACK: since tick will never happen when the window is being resized, add it here; will not double-add when the game is over because that still does a tick
+	GameSceneManager::DrawScenes_WindowResize();
 }
 
 //actual renderer code:
@@ -124,9 +125,28 @@ void Renderer::BeginningStuff() {
 	//}
 	//drawingDataLock.lock();
 
-	if (KeypressManager::getSpecialKey(GLUT_KEY_F11)) {
-		glutFullScreenToggle();
-		KeypressManager::unsetSpecialKey(GLUT_KEY_F11, 0, 0);
+	if (KeypressManager::getKeyState("F11")) [[unlikely]] {
+		const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+		//TODO: current monitor instead of primary: https://stackoverflow.com/questions/21421074/how-to-create-a-full-screen-window-on-the-current-monitor-with-glfw#31526753
+		//also needs glfwGetMonitorContentScale to work properly across different monitors
+
+		if (currently_fullscreen) {
+			glfwSetWindowAttrib(Renderer::glfw_window, GLFW_DECORATED, GLFW_TRUE);
+			glfwSetWindowMonitor(Renderer::glfw_window, NULL, old_window_xpos, old_window_ypos, old_window_width, old_window_height, mode->refreshRate);
+
+			currently_fullscreen = false;
+		} else {
+			glfwGetWindowPos(Renderer::glfw_window, &Renderer::old_window_xpos, &Renderer::old_window_ypos);
+			glfwGetWindowSize(Renderer::glfw_window, &Renderer::old_window_width, &Renderer::old_window_height);
+
+			glfwSetWindowAttrib(Renderer::glfw_window, GLFW_DECORATED, GLFW_FALSE); //this is not stated to be required for proper fullscreen
+			glfwSetWindowMonitor(Renderer::glfw_window, NULL, 0, 0, mode->width, mode->height, GLFW_DONT_CARE);
+			//alternatively, can do glfwSetWindowPos and glfwSetWindowSize
+
+			currently_fullscreen = true;
+		}
+
+		KeypressManager::unsetKeyState("F11");
 	}
 }
 
@@ -171,7 +191,7 @@ void Renderer::SetContext(std::string API) {
 }
 
 void Renderer::PreInitialize(int* argc, char** argv, std::string windowName) {
-	Renderer::PreInitialize(argc, argv, windowName, 60, 60);
+	Renderer::PreInitialize(argc, argv, windowName, 120, 120);
 }
 
 void Renderer::PreInitialize(int* argc, char** argv, std::string windowName, int startX, int startY) {
@@ -179,18 +199,36 @@ void Renderer::PreInitialize(int* argc, char** argv, std::string windowName, int
 }
 
 void Renderer::PreInitialize(int* argc, char** argv, std::string windowName, int startX, int startY, double sizeMultiplier) {
-	// Initialize FreeGLUT
-	glutInit(argc, argv);
-	glutInitDisplayMode(GLUT_SINGLE | GLUT_DEPTH);
-	//thanks to https://community.khronos.org/t/wglmakecurrent-issues/62656/3 for solving why a draw call would take ~15ms for no reason (it's just the V-sync time)
+	// Initialize GLFW
+	if (!glfwInit()) {
+		throw "glfw failed";
+	}
 
 	// Setup window position, size, and title
-	glutInitWindowPosition(startX, startY);
+	GLFWwindow* window;
 	Renderer::window_width = GAME_WIDTH*sizeMultiplier; Renderer::window_height = GAME_HEIGHT*sizeMultiplier;
-	glutInitWindowSize(Renderer::window_width, Renderer::window_height);
-	glutCreateWindow(windowName.c_str());
+	glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_FALSE);
+	//glfwWindowHint(GLFW_SAMPLES, 64); //TODO: doesn't seem to work
+	glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_TRUE);
+	//glfwWindowHint(GLFW_DECORATED, GLFW_TRUE); //unnecessary
+	window = glfwCreateWindow(Renderer::window_width, Renderer::window_height, windowName.c_str(), NULL, NULL);
+	glfwSetWindowPos(window, startX, startY); //TODO: this sets the inner window content part (framebuffer?)'s position, I think
+	Renderer::glfw_window = window;
+	//glEnable(GL_POLYGON_SMOOTH);
+	//glEnable(GL_MULTISAMPLE);
 
-	glDisable(GL_DEPTH_TEST);
+	glfwGetWindowPos(Renderer::glfw_window, &Renderer::old_window_xpos, &Renderer::old_window_ypos);
+	glfwGetWindowSize(Renderer::glfw_window, &Renderer::old_window_width, &Renderer::old_window_height); //required for monitor content scaling
+	Renderer::window_width = Renderer::old_window_width; Renderer::window_height = Renderer::old_window_height;
+	Renderer::gamewindow_width = Renderer::window_width; Renderer::gamewindow_height = Renderer::window_height;
+	//glfwGetMonitorContentScale(glfwGetPrimaryMonitor(), &xscale, &yscale);
+
+	glfwMakeContextCurrent(window);
+
+	//thanks to https://community.khronos.org/t/wglmakecurrent-issues/62656/3 for solving why a draw call would take ~15ms for no reason (it's just the V-sync time)
+	//glfwSwapInterval(0);
+
+	//glDisable(GL_DEPTH_TEST);
 	//transparency:
 	//glEnable(GL_BLEND);
 	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -226,6 +264,7 @@ void Renderer::Uninitialize() {
 	//thread_workExists.store(true);
 	//graphicsThread.join();
 	////uninitializeGPU();
+	glfwTerminate();
 }
 
 /*
@@ -441,7 +480,7 @@ void Renderer::ActuallyFlush() {
 	//for single framebuffer, use glFlush; for double framebuffer, swap the buffers
 	//swapping buffers is limited to monitor refresh rate, so I use glFlush
 	glFlush();
-	//glutSwapBuffers();
+	//glfwSwapBuffers(glfw_window);
 
 	UnbindAll();
 }

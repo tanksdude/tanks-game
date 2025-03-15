@@ -20,7 +20,6 @@
 0.2.6 (future)
 * cross-platform!
 * switched to GLFW from FreeGLUT
-    * fullscreen toggle removed because of that
 
 0.2.5.1
 * updated dependencies

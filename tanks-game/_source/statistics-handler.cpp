@@ -10,7 +10,7 @@ std::unordered_map<std::string, int64_t> StatisticsHandler::data;
 
 std::shared_mutex StatisticsHandler::rw_lock;
 
-void StatisticsHandler::DumpData() noexcept {
+void StatisticsHandler::DumpData(GLFWwindow*) noexcept {
 #if 0
 	rw_lock.lock();
 
