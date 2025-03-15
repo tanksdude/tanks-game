@@ -1,19 +1,19 @@
 #pragma once
 
-typedef long Game_ID;
+typedef int Game_ID;
 typedef char Team_ID;
 
-extern const double PI; //this doesn't need to exist but typing the #define before the #include <cmath> is annoying
+extern const double PI;
 extern const double GAME_WIDTH;
 extern const double GAME_HEIGHT;
 extern const double TANK_RADIUS;
 extern const double SHOOT_COOLDOWN;
 extern const double POWER_COOLDOWN;
 
-extern const float DESTRUCTION_TIER; //offense tier for destorying walls and turrets & stuff
 extern const double BULLET_TO_TANK_RADIUS_RATIO;
 extern const double BULLET_TO_TANK_SPEED_RATIO;
 
+extern const float DESTRUCTION_TIER; //offense tier for destorying walls and turrets & stuff
 extern const float LOW_TIER;
 extern const float HIGH_TIER;
 extern const float LOW_IMPORTANCE;
