@@ -41,10 +41,6 @@ void GeneralizedLava::LavaBubble::tick() {
 	}
 }
 
-bool GeneralizedLava::LavaBubble::isDead() const noexcept {
-	return (state >= 3);
-}
-
 float GeneralizedLava::LavaBubble::getAlpha() const noexcept {
 	switch (state) {
 		case 0: return tickCount / (tickMax * stateMultiplier[0]) * .5f;

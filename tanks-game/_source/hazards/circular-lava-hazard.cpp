@@ -101,13 +101,13 @@ void CircularLavaHazard::pushNewBubble(double radius) {
 	int attempts = 0;
 
 	float r0, a0, r1, a1;
-	r0 = VisualRNG::randFunc() * (r - radius);
 	a0 = VisualRNG::randFunc() * (2*PI);
+	r0 = VisualRNG::randFunc() * (r - radius);
 	x0 = r0 * cos(a0);
 	y0 = r0 * sin(a0);
 	do {
-		r1 = VisualRNG::randFunc() * (r - radius);
 		a1 = VisualRNG::randFunc() * (2*PI);
+		r1 = VisualRNG::randFunc() * (r - radius);
 		x1 = r1 * cos(a1);
 		y1 = r1 * sin(a1);
 		attempts++;

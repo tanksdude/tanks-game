@@ -28,8 +28,8 @@ protected:
 		// 3 = dead (don't use)
 
 	public:
+		inline bool isDead() const noexcept { return (state >= 3); }
 		virtual void tick();
-		bool isDead() const noexcept;
 		virtual float getAlpha() const noexcept;
 		virtual float getX() const noexcept;
 		virtual float getY() const noexcept;
