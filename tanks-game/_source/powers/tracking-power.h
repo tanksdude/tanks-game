@@ -47,6 +47,7 @@ public:
 class TrackingBulletPower : public BulletPower {
 public:
 	virtual ColorValueHolder getColor() const override { return TrackingPower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return TrackingPower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new TrackingBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

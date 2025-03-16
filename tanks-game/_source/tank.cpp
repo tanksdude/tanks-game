@@ -47,7 +47,7 @@ Tank::Tank(double x_, double y_, double angle, Team_ID teamID, std::string name_
 		//shiny tank (yes, 1/8192 is the chance before Sword/Shield)
 		defaultColor = ColorValueHolder(0.75f, 0.75f, 0.75f);
 	} else {
-		defaultColor = ColorValueHolder(0.5f, 0.5f, 0.5f);
+		defaultColor = ColorValueHolder(0.5f, 0.5f, 0.5f); //JS: #888888
 	}
 
 	initializeVertices();

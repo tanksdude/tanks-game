@@ -57,6 +57,7 @@ public:
 	virtual void removeEffects(Bullet* parent) override;
 
 	virtual ColorValueHolder getColor() const override { return MineLayerPower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return MineLayerPower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new MineLayerBulletPower(); } //don't pass on tickCount
 	virtual TankPower* makeTankPower() const override;

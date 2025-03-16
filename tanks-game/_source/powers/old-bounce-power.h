@@ -42,6 +42,7 @@ public:
 class OldBounceBulletPower : public BounceBulletPower {
 public:
 	virtual ColorValueHolder getColor() const override { return OldBouncePower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return OldBouncePower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new OldBounceBulletPower(); } //not sure if bounces were passed on in JS
 	virtual TankPower* makeTankPower() const override;

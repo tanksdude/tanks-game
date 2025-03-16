@@ -89,6 +89,7 @@
     <ClCompile Include="_source\bullet.cpp" />
     <ClCompile Include="_source\circle-hazard.cpp" />
     <ClCompile Include="_source\collision-handler.cpp" />
+    <ClCompile Include="_source\color-cache.cpp" />
     <ClCompile Include="_source\color-mixer.cpp" />
     <ClCompile Include="_source\color-value-holder.cpp" />
     <ClCompile Include="_source\constants.cpp" />
@@ -207,7 +208,6 @@
     <ClCompile Include="_source\powers\blast-power.cpp" />
     <ClCompile Include="_source\powers\bounce-power.cpp" />
     <ClCompile Include="_source\powers\dev-backwards-movement-power.cpp" />
-    <ClCompile Include="_source\powers\dev-color-changing-power.cpp" />
     <ClCompile Include="_source\powers\dev-colorless-long-invincible-named-power.cpp" />
     <ClCompile Include="_source\powers\dev-long-invincible-named-power.cpp" />
     <ClCompile Include="_source\powers\dev-movement-restarter-power.cpp" />
@@ -268,6 +268,7 @@
     <ClInclude Include="_source\circle-hazard.h" />
     <ClInclude Include="_source\circle.h" />
     <ClInclude Include="_source\collision-handler.h" />
+    <ClInclude Include="_source\color-cache.h" />
     <ClInclude Include="_source\color-mixer.h" />
     <ClInclude Include="_source\color-value-holder.h" />
     <ClInclude Include="_source\constants.h" />
@@ -394,7 +395,6 @@
     <ClInclude Include="_source\powers\blast-power.h" />
     <ClInclude Include="_source\powers\bounce-power.h" />
     <ClInclude Include="_source\powers\dev-backwards-movement-power.h" />
-    <ClInclude Include="_source\powers\dev-color-changing-power.h" />
     <ClInclude Include="_source\powers\dev-colorless-long-invincible-named-power.h" />
     <ClInclude Include="_source\powers\dev-long-invincible-named-power.h" />
     <ClInclude Include="_source\powers\dev-movement-restarter-power.h" />

@@ -42,6 +42,7 @@ public:
 class HomingBulletPower : public BulletPower {
 public:
 	virtual ColorValueHolder getColor() const override { return HomingPower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return HomingPower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new HomingBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

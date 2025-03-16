@@ -53,6 +53,7 @@ public:
 class AnnoyingBulletPower : public BulletPower {
 public:
 	virtual ColorValueHolder getColor() const override { return AnnoyingPower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return AnnoyingPower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new AnnoyingBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

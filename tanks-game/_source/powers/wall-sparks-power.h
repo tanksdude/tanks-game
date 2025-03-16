@@ -55,6 +55,7 @@ protected:
 
 public:
 	virtual ColorValueHolder getColor() const override { return WallSparksPower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return WallSparksPower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new WallSparksBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

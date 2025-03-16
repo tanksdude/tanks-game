@@ -41,6 +41,7 @@ public:
 class TripleSpreadNamedBulletPower : public TripleNamedBulletPower {
 public:
 	virtual ColorValueHolder getColor() const override { return TripleSpreadNamedPower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return TripleSpreadNamedPower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new TripleSpreadNamedBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

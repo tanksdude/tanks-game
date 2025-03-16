@@ -46,6 +46,7 @@ public:
 class WallhackBulletPower : public BulletPower {
 public:
 	virtual ColorValueHolder getColor() const override { return WallhackPower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return WallhackPower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new WallhackBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

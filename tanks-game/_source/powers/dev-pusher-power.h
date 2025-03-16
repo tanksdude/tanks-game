@@ -51,6 +51,7 @@ public:
 class DevPusherBulletPower : public BulletPower {
 public:
 	virtual ColorValueHolder getColor() const override { return DevPusherPower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return DevPusherPower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new DevPusherBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

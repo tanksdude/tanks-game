@@ -38,6 +38,7 @@ public:
 class EdgeSparksBulletPower : public WallSparksBulletPower {
 public:
 	virtual ColorValueHolder getColor() const override { return EdgeSparksPower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return EdgeSparksPower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new EdgeSparksBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

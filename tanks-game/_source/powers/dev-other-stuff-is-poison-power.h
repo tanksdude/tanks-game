@@ -64,6 +64,7 @@ public:
 class DevOtherStuffIsPoisonBulletPower : public BulletPower {
 public:
 	virtual ColorValueHolder getColor() const override { return DevOtherStuffIsPoisonPower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return DevOtherStuffIsPoisonPower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new DevOtherStuffIsPoisonBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

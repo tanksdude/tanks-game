@@ -46,6 +46,7 @@ public:
 class GrenadeBulletPower : public BulletPower {
 public:
 	virtual ColorValueHolder getColor() const override { return GrenadePower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return GrenadePower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new GrenadeBulletPower(); } //should current size be passed on?
 	virtual TankPower* makeTankPower() const override;

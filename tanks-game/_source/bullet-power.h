@@ -36,6 +36,7 @@ public:
 	}
 	virtual ColorValueHolder getColor() const = 0;
 	virtual float getColorImportance() const { return 0; }
+	virtual std::string getColorIdentifier() const = 0; //for caching colors
 
 	virtual BulletPower* makeDuplicate() const = 0;
 	virtual TankPower* makeTankPower() const = 0;

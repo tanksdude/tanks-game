@@ -44,6 +44,7 @@ class OldMinesBulletPower : public MinesBulletPower {
 public:
 	virtual ColorValueHolder getColor() const override { return OldMinesPower::getClassColor(); }
 	virtual float getColorImportance() const override { return OldMinesPower::getClassColorImportance(); }
+	virtual std::string getColorIdentifier() const override { return OldMinesPower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new OldMinesBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

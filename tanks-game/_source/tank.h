@@ -60,9 +60,9 @@ public:
 	void preciseMakeBullet(double x_offset, double y_offset, double angle); //make bullet x and y dist from tank, moving with angle; basically just for mines
 
 protected:
-	ColorValueHolder defaultColor; // = ColorValueHolder(0.5f, 0.5f, 0.5f); //JS: #888888
-	//ColorValueHolder defaultNameFill = ColorValueHolder(1.0f, 1.0f, 1.0f);
-	//ColorValueHolder defaultNameStroke = ColorValueHolder(0.0f, 0.0f, 0.0f);
+	ColorValueHolder defaultColor; //not static because of shiny tanks
+	//static const ColorValueHolder defaultNameFill = ColorValueHolder(1.0f, 1.0f, 1.0f);
+	//static const ColorValueHolder defaultNameStroke = ColorValueHolder(0.0f, 0.0f, 0.0f);
 
 	bool kill(); //allows for custom death (a.k.a. something saving the tank from death)
 	void kill_hard(); //kills without accounting for extra lives

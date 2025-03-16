@@ -46,6 +46,7 @@ public:
 class MultishotBulletPower : public BulletPower {
 public:
 	virtual ColorValueHolder getColor() const override { return MultishotPower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return MultishotPower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new MultishotBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

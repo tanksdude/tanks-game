@@ -53,6 +53,7 @@ public:
 	virtual void tick(Bullet* b) override; //for updating wall collision bools based on size
 
 	virtual ColorValueHolder getColor() const override { return MegaDeathPower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return MegaDeathPower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new MegaDeathBulletPower(); } //should current size be passed on?
 	virtual TankPower* makeTankPower() const override;

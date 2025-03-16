@@ -15,6 +15,7 @@
 //other:
 #include "background-rect.h"
 #include "diagnostics.h"
+#include "color-cache.h"
 
 //managers:
 #include "game-manager.h"
@@ -1228,12 +1229,13 @@ void GameMainLoop::drawMain() const {
 	Diagnostics::endTiming();
 
 	Diagnostics::startTiming("bullets");
+	ColorCacheBullet::invalidateColors();
 	for (int i = 0; i < BulletManager::getNumBullets(); i++) {
 		BulletManager::getBullet(i)->draw(DrawingLayers::normal);
 	}
 	Diagnostics::endTiming();
 
-	//drawing text on the GPU will need a library, so names don't get drawn anymore
+	//drawing text on the GPU will need a library, so names don't get drawn anymore //TODO: https://github.com/nothings/stb
 	/*
 	for (int i = 0; i < tanks.size(); i++) {
 		tanks[i]->drawName();

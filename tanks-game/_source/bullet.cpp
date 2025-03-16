@@ -6,6 +6,7 @@
 #include <iostream>
 
 #include "renderer.h"
+#include "color-cache.h"
 #include "color-mixer.h"
 #include "background-rect.h"
 
@@ -16,6 +17,7 @@ unsigned int Bullet::body_indices[Bullet::BulletSideCount * 3];
 unsigned int Bullet::outline_indices[Bullet::BulletSideCount * 2*3];
 bool Bullet::initialized_vertices = false;
 
+const ColorValueHolder Bullet::default_color = ColorValueHolder(0.5f, 0.5f, 0.5f);
 const double Bullet::default_radius = 4;
 
 Bullet::Bullet(double x_, double y_, double angle, Team_ID teamID, BulletParentType parentType, Game_ID parentID) : GameThing(teamID) { //every bullet constructor does this stuff
@@ -25,6 +27,7 @@ Bullet::Bullet(double x_, double y_, double angle, Team_ID teamID, BulletParentT
 	this->parentType = parentType;
 	this->parentID = parentID;
 	this->lifeValue = 100;
+	this->m_colorIdentifier = "";
 
 	initializeVertices();
 }
@@ -37,6 +40,7 @@ Bullet::Bullet(double x_, double y_, double angle, Team_ID teamID, BulletParentT
 	for (int i = 0; i < bulletPowers.size(); i++) {
 		bulletPowers[i]->initialize(this);
 	}
+	updateColorIdentifier(); //TODO: regenerating this each time is not optimal, but oh well
 	//bp not deleted
 }
 
@@ -271,10 +275,6 @@ double Bullet::getBulletAcceleration() const {
 	//look at Tank::getShootingSpeedMultiplier()
 	//(this has importance though)
 
-	if (bulletPowers.size() == 0) {
-		return 0;
-	}
-
 	float importance = LOW_IMPORTANCE;
 	for (int i = 0; i < bulletPowers.size(); i++) {
 		float value = bulletPowers[i]->getBulletAccelerationImportance();
@@ -406,28 +406,55 @@ void Bullet::removePower(int i) {
 	bulletPowers[i]->removeEffects(this);
 	delete bulletPowers[i];
 	bulletPowers.erase(bulletPowers.begin() + i);
+	updateColorIdentifier();
 }
 
-ColorValueHolder Bullet::getColor() const {
-	if (bulletPowers.size() == 0) {
-		return defaultColor;
+void Bullet::updateColorIdentifier() {
+	float highest = LOW_IMPORTANCE;
+	for (int i = 0; i < bulletPowers.size(); i++) {
+		if (bulletPowers[i]->getColorImportance() > highest) {
+			highest = bulletPowers[i]->getColorImportance();
+		}
+	}
+	if (highest < 0) [[unlikely]] {
+		m_colorIdentifier = "";
+		return;
+	}
+
+	m_colorIdentifier = "";
+	for (int i = 0; i < bulletPowers.size(); i++) {
+		if (bulletPowers[i]->getColorImportance() == highest) {
+			m_colorIdentifier += "|" + bulletPowers[i]->getColorIdentifier();
+		}
+	}
+}
+
+const ColorValueHolder& Bullet::getColor() const {
+	if (bulletPowers.size() == 0) [[unlikely]] {
+		return default_color;
 	} else {
-		float highest = LOW_IMPORTANCE;
-		for (int i = 0; i < bulletPowers.size(); i++) {
-			if (bulletPowers[i]->getColorImportance() > highest) {
-				highest = bulletPowers[i]->getColorImportance();
+		if (m_colorIdentifier.size() == 0) [[unlikely]] {
+			return default_color;
+		}
+
+		if (ColorCacheBullet::colorExists(m_colorIdentifier)) [[likely]] {
+			return ColorCacheBullet::getColor(m_colorIdentifier);
+		} else {
+			float highest = LOW_IMPORTANCE;
+			for (int i = 0; i < bulletPowers.size(); i++) {
+				if (bulletPowers[i]->getColorImportance() > highest) {
+					highest = bulletPowers[i]->getColorImportance();
+				}
 			}
-		}
-		if (highest < 0) {
-			return defaultColor;
-		}
-		std::vector<ColorValueHolder> mixingColors; mixingColors.reserve(bulletPowers.size()); //dumb preallocating is a bit faster than counting exactly how many
-		for (int i = 0; i < bulletPowers.size(); i++) {
-			if (bulletPowers[i]->getColorImportance() == highest) {
-				mixingColors.push_back(bulletPowers[i]->getColor());
+
+			std::vector<ColorValueHolder> mixingColors; mixingColors.reserve(bulletPowers.size());
+			for (int i = 0; i < bulletPowers.size(); i++) {
+				if (bulletPowers[i]->getColorImportance() == highest) {
+					mixingColors.push_back(bulletPowers[i]->getColor());
+				}
 			}
+			return ColorCacheBullet::insertColor(m_colorIdentifier, mixingColors.data(), mixingColors.size());
 		}
-		return ColorMixer::mix(mixingColors.data(), mixingColors.size());
 	}
 }
 

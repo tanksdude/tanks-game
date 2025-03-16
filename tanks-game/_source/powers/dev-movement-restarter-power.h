@@ -41,6 +41,7 @@ protected:
 
 public:
 	virtual ColorValueHolder getColor() const override { return DevMovementRestarterPower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return DevMovementRestarterPower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new DevMovementRestarterBulletPower(); } //don't pass on hasRestartedMovement
 	virtual TankPower* makeTankPower() const override;

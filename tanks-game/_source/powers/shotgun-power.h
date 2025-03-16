@@ -51,6 +51,7 @@ public:
 class ShotgunBulletPower : public BulletPower {
 public:
 	virtual ColorValueHolder getColor() const override { return ShotgunPower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return ShotgunPower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new ShotgunBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

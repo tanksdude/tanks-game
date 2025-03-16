@@ -32,6 +32,7 @@ public: //hopefully temporary
 	BulletParentType parentType;
 	std::vector<BulletPower*> bulletPowers; //change eventually?
 	double lifeValue; //[0,100], controls transparency (0=nothing, 100=opaque)
+	std::string m_colorIdentifier;
 
 public:
 	float getOffenseTier() const;
@@ -54,7 +55,6 @@ public:
 	double getBulletRadiusGrowNumber_MovingMultiplier() const;
 
 protected:
-	ColorValueHolder defaultColor = ColorValueHolder(0.5f, 0.5f, 0.5f);
 	bool kill(); //allows for custom death (a.k.a. something saving the bullet from death)
 	inline void move_base();
 	inline void degradeHandle();
@@ -62,18 +62,20 @@ protected:
 
 public:
 	//helper functions:
-	ColorValueHolder getColor() const;
+	const ColorValueHolder& getColor() const;
 	double getInitialVelocity() const { return initial_velocity; }
 	Game_ID getParentID() const { return parentID; }
 	BulletParentType getParentIDType() const { return parentType; }
 	bool isDead() const { return (lifeValue <= 0); }
 
+	static const ColorValueHolder default_color;
 	static const double default_radius;
 
 public:
 	bool move();
 	void powerCalculate();
 	void removePower(int index);
+	void updateColorIdentifier();
 
 	bool canCollideWith(const GameThing*) const;
 	bool canCollideWith(const Bullet*) const;

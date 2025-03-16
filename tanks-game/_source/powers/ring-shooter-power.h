@@ -50,6 +50,7 @@ public:
 class RingShooterBulletPower : public BulletPower {
 public:
 	virtual ColorValueHolder getColor() const override { return RingShooterPower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return RingShooterPower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new RingShooterBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

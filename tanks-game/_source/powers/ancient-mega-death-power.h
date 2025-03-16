@@ -47,6 +47,7 @@ public:
 class AncientMegaDeathBulletPower : public BulletPower {
 public:
 	virtual ColorValueHolder getColor() const override { return AncientMegaDeathPower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return AncientMegaDeathPower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new AncientMegaDeathBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

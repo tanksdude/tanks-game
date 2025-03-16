@@ -47,6 +47,7 @@ public:
 class BigNamedBulletPower : public BulletPower {
 public:
 	virtual ColorValueHolder getColor() const override { return BigNamedPower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return BigNamedPower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new BigNamedBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

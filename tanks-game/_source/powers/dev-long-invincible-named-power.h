@@ -41,6 +41,7 @@ public:
 class DevLongInvincibleNamedBulletPower : public InvincibleNamedBulletPower {
 public:
 	virtual ColorValueHolder getColor() const override { return DevLongInvincibleNamedPower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return DevLongInvincibleNamedPower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new DevLongInvincibleNamedBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

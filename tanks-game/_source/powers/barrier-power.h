@@ -43,6 +43,7 @@ public:
 class BarrierBulletPower : public BulletPower {
 public:
 	virtual ColorValueHolder getColor() const override { return BarrierPower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return BarrierPower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new BarrierBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

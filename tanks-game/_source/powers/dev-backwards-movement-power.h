@@ -45,6 +45,7 @@ public:
 class DevBackwardsMovementBulletPower : public BulletPower {
 public:
 	virtual ColorValueHolder getColor() const override { return DevBackwardsMovementPower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return DevBackwardsMovementPower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new DevBackwardsMovementBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

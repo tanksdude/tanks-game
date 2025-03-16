@@ -58,6 +58,7 @@ public:
 class SwarmBulletPower : public BulletPower {
 public:
 	virtual ColorValueHolder getColor() const override { return SwarmPower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return SwarmPower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new SwarmBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

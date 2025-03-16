@@ -323,6 +323,7 @@ protected:
 public:
 	ColorValueHolder getColor() const override { return this->color; }
 	float getColorImportance() const override { return this->colorImportance; }
+	std::string getColorIdentifier() const override { return this->name; }
 
 	BulletPower* makeDuplicate() const override;
 	TankPower* makeTankPower() const override;

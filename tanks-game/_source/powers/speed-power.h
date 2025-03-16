@@ -41,6 +41,7 @@ public:
 class SpeedBulletPower : public BulletPower {
 public:
 	virtual ColorValueHolder getColor() const override { return SpeedPower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return SpeedPower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new SpeedBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

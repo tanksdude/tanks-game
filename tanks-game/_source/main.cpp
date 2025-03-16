@@ -147,7 +147,6 @@
 #include "powers/inversion-power.h" //flips left and right turning
 #include "powers/annoying-power.h" //bullet doesn't hurt tank, merely pushes away
 #include "powers/ultra-bounce-power.h" //pushes wall away when it bounces
-#include "powers/dev-color-changing-power.h" //color changes based on tank proximity
 #include "powers/dev-other-stuff-is-poison-power.h" //kills tank when touching normally-safe stuff
 #include "powers/dev-backwards-movement-power.h" //self-explanatory
 #include "powers/wall-sparks-power.h" //create some extra bullets when hitting a wall
@@ -276,7 +275,6 @@ int main(int argc, char** argv) {
 	PowerupDataGovernor::addPowerFactory(InversionPower::factory);
 	PowerupDataGovernor::addPowerFactory(AnnoyingPower::factory);
 	PowerupDataGovernor::addPowerFactory(UltraBouncePower::factory);
-	PowerupDataGovernor::addPowerFactory(DevColorChangingPower::factory);
 	PowerupDataGovernor::addPowerFactory(DevOtherStuffIsPoisonPower::factory);
 	PowerupDataGovernor::addPowerFactory(DevBackwardsMovementPower::factory);
 	PowerupDataGovernor::addPowerFactory(WallSparksPower::factory);

@@ -38,6 +38,7 @@ public:
 class UltraBounceBulletPower : public BounceBulletPower {
 public:
 	virtual ColorValueHolder getColor() const override { return UltraBouncePower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return UltraBouncePower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override;
 	virtual TankPower* makeTankPower() const override;

@@ -52,6 +52,7 @@ class GodmodeBulletPower : public BulletPower {
 public:
 	virtual ColorValueHolder getColor() const override { return GodmodePower::getClassColor(); }
 	virtual float getColorImportance() const override { return GodmodePower::getClassColorImportance(); }
+	virtual std::string getColorIdentifier() const override { return GodmodePower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new GodmodeBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

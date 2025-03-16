@@ -49,6 +49,7 @@ protected:
 
 public:
 	virtual ColorValueHolder getColor() const override { return BananaPower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return BananaPower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new BananaBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

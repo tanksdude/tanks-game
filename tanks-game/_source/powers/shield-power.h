@@ -50,6 +50,7 @@ public:
 class ShieldBulletPower : public BulletPower {
 public:
 	virtual ColorValueHolder getColor() const override { return ShieldPower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return ShieldPower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override;
 	virtual TankPower* makeTankPower() const override;

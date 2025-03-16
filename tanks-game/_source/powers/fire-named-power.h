@@ -64,6 +64,7 @@ protected:
 
 public:
 	virtual ColorValueHolder getColor() const override { return FireNamedPower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return FireNamedPower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override;
 	virtual TankPower* makeTankPower() const override;

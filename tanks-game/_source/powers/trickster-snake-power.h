@@ -49,6 +49,7 @@ protected:
 
 public:
 	virtual ColorValueHolder getColor() const override { return TricksterSnakePower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return TricksterSnakePower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new TricksterSnakeBulletPower(); }
 	virtual TankPower* makeTankPower() const override;
