@@ -101,8 +101,8 @@ private:
 	static unsigned int body_indices[BulletSideCount * 3];
 	static unsigned int outline_indices[BulletSideCount * 2*3];
 	static bool initialized_vertices;
-
-	static bool initializeVertices();
+public:
+	static bool initializeVertices(); //initialized in main()
 
 private:
 	Bullet(double x, double y, double angle, Team_ID teamID, BulletParentType parentType, Game_ID parentID); //every bullet uses this

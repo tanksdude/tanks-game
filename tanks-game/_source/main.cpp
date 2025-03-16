@@ -390,6 +390,7 @@ int main(int argc, char** argv) {
 	Diagnostics::Initialize();
 	GameSceneManager::Initialize();
 	Renderer::Initialize();
+	Bullet::initializeVertices(); //so bullet constructors don't have to call this every time
 
 	ModProcessor::ProcessMods();
 

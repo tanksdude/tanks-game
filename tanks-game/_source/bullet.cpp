@@ -29,7 +29,7 @@ Bullet::Bullet(double x_, double y_, double angle, Team_ID teamID, BulletParentT
 	this->lifeValue = 100;
 	this->m_colorIdentifier = "";
 
-	initializeVertices();
+	//initializeVertices(); //called in main() to reduce the tiny overhead in calling this every time a bullet is created
 }
 
 Bullet::Bullet(double x_, double y_, double angle, Team_ID teamID, BulletParentType parentType, Game_ID parentID, const std::vector<BulletPower*>* bp) : Bullet(x_,y_,angle,teamID,parentType,parentID) {
