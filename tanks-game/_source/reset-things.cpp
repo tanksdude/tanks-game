@@ -52,8 +52,14 @@ void ResetThings::reset(int) {
 	if (game_settings.GameForceSameLevel) {
 		LevelManager::pushLevel(game_settings.GameForceSameLevel_identifier.first, game_settings.GameForceSameLevel_identifier.second);
 	} else [[likely]] {
-		const std::string levelPlaylist = game_settings.GameLevelPlaylist;
-		LevelManager::pushLevel(levelPlaylist, LevelManager::levelWeightedSelect(levelPlaylist));
+		if (game_settings.CustomLevelPlaylist.empty()) {
+			const std::string levelPlaylist = game_settings.GameLevelPlaylist;
+			LevelManager::pushLevel(levelPlaylist, LevelManager::levelWeightedSelect(levelPlaylist));
+		} else {
+			int levelIndex = LevelManager::customLevelWeightedSelect(game_settings.CustomLevelPlaylist);
+			const auto& levelIdentifier = game_settings.CustomLevelPlaylist[levelIndex];
+			LevelManager::pushLevel(levelIdentifier.first.first, levelIdentifier.first.second);
+		}
 	}
 
 	//initialize levels from LevelManager level list

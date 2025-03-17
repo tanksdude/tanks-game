@@ -2,6 +2,9 @@
 
 #include "constants.h"
 
+#include <stdexcept>
+#include <iostream>
+
 void GameSettings::Initialize(const BasicINIParser::BasicINIData& ini_data) {
 	//[DEBUG]
 	PerformanceGraphEnable = ini_data.exists("DEBUG", "PerformanceGraphEnable") && std::stoi(ini_data.get("DEBUG", "PerformanceGraphEnable"));
@@ -19,7 +22,33 @@ void GameSettings::Initialize(const BasicINIParser::BasicINIData& ini_data) {
 	} else {
 		GameForceSameLevel = false;
 		GameForceSameLevel_identifier = { "", "" };
-	
+	}
+	if (ini_data.exists("GAME_OPTIONS", "CustomLevelPlaylist")) {
+		CustomLevelPlaylist = {};
+		bool onlyZeroWeights = true;
+		for (int i = 0; i < ini_data.length("GAME_OPTIONS", "CustomLevelPlaylist") / 3; i++) {
+			float weight;
+			try {
+				weight = std::max(0.0f, std::stof(ini_data.get("GAME_OPTIONS", "CustomLevelPlaylist", i*3+2)));
+			}
+			catch (const std::exception&) {
+				std::cerr << "Could not parse CustomLevelPlaylist weight \"" << ini_data.get("GAME_OPTIONS", "CustomLevelPlaylist", i*3+2) << "\", cancelling..." << std::endl << std::endl;
+				CustomLevelPlaylist.clear();
+				break;
+			}
+			CustomLevelPlaylist.push_back({{ ini_data.get("GAME_OPTIONS", "CustomLevelPlaylist", i*3),
+			                                 ini_data.get("GAME_OPTIONS", "CustomLevelPlaylist", i*3+1) },
+			                                 weight });
+			if (weight > 0) {
+				onlyZeroWeights = false;
+			}
+		}
+		if (!CustomLevelPlaylist.empty() && onlyZeroWeights) {
+			std::cerr << "CustomLevelPlaylist only has zero weights, cancelling..." << std::endl << std::endl;
+			CustomLevelPlaylist.clear();
+		}
+	} else {
+		CustomLevelPlaylist = {};
 	}
 	ReportCurrentLevel = ini_data.exists("GAME_OPTIONS", "ReportCurrentLevel") && std::stoi(ini_data.get("GAME_OPTIONS", "ReportCurrentLevel"));
 

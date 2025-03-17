@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <utility>
+#include <vector>
 
 #include "basic-ini-parser.h"
 
@@ -20,6 +21,7 @@ public: //safe to be public because a const reference is used, and I don't want 
 	std::string GameLevelPlaylist;
 	bool GameForceSameLevel;
 	std::pair<std::string, std::string> GameForceSameLevel_identifier;
+	std::vector<std::pair<std::pair<std::string, std::string>, float>> CustomLevelPlaylist;
 	bool ReportCurrentLevel;
 
 	bool LimitBullets;

@@ -64,6 +64,14 @@ std::string LevelManager::levelWeightedSelect(std::string levelPlaylist) {
 	}
 }
 
+int LevelManager::customLevelWeightedSelect(const std::vector<std::pair<std::pair<std::string, std::string>, float>>& customLevelList) {
+	std::vector<float> levelWeights;
+	for (const auto& l : customLevelList) {
+		levelWeights.push_back(l.second);
+	}
+	return weightedSelect<float>(levelWeights.data(), levelWeights.size());
+}
+
 LevelEffect* LevelManager::makeLevelEffect(std::string type, std::string name, const GenericFactoryConstructionData& data) {
 	return LevelDataGovernor::getLevelEffectFactory(type, name)(data);
 }
