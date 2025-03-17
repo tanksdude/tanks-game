@@ -18,6 +18,9 @@
 #include "../level-manager.h"
 #include "circular-lava-hazard.h"
 
+const ColorValueHolder SpiralLavaHazard::lightColor = ColorValueHolder(185/255.0,  66/255.0, 240/255.0); //light-ish purple
+const ColorValueHolder SpiralLavaHazard::darkColor  = ColorValueHolder(137/255.0,  10/255.0, 166/255.0); //dark purple
+
 std::unordered_map<std::string, float> SpiralLavaHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla-extra", 0.5f });
@@ -30,12 +33,6 @@ SpiralLavaHazard::SpiralLavaHazard(double xpos, double ypos, double width, int c
 	x = xpos;
 	y = ypos;
 	w = h = width;
-	if (LevelManager::getNumLevels() > 0) [[likely]] {
-		color = LevelManager::getLevel(0)->getDefaultColor();
-		//TODO: should this really be the same color as walls? feels a bit evil
-	} else {
-		color = ColorValueHolder(0, 0, 0);
-	}
 
 	maxLavaBlobs = count;
 	lavaBlobIDs = std::vector<Game_ID>(maxLavaBlobs, -1);
@@ -93,6 +90,16 @@ void SpiralLavaHazard::initialize() {
 		pushLavaBlob(i);
 	}
 	//TODO: this should delete its lava blobs when it dies
+}
+
+ColorValueHolder SpiralLavaHazard::getColor() const {
+	if (currentlyActive) {
+		return ColorMixer::mix(SpiralLavaHazard::darkColor, SpiralLavaHazard::lightColor,
+		                       .5f * (1.0f + sin(static_cast<float>(2*PI) *        (.5f*static_cast<float>(tickCount/tickCycle)))));
+	} else {
+		return ColorMixer::mix(SpiralLavaHazard::lightColor, SpiralLavaHazard::darkColor,
+		                       .5f * (1.0f + sin(static_cast<float>(2*PI) * (1.0f + .5f*static_cast<float>(tickCount/tickCycle)))));
+	}
 }
 
 CircleHazard* SpiralLavaHazard::makeLavaBlob(int blobNum) const {
@@ -268,7 +275,7 @@ void SpiralLavaHazard::ghostDraw(float alpha) const {
 	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
-	ColorValueHolder c = this->color;
+	ColorValueHolder c = getColor();
 	c = ColorMixer::mix(BackgroundRect::getBackColor(), c, alpha);
 
 	float coordsAndColor[] = {

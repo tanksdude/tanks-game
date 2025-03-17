@@ -6,7 +6,8 @@
 class SpiralLavaHazard : public RectHazard {
 	//the base part is just a wall
 protected:
-	ColorValueHolder color;
+	static const ColorValueHolder lightColor;
+	static const ColorValueHolder darkColor;
 
 	int maxLavaBlobs; //don't know what else to call them...
 	std::vector<Game_ID> lavaBlobIDs;
@@ -19,6 +20,7 @@ protected:
 	double lavaAngleRotate; //default 180deg
 
 protected:
+	virtual ColorValueHolder getColor() const;
 	virtual CircleHazard* makeLavaBlob(int blobNum) const;
 	void pushLavaBlob(int blobNum); //shouldn't need to be virtual
 
