@@ -54,6 +54,7 @@ const int Renderer::maxVerticesDataLength = (1 << 24) / sizeof(float);
 const int Renderer::maxIndicesDataLength = (1 << 24) / sizeof(unsigned int); //TODO: size (fills up faster)
 
 void Renderer::windowResizeFunc(GLFWwindow*, int w, int h) {
+	//note: this function also gets called when moving the window between monitors (when the scale is different)
 	Renderer::window_width = w;
 	Renderer::window_height = h;
 
@@ -111,6 +112,42 @@ void Renderer::windowResizeFunc(GLFWwindow*, int w, int h) {
 	GameSceneManager::DrawScenes_WindowResize();
 }
 
+//from: https://stackoverflow.com/questions/21421074/how-to-create-a-full-screen-window-on-the-current-monitor-with-glfw#31526753
+GLFWmonitor* Renderer::get_current_monitor(GLFWwindow* window) {
+	int nmonitors, i;
+	int wx, wy, ww, wh;
+	int mx, my, mw, mh;
+	int overlap, bestoverlap;
+	GLFWmonitor* bestmonitor;
+	GLFWmonitor** monitors;
+	const GLFWvidmode* mode;
+
+	bestoverlap = 0;
+	bestmonitor = NULL;
+
+	glfwGetWindowPos(window, &wx, &wy);
+	glfwGetWindowSize(window, &ww, &wh);
+	monitors = glfwGetMonitors(&nmonitors);
+
+	for (i = 0; i < nmonitors; i++) {
+		mode = glfwGetVideoMode(monitors[i]);
+		glfwGetMonitorPos(monitors[i], &mx, &my);
+		mw = mode->width;
+		mh = mode->height;
+
+		overlap =
+			std::max(0, std::min(wx + ww, mx + mw) - std::max(wx, mx)) *
+			std::max(0, std::min(wy + wh, my + mh) - std::max(wy, my));
+
+		if (bestoverlap < overlap) {
+			bestoverlap = overlap;
+			bestmonitor = monitors[i];
+		}
+	}
+
+	return bestmonitor;
+}
+
 //actual renderer code:
 
 std::unordered_map<std::string, Shader*> Renderer::shaderCache;
@@ -126,22 +163,27 @@ void Renderer::BeginningStuff() {
 	//drawingDataLock.lock();
 
 	if (KeypressManager::getKeyState("F11")) [[unlikely]] {
-		const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-		//TODO: current monitor instead of primary: https://stackoverflow.com/questions/21421074/how-to-create-a-full-screen-window-on-the-current-monitor-with-glfw#31526753
-		//also needs glfwGetMonitorContentScale to work properly across different monitors
-
 		if (currently_fullscreen) {
+			//it's possible for the number of monitors to change, so these positions could be wrong, but whatever
+
 			glfwSetWindowAttrib(Renderer::glfw_window, GLFW_DECORATED, GLFW_TRUE);
-			glfwSetWindowMonitor(Renderer::glfw_window, NULL, old_window_xpos, old_window_ypos, old_window_width, old_window_height, mode->refreshRate);
+			glfwSetWindowPos(Renderer::glfw_window, Renderer::old_window_xpos, Renderer::old_window_ypos);
+			glfwSetWindowSize(Renderer::glfw_window, Renderer::old_window_width, Renderer::old_window_height);
 
 			currently_fullscreen = false;
 		} else {
+			GLFWmonitor* monitor = get_current_monitor(Renderer::glfw_window);
+			const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+			//doesn't need glfwGetMonitorContentScale to work properly
+
+			int monitorX, monitorY;
+			glfwGetMonitorPos(monitor, &monitorX, &monitorY);
 			glfwGetWindowPos(Renderer::glfw_window, &Renderer::old_window_xpos, &Renderer::old_window_ypos);
 			glfwGetWindowSize(Renderer::glfw_window, &Renderer::old_window_width, &Renderer::old_window_height);
 
 			glfwSetWindowAttrib(Renderer::glfw_window, GLFW_DECORATED, GLFW_FALSE); //this is not stated to be required for proper fullscreen
-			glfwSetWindowMonitor(Renderer::glfw_window, NULL, 0, 0, mode->width, mode->height, GLFW_DONT_CARE);
-			//alternatively, can do glfwSetWindowPos and glfwSetWindowSize
+			glfwSetWindowPos(Renderer::glfw_window, monitorX, monitorY);
+			glfwSetWindowSize(Renderer::glfw_window, mode->width, mode->height);
 
 			currently_fullscreen = true;
 		}

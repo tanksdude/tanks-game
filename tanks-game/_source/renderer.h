@@ -40,8 +40,9 @@ class Renderer {
 public:
 	static GLFWwindow* glfw_window;
 	static void windowResizeFunc(GLFWwindow* window, int w, int h);
-	//static void thread_func();
+	static GLFWmonitor* get_current_monitor(GLFWwindow* window);
 
+	//static void thread_func();
 	//static std::mutex drawingDataLock;
 	//static std::atomic_bool thread_workExists;
 
