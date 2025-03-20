@@ -63,7 +63,13 @@ void DeveloperManager::mouseScrollCallbackFunc(GLFWwindow*, double xOffset, doub
 
 	const unsigned int insertIndexMax = insertListIdentifiers.size();
 	if (insertIndexMax > 0) {
-		insertIndex = ((insertIndex + scrollAmount) % insertIndexMax + insertIndexMax) % insertIndexMax;
+		insertIndex += scrollAmount;
+		do {
+			insertIndex += insertIndexMax;
+			//modulo on a negative int is implementation-defined, so this is just about the only solution
+			//compilers are very smart, so they should be able to recognize what this is trying to do and replace it with something simpler if possible
+		} while (insertIndex < 0);
+		insertIndex %= insertIndexMax;
 	} else [[unlikely]] {
 		insertIndex = 0;
 	}
