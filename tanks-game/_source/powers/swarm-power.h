@@ -66,7 +66,8 @@ public:
 	//bool modifiesMovement = true;
 	virtual InteractionBoolHolder modifiedMovement(Bullet*) override;
 
-	//TODO: not sure if it should be allowed to go a bit out of bounds
+	//bool modifiesEdgeCollision = true;
+	virtual InteractionBoolHolder modifiedEdgeCollision(Bullet*) override;
 
 	virtual double getBulletSpeedMultiplier() const override { return .5; }
 

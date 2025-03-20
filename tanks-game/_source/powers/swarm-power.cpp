@@ -123,6 +123,17 @@ InteractionBoolHolder SwarmBulletPower::modifiedMovement(Bullet* b) {
 	return { false };
 }
 
+InteractionBoolHolder SwarmBulletPower::modifiedEdgeCollision(Bullet* b) {
+	//in the event the tank's size changes while the bullet is out of bounds, the "safe area" would change
+	//therefore, allow double the circling radius, because that should be plenty
+	const Tank* parentTank = TankManager::getTankByID(b->getParentID());
+	const double interiorRadius = parentTank->r * 4; //changed here
+
+	return { ((b->velocity.getMagnitude() == 0) && ((b->x + b->r <= 0) || (b->x - b->r >= GAME_WIDTH) || (b->y + b->r <= 0) || (b->y - b->r >= GAME_HEIGHT))) ||
+	         ((b->x - b->r >= GAME_WIDTH+interiorRadius)  || (b->x + b->r <= -interiorRadius) ||
+	         ((b->y - b->r >= GAME_HEIGHT+interiorRadius) || (b->y + b->r <= -interiorRadius))) };
+}
+
 TankPower* SwarmBulletPower::makeTankPower() const {
 	return new SwarmTankPower();
 }
@@ -132,4 +143,5 @@ SwarmBulletPower::SwarmBulletPower() {
 	maxTime = -1;
 
 	modifiesMovement = true;
+	modifiesEdgeCollision = true;
 }
