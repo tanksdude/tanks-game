@@ -60,11 +60,11 @@ public:
 	virtual BulletPower* makeDuplicate() const override { return new WallSparksBulletPower(); }
 	virtual TankPower* makeTankPower() const override;
 
+	//bool modifiesEdgeCollision = false; //important: not intended for this power; defined so edge sparks can use it
+	virtual InteractionBoolHolder modifiedEdgeCollision(Bullet*) override;
+
 	//bool modifiesCollisionWithWall = true;
 	virtual InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> modifiedCollisionWithWall(const Bullet*, const Wall*) override;
-
-	//bool modifiesCollisionWithEdge = false; //important: not intended for this power; defined so edge sparks can use it
-	virtual InteractionBoolHolder modifiedEdgeCollision(Bullet*) override;
 
 	WallSparksBulletPower();
 	WallSparksBulletPower(int bounces);

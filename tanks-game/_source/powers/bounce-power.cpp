@@ -49,36 +49,6 @@ BounceTankPower::BounceTankPower() {
 
 //#include "../statistics-handler.h"
 
-InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> BounceBulletPower::modifiedCollisionWithWall(const Bullet* b, const Wall* w) {
-	std::shared_ptr<BulletUpdateStruct> b_update;
-	std::shared_ptr<WallUpdateStruct> w_update;
-
-	if (b->velocity.getMagnitude() * (Bullet::default_radius/b->r) <= .5) {
-		auto result = PowerFunctionHelper::bounceGenericWithCorners(b, w);
-		b_update = result.second.firstUpdate;
-		w_update = result.second.secondUpdate;
-		if (result.first) {
-			bouncesLeft--;
-			//StatisticsHandler::addData("bounce_wall", 1);
-		}
-	} else {
-		auto result = PowerFunctionHelper::bounceGeneric(b, w);
-		b_update = result.second.firstUpdate;
-		w_update = result.second.secondUpdate;
-		if (result.first) {
-			bouncesLeft--;
-			//StatisticsHandler::addData("bounce_wall", 1);
-		}
-	}
-
-	if (bouncesLeft <= 0) {
-		modifiesCollisionWithWall = false;
-		modifiesEdgeCollision = false;
-	}
-
-	return { (bouncesLeft < 0), false, b_update, w_update };
-}
-
 InteractionBoolHolder BounceBulletPower::modifiedEdgeCollision(Bullet* b) {
 	//the bullet can bounce off of edges twice in a single tick
 	//therefore, it can lose 2 bounces at once
@@ -141,6 +111,36 @@ InteractionBoolHolder BounceBulletPower::modifiedEdgeCollision(Bullet* b) {
 	}
 
 	return { CollisionHandler::fullyOutOfBounds(b) };
+}
+
+InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> BounceBulletPower::modifiedCollisionWithWall(const Bullet* b, const Wall* w) {
+	std::shared_ptr<BulletUpdateStruct> b_update;
+	std::shared_ptr<WallUpdateStruct> w_update;
+
+	if (b->velocity.getMagnitude() * (Bullet::default_radius/b->r) <= .5) {
+		auto result = PowerFunctionHelper::bounceGenericWithCorners(b, w);
+		b_update = result.second.firstUpdate;
+		w_update = result.second.secondUpdate;
+		if (result.first) {
+			bouncesLeft--;
+			//StatisticsHandler::addData("bounce_wall", 1);
+		}
+	} else {
+		auto result = PowerFunctionHelper::bounceGeneric(b, w);
+		b_update = result.second.firstUpdate;
+		w_update = result.second.secondUpdate;
+		if (result.first) {
+			bouncesLeft--;
+			//StatisticsHandler::addData("bounce_wall", 1);
+		}
+	}
+
+	if (bouncesLeft <= 0) {
+		modifiesCollisionWithWall = false;
+		modifiesEdgeCollision = false;
+	}
+
+	return { (bouncesLeft < 0), false, b_update, w_update };
 }
 
 BulletPower* BounceBulletPower::makeDuplicate() const {

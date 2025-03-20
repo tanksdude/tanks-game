@@ -45,6 +45,6 @@ EdgeSparksBulletPower::EdgeSparksBulletPower(int bounces) : WallSparksBulletPowe
 	if (bounces > 0) [[likely]] {
 		modifiesEdgeCollision = true;
 	}
-	
+
 	modifiesCollisionWithWall = false; //unset
 }

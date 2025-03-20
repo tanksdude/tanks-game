@@ -76,34 +76,6 @@ void WallSparksBulletPower::sparkExplode(const Bullet* b, const BulletUpdateStru
 	}
 }
 
-InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> WallSparksBulletPower::modifiedCollisionWithWall(const Bullet* b, const Wall* w) {
-	//see BounceBulletPower::modifiedWallCollision()
-
-	std::shared_ptr<BulletUpdateStruct> b_update;
-	std::shared_ptr<WallUpdateStruct> w_update;
-
-	//first, bounce off wall
-
-	auto result = PowerFunctionHelper::bounceGeneric(b, w);
-	b_update = result.second.firstUpdate;
-	w_update = result.second.secondUpdate;
-	if (result.first) {
-		bouncesLeft--;
-	}
-
-	if (bouncesLeft <= 0) {
-		modifiesCollisionWithWall = false;
-		modifiesEdgeCollision = false; //for edge sparks
-	}
-
-	//second, create more bullets (they lose this power, just like banana)
-
-	sparkExplode(b, b_update.get());
-
-	return { (bouncesLeft < 0), false, b_update, w_update };
-	//feels a little overpowered to let the bullet bounce and live...
-}
-
 InteractionBoolHolder WallSparksBulletPower::modifiedEdgeCollision(Bullet* b) {
 	//see BounceBulletPower::modifiedEdgeCollision()
 
@@ -160,6 +132,34 @@ InteractionBoolHolder WallSparksBulletPower::modifiedEdgeCollision(Bullet* b) {
 	}
 
 	return { CollisionHandler::fullyOutOfBounds(b) };
+}
+
+InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> WallSparksBulletPower::modifiedCollisionWithWall(const Bullet* b, const Wall* w) {
+	//see BounceBulletPower::modifiedWallCollision()
+
+	std::shared_ptr<BulletUpdateStruct> b_update;
+	std::shared_ptr<WallUpdateStruct> w_update;
+
+	//first, bounce off wall
+
+	auto result = PowerFunctionHelper::bounceGeneric(b, w);
+	b_update = result.second.firstUpdate;
+	w_update = result.second.secondUpdate;
+	if (result.first) {
+		bouncesLeft--;
+	}
+
+	if (bouncesLeft <= 0) {
+		modifiesCollisionWithWall = false;
+		modifiesEdgeCollision = false; //for edge sparks
+	}
+
+	//second, create more bullets (they lose this power, just like banana)
+
+	sparkExplode(b, b_update.get());
+
+	return { (bouncesLeft < 0), false, b_update, w_update };
+	//feels a little overpowered to let the bullet bounce and live...
 }
 
 TankPower* WallSparksBulletPower::makeTankPower() const {

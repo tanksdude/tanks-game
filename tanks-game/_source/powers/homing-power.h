@@ -50,7 +50,7 @@ public:
 	//bool modifiesMovement = true;
 	virtual InteractionBoolHolder modifiedMovement(Bullet*) override;
 
-	//bool modifiesCollisionWithEdge = true;
+	//bool modifiesEdgeCollision = true;
 	virtual InteractionBoolHolder modifiedEdgeCollision(Bullet*) override;
 
 	virtual double getBulletSpeedMultiplier() const override { return .5; }

@@ -23,7 +23,7 @@ public:
 		addExtraShootingPoints_Enable,
 		addExtraShootingPoints_Raw,
 
-		modifiedCollisionWithEdge_Enable,
+		modifiedCollisionWithEdge_Enable, //not modifiedEdgeCollision for consistency with bulletpowers
 		modifiedCollisionWithEdge_AdditionalBoundary,
 
 		//modifiedCollisionWithTank_Enable,
@@ -58,7 +58,7 @@ public:
 	enum class CustomPowerCommands_BulletPower {
 		modifiedCollision_BounceCount,
 
-		modifiedCollisionWithEdge_EnableBounce,
+		modifiedCollisionWithEdge_EnableBounce, //not modifiedEdgeCollision for consistency with wall collision
 
 		//modifiedCollisionWithTank_Enable,
 
