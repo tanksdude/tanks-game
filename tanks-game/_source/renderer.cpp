@@ -58,58 +58,37 @@ void Renderer::windowResizeFunc(GLFWwindow*, int w, int h) {
 	Renderer::window_width = w;
 	Renderer::window_height = h;
 
-	double scale, center;
-	double winXmin, winXmax, winYmin, winYmax;
+	// Define x-axis and y-axis range
+	const float appXmin = 0.0;
+	const float appXmax = GAME_WIDTH;
+	const float appYmin = 0.0;
+	const float appYmax = GAME_HEIGHT;
 
-	// Define x-axis and y-axis range (for CPU)
-	const double appXmin = 0.0;
-	const double appXmax = GAME_WIDTH;
-	const double appYmin = 0.0;
-	const double appYmax = GAME_HEIGHT;
-
-	// Define that OpenGL should use the whole window for rendering (on CPU)
+	// Define that OpenGL should use the whole window for rendering
 	glViewport(0, 0, w, h);
 
-	// Set up the projection matrix using a orthographic projection that will
-	// maintain the aspect ratio of the scene no matter the aspect ratio of
-	// the window, and also set the min/max coordinates to be the disired ones (CPU only)
-	w = (w == 0) ? 1 : w;
-	h = (h == 0) ? 1 : h;
-
 	if ((appXmax - appXmin) / w < (appYmax - appYmin) / h) { //too wide
-		scale = ((appYmax - appYmin) / h) / ((appXmax - appXmin) / w);
-		center = 0;
-		winXmin = center - (center - appXmin) * scale;
-		winXmax = center + (appXmax - center) * scale;
-		winYmin = appYmin;
-		winYmax = appYmax;
-
-		Renderer::proj = glm::ortho(0.0f, float(GAME_WIDTH*scale), 0.0f, (float)GAME_HEIGHT); //GPU
+		float scale = ((appYmax - appYmin) / h) / ((appXmax - appXmin) / w);
+		Renderer::proj = glm::ortho(float(GAME_WIDTH/2) - float(GAME_WIDTH/2)*scale, float(GAME_WIDTH/2) + float(GAME_WIDTH/2)*scale, 0.0f, (float)GAME_HEIGHT);
 		Renderer::gamewindow_width = Renderer::window_height * (GAME_WIDTH/GAME_HEIGHT);
 		Renderer::gamewindow_height = Renderer::window_height;
-		//Renderer::proj = glm::ortho(float(-gamewindow_width/2), float(GAME_WIDTH*scale + gamewindow_width/2), 0.0f, (float)GAME_HEIGHT); //GPU
 	} else { //too tall
-		scale = ((appXmax - appXmin) / w) / ((appYmax - appYmin) / h);
-		center = 0;
-		winYmin = center - (center - appYmin) * scale;
-		winYmax = center + (appYmax - center) * scale;
-		winXmin = appXmin;
-		winXmax = appXmax;
-
-		Renderer::proj = glm::ortho(0.0f, (float)GAME_WIDTH, 0.0f, float(GAME_HEIGHT*scale)); //GPU
+		float scale = ((appXmax - appXmin) / w) / ((appYmax - appYmin) / h);
+		Renderer::proj = glm::ortho(0.0f, (float)GAME_WIDTH, float(GAME_HEIGHT/2) - float(GAME_HEIGHT/2)*scale, float(GAME_HEIGHT/2) + float(GAME_HEIGHT/2)*scale);
 		Renderer::gamewindow_width = Renderer::window_width;
 		Renderer::gamewindow_height = Renderer::window_width * (GAME_HEIGHT/GAME_WIDTH);
-		//Renderer::proj = glm::ortho(0.0f, (float)GAME_WIDTH, float(-window_height*scale), float(GAME_HEIGHT*scale)); //GPU
-
-		/*
-		std::cout << "window_width: " << window_width << std::endl;
-		std::cout << "window_height: " << window_height << std::endl;
-		std::cout << "GAME_HEIGHT*scale: " << (GAME_HEIGHT*scale) << std::endl << std::endl;
-		*/
 	}
 
 	Diagnostics::pushGraphTime("tick", 0); //HACK: since tick will never happen when the window is being resized, add it here; will not double-add when the game is over because that still does a tick
 	GameSceneManager::DrawScenes_WindowResize();
+}
+
+void Renderer::windowCoordsToGameCoords(double inputX, double inputY, int& actualX, int& actualY) {
+	//basically subtract out the black bars (just left/top), convert to a percent of the window, scale to game size
+	//when the window is too wide, Renderer::window_height = Renderer::gamewindow_height; same when too tall for width
+	//therefore this can handle both cases
+	actualX =      (inputX - (Renderer::window_width  - Renderer::gamewindow_width)/2)  / Renderer::gamewindow_width   * GAME_WIDTH;
+	actualY = (1 - (inputY - (Renderer::window_height - Renderer::gamewindow_height)/2) / Renderer::gamewindow_height) * GAME_HEIGHT;
 }
 
 //from: https://stackoverflow.com/questions/21421074/how-to-create-a-full-screen-window-on-the-current-monitor-with-glfw#31526753

@@ -40,6 +40,7 @@ class Renderer {
 public:
 	static GLFWwindow* glfw_window;
 	static void windowResizeFunc(GLFWwindow* window, int w, int h);
+	static void windowCoordsToGameCoords(double inputX, double inputY, int& actualX, int& actualY);
 	static GLFWmonitor* get_current_monitor(GLFWwindow* window);
 
 	//static void thread_func();

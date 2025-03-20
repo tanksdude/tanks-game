@@ -72,12 +72,7 @@ void DeveloperManager::mouseScrollCallbackFunc(GLFWwindow*, double xOffset, doub
 }
 
 void DeveloperManager::mouseCursorPosCallbackFunc(GLFWwindow*, double xPos, double yPos) {
-	//dev tools
-	const int real_x = xPos;
-	const int real_y = yPos - (Renderer::window_height - Renderer::gamewindow_height);
-	mousePosX = static_cast<int>((real_x / double(Renderer::gamewindow_width)) * GAME_WIDTH);
-	mousePosY = static_cast<int>((1 - real_y / double(Renderer::gamewindow_height)) * GAME_HEIGHT);
-
+	Renderer::windowCoordsToGameCoords(xPos, yPos, mousePosX, mousePosY);
 	if (leftMouse) {
 		if (!rightMouse) {
 			TankManager::getTank(0)->x = mousePosX;
