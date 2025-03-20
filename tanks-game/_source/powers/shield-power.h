@@ -3,7 +3,7 @@
 
 class ShieldPower : public Power {
 public: //tank and bullet stuff
-	static const double barrierStrength; //amount of time to subtract when harming the shield
+	static const double barrierStrengthPercentDrain; //percent of full time to subtract when harming the shield
 
 public:
 	virtual std::vector<std::string> getPowerTypes() const override {

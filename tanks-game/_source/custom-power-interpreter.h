@@ -35,7 +35,7 @@ public:
 		//modifiedCollisionWithRectHazard_Enable,
 
 		modifiedDeathHandling_Enable,
-		modifiedDeathHandling_DurationSubtract,
+		modifiedDeathHandling_DurationSubtractPercent,
 
 		tankMaxSpeedMultiplier,
 		tankMaxSpeedStacks,
@@ -180,7 +180,7 @@ protected:
 
 	double modifiedCollisionWithEdge_AdditionalBoundaryAmount;
 
-	double modifiedDeathHandling_DurationSubtractAmount;
+	double modifiedDeathHandling_DurationSubtractPercent;
 
 protected:
 	inline void initialization_helper_Enable(bool& thingToUpdate, const GenericFactoryConstructionData&) noexcept;
@@ -201,7 +201,7 @@ protected:
 	inline void initialization_modifiedCollisionWithEdge_AdditionalBoundary(const GenericFactoryConstructionData&) noexcept;
 
 	inline void initialization_modifiedDeathHandling_Enable_tank(const GenericFactoryConstructionData&) noexcept;
-	inline void initialization_modifiedDeathHandling_DurationSubtract_tank(const GenericFactoryConstructionData&) noexcept;
+	inline void initialization_modifiedDeathHandling_DurationSubtractPercent_tank(const GenericFactoryConstructionData&) noexcept;
 
 	inline void initialization_tankMaxSpeedMultiplier(const GenericFactoryConstructionData&) noexcept;
 	inline void initialization_tankMaxSpeedStacks(const GenericFactoryConstructionData&) noexcept;
@@ -407,7 +407,7 @@ protected: //tank
 	//static inline void stringToAction_modifiedCollisionWithEdge_AdditionalBoundary(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData);
 
 	//static inline void stringToAction_modifiedDeathHandling_Enable(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData);
-	//static inline void stringToAction_modifiedDeathHandling_DurationSubtract(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData);
+	//static inline void stringToAction_modifiedDeathHandling_DurationSubtractPercent(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData);
 
 	//static inline void stringToAction_tankMaxSpeedMultiplier(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData);
 	//static inline void stringToAction_tankMaxSpeedStacks(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData);

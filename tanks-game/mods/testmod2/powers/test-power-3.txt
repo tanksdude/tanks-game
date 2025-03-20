@@ -13,7 +13,7 @@ modifiedCollisionWithEdge_Enable
 modifiedCollisionWithEdge_AdditionalBoundary 16
 
 modifiedDeathHandling_Enable
-modifiedDeathHandling_DurationSubtract 100
+modifiedDeathHandling_DurationSubtractPercent 0.1
 
 tankAccelerationMultiplier .25 ;very icy
 tankTurningIncrementMultiplier .25 ;very hard to control

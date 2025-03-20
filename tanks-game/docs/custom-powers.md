@@ -68,7 +68,7 @@ First, do `modifiedCollisionWithEdge_Enable` to enable this feature.
 
 First, do `modifiedDeathHandling_Enable` to enable this feature.
 
-`modifiedDeathHandling_DurationSubtract <amount>`: The amount of "life force" to subtract when taking a hit. "Life force" in this case is just the time left on the power. For example, Shield sets this to 50, so it can theoretically save the tank from 10 hits. Barrier sets this to 500, so it can only prevent one death (actually it *always* prevents one death regardless of how much time is left but that's not the point).
+`modifiedDeathHandling_DurationSubtractPercent <amount>`: The percent of "life force" to subtract when taking a hit. "Life force" in this case is just the time left on the power. For example, Shield sets this to 0.1, so it can theoretically save the tank from 10 hits. Barrier sets this to 1.0, so it can only prevent one death.
 
 ### Tank-specific changes
 

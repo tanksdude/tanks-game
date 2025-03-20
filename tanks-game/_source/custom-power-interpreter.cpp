@@ -112,7 +112,7 @@ std::shared_ptr<std::vector<CustomPower::CustomPowerAction_Bullet*>> initializat
 	this->additionalShooting_AngleRelativeToCannon = 0;
 	this->additionalShooting_BulletCount = 1;
 	this->modifiedCollisionWithEdge_AdditionalBoundaryAmount = 0;
-	this->modifiedDeathHandling_DurationSubtractAmount = 0;
+	this->modifiedDeathHandling_DurationSubtractPercent = 0;
 
 	for (int i = 0; i < initializationActions_tank->size(); i++) {
 		GenericFactoryConstructionData& data = initializationActions_tank->at(i)->data;
@@ -158,8 +158,8 @@ std::shared_ptr<std::vector<CustomPower::CustomPowerAction_Bullet*>> initializat
 			case CustomPower::CustomPowerCommands_TankPower::modifiedDeathHandling_Enable:
 				initialization_modifiedDeathHandling_Enable_tank(data);
 				break;
-			case CustomPower::CustomPowerCommands_TankPower::modifiedDeathHandling_DurationSubtract:
-				initialization_modifiedDeathHandling_DurationSubtract_tank(data);
+			case CustomPower::CustomPowerCommands_TankPower::modifiedDeathHandling_DurationSubtractPercent:
+				initialization_modifiedDeathHandling_DurationSubtractPercent_tank(data);
 				break;
 
 			case CustomPower::CustomPowerCommands_TankPower::tankMaxSpeedMultiplier:
@@ -378,8 +378,8 @@ CustomPower::CustomPowerCommands_TankPower CustomPower::strToCommand_tank(const 
 	}
 	else if (str == "modifiedDeathHandling_Enable") {
 		powerCommand_tank = CustomPower::CustomPowerCommands_TankPower::modifiedDeathHandling_Enable;
-	} else if (str == "modifiedDeathHandling_DurationSubtract") {
-		powerCommand_tank = CustomPower::CustomPowerCommands_TankPower::modifiedDeathHandling_DurationSubtract;
+	} else if (str == "modifiedDeathHandling_DurationSubtractPercent") {
+		powerCommand_tank = CustomPower::CustomPowerCommands_TankPower::modifiedDeathHandling_DurationSubtractPercent;
 	}
 	else if (str == "tankMaxSpeedMultiplier") {
 		powerCommand_tank = CustomPower::CustomPowerCommands_TankPower::tankMaxSpeedMultiplier;
@@ -525,8 +525,8 @@ inline void CustomTankPower::initialization_modifiedCollisionWithEdge_Additional
 inline void CustomTankPower::initialization_modifiedDeathHandling_Enable_tank(const GenericFactoryConstructionData& data) noexcept {
 	initialization_helper_Enable(modifiesDeathHandling, data);
 }
-inline void CustomTankPower::initialization_modifiedDeathHandling_DurationSubtract_tank(const GenericFactoryConstructionData& data) noexcept {
-	modifiedDeathHandling_DurationSubtractAmount = static_cast<const double*>(data.getDataPortion(0).get())[0];
+inline void CustomTankPower::initialization_modifiedDeathHandling_DurationSubtractPercent_tank(const GenericFactoryConstructionData& data) noexcept {
+	modifiedDeathHandling_DurationSubtractPercent = static_cast<const double*>(data.getDataPortion(0).get())[0];
 }
 
 inline void CustomTankPower::initialization_tankMaxSpeedMultiplier(const GenericFactoryConstructionData& data) noexcept {
@@ -668,10 +668,10 @@ InteractionBoolHolder CustomTankPower::modifiedDeathHandling(Tank* parent) {
 	if (this->maxTime < 0) {
 		return { false, false };
 	}
-	if (this->timeLeft <= modifiedDeathHandling_DurationSubtractAmount) {
+	if (this->timeLeft <= modifiedDeathHandling_DurationSubtractPercent * GameManager::get_settings().PowerupDurationBaseTime) {
 		return { false, true };
 	}
-	this->timeLeft -= modifiedDeathHandling_DurationSubtractAmount;
+	this->timeLeft -= modifiedDeathHandling_DurationSubtractPercent * GameManager::get_settings().PowerupDurationBaseTime;
 	return { false, false };
 }
 
@@ -1178,7 +1178,7 @@ inline CustomPower::CustomPowerAction_Tank* CustomPowerInterpreter::stringToActi
 			case CustomPower::CustomPowerCommands_TankPower::modifiedDeathHandling_Enable:
 				stringToAction_genericEnable(words, constructionData);
 				break;
-			case CustomPower::CustomPowerCommands_TankPower::modifiedDeathHandling_DurationSubtract:
+			case CustomPower::CustomPowerCommands_TankPower::modifiedDeathHandling_DurationSubtractPercent:
 				stringToAction_genericSingleValue_d(words, constructionData);
 				break;
 

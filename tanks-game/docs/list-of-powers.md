@@ -330,16 +330,6 @@ Currently considered a "dev" power because I'm not sure whether I should modify 
 
 Bounces just like Bounce, but now walls get pushed back a little! A totally radical xtreme power.
 
-## [DEV] Color Changing
-
-* Types: "dev", "random-dev"
-* Internal name: `color_changing`
-* Attributes: "mix"
-* Color: changes based on distance to the other tank (grayscale-only)
-* Color importance: 0.5
-
-Was a test on changing the color based on proximity. Doesn't work very well. Inspiration came from Godmode being able to change its color.
-
 ## [DEV] Other Stuff is Poison
 
 * Types: "dev", "random-dev"
