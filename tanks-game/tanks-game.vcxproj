@@ -53,6 +53,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <DisableSpecificWarnings>4244;4267;4305;4838;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <PreprocessorDefinitions>ARCH_64BIT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -72,6 +73,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <DisableSpecificWarnings>4244;4267;4305;4838;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <PreprocessorDefinitions>NDEBUG;ARCH_64BIT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
