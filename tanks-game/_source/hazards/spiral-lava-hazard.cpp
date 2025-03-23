@@ -89,16 +89,25 @@ void SpiralLavaHazard::initialize() {
 	for (int i = 0; i < maxLavaBlobs; i++) {
 		pushLavaBlob(i);
 	}
-	//TODO: this should delete its lava blobs when it dies
 }
 
+/*
+void SpiralLavaHazard::uninitialize() {
+	for (int i = 0; i < lavaBlobIDs.size(); i++) {
+		CircleHazard* ch = HazardManager::getCircleHazardByID(lavaBlobIDs[i]);
+		if (ch != nullptr) [[likely]] {
+			HazardManager::deleteCircleHazardByID(lavaBlobIDs[i]);
+		}
+	}
+}
+*/
+
 ColorValueHolder SpiralLavaHazard::getColor() const {
+	const float mixVal = .5f * (1.0f + sin(static_cast<float>(PI) * static_cast<float>(tickCount/tickCycle)));
 	if (currentlyActive) {
-		return ColorMixer::mix(SpiralLavaHazard::darkColor, SpiralLavaHazard::lightColor,
-		                       .5f * (1.0f + sin(static_cast<float>(2*PI) *        (.5f*static_cast<float>(tickCount/tickCycle)))));
+		return ColorMixer::mix(SpiralLavaHazard::darkColor, SpiralLavaHazard::lightColor, mixVal);
 	} else {
-		return ColorMixer::mix(SpiralLavaHazard::lightColor, SpiralLavaHazard::darkColor,
-		                       .5f * (1.0f + sin(static_cast<float>(2*PI) * (1.0f + .5f*static_cast<float>(tickCount/tickCycle)))));
+		return ColorMixer::mix(SpiralLavaHazard::lightColor, SpiralLavaHazard::darkColor, mixVal);
 	}
 }
 
