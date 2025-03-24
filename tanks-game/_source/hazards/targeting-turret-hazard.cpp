@@ -96,7 +96,7 @@ void TargetingTurretHazard::tick() {
 	//maxState is 3; not using else in case tickCycle is zero
 }
 
-inline void TargetingTurretHazard::tick_continueTracking() {
+void TargetingTurretHazard::tick_continueTracking() {
 	bool tankIsVisible = false;
 	const Tank* t = TankManager::getTankByID(this->trackingID);
 	if (t != nullptr) { //exists
@@ -125,7 +125,7 @@ inline void TargetingTurretHazard::tick_continueTracking() {
 	}
 }
 
-inline void TargetingTurretHazard::tick_lookForNewTarget() {
+void TargetingTurretHazard::tick_lookForNewTarget() {
 	//targetingCount = 0;
 
 	std::vector<bool> tankVisibility; tankVisibility.reserve(TankManager::getNumTanks()); //not using regular arrays so people (including future me) can actually read this
@@ -167,7 +167,7 @@ inline void TargetingTurretHazard::tick_lookForNewTarget() {
 	}
 }
 
-inline void TargetingTurretHazard::tick_chargeUp() {
+void TargetingTurretHazard::tick_chargeUp() {
 	targetingCount++;
 	if (targetingCount >= stateMultiplier[1] * tickCycle) {
 		BulletManager::pushBullet(new Bullet(x + r*cos(velocity.getAngle()), y + r*sin(velocity.getAngle()), r*BULLET_TO_TANK_RADIUS_RATIO, velocity.getAngle(), Tank::default_maxSpeed*BULLET_TO_TANK_SPEED_RATIO, this->getTeamID(), BulletParentType::individual, this->getGameID()));
@@ -177,7 +177,7 @@ inline void TargetingTurretHazard::tick_chargeUp() {
 	}
 }
 
-inline void TargetingTurretHazard::tick_cooldown() {
+void TargetingTurretHazard::tick_cooldown() {
 	targetingCount++;
 	if (targetingCount >= stateMultiplier[2] * tickCycle) {
 		targetingCount = 0;
@@ -365,7 +365,7 @@ void TargetingTurretHazard::ghostDraw(DrawingLayers layer, float alpha) const {
 	}
 }
 
-inline void TargetingTurretHazard::drawReticule(float alpha) const {
+void TargetingTurretHazard::drawReticule(float alpha) const {
 	if (!targeting) {
 		return;
 	}

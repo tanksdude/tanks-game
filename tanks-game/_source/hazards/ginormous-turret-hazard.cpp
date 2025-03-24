@@ -86,7 +86,7 @@ bool GinormousTurretHazard::MinionTurret::canSeeTank(const Tank* t) const {
 	return (this->trackingID == t->getGameID());
 }
 
-inline void GinormousTurretHazard::MinionTurret::drawReticule(float alpha) const {
+void GinormousTurretHazard::MinionTurret::drawReticule(float alpha) const {
 	if (currentState == 2) {
 		//this is an absolute hack
 		return;
@@ -239,7 +239,7 @@ void GinormousTurretHazard::tick_stopChildren() {
 	}
 }
 
-inline void GinormousTurretHazard::drawOutline(float alpha) const {
+void GinormousTurretHazard::drawOutline(float alpha) const {
 	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
@@ -267,7 +267,7 @@ inline void GinormousTurretHazard::drawOutline(float alpha) const {
 	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::NumOfSides*2)*(2+4), outline_indices, Circle::NumOfSides*6);
 }
 
-inline void GinormousTurretHazard::drawBarrel(float alpha) const {
+void GinormousTurretHazard::drawBarrel(float alpha) const {
 	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 

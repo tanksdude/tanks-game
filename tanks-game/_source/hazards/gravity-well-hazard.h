@@ -15,7 +15,7 @@ protected:
 protected:
 	inline bool isGravityReversed() const { return (minGravityStrength < 0 && maxGravityStrength < 0); }
 	inline double getGravityStrength(double dist) const;
-	virtual inline float getInnerGravityCircleRadius() const;
+	inline float getInnerGravityCircleRadius() const;
 	[[nodiscard]] inline Circle* getGravityRangeCircle() const;
 
 public:
@@ -47,10 +47,10 @@ public:
 	virtual void ghostDraw(DrawingLayers, float alpha) const override;
 
 protected:
-	virtual inline void drawBody(float alpha = 1.0f) const;
-	virtual inline void drawOutline(float alpha = 1.0f) const;
-	virtual inline void drawGravityCircle(float alpha = 1.0f) const;
-	virtual inline void drawGravityArrows(float alpha = 1.0f) const;
+	virtual void drawBody(float alpha = 1.0f) const;
+	virtual void drawOutline(float alpha = 1.0f) const;
+	virtual void drawGravityCircle(float alpha = 1.0f) const;
+	virtual void drawGravityArrows(float alpha = 1.0f) const;
 
 protected:
 	static SimpleVector2D body_vertices[Circle::NumOfSides+1];

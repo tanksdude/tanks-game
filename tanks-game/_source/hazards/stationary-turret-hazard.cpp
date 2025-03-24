@@ -282,7 +282,7 @@ void StationaryTurretHazard::ghostDraw(DrawingLayers layer, float alpha) const {
 	}
 }
 
-inline void StationaryTurretHazard::drawBody(float alpha) const {
+void StationaryTurretHazard::drawBody(float alpha) const {
 	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
@@ -308,7 +308,7 @@ inline void StationaryTurretHazard::drawBody(float alpha) const {
 	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::NumOfSides+1)*(2+4), body_indices, Circle::NumOfSides*3);
 }
 
-inline void StationaryTurretHazard::drawOutline(float alpha) const {
+void StationaryTurretHazard::drawOutline(float alpha) const {
 	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
@@ -336,7 +336,7 @@ inline void StationaryTurretHazard::drawOutline(float alpha) const {
 	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::NumOfSides*2)*(2+4), outline_indices, Circle::NumOfSides*6);
 }
 
-inline void StationaryTurretHazard::drawBarrel(float alpha) const {
+void StationaryTurretHazard::drawBarrel(float alpha) const {
 	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 

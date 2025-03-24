@@ -30,9 +30,9 @@ public:
 	static std::string getClassName() { return "horizontal_lightning"; }
 
 protected:
-	virtual inline void drawBackground(bool pose, float alpha = 1.0f) const;
-	virtual inline void drawBackgroundOutline(float alpha) const; //called by drawBackground()
-	virtual inline void drawBolts_Pose(float alpha = 1.0f) const;
+	virtual void drawBackground(bool pose, float alpha = 1.0f) const override;
+	virtual void drawBackgroundOutline(float alpha) const override; //called by drawBackground()
+	virtual void drawBolts_Pose(float alpha = 1.0f) const override;
 
 public:
 	HorizontalLightningHazard(double xpos, double ypos, double width, double height);

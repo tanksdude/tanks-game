@@ -25,7 +25,7 @@ Bullet* MinefieldLevelEffect::genMine() const {
 	return mine;
 }
 
-inline void MinefieldLevelEffect::pushRandomMine() {
+void MinefieldLevelEffect::pushRandomMine() {
 	Bullet* b = genMine();
 	BulletManager::pushBullet(b);
 	aliveMinesPushed.push_back(b->getGameID());

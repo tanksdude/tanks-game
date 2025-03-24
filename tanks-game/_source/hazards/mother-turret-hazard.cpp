@@ -227,7 +227,7 @@ void MotherTurretHazard::tick() {
 	//maxState is 3; not using else in case tickCycle is zero
 }
 
-inline void MotherTurretHazard::tick_chooseSpot() {
+void MotherTurretHazard::tick_chooseSpot() {
 	//choose the spot that will result in the most time spent turning
 	if (getChildCount() < maxChildTurrets) {
 		const float childAngleDiff = (2*PI) / maxChildTurrets;
@@ -248,7 +248,7 @@ inline void MotherTurretHazard::tick_chooseSpot() {
 	}
 }
 
-inline void MotherTurretHazard::tick_trackSpot() {
+void MotherTurretHazard::tick_trackSpot() {
 	turnTowardsPoint(targetingNum);
 	if (isPointedAt(targetingNum)) {
 		targetingCount++;
@@ -264,7 +264,7 @@ inline void MotherTurretHazard::tick_trackSpot() {
 	}
 }
 
-inline void MotherTurretHazard::tick_chargeUp() {
+void MotherTurretHazard::tick_chargeUp() {
 	targetingCount++;
 	if (targetingCount >= stateMultiplier[1] * tickCycle) {
 		pushChild(targetingNum);
@@ -453,7 +453,7 @@ void MotherTurretHazard::ghostDraw(DrawingLayers layer, float alpha) const {
 	}
 }
 
-inline void MotherTurretHazard::drawShootingTimer(float alpha) const {
+void MotherTurretHazard::drawShootingTimer(float alpha) const {
 	if (currentState != 1) {
 		return;
 	}
@@ -497,7 +497,7 @@ inline void MotherTurretHazard::drawShootingTimer(float alpha) const {
 	}
 }
 
-inline void MotherTurretHazard::drawChildTurretLocations(float alpha) const {
+void MotherTurretHazard::drawChildTurretLocations(float alpha) const {
 	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 

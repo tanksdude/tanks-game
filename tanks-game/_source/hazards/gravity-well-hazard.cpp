@@ -315,7 +315,7 @@ void GravityWellHazard::ghostDraw(DrawingLayers layer, float alpha) const {
 	}
 }
 
-inline void GravityWellHazard::drawBody(float alpha) const {
+void GravityWellHazard::drawBody(float alpha) const {
 	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
@@ -341,7 +341,7 @@ inline void GravityWellHazard::drawBody(float alpha) const {
 	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::NumOfSides+1)*(2+4), body_indices, Circle::NumOfSides*3);
 }
 
-inline void GravityWellHazard::drawOutline(float alpha) const {
+void GravityWellHazard::drawOutline(float alpha) const {
 	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
@@ -369,7 +369,7 @@ inline void GravityWellHazard::drawOutline(float alpha) const {
 	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::NumOfSides*2)*(2+4), outline_indices, Circle::NumOfSides*6);
 }
 
-inline void GravityWellHazard::drawGravityCircle(float alpha) const {
+void GravityWellHazard::drawGravityCircle(float alpha) const {
 	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
@@ -397,7 +397,7 @@ inline void GravityWellHazard::drawGravityCircle(float alpha) const {
 	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::NumOfSides*2)*(2+4), outline_indices, Circle::NumOfSides*6);
 }
 
-inline void GravityWellHazard::drawGravityArrows(float alpha) const {
+void GravityWellHazard::drawGravityArrows(float alpha) const {
 	ColorValueHolder color = ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(0.0f, 0.0f, 0.0f));
 	const float arrowScale = this->r / 2; //x-coords are in [-1,1]
 

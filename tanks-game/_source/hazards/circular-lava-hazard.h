@@ -46,8 +46,8 @@ public:
 	virtual void ghostDraw(DrawingLayers, float alpha) const override;
 
 protected:
-	virtual inline void drawBackground(bool pose, float alpha = 1.0f) const;
-	virtual inline void drawBubbles(bool pose, float alpha = 1.0f) const;
+	virtual void drawBackground(bool pose, float alpha = 1.0f) const;
+	virtual void drawBubbles(bool pose, float alpha = 1.0f) const;
 
 protected:
 	//NOTE: bubbles (and the lava) have half the normal circle vertices

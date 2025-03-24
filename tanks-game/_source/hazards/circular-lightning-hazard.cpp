@@ -355,7 +355,7 @@ void CircularLightningHazard::ghostDraw(DrawingLayers layer, float alpha) const 
 	}
 }
 
-inline void CircularLightningHazard::drawBackground(bool pose, float alpha) const {
+void CircularLightningHazard::drawBackground(bool pose, float alpha) const {
 	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
@@ -392,7 +392,7 @@ inline void CircularLightningHazard::drawBackground(bool pose, float alpha) cons
 	drawBackgroundOutline(alpha);
 }
 
-inline void CircularLightningHazard::drawBackgroundOutline(float alpha) const {
+void CircularLightningHazard::drawBackgroundOutline(float alpha) const {
 	//alpha set by drawBackground()
 
 	ColorValueHolder color_outline = ColorValueHolder(0.5f, 0.5f, 0.5f); //use gray; black is a bit too strong for a lightning's outline
@@ -420,7 +420,7 @@ inline void CircularLightningHazard::drawBackgroundOutline(float alpha) const {
 	Renderer::SubmitBatchedDraw(coordsAndColor_outline, (Circle::NumOfSides*2)*(2+4), outline_indices, Circle::NumOfSides*6);
 }
 
-inline void CircularLightningHazard::drawBolts(float alpha) const {
+void CircularLightningHazard::drawBolts(float alpha) const {
 	if (!currentlyActive) {
 		return;
 	}
@@ -472,7 +472,7 @@ inline void CircularLightningHazard::drawBolts(float alpha) const {
 	}
 }
 
-inline void CircularLightningHazard::drawBolts_Pose(float alpha) const {
+void CircularLightningHazard::drawBolts_Pose(float alpha) const {
 	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 

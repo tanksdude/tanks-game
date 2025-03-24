@@ -52,13 +52,13 @@ public:
 	virtual void ghostDraw(DrawingLayers, float alpha) const override;
 
 protected:
-	virtual inline void tick_chooseSpot();
-	virtual inline void tick_trackSpot();
-	virtual inline void tick_chargeUp() override;
+	virtual void tick_chooseSpot();
+	virtual void tick_trackSpot();
+	virtual void tick_chargeUp() override;
 
 protected:
-	virtual inline void drawShootingTimer(float alpha = 1.0f) const;
-	virtual inline void drawChildTurretLocations(float alpha = 1.0f) const; //debug
+	virtual void drawShootingTimer(float alpha = 1.0f) const;
+	virtual void drawChildTurretLocations(float alpha = 1.0f) const; //debug
 
 public:
 	MotherTurretHazard(double xpos, double ypos, double angle);

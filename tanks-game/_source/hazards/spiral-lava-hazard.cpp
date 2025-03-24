@@ -125,11 +125,11 @@ void SpiralLavaHazard::pushLavaBlob(int blobNum) {
 	HazardManager::pushCircleHazard(lavaBlob);
 }
 
-inline double SpiralLavaHazard::getLavaBlobAngle(int blobNum, double tickValue) const {
+double SpiralLavaHazard::getLavaBlobAngle(int blobNum, double tickValue) const {
 	return (2*PI) * (blobNum / double(maxLavaBlobs)) + (tickValue / tickCycle) * (lavaAngleRotate * (moveClockwise ? 1 : -1));
 }
 
-inline double SpiralLavaHazard::getLavaBlobDist(double tickValue) const {
+double SpiralLavaHazard::getLavaBlobDist(double tickValue) const {
 	return maxLavaDist * sin(PI * (tickValue / tickCycle)); //not 2*PI because only the >0 part is wanted
 }
 

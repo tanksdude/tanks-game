@@ -236,7 +236,7 @@ void RectangularLavaHazard::ghostDraw(DrawingLayers layer, float alpha) const {
 	}
 }
 
-inline void RectangularLavaHazard::drawBackground(bool pose, float alpha) const {
+void RectangularLavaHazard::drawBackground(bool pose, float alpha) const {
 	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
@@ -257,7 +257,7 @@ inline void RectangularLavaHazard::drawBackground(bool pose, float alpha) const 
 	Renderer::SubmitBatchedDraw(coordsAndColor, 4 * (2+4), indices, 2 * 3);
 }
 
-inline void RectangularLavaHazard::drawBubbles(bool pose, float alpha) const {
+void RectangularLavaHazard::drawBubbles(bool pose, float alpha) const {
 	if (bubbles.size() == 0) {
 		return;
 	}

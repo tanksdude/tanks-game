@@ -366,7 +366,7 @@ void RectangularLightningHazard::ghostDraw(DrawingLayers layer, float alpha) con
 	}
 }
 
-inline void RectangularLightningHazard::drawBackground(bool pose, float alpha) const {
+void RectangularLightningHazard::drawBackground(bool pose, float alpha) const {
 	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
@@ -398,7 +398,7 @@ inline void RectangularLightningHazard::drawBackground(bool pose, float alpha) c
 	drawBackgroundOutline(alpha);
 }
 
-inline void RectangularLightningHazard::drawBackgroundOutline(float alpha) const {
+void RectangularLightningHazard::drawBackgroundOutline(float alpha) const {
 	//alpha set by drawBackground()
 
 	ColorValueHolder color_outline = ColorValueHolder(0.5f, 0.5f, 0.5f); //use gray; black is a bit too strong for a lightning's outline
@@ -440,7 +440,7 @@ inline void RectangularLightningHazard::drawBackgroundOutline(float alpha) const
 	Renderer::SubmitBatchedDraw(coordsAndColor_outline, (4+4) * (2+4), indices_outline, (4*2) * 3);
 }
 
-inline void RectangularLightningHazard::drawBolts(float alpha) const {
+void RectangularLightningHazard::drawBolts(float alpha) const {
 	if (!currentlyActive) {
 		return;
 	}
@@ -492,7 +492,7 @@ inline void RectangularLightningHazard::drawBolts(float alpha) const {
 	}
 }
 
-inline void RectangularLightningHazard::drawBolts_Pose(float alpha) const {
+void RectangularLightningHazard::drawBolts_Pose(float alpha) const {
 	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 

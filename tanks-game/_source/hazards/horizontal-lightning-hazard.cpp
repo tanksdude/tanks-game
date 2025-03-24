@@ -281,7 +281,7 @@ void HorizontalLightningHazard::refreshBolt(LightningBolt* l) const {
 	RectangularLightningHazard::refreshBolt(l, this->h, this->w);
 }
 
-inline void HorizontalLightningHazard::drawBackground(bool pose, float alpha) const {
+void HorizontalLightningHazard::drawBackground(bool pose, float alpha) const {
 	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
@@ -313,7 +313,7 @@ inline void HorizontalLightningHazard::drawBackground(bool pose, float alpha) co
 	drawBackgroundOutline(alpha);
 }
 
-inline void HorizontalLightningHazard::drawBackgroundOutline(float alpha) const {
+void HorizontalLightningHazard::drawBackgroundOutline(float alpha) const {
 	//alpha set by drawBackground()
 
 	ColorValueHolder color_outline = ColorValueHolder(0.5f, 0.5f, 0.5f); //use gray; black is a bit too strong for a lightning's outline
@@ -347,7 +347,7 @@ inline void HorizontalLightningHazard::drawBackgroundOutline(float alpha) const 
 	Renderer::SubmitBatchedDraw(coordsAndColor_outline, (4+4) * (2+4), indices_outline, (2*2) * 3);
 }
 
-inline void HorizontalLightningHazard::drawBolts_Pose(float alpha) const {
+void HorizontalLightningHazard::drawBolts_Pose(float alpha) const {
 	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 

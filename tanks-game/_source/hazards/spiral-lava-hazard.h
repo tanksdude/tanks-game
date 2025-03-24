@@ -24,9 +24,9 @@ protected:
 	virtual CircleHazard* makeLavaBlob(int blobNum) const;
 	void pushLavaBlob(int blobNum); //shouldn't need to be virtual
 
-	virtual inline double getLavaBlobAngle(int blobNum, double tickValue) const;
-	virtual inline double getLavaBlobDist(double tickValue) const;
-	virtual inline double getLavaBlobRadius() const;
+	virtual double getLavaBlobAngle(int blobNum, double tickValue) const;
+	virtual double getLavaBlobDist(double tickValue) const;
+	inline double getLavaBlobRadius() const;
 
 	virtual bool canReachTanks() const; //used during randomization factory (in reasonableLocation())
 

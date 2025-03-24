@@ -58,10 +58,10 @@ public:
 	virtual void ghostDraw(DrawingLayers, float alpha) const override;
 
 protected:
-	virtual inline void drawBackground(bool pose, float alpha = 1.0f) const;
-	virtual inline void drawBackgroundOutline(float alpha) const; //called by drawBackground()
-	virtual inline void drawBolts(float alpha = 1.0f) const;
-	virtual inline void drawBolts_Pose(float alpha = 1.0f) const;
+	virtual void drawBackground(bool pose, float alpha = 1.0f) const;
+	virtual void drawBackgroundOutline(float alpha) const; //called by drawBackground()
+	virtual void drawBolts(float alpha = 1.0f) const;
+	virtual void drawBolts_Pose(float alpha = 1.0f) const;
 
 public:
 	RectangularLightningHazard(double xpos, double ypos, double width, double height);

@@ -104,7 +104,7 @@ void PatrollingTurretHazard::tick() {
 	//overrides tick_lookForNewTarget to do patrolling and stuff
 }
 
-inline void PatrollingTurretHazard::tick_lookForNewTarget() {
+void PatrollingTurretHazard::tick_lookForNewTarget() {
 	targetingCount = 0;
 	TargetingTurretHazard::tick_lookForNewTarget();
 
@@ -115,7 +115,7 @@ inline void PatrollingTurretHazard::tick_lookForNewTarget() {
 	tick_patrol();
 }
 
-inline void PatrollingTurretHazard::tick_patrol() {
+void PatrollingTurretHazard::tick_patrol() {
 	if (isWaitingAtPoint()) {
 		tick_patrolWait();
 	} else {
@@ -126,12 +126,12 @@ inline void PatrollingTurretHazard::tick_patrol() {
 	}
 }
 
-inline void PatrollingTurretHazard::tick_moveForward() {
+void PatrollingTurretHazard::tick_moveForward() {
 	this->x += velocity.getXComp();
 	this->y += velocity.getYComp();
 }
 
-inline void PatrollingTurretHazard::tick_patrolWait() {
+void PatrollingTurretHazard::tick_patrolWait() {
 	if (waitCount >= routeWaitCount[currentPatrolTarget]) {
 		waitCount = 0;
 		currentPatrolTarget = (currentPatrolTarget+1) % routePosPairNum;
@@ -383,7 +383,7 @@ void PatrollingTurretHazard::ghostDraw(DrawingLayers layer, float alpha) const {
 	}
 }
 
-inline void PatrollingTurretHazard::drawPath(float alpha) const {
+void PatrollingTurretHazard::drawPath(float alpha) const {
 	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 

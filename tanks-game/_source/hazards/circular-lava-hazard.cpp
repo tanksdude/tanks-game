@@ -239,7 +239,7 @@ void CircularLavaHazard::ghostDraw(DrawingLayers layer, float alpha) const {
 	}
 }
 
-inline void CircularLavaHazard::drawBackground(bool pose, float alpha) const {
+void CircularLavaHazard::drawBackground(bool pose, float alpha) const {
 	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
@@ -265,7 +265,7 @@ inline void CircularLavaHazard::drawBackground(bool pose, float alpha) const {
 	Renderer::SubmitBatchedDraw(coordsAndColor, (CircularLavaHazard::BubbleSideCount+1)*(2+4), bubble_indices, CircularLavaHazard::BubbleSideCount*3);
 }
 
-inline void CircularLavaHazard::drawBubbles(bool pose, float alpha) const {
+void CircularLavaHazard::drawBubbles(bool pose, float alpha) const {
 	if (bubbles.size() == 0) {
 		return;
 	}
