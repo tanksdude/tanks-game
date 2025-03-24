@@ -50,7 +50,7 @@ protected:
 	virtual inline void drawBubbles(bool pose, float alpha = 1.0f) const;
 
 protected:
-	//NOTE: bubbles have half the normal circle vertices
+	//NOTE: bubbles (and the lava) have half the normal circle vertices
 	static constexpr unsigned int BubbleSideCount = Circle::NumOfSides / 2;
 	static SimpleVector2D bubble_vertices[BubbleSideCount + 1];
 	static unsigned int bubble_indices[BubbleSideCount * 3];

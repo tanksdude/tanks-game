@@ -190,14 +190,14 @@ bool PatrollingTurretHazard::reasonableLocation() const {
 
 		const SimpleVector2D path = SimpleVector2D(getRoutePosX(end_pos) - getRoutePosX(start_pos), getRoutePosY(end_pos), getRoutePosY(start_pos));
 		double outerPath[4] = {
-			getRoutePosX(start_pos) + getR() * cos(path.getAngle() - PI/2), getRoutePosY(start_pos) + getR() * sin(path.getAngle() - PI/2),
-			getRoutePosX(end_pos)   + getR() * cos(path.getAngle() - PI/2), getRoutePosY(end_pos)   + getR() * sin(path.getAngle() - PI/2) };
+			getRoutePosX(start_pos) + getR() * cos(path.getAngle() - static_cast<float>(PI/2)), getRoutePosY(start_pos) + getR() * sin(path.getAngle() - static_cast<float>(PI/2)),
+			getRoutePosX(end_pos)   + getR() * cos(path.getAngle() - static_cast<float>(PI/2)), getRoutePosY(end_pos)   + getR() * sin(path.getAngle() - static_cast<float>(PI/2)) };
 		double mainPath[4] = {
 			getRoutePosX(start_pos), getRoutePosY(start_pos),
 			getRoutePosX(end_pos), getRoutePosY(end_pos) };
 		double innerPath[4] = {
-			getRoutePosX(start_pos) + getR() * cos(path.getAngle() + PI/2), getRoutePosY(start_pos) + getR() * sin(path.getAngle() + PI/2),
-			getRoutePosX(end_pos)   + getR() * cos(path.getAngle() + PI/2), getRoutePosY(end_pos)   + getR() * sin(path.getAngle() + PI/2) };
+			getRoutePosX(start_pos) + getR() * cos(path.getAngle() + static_cast<float>(PI/2)), getRoutePosY(start_pos) + getR() * sin(path.getAngle() + static_cast<float>(PI/2)),
+			getRoutePosX(end_pos)   + getR() * cos(path.getAngle() + static_cast<float>(PI/2)), getRoutePosY(end_pos)   + getR() * sin(path.getAngle() + static_cast<float>(PI/2)) };
 
 		for (int j = 0; j < WallManager::getNumWalls(); j++) {
 			if (CollisionHandler::lineRectCollision(outerPath[0], outerPath[1], outerPath[2], outerPath[3], WallManager::getWall(j))) {
@@ -417,7 +417,7 @@ inline void PatrollingTurretHazard::drawPath(float alpha) const {
 
 		//line
 		SimpleVector2D dist = SimpleVector2D(getRoutePosX((i+1) % routePosPairNum) - getRoutePosX(i), getRoutePosY((i+1) % routePosPairNum) - getRoutePosY(i));
-		SimpleVector2D distCW  = SimpleVector2D(dist.getAngle() - PI/2, lineWidth, true);
+		SimpleVector2D distCW  = SimpleVector2D(dist.getAngle() - static_cast<float>(PI/2), lineWidth, true);
 		//SimpleVector2D distCCW = SimpleVector2D(dist.getAngle() + PI/2, lineWidth, true);
 
 		coordsAndColor_line[0*6]   = static_cast<float>(getRoutePosX(i))                   + distCW.getXComp();

@@ -234,8 +234,8 @@ void CircularNoBulletZoneHazard::ghostDraw(float alpha) const {
 	coordsAndColor_background[4] = color_background.getBf();
 	coordsAndColor_background[5] = color_background.getAf();
 	for (int i = 1; i < Circle::NumOfSides+1; i++) {
-		coordsAndColor_background[i*6]   = x + r * body_vertices[i].getXComp();
-		coordsAndColor_background[i*6+1] = y + r * body_vertices[i].getYComp();
+		coordsAndColor_background[i*6]   = static_cast<float>(x) + static_cast<float>(r) * body_vertices[i].getXComp();
+		coordsAndColor_background[i*6+1] = static_cast<float>(y) + static_cast<float>(r) * body_vertices[i].getYComp();
 		coordsAndColor_background[i*6+2] = color_background.getRf();
 		coordsAndColor_background[i*6+3] = color_background.getGf();
 		coordsAndColor_background[i*6+4] = color_background.getBf();
@@ -256,8 +256,8 @@ void CircularNoBulletZoneHazard::ghostDraw(float alpha) const {
 	coordsAndColor_extra[4] = color_extra.getBf();
 	coordsAndColor_extra[5] = color_extra.getAf();
 	for (int i = 1; i < redX_vertices_count; i++) {
-		coordsAndColor_extra[i*6]   = x + r * redX_vertices[i].getXComp();
-		coordsAndColor_extra[i*6+1] = y + r * redX_vertices[i].getYComp();
+		coordsAndColor_extra[i*6]   = static_cast<float>(x) + static_cast<float>(r) * redX_vertices[i].getXComp();
+		coordsAndColor_extra[i*6+1] = static_cast<float>(y) + static_cast<float>(r) * redX_vertices[i].getYComp();
 		coordsAndColor_extra[i*6+2] = color_extra.getRf();
 		coordsAndColor_extra[i*6+3] = color_extra.getGf();
 		coordsAndColor_extra[i*6+4] = color_extra.getBf();

@@ -291,8 +291,8 @@ void CloudHazard::ghostDraw(float alpha) const {
 	coordsAndColor[4] = cloudColor.getBf();
 	coordsAndColor[5] = cloudColor.getAf();
 	for (int i = 1; i < Circle::NumOfSides+1; i++) {
-		coordsAndColor[i*6]   = x + r * body_vertices[i].getXComp();
-		coordsAndColor[i*6+1] = y + r * body_vertices[i].getYComp();
+		coordsAndColor[i*6]   = static_cast<float>(x) + static_cast<float>(r) * body_vertices[i].getXComp();
+		coordsAndColor[i*6+1] = static_cast<float>(y) + static_cast<float>(r) * body_vertices[i].getYComp();
 		coordsAndColor[i*6+2] = cloudColor.getRf();
 		coordsAndColor[i*6+3] = cloudColor.getGf();
 		coordsAndColor[i*6+4] = cloudColor.getBf();

@@ -586,8 +586,8 @@ inline void Bullet::drawBody(float alpha) const {
 	coordsAndColor[4] = color.getBf();
 	coordsAndColor[5] = color.getAf();
 	for (int i = 1; i < Bullet::BulletSideCount+1; i++) {
-		coordsAndColor[i*6]   = x + r * body_vertices[i].getXComp();
-		coordsAndColor[i*6+1] = y + r * body_vertices[i].getYComp();
+		coordsAndColor[i*6]   = static_cast<float>(x) + static_cast<float>(r) * body_vertices[i].getXComp();
+		coordsAndColor[i*6+1] = static_cast<float>(y) + static_cast<float>(r) * body_vertices[i].getYComp();
 		coordsAndColor[i*6+2] = color.getRf();
 		coordsAndColor[i*6+3] = color.getGf();
 		coordsAndColor[i*6+4] = color.getBf();
@@ -607,10 +607,10 @@ inline void Bullet::drawOutline(float alpha) const {
 
 	float coordsAndColor[(Bullet::BulletSideCount*2)*(2+4)];
 	for (int i = 0; i < Bullet::BulletSideCount; i++) {
-		coordsAndColor[(i*2)  *6]   = x + (r-lineWidth) * body_vertices[i+1].getXComp();
-		coordsAndColor[(i*2)  *6+1] = y + (r-lineWidth) * body_vertices[i+1].getYComp();
-		coordsAndColor[(i*2+1)*6]   = x + (r+lineWidth) * body_vertices[i+1].getXComp();
-		coordsAndColor[(i*2+1)*6+1] = y + (r+lineWidth) * body_vertices[i+1].getYComp();
+		coordsAndColor[(i*2)  *6]   = static_cast<float>(x) + (static_cast<float>(r)-lineWidth) * body_vertices[i+1].getXComp();
+		coordsAndColor[(i*2)  *6+1] = static_cast<float>(y) + (static_cast<float>(r)-lineWidth) * body_vertices[i+1].getYComp();
+		coordsAndColor[(i*2+1)*6]   = static_cast<float>(x) + (static_cast<float>(r)+lineWidth) * body_vertices[i+1].getXComp();
+		coordsAndColor[(i*2+1)*6+1] = static_cast<float>(y) + (static_cast<float>(r)+lineWidth) * body_vertices[i+1].getYComp();
 
 		coordsAndColor[(i*2)  *6+2] = color.getRf();
 		coordsAndColor[(i*2)  *6+3] = color.getGf();
@@ -632,7 +632,7 @@ inline void Bullet::drawDeathCooldown(float alpha) const {
 	//checking glIsEnabled(GL_BLEND) to skip is an option (though the result should be stored somewhere to avoid GL calls)
 
 	if (this->lifeValue < 100) {
-		double deathPercent = std::max<double>(this->lifeValue/100, 0);
+		float deathPercent = std::max<float>(this->lifeValue/100, 0);
 		unsigned int deathTriangles = Bullet::BulletSideCount * deathPercent;
 
 		if (deathTriangles > 0) {
@@ -651,7 +651,7 @@ inline void Bullet::drawDeathCooldown(float alpha) const {
 				//with wrong condition: two verts on an old bullet's death outline to the center of a new bullet's center body or death outline, though sometimes even a tank or rarely the bottom left corner (why)
 				//to be more specific: with the old conditional, think it was happening when deathTriangles==1, leading to pushing only two total verts but pushing three indices; but that would mean it was always pushing insufficient verts for the indices, why wasn't it showing up before?
 				SimpleVector2D vertex = SimpleVector2D(body_vertices[i+1]);
-				vertex.multiplyMagnitude((r+2)*(9.0/8.0));
+				vertex.multiplyMagnitude((static_cast<float>(r)+2)*(9.0f/8.0f));
 				//vertex.scaleAndRotate((r+2)*(9.0/8.0), PI/2);
 
 				coordsAndColor[(i+1)*6]   = static_cast<float>(x) + vertex.getXComp();

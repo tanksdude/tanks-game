@@ -461,7 +461,7 @@ inline void RectangularLightningHazard::drawBolts(float alpha) const {
 			const int startIndex = j*6;
 
 			SimpleVector2D dist = SimpleVector2D(bolts[i]->positions[(j+1)*2] - bolts[i]->positions[j*2], bolts[i]->positions[(j+1)*2+1] - bolts[i]->positions[j*2+1]);
-			SimpleVector2D distCW = SimpleVector2D(dist.getAngle() - PI/2, lineWidth, true);
+			SimpleVector2D distCW = SimpleVector2D(dist.getAngle() - static_cast<float>(PI/2), lineWidth, true);
 
 			coordsAndColor[startVertex + 0*6]   = static_cast<float>(x) + bolts[i]->positions[j*2]                     + distCW.getXComp();
 			coordsAndColor[startVertex + 0*6+1] = static_cast<float>(y) + bolts[i]->positions[j*2+1]                   + distCW.getYComp();
@@ -522,7 +522,7 @@ inline void RectangularLightningHazard::drawBolts_Pose(float alpha) const {
 			const int startIndex = j*6;
 
 			SimpleVector2D dist = SimpleVector2D(poseBolts[i]->positions[(j+1)*2] - poseBolts[i]->positions[j*2], poseBolts[i]->positions[(j+1)*2+1] - poseBolts[i]->positions[j*2+1]);
-			SimpleVector2D distCW = SimpleVector2D(dist.getAngle() - PI/2, lineWidth, true);
+			SimpleVector2D distCW = SimpleVector2D(dist.getAngle() - static_cast<float>(PI/2), lineWidth, true);
 
 			coordsAndColor[startVertex + 0*6]   = static_cast<float>(x) + poseBolts[i]->positions[j*2]                     + distCW.getXComp();
 			coordsAndColor[startVertex + 0*6+1] = static_cast<float>(y) + poseBolts[i]->positions[j*2+1]                   + distCW.getYComp();

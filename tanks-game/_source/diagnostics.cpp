@@ -191,7 +191,7 @@ void Diagnostics::drawGraphTimes_data(std::string name) {
 		const int startIndex = j*6;
 
 		SimpleVector2D dist = SimpleVector2D(positions[(j+1)*2] - positions[j*2], positions[(j+1)*2+1] - positions[j*2+1]);
-		SimpleVector2D distCW = SimpleVector2D(dist.getAngle() - PI/2, lineWidth, true);
+		SimpleVector2D distCW = SimpleVector2D(dist.getAngle() - static_cast<float>(PI/2), lineWidth, true);
 
 		coordsAndColor[startVertex + 0*6]   = graphXOffset + positions[j*2]                     + distCW.getXComp();
 		coordsAndColor[startVertex + 0*6+1] = graphYOffset + positions[j*2+1]                   + distCW.getYComp();

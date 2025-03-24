@@ -254,8 +254,8 @@ inline void CircularLavaHazard::drawBackground(bool pose, float alpha) const {
 	coordsAndColor[4] = color.getBf();
 	coordsAndColor[5] = color.getAf();
 	for (int i = 1; i < CircularLavaHazard::BubbleSideCount+1; i++) {
-		coordsAndColor[i*6]   = x + r * bubble_vertices[i].getXComp();
-		coordsAndColor[i*6+1] = y + r * bubble_vertices[i].getYComp();
+		coordsAndColor[i*6]   = static_cast<float>(x) + static_cast<float>(r) * bubble_vertices[i].getXComp();
+		coordsAndColor[i*6+1] = static_cast<float>(y) + static_cast<float>(r) * bubble_vertices[i].getYComp();
 		coordsAndColor[i*6+2] = color.getRf();
 		coordsAndColor[i*6+3] = color.getGf();
 		coordsAndColor[i*6+4] = color.getBf();
@@ -286,10 +286,10 @@ inline void CircularLavaHazard::drawBubbles(bool pose, float alpha) const {
 
 		float coordsAndColor[(CircularLavaHazard::BubbleSideCount*2)*(2+4)];
 		for (int i = 0; i < CircularLavaHazard::BubbleSideCount; i++) {
-			coordsAndColor[(i*2)  *6]   = (sortedBubbles[j]->getX()*this->r + this->x) + (sortedBubbles[j]->getR() - lineWidth) * bubble_vertices[i+1].getXComp();
-			coordsAndColor[(i*2)  *6+1] = (sortedBubbles[j]->getY()*this->r + this->y) + (sortedBubbles[j]->getR() - lineWidth) * bubble_vertices[i+1].getYComp();
-			coordsAndColor[(i*2+1)*6]   = (sortedBubbles[j]->getX()*this->r + this->x) + (sortedBubbles[j]->getR() + lineWidth) * bubble_vertices[i+1].getXComp();
-			coordsAndColor[(i*2+1)*6+1] = (sortedBubbles[j]->getY()*this->r + this->y) + (sortedBubbles[j]->getR() + lineWidth) * bubble_vertices[i+1].getYComp();
+			coordsAndColor[(i*2)  *6]   = (sortedBubbles[j]->getX()*static_cast<float>(this->r) + static_cast<float>(this->x)) + (sortedBubbles[j]->getR() - lineWidth) * bubble_vertices[i+1].getXComp();
+			coordsAndColor[(i*2)  *6+1] = (sortedBubbles[j]->getY()*static_cast<float>(this->r) + static_cast<float>(this->y)) + (sortedBubbles[j]->getR() - lineWidth) * bubble_vertices[i+1].getYComp();
+			coordsAndColor[(i*2+1)*6]   = (sortedBubbles[j]->getX()*static_cast<float>(this->r) + static_cast<float>(this->x)) + (sortedBubbles[j]->getR() + lineWidth) * bubble_vertices[i+1].getXComp();
+			coordsAndColor[(i*2+1)*6+1] = (sortedBubbles[j]->getY()*static_cast<float>(this->r) + static_cast<float>(this->y)) + (sortedBubbles[j]->getR() + lineWidth) * bubble_vertices[i+1].getYComp();
 
 			coordsAndColor[(i*2)  *6+2] = color.getRf();
 			coordsAndColor[(i*2)  *6+3] = color.getGf();

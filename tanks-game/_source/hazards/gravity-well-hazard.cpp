@@ -330,8 +330,8 @@ inline void GravityWellHazard::drawBody(float alpha) const {
 	coordsAndColor[4] = cloudColor.getBf();
 	coordsAndColor[5] = cloudColor.getAf();
 	for (int i = 1; i < Circle::NumOfSides+1; i++) {
-		coordsAndColor[i*6]   = x + r * body_vertices[i].getXComp();
-		coordsAndColor[i*6+1] = y + r * body_vertices[i].getYComp();
+		coordsAndColor[i*6]   = static_cast<float>(x) + static_cast<float>(r) * body_vertices[i].getXComp();
+		coordsAndColor[i*6+1] = static_cast<float>(y) + static_cast<float>(r) * body_vertices[i].getYComp();
 		coordsAndColor[i*6+2] = cloudColor.getRf();
 		coordsAndColor[i*6+3] = cloudColor.getGf();
 		coordsAndColor[i*6+4] = cloudColor.getBf();
@@ -351,10 +351,10 @@ inline void GravityWellHazard::drawOutline(float alpha) const {
 
 	float coordsAndColor[(Circle::NumOfSides*2)*(2+4)];
 	for (int i = 0; i < Circle::NumOfSides; i++) {
-		coordsAndColor[(i*2)  *6]   = x + (gravityRange-lineWidth) * body_vertices[i+1].getXComp();
-		coordsAndColor[(i*2)  *6+1] = y + (gravityRange-lineWidth) * body_vertices[i+1].getYComp();
-		coordsAndColor[(i*2+1)*6]   = x + (gravityRange+lineWidth) * body_vertices[i+1].getXComp();
-		coordsAndColor[(i*2+1)*6+1] = y + (gravityRange+lineWidth) * body_vertices[i+1].getYComp();
+		coordsAndColor[(i*2)  *6]   = static_cast<float>(x) + (static_cast<float>(gravityRange)-lineWidth) * body_vertices[i+1].getXComp();
+		coordsAndColor[(i*2)  *6+1] = static_cast<float>(y) + (static_cast<float>(gravityRange)-lineWidth) * body_vertices[i+1].getYComp();
+		coordsAndColor[(i*2+1)*6]   = static_cast<float>(x) + (static_cast<float>(gravityRange)+lineWidth) * body_vertices[i+1].getXComp();
+		coordsAndColor[(i*2+1)*6+1] = static_cast<float>(y) + (static_cast<float>(gravityRange)+lineWidth) * body_vertices[i+1].getYComp();
 
 		coordsAndColor[(i*2)  *6+2] = color.getRf();
 		coordsAndColor[(i*2)  *6+3] = color.getGf();
@@ -399,18 +399,18 @@ inline void GravityWellHazard::drawGravityCircle(float alpha) const {
 
 inline void GravityWellHazard::drawGravityArrows(float alpha) const {
 	ColorValueHolder color = ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(0.0f, 0.0f, 0.0f));
-	const double arrowScale = this->r / 2; //x-coords are in [-1,1]
+	const float arrowScale = this->r / 2; //x-coords are in [-1,1]
 
 	float coordsAndColor_arrow[7*(2+4)];
 	for (int i = 0; i < 4; i++) {
-		const double rotateAngle = i*(PI/2) + PI/4;
+		const float rotateAngle = i*(PI/2) + PI/4;
 		SimpleVector2D translateAmount = SimpleVector2D(rotateAngle, -arrowScale + getInnerGravityCircleRadius(), true);
 		for (int j = 0; j < 7; j++) {
 			SimpleVector2D vertex = SimpleVector2D(vertices_arrow[j]);
 			if (isGravityReversed()) {
 				vertex.scaleAndRotate(arrowScale, rotateAngle);
 			} else {
-				vertex.scaleAndRotate(arrowScale, rotateAngle + PI); //flip arrow direction
+				vertex.scaleAndRotate(arrowScale, rotateAngle + static_cast<float>(PI)); //flip arrow direction
 			}
 
 			coordsAndColor_arrow[j*6]   = static_cast<float>(this->x) + translateAmount.getXComp() + vertex.getXComp();

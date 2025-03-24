@@ -725,8 +725,8 @@ inline void Tank::drawBody(float alpha) const {
 		coordsAndColor[4] = color.getBf();
 		coordsAndColor[5] = color.getAf();
 		for (int i = 1; i < Circle::NumOfSides+1; i++) {
-			coordsAndColor[i*6]   = x + r * body_vertices[i].getXComp();
-			coordsAndColor[i*6+1] = y + r * body_vertices[i].getYComp();
+			coordsAndColor[i*6]   = static_cast<float>(x) + static_cast<float>(r) * body_vertices[i].getXComp();
+			coordsAndColor[i*6+1] = static_cast<float>(y) + static_cast<float>(r) * body_vertices[i].getYComp();
 			coordsAndColor[i*6+2] = color.getRf();
 			coordsAndColor[i*6+3] = color.getGf();
 			coordsAndColor[i*6+4] = color.getBf();
@@ -790,8 +790,8 @@ inline void Tank::drawBody(float alpha) const {
 		coordsAndColor[4] = color.getBf();
 		coordsAndColor[5] = color.getAf();
 		for (int i = 1; i < Circle::NumOfSides+1; i++) {
-			coordsAndColor[i*6]   = x + (r*.75) * body_vertices[i].getXComp();
-			coordsAndColor[i*6+1] = y + (r*.75) * body_vertices[i].getYComp();
+			coordsAndColor[i*6]   = static_cast<float>(x) + (static_cast<float>(r)*.75f) * body_vertices[i].getXComp();
+			coordsAndColor[i*6+1] = static_cast<float>(y) + (static_cast<float>(r)*.75f) * body_vertices[i].getYComp();
 			coordsAndColor[i*6+2] = color.getRf();
 			coordsAndColor[i*6+3] = color.getGf();
 			coordsAndColor[i*6+4] = color.getBf();
@@ -819,8 +819,8 @@ inline void Tank::drawBodyDead(float alpha) const {
 	coordsAndColor[4] = deadColor.getBf();
 	coordsAndColor[5] = deadColor.getAf();
 	for (int i = 1; i < Circle::NumOfSides+1; i++) {
-		coordsAndColor[i*6]   = x + r * body_vertices[i].getXComp();
-		coordsAndColor[i*6+1] = y + r * body_vertices[i].getYComp();
+		coordsAndColor[i*6]   = static_cast<float>(x) + static_cast<float>(r) * body_vertices[i].getXComp();
+		coordsAndColor[i*6+1] = static_cast<float>(y) + static_cast<float>(r) * body_vertices[i].getYComp();
 		coordsAndColor[i*6+2] = outerColor.getRf();
 		coordsAndColor[i*6+3] = outerColor.getGf();
 		coordsAndColor[i*6+4] = outerColor.getBf();
@@ -840,10 +840,10 @@ inline void Tank::drawOutline(float alpha) const {
 
 	float coordsAndColor[(Circle::NumOfSides*2)*(2+4)];
 	for (int i = 0; i < Circle::NumOfSides; i++) {
-		coordsAndColor[(i*2)  *6]   = x + (r-lineWidth) * body_vertices[i+1].getXComp();
-		coordsAndColor[(i*2)  *6+1] = y + (r-lineWidth) * body_vertices[i+1].getYComp();
-		coordsAndColor[(i*2+1)*6]   = x + (r+lineWidth) * body_vertices[i+1].getXComp();
-		coordsAndColor[(i*2+1)*6+1] = y + (r+lineWidth) * body_vertices[i+1].getYComp();
+		coordsAndColor[(i*2)  *6]   = static_cast<float>(x) + (static_cast<float>(r)-lineWidth) * body_vertices[i+1].getXComp();
+		coordsAndColor[(i*2)  *6+1] = static_cast<float>(y) + (static_cast<float>(r)-lineWidth) * body_vertices[i+1].getYComp();
+		coordsAndColor[(i*2+1)*6]   = static_cast<float>(x) + (static_cast<float>(r)+lineWidth) * body_vertices[i+1].getXComp();
+		coordsAndColor[(i*2+1)*6+1] = static_cast<float>(y) + (static_cast<float>(r)+lineWidth) * body_vertices[i+1].getYComp();
 
 		coordsAndColor[(i*2)  *6+2] = color.getRf();
 		coordsAndColor[(i*2)  *6+3] = color.getGf();
@@ -862,11 +862,11 @@ inline void Tank::drawShootingCooldown(float alpha) const {
 	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
-	double shootingOutlinePercent;
+	float shootingOutlinePercent;
 	if (maxShootCount*getShootingSpeedMultiplier() <= 0 || maxShootCount <= 0) {
 		shootingOutlinePercent = 0;
 	} else {
-		shootingOutlinePercent = std::clamp<double>(shootCount/(maxShootCount*getShootingSpeedMultiplier()), 0, 1);
+		shootingOutlinePercent = std::clamp<float>(shootCount/(maxShootCount*getShootingSpeedMultiplier()), 0, 1);
 	}
 	unsigned int shootingOutlineTriangles = Circle::NumOfSides * shootingOutlinePercent;
 
@@ -883,7 +883,7 @@ inline void Tank::drawShootingCooldown(float alpha) const {
 		coordsAndColor[5] = color.getAf();
 		for (unsigned int i = 0; i <= shootingOutlineTriangles && i < Circle::NumOfSides; i++) {
 			SimpleVector2D vertex = SimpleVector2D(body_vertices[i % Circle::NumOfSides + 1]);
-			vertex.scaleAndRotate(r*(5.0/4.0), velocity.getAngle());
+			vertex.scaleAndRotate(static_cast<float>(r)*(5.0f/4.0f), velocity.getAngle());
 
 			coordsAndColor[(i+1)*6]   = static_cast<float>(x) + vertex.getXComp();
 			coordsAndColor[(i+1)*6+1] = static_cast<float>(y) + vertex.getYComp();
@@ -908,11 +908,11 @@ inline void Tank::drawPowerCooldown(float alpha) const {
 
 	//second, actually draw them
 	for (int i = 0; i < sortedTankPowers.size(); i++) {
-		double powerOutlinePercent;
+		float powerOutlinePercent;
 		if (sortedTankPowers[i]->maxTime <= 0) [[unlikely]] {
 			powerOutlinePercent = 0;
 		} else {
-			powerOutlinePercent = std::clamp<double>(sortedTankPowers[i]->timeLeft/sortedTankPowers[i]->maxTime, 0, 1);
+			powerOutlinePercent = std::clamp<float>(sortedTankPowers[i]->timeLeft/sortedTankPowers[i]->maxTime, 0, 1);
 		}
 		unsigned int powerOutlineTriangles = Circle::NumOfSides * powerOutlinePercent;
 
@@ -929,7 +929,7 @@ inline void Tank::drawPowerCooldown(float alpha) const {
 			coordsAndColor[5] = color.getAf();
 			for (unsigned int j = 0; j <= powerOutlineTriangles && j < Circle::NumOfSides; j++) {
 				SimpleVector2D vertex = SimpleVector2D(body_vertices[j % Circle::NumOfSides + 1]);
-				vertex.scaleAndRotate(r*(9.0/8.0), velocity.getAngle());
+				vertex.scaleAndRotate(static_cast<float>(r)*(9.0f/8.0f), velocity.getAngle());
 
 				coordsAndColor[(j+1)*6]   = static_cast<float>(x) + vertex.getXComp();
 				coordsAndColor[(j+1)*6+1] = static_cast<float>(y) + vertex.getYComp();
@@ -956,7 +956,7 @@ inline void Tank::drawMainBarrel(float alpha) const {
 	unsigned int indices[6];
 
 	SimpleVector2D dist = SimpleVector2D(velocity.getAngle(), r, true);
-	SimpleVector2D distCW = SimpleVector2D(velocity.getAngle() - PI/2, lineWidth, true);
+	SimpleVector2D distCW = SimpleVector2D(velocity.getAngle() - static_cast<float>(PI/2), lineWidth, true);
 
 	coordsAndColor[0*6]   = static_cast<float>(x)                   + distCW.getXComp();
 	coordsAndColor[0*6+1] = static_cast<float>(y)                   + distCW.getYComp();

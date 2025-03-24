@@ -461,18 +461,18 @@ inline void MotherTurretHazard::drawShootingTimer(float alpha) const {
 	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
-	double shootingOutlinePercent;
+	float shootingOutlinePercent;
 	if (tickCycle <= 0) {
 		shootingOutlinePercent = 0;
 	} else {
-		shootingOutlinePercent = std::clamp<double>(targetingCount / (stateMultiplier[1] * tickCycle), 0, 1);
+		shootingOutlinePercent = std::clamp<float>(targetingCount / (stateMultiplier[1] * tickCycle), 0, 1);
 	}
 	unsigned int shootingOutlineTriangles = Circle::NumOfSides * shootingOutlinePercent;
 
 	if (shootingOutlineTriangles > 0) {
 		ColorValueHolder color = ColorValueHolder(1.0f, 1.0f, 1.0f);
 		color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-		const double rotateAngle = velocity.getAngle() + (2*PI)*(1 - double(shootingOutlineTriangles)/Circle::NumOfSides)/2;
+		const float rotateAngle = velocity.getAngle() + static_cast<float>(2*PI)*(1 - float(shootingOutlineTriangles)/Circle::NumOfSides)/2;
 
 		float coordsAndColor[(Circle::NumOfSides+1)*(2+4)];
 		coordsAndColor[0] = x;
@@ -483,7 +483,7 @@ inline void MotherTurretHazard::drawShootingTimer(float alpha) const {
 		coordsAndColor[5] = color.getAf();
 		for (unsigned int i = 0; i <= shootingOutlineTriangles && i < Circle::NumOfSides; i++) {
 			SimpleVector2D vertex = SimpleVector2D(body_vertices[i % Circle::NumOfSides + 1]);
-			vertex.scaleAndRotate(r*(5.0/4.0), rotateAngle);
+			vertex.scaleAndRotate(static_cast<float>(r)*(5.0f/4.0f), rotateAngle);
 
 			coordsAndColor[(i+1)*6]   = static_cast<float>(x) + vertex.getXComp();
 			coordsAndColor[(i+1)*6+1] = static_cast<float>(y) + vertex.getYComp();
@@ -524,8 +524,8 @@ inline void MotherTurretHazard::drawChildTurretLocations(float alpha) const {
 		coordsAndColor[4] = color.getBf();
 		coordsAndColor[5] = color.getAf();
 		for (int j = 1; j < Circle::NumOfSides+1; j++) {
-			coordsAndColor[j*6]   = testChild->x + radius * body_vertices[j].getXComp();
-			coordsAndColor[j*6+1] = testChild->y + radius * body_vertices[j].getYComp();
+			coordsAndColor[j*6]   = static_cast<float>(testChild->x) + radius * body_vertices[j].getXComp();
+			coordsAndColor[j*6+1] = static_cast<float>(testChild->y) + radius * body_vertices[j].getYComp();
 			coordsAndColor[j*6+2] = color.getRf();
 			coordsAndColor[j*6+3] = color.getGf();
 			coordsAndColor[j*6+4] = color.getBf();
