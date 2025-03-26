@@ -27,7 +27,7 @@ Required: every power needs a name, color, types, and weights for the types.
 
 Optional: the duration and some attributes.
 
-* `PowerTankDuration` (double, default = 500): The duration the tank has the power. Bullets always have unlimited power duration.
+* `PowerTankDurationMultiplier` (double, default = 1.0): The duration the tank has the power. Bullets always have unlimited power duration. Wallhack sets this to 0.5 and is the only vanilla power to change this. (Was planning on more but things that's just how game development is sometimes.)
 * `PowerAttributes` (strings, default = "stack" and "mix"): Just something to help when randomizing powers. (Which isn't possible for custom levels yet...) Currently only "stack" and "mix" are even acknowledged as existing.
 
 After you have set the required and optional attributes, you need to write `[TANKPOWER_START]` to begin commands for the tank power, then after that, write `[BULLETPOWER_START]` to begin commands for the bullet power.

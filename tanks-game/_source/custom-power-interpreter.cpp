@@ -896,7 +896,7 @@ CustomPower* CustomPowerInterpreter::processCustomPower(std::string path) {
 
 	std::string name;
 	float colorR, colorG, colorB;
-	double tankDuration = GameManager::get_settings().PowerupDurationBaseTime;
+	double tankDurationMultiplier = 1;
 	std::vector<std::string> types;
 	std::vector<std::string> attributes = std::vector<std::string>{ "stack", "mix" };
 	std::unordered_map<std::string, float> weights;
@@ -905,7 +905,6 @@ CustomPower* CustomPowerInterpreter::processCustomPower(std::string path) {
 
 	bool name_set = false;
 	bool color_set = false;
-	//bool tankDuration_set = false;
 	bool types_set = false;
 	//bool attributes_set = false;
 	bool weights_set = false;
@@ -1013,19 +1012,18 @@ CustomPower* CustomPowerInterpreter::processCustomPower(std::string path) {
 						attributes = assignmentValues_list;
 						//attributes_set = true;
 					}
-					else if (assignmentName == "PowerTankDuration") {
+					else if (assignmentName == "PowerTankDurationMultiplier") {
 						if (assignmentValues_list.size() != 1) [[unlikely]] {
-							error_string = "Syntax error on line " + std::to_string(lineNum) + ": expected 1 data item for \"PowerTankDuration\" but got " + std::to_string(assignmentValues_list.size());
+							error_string = "Syntax error on line " + std::to_string(lineNum) + ": expected 1 data item for \"PowerTankDurationMultiplier\" but got " + std::to_string(assignmentValues_list.size());
 							break;
 						}
 						try {
-							tankDuration = std::stod(assignmentValues_list[0]);
+							tankDurationMultiplier = std::stod(assignmentValues_list[0]);
 						}
 						catch (const std::exception&) {
 							error_string = "Syntax error on line " + std::to_string(lineNum) + ": unable to parse \"" + assignmentName + "\" values";
 							break;
 						}
-						//tankDuration_set = true;
 					}
 					else {
 						//error_string = "Syntax error on line " + std::to_string(lineNum) + ": unknown assignment \"" + assignmentName + "\"";
@@ -1110,7 +1108,7 @@ CustomPower* CustomPowerInterpreter::processCustomPower(std::string path) {
 
 	return new CustomPower(name,
 		colorR, colorG, colorB,
-		tankDuration,
+		tankDurationMultiplier * GameManager::get_settings().PowerupDurationBaseTime,
 		types, attributes, weights,
 		actions_tank, actions_bullet);
 }
