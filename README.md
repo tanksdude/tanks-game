@@ -78,6 +78,7 @@ I didn't find a good way to easily build documentation, so... the documentation 
 * [GLEW](https://glew.sourceforge.net/) - OpenGL Extension Wrangler Library; for getting the latest OpenGL commands on Windows (where "latest" is >1.1 or so)
 * [OpenGL Mathematics (GLM)](https://github.com/g-truc/glm) - OpenGL-happy matrix and vector math library
 * [rpmalloc](https://github.com/mjansson/rpmalloc) - Memory allocator, for some extra performance
+* [stb_image](https://github.com/nothings/stb) - Image loader for loading the window icon
 
 ## Contributing
 

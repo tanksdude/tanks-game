@@ -120,6 +120,7 @@ public:
 	static void PreInitialize(int* argc, char** argv, std::string windowName); //initialize GLFW and GLEW
 	static void PreInitialize(int* argc, char** argv, std::string windowName, int startX, int startY);
 	static void PreInitialize(int* argc, char** argv, std::string windowName, int startX, int startY, double sizeMultiplier);
+	static void SetWindowIcon(const char* image_path); //called during PreInitialize; 32x32 seems to be the size OSes like the most
 	static void Initialize();
 	static void Uninitialize();
 

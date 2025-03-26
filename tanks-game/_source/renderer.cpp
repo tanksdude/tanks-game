@@ -7,6 +7,7 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <stb_image.h>
 #include "graphics/opengl-rendering-context.h"
 #include "graphics/software-rendering-context.h"
 #include "graphics/null-rendering-context.h"
@@ -233,7 +234,7 @@ void Renderer::PreInitialize(int* argc, char** argv, std::string windowName, int
 	glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_TRUE);
 	//glfwWindowHint(GLFW_DECORATED, GLFW_TRUE); //unnecessary
 	window = glfwCreateWindow(Renderer::window_width, Renderer::window_height, windowName.c_str(), NULL, NULL);
-	glfwSetWindowPos(window, startX, startY); //TODO: this sets the inner window content part (framebuffer?)'s position, I think
+	glfwSetWindowPos(window, startX, startY); //this sets the position of the inner window part, not the OS window position
 	Renderer::glfw_window = window;
 	//glEnable(GL_POLYGON_SMOOTH);
 	//glEnable(GL_MULTISAMPLE);
@@ -243,6 +244,7 @@ void Renderer::PreInitialize(int* argc, char** argv, std::string windowName, int
 	Renderer::window_width = Renderer::old_window_width; Renderer::window_height = Renderer::old_window_height;
 	Renderer::gamewindow_width = Renderer::window_width; Renderer::gamewindow_height = Renderer::window_height;
 	//glfwGetMonitorContentScale(glfwGetPrimaryMonitor(), &xscale, &yscale);
+	SetWindowIcon("res/favicon-64.png"); //TODO: 32x32
 
 	glfwMakeContextCurrent(window);
 
@@ -261,6 +263,14 @@ void Renderer::PreInitialize(int* argc, char** argv, std::string windowName, int
 		fprintf(stderr, "Error: '%s'\n", glewGetErrorString(res));
 		throw "glew failed";
 	}
+}
+
+//from: https://stackoverflow.com/questions/44321902/load-icon-function-for-glfwsetwindowicon/64783512#64783512
+void Renderer::SetWindowIcon(const char* image_path) {
+	GLFWimage images[1];
+	images[0].pixels = stbi_load(image_path, &images[0].width, &images[0].height, NULL, 4);
+	glfwSetWindowIcon(Renderer::glfw_window, 1, images);
+	stbi_image_free(images[0].pixels);
 }
 
 void Renderer::Initialize() {

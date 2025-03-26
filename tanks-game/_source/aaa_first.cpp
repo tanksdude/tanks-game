@@ -3,7 +3,10 @@
 #include <rpmalloc.h>
 #include <rpnew.h> //only include once!
 #include <rpmalloc.c> //yeah, .c files shouldn't be #include-ed, but it's fine
-//#include <malloc.c> //not used
+//#include <malloc.c> //included by rpmalloc.c with ENABLE_OVERRIDE=1 (not enabled), would only be used by stb_image
+
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
 
 FirstLoadedObject::FirstLoadedObject() {
 	//needs to be initialized before main(), because anything using the heap (like std::string or std::vector) will fail otherwise
