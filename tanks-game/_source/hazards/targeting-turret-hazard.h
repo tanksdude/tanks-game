@@ -4,7 +4,7 @@
 class TargetingTurretHazard : public StationaryTurretHazard {
 	//just called Turret in JS Tanks
 protected:
-	double turningIncrement = 128;
+	float turningIncrement = 128;
 	bool targeting;
 	float targetingX, targetingY; //not the x and y of the targeted tank; it's the x and y of the targeting reticule
 	ColorValueHolder reticuleColors[2];

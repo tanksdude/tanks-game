@@ -163,19 +163,19 @@ void MotherTurretHazard::pushInitialChildren(int childCount) {
 		currentInitialChildren /= 2;
 	}
 
-	const double turretAngleDiff = (2*PI) / maxChildTurrets;
-	const double workingAngle = (2*PI) / angleSplit;
+	const float turretAngleDiff = float(2*PI) / maxChildTurrets;
+	const float workingAngle = float(2*PI) / angleSplit;
 	for (int i = 0; i < angleSplit; i++) {
 		for (int j = 1; j <= currentInitialChildren; j++) {
-			pushChild(i*currentMaxChildren + round((j * workingAngle/double(currentInitialChildren+1)) / turretAngleDiff));
+			pushChild(i*currentMaxChildren + round((j * workingAngle/float(currentInitialChildren+1)) / turretAngleDiff));
 		}
 	}
 }
 
 CircleHazard* MotherTurretHazard::makeTurret(int turretNum) const {
 	GenericFactoryConstructionData constructionData;
-	const double angle = getChildTurretAngle(turretNum);
-	double* posArr = new double[3]{ this->x + (this->r+childDistFromMother) * cos(angle), this->y + (this->r+childDistFromMother) * sin(angle), angle };
+	const float angle = getChildTurretAngle(turretNum);
+	double* posArr = new double[3]{ this->x + (this->r+childDistFromMother) * cos(angle), this->y + (this->r+childDistFromMother) * sin(angle), double(angle) };
 	constructionData = GenericFactoryConstructionData(3, posArr);
 	CircleHazard* childTurret = HazardDataGovernor::getCircleHazardFactory("vanilla", "targeting_turret")(constructionData);
 	return childTurret;
@@ -193,8 +193,8 @@ void MotherTurretHazard::pushChild(int turretNum) {
 	HazardManager::pushCircleHazard(childTurret);
 }
 
-inline double MotherTurretHazard::getChildTurretAngle(int turretNum) const {
-	const double turretAngleDiff = (2*PI) / maxChildTurrets;
+inline float MotherTurretHazard::getChildTurretAngle(int turretNum) const {
+	const float turretAngleDiff = float(2*PI) / maxChildTurrets;
 	return initialAngle + turretNum * turretAngleDiff;
 }
 
@@ -230,7 +230,7 @@ void MotherTurretHazard::tick() {
 void MotherTurretHazard::tick_chooseSpot() {
 	//choose the spot that will result in the most time spent turning
 	if (getChildCount() < maxChildTurrets) {
-		const float childAngleDiff = (2*PI) / maxChildTurrets;
+		const float childAngleDiff = float(2*PI) / maxChildTurrets;
 		float* angleDiff = new float[maxChildTurrets];
 		for (int i = 0; i < maxChildTurrets; i++) {
 			if (childTurretAlive[i]) {
@@ -304,21 +304,21 @@ void MotherTurretHazard::turnTowardsPoint(int turretNum) {
 	//see TargetingTurretHazard::turnTowardsTank
 	SimpleVector2D distToChild = SimpleVector2D(getChildTurretAngle(turretNum), this->r+childDistFromMother, true);
 	float theta = SimpleVector2D::angleBetween(distToChild, velocity);
-	if (abs(theta) < PI/turningIncrement) {
+	if (abs(theta) < float(PI)/turningIncrement) {
 		//too small to adjust angle
 	} else {
 		//large angle adjustment needed
 		if (theta < 0) {
-			this->velocity.changeAngle(PI/turningIncrement);
+			this->velocity.changeAngle(float(PI)/turningIncrement);
 		} else {
-			this->velocity.changeAngle(-PI/turningIncrement);
+			this->velocity.changeAngle(float(-PI)/turningIncrement);
 		}
 	}
 }
 
 bool MotherTurretHazard::isPointedAt(int turretNum) const {
 	float angle = getChildTurretAngle(turretNum);
-	return (abs(SimpleVector2D::angleBetween(velocity, SimpleVector2D(angle, 0, true))) < PI/turningIncrement);
+	return (abs(SimpleVector2D::angleBetween(velocity, SimpleVector2D(angle, 0, true))) < float(PI)/turningIncrement);
 }
 
 bool MotherTurretHazard::reasonableLocation() const {
@@ -472,7 +472,7 @@ void MotherTurretHazard::drawShootingTimer(float alpha) const {
 	if (shootingOutlineTriangles > 0) {
 		ColorValueHolder color = ColorValueHolder(1.0f, 1.0f, 1.0f);
 		color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-		const float rotateAngle = velocity.getAngle() + static_cast<float>(2*PI)*(1 - float(shootingOutlineTriangles)/Circle::NumOfSides)/2;
+		const float rotateAngle = velocity.getAngle() + float(2*PI)*(1 - float(shootingOutlineTriangles)/Circle::NumOfSides)/2;
 
 		float coordsAndColor[(Circle::NumOfSides+1)*(2+4)];
 		coordsAndColor[0] = x;

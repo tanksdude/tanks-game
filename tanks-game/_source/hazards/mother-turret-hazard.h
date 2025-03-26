@@ -10,7 +10,7 @@ protected:
 	bool targetingChild; //basically the targeting bool, but the distinction allows GinormousTurretHazard to work correctly
 
 	double childDistFromMother;
-	double initialAngle;
+	float initialAngle;
 	int initialChildren;
 
 protected:
@@ -20,7 +20,7 @@ protected:
 	int updateChildCount(); //returns alive children
 	virtual CircleHazard* makeTurret(int turretNum) const;
 	void pushChild(int turretNum); //shouldn't need to be virtual
-	inline double getChildTurretAngle(int turretNum) const; //same
+	inline float getChildTurretAngle(int turretNum) const; //same
 
 	virtual void turnTowardsPoint(int turretNum);
 	virtual bool isPointedAt(int turretNum) const;

@@ -3,9 +3,9 @@
 
 #include "../constants.h"
 
-const double SwarmPower::initialAngleDiff = 15 * (PI/180);
+const float SwarmPower::initialAngleDiff = 15 * (PI/180);
 
-const double SwarmPower::homingStrength = (2*PI) / 32;
+const float SwarmPower::homingStrength = (2*PI) / 32;
 
 std::unordered_map<std::string, float> SwarmPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;

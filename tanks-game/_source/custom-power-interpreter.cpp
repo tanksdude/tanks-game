@@ -477,10 +477,10 @@ inline void CustomTankPower::initialization_additionalShooting_Enable(const Gene
 	overridesAdditionalShooting = modifiesAdditionalShooting;
 }
 inline void CustomTankPower::initialization_additionalShooting_AngleRelativeToTank(const GenericFactoryConstructionData& data) noexcept {
-	additionalShooting_AngleRelativeToTank = static_cast<float>(PI/180) * static_cast<const float*>(data.getDataPortion(0).get())[0];
+	additionalShooting_AngleRelativeToTank = float(PI/180) * static_cast<const float*>(data.getDataPortion(0).get())[0];
 }
 inline void CustomTankPower::initialization_additionalShooting_AngleRelativeToCannon(const GenericFactoryConstructionData& data) noexcept {
-	additionalShooting_AngleRelativeToCannon = static_cast<float>(PI/180) * static_cast<const float*>(data.getDataPortion(0).get())[0];
+	additionalShooting_AngleRelativeToCannon = float(PI/180) * static_cast<const float*>(data.getDataPortion(0).get())[0];
 }
 inline void CustomTankPower::initialization_additionalShooting_BulletCount(const GenericFactoryConstructionData& data) noexcept {
 	additionalShooting_BulletCount = static_cast<const int*>(data.getDataPortion(0).get())[0];

@@ -133,7 +133,7 @@ CircleHazard* GravityWellHazard::factory(const GenericFactoryConstructionData& a
 	return new GravityWellHazard(0, 0, 0);
 }
 
-inline double GravityWellHazard::getGravityStrength(double dist) const {
+inline float GravityWellHazard::getGravityStrength(double dist) const {
 	return (1 - dist/(this->gravityRange - this->r)) * (maxGravityStrength - minGravityStrength) + minGravityStrength;
 }
 
@@ -410,7 +410,7 @@ void GravityWellHazard::drawGravityArrows(float alpha) const {
 			if (isGravityReversed()) {
 				vertex.scaleAndRotate(arrowScale, rotateAngle);
 			} else {
-				vertex.scaleAndRotate(arrowScale, rotateAngle + static_cast<float>(PI)); //flip arrow direction
+				vertex.scaleAndRotate(arrowScale, rotateAngle + float(PI)); //flip arrow direction
 			}
 
 			coordsAndColor_arrow[j*6]   = static_cast<float>(this->x) + translateAmount.getXComp() + vertex.getXComp();

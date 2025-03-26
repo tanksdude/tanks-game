@@ -126,18 +126,18 @@ inline void Tank::move_base(bool forward, bool turnL, bool turnR) {
 	if (game_settings.RestrictTankTurning) {
 		if (!forward) {
 			if (turnL) {
-				velocity.changeAngle(PI/turningIncrement);
+				velocity.changeAngle(float(PI)/turningIncrement);
 			}
 			if (turnR) {
-				velocity.changeAngle(-PI/turningIncrement);
+				velocity.changeAngle(float(-PI)/turningIncrement);
 			}
 		}
 	} else [[likely]] {
 		if (turnL) {
-			velocity.changeAngle(PI/turningIncrement);
+			velocity.changeAngle(float(PI)/turningIncrement);
 		}
 		if (turnR) {
-			velocity.changeAngle(-PI/turningIncrement);
+			velocity.changeAngle(float(-PI)/turningIncrement);
 		}
 	}
 
@@ -292,8 +292,8 @@ inline void Tank::determineShootingAngles_helper(std::vector<float>* newCannonPo
 	for (int i = shootingPoints.size() - 1; i >= 0; i--) {
 		const int end = (i + 1) % shootingPoints.size();
 		const float angle_diff = end == 0 ?
-		                          float(2*PI) - (shootingPoints[i].angleFromCenter - shootingPoints[end].angleFromCenter) :
-		                          shootingPoints[end].angleFromCenter - shootingPoints[i].angleFromCenter;
+		                         float(2*PI) - (shootingPoints[i].angleFromCenter - shootingPoints[end].angleFromCenter) :
+		                         shootingPoints[end].angleFromCenter - shootingPoints[i].angleFromCenter;
 
 		for (int j = 0; j < newCannonPoints->size(); j++) {
 			const float newAngle = angle_diff * newCannonPoints->at(j);
@@ -956,7 +956,7 @@ inline void Tank::drawMainBarrel(float alpha) const {
 	unsigned int indices[6];
 
 	SimpleVector2D dist = SimpleVector2D(velocity.getAngle(), r, true);
-	SimpleVector2D distCW = SimpleVector2D(velocity.getAngle() - static_cast<float>(PI/2), lineWidth, true);
+	SimpleVector2D distCW = SimpleVector2D(velocity.getAngle() - float(PI/2), lineWidth, true);
 
 	coordsAndColor[0*6]   = static_cast<float>(x)                   + distCW.getXComp();
 	coordsAndColor[0*6+1] = static_cast<float>(y)                   + distCW.getYComp();
@@ -1004,7 +1004,7 @@ inline void Tank::drawExtraBarrels(float alpha) const {
 		const int startIndex = i*6;
 
 		SimpleVector2D dist = SimpleVector2D(getEvaluatedCannonAngle(i+1), r, true);
-		SimpleVector2D distCW = SimpleVector2D(getEvaluatedCannonAngle(i+1) - PI/2, lineWidth, true);
+		SimpleVector2D distCW = SimpleVector2D(getEvaluatedCannonAngle(i+1) - float(PI/2), lineWidth, true);
 
 		coordsAndColor[startVertex + 0*6]   = static_cast<float>(x)                   + distCW.getXComp();
 		coordsAndColor[startVertex + 0*6+1] = static_cast<float>(y)                   + distCW.getYComp();
@@ -1054,10 +1054,10 @@ inline void Tank::drawExtraExtraBarrels(float alpha) const {
 		const int startIndex = i*6;
 
 		SimpleVector2D distFromCenter = SimpleVector2D(getEvaluatedCannonAngle(0, i+1), r, true);
-		const double computedAngle = shootingPoints[0].angleFromCenter + extraShootingPoints[i+1].angleFromCenter;
-		const float extraCannonLength = r * (sin(computedAngle)*sin(computedAngle) * .25 + .25); //.25 at main cannon, .5 at 90deg //x^2 instead of abs because 45deg cannon was too long
+		const float computedAngle = shootingPoints[0].angleFromCenter + extraShootingPoints[i+1].angleFromCenter;
+		const float extraCannonLength = static_cast<float>(r) * (sin(computedAngle)*sin(computedAngle) * .25f + .25f); //.25 at main cannon, .5 at 90deg //x^2 instead of abs because 45deg cannon was too long
 		SimpleVector2D dist = SimpleVector2D(getEvaluatedCannonAngleWithEdge(0, i+1), extraCannonLength, true);
-		SimpleVector2D distCW = SimpleVector2D(getEvaluatedCannonAngleWithEdge(0, i+1) - PI/2, lineWidth, true);
+		SimpleVector2D distCW = SimpleVector2D(getEvaluatedCannonAngleWithEdge(0, i+1) - float(PI/2), lineWidth, true);
 
 		coordsAndColor[startVertex + 0*6]   = static_cast<float>(x) + distFromCenter.getXComp()                   + distCW.getXComp();
 		coordsAndColor[startVertex + 0*6+1] = static_cast<float>(y) + distFromCenter.getYComp()                   + distCW.getYComp();

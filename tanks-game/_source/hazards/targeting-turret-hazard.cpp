@@ -199,20 +199,20 @@ void TargetingTurretHazard::turnTowardsTank(const Tank* t) {
 	//see PowerFunctionHelper::homingGeneric
 	SimpleVector2D distToTank = SimpleVector2D(t->getX() - this->x, t->getY() - this->y);
 	float theta = SimpleVector2D::angleBetween(distToTank, velocity);
-	if (abs(theta) < PI/turningIncrement) {
+	if (abs(theta) < float(PI)/turningIncrement) {
 		//too small to adjust angle
 	} else {
 		//large angle adjustment needed
 		if (theta < 0) {
-			this->velocity.changeAngle(PI/turningIncrement);
+			this->velocity.changeAngle(float(PI)/turningIncrement);
 		} else {
-			this->velocity.changeAngle(-PI/turningIncrement);
+			this->velocity.changeAngle(float(-PI)/turningIncrement);
 		}
 	}
 }
 
 bool TargetingTurretHazard::isPointedAt(const Tank* t) const {
-	return (abs(SimpleVector2D::angleBetween(velocity, SimpleVector2D(t->x - x, t->y - y))) < PI/turningIncrement);
+	return (abs(SimpleVector2D::angleBetween(velocity, SimpleVector2D(t->x - x, t->y - y))) < float(PI)/turningIncrement);
 }
 
 bool TargetingTurretHazard::reasonableLocation() const {

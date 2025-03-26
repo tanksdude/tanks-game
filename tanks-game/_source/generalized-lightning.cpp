@@ -9,7 +9,7 @@
 #include "color-mixer.h"
 #include "background-rect.h"
 
-int GeneralizedLightning::getDefaultNumBoltPoints(double horzDist) const {
+int GeneralizedLightning::getDefaultNumBoltPoints(float horzDist) const {
 	int boltPoints = ceil(horzDist / lengthOfBolt); //not floor because the last point is the edge of the lightning area
 	return std::max(2, boltPoints);
 }

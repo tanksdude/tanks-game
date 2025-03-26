@@ -157,14 +157,14 @@ void PatrollingTurretHazard::turnTowardsPoint() {
 	//see TargetingTurretHazard::turnTowardsTank
 	SimpleVector2D distToPoint = SimpleVector2D(getRoutePosX(currentPatrolTarget) - this->x, getRoutePosY(currentPatrolTarget) - this->y);
 	float theta = SimpleVector2D::angleBetween(distToPoint, velocity);
-	if (abs(theta) < PI/turningIncrement) {
+	if (abs(theta) < float(PI)/turningIncrement) {
 		//too small to adjust angle
 	} else {
 		//large angle adjustment needed
 		if (theta < 0) {
-			this->velocity.changeAngle(PI/turningIncrement);
+			this->velocity.changeAngle(float(PI)/turningIncrement);
 		} else {
-			this->velocity.changeAngle(-PI/turningIncrement);
+			this->velocity.changeAngle(float(-PI)/turningIncrement);
 		}
 	}
 }
@@ -172,7 +172,7 @@ void PatrollingTurretHazard::turnTowardsPoint() {
 bool PatrollingTurretHazard::isPointedAtPoint() const {
 	SimpleVector2D distToPoint = SimpleVector2D(getRoutePosX(currentPatrolTarget) - this->x, getRoutePosY(currentPatrolTarget) - this->y);
 	float theta = SimpleVector2D::angleBetween(distToPoint, velocity);
-	return (abs(theta) < PI/turningIncrement);
+	return (abs(theta) < float(PI)/turningIncrement);
 }
 
 bool PatrollingTurretHazard::reasonableLocation() const {
@@ -190,14 +190,14 @@ bool PatrollingTurretHazard::reasonableLocation() const {
 
 		const SimpleVector2D path = SimpleVector2D(getRoutePosX(end_pos) - getRoutePosX(start_pos), getRoutePosY(end_pos), getRoutePosY(start_pos));
 		double outerPath[4] = {
-			getRoutePosX(start_pos) + getR() * cos(path.getAngle() - static_cast<float>(PI/2)), getRoutePosY(start_pos) + getR() * sin(path.getAngle() - static_cast<float>(PI/2)),
-			getRoutePosX(end_pos)   + getR() * cos(path.getAngle() - static_cast<float>(PI/2)), getRoutePosY(end_pos)   + getR() * sin(path.getAngle() - static_cast<float>(PI/2)) };
+			getRoutePosX(start_pos) + getR() * cos(path.getAngle() - float(PI/2)), getRoutePosY(start_pos) + getR() * sin(path.getAngle() - float(PI/2)),
+			getRoutePosX(end_pos)   + getR() * cos(path.getAngle() - float(PI/2)), getRoutePosY(end_pos)   + getR() * sin(path.getAngle() - float(PI/2)) };
 		double mainPath[4] = {
 			getRoutePosX(start_pos), getRoutePosY(start_pos),
 			getRoutePosX(end_pos), getRoutePosY(end_pos) };
 		double innerPath[4] = {
-			getRoutePosX(start_pos) + getR() * cos(path.getAngle() + static_cast<float>(PI/2)), getRoutePosY(start_pos) + getR() * sin(path.getAngle() + static_cast<float>(PI/2)),
-			getRoutePosX(end_pos)   + getR() * cos(path.getAngle() + static_cast<float>(PI/2)), getRoutePosY(end_pos)   + getR() * sin(path.getAngle() + static_cast<float>(PI/2)) };
+			getRoutePosX(start_pos) + getR() * cos(path.getAngle() + float(PI/2)), getRoutePosY(start_pos) + getR() * sin(path.getAngle() + float(PI/2)),
+			getRoutePosX(end_pos)   + getR() * cos(path.getAngle() + float(PI/2)), getRoutePosY(end_pos)   + getR() * sin(path.getAngle() + float(PI/2)) };
 
 		for (int j = 0; j < WallManager::getNumWalls(); j++) {
 			if (CollisionHandler::lineRectCollision(outerPath[0], outerPath[1], outerPath[2], outerPath[3], WallManager::getWall(j))) {
@@ -417,7 +417,7 @@ void PatrollingTurretHazard::drawPath(float alpha) const {
 
 		//line
 		SimpleVector2D dist = SimpleVector2D(getRoutePosX((i+1) % routePosPairNum) - getRoutePosX(i), getRoutePosY((i+1) % routePosPairNum) - getRoutePosY(i));
-		SimpleVector2D distCW  = SimpleVector2D(dist.getAngle() - static_cast<float>(PI/2), lineWidth, true);
+		SimpleVector2D distCW  = SimpleVector2D(dist.getAngle() - float(PI/2), lineWidth, true);
 		//SimpleVector2D distCCW = SimpleVector2D(dist.getAngle() + PI/2, lineWidth, true);
 
 		coordsAndColor_line[0*6]   = static_cast<float>(getRoutePosX(i))                   + distCW.getXComp();

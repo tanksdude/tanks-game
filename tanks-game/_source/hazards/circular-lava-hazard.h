@@ -6,7 +6,7 @@
 
 class CircularLavaHazard : public CircleHazard, public GeneralizedLava {
 protected:
-	virtual void pushNewBubble(double radius) override;
+	virtual void pushNewBubble(float bubbleRadius) override;
 
 public:
 	virtual std::vector<std::string> getHazardTypes() const override {

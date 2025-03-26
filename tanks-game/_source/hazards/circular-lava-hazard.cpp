@@ -96,26 +96,26 @@ CircleHazard* CircularLavaHazard::factory(const GenericFactoryConstructionData& 
 	return new CircularLavaHazard(0, 0, 0);
 }
 
-void CircularLavaHazard::pushNewBubble(double radius) {
+void CircularLavaHazard::pushNewBubble(float bubbleRadius) {
 	float x0, y0, x1, y1;
 	int attempts = 0;
 
 	float r0, a0, r1, a1;
-	a0 = VisualRNG::randFunc() * (2*PI);
-	r0 = VisualRNG::randFunc() * (r - radius);
+	a0 = VisualRNG::randFuncf() * float(2*PI);
+	r0 = VisualRNG::randFuncf() * (float(r) - bubbleRadius);
 	x0 = r0 * cos(a0);
 	y0 = r0 * sin(a0);
 	do {
-		a1 = VisualRNG::randFunc() * (2*PI);
-		r1 = VisualRNG::randFunc() * (r - radius);
+		a1 = VisualRNG::randFuncf() * float(2*PI);
+		r1 = VisualRNG::randFuncf() * (float(r) - bubbleRadius);
 		x1 = r1 * cos(a1);
 		y1 = r1 * sin(a1);
 		attempts++;
-	} while ((attempts < 8) && (abs(x0-x1) < r/16 || abs(y0-y1) < r/16));
+	} while ((attempts < 8) && (abs(x0-x1) < float(r)/16 || abs(y0-y1) < float(r)/16));
 
 	if (attempts < 8) {
 		float maxTick = floor(VisualRNG::randFloatInRange(200, 300+1));
-		bubbles.push_back(new LavaBubble(radius, x0/float(r), y0/float(r), x1/float(r), y1/float(r), maxTick));
+		bubbles.push_back(new LavaBubble(bubbleRadius, x0/float(r), y0/float(r), x1/float(r), y1/float(r), maxTick));
 	}
 }
 

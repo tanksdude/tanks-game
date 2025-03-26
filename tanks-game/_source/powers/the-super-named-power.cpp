@@ -17,7 +17,7 @@ std::unordered_map<std::string, float> TheSuperNamedPower::getWeights() const {
 }
 
 ColorValueHolder TheSuperNamedPower::getClassColor() {
-	return ColorMixer::mix(ColorValueHolder(0, 0, 0), ColorValueHolder(1, 1, 1), .5f + .5f*sin(static_cast<float>(2*PI) * TheSuperNamedPower::getTimeValue()));
+	return ColorMixer::mix(ColorValueHolder(0, 0, 0), ColorValueHolder(1, 1, 1), .5f + .5f*sin(float(2*PI) * TheSuperNamedPower::getTimeValue()));
 }
 
 TankPower* TheSuperNamedPower::makeTankPower() const {

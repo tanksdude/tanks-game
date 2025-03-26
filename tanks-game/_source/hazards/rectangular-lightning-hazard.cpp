@@ -261,10 +261,10 @@ void RectangularLightningHazard::refreshBolt(LightningBolt* l, double smaller, d
 		float randTemp;
 		float testX, testY;
 		do {
-			randTemp = maxVariance * static_cast<float>(VisualRNG::randFunc()*2-1);
+			randTemp = maxVariance * (VisualRNG::randFuncf()*2-1);
 			testX = l->positions[j*2 - 2] + (boltDeltaX/(l->length-1)) - randTemp * sinAngle;
 			testY = l->positions[j*2 - 1] + (boltDeltaY/(l->length-1)) + randTemp * cosAngle;
-		} while ((testX < 0 || testX > w || testY < 0 || testY > h) || !pointInPolygon(6, polygonX, polygonY, testX, testY));
+		} while ((testX < 0 || testX > static_cast<float>(w) || testY < 0 || testY > static_cast<float>(h)) || !pointInPolygon(6, polygonX, polygonY, testX, testY));
 		l->positions[j*2]   = testX;
 		l->positions[j*2+1] = testY;
 	}
@@ -461,7 +461,7 @@ void RectangularLightningHazard::drawBolts(float alpha) const {
 			const int startIndex = j*6;
 
 			SimpleVector2D dist = SimpleVector2D(bolts[i]->positions[(j+1)*2] - bolts[i]->positions[j*2], bolts[i]->positions[(j+1)*2+1] - bolts[i]->positions[j*2+1]);
-			SimpleVector2D distCW = SimpleVector2D(dist.getAngle() - static_cast<float>(PI/2), lineWidth, true);
+			SimpleVector2D distCW = SimpleVector2D(dist.getAngle() - float(PI/2), lineWidth, true);
 
 			coordsAndColor[startVertex + 0*6]   = static_cast<float>(x) + bolts[i]->positions[j*2]                     + distCW.getXComp();
 			coordsAndColor[startVertex + 0*6+1] = static_cast<float>(y) + bolts[i]->positions[j*2+1]                   + distCW.getYComp();
@@ -501,7 +501,8 @@ void RectangularLightningHazard::drawBolts_Pose(float alpha) const {
 	for (int i = 0; i < 4; i++) {
 		//from pushDefaultBolt(), mostly
 		float xEnd = (i%2==0 ? -1 : 1) * (w*.375), yEnd = (i/2==0 ? -1 : 1) * (h*.375);
-		LightningBolt* l = new LightningBolt(w/2, h/2, xEnd, yEnd, getDefaultNumBoltPoints(sqrt((xEnd - w/2)*(xEnd - w/2) + (yEnd - h/2)*(yEnd - h/2))));
+		float xDelta = xEnd - static_cast<float>(w)/2, yDelta = yEnd - static_cast<float>(h)/2;
+		LightningBolt* l = new LightningBolt(w/2, h/2, xEnd, yEnd, getDefaultNumBoltPoints(sqrt(xDelta*xDelta + yDelta*yDelta)));
 
 		refreshBolt(l);
 		poseBolts.push_back(l);
@@ -522,7 +523,7 @@ void RectangularLightningHazard::drawBolts_Pose(float alpha) const {
 			const int startIndex = j*6;
 
 			SimpleVector2D dist = SimpleVector2D(poseBolts[i]->positions[(j+1)*2] - poseBolts[i]->positions[j*2], poseBolts[i]->positions[(j+1)*2+1] - poseBolts[i]->positions[j*2+1]);
-			SimpleVector2D distCW = SimpleVector2D(dist.getAngle() - static_cast<float>(PI/2), lineWidth, true);
+			SimpleVector2D distCW = SimpleVector2D(dist.getAngle() - float(PI/2), lineWidth, true);
 
 			coordsAndColor[startVertex + 0*6]   = static_cast<float>(x) + poseBolts[i]->positions[j*2]                     + distCW.getXComp();
 			coordsAndColor[startVertex + 0*6+1] = static_cast<float>(y) + poseBolts[i]->positions[j*2+1]                   + distCW.getYComp();

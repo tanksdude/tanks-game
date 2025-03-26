@@ -103,7 +103,7 @@ void SpiralLavaHazard::uninitialize() {
 */
 
 ColorValueHolder SpiralLavaHazard::getColor() const {
-	const float mixVal = .5f * (1.0f + sin(static_cast<float>(PI) * static_cast<float>(tickCount/tickCycle)));
+	const float mixVal = .5f * (1.0f + sin(float(PI) * static_cast<float>(tickCount/tickCycle)));
 	if (currentlyActive) {
 		return ColorMixer::mix(SpiralLavaHazard::darkColor, SpiralLavaHazard::lightColor, mixVal);
 	} else {

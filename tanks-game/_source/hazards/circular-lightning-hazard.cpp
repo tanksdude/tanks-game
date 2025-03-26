@@ -170,8 +170,8 @@ void CircularLightningHazard::pushBolt(LightningBolt* l) {
 
 void CircularLightningHazard::pushDefaultBolt(int num, bool randomize) {
 	//the default bolt is from center to a random point
-	double randR = r*VisualRNG::randFunc(), randAngle = (2*PI)*VisualRNG::randFunc();
-	double xEnd = randR*cos(randAngle), yEnd = randR*sin(randAngle);
+	float randR = float(r)*VisualRNG::randFuncf(), randAngle = float(2*PI)*VisualRNG::randFuncf();
+	float xEnd = randR*cos(randAngle), yEnd = randR*sin(randAngle);
 	for (int i = 0; i < num; i++) {
 		LightningBolt* l = new LightningBolt(0, 0, xEnd, yEnd, getDefaultNumBoltPoints(sqrt(xEnd*xEnd + yEnd*yEnd)));
 		if (randomize) {
@@ -248,10 +248,10 @@ void CircularLightningHazard::refreshBolt(LightningBolt* l) const {
 		float randTemp;
 		float testX, testY;
 		do {
-			randTemp = maxVariance * static_cast<float>(VisualRNG::randFunc()*2-1);
+			randTemp = maxVariance * (VisualRNG::randFuncf()*2-1);
 			testX = l->positions[j*2 - 2] + (boltDeltaX/(l->length-1)) - randTemp * sinAngle;
 			testY = l->positions[j*2 - 1] + (boltDeltaY/(l->length-1)) + randTemp * cosAngle;
-		} while ((sqrt(testX*testX + testY*testY) > r) || !pointInPolygon(6, polygonX, polygonY, testX, testY));
+		} while ((sqrt(testX*testX + testY*testY) > static_cast<float>(r)) || !pointInPolygon(6, polygonX, polygonY, testX, testY));
 		//the first case is rare, but I'm fairly certain it's a useless check if pointInPolygon is checked first
 		l->positions[j*2]   = testX;
 		l->positions[j*2+1] = testY;
@@ -441,7 +441,7 @@ void CircularLightningHazard::drawBolts(float alpha) const {
 			const int startIndex = j*6;
 
 			SimpleVector2D dist = SimpleVector2D(bolts[i]->positions[(j+1)*2] - bolts[i]->positions[j*2], bolts[i]->positions[(j+1)*2+1] - bolts[i]->positions[j*2+1]);
-			SimpleVector2D distCW = SimpleVector2D(dist.getAngle() - static_cast<float>(PI/2), lineWidth, true);
+			SimpleVector2D distCW = SimpleVector2D(dist.getAngle() - float(PI/2), lineWidth, true);
 
 			coordsAndColor[startVertex + 0*6]   = static_cast<float>(x) + bolts[i]->positions[j*2]                     + distCW.getXComp();
 			coordsAndColor[startVertex + 0*6+1] = static_cast<float>(y) + bolts[i]->positions[j*2+1]                   + distCW.getYComp();
@@ -503,7 +503,7 @@ void CircularLightningHazard::drawBolts_Pose(float alpha) const {
 			const int startIndex = j*6;
 
 			SimpleVector2D dist = SimpleVector2D(poseBolts[i]->positions[(j+1)*2] - poseBolts[i]->positions[j*2], poseBolts[i]->positions[(j+1)*2+1] - poseBolts[i]->positions[j*2+1]);
-			SimpleVector2D distCW = SimpleVector2D(dist.getAngle() - static_cast<float>(PI/2), lineWidth, true);
+			SimpleVector2D distCW = SimpleVector2D(dist.getAngle() - float(PI/2), lineWidth, true);
 
 			coordsAndColor[startVertex + 0*6]   = static_cast<float>(x) + poseBolts[i]->positions[j*2]                     + distCW.getXComp();
 			coordsAndColor[startVertex + 0*6+1] = static_cast<float>(y) + poseBolts[i]->positions[j*2+1]                   + distCW.getYComp();

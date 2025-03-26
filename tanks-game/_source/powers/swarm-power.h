@@ -3,10 +3,10 @@
 
 class SwarmPower : public Power {
 public: //tank stuff
-	static const double initialAngleDiff;
+	static const float initialAngleDiff;
 
 public: //bullet stuff
-	static const double homingStrength;
+	static const float homingStrength;
 
 public:
 	virtual std::vector<std::string> getPowerTypes() const override {

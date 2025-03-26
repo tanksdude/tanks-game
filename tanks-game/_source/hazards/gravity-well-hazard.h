@@ -14,7 +14,7 @@ protected:
 
 protected:
 	inline bool isGravityReversed() const { return (minGravityStrength < 0 && maxGravityStrength < 0); }
-	inline double getGravityStrength(double dist) const;
+	inline float getGravityStrength(double dist) const;
 	inline float getInnerGravityCircleRadius() const;
 	[[nodiscard]] inline Circle* getGravityRangeCircle() const;
 

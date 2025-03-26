@@ -267,14 +267,14 @@ void VerticalLightningHazard::simpleRefreshBolt(LightningBolt* l) const {
 		float xMin, xMax;
 		if (j < l->length/4) { //bottom quarter
 			//instead of y=ax+b, use x=(y-b)/a
-			xMin = ((deltaY * j) - h/4) / (-.5*(h/w));
-			xMax = ((deltaY * j) + h/4) / ( .5*(h/w));
-		} else if (j < l->length * (3.0/4.0)) { //middle half
+			xMin = ((deltaY * j) - static_cast<float>(h)/4) / (-.5f*static_cast<float>(h/w));
+			xMax = ((deltaY * j) + static_cast<float>(h)/4) / ( .5f*static_cast<float>(h/w));
+		} else if (j < l->length * (3.0f/4.0f)) { //middle half
 			xMin = 0;
 			xMax = w;
 		} else { //top quarter
-			xMin = ((deltaY * j) - (3.0/4.0)*h) / ( .5*(h/w));
-			xMax = ((deltaY * j) - (5.0/4.0)*h) / (-.5*(h/w));
+			xMin = ((deltaY * j) - (3.0f/4.0f)*static_cast<float>(h)) / ( .5f*static_cast<float>(h/w));
+			xMax = ((deltaY * j) - (5.0f/4.0f)*static_cast<float>(h)) / (-.5f*static_cast<float>(h/w));
 		}
 		xRangeLower = (xRangeLower < xMin ? xMin : xRangeLower);
 		xRangeUpper = (xRangeUpper > xMax ? xMax : xRangeUpper);
@@ -378,7 +378,7 @@ void VerticalLightningHazard::drawBolts_Pose(float alpha) const {
 			const int startIndex = j*6;
 
 			SimpleVector2D dist = SimpleVector2D(poseBolts[i]->positions[(j+1)*2] - poseBolts[i]->positions[j*2], poseBolts[i]->positions[(j+1)*2+1] - poseBolts[i]->positions[j*2+1]);
-			SimpleVector2D distCW = SimpleVector2D(dist.getAngle() - static_cast<float>(PI/2), lineWidth, true);
+			SimpleVector2D distCW = SimpleVector2D(dist.getAngle() - float(PI/2), lineWidth, true);
 
 			coordsAndColor[startVertex + 0*6]   = static_cast<float>(x) + poseBolts[i]->positions[j*2]                     + distCW.getXComp();
 			coordsAndColor[startVertex + 0*6+1] = static_cast<float>(y) + poseBolts[i]->positions[j*2+1]                   + distCW.getYComp();

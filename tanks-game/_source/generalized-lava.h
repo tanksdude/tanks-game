@@ -49,9 +49,9 @@ protected:
 	double tickCycle; //this is used to make the brightness of the lava vary sinusoidally
 
 	const unsigned int maxBubbles = 8; //there wasn't a limit in JS Tanks because the bubbles were rare (1/400 per tick, 100Hz), but there should be, whether it's met or not
+	float bubbleChance; //= 1.0/400 (chance to spawn bubble this tick)
 	std::vector<LavaBubble*> bubbles;
-	double bubbleChance; //= 1.0/400 (chance to spawn bubble this tick)
-	virtual void pushNewBubble(double radius) = 0;
+	virtual void pushNewBubble(float bubbleRadius) = 0;
 
 public:
 	virtual ColorValueHolder getBackgroundColor() const;

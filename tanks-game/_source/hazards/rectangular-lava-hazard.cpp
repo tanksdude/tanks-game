@@ -98,21 +98,21 @@ RectHazard* RectangularLavaHazard::factory(const GenericFactoryConstructionData&
 	return new RectangularLavaHazard(0, 0, 0, 0);
 }
 
-void RectangularLavaHazard::pushNewBubble(double radius) {
+void RectangularLavaHazard::pushNewBubble(float bubbleRadius) {
 	float x0, y0, x1, y1;
 	int attempts = 0;
 
-	x0 = VisualRNG::randFloatInRange(radius, w - radius);
-	y0 = VisualRNG::randFloatInRange(radius, h - radius);
+	x0 = VisualRNG::randFloatInRange(bubbleRadius, float(w) - bubbleRadius);
+	y0 = VisualRNG::randFloatInRange(bubbleRadius, float(h) - bubbleRadius);
 	do {
-		x1 = VisualRNG::randFloatInRange(radius, w - radius);
-		y1 = VisualRNG::randFloatInRange(radius, h - radius);
+		x1 = VisualRNG::randFloatInRange(bubbleRadius, float(w) - bubbleRadius);
+		y1 = VisualRNG::randFloatInRange(bubbleRadius, float(h) - bubbleRadius);
 		attempts++;
-	} while ((attempts < 8) && (abs(x0-x1) < w/16 || abs(y0-y1) < h/16)); //JS Tanks used w/8 and h/8
+	} while ((attempts < 8) && (abs(x0-x1) < float(w)/16 || abs(y0-y1) < float(h)/16)); //JS Tanks used w/8 and h/8
 
 	if (attempts < 8) {
 		float maxTick = floor(VisualRNG::randFloatInRange(200, 300+1));
-		bubbles.push_back(new LavaBubble(radius, x0/float(w), y0/float(h), x1/float(w), y1/float(h), maxTick));
+		bubbles.push_back(new LavaBubble(bubbleRadius, x0/float(w), y0/float(h), x1/float(w), y1/float(h), maxTick));
 	}
 }
 

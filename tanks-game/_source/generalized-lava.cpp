@@ -77,7 +77,7 @@ float GeneralizedLava::LavaBubble::getR() const noexcept {
 ColorValueHolder GeneralizedLava::getBackgroundColor() const {
 	//colors: red (#FF0000) and orange-red (#FFAA00) mixed
 	return ColorMixer::mix(ColorValueHolder(1.0f, 0.0f, 0.0f), ColorValueHolder(1.0f, 0.875f, 0.0f),
-	                       .625 + sin((2*PI) * (tickCount/tickCycle))/8 + cos((2*PI) * (tickCount/tickCycle) * 8)/8);
+	                       .625f + sin(float(2*PI) * static_cast<float>(tickCount/tickCycle))/8 + cos(float(2*PI) * 8 * static_cast<float>(tickCount/tickCycle))/8);
 }
 
 ColorValueHolder GeneralizedLava::getBackgroundColor_Pose() const {
@@ -99,8 +99,8 @@ void GeneralizedLava::tick() {
 		tickCount = 0;
 	}
 
-	if ((bubbles.size() < maxBubbles) && (VisualRNG::randFunc() < bubbleChance)) {
-		pushNewBubble(4); //possible radius: sqrt(w * h * 2)/50 or sqrt(r * r * 2)/50
+	if ((bubbles.size() < maxBubbles) && (VisualRNG::randFuncf() < bubbleChance)) {
+		pushNewBubble(4.0f); //possible radius: sqrt(w * h * 2)/50 or sqrt(r * r * 2)/50
 	}
 
 	for (int i = bubbles.size()-1; i >= 0; i--) {
