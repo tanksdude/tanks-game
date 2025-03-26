@@ -40,6 +40,7 @@ std::vector<CustomPowerAction_Bullet*>* actions_bullet) {
 
 	this->name = name;
 	this->color = ColorValueHolder(colorR, colorG, colorB);
+	this->colorImportance = 0;
 	this->powerTypes = std::vector<std::string>(types);
 	this->powerWeights = std::unordered_map<std::string, float>(weights);
 
@@ -69,6 +70,7 @@ std::shared_ptr<std::vector<CustomPowerAction_Bullet*>> actions_bullet) {
 
 	this->name = name;
 	this->color = ColorValueHolder(colorR, colorG, colorB);
+	this->colorImportance = 0;
 	this->powerTypes = std::vector<std::string>(types);
 	this->powerWeights = std::unordered_map<std::string, float>(weights);
 
