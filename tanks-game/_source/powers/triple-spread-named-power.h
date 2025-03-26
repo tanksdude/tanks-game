@@ -31,7 +31,7 @@ public:
 	virtual BulletPower* makeBulletPower() const override;
 
 	//bool addsExtraShootingPoints = true;
-	virtual std::vector<std::pair<double, double>>* addExtraShootingPoints() const override;
+	virtual std::vector<std::pair<float, float>>* addExtraShootingPoints() const override;
 
 	TripleSpreadNamedTankPower();
 };

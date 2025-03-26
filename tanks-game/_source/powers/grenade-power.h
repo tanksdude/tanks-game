@@ -54,7 +54,7 @@ public:
 	//bool modifiesCollisionWithWall = true;
 	virtual InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> modifiedCollisionWithWall(const Bullet*, const Wall*) override;
 
-	virtual double getBulletAcceleration() const override { return -1.0/16; }
+	virtual float  getBulletAcceleration() const override { return -1.0/16; }
 	virtual double getBulletDegradeAmount() const override { return GrenadePower::degradeAmount; }
 	virtual double getBulletRadiusGrowNumber_Stationary() const override { return GrenadePower::growAmount; }
 	//bool bulletRadiusGrowMultiplies_Stationary = true;

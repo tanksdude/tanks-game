@@ -3,7 +3,7 @@
 #include "../constants.h"
 
 const int BananaSplitPower::bananaSplitCount = 4;
-const double BananaSplitPower::bananaSplitAngleDeviation = PI/4;
+const float BananaSplitPower::bananaSplitAngleDeviation = PI/4;
 static_assert(BananaSplitPower::bananaSplitCount > 1);
 
 std::unordered_map<std::string, float> BananaSplitPower::getWeights() const {
@@ -56,12 +56,12 @@ void BananaSplitBulletPower::bananaExplode(const Bullet* b) {
 				bp->push_back(b->bulletPowers[i]->makeDuplicate());
 			}
 		}
-		double newVelocity = b->getInitialVelocity();
+		float newVelocity = b->getInitialVelocity();
 		if (newVelocity == 0) {
 			newVelocity = Tank::default_maxSpeed*BULLET_TO_TANK_SPEED_RATIO; //if bullet's initial speed is zero, it should still explode (TODO: what should the initial speed be?)
 		}
-		newVelocity = newVelocity * ((GameRNG::randFunc()+GameRNG::randFunc())/2 * (BananaPower::maxNewBulletVelocityMultiplier - BananaPower::minNewBulletVelocityMultiplier) + BananaPower::minNewBulletVelocityMultiplier);
-		const double newAngle = b->velocity.getAngle() + ((double(i)/(BananaSplitPower::bananaSplitCount-1)) * (2*BananaSplitPower::bananaSplitAngleDeviation) - BananaSplitPower::bananaSplitAngleDeviation); //[-1,1) * deviation
+		newVelocity = newVelocity * ((GameRNG::randFuncf()+GameRNG::randFuncf())/2 * (BananaPower::maxNewBulletVelocityMultiplier - BananaPower::minNewBulletVelocityMultiplier) + BananaPower::minNewBulletVelocityMultiplier);
+		const float newAngle = b->velocity.getAngle() + ((float(i)/(BananaSplitPower::bananaSplitCount-1)) * (2*BananaSplitPower::bananaSplitAngleDeviation) - BananaSplitPower::bananaSplitAngleDeviation); //[-1,1) * deviation
 		BulletManager::pushBullet(new Bullet(b->x, b->y, b->r/2, newAngle, newVelocity, b->getTeamID(), b->getParentIDType(), b->getParentID(), bp, true));
 		delete bp;
 	}

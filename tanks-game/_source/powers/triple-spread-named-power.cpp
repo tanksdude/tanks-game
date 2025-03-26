@@ -25,9 +25,9 @@ TripleSpreadNamedPower::TripleSpreadNamedPower() : TripleNamedPower() {
 
 
 
-std::vector<std::pair<double, double>>* TripleSpreadNamedTankPower::addExtraShootingPoints() const {
-	return new std::vector<std::pair<double, double>>{ {0,  TripleNamedPower::bulletAngleDiff},
-	                                                   {0, -TripleNamedPower::bulletAngleDiff} };
+std::vector<std::pair<float, float>>* TripleSpreadNamedTankPower::addExtraShootingPoints() const {
+	return new std::vector<std::pair<float, float>>{ {0,  TripleNamedPower::bulletAngleDiff},
+	                                                 {0, -TripleNamedPower::bulletAngleDiff} };
 }
 
 BulletPower* TripleSpreadNamedTankPower::makeBulletPower() const {

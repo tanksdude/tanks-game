@@ -87,11 +87,11 @@ public:
 	virtual InteractionBoolHolder modifiedDeathHandling(Bullet* parent) { return { true, false }; } //first is bullet, second is bulletpower
 	//it's first come, first served
 
-	virtual double getBulletSpeedMultiplier() const { return 1; }
+	virtual float getBulletSpeedMultiplier() const { return 1; }
 	bool bulletSpeedStacks = false;
 	virtual double getBulletRadiusMultiplier() const { return 1; }
 	bool bulletRadiusStacks = false;
-	virtual double getBulletAcceleration() const { return 0; }
+	virtual float getBulletAcceleration() const { return 0; }
 	virtual float getBulletAccelerationImportance() const { return 0; }
 	virtual double getBulletDegradeAmount() const { return 0; } //negative values are not valid
 	virtual float getBulletDegradeImportance() const { return 0; }

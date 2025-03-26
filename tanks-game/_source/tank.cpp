@@ -19,11 +19,11 @@ unsigned int Tank::body_indices[Circle::NumOfSides*3];
 unsigned int Tank::outline_indices[Circle::NumOfSides*2*3];
 bool Tank::initialized_vertices = false;
 
-const double Tank::default_maxSpeed = 1;
-const double Tank::default_acceleration = 1.0/16;
-const double Tank::default_turningIncrement = 64;
+const float Tank::default_maxSpeed = 1;
+const float Tank::default_acceleration = 1.0/16;
+const float Tank::default_turningIncrement = 64;
 
-Tank::Tank(double x_, double y_, double angle, Team_ID teamID, std::string name_, double shootCooldown) : GameThing(teamID) {
+Tank::Tank(double x_, double y_, float angle, Team_ID teamID, std::string name_, double shootCooldown) : GameThing(teamID) {
 	x = x_;
 	y = y_;
 	velocity = SimpleVector2D(angle, 0, true);
@@ -215,11 +215,11 @@ void Tank::shoot(bool shooting) {
 			}
 		}
 
-		shootCount = maxShootCount * getShootingSpeedMultiplier();
+		shootCount = maxShootCount * getFiringRateMultiplier();
 	}
 }
 
-void Tank::makeBulletCommon(double x, double y, double angle, double radius, double speed) {
+void Tank::makeBulletCommon(double x, double y, double radius, float angle, float speed) {
 	std::vector<BulletPower*>* bp = new std::vector<BulletPower*>;
 	bp->reserve(tankPowers.size());
 	for (int k = 0; k < tankPowers.size(); k++) {
@@ -232,7 +232,7 @@ void Tank::makeBulletCommon(double x, double y, double angle, double radius, dou
 	delete bp;
 }
 
-void Tank::makeBullet(double x, double y, double angle, double radius, double speed, double acc) {
+void Tank::makeBullet(double x, double y, double radius, float angle, float speed, float acc) {
 	std::vector<BulletPower*>* bp = new std::vector<BulletPower*>;
 	bp->reserve(tankPowers.size());
 	for (int k = 0; k < tankPowers.size(); k++) {
@@ -245,16 +245,16 @@ void Tank::makeBullet(double x, double y, double angle, double radius, double sp
 	delete bp;
 }
 
-void Tank::defaultMakeBullet(double angle) {
-	makeBulletCommon(x + r*cos(angle), y + r*sin(angle), angle, r*BULLET_TO_TANK_RADIUS_RATIO, maxSpeed*BULLET_TO_TANK_SPEED_RATIO);
+void Tank::defaultMakeBullet(float angle) {
+	makeBulletCommon(x + r*cos(angle), y + r*sin(angle), r*BULLET_TO_TANK_RADIUS_RATIO, angle, maxSpeed*BULLET_TO_TANK_SPEED_RATIO);
 }
 
-void Tank::defaultMakeBullet(double angle, double edgeAngleOffset) {
-	makeBulletCommon(x + r*cos(angle), y + r*sin(angle), angle + edgeAngleOffset, r*BULLET_TO_TANK_RADIUS_RATIO, maxSpeed*BULLET_TO_TANK_SPEED_RATIO);
+void Tank::defaultMakeBullet(float angle, float edgeAngleOffset) {
+	makeBulletCommon(x + r*cos(angle), y + r*sin(angle), r*BULLET_TO_TANK_RADIUS_RATIO, angle + edgeAngleOffset, maxSpeed*BULLET_TO_TANK_SPEED_RATIO);
 }
 
-void Tank::preciseMakeBullet(double x, double y, double angle) {
-	makeBulletCommon(this->x + x, this->y + y, angle, r*BULLET_TO_TANK_RADIUS_RATIO, maxSpeed*BULLET_TO_TANK_SPEED_RATIO);
+void Tank::preciseMakeBullet(double x, double y, float angle) {
+	makeBulletCommon(this->x + x, this->y + y, r*BULLET_TO_TANK_RADIUS_RATIO, angle, maxSpeed*BULLET_TO_TANK_SPEED_RATIO);
 }
 
 void Tank::determineShootingAngles() {
@@ -275,7 +275,7 @@ void Tank::determineShootingAngles() {
 
 	for (int i = 0; i < tankPowers.size(); i++) {
 		if (tankPowers[i]->addsExtraShootingPoints) {
-			std::vector<std::pair<double, double>>* extraCannons = tankPowers[i]->addExtraShootingPoints();
+			std::vector<std::pair<float, float>>* extraCannons = tankPowers[i]->addExtraShootingPoints();
 			for (int j = 0; j < extraCannons->size(); j++) {
 				extraShootingPoints.push_back({ extraCannons->at(j).first, extraCannons->at(j).second });
 			}
@@ -288,15 +288,15 @@ void Tank::determineShootingAngles() {
 	}
 }
 
-inline void Tank::determineShootingAngles_helper(std::vector<double>* newCannonPoints) {
+inline void Tank::determineShootingAngles_helper(std::vector<float>* newCannonPoints) {
 	for (int i = shootingPoints.size() - 1; i >= 0; i--) {
 		const int end = (i + 1) % shootingPoints.size();
-		const double angle_diff = end == 0 ?
-		                          2*PI - (shootingPoints[i].angleFromCenter - shootingPoints[end].angleFromCenter) :
+		const float angle_diff = end == 0 ?
+		                          float(2*PI) - (shootingPoints[i].angleFromCenter - shootingPoints[end].angleFromCenter) :
 		                          shootingPoints[end].angleFromCenter - shootingPoints[i].angleFromCenter;
 
 		for (int j = 0; j < newCannonPoints->size(); j++) {
-			const double newAngle = angle_diff * newCannonPoints->at(j);
+			const float newAngle = angle_diff * newCannonPoints->at(j);
 			CannonPoint temp = CannonPoint(newAngle + shootingPoints[i].angleFromCenter);
 			shootingPoints.insert(shootingPoints.begin() + i + j + 1, temp);
 		}
@@ -305,7 +305,7 @@ inline void Tank::determineShootingAngles_helper(std::vector<double>* newCannonP
 	delete newCannonPoints;
 }
 
-double Tank::getShootingSpeedMultiplier() const {
+double Tank::getFiringRateMultiplier() const {
 	//so this function will look at the firing rate multipliers provided by the tankpowers
 	//(0-1] range: use lowest; (1-inf) range: use highest
 	//if there are values in each range, then there are three options:
@@ -354,14 +354,14 @@ void Tank::updateAllValues() {
 }
 
 void Tank::updateMaxSpeed() {
-	//look at getShootingSpeedMultiplier()
+	//look at getFiringRateMultiplier()
 
-	double highest = 1;
-	double lowest = 1;
-	std::vector<double> stackList;
+	float highest = 1;
+	float lowest = 1;
+	std::vector<float> stackList;
 
 	for (int i = 0; i < tankPowers.size(); i++) {
-		double value = tankPowers[i]->getTankMaxSpeedMultiplier();
+		float value = tankPowers[i]->getTankMaxSpeedMultiplier();
 		if (tankPowers[i]->tankMaxSpeedStacks) {
 			stackList.push_back(value);
 		} else {
@@ -373,12 +373,12 @@ void Tank::updateMaxSpeed() {
 		}
 	}
 
-	double value = 1;
+	float value = 1;
 	for (int i = 0; i < stackList.size(); i++) {
 		value *= stackList[i];
 	}
 
-	double level_amount = 1;
+	float level_amount = 1;
 	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
 		Level* l = LevelManager::getLevel(i);
 		for (int j = 0; j < l->getNumEffects(); j++) {
@@ -391,14 +391,14 @@ void Tank::updateMaxSpeed() {
 }
 
 void Tank::updateAcceleration() {
-	//look at getShootingSpeedMultiplier()
+	//look at getFiringRateMultiplier()
 
-	double highest = 1;
-	double lowest = 1;
-	std::vector<double> stackList;
+	float highest = 1;
+	float lowest = 1;
+	std::vector<float> stackList;
 
 	for (int i = 0; i < tankPowers.size(); i++) {
-		double value = tankPowers[i]->getTankAccelerationMultiplier();
+		float value = tankPowers[i]->getTankAccelerationMultiplier();
 		if (tankPowers[i]->tankAccelerationStacks) {
 			stackList.push_back(value);
 		} else {
@@ -410,12 +410,12 @@ void Tank::updateAcceleration() {
 		}
 	}
 
-	double value = 1;
+	float value = 1;
 	for (int i = 0; i < stackList.size(); i++) {
 		value *= stackList[i];
 	}
 
-	double level_amount = 1;
+	float level_amount = 1;
 	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
 		Level* l = LevelManager::getLevel(i);
 		for (int j = 0; j < l->getNumEffects(); j++) {
@@ -428,7 +428,7 @@ void Tank::updateAcceleration() {
 }
 
 void Tank::updateRadius() {
-	//look at getShootingSpeedMultiplier()
+	//look at getFiringRateMultiplier()
 
 	double highest = 1;
 	double lowest = 1;
@@ -465,15 +465,15 @@ void Tank::updateRadius() {
 }
 
 void Tank::updateTurningIncrement() {
-	//look at getShootingSpeedMultiplier()
+	//look at getFiringRateMultiplier()
 
-	double highest = 1;
-	double lowest = 1;
-	std::vector<double> stackList;
+	float highest = 1;
+	float lowest = 1;
+	std::vector<float> stackList;
 	int negativeCount = 0;
 
 	for (int i = 0; i < tankPowers.size(); i++) {
-		double value = tankPowers[i]->getTankTurningIncrementMultiplier();
+		float value = tankPowers[i]->getTankTurningIncrementMultiplier();
 		if (value < 0) {
 			negativeCount++;
 			value = value * -1;
@@ -489,12 +489,12 @@ void Tank::updateTurningIncrement() {
 		}
 	}
 
-	double value = 1;
+	float value = 1;
 	for (int i = 0; i < stackList.size(); i++) {
 		value *= stackList[i];
 	}
 
-	double level_amount = 1;
+	float level_amount = 1;
 	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
 		Level* l = LevelManager::getLevel(i);
 		for (int j = 0; j < l->getNumEffects(); j++) {
@@ -504,7 +504,7 @@ void Tank::updateTurningIncrement() {
 	}
 
 	turningIncrement = highest * lowest * value * level_amount * default_turningIncrement * (negativeCount%2 == 0 ? 1 : -1);
-	velocity.setAngle(round(velocity.getAngle() / (PI / turningIncrement)) * (PI / turningIncrement));
+	velocity.setAngle(round(velocity.getAngle() / (float(PI) / turningIncrement)) * (float(PI) / turningIncrement));
 }
 
 void Tank::powerCalculate() {
@@ -556,15 +556,15 @@ ColorValueHolder Tank::getBodyColor() const {
 	}
 }
 
-inline double Tank::getEvaluatedCannonAngle(unsigned int i) const {
+inline float Tank::getEvaluatedCannonAngle(unsigned int i) const {
 	return velocity.getAngle() + shootingPoints[i].angleFromCenter;
 }
 
-inline double Tank::getEvaluatedCannonAngle(unsigned int i, unsigned int j) const {
+inline float Tank::getEvaluatedCannonAngle(unsigned int i, unsigned int j) const {
 	return velocity.getAngle() + shootingPoints[i].angleFromCenter + extraShootingPoints[j].angleFromCenter;
 }
 
-inline double Tank::getEvaluatedCannonAngleWithEdge(unsigned int i, unsigned int j) const {
+inline float Tank::getEvaluatedCannonAngleWithEdge(unsigned int i, unsigned int j) const {
 	return velocity.getAngle() + shootingPoints[i].angleFromCenter + extraShootingPoints[j].angleFromCenter + extraShootingPoints[j].angleFromEdge;
 }
 
@@ -863,10 +863,10 @@ inline void Tank::drawShootingCooldown(float alpha) const {
 	alpha = alpha * alpha;
 
 	float shootingOutlinePercent;
-	if (maxShootCount*getShootingSpeedMultiplier() <= 0 || maxShootCount <= 0) {
+	if (maxShootCount*getFiringRateMultiplier() <= 0 || maxShootCount <= 0) {
 		shootingOutlinePercent = 0;
 	} else {
-		shootingOutlinePercent = std::clamp<float>(shootCount/(maxShootCount*getShootingSpeedMultiplier()), 0, 1);
+		shootingOutlinePercent = std::clamp<float>(shootCount/(maxShootCount*getFiringRateMultiplier()), 0, 1);
 	}
 	unsigned int shootingOutlineTriangles = Circle::NumOfSides * shootingOutlinePercent;
 

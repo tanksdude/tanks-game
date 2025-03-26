@@ -3,7 +3,7 @@
 
 class HomingPower : public Power {
 public: //bullet stuff
-	static const double homingStrength;
+	static const float homingStrength;
 
 public:
 	virtual std::vector<std::string> getPowerTypes() const override {
@@ -53,7 +53,7 @@ public:
 	//bool modifiesEdgeCollision = true;
 	virtual InteractionBoolHolder modifiedEdgeCollision(Bullet*) override;
 
-	virtual double getBulletSpeedMultiplier() const override { return .5; }
+	virtual float getBulletSpeedMultiplier() const override { return .5; }
 
 	HomingBulletPower();
 };

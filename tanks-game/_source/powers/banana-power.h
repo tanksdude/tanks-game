@@ -4,8 +4,8 @@
 class BananaPower : public Power {
 public: //bullet stuff
 	static const int bananaCount; //TODO: ability to change this in constructor
-	static const double maxNewBulletVelocityMultiplier;
-	static const double minNewBulletVelocityMultiplier;
+	static const float maxNewBulletVelocityMultiplier;
+	static const float minNewBulletVelocityMultiplier;
 
 public:
 	virtual std::vector<std::string> getPowerTypes() const override {
@@ -57,7 +57,7 @@ public:
 	//bool modifiesMovement = true;
 	virtual InteractionBoolHolder modifiedMovement(Bullet*) override;
 
-	virtual double getBulletAcceleration() const override { return -1.0/8; }
+	virtual float getBulletAcceleration() const override { return -1.0/8; }
 
 	BananaBulletPower();
 };

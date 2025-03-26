@@ -33,8 +33,8 @@ public:
 	virtual TankPower* makeDuplicate() const override { return new BigNamedTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
 
-	virtual double getTankMaxSpeedMultiplier() const override { return .5; }
-	virtual double getTankAccelerationMultiplier() const override { return .5; }
+	virtual float  getTankMaxSpeedMultiplier() const override { return .5; }
+	virtual float  getTankAccelerationMultiplier() const override { return .5; }
 	virtual double getTankFiringRateMultiplier() const override { return 4; } //maybe *2? //JS: stacks (as did everything)
 
 	BigNamedTankPower();
@@ -56,7 +56,7 @@ public:
 	virtual InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> modifiedCollisionWithWall(const Bullet*, const Wall*) override;
 	//bool modifiedCollisionWithWallCanWorkWithOthers = false;
 
-	virtual double getBulletSpeedMultiplier() const override { return .25; } //JS: .5
+	virtual float  getBulletSpeedMultiplier() const override { return .25; } //JS: .5
 	virtual double getBulletRadiusMultiplier() const override { return 4; }
 	//bool bulletRadiusStacks = true;
 

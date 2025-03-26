@@ -325,7 +325,7 @@ std::shared_ptr<std::vector<CustomPower::CustomPowerAction_Bullet*>> initializat
 CustomBulletPower::CustomBulletPower(std::string name, const ColorValueHolder& color, float colorImportance, double tankDuration,
 std::shared_ptr<std::vector<CustomPower::CustomPowerAction_Tank*>> initializationActions_tank,
 std::shared_ptr<std::vector<CustomPower::CustomPowerAction_Bullet*>> initializationActions_bullet,
-double speedMultiplier, double radiusMultiplier, double acceleration, int bouncesLeft)
+double radiusMultiplier, float speedMultiplier, float acceleration, int bouncesLeft)
 : CustomBulletPower(name, color, colorImportance, tankDuration, initializationActions_tank, initializationActions_bullet) {
 
 	//the correct thing to do is copy-paste the old constructor and change the bulletSpeedMultiplier case and stuff to skip
@@ -477,10 +477,10 @@ inline void CustomTankPower::initialization_additionalShooting_Enable(const Gene
 	overridesAdditionalShooting = modifiesAdditionalShooting;
 }
 inline void CustomTankPower::initialization_additionalShooting_AngleRelativeToTank(const GenericFactoryConstructionData& data) noexcept {
-	additionalShooting_AngleRelativeToTank = (PI/180) * static_cast<const double*>(data.getDataPortion(0).get())[0];
+	additionalShooting_AngleRelativeToTank = static_cast<float>(PI/180) * static_cast<const float*>(data.getDataPortion(0).get())[0];
 }
 inline void CustomTankPower::initialization_additionalShooting_AngleRelativeToCannon(const GenericFactoryConstructionData& data) noexcept {
-	additionalShooting_AngleRelativeToCannon = (PI/180) * static_cast<const double*>(data.getDataPortion(0).get())[0];
+	additionalShooting_AngleRelativeToCannon = static_cast<float>(PI/180) * static_cast<const float*>(data.getDataPortion(0).get())[0];
 }
 inline void CustomTankPower::initialization_additionalShooting_BulletCount(const GenericFactoryConstructionData& data) noexcept {
 	additionalShooting_BulletCount = static_cast<const int*>(data.getDataPortion(0).get())[0];
@@ -491,13 +491,13 @@ inline void CustomTankPower::initialization_addShootingPoints_Enable(const Gener
 }
 inline void CustomTankPower::initialization_addShootingPoints_EquallySpaced(const GenericFactoryConstructionData& data) noexcept {
 	const int amount = static_cast<const int*>(data.getDataPortion(0).get())[0];
-	std::vector<double>* list = PowerFunctionHelper::equallySpacedCannonPoints(amount);
+	std::vector<float>* list = PowerFunctionHelper::equallySpacedCannonPoints(amount);
 	addShootingPoints_AngleList.insert(addShootingPoints_AngleList.end(), list->begin(), list->end());
 	delete list;
 	std::sort(addShootingPoints_AngleList.begin(), addShootingPoints_AngleList.end());
 }
 inline void CustomTankPower::initialization_addShootingPoints_Raw(const GenericFactoryConstructionData& data) noexcept {
-	const double* list = static_cast<const double*>(data.getDataPortion(0).get());
+	const float* list = static_cast<const float*>(data.getDataPortion(0).get());
 	for (int i = 0; i < data.getDataPortionLength(0); i++) {
 		addShootingPoints_AngleList.push_back(list[i]);
 	}
@@ -508,9 +508,9 @@ inline void CustomTankPower::initialization_addExtraShootingPoints_Enable(const 
 	initialization_helper_Enable(addsExtraShootingPoints, data);
 }
 inline void CustomTankPower::initialization_addExtraShootingPoints_Raw(const GenericFactoryConstructionData& data) noexcept {
-	const double* list = static_cast<const double*>(data.getDataPortion(0).get());
+	const float* list = static_cast<const float*>(data.getDataPortion(0).get());
 	for (int i = 0; i < data.getDataPortionLength(0)/2; i++) {
-		addExtraShootingPoints_AngleList.push_back({ list[i*2] * (2*PI), list[i*2+1] * (2*PI) });
+		addExtraShootingPoints_AngleList.push_back({ list[i*2] * float(2*PI), list[i*2+1] * float(2*PI) });
 	}
 	//std::sort(addExtraShootingPoints_AngleList.begin(), addExtraShootingPoints_AngleList.end());
 }
@@ -530,13 +530,13 @@ inline void CustomTankPower::initialization_modifiedDeathHandling_DurationSubtra
 }
 
 inline void CustomTankPower::initialization_tankMaxSpeedMultiplier(const GenericFactoryConstructionData& data) noexcept {
-	tankMaxSpeedMultiplier = static_cast<const double*>(data.getDataPortion(0).get())[0];
+	tankMaxSpeedMultiplier = static_cast<const float*>(data.getDataPortion(0).get())[0];
 }
 inline void CustomTankPower::initialization_tankMaxSpeedStacks(const GenericFactoryConstructionData& data) noexcept {
 	initialization_helper_Enable(tankMaxSpeedStacks, data);
 }
 inline void CustomTankPower::initialization_tankAccelerationMultiplier(const GenericFactoryConstructionData& data) noexcept {
-	tankAccelerationMultiplier = static_cast<const double*>(data.getDataPortion(0).get())[0];
+	tankAccelerationMultiplier = static_cast<const float*>(data.getDataPortion(0).get())[0];
 }
 inline void CustomTankPower::initialization_tankAccelerationStacks(const GenericFactoryConstructionData& data) noexcept {
 	initialization_helper_Enable(tankAccelerationStacks, data);
@@ -554,7 +554,7 @@ inline void CustomTankPower::initialization_tankFiringRateStacks(const GenericFa
 	initialization_helper_Enable(tankFiringRateStacks, data);
 }
 inline void CustomTankPower::initialization_tankTurningIncrementMultiplier(const GenericFactoryConstructionData& data) noexcept {
-	tankTurningIncrementMultiplier = static_cast<const double*>(data.getDataPortion(0).get())[0];
+	tankTurningIncrementMultiplier = static_cast<const float*>(data.getDataPortion(0).get())[0];
 }
 inline void CustomTankPower::initialization_tankTurningIncrementStacks(const GenericFactoryConstructionData& data) noexcept {
 	initialization_helper_Enable(tankTurningIncrementStacks, data);
@@ -607,12 +607,12 @@ inline void CustomBulletPower::initialization_modifiedDeathHandling_Enable_bulle
 }
 
 inline void CustomBulletPower::initialization_bulletSpeedMultiplier(const GenericFactoryConstructionData& data) noexcept {
-	double bulletSpeedMultiplierMin = static_cast<const double*>(data.getDataPortion(0).get())[0];
-	double bulletSpeedMultiplierMax = static_cast<const double*>(data.getDataPortion(0).get())[1];
+	float bulletSpeedMultiplierMin = static_cast<const float*>(data.getDataPortion(0).get())[0];
+	float bulletSpeedMultiplierMax = static_cast<const float*>(data.getDataPortion(0).get())[1];
 	if (bulletSpeedMultiplierMin == bulletSpeedMultiplierMax) {
 		bulletSpeedMultiplier = bulletSpeedMultiplierMin;
 	} else {
-		bulletSpeedMultiplier = (((GameRNG::randFunc()+GameRNG::randFunc())/2) * (bulletSpeedMultiplierMax - bulletSpeedMultiplierMin) + bulletSpeedMultiplierMin);
+		bulletSpeedMultiplier = (((GameRNG::randFuncf()+GameRNG::randFuncf())/2) * (bulletSpeedMultiplierMax - bulletSpeedMultiplierMin) + bulletSpeedMultiplierMin);
 	}
 }
 inline void CustomBulletPower::initialization_bulletSpeedStacks(const GenericFactoryConstructionData& data) noexcept {
@@ -631,12 +631,12 @@ inline void CustomBulletPower::initialization_bulletRadiusStacks(const GenericFa
 	initialization_helper_Enable(bulletRadiusStacks, data);
 }
 inline void CustomBulletPower::initialization_bulletDeceleration(const GenericFactoryConstructionData& data) noexcept {
-	double bulletDecelerationMin = static_cast<const double*>(data.getDataPortion(0).get())[0];
-	double bulletDecelerationMax = static_cast<const double*>(data.getDataPortion(0).get())[1];
+	float bulletDecelerationMin = static_cast<const float*>(data.getDataPortion(0).get())[0];
+	float bulletDecelerationMax = static_cast<const float*>(data.getDataPortion(0).get())[1];
 	if (bulletDecelerationMin == bulletDecelerationMax) {
 		bulletAcceleration = -1 * bulletDecelerationMin;
 	} else {
-		bulletAcceleration = -1 * (((GameRNG::randFunc()+GameRNG::randFunc())/2) * (bulletDecelerationMax - bulletDecelerationMin) + bulletDecelerationMin);
+		bulletAcceleration = -1 * (((GameRNG::randFuncf()+GameRNG::randFuncf())/2) * (bulletDecelerationMax - bulletDecelerationMin) + bulletDecelerationMin);
 	}
 }
 inline void CustomBulletPower::initialization_bulletAccelerationImportance(const GenericFactoryConstructionData& data) noexcept {
@@ -677,19 +677,19 @@ InteractionBoolHolder CustomTankPower::modifiedDeathHandling(Tank* parent) {
 
 void CustomTankPower::additionalShooting(Tank* t, const CannonPoint& c, const ExtraCannonPoint& c2) {
 	for (int i = 0; i < additionalShooting_BulletCount; i++) {
-		double tempAngle_fromTank = (GameRNG::randFunc()*2 - 1) * additionalShooting_AngleRelativeToTank;
-		double tempAngle_fromCannon = (GameRNG::randFunc()*2 - 1) * additionalShooting_AngleRelativeToCannon;
+		float tempAngle_fromTank = (GameRNG::randFuncf()*2 - 1) * additionalShooting_AngleRelativeToTank;
+		float tempAngle_fromCannon = (GameRNG::randFuncf()*2 - 1) * additionalShooting_AngleRelativeToCannon;
 		t->defaultMakeBullet(t->velocity.getAngle() + c.angleFromCenter + c2.angleFromCenter + tempAngle_fromTank,
 		                     c2.angleFromEdge + tempAngle_fromCannon);
 	}
 }
 
-std::vector<double>* CustomTankPower::addShootingPoints() const {
-	return new std::vector<double>(this->addShootingPoints_AngleList);
+std::vector<float>* CustomTankPower::addShootingPoints() const {
+	return new std::vector<float>(this->addShootingPoints_AngleList);
 }
 
-std::vector<std::pair<double, double>>* CustomTankPower::addExtraShootingPoints() const {
-	return new std::vector<std::pair<double, double>>(this->addExtraShootingPoints_AngleList);
+std::vector<std::pair<float, float>>* CustomTankPower::addExtraShootingPoints() const {
+	return new std::vector<std::pair<float, float>>(this->addExtraShootingPoints_AngleList);
 }
 
 InteractionBoolHolder CustomBulletPower::modifiedEdgeCollision(Bullet* b) {
@@ -1142,10 +1142,10 @@ inline CustomPower::CustomPowerAction_Tank* CustomPowerInterpreter::stringToActi
 				stringToAction_genericEnable(words, constructionData);
 				break;
 			case CustomPower::CustomPowerCommands_TankPower::additionalShooting_AngleRelativeToTank:
-				stringToAction_genericSingleValue_d(words, constructionData); //note: angle in degrees
+				stringToAction_genericSingleValue_f(words, constructionData); //note: angle in degrees
 				break;
 			case CustomPower::CustomPowerCommands_TankPower::additionalShooting_AngleRelativeToCannon:
-				stringToAction_genericSingleValue_d(words, constructionData); //note: angle in degrees
+				stringToAction_genericSingleValue_f(words, constructionData); //note: angle in degrees
 				break;
 			case CustomPower::CustomPowerCommands_TankPower::additionalShooting_BulletCount:
 				stringToAction_genericSingleValue_i(words, constructionData);
@@ -1183,13 +1183,13 @@ inline CustomPower::CustomPowerAction_Tank* CustomPowerInterpreter::stringToActi
 				break;
 
 			case CustomPower::CustomPowerCommands_TankPower::tankMaxSpeedMultiplier:
-				stringToAction_genericSingleValue_d(words, constructionData);
+				stringToAction_genericSingleValue_f(words, constructionData);
 				break;
 			case CustomPower::CustomPowerCommands_TankPower::tankMaxSpeedStacks:
 				stringToAction_genericEnable(words, constructionData);
 				break;
 			case CustomPower::CustomPowerCommands_TankPower::tankAccelerationMultiplier:
-				stringToAction_genericSingleValue_d(words, constructionData);
+				stringToAction_genericSingleValue_f(words, constructionData);
 				break;
 			case CustomPower::CustomPowerCommands_TankPower::tankAccelerationStacks:
 				stringToAction_genericEnable(words, constructionData);
@@ -1207,7 +1207,7 @@ inline CustomPower::CustomPowerAction_Tank* CustomPowerInterpreter::stringToActi
 				stringToAction_genericEnable(words, constructionData);
 				break;
 			case CustomPower::CustomPowerCommands_TankPower::tankTurningIncrementMultiplier:
-				stringToAction_genericSingleValue_d(words, constructionData);
+				stringToAction_genericSingleValue_f(words, constructionData);
 				break;
 			case CustomPower::CustomPowerCommands_TankPower::tankTurningIncrementStacks:
 				stringToAction_genericEnable(words, constructionData);
@@ -1416,10 +1416,10 @@ inline void CustomPowerInterpreter::stringToAction_addShootingPoints_Raw(const s
 		throw std::runtime_error("expected at least 1 data item");
 	}
 
-	double* values = new double[words.size()];
+	float* values = new float[words.size()];
 	try {
 		for (int i = 0; i < words.size(); i++) {
-			values[i] = std::stod(words[i]) / 360;
+			values[i] = std::stof(words[i]) / 360;
 		}
 	}
 	catch (const std::exception&) {
@@ -1438,10 +1438,10 @@ inline void CustomPowerInterpreter::stringToAction_addExtraShootingPoints_Raw(co
 		throw std::runtime_error("expected an even number of data items");
 	}
 
-	double* values = new double[words.size()];
+	float* values = new float[words.size()];
 	try {
 		for (int i = 0; i < words.size(); i++) {
-			values[i] = std::stod(words[i]) / 360;
+			values[i] = std::stof(words[i]) / 360;
 		}
 	}
 	catch (const std::exception&) {
@@ -1457,11 +1457,11 @@ inline void CustomPowerInterpreter::stringToAction_bulletSpeedMultiplier(const s
 		throw std::runtime_error("expected 1 or 2 data items but got " + std::to_string(words.size()));
 	}
 
-	double velMin, velMax;
+	float velMin, velMax;
 	try {
-		velMin = std::stod(words[0]);
+		velMin = std::stof(words[0]);
 		if (words.size() > 1) {
-			velMax = std::stod(words[1]);
+			velMax = std::stof(words[1]);
 		} else {
 			velMax = velMin;
 		}
@@ -1470,7 +1470,7 @@ inline void CustomPowerInterpreter::stringToAction_bulletSpeedMultiplier(const s
 		throw std::runtime_error("unable to parse values");
 	}
 
-	constructionData.pushData(2, new double[2]{ velMin, velMax });
+	constructionData.pushData(2, new float[2]{ velMin, velMax });
 }
 
 inline void CustomPowerInterpreter::stringToAction_bulletRadiusMultiplier(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData) {
@@ -1499,11 +1499,11 @@ inline void CustomPowerInterpreter::stringToAction_bulletDeceleration(const std:
 		throw std::runtime_error("expected 1 or 2 data items but got " + std::to_string(words.size()));
 	}
 
-	double decMin, decMax;
+	float decMin, decMax;
 	try {
-		decMin = std::stod(words[0]);
+		decMin = std::stof(words[0]);
 		if (words.size() > 1) {
-			decMax = std::stod(words[1]);
+			decMax = std::stof(words[1]);
 		} else {
 			decMax = decMin;
 		}
@@ -1512,5 +1512,5 @@ inline void CustomPowerInterpreter::stringToAction_bulletDeceleration(const std:
 		throw std::runtime_error("unable to parse values");
 	}
 
-	constructionData.pushData(2, new double[2]{ decMin, decMax });
+	constructionData.pushData(2, new float[2]{ decMin, decMax });
 }

@@ -49,7 +49,7 @@ InteractionBoolHolder TricksterSnakeBulletPower::modifiedMovement(Bullet* b) {
 	//ydiff = A * (2*PI) * cos((2*PI) * tick)
 
 	const float moveDiff = (TricksterSnakePower::movementAmplitude * (2*PI)) * cos((2*PI) * (tickCount / TricksterSnakePower::timePeriod));
-	const SimpleVector2D perpendicularMoveDiff = SimpleVector2D(b->velocity.getAngle() + static_cast<float>(PI/2), moveDiff, true);
+	const SimpleVector2D perpendicularMoveDiff = SimpleVector2D(b->velocity.getAngle() + float(PI/2), moveDiff, true);
 
 	b->x += perpendicularMoveDiff.getXComp();
 	b->y += perpendicularMoveDiff.getYComp();

@@ -54,7 +54,7 @@ public:
 	virtual InteractionBoolHolder modifiedCollisionWithRectHazard(Tank*, RectHazard*) override { return { true, false }; }
 	//bool overridesCollisionWithRectHazard = false;
 
-	virtual double getTankAccelerationMultiplier() const override { return .5; }
+	virtual float getTankAccelerationMultiplier() const override { return .5; }
 
 	DevOtherStuffIsPoisonTankPower();
 };

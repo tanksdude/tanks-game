@@ -4,12 +4,12 @@
 class BlastPower : public Power {
 	//called mega-blast in JS Tanks
 public: //tank stuff
-	static const double bulletAngleDeviation;
+	static const float bulletAngleDeviation;
 	static const int bulletAmount;
 
 public: //bullet stuff
-	static const double maxBulletAcceleration;
-	static const double minBulletAcceleration;
+	static const float  maxBulletAcceleration;
+	static const float  minBulletAcceleration;
 	static const double degradeAmount;
 
 public:
@@ -50,8 +50,8 @@ public:
 	virtual void additionalShooting(Tank* parent, const CannonPoint&, const ExtraCannonPoint&) override;
 	//bool overridesAdditionalShooting = true;
 
-	virtual double getTankMaxSpeedMultiplier() const override { return .5; }
-	virtual double getTankAccelerationMultiplier() const override { return .5; }
+	virtual float  getTankMaxSpeedMultiplier() const override { return .5; }
+	virtual float  getTankAccelerationMultiplier() const override { return .5; }
 	//virtual double getTankFiringRateMultiplier() const override { return .5; } //JS
 
 	BlastTankPower();
@@ -61,7 +61,7 @@ public:
 
 class BlastBulletPower : public BulletPower {
 protected:
-	double accelerationAmount;
+	float accelerationAmount;
 
 public:
 	virtual ColorValueHolder getColor() const override { return BlastPower::getClassColor(); }
@@ -80,9 +80,9 @@ public:
 	virtual InteractionBoolHolder modifiedCollisionWithRectHazard(Bullet*, RectHazard*) override;
 
 	virtual double getBulletRadiusMultiplier() const override { return .25; } //JS: .5
-	virtual double getBulletAcceleration() const override { return accelerationAmount; }
+	virtual float  getBulletAcceleration() const override { return accelerationAmount; }
 	virtual double getBulletDegradeAmount() const override { return BlastPower::degradeAmount; }
 
 	BlastBulletPower();
-	BlastBulletPower(double acceleration); //protected?
+	BlastBulletPower(float acceleration); //protected?
 };

@@ -13,7 +13,8 @@ std::pair<bool, InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct>> P
 		return { false, { false, false, nullptr, nullptr } };
 	}
 
-	double b_xDelta, b_yDelta, b_angleDelta;
+	double b_xDelta, b_yDelta;
+	float  b_angleDelta;
 	double w_xDelta, w_yDelta;
 
 	if (b->y - w->y <= (w->h / w->w) * (b->x - w->x)) { //I think this is bottom right
@@ -24,14 +25,14 @@ std::pair<bool, InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct>> P
 			b_xDelta = 0, w_xDelta = 0;
 		} else { //right
 			b_xDelta = (w->x + w->w - (b->x - b->r)) * 2; //b->x = w->x + w->w + b->r
-			b_angleDelta = PI - 2*b->velocity.getAngle(); //b->velocity.setAngle(PI - b->velocity.getAngle());
+			b_angleDelta = float(PI) - 2*b->velocity.getAngle(); //b->velocity.setAngle(PI - b->velocity.getAngle());
 			w_xDelta = -1 * strength;
 			b_yDelta = 0, w_yDelta = 0;
 		}
 	} else { //top left?
 		if (b->y - (w->y + w->h) <= (-w->h / w->w) * (b->x - w->x)) { //left
 			b_xDelta = -1 * ((b->x + b->r - w->x) * 2); //b->x = w->x - b->r
-			b_angleDelta = PI - 2*b->velocity.getAngle(); //b->velocity.setAngle(PI - b->velocity.getAngle());
+			b_angleDelta = float(PI) - 2*b->velocity.getAngle(); //b->velocity.setAngle(PI - b->velocity.getAngle());
 			w_xDelta = strength;
 			b_yDelta = 0, w_yDelta = 0;
 		} else { //top
@@ -77,10 +78,11 @@ std::pair<bool, InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct>> P
 	if ((abs(x - b->x) <= b->r) && (abs(y - b->y) <= b->r)) {
 		double d = sqrt((x - b->x)*(x - b->x) + (y - b->y)*(y - b->y));
 		if (d <= b->r) {
-			double b_xDelta = 0, b_yDelta = 0, b_angleDelta;
+			double b_xDelta = 0, b_yDelta = 0;
+			float  b_angleDelta;
 			double w_xDelta, w_yDelta;
 
-			double angle = atan2((y - b->y), (x - b->x));
+			float angle = atan2((y - b->y), (x - b->x));
 			b_yDelta -= sin(angle) * (b->r - d);
 			b_xDelta -= cos(angle) * (b->r - d);
 
@@ -89,7 +91,7 @@ std::pair<bool, InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct>> P
 			//in effect, rounded rectangle against a point is the same as rectangle against circle
 			//the bullet's angle needs to reflect off of the perpendicular to the tangent, and the tangent goes through the intersection between the bullet's path and the area of influence
 
-			double newAngle = 2*angle - (b->velocity.getAngle() - PI);
+			float newAngle = 2*angle - (b->velocity.getAngle() - float(PI));
 			b_yDelta += sin(newAngle) * (b->r - d);
 			b_xDelta += cos(newAngle) * (b->r - d);
 			b_angleDelta = (newAngle - b->velocity.getAngle()); //b->velocity.setAngle(newAngle);
@@ -106,15 +108,16 @@ std::pair<bool, InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct>> P
 
 std::pair<bool, BulletUpdateStruct> PowerFunctionHelper::bounceEdgeGenericX(const Bullet* b) {
 	bool bounced = 0; //wait, why is this =0? leftover from edge bouncing X and Y being together?
-	double b_xDelta, b_yDelta=0, b_angleDelta;
+	double b_xDelta, b_yDelta=0;
+	float  b_angleDelta;
 
 	if (b->x + b->r > GAME_WIDTH) { //right edge
 		b_xDelta = -1 * (((b->x + b->r) - GAME_WIDTH) * 2);
-		b_angleDelta = PI - 2*b->velocity.getAngle(); //b->velocity.setAngle(PI - b->velocity.getAngle());
+		b_angleDelta = float(PI) - 2*b->velocity.getAngle(); //b->velocity.setAngle(PI - b->velocity.getAngle());
 		bounced = true;
 	} else if (b->x - b->r < 0) { //left edge
 		b_xDelta = -(b->x - b->r) * 2;
-		b_angleDelta = PI - 2*b->velocity.getAngle(); //b->velocity.setAngle(PI - b->velocity.getAngle());
+		b_angleDelta = float(PI) - 2*b->velocity.getAngle(); //b->velocity.setAngle(PI - b->velocity.getAngle());
 		bounced = true;
 	} else {
 		b_xDelta = 0;
@@ -126,7 +129,8 @@ std::pair<bool, BulletUpdateStruct> PowerFunctionHelper::bounceEdgeGenericX(cons
 
 std::pair<bool, BulletUpdateStruct> PowerFunctionHelper::bounceEdgeGenericY(const Bullet* b) {
 	bool bounced = 0;
-	double b_xDelta=0, b_yDelta, b_angleDelta;
+	double b_xDelta=0, b_yDelta;
+	float  b_angleDelta;
 
 	if (b->y + b->r > GAME_HEIGHT) { //top edge
 		b_yDelta = -1 * (((b->y + b->r) - GAME_HEIGHT) * 2);
@@ -144,11 +148,11 @@ std::pair<bool, BulletUpdateStruct> PowerFunctionHelper::bounceEdgeGenericY(cons
 	return { bounced, BulletUpdateStruct(b_xDelta, b_yDelta, 0,0, b_angleDelta, 0) };
 }
 
-std::vector<double>* PowerFunctionHelper::equallySpacedCannonPoints(int count) {
-	std::vector<double>* newCannonPoints = new std::vector<double>;
+std::vector<float>* PowerFunctionHelper::equallySpacedCannonPoints(int count) {
+	std::vector<float>* newCannonPoints = new std::vector<float>;
 	newCannonPoints->reserve(count-1);
 	for (int i = 1; i < count; i++) {
-		newCannonPoints->push_back(i / double(count));
+		newCannonPoints->push_back(i / float(count));
 	}
 	return newCannonPoints;
 }
@@ -157,7 +161,7 @@ Game_ID PowerFunctionHelper::homingGenericTarget(const Bullet* b, bool targetUsi
 	int targetTankIndex; //only targets tanks for now
 
 	if (targetUsingAngleDiff) {
-		double* angleDiffs = new double[TankManager::getNumTanks()];
+		float* angleDiffs = new float[TankManager::getNumTanks()];
 		for (int i = 0; i < TankManager::getNumTanks(); i++) {
 			const Tank* t = TankManager::getTank(i);
 			if (t->getTeamID() == b->getTeamID()) {

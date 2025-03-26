@@ -37,7 +37,7 @@ BulletPower* MultishotTankPower::makeBulletPower() const {
 	return new MultishotBulletPower();
 }
 
-std::vector<double>* MultishotTankPower::addShootingPoints() const {
+std::vector<float>* MultishotTankPower::addShootingPoints() const {
 	return PowerFunctionHelper::equallySpacedCannonPoints(MultishotPower::bulletCount);
 }
 

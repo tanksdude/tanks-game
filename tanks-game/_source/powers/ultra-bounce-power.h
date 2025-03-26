@@ -45,7 +45,7 @@ public:
 
 	virtual InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> modifiedCollisionWithWall(const Bullet*, const Wall*) override;
 
-	virtual double getBulletSpeedMultiplier() const override { return .25; }
+	virtual float getBulletSpeedMultiplier() const override { return .25; }
 
 	UltraBounceBulletPower();
 	UltraBounceBulletPower(int bounces);

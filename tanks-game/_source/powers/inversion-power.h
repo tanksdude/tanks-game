@@ -30,7 +30,7 @@ public:
 	virtual TankPower* makeDuplicate() const override { return new InversionTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
 
-	virtual double getTankTurningIncrementMultiplier() const override { return -1; }
+	virtual float getTankTurningIncrementMultiplier() const override { return -1; }
 	//bool tankTurningIncrementStacks = true;
 
 	InversionTankPower();

@@ -35,8 +35,8 @@ public:
 	virtual TankPower* makeDuplicate() const override { return new InvincibleNamedTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
 
-	virtual double getTankMaxSpeedMultiplier() const override { return .5; }
-	virtual double getTankAccelerationMultiplier() const override { return .5; } //JS: 1
+	virtual float getTankMaxSpeedMultiplier() const override { return .5; }
+	virtual float getTankAccelerationMultiplier() const override { return .5; } //JS: 1
 
 	virtual float getOffenseTier(const Tank*) const override { return 0; }
 	virtual float getDefenseTier(const Tank*) const override { return 2.5; } // this is not DESTRUCTION_TIER+.5 in case someone wants to have a higher destruction tier

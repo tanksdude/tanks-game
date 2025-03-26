@@ -3,7 +3,7 @@
 
 #include "../constants.h"
 
-const double HomingPower::homingStrength = (2*PI) / 512;
+const float HomingPower::homingStrength = (2*PI) / 512;
 
 std::unordered_map<std::string, float> HomingPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;

@@ -3,7 +3,7 @@
 
 class IceLevelEffect : public LevelEffect {
 protected:
-	double iceFactor;
+	float iceFactor;
 
 public:
 	virtual std::string getName() const override { return "ice"; }
@@ -18,10 +18,10 @@ public:
 	virtual void tick(const Level* parent) override { return; }
 	virtual void doEffects(Level* parent) const override { return; }
 
-	virtual double getTankAccelerationMultiplier() const { return iceFactor; }
+	virtual float getTankAccelerationMultiplier() const override { return iceFactor; }
 
 	IceLevelEffect();
-	IceLevelEffect(double iceFactor);
+	IceLevelEffect(float iceFactor);
 	virtual ~IceLevelEffect();
 	static LevelEffect* factory(const GenericFactoryConstructionData&);
 };

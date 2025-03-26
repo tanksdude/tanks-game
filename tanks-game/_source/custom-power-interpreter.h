@@ -160,23 +160,23 @@ protected:
 	std::shared_ptr<std::vector<CustomPower::CustomPowerAction_Tank*>> initializationActions_tank;
 	std::shared_ptr<std::vector<CustomPower::CustomPowerAction_Bullet*>> initializationActions_bullet;
 
-	double tankMaxSpeedMultiplier;
-	double tankAccelerationMultiplier;
+	float  tankMaxSpeedMultiplier;
+	float  tankAccelerationMultiplier;
 	double tankRadiusMultiplier;
 	double tankFiringRateMultiplier;
-	double tankTurningIncrementMultiplier;
+	float  tankTurningIncrementMultiplier;
 
 	float offenseImportance;
 	float offenseTier;
 	float defenseImportance;
 	float defenseTier;
 
-	double additionalShooting_AngleRelativeToTank;
-	double additionalShooting_AngleRelativeToCannon;
+	float additionalShooting_AngleRelativeToTank;
+	float additionalShooting_AngleRelativeToCannon;
 	int additionalShooting_BulletCount;
 
-	std::vector<double> addShootingPoints_AngleList;
-	std::vector<std::pair<double, double>> addExtraShootingPoints_AngleList;
+	std::vector<float> addShootingPoints_AngleList;
+	std::vector<std::pair<float, float>> addExtraShootingPoints_AngleList;
 
 	double modifiedCollisionWithEdge_AdditionalBoundaryAmount;
 
@@ -242,15 +242,15 @@ public:
 
 	void additionalShooting(Tank* parent, const CannonPoint&, const ExtraCannonPoint&) override;
 
-	std::vector<double>* addShootingPoints() const override;
+	std::vector<float>* addShootingPoints() const override;
 
-	std::vector<std::pair<double, double>>* addExtraShootingPoints() const override;
+	std::vector<std::pair<float, float>>* addExtraShootingPoints() const override;
 
-	double getTankMaxSpeedMultiplier() const override { return this->tankMaxSpeedMultiplier; }
-	double getTankAccelerationMultiplier() const override { return this->tankAccelerationMultiplier; }
+	float  getTankMaxSpeedMultiplier() const override { return this->tankMaxSpeedMultiplier; }
+	float  getTankAccelerationMultiplier() const override { return this->tankAccelerationMultiplier; }
 	double getTankRadiusMultiplier() const override { return this->tankRadiusMultiplier; }
 	double getTankFiringRateMultiplier() const override { return this->tankFiringRateMultiplier; }
-	double getTankTurningIncrementMultiplier() const override { return this->tankTurningIncrementMultiplier; }
+	float  getTankTurningIncrementMultiplier() const override { return this->tankTurningIncrementMultiplier; }
 
 	float getOffenseImportance() const override { return this->offenseImportance; }
 	float getOffenseTier(const Tank*) const override { return this->offenseTier; }
@@ -278,10 +278,10 @@ protected:
 	std::shared_ptr<std::vector<CustomPower::CustomPowerAction_Tank*>> initializationActions_tank;
 	std::shared_ptr<std::vector<CustomPower::CustomPowerAction_Bullet*>> initializationActions_bullet;
 
-	double bulletSpeedMultiplier;
+	float  bulletSpeedMultiplier;
 	double bulletRadiusMultiplier;
-	double bulletAcceleration;
-	float bulletAccelerationImportance;
+	float  bulletAcceleration;
+	float  bulletAccelerationImportance;
 	double bulletDeceleration_DegradeAmount;
 
 	float offenseImportance;
@@ -342,10 +342,10 @@ public:
 
 	InteractionBoolHolder modifiedDeathHandling(Bullet* parent) override;
 
-	double getBulletSpeedMultiplier() const override { return this->bulletSpeedMultiplier; }
+	float  getBulletSpeedMultiplier() const override { return this->bulletSpeedMultiplier; }
 	double getBulletRadiusMultiplier() const override { return this->bulletRadiusMultiplier; }
-	double getBulletAcceleration() const override { return this->bulletAcceleration; }
-	float getBulletAccelerationImportance() const override { return this->bulletAccelerationImportance; }
+	float  getBulletAcceleration() const override { return this->bulletAcceleration; }
+	float  getBulletAccelerationImportance() const override { return this->bulletAccelerationImportance; }
 	double getBulletDegradeAmount() const override { return this->bulletDeceleration_DegradeAmount; }
 
 	float getOffenseImportance() const override { return this->offenseImportance; }
@@ -360,7 +360,7 @@ public:
 	CustomBulletPower(std::string name, const ColorValueHolder& color, float colorImportance, double tankDuration,
 		std::shared_ptr<std::vector<CustomPower::CustomPowerAction_Tank*>> initializationActions_tank,
 		std::shared_ptr<std::vector<CustomPower::CustomPowerAction_Bullet*>> initializationActions_bullet,
-		double speedMultiplier, double radiusMultiplier, double acceleration, int bouncesLeft); //for makeDuplicate() to pass on things that can vary in a range and bounces left
+		double radiusMultiplier, float speedMultiplier, float acceleration, int bouncesLeft); //for makeDuplicate() to pass on things that can vary in a range and bounces left
 };
 
 

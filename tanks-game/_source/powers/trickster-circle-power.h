@@ -57,7 +57,7 @@ public:
 	//bool modifiesMovement = true;
 	virtual InteractionBoolHolder modifiedMovement(Bullet*) override;
 
-	virtual double getBulletSpeedMultiplier() const override { return .25; }
+	virtual float getBulletSpeedMultiplier() const override { return .25; }
 
 	TricksterCircleBulletPower();
 };

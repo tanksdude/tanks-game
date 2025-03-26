@@ -5,9 +5,9 @@ class WallSparksPower : public Power {
 public: //bullet stuff
 	static const int extraBulletsCount;
 	static const int maxBounces;
-	static const double maxNewBulletVelocity;
-	static const double minNewBulletVelocity;
-	static const double bulletAngleDeviation;
+	static const float maxNewBulletVelocity;
+	static const float minNewBulletVelocity;
+	static const float bulletAngleDeviation;
 
 public:
 	virtual std::vector<std::string> getPowerTypes() const override {

@@ -16,7 +16,7 @@ void IceLevelEffect::apply() {
 	}
 }
 
-IceLevelEffect::IceLevelEffect(double iceAmount) {
+IceLevelEffect::IceLevelEffect(float iceAmount) {
 	iceFactor = iceAmount;
 }
 
@@ -31,8 +31,8 @@ LevelEffect* IceLevelEffect::factory(const GenericFactoryConstructionData& args)
 		int count = args.getDataPortionLength(0);
 
 		if (count >= 1) [[likely]] {
-			const double* arr = static_cast<const double*>(args.getDataPortion(0).get());
-			double ice = arr[0];
+			const float* arr = static_cast<const float*>(args.getDataPortion(0).get());
+			float ice = arr[0];
 			return new IceLevelEffect(ice);
 		}
 	}

@@ -30,7 +30,7 @@ public:
 	virtual TankPower* makeDuplicate() const override { return new OldBounceTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
 
-	virtual double getTankAccelerationMultiplier() const override { return .5; }
+	virtual float  getTankAccelerationMultiplier() const override { return .5; }
 	virtual double getTankRadiusMultiplier() const override { return .5; } //JS: stacks (as did everything)
 	virtual double getTankFiringRateMultiplier() const override { return .5; }
 
@@ -47,7 +47,7 @@ public:
 	virtual BulletPower* makeDuplicate() const override { return new OldBounceBulletPower(); } //not sure if bounces were passed on in JS
 	virtual TankPower* makeTankPower() const override;
 
-	virtual double getBulletSpeedMultiplier() const override { return .25; }
+	virtual float getBulletSpeedMultiplier() const override { return .25; }
 
 	OldBounceBulletPower();
 };

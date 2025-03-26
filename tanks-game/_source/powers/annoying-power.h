@@ -43,7 +43,7 @@ public:
 	//bool modifiesEdgeCollision = true;
 	virtual InteractionBoolHolder modifiedEdgeCollision(Tank*) override;
 
-	virtual double getTankAccelerationMultiplier() const override;
+	virtual float getTankAccelerationMultiplier() const override;
 
 	AnnoyingTankPower();
 };
@@ -61,7 +61,7 @@ public:
 	//bool modifiesCollisionWithTank = true;
 	virtual InteractionBoolHolder modifiedCollisionWithTank(Bullet*, Tank*) override;
 
-	virtual double getBulletSpeedMultiplier() const override { return .5; }
+	virtual float getBulletSpeedMultiplier() const override { return .5; }
 
 	virtual float getOffenseImportance() const override;
 	virtual float getOffenseTier(const Bullet*) const override;

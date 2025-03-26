@@ -65,7 +65,7 @@ public:
 	//bool modifiesMovement = true;
 	virtual InteractionBoolHolder modifiedMovement(Bullet*) override;
 
-	virtual double getBulletSpeedMultiplier() const override { return .5; }
+	virtual float getBulletSpeedMultiplier() const override { return .5; }
 
 	MineLayerBulletPower();
 };

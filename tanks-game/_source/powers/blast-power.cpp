@@ -3,11 +3,11 @@
 
 #include "../constants.h"
 
-const double BlastPower::bulletAngleDeviation = PI/3;
+const float BlastPower::bulletAngleDeviation = PI/3;
 const int BlastPower::bulletAmount = 16;
 
-const double BlastPower::maxBulletAcceleration = 3/16.0;
-const double BlastPower::minBulletAcceleration = 1/16.0;
+const float  BlastPower::maxBulletAcceleration = 3/16.0;
+const float  BlastPower::minBulletAcceleration = 1/16.0;
 const double BlastPower::degradeAmount = .25;
 
 std::unordered_map<std::string, float> BlastPower::getWeights() const {
@@ -42,7 +42,7 @@ BlastPower::BlastPower() {
 
 void BlastTankPower::additionalShooting(Tank* t, const CannonPoint& c, const ExtraCannonPoint& c2) {
 	for (int i = 0; i < BlastPower::bulletAmount; i++) {
-		double tempAngle = (GameRNG::randFunc()*2 - 1) * BlastPower::bulletAngleDeviation; //[-1,1) * deviation
+		float tempAngle = (GameRNG::randFuncf()*2 - 1) * BlastPower::bulletAngleDeviation; //[-1,1) * deviation
 		t->defaultMakeBullet(t->velocity.getAngle() + c.angleFromCenter + c2.angleFromCenter + tempAngle, c2.angleFromEdge);
 	}
 }
@@ -114,10 +114,10 @@ TankPower* BlastBulletPower::makeTankPower() const {
 }
 
 BlastBulletPower::BlastBulletPower()
-: BlastBulletPower(-1 * ((GameRNG::randFunc()+GameRNG::randFunc())/2 * (BlastPower::maxBulletAcceleration - BlastPower::minBulletAcceleration) + BlastPower::minBulletAcceleration)) {}
+: BlastBulletPower(-1 * ((GameRNG::randFuncf()+GameRNG::randFuncf())/2 * (BlastPower::maxBulletAcceleration - BlastPower::minBulletAcceleration) + BlastPower::minBulletAcceleration)) {}
 //acceleration: [0,1) * accDiff + min
 
-BlastBulletPower::BlastBulletPower(double acceleration) {
+BlastBulletPower::BlastBulletPower(float acceleration) {
 	timeLeft = 0;
 	maxTime = -1;
 

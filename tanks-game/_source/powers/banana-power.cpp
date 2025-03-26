@@ -2,8 +2,8 @@
 #include "../game-manager.h" //settings
 
 const int BananaPower::bananaCount = 8; //TODO: change with INI
-const double BananaPower::maxNewBulletVelocityMultiplier = 5.0/4.0;
-const double BananaPower::minNewBulletVelocityMultiplier = 1.0/2.0; //JS range: [0,1]
+const float BananaPower::maxNewBulletVelocityMultiplier = 5.0/4.0;
+const float BananaPower::minNewBulletVelocityMultiplier = 1.0/2.0; //JS range: [0,1]
 
 std::unordered_map<std::string, float> BananaPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -62,12 +62,12 @@ void BananaBulletPower::bananaExplode(const Bullet* b) {
 				bp->push_back(b->bulletPowers[i]->makeDuplicate());
 			}
 		}
-		double newVelocity = b->getInitialVelocity();
+		float newVelocity = b->getInitialVelocity();
 		if (newVelocity == 0) {
 			newVelocity = Tank::default_maxSpeed*BULLET_TO_TANK_SPEED_RATIO; //if bullet's initial speed is zero, it should still explode (TODO: what should the initial speed be?)
 		}
-		newVelocity = newVelocity * ((GameRNG::randFunc()+GameRNG::randFunc())/2 * (BananaPower::maxNewBulletVelocityMultiplier - BananaPower::minNewBulletVelocityMultiplier) + BananaPower::minNewBulletVelocityMultiplier);
-		BulletManager::pushBullet(new Bullet(b->x, b->y, b->r/2, GameRNG::randFunc() * (2*PI), newVelocity, b->getTeamID(), b->getParentIDType(), b->getParentID(), bp, true));
+		newVelocity = newVelocity * ((GameRNG::randFuncf()+GameRNG::randFuncf())/2 * (BananaPower::maxNewBulletVelocityMultiplier - BananaPower::minNewBulletVelocityMultiplier) + BananaPower::minNewBulletVelocityMultiplier);
+		BulletManager::pushBullet(new Bullet(b->x, b->y, b->r/2, GameRNG::randFuncf() * float(2*PI), newVelocity, b->getTeamID(), b->getParentIDType(), b->getParentID(), bp, true));
 		delete bp;
 	}
 }

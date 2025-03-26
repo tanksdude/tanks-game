@@ -30,8 +30,8 @@ public:
 	virtual TankPower* makeDuplicate() const override { return new DevLongInvincibleNamedTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
 
-	virtual double getTankMaxSpeedMultiplier() const override { return 1; }
-	virtual double getTankAccelerationMultiplier() const override { return 1; }
+	virtual float getTankMaxSpeedMultiplier() const override { return 1; }
+	virtual float getTankAccelerationMultiplier() const override { return 1; }
 
 	DevLongInvincibleNamedTankPower();
 };

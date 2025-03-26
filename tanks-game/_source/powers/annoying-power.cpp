@@ -49,7 +49,7 @@ InteractionBoolHolder AnnoyingTankPower::modifiedEdgeCollision(Tank* parent) {
 	return { false };
 }
 
-double AnnoyingTankPower::getTankAccelerationMultiplier() const {
+float AnnoyingTankPower::getTankAccelerationMultiplier() const {
 	//might change this
 	return .5;
 }

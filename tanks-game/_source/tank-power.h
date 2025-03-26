@@ -104,13 +104,13 @@ public:
 
 	bool addsShootingPoints = false;
 	[[nodiscard]]
-	virtual std::vector<double>* addShootingPoints() const { return nullptr; } //list of angles to put new cannons at; angle range: (0,1)
+	virtual std::vector<float>* addShootingPoints() const { return nullptr; } //list of angles to put new cannons at; angle range: (0,1)
 	//bool overridesAddShootingPoints = false; //makes no sense to be true
 	bool addShootingPointsCanWorkWithOthers = true; //should only be true
 
 	bool addsExtraShootingPoints = false;
 	[[nodiscard]]
-	virtual std::vector<std::pair<double, double>>* addExtraShootingPoints() const { return nullptr; } //list of angles to put "extra" cannons at (triple and shotgun)
+	virtual std::vector<std::pair<float, float>>* addExtraShootingPoints() const { return nullptr; } //list of angles to put "extra" cannons at (triple and shotgun)
 	//bool overridesAddExtraShootingPoints = false; //makes no sense to be true
 	bool addExtraShootingPointsCanWorkWithOthers = true; //should only be true
 
@@ -122,15 +122,15 @@ public:
 	bool modifiedTankDrawingsCanWorkWithOthers = true;
 	*/
 
-	virtual double getTankMaxSpeedMultiplier() const { return 1; }
+	virtual float  getTankMaxSpeedMultiplier() const { return 1; }
 	bool tankMaxSpeedStacks = false;
-	virtual double getTankAccelerationMultiplier() const { return 1; }
+	virtual float  getTankAccelerationMultiplier() const { return 1; }
 	bool tankAccelerationStacks = false;
 	virtual double getTankRadiusMultiplier() const { return 1; }
 	bool tankRadiusStacks = false;
 	virtual double getTankFiringRateMultiplier() const { return 1; }
 	bool tankFiringRateStacks = false;
-	virtual double getTankTurningIncrementMultiplier() const { return 1; }
+	virtual float  getTankTurningIncrementMultiplier() const { return 1; }
 	bool tankTurningIncrementStacks = false;
 
 	virtual float getOffenseImportance() const { return 0; } //"importance" = "override" value (when dealing with other powers)

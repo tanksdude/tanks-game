@@ -3,9 +3,9 @@
 struct CannonPoint {
 	friend class Tank; //unnecessary
 
-	double angleFromCenter;
+	float angleFromCenter;
 
-	CannonPoint(double angle) {
+	CannonPoint(float angle) {
 		this->angleFromCenter = angle;
 	}
 	CannonPoint() { this->angleFromCenter = 0; }
@@ -14,15 +14,15 @@ struct CannonPoint {
 struct ExtraCannonPoint {
 	friend class Tank; //unnecessary
 
-	double angleFromCenter;
-	double angleFromEdge; //0 means straight out from center
+	float angleFromCenter;
+	float angleFromEdge; //0 means straight out from center
 	//note: two doubles don't satisfy std::atomic<T>::is_lock_free(), which doesn't really matter here
 
-	ExtraCannonPoint(double angle) {
+	ExtraCannonPoint(float angle) {
 		this->angleFromCenter = angle;
 		this->angleFromEdge = 0;
 	}
-	ExtraCannonPoint(double angleCenter, double angleEdge) {
+	ExtraCannonPoint(float angleCenter, float angleEdge) {
 		this->angleFromCenter = angleCenter;
 		this->angleFromEdge = angleEdge;
 	}

@@ -11,7 +11,7 @@ const double SHOOT_COOLDOWN = 100;
 const double POWER_COOLDOWN = 500;
 
 const double BULLET_TO_TANK_RADIUS_RATIO = .25;
-const double BULLET_TO_TANK_SPEED_RATIO = 4; //2 isn't that bad
+const float  BULLET_TO_TANK_SPEED_RATIO = 4; //2 isn't that bad
 
 const float DESTRUCTION_TIER = 2;
 const float LOW_TIER = -999;

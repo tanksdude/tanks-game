@@ -69,7 +69,7 @@ public:
 	//bool modifiesEdgeCollision = true;
 	virtual InteractionBoolHolder modifiedEdgeCollision(Bullet*) override;
 
-	virtual double getBulletSpeedMultiplier() const override { return .5; }
+	virtual float getBulletSpeedMultiplier() const override { return .5; }
 
 	SwarmBulletPower();
 };

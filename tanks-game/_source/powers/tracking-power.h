@@ -35,8 +35,8 @@ public:
 	virtual TankPower* makeDuplicate() const override { return new TrackingTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
 
-	virtual double getTankMaxSpeedMultiplier() const override { return .5; }
-	virtual double getTankAccelerationMultiplier() const override { return .5; }
+	virtual float  getTankMaxSpeedMultiplier() const override { return .5; }
+	virtual float  getTankAccelerationMultiplier() const override { return .5; }
 	virtual double getTankFiringRateMultiplier() const override { return 2; }
 
 	TrackingTankPower();
@@ -59,7 +59,7 @@ public:
 	virtual InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> modifiedCollisionWithWall(const Bullet*, const Wall*) override;
 	//bool modifiedCollisionWithWallCanWorkWithOthers = false;
 
-	virtual double getBulletSpeedMultiplier() const override { return .25; }
+	virtual float getBulletSpeedMultiplier() const override { return .25; }
 
 	TrackingBulletPower();
 };

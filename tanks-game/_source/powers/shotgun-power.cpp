@@ -33,10 +33,10 @@ ShotgunPower::ShotgunPower() {
 
 #include "../constants.h"
 
-std::vector<std::pair<double, double>>* ShotgunTankPower::addExtraShootingPoints() const {
-	std::vector<std::pair<double, double>>* newExtraCannonPoints = new std::vector<std::pair<double, double>>;
+std::vector<std::pair<float, float>>* ShotgunTankPower::addExtraShootingPoints() const {
+	std::vector<std::pair<float, float>>* newExtraCannonPoints = new std::vector<std::pair<float, float>>;
 	newExtraCannonPoints->reserve(ShotgunPower::bulletSpreadCount * 2);
-	const double angleDiff = (PI/2) / ShotgunPower::bulletSpreadCount;
+	const float angleDiff = float(PI/2) / ShotgunPower::bulletSpreadCount;
 	for (int i = 1; i <= ShotgunPower::bulletSpreadCount; i++) {
 		newExtraCannonPoints->push_back({ i *  angleDiff, i * -angleDiff });
 		newExtraCannonPoints->push_back({ i * -angleDiff, i *  angleDiff });

@@ -31,7 +31,7 @@ public:
 	virtual BulletPower* makeBulletPower() const override;
 
 	//bool addsShootingPoints = true;
-	virtual std::vector<double>* addShootingPoints() const override;
+	virtual std::vector<float>* addShootingPoints() const override;
 
 	virtual double getTankFiringRateMultiplier() const override { return .5; }
 

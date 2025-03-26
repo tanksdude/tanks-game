@@ -20,7 +20,7 @@ bool Bullet::initialized_vertices = false;
 const ColorValueHolder Bullet::default_color = ColorValueHolder(0.5f, 0.5f, 0.5f);
 const double Bullet::default_radius = 4;
 
-Bullet::Bullet(double x_, double y_, double angle, Team_ID teamID, BulletParentType parentType, Game_ID parentID) : GameThing(teamID) { //every bullet constructor does this stuff
+Bullet::Bullet(double x_, double y_, float angle, Team_ID teamID, BulletParentType parentType, Game_ID parentID) : GameThing(teamID) { //every bullet constructor does this stuff
 	this->x = x_;
 	this->y = y_;
 	this->velocity = SimpleVector2D(angle, 0, true);
@@ -32,7 +32,7 @@ Bullet::Bullet(double x_, double y_, double angle, Team_ID teamID, BulletParentT
 	//initializeVertices(); //called in main() to reduce the tiny overhead in calling this every time a bullet is created
 }
 
-Bullet::Bullet(double x_, double y_, double angle, Team_ID teamID, BulletParentType parentType, Game_ID parentID, const std::vector<BulletPower*>* bp) : Bullet(x_,y_,angle,teamID,parentType,parentID) {
+Bullet::Bullet(double x_, double y_, float angle, Team_ID teamID, BulletParentType parentType, Game_ID parentID, const std::vector<BulletPower*>* bp) : Bullet(x_,y_,angle,teamID,parentType,parentID) {
 	bulletPowers.reserve(bp->size());
 	for (int i = 0; i < bp->size(); i++) {
 		bulletPowers.push_back(bp->at(i));
@@ -45,7 +45,7 @@ Bullet::Bullet(double x_, double y_, double angle, Team_ID teamID, BulletParentT
 }
 
 //probably just for banana bullet creation:
-Bullet::Bullet(double x_, double y_, double r_, double angle, double vel, Team_ID teamID, BulletParentType parentType, Game_ID parentID, const std::vector<BulletPower*>* bp, bool) : Bullet(x_,y_,angle,teamID,parentType,parentID,bp) {
+Bullet::Bullet(double x_, double y_, double r_, float angle, float vel, Team_ID teamID, BulletParentType parentType, Game_ID parentID, const std::vector<BulletPower*>* bp, bool) : Bullet(x_,y_,angle,teamID,parentType,parentID,bp) {
 	this->r = r_;
 	this->velocity.setMagnitude(vel); // * getBulletSpeedMultiplier(); //not wanted
 	this->initial_velocity = this->velocity.getMagnitude();
@@ -53,7 +53,7 @@ Bullet::Bullet(double x_, double y_, double r_, double angle, double vel, Team_I
 }
 
 //avoid using:
-Bullet::Bullet(double x_, double y_, double r_, double angle, double vel, double acc, Team_ID teamID, BulletParentType parentType, Game_ID parentID, const std::vector<BulletPower*>* bp, bool) : Bullet(x_,y_,angle,teamID,parentType,parentID,bp) {
+Bullet::Bullet(double x_, double y_, double r_, float angle, float vel, float acc, Team_ID teamID, BulletParentType parentType, Game_ID parentID, const std::vector<BulletPower*>* bp, bool) : Bullet(x_,y_,angle,teamID,parentType,parentID,bp) {
 	this->r = r_ * getBulletRadiusMultiplier();
 	this->velocity.setMagnitude(vel * getBulletSpeedMultiplier());
 	this->initial_velocity = this->velocity.getMagnitude();
@@ -61,7 +61,7 @@ Bullet::Bullet(double x_, double y_, double r_, double angle, double vel, double
 }
 
 //regular 1:
-Bullet::Bullet(double x_, double y_, double r_, double angle, double vel, Team_ID teamID, BulletParentType parentType, Game_ID parentID) : Bullet(x_,y_,angle,teamID,parentType,parentID) {
+Bullet::Bullet(double x_, double y_, double r_, float angle, float vel, Team_ID teamID, BulletParentType parentType, Game_ID parentID) : Bullet(x_,y_,angle,teamID,parentType,parentID) {
 	this->r = r_;
 	this->velocity.setMagnitude(vel);
 	this->initial_velocity = this->velocity.getMagnitude();
@@ -69,7 +69,7 @@ Bullet::Bullet(double x_, double y_, double r_, double angle, double vel, Team_I
 }
 
 //regular 2:
-Bullet::Bullet(double x_, double y_, double r_, double angle, double vel, Team_ID teamID, BulletParentType parentType, Game_ID parentID, const std::vector<BulletPower*>* bp) : Bullet(x_,y_,angle,teamID,parentType,parentID,bp) {
+Bullet::Bullet(double x_, double y_, double r_, float angle, float vel, Team_ID teamID, BulletParentType parentType, Game_ID parentID, const std::vector<BulletPower*>* bp) : Bullet(x_,y_,angle,teamID,parentType,parentID,bp) {
 	this->r = r_ * getBulletRadiusMultiplier();
 	this->velocity.setMagnitude(vel * getBulletSpeedMultiplier());
 	this->initial_velocity = this->velocity.getMagnitude();
@@ -216,15 +216,15 @@ inline void Bullet::growHandle() {
 	//TODO: negative additive values could work, as long as when b->r <= 0 the bullet dies
 }
 
-double Bullet::getBulletSpeedMultiplier() const {
-	//look at Tank::getShootingSpeedMultiplier()
+float Bullet::getBulletSpeedMultiplier() const {
+	//look at Tank::getFiringRateMultiplier()
 
-	double highest = 1;
-	double lowest = 1;
-	std::vector<double> stackList;
+	float highest = 1;
+	float lowest = 1;
+	std::vector<float> stackList;
 
 	for (int i = 0; i < bulletPowers.size(); i++) {
-		double value = bulletPowers[i]->getBulletSpeedMultiplier();
+		float value = bulletPowers[i]->getBulletSpeedMultiplier();
 		if (bulletPowers[i]->bulletSpeedStacks) {
 			stackList.push_back(value);
 		} else {
@@ -236,7 +236,7 @@ double Bullet::getBulletSpeedMultiplier() const {
 		}
 	}
 
-	double value = 1;
+	float value = 1;
 	for (int i = 0; i < stackList.size(); i++) {
 		value *= stackList[i];
 	}
@@ -245,7 +245,7 @@ double Bullet::getBulletSpeedMultiplier() const {
 }
 
 double Bullet::getBulletRadiusMultiplier() const {
-	//look at Tank::getShootingSpeedMultiplier()
+	//look at Tank::getFiringRateMultiplier()
 
 	double highest = 1;
 	double lowest = 1;
@@ -271,8 +271,8 @@ double Bullet::getBulletRadiusMultiplier() const {
 	return highest * lowest * value;
 }
 
-double Bullet::getBulletAcceleration() const {
-	//look at Tank::getShootingSpeedMultiplier()
+float Bullet::getBulletAcceleration() const {
+	//look at Tank::getFiringRateMultiplier()
 	//(this has importance though)
 
 	float importance = LOW_IMPORTANCE;
@@ -283,11 +283,11 @@ double Bullet::getBulletAcceleration() const {
 		}
 	}
 
-	double highest = 0;
-	double lowest = 0;
+	float highest = 0;
+	float lowest = 0;
 	for (int i = 0; i < bulletPowers.size(); i++) {
 		if (bulletPowers[i]->getBulletAccelerationImportance() == importance) {
-			double value = bulletPowers[i]->getBulletAcceleration();
+			float value = bulletPowers[i]->getBulletAcceleration();
 			if (value < lowest) {
 				lowest = value;
 			} else if (value > highest) {
@@ -299,7 +299,7 @@ double Bullet::getBulletAcceleration() const {
 }
 
 double Bullet::getBulletDegradeAmount() const {
-	//look at Tank::getShootingSpeedMultiplier()
+	//look at Tank::getFiringRateMultiplier()
 	//(this has importance though)
 	//negative degrade values are not valid, so this just finds the highest value
 
@@ -324,7 +324,7 @@ double Bullet::getBulletDegradeAmount() const {
 }
 
 double Bullet::getBulletRadiusGrowNumber_StationaryAdditive() const {
-	//look at Tank::getShootingSpeedMultiplier()
+	//look at Tank::getFiringRateMultiplier()
 	//negative values are not valid
 
 	double highest = 0;
@@ -339,7 +339,7 @@ double Bullet::getBulletRadiusGrowNumber_StationaryAdditive() const {
 	return highest;
 }
 double Bullet::getBulletRadiusGrowNumber_StationaryMultiplier() const {
-	//look at Tank::getShootingSpeedMultiplier()
+	//look at Tank::getFiringRateMultiplier()
 	//negative values are not valid, but not enforced
 
 	double highest = 1;
@@ -358,7 +358,7 @@ double Bullet::getBulletRadiusGrowNumber_StationaryMultiplier() const {
 }
 
 double Bullet::getBulletRadiusGrowNumber_MovingAdditive() const {
-	//look at Tank::getShootingSpeedMultiplier()
+	//look at Tank::getFiringRateMultiplier()
 	//negative values are not valid
 
 	double highest = 0;
@@ -373,7 +373,7 @@ double Bullet::getBulletRadiusGrowNumber_MovingAdditive() const {
 	return highest;
 }
 double Bullet::getBulletRadiusGrowNumber_MovingMultiplier() const {
-	//look at Tank::getShootingSpeedMultiplier()
+	//look at Tank::getFiringRateMultiplier()
 	//negative values are not valid, but not enforced
 
 	double highest = 1;
@@ -822,7 +822,7 @@ float Bullet::getDefenseTier() const {
 	return getHighestDefenseTier(getHighestDefenseImportance());
 }
 
-BulletUpdateStruct::BulletUpdateStruct(double x, double y, double r, double speed, double angle, double alpha, const std::vector<Bullet*>& newBullets) {
+BulletUpdateStruct::BulletUpdateStruct(double x, double y, double r, float speed, float angle, double alpha, const std::vector<Bullet*>& newBullets) {
 	//add acceleration?
 	this->x = x;
 	this->y = y;
@@ -833,7 +833,7 @@ BulletUpdateStruct::BulletUpdateStruct(double x, double y, double r, double spee
 	this->newBullets = std::vector<Bullet*>(newBullets);
 }
 
-BulletUpdateStruct::BulletUpdateStruct(double x, double y, double r, double speed, double angle, double alpha) {
+BulletUpdateStruct::BulletUpdateStruct(double x, double y, double r, float speed, float angle, double alpha) {
 	//add acceleration?
 	this->x = x;
 	this->y = y;

@@ -3,7 +3,7 @@
 
 class TripleNamedPower : public Power {
 public: //tank stuff
-	static const double bulletAngleDiff;
+	static const float bulletAngleDiff;
 
 public:
 	virtual std::vector<std::string> getPowerTypes() const override {
@@ -38,7 +38,7 @@ public:
 	virtual BulletPower* makeBulletPower() const override;
 
 	//bool addsExtraShootingPoints = true;
-	virtual std::vector<std::pair<double, double>>* addExtraShootingPoints() const override;
+	virtual std::vector<std::pair<float, float>>* addExtraShootingPoints() const override;
 
 	//virtual double getTankFiringRateMultiplier() const override { return .5; } //JS
 

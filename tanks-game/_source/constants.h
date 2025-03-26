@@ -11,7 +11,7 @@ extern const double SHOOT_COOLDOWN;
 extern const double POWER_COOLDOWN;
 
 extern const double BULLET_TO_TANK_RADIUS_RATIO;
-extern const double BULLET_TO_TANK_SPEED_RATIO;
+extern const float  BULLET_TO_TANK_SPEED_RATIO;
 
 extern const float DESTRUCTION_TIER; //offense tier for destorying walls and turrets & stuff
 extern const float LOW_TIER;

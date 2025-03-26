@@ -43,7 +43,7 @@ public:
 	virtual BulletPower* makeDuplicate() const override { return new OldBigNamedBulletPower(); }
 	virtual TankPower* makeTankPower() const override;
 
-	virtual double getBulletSpeedMultiplier() const override { return .5; }
+	virtual float getBulletSpeedMultiplier() const override { return .5; }
 	//bool bulletSpeedStacks = true;
 
 	OldBigNamedBulletPower();

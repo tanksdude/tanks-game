@@ -20,9 +20,9 @@ class Tank : public GameThing, public Circle, public DrawableThing {
 
 public:
 	SimpleVector2D velocity;
-	double maxSpeed; // = 1;
-	double acceleration; // = 1.0/16; //intentional acceleration, not total
-	double turningIncrement; // = 64;
+	float maxSpeed; // = 1;
+	float acceleration; // = 1.0/16; //intentional acceleration, not total
+	float turningIncrement; // = 64;
 	std::vector<CannonPoint> shootingPoints;
 	std::vector<ExtraCannonPoint> extraShootingPoints;
 	std::vector<TankPower*> tankPowers;
@@ -49,15 +49,15 @@ public:
 	void updateRadius();
 	void updateTurningIncrement();
 
-	double getShootingSpeedMultiplier() const;
+	double getFiringRateMultiplier() const;
 
 protected:
-	void makeBulletCommon(double x, double y, double angle, double radius, double speed);
+	void makeBulletCommon(double x, double y, double radius, float angle, float speed);
 public:
-	void makeBullet(double x, double y, double angle, double radius, double speed, double acc); //does not use makeBulletCommon (avoid using)
-	void defaultMakeBullet(double angle); //simple shoot: bullet points away from tank center at a given angle
-	void defaultMakeBullet(double angle, double edgeAngleOffset); //same but control over the firing angle
-	void preciseMakeBullet(double x_offset, double y_offset, double angle); //make bullet x and y dist from tank, moving with angle; basically just for mines
+	void makeBullet(double x, double y, double radius, float angle, float speed, float acc); //does not use makeBulletCommon (avoid using)
+	void defaultMakeBullet(float angle); //simple shoot: bullet points away from tank center at a given angle
+	void defaultMakeBullet(float angle, float edgeAngleOffset); //same but control over the firing angle
+	void preciseMakeBullet(double x_offset, double y_offset, float angle); //make bullet x and y dist from tank, moving with angle; basically just for mines
 
 protected:
 	ColorValueHolder defaultColor; //not static because of shiny tanks
@@ -68,19 +68,19 @@ protected:
 	void kill_hard(); //kills without accounting for extra lives
 	inline void terminalVelocity(bool forward);
 	inline void move_base(bool forward, bool turnL, bool turnR);
-	inline void determineShootingAngles_helper(std::vector<double>* newCannonPoints);
-	inline double getEvaluatedCannonAngle(unsigned int index) const;
-	inline double getEvaluatedCannonAngle(unsigned int indexRegular, unsigned int indexExtra) const;
-	inline double getEvaluatedCannonAngleWithEdge(unsigned int indexRegular, unsigned int indexExtra) const;
+	inline void determineShootingAngles_helper(std::vector<float>* newCannonPoints);
+	inline float getEvaluatedCannonAngle(unsigned int index) const;
+	inline float getEvaluatedCannonAngle(unsigned int indexRegular, unsigned int indexExtra) const;
+	inline float getEvaluatedCannonAngleWithEdge(unsigned int indexRegular, unsigned int indexExtra) const;
 
 public:
 	//helper stuff:
 	ColorValueHolder getBodyColor() const;
 	std::string getName() const { return name; }
 
-	static const double default_maxSpeed;
-	static const double default_acceleration;
-	static const double default_turningIncrement;
+	static const float default_maxSpeed;
+	static const float default_acceleration;
+	static const float default_turningIncrement;
 
 public:
 	bool move(bool forward, bool turnL, bool turnR, bool specialKey);
@@ -115,6 +115,6 @@ private:
 	static bool initializeVertices();
 
 public:
-	Tank(double x, double y, double angle, Team_ID id, std::string name, double shootCooldown);
+	Tank(double x, double y, float angle, Team_ID id, std::string name, double shootCooldown);
 	~Tank();
 };
