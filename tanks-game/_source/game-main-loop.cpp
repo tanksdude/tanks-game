@@ -209,7 +209,7 @@ inline void GameMainLoop::thread_updateBulletsFunc(void* updateBulletList, void*
 inline void GameMainLoop::thread_updateWallsFunc(void* updateWallList, void* updateWallValues, int start, int end) {
 	std::unordered_map<Game_ID, WallUpdateStruct>* wallUpdates = (std::unordered_map<Game_ID, WallUpdateStruct>*) updateWallValues;
 	std::vector<Game_ID>* wallUpdateList = (std::vector<Game_ID>*) updateWallList;
-	
+
 	for (int i = start; i < end; i++) {
 		Wall* w = WallManager::getWallByID(wallUpdateList->at(i));
 		w->update(&wallUpdates->at(wallUpdateList->at(i)));
@@ -1229,7 +1229,7 @@ void GameMainLoop::drawMain() const {
 	Diagnostics::endTiming();
 
 	Diagnostics::startTiming("bullets");
-	ColorCacheBullet::invalidateColors();
+	ColorCacheBullet::invalidateCachedColors();
 	for (int i = 0; i < BulletManager::getNumBullets(); i++) {
 		BulletManager::getBullet(i)->draw(DrawingLayers::normal);
 	}

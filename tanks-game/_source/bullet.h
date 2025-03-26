@@ -32,7 +32,7 @@ public: //hopefully temporary
 	BulletParentType parentType;
 	std::vector<BulletPower*> bulletPowers; //change eventually?
 	double lifeValue; //[0,100], controls transparency (0=nothing, 100=opaque)
-	std::string m_colorIdentifier;
+	int m_colorIdentifier;
 
 public:
 	float getOffenseTier() const;
