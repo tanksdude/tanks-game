@@ -20,6 +20,9 @@
 0.2.6 (future)
 * cross-platform!
 * switched to GLFW from FreeGLUT
+* render game in center of window
+* added a window icon
+* custom level playlist option
 
 0.2.5.1
 * updated dependencies
@@ -190,7 +193,7 @@
 0.1.3
 * hazards (no hazard powers yet)
 * stationary turret mostly implemented
-    * doesn't display its shooting angle 
+    * doesn't display its shooting angle
 
 0.1.2.1
 * added a fun level: only has simple powerups and big (fun with superfast shooting)

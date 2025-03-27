@@ -8,27 +8,42 @@ The C++ upgrade of my [JavaScript game](https://uncreativeusername.neocities.org
 
 (The video's small size is because GIFs don't have codecs for compression, and GitHub doesn't allow embedding MP4s...)
 
-### Prerequisites
+### Requirements
 
-* If compiling from source, you'll want Visual Studio 2022
-    * [pre-compiled executables](https://github.com/tanksdude/tanks-game/releases) are provided if that's not an option for you
 * OpenGL 3.3 or later
-    * Earlier versions almost certainly work if you update the shaders (change `#version 330 core` to `#version 150 core` or whatever)
+    * Earlier versions almost certainly work if you update the shaders (change `#version 330 core` to `#version 150 core` or [whatever](https://en.wikipedia.org/wiki/OpenGL_Shading_Language#Versions))
     * Your GPU almost certainly supports this (yes, even if it's an ancient Thinkpad)
+        * Apparently there are some Windows ARM laptops that only support DirectX, so those aren't supported
 * 3GHz+ CPU recommended
     * Faster CPU -> more bullets on screen
-    * Multithreading not available, too difficult (also I have no idea how to approach multithreading RNG)
-* RAM requirements unknown, but 100MB is good
-    * More bullets -> more RAM needed
+    * Multithreading not available, too difficult (also I have basically no idea how to effectively multithreading RNG)
+* ~200MB RAM
 * No audio requirements, because there's no audio
-* **Windows-only** and 64-bit
-    * But it should be very easy to compile it for another platform
+* OS: Windows x64 or Linux x64
+    * Mac OS dropped support for OpenGL when they switched to ARM, also I don't have a Mac to test on
+    * ARM should be possible to support but I don't have an ARM device to test on
 
-### Installing
+### Building (Windows)
 
-Install Visual Studio (2022) and the GitHub extension (I don't know if that's needed), then clone this project and run x64 Release (also make sure you're on the solution, not project).
+1. Install Visual Studio 2022
+1. Build x64 Release (on the solution, not project)
+1. [Pre-compiled executables](https://github.com/tanksdude/tanks-game/releases) are provided if this isn't an option for you
 
-Pre-compiled executables are available under "Releases" in the [GitHub repository](https://github.com/tanksdude/tanks-game).
+### Building (Linux)
+
+Note: Currently compiles but displays a black screen, will fix later (unless you compile with `-Ofast`, then you get *something* with multicolored triangles dancing)
+
+1. Prerequisites: a compiler and CMake: `sudo apt install build-essential cmake` (and maybe `git`)
+1. GLFW and GLEW: `sudo apt install libglfw3-dev libglew-dev`
+    * non-Debian systems currently untested
+    * compiling these from source is currently unsupported, sorry
+1. `mkdir build && cd build`
+1. `cmake ..` (optional: add `-DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS=-march=native -DCMAKE_C_FLAGS=-march=native`)
+1. `make -j$(nproc)`
+1. TODO: also needs `res/` and `tanks.ini` copied to the build dir
+1. TODO: also needs `tanks.ini` line endings changed to LF, and for now requires `LoadMods = 0`
+1. TODO: needs `MotherTurretHazard::getChildCount()` and `MotherTurretHazard::getChildTurretAngle()` to have their inline property removed (I know it's due to include order, and CMake probably has a way to specify when one file depends on another)
+1. TODO (last one I promise): need to comment out `#include <rpmalloc.c>` in `_source/aaa_first.cpp`; seems GCC is far more strict about that stuff than MSVC
 
 ![superfast shooting video](readme-video-other.gif)
 
@@ -63,7 +78,7 @@ The custom power interpreter is also very simple and barebones.
 
 ## Running the tests
 
-~~Will come soon™.~~
+~~Will come soonâ„¢.~~
 
 ## Documentation
 
@@ -75,7 +90,7 @@ I didn't find a good way to easily build documentation, so... the documentation 
 
 * [Visual Studio (2022)](https://visualstudio.microsoft.com/) - C++ IDE from Microsoft
 * [GFLW](https://www.glfw.org/) - OpenGL Framework (or Graphics Library Framework); cross-platform way to make windows and get inputs
-* [GLEW](https://glew.sourceforge.net/) - OpenGL Extension Wrangler Library; for getting the latest OpenGL commands on Windows (where "latest" is >1.1 or so)
+* [GLEW](https://glew.sourceforge.net/) - OpenGL Extension Wrangler Library; for getting the latest OpenGL commands (where "latest" is >1.1)
 * [OpenGL Mathematics (GLM)](https://github.com/g-truc/glm) - OpenGL-happy matrix and vector math library
 * [rpmalloc](https://github.com/mjansson/rpmalloc) - Memory allocator, for some extra performance
 * [stb_image](https://github.com/nothings/stb) - Image loader for loading the window icon
