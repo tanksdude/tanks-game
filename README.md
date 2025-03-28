@@ -31,8 +31,6 @@ The C++ upgrade of my [JavaScript game](https://uncreativeusername.neocities.org
 
 ### Building (Linux)
 
-Note: Currently compiles but displays a black screen, will fix later (unless you compile with `-Ofast`, then you get *something* with multicolored triangles dancing)
-
 1. Prerequisites: a compiler and CMake: `sudo apt install build-essential cmake` (and maybe `git`)
 1. GLFW and GLEW: `sudo apt install libglfw3-dev libglew-dev`
     * non-Debian systems currently untested

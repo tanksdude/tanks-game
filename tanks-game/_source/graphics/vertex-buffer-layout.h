@@ -64,6 +64,7 @@ private:
 public:
 	VertexBufferLayout(const std::initializer_list<VertexBufferElement>& e) {
 		elements = std::vector<VertexBufferElement>(e);
+		stride = 0;
 
 		int cumulativeOffset = 0;
 		for (int i = 0; i < elements.size(); i++) {
