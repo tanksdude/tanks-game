@@ -271,9 +271,15 @@ void Renderer::PreInitialize(int* argc, char** argv, std::string windowName, int
 //from: https://stackoverflow.com/questions/44321902/load-icon-function-for-glfwsetwindowicon/64783512#64783512
 void Renderer::SetWindowIcon(const char* image_path) {
 	GLFWimage images[1];
-	images[0].pixels = stbi_load(image_path, &images[0].width, &images[0].height, NULL, 4);
-	glfwSetWindowIcon(Renderer::glfw_window, 1, images);
-	stbi_image_free(images[0].pixels);
+	auto ret = stbi_load(image_path, &images[0].width, &images[0].height, NULL, 4);
+	if (ret == NULL) {
+		//Windows doesn't care, but Linux does
+		std::cerr << "Could not load \"" << image_path << "\": " << stbi_failure_reason() << std::endl;
+	} else {
+		images[0].pixels = ret;
+		glfwSetWindowIcon(Renderer::glfw_window, 1, images);
+		stbi_image_free(images[0].pixels);
+	}
 }
 
 void Renderer::Initialize() {
