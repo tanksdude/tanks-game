@@ -32,8 +32,8 @@ DevBackwardsMovementPower::DevBackwardsMovementPower() {
 InteractionBoolHolder DevBackwardsMovementTankPower::modifiedMovement(Tank* t, bool forward, bool turnL, bool turnR, bool specialKey) {
 	if (specialKey) {
 		//TODO: I don't know how this should be implemented (it should do something with acceleration; use the tank's or store a vector?)
-		t->x -= t->maxSpeed * cos(t->velocity.getAngle());
-		t->y -= t->maxSpeed * sin(t->velocity.getAngle());
+		t->x -= t->maxSpeed * std::cos(t->velocity.getAngle());
+		t->y -= t->maxSpeed * std::sin(t->velocity.getAngle());
 	}
 	return { false };
 }

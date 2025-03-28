@@ -167,7 +167,7 @@ void MotherTurretHazard::pushInitialChildren(int childCount) {
 	const float workingAngle = float(2*PI) / angleSplit;
 	for (int i = 0; i < angleSplit; i++) {
 		for (int j = 1; j <= currentInitialChildren; j++) {
-			pushChild(i*currentMaxChildren + round((j * workingAngle/float(currentInitialChildren+1)) / turretAngleDiff));
+			pushChild(i*currentMaxChildren + std::round((j * workingAngle/float(currentInitialChildren+1)) / turretAngleDiff));
 		}
 	}
 }
@@ -175,7 +175,7 @@ void MotherTurretHazard::pushInitialChildren(int childCount) {
 CircleHazard* MotherTurretHazard::makeTurret(int turretNum) const {
 	GenericFactoryConstructionData constructionData;
 	const float angle = getChildTurretAngle(turretNum);
-	double* posArr = new double[3]{ this->x + (this->r+childDistFromMother) * cos(angle), this->y + (this->r+childDistFromMother) * sin(angle), double(angle) };
+	double* posArr = new double[3]{ this->x + (this->r+childDistFromMother) * std::cos(angle), this->y + (this->r+childDistFromMother) * std::sin(angle), double(angle) };
 	constructionData = GenericFactoryConstructionData(3, posArr);
 	CircleHazard* childTurret = HazardDataGovernor::getCircleHazardFactory("vanilla", "targeting_turret")(constructionData);
 	return childTurret;
@@ -236,7 +236,7 @@ void MotherTurretHazard::tick_chooseSpot() {
 			if (childTurretAlive[i]) {
 				angleDiff[i] = -2*PI;
 			} else {
-				angleDiff[i] = abs(SimpleVector2D::angleBetween(this->velocity, SimpleVector2D(getChildTurretAngle(i), 0, true)));
+				angleDiff[i] = std::abs(SimpleVector2D::angleBetween(this->velocity, SimpleVector2D(getChildTurretAngle(i), 0, true)));
 			}
 		}
 		targetingNum = findMaxIndex(angleDiff, maxChildTurrets);
@@ -304,7 +304,7 @@ void MotherTurretHazard::turnTowardsPoint(int turretNum) {
 	//see TargetingTurretHazard::turnTowardsTank
 	SimpleVector2D distToChild = SimpleVector2D(getChildTurretAngle(turretNum), this->r+childDistFromMother, true);
 	float theta = SimpleVector2D::angleBetween(distToChild, velocity);
-	if (abs(theta) < float(PI)/turningIncrement) {
+	if (std::abs(theta) < float(PI)/turningIncrement) {
 		//too small to adjust angle
 	} else {
 		//large angle adjustment needed
@@ -318,7 +318,7 @@ void MotherTurretHazard::turnTowardsPoint(int turretNum) {
 
 bool MotherTurretHazard::isPointedAt(int turretNum) const {
 	float angle = getChildTurretAngle(turretNum);
-	return (abs(SimpleVector2D::angleBetween(velocity, SimpleVector2D(angle, 0, true))) < float(PI)/turningIncrement);
+	return (std::abs(SimpleVector2D::angleBetween(velocity, SimpleVector2D(angle, 0, true))) < float(PI)/turningIncrement);
 }
 
 bool MotherTurretHazard::reasonableLocation() const {

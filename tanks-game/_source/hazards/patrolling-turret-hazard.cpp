@@ -145,7 +145,7 @@ bool PatrollingTurretHazard::isCloseAsPossibleToCurrentPoint() const {
 	//if distance is less than current velocity, not close enough
 	double xDist = this->x - getRoutePosX(currentPatrolTarget);
 	double yDist = this->y - getRoutePosY(currentPatrolTarget);
-	float dist = sqrt(xDist*xDist + yDist*yDist);
+	float dist = std::sqrt(xDist*xDist + yDist*yDist);
 	return (dist < velocity.getMagnitude());
 }
 
@@ -157,7 +157,7 @@ void PatrollingTurretHazard::turnTowardsPoint() {
 	//see TargetingTurretHazard::turnTowardsTank
 	SimpleVector2D distToPoint = SimpleVector2D(getRoutePosX(currentPatrolTarget) - this->x, getRoutePosY(currentPatrolTarget) - this->y);
 	float theta = SimpleVector2D::angleBetween(distToPoint, velocity);
-	if (abs(theta) < float(PI)/turningIncrement) {
+	if (std::abs(theta) < float(PI)/turningIncrement) {
 		//too small to adjust angle
 	} else {
 		//large angle adjustment needed
@@ -172,7 +172,7 @@ void PatrollingTurretHazard::turnTowardsPoint() {
 bool PatrollingTurretHazard::isPointedAtPoint() const {
 	SimpleVector2D distToPoint = SimpleVector2D(getRoutePosX(currentPatrolTarget) - this->x, getRoutePosY(currentPatrolTarget) - this->y);
 	float theta = SimpleVector2D::angleBetween(distToPoint, velocity);
-	return (abs(theta) < float(PI)/turningIncrement);
+	return (std::abs(theta) < float(PI)/turningIncrement);
 }
 
 bool PatrollingTurretHazard::reasonableLocation() const {
@@ -190,14 +190,14 @@ bool PatrollingTurretHazard::reasonableLocation() const {
 
 		const SimpleVector2D path = SimpleVector2D(getRoutePosX(end_pos) - getRoutePosX(start_pos), getRoutePosY(end_pos), getRoutePosY(start_pos));
 		double outerPath[4] = {
-			getRoutePosX(start_pos) + getR() * cos(path.getAngle() - float(PI/2)), getRoutePosY(start_pos) + getR() * sin(path.getAngle() - float(PI/2)),
-			getRoutePosX(end_pos)   + getR() * cos(path.getAngle() - float(PI/2)), getRoutePosY(end_pos)   + getR() * sin(path.getAngle() - float(PI/2)) };
+			getRoutePosX(start_pos) + getR() * std::cos(path.getAngle() - float(PI/2)), getRoutePosY(start_pos) + getR() * std::sin(path.getAngle() - float(PI/2)),
+			getRoutePosX(end_pos)   + getR() * std::cos(path.getAngle() - float(PI/2)), getRoutePosY(end_pos)   + getR() * std::sin(path.getAngle() - float(PI/2)) };
 		double mainPath[4] = {
 			getRoutePosX(start_pos), getRoutePosY(start_pos),
 			getRoutePosX(end_pos), getRoutePosY(end_pos) };
 		double innerPath[4] = {
-			getRoutePosX(start_pos) + getR() * cos(path.getAngle() + float(PI/2)), getRoutePosY(start_pos) + getR() * sin(path.getAngle() + float(PI/2)),
-			getRoutePosX(end_pos)   + getR() * cos(path.getAngle() + float(PI/2)), getRoutePosY(end_pos)   + getR() * sin(path.getAngle() + float(PI/2)) };
+			getRoutePosX(start_pos) + getR() * std::cos(path.getAngle() + float(PI/2)), getRoutePosY(start_pos) + getR() * std::sin(path.getAngle() + float(PI/2)),
+			getRoutePosX(end_pos)   + getR() * std::cos(path.getAngle() + float(PI/2)), getRoutePosY(end_pos)   + getR() * std::sin(path.getAngle() + float(PI/2)) };
 
 		for (int j = 0; j < WallManager::getNumWalls(); j++) {
 			if (CollisionHandler::lineRectCollision(outerPath[0], outerPath[1], outerPath[2], outerPath[3], WallManager::getWall(j))) {
@@ -472,7 +472,7 @@ CircleHazard* PatrollingTurretHazard::randomizingFactory(double x_start, double 
 		double* stoppingLocations = new double[stoppingLocationCount*2];
 		double* waitTimes = new double[stoppingLocationCount];
 
-		waitTimes[0] = floor(LevelRNG::randNumInRange(150, 200+1));
+		waitTimes[0] = std::floor(LevelRNG::randNumInRange(150, 200+1));
 		if (count >= 3) {
 			stoppingLocations[0] = static_cast<const double*>(args.getDataPortion(0).get())[1];
 			stoppingLocations[1] = static_cast<const double*>(args.getDataPortion(0).get())[2];
@@ -502,7 +502,7 @@ CircleHazard* PatrollingTurretHazard::randomizingFactory(double x_start, double 
 
 		bool outOfBounds;
 		for (int i = 1; i < stoppingLocationCount; i++) {
-			waitTimes[i] = floor(LevelRNG::randNumInRange(150, 200+1));
+			waitTimes[i] = std::floor(LevelRNG::randNumInRange(150, 200+1));
 			int location_attempts = 0;
 			bool blockedPosition;
 			do {

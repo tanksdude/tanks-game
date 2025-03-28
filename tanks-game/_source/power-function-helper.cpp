@@ -75,16 +75,16 @@ std::pair<bool, InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct>> P
 	//I have no idea if this is correct but it behaves exactly as I want it to, I think
 	//it's not exact because intersection points aren't calculated but it's close enough
 
-	if ((abs(x - b->x) <= b->r) && (abs(y - b->y) <= b->r)) {
-		double d = sqrt((x - b->x)*(x - b->x) + (y - b->y)*(y - b->y));
+	if ((std::abs(x - b->x) <= b->r) && (std::abs(y - b->y) <= b->r)) {
+		double d = std::sqrt((x - b->x)*(x - b->x) + (y - b->y)*(y - b->y));
 		if (d <= b->r) {
 			double b_xDelta = 0, b_yDelta = 0;
 			float  b_angleDelta;
 			double w_xDelta, w_yDelta;
 
-			float angle = atan2((y - b->y), (x - b->x));
-			b_yDelta -= sin(angle) * (b->r - d);
-			b_xDelta -= cos(angle) * (b->r - d);
+			float angle = std::atan2((y - b->y), (x - b->x));
+			b_yDelta -= std::sin(angle) * (b->r - d);
+			b_xDelta -= std::cos(angle) * (b->r - d);
 
 			//so a rectangle has an area of influence against a circle: outer edges + radius, and corners are radius (picture a rounded rectangle)
 			//when a bullet's center enters the area, it is inside the rectangle, and therefore needs to reflect
@@ -92,12 +92,12 @@ std::pair<bool, InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct>> P
 			//the bullet's angle needs to reflect off of the perpendicular to the tangent, and the tangent goes through the intersection between the bullet's path and the area of influence
 
 			float newAngle = 2*angle - (b->velocity.getAngle() - float(PI));
-			b_yDelta += sin(newAngle) * (b->r - d);
-			b_xDelta += cos(newAngle) * (b->r - d);
+			b_yDelta += std::sin(newAngle) * (b->r - d);
+			b_xDelta += std::cos(newAngle) * (b->r - d);
 			b_angleDelta = (newAngle - b->velocity.getAngle()); //b->velocity.setAngle(newAngle);
 
-			w_yDelta = sin(angle) * strength;
-			w_xDelta = cos(angle) * strength;
+			w_yDelta = std::sin(angle) * strength;
+			w_xDelta = std::cos(angle) * strength;
 
 			return { true, { false, false, new BulletUpdateStruct(b_xDelta, b_yDelta, 0,0, b_angleDelta, 0), new WallUpdateStruct(w_xDelta, w_yDelta, 0,0) } };
 		}
@@ -167,7 +167,7 @@ Game_ID PowerFunctionHelper::homingGenericTarget(const Bullet* b, bool targetUsi
 			if (t->getTeamID() == b->getTeamID()) {
 				angleDiffs[i] = (2*PI) * 2; //is way more than enough
 			} else {
-				angleDiffs[i] = abs(atan2(b->y - t->y, b->x - t->x));
+				angleDiffs[i] = std::abs(std::atan2(b->y - t->y, b->x - t->x));
 			}
 		}
 		targetTankIndex = findMinIndex(angleDiffs, TankManager::getNumTanks());
@@ -182,7 +182,7 @@ Game_ID PowerFunctionHelper::homingGenericTarget(const Bullet* b, bool targetUsi
 			if (t->getTeamID() == b->getTeamID()) {
 				distDiffs[i] = GAME_WIDTH*2 + GAME_HEIGHT*2; //should be enough
 			} else {
-				distDiffs[i] = sqrt((b->x - t->x)*(b->x - t->x) + (b->y - t->y)*(b->y - t->y)); //TODO: this an issue?
+				distDiffs[i] = std::sqrt((b->x - t->x)*(b->x - t->x) + (b->y - t->y)*(b->y - t->y)); //TODO: this an issue?
 			}
 		}
 		targetTankIndex = findMinIndex(distDiffs, TankManager::getNumTanks());
@@ -203,7 +203,7 @@ void PowerFunctionHelper::homingGenericMove(Bullet* b, Game_ID targetID, float m
 
 	const SimpleVector2D distToTank = SimpleVector2D(t->getX() - b->x, t->getY() - b->y);
 	float theta = SimpleVector2D::angleBetween(distToTank, b->velocity);
-	if (abs(theta) <= maxAngleChange) {
+	if (std::abs(theta) <= maxAngleChange) {
 		//small angle adjustment needed
 		b->velocity.setAngle(distToTank.getAngle());
 	} else {

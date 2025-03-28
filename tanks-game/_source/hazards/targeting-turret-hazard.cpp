@@ -66,9 +66,9 @@ inline void TargetingTurretHazard::updateTrackingPos(const Tank* t, bool pointed
 		targetingX = t->x;
 		targetingY = t->y;
 	} else {
-		float dist = sqrt((t->x - x)*(t->x - x) + (t->y - y)*(t->y - y));
-		targetingX = static_cast<float>(x) + dist * cos(velocity.getAngle());
-		targetingY = static_cast<float>(y) + dist * sin(velocity.getAngle());
+		float dist = std::sqrt((t->x - x)*(t->x - x) + (t->y - y)*(t->y - y));
+		targetingX = static_cast<float>(x) + dist * std::cos(velocity.getAngle());
+		targetingY = static_cast<float>(y) + dist * std::sin(velocity.getAngle());
 	}
 }
 
@@ -134,7 +134,7 @@ void TargetingTurretHazard::tick_lookForNewTarget() {
 		const Tank* t = TankManager::getTank(i);
 		tankVisibility.push_back(canSeeTank(t));
 		if (tankVisibility.at(i)) {
-			distancesToTank.push_back(sqrt((t->x - x)*(t->x - x) + (t->y - y)*(t->y - y)));
+			distancesToTank.push_back(std::sqrt((t->x - x)*(t->x - x) + (t->y - y)*(t->y - y)));
 		} else {
 			distancesToTank.push_back(GAME_WIDTH*2 + GAME_HEIGHT*2);
 		}
@@ -170,7 +170,7 @@ void TargetingTurretHazard::tick_lookForNewTarget() {
 void TargetingTurretHazard::tick_chargeUp() {
 	targetingCount++;
 	if (targetingCount >= stateMultiplier[1] * tickCycle) {
-		BulletManager::pushBullet(new Bullet(x + r*cos(velocity.getAngle()), y + r*sin(velocity.getAngle()), r*BULLET_TO_TANK_RADIUS_RATIO, velocity.getAngle(), Tank::default_maxSpeed*BULLET_TO_TANK_SPEED_RATIO, this->getTeamID(), BulletParentType::individual, this->getGameID()));
+		BulletManager::pushBullet(new Bullet(x + r*std::cos(velocity.getAngle()), y + r*std::sin(velocity.getAngle()), r*BULLET_TO_TANK_RADIUS_RATIO, velocity.getAngle(), Tank::default_maxSpeed*BULLET_TO_TANK_SPEED_RATIO, this->getTeamID(), BulletParentType::individual, this->getGameID()));
 		currentState = 2;
 		targetingCount = 0;
 		targeting = false; //allows target to change (also controls whether the reticule is drawn)
@@ -199,7 +199,7 @@ void TargetingTurretHazard::turnTowardsTank(const Tank* t) {
 	//see PowerFunctionHelper::homingGeneric
 	SimpleVector2D distToTank = SimpleVector2D(t->getX() - this->x, t->getY() - this->y);
 	float theta = SimpleVector2D::angleBetween(distToTank, velocity);
-	if (abs(theta) < float(PI)/turningIncrement) {
+	if (std::abs(theta) < float(PI)/turningIncrement) {
 		//too small to adjust angle
 	} else {
 		//large angle adjustment needed
@@ -212,7 +212,7 @@ void TargetingTurretHazard::turnTowardsTank(const Tank* t) {
 }
 
 bool TargetingTurretHazard::isPointedAt(const Tank* t) const {
-	return (abs(SimpleVector2D::angleBetween(velocity, SimpleVector2D(t->x - x, t->y - y))) < float(PI)/turningIncrement);
+	return (std::abs(SimpleVector2D::angleBetween(velocity, SimpleVector2D(t->x - x, t->y - y))) < float(PI)/turningIncrement);
 }
 
 bool TargetingTurretHazard::reasonableLocation() const {

@@ -109,15 +109,15 @@ bool CollisionHandler::partiallyCollided(const Rect* a, const Circle* b) {
 //bool CollisionHandler::partiallyCollided(const Circle* a, const Rect* b);
 
 bool CollisionHandler::partiallyCollided(const Circle* a, const Circle* b) {
-	if ((abs(a->x - b->x) <= a->r + b->r) && (abs(a->y - b->y) <= (a->r + b->r))) {
-		return (sqrt((a->x - b->x)*(a->x - b->x) + (a->y - b->y)*(a->y - b->y)) <= (a->r + b->r));
+	if ((std::abs(a->x - b->x) <= a->r + b->r) && (std::abs(a->y - b->y) <= (a->r + b->r))) {
+		return (std::sqrt((a->x - b->x)*(a->x - b->x) + (a->y - b->y)*(a->y - b->y)) <= (a->r + b->r));
 	}
 	return false;
 }
 
 bool CollisionHandler::cornerCollided(const Circle* a, double x, double y) { //effectively C-C but C2->r = 0
-	if ((abs(x - a->x) <= a->r) && (abs(y - a->y) <= a->r)) {
-		double d = sqrt((x - a->x)*(x - a->x) + (y - a->y)*(y - a->y));
+	if ((std::abs(x - a->x) <= a->r) && (std::abs(y - a->y) <= a->r)) {
+		double d = std::sqrt((x - a->x)*(x - a->x) + (y - a->y)*(y - a->y));
 		return (d <= a->r);
 	}
 	return false;
@@ -144,15 +144,15 @@ bool CollisionHandler::partiallyCollidedIgnoreEdge(const Rect* a, const Circle* 
 //bool CollisionHandler::partiallyCollidedIgnoreEdge(const Circle* a, const Rect* b);
 
 bool CollisionHandler::partiallyCollidedIgnoreEdge(const Circle* a, const Circle* b) {
-	if ((abs(a->x - b->x) < a->r + b->r) && (abs(a->y - b->y) < (a->r + b->r))) {
-		return (sqrt((a->x - b->x)*(a->x - b->x) + (a->y - b->y)*(a->y - b->y)) < (a->r + b->r));
+	if ((std::abs(a->x - b->x) < a->r + b->r) && (std::abs(a->y - b->y) < (a->r + b->r))) {
+		return (std::sqrt((a->x - b->x)*(a->x - b->x) + (a->y - b->y)*(a->y - b->y)) < (a->r + b->r));
 	}
 	return false;
 }
 
 bool CollisionHandler::cornerCollidedIgnoreEdge(const Circle* a, double x, double y) {
-	if ((abs(x - a->x) < a->r) && (abs(y - a->y) < a->r)) {
-		double d = sqrt((x - a->x)*(x - a->x) + (y - a->y)*(y - a->y));
+	if ((std::abs(x - a->x) < a->r) && (std::abs(y - a->y) < a->r)) {
+		double d = std::sqrt((x - a->x)*(x - a->x) + (y - a->y)*(y - a->y));
 		return (d < a->r);
 	}
 	return false;
@@ -164,10 +164,10 @@ bool CollisionHandler::fullyCollided(const Rect* a, const Rect* b) { //a inside 
 bool CollisionHandler::fullyCollided(const Rect* a, const Circle* b) { //rectangle inside circle
 	if ((a->x >= (b->x - b->r)) && ((a->x + a->w) <= (b->x + b->r)) && (a->y >= (b->y - b->r)) && ((a->y + a->h) <= (b->y + b->r))) { //check R-R collision
 		//check distance between each corner to circle center
-		return ((sqrt(( a->x         - b->x)*( a->x         - b->x) + ( a->y         - b->y)*( a->y         - b->y)) <= b->r) &&
-		        (sqrt(( a->x         - b->x)*( a->x         - b->x) + ((a->y + a->h) - b->y)*((a->y + a->h) - b->y)) <= b->r) &&
-		        (sqrt(((a->x + a->w) - b->x)*((a->x + a->w) - b->x) + ( a->y         - b->y)*( a->y         - b->y)) <= b->r) &&
-		        (sqrt(((a->x + a->w) - b->x)*((a->x + a->w) - b->x) + ((a->y + a->h) - b->y)*((a->y + a->h) - b->y)) <= b->r));
+		return ((std::sqrt(( a->x         - b->x)*( a->x         - b->x) + ( a->y         - b->y)*( a->y         - b->y)) <= b->r) &&
+		        (std::sqrt(( a->x         - b->x)*( a->x         - b->x) + ((a->y + a->h) - b->y)*((a->y + a->h) - b->y)) <= b->r) &&
+		        (std::sqrt(((a->x + a->w) - b->x)*((a->x + a->w) - b->x) + ( a->y         - b->y)*( a->y         - b->y)) <= b->r) &&
+		        (std::sqrt(((a->x + a->w) - b->x)*((a->x + a->w) - b->x) + ((a->y + a->h) - b->y)*((a->y + a->h) - b->y)) <= b->r));
 	}
 	return false;
 }
@@ -176,7 +176,7 @@ bool CollisionHandler::fullyCollided(const Circle* a, const Rect* b) { //circle 
 }
 bool CollisionHandler::fullyCollided(const Circle* a, const Circle* b) { //a inside b
 	if (((a->x - a->r) >= (b->x - b->r)) && ((a->x + a->r) <= (b->x + b->r)) && ((a->y - a->r) >= (b->y - b->r)) && ((a->y + a->r) <= (b->y + b->r))) { //check R-R collision
-		return (sqrt((a->x - b->x)*(a->x - b->x) + (a->y - b->y)*(a->y - b->y)) <= (b->r - a->r));
+		return (std::sqrt((a->x - b->x)*(a->x - b->x) + (a->y - b->y)*(a->y - b->y)) <= (b->r - a->r));
 	}
 	return false;
 }
@@ -341,39 +341,39 @@ void CollisionHandler::pushMovableAwayFromMovable(Rect* movable1, Circle* movabl
 }
 
 void CollisionHandler::pushMovableAwayFromImmovable(Circle* movable, Circle* immovable) {
-	double angle = atan2((movable->y - immovable->y), (movable->x - immovable->x));
-	double d = sqrt((movable->x - immovable->x)*(movable->x - immovable->x) + (movable->y - immovable->y)*(movable->y - immovable->y)) - (movable->r + immovable->r);
-	movable->y -= d * sin(angle);
-	movable->x -= d * cos(angle);
+	double angle = std::atan2((movable->y - immovable->y), (movable->x - immovable->x));
+	double d = std::sqrt((movable->x - immovable->x)*(movable->x - immovable->x) + (movable->y - immovable->y)*(movable->y - immovable->y)) - (movable->r + immovable->r);
+	movable->y -= d * std::sin(angle);
+	movable->x -= d * std::cos(angle);
 }
 void CollisionHandler::pushMovableAwayFromMovable(Circle* movable1, Circle* movable2) {
-	double angle = atan2((movable1->y - movable2->y), (movable1->x - movable2->x));
-	double d = sqrt((movable1->x - movable2->x)*(movable1->x - movable2->x) + (movable1->y - movable2->y)*(movable1->y - movable2->y)) - (movable1->r + movable2->r);
-	movable1->y -= d/2 * sin(angle);
-	movable1->x -= d/2 * cos(angle);
-	movable2->y += d/2 * sin(angle);
-	movable2->x += d/2 * cos(angle);
+	double angle = std::atan2((movable1->y - movable2->y), (movable1->x - movable2->x));
+	double d = std::sqrt((movable1->x - movable2->x)*(movable1->x - movable2->x) + (movable1->y - movable2->y)*(movable1->y - movable2->y)) - (movable1->r + movable2->r);
+	movable1->y -= d/2 * std::sin(angle);
+	movable1->x -= d/2 * std::cos(angle);
+	movable2->y += d/2 * std::sin(angle);
+	movable2->x += d/2 * std::cos(angle);
 }
 
 void CollisionHandler::cornerPushMovableAwayFromImmovable(Circle* movable, double x, double y) {
-	double angle = atan2((y - movable->y), (x - movable->x));
-	double d = movable->r - sqrt((x - movable->x)*(x - movable->x) + (y - movable->y)*(y - movable->y));
-	movable->y -= d * sin(angle);
-	movable->x -= d * cos(angle);
+	double angle = std::atan2((y - movable->y), (x - movable->x));
+	double d = movable->r - std::sqrt((x - movable->x)*(x - movable->x) + (y - movable->y)*(y - movable->y));
+	movable->y -= d * std::sin(angle);
+	movable->x -= d * std::cos(angle);
 }
 void CollisionHandler::cornerPushMovableAwayFromMovable(Circle* movable1, Rect* movable2, double x, double y) {
-	double angle = atan2((y - movable1->y), (x - movable1->x));
-	double d = movable1->r - sqrt((x - movable1->x)*(x - movable1->x) + (y - movable1->y)*(y - movable1->y));
-	movable1->y -= d/2 * sin(angle);
-	movable1->x -= d/2 * cos(angle);
-	movable2->y += d/2 * sin(angle);
-	movable2->x += d/2 * cos(angle);
+	double angle = std::atan2((y - movable1->y), (x - movable1->x));
+	double d = movable1->r - std::sqrt((x - movable1->x)*(x - movable1->x) + (y - movable1->y)*(y - movable1->y));
+	movable1->y -= d/2 * std::sin(angle);
+	movable1->x -= d/2 * std::cos(angle);
+	movable2->y += d/2 * std::sin(angle);
+	movable2->x += d/2 * std::cos(angle);
 }
 void CollisionHandler::cornerPushMovableAwayFromImmovable(Rect* movable, Circle* immovable, double x, double y) {
-	double angle = atan2((immovable->y - y), (immovable->x - x));
-	double d = immovable->r - sqrt((x - immovable->x)*(x - immovable->x) + (y - immovable->y)*(y - immovable->y));
-	movable->y -= d * sin(angle);
-	movable->x -= d * cos(angle);
+	double angle = std::atan2((immovable->y - y), (immovable->x - x));
+	double d = immovable->r - std::sqrt((x - immovable->x)*(x - immovable->x) + (y - immovable->y)*(y - immovable->y));
+	movable->y -= d * std::sin(angle);
+	movable->x -= d * std::cos(angle);
 }
 //void CollisionHandler::cornerPushMovableAwayFromMovable(Rect* movable1, Circle* movable2, double x, double y);
 
@@ -381,7 +381,7 @@ bool CollisionHandler::circleLineIntersectionHappens(const Circle* c, double lin
 	double x1 = lineX1 - c->x, x2 = lineX2 - c->x;
 	double y1 = lineY1 - c->y, y2 = lineY2 - c->y;
 	double dx = x2-x1, dy = y2-y1;
-	double dr = sqrt(dx*dx + dy*dy);
+	double dr = std::sqrt(dx*dx + dy*dy);
 	double D = x1*y2 - x2*y1;
 
 	double discriminant = c->r*c->r * dr*dr - D*D;
@@ -393,7 +393,7 @@ std::pair<PositionHolder, PositionHolder> CollisionHandler::circleLineIntersecti
 	double x1 = lineX1 - c->x, x2 = lineX2 - c->x;
 	double y1 = lineY1 - c->y, y2 = lineY2 - c->y;
 	double dx = x2-x1, dy = y2-y1;
-	double dr = sqrt(dx*dx + dy*dy);
+	double dr = std::sqrt(dx*dx + dy*dy);
 	double D = x1*y2 - x2*y1; //I spent about an hour debugging this, only to find out I did x1*y2 - x1*y1. Don't make the same mistake.
 
 	//check if the user used this incorrectly:
@@ -404,10 +404,10 @@ std::pair<PositionHolder, PositionHolder> CollisionHandler::circleLineIntersecti
 	}
 	*/
 
-	double intersectionX1 = (D*dy - (dy<0 ? -1 : 1) * dx * sqrt(c->r*c->r * dr*dr - D*D)) / (dr*dr);
-	double intersectionX2 = (D*dy + (dy<0 ? -1 : 1) * dx * sqrt(c->r*c->r * dr*dr - D*D)) / (dr*dr);
-	double intersectionY1 = (-D*dx - abs(dy) * sqrt(c->r*c->r * dr*dr - D*D)) / (dr*dr);
-	double intersectionY2 = (-D*dx + abs(dy) * sqrt(c->r*c->r * dr*dr - D*D)) / (dr*dr);
+	double intersectionX1 = (D*dy - (dy<0 ? -1 : 1) * dx * std::sqrt(c->r*c->r * dr*dr - D*D)) / (dr*dr);
+	double intersectionX2 = (D*dy + (dy<0 ? -1 : 1) * dx * std::sqrt(c->r*c->r * dr*dr - D*D)) / (dr*dr);
+	double intersectionY1 = (-D*dx - std::abs(dy) * std::sqrt(c->r*c->r * dr*dr - D*D)) / (dr*dr);
+	double intersectionY2 = (-D*dx + std::abs(dy) * std::sqrt(c->r*c->r * dr*dr - D*D)) / (dr*dr);
 
 	return std::pair<PositionHolder, PositionHolder>{ {intersectionX1 + c->x, intersectionY1 + c->y}, {intersectionX2 + c->x, intersectionY2 + c->y} };
 }

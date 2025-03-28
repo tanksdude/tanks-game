@@ -1,7 +1,7 @@
 #include "spiral-lava-hazard.h"
 
 #include "../constants.h"
-#include <cmath>
+#include <cmath> //sin, cos
 #include <algorithm> //std::clamp, std::min
 #include <iostream>
 #include "../rng.h"
@@ -103,7 +103,7 @@ void SpiralLavaHazard::uninitialize() {
 */
 
 ColorValueHolder SpiralLavaHazard::getColor() const {
-	const float mixVal = .5f * (1.0f + sin(float(PI) * static_cast<float>(tickCount/tickCycle)));
+	const float mixVal = .5f * (1.0f + std::sin(float(PI) * static_cast<float>(tickCount/tickCycle)));
 	if (currentlyActive) {
 		return ColorMixer::mix(SpiralLavaHazard::darkColor, SpiralLavaHazard::lightColor, mixVal);
 	} else {
@@ -130,7 +130,7 @@ float SpiralLavaHazard::getLavaBlobAngle(int blobNum, double tickValue) const {
 }
 
 double SpiralLavaHazard::getLavaBlobDist(double tickValue) const {
-	return maxLavaDist * sin(PI * (tickValue / tickCycle)); //not 2*PI because only the >0 part is wanted
+	return maxLavaDist * std::sin(PI * (tickValue / tickCycle)); //not 2*PI because only the >0 part is wanted
 }
 
 inline double SpiralLavaHazard::getLavaBlobRadius() const {
@@ -177,8 +177,8 @@ void SpiralLavaHazard::tick() {
 		CircularLavaHazard* blob = static_cast<CircularLavaHazard*>(ch);
 		const double lavaDist = getLavaBlobDist(tickValue);
 		const float lavaAngle = getLavaBlobAngle(i, tickValue);
-		blob->x = (this->x + this->w/2) + lavaDist * cos(lavaAngle);
-		blob->y = (this->y + this->h/2) + lavaDist * sin(lavaAngle);
+		blob->x = (this->x + this->w/2) + lavaDist * std::cos(lavaAngle);
+		blob->y = (this->y + this->h/2) + lavaDist * std::sin(lavaAngle);
 		//I would prefer to use deltas instead of absolutes, but this is way easier
 		if (tickValue == 0) {
 			//hack to allow touching the hazard without dying

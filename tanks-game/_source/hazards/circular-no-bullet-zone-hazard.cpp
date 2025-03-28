@@ -56,7 +56,7 @@ bool CircularNoBulletZoneHazard::initializeVertices() {
 
 	body_vertices[0] = SimpleVector2D(0, 0);
 	for (int i = 1; i < Circle::NumOfSides+1; i++) {
-		body_vertices[i] = SimpleVector2D(cos((i-1) * (2*PI / Circle::NumOfSides)), sin((i-1) * (2*PI / Circle::NumOfSides)));
+		body_vertices[i] = SimpleVector2D(std::cos((i-1) * (2*PI / Circle::NumOfSides)), std::sin((i-1) * (2*PI / Circle::NumOfSides)));
 	}
 
 	for (int i = 0; i < Circle::NumOfSides; i++) {
@@ -65,7 +65,7 @@ bool CircularNoBulletZoneHazard::initializeVertices() {
 		body_indices[i*3+2] = (i+1) % Circle::NumOfSides + 1;
 	}
 
-	const int num_vertices_fromSlashCenter = floor(Circle::NumOfSides/4 * X_WIDTH); //vertices from the center of a slash
+	const int num_vertices_fromSlashCenter = std::floor(Circle::NumOfSides/4 * X_WIDTH); //vertices from the center of a slash
 	const int num_vertices_outside = (2*num_vertices_fromSlashCenter + 1) * 4; //all the vertices on the outside
 	std::vector<float> coords_extra;
 	std::vector<unsigned int> indices_extra;
@@ -76,8 +76,8 @@ bool CircularNoBulletZoneHazard::initializeVertices() {
 	for (int k = 0; k < 4; k++) {
 		for (int i = -1*num_vertices_fromSlashCenter; i <= num_vertices_fromSlashCenter; i++) {
 			int val = (k*Circle::NumOfSides/4 + Circle::NumOfSides/8) + i;
-			coords_extra.push_back(cos(val * (2*PI / Circle::NumOfSides)));
-			coords_extra.push_back(sin(val * (2*PI / Circle::NumOfSides)));
+			coords_extra.push_back(std::cos(val * (2*PI / Circle::NumOfSides)));
+			coords_extra.push_back(std::sin(val * (2*PI / Circle::NumOfSides)));
 		}
 
 		for (int i = 0; i < num_vertices_outside/4-1; i++) {

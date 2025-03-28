@@ -27,7 +27,7 @@ ColorValueHolder ColorMixer::HSVtoRGB(float hue, float saturation, float value) 
 	//got this from https://en.wikipedia.org/wiki/HSL_and_HSV#HSV_to_RGB
 	float c = saturation * value;
 	float hPrime = hue / 60;
-	float x = c * (1 - abs(fmod(hPrime,2) - 1));
+	float x = c * (1 - std::abs(std::fmod(hPrime,2) - 1));
 	float R, G, B;
 	if (hPrime < 1) {
 		R=c, G=x, B=0;
@@ -49,7 +49,7 @@ ColorValueHolder ColorMixer::HSVtoRGB(float hue, float saturation, float value) 
 ColorValueHolder ColorMixer::HSVtoRGB_int(int hue, float saturation, float value) {
 	float c = saturation * value;
 	int hPrime = hue / 60;
-	float x = c * (1 - abs(static_cast<float>(hue % 120) / 60 - 1));
+	float x = c * (1 - std::abs(static_cast<float>(hue % 120) / 60 - 1));
 	float R, G, B;
 	switch (hPrime) {
 		case 0:
@@ -71,9 +71,9 @@ ColorValueHolder ColorMixer::HSVtoRGB_int(int hue, float saturation, float value
 
 ColorValueHolder ColorMixer::HSLtoRGB(float hue, float saturation, float light) {
 	//got this from https://en.wikipedia.org/wiki/HSL_and_HSV#HSL_to_RGB
-	float c = (1 - abs(2*light - 1)) * saturation;
+	float c = (1 - std::abs(2*light - 1)) * saturation;
 	float hPrime = hue / 60;
-	float x = c * (1 - abs(fmod(hPrime,2) - 1));
+	float x = c * (1 - std::abs(std::fmod(hPrime,2) - 1));
 	float R, G, B;
 	if (hPrime < 1) {
 		R=c, G=x, B=0;

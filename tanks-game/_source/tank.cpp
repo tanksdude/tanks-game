@@ -67,7 +67,7 @@ bool Tank::initializeVertices() {
 
 	body_vertices[0] = SimpleVector2D(0, 0);
 	for (int i = 1; i < Circle::NumOfSides+1; i++) {
-		body_vertices[i] = SimpleVector2D(cos((i-1) * (2*PI / Circle::NumOfSides)), sin((i-1) * (2*PI / Circle::NumOfSides)));
+		body_vertices[i] = SimpleVector2D(std::cos((i-1) * (2*PI / Circle::NumOfSides)), std::sin((i-1) * (2*PI / Circle::NumOfSides)));
 	}
 
 	for (int i = 0; i < Circle::NumOfSides; i++) {
@@ -246,11 +246,11 @@ void Tank::makeBullet(double x, double y, double radius, float angle, float spee
 }
 
 void Tank::defaultMakeBullet(float angle) {
-	makeBulletCommon(x + r*cos(angle), y + r*sin(angle), r*BULLET_TO_TANK_RADIUS_RATIO, angle, maxSpeed*BULLET_TO_TANK_SPEED_RATIO);
+	makeBulletCommon(x + r*std::cos(angle), y + r*std::sin(angle), r*BULLET_TO_TANK_RADIUS_RATIO, angle, maxSpeed*BULLET_TO_TANK_SPEED_RATIO);
 }
 
 void Tank::defaultMakeBullet(float angle, float edgeAngleOffset) {
-	makeBulletCommon(x + r*cos(angle), y + r*sin(angle), r*BULLET_TO_TANK_RADIUS_RATIO, angle + edgeAngleOffset, maxSpeed*BULLET_TO_TANK_SPEED_RATIO);
+	makeBulletCommon(x + r*std::cos(angle), y + r*std::sin(angle), r*BULLET_TO_TANK_RADIUS_RATIO, angle + edgeAngleOffset, maxSpeed*BULLET_TO_TANK_SPEED_RATIO);
 }
 
 void Tank::preciseMakeBullet(double x, double y, float angle) {
@@ -504,7 +504,7 @@ void Tank::updateTurningIncrement() {
 	}
 
 	turningIncrement = highest * lowest * value * level_amount * default_turningIncrement * (negativeCount%2 == 0 ? 1 : -1);
-	velocity.setAngle(round(velocity.getAngle() / (float(PI) / turningIncrement)) * (float(PI) / turningIncrement));
+	velocity.setAngle(std::round(velocity.getAngle() / (float(PI) / turningIncrement)) * (float(PI) / turningIncrement));
 }
 
 void Tank::powerCalculate() {
@@ -750,11 +750,11 @@ inline void Tank::drawBody(float alpha) const {
 			color = tankPowers[i]->getColor();
 			color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 
-			float rotatePercent = floor((float(i) / visiblePowerCount) * Circle::NumOfSides) / Circle::NumOfSides;
-			float nextRotatePercent = floor((float(i+1) / visiblePowerCount) * Circle::NumOfSides) / Circle::NumOfSides;
-			//unsigned int rotateVertices = floor((nextRotatePercent - rotatePercent) * Circle::NumOfSides);
-			unsigned int rotateVertexStart = floor(rotatePercent * Circle::NumOfSides);
-			unsigned int rotateVertexEnd = floor(nextRotatePercent * Circle::NumOfSides);
+			float rotatePercent = std::floor((float(i) / visiblePowerCount) * Circle::NumOfSides) / Circle::NumOfSides;
+			float nextRotatePercent = std::floor((float(i+1) / visiblePowerCount) * Circle::NumOfSides) / Circle::NumOfSides;
+			//unsigned int rotateVertices = (nextRotatePercent - rotatePercent) * Circle::NumOfSides;
+			unsigned int rotateVertexStart = rotatePercent * Circle::NumOfSides;
+			unsigned int rotateVertexEnd = nextRotatePercent * Circle::NumOfSides;
 
 			coordsAndColor_colorSplit.push_back(x);
 			coordsAndColor_colorSplit.push_back(y);
@@ -1055,7 +1055,7 @@ inline void Tank::drawExtraExtraBarrels(float alpha) const {
 
 		SimpleVector2D distFromCenter = SimpleVector2D(getEvaluatedCannonAngle(0, i+1), r, true);
 		const float computedAngle = shootingPoints[0].angleFromCenter + extraShootingPoints[i+1].angleFromCenter;
-		const float extraCannonLength = static_cast<float>(r) * (sin(computedAngle)*sin(computedAngle) * .25f + .25f); //.25 at main cannon, .5 at 90deg //x^2 instead of abs because 45deg cannon was too long
+		const float extraCannonLength = static_cast<float>(r) * (std::sin(computedAngle)*std::sin(computedAngle) * .25f + .25f); //.25 at main cannon, .5 at 90deg //x^2 instead of abs because 45deg cannon was too long
 		SimpleVector2D dist = SimpleVector2D(getEvaluatedCannonAngleWithEdge(0, i+1), extraCannonLength, true);
 		SimpleVector2D distCW = SimpleVector2D(getEvaluatedCannonAngleWithEdge(0, i+1) - float(PI/2), lineWidth, true);
 

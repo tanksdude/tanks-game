@@ -1,7 +1,7 @@
 #include "level-helper.h"
 
 #include "constants.h"
-#include <cmath>
+#include <cmath> //ceil
 #include <algorithm> //std::find
 #include "rng.h"
 #include "mylib.h" //isInArray, weightedSelect
@@ -436,7 +436,7 @@ std::string* LevelHelper::getRandomPowers(int count, const bool* powersCanStack,
 }
 
 std::string LevelHelper::powerAlternate(int position, int rand, std::string p1, std::string p2) {
-	return (((int)ceil( float(position%3) / 3) + rand) % 2 == 0 ? p1 : p2);
+	return (((int)std::ceil( float(position%3) / 3) + rand) % 2 == 0 ? p1 : p2);
 	/*
 	{0,   1,   2,  3} // start
 	{0,   1,   2,  0} // %3, then cast to float
@@ -453,7 +453,7 @@ std::string LevelHelper::simplePowerAlternate(int position, int rand, std::strin
 
 int LevelHelper::powerAlternateNum(int position, int rand) {
 	//see powerAlternate()
-	return ((int)ceil( float(position%3) / 3) + rand) % 2;
+	return ((int)std::ceil( float(position%3) / 3) + rand) % 2;
 }
 
 int LevelHelper::simplePowerAlternateNum(int position, int rand) {

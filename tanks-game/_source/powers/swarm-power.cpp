@@ -2,6 +2,7 @@
 #include "../game-manager.h" //settings
 
 #include "../constants.h"
+#include <cmath> //abs, sqrt
 
 const float SwarmPower::initialAngleDiff = 15 * (PI/180);
 
@@ -83,10 +84,10 @@ InteractionBoolHolder SwarmBulletPower::modifiedMovement(Bullet* b) {
 	const float x0 = b->x - parentTank->x;
 	const float y0 = b->y - parentTank->y;
 
-	const float point1XFromTank = ((r*r) / d0Squared) * x0   +   (r / d0Squared * sqrt(d0Squared - (r*r))) * -y0;
-	const float point1YFromTank = ((r*r) / d0Squared) * y0   +   (r / d0Squared * sqrt(d0Squared - (r*r))) * x0;
-	const float point2XFromTank = ((r*r) / d0Squared) * x0   -   (r / d0Squared * sqrt(d0Squared - (r*r))) * -y0;
-	const float point2YFromTank = ((r*r) / d0Squared) * y0   -   (r / d0Squared * sqrt(d0Squared - (r*r))) * x0;
+	const float point1XFromTank = ((r*r) / d0Squared) * x0   +   (r / d0Squared * std::sqrt(d0Squared - (r*r))) * -y0;
+	const float point1YFromTank = ((r*r) / d0Squared) * y0   +   (r / d0Squared * std::sqrt(d0Squared - (r*r))) * x0;
+	const float point2XFromTank = ((r*r) / d0Squared) * x0   -   (r / d0Squared * std::sqrt(d0Squared - (r*r))) * -y0;
+	const float point2YFromTank = ((r*r) / d0Squared) * y0   -   (r / d0Squared * std::sqrt(d0Squared - (r*r))) * x0;
 
 	const SimpleVector2D distToPoint1 = SimpleVector2D(point1XFromTank - x0, point1YFromTank - y0); //SimpleVector2D((parentTank->x + point1XFromTank) - b->x, (parentTank->y + point1YFromTank) - b->y);
 	const SimpleVector2D distToPoint2 = SimpleVector2D(point2XFromTank - x0, point2YFromTank - y0); //SimpleVector2D((parentTank->x + point2XFromTank) - b->x, (parentTank->y + point2YFromTank) - b->y);
@@ -94,8 +95,8 @@ InteractionBoolHolder SwarmBulletPower::modifiedMovement(Bullet* b) {
 	const float angleToPoint2 = SimpleVector2D::angleBetween(distToPoint2, b->velocity);
 
 	//copied from PowerFunctionHelper::homingGenericMove()
-	if (abs(angleToPoint1) < abs(angleToPoint2)) {
-		if (abs(angleToPoint1) < SwarmPower::homingStrength) {
+	if (std::abs(angleToPoint1) < std::abs(angleToPoint2)) {
+		if (std::abs(angleToPoint1) < SwarmPower::homingStrength) {
 			//small angle adjustment needed
 			b->velocity.setAngle(distToPoint1.getAngle());
 		} else {
@@ -107,7 +108,7 @@ InteractionBoolHolder SwarmBulletPower::modifiedMovement(Bullet* b) {
 			}
 		}
 	} else {
-		if (abs(angleToPoint2) < SwarmPower::homingStrength) {
+		if (std::abs(angleToPoint2) < SwarmPower::homingStrength) {
 			//small angle adjustment needed
 			b->velocity.setAngle(distToPoint2.getAngle());
 		} else {

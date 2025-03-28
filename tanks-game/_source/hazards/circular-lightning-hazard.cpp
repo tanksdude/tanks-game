@@ -3,7 +3,7 @@
 #include "../constants.h"
 #include <cmath>
 #include <stdexcept>
-#include <algorithm> //std::copy, std::clamp
+#include <algorithm> //std::find, std::copy, std::clamp
 #include <iostream>
 #include "../rng.h"
 #include "../mylib.h" //pointInPolygon
@@ -75,7 +75,7 @@ bool CircularLightningHazard::initializeVertices() {
 
 	body_vertices[0] = SimpleVector2D(0, 0);
 	for (int i = 1; i < Circle::NumOfSides+1; i++) {
-		body_vertices[i] = SimpleVector2D(cos((i-1) * (2*PI / Circle::NumOfSides)), sin((i-1) * (2*PI / Circle::NumOfSides)));
+		body_vertices[i] = SimpleVector2D(std::cos((i-1) * (2*PI / Circle::NumOfSides)), std::sin((i-1) * (2*PI / Circle::NumOfSides)));
 	}
 
 	for (int i = 0; i < Circle::NumOfSides; i++) {
@@ -171,9 +171,9 @@ void CircularLightningHazard::pushBolt(LightningBolt* l) {
 void CircularLightningHazard::pushDefaultBolt(int num, bool randomize) {
 	//the default bolt is from center to a random point
 	float randR = float(r)*VisualRNG::randFuncf(), randAngle = float(2*PI)*VisualRNG::randFuncf();
-	float xEnd = randR*cos(randAngle), yEnd = randR*sin(randAngle);
+	float xEnd = randR*std::cos(randAngle), yEnd = randR*std::sin(randAngle);
 	for (int i = 0; i < num; i++) {
-		LightningBolt* l = new LightningBolt(0, 0, xEnd, yEnd, getDefaultNumBoltPoints(sqrt(xEnd*xEnd + yEnd*yEnd)));
+		LightningBolt* l = new LightningBolt(0, 0, xEnd, yEnd, getDefaultNumBoltPoints(std::sqrt(xEnd*xEnd + yEnd*yEnd)));
 		if (randomize) {
 			pushBolt(l);
 		} else {
@@ -219,11 +219,11 @@ void CircularLightningHazard::refreshBolt(LightningBolt* l) const {
 		return;
 	}
 
-	float boltDeltaX = l->positions[l->length*2-2] - l->positions[0];
-	float boltDeltaY = l->positions[l->length*2-1] - l->positions[1];
-	SimpleVector2D boltVec = SimpleVector2D(boltDeltaX, boltDeltaY);
-	float sinAngle = sin(boltVec.getAngle());
-	float cosAngle = cos(boltVec.getAngle()); //to avoid recalculating each time (though it would probably get optimized out)
+	const float boltDeltaX = l->positions[l->length*2-2] - l->positions[0];
+	const float boltDeltaY = l->positions[l->length*2-1] - l->positions[1];
+	const SimpleVector2D boltVec = SimpleVector2D(boltDeltaX, boltDeltaY);
+	const float sinAngle = std::sin(boltVec.getAngle());
+	const float cosAngle = std::cos(boltVec.getAngle()); //to avoid recalculating each time (though it would probably get optimized out)
 	const float newH = boltVec.getMagnitude() * 1.0f; //maybe *.5, I dunno
 	const float maxVariance = (1.0f/4.0f) * boltVec.getMagnitude() * 1.0f; //(same here)
 
@@ -251,7 +251,7 @@ void CircularLightningHazard::refreshBolt(LightningBolt* l) const {
 			randTemp = maxVariance * (VisualRNG::randFuncf()*2-1);
 			testX = l->positions[j*2 - 2] + (boltDeltaX/(l->length-1)) - randTemp * sinAngle;
 			testY = l->positions[j*2 - 1] + (boltDeltaY/(l->length-1)) + randTemp * cosAngle;
-		} while ((sqrt(testX*testX + testY*testY) > static_cast<float>(r)) || !pointInPolygon(6, polygonX, polygonY, testX, testY));
+		} while ((std::sqrt(testX*testX + testY*testY) > static_cast<float>(r)) || !pointInPolygon(6, polygonX, polygonY, testX, testY));
 		//the first case is rare, but I'm fairly certain it's a useless check if pointInPolygon is checked first
 		l->positions[j*2]   = testX;
 		l->positions[j*2+1] = testY;
@@ -481,8 +481,8 @@ void CircularLightningHazard::drawBolts_Pose(float alpha) const {
 	for (int i = 0; i < 4; i++) {
 		//from pushDefaultBolt(), mostly
 		float dist = r * .75, angle = PI/4 + i*(PI/2);
-		float xEnd = dist*cos(angle), yEnd = dist*sin(angle);
-		LightningBolt* l = new LightningBolt(0, 0, xEnd, yEnd, getDefaultNumBoltPoints(sqrt(xEnd*xEnd + yEnd*yEnd)));
+		float xEnd = dist*std::cos(angle), yEnd = dist*std::sin(angle);
+		LightningBolt* l = new LightningBolt(0, 0, xEnd, yEnd, getDefaultNumBoltPoints(std::sqrt(xEnd*xEnd + yEnd*yEnd)));
 
 		refreshBolt(l);
 		poseBolts.push_back(l);

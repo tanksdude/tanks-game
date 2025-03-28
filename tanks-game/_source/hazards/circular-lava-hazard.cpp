@@ -58,7 +58,7 @@ bool CircularLavaHazard::initializeVertices() {
 
 	bubble_vertices[0] = SimpleVector2D(0, 0);
 	for (int i = 1; i < CircularLavaHazard::BubbleSideCount+1; i++) {
-		bubble_vertices[i] = SimpleVector2D(cos((i-1) * (2*PI / CircularLavaHazard::BubbleSideCount)), sin((i-1) * (2*PI / CircularLavaHazard::BubbleSideCount)));
+		bubble_vertices[i] = SimpleVector2D(std::cos((i-1) * (2*PI / CircularLavaHazard::BubbleSideCount)), std::sin((i-1) * (2*PI / CircularLavaHazard::BubbleSideCount)));
 	}
 
 	for (int i = 0; i < CircularLavaHazard::BubbleSideCount; i++) {
@@ -103,18 +103,18 @@ void CircularLavaHazard::pushNewBubble(float bubbleRadius) {
 	float r0, a0, r1, a1;
 	a0 = VisualRNG::randFuncf() * float(2*PI);
 	r0 = VisualRNG::randFuncf() * (float(r) - bubbleRadius);
-	x0 = r0 * cos(a0);
-	y0 = r0 * sin(a0);
+	x0 = r0 * std::cos(a0);
+	y0 = r0 * std::sin(a0);
 	do {
 		a1 = VisualRNG::randFuncf() * float(2*PI);
 		r1 = VisualRNG::randFuncf() * (float(r) - bubbleRadius);
-		x1 = r1 * cos(a1);
-		y1 = r1 * sin(a1);
+		x1 = r1 * std::cos(a1);
+		y1 = r1 * std::sin(a1);
 		attempts++;
-	} while ((attempts < 8) && (abs(x0-x1) < float(r)/16 || abs(y0-y1) < float(r)/16));
+	} while ((attempts < 8) && (std::abs(x0-x1) < float(r)/16 || std::abs(y0-y1) < float(r)/16));
 
 	if (attempts < 8) {
-		float maxTick = floor(VisualRNG::randFloatInRange(200, 300+1));
+		float maxTick = std::floor(VisualRNG::randFloatInRange(200, 300+1));
 		bubbles.push_back(new LavaBubble(bubbleRadius, x0/float(r), y0/float(r), x1/float(r), y1/float(r), maxTick));
 	}
 }

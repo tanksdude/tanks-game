@@ -763,8 +763,7 @@ InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> CustomBulletPower:
 	std::shared_ptr<BulletUpdateStruct> b_update;
 	std::shared_ptr<WallUpdateStruct> w_update;
 
-	if (abs(b->velocity.getMagnitude()) * Bullet::default_radius/b->r <= .5) {
-		//should abs() be used? it's not needed...
+	if (b->velocity.getMagnitude() * Bullet::default_radius/b->r <= .5) {
 		auto result = PowerFunctionHelper::bounceGenericWithCorners(b, w);
 		b_update = result.second.firstUpdate;
 		w_update = result.second.secondUpdate;

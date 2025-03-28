@@ -1,7 +1,7 @@
 #include "generalized-lava.h"
 
 #include "constants.h"
-#include <cmath>
+#include <cmath> //sin, cos, sqrt
 #include <algorithm> //std::copy
 #include <limits> //std::numeric_limits<float>::infinity();
 #include "rng.h"
@@ -68,9 +68,9 @@ float GeneralizedLava::LavaBubble::getR() const noexcept {
 	return r;
 	/*
 	switch (state) {
-		case 0: return sqrt(tickCount / (tickMax * stateMultiplier[0])) * (r/2) + (r/2);
+		case 0: return std::sqrt(tickCount / (tickMax * stateMultiplier[0])) * (r/2) + (r/2);
 		case 1: return r;
-		case 2: return sqrt(1.0f - tickCount / (tickMax * stateMultiplier[2])) * (r/2) + (r/2);
+		case 2: return std::sqrt(1.0f - tickCount / (tickMax * stateMultiplier[2])) * (r/2) + (r/2);
 		default: return 0;
 	}
 	*/
@@ -81,7 +81,7 @@ float GeneralizedLava::LavaBubble::getR() const noexcept {
 ColorValueHolder GeneralizedLava::getBackgroundColor() const {
 	//colors: red (#FF0000) and orange-red (#FFAA00) mixed
 	return ColorMixer::mix(ColorValueHolder(1.0f, 0.0f, 0.0f), ColorValueHolder(1.0f, 0.875f, 0.0f),
-	                       .625f + sin(float(2*PI) * static_cast<float>(tickCount/tickCycle))/8 + cos(float(2*PI) * 8 * static_cast<float>(tickCount/tickCycle))/8);
+	                       .625f + std::sin(float(2*PI) * static_cast<float>(tickCount/tickCycle))/8 + std::cos(float(2*PI) * 8 * static_cast<float>(tickCount/tickCycle))/8);
 }
 
 ColorValueHolder GeneralizedLava::getBackgroundColor_Pose() const {

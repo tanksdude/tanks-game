@@ -98,8 +98,8 @@ void MagnetismLevelEffect::doEffects(Level* parent) const {
 				const double& maxMoveAmount = watchingData[i].second;
 				if (distToTank.getMagnitude() < distToStartMoving) {
 					const double maxMovePercentage = 1 - (distToTank.getMagnitude() / distToStartMoving); //linear interpolation
-					moveDelta[0] += (maxMoveAmount * maxMovePercentage) * cos(distToTank.getAngle());
-					moveDelta[1] += (maxMoveAmount * maxMovePercentage) * sin(distToTank.getAngle());
+					moveDelta[0] += (maxMoveAmount * maxMovePercentage) * std::cos(distToTank.getAngle());
+					moveDelta[1] += (maxMoveAmount * maxMovePercentage) * std::sin(distToTank.getAngle());
 				}
 			}
 			p->x += moveDelta[0];

@@ -45,12 +45,12 @@ TricksterCircleTankPower::TricksterCircleTankPower() {
 #include <cmath>
 
 InteractionBoolHolder TricksterCircleBulletPower::modifiedMovement(Bullet* b) {
-	//displacement from "center" vector = {TricksterCirclePower::movementRadius * cos((2*PI) * (tickCount / TricksterCirclePower::timePeriod)), y value similar}
-	//derivative = {(TricksterCirclePower::movementRadius * (2*PI)) * -sin((2*PI) * (tickCount / TricksterCirclePower::timePeriod)), y value similar}
+	//displacement from "center" vector = {TricksterCirclePower::movementRadius * std::cos((2*PI) * (tickCount / TricksterCirclePower::timePeriod)), y value similar}
+	//derivative = {(TricksterCirclePower::movementRadius * (2*PI)) * -std::sin((2*PI) * (tickCount / TricksterCirclePower::timePeriod)), y value similar}
 
 	//negative tickCount because it looks cooler
-	const float moveXDiff = (TricksterCirclePower::movementRadius * (2*PI)) * -sin((2*PI) * (-tickCount / TricksterCirclePower::timePeriod));
-	const float moveYDiff = (TricksterCirclePower::movementRadius * (2*PI)) *  cos((2*PI) * (-tickCount / TricksterCirclePower::timePeriod));
+	const float moveXDiff = (TricksterCirclePower::movementRadius * (2*PI)) * -std::sin((2*PI) * (-tickCount / TricksterCirclePower::timePeriod));
+	const float moveYDiff = (TricksterCirclePower::movementRadius * (2*PI)) *  std::cos((2*PI) * (-tickCount / TricksterCirclePower::timePeriod));
 	const SimpleVector2D vectorMoveDiff = SimpleVector2D(b->velocity.getXComp() + moveXDiff, b->velocity.getYComp() + moveYDiff);
 
 	b->x += vectorMoveDiff.getXComp();

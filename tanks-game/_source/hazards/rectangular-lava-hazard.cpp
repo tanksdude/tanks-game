@@ -59,7 +59,7 @@ bool RectangularLavaHazard::initializeVertices() {
 
 	bubble_vertices[0] = SimpleVector2D(0, 0);
 	for (int i = 1; i < RectangularLavaHazard::BubbleSideCount+1; i++) {
-		bubble_vertices[i] = SimpleVector2D(cos((i-1) * (2*PI / RectangularLavaHazard::BubbleSideCount)), sin((i-1) * (2*PI / RectangularLavaHazard::BubbleSideCount)));
+		bubble_vertices[i] = SimpleVector2D(std::cos((i-1) * (2*PI / RectangularLavaHazard::BubbleSideCount)), std::sin((i-1) * (2*PI / RectangularLavaHazard::BubbleSideCount)));
 	}
 
 	for (int i = 0; i < RectangularLavaHazard::BubbleSideCount; i++) {
@@ -108,10 +108,10 @@ void RectangularLavaHazard::pushNewBubble(float bubbleRadius) {
 		x1 = VisualRNG::randFloatInRange(bubbleRadius, float(w) - bubbleRadius);
 		y1 = VisualRNG::randFloatInRange(bubbleRadius, float(h) - bubbleRadius);
 		attempts++;
-	} while ((attempts < 8) && (abs(x0-x1) < float(w)/16 || abs(y0-y1) < float(h)/16)); //JS Tanks used w/8 and h/8
+	} while ((attempts < 8) && (std::abs(x0-x1) < float(w)/16 || std::abs(y0-y1) < float(h)/16)); //JS Tanks used w/8 and h/8
 
 	if (attempts < 8) {
-		float maxTick = floor(VisualRNG::randFloatInRange(200, 300+1));
+		float maxTick = std::floor(VisualRNG::randFloatInRange(200, 300+1));
 		bubbles.push_back(new LavaBubble(bubbleRadius, x0/float(w), y0/float(h), x1/float(w), y1/float(h), maxTick));
 	}
 }

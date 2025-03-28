@@ -63,7 +63,7 @@ bool StationaryTurretHazard::initializeVertices() {
 
 	body_vertices[0] = SimpleVector2D(0, 0);
 	for (int i = 1; i < Circle::NumOfSides+1; i++) {
-		body_vertices[i] = SimpleVector2D(cos((i-1) * (2*PI / Circle::NumOfSides)), sin((i-1) * (2*PI / Circle::NumOfSides)));
+		body_vertices[i] = SimpleVector2D(std::cos((i-1) * (2*PI / Circle::NumOfSides)), std::sin((i-1) * (2*PI / Circle::NumOfSides)));
 	}
 
 	for (int i = 0; i < Circle::NumOfSides; i++) {
@@ -119,7 +119,7 @@ void StationaryTurretHazard::tick() {
 		}
 	}
 	if (mustShoot) {
-		BulletManager::pushBullet(new Bullet(x + r*cos(velocity.getAngle()), y + r*sin(velocity.getAngle()), r*(BULLET_TO_TANK_RADIUS_RATIO*2), velocity.getAngle(), Tank::default_maxSpeed*BULLET_TO_TANK_SPEED_RATIO, this->getTeamID(), BulletParentType::individual, this->getGameID()));
+		BulletManager::pushBullet(new Bullet(x + r*std::cos(velocity.getAngle()), y + r*std::sin(velocity.getAngle()), r*(BULLET_TO_TANK_RADIUS_RATIO*2), velocity.getAngle(), Tank::default_maxSpeed*BULLET_TO_TANK_SPEED_RATIO, this->getTeamID(), BulletParentType::individual, this->getGameID()));
 	}
 }
 
@@ -128,8 +128,8 @@ bool StationaryTurretHazard::canSeeTank(const Tank* t) const {
 
 	//line of sight
 	float angleDiff = SimpleVector2D::angleBetween(distToTank, this->velocity);
-	float projMag = distToTank.getMagnitude() * cos(angleDiff);
-	float distToLineOfSight = sqrt(distToTank.getMagnitude()*distToTank.getMagnitude() - projMag*projMag);
+	float projMag = distToTank.getMagnitude() * std::cos(angleDiff);
+	float distToLineOfSight = std::sqrt(distToTank.getMagnitude()*distToTank.getMagnitude() - projMag*projMag);
 	if (distToLineOfSight > t->r) {
 		return false;
 	}
@@ -137,7 +137,7 @@ bool StationaryTurretHazard::canSeeTank(const Tank* t) const {
 	//check walls
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		const Wall* wa = WallManager::getWall(i);
-		if (CollisionHandler::lineRectCollision(x, y, x + distToTank.getMagnitude()*cos(this->velocity.getAngle()), y + distToTank.getMagnitude()*sin(this->velocity.getAngle()), wa)) {
+		if (CollisionHandler::lineRectCollision(x, y, x + distToTank.getMagnitude()*std::cos(this->velocity.getAngle()), y + distToTank.getMagnitude()*std::sin(this->velocity.getAngle()), wa)) {
 			return false;
 		}
 	}

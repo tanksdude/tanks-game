@@ -3,7 +3,7 @@
 #include "../constants.h"
 #include <cmath>
 #include <stdexcept>
-#include <algorithm> //std::copy, std::clamp
+#include <algorithm> //std::find, std::copy, std::clamp
 #include <iostream>
 #include "../rng.h"
 #include "../mylib.h" //pointInPolygon
@@ -134,7 +134,7 @@ void RectangularLightningHazard::specialEffectCircleCollision(const Circle* c) {
 				std::cerr << "WARNING: rectangular lightning endpoint Y out of range!" << std::endl;
 				intersectionY = std::clamp<double>(intersectionY, y, y+h);
 			}
-			boltPoints = getDefaultNumBoltPoints(sqrt((intersectionX - centerPoint->x)*(intersectionX - centerPoint->x) + (intersectionY - centerPoint->y)*(intersectionY - centerPoint->y)));
+			boltPoints = getDefaultNumBoltPoints(std::sqrt((intersectionX - centerPoint->x)*(intersectionX - centerPoint->x) + (intersectionY - centerPoint->y)*(intersectionY - centerPoint->y)));
 		}
 		delete circleCenter;
 	}
@@ -183,7 +183,8 @@ void RectangularLightningHazard::pushDefaultBolt(int num, bool randomize) {
 	//the default bolt is from center to a random point
 	for (int i = 0; i < num; i++) {
 		float xEnd = w*VisualRNG::randFunc(), yEnd = h*VisualRNG::randFunc();
-		LightningBolt* l = new LightningBolt(w/2, h/2, xEnd, yEnd, getDefaultNumBoltPoints(sqrt((xEnd - w/2)*(xEnd - w/2) + (yEnd - h/2)*(yEnd - h/2))));
+		float xDelta = xEnd - static_cast<float>(w)/2, yDelta = yEnd - static_cast<float>(h)/2;
+		LightningBolt* l = new LightningBolt(w/2, h/2, xEnd, yEnd, getDefaultNumBoltPoints(std::sqrt(xDelta*xDelta + yDelta*yDelta)));
 		if (randomize) {
 			pushBolt(l);
 		} else {
@@ -232,11 +233,11 @@ void RectangularLightningHazard::refreshBolt(LightningBolt* l, double smaller, d
 		return;
 	}
 
-	float boltDeltaX = l->positions[l->length*2-2] - l->positions[0];
-	float boltDeltaY = l->positions[l->length*2-1] - l->positions[1];
-	SimpleVector2D boltVec = SimpleVector2D(boltDeltaX, boltDeltaY);
-	float sinAngle = sin(boltVec.getAngle());
-	float cosAngle = cos(boltVec.getAngle()); //to avoid recalculating each time (though it would probably get optimized out)
+	const float boltDeltaX = l->positions[l->length*2-2] - l->positions[0];
+	const float boltDeltaY = l->positions[l->length*2-1] - l->positions[1];
+	const SimpleVector2D boltVec = SimpleVector2D(boltDeltaX, boltDeltaY);
+	const float sinAngle = std::sin(boltVec.getAngle());
+	const float cosAngle = std::cos(boltVec.getAngle()); //to avoid recalculating each time (though it would probably get optimized out)
 	const float newH = boltVec.getMagnitude() * static_cast<float>(smaller/larger);
 	const float maxVariance = (1.0f/4.0f) * boltVec.getMagnitude() * static_cast<float>(smaller/larger);
 
@@ -502,7 +503,7 @@ void RectangularLightningHazard::drawBolts_Pose(float alpha) const {
 		//from pushDefaultBolt(), mostly
 		float xEnd = (i%2==0 ? -1 : 1) * (w*.375), yEnd = (i/2==0 ? -1 : 1) * (h*.375);
 		float xDelta = xEnd - static_cast<float>(w)/2, yDelta = yEnd - static_cast<float>(h)/2;
-		LightningBolt* l = new LightningBolt(w/2, h/2, xEnd, yEnd, getDefaultNumBoltPoints(sqrt(xDelta*xDelta + yDelta*yDelta)));
+		LightningBolt* l = new LightningBolt(w/2, h/2, xEnd, yEnd, getDefaultNumBoltPoints(std::sqrt(xDelta*xDelta + yDelta*yDelta)));
 
 		refreshBolt(l);
 		poseBolts.push_back(l);

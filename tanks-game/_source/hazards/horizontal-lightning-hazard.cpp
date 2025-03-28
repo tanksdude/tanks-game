@@ -116,7 +116,7 @@ void HorizontalLightningHazard::specialEffectCircleCollision(const Circle* c) {
 			std::cerr << "WARNING: horizontal lightning endpoint Y (left half) out of range!" << std::endl;
 			intersectionYL = std::clamp<double>(intersectionYL, y, y+h);
 		}
-		boltPointsL = getDefaultNumBoltPoints(sqrt((intersectionXL - leftPoint->x)*(intersectionXL - leftPoint->x) + (intersectionYL - leftPoint->y)*(intersectionYL - leftPoint->y)));
+		boltPointsL = getDefaultNumBoltPoints(std::sqrt((intersectionXL - leftPoint->x)*(intersectionXL - leftPoint->x) + (intersectionYL - leftPoint->y)*(intersectionYL - leftPoint->y)));
 	}
 
 	if (CollisionHandler::fullyCollided(rightPoint, c)) {
@@ -140,7 +140,7 @@ void HorizontalLightningHazard::specialEffectCircleCollision(const Circle* c) {
 			std::cerr << "WARNING: horizontal lightning endpoint Y (right half) out of range!" << std::endl;
 			intersectionYR = std::clamp<double>(intersectionYR, y, y+h);
 		}
-		boltPointsR = getDefaultNumBoltPoints(sqrt((intersectionXR - rightPoint->x)*(intersectionXR - rightPoint->x) + (intersectionYR - rightPoint->y)*(intersectionYR - rightPoint->y)));
+		boltPointsR = getDefaultNumBoltPoints(std::sqrt((intersectionXR - rightPoint->x)*(intersectionXR - rightPoint->x) + (intersectionYR - rightPoint->y)*(intersectionYR - rightPoint->y)));
 	}
 
 	pushBolt(new LightningBolt(0, h/2, intersectionXL-x, intersectionYL-y, boltPointsL), false);
@@ -256,7 +256,7 @@ void HorizontalLightningHazard::simpleRefreshBolt(LightningBolt* l) const {
 	 * the region is 1/4 triangle, 1/2 rectangle, then 1/4 triangle
 	 */
 
-	float deltaX = (l->positions[l->length*2-2] - l->positions[0]) / (l->length - 1);
+	const float deltaX = (l->positions[l->length*2-2] - l->positions[0]) / (l->length - 1);
 	for (int j = 1; j < l->length-1; j++) {
 		float yRangeLower = l->positions[j*2 - 1] - maxVariance;
 		float yRangeUpper = l->positions[j*2 - 1] + maxVariance;
@@ -264,7 +264,7 @@ void HorizontalLightningHazard::simpleRefreshBolt(LightningBolt* l) const {
 		if (j < l->length/4) { //first quarter
 			yMin = -2*static_cast<float>(h/w) * (deltaX * j) + static_cast<float>(h)/2;
 			yMax =  2*static_cast<float>(h/w) * (deltaX * j) + static_cast<float>(h)/2;
-		} else if (j < l->length * (3.0f/4.0f)) { //middle half
+		} else if (j < 3 * l->length / 4) { //middle half
 			yMin = 0;
 			yMax = h;
 		} else { //last quarter

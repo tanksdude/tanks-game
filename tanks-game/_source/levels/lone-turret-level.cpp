@@ -1,6 +1,7 @@
 #include "lone-turret-level.h"
 
 #include "../constants.h"
+#include <cmath> //floor
 #include "../rng.h"
 
 #include "../reset-things.h"
@@ -26,7 +27,7 @@ void LoneTurretLevel::initialize() {
 
 	//LevelHelper::pushClassicWalls(color); //JS
 
-	posArr = new double[3]{ GAME_WIDTH/2, GAME_HEIGHT/2, PI/2 * (floor(LevelRNG::randFunc()*2)*2-1) };
+	posArr = new double[3]{ GAME_WIDTH/2, GAME_HEIGHT/2, PI/2 * (std::floor(LevelRNG::randFunc()*2)*2-1) };
 	constructionData = GenericFactoryConstructionData(3, posArr);
 	HazardManager::pushCircleHazard("vanilla", "targeting_turret", constructionData);
 

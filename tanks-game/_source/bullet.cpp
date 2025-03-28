@@ -90,7 +90,7 @@ bool Bullet::initializeVertices() {
 
 	body_vertices[0] = SimpleVector2D(0, 0);
 	for (int i = 1; i < Bullet::BulletSideCount+1; i++) {
-		body_vertices[i] = SimpleVector2D(cos((i-1) * (2*PI / Bullet::BulletSideCount) + PI/2), sin((i-1) * (2*PI / Bullet::BulletSideCount) + PI/2));
+		body_vertices[i] = SimpleVector2D(std::cos((i-1) * (2*PI / Bullet::BulletSideCount) + PI/2), std::sin((i-1) * (2*PI / Bullet::BulletSideCount) + PI/2));
 	}
 
 	for (int i = 0; i < Bullet::BulletSideCount; i++) {

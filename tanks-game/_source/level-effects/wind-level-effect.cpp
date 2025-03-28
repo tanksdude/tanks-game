@@ -1,7 +1,7 @@
 #include "wind-level-effect.h"
 
 #include "../constants.h"
-#include <cmath>
+#include <cmath> //sqrt
 #include <algorithm> //std::copy
 #include <iostream>
 #include "../rng.h"
@@ -91,7 +91,7 @@ void WindLevelEffect::draw() const {
 	ColorValueHolder color = ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(0.0f, 0.0f, 0.0f));
 
 	const float length = 16 * (pushDirection.getMagnitude() * getWindStrengthMultiplier()); //normal
-	//const float length = 16 * sqrt(pushDirection.getMagnitude() * getWindStrengthMultiplier()); //ez way to make small values more visible
+	//const float length = 16 * std::sqrt(pushDirection.getMagnitude() * getWindStrengthMultiplier()); //ez way to make small values more visible
 	//sqrt is not a big deal to compute: https://stackoverflow.com/questions/41582376/fast-approximation-of-square-rootx-with-known-0-x-1
 	const double x_offset = 64; //JS x offset: (528-112)/7 (it's the distance between the main walls) = 59.42857
 	const double y_offset = 64; //JS y offset: (320)/5 = 64
