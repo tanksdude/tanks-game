@@ -16,15 +16,15 @@ protected:
 	double tickCycle;
 	bool currentlyActive;
 	bool moveClockwise;
+	float lavaAngleRotate; //default 180deg
 	double maxLavaDist;
-	double lavaAngleRotate; //default 180deg
 
 protected:
 	virtual ColorValueHolder getColor() const;
 	virtual CircleHazard* makeLavaBlob(int blobNum) const;
 	void pushLavaBlob(int blobNum); //shouldn't need to be virtual
 
-	virtual double getLavaBlobAngle(int blobNum, double tickValue) const;
+	virtual float getLavaBlobAngle(int blobNum, double tickValue) const;
 	virtual double getLavaBlobDist(double tickValue) const;
 	inline double getLavaBlobRadius() const;
 

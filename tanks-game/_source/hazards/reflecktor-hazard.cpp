@@ -64,7 +64,8 @@ void ReflecktorHazard::modifiedTankCollision(Tank* t) {
 		return;
 	}
 
-	double t_xDelta, t_yDelta, t_angleDelta;
+	double t_xDelta, t_yDelta;
+	float  t_angleDelta;
 
 	if (t->y - this->y <= (this->h / this->w) * (t->x - this->x)) {
 		if (t->y - (this->y + this->h) <= (-this->h / this->w) * (t->x - this->x)) { //bottom
@@ -73,13 +74,13 @@ void ReflecktorHazard::modifiedTankCollision(Tank* t) {
 			t_xDelta = 0;
 		} else { //right
 			t_xDelta = (this->x + this->w - (t->x - t->r)) * 2;
-			t_angleDelta = PI - 2*t->velocity.getAngle();
+			t_angleDelta = float(PI) - 2*t->velocity.getAngle();
 			t_yDelta = 0;
 		}
 	} else {
 		if (t->y - (this->y + this->h) <= (-this->h / this->w) * (t->x - this->x)) { //left
 			t_xDelta = -1 * ((t->x + t->r - this->x) * 2);
-			t_angleDelta = PI - 2*t->velocity.getAngle();
+			t_angleDelta = float(PI) - 2*t->velocity.getAngle();
 			t_yDelta = 0;
 		} else { //top
 			t_yDelta = (this->y + this->h - (t->y - t->r)) * 2;

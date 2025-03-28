@@ -6,10 +6,10 @@
 
 class CloudHazard : public CircleHazard {
 protected:
-	ColorValueHolder color;
+	static const ColorValueHolder color;
 	std::vector<std::vector<std::string>> powerChoices;
-	double initialSpeed;
-	double acceleration;
+	float initialSpeed;
+	float acceleration;
 	double tickCount;
 	double tickCycle;
 

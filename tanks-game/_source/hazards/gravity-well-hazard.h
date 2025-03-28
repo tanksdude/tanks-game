@@ -5,7 +5,7 @@
 
 class GravityWellHazard : public CircleHazard {
 protected:
-	ColorValueHolder color;
+	static const ColorValueHolder color;
 	double gravityRange;
 	double minGravityStrength;
 	double maxGravityStrength;

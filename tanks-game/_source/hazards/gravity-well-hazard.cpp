@@ -24,6 +24,8 @@ SimpleVector2D GravityWellHazard::vertices_arrow[7];
 unsigned int GravityWellHazard::indices_arrow[3*3];
 bool GravityWellHazard::initialized_vertices = false;
 
+const ColorValueHolder GravityWellHazard::color = ColorValueHolder(0.25f, 0.25f, 0.25f);
+
 std::unordered_map<std::string, float> GravityWellHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla-extra", 1.0f });
@@ -37,7 +39,6 @@ GravityWellHazard::GravityWellHazard(double xpos, double ypos, double radius, do
 	y = ypos;
 	r = radius;
 
-	color = ColorValueHolder(0.25f, 0.25f, 0.25f);
 	gravityRange = range;
 	minGravityStrength = minGravity;
 	maxGravityStrength = maxGravity;

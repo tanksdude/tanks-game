@@ -125,8 +125,8 @@ void SpiralLavaHazard::pushLavaBlob(int blobNum) {
 	HazardManager::pushCircleHazard(lavaBlob);
 }
 
-double SpiralLavaHazard::getLavaBlobAngle(int blobNum, double tickValue) const {
-	return (2*PI) * (blobNum / double(maxLavaBlobs)) + (tickValue / tickCycle) * (lavaAngleRotate * (moveClockwise ? 1 : -1));
+float SpiralLavaHazard::getLavaBlobAngle(int blobNum, double tickValue) const {
+	return float(2*PI) * (blobNum / float(maxLavaBlobs)) + float(tickValue / tickCycle) * (lavaAngleRotate * (moveClockwise ? 1 : -1));
 }
 
 double SpiralLavaHazard::getLavaBlobDist(double tickValue) const {
@@ -176,7 +176,7 @@ void SpiralLavaHazard::tick() {
 
 		CircularLavaHazard* blob = static_cast<CircularLavaHazard*>(ch);
 		const double lavaDist = getLavaBlobDist(tickValue);
-		const double lavaAngle = getLavaBlobAngle(i, tickValue);
+		const float lavaAngle = getLavaBlobAngle(i, tickValue);
 		blob->x = (this->x + this->w/2) + lavaDist * cos(lavaAngle);
 		blob->y = (this->y + this->h/2) + lavaDist * sin(lavaAngle);
 		//I would prefer to use deltas instead of absolutes, but this is way easier

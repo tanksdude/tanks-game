@@ -6,7 +6,7 @@
 class ReflecktorHazard : public RectHazard {
 	//it's basically a wall with some special properties
 protected:
-	ColorValueHolder color; //set by the hazard, not the level
+	ColorValueHolder color; //set by the hazard, not the level; not static in case someone wants to change it
 
 public:
 	virtual std::vector<std::string> getHazardTypes() const override {

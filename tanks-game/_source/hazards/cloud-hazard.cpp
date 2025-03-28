@@ -20,6 +20,8 @@ SimpleVector2D CloudHazard::body_vertices[Circle::NumOfSides+1];
 unsigned int CloudHazard::body_indices[Circle::NumOfSides*3];
 bool CloudHazard::initialized_vertices = false;
 
+const ColorValueHolder CloudHazard::color = ColorValueHolder(1.0f, 1.0f, 1.0f);
+
 std::unordered_map<std::string, float> CloudHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "dev", 1.0f });
@@ -34,7 +36,6 @@ CloudHazard::CloudHazard(double xpos, double ypos, double radius, double speed, 
 	y = ypos;
 	r = radius;
 
-	color = ColorValueHolder(1.0f, 1.0f, 1.0f);
 	powerChoices = { {"vanilla", "speed"} }; //TODO: pull from the level?
 	initialSpeed = speed;
 	acceleration = acc;
@@ -60,7 +61,6 @@ CloudHazard::CloudHazard(double xpos, double ypos, double radius, double speed, 
 	y = ypos;
 	r = radius;
 
-	color = ColorValueHolder(1.0f, 1.0f, 1.0f);
 	powerChoices = std::vector<std::vector<std::string>>(powerList);
 	initialSpeed = speed;
 	acceleration = acc;
@@ -151,7 +151,7 @@ void CloudHazard::pushPowerup() {
 	int powerupIndex = GameRNG::randFunc() * powerChoices.size();
 	PowerSquare* powerup = makePowerup(powerupIndex);
 	powerupsToMove.push_back(powerup->getGameID());
-	powerupsVelocity.push_back(SimpleVector2D((2*PI) * GameRNG::randFunc(), this->initialSpeed, true));
+	powerupsVelocity.push_back(SimpleVector2D(float(2*PI) * GameRNG::randFuncf(), this->initialSpeed, true));
 	PowerupManager::pushPowerup(powerup);
 }
 
