@@ -80,8 +80,11 @@ void Renderer::windowResizeFunc(GLFWwindow*, int w, int h) {
 		Renderer::gamewindow_height = Renderer::window_width * (GAME_HEIGHT/GAME_WIDTH);
 	}
 
+	//Windows does not do any updates when the window is being held or resized, so force a redraw:
+	#ifdef _WIN32
 	Diagnostics::pushGraphTime("tick", 0); //HACK: since tick will never happen when the window is being resized, add it here; will not double-add when the game is over because that still does a tick
 	GameSceneManager::DrawScenes_WindowResize();
+	#endif
 }
 
 void Renderer::windowCoordsToGameCoords(double inputX, double inputY, int& actualX, int& actualY) {
