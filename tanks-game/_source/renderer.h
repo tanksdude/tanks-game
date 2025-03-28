@@ -96,6 +96,8 @@ private:
 	static std::unordered_map<std::string, std::vector<std::pair<std::vector<float>, std::vector<unsigned int>>>> sceneData; //<vertices, indices>
 	static std::vector<std::string> sceneList;
 	static std::string currentSceneName;
+	static std::vector<float>* currentVerticesData;
+	static std::vector<unsigned int>* currentIndicesData;
 	static const int maxVerticesDataLength;
 	static const int maxIndicesDataLength;
 	static inline bool enoughRoomForMoreVertices(int pushLength);

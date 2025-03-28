@@ -51,6 +51,8 @@ bool Renderer::initialized_GPU = false;
 std::unordered_map<std::string, std::vector<std::pair<std::vector<float>, std::vector<unsigned int>>>> Renderer::sceneData;
 std::vector<std::string> Renderer::sceneList;
 std::string Renderer::currentSceneName = "";
+std::vector<float>* Renderer::currentVerticesData;
+std::vector<unsigned int>* Renderer::currentIndicesData;
 const int Renderer::maxVerticesDataLength = (1 << 24) / sizeof(float);
 const int Renderer::maxIndicesDataLength = (1 << 24) / sizeof(unsigned int); //TODO: size (fills up faster)
 
@@ -580,12 +582,12 @@ bool Renderer::uninitializeGPU() {
 }
 
 inline bool Renderer::enoughRoomForMoreVertices(int pushLength) {
-	const std::pair<std::vector<float>, std::vector<unsigned int>>& currentSceneData = sceneData[currentSceneName][sceneData[currentSceneName].size()-1];
-	return (currentSceneData.first.size() + pushLength <= maxVerticesDataLength);
+	//const std::pair<std::vector<float>, std::vector<unsigned int>>& currentSceneData = sceneData[currentSceneName][sceneData[currentSceneName].size()-1];
+	return (currentVerticesData->size() + pushLength <= maxVerticesDataLength);
 }
 inline bool Renderer::enoughRoomForMoreIndices(int pushLength) {
-	const std::pair<std::vector<float>, std::vector<unsigned int>>& currentSceneData = sceneData[currentSceneName][sceneData[currentSceneName].size()-1];
-	return (currentSceneData.second.size() + pushLength <= maxIndicesDataLength);
+	//const std::pair<std::vector<float>, std::vector<unsigned int>>& currentSceneData = sceneData[currentSceneName][sceneData[currentSceneName].size()-1];
+	return (currentIndicesData->size() + pushLength <= maxIndicesDataLength);
 }
 
 inline void Renderer::pushAnotherDataList() {
@@ -597,6 +599,8 @@ inline void Renderer::pushAnotherDataList() {
 	sceneData[currentSceneName][sceneData[currentSceneName].size()-1].first.reserve(maxVerticesDataLength);
 	sceneData[currentSceneName][sceneData[currentSceneName].size()-1].second.reserve(maxIndicesDataLength);
 	#endif
+	currentVerticesData = &sceneData[currentSceneName][sceneData[currentSceneName].size()-1].first;
+	currentIndicesData  = &sceneData[currentSceneName][sceneData[currentSceneName].size()-1].second;
 }
 
 void Renderer::SubmitBatchedDraw(const float* posAndColor, int posAndColorLength, const unsigned int* indices, int indicesLength) {
@@ -617,9 +621,9 @@ void Renderer::SubmitBatchedDraw(const float* posAndColor, int posAndColorLength
 			}
 		}
 
-		std::pair<std::vector<float>, std::vector<unsigned int>>& currentSceneData = sceneData[currentSceneName][sceneData[currentSceneName].size()-1];
-		std::vector<float>& verticesData = currentSceneData.first;
-		std::vector<unsigned int>& indicesData = currentSceneData.second;
+		//std::pair<std::vector<float>, std::vector<unsigned int>>& currentSceneData = sceneData[currentSceneName][sceneData[currentSceneName].size()-1];
+		std::vector<float>& verticesData = *currentVerticesData;
+		std::vector<unsigned int>& indicesData = *currentIndicesData;
 
 		unsigned int currVerticesLength = verticesData.size();
 		verticesData.insert(verticesData.end(), posAndColor, posAndColor + posAndColorLength);
