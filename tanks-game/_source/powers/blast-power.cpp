@@ -6,9 +6,9 @@
 const float BlastPower::bulletAngleDeviation = PI/3;
 const int BlastPower::bulletAmount = 16;
 
-const float  BlastPower::maxBulletAcceleration = 3/16.0;
-const float  BlastPower::minBulletAcceleration = 1/16.0;
-const double BlastPower::degradeAmount = .25;
+const float BlastPower::maxBulletAcceleration = 3/16.0;
+const float BlastPower::minBulletAcceleration = 1/16.0;
+const float BlastPower::degradeAmount = .25;
 
 std::unordered_map<std::string, float> BlastPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;

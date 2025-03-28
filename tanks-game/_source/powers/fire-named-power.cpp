@@ -8,7 +8,7 @@ const int FireNamedPower::bulletAmount = 4;
 
 const float  FireNamedPower::maxBulletAcceleration = 3/32.0;
 const float  FireNamedPower::minBulletAcceleration = 1/32.0;
-const double FireNamedPower::degradeAmount = .5;
+const float  FireNamedPower::degradeAmount = .5;
 const double FireNamedPower::growAmount = 1.5/32.0; //JS: [1/32, 5/32] //TODO: need way to pass parameters into bulletpower constructor
 
 std::unordered_map<std::string, float> FireNamedPower::getWeights() const {

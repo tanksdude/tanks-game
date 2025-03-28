@@ -8,9 +8,9 @@ public: //tank stuff
 	static const int bulletAmount;
 
 public: //bullet stuff
-	static const float  maxBulletAcceleration;
-	static const float  minBulletAcceleration;
-	static const double degradeAmount;
+	static const float maxBulletAcceleration;
+	static const float minBulletAcceleration;
+	static const float degradeAmount;
 
 public:
 	virtual std::vector<std::string> getPowerTypes() const override {
@@ -81,7 +81,7 @@ public:
 
 	virtual double getBulletRadiusMultiplier() const override { return .25; } //JS: .5
 	virtual float  getBulletAcceleration() const override { return accelerationAmount; }
-	virtual double getBulletDegradeAmount() const override { return BlastPower::degradeAmount; }
+	virtual float  getBulletDegradeAmount() const override { return BlastPower::degradeAmount; }
 
 	BlastBulletPower();
 	BlastBulletPower(float acceleration); //protected?

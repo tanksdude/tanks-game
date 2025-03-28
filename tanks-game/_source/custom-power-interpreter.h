@@ -282,7 +282,7 @@ protected:
 	double bulletRadiusMultiplier;
 	float  bulletAcceleration;
 	float  bulletAccelerationImportance;
-	double bulletDeceleration_DegradeAmount;
+	float  bulletDeceleration_DegradeAmount;
 
 	float offenseImportance;
 	float offenseTier;
@@ -346,7 +346,7 @@ public:
 	double getBulletRadiusMultiplier() const override { return this->bulletRadiusMultiplier; }
 	float  getBulletAcceleration() const override { return this->bulletAcceleration; }
 	float  getBulletAccelerationImportance() const override { return this->bulletAccelerationImportance; }
-	double getBulletDegradeAmount() const override { return this->bulletDeceleration_DegradeAmount; }
+	float  getBulletDegradeAmount() const override { return this->bulletDeceleration_DegradeAmount; }
 
 	float getOffenseImportance() const override { return this->offenseImportance; }
 	float getOffenseTier(const Bullet*) const override { return this->offenseTier; }

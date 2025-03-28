@@ -3,7 +3,7 @@
 
 class GrenadePower : public Power {
 public: //bullet stuff
-	static const double degradeAmount;
+	static const float  degradeAmount;
 	static const double growAmount;
 
 public:
@@ -55,7 +55,7 @@ public:
 	virtual InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> modifiedCollisionWithWall(const Bullet*, const Wall*) override;
 
 	virtual float  getBulletAcceleration() const override { return -1.0/16; }
-	virtual double getBulletDegradeAmount() const override { return GrenadePower::degradeAmount; }
+	virtual float  getBulletDegradeAmount() const override { return GrenadePower::degradeAmount; }
 	virtual double getBulletRadiusGrowNumber_Stationary() const override { return GrenadePower::growAmount; }
 	//bool bulletRadiusGrowMultiplies_Stationary = true;
 

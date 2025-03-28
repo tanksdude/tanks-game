@@ -93,7 +93,7 @@ public:
 	bool bulletRadiusStacks = false;
 	virtual float getBulletAcceleration() const { return 0; }
 	virtual float getBulletAccelerationImportance() const { return 0; }
-	virtual double getBulletDegradeAmount() const { return 0; } //negative values are not valid
+	virtual float getBulletDegradeAmount() const { return 0; } //negative values are not valid
 	virtual float getBulletDegradeImportance() const { return 0; }
 	virtual double getBulletRadiusGrowNumber_Stationary() const { return 0; }
 	bool bulletRadiusGrowMultiplies_Stationary = false; //negative additive values do not get processed by bullets

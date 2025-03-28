@@ -31,7 +31,7 @@ public: //hopefully temporary
 	Game_ID parentID; //may not be used, depends on parentType
 	BulletParentType parentType;
 	std::vector<BulletPower*> bulletPowers; //change eventually?
-	double lifeValue; //[0,100], controls transparency (0=nothing, 100=opaque)
+	float lifeValue; //[0,100], controls transparency (0=nothing, 100=opaque)
 	int m_colorIdentifier;
 
 public:
@@ -48,7 +48,7 @@ public:
 	float  getBulletSpeedMultiplier() const;
 	double getBulletRadiusMultiplier() const;
 	float  getBulletAcceleration() const;
-	double getBulletDegradeAmount() const;
+	float  getBulletDegradeAmount() const;
 	double getBulletRadiusGrowNumber_StationaryAdditive() const;
 	double getBulletRadiusGrowNumber_StationaryMultiplier() const;
 	double getBulletRadiusGrowNumber_MovingAdditive() const;
@@ -121,16 +121,16 @@ struct BulletUpdateStruct {
 	double x;
 	double y;
 	double r;
-	float  speed;
-	float  angle;
-	double alpha;
+	float speed;
+	float angle;
+	float alpha;
 	//absolutes:
 	//float acceleration;
 	std::vector<Bullet*> newBullets; //not implemented, don't use
 
 	void add(const BulletUpdateStruct& other);
 
-	BulletUpdateStruct(double x, double y, double r, float speed, float angle, double alpha, const std::vector<Bullet*>& newBullets);
-	BulletUpdateStruct(double x, double y, double r, float speed, float angle, double alpha);
+	BulletUpdateStruct(double x, double y, double r, float speed, float angle, float alpha, const std::vector<Bullet*>& newBullets);
+	BulletUpdateStruct(double x, double y, double r, float speed, float angle, float alpha);
 	BulletUpdateStruct() : BulletUpdateStruct(0, 0, 0, 0, 0, 0) {}
 };

@@ -20,6 +20,8 @@ bool Bullet::initialized_vertices = false;
 const ColorValueHolder Bullet::default_color = ColorValueHolder(0.5f, 0.5f, 0.5f);
 const double Bullet::default_radius = 4;
 
+//TODO: bitset for powers' bools? possibly more cache-friendly but initialization might take longer
+
 Bullet::Bullet(double x_, double y_, float angle, Team_ID teamID, BulletParentType parentType, Game_ID parentID) : GameThing(teamID) { //every bullet constructor does this stuff
 	this->x = x_;
 	this->y = y_;
@@ -141,7 +143,7 @@ void Bullet::update(const BulletUpdateStruct* up) {
 	this->y += up->y;
 	this->r += up->r;
 	this->velocity = SimpleVector2D(velocity.getAngle() + up->angle, velocity.getMagnitude() + up->speed, true);
-	this->lifeValue = std::min(this->lifeValue + up->alpha, 100.0);
+	this->lifeValue = std::min(this->lifeValue + up->alpha, 100.0f);
 }
 
 bool Bullet::move() {
@@ -298,7 +300,7 @@ float Bullet::getBulletAcceleration() const {
 	return highest + lowest;
 }
 
-double Bullet::getBulletDegradeAmount() const {
+float Bullet::getBulletDegradeAmount() const {
 	//look at Tank::getFiringRateMultiplier()
 	//(this has importance though)
 	//negative degrade values are not valid, so this just finds the highest value
@@ -311,10 +313,10 @@ double Bullet::getBulletDegradeAmount() const {
 		}
 	}
 
-	double highest = 0;
+	float highest = 0;
 	for (int i = 0; i < bulletPowers.size(); i++) {
 		if (bulletPowers[i]->getBulletDegradeImportance() == importance) {
-			double value = bulletPowers[i]->getBulletDegradeAmount();
+			float value = bulletPowers[i]->getBulletDegradeAmount();
 			if (value > highest) {
 				highest = value;
 			}
@@ -629,7 +631,7 @@ inline void Bullet::drawDeathCooldown(float alpha) const {
 	//checking glIsEnabled(GL_BLEND) to skip is an option (though the result should be stored somewhere to avoid GL calls)
 
 	if (this->lifeValue < 100) {
-		float deathPercent = std::max<float>(this->lifeValue/100, 0);
+		float deathPercent = std::max(this->lifeValue/100, 0.0f);
 		unsigned int deathTriangles = Bullet::BulletSideCount * deathPercent;
 
 		if (deathTriangles > 0) {
@@ -669,7 +671,7 @@ inline void Bullet::drawDeathBar(float alpha) const {
 	alpha = alpha * alpha;
 
 	if (this->lifeValue < 100) {
-		double deathPercent = std::max<double>(this->lifeValue/100, 0);
+		float deathPercent = std::max(this->lifeValue/100, 0.0f);
 
 		//fill:
 
@@ -819,7 +821,7 @@ float Bullet::getDefenseTier() const {
 	return getHighestDefenseTier(getHighestDefenseImportance());
 }
 
-BulletUpdateStruct::BulletUpdateStruct(double x, double y, double r, float speed, float angle, double alpha, const std::vector<Bullet*>& newBullets) {
+BulletUpdateStruct::BulletUpdateStruct(double x, double y, double r, float speed, float angle, float alpha, const std::vector<Bullet*>& newBullets) {
 	//add acceleration?
 	this->x = x;
 	this->y = y;
@@ -830,7 +832,7 @@ BulletUpdateStruct::BulletUpdateStruct(double x, double y, double r, float speed
 	this->newBullets = std::vector<Bullet*>(newBullets);
 }
 
-BulletUpdateStruct::BulletUpdateStruct(double x, double y, double r, float speed, float angle, double alpha) {
+BulletUpdateStruct::BulletUpdateStruct(double x, double y, double r, float speed, float angle, float alpha) {
 	//add acceleration?
 	this->x = x;
 	this->y = y;

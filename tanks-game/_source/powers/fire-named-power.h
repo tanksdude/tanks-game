@@ -9,7 +9,7 @@ public: //tank stuff
 public: //bullet stuff
 	static const float  maxBulletAcceleration;
 	static const float  minBulletAcceleration;
-	static const double degradeAmount;
+	static const float  degradeAmount;
 	static const double growAmount;
 
 public:
@@ -74,7 +74,7 @@ public:
 
 	virtual float  getBulletSpeedMultiplier() const override { return .5; }
 	virtual float  getBulletAcceleration() const override { return accelerationAmount; }
-	virtual double getBulletDegradeAmount() const override { return FireNamedPower::degradeAmount; }
+	virtual float  getBulletDegradeAmount() const override { return FireNamedPower::degradeAmount; }
 	virtual double getBulletRadiusGrowNumber_Moving() const override { return FireNamedPower::growAmount; }
 	//bool bulletRadiusGrowMultiplies_Moving = false;
 

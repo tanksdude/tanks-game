@@ -1,7 +1,7 @@
 #include "grenade-power.h"
 #include "../game-manager.h" //settings
 
-const double GrenadePower::degradeAmount = .875; //JS: .75
+const float  GrenadePower::degradeAmount = .875; //JS: .75
 const double GrenadePower::growAmount = 65/64.0;
 
 std::unordered_map<std::string, float> GrenadePower::getWeights() const {

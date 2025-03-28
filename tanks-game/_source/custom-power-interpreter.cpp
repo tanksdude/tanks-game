@@ -645,7 +645,7 @@ inline void CustomBulletPower::initialization_bulletAccelerationImportance(const
 	bulletAccelerationImportance = static_cast<const float*>(data.getDataPortion(0).get())[0];
 }
 inline void CustomBulletPower::initialization_bulletDeceleration_DegradeAmount(const GenericFactoryConstructionData& data) noexcept {
-	bulletDeceleration_DegradeAmount = static_cast<const double*>(data.getDataPortion(0).get())[0];
+	bulletDeceleration_DegradeAmount = static_cast<const float*>(data.getDataPortion(0).get())[0];
 }
 
 inline void CustomBulletPower::initialization_offenseImportance_bullet(const GenericFactoryConstructionData& data) noexcept {
@@ -1301,7 +1301,7 @@ inline CustomPower::CustomPowerAction_Bullet* CustomPowerInterpreter::stringToAc
 				stringToAction_genericSingleValue_f(words, constructionData);
 				break;
 			case CustomPower::CustomPowerCommands_BulletPower::bulletDeceleration_DegradeAmount:
-				stringToAction_genericSingleValue_d(words, constructionData);
+				stringToAction_genericSingleValue_f(words, constructionData);
 				break;
 
 			case CustomPower::CustomPowerCommands_BulletPower::offenseImportance:
