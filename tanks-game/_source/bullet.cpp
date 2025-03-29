@@ -633,12 +633,21 @@ inline void Bullet::drawDeathCooldown(float alpha) const {
 				//the final triangle shares its last vertex with the first triangle, which is why this loop condition is a bit strange (second conditional only false for that last triangle)
 				//with wrong condition: two verts on an old bullet's death outline to the center of a new bullet's center body or death outline, though sometimes even a tank or rarely the bottom left corner (why)
 				//to be more specific: with the old conditional, think it was happening when deathTriangles==1, leading to pushing only two total verts but pushing three indices; but that would mean it was always pushing insufficient verts for the indices, why wasn't it showing up before?
-				SimpleVector2D vertex = SimpleVector2D(body_vertices[i+1]);
-				vertex.multiplyMagnitude((static_cast<float>(r)+2)*(9.0f/8.0f));
-				//vertex.scaleAndRotate((r+2)*(9.0/8.0), PI/2);
 
-				coordsAndColor[(i+1)*6]   = static_cast<float>(x) + vertex.getXComp();
-				coordsAndColor[(i+1)*6+1] = static_cast<float>(y) + vertex.getYComp();
+				SimpleVector2D vertex = SimpleVector2D(body_vertices[i+1]);
+				//this is a way to hide the lack of vertices: rotate the last vertex to the exact percent it should be
+				//requires std::ceil for deathTriangles, and to look correct it requires an additional vertex when nearly full (since it's shared with the last vertex)
+				/*
+				if (i == deathTriangles) {
+					float lastTriangleAngleDelta = float(2*PI) * std::fmod(1-deathPercent, 1.0f/Bullet::BulletSideCount);
+					vertex.scaleAndRotate((static_cast<float>(r)+2)*(9.0f/8.0f), -1 * lastTriangleAngleDelta);
+				} else {
+					vertex.multiplyMagnitude((static_cast<float>(r)+2)*(9.0f/8.0f));
+				}
+				*/
+
+				coordsAndColor[(i+1)*6]   = static_cast<float>(x) + vertex.getXComp() * (static_cast<float>(r)+2)*(9.0f/8.0f);
+				coordsAndColor[(i+1)*6+1] = static_cast<float>(y) + vertex.getYComp() * (static_cast<float>(r)+2)*(9.0f/8.0f);
 				coordsAndColor[(i+1)*6+2] = color.getRf();
 				coordsAndColor[(i+1)*6+3] = color.getGf();
 				coordsAndColor[(i+1)*6+4] = color.getBf();
