@@ -195,11 +195,13 @@ inline void Bullet::degradeHandle() {
 inline void Bullet::growHandle() {
 	double additiveR, multiplierR;
 	if (velocity.getMagnitude() > 0) {
-		additiveR = getBulletRadiusGrowNumber_MovingAdditive();
-		multiplierR = getBulletRadiusGrowNumber_MovingMultiplier();
+		std::pair<double, double> growValues = getBulletRadiusGrowNumber_Moving();
+		additiveR = growValues.first;
+		multiplierR = growValues.second;
 	} else {
-		additiveR = getBulletRadiusGrowNumber_StationaryAdditive();
-		multiplierR = getBulletRadiusGrowNumber_StationaryMultiplier();
+		std::pair<double, double> growValues = getBulletRadiusGrowNumber_Stationary();
+		additiveR = growValues.first;
+		multiplierR = growValues.second;
 	}
 
 	//if multiplierR>1, choose whichever is greater; else apply both (add then mult)
@@ -325,72 +327,54 @@ float Bullet::getBulletDegradeAmount() const {
 	return highest;
 }
 
-double Bullet::getBulletRadiusGrowNumber_StationaryAdditive() const {
-	//look at Tank::getFiringRateMultiplier()
-	//negative values are not valid
-
-	double highest = 0;
-	for (int i = 0; i < bulletPowers.size(); i++) {
-		if (!bulletPowers[i]->bulletRadiusGrowMultiplies_Stationary) {
-			double value = bulletPowers[i]->getBulletRadiusGrowNumber_Stationary();
-			if (value > highest) {
-				highest = value;
-			}
-		}
-	}
-	return highest;
-}
-double Bullet::getBulletRadiusGrowNumber_StationaryMultiplier() const {
+std::pair<double, double> Bullet::getBulletRadiusGrowNumber_Stationary() const {
 	//look at Tank::getFiringRateMultiplier()
 	//negative values are not valid, but not enforced
 
-	double highest = 1;
-	double lowest = 1;
+	double highestAdditive = 0;
+	double highestMultiplier = 1;
+	double lowestMultiplier = 1;
+
 	for (int i = 0; i < bulletPowers.size(); i++) {
+		double value = bulletPowers[i]->getBulletRadiusGrowNumber_Stationary();
 		if (bulletPowers[i]->bulletRadiusGrowMultiplies_Stationary) {
-			double value = bulletPowers[i]->getBulletRadiusGrowNumber_Stationary();
-			if (value < lowest) {
-				lowest = value;
-			} else if (value > highest) {
-				highest = value;
+			if (value < lowestMultiplier) {
+				lowestMultiplier = value;
+			} else if (value > highestMultiplier) {
+				highestMultiplier = value;
+			}
+		} else {
+			if (value > highestAdditive) {
+				highestAdditive = value;
 			}
 		}
 	}
-	return highest * lowest;
+	return { highestAdditive, highestMultiplier * lowestMultiplier };
 }
 
-double Bullet::getBulletRadiusGrowNumber_MovingAdditive() const {
-	//look at Tank::getFiringRateMultiplier()
-	//negative values are not valid
-
-	double highest = 0;
-	for (int i = 0; i < bulletPowers.size(); i++) {
-		if (!bulletPowers[i]->bulletRadiusGrowMultiplies_Moving) {
-			double value = bulletPowers[i]->getBulletRadiusGrowNumber_Moving();
-			if (value > highest) {
-				highest = value;
-			}
-		}
-	}
-	return highest;
-}
-double Bullet::getBulletRadiusGrowNumber_MovingMultiplier() const {
+std::pair<double, double> Bullet::getBulletRadiusGrowNumber_Moving() const {
 	//look at Tank::getFiringRateMultiplier()
 	//negative values are not valid, but not enforced
 
-	double highest = 1;
-	double lowest = 1;
+	double highestAdditive = 0;
+	double highestMultiplier = 1;
+	double lowestMultiplier = 1;
+
 	for (int i = 0; i < bulletPowers.size(); i++) {
+		double value = bulletPowers[i]->getBulletRadiusGrowNumber_Moving();
 		if (bulletPowers[i]->bulletRadiusGrowMultiplies_Moving) {
-			double value = bulletPowers[i]->getBulletRadiusGrowNumber_Moving();
-			if (value < lowest) {
-				lowest = value;
-			} else if (value > highest) {
-				highest = value;
+			if (value < lowestMultiplier) {
+				lowestMultiplier = value;
+			} else if (value > highestMultiplier) {
+				highestMultiplier = value;
+			}
+		} else {
+			if (value > highestAdditive) {
+				highestAdditive = value;
 			}
 		}
 	}
-	return highest * lowest;
+	return { highestAdditive, highestMultiplier * lowestMultiplier };
 }
 
 void Bullet::powerCalculate() {

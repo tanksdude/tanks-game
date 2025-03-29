@@ -49,10 +49,8 @@ public:
 	double getBulletRadiusMultiplier() const;
 	float  getBulletAcceleration() const;
 	float  getBulletDegradeAmount() const;
-	double getBulletRadiusGrowNumber_StationaryAdditive() const;
-	double getBulletRadiusGrowNumber_StationaryMultiplier() const;
-	double getBulletRadiusGrowNumber_MovingAdditive() const;
-	double getBulletRadiusGrowNumber_MovingMultiplier() const;
+	std::pair<double, double> getBulletRadiusGrowNumber_Stationary() const; //{additive, multiplier}
+	std::pair<double, double> getBulletRadiusGrowNumber_Moving() const;     //{additive, multiplier}
 
 protected:
 	bool kill(); //allows for custom death (a.k.a. something saving the bullet from death)
