@@ -69,7 +69,8 @@ BlastTankPower::BlastTankPower() {
 
 InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> BlastBulletPower::modifiedCollisionWithWall(const Bullet* b, const Wall* w) {
 	if (b->velocity.getMagnitude() <= 0) {
-		return { b->isDead(), false, new BulletUpdateStruct(0,0,0,0,0, -BlastPower::degradeAmount), nullptr };
+		//return { b->isDead(), false, new BulletUpdateStruct(0,0,0,0,0, -BlastPower::degradeAmount), nullptr };
+		return { false, false, nullptr, nullptr };
 	} else {
 		if (CollisionHandler::partiallyCollided(b, w)) {
 			//CollisionHandler::pushMovableAwayFromImmovable(b, w);
@@ -77,7 +78,8 @@ InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> BlastBulletPower::
 
 			//b->acceleration = 0;
 			//b->velocity.setMagnitude(0);
-			return { false, false, new BulletUpdateStruct(0,0,0,0,0,0), nullptr };
+			return { false, false, new BulletUpdateStruct(0,0,0, -2*b->velocity.getMagnitude(), 0,0), nullptr };
+			//TODO: not great but better than nothing
 		}
 		return { false, false, nullptr, nullptr };
 	}
