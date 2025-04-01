@@ -119,7 +119,7 @@ Might've been made for Lightning Corners level, then realized it wasn't needed.
 * Attributes: "mix"
 * Color: `#4F3E3E` (brown-ish)
 * Tank modifiers: quadruple shooting cooldown
-* Bullet modifiers: quarter speed, +1/64 acceleration, ×65/64 grow
+* Bullet modifiers: quarter speed, +1/64 acceleration, Ã—65/64 grow
 
 Note that this power is a work in progress. I never quite figured out what it should be. I also kept telling myself "it should really be removed from vanilla by now" but never bothered...
 
@@ -132,7 +132,7 @@ Note that this power is a work in progress. I never quite figured out what it sh
 * Internal name: `grenade`
 * Attributes: "mix"
 * Color: `(0.75, 1.0, 0.0)` (lime green)
-* Bullet modifiers: -1/16 acceleration, .875 degrade, ×65/64 grow (stationary)
+* Bullet modifiers: -1/16 acceleration, .875 degrade, Ã—65/64 grow (stationary)
 
 After the bullet comes to a stop, it starts growing. Can pass through walls, though doing so degrades the bullet extra (where degrading is slowing down or losing "life force").
 
@@ -145,7 +145,7 @@ After the bullet comes to a stop, it starts growing. Can pass through walls, tho
 * Tank modifiers: half shooting cooldown, half turning speed
 * Bullet modifiers: half speed, [-3/32, -1/32] acceleration, .5 degrade, +1.5/32 grow (moving)
 
-Shoots four bullets, ±45° from the cannon. The bullets grow a small amount before coming to a stop. Eventually decays.
+Shoots four bullets, Â±45Â° from the cannon. The bullets grow a small amount before coming to a stop. Eventually decays.
 
 ## Blast
 
@@ -156,7 +156,7 @@ Shoots four bullets, ±45° from the cannon. The bullets grow a small amount befor
 * Tank modifiers: half speed, half acceleration
 * Bullet modifiers: quarter radius, [-3/16, -1/16] acceleration, .25 degrade
 
-Shoots 16 bullets, ±60° from the cannon. Eventually decays. Used to stick to walls when it touched them, but this no longer happens due to a code restructuring.
+Shoots 16 bullets, Â±60Â° from the cannon. Eventually decays.
 
 ## Banana
 
@@ -375,7 +375,7 @@ When bouncing off an edge, a few bullet "sparks" get created. Does not bounce of
 * Color: `(0.625, 0.625, 0.625)` (light-ish gray)
 * Tank modifiers: half shooting cooldown
 
-Adds a cannon at 90° and 225°, just to test adding non-symmetric cannons. When adding extra cannons was added (pre-v0.0.7), I got the idea to make a power like this to test it out the system. Forgot about it, finally remembered, added it in much later (v0.2.5). Well, it works, so test success.
+Adds a cannon at 90Â° and 225Â°, just to test adding non-symmetric cannons. When adding extra cannons was added (pre-v0.0.7), I got the idea to make a power like this to test it out the system. Forgot about it, finally remembered, added it in much later (v0.2.5). Well, it works, so test success.
 
 ## [DEV] Triple Spread
 

@@ -377,6 +377,199 @@ void CollisionHandler::cornerPushMovableAwayFromImmovable(Rect* movable, Circle*
 }
 //void CollisionHandler::cornerPushMovableAwayFromMovable(Rect* movable1, Circle* movable2, double x, double y);
 
+
+
+//NOTE: the _vecOnly versions are copy-pasted intentionally! collision math needs to be fast, so reducing unnecessary float math is necessary (since float math is non-associative, the compiler can't optimize it out)
+//it's possible performance is ever so slightly worse due to caching, but that should only be an issue if _vecOnly and regular versions are commonly mixed, and they shouldn't be
+
+std::pair<double, double> CollisionHandler::pushMovableAwayFromImmovable_vecOnly(const Rect* movable, const Rect* immovable) {
+	if ((movable->y + movable->h/2) - immovable->y <= (immovable->h / immovable->w) * ((movable->x + movable->w/2) - immovable->x)) { //I think this is top right
+		if ((movable->y + movable->h/2) - (immovable->y + immovable->h) <= (-immovable->h / immovable->w) * ((movable->x + movable->w/2) - immovable->x)) { //top
+			return { 0, (immovable->y - movable->h) - movable->y };
+		} else { //right
+			return { (immovable->x + immovable->w) - movable->x, 0 };
+		}
+	} else { //bottom left?
+		if ((movable->y + movable->h/2) - (immovable->y + immovable->h) <= (-immovable->h / immovable->w) * ((movable->x + movable->w/2) - immovable->x)) { //left
+			return { (immovable->x - movable->w) - movable->x, 0 };
+		} else { //bottom
+			return { 0, (immovable->y + immovable->h) - movable->y };
+		}
+	}
+}
+std::pair<std::pair<double, double>, std::pair<double, double>> CollisionHandler::pushMovableAwayFromMovable_vecOnly(const Rect* movable1, const Rect* movable2) {
+	std::pair<std::pair<double, double>, std::pair<double, double>> vecs;
+	if ((movable1->y + movable1->h/2) - movable2->y <= (movable2->h / movable2->w) * ((movable1->x + movable1->w/2) - movable2->x)) { //I think this is top right
+		if ((movable1->y + movable1->h/2) - (movable2->y + movable2->h) <= (-movable2->h / movable2->w) * ((movable1->x + movable1->w/2) - movable2->x)) { //top
+			double d = (movable1->y + movable1->h) - movable2->y;
+			return { {0, -d/2}, {0, d/2} };
+		} else { //right
+			double d = (movable2->x + movable2->w) - movable1->x;
+			return { {d/2, 0}, {-d/2, 0} };
+		}
+	} else { //bottom left?
+		if ((movable1->y + movable1->h/2) - (movable2->y + movable2->h) <= (-movable2->h / movable2->w) * ((movable1->x + movable1->w/2) - movable2->x)) { //left
+			double d = (movable1->x + movable1->w) - movable2->x;
+			return { {-d/2, 0}, {d/2, 0} };
+		} else { //bottom
+			double d = (movable2->y + movable2->h) - movable1->y;
+			return { {0, d/2}, {0, -d/2} };
+		}
+	}
+}
+
+std::pair<double, double> CollisionHandler::pushMovableAwayFromImmovable_vecOnly(const Circle* movable, const Rect* immovable) {
+	//MODIFIED: only one corner collision
+	//typically Tank-Wall collision
+
+	if ((movable->x < immovable->x) && (movable->y < immovable->y)) { //circle in bottom left
+		return cornerPushMovableAwayFromImmovable_vecOnly(movable, immovable->x, immovable->y);
+	}
+	if ((movable->x > (immovable->x + immovable->w)) && (movable->y < immovable->y)) { //circle in bottom right
+		return cornerPushMovableAwayFromImmovable_vecOnly(movable, (immovable->x + immovable->w), immovable->y);
+	}
+	if ((movable->x < immovable->x) && (movable->y > (immovable->y + immovable->h))) { //circle in top left
+		return cornerPushMovableAwayFromImmovable_vecOnly(movable, immovable->x, (immovable->y + immovable->h));
+	}
+	if ((movable->x > (immovable->x + immovable->w)) && (movable->y > (immovable->y + immovable->h))) { //circle in top right
+		return cornerPushMovableAwayFromImmovable_vecOnly(movable, (immovable->x + immovable->w), (immovable->y + immovable->h));
+	}
+
+	//find which side the circle is near
+	if (movable->y - immovable->y <= (immovable->h / immovable->w) * (movable->x - immovable->x)) { //I think this is bottom right
+		if (movable->y - (immovable->y + immovable->h) <= (-immovable->h / immovable->w) * (movable->x - immovable->x)) { //bottom
+			return { 0, (immovable->y - movable->r) - movable->y };
+		} else { //right
+			return { (immovable->x + immovable->w + movable->r) - movable->x, 0 };
+		}
+	} else { //top left?
+		if (movable->y - (immovable->y + immovable->h) <= (-immovable->h / immovable->w) * (movable->x - immovable->x)) { //left
+			return { (immovable->x - movable->r) - movable->x, 0 };
+		} else { //top
+			return { 0, (immovable->y + immovable->h + movable->r) - movable->y };
+		}
+	}
+}
+
+std::pair<double, double> CollisionHandler::pushMovableAwayFromImmovable_vecOnly(const Rect* movable, const Circle* immovable) {
+	//MODIFIED: only one corner collision
+	//first, find if circle is in outer corner (as opposed to near a side)
+	//if on side, R-R stuff
+	//else, C-C stuff (if dist < asdf then move, but don't use else)
+
+	if ((immovable->x < movable->x) && (immovable->y < movable->y)) { //circle in top left
+		return cornerPushMovableAwayFromImmovable_vecOnly(movable, immovable, movable->x, movable->y);
+	}
+	if ((immovable->x > (movable->x + movable->w)) && (immovable->y < movable->y)) { //circle in top right
+		return cornerPushMovableAwayFromImmovable_vecOnly(movable, immovable, (movable->x + movable->w), movable->y);
+	}
+	if ((immovable->x < movable->x) && (immovable->y > (movable->y + movable->h))) { //circle in bottom left
+		return cornerPushMovableAwayFromImmovable_vecOnly(movable, immovable, movable->x, (movable->y + movable->h));
+	}
+	if ((immovable->x > (movable->x + movable->w)) && (immovable->y > (movable->y + movable->h))) { //circle in bottom right
+		return cornerPushMovableAwayFromImmovable_vecOnly(movable, immovable, (movable->x + movable->w), (movable->y + movable->h));
+	}
+
+	//find which side the circle is near
+
+	if (immovable->y - movable->y <= (movable->h / movable->w) * (immovable->x - movable->x)) { //I think this is top right
+		if (immovable->y - (movable->y + movable->h) <= (-movable->h / movable->w) * (immovable->x - movable->x)) { //top
+			return { 0, (immovable->y - immovable->r - movable->h) - movable->y };
+		} else { //right
+			return { (immovable->x + immovable->r) - movable->x, 0 };
+		}
+	} else { //bottom left?
+		if (immovable->y - (movable->y + movable->h) <= (-movable->h / movable->w) * (immovable->x - movable->x)) { //left
+			return { (immovable->x - immovable->r - movable->w) - movable->x, 0 };
+		} else { //bottom
+			return { 0, (immovable->y + immovable->r) - movable->y };
+		}
+	}
+}
+std::pair<std::pair<double, double>, std::pair<double, double>> CollisionHandler::pushMovableAwayFromMovable_vecOnly(const Rect* movable1, const Circle* movable2) {
+	//MODIFIED: only one corner collision
+	if ((movable2->x < movable1->x) && (movable2->y < movable1->y)) { //circle in top left
+		return cornerPushMovableAwayFromMovable_vecOnly(movable1, movable2, movable1->x, movable1->y);
+	}
+	if ((movable2->x >(movable1->x + movable1->w)) && (movable2->y < movable1->y)) { //circle in top right
+		return cornerPushMovableAwayFromMovable_vecOnly(movable1, movable2, (movable1->x + movable1->w), movable1->y);
+	}
+	if ((movable2->x < movable1->x) && (movable2->y >(movable1->y + movable1->h))) { //circle in bottom left
+		return cornerPushMovableAwayFromMovable_vecOnly(movable1, movable2, movable1->x, (movable1->y + movable1->h));
+	}
+	if ((movable2->x >(movable1->x + movable1->w)) && (movable2->y >(movable1->y + movable1->h))) { //circle in bottom right
+		return cornerPushMovableAwayFromMovable_vecOnly(movable1, movable2, (movable1->x + movable1->w), (movable1->y + movable1->h));
+	}
+
+	if (movable2->y - movable1->y <= (movable1->h / movable1->w) * (movable2->x - movable1->x)) { //I think this is top right
+		if (movable2->y - (movable1->y + movable1->h) <= (-movable1->h / movable1->w) * (movable2->x - movable1->x)) { //top
+			double d = movable2->y + movable2->r - movable1->y;
+			return { {0, d/2}, {0, -d/2} };
+		} else { //right
+			double d = (movable1->x + movable1->w) - (movable2->x - movable2->r);
+			return { {-d/2, 0}, {d/2, 0} };
+		}
+	} else { //bottom left?
+		if (movable2->y - (movable1->y + movable1->h) <= (-movable1->h / movable1->w) * (movable2->x - movable1->x)) { //left
+			double d = (movable2->x + movable2->r) - movable1->x;
+			return { {d/2, 0}, {-d/2, 0} };
+		} else { //bottom
+			double d = (movable1->y + movable1->h) - (movable2->y - movable2->r);
+			return { {0, -d/2}, {0, d/2} };
+		}
+	}
+}
+
+std::pair<double, double> CollisionHandler::pushMovableAwayFromImmovable_vecOnly(const Circle* movable, const Circle* immovable) {
+	double angle = std::atan2((movable->y - immovable->y), (movable->x - immovable->x));
+	double d = std::sqrt((movable->x - immovable->x)*(movable->x - immovable->x) + (movable->y - immovable->y)*(movable->y - immovable->y)) - (movable->r + immovable->r);
+	return { -d * std::cos(angle), -d * std::sin(angle) };
+}
+std::pair<std::pair<double, double>, std::pair<double, double>> CollisionHandler::pushMovableAwayFromMovable_vecOnly(const Circle* movable1, const Circle* movable2) {
+	double angle = std::atan2((movable1->y - movable2->y), (movable1->x - movable2->x));
+	double d = std::sqrt((movable1->x - movable2->x)*(movable1->x - movable2->x) + (movable1->y - movable2->y)*(movable1->y - movable2->y)) - (movable1->r + movable2->r);
+	return { {-d/2 * std::cos(angle), -d/2 * std::sin(angle)}, {d/2 * std::cos(angle), d/2 * std::sin(angle)} };
+}
+
+std::pair<double, double> CollisionHandler::cornerPushMovableAwayFromImmovable_vecOnly(const Circle* movable, double x, double y) {
+	double angle = std::atan2((y - movable->y), (x - movable->x));
+	double d = movable->r - std::sqrt((x - movable->x)*(x - movable->x) + (y - movable->y)*(y - movable->y));
+	return { -d * std::cos(angle), -d * std::sin(angle) };
+}
+std::pair<std::pair<double, double>, std::pair<double, double>> CollisionHandler::cornerPushMovableAwayFromMovable_vecOnly(const Circle* movable1, const Rect* movable2, double x, double y) {
+	double angle = std::atan2((y - movable1->y), (x - movable1->x));
+	double d = movable1->r - std::sqrt((x - movable1->x)*(x - movable1->x) + (y - movable1->y)*(y - movable1->y));
+	return { {-d/2 * std::cos(angle), -d/2 * std::sin(angle)}, {d/2 * std::cos(angle), d/2 * std::sin(angle)} };
+}
+std::pair<double, double> CollisionHandler::cornerPushMovableAwayFromImmovable_vecOnly(const Rect* movable, const Circle* immovable, double x, double y) {
+	double angle = std::atan2((immovable->y - y), (immovable->x - x));
+	double d = immovable->r - std::sqrt((x - immovable->x)*(x - immovable->x) + (y - immovable->y)*(y - immovable->y));
+	return { -d * std::cos(angle), -d * std::sin(angle) };
+}
+
+
+
+std::optional<std::pair<PositionHolder, PositionHolder>> CollisionHandler::circleLineIntersectionCheckAndGet(const Circle* c, double lineX1, double lineY1, double lineX2, double lineY2) {
+	//copied from circleLineIntersection
+	double x1 = lineX1 - c->x, x2 = lineX2 - c->x;
+	double y1 = lineY1 - c->y, y2 = lineY2 - c->y;
+	double dx = x2-x1, dy = y2-y1;
+	double dr = std::sqrt(dx*dx + dy*dy);
+	double D = x1*y2 - x2*y1;
+
+	double discriminant = (c->r*c->r) * (dr*dr) - (D*D);
+	if (discriminant >= 0) {
+		double intersectionX1 = (D*dy - (dy<0 ? -1 : 1) * dx * std::sqrt((c->r*c->r) * (dr*dr) - (D*D))) / (dr*dr);
+		double intersectionX2 = (D*dy + (dy<0 ? -1 : 1) * dx * std::sqrt((c->r*c->r) * (dr*dr) - (D*D))) / (dr*dr);
+		double intersectionY1 = (-D*dx - std::abs(dy)        * std::sqrt((c->r*c->r) * (dr*dr) - (D*D))) / (dr*dr);
+		double intersectionY2 = (-D*dx + std::abs(dy)        * std::sqrt((c->r*c->r) * (dr*dr) - (D*D))) / (dr*dr);
+
+		return std::pair<PositionHolder, PositionHolder>{ {intersectionX1 + c->x, intersectionY1 + c->y}, {intersectionX2 + c->x, intersectionY2 + c->y} };
+	} else {
+		return {};
+	}
+}
+
 bool CollisionHandler::circleLineIntersectionHappens(const Circle* c, double lineX1, double lineY1, double lineX2, double lineY2) {
 	double x1 = lineX1 - c->x, x2 = lineX2 - c->x;
 	double y1 = lineY1 - c->y, y2 = lineY2 - c->y;
@@ -384,7 +577,7 @@ bool CollisionHandler::circleLineIntersectionHappens(const Circle* c, double lin
 	double dr = std::sqrt(dx*dx + dy*dy);
 	double D = x1*y2 - x2*y1;
 
-	double discriminant = c->r*c->r * dr*dr - D*D;
+	double discriminant = (c->r*c->r) * (dr*dr) - (D*D);
 	return (discriminant >= 0);
 }
 
@@ -396,18 +589,10 @@ std::pair<PositionHolder, PositionHolder> CollisionHandler::circleLineIntersecti
 	double dr = std::sqrt(dx*dx + dy*dy);
 	double D = x1*y2 - x2*y1; //I spent about an hour debugging this, only to find out I did x1*y2 - x1*y1. Don't make the same mistake.
 
-	//check if the user used this incorrectly:
-	/*
-	double discriminant = c->r*c->r * dr*dr - D*D;
-	if (discriminant < 0) [[unlikely]] {
-		throw std::invalid_argument("CollisionHandler::circleLineIntersection was not given an intersecting circle and line!");
-	}
-	*/
-
-	double intersectionX1 = (D*dy - (dy<0 ? -1 : 1) * dx * std::sqrt(c->r*c->r * dr*dr - D*D)) / (dr*dr);
-	double intersectionX2 = (D*dy + (dy<0 ? -1 : 1) * dx * std::sqrt(c->r*c->r * dr*dr - D*D)) / (dr*dr);
-	double intersectionY1 = (-D*dx - std::abs(dy) * std::sqrt(c->r*c->r * dr*dr - D*D)) / (dr*dr);
-	double intersectionY2 = (-D*dx + std::abs(dy) * std::sqrt(c->r*c->r * dr*dr - D*D)) / (dr*dr);
+	double intersectionX1 = (D*dy - (dy<0 ? -1 : 1) * dx * std::sqrt((c->r*c->r) * (dr*dr) - (D*D))) / (dr*dr);
+	double intersectionX2 = (D*dy + (dy<0 ? -1 : 1) * dx * std::sqrt((c->r*c->r) * (dr*dr) - (D*D))) / (dr*dr);
+	double intersectionY1 = (-D*dx - std::abs(dy)        * std::sqrt((c->r*c->r) * (dr*dr) - (D*D))) / (dr*dr);
+	double intersectionY2 = (-D*dx + std::abs(dy)        * std::sqrt((c->r*c->r) * (dr*dr) - (D*D))) / (dr*dr);
 
 	return std::pair<PositionHolder, PositionHolder>{ {intersectionX1 + c->x, intersectionY1 + c->y}, {intersectionX2 + c->x, intersectionY2 + c->y} };
 }

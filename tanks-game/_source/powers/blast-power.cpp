@@ -68,21 +68,12 @@ BlastTankPower::BlastTankPower() {
 #include "../collision-handler.h"
 
 InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> BlastBulletPower::modifiedCollisionWithWall(const Bullet* b, const Wall* w) {
-	if (b->velocity.getMagnitude() <= 0) {
-		//return { b->isDead(), false, new BulletUpdateStruct(0,0,0,0,0, -BlastPower::degradeAmount), nullptr };
-		return { false, false, nullptr, nullptr };
-	} else {
-		if (CollisionHandler::partiallyCollided(b, w)) {
-			//CollisionHandler::pushMovableAwayFromImmovable(b, w);
-			//TODO: add an absolute bool to BulletUpdateStruct to constrain it
-
-			//b->acceleration = 0;
-			//b->velocity.setMagnitude(0);
-			return { false, false, new BulletUpdateStruct(0,0,0, -2*b->velocity.getMagnitude(), 0,0), nullptr };
-			//TODO: not great but better than nothing
-		}
-		return { false, false, nullptr, nullptr };
+	if (CollisionHandler::partiallyCollidedIgnoreEdge(b, w)) {
+		std::pair<double, double> vec = CollisionHandler::pushMovableAwayFromImmovable_vecOnly(b, w);
+		return { false, false, new BulletUpdateStruct(vec.first, vec.second, 0, -1024*b->velocity.getMagnitude(), 0,0), nullptr };
+		//not the best way to implement this, but at least it works
 	}
+	return { false, false, nullptr, nullptr };
 }
 
 bool BlastBulletPower::getModifiesCollisionWithCircleHazard(const CircleHazard* ch) const {
@@ -126,4 +117,5 @@ BlastBulletPower::BlastBulletPower(float acceleration) {
 	accelerationAmount = acceleration;
 
 	modifiesCollisionWithWall = true;
+	modifiedCollisionWithWallCanWorkWithOthers = false; //TODO: not sure on this one
 }

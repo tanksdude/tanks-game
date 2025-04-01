@@ -1,5 +1,6 @@
 #pragma once
 #include <utility>
+#include <optional>
 
 #include "position-holder.h"
 #include "circle.h"
@@ -9,11 +10,24 @@ class CollisionHandler {
 protected:
 	static bool cornerCollided(const Circle*, double x, double y);
 	static bool cornerCollidedIgnoreEdge(const Circle*, double x, double y);
+
 	static void cornerPushMovableAwayFromImmovable(Circle* movable, double x, double y);
 	static void cornerPushMovableAwayFromMovable(Circle* movable1, Rect* movable2, double x, double y);
 	static void cornerPushMovableAwayFromImmovable(Rect* movable, Circle*, double x, double y);
 	static void cornerPushMovableAwayFromMovable(Rect* movable1, Circle* movable2, double x, double y) {
 		CollisionHandler::cornerPushMovableAwayFromMovable(movable2, movable1, x, y);
+	}
+
+	static std::pair<double, double>
+	cornerPushMovableAwayFromImmovable_vecOnly(const Circle* movable, double x, double y);
+	static std::pair<std::pair<double, double>, std::pair<double, double>>
+	cornerPushMovableAwayFromMovable_vecOnly(const Circle* movable1, const Rect* movable2, double x, double y);
+	static std::pair<double, double>
+	cornerPushMovableAwayFromImmovable_vecOnly(const Rect* movable, const Circle*, double x, double y);
+	static std::pair<std::pair<double, double>, std::pair<double, double>>
+	cornerPushMovableAwayFromMovable_vecOnly(const Rect* movable1, const Circle* movable2, double x, double y) {
+		std::pair<std::pair<double, double>, std::pair<double, double>> vecs = CollisionHandler::cornerPushMovableAwayFromMovable_vecOnly(movable2, movable1, x, y);
+		return { vecs.second, vecs.first };
 	}
 
 public: //for tanks and bullets and stuff (things that move around)
@@ -68,6 +82,30 @@ public: //collision detection and handling (just moving)
 	static void pushMovableAwayFromImmovable(Circle* movable, Circle* immovable);
 	static void pushMovableAwayFromMovable(Circle* movable1, Circle* movable2);
 
+public: //displacement-only versions
+	static std::pair<double, double>
+	pushMovableAwayFromImmovable_vecOnly(const Rect* movable, const Rect* immovable);
+	static std::pair<std::pair<double, double>, std::pair<double, double>>
+	pushMovableAwayFromMovable_vecOnly(const Rect* movable1, const Rect* movable2);
+
+	static std::pair<double, double>
+	pushMovableAwayFromImmovable_vecOnly(const Circle* movable, const Rect* immovable);
+	static std::pair<std::pair<double, double>, std::pair<double, double>>
+	pushMovableAwayFromMovable_vecOnly(const Circle* movable1, const Rect* movable2) {
+		std::pair<std::pair<double, double>, std::pair<double, double>> vecs = CollisionHandler::pushMovableAwayFromMovable_vecOnly(movable2, movable1);
+		return { vecs.second, vecs.first };
+	}
+
+	static std::pair<double, double>
+	pushMovableAwayFromImmovable_vecOnly(const Rect* movable, const Circle* immovable);
+	static std::pair<std::pair<double, double>, std::pair<double, double>>
+	pushMovableAwayFromMovable_vecOnly(const Rect* movable1, const Circle* movable2);
+
+	static std::pair<double, double>
+	pushMovableAwayFromImmovable_vecOnly(const Circle* movable, const Circle* immovable);
+	static std::pair<std::pair<double, double>, std::pair<double, double>>
+	pushMovableAwayFromMovable_vecOnly(const Circle* movable1, const Circle* movable2);
+
 	/*
 	//interesting...
 	static void pullMovableIntoImmovable(Rect* movable, Rect* immovable);
@@ -88,9 +126,11 @@ public: //collision detection and handling (just moving)
 	*/
 
 public:
-	//intersection or tangent happens:
+	//check if intersection or tangent happens, and if so where:
+	static std::optional<std::pair<PositionHolder, PositionHolder>> circleLineIntersectionCheckAndGet(const Circle*, double lineX1, double lineY1, double lineX2, double lineY2);
+	//only check if it happens:
 	static bool circleLineIntersectionHappens(const Circle*, double lineX1, double lineY1, double lineX2, double lineY2);
-	//location of intersection (only use if collision is guranteed):
+	//only get location of intersection:
 	static std::pair<PositionHolder, PositionHolder> circleLineIntersection(const Circle*, double lineX1, double lineY1, double lineX2, double lineY2);
 
 public: //other stuff
