@@ -1,7 +1,7 @@
 #include "mod-processor.h"
 
 #include <stdexcept>
-#include <algorithm> //std::find
+#include <algorithm> //std::find, std::remove
 #include <filesystem> //C++17
 #include <fstream>
 #include <iostream>
@@ -32,6 +32,8 @@ std::vector<std::string> ModProcessor::getListOfKnownMods() {
 	if (modOrder_file.is_open()) {
 		std::string line;
 		while (std::getline(modOrder_file, line)) {
+			line.erase(std::remove(line.begin(), line.end(), '\r'), line.end());
+			line.erase(std::remove(line.begin(), line.end(), '\n'), line.end());
 			modOrder_list.push_back(line);
 		}
 		modOrder_file.close();
@@ -76,6 +78,8 @@ std::vector<std::string> ModProcessor::getListOfIgnoredMods() {
 	if (ignoreList_file.is_open()) {
 		std::string line;
 		while (std::getline(ignoreList_file, line)) {
+			line.erase(std::remove(line.begin(), line.end(), '\r'), line.end());
+			line.erase(std::remove(line.begin(), line.end(), '\n'), line.end());
 			ignoreList_list.push_back(line);
 		}
 		ignoreList_file.close();

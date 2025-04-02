@@ -1,7 +1,7 @@
 #include "custom-power-interpreter.h"
 
 #include <stdexcept>
-#include <algorithm> //std::find, std::sort
+#include <algorithm> //std::find, std::sort, std::remove
 #include <filesystem> //only for catching ModProcessor's exceptions
 #include <fstream>
 #include <iostream>
@@ -925,6 +925,8 @@ CustomPower* CustomPowerInterpreter::processCustomPower(std::string path) {
 		std::string error_string = ""; //when an exception is generated, this is set and the loop below is broken out of (so the file can get closed)
 
 		while (std::getline(power_file, line)) {
+			line.erase(std::remove(line.begin(), line.end(), '\r'), line.end());
+			line.erase(std::remove(line.begin(), line.end(), '\n'), line.end());
 			lineNum++;
 			BasicINIParser::removeLeftWhitespace(line);
 			BasicINIParser::removeComments(line);

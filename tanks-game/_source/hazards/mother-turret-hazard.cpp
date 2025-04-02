@@ -193,7 +193,7 @@ void MotherTurretHazard::pushChild(int turretNum) {
 	HazardManager::pushCircleHazard(childTurret);
 }
 
-inline float MotherTurretHazard::getChildTurretAngle(int turretNum) const {
+float MotherTurretHazard::getChildTurretAngle(int turretNum) const {
 	const float turretAngleDiff = float(2*PI) / maxChildTurrets;
 	return initialAngle + turretNum * turretAngleDiff;
 }
@@ -275,7 +275,7 @@ void MotherTurretHazard::tick_chargeUp() {
 	}
 }
 
-inline int MotherTurretHazard::getChildCount() const {
+int MotherTurretHazard::getChildCount() const {
 	return std::count(childTurretAlive.begin(), childTurretAlive.end(), true);
 }
 

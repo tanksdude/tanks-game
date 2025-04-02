@@ -16,11 +16,11 @@ protected:
 protected:
 	virtual void pushInitialChildren(int count);
 
-	inline int getChildCount() const; //update child count before using this!
+	int getChildCount() const; //update child count before using this!
 	int updateChildCount(); //returns alive children
 	virtual CircleHazard* makeTurret(int turretNum) const;
 	void pushChild(int turretNum); //shouldn't need to be virtual
-	inline float getChildTurretAngle(int turretNum) const; //same
+	float getChildTurretAngle(int turretNum) const; //same
 
 	virtual void turnTowardsPoint(int turretNum);
 	virtual bool isPointedAt(int turretNum) const;

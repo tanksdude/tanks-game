@@ -88,6 +88,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Dependencies\rpmalloc\rpmalloc.c" />
     <ClCompile Include="_source\aaa_first.cpp" />
     <ClCompile Include="_source\background-rect.cpp" />
     <ClCompile Include="_source\basic-ini-parser.cpp" />

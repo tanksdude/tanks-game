@@ -8,19 +8,17 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 include_directories(glm      PRIVATE Dependencies/glm)
 include_directories(rpmalloc PRIVATE Dependencies/rpmalloc)
 include_directories(stb      PRIVATE Dependencies/stb)
+include_directories(misc     PRIVATE Dependencies/_misc)
 
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(glfw3 REQUIRED)
 
-add_compile_options(-Wno-delete-incomplete)
-add_compile_options(-Wno-narrowing)
-add_compile_options(-Wno-int-to-pointer-cast)
-#add_compile_options(-g)
-add_compile_options(-O2)
+#set(CMAKE_BUILD_TYPE "Release") #options: Debug, Release, RelWithDebInfo, MinSizeRel
+set(CMAKE_C_FLAGS     "${CMAKE_C_FLAGS} -Wno-narrowing -Wno-int-to-pointer-cast")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-narrowing -Wno-int-to-pointer-cast -Wno-delete-incomplete")
 #add_compile_options(-lpthread)
 
-# TODO: is there a more elegant way to do this?
 add_executable(${PROJECT_NAME}
 	Dependencies/rpmalloc/rpmalloc.c
 	tanks-game/_source/aaa_first.cpp

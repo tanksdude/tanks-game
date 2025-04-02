@@ -27,7 +27,7 @@ The C++ upgrade of my [JavaScript game](https://uncreativeusername.neocities.org
 
 1. Install Visual Studio 2022
 1. Build x64 Release (on the solution, not project)
-1. [Pre-compiled executables](https://github.com/tanksdude/tanks-game/releases) are provided if this isn't an option for you
+1. **[Pre-compiled executables](https://github.com/tanksdude/tanks-game/releases)** are provided if this isn't an option for you
 
 ### Building (Linux)
 
@@ -36,12 +36,9 @@ The C++ upgrade of my [JavaScript game](https://uncreativeusername.neocities.org
     * non-Debian systems currently untested
     * compiling these from source is currently unsupported, sorry
 1. `mkdir build && cd build`
-1. `cmake ..` (optional: add `-DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS=-march=native -DCMAKE_C_FLAGS=-march=native`)
+1. `cmake .. -DCMAKE_BUILD_TYPE=Release` (optional: `-DCMAKE_CXX_FLAGS=-march=native -DCMAKE_C_FLAGS=-march=native`)
 1. `make -j$(nproc)`
 1. TODO: also needs `res/` and `tanks.ini` copied to the build dir
-1. TODO: also needs `tanks.ini` line endings changed to LF, and for now requires `LoadMods = 0`
-1. TODO: needs `MotherTurretHazard::getChildCount()` and `MotherTurretHazard::getChildTurretAngle()` to have their inline property removed (I know it's due to include order, and CMake probably has a way to specify when one file depends on another)
-1. TODO (last one I promise): need to comment out `#include <rpmalloc.c>` in `_source/aaa_first.cpp`; seems GCC is far more strict about that stuff than MSVC
 
 ![superfast shooting video](readme-video-other.gif)
 
