@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 #include <chrono>
-#include <thread> //sleep (std::this_thread::sleep_for(), std::this_thread::yield())
+#include <thread> //std::this_thread::yield()
 #include <stdexcept>
 
 //needed for callbacks and stuff:
@@ -169,6 +169,7 @@
 
 #include <rpmalloc.h> //rest of rpmalloc stuff is in aaa_first.cpp
 #include <win32/usleep-windows.h> //has the platform check in the file, don't worry
+#include <posix/usleep-posix.h> //same (though it really check for not Windows)
 
 const std::string GameWindowName = "PowerTanks Battle post-v0.2.5.1 DEV"; //this is not guaranteed to be correct every commit but likely will be
 const std::string INIFilePath = "tanks.ini";
@@ -466,20 +467,17 @@ int main(int argc, char** argv) {
 			//need to wait
 			startTime += 10.0/1000;
 
-			const double timeDelayMS = (startTime - currTime) * 1000;
+			const double timeDelayUS = (startTime - currTime) * 1000000;
+			//sleeping on a modern OS is unreliable for <10ms, so use platform-specific methods: Windows timers and POSIX nanosleep
 			#ifdef _WIN32
-			//sleeping on Windows is unreliable, since Windows can't reliably sleep <10ms
-			//no really, even a 1ms sleep could take >10ms; I thought a few 1ms sleeps could work if there's >5ms of waiting left, but nope
-			//the only way around this is the timer functions in the Windows API
-			const long long sleepTimeUS = (static_cast<long long>(timeDelayMS) - 1) * 1000; //1ms of buffer time should be enough
+			const long long sleepTimeUS = static_cast<long long>(timeDelayUS) - 1000; //1ms of buffer time should be enough
 			if (sleepTimeUS > 0) {
 				usleep_windows(sleepTimeUS);
 			}
 			#else
-			//sleeping on Linux is far better
-			const double sleepTimeMS = ((10 - timeDelayMS) / 1000) - 1; //wake up 1ms early
-			if (sleepTimeMS > 0) {
-				std::this_thread::sleep_for(std::chrono::duration<double>(sleepTimeMS));
+			const long sleepTimeUS = static_cast<long>(timeDelayUS) - 2000; //wake up 2ms early
+			if (sleepTimeUS > 0) {
+				SleepInUs_posix(sleepTimeUS);
 			}
 			#endif
 			//spin for the rest
