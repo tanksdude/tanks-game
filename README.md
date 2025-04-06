@@ -39,6 +39,7 @@ The C++ upgrade of my [JavaScript game](https://uncreativeusername.neocities.org
 1. `cmake .. -DCMAKE_BUILD_TYPE=Release` (optional: `-DCMAKE_CXX_FLAGS=-march=native -DCMAKE_C_FLAGS=-march=native`)
 1. `make -j$(nproc)`
 1. TODO: also needs `res/` and `tanks.ini` copied to the build dir
+1. Note: On Ubuntu, going fullscreen seems to force the window to the largest monitor, unless "Auto-hide the Dock" is enabled. It appears that Ubuntu forces windows that are too large for the current screen (which means full height is too much due to the dock) to the largest screen.
 
 ![superfast shooting video](readme-video-other.gif)
 

@@ -152,8 +152,9 @@ void Renderer::BeginningStuff() {
 			//it's possible for the number of monitors to change, so these positions could be wrong, but whatever
 
 			glfwSetWindowAttrib(Renderer::glfw_window, GLFW_DECORATED, GLFW_TRUE);
-			glfwSetWindowPos(Renderer::glfw_window, Renderer::old_window_xpos, Renderer::old_window_ypos);
+			glfwSetWindowAttrib(Renderer::glfw_window, GLFW_RESIZABLE, GLFW_TRUE); //this is *very needed* on Linux
 			glfwSetWindowSize(Renderer::glfw_window, Renderer::old_window_width, Renderer::old_window_height);
+			glfwSetWindowPos(Renderer::glfw_window, Renderer::old_window_xpos, Renderer::old_window_ypos); //pos should be set after size
 
 			currently_fullscreen = false;
 		} else {
@@ -161,14 +162,15 @@ void Renderer::BeginningStuff() {
 			const GLFWvidmode* mode = glfwGetVideoMode(monitor);
 			//doesn't need glfwGetMonitorContentScale to work properly
 
-			int monitorX, monitorY;
-			glfwGetMonitorPos(monitor, &monitorX, &monitorY);
+			int monitor_xpos, monitor_ypos;
+			glfwGetMonitorPos(monitor, &monitor_xpos, &monitor_ypos);
 			glfwGetWindowPos(Renderer::glfw_window, &Renderer::old_window_xpos, &Renderer::old_window_ypos);
 			glfwGetWindowSize(Renderer::glfw_window, &Renderer::old_window_width, &Renderer::old_window_height);
 
 			glfwSetWindowAttrib(Renderer::glfw_window, GLFW_DECORATED, GLFW_FALSE); //this is not stated to be required for proper fullscreen
-			glfwSetWindowPos(Renderer::glfw_window, monitorX, monitorY);
-			glfwSetWindowSize(Renderer::glfw_window, mode->width, mode->height);
+			glfwSetWindowAttrib(Renderer::glfw_window, GLFW_RESIZABLE, GLFW_FALSE);
+			glfwSetWindowPos(Renderer::glfw_window, monitor_xpos, monitor_ypos);
+			glfwSetWindowSize(Renderer::glfw_window, mode->width, mode->height); //note: on Ubuntu, this will force the window to the largest monitor, unless auto-hide dock is enabled
 
 			currently_fullscreen = true;
 		}
@@ -239,7 +241,9 @@ void Renderer::PreInitialize(int* argc, char** argv, std::string windowName, int
 	glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_TRUE);
 	//glfwWindowHint(GLFW_DECORATED, GLFW_TRUE); //unnecessary
 	window = glfwCreateWindow(Renderer::window_width, Renderer::window_height, windowName.c_str(), NULL, NULL);
-	glfwSetWindowPos(window, startX, startY); //this sets the position of the inner window part, not the OS window position
+	int primary_monitor_xpos, primary_monitor_ypos;
+	glfwGetMonitorPos(glfwGetPrimaryMonitor(), &primary_monitor_xpos, &primary_monitor_ypos); //does not seem to do anything on Windows
+	glfwSetWindowPos(window, primary_monitor_xpos + startX, primary_monitor_ypos + startY); //this sets the position of the inner window part, not the OS window position
 	Renderer::glfw_window = window;
 	//glEnable(GL_POLYGON_SMOOTH);
 	//glEnable(GL_MULTISAMPLE);
