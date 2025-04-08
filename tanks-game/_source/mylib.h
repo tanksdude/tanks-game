@@ -1,5 +1,6 @@
 #pragma once
 #include <algorithm> //std::min_element, std::max_element, std::find
+#include <concepts>
 
 template<typename T>
 inline T findMin(const T* arr, int len) { return *std::min_element(arr, arr + len); }
@@ -24,5 +25,5 @@ inline bool isInArray(T value, const T* arr, int length) {
 	return (std::find(arr, arr + length, value) != (arr + length));
 }
 
-template<typename T>
+template<std::floating_point T>
 int weightedSelect(const T* weights, int num);
