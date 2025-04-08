@@ -122,7 +122,7 @@ This level was partially made from randomly throwing down some walls and really 
 * Types: "vanilla", "random-vanilla", "random"
 * Internal name: `untraditional_divider`
 * Default color: `#76C67D`
-* Level effects: Respawning Powerups, Magnetism, Minefield × 4
+* Level effects: Respawning Powerups, Magnetism, Minefield Ã— 4
 
 Instead of the usual vertical dividers, there's only one horizontal wall?! Keep your wits about you as you try to get a powerup, because all of them are in treacherous locations!
 

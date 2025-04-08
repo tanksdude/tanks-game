@@ -28,7 +28,7 @@ Since I don't have the expertise or willingness to add advanced features like "a
 
 * `Position.StartX` (default 60): Sets the window's starting x-position (in pixels? not sure).
 * `Position.StartY` (default 60): Sets the window's starting y-position. Remember that this is counted from the top left of your monitor.
-* `Position.SizeMultiplier` (default 2.5): Controls the sizing of the window. The actual game's size is 640×320, so this setting scales it up to 1600×800.
+* `Position.SizeMultiplier` (default 2.5): Controls the sizing of the window. The actual game's size is 640Ã—320, so this setting scales it up to 1600Ã—800.
 * `Bullet.PerformanceMode` (default 0): Controls whether to draw a circular outline around the bullet to represent its transparency or whether to draw a bar underneath it (no option for actual transparency because that is hard on performance).
 
 Note: Press F11 to toggle fullscreen. (Well, it's borderless fullscreen, but it still fills the whole screen.)
@@ -40,7 +40,7 @@ Note: Press F11 to toggle fullscreen. (Well, it's borderless fullscreen, but it 
 * `GameForceSameLevel`: Forces the game to only play on the same level, which is useful for testing new levels. Set to the name of the level to enable (for example, "vanilla" "default_random").
 * `LimitBullets` (default 1): Controls whether to limit the number of bullets on screen. Look, your computer has a limit at some point.
 * `MaxBullets` (default 8192): Controls the maximum number of bullets, assuming `LimitBullets` is true.
-* `FewerExtraShootingBullets` (default 0): Controls whether something like Triple + Fire shoots 7 or 12 bullets. Keeping this setting off is a significant change (and performance hit), so that's why this is an option instead of always doing more bullets. Remember, Shotgun + Blast goes from 4+16 to 5×16 bullets; that's a lot!
+* `FewerExtraShootingBullets` (default 0): Controls whether something like Triple + Fire shoots 7 or 12 bullets. Keeping this setting off is a significant change (and performance hit), so that's why this is an option instead of always doing more bullets. Remember, Shotgun + Blast goes from 4+16 to 5Ã—16 bullets; that's a lot!
 * `ShootingCooldown` (default 100): Controls the tanks' shooting cooldown. Set to 0 for superfast shooting.
 * `PowerupDurationBaseTime` (default 500): Controls the base time of powerups. Currently does nothing.
 * `DisableTraps` (default 1): Prevents traps from activating. Does nothing since traps don't exist but might in the future. (They existed in JS Tanks.)

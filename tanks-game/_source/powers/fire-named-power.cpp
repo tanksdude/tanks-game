@@ -89,7 +89,7 @@ TankPower* FireNamedBulletPower::makeTankPower() const {
 
 FireNamedBulletPower::FireNamedBulletPower()
 : FireNamedBulletPower(-1 * ((GameRNG::randFuncf()+GameRNG::randFuncf())/2 * (FireNamedPower::maxBulletAcceleration - FireNamedPower::minBulletAcceleration) + FireNamedPower::minBulletAcceleration)) {}
-//accleration: [0,1) * accDiff + min
+//acceleration: [0,1) * accDiff + min
 
 FireNamedBulletPower::FireNamedBulletPower(float acceleration) {
 	accelerationAmount = acceleration;

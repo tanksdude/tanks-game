@@ -18,7 +18,7 @@ Some general notes:
 * Every line can only have one assignment or command. If you have a really long line, sorry, but I recommend turning on word wrap.
 * Sorry, but there's no math parsing when supplying numbers. You can't do something like `(16+8)/2`; you must do `12` instead.
 * Comments can be added by using a semicolon (`;`) or number sign (`#`).
-* The size of a level is 640×320.
+* The size of a level is 640Ã—320.
 
 ## Initialization stuff
 

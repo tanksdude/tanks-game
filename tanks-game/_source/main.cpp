@@ -412,7 +412,7 @@ int main(int argc, char** argv) {
 
 	//game mode:
 	GameMainLoop* game;
-	if (ini_data.exists("UNIVERAL", "GameMode")) {
+	if (ini_data.exists("UNIVERSAL", "GameMode")) {
 		int mode = std::stoi(ini_data.get("UNIVERSAL", "GameMode"));
 		switch (mode) {
 			default:

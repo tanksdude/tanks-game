@@ -1,7 +1,7 @@
 #pragma once
 #include "../power.h"
 
-//TOOD: wall/edge bouncing should probably be a built-in feature, since multiple powers bounce, but they can "double bounce" off stuff which is very wrong
+//TODO: wall/edge bouncing should probably be a built-in feature, since multiple powers bounce, but they can "double bounce" off stuff which is very wrong
 //wall bounce notes: check if the bulletpower does bounce, do the bounce, apply an update to the bulletpower (to decrease bounce count), check if the other bulletpowers want to do something
 //if the other bulletpowers do want to do something, then only the first one can do anything to the wall (so ultrabounce doesn't push twice)
 //should something like wall sparks create twice as many sparks, or should it only be allowed once? could this whole thing be solved by not letting the same power type go twice?

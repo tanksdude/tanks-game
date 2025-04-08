@@ -3,7 +3,7 @@
 #include <rpmalloc.h>
 #include <rpnew.h> //only include once!
 //malloc.c is included by rpmalloc.c with ENABLE_OVERRIDE=1 (not enabled), would only be used by stb_image
-//to get it to compile, need to make _msize_base noexcept because that's what the current/latest Windows SDK wants
+//couldn't get it to compile; it works on the latest develop branch, but not interested in switching over
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>

@@ -27,7 +27,7 @@ Required: every power needs a name, color, types, and weights for the types.
 
 Optional: the duration and some attributes.
 
-* `PowerTankDurationMultiplier` (double, default = 1.0): The duration the tank has the power. Bullets always have unlimited power duration. Wallhack sets this to 0.5 and is the only vanilla power to change this. (Was planning on more but things that's just how game development is sometimes.)
+* `PowerTankDurationMultiplier` (double, default = 1.0): The duration the tank has the power. Bullets always have unlimited power duration. Wallhack sets this to 0.5 and is the only vanilla power to change this. (Was planning on more but that's just how game development is sometimes.)
 * `PowerAttributes` (strings, default = "stack" and "mix"): Just something to help when randomizing powers. (Which isn't possible for custom levels yet...) Currently only "stack" and "mix" are even acknowledged as existing.
 
 After you have set the required and optional attributes, you need to write `[TANKPOWER_START]` to begin commands for the tank power, then after that, write `[BULLETPOWER_START]` to begin commands for the bullet power.
@@ -78,7 +78,7 @@ First, do `modifiedDeathHandling_Enable` to enable this feature.
 * `tankFiringRateMultiplier <number>`: Multiplies the tank's shooting cooldown by this number. For example, Big sets this to 4 while Multishot sets this to 0.5. Add `tankFiringRateStacks` to have this multiplier stack.
 * `tankTurningIncrementMultiplier <number>`: Multiplies the tank's turning increment (turning speed) by this number. For example, Fire sets this to 2, and Invert sets this to -1 (and stacks). Add `tankTurningIncrementStacks` to have this multiplier stack.
 
-Note on "stacking": When collecting two Speed powerups, the tank is 4× as fast. However, when collecting two Invincible powerups with a .5× max speed multiplier, the tank's max speed is still .5× its normal value. "Stacking" really means to force the multiplier to always apply. When deciding between many different multipliers, the largest and smallest ones are both used (by multiplying them together).
+Note on "stacking": When collecting two Speed powerups, the tank is 4Ã— as fast. However, when collecting two Invincible powerups with a .5Ã— max speed multiplier, the tank's max speed is still .5Ã— its normal value. "Stacking" really means to force the multiplier to always apply. When deciding between many different multipliers, the largest and smallest ones are both used (by multiplying them together).
 
 ### Offense and defense
 

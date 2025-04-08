@@ -66,7 +66,7 @@ public:
 	//with bulletSizeMultiplierPerTick = 257.0/256.0, 1.0/128 or 1.0/64 might be closer to what I originally thought of
 	//virtual double getBulletRadiusMultiplier() const override { return 1; }
 	virtual float  getBulletAcceleration() const override { return 1.0/64; }
-	//with bulletSizeMultiplierPerTick = 257.0/256.0, 1.0/512 or 1.0/1024 (with a smaller radius multiplier per tick) might be closer to what I orignially thought of
+	//with bulletSizeMultiplierPerTick = 257.0/256.0, 1.0/512 or 1.0/1024 (with a smaller radius multiplier per tick) might be closer to what I originally thought of
 	virtual double getBulletRadiusGrowNumber_Stationary() const override { return MegaDeathPower::bulletSizeMultiplierPerTick; }
 	//bool bulletRadiusGrowMultiplies_Stationary = true;
 	virtual double getBulletRadiusGrowNumber_Moving() const override { return MegaDeathPower::bulletSizeMultiplierPerTick; }

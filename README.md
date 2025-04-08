@@ -65,7 +65,7 @@ Making your own powers is also now a thing! (Although very limited.) How to do s
 
 1. Follow the same steps as making custom levels, but add a `powers` folder in your mod's folder.
 1. Every power needs a `Name` (string), `Color` (3 floats in range [0,1] for RGB), `PowerTypes` (at least one string; recommended "modname" and "random-modname"), and `PowerWeights` (1 float for each type; recommended 1.0 is the base weight).
-1. Optionally, powers can contain a `PowerTankDurationMultiplier` (double, default = 1.0, for the duration the tank has the power) and `PowerAttributes` (strings, default = "stack" and "mix", just something to help when randomizing powers)
+1. Optionally, powers can contain a `PowerTankDurationMultiplier` (float, default = 1.0, for the duration the tank has the power) and `PowerAttributes` (strings, default = "stack" and "mix", just something to help when randomizing powers)
 1. Once the assignments have been set, do `[TANKPOWER_START]` to set up the tank power, then `[BULLETPOWER_START]` to set up the bullet power.
 1. Check the provided powers for syntax and stuff. They contain basically every operation currently available.
 1. Look at `docs/custom-powers.md` for more information.
