@@ -77,6 +77,5 @@ TankPower* GodmodeBulletPower::makeTankPower() const {
 }
 
 GodmodeBulletPower::GodmodeBulletPower() {
-	timeLeft = 0;
-	maxTime = -1;
+	//nothing
 }

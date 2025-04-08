@@ -64,9 +64,6 @@ TankPower* GrenadeBulletPower::makeTankPower() const {
 }
 
 GrenadeBulletPower::GrenadeBulletPower() {
-	timeLeft = 0;
-	maxTime = -1;
-
 	modifiesCollisionWithWall = true;
 
 	bulletRadiusGrowMultiplies_Stationary = true;

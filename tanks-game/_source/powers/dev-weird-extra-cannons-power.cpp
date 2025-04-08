@@ -52,6 +52,5 @@ TankPower* DevWeirdExtraCannonsBulletPower::makeTankPower() const {
 }
 
 DevWeirdExtraCannonsBulletPower::DevWeirdExtraCannonsBulletPower() {
-	timeLeft = 0;
-	maxTime = -1;
+	//nothing
 }

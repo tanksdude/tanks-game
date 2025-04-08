@@ -57,6 +57,5 @@ TankPower* DevBackwardsMovementBulletPower::makeTankPower() const {
 }
 
 DevBackwardsMovementBulletPower::DevBackwardsMovementBulletPower() {
-	timeLeft = 0;
-	maxTime = -1;
+	//nothing
 }

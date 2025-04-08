@@ -169,9 +169,6 @@ TankPower* WallSparksBulletPower::makeTankPower() const {
 WallSparksBulletPower::WallSparksBulletPower() : WallSparksBulletPower(WallSparksPower::maxBounces) {}
 
 WallSparksBulletPower::WallSparksBulletPower(int bounces) {
-	timeLeft = 0;
-	maxTime = -1;
-
 	bouncesLeft = bounces;
 	if (bounces > 0) [[likely]] {
 		modifiesCollisionWithWall = true;

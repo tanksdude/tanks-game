@@ -73,6 +73,5 @@ TankPower* MinesBulletPower::makeTankPower() const {
 }
 
 MinesBulletPower::MinesBulletPower() {
-	timeLeft = 0;
-	maxTime = -1;
+	//nothing
 }

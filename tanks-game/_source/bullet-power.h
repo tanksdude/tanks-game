@@ -13,27 +13,10 @@ class BulletPower;
 
 class BulletPower {
 public:
-	double timeLeft;
-	double maxTime; //set to -1 to last forever (which is normal for bullet powers)
-
-public:
 	virtual void initialize(Bullet* parent) { return; } //unlikely to be used
 	virtual void removeEffects(Bullet* parent) { return; } //not really needed
 
 	virtual void tick(Bullet*) { return; } //most will be doing a lot, though they shouldn't need this, but just in case
-	void powerTick() {
-		timeLeft--;
-		//should not be virtual
-	}
-	bool isDone() const {
-		/*
-		if (maxTime < 0) [[likely]] {
-			return false;
-		}
-		return (timeLeft <= 0);
-		*/
-		return ((maxTime >= 0) && (timeLeft <= 0));
-	}
 	virtual ColorValueHolder getColor() const = 0;
 	virtual float getColorImportance() const { return 0; }
 	virtual std::string getColorIdentifier() const = 0; //for caching colors

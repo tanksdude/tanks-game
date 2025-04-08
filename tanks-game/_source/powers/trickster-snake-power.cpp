@@ -63,9 +63,6 @@ TankPower* TricksterSnakeBulletPower::makeTankPower() const {
 }
 
 TricksterSnakeBulletPower::TricksterSnakeBulletPower() {
-	timeLeft = 0;
-	maxTime = -1;
-
 	modifiesMovement = true;
 
 	tickCount = 0;

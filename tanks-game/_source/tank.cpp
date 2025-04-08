@@ -507,8 +507,10 @@ void Tank::updateTurningIncrement() {
 	velocity.setAngle(std::round(velocity.getAngle() / (float(PI) / turningIncrement)) * (float(PI) / turningIncrement));
 }
 
-void Tank::powerCalculate() {
-	//TODO: separate into power tick and power count down
+void Tank::powerTickAndCalculate() {
+	//should this be separated into power tick and power count down?
+	//for now, no because laziness and memory bandwidth (which doesn't really matter when there's only two tanks, matters a lot more for bullets)
+	//the only power that might care is mines, because it checks whether it needs to modify additional shooting based on other powers
 	for (int i = tankPowers.size() - 1; i >= 0; i--) {
 		tankPowers[i]->tick(this); //I don't think any power will use this, but whatever
 		if (tankPowers[i]->isDone()) [[unlikely]] {

@@ -111,9 +111,6 @@ BlastBulletPower::BlastBulletPower()
 //acceleration: [0,1) * accDiff + min
 
 BlastBulletPower::BlastBulletPower(float acceleration) {
-	timeLeft = 0;
-	maxTime = -1;
-
 	accelerationAmount = acceleration;
 
 	modifiesCollisionWithWall = true;

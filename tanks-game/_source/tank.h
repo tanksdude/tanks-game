@@ -85,7 +85,7 @@ public:
 public:
 	bool move(bool forward, bool turnL, bool turnR, bool specialKey);
 	void shoot(bool shooting);
-	void powerCalculate();
+	void powerTickAndCalculate();
 	void removePower(int index);
 	void powerReset();
 

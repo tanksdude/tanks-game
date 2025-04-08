@@ -60,9 +60,6 @@ TankPower* TheSuperNamedBulletPower::makeTankPower() const {
 }
 
 TheSuperNamedBulletPower::TheSuperNamedBulletPower() {
-	timeLeft = 0;
-	maxTime = -1;
-
 	modifiesCollisionWithWall = true;
 	modifiedCollisionWithWallCanWorkWithOthers = false;
 }

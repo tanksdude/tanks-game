@@ -63,9 +63,6 @@ TankPower* AncientMegaDeathBulletPower::makeTankPower() const {
 }
 
 AncientMegaDeathBulletPower::AncientMegaDeathBulletPower() {
-	timeLeft = 0;
-	maxTime = -1;
-
 	modifiesMovement = true;
 	modifiesCollisionWithWall = true;
 	modifiedCollisionWithWallCanWorkWithOthers = false;

@@ -88,8 +88,5 @@ InteractionBoolHolder ShieldBulletPower::modifiedDeathHandling(Bullet* parent) {
 }
 
 ShieldBulletPower::ShieldBulletPower() {
-	timeLeft = 0;
-	maxTime = -1;
-
 	modifiesDeathHandling = true;
 }

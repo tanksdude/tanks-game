@@ -57,6 +57,5 @@ TankPower* MultishotBulletPower::makeTankPower() const {
 }
 
 MultishotBulletPower::MultishotBulletPower() {
-	timeLeft = 0;
-	maxTime = -1;
+	//nothing
 }

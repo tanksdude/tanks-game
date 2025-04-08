@@ -90,9 +90,6 @@ TankPower* BananaBulletPower::makeTankPower() const {
 }
 
 BananaBulletPower::BananaBulletPower() {
-	timeLeft = 0;
-	maxTime = -1;
-
 	modifiesMovement = true;
 
 	wasStationary = false;

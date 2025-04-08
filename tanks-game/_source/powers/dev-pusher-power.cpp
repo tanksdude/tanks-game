@@ -71,6 +71,5 @@ TankPower* DevPusherBulletPower::makeTankPower() const {
 }
 
 DevPusherBulletPower::DevPusherBulletPower() {
-	timeLeft = 0;
-	maxTime = -1;
+	//nothing
 }

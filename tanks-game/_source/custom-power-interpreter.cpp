@@ -241,9 +241,6 @@ std::shared_ptr<std::vector<CustomPower::CustomPowerAction_Bullet*>> initializat
 	this->initializationActions_tank = initializationActions_tank;
 	this->initializationActions_bullet = initializationActions_bullet;
 
-	timeLeft = 0;
-	maxTime = -1;
-
 	this->bulletSpeedMultiplier = BulletPower::getBulletSpeedMultiplier();
 	this->bulletRadiusMultiplier = BulletPower::getBulletRadiusMultiplier();
 	this->bulletAcceleration = BulletPower::getBulletAcceleration();

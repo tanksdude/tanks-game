@@ -279,8 +279,8 @@ void GameMainLoop::Tick(int UPS) {
 	//powerCalculate on tanks and bullets, then tank shoot:
 	Diagnostics::startTiming("power calculate and tank shoot");
 	tankShoot();
-	tankPowerCalculate();
-	bulletPowerCalculate();
+	tankPowerTickAndCalculate();
+	bulletPowerTick();
 	Diagnostics::endTiming();
 
 	//collide tanks with walls:
@@ -432,17 +432,18 @@ void GameMainLoop::moveBullets() {
 	BulletManager::forceLimitBullets();
 }
 
-void GameMainLoop::tankPowerCalculate() {
+void GameMainLoop::tankPowerTickAndCalculate() {
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
-		TankManager::getTank(i)->powerCalculate();
+		TankManager::getTank(i)->powerTickAndCalculate();
 	}
 }
 
-void GameMainLoop::bulletPowerCalculate() {
+void GameMainLoop::bulletPowerTick() {
 	for (int i = BulletManager::getNumBullets() - 1; i >= 0; i--) {
 		Bullet* b = BulletManager::getBullet(i);
-		b->powerCalculate();
-		if (b->isDead()) {
+		b->powerTick();
+		if (b->isDead()) [[unlikely]] {
+			//what power would do this?
 			BulletManager::deleteBullet(i);
 			continue;
 		}

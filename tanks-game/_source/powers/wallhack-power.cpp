@@ -58,9 +58,6 @@ InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> WallhackBulletPowe
 }
 
 WallhackBulletPower::WallhackBulletPower() {
-	timeLeft = 0;
-	maxTime = -1;
-
 	modifiesCollisionWithWall = true;
 	modifiedCollisionWithWallCanWorkWithOthers = false;
 }

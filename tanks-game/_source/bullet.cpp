@@ -377,14 +377,9 @@ std::pair<double, double> Bullet::getBulletRadiusGrowNumber_Moving() const {
 	return { highestAdditive, highestMultiplier * lowestMultiplier };
 }
 
-void Bullet::powerCalculate() {
+void Bullet::powerTick() {
 	for (int i = bulletPowers.size() - 1; i >= 0; i--) {
 		bulletPowers[i]->tick(this); //I don't think any power will use this, but whatever
-		if (bulletPowers[i]->isDone()) [[unlikely]] {
-			removePower(i);
-		} else { //to make each power last its full length, not n-1 length
-			bulletPowers[i]->powerTick();
-		}
 	}
 }
 

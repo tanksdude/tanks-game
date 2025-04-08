@@ -154,9 +154,6 @@ TankPower* BounceBulletPower::makeTankPower() const {
 BounceBulletPower::BounceBulletPower() : BounceBulletPower(BouncePower::maxBounces) {}
 
 BounceBulletPower::BounceBulletPower(int bounces) {
-	timeLeft = 0;
-	maxTime = -1;
-
 	this->bouncesLeft = bounces;
 	if (bounces > 0) [[likely]] {
 		modifiesCollisionWithWall = true;

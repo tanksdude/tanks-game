@@ -99,8 +99,8 @@ public:
 	void tickHazards();
 	void moveBullets();
 	void tankShoot();
-	void tankPowerCalculate();
-	void bulletPowerCalculate();
+	void tankPowerTickAndCalculate();
+	void bulletPowerTick();
 	void tankToWall();
 	void tankToHazard();
 	void tankToTank();

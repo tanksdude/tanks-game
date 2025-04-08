@@ -52,9 +52,6 @@ TankPower* DevMovementRestarterBulletPower::makeTankPower() const {
 }
 
 DevMovementRestarterBulletPower::DevMovementRestarterBulletPower() {
-	timeLeft = 0;
-	maxTime = -1;
-
 	modifiesMovement = true;
 
 	hasRestartedMovement = false;

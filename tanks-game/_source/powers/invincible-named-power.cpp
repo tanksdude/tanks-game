@@ -46,6 +46,5 @@ TankPower* InvincibleNamedBulletPower::makeTankPower() const {
 }
 
 InvincibleNamedBulletPower::InvincibleNamedBulletPower() {
-	timeLeft = 0;
-	maxTime = -1;
+	//nothing
 }

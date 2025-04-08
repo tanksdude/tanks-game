@@ -71,7 +71,7 @@ public:
 
 public:
 	bool move();
-	void powerCalculate();
+	void powerTick();
 	void removePower(int index);
 	void updateColorIdentifier();
 

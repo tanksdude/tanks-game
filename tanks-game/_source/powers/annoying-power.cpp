@@ -97,9 +97,6 @@ float AnnoyingBulletPower::getDefenseTier(const Bullet*) const {
 }
 
 AnnoyingBulletPower::AnnoyingBulletPower() {
-	timeLeft = 0;
-	maxTime = -1;
-
 	modifiesCollisionWithTank = true;
 	//modifiedCollisionWithTankCanWorkWithOthers = false; //TODO: should this be set?
 }

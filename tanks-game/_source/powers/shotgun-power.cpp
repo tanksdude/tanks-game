@@ -63,6 +63,5 @@ TankPower* ShotgunBulletPower::makeTankPower() const {
 }
 
 ShotgunBulletPower::ShotgunBulletPower() {
-	timeLeft = 0;
-	maxTime = -1;
+	//nothing
 }
