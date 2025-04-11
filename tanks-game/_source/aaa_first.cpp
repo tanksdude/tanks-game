@@ -1,9 +1,18 @@
 #include "aaa_first.h"
 
 #include <rpmalloc.h>
-#include <rpnew.h> //only include once!
-//malloc.c is included by rpmalloc.c with ENABLE_OVERRIDE=1 (not enabled), would only be used by stb_image
-//couldn't get it to compile; it works on the latest develop branch, but not interested in switching over
+#include <rpnew.h> //only include once! (there's no include guard, despite the readme saying it's okay)
+
+//compiling rpmalloc with malloc/free replacement (ENABLE_OVERRIDE=1):
+
+//current version (1.4.5):
+//Windows: C/C++ > Code Generation > Runtime Library to static (the non-DLL one) *and non-debug* (because of glew?), use glfw3_mt.lib, add ENABLE_PRELOAD=1
+//Linux: remove the rpnew.h include, add ENABLE_PRELOAD=1, if using GCC then also add _GNU_SOURCE
+
+//latest develop branch (which will presumably become 2.0.0) (ENABLE_OVERRIDE is on by default):
+//Windows: just C17 and /experimental:c11atomics (other changes are not necessary)
+//Linux: remove the rpnew.h include (a debugger shows it's hitting the rpmalloc functions on a new() call despite rpnew.h not being included, so I guess rpnew.h is Windows-only (__CRTDECL is Microsoft-exclusive, after all))
+//Linux continued: malloc.c says to include rpnew.h on Windows, and Linux does not compile if rpnew.h is included (redefining new/delete/etc), even though the readme implies it's supposed to be included despite the platform
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
