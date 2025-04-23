@@ -3,7 +3,8 @@
 #include <string>
 #include <vector>
 #include <chrono>
-#include <thread> //std::this_thread::yield()
+#include <algorithm> //std::max
+#include <thread> //std::this_thread::yield(), std::thread::hardware_concurrency()
 #include <stdexcept>
 
 //needed for callbacks and stuff:
@@ -167,7 +168,8 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-#include <rpmalloc.h> //rest of rpmalloc stuff is in aaa_first.cpp
+#include "aaa_first.h" //for the thread manager, because I didn't want to make a new "globals" file or put it in constants.h
+//#include <rpmalloc.h> //rest of rpmalloc stuff is in aaa_first.cpp
 #include <win32/usleep-windows.h> //has the platform check in the file, don't worry
 #include <posix/usleep-posix.h> //same (though it really check for not Windows)
 
@@ -185,6 +187,31 @@ int main(int argc, char** argv) {
 	GameManager::initializeINI(INIFilePath);
 	GameManager::initializeSettings();
 	const BasicINIParser::BasicINIData& ini_data = GameManager::get_INI();
+
+	if (ini_data.exists("UNIVERSAL", "ThreadCount")) {
+		int threadCount = std::stoi(ini_data.get("UNIVERSAL", "ThreadCount"));
+		if (threadCount <= 0) {
+			threadCount = std::max(1, static_cast<signed>(std::thread::hardware_concurrency()) - threadCount);
+		}
+
+		enki::TaskSchedulerConfig config;
+		config.numTaskThreadsToCreate = threadCount;
+		//not required to set config.customAllocator
+		/*
+		static enki::AllocFunc rpmalloc_alloc_wrapper = [](size_t align_, size_t size_, void* userData_, const char* file_, int line_) {
+			return rpaligned_alloc(align_, size_);
+		};
+		static enki::FreeFunc rpmalloc_free_wrapper = [](void* ptr_, size_t size_, void* userData_, const char* file_, int line_) {
+			rpfree(ptr_);
+		};
+		config.customAllocator.alloc = rpmalloc_alloc_wrapper;
+		config.customAllocator.free  = rpmalloc_free_wrapper;
+		*/
+
+		g_TS.Initialize(config);
+	} else {
+		g_TS.Initialize(1);
+	}
 
 	if (ini_data.exists("UNIVERSAL", "RNGSeed")) {
 		long long seed = std::stoll(ini_data.get("UNIVERSAL", "RNGSeed"));
@@ -491,6 +518,6 @@ int main(int argc, char** argv) {
 
 	Renderer::Uninitialize();
 
-	rpmalloc_finalize();
+	//rpmalloc_finalize();
 	return 0;
 }

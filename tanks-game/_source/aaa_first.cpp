@@ -1,13 +1,14 @@
 #include "aaa_first.h"
 
-#include <rpmalloc.h>
-#include <rpnew.h> //only include once! (there's no include guard, despite the readme saying it's okay)
+//#include <rpmalloc.h>
+//#include <rpnew.h> //only include once! (there's no include guard, despite the readme saying it's okay)
 
-//compiling rpmalloc with malloc/free replacement (ENABLE_OVERRIDE=1):
+//compiling rpmalloc with malloc/free replacement *and automatic thread initialization* (ENABLE_OVERRIDE=1):
 
 //current version (1.4.5):
 //Windows: C/C++ > Code Generation > Runtime Library to static (the non-DLL one) *and non-debug* (because of glew?), use glfw3_mt.lib, add ENABLE_PRELOAD=1
 //Linux: remove the rpnew.h include, add ENABLE_PRELOAD=1, if using GCC then also add _GNU_SOURCE
+//Windows continued: it's not possible to use enkiTS and rpmalloc together this way (Linux unaffected)
 
 //latest develop branch (which will presumably become 2.0.0) (ENABLE_OVERRIDE is on by default):
 //Windows: just C17 and /experimental:c11atomics (other changes are not necessary)
@@ -20,7 +21,9 @@
 FirstLoadedObject::FirstLoadedObject() {
 	//needs to be initialized before main(), because anything using the heap (like std::string or std::vector) will fail otherwise
 	//also, this is *not* a HACK, because this is literally the only way to solve this problem in C/C++ (as far as I'm aware)
-	rpmalloc_initialize();
+	//rpmalloc_initialize();
 }
 
 FirstLoadedObject first_loaded;
+
+enki::TaskScheduler g_TS;

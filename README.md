@@ -16,7 +16,7 @@ The C++ upgrade of my [JavaScript game](https://uncreativeusername.neocities.org
         * Apparently there are some Windows ARM laptops that only support DirectX, so those aren't supported
 * 3GHz+ CPU recommended
     * Faster CPU -> more bullets on screen
-    * Multithreading not available, too difficult (also I have basically no idea how to effectively multithreading RNG)
+    * The game can use more than one core, however the performance is usually the same or worse; even with a complete rewrite, not sure performance would improve...
 * ~200MB RAM
 * No audio requirements, because there's no audio
 * OS: Windows x64 or Linux x64

@@ -6,6 +6,8 @@
 #include "circle.h"
 #include "rect.h"
 
+#include <TaskScheduler.h>
+
 class PhysicsHandler {
 protected:
 	struct ObjectIntervalInfo {
@@ -24,23 +26,59 @@ protected:
 		}
 	};
 
+	static const uint32_t MinTaskSize;
+
+	struct SweepAndPruneTask_TwoLists : public enki::ITaskSet {
+		std::vector<std::pair<int, int>>** m_collisionLists;
+		const std::vector<PhysicsHandler::ObjectIntervalInfo>* m_objectIntervals;
+		int num_threads;
+
+		//void Init(const std::vector<PhysicsHandler::ObjectIntervalInfo>* objectIntervals);
+		void ExecuteRange(enki::TaskSetPartition range_, uint32_t threadnum_) override;
+
+		SweepAndPruneTask_TwoLists(const std::vector<PhysicsHandler::ObjectIntervalInfo>* objectIntervals, int num_threads, int task_size);
+		~SweepAndPruneTask_TwoLists() override;
+	};
+
+	struct SweepAndPruneTaskGroup_TwoLists : public enki::ITaskSet {
+		SweepAndPruneTask_TwoLists*       m_testTasks;
+		enki::Dependency                  m_Dependency;
+		std::vector<std::pair<int, int>>* final_collisionList;
+
+		void ExecuteRange(enki::TaskSetPartition range, uint32_t threadnum) override;
+
+		SweepAndPruneTaskGroup_TwoLists(SweepAndPruneTask_TwoLists* testTask_);
+		~SweepAndPruneTaskGroup_TwoLists() override;
+	};
+
+	struct SweepAndPruneTask : public enki::ITaskSet {
+		std::vector<std::pair<int, int>>** m_collisionLists;
+		const std::vector<PhysicsHandler::ObjectIntervalInfo>* m_objectIntervals;
+		int num_threads;
+
+		//void Init(const std::vector<PhysicsHandler::ObjectIntervalInfo>* objectIntervals);
+		void ExecuteRange(enki::TaskSetPartition range_, uint32_t threadnum_) override;
+
+		SweepAndPruneTask(const std::vector<PhysicsHandler::ObjectIntervalInfo>* objectIntervals, int num_threads, int task_size);
+		~SweepAndPruneTask() override;
+	};
+
+	struct SweepAndPruneTaskGroup : public enki::ITaskSet {
+		SweepAndPruneTask*                m_testTasks;
+		enki::Dependency                  m_Dependency;
+		std::vector<std::pair<int, int>>* final_collisionList;
+
+		void ExecuteRange(enki::TaskSetPartition range, uint32_t threadnum) override;
+
+		SweepAndPruneTaskGroup(SweepAndPruneTask* testTask_);
+		~SweepAndPruneTaskGroup() override;
+	};
+
 public:
 	template<typename T, typename U>
 	static std::vector<std::pair<int, int>>* sweepAndPrune(const std::vector<T>& collider, const std::vector<U>& collidee);
 	template<typename T>
 	static std::vector<std::pair<int, int>>* sweepAndPrune(const std::vector<T>& collider);
-
-	//template<typename T>
-	//static std::unordered_map<std::pair<int, int>, std::vector<T>>* bucketPlacement(const std::vector<T>& collider, double leftBound, double rightBound, double downBound, double upBound, int lrBuckets, int udBuckets);
-	////since bucket sort is a real thing this shouldn't call be called that https://en.wikipedia.org/wiki/Bucket_sort
-	//problem: can't do the bucket thing (spatial partitioning is its official name, I think) because individual elements can't be larger than a cell
-	//solution: quadtrees (I put this off for so long)
-	//idea: quadtree fast path for small stuff, sweep and prune backup for larger stuff
-
-	//template<typename T> /* TODO return type; probably a new class */
-	//static std::unordered_map<std::pair<int, int>, std::vector<T>>* generateQuadtree(const std::vector<T>& collider, double leftBound, double rightBound, double downBound, double upBound, int lrBuckets, int udBuckets);
-	////https://stackoverflow.com/a/48355534
-	////https://stackoverflow.com/a/48384354
 
 private:
 	PhysicsHandler() = delete;
