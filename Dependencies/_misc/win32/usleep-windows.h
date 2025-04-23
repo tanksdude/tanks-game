@@ -1,11 +1,13 @@
 //code from: https://github.com/TurtleMan64/usleep-windows
-//slightly modified: moved the init out of the main function
+//slightly modified: moved the init out of the main function (and added Windows defines)
 #pragma once
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 #ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
 #include <Windows.h>
 #include <winnt.h>
 
