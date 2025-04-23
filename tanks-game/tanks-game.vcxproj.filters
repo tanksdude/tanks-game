@@ -540,6 +540,9 @@
     <ClCompile Include="_source\color-cache.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\Dependencies\enkiTS\TaskScheduler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="_source\bullet.h">

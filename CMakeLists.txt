@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED False)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+include_directories(enkiTS   PRIVATE Dependencies/enkiTS)
 include_directories(glm      PRIVATE Dependencies/glm)
 include_directories(rpmalloc PRIVATE Dependencies/rpmalloc)
 include_directories(stb      PRIVATE Dependencies/stb)
@@ -17,9 +18,10 @@ find_package(glfw3 REQUIRED)
 #set(CMAKE_BUILD_TYPE "Release") #options: Debug, Release, RelWithDebInfo, MinSizeRel
 set(CMAKE_C_FLAGS     "${CMAKE_C_FLAGS} -Wno-narrowing -Wno-int-to-pointer-cast")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-narrowing -Wno-int-to-pointer-cast -Wno-delete-incomplete")
-#add_compile_options(-lpthread)
+#add_compile_options(-lpthread) #does not seem to be necessary
 
 add_executable(${PROJECT_NAME}
+	Dependencies/enkiTS/TaskScheduler.cpp
 	Dependencies/rpmalloc/rpmalloc.c
 	tanks-game/_source/aaa_first.cpp
 	tanks-game/_source/background-rect.cpp
