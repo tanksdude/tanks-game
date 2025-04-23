@@ -169,7 +169,7 @@
 #include <GLFW/glfw3.h>
 
 #include "aaa_first.h" //for the thread manager, because I didn't want to make a new "globals" file or put it in constants.h
-//#include <rpmalloc.h> //rest of rpmalloc stuff is in aaa_first.cpp
+#include <rpmalloc.h> //rest of rpmalloc stuff is in aaa_first.cpp
 #include <win32/usleep-windows.h> //has the platform check in the file, don't worry
 #include <posix/usleep-posix.h> //same (though it really check for not Windows)
 
@@ -518,6 +518,6 @@ int main(int argc, char** argv) {
 
 	Renderer::Uninitialize();
 
-	//rpmalloc_finalize();
+	rpmalloc_finalize();
 	return 0;
 }

@@ -1,7 +1,7 @@
 #include "aaa_first.h"
 
-//#include <rpmalloc.h>
-//#include <rpnew.h> //only include once! (there's no include guard, despite the readme saying it's okay)
+#include <rpmalloc.h>
+#include <rpnew.h> //only include once! (there's no include guard, despite the readme saying it's okay)
 
 //compiling rpmalloc with malloc/free replacement *and automatic thread initialization* (ENABLE_OVERRIDE=1):
 
@@ -21,7 +21,7 @@
 FirstLoadedObject::FirstLoadedObject() {
 	//needs to be initialized before main(), because anything using the heap (like std::string or std::vector) will fail otherwise
 	//also, this is *not* a HACK, because this is literally the only way to solve this problem in C/C++ (as far as I'm aware)
-	//rpmalloc_initialize();
+	rpmalloc_initialize();
 }
 
 FirstLoadedObject first_loaded;

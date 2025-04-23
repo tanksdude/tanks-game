@@ -248,8 +248,10 @@ uint32_t TaskScheduler::GetNumRegisteredExternalTaskThreads()
     return m_NumExternalTaskThreadsRegistered;
 }
 
+#include <rpmalloc.h> /* EDITED */
 void TaskScheduler::TaskingThreadFunction( const ThreadArgs& args_ )
 {
+	rpmalloc_thread_initialize(); /* EDITED */
     uint32_t threadNum  = args_.threadNum;
     TaskScheduler*  pTS = args_.pTaskScheduler;
     gtl_threadNum       = threadNum;
@@ -284,6 +286,7 @@ void TaskScheduler::TaskingThreadFunction( const ThreadArgs& args_ )
     pTS->m_NumInternalTaskThreadsRunning.fetch_sub( 1, std::memory_order_release );
     pTS->m_pThreadDataStore[threadNum].threadState.store( ENKI_THREAD_STATE_STOPPED, std::memory_order_release );
     SafeCallback( pTS->m_Config.profilerCallbacks.threadStop, threadNum );
+	rpmalloc_thread_finalize(1); /* EDITED */
     return;
 
 }
