@@ -21,7 +21,9 @@ The C++ upgrade of my [JavaScript game](https://uncreativeusername.neocities.org
 * No audio requirements, because there's no audio
 * OS: Windows x64 or Linux x64
     * Mac OS dropped support for OpenGL when they switched to ARM, also I don't have a Mac to test on
-    * ARM should be possible to support but I don't have an ARM device to test on
+    * ARM should be possible to support but I don't have an ARM device to test on, and RISC-V has extremely few consumer devices
+
+[Download here](https://github.com/tanksdude/tanks-game/releases) (Windows-only build; Linux has to compile from source, see below)
 
 ### Building (Windows)
 
@@ -31,12 +33,13 @@ The C++ upgrade of my [JavaScript game](https://uncreativeusername.neocities.org
 
 ### Building (Linux)
 
-1. Prerequisites: a compiler and CMake: `sudo apt install build-essential cmake` (and maybe `git`)
+1. Prerequisites: a compiler and CMake: `sudo apt install build-essential cmake`
 1. GLFW and GLEW: `sudo apt install libglfw3-dev libglew-dev`
     * non-Debian systems currently untested
     * compiling these from source is currently unsupported, sorry
+        * Alpine (an extremely lightweight distro probably intended for embedded work), Gentoo (a distro known for compiling everything yourself), ChromeOS (known for being ChromeOS (and did you know it's [based on Gentoo?](https://en.wikipedia.org/wiki/ChromeOS#Architecture_2))), and even the non-Linux [Haiku](https://www.haiku-os.org/) (which I only heard about by reading other projects' CMake files) have prebuilt packages for GLFW and GLEW, so you really should be okay on your distro of choice
 1. `mkdir build && cd build`
-1. `cmake .. -DCMAKE_BUILD_TYPE=Release` (optional: `-DCMAKE_CXX_FLAGS=-march=native -DCMAKE_C_FLAGS=-march=native`)
+1. `cmake .. -DCMAKE_BUILD_TYPE=Release` (optional and recommended: `-DCMAKE_CXX_FLAGS=-march=native -DCMAKE_C_FLAGS=-march=native`)
 1. `make -j$(nproc)`
 1. TODO: also needs `res/` and `tanks.ini` copied to the build dir
 1. Note: On Ubuntu, going fullscreen seems to force the window to the largest monitor, unless "Auto-hide the Dock" is enabled. It appears that Ubuntu forces windows that are too large for the current screen (which means full height is too much due to the dock) to the largest screen.

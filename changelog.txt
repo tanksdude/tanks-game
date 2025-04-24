@@ -20,9 +20,13 @@
 0.2.6 (future)
 * cross-platform!
 * switched to GLFW from FreeGLUT
-* render game in center of window
+* multithreading option
+    * performance doesn't really improve...
+* render game in center of window (instead of bottom/left)
 * added a window icon
 * custom level playlist option
+* allow swarm bullets to exist a little bit out of bounds
+* gave spiral lava hazard a better color
 
 0.2.5.1
 * updated dependencies

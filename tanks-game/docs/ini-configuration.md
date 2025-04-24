@@ -26,8 +26,8 @@ Since I don't have the expertise or willingness to add advanced features like "a
 
 ## GRAPHICS_SETTINGS
 
-* `Position.StartX` (default 60): Sets the window's starting x-position (in pixels? not sure).
-* `Position.StartY` (default 60): Sets the window's starting y-position. Remember that this is counted from the top left of your monitor.
+* `Position.StartX` (default 120): Sets the window's starting x-position.
+* `Position.StartY` (default 120): Sets the window's starting y-position. Remember that this is counted from the top left of your primary monitor.
 * `Position.SizeMultiplier` (default 2.5): Controls the sizing of the window. The actual game's size is 640×320, so this setting scales it up to 1600×800.
 * `Bullet.PerformanceMode` (default 0): Controls whether to draw a circular outline around the bullet to represent its transparency or whether to draw a bar underneath it (no option for actual transparency because that is hard on performance).
 
@@ -38,6 +38,7 @@ Note: Press F11 to toggle fullscreen. (Well, it's borderless fullscreen, but it 
 * `GameFirstLevel` (default "vanilla" "default_random"): Controls the first level of the game. Very useful.
 * `GameLevelPlaylist` (default "random-vanilla"): Controls which level playlist to choose from once the game has started.
 * `GameForceSameLevel`: Forces the game to only play on the same level, which is useful for testing new levels. Set to the name of the level to enable (for example, "vanilla" "default_random").
+* `CustomLevelPlaylist`: Creates a level playlist with levels of your choosing. In groups of 3, supply the level's type, name, and weight. Overrides `GameLevelPlaylist` if set.
 * `LimitBullets` (default 1): Controls whether to limit the number of bullets on screen. Look, your computer has a limit at some point.
 * `MaxBullets` (default 8192): Controls the maximum number of bullets, assuming `LimitBullets` is true.
 * `FewerExtraShootingBullets` (default 0): Controls whether something like Triple + Fire shoots 7 or 12 bullets. Keeping this setting off is a significant change (and performance hit), so that's why this is an option instead of always doing more bullets. Remember, Shotgun + Blast goes from 4+16 to 5×16 bullets; that's a lot!

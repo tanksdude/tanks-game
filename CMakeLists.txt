@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.16)
 project(tanks-game VERSION 0.2.6)
 
+#note: when changing these defaults, you have to delete CMakeCache.txt
+#option(USE_SYSTEM_GLEW "Use the system GLEW package" ON) #currently does nothing
+#option(USE_SYSTEM_GLFW "Use the system GLFW package" ON) #currently does nothing
+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED False)
 set(CMAKE_CXX_EXTENSIONS OFF)
