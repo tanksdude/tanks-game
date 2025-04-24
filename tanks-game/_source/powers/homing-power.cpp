@@ -53,9 +53,15 @@ HomingTankPower::HomingTankPower() {
 #include "../power-function-helper.h"
 
 InteractionBoolHolder HomingBulletPower::modifiedMovement(Bullet* b) {
+	if (b->velocity.getMagnitude() == 0) {
+		return { false };
+	}
+
 	Game_ID targetID = PowerFunctionHelper::homingGenericTarget(b, true);
 	if (targetID != -1) {
-		PowerFunctionHelper::homingGenericMove(b, targetID, HomingPower::homingStrength);
+		float angleChange = HomingPower::homingStrength * (b->velocity.getMagnitude() / b->getInitialVelocity());
+		//TODO: should this be capped? (and handle a probably impossible initial velocity = 0)
+		PowerFunctionHelper::homingGenericMove(b, targetID, angleChange);
 	} else {
 		//do another targeting round, but on hazards/"targetables" instead
 		//this will only occur for some sort of "team mode" or single-player campaign
