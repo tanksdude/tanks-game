@@ -44,7 +44,6 @@ void DeveloperManager::mouseButtonCallbackFunc(GLFWwindow*, int button, int acti
 			}
 			break;
 	}
-
 }
 
 void DeveloperManager::mouseScrollCallbackFunc(GLFWwindow*, double xOffset, double yOffset) {
@@ -104,10 +103,10 @@ void DeveloperManager::devInsert(int x, int y) {
 			#endif
 			break;
 		case 1:
-			//PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla", "megadeath"));
+			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla", "megadeath"));
 			//PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla-extra", "shotgun"));
 			//PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "banana_split"));
-			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla-extra", "swarm"));
+			//PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla-extra", "swarm"));
 			break;
 		case 2:
 			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla", "banana"));

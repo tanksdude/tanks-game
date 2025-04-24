@@ -1082,7 +1082,8 @@ void GameMainLoop::bulletToBullet() {
 		Bullet* b_inner = BulletManager::getBullet(collisionPair.second);
 		bool b_innerShouldDie = false;
 
-		if (b_outer == b_inner) {
+		if (b_outer == b_inner) [[unlikely]] {
+			//TODO: can this even happen?
 			continue;
 		}
 		if (!b_outer->canCollideWith(b_inner)) {

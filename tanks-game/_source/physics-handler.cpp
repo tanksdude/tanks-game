@@ -50,6 +50,7 @@ void PhysicsHandler::SweepAndPruneTask_TwoLists::ExecuteRange(enki::TaskSetParti
 			}
 			//push possible collision
 			if (iteratingObjects[j].xStart <= finalXStart) [[likely]] {
+				//TODO: what happens if two objects have the exact same xStart?
 				if (iteratingObjects[j].collider && !currentObject.collider) {
 					m_collisionLists[threadnum_]->push_back(std::pair<int, int>(iteratingObjects[j].listIndex, currentObject.listIndex));
 				} else if (currentObject.collider && !iteratingObjects[j].collider) {
@@ -127,6 +128,7 @@ void PhysicsHandler::SweepAndPruneTask::ExecuteRange(enki::TaskSetPartition rang
 			}
 			//push possible collision
 			if (iteratingObjects[j].xStart <= finalXStart) [[likely]] {
+				//TODO: what happens if two objects have the exact same xStart?
 				m_collisionLists[threadnum_]->push_back(std::pair<int, int>(currentObject.listIndex, iteratingObjects[j].listIndex));
 				everyObjectIsOutOfRange = false;
 			}
