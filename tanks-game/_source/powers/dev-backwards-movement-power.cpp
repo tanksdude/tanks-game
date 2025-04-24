@@ -1,9 +1,6 @@
 #include "dev-backwards-movement-power.h"
 #include "../game-manager.h" //settings
 
-#include "../constants.h"
-#include <cmath>
-
 std::unordered_map<std::string, float> DevBackwardsMovementPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "dev", 1.0f });
@@ -28,6 +25,9 @@ DevBackwardsMovementPower::DevBackwardsMovementPower() {
 }
 
 
+
+#include "../constants.h"
+#include <cmath>
 
 InteractionBoolHolder DevBackwardsMovementTankPower::modifiedMovement(Tank* t, bool forward, bool turnL, bool turnR, bool specialKey) {
 	if (specialKey) {

@@ -40,9 +40,6 @@ MineLayerTankPower::MineLayerTankPower() {
 
 
 
-#include "../constants.h"
-#include <cmath>
-
 #include "../bullet-manager.h"
 
 void MineLayerBulletPower::initialize(Bullet* parent) {
