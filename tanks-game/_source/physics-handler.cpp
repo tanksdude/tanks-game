@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include <execution>
 
 #include "diagnostics.h"
 
@@ -176,7 +177,7 @@ std::vector<std::pair<int, int>>* PhysicsHandler::sweepAndPrune(const std::vecto
 		U o = collidee[j];
 		objectIntervals.push_back(ObjectIntervalInfo(o, j, false));
 	}
-	std::sort(objectIntervals.begin(), objectIntervals.end(),
+	std::sort(std::execution::par, objectIntervals.begin(), objectIntervals.end(),
 		[](const ObjectIntervalInfo& lhs, const ObjectIntervalInfo& rhs) { return (lhs.xStart < rhs.xStart); });
 
 	//sweep through
@@ -208,8 +209,8 @@ std::vector<std::pair<int, int>>* PhysicsHandler::sweepAndPrune(const std::vecto
 		T o = collider[i];
 		objectIntervals.push_back(ObjectIntervalInfo(o, i, true));
 	}
-	//TODO: try parallel sorting
-	std::sort(objectIntervals.begin(), objectIntervals.end(),
+	//TODO: try parallel sorting (using enkiTS)
+	std::sort(std::execution::par, objectIntervals.begin(), objectIntervals.end(),
 		[](const ObjectIntervalInfo& lhs, const ObjectIntervalInfo& rhs) { return (lhs.xStart < rhs.xStart); });
 	//auto end = Diagnostics::getTime();
 	//std::cout << "intervals: " << (long double)Diagnostics::getDiff(start, end) << "ms" << std::endl;
