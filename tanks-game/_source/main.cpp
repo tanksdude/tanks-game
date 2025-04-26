@@ -195,7 +195,7 @@ int main(int argc, char** argv) {
 		}
 
 		enki::TaskSchedulerConfig config;
-		config.numTaskThreadsToCreate = threadCount;
+		config.numTaskThreadsToCreate = threadCount - 1; //initializing with a config does not account for the main thread
 		//not required to set config.customAllocator
 		/*
 		static enki::AllocFunc rpmalloc_alloc_wrapper = [](size_t align_, size_t size_, void* userData_, const char* file_, int line_) {
