@@ -2,6 +2,7 @@
 
 typedef int Game_ID;
 typedef char Team_ID;
+typedef int Color_ID;
 
 extern const double PI;
 extern const double GAME_WIDTH;

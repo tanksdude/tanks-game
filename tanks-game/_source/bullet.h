@@ -2,6 +2,7 @@
 class Bullet;
 struct BulletUpdateStruct;
 
+#include "constants.h"
 #include <vector>
 
 #include "game-thing.h"
@@ -32,7 +33,7 @@ public: //hopefully temporary
 	BulletParentType parentType;
 	std::vector<BulletPower*> bulletPowers; //change eventually?
 	float lifeValue; //[0,100], controls transparency (0=nothing, 100=opaque)
-	int m_colorIdentifier;
+	Color_ID m_colorIdentifier;
 
 public:
 	float getOffenseTier() const;

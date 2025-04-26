@@ -2,15 +2,15 @@
 
 #include "color-mixer.h"
 
-std::unordered_map<std::string, int> ColorCacheBullet::identifierToID;
-std::unordered_map<int, ColorValueHolder> ColorCacheBullet::cachedColors;
-int ColorCacheBullet::nextFreeID = 0;
+std::unordered_map<std::string, Color_ID> ColorCacheBullet::identifierToID;
+std::unordered_map<Color_ID, ColorValueHolder> ColorCacheBullet::cachedColors;
+Color_ID ColorCacheBullet::nextFreeID = 0;
 
 void ColorCacheBullet::invalidateCachedColors() {
 	cachedColors.clear();
 }
 
-int ColorCacheBullet::getColorID(const std::string& identifier) {
+Color_ID ColorCacheBullet::getColorID(const std::string& identifier) {
 	if (identifierToID.find(identifier) == identifierToID.end()) [[unlikely]] {
 		identifierToID.insert({ identifier, ++nextFreeID });
 		return nextFreeID;
@@ -18,11 +18,11 @@ int ColorCacheBullet::getColorID(const std::string& identifier) {
 	return identifierToID.at(identifier);
 }
 
-const ColorValueHolder& ColorCacheBullet::insertColor(int id, const ColorValueHolder* colors, int num) {
+const ColorValueHolder& ColorCacheBullet::insertColor(Color_ID id, const ColorValueHolder* colors, int num) {
 	cachedColors.insert({ id, ColorMixer::mix(colors, num) });
 	return cachedColors.at(id);
 }
 
-const ColorValueHolder& ColorCacheBullet::getColor(int id) {
+const ColorValueHolder& ColorCacheBullet::getColor(Color_ID id) {
 	return cachedColors.at(id);
 }
