@@ -110,5 +110,5 @@ public:
 	virtual RectFactoryInformation getFactoryInformation() const = 0;
 
 protected:
-	RectHazard(Team_ID t_id) : GameThing(t_id) {}
+	RectHazard(Team_ID t_id) : GameThing(t_id, ObjectType::Hazard_R) {}
 };

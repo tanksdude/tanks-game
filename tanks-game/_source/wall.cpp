@@ -8,7 +8,7 @@
 #include "color-mixer.h"
 #include "background-rect.h"
 
-Wall::Wall(double x_, double y_, double w_, double h_, const ColorValueHolder& c) : GameThing(DEFAULT_TEAM) {
+Wall::Wall(double x_, double y_, double w_, double h_, const ColorValueHolder& c) : GameThing(DEFAULT_TEAM, ObjectType::Wall) {
 	this->x = x_;
 	this->y = y_;
 	this->w = w_;

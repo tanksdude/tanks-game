@@ -111,5 +111,5 @@ public:
 	virtual CircleFactoryInformation getFactoryInformation() const = 0;
 
 protected:
-	CircleHazard(Team_ID t_id) : GameThing(t_id) {}
+	CircleHazard(Team_ID t_id) : GameThing(t_id, ObjectType::Hazard_C) {}
 };

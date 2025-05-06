@@ -2,7 +2,8 @@
 
 #include "game-manager.h"
 
-GameThing::GameThing(Team_ID t_id) {
+GameThing::GameThing(Team_ID t_id, ObjectType type) {
 	this->gameID = GameManager::getNextID();
 	this->teamID = t_id;
+	this->objectType = type;
 }

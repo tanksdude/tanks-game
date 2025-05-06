@@ -8,6 +8,7 @@ class GameThing {
 private:
 	Game_ID gameID;
 	Team_ID teamID;
+	ObjectType objectType;
 
 public:
 	Game_ID getGameID() const noexcept { return this->gameID; }
@@ -15,7 +16,7 @@ public:
 
 protected:
 	void changeTeamID(Team_ID t_id) { this->teamID = t_id; }
-	GameThing(Team_ID t_id);
+	GameThing(Team_ID t_id, ObjectType type);
 
 private:
 	GameThing() = delete;

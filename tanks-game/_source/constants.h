@@ -1,8 +1,20 @@
 #pragma once
+#include <cstdint>
 
-typedef int Game_ID;
-typedef char Team_ID;
-typedef int Color_ID;
+typedef int32_t Game_ID;
+typedef int8_t Team_ID;
+
+enum class ObjectType : uint8_t {
+	None       = 0, //error
+	Tank       = 1,
+	Bullet     = 2,
+	Wall       = 3,
+	Powerup    = 4,
+	Hazard_C   = 5,
+	Hazard_R   = 6,
+};
+
+typedef int32_t Color_ID;
 
 extern const double PI;
 extern const double GAME_WIDTH;

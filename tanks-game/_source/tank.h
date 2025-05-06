@@ -23,13 +23,13 @@ public:
 	float maxSpeed; // = 1;
 	float acceleration; // = 1.0/16; //intentional acceleration, not total
 	float turningIncrement; // = 64;
+	bool dead = false; //only kill() should modify this
 	std::vector<CannonPoint> shootingPoints;
 	std::vector<ExtraCannonPoint> extraShootingPoints;
 	std::vector<TankPower*> tankPowers;
 	double shootCount;
 	double maxShootCount;
-	bool dead = false; //only kill() should modify this
-	std::string name;
+	//std::string name; //note: this is for drawing a name above a tank, but that doesn't exist anymore, so this does nothing
 
 public:
 	float getOffenseTier() const;
@@ -76,7 +76,7 @@ protected:
 public:
 	//helper stuff:
 	ColorValueHolder getBodyColor() const;
-	std::string getName() const { return name; }
+	//std::string getName() const { return name; }
 
 	static const float default_maxSpeed;
 	static const float default_acceleration;

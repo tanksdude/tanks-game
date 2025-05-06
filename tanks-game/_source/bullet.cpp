@@ -22,7 +22,7 @@ const double Bullet::default_radius = 4;
 
 //TODO: bitset for powers' bools? possibly more cache-friendly but initialization might take longer
 
-Bullet::Bullet(double x_, double y_, float angle, Team_ID teamID, BulletParentType parentType, Game_ID parentID) : GameThing(teamID) { //every bullet constructor does this stuff
+Bullet::Bullet(double x_, double y_, float angle, Team_ID teamID, BulletParentType parentType, Game_ID parentID) : GameThing(teamID, ObjectType::Bullet) { //every bullet constructor does this stuff
 	this->x = x_;
 	this->y = y_;
 	this->velocity = SimpleVector2D(angle, 0, true);

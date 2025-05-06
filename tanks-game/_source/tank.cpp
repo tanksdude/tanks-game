@@ -23,12 +23,12 @@ const float Tank::default_maxSpeed = 1;
 const float Tank::default_acceleration = 1.0/16;
 const float Tank::default_turningIncrement = 64;
 
-Tank::Tank(double x_, double y_, float angle, Team_ID teamID, std::string name_, double shootCooldown) : GameThing(teamID) {
+Tank::Tank(double x_, double y_, float angle, Team_ID teamID, std::string name_, double shootCooldown) : GameThing(teamID, ObjectType::Tank) {
 	x = x_;
 	y = y_;
 	velocity = SimpleVector2D(angle, 0, true);
 	r = TANK_RADIUS;
-	name = name_;
+	//name = name_;
 	this->dead = false;
 
 	maxSpeed = default_maxSpeed;
