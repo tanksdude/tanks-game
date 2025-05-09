@@ -10,6 +10,7 @@ Since I don't have the expertise or willingness to add advanced features like "a
 * `GraphicsContext` (default "OpenGL"): options are "OpenGL", "software", and "NULL". Only "OpenGL" is supported...
 * `RNGSeed`: Set the seed for RNG, or blank for random.
 * `ThreadCount` (default 1): The number of total threads to use for multithreading (counting the main thread); <=0 is all cores on your system minus the number (so -2 is all but two cores). Unfortunately, performance is about the same or worse when using extra threads... granted, the extra threads are only used for the broad phase of collision, but that's the largest timesink. :(
+* `ThreadTaskSize` (default 256): The minimum number of items to be worked on by each thread. If this is too low, then the overhead in spinning up a new thread will greatly outweigh the work it could do; too high and not all threads will do anything.
 
 ## MODS
 

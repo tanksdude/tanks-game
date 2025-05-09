@@ -26,17 +26,15 @@ protected:
 		}
 	};
 
-	static const uint32_t MinTaskSize;
-
 	struct SweepAndPruneTask_TwoLists : public enki::ITaskSet {
 		std::vector<std::pair<int, int>>** m_collisionLists;
 		const std::vector<PhysicsHandler::ObjectIntervalInfo>* m_objectIntervals;
 		int num_threads;
 
-		//void Init(const std::vector<PhysicsHandler::ObjectIntervalInfo>* objectIntervals);
+		void Init(const std::vector<PhysicsHandler::ObjectIntervalInfo>* objectIntervals, int task_size);
 		void ExecuteRange(enki::TaskSetPartition range_, uint32_t threadnum_) override;
 
-		SweepAndPruneTask_TwoLists(const std::vector<PhysicsHandler::ObjectIntervalInfo>* objectIntervals, int num_threads, int task_size);
+		SweepAndPruneTask_TwoLists(int num_threads);
 		~SweepAndPruneTask_TwoLists() override;
 	};
 
@@ -56,10 +54,10 @@ protected:
 		const std::vector<PhysicsHandler::ObjectIntervalInfo>* m_objectIntervals;
 		int num_threads;
 
-		//void Init(const std::vector<PhysicsHandler::ObjectIntervalInfo>* objectIntervals);
+		void Init(const std::vector<PhysicsHandler::ObjectIntervalInfo>* objectIntervals, int task_size);
 		void ExecuteRange(enki::TaskSetPartition range_, uint32_t threadnum_) override;
 
-		SweepAndPruneTask(const std::vector<PhysicsHandler::ObjectIntervalInfo>* objectIntervals, int num_threads, int task_size);
+		SweepAndPruneTask(int num_threads);
 		~SweepAndPruneTask() override;
 	};
 
@@ -74,7 +72,15 @@ protected:
 		~SweepAndPruneTaskGroup() override;
 	};
 
+	static uint32_t MinTaskSize;
+	static SweepAndPruneTask* s_physicsTask;
+	static SweepAndPruneTask_TwoLists* s_physicsTask_TwoLists;
+
 public:
+	static inline void Initialize() { Initialize(256); }
+	static void Initialize(uint32_t MinTaskSize);
+	static void Uninitialize();
+
 	template<typename T, typename U>
 	static std::vector<std::pair<int, int>>* sweepAndPrune(const std::vector<T>& collider, const std::vector<U>& collidee);
 	template<typename T>

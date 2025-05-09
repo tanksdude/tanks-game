@@ -18,6 +18,7 @@
 #include "diagnostics.h"
 #include "basic-ini-parser.h"
 #include "game-settings.h"
+#include "physics-handler.h"
 #include "mod-processor.h"
 #include "statistics-handler.h"
 
@@ -211,6 +212,12 @@ int main(int argc, char** argv) {
 		g_TS.Initialize(config);
 	} else {
 		g_TS.Initialize(1);
+	}
+
+	if (ini_data.exists("UNIVERSAL", "ThreadTaskSize")) {
+		PhysicsHandler::Initialize(std::max(1, std::stoi(ini_data.get("UNIVERSAL", "ThreadTaskSize"))));
+	} else {
+		PhysicsHandler::Initialize();
 	}
 
 	if (ini_data.exists("UNIVERSAL", "RNGSeed")) {
@@ -516,6 +523,7 @@ int main(int argc, char** argv) {
 		}
 	}
 
+	PhysicsHandler::Uninitialize();
 	Renderer::Uninitialize();
 
 	rpmalloc_finalize();

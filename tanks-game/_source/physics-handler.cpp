@@ -8,12 +8,25 @@
 
 #include "aaa_first.h"
 
-const uint32_t PhysicsHandler::MinTaskSize = 512; //TODO: set in INI
+uint32_t PhysicsHandler::MinTaskSize;
+PhysicsHandler::SweepAndPruneTask* PhysicsHandler::s_physicsTask;
+PhysicsHandler::SweepAndPruneTask_TwoLists* PhysicsHandler::s_physicsTask_TwoLists;
 
-PhysicsHandler::SweepAndPruneTask_TwoLists::SweepAndPruneTask_TwoLists(const std::vector<PhysicsHandler::ObjectIntervalInfo>* objectIntervals, int num_threads_, int task_size) {
-	m_objectIntervals = objectIntervals;
+void PhysicsHandler::Initialize(uint32_t MinTaskSize_) {
+	MinTaskSize = MinTaskSize_;
+
+	s_physicsTask = new SweepAndPruneTask(g_TS.GetNumTaskThreads());
+	s_physicsTask_TwoLists = new SweepAndPruneTask_TwoLists(g_TS.GetNumTaskThreads());
+}
+
+void PhysicsHandler::Uninitialize() {
+	delete s_physicsTask;
+	delete s_physicsTask_TwoLists;
+}
+
+PhysicsHandler::SweepAndPruneTask_TwoLists::SweepAndPruneTask_TwoLists(int num_threads_) {
+	(void) m_objectIntervals; (void) m_SetSize;
 	num_threads = num_threads_;
-	m_SetSize = task_size;
 	m_MinRange = PhysicsHandler::MinTaskSize;
 	m_collisionLists = new std::vector<std::pair<int, int>>*[num_threads_];
 	for (int i = 0; i < num_threads_; i++) {
@@ -21,9 +34,14 @@ PhysicsHandler::SweepAndPruneTask_TwoLists::SweepAndPruneTask_TwoLists(const std
 		#if _DEBUG
 		//performance seems about the same with or without reserving
 		#else
-		m_collisionLists[i]->reserve((objectIntervals->size()/num_threads_) * (objectIntervals->size()/num_threads_) / 2); //half just to save memory in the very likely scenario everything in range is not touching everything in range
+		m_collisionLists[i]->reserve(PhysicsHandler::MinTaskSize * PhysicsHandler::MinTaskSize / 2); //half just to save memory in the very likely scenario everything in range is not touching everything in range
 		#endif
 	}
+}
+
+void PhysicsHandler::SweepAndPruneTask_TwoLists::Init(const std::vector<PhysicsHandler::ObjectIntervalInfo>* objectIntervals, int task_size) {
+	m_objectIntervals = objectIntervals;
+	m_SetSize = task_size;
 }
 
 PhysicsHandler::SweepAndPruneTask_TwoLists::~SweepAndPruneTask_TwoLists() {
@@ -86,13 +104,13 @@ void PhysicsHandler::SweepAndPruneTaskGroup_TwoLists::ExecuteRange(enki::TaskSet
 	final_collisionList->reserve(size);
 	for (int i = 0; i < m_testTasks->num_threads; i++) {
 		final_collisionList->insert(final_collisionList->end(), m_testTasks->m_collisionLists[i]->begin(), m_testTasks->m_collisionLists[i]->end());
+		m_testTasks->m_collisionLists[i]->clear();
 	}
 }
 
-PhysicsHandler::SweepAndPruneTask::SweepAndPruneTask(const std::vector<PhysicsHandler::ObjectIntervalInfo>* objectIntervals, int num_threads_, int task_size) {
-	m_objectIntervals = objectIntervals;
+PhysicsHandler::SweepAndPruneTask::SweepAndPruneTask(int num_threads_) {
+	(void) m_objectIntervals; (void) m_SetSize;
 	num_threads = num_threads_;
-	m_SetSize = task_size;
 	m_MinRange = PhysicsHandler::MinTaskSize;
 	m_collisionLists = new std::vector<std::pair<int, int>>*[num_threads_];
 	for (int i = 0; i < num_threads_; i++) {
@@ -100,9 +118,14 @@ PhysicsHandler::SweepAndPruneTask::SweepAndPruneTask(const std::vector<PhysicsHa
 		#if _DEBUG
 		//performance seems about the same with or without reserving
 		#else
-		m_collisionLists[i]->reserve((objectIntervals->size()/num_threads_) * (objectIntervals->size()/num_threads_) / 2); //half just to save memory in the very likely scenario everything in range is not touching everything in range
+		m_collisionLists[i]->reserve(PhysicsHandler::MinTaskSize * PhysicsHandler::MinTaskSize / 2); //half just to save memory in the very likely scenario everything in range is not touching everything in range
 		#endif
 	}
+}
+
+void PhysicsHandler::SweepAndPruneTask::Init(const std::vector<PhysicsHandler::ObjectIntervalInfo>* objectIntervals, int task_size) {
+	m_objectIntervals = objectIntervals;
+	m_SetSize = task_size;
 }
 
 PhysicsHandler::SweepAndPruneTask::~SweepAndPruneTask() {
@@ -160,6 +183,7 @@ void PhysicsHandler::SweepAndPruneTaskGroup::ExecuteRange(enki::TaskSetPartition
 	final_collisionList->reserve(size);
 	for (int i = 0; i < m_testTasks->num_threads; i++) {
 		final_collisionList->insert(final_collisionList->end(), m_testTasks->m_collisionLists[i]->begin(), m_testTasks->m_collisionLists[i]->end());
+		m_testTasks->m_collisionLists[i]->clear();
 	}
 }
 
@@ -181,10 +205,10 @@ std::vector<std::pair<int, int>>* PhysicsHandler::sweepAndPrune(const std::vecto
 		[](const ObjectIntervalInfo& lhs, const ObjectIntervalInfo& rhs) { return (lhs.xStart < rhs.xStart); });
 
 	//sweep through
-	SweepAndPruneTask_TwoLists physicsTask(&objectIntervals, g_TS.GetNumTaskThreads(), collider.size() + collidee.size());
-	SweepAndPruneTaskGroup_TwoLists physicsTaskGroup(&physicsTask);
+	s_physicsTask_TwoLists->Init(&objectIntervals, collider.size() + collidee.size());
+	SweepAndPruneTaskGroup_TwoLists physicsTaskGroup(s_physicsTask_TwoLists);
 
-	g_TS.AddTaskSetToPipe(&physicsTask);
+	g_TS.AddTaskSetToPipe(s_physicsTask_TwoLists);
 	g_TS.WaitforTask(&physicsTaskGroup);
 
 	return physicsTaskGroup.final_collisionList;
@@ -217,10 +241,10 @@ std::vector<std::pair<int, int>>* PhysicsHandler::sweepAndPrune(const std::vecto
 
 	//sweep through
 	//start = Diagnostics::getTime();
-	SweepAndPruneTask physicsTask(&objectIntervals, g_TS.GetNumTaskThreads(), collider.size());
-	SweepAndPruneTaskGroup physicsTaskGroup(&physicsTask);
+	s_physicsTask->Init(&objectIntervals, collider.size());
+	SweepAndPruneTaskGroup physicsTaskGroup(s_physicsTask);
 
-	g_TS.AddTaskSetToPipe(&physicsTask);
+	g_TS.AddTaskSetToPipe(s_physicsTask);
 	g_TS.WaitforTask(&physicsTaskGroup);
 
 	//end = Diagnostics::getTime();
