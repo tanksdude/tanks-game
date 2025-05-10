@@ -268,8 +268,8 @@ void HorizontalLightningHazard::simpleRefreshBolt(LightningBolt* l) const {
 			yMin = 0;
 			yMax = h;
 		} else { //last quarter
-			yMin =  2*static_cast<float>(h/w) * (deltaX * (j - l->length*(3.0f/4.0f))) + 0;
-			yMax = -2*static_cast<float>(h/w) * (deltaX * (j - l->length*(3.0f/4.0f))) + static_cast<float>(h);
+			yMin =  2*static_cast<float>(h/w) * (deltaX * (j - 3 * l->length / 4)) + 0;
+			yMax = -2*static_cast<float>(h/w) * (deltaX * (j - 3 * l->length / 4)) + static_cast<float>(h);
 		}
 		yRangeLower = (yRangeLower < yMin ? yMin : yRangeLower);
 		yRangeUpper = (yRangeUpper > yMax ? yMax : yRangeUpper);

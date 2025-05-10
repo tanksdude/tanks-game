@@ -5,7 +5,6 @@
 #include <algorithm> //std::copy, std::count, std::clamp
 #include <iostream>
 #include "../rng.h"
-#include "../mylib.h" //findMaxIndex
 
 #include "../renderer.h"
 #include "../color-mixer.h"
@@ -231,17 +230,17 @@ void MotherTurretHazard::tick_chooseSpot() {
 	//choose the spot that will result in the most time spent turning
 	if (getChildCount() < maxChildTurrets) {
 		const float childAngleDiff = float(2*PI) / maxChildTurrets;
-		float* angleDiff = new float[maxChildTurrets];
+		float maxAngleDiff = -2*PI;
 		for (int i = 0; i < maxChildTurrets; i++) {
-			if (childTurretAlive[i]) {
-				angleDiff[i] = -2*PI;
-			} else {
-				angleDiff[i] = std::abs(SimpleVector2D::angleBetween(this->velocity, SimpleVector2D(getChildTurretAngle(i), 0, true)));
+			if (!childTurretAlive[i]) {
+				float a = std::abs(SimpleVector2D::angleBetween(this->velocity, SimpleVector2D(getChildTurretAngle(i), 0, true)));
+				if (a > maxAngleDiff) {
+					maxAngleDiff = a;
+					targetingNum = i;
+				}
 			}
 		}
-		targetingNum = findMaxIndex(angleDiff, maxChildTurrets);
 		targetingChild = true;
-		delete[] angleDiff;
 	} else {
 		targetingChild = false;
 		targetingCount = 0;

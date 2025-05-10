@@ -3,7 +3,6 @@
 #include "constants.h"
 #include <cmath>
 #include <iostream>
-#include "mylib.h" //findMinIndex
 
 #include "collision-handler.h"
 #include "tank-manager.h"
@@ -158,38 +157,32 @@ std::vector<float>* PowerFunctionHelper::equallySpacedCannonPoints(int count) {
 }
 
 Game_ID PowerFunctionHelper::homingGenericTarget(const Bullet* b, bool targetUsingAngleDiff) {
-	int targetTankIndex; //only targets tanks for now
+	int targetTankIndex = -1; //only targets tanks for now
 
 	if (targetUsingAngleDiff) {
-		float* angleDiffs = new float[TankManager::getNumTanks()];
+		float minAngleDiff = (2*PI) * 2; //is way more than enough
 		for (int i = 0; i < TankManager::getNumTanks(); i++) {
 			const Tank* t = TankManager::getTank(i);
-			if (t->getTeamID() == b->getTeamID()) {
-				angleDiffs[i] = (2*PI) * 2; //is way more than enough
-			} else {
-				angleDiffs[i] = std::abs(std::atan2(b->y - t->y, b->x - t->x));
+			if (t->getTeamID() != b->getTeamID()) [[likely]] {
+				float a = std::abs(std::atan2(static_cast<float>(b->y - t->y), static_cast<float>(b->x - t->x)));
+				if (a < minAngleDiff) {
+					minAngleDiff = a;
+					targetTankIndex = i;
+				}
 			}
 		}
-		targetTankIndex = findMinIndex(angleDiffs, TankManager::getNumTanks());
-		if (TankManager::getTank(targetTankIndex)->getTeamID() == b->getTeamID()) {
-			targetTankIndex = -1;
-		}
-		delete[] angleDiffs;
 	} else { //targetUsingDistance
-		double* distDiffs = new double[TankManager::getNumTanks()];
+		double minDistDiff = GAME_WIDTH*2 + GAME_HEIGHT*2; //should be enough
 		for (int i = 0; i < TankManager::getNumTanks(); i++) {
 			const Tank* t = TankManager::getTank(i);
-			if (t->getTeamID() == b->getTeamID()) {
-				distDiffs[i] = GAME_WIDTH*2 + GAME_HEIGHT*2; //should be enough
-			} else {
-				distDiffs[i] = std::sqrt((b->x - t->x)*(b->x - t->x) + (b->y - t->y)*(b->y - t->y)); //TODO: this an issue?
+			if (t->getTeamID() != b->getTeamID()) [[likely]] {
+				double d = std::sqrt((b->x - t->x)*(b->x - t->x) + (b->y - t->y)*(b->y - t->y));
+				if (d < minDistDiff) {
+					minDistDiff = d;
+					targetTankIndex = i;
+				}
 			}
 		}
-		targetTankIndex = findMinIndex(distDiffs, TankManager::getNumTanks());
-		if (TankManager::getTank(targetTankIndex)->getTeamID() == b->getTeamID()) {
-			targetTankIndex = -1;
-		}
-		delete[] distDiffs;
 	}
 
 	if (targetTankIndex == -1) {
