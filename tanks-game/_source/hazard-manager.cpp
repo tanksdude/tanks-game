@@ -1,5 +1,6 @@
 #include "hazard-manager.h"
 
+#include "game-manager.h"
 #include "hazard-data-governor.h"
 
 std::vector<CircleHazard*> HazardManager::circleHazards;
@@ -34,22 +35,31 @@ RectHazard* HazardManager::getRectHazardByID(Game_ID gameID) {
 }
 
 void HazardManager::pushCircleHazard(std::string type, std::string name, const GenericFactoryConstructionData& data) {
-	pushCircleHazard(makeCircleHazard(type, name, data));
+	CircleHazard* ch = makeCircleHazard(type, name, data);
+	pushCircleHazard(ch);
+	GameManager::pushObject(ch);
 }
 void HazardManager::pushRectHazard(std::string type, std::string name, const GenericFactoryConstructionData& data) {
-	pushRectHazard(makeRectHazard(type, name, data));
+	RectHazard* rh = makeRectHazard(type, name, data);
+	pushRectHazard(rh);
+	GameManager::pushObject(rh);
 }
 
 void HazardManager::deleteCircleHazard(unsigned int index) {
+	CircleHazard* ch = circleHazards[index];
+	GameManager::deleteObjectByID(ch->getGameID());
 	delete circleHazards[index];
 	circleHazards.erase(circleHazards.begin() + index);
 }
 void HazardManager::deleteRectHazard(unsigned int index) {
+	RectHazard* rh = rectHazards[index];
+	GameManager::deleteObjectByID(rh->getGameID());
 	delete rectHazards[index];
 	rectHazards.erase(rectHazards.begin() + index);
 }
 
 void HazardManager::deleteCircleHazardByID(Game_ID gameID) {
+	GameManager::deleteObjectByID(gameID);
 	for (int i = 0; i < circleHazards.size(); i++) {
 		if (circleHazards[i]->getGameID() == gameID) {
 			deleteCircleHazard(i);
@@ -58,6 +68,7 @@ void HazardManager::deleteCircleHazardByID(Game_ID gameID) {
 	}
 }
 void HazardManager::deleteRectHazardByID(Game_ID gameID) {
+	GameManager::deleteObjectByID(gameID);
 	for (int i = 0; i < rectHazards.size(); i++) {
 		if (rectHazards[i]->getGameID() == gameID) {
 			deleteRectHazard(i);
@@ -88,10 +99,12 @@ RectHazard* HazardManager::makeRectHazard(std::string type, std::string name, co
 
 void HazardManager::pushCircleHazard(CircleHazard* ch) {
 	circleHazards.push_back(ch);
+	GameManager::pushObject(ch);
 	ch->initialize();
 }
 void HazardManager::pushRectHazard(RectHazard* rh) {
 	rectHazards.push_back(rh);
+	GameManager::pushObject(rh);
 	rh->initialize();
 }
 

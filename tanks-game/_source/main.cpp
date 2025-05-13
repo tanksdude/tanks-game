@@ -418,8 +418,9 @@ int main(int argc, char** argv) {
 	LevelDataGovernor::addLevelFactory(TerrifyingChaosLevel::factory);
 
 	//initialize managers and stuff:
-	GameManager::Initialize();
 	KeypressManager::Initialize();
+	GameManager::Initialize();
+	GameManager::initializeObjectList();
 	TankManager::initialize();
 	BulletManager::initialize();
 	PowerupManager::initialize();

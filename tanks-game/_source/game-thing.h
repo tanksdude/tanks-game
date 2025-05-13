@@ -10,11 +10,19 @@ private:
 	Team_ID teamID;
 	ObjectType objectType;
 
+	double xStart;
+	double xEnd;
+
 public:
 	Game_ID getGameID() const noexcept { return this->gameID; }
 	Team_ID getTeamID() const noexcept { return this->teamID; }
+	ObjectType getObjectType() const noexcept { return this->objectType; }
+
+	double get_xStart() const noexcept { return this->xStart; }
+	double get_xEnd() const noexcept { return this->xEnd; }
 
 protected:
+	void updateAABB() noexcept;
 	void changeTeamID(Team_ID t_id) { this->teamID = t_id; }
 	GameThing(Team_ID t_id, ObjectType type);
 

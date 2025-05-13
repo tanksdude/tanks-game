@@ -19,6 +19,13 @@ std::unordered_map<std::string, float> RectHazard::getWeights() const {
 }
 */
 
+void RectHazard::update(const RectHazardUpdateStruct* up) {
+	this->x += up->x;
+	this->y += up->y;
+	this->w += up->w;
+	this->h += up->h;
+}
+
 void RectHazard::modifiedTankCollision(Tank* t) {
 	CollisionHandler::pushMovableAwayFromImmovable(t, this);
 }
@@ -97,6 +104,20 @@ float RectHazard::getHighestDefenseTier(float importance) const {
 
 float RectHazard::getDefenseTier() const {
 	return getHighestDefenseTier(getHighestDefenseImportance());
+}
+
+RectHazardUpdateStruct::RectHazardUpdateStruct(double x, double y, double w, double h) {
+	this->x = x;
+	this->y = y;
+	this->w = w;
+	this->h = h;
+}
+
+void RectHazardUpdateStruct::add(const RectHazardUpdateStruct& other) {
+	this->x += other.x;
+	this->y += other.y;
+	this->w += other.w;
+	this->h += other.h;
 }
 
 //see circle-hazard.cpp for hazard notes

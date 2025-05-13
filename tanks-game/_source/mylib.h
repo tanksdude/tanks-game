@@ -16,6 +16,23 @@ constexpr bool XOR(bool a, bool b) {
 	//return ((a || b) && !(a && b));
 }
 
+//from: https://github.com/nicolausYes/iterator-template-sort-library/blob/master/src/InsertionSort.h
+template< class RandomAccessIterator >
+inline void InsertionSort( RandomAccessIterator first, RandomAccessIterator last ) {
+	InsertionSort( first, last, std::less< std::iterator_traits<RandomAccessIterator>::value_type >() );
+}
+template< class RandomAccessIterator, class Compare >
+void InsertionSort( RandomAccessIterator first, RandomAccessIterator last, Compare comp ) {
+	for( auto i = first; i != last; i++ ) {
+		for( auto j = i; j != first; j-- ) {
+			if( comp( *j, *(j-1) ) )
+				std::swap( *j, *(j-1) );
+			else
+				break;
+		}
+	}
+}
+
 //algorithm from https://wrf.ecse.rpi.edu/Research/Short_Notes/pnpoly.html
 bool pointInPolygon(int vertNum, const double* vertX, const double* vertY, double testX, double testY);
 bool pointInPolygon(int vertNum, const float* vertX, const float* vertY, float testX, float testY);

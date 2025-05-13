@@ -1,5 +1,7 @@
 #include "wall-manager.h"
 
+#include "game-manager.h"
+
 std::vector<Wall*> WallManager::walls;
 
 void WallManager::initialize() {
@@ -21,14 +23,18 @@ Wall* WallManager::getWallByID(Game_ID gameID) {
 
 void WallManager::pushWall(Wall* w) {
 	walls.push_back(w);
+	GameManager::pushObject(w);
 }
 
 void WallManager::deleteWall(unsigned int index) {
+	Wall* w = walls[index];
+	GameManager::deleteObjectByID(w->getGameID());
 	delete walls[index];
 	walls.erase(walls.begin() + index);
 }
 
 void WallManager::deleteWallByID(Game_ID gameID) {
+	GameManager::deleteObjectByID(gameID);
 	for (int i = 0; i < walls.size(); i++) {
 		if (walls[i]->getGameID() == gameID) {
 			deleteWall(i);

@@ -1,5 +1,6 @@
 #pragma once
 class Tank;
+struct TankUpdateStruct;
 
 #include <string>
 #include <vector>
@@ -88,6 +89,7 @@ public:
 	void powerTickAndCalculate();
 	void removePower(int index);
 	void powerReset();
+	void update(const TankUpdateStruct*);
 
 	void draw() const override;
 	void draw(DrawingLayers) const override;
@@ -117,4 +119,18 @@ private:
 public:
 	Tank(double x, double y, float angle, Team_ID id, std::string name, double shootCooldown);
 	~Tank();
+};
+
+struct TankUpdateStruct {
+	//deltas:
+	double x;
+	double y;
+	double r;
+	float speed;
+	float angle;
+
+	void add(const TankUpdateStruct& other);
+
+	TankUpdateStruct(double x, double y, double r, float speed, float angle);
+	TankUpdateStruct() : TankUpdateStruct(0, 0, 0, 0, 0) {}
 };

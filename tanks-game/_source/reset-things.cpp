@@ -41,6 +41,7 @@ void ResetThings::reset(int) {
 	HazardManager::clearRectHazards();
 	LevelManager::clearLevels();
 	TankManager::clearTanks();
+	GameManager::clearObjects();
 
 	//TODO: maybe GameMainLoop should hold the shooting cooldown? (but the tank still needs to get initialized with it...)
 	const GameSettings& game_settings = GameManager::get_settings();

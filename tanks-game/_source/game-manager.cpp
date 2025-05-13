@@ -1,7 +1,61 @@
 #include "game-manager.h"
 
+#include "mylib.h"
 #include <stdexcept>
 #include <iostream>
+//#include <execution>
+
+std::vector<GameThing*> GameManager::objectsInGame;
+
+void GameManager::initializeObjectList() {
+	//nothing
+}
+
+GameThing* GameManager::getObject(unsigned int index) {
+	return objectsInGame[index];
+}
+
+GameThing* GameManager::getObjectByID(Game_ID gameID) {
+	for (int i = 0; i < objectsInGame.size(); i++) {
+		if (objectsInGame[i]->getGameID() == gameID) {
+			return objectsInGame[i];
+		}
+	}
+	return nullptr;
+}
+
+void GameManager::pushObject(GameThing* g) {
+	//TODO?
+	objectsInGame.push_back(g);
+}
+
+void GameManager::deleteObject(unsigned int index) {
+	//TODO?
+	objectsInGame.erase(objectsInGame.begin() + index);
+}
+
+void GameManager::deleteObjectByID(Game_ID gameID) {
+	for (int i = 0; i < objectsInGame.size(); i++) {
+		if (objectsInGame[i]->getGameID() == gameID) {
+			deleteObject(i);
+			break;
+		}
+	}
+}
+
+void GameManager::clearObjects() {
+	//TODO?
+	objectsInGame.clear();
+}
+
+void GameManager::updateEveryAABB() {
+	for (int i = 0; i < objectsInGame.size(); i++) {
+		objectsInGame[i]->updateAABB();
+	}
+	InsertionSort(objectsInGame.begin(), objectsInGame.end(), [](const GameThing* lhs, const GameThing* rhs) { return lhs->get_xStart() < rhs->get_xStart(); });
+	//std::sort(std::execution::par, objectsInGame.begin(), objectsInGame.end(), [](const GameThing* lhs, const GameThing* rhs) { return lhs->get_xStart() < rhs->get_xStart(); });
+	//as expected, that ^^^ is faster for banana spikes, otherwise slightly slower; in the future, try insertion on old stuff, quicksort on new stuff, then merge together
+}
 
 Game_ID GameManager::nextID = -1;
 double GameManager::tickCount = 0;

@@ -1,5 +1,6 @@
 #pragma once
 class CircleHazard;
+struct CircleHazardUpdateStruct;
 
 #include <string>
 #include <vector>
@@ -91,6 +92,7 @@ public:
 	virtual bool reasonableLocation() const = 0;
 	virtual void initialize() { return; } //called when circlehazard is pushed for the first time
 	//virtual void uninitialize() { return; } //called when circlehazard is destroyed (TODO)
+	void update(const CircleHazardUpdateStruct*);
 
 	virtual std::string getName() const = 0;
 	//static std::string getClassName();
@@ -112,4 +114,18 @@ public:
 
 protected:
 	CircleHazard(Team_ID t_id) : GameThing(t_id, ObjectType::Hazard_C) {}
+};
+
+struct CircleHazardUpdateStruct {
+	//deltas:
+	double x;
+	double y;
+	double r;
+	//float speed;
+	//float angle;
+
+	void add(const CircleHazardUpdateStruct& other);
+
+	CircleHazardUpdateStruct(double x, double y, double r);
+	CircleHazardUpdateStruct() : CircleHazardUpdateStruct(0, 0, 0) {}
 };

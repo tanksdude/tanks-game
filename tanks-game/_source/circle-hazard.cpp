@@ -19,6 +19,12 @@ std::unordered_map<std::string, float> CircleHazard::getWeights() const {
 }
 */
 
+void CircleHazard::update(const CircleHazardUpdateStruct* up) {
+	this->x += up->x;
+	this->y += up->y;
+	this->r += up->r;
+}
+
 void CircleHazard::modifiedTankCollision(Tank* t) {
 	CollisionHandler::pushMovableAwayFromImmovable(t, this);
 }
@@ -97,6 +103,18 @@ float CircleHazard::getHighestDefenseTier(float importance) const {
 
 float CircleHazard::getDefenseTier() const {
 	return getHighestDefenseTier(getHighestDefenseImportance());
+}
+
+CircleHazardUpdateStruct::CircleHazardUpdateStruct(double x, double y, double r) {
+	this->x = x;
+	this->y = y;
+	this->r = r;
+}
+
+void CircleHazardUpdateStruct::add(const CircleHazardUpdateStruct& other) {
+	this->x += other.x;
+	this->y += other.y;
+	this->r += other.r;
 }
 
 //hazard notes:

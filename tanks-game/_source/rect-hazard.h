@@ -1,5 +1,6 @@
 #pragma once
 class RectHazard;
+struct RectHazardUpdateStruct;
 
 #include <string>
 #include <vector>
@@ -90,6 +91,7 @@ public:
 	virtual bool reasonableLocation() const = 0;
 	virtual void initialize() { return; } //called when recthazard is pushed for the first time
 	//virtual void uninitialize() { return; } //called when recthazard is destroyed (TODO)
+	void update(const RectHazardUpdateStruct*);
 
 	virtual std::string getName() const = 0;
 	//static std::string getClassName();
@@ -111,4 +113,17 @@ public:
 
 protected:
 	RectHazard(Team_ID t_id) : GameThing(t_id, ObjectType::Hazard_R) {}
+};
+
+struct RectHazardUpdateStruct {
+	//deltas:
+	double x;
+	double y;
+	double w;
+	double h;
+
+	void add(const RectHazardUpdateStruct& other);
+
+	RectHazardUpdateStruct(double x, double y, double w, double h);
+	RectHazardUpdateStruct() : RectHazardUpdateStruct(0, 0, 0, 0) {}
 };
