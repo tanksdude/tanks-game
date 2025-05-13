@@ -37,7 +37,7 @@ Bullet::Bullet(double x_, double y_, float angle, Team_ID teamID, BulletParentTy
 Bullet::Bullet(double x_, double y_, float angle, Team_ID teamID, BulletParentType parentType, Game_ID parentID, const std::vector<BulletPower*>* bp) : Bullet(x_,y_,angle,teamID,parentType,parentID) {
 	bulletPowers.reserve(bp->size());
 	for (int i = 0; i < bp->size(); i++) {
-		bulletPowers.push_back(bp->at(i));
+		bulletPowers.push_back(bp->data()[i]);
 	}
 	for (int i = 0; i < bulletPowers.size(); i++) {
 		bulletPowers[i]->initialize(this);
@@ -187,7 +187,7 @@ inline void Bullet::move_base() {
 }
 
 inline void Bullet::degradeHandle() {
-	if (velocity.getMagnitude() <= 0) {
+	if (velocity.getMagnitude() == 0) {
 		this->lifeValue -= getBulletDegradeAmount();
 	}
 }

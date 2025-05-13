@@ -73,11 +73,11 @@ void BananaBulletPower::bananaExplode(const Bullet* b) {
 }
 
 InteractionBoolHolder BananaBulletPower::modifiedMovement(Bullet* b) {
-	if (wasStationary && b->velocity.getMagnitude() <= 0) {
+	if (wasStationary && b->velocity.getMagnitude() == 0) [[unlikely]] {
 		bananaExplode(b);
 		return { true };
 	}
-	if (b->velocity.getMagnitude() <= 0) {
+	if (b->velocity.getMagnitude() == 0) [[unlikely]] {
 		wasStationary = true;
 	} else {
 		wasStationary = false; //something else changed the bullet's speed

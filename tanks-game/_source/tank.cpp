@@ -277,7 +277,7 @@ void Tank::determineShootingAngles() {
 		if (tankPowers[i]->addsExtraShootingPoints) {
 			std::vector<std::pair<float, float>>* extraCannons = tankPowers[i]->addExtraShootingPoints();
 			for (int j = 0; j < extraCannons->size(); j++) {
-				extraShootingPoints.push_back({ extraCannons->at(j).first, extraCannons->at(j).second });
+				extraShootingPoints.push_back({ extraCannons->data()[j].first, extraCannons->data()[j].second });
 			}
 			delete extraCannons;
 
@@ -296,7 +296,7 @@ inline void Tank::determineShootingAngles_helper(std::vector<float>* newCannonPo
 		                         shootingPoints[end].angleFromCenter - shootingPoints[i].angleFromCenter;
 
 		for (int j = 0; j < newCannonPoints->size(); j++) {
-			const float newAngle = angle_diff * newCannonPoints->at(j);
+			const float newAngle = angle_diff * newCannonPoints->data()[j];
 			CannonPoint temp = CannonPoint(newAngle + shootingPoints[i].angleFromCenter);
 			shootingPoints.insert(shootingPoints.begin() + i + j + 1, temp);
 		}

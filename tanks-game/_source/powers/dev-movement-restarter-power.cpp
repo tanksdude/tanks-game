@@ -39,7 +39,7 @@ DevMovementRestarterTankPower::DevMovementRestarterTankPower() {
 
 
 InteractionBoolHolder DevMovementRestarterBulletPower::modifiedMovement(Bullet* b) {
-	if (!hasRestartedMovement && b->velocity.getMagnitude() <= 0) [[unlikely]] {
+	if (!hasRestartedMovement && b->velocity.getMagnitude() == 0) [[unlikely]] {
 		//b->velocity.setMagnitude(b->getInitialVelocity()); //alternate option: reset velocity instead of changing acceleration
 		b->acceleration *= -1.25;
 		hasRestartedMovement = true; //mainly existed for that alternate option, not really needed anymore

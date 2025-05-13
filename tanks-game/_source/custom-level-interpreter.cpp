@@ -50,7 +50,7 @@ std::vector<CustomLevelAction*>* actions) {
 
 	this->initializationActions = std::shared_ptr<std::vector<CustomLevelAction*>>(actions, [](std::vector<CustomLevelAction*>* p) {
 		for (int i = 0; i < p->size(); i++) {
-			delete p->at(i);
+			delete p->data()[i];
 		}
 	});
 }
@@ -143,9 +143,9 @@ void CustomLevel::initialize() {
 	ColorValueHolder color = getDefaultColor();
 
 	for (int i = 0; i < initializationActions->size(); i++) {
-		GenericFactoryConstructionData& data = initializationActions->at(i)->data;
+		GenericFactoryConstructionData& data = initializationActions->data()[i]->data;
 
-		switch (initializationActions->at(i)->command) {
+		switch (initializationActions->data()[i]->command) {
 			case CustomLevelCommands::WALL:
 				initialization_WALL(data, color);
 				break;

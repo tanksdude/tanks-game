@@ -49,7 +49,7 @@ GrenadeTankPower::GrenadeTankPower() {
 
 
 InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> GrenadeBulletPower::modifiedCollisionWithWall(const Bullet* b, const Wall* w) {
-	if (b->velocity.getMagnitude() <= 0) {
+	if (b->velocity.getMagnitude() == 0) {
 		return { b->isDead(), false, new BulletUpdateStruct(0,0,0,0,0, -GrenadePower::degradeAmount), nullptr };
 	} else {
 		if (b->acceleration < 0) {

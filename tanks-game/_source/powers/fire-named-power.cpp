@@ -69,7 +69,7 @@ FireNamedTankPower::FireNamedTankPower() {
 #include "../rng.h"
 
 InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> FireNamedBulletPower::modifiedCollisionWithWall(const Bullet* b, const Wall* w) {
-	if (b->velocity.getMagnitude() <= 0) {
+	if (b->velocity.getMagnitude() == 0) {
 		return { false, false, new BulletUpdateStruct(0,0,0,0,0, -FireNamedPower::degradeAmount), nullptr };
 	} else {
 		if (b->acceleration < 0) {

@@ -49,12 +49,12 @@ std::vector<CustomPowerAction_Bullet*>* actions_bullet) {
 
 	this->initializationActions_tank = std::shared_ptr<std::vector<CustomPowerAction_Tank*>>(actions_tank, [](std::vector<CustomPowerAction_Tank*>* p) {
 		for (int i = 0; i < p->size(); i++) {
-			delete p->at(i);
+			delete p->data()[i];
 		}
 	});
 	this->initializationActions_bullet = std::shared_ptr<std::vector<CustomPowerAction_Bullet*>>(actions_bullet, [](std::vector<CustomPowerAction_Bullet*>* p) {
 		for (int i = 0; i < p->size(); i++) {
-			delete p->at(i);
+			delete p->data()[i];
 		}
 	});
 }
@@ -117,9 +117,9 @@ std::shared_ptr<std::vector<CustomPower::CustomPowerAction_Bullet*>> initializat
 	this->modifiedDeathHandling_DurationSubtractPercent = 0;
 
 	for (int i = 0; i < initializationActions_tank->size(); i++) {
-		GenericFactoryConstructionData& data = initializationActions_tank->at(i)->data;
+		GenericFactoryConstructionData& data = initializationActions_tank->data()[i]->data;
 
-		switch (initializationActions_tank->at(i)->command) {
+		switch (initializationActions_tank->data()[i]->command) {
 			case CustomPower::CustomPowerCommands_TankPower::additionalShooting_Enable:
 				initialization_additionalShooting_Enable(data);
 				break;
@@ -257,9 +257,9 @@ std::shared_ptr<std::vector<CustomPower::CustomPowerAction_Bullet*>> initializat
 	this->modifiedCollisionWithWall_DestroyWallEnable = false;
 
 	for (int i = 0; i < initializationActions_bullet->size(); i++) {
-		GenericFactoryConstructionData& data = initializationActions_bullet->at(i)->data;
+		GenericFactoryConstructionData& data = initializationActions_bullet->data()[i]->data;
 
-		switch (initializationActions_bullet->at(i)->command) {
+		switch (initializationActions_bullet->data()[i]->command) {
 			case CustomPower::CustomPowerCommands_BulletPower::modifiedCollision_BounceCount:
 				initialization_modifiedCollision_BounceCount(data);
 				break;
