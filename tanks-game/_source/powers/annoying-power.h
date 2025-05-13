@@ -59,7 +59,7 @@ public:
 	virtual TankPower* makeTankPower() const override;
 
 	//bool modifiesCollisionWithTank = true;
-	virtual InteractionBoolHolder modifiedCollisionWithTank(Bullet*, Tank*) override;
+	virtual InteractionUpdateHolder<BulletUpdateStruct, TankUpdateStruct> modifiedCollisionWithTank(const Bullet*, const Tank*) override;
 
 	virtual float getBulletSpeedMultiplier() const override { return .5; }
 

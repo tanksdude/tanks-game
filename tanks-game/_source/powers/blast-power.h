@@ -74,10 +74,10 @@ public:
 	virtual InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> modifiedCollisionWithWall(const Bullet*, const Wall*) override;
 
 	virtual bool getModifiesCollisionWithCircleHazard(const CircleHazard*) const override;
-	virtual InteractionBoolHolder modifiedCollisionWithCircleHazard(Bullet*, CircleHazard*) override;
+	virtual InteractionUpdateHolder<BulletUpdateStruct, CircleHazardUpdateStruct> modifiedCollisionWithCircleHazard(const Bullet*, const CircleHazard*) override;
 
 	virtual bool getModifiesCollisionWithRectHazard(const RectHazard*) const override;
-	virtual InteractionBoolHolder modifiedCollisionWithRectHazard(Bullet*, RectHazard*) override;
+	virtual InteractionUpdateHolder<BulletUpdateStruct, RectHazardUpdateStruct> modifiedCollisionWithRectHazard(const Bullet*, const RectHazard*) override;
 
 	virtual double getBulletRadiusMultiplier() const override { return .25; } //JS: .5
 	virtual float  getBulletAcceleration() const override { return accelerationAmount; }

@@ -5,6 +5,7 @@
 
 #include "circle.h"
 #include "rect.h"
+#include "game-thing.h"
 
 #include <TaskScheduler.h>
 
@@ -14,39 +15,12 @@ protected:
 		double xStart;
 		double xEnd;
 		int listIndex;
-		bool collider;
-		ObjectIntervalInfo() : ObjectIntervalInfo(0, 0, 0, false) {}
-		ObjectIntervalInfo(const Rect* r, int i, bool col) : ObjectIntervalInfo(r->getX(), r->getX() + r->getW(), i, col) {}
-		ObjectIntervalInfo(const Circle* c, int i, bool col) : ObjectIntervalInfo(c->getX() - c->getR(), c->getX() + c->getR(), i, col) {}
-		ObjectIntervalInfo(double x1, double x2, int i, bool c) {
+		ObjectIntervalInfo() : ObjectIntervalInfo(0, 0, 0) {}
+		ObjectIntervalInfo(double x1, double x2, int i) {
 			xStart = x1;
 			xEnd = x2;
 			listIndex = i;
-			collider = c;
 		}
-	};
-
-	struct SweepAndPruneTask_TwoLists : public enki::ITaskSet {
-		std::vector<std::pair<int, int>>** m_collisionLists;
-		const std::vector<PhysicsHandler::ObjectIntervalInfo>* m_objectIntervals;
-		int num_threads;
-
-		void Init(const std::vector<PhysicsHandler::ObjectIntervalInfo>* objectIntervals, int task_size);
-		void ExecuteRange(enki::TaskSetPartition range_, uint32_t threadnum_) override;
-
-		SweepAndPruneTask_TwoLists(int num_threads);
-		~SweepAndPruneTask_TwoLists() override;
-	};
-
-	struct SweepAndPruneTaskGroup_TwoLists : public enki::ITaskSet {
-		SweepAndPruneTask_TwoLists*       m_testTasks;
-		enki::Dependency                  m_Dependency;
-		std::vector<std::pair<int, int>>* final_collisionList;
-
-		void ExecuteRange(enki::TaskSetPartition range, uint32_t threadnum) override;
-
-		SweepAndPruneTaskGroup_TwoLists(SweepAndPruneTask_TwoLists* testTask_);
-		~SweepAndPruneTaskGroup_TwoLists() override;
 	};
 
 	struct SweepAndPruneTask : public enki::ITaskSet {
@@ -74,17 +48,13 @@ protected:
 
 	static uint32_t MinTaskSize;
 	static SweepAndPruneTask* s_physicsTask;
-	static SweepAndPruneTask_TwoLists* s_physicsTask_TwoLists;
 
 public:
 	static inline void Initialize() { Initialize(256); }
 	static void Initialize(uint32_t MinTaskSize);
 	static void Uninitialize();
 
-	template<typename T, typename U>
-	static std::vector<std::pair<int, int>>* sweepAndPrune(const std::vector<T>& collider, const std::vector<U>& collidee);
-	template<typename T>
-	static std::vector<std::pair<int, int>>* sweepAndPrune(const std::vector<T>& collider);
+	static std::vector<std::pair<int, int>>* sweepAndPrune(const std::vector<GameThing*>& list);
 
 private:
 	PhysicsHandler() = delete;

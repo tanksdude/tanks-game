@@ -84,18 +84,14 @@ bool BlastBulletPower::getModifiesCollisionWithRectHazard(const RectHazard* rh) 
 	return (rh->getCollisionType() == RectHazardCollisionType::solid);
 }
 
-InteractionBoolHolder BlastBulletPower::modifiedCollisionWithCircleHazard(Bullet* b, CircleHazard* ch) {
-	CollisionHandler::pushMovableAwayFromImmovable(b, ch);
-	b->acceleration = 0;
-	b->velocity.setMagnitude(0);
-	return { false, false };
+InteractionUpdateHolder<BulletUpdateStruct, CircleHazardUpdateStruct> BlastBulletPower::modifiedCollisionWithCircleHazard(const Bullet* b, const CircleHazard* ch) {
+	std::pair<double, double> vec = CollisionHandler::pushMovableAwayFromImmovable_vecOnly(b, ch);
+	return { false, false, new BulletUpdateStruct(vec.first, vec.second, 0, -1024*b->velocity.getMagnitude(), 0,0), nullptr };
 }
 
-InteractionBoolHolder BlastBulletPower::modifiedCollisionWithRectHazard(Bullet* b, RectHazard* rh) {
-	CollisionHandler::pushMovableAwayFromImmovable(b, rh);
-	b->acceleration = 0;
-	b->velocity.setMagnitude(0);
-	return { false, false };
+InteractionUpdateHolder<BulletUpdateStruct, RectHazardUpdateStruct> BlastBulletPower::modifiedCollisionWithRectHazard(const Bullet* b, const RectHazard* rh) {
+	std::pair<double, double> vec = CollisionHandler::pushMovableAwayFromImmovable_vecOnly(b, rh);
+	return { false, false, new BulletUpdateStruct(vec.first, vec.second, 0, -1024*b->velocity.getMagnitude(), 0,0), nullptr };
 }
 
 BulletPower* BlastBulletPower::makeDuplicate() const {

@@ -230,13 +230,13 @@ public:
 
 	//InteractionBoolHolder modifiedCollisionWithTank(Tank* parent, Tank* other) override;
 
-	//InteractionBoolHolder modifiedCollisionWithWall(Tank*, Wall*) override;
+	//InteractionUpdateHolder<TankUpdateStruct, WallUpdateStruct> modifiedCollisionWithWall(const Tank*, const Wall*) override;
 
 	//bool getModifiesCollisionWithCircleHazard(const CircleHazard*) const override;
-	//InteractionBoolHolder modifiedCollisionWithCircleHazard(Tank*, CircleHazard*) override;
+	//InteractionUpdateHolder<TankUpdateStruct, CircleHazardUpdateStruct> modifiedCollisionWithCircleHazard(const Tank*, const CircleHazard*) override;
 
 	//bool getModifiesCollisionWithRectHazard(const RectHazard*) const override;
-	//InteractionBoolHolder modifiedCollisionWithRectHazard(Tank*, RectHazard*) override;
+	//InteractionUpdateHolder<TankUpdateStruct, RectHazardUpdateStruct> modifiedCollisionWithRectHazard(const Tank*, const RectHazard*) override;
 
 	InteractionBoolHolder modifiedDeathHandling(Tank* parent) override;
 
@@ -335,10 +335,10 @@ public:
 	InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> modifiedCollisionWithWall(const Bullet*, const Wall*) override;
 
 	//bool getModifiesCollisionWithCircleHazard(const CircleHazard*) const override;
-	//InteractionBoolHolder modifiedCollisionWithCircleHazard(Bullet*, CircleHazard*) override;
+	//InteractionUpdateHolder<BulletUpdateStruct, CircleHazardUpdateStruct> modifiedCollisionWithCircleHazard(const Bullet*, const CircleHazard*) override;
 
 	//bool getModifiesCollisionWithRectHazard(const RectHazard*) const override;
-	//InteractionBoolHolder modifiedCollisionWithRectHazard(Bullet*, RectHazard*) override;
+	//InteractionUpdateHolder<BulletUpdateStruct, RectHazardUpdateStruct> modifiedCollisionWithRectHazard(const Bullet*, const RectHazard*) override;
 
 	InteractionBoolHolder modifiedDeathHandling(Bullet* parent) override;
 

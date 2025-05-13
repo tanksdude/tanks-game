@@ -29,12 +29,6 @@ public:
 enum class ThreadJobType {
 	nothing,
 
-	broad_bulletToWall,
-	broad_bulletToCircleHazard,
-	broad_bulletToRectHazard,
-	broad_bulletToBullet,
-	broad_bulletToTank,
-
 	update_bullets,
 	update_walls,
 	update_circleHazards,
@@ -70,12 +64,6 @@ public:
 
 	static void thread_func(int thread_id, int numThreads);
 
-	static inline void thread_broadBulletToWall(void* bulletCollisionList, void* wallCollisionList, void** collisionPairList);
-	static inline void thread_broadBulletToCircleHazard(void* bulletCollisionList, void* circleHazardCollisionList, void** collisionPairList);
-	static inline void thread_broadBulletToRectHazard(void* bulletCollisionList, void* rectHazardCollisionList, void** collisionPairList);
-	static inline void thread_broadBulletToBullet(void* bulletCollisionList, void** collisionPairList);
-	static inline void thread_broadBulletToTank(void* bulletCollisionList, void* tankCollisionList, void** collisionPairList);
-
 	static inline void thread_updateBulletsFunc(void* updateBulletList, void* updateBulletValues, int start, int end); //[start, end)
 	static inline void thread_updateWallsFunc(void* updateWallList, void* updateWallValues, int start, int end); //probably pointless
 	static inline void thread_updateCircleHazardsFunc(void* updateCircleHazardList, void* updateCircleHazardValues, int start, int end); //maybe pointless
@@ -107,26 +95,26 @@ public:
 	void tankShoot();
 	void tankPowerTickAndCalculate();
 	void bulletPowerTick();
-	void tankToWall();
-	void tankToHazard();
-	void tankToTank();
+	//void tankToWall();
+	//void tankToHazard();
+	//void tankToTank();
 	void tankToEdge();
 	void bulletToEdge();
-	void bulletToWall();
-	void bulletToHazard();
-	void bulletToBullet();
-	void bulletToTank();
+	//void bulletToWall();
+	//void bulletToHazard();
+	//void bulletToBullet();
+	//void bulletToTank();
 
 	void everythingToEverything();
-	//void everythingToEverything_tank_tank(int i, int j, std::unordered_map<Game_ID, TankUpdateStruct>& tankUpdates);
-	//void everythingToEverything_tank_wall(int i, int j, std::unordered_map<Game_ID, TankUpdateStruct>& tankUpdates, std::vector<Game_ID>& wallDeletionList, std::unordered_map<Game_ID, WallUpdateStruct>& wallUpdates);
-	//void everythingToEverything_tank_circlehazard(int i, int j, std::unordered_map<Game_ID, TankUpdateStruct>& tankUpdates, std::vector<Game_ID>& circleHazardDeletionList, std::unordered_map<Game_ID, CircleHazardUpdateStruct>& circleHazardUpdates);
-	//void everythingToEverything_tank_recthazard(int i, int j, std::unordered_map<Game_ID, TankUpdateStruct>& tankUpdates, std::vector<Game_ID>& rectHazardDeletionList, std::unordered_map<Game_ID, RectHazardUpdateStruct>& rectHazardUpdates);
-	//void everythingToEverything_bullet_tank(int i, int j, std::vector<Game_ID>& bulletDeletionList, std::unordered_map<Game_ID, BulletUpdateStruct>& bulletUpdates, std::unordered_map<Game_ID, TankUpdateStruct>& tankUpdates);
-	//void everythingToEverything_bullet_bullet(int i, int j, std::vector<Game_ID>& bulletDeletionList, std::unordered_map<Game_ID, BulletUpdateStruct>& bulletUpdates);
-	//void everythingToEverything_bullet_wall(int i, int j, std::vector<Game_ID>& bulletDeletionList, std::unordered_map<Game_ID, BulletUpdateStruct>& bulletUpdates, std::vector<Game_ID>& wallDeletionList, std::unordered_map<Game_ID, WallUpdateStruct>& wallUpdates);
-	//void everythingToEverything_bullet_circlehazard(int i, int j, std::vector<Game_ID>& bulletDeletionList, std::unordered_map<Game_ID, BulletUpdateStruct>& bulletUpdates, std::vector<Game_ID>& circleHazardDeletionList, std::unordered_map<Game_ID, CircleHazardUpdateStruct>& circleHazardUpdates);
-	//void everythingToEverything_bullet_recthazard(int i, int j, std::vector<Game_ID>& bulletDeletionList, std::unordered_map<Game_ID, BulletUpdateStruct>& bulletUpdates, std::vector<Game_ID>& rectHazardDeletionList, std::unordered_map<Game_ID, RectHazardUpdateStruct>& rectHazardUpdates);
+	void everythingToEverything_tank_tank(int i, int j, std::unordered_map<Game_ID, TankUpdateStruct>& tankUpdates);
+	void everythingToEverything_tank_wall(int i, int j, std::unordered_map<Game_ID, TankUpdateStruct>& tankUpdates, std::vector<Game_ID>& wallDeletionList, std::unordered_map<Game_ID, WallUpdateStruct>& wallUpdates);
+	void everythingToEverything_tank_circlehazard(int i, int j, std::unordered_map<Game_ID, TankUpdateStruct>& tankUpdates, std::vector<Game_ID>& circleHazardDeletionList, std::unordered_map<Game_ID, CircleHazardUpdateStruct>& circleHazardUpdates);
+	void everythingToEverything_tank_recthazard(int i, int j, std::unordered_map<Game_ID, TankUpdateStruct>& tankUpdates, std::vector<Game_ID>& rectHazardDeletionList, std::unordered_map<Game_ID, RectHazardUpdateStruct>& rectHazardUpdates);
+	void everythingToEverything_bullet_tank(int i, int j, std::vector<Game_ID>& bulletDeletionList, std::unordered_map<Game_ID, BulletUpdateStruct>& bulletUpdates, std::unordered_map<Game_ID, TankUpdateStruct>& tankUpdates);
+	void everythingToEverything_bullet_bullet(int i, int j, std::vector<Game_ID>& bulletDeletionList, std::unordered_map<Game_ID, BulletUpdateStruct>& bulletUpdates);
+	void everythingToEverything_bullet_wall(int i, int j, std::vector<Game_ID>& bulletDeletionList, std::unordered_map<Game_ID, BulletUpdateStruct>& bulletUpdates, std::vector<Game_ID>& wallDeletionList, std::unordered_map<Game_ID, WallUpdateStruct>& wallUpdates);
+	void everythingToEverything_bullet_circlehazard(int i, int j, std::vector<Game_ID>& bulletDeletionList, std::unordered_map<Game_ID, BulletUpdateStruct>& bulletUpdates, std::vector<Game_ID>& circleHazardDeletionList, std::unordered_map<Game_ID, CircleHazardUpdateStruct>& circleHazardUpdates);
+	void everythingToEverything_bullet_recthazard(int i, int j, std::vector<Game_ID>& bulletDeletionList, std::unordered_map<Game_ID, BulletUpdateStruct>& bulletUpdates, std::vector<Game_ID>& rectHazardDeletionList, std::unordered_map<Game_ID, RectHazardUpdateStruct>& rectHazardUpdates);
 
 	void drawMain() const; //doesn't draw all layers (since not everything uses everything)
 	void drawAllLayers() const;

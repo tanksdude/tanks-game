@@ -28,10 +28,10 @@ DevPusherPower::DevPusherPower() {
 
 #include "../collision-handler.h"
 
-InteractionBoolHolder DevPusherTankPower::modifiedCollisionWithWall(Tank* t, Wall* w) {
+InteractionUpdateHolder<TankUpdateStruct, WallUpdateStruct> DevPusherTankPower::modifiedCollisionWithWall(const Tank* t, const Wall* w) {
 	//TODO: supposed to check if they're still collided first; don't care, it's a dev power
-	CollisionHandler::pushMovableAwayFromMovable(t, w);
-	return { false, false };
+	std::pair<std::pair<double, double>, std::pair<double, double>> vecs = CollisionHandler::pushMovableAwayFromMovable_vecOnly(t, w);
+	return { false, false, new TankUpdateStruct(vecs.first.first, vecs.first.second, 0,0,0), new WallUpdateStruct(vecs.second.first, vecs.second.second, 0,0) };
 }
 
 bool DevPusherTankPower::getModifiesCollisionWithCircleHazard(const CircleHazard* ch) const {
@@ -42,14 +42,14 @@ bool DevPusherTankPower::getModifiesCollisionWithRectHazard(const RectHazard* rh
 	return (rh->getCollisionType() == RectHazardCollisionType::solid);
 }
 
-InteractionBoolHolder DevPusherTankPower::modifiedCollisionWithCircleHazard(Tank* t, CircleHazard* ch) {
-	CollisionHandler::pushMovableAwayFromMovable(t, ch);
-	return { false, false };
+InteractionUpdateHolder<TankUpdateStruct, CircleHazardUpdateStruct> DevPusherTankPower::modifiedCollisionWithCircleHazard(const Tank* t, const CircleHazard* ch) {
+	std::pair<std::pair<double, double>, std::pair<double, double>> vecs = CollisionHandler::pushMovableAwayFromMovable_vecOnly(t, ch);
+	return { false, false, new TankUpdateStruct(vecs.first.first, vecs.first.second, 0,0,0), new CircleHazardUpdateStruct(vecs.second.first, vecs.second.second, 0) };
 }
 
-InteractionBoolHolder DevPusherTankPower::modifiedCollisionWithRectHazard(Tank* t, RectHazard* rh) {
-	CollisionHandler::pushMovableAwayFromMovable(t, rh);
-	return { false, false };
+InteractionUpdateHolder<TankUpdateStruct, RectHazardUpdateStruct> DevPusherTankPower::modifiedCollisionWithRectHazard(const Tank* t, const RectHazard* rh) {
+	std::pair<std::pair<double, double>, std::pair<double, double>> vecs = CollisionHandler::pushMovableAwayFromMovable_vecOnly(t, rh);
+	return { false, false, new TankUpdateStruct(vecs.first.first, vecs.first.second, 0,0,0), new RectHazardUpdateStruct(vecs.second.first, vecs.second.second, 0,0) };
 }
 
 BulletPower* DevPusherTankPower::makeBulletPower() const {

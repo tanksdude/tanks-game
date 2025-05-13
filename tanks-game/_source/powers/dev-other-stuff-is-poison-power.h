@@ -43,15 +43,15 @@ public:
 	//bool overridesCollisionWithTank = false;
 
 	//bool modifiesCollisionWithWall = true;
-	virtual InteractionBoolHolder modifiedCollisionWithWall(Tank*, Wall*) override { return { true, false }; }
+	virtual InteractionUpdateHolder<TankUpdateStruct, WallUpdateStruct> modifiedCollisionWithWall(const Tank*, const Wall*) override { return { true, false, nullptr, nullptr }; }
 	//bool overridesCollisionWithWall = false;
 
 	virtual bool getModifiesCollisionWithCircleHazard(const CircleHazard*) const override { return true; }
-	virtual InteractionBoolHolder modifiedCollisionWithCircleHazard(Tank*, CircleHazard*) override { return { true, false }; }
+	virtual InteractionUpdateHolder<TankUpdateStruct, CircleHazardUpdateStruct> modifiedCollisionWithCircleHazard(const Tank*, const CircleHazard*) override { return { true, false, nullptr, nullptr }; }
 	//bool overridesCollisionWithCircleHazard = false;
 
 	virtual bool getModifiesCollisionWithRectHazard(const RectHazard*) const override { return true; }
-	virtual InteractionBoolHolder modifiedCollisionWithRectHazard(Tank*, RectHazard*) override { return { true, false }; }
+	virtual InteractionUpdateHolder<TankUpdateStruct, RectHazardUpdateStruct> modifiedCollisionWithRectHazard(const Tank*, const RectHazard*) override { return { true, false, nullptr, nullptr }; }
 	//bool overridesCollisionWithRectHazard = false;
 
 	virtual float getTankAccelerationMultiplier() const override { return .5; }

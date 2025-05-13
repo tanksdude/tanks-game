@@ -38,7 +38,7 @@ public:
 
 	bool modifiesCollisionWithTank = false;
 	//precondition: hit tank, is not necessarily inside tank
-	virtual InteractionBoolHolder modifiedCollisionWithTank(Bullet*, Tank*) { return { false, false }; }
+	virtual InteractionUpdateHolder<BulletUpdateStruct, TankUpdateStruct> modifiedCollisionWithTank(const Bullet*, const Tank*) { return { false, false, {}, {} }; }
 	bool overridesCollisionWithTank = true;
 	bool modifiedCollisionWithTankCanWorkWithOthers = true;
 
@@ -56,13 +56,13 @@ public:
 
 	virtual bool getModifiesCollisionWithCircleHazard(const CircleHazard*) const { return false; }
 	//precondition: hit circlehazard, is not necessarily inside circlehazard
-	virtual InteractionBoolHolder modifiedCollisionWithCircleHazard(Bullet*, CircleHazard*) { return { false, false }; }
+	virtual InteractionUpdateHolder<BulletUpdateStruct, CircleHazardUpdateStruct> modifiedCollisionWithCircleHazard(const Bullet*, const CircleHazard*) { return { false, false, {}, {} }; }
 	bool overridesCollisionWithCircleHazard = true; //false means also use the default, which means destroy the bullet if it collides
 	bool modifiedCollisionWithCircleHazardCanWorkWithOthers = true;
 
 	virtual bool getModifiesCollisionWithRectHazard(const RectHazard*) const { return false; }
 	//precondition: hit recthazard, is not necessarily inside recthazard
-	virtual InteractionBoolHolder modifiedCollisionWithRectHazard(Bullet*, RectHazard*) { return { false, false }; }
+	virtual InteractionUpdateHolder<BulletUpdateStruct, RectHazardUpdateStruct> modifiedCollisionWithRectHazard(const Bullet*, const RectHazard*) { return { false, false, {}, {} }; }
 	bool overridesCollisionWithRectHazard = true; //false means also use the default, which means destroy the bullet if it collides
 	bool modifiedCollisionWithRectHazardCanWorkWithOthers = true;
 
