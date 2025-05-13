@@ -75,7 +75,3 @@ void BulletManager::clearBullets() {
 	}
 	bullets.clear();
 }
-
-std::vector<Circle*> BulletManager::getBulletCollisionList() {
-	return std::vector<Circle*>(bullets.begin(), bullets.end());
-}

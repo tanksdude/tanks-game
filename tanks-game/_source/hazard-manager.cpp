@@ -107,10 +107,3 @@ void HazardManager::pushRectHazard(RectHazard* rh) {
 	GameManager::pushObject(rh);
 	rh->initialize();
 }
-
-std::vector<Circle*> HazardManager::getCircleHazardCollisionList() {
-	return std::vector<Circle*>(circleHazards.begin(), circleHazards.end());
-}
-std::vector<Rect*> HazardManager::getRectHazardCollisionList() {
-	return std::vector<Rect*>(rectHazards.begin(), rectHazards.end());
-}

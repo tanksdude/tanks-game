@@ -32,9 +32,6 @@ public:
 	static void pushCircleHazard(CircleHazard*);
 	static void pushRectHazard(RectHazard*);
 
-	static std::vector<Circle*> getCircleHazardCollisionList();
-	static std::vector<Rect*> getRectHazardCollisionList();
-
 private:
 	HazardManager() = delete;
 	HazardManager(const HazardManager&) = delete;

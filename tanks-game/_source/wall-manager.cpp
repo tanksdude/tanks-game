@@ -49,7 +49,3 @@ void WallManager::clearWalls() {
 	}
 	walls.clear();
 }
-
-std::vector<Rect*> WallManager::getWallCollisionList() {
-	return std::vector<Rect*>(walls.begin(), walls.end());
-}

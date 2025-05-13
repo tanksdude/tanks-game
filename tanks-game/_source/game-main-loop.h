@@ -4,12 +4,6 @@
 #include "game-scene.h"
 #include "drawable-thing.h" //for DrawingLayers
 
-#include <thread>
-#include <atomic>
-#include <mutex>
-#include <queue>
-#include <condition_variable>
-
 #include "tank.h"
 #include "bullet.h"
 #include "wall.h"
@@ -26,48 +20,9 @@ public:
 	TankInputChar();
 };
 
-enum class ThreadJobType {
-	nothing,
-
-	update_bullets,
-	update_walls,
-	update_circleHazards,
-	update_rectHazards,
-};
-
 class GameMainLoop : public GameScene {
 	friend class DeveloperManager;
 	friend class GameManager; //needed?
-
-	struct ThreadJob {
-		ThreadJobType jobType;
-		void* updateList;
-		void* updateValues;
-		void** newArrayPointer;
-		int arrayStart, arrayEnd;
-		ThreadJob(ThreadJobType j, void* list, void* values, int start, int end);
-		ThreadJob(ThreadJobType j, void* list, void* values, void** newArr, int start, int end);
-	private:
-		ThreadJob();
-		ThreadJob(const ThreadJob&);
-	};
-
-protected:
-	int helperThreadCount;
-	std::thread* thread_arr;
-public:
-	static std::atomic_bool keepRunning;
-	static std::queue<GameMainLoop::ThreadJob*> workQueue; //TODO: real asynchronous consumer-producer queue
-	static std::condition_variable queueCV;
-	static std::mutex queueMutex;
-	static std::atomic_bool* thread_isWorking;
-
-	static void thread_func(int thread_id, int numThreads);
-
-	static inline void thread_updateBulletsFunc(void* updateBulletList, void* updateBulletValues, int start, int end); //[start, end)
-	static inline void thread_updateWallsFunc(void* updateWallList, void* updateWallValues, int start, int end); //probably pointless
-	static inline void thread_updateCircleHazardsFunc(void* updateCircleHazardList, void* updateCircleHazardValues, int start, int end); //maybe pointless
-	static inline void thread_updateRectHazardsFunc(void* updateRectHazardsList, void* updateRectHazardValues, int start, int end);
 
 protected:
 	int physicsRate; //(in Hz)
@@ -81,7 +36,6 @@ public: //only for ResetThings
 
 public:
 	GameMainLoop();
-	~GameMainLoop();
 	void Tick() { Tick(physicsRate); }
 	void Tick(int UPS) override;
 	void Draw() const override { drawMain(); }
@@ -95,15 +49,8 @@ public:
 	void tankShoot();
 	void tankPowerTickAndCalculate();
 	void bulletPowerTick();
-	//void tankToWall();
-	//void tankToHazard();
-	//void tankToTank();
 	void tankToEdge();
 	void bulletToEdge();
-	//void bulletToWall();
-	//void bulletToHazard();
-	//void bulletToBullet();
-	//void bulletToTank();
 
 	void everythingToEverything();
 	void everythingToEverything_tank_tank(int i, int j, std::unordered_map<Game_ID, TankUpdateStruct>& tankUpdates);

@@ -53,7 +53,3 @@ void PowerupManager::clearPowerups() {
 	}
 	powerups.clear();
 }
-
-std::vector<Rect*> PowerupManager::getPowerupCollisionList() {
-	return std::vector<Rect*>(powerups.begin(), powerups.end());
-}

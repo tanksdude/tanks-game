@@ -126,7 +126,7 @@ bool Bullet::canCollideWith(const GameThing* thing) const {
 		case BulletParentType::none:
 			//TODO
 			[[fallthrough]];
-		[[unlikely]] default:
+		default:
 			return true;
 	}
 }

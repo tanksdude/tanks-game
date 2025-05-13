@@ -16,8 +16,6 @@ public:
 	static void pushTank(Tank*);
 	static unsigned int getNumTanks() { return tanks.size(); }
 
-	static std::vector<Circle*> getTankCollisionList();
-
 private:
 	TankManager() = delete;
 	TankManager(const TankManager&) = delete;
