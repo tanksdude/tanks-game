@@ -23,9 +23,8 @@ public:
 	//bool modifiesBulletCollision = true;
 	virtual void modifiedBulletCollision(Bullet*) override { return; } //TODO: should the bullet be destroyed here?
 
-protected:
-	virtual float getDefaultOffense() const override { return HIGH_TIER; }
-	virtual float getDefaultDefense() const override { return HIGH_TIER; }
+	virtual float getOffenseTier() const override { return HIGH_TIER; }
+	virtual float getDefenseTier() const override { return HIGH_TIER; }
 
 public:
 	//virtual bool validLocation() const override { return true; }

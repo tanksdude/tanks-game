@@ -34,12 +34,12 @@ public:
 	virtual void modifiedBulletCollision(Bullet*) override { return; }
 	//bool hasSpecialEffectBulletCollision = true;
 	virtual void specialEffectBulletCollision(const Bullet*) override;
-protected:
-	virtual void specialEffectCircleCollision(const Circle*); //tanks and bullets are both circles, so calculating the bolt positions would be the same
+
+	virtual float getOffenseTier() const override { return .5; } //1.5?
+	virtual float getDefenseTier() const override { return HIGH_TIER; }
 
 protected:
-	virtual float getDefaultOffense() const override { return .5; } //1.5?
-	virtual float getDefaultDefense() const override { return HIGH_TIER; }
+	virtual void specialEffectCircleCollision(const Circle*); //tanks and bullets are both circles, so calculating the bolt positions would be the same
 
 public:
 	virtual bool validLocation() const override;

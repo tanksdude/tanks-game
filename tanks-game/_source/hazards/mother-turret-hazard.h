@@ -32,9 +32,8 @@ public:
 	}
 	virtual std::unordered_map<std::string, float> getWeights() const override;
 
-protected:
-	virtual float getDefaultOffense() const override { return 0; }
-	virtual float getDefaultDefense() const override { return DESTRUCTION_TIER + .5f; } //TODO: double big bullets should be able to destroy this
+	virtual float getOffenseTier() const override { return 0; }
+	virtual float getDefenseTier() const override { return DESTRUCTION_TIER + .5f; } //TODO: double big bullets should be able to destroy this
 
 public:
 	virtual bool reasonableLocation() const override;

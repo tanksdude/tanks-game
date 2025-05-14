@@ -52,9 +52,8 @@ public:
 	}
 	virtual std::unordered_map<std::string, float> getWeights() const override;
 
-protected:
-	virtual float getDefaultOffense() const override { return 0; }
-	virtual float getDefaultDefense() const override { return DESTRUCTION_TIER + 1.0f; }
+	virtual float getOffenseTier() const override { return 0; }
+	virtual float getDefenseTier() const override { return DESTRUCTION_TIER + 1.0f; }
 
 public:
 	//virtual void uninitialize() override; //tells children to stop targeting

@@ -50,21 +50,6 @@ enum class CircleHazardCollisionType {
 };
 
 class CircleHazard : public GameThing, public Circle, public DrawableThing {
-public: //protected?
-	//std::vector<CircleHazardPower*> hazardPowers;
-	//bool canAcceptPowers;
-	//virtual bool getCanAcceptPowers();
-
-public:
-	float getOffenseTier() const;
-	float getDefenseTier() const;
-
-protected:
-	float getHighestOffenseImportance() const;
-	float getHighestOffenseTier(float importance) const;
-	float getHighestDefenseImportance() const;
-	float getHighestDefenseTier(float importance) const;
-
 public:
 	virtual std::vector<std::string> getHazardTypes() const = 0;
 	virtual std::unordered_map<std::string, float> getWeights() const = 0; //intended range: (0,1]
@@ -83,9 +68,8 @@ public:
 	bool hasSpecialEffectBulletCollision = false;
 	virtual void specialEffectBulletCollision(const Bullet*) { return; } //always activated before modifiedBulletCollision
 
-protected:
-	virtual float getDefaultOffense() const = 0;
-	virtual float getDefaultDefense() const = 0;
+	virtual float getOffenseTier() const = 0;
+	virtual float getDefenseTier() const = 0;
 
 public:
 	virtual bool validLocation() const { return true; }

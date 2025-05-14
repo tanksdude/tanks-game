@@ -27,9 +27,8 @@ public:
 
 	virtual CircleHazardCollisionType getCollisionType() const override { return CircleHazardCollisionType::solid; }
 
-protected:
-	virtual float getDefaultOffense() const override { return 0; }
-	virtual float getDefaultDefense() const override { return DESTRUCTION_TIER; }
+	virtual float getOffenseTier() const override { return 0; }
+	virtual float getDefenseTier() const override { return DESTRUCTION_TIER; }
 
 public:
 	//virtual bool validLocation() const override { return true; } //maybe change
