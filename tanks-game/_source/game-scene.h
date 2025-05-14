@@ -8,7 +8,7 @@ protected:
 
 public:
 	//TODO
-	virtual void Tick(int UPS) = 0;
+	virtual void Tick() = 0;
 	virtual void Draw() const = 0;
 
 protected:

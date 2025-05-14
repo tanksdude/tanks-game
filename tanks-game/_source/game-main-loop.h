@@ -25,7 +25,6 @@ class GameMainLoop : public GameScene {
 	friend class GameManager; //needed?
 
 protected:
-	int physicsRate; //(in Hz)
 	int waitCount;
 	int maxWaitCount;
 
@@ -36,8 +35,7 @@ public: //only for ResetThings
 
 public:
 	GameMainLoop();
-	void Tick() { Tick(physicsRate); }
-	void Tick(int UPS) override;
+	void Tick() override;
 	void Draw() const override { drawMain(); }
 
 	//tick stuff:

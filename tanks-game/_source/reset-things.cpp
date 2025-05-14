@@ -21,7 +21,7 @@ const int ResetThings::default_tankStartingYCount = 5;
 const double ResetThings::default_tankToEdgeDist = 20;
 const double ResetThings::default_tankStartingYRange = (4.0/5) * GAME_HEIGHT;
 
-void ResetThings::reset(int) {
+void ResetThings::reset() {
 	EndGameHandler::finalizeScores();
 	//TODO: this good?
 	for (int i = 0; i < EndGameHandler::teamsParticipating.size(); i++) {

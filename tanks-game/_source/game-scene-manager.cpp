@@ -13,20 +13,20 @@ void GameSceneManager::Initialize() {
 	//nothing
 }
 
-void GameSceneManager::TickScenes(int UPS) {
+void GameSceneManager::TickScenes() {
 	/*
 	auto start = Diagnostics::getTime();
 	*/
 
 	for (int i = 0; i < scenes.size(); i++) {
-		scenes[i].first->Tick(UPS);
+		scenes[i].first->Tick();
 	}
 	DrawScenes();
 
 	/*
 	auto end = Diagnostics::getTime();
 	auto timeTakenMS = Diagnostics::getDiff(start, end);
-	auto sleepTimeMS = (1000.0/UPS - timeTakenMS);
+	auto sleepTimeMS = (100.0 - timeTakenMS);
 	*/
 }
 

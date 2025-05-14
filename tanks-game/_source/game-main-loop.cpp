@@ -50,12 +50,11 @@ bool TankInputChar::getKeyState() const {
 }
 
 GameMainLoop::GameMainLoop() : GameScene() {
-	physicsRate = 100;
 	waitCount = 0;
-	maxWaitCount = 1000/physicsRate * 10;
+	maxWaitCount = 100;
 }
 
-void GameMainLoop::Tick(int UPS) {
+void GameMainLoop::Tick() {
 	if (EndGameHandler::shouldGameEnd()) {
 		waitCount++;
 		if (waitCount >= maxWaitCount) {

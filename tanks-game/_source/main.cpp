@@ -487,7 +487,7 @@ int main(int argc, char** argv) {
 		//do the frame:
 
 		glfwPollEvents();
-		GameSceneManager::TickScenes(100);
+		GameSceneManager::TickScenes();
 
 		//wait until it's time to start the next frame:
 

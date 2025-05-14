@@ -22,7 +22,7 @@ public:
 	static void deleteScene(unsigned int index);
 	static void deleteSceneByID(Scene_ID);
 
-	static void TickScenes(int UPS);
+	static void TickScenes();
 	static void DrawScenes();
 	static void DrawScenes_WindowResize();
 
