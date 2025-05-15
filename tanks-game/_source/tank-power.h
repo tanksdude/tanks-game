@@ -58,7 +58,7 @@ public:
 
 	bool modifiesCollisionWithTank = false;
 	//precondition: hit tank, is not necessarily inside tank
-	virtual InteractionBoolHolder modifiedCollisionWithTank(Tank* parent, Tank* other) { return { false, false }; }
+	virtual InteractionUpdateHolder<TankUpdateStruct, TankUpdateStruct> modifiedCollisionWithTank(const Tank* parent, const Tank* other) { return { false, false, {}, {} }; }
 	bool overridesCollisionWithTank = true;
 	bool modifiedCollisionWithTankCanWorkWithOthers = true;
 

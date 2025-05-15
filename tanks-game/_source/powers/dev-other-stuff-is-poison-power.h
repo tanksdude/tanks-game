@@ -39,7 +39,7 @@ public:
 	//bool overridesEdgeCollision = false;
 
 	//bool modifiesCollisionWithTank = true; //maybe...
-	//virtual InteractionBoolHolder modifiedCollisionWithTank(Tank* parent, Tank* other) override { return { true, false }; }
+	//virtual InteractionUpdateHolder<TankUpdateStruct, TankUpdateStruct> modifiedCollisionWithTank(const Tank* parent, const Tank* other) override { return { true, false, nullptr, nullptr }; }
 	//bool overridesCollisionWithTank = false;
 
 	//bool modifiesCollisionWithWall = true;

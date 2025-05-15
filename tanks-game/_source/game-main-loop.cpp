@@ -117,7 +117,9 @@ void GameMainLoop::Tick() {
 	GameManager::updateEveryAABB();
 	Diagnostics::endTiming();
 	Diagnostics::startTiming("everything-everything");
-	everythingToEverything(); //TODO: it's now impossible for a tank to shoot a bullet the exact frame an enemy bullet hits it and lives; worth the effort to adjust?
+	everythingToEverything();
+	//TODO: it's now impossible for a tank to shoot a bullet the exact frame an enemy bullet hits it and lives; worth the effort to adjust?
+	//maybe bullet-tank collision pairs could be pushed to a list to check later; update everything, then check bullet-tank, then update again
 	Diagnostics::endTiming();
 
 	//finish up by incrementing the tick count
@@ -299,61 +301,101 @@ void GameMainLoop::everythingToEverything() {
 	delete collisionList;
 }
 
-void GameMainLoop::levelTick() {
-	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
-		LevelManager::getLevel(i)->tickLevelEffects();
-	}
-	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
-		LevelManager::getLevel(i)->doLevelEffects();
-		LevelManager::getLevel(i)->tick();
-	}
-}
-
 void GameMainLoop::everythingToEverything_tank_tank(int i, int j, std::unordered_map<Game_ID, TankUpdateStruct>& tankUpdates) {
-	Tank* t_outer = static_cast<Tank*>(GameManager::getObject(i));
-	bool t_outerShouldDie = false;
+	Tank* t_first = static_cast<Tank*>(GameManager::getObject(i));
+	bool t_firstShouldDie = false;
 
-	Tank* t_inner = static_cast<Tank*>(GameManager::getObject(j));
-	bool t_innerShouldDie = false;
+	Tank* t_second = static_cast<Tank*>(GameManager::getObject(j));
+	bool t_secondShouldDie = false;
 	bool overridedTankCollision = false;
 
-	//TODO: rewrite to give equal preference (just two tankpower loops)
-
-	if (CollisionHandler::partiallyCollided(t_outer, t_inner)) {
-		for (int k = 0; k < t_outer->tankPowers.size(); k++) {
-			if (t_outer->tankPowers[k]->modifiesCollisionWithTank) {
-				if (t_outer->tankPowers[k]->overridesCollisionWithTank) {
+	if (CollisionHandler::partiallyCollided(t_first, t_second)) {
+		for (int k = 0; k < t_first->tankPowers.size(); k++) {
+			if (t_first->tankPowers[k]->modifiesCollisionWithTank) {
+				if (t_first->tankPowers[k]->overridesCollisionWithTank) {
 					overridedTankCollision = true;
 				}
 
-				InteractionBoolHolder check_temp = t_outer->tankPowers[k]->modifiedCollisionWithTank(t_outer, t_inner);
-				if (check_temp.shouldDie) {
-					t_outerShouldDie = true;
-				}
-				if (check_temp.otherShouldDie) {
-					if (t_outer->getTeamID() != t_inner->getTeamID()) {
-						t_innerShouldDie = true;
+				InteractionUpdateHolder<TankUpdateStruct, TankUpdateStruct> check_temp = t_first->tankPowers[k]->modifiedCollisionWithTank(t_first, t_second);
+				if (t_first->getTeamID() != t_second->getTeamID()) {
+					if (check_temp.deaths.shouldDie) {
+						t_firstShouldDie = true;
+					}
+					if (check_temp.deaths.otherShouldDie) {
+						t_secondShouldDie = true;
 					}
 				}
 
-				if (!t_outer->tankPowers[k]->modifiedCollisionWithTankCanWorkWithOthers) {
+				if (check_temp.firstUpdate != nullptr) {
+					if (tankUpdates.find(t_first->getGameID()) == tankUpdates.end()) {
+						tankUpdates.insert({ t_first->getGameID(), TankUpdateStruct(*check_temp.firstUpdate) });
+					} else {
+						tankUpdates[t_first->getGameID()].add(TankUpdateStruct(*check_temp.firstUpdate));
+					}
+				}
+				if (check_temp.secondUpdate != nullptr) {
+					if (tankUpdates.find(t_second->getGameID()) == tankUpdates.end()) {
+						tankUpdates.insert({ t_second->getGameID(), TankUpdateStruct(*check_temp.secondUpdate) });
+					} else {
+						tankUpdates[t_second->getGameID()].add(TankUpdateStruct(*check_temp.secondUpdate));
+					}
+				}
+
+				if (!t_first->tankPowers[k]->modifiedCollisionWithTankCanWorkWithOthers) {
+					break;
+				}
+			}
+		}
+
+		for (int k = 0; k < t_second->tankPowers.size(); k++) {
+			if (t_second->tankPowers[k]->modifiesCollisionWithTank) {
+				if (t_second->tankPowers[k]->overridesCollisionWithTank) {
+					overridedTankCollision = true;
+				}
+
+				InteractionUpdateHolder<TankUpdateStruct, TankUpdateStruct> check_temp = t_second->tankPowers[k]->modifiedCollisionWithTank(t_second, t_first);
+				if (t_first->getTeamID() != t_second->getTeamID()) {
+					if (check_temp.deaths.shouldDie) {
+						t_secondShouldDie = true;
+					}
+					if (check_temp.deaths.otherShouldDie) {
+						t_firstShouldDie = true;
+					}
+				}
+
+				if (check_temp.firstUpdate != nullptr) {
+					if (tankUpdates.find(t_second->getGameID()) == tankUpdates.end()) {
+						tankUpdates.insert({ t_second->getGameID(), TankUpdateStruct(*check_temp.firstUpdate) });
+					} else {
+						tankUpdates[t_second->getGameID()].add(TankUpdateStruct(*check_temp.firstUpdate));
+					}
+				}
+				if (check_temp.secondUpdate != nullptr) {
+					if (tankUpdates.find(t_first->getGameID()) == tankUpdates.end()) {
+						tankUpdates.insert({ t_first->getGameID(), TankUpdateStruct(*check_temp.secondUpdate) });
+					} else {
+						tankUpdates[t_first->getGameID()].add(TankUpdateStruct(*check_temp.secondUpdate));
+					}
+				}
+
+				if (!t_second->tankPowers[k]->modifiedCollisionWithTankCanWorkWithOthers) {
 					break;
 				}
 			}
 		}
 
 		if (!overridedTankCollision) {
-			InteractionBoolHolder result = EndGameHandler::determineWinner(t_outer, t_inner);
-			t_outerShouldDie = result.shouldDie;
-			t_innerShouldDie = result.otherShouldDie;
+			InteractionBoolHolder result = EndGameHandler::determineWinner(t_first, t_second);
+			t_firstShouldDie = result.shouldDie;
+			t_secondShouldDie = result.otherShouldDie;
 		}
 	}
 
-	if (t_innerShouldDie) {
+	if (t_firstShouldDie) {
 		//TODO: proper implementation?
 	}
 
-	if (t_outerShouldDie) {
+	if (t_secondShouldDie) {
 		//TODO: proper implementation?
 	}
 }
@@ -859,6 +901,16 @@ void GameMainLoop::everythingToEverything_bullet_recthazard(int i, int j, std::v
 
 	if (shouldBeKilled) {
 		bulletDeletionList.push_back(b->getGameID());
+	}
+}
+
+void GameMainLoop::levelTick() {
+	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
+		LevelManager::getLevel(i)->tickLevelEffects();
+	}
+	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
+		LevelManager::getLevel(i)->doLevelEffects();
+		LevelManager::getLevel(i)->tick();
 	}
 }
 

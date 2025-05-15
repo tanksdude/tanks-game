@@ -228,7 +228,7 @@ public:
 
 	InteractionBoolHolder modifiedEdgeCollision(Tank*) override;
 
-	//InteractionBoolHolder modifiedCollisionWithTank(Tank* parent, Tank* other) override;
+	//InteractionUpdateHolder<TankUpdateStruct, TankUpdateStruct> modifiedCollisionWithTank(const Tank* parent, const Tank* other) override;
 
 	//InteractionUpdateHolder<TankUpdateStruct, WallUpdateStruct> modifiedCollisionWithWall(const Tank*, const Wall*) override;
 
