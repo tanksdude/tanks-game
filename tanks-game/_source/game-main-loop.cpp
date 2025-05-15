@@ -303,9 +303,8 @@ void GameMainLoop::everythingToEverything() {
 
 void GameMainLoop::everythingToEverything_tank_tank(int i, int j, std::unordered_map<Game_ID, TankUpdateStruct>& tankUpdates) {
 	Tank* t_first = static_cast<Tank*>(GameManager::getObject(i));
-	bool t_firstShouldDie = false;
-
 	Tank* t_second = static_cast<Tank*>(GameManager::getObject(j));
+	bool t_firstShouldDie = false;
 	bool t_secondShouldDie = false;
 	bool overridedTankCollision = false;
 
@@ -389,22 +388,20 @@ void GameMainLoop::everythingToEverything_tank_tank(int i, int j, std::unordered
 			t_firstShouldDie = result.shouldDie;
 			t_secondShouldDie = result.otherShouldDie;
 		}
-	}
 
-	if (t_firstShouldDie) {
-		//TODO: proper implementation?
-	}
-
-	if (t_secondShouldDie) {
-		//TODO: proper implementation?
+		if (t_firstShouldDie) {
+			//TODO: proper implementation?
+		}
+		if (t_secondShouldDie) {
+			//TODO: proper implementation?
+		}
 	}
 }
 
 void GameMainLoop::everythingToEverything_tank_wall(int i, int j, std::unordered_map<Game_ID, TankUpdateStruct>& tankUpdates, std::vector<Game_ID>& wallDeletionList, std::unordered_map<Game_ID, WallUpdateStruct>& wallUpdates) {
 	Tank* t = static_cast<Tank*>(GameManager::getObject(i));
-	bool shouldBeKilled = false; //unlikely to be set
-
 	Wall* w = static_cast<Wall*>(GameManager::getObject(j));
+	bool killTank = false; //unlikely to be set
 	bool killWall = false;
 	bool overridedWallCollision = false;
 
@@ -417,7 +414,7 @@ void GameMainLoop::everythingToEverything_tank_wall(int i, int j, std::unordered
 
 				InteractionUpdateHolder<TankUpdateStruct, WallUpdateStruct> check_temp = t->tankPowers[k]->modifiedCollisionWithWall(t, w);
 				if (check_temp.deaths.shouldDie) {
-					shouldBeKilled = true;
+					killTank = true;
 				}
 				if (check_temp.deaths.otherShouldDie) {
 					killWall = true;
@@ -446,31 +443,29 @@ void GameMainLoop::everythingToEverything_tank_wall(int i, int j, std::unordered
 
 		if (!overridedWallCollision) {
 			if (CollisionHandler::partiallyCollided(t, w)) {
-				InteractionBoolHolder result = EndGameHandler::determineWinner(t, w, shouldBeKilled);
+				InteractionBoolHolder result = EndGameHandler::determineWinner(t, w, killTank);
 				if (result.shouldDie) {
-					shouldBeKilled = true;
+					killTank = true;
 				}
 				if (result.otherShouldDie) {
 					killWall = true;
 				}
 			}
 		}
-	}
 
-	if (killWall) {
-		wallDeletionList.push_back(w->getGameID());
-	}
-
-	if (shouldBeKilled) {
-		//TODO: proper implementation?
+		if (killTank) {
+			//TODO: proper implementation?
+		}
+		if (killWall) {
+			wallDeletionList.push_back(w->getGameID());
+		}
 	}
 }
 
 void GameMainLoop::everythingToEverything_tank_circlehazard(int i, int j, std::unordered_map<Game_ID, TankUpdateStruct>& tankUpdates, std::vector<Game_ID>& circleHazardDeletionList, std::unordered_map<Game_ID, CircleHazardUpdateStruct>& circleHazardUpdates) {
 	Tank* t = static_cast<Tank*>(GameManager::getObject(i));
-	bool shouldBeKilled = false;
-
 	CircleHazard* ch = static_cast<CircleHazard*>(GameManager::getObject(j));
+	bool killTank = false;
 	bool killCircleHazard = false;
 	bool overridedCircleHazardCollision = false;
 
@@ -482,10 +477,10 @@ void GameMainLoop::everythingToEverything_tank_circlehazard(int i, int j, std::u
 					overridedCircleHazardCollision = true;
 				}
 
-				//TODO: this doesn't kill the tank but it should
+				//TODO: this doesn't kill the tank but it should //TODO: really?
 				InteractionUpdateHolder<TankUpdateStruct, CircleHazardUpdateStruct> check_temp = t->tankPowers[k]->modifiedCollisionWithCircleHazard(t, ch);
 				if (check_temp.deaths.shouldDie) {
-					shouldBeKilled = true;
+					killTank = true;
 				}
 				if (check_temp.deaths.otherShouldDie) {
 					killCircleHazard = true;
@@ -517,7 +512,7 @@ void GameMainLoop::everythingToEverything_tank_circlehazard(int i, int j, std::u
 				if (ch->actuallyCollided(t)) {
 					InteractionBoolHolder result = EndGameHandler::determineWinner(t, ch);
 					if (result.shouldDie) {
-						shouldBeKilled = true;
+						killTank = true;
 					}
 					if (result.otherShouldDie) {
 						killCircleHazard = true;
@@ -525,22 +520,20 @@ void GameMainLoop::everythingToEverything_tank_circlehazard(int i, int j, std::u
 				}
 			}
 		}
-	}
 
-	if (killCircleHazard) {
-		circleHazardDeletionList.push_back(ch->getGameID());
-	}
-
-	if (shouldBeKilled) {
-		//TODO: proper implementation?
+		if (killTank) {
+			//TODO: proper implementation?
+		}
+		if (killCircleHazard) {
+			circleHazardDeletionList.push_back(ch->getGameID());
+		}
 	}
 }
 
 void GameMainLoop::everythingToEverything_tank_recthazard(int i, int j, std::unordered_map<Game_ID, TankUpdateStruct>& tankUpdates, std::vector<Game_ID>& rectHazardDeletionList, std::unordered_map<Game_ID, RectHazardUpdateStruct>& rectHazardUpdates) {
 	Tank* t = static_cast<Tank*>(GameManager::getObject(i));
-	bool shouldBeKilled = false;
-
 	RectHazard* rh = static_cast<RectHazard*>(GameManager::getObject(j));
+	bool killTank = false;
 	bool killRectHazard = false;
 	bool overridedRectHazardCollision = false;
 
@@ -551,10 +544,10 @@ void GameMainLoop::everythingToEverything_tank_recthazard(int i, int j, std::uno
 					overridedRectHazardCollision = true;
 				}
 
-				//TODO: this doesn't kill the tank but it should
+				//TODO: this doesn't kill the tank but it should //TODO: really?
 				InteractionUpdateHolder<TankUpdateStruct, RectHazardUpdateStruct> check_temp = t->tankPowers[k]->modifiedCollisionWithRectHazard(t, rh);
 				if (check_temp.deaths.shouldDie) {
-					shouldBeKilled = true;
+					killTank = true;
 				}
 				if (check_temp.deaths.otherShouldDie) {
 					killRectHazard = true;
@@ -586,7 +579,7 @@ void GameMainLoop::everythingToEverything_tank_recthazard(int i, int j, std::uno
 				if (rh->actuallyCollided(t)) {
 					InteractionBoolHolder result = EndGameHandler::determineWinner(t, rh);
 					if (result.shouldDie) {
-						shouldBeKilled = true;
+						killTank = true;
 					}
 					if (result.otherShouldDie) {
 						killRectHazard = true;
@@ -594,23 +587,21 @@ void GameMainLoop::everythingToEverything_tank_recthazard(int i, int j, std::uno
 				}
 			}
 		}
-	}
 
-	if (killRectHazard) {
-		rectHazardDeletionList.push_back(rh->getGameID());
-	}
-
-	if (shouldBeKilled) {
-		//TODO: proper implementation?
+		if (killTank) {
+			//TODO: proper implementation?
+		}
+		if (killRectHazard) {
+			rectHazardDeletionList.push_back(rh->getGameID());
+		}
 	}
 }
 
 void GameMainLoop::everythingToEverything_bullet_tank(int i, int j, std::vector<Game_ID>& bulletDeletionList, std::unordered_map<Game_ID, BulletUpdateStruct>& bulletUpdates, std::unordered_map<Game_ID, TankUpdateStruct>& tankUpdates) {
-	//TODO: tanks and bullets both have powers, so which one gets custom collision priority? (tanks, probably)
+	//bullets can have custom collision with tanks but not vice versa; does it really matter? probably not
 	Bullet* b = static_cast<Bullet*>(GameManager::getObject(i));
-	bool shouldBeKilled = false;
-
 	Tank* t = static_cast<Tank*>(GameManager::getObject(j));
+	bool killBullet = false;
 	bool killTank = false;
 	bool overridedTankCollision = false;
 
@@ -626,7 +617,7 @@ void GameMainLoop::everythingToEverything_bullet_tank(int i, int j, std::vector<
 
 				InteractionUpdateHolder<BulletUpdateStruct, TankUpdateStruct> check_temp = b->bulletPowers[k]->modifiedCollisionWithTank(b, t);
 				if (check_temp.deaths.shouldDie) {
-					shouldBeKilled = true;
+					killBullet = true;
 				}
 				if (check_temp.deaths.otherShouldDie) {
 					killTank = true;
@@ -659,53 +650,49 @@ void GameMainLoop::everythingToEverything_bullet_tank(int i, int j, std::vector<
 				killTank = true;
 			}
 			if (result.otherShouldDie) {
-				shouldBeKilled = true;
+				killBullet = true;
 			}
 		}
-	}
 
-	if (killTank) {
-		//TODO: proper implementation?
-	}
-
-	if (shouldBeKilled) {
-		bulletDeletionList.push_back(b->getGameID());
+		if (killBullet) {
+			bulletDeletionList.push_back(b->getGameID());
+		}
+		if (killTank) {
+			//TODO: proper implementation?
+		}
 	}
 }
 
 void GameMainLoop::everythingToEverything_bullet_bullet(int i, int j, std::vector<Game_ID>& bulletDeletionList, std::unordered_map<Game_ID, BulletUpdateStruct>& bulletUpdates) {
-	//TODO: modernize (add default vs custom collision stuff)
-	Bullet* b_outer = static_cast<Bullet*>(GameManager::getObject(i));
-	bool b_outerShouldDie = false;
+	//bullets do not get custom collision with other bullets
+	Bullet* b_first = static_cast<Bullet*>(GameManager::getObject(i));
+	Bullet* b_second = static_cast<Bullet*>(GameManager::getObject(j));
+	bool b_firstShouldDie = false;
+	bool b_secondShouldDie = false;
 
-	Bullet* b_inner = static_cast<Bullet*>(GameManager::getObject(j));
-	bool b_innerShouldDie = false;
-
-	if (!b_outer->canCollideWith(b_inner)) {
+	if (!b_first->canCollideWith(b_second)) {
 		return;
 	}
-	if (CollisionHandler::partiallyCollided(b_outer, b_inner)) {
-		InteractionBoolHolder result = EndGameHandler::determineWinner(b_outer, b_inner);
-		//if (!b_outerShouldDie) {
-			b_outerShouldDie = result.shouldDie; //TODO: does this need to go in the conditional?
+	if (CollisionHandler::partiallyCollided(b_first, b_second)) {
+		InteractionBoolHolder result = EndGameHandler::determineWinner(b_first, b_second);
+		//if (!b_firstShouldDie) {
+			b_firstShouldDie = result.shouldDie; //TODO: does this need to go in the conditional?
 		//}
-		b_innerShouldDie = result.otherShouldDie;
+		b_secondShouldDie = result.otherShouldDie;
 
-		if (b_innerShouldDie) {
-			bulletDeletionList.push_back(b_inner->getGameID());
+		if (b_firstShouldDie) {
+			bulletDeletionList.push_back(b_first->getGameID());
 		}
-	}
-
-	if (b_outerShouldDie) {
-		bulletDeletionList.push_back(b_outer->getGameID());
+		if (b_secondShouldDie) {
+			bulletDeletionList.push_back(b_second->getGameID());
+		}
 	}
 }
 
 void GameMainLoop::everythingToEverything_bullet_wall(int i, int j, std::vector<Game_ID>& bulletDeletionList, std::unordered_map<Game_ID, BulletUpdateStruct>& bulletUpdates, std::vector<Game_ID>& wallDeletionList, std::unordered_map<Game_ID, WallUpdateStruct>& wallUpdates) {
 	Bullet* b = static_cast<Bullet*>(GameManager::getObject(i));
-	bool shouldBeKilled = false;
-
 	Wall* w = static_cast<Wall*>(GameManager::getObject(j));
+	bool killBullet = false;
 	bool killWall = false;
 	bool overridedWallCollision = false;
 
@@ -718,13 +705,12 @@ void GameMainLoop::everythingToEverything_bullet_wall(int i, int j, std::vector<
 
 				InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> check_temp = b->bulletPowers[k]->modifiedCollisionWithWall(b, w);
 				if (check_temp.deaths.shouldDie) {
-					shouldBeKilled = true;
+					killBullet = true;
 				}
 				if (check_temp.deaths.otherShouldDie) {
 					killWall = true;
 				}
 
-				//TODO: maybe package all the updates together, then do this upsert
 				if (check_temp.firstUpdate != nullptr) {
 					if (bulletUpdates.find(b->getGameID()) == bulletUpdates.end()) {
 						bulletUpdates.insert({ b->getGameID(), BulletUpdateStruct(*check_temp.firstUpdate) });
@@ -748,25 +734,23 @@ void GameMainLoop::everythingToEverything_bullet_wall(int i, int j, std::vector<
 
 		if (!overridedWallCollision) {
 			if (CollisionHandler::partiallyCollided(b, w)) {
-				shouldBeKilled = true;
+				killBullet = true;
 			}
 		}
-	}
 
-	if (killWall) {
-		wallDeletionList.push_back(w->getGameID());
-	}
-
-	if (shouldBeKilled) {
-		bulletDeletionList.push_back(b->getGameID());
+		if (killBullet) {
+			bulletDeletionList.push_back(b->getGameID());
+		}
+		if (killWall) {
+			wallDeletionList.push_back(w->getGameID());
+		}
 	}
 }
 
 void GameMainLoop::everythingToEverything_bullet_circlehazard(int i, int j, std::vector<Game_ID>& bulletDeletionList, std::unordered_map<Game_ID, BulletUpdateStruct>& bulletUpdates, std::vector<Game_ID>& circleHazardDeletionList, std::unordered_map<Game_ID, CircleHazardUpdateStruct>& circleHazardUpdates) {
 	Bullet* b = static_cast<Bullet*>(GameManager::getObject(i));
-	bool shouldBeKilled = false;
-
 	CircleHazard* ch = static_cast<CircleHazard*>(GameManager::getObject(j));
+	bool killBullet = false;
 	bool killCircleHazard = false;
 	bool overridedCircleHazardCollision = false;
 
@@ -782,7 +766,7 @@ void GameMainLoop::everythingToEverything_bullet_circlehazard(int i, int j, std:
 
 				InteractionUpdateHolder<BulletUpdateStruct, CircleHazardUpdateStruct> check_temp = b->bulletPowers[k]->modifiedCollisionWithCircleHazard(b, ch);
 				if (check_temp.deaths.shouldDie) {
-					shouldBeKilled = true;
+					killBullet = true;
 				}
 				if (check_temp.deaths.otherShouldDie) {
 					killCircleHazard = true;
@@ -814,7 +798,7 @@ void GameMainLoop::everythingToEverything_bullet_circlehazard(int i, int j, std:
 				if (ch->actuallyCollided(b)) {
 					InteractionBoolHolder result = EndGameHandler::determineWinner(b, ch);
 					if (result.shouldDie) {
-						shouldBeKilled = true;
+						killBullet = true;
 					}
 					if (result.otherShouldDie) {
 						killCircleHazard = true;
@@ -822,22 +806,20 @@ void GameMainLoop::everythingToEverything_bullet_circlehazard(int i, int j, std:
 				}
 			}
 		}
-	}
 
-	if (killCircleHazard) {
-		circleHazardDeletionList.push_back(ch->getGameID());
-	}
-
-	if (shouldBeKilled) {
-		bulletDeletionList.push_back(b->getGameID());
+		if (killBullet) {
+			bulletDeletionList.push_back(b->getGameID());
+		}
+		if (killCircleHazard) {
+			circleHazardDeletionList.push_back(ch->getGameID());
+		}
 	}
 }
 
 void GameMainLoop::everythingToEverything_bullet_recthazard(int i, int j, std::vector<Game_ID>& bulletDeletionList, std::unordered_map<Game_ID, BulletUpdateStruct>& bulletUpdates, std::vector<Game_ID>& rectHazardDeletionList, std::unordered_map<Game_ID, RectHazardUpdateStruct>& rectHazardUpdates) {
 	Bullet* b = static_cast<Bullet*>(GameManager::getObject(i));
-	bool shouldBeKilled = false;
-
 	RectHazard* rh = static_cast<RectHazard*>(GameManager::getObject(j));
+	bool killBullet = false;
 	bool killRectHazard = false;
 	bool overridedRectHazardCollision = false;
 
@@ -853,7 +835,7 @@ void GameMainLoop::everythingToEverything_bullet_recthazard(int i, int j, std::v
 
 				InteractionUpdateHolder<BulletUpdateStruct, RectHazardUpdateStruct> check_temp = b->bulletPowers[k]->modifiedCollisionWithRectHazard(b, rh);
 				if (check_temp.deaths.shouldDie) {
-					shouldBeKilled = true;
+					killBullet = true;
 				}
 				if (check_temp.deaths.otherShouldDie) {
 					killRectHazard = true;
@@ -885,7 +867,7 @@ void GameMainLoop::everythingToEverything_bullet_recthazard(int i, int j, std::v
 				if (rh->actuallyCollided(b)) {
 					InteractionBoolHolder result = EndGameHandler::determineWinner(b, rh);
 					if (result.shouldDie) {
-						shouldBeKilled = true;
+						killBullet = true;
 					}
 					if (result.otherShouldDie) {
 						killRectHazard = true;
@@ -893,14 +875,13 @@ void GameMainLoop::everythingToEverything_bullet_recthazard(int i, int j, std::v
 				}
 			}
 		}
-	}
 
-	if (killRectHazard) {
-		rectHazardDeletionList.push_back(rh->getGameID());
-	}
-
-	if (shouldBeKilled) {
-		bulletDeletionList.push_back(b->getGameID());
+		if (killBullet) {
+			bulletDeletionList.push_back(b->getGameID());
+		}
+		if (killRectHazard) {
+			rectHazardDeletionList.push_back(rh->getGameID());
+		}
 	}
 }
 
@@ -973,7 +954,7 @@ void GameMainLoop::moveBullets() {
 	for (int i = BulletManager::getNumBullets() - 1; i >= 0; i--) {
 		Bullet* b = BulletManager::getBullet(i);
 		bool shouldBeKilled = b->move();
-		if (shouldBeKilled) {
+		if (shouldBeKilled) [[unlikely]] {
 			EndGameHandler::killBullet(b);
 			BulletManager::deleteBullet(i);
 			continue;
@@ -1041,10 +1022,10 @@ void GameMainLoop::tankToEdge() {
 			if (!overridedEdgeCollision) {
 				CollisionHandler::edgeConstrain(t);
 			}
-		}
 
-		if (shouldBeKilled) {
-			//TODO: proper implementation?
+			if (shouldBeKilled) {
+				//TODO: proper implementation?
+			}
 		}
 	}
 }
@@ -1078,11 +1059,11 @@ void GameMainLoop::bulletToEdge() {
 					shouldBeKilled = true;
 				}
 			}
-		}
 
-		if (shouldBeKilled) {
-			BulletManager::deleteBullet(i);
-			continue;
+			if (shouldBeKilled) {
+				BulletManager::deleteBullet(i);
+				continue;
+			}
 		}
 	}
 }
