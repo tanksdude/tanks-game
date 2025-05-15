@@ -1,7 +1,5 @@
 #include "rect-hazard.h"
 
-#include "constants.h"
-
 #include "collision-handler.h"
 
 /*

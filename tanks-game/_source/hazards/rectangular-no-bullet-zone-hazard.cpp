@@ -1,6 +1,5 @@
 #include "rectangular-no-bullet-zone-hazard.h"
 
-#include "../constants.h"
 #include <cmath>
 #include <algorithm> //std::clamp
 #include <iostream>

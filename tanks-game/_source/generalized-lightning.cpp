@@ -1,8 +1,6 @@
 #include "generalized-lightning.h"
 
-#include "constants.h"
 #include <cmath> //ceil
-//#include <stdexcept>
 #include <algorithm> //std::copy, std::clamp, std::max
 #include <iostream>
 

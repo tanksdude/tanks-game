@@ -1,6 +1,5 @@
 #include "simple-vector-2d.h"
 
-#include "constants.h"
 #include <cmath>
 #include <algorithm> //std::clamp
 

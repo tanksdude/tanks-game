@@ -28,7 +28,6 @@ MinesPower::MinesPower() {
 
 
 
-#include "../constants.h"
 #include <cmath>
 
 void MinesTankPower::tick(Tank* t) {

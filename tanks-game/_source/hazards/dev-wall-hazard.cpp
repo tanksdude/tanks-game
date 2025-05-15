@@ -1,7 +1,5 @@
 #include "dev-wall-hazard.h"
 
-#include "../constants.h"
-#include <cmath>
 #include <algorithm> //std::clamp
 #include <iostream>
 #include "../rng.h"

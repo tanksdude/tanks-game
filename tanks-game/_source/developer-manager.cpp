@@ -1,6 +1,5 @@
 #include "developer-manager.h"
 
-#include "constants.h"
 #include <iostream>
 
 #include <GL/glew.h>

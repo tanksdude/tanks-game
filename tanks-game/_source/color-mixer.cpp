@@ -1,6 +1,5 @@
 #include "color-mixer.h"
 
-#include "constants.h"
 #include <cmath> //abs, fmod
 #include <iostream>
 

@@ -1,6 +1,5 @@
 #include "magnetism-level-effect.h"
 
-#include "../constants.h"
 #include <cmath>
 
 #include "../tank-manager.h"

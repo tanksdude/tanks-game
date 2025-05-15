@@ -26,7 +26,6 @@ DevBackwardsMovementPower::DevBackwardsMovementPower() {
 
 
 
-#include "../constants.h"
 #include <cmath>
 
 InteractionBoolHolder DevBackwardsMovementTankPower::modifiedMovement(Tank* t, bool forward, bool turnL, bool turnR, bool specialKey) {
