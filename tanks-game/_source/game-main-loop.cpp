@@ -65,10 +65,6 @@ void GameMainLoop::Tick() {
 		return;
 	}
 
-	//big problem: I currently don't have the brainpower or willingness to parallelize the broad phase of collision, but I need to multithread something
-	//solution: parallelize the various broad phases!
-	//bonus: this is how all collision will be able to be done simultaneously
-
 	/* old order:
 	 * levelTick();
 	 * moveTanks();
@@ -157,7 +153,7 @@ void GameMainLoop::everythingToEverything() {
 	//what about a barrier powerup that also gives invincibility?... that's complicated, worry about it later
 	//multithreaded RNG: currently thinking loop every object, give it a pointer to the start of its requested RNG (there's a list of like 10K RNG calls stored), increment that pointer by the number of RNG calls requested by the object
 	//bulletpowers are still sequential, so that approach needs a mutex for each object, but even then it's still non-deterministic
-	//as that it very complicated and needs a sizeable rewrite, that is a future problem to solve
+	//as that is very complicated and needs a sizeable rewrite, that is a future problem to solve
 
 	for (int i = 0; i < collisionList->size(); i++) {
 		int collisionPairFirst = collisionList->data()[i].first;

@@ -1,11 +1,6 @@
 #include "physics-handler.h"
 
 #include <algorithm>
-#include <iostream>
-#include <execution>
-
-#include "diagnostics.h"
-
 #include "aaa_first.h"
 
 uint32_t PhysicsHandler::MinTaskSize;
@@ -109,15 +104,11 @@ std::vector<std::pair<int, int>>* PhysicsHandler::sweepAndPrune(const std::vecto
 	}
 
 	//sweep through
-	//start = Diagnostics::getTime();
 	s_physicsTask->Init(&objectIntervals, collisionObjects.size());
 	SweepAndPruneTaskGroup physicsTaskGroup(s_physicsTask);
 
 	g_TS.AddTaskSetToPipe(s_physicsTask);
 	g_TS.WaitforTask(&physicsTaskGroup);
-
-	//end = Diagnostics::getTime();
-	//std::cout << "sweep: " << (long double)Diagnostics::getDiff(start, end) << "ms" << std::endl << std::endl;
 
 	return physicsTaskGroup.final_collisionList;
 }
