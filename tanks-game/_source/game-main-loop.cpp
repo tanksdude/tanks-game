@@ -692,6 +692,7 @@ void GameMainLoop::everythingToEverything_bullet_wall(int i, int j, std::vector<
 	bool killWall = false;
 	bool overridedWallCollision = false;
 
+	//TODO: ignore edge? bounce is basically the only thing that might care, for blast it's just unnecessary computation
 	if (CollisionHandler::partiallyCollided(b, w)) {
 		for (int k = 0; k < b->bulletPowers.size(); k++) {
 			if (b->bulletPowers[k]->modifiesCollisionWithWall) {

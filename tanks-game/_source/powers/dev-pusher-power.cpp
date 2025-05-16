@@ -29,7 +29,6 @@ DevPusherPower::DevPusherPower() {
 #include "../collision-handler.h"
 
 InteractionUpdateHolder<TankUpdateStruct, WallUpdateStruct> DevPusherTankPower::modifiedCollisionWithWall(const Tank* t, const Wall* w) {
-	//TODO: supposed to check if they're still collided first; don't care, it's a dev power
 	std::pair<std::pair<double, double>, std::pair<double, double>> vecs = CollisionHandler::pushMovableAwayFromMovable_vecOnly(t, w);
 	return { false, false, new TankUpdateStruct(vecs.first.first, vecs.first.second, 0,0,0), new WallUpdateStruct(vecs.second.first, vecs.second.second, 0,0) };
 }

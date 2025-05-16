@@ -68,12 +68,8 @@ BlastTankPower::BlastTankPower() {
 #include "../collision-handler.h"
 
 InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> BlastBulletPower::modifiedCollisionWithWall(const Bullet* b, const Wall* w) {
-	if (CollisionHandler::partiallyCollidedIgnoreEdge(b, w)) {
-		std::pair<double, double> vec = CollisionHandler::pushMovableAwayFromImmovable_vecOnly(b, w);
-		return { false, false, new BulletUpdateStruct(vec.first, vec.second, 0, -1024*b->velocity.getMagnitude(), 0,0), nullptr };
-		//not the best way to implement this, but at least it works
-	}
-	return { false, false, nullptr, nullptr };
+	std::pair<double, double> vec = CollisionHandler::pushMovableAwayFromImmovable_vecOnly(b, w);
+	return { false, false, new BulletUpdateStruct(vec.first, vec.second, 0, -1024*b->velocity.getMagnitude(), 0,0), nullptr };
 }
 
 bool BlastBulletPower::getModifiesCollisionWithCircleHazard(const CircleHazard* ch) const {

@@ -8,10 +8,6 @@
 #include "tank-manager.h"
 
 std::pair<bool, InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct>> PowerFunctionHelper::superbounceGeneric(const Bullet* b, const Wall* w, double strength) {
-	if (!CollisionHandler::partiallyCollided(b, w)) {
-		return { false, { false, false, nullptr, nullptr } };
-	}
-
 	double b_xDelta, b_yDelta;
 	float  b_angleDelta;
 	double w_xDelta, w_yDelta;
@@ -41,17 +37,11 @@ std::pair<bool, InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct>> P
 			b_xDelta = 0, w_xDelta = 0;
 		}
 	}
-	//TODO: ensure bullet is not actually in wall; move bullet to edge of relevant wall if still colliding (TODO: this still relevant?)
 
 	return { true, { false, false, new BulletUpdateStruct(b_xDelta, b_yDelta, 0,0, b_angleDelta, 0), new WallUpdateStruct(w_xDelta, w_yDelta, 0,0) } };
-	//TODO: doesn't mean it should be deleted; should separate the update struct
 }
 
 std::pair<bool, InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct>> PowerFunctionHelper::superbounceGenericWithCorners(const Bullet* b, const Wall* w, double strength) { //not the default because bullets move too quickly on average
-	if (!CollisionHandler::partiallyCollided(b, w)) {
-		return { false, { false, false, nullptr, nullptr } };
-	}
-
 	if ((b->x < w->x) && (b->y < w->y)) { //circle in bottom left
 		return PowerFunctionHelper::superbounceGenericCornerHandler(b, w, w->x, w->y, strength);
 	}
@@ -67,48 +57,41 @@ std::pair<bool, InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct>> P
 	}
 
 	return PowerFunctionHelper::superbounceGeneric(b, w, strength);
-	//return false;
 }
 
 std::pair<bool, InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct>> PowerFunctionHelper::superbounceGenericCornerHandler(const Bullet* b, const Wall* w, double x, double y, double strength) {
 	//I have no idea if this is correct but it behaves exactly as I want it to, I think
 	//it's not exact because intersection points aren't calculated but it's close enough
 
-	if ((std::abs(x - b->x) <= b->r) && (std::abs(y - b->y) <= b->r)) {
-		double d = std::sqrt((x - b->x)*(x - b->x) + (y - b->y)*(y - b->y));
-		if (d <= b->r) {
-			double b_xDelta = 0, b_yDelta = 0;
-			float  b_angleDelta;
-			double w_xDelta, w_yDelta;
+	double b_xDelta = 0, b_yDelta = 0;
+	float  b_angleDelta;
+	double w_xDelta, w_yDelta;
 
-			float angle = std::atan2((y - b->y), (x - b->x));
-			b_yDelta -= std::sin(angle) * (b->r - d);
-			b_xDelta -= std::cos(angle) * (b->r - d);
+	double d = std::sqrt((x - b->x)*(x - b->x) + (y - b->y)*(y - b->y));
+	float angle = std::atan2((y - b->y), (x - b->x));
+	b_yDelta -= std::sin(angle) * (b->r - d);
+	b_xDelta -= std::cos(angle) * (b->r - d);
 
-			//so a rectangle has an area of influence against a circle: outer edges + radius, and corners are radius (picture a rounded rectangle)
-			//when a bullet's center enters the area, it is inside the rectangle, and therefore needs to reflect
-			//in effect, rounded rectangle against a point is the same as rectangle against circle
-			//the bullet's angle needs to reflect off of the perpendicular to the tangent, and the tangent goes through the intersection between the bullet's path and the area of influence
+	//so a rectangle has an area of influence against a circle: outer edges + radius, and corners are radius (picture a rounded rectangle)
+	//when a bullet's center enters the area, it is inside the rectangle, and therefore needs to reflect
+	//in effect, rounded rectangle against a point is the same as rectangle against circle
+	//the bullet's angle needs to reflect off of the perpendicular to the tangent, and the tangent goes through the intersection between the bullet's path and the area of influence
 
-			float newAngle = 2*angle - (b->velocity.getAngle() - float(PI));
-			b_yDelta += std::sin(newAngle) * (b->r - d);
-			b_xDelta += std::cos(newAngle) * (b->r - d);
-			b_angleDelta = (newAngle - b->velocity.getAngle()); //b->velocity.setAngle(newAngle);
+	float newAngle = 2*angle - (b->velocity.getAngle() - float(PI));
+	b_yDelta += std::sin(newAngle) * (b->r - d);
+	b_xDelta += std::cos(newAngle) * (b->r - d);
+	b_angleDelta = (newAngle - b->velocity.getAngle()); //b->velocity.setAngle(newAngle);
 
-			w_yDelta = std::sin(angle) * strength;
-			w_xDelta = std::cos(angle) * strength;
+	w_yDelta = std::sin(angle) * strength;
+	w_xDelta = std::cos(angle) * strength;
 
-			return { true, { false, false, new BulletUpdateStruct(b_xDelta, b_yDelta, 0,0, b_angleDelta, 0), new WallUpdateStruct(w_xDelta, w_yDelta, 0,0) } };
-		}
-	}
-
-	return { false, { false, false, {}, {} } };
+	return { true, { false, false, new BulletUpdateStruct(b_xDelta, b_yDelta, 0,0, b_angleDelta, 0), new WallUpdateStruct(w_xDelta, w_yDelta, 0,0) } };
 }
 
 std::pair<bool, BulletUpdateStruct> PowerFunctionHelper::bounceEdgeGenericX(const Bullet* b) {
-	bool bounced = 0; //wait, why is this =0? leftover from edge bouncing X and Y being together?
-	double b_xDelta, b_yDelta=0;
+	double b_xDelta;
 	float  b_angleDelta;
+	bool bounced = false;
 
 	if (b->x + b->r > GAME_WIDTH) { //right edge
 		b_xDelta = -1 * (((b->x + b->r) - GAME_WIDTH) * 2);
@@ -123,13 +106,13 @@ std::pair<bool, BulletUpdateStruct> PowerFunctionHelper::bounceEdgeGenericX(cons
 		b_angleDelta = 0;
 	}
 
-	return { bounced, BulletUpdateStruct(b_xDelta, b_yDelta, 0,0, b_angleDelta, 0) };
+	return { bounced, BulletUpdateStruct(b_xDelta, 0, 0,0, b_angleDelta, 0) };
 }
 
 std::pair<bool, BulletUpdateStruct> PowerFunctionHelper::bounceEdgeGenericY(const Bullet* b) {
-	bool bounced = 0;
-	double b_xDelta=0, b_yDelta;
+	double b_yDelta;
 	float  b_angleDelta;
+	bool bounced = false;
 
 	if (b->y + b->r > GAME_HEIGHT) { //top edge
 		b_yDelta = -1 * (((b->y + b->r) - GAME_HEIGHT) * 2);
@@ -144,7 +127,7 @@ std::pair<bool, BulletUpdateStruct> PowerFunctionHelper::bounceEdgeGenericY(cons
 		b_angleDelta = 0;
 	}
 
-	return { bounced, BulletUpdateStruct(b_xDelta, b_yDelta, 0,0, b_angleDelta, 0) };
+	return { bounced, BulletUpdateStruct(0, b_yDelta, 0,0, b_angleDelta, 0) };
 }
 
 std::vector<float>* PowerFunctionHelper::equallySpacedCannonPoints(int count) {
