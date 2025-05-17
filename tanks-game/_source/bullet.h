@@ -123,13 +123,13 @@ struct BulletUpdateStruct {
 	float speed;
 	float angle;
 	float alpha;
-	//absolutes:
 	//float acceleration;
-	std::vector<Bullet*> newBullets; //not implemented, don't use
+	//others:
+	//std::vector<Bullet*> newBullets; //not implemented, don't use
 
 	void add(const BulletUpdateStruct& other);
 
-	BulletUpdateStruct(double x, double y, double r, float speed, float angle, float alpha, const std::vector<Bullet*>& newBullets);
+	//BulletUpdateStruct(double x, double y, double r, float speed, float angle, float alpha, const std::vector<Bullet*>& newBullets);
 	BulletUpdateStruct(double x, double y, double r, float speed, float angle, float alpha);
 	BulletUpdateStruct() : BulletUpdateStruct(0, 0, 0, 0, 0, 0) {}
 };

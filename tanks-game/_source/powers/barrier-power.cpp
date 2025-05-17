@@ -33,7 +33,7 @@ BulletPower* BarrierTankPower::makeBulletPower() const {
 	return new BarrierBulletPower();
 }
 
-InteractionBoolHolder BarrierTankPower::modifiedDeathHandling(Tank* parent) {
+InteractionBoolHolder BarrierTankPower::modifiedDeathHandling(const Tank* parent) {
 	return { false, true };
 }
 
@@ -53,7 +53,7 @@ TankPower* BarrierBulletPower::makeTankPower() const {
 	return new BarrierTankPower();
 }
 
-InteractionBoolHolder BarrierBulletPower::modifiedDeathHandling(Bullet* parent) {
+InteractionBoolHolder BarrierBulletPower::modifiedDeathHandling(const Bullet* parent) {
 	return { false, true };
 }
 

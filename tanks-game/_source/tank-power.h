@@ -45,49 +45,41 @@ public:
 	virtual BulletPower* makeBulletPower() const = 0;
 
 	bool modifiesMovement = false;
-	//precondition: nothing
 	virtual InteractionBoolHolder modifiedMovement(Tank*, bool forward, bool turnL, bool turnR, bool specialKey) { return { false }; }
 	bool overridesMovement = false; //set to true if the power completely changes how it moves; regular powers slightly modify movement and still want basic tank move
 	bool modifiedMovementCanWorkWithOthers = true; //stops later powerups in list from activating
 
 	bool modifiesEdgeCollision = false;
-	//precondition: was out of bounds, is not necessarily out of bounds
+	//precondition: was out of bounds, is not necessarily out of bounds anymore
 	virtual InteractionBoolHolder modifiedEdgeCollision(Tank*) { return { false }; } //only the first false means something
 	bool overridesEdgeCollision = true;
 	bool modifiedEdgeCollisionCanWorkWithOthers = true;
 
 	bool modifiesCollisionWithTank = false;
-	//precondition: hit tank, is not necessarily inside tank
 	virtual InteractionUpdateHolder<TankUpdateStruct, TankUpdateStruct> modifiedCollisionWithTank(const Tank* parent, const Tank* other) { return { false, false, {}, {} }; }
 	bool overridesCollisionWithTank = true;
 	bool modifiedCollisionWithTankCanWorkWithOthers = true;
 
+	//bool modifiesCollisionWithBullet = false;
+	//virtual InteractionUpdateHolder<TankUpdateStruct, BulletUpdateStruct> modifiedCollisionWithBullet(Tank*, Bullet*) { return; } //probably shouldn't be used
+
 	bool modifiesCollisionWithWall = false;
-	//precondition: hit wall, is not necessariliy inside wall
 	virtual InteractionUpdateHolder<TankUpdateStruct, WallUpdateStruct> modifiedCollisionWithWall(const Tank*, const Wall*) { return { false, false, {}, {} }; }
 	bool overridesCollisionWithWall = true;
 	bool modifiedCollisionWithWallCanWorkWithOthers = true;
 
-	//bool modifiesCollisionWithPowerup = false;
-	//virtual void modifiedCollisionWithPowerSquare(Tank*, PowerSquare*) { return; } //probably not going to be used
-
-	//bool modifiesCollisionWithBullet = false;
-	//virtual void modifiedCollisionWithBullet(Tank*, Bullet*) { return; } //probably shouldn't be used
-
 	virtual bool getModifiesCollisionWithCircleHazard(const CircleHazard*) const { return false; }
-	//precondition: hit circlehazard, is not necessarily inside circlehazard
 	virtual InteractionUpdateHolder<TankUpdateStruct, CircleHazardUpdateStruct> modifiedCollisionWithCircleHazard(const Tank*, const CircleHazard*) { return { false, false, {}, {} }; }
 	bool overridesCollisionWithCircleHazard = true; //false means also use the default, which means destroy the tank if it collides
 	bool modifiedCollisionWithCircleHazardCanWorkWithOthers = true;
 
 	virtual bool getModifiesCollisionWithRectHazard(const RectHazard*) const { return false; }
-	//precondition: hit recthazard, is not necessarily inside recthazard
 	virtual InteractionUpdateHolder<TankUpdateStruct, RectHazardUpdateStruct> modifiedCollisionWithRectHazard(const Tank*, const RectHazard*) { return { false, false, {}, {} }; }
 	bool overridesCollisionWithRectHazard = true; //false means also use the default, which means destroy the tank if it collides
 	bool modifiedCollisionWithRectHazardCanWorkWithOthers = true;
 
 	bool modifiesDeathHandling = false;
-	virtual InteractionBoolHolder modifiedDeathHandling(Tank* parent) { return { true, false }; } //first is tank, second is tankpower
+	virtual InteractionBoolHolder modifiedDeathHandling(const Tank* parent) { return { true, false }; } //first is tank, second is tankpower
 	//it's first come, first served
 
 	/*

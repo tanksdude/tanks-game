@@ -25,13 +25,13 @@ public:
 
 	virtual bool actuallyCollided(const Tank*) const override { return currentlyActive; }
 	//bool modifiesTankCollision = true;
-	virtual void modifiedTankCollision(Tank*) override { return; }
+	virtual InteractionUpdateHolder<TankUpdateStruct, CircleHazardUpdateStruct> modifiedTankCollision(const Tank*) const override { return { false, false, nullptr, nullptr }; }
 	//bool hasSpecialEffectTankCollision = true;
 	virtual void specialEffectTankCollision(const Tank*) override;
 
 	virtual bool actuallyCollided(const Bullet*) const override { return currentlyActive; }
 	//bool modifiesBulletCollision = true;
-	virtual void modifiedBulletCollision(Bullet*) override { return; }
+	virtual InteractionUpdateHolder<BulletUpdateStruct, CircleHazardUpdateStruct> modifiedBulletCollision(const Bullet*) const override { return { false, false, nullptr, nullptr }; }
 	//bool hasSpecialEffectBulletCollision = true;
 	virtual void specialEffectBulletCollision(const Bullet*) override;
 

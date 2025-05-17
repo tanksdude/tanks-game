@@ -17,11 +17,11 @@ public:
 
 	virtual bool actuallyCollided(const Tank*) const override { return false; }
 	//bool modifiesTankCollision = true;
-	virtual void modifiedTankCollision(Tank*) override { return; }
+	virtual InteractionUpdateHolder<TankUpdateStruct, RectHazardUpdateStruct> modifiedTankCollision(const Tank*) const override { return { false, false, nullptr, nullptr }; }
 
 	virtual bool actuallyCollided(const Bullet*) const override { return true; }
 	//bool modifiesBulletCollision = true;
-	virtual void modifiedBulletCollision(Bullet*) override { return; } //TODO: should the bullet be destroyed here?
+	virtual InteractionUpdateHolder<BulletUpdateStruct, RectHazardUpdateStruct> modifiedBulletCollision(const Bullet*) const override { return { false, false, nullptr, nullptr }; } //TODO: should the bullet be destroyed here?
 
 	virtual float getOffenseTier() const override { return HIGH_TIER; }
 	virtual float getDefenseTier() const override { return HIGH_TIER; }

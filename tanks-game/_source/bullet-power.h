@@ -24,50 +24,42 @@ public:
 	virtual BulletPower* makeDuplicate() const = 0;
 	virtual TankPower* makeTankPower() const = 0;
 
-	bool modifiesMovement = false; //true if it, you know, modifies the movement
-	//precondition: nothing
+	bool modifiesMovement = false;
 	virtual InteractionBoolHolder modifiedMovement(Bullet*) { return { false }; } //default does nothing, obviously
 	bool overridesMovement = false; //true if the power completely changes how it moves; regular powers slightly modify movement (think homing) and still want basic bullet move
 	bool modifiedMovementCanWorkWithOthers = true; //false stops later powerups in list from activating
 
 	bool modifiesEdgeCollision = false;
-	//precondition: was out of bounds, is not necessarily out of bounds
+	//precondition: was out of bounds, is not necessarily out of bounds anymore
 	virtual InteractionBoolHolder modifiedEdgeCollision(Bullet*) { return { false }; } //only the first false means something
 	bool overridesEdgeCollision = true;
 	bool modifiedEdgeCollisionCanWorkWithOthers = false; //options: either it bounces or temporarily stays outside, so it has no need to work with others; that makes the promise of powerup mixing kinda depressing
 
 	bool modifiesCollisionWithTank = false;
-	//precondition: hit tank, is not necessarily inside tank
 	virtual InteractionUpdateHolder<BulletUpdateStruct, TankUpdateStruct> modifiedCollisionWithTank(const Bullet*, const Tank*) { return { false, false, {}, {} }; }
 	bool overridesCollisionWithTank = true;
 	bool modifiedCollisionWithTankCanWorkWithOthers = true;
 
+	//bool modifiesCollisionWithBullet = false;
+	//virtual InteractionUpdateHolder<BulletUpdateStruct, BulletUpdateStruct> modifiedCollisionWithBullet(Bullet* parent, Bullet* other) { return; } //huge potential for performance issues, so don't use
+
 	bool modifiesCollisionWithWall = false;
-	//precondition: hit wall, is not necessarily inside wall
 	virtual InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> modifiedCollisionWithWall(const Bullet*, const Wall*) { return { false, false, {}, {} }; }
 	bool overridesCollisionWithWall = true; //false means also use the default, which is just destroy the bullet if it collides
 	bool modifiedCollisionWithWallCanWorkWithOthers = true;
 
-	//bool modifiesCollisionWithPowerup = false;
-	//virtual void modifiedCollisionWithPowerSquare(Bullet*, PowerSquare*) { return; } //shouldn't be used
-
-	//bool modifiesCollisionWithBullet = false;
-	//virtual void modifiedCollisionWithBullet(Bullet* parent, Bullet* other) { return; } //probably shouldn't be used
-
 	virtual bool getModifiesCollisionWithCircleHazard(const CircleHazard*) const { return false; }
-	//precondition: hit circlehazard, is not necessarily inside circlehazard
 	virtual InteractionUpdateHolder<BulletUpdateStruct, CircleHazardUpdateStruct> modifiedCollisionWithCircleHazard(const Bullet*, const CircleHazard*) { return { false, false, {}, {} }; }
 	bool overridesCollisionWithCircleHazard = true; //false means also use the default, which means destroy the bullet if it collides
 	bool modifiedCollisionWithCircleHazardCanWorkWithOthers = true;
 
 	virtual bool getModifiesCollisionWithRectHazard(const RectHazard*) const { return false; }
-	//precondition: hit recthazard, is not necessarily inside recthazard
 	virtual InteractionUpdateHolder<BulletUpdateStruct, RectHazardUpdateStruct> modifiedCollisionWithRectHazard(const Bullet*, const RectHazard*) { return { false, false, {}, {} }; }
 	bool overridesCollisionWithRectHazard = true; //false means also use the default, which means destroy the bullet if it collides
 	bool modifiedCollisionWithRectHazardCanWorkWithOthers = true;
 
 	bool modifiesDeathHandling = false;
-	virtual InteractionBoolHolder modifiedDeathHandling(Bullet* parent) { return { true, false }; } //first is bullet, second is bulletpower
+	virtual InteractionBoolHolder modifiedDeathHandling(const Bullet* parent) { return { true, false }; } //first is bullet, second is bulletpower
 	//it's first come, first served
 
 	virtual float getBulletSpeedMultiplier() const { return 1; }

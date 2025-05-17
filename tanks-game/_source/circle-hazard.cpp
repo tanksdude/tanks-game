@@ -23,12 +23,14 @@ void CircleHazard::update(const CircleHazardUpdateStruct* up) {
 	this->r += up->r;
 }
 
-void CircleHazard::modifiedTankCollision(Tank* t) {
-	CollisionHandler::pushMovableAwayFromImmovable(t, this);
+InteractionUpdateHolder<TankUpdateStruct, CircleHazardUpdateStruct> CircleHazard::modifiedTankCollision(const Tank* t) const {
+	std::pair<double, double> vec = CollisionHandler::pushMovableAwayFromImmovable_vecOnly(t, this);
+	return { false, false, new TankUpdateStruct(vec.first, vec.second, 0,0,0), nullptr };
 }
 
-void CircleHazard::modifiedBulletCollision(Bullet* b) {
-	CollisionHandler::pushMovableAwayFromImmovable(b, this);
+InteractionUpdateHolder<BulletUpdateStruct, CircleHazardUpdateStruct> CircleHazard::modifiedBulletCollision(const Bullet* b) const {
+	std::pair<double, double> vec = CollisionHandler::pushMovableAwayFromImmovable_vecOnly(b, this);
+	return { false, false, new BulletUpdateStruct(vec.first, vec.second, 0,0,0,0), nullptr };
 }
 
 CircleHazardUpdateStruct::CircleHazardUpdateStruct(double x, double y, double r) {

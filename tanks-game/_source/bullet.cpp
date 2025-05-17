@@ -158,7 +158,7 @@ bool Bullet::move() {
 			}
 
 			InteractionBoolHolder check_temp = bulletPowers[k]->modifiedMovement(this);
-			if (check_temp.shouldDie) {
+			if (check_temp.firstShouldDie) {
 				shouldBeKilled = true;
 				overridedMovement = true;
 				break;
@@ -730,10 +730,10 @@ bool Bullet::kill() {
 
 		if (bulletPowers[i]->modifiesDeathHandling) {
 			InteractionBoolHolder check_temp = bulletPowers[i]->modifiedDeathHandling(this);
-			if (!check_temp.shouldDie) {
+			if (!check_temp.firstShouldDie) {
 				shouldBeKilled = false;
 			}
-			if (check_temp.otherShouldDie) {
+			if (check_temp.secondShouldDie) {
 				killBulletPower = true;
 			}
 		}
@@ -809,26 +809,15 @@ float Bullet::getDefenseTier() const {
 	return getHighestDefenseTier(getHighestDefenseImportance());
 }
 
-BulletUpdateStruct::BulletUpdateStruct(double x, double y, double r, float speed, float angle, float alpha, const std::vector<Bullet*>& newBullets) {
-	//add acceleration?
-	this->x = x;
-	this->y = y;
-	this->r = r;
-	this->speed = speed;
-	this->angle = angle;
-	this->alpha = alpha;
-	this->newBullets = std::vector<Bullet*>(newBullets);
-}
-
 BulletUpdateStruct::BulletUpdateStruct(double x, double y, double r, float speed, float angle, float alpha) {
-	//add acceleration?
 	this->x = x;
 	this->y = y;
 	this->r = r;
 	this->speed = speed;
 	this->angle = angle;
 	this->alpha = alpha;
-	this->newBullets = std::vector<Bullet*>();
+	//this->newBullets = std::vector<Bullet*>();
+	//this->newBullets = std::vector<Bullet*>(newBullets);
 }
 
 void BulletUpdateStruct::add(const BulletUpdateStruct& other) {
@@ -838,5 +827,5 @@ void BulletUpdateStruct::add(const BulletUpdateStruct& other) {
 	this->speed += other.speed;
 	this->angle += other.angle;
 	this->alpha += other.alpha;
-	newBullets.insert(newBullets.end(), other.newBullets.begin(), other.newBullets.end());
+	//newBullets.insert(newBullets.end(), other.newBullets.begin(), other.newBullets.end());
 }

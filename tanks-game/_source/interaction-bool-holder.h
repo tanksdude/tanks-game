@@ -2,11 +2,11 @@
 #include <memory>
 
 struct InteractionBoolHolder {
-	bool shouldDie;
-	bool otherShouldDie;
+	bool firstShouldDie;
+	bool secondShouldDie;
 	InteractionBoolHolder(bool a, bool b) {
-		shouldDie = a;
-		otherShouldDie = b;
+		firstShouldDie = a;
+		secondShouldDie = b;
 	}
 	InteractionBoolHolder(bool a) : InteractionBoolHolder(a, false) {}
 	InteractionBoolHolder() : InteractionBoolHolder(false, false) {}

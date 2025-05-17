@@ -24,12 +24,14 @@ void RectHazard::update(const RectHazardUpdateStruct* up) {
 	this->h += up->h;
 }
 
-void RectHazard::modifiedTankCollision(Tank* t) {
-	CollisionHandler::pushMovableAwayFromImmovable(t, this);
+InteractionUpdateHolder<TankUpdateStruct, RectHazardUpdateStruct> RectHazard::modifiedTankCollision(const Tank* t) const {
+	std::pair<double, double> vec = CollisionHandler::pushMovableAwayFromImmovable_vecOnly(t, this);
+	return { false, false, new TankUpdateStruct(vec.first, vec.second, 0,0,0), nullptr };
 }
 
-void RectHazard::modifiedBulletCollision(Bullet* b) {
-	CollisionHandler::pushMovableAwayFromImmovable(b, this);
+InteractionUpdateHolder<BulletUpdateStruct, RectHazardUpdateStruct> RectHazard::modifiedBulletCollision(const Bullet* b) const {
+	std::pair<double, double> vec = CollisionHandler::pushMovableAwayFromImmovable_vecOnly(b, this);
+	return { false, false, new BulletUpdateStruct(vec.first, vec.second, 0,0,0,0), nullptr };
 }
 
 RectHazardUpdateStruct::RectHazardUpdateStruct(double x, double y, double w, double h) {

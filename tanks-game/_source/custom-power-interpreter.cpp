@@ -663,7 +663,7 @@ InteractionBoolHolder CustomTankPower::modifiedEdgeCollision(Tank* t) {
 	return { false };
 }
 
-InteractionBoolHolder CustomTankPower::modifiedDeathHandling(Tank* parent) {
+InteractionBoolHolder CustomTankPower::modifiedDeathHandling(const Tank* parent) {
 	if (this->maxTime < 0) {
 		return { false, false };
 	}
@@ -785,7 +785,7 @@ InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> CustomBulletPower:
 	return { (modifiedCollision_BouncesLeft < 0), this->modifiedCollisionWithWall_DestroyWallEnable, b_update, w_update };
 }
 
-InteractionBoolHolder CustomBulletPower::modifiedDeathHandling(Bullet* parent) {
+InteractionBoolHolder CustomBulletPower::modifiedDeathHandling(const Bullet* parent) {
 	return { false, true };
 }
 

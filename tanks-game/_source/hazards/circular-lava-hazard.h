@@ -20,11 +20,11 @@ public:
 
 	//virtual bool actuallyCollided(const Tank*) const override { return true; }
 	//bool modifiesTankCollision = true;
-	virtual void modifiedTankCollision(Tank*) override { return; }
+	virtual InteractionUpdateHolder<TankUpdateStruct, CircleHazardUpdateStruct> modifiedTankCollision(const Tank*) const override { return { false, false, nullptr, nullptr }; }
 
 	virtual bool actuallyCollided(const Bullet* b) const override { return (b->velocity.getMagnitude() == 0); }
 	//bool modifiesBulletCollision = true;
-	virtual void modifiedBulletCollision(Bullet*) override { return; }
+	virtual InteractionUpdateHolder<BulletUpdateStruct, CircleHazardUpdateStruct> modifiedBulletCollision(const Bullet*) const override { return { false, false, nullptr, nullptr }; }
 
 	virtual float getOffenseTier() const override { return .5; }
 	virtual float getDefenseTier() const override { return HIGH_TIER; }

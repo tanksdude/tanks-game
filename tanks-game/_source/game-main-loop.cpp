@@ -155,6 +155,11 @@ void GameMainLoop::everythingToEverything() {
 	//bulletpowers are still sequential, so that approach needs a mutex for each object, but even then it's still non-deterministic
 	//as that is very complicated and needs a sizeable rewrite, that is a future problem to solve
 
+	//TODO: things can get killed in these functions, thus the results can change depending on the number of threads
+	//while I strive to make things as deterministic as possible, uh, oh well on that
+	//not impossible, but it means splitting the kill event from the collision functions, which means a lot of code moving (not really rewriting)
+	//that is a later problem, because it would need a re-architecture of the killing system, and may as well put that off until fully multithreaded collision
+
 	for (int i = 0; i < collisionList->size(); i++) {
 		int collisionPairFirst = collisionList->data()[i].first;
 		int collisionPairSecond = collisionList->data()[i].second;
@@ -313,10 +318,10 @@ void GameMainLoop::everythingToEverything_tank_tank(int i, int j, std::unordered
 
 				InteractionUpdateHolder<TankUpdateStruct, TankUpdateStruct> check_temp = t_first->tankPowers[k]->modifiedCollisionWithTank(t_first, t_second);
 				if (t_first->getTeamID() != t_second->getTeamID()) {
-					if (check_temp.deaths.shouldDie) {
+					if (check_temp.deaths.firstShouldDie) {
 						t_firstShouldDie = true;
 					}
-					if (check_temp.deaths.otherShouldDie) {
+					if (check_temp.deaths.secondShouldDie) {
 						t_secondShouldDie = true;
 					}
 				}
@@ -350,10 +355,10 @@ void GameMainLoop::everythingToEverything_tank_tank(int i, int j, std::unordered
 
 				InteractionUpdateHolder<TankUpdateStruct, TankUpdateStruct> check_temp = t_second->tankPowers[k]->modifiedCollisionWithTank(t_second, t_first);
 				if (t_first->getTeamID() != t_second->getTeamID()) {
-					if (check_temp.deaths.shouldDie) {
+					if (check_temp.deaths.firstShouldDie) {
 						t_secondShouldDie = true;
 					}
-					if (check_temp.deaths.otherShouldDie) {
+					if (check_temp.deaths.secondShouldDie) {
 						t_firstShouldDie = true;
 					}
 				}
@@ -380,9 +385,24 @@ void GameMainLoop::everythingToEverything_tank_tank(int i, int j, std::unordered
 		}
 
 		if (!overridedTankCollision) {
-			InteractionBoolHolder result = EndGameHandler::determineWinner(t_first, t_second);
-			t_firstShouldDie = result.shouldDie;
-			t_secondShouldDie = result.otherShouldDie;
+			InteractionUpdateHolder<TankUpdateStruct, TankUpdateStruct> result = EndGameHandler::determineWinner(t_first, t_second);
+			t_firstShouldDie = result.deaths.firstShouldDie;
+			t_secondShouldDie = result.deaths.secondShouldDie;
+
+			if (result.firstUpdate != nullptr) {
+				if (tankUpdates.find(t_first->getGameID()) == tankUpdates.end()) {
+					tankUpdates.insert({ t_first->getGameID(), TankUpdateStruct(*result.firstUpdate) });
+				} else {
+					tankUpdates[t_first->getGameID()].add(TankUpdateStruct(*result.firstUpdate));
+				}
+			}
+			if (result.secondUpdate != nullptr) {
+				if (tankUpdates.find(t_second->getGameID()) == tankUpdates.end()) {
+					tankUpdates.insert({ t_second->getGameID(), TankUpdateStruct(*result.secondUpdate) });
+				} else {
+					tankUpdates[t_second->getGameID()].add(TankUpdateStruct(*result.secondUpdate));
+				}
+			}
 		}
 
 		if (t_firstShouldDie) {
@@ -409,10 +429,10 @@ void GameMainLoop::everythingToEverything_tank_wall(int i, int j, std::unordered
 				}
 
 				InteractionUpdateHolder<TankUpdateStruct, WallUpdateStruct> check_temp = t->tankPowers[k]->modifiedCollisionWithWall(t, w);
-				if (check_temp.deaths.shouldDie) {
+				if (check_temp.deaths.firstShouldDie) {
 					killTank = true;
 				}
-				if (check_temp.deaths.otherShouldDie) {
+				if (check_temp.deaths.secondShouldDie) {
 					killWall = true;
 				}
 
@@ -438,13 +458,26 @@ void GameMainLoop::everythingToEverything_tank_wall(int i, int j, std::unordered
 		}
 
 		if (!overridedWallCollision) {
-			if (CollisionHandler::partiallyCollided(t, w)) {
-				InteractionBoolHolder result = EndGameHandler::determineWinner(t, w, killTank);
-				if (result.shouldDie) {
-					killTank = true;
+			InteractionUpdateHolder<TankUpdateStruct, WallUpdateStruct> result = EndGameHandler::determineWinner(t, w, killTank);
+			if (result.deaths.firstShouldDie) {
+				killTank = true;
+			}
+			if (result.deaths.secondShouldDie) {
+				killWall = true;
+			}
+
+			if (result.firstUpdate != nullptr) {
+				if (tankUpdates.find(t->getGameID()) == tankUpdates.end()) {
+					tankUpdates.insert({ t->getGameID(), TankUpdateStruct(*result.firstUpdate) });
+				} else {
+					tankUpdates[t->getGameID()].add(TankUpdateStruct(*result.firstUpdate));
 				}
-				if (result.otherShouldDie) {
-					killWall = true;
+			}
+			if (result.secondUpdate != nullptr) {
+				if (wallUpdates.find(w->getGameID()) == wallUpdates.end()) {
+					wallUpdates.insert({ w->getGameID(), WallUpdateStruct(*result.secondUpdate) });
+				} else {
+					wallUpdates[w->getGameID()].add(WallUpdateStruct(*result.secondUpdate));
 				}
 			}
 		}
@@ -466,19 +499,17 @@ void GameMainLoop::everythingToEverything_tank_circlehazard(int i, int j, std::u
 	bool overridedCircleHazardCollision = false;
 
 	if (CollisionHandler::partiallyCollided(t, ch)) {
-		//tankpower decides whether to use the partial collision or the true collision
 		for (int k = 0; k < t->tankPowers.size(); k++) {
 			if (t->tankPowers[k]->getModifiesCollisionWithCircleHazard(ch)) {
 				if (t->tankPowers[k]->overridesCollisionWithCircleHazard) {
 					overridedCircleHazardCollision = true;
 				}
 
-				//TODO: this doesn't kill the tank but it should //TODO: really?
 				InteractionUpdateHolder<TankUpdateStruct, CircleHazardUpdateStruct> check_temp = t->tankPowers[k]->modifiedCollisionWithCircleHazard(t, ch);
-				if (check_temp.deaths.shouldDie) {
+				if (check_temp.deaths.firstShouldDie) {
 					killTank = true;
 				}
-				if (check_temp.deaths.otherShouldDie) {
+				if (check_temp.deaths.secondShouldDie) {
 					killCircleHazard = true;
 				}
 
@@ -504,14 +535,27 @@ void GameMainLoop::everythingToEverything_tank_circlehazard(int i, int j, std::u
 		}
 
 		if (!overridedCircleHazardCollision) {
-			if (CollisionHandler::partiallyCollided(t, ch)) {
-				if (ch->actuallyCollided(t)) {
-					InteractionBoolHolder result = EndGameHandler::determineWinner(t, ch);
-					if (result.shouldDie) {
-						killTank = true;
+			if (ch->actuallyCollided(t)) {
+				InteractionUpdateHolder<TankUpdateStruct, CircleHazardUpdateStruct> result = EndGameHandler::determineWinner(t, ch);
+				if (result.deaths.firstShouldDie) {
+					killTank = true;
+				}
+				if (result.deaths.secondShouldDie) {
+					killCircleHazard = true;
+				}
+
+				if (result.firstUpdate != nullptr) {
+					if (tankUpdates.find(t->getGameID()) == tankUpdates.end()) {
+						tankUpdates.insert({ t->getGameID(), TankUpdateStruct(*result.firstUpdate) });
+					} else {
+						tankUpdates[t->getGameID()].add(TankUpdateStruct(*result.firstUpdate));
 					}
-					if (result.otherShouldDie) {
-						killCircleHazard = true;
+				}
+				if (result.secondUpdate != nullptr) {
+					if (circleHazardUpdates.find(ch->getGameID()) == circleHazardUpdates.end()) {
+						circleHazardUpdates.insert({ ch->getGameID(), CircleHazardUpdateStruct(*result.secondUpdate) });
+					} else {
+						circleHazardUpdates[ch->getGameID()].add(CircleHazardUpdateStruct(*result.secondUpdate));
 					}
 				}
 			}
@@ -540,12 +584,11 @@ void GameMainLoop::everythingToEverything_tank_recthazard(int i, int j, std::uno
 					overridedRectHazardCollision = true;
 				}
 
-				//TODO: this doesn't kill the tank but it should //TODO: really?
 				InteractionUpdateHolder<TankUpdateStruct, RectHazardUpdateStruct> check_temp = t->tankPowers[k]->modifiedCollisionWithRectHazard(t, rh);
-				if (check_temp.deaths.shouldDie) {
+				if (check_temp.deaths.firstShouldDie) {
 					killTank = true;
 				}
-				if (check_temp.deaths.otherShouldDie) {
+				if (check_temp.deaths.secondShouldDie) {
 					killRectHazard = true;
 				}
 
@@ -571,14 +614,27 @@ void GameMainLoop::everythingToEverything_tank_recthazard(int i, int j, std::uno
 		}
 
 		if (!overridedRectHazardCollision) {
-			if (CollisionHandler::partiallyCollided(t, rh)) {
-				if (rh->actuallyCollided(t)) {
-					InteractionBoolHolder result = EndGameHandler::determineWinner(t, rh);
-					if (result.shouldDie) {
-						killTank = true;
+			if (rh->actuallyCollided(t)) {
+				InteractionUpdateHolder<TankUpdateStruct, RectHazardUpdateStruct> result = EndGameHandler::determineWinner(t, rh);
+				if (result.deaths.firstShouldDie) {
+					killTank = true;
+				}
+				if (result.deaths.secondShouldDie) {
+					killRectHazard = true;
+				}
+
+				if (result.firstUpdate != nullptr) {
+					if (tankUpdates.find(t->getGameID()) == tankUpdates.end()) {
+						tankUpdates.insert({ t->getGameID(), TankUpdateStruct(*result.firstUpdate) });
+					} else {
+						tankUpdates[t->getGameID()].add(TankUpdateStruct(*result.firstUpdate));
 					}
-					if (result.otherShouldDie) {
-						killRectHazard = true;
+				}
+				if (result.secondUpdate != nullptr) {
+					if (rectHazardUpdates.find(rh->getGameID()) == rectHazardUpdates.end()) {
+						rectHazardUpdates.insert({ rh->getGameID(), RectHazardUpdateStruct(*result.secondUpdate) });
+					} else {
+						rectHazardUpdates[rh->getGameID()].add(RectHazardUpdateStruct(*result.secondUpdate));
 					}
 				}
 			}
@@ -612,10 +668,10 @@ void GameMainLoop::everythingToEverything_bullet_tank(int i, int j, std::vector<
 				}
 
 				InteractionUpdateHolder<BulletUpdateStruct, TankUpdateStruct> check_temp = b->bulletPowers[k]->modifiedCollisionWithTank(b, t);
-				if (check_temp.deaths.shouldDie) {
+				if (check_temp.deaths.firstShouldDie) {
 					killBullet = true;
 				}
-				if (check_temp.deaths.otherShouldDie) {
+				if (check_temp.deaths.secondShouldDie) {
 					killTank = true;
 				}
 
@@ -642,10 +698,11 @@ void GameMainLoop::everythingToEverything_bullet_tank(int i, int j, std::vector<
 
 		if (!overridedTankCollision) {
 			InteractionBoolHolder result = EndGameHandler::determineWinner(t, b);
-			if (result.shouldDie) {
+			//note: the tank and bullet inputs are switched (compared to above)
+			if (result.firstShouldDie) {
 				killTank = true;
 			}
-			if (result.otherShouldDie) {
+			if (result.secondShouldDie) {
 				killBullet = true;
 			}
 		}
@@ -671,10 +728,8 @@ void GameMainLoop::everythingToEverything_bullet_bullet(int i, int j, std::vecto
 	}
 	if (CollisionHandler::partiallyCollided(b_first, b_second)) {
 		InteractionBoolHolder result = EndGameHandler::determineWinner(b_first, b_second);
-		//if (!b_firstShouldDie) {
-			b_firstShouldDie = result.shouldDie; //TODO: does this need to go in the conditional?
-		//}
-		b_secondShouldDie = result.otherShouldDie;
+		b_firstShouldDie = result.firstShouldDie;
+		b_secondShouldDie = result.secondShouldDie;
 
 		if (b_firstShouldDie) {
 			bulletDeletionList.push_back(b_first->getGameID());
@@ -701,10 +756,10 @@ void GameMainLoop::everythingToEverything_bullet_wall(int i, int j, std::vector<
 				}
 
 				InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> check_temp = b->bulletPowers[k]->modifiedCollisionWithWall(b, w);
-				if (check_temp.deaths.shouldDie) {
+				if (check_temp.deaths.firstShouldDie) {
 					killBullet = true;
 				}
-				if (check_temp.deaths.otherShouldDie) {
+				if (check_temp.deaths.secondShouldDie) {
 					killWall = true;
 				}
 
@@ -762,10 +817,10 @@ void GameMainLoop::everythingToEverything_bullet_circlehazard(int i, int j, std:
 				}
 
 				InteractionUpdateHolder<BulletUpdateStruct, CircleHazardUpdateStruct> check_temp = b->bulletPowers[k]->modifiedCollisionWithCircleHazard(b, ch);
-				if (check_temp.deaths.shouldDie) {
+				if (check_temp.deaths.firstShouldDie) {
 					killBullet = true;
 				}
-				if (check_temp.deaths.otherShouldDie) {
+				if (check_temp.deaths.secondShouldDie) {
 					killCircleHazard = true;
 				}
 
@@ -791,14 +846,27 @@ void GameMainLoop::everythingToEverything_bullet_circlehazard(int i, int j, std:
 		}
 
 		if (!overridedCircleHazardCollision) {
-			if (CollisionHandler::partiallyCollided(b, ch)) {
-				if (ch->actuallyCollided(b)) {
-					InteractionBoolHolder result = EndGameHandler::determineWinner(b, ch);
-					if (result.shouldDie) {
-						killBullet = true;
+			if (ch->actuallyCollided(b)) {
+				InteractionUpdateHolder<BulletUpdateStruct, CircleHazardUpdateStruct> result = EndGameHandler::determineWinner(b, ch);
+				if (result.deaths.firstShouldDie) {
+					killBullet = true;
+				}
+				if (result.deaths.secondShouldDie) {
+					killCircleHazard = true;
+				}
+
+				if (result.firstUpdate != nullptr) {
+					if (bulletUpdates.find(b->getGameID()) == bulletUpdates.end()) {
+						bulletUpdates.insert({ b->getGameID(), BulletUpdateStruct(*result.firstUpdate) });
+					} else {
+						bulletUpdates[b->getGameID()].add(BulletUpdateStruct(*result.firstUpdate));
 					}
-					if (result.otherShouldDie) {
-						killCircleHazard = true;
+				}
+				if (result.secondUpdate != nullptr) {
+					if (circleHazardUpdates.find(ch->getGameID()) == circleHazardUpdates.end()) {
+						circleHazardUpdates.insert({ ch->getGameID(), CircleHazardUpdateStruct(*result.secondUpdate) });
+					} else {
+						circleHazardUpdates[ch->getGameID()].add(CircleHazardUpdateStruct(*result.secondUpdate));
 					}
 				}
 			}
@@ -831,10 +899,10 @@ void GameMainLoop::everythingToEverything_bullet_recthazard(int i, int j, std::v
 				}
 
 				InteractionUpdateHolder<BulletUpdateStruct, RectHazardUpdateStruct> check_temp = b->bulletPowers[k]->modifiedCollisionWithRectHazard(b, rh);
-				if (check_temp.deaths.shouldDie) {
+				if (check_temp.deaths.firstShouldDie) {
 					killBullet = true;
 				}
-				if (check_temp.deaths.otherShouldDie) {
+				if (check_temp.deaths.secondShouldDie) {
 					killRectHazard = true;
 				}
 
@@ -860,14 +928,27 @@ void GameMainLoop::everythingToEverything_bullet_recthazard(int i, int j, std::v
 		}
 
 		if (!overridedRectHazardCollision) {
-			if (CollisionHandler::partiallyCollided(b, rh)) {
-				if (rh->actuallyCollided(b)) {
-					InteractionBoolHolder result = EndGameHandler::determineWinner(b, rh);
-					if (result.shouldDie) {
-						killBullet = true;
+			if (rh->actuallyCollided(b)) {
+				InteractionUpdateHolder<BulletUpdateStruct, RectHazardUpdateStruct> result = EndGameHandler::determineWinner(b, rh);
+				if (result.deaths.firstShouldDie) {
+					killBullet = true;
+				}
+				if (result.deaths.secondShouldDie) {
+					killRectHazard = true;
+				}
+
+				if (result.firstUpdate != nullptr) {
+					if (bulletUpdates.find(b->getGameID()) == bulletUpdates.end()) {
+						bulletUpdates.insert({ b->getGameID(), BulletUpdateStruct(*result.firstUpdate) });
+					} else {
+						bulletUpdates[b->getGameID()].add(BulletUpdateStruct(*result.firstUpdate));
 					}
-					if (result.otherShouldDie) {
-						killRectHazard = true;
+				}
+				if (result.secondUpdate != nullptr) {
+					if (rectHazardUpdates.find(rh->getGameID()) == rectHazardUpdates.end()) {
+						rectHazardUpdates.insert({ rh->getGameID(), RectHazardUpdateStruct(*result.secondUpdate) });
+					} else {
+						rectHazardUpdates[rh->getGameID()].add(RectHazardUpdateStruct(*result.secondUpdate));
 					}
 				}
 			}
@@ -1006,7 +1087,7 @@ void GameMainLoop::tankToEdge() {
 					}
 
 					InteractionBoolHolder check_temp = t->tankPowers[k]->modifiedEdgeCollision(t);
-					if (check_temp.shouldDie) {
+					if (check_temp.firstShouldDie) {
 						shouldBeKilled = true;
 					}
 
@@ -1041,7 +1122,7 @@ void GameMainLoop::bulletToEdge() {
 					}
 
 					InteractionBoolHolder check_temp = b->bulletPowers[k]->modifiedEdgeCollision(b);
-					if (check_temp.shouldDie) {
+					if (check_temp.firstShouldDie) {
 						shouldBeKilled = true;
 					}
 

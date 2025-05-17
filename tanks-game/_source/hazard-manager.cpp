@@ -37,12 +37,10 @@ RectHazard* HazardManager::getRectHazardByID(Game_ID gameID) {
 void HazardManager::pushCircleHazard(std::string type, std::string name, const GenericFactoryConstructionData& data) {
 	CircleHazard* ch = makeCircleHazard(type, name, data);
 	pushCircleHazard(ch);
-	GameManager::pushObject(ch);
 }
 void HazardManager::pushRectHazard(std::string type, std::string name, const GenericFactoryConstructionData& data) {
 	RectHazard* rh = makeRectHazard(type, name, data);
 	pushRectHazard(rh);
-	GameManager::pushObject(rh);
 }
 
 void HazardManager::deleteCircleHazard(unsigned int index) {

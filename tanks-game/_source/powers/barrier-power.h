@@ -33,7 +33,7 @@ public:
 	virtual BulletPower* makeBulletPower() const override;
 
 	//bool modifiesDeathHandling = true;
-	virtual InteractionBoolHolder modifiedDeathHandling(Tank* parent) override;
+	virtual InteractionBoolHolder modifiedDeathHandling(const Tank* parent) override;
 
 	BarrierTankPower();
 };
@@ -49,7 +49,7 @@ public:
 	virtual TankPower* makeTankPower() const override;
 
 	//bool modifiesDeathHandling = true;
-	virtual InteractionBoolHolder modifiedDeathHandling(Bullet* parent) override;
+	virtual InteractionBoolHolder modifiedDeathHandling(const Bullet* parent) override;
 
 	BarrierBulletPower();
 };

@@ -108,7 +108,7 @@ bool Tank::move(bool forward, bool turnL, bool turnR, bool specialKey) {
 			}
 
 			InteractionBoolHolder check_temp = tankPowers[k]->modifiedMovement(this, forward, turnL, turnR, specialKey);
-			if (check_temp.shouldDie) {
+			if (check_temp.firstShouldDie) {
 				shouldBeKilled = true;
 				overridedMovement = true;
 				break;
@@ -274,7 +274,7 @@ void Tank::determineShootingAngles() {
 		if (tankPowers[i]->addsShootingPoints) {
 			determineShootingAngles_helper(tankPowers[i]->addShootingPoints());
 
-			if (!tankPowers[i]->addExtraShootingPointsCanWorkWithOthers) {
+			if (!tankPowers[i]->addShootingPointsCanWorkWithOthers) {
 				break;
 			}
 		}
@@ -1107,10 +1107,10 @@ bool Tank::kill() {
 
 		if (tankPowers[i]->modifiesDeathHandling) {
 			InteractionBoolHolder check_temp = tankPowers[i]->modifiedDeathHandling(this);
-			if (!check_temp.shouldDie) {
+			if (!check_temp.firstShouldDie) {
 				shouldBeKilled = false;
 			}
-			if (check_temp.otherShouldDie) {
+			if (check_temp.secondShouldDie) {
 				killTankPower = true;
 			}
 		}

@@ -53,7 +53,7 @@ BulletPower* ShieldTankPower::makeBulletPower() const {
 	return new ShieldBulletPower();
 }
 
-InteractionBoolHolder ShieldTankPower::modifiedDeathHandling(Tank* parent) {
+InteractionBoolHolder ShieldTankPower::modifiedDeathHandling(const Tank* parent) {
 	if (this->maxTime < 0) {
 		return { false, false };
 	}
@@ -83,7 +83,7 @@ TankPower* ShieldBulletPower::makeTankPower() const {
 	return new ShieldTankPower();
 }
 
-InteractionBoolHolder ShieldBulletPower::modifiedDeathHandling(Bullet* parent) {
+InteractionBoolHolder ShieldBulletPower::modifiedDeathHandling(const Bullet* parent) {
 	return { false, true };
 }
 

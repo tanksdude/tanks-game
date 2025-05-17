@@ -57,12 +57,8 @@ RectHazard* ReflecktorHazard::factory(const GenericFactoryConstructionData& args
 	return new ReflecktorHazard(0, 0, 0, 0);
 }
 
-void ReflecktorHazard::modifiedTankCollision(Tank* t) {
+InteractionUpdateHolder<TankUpdateStruct, RectHazardUpdateStruct> ReflecktorHazard::modifiedTankCollision(const Tank* t) const {
 	//copied from PowerFunctionHelper::superbounceGeneric()
-
-	if (!CollisionHandler::partiallyCollided(t, this)) {
-		return;
-	}
 
 	double t_xDelta, t_yDelta;
 	float  t_angleDelta;
@@ -89,9 +85,7 @@ void ReflecktorHazard::modifiedTankCollision(Tank* t) {
 		}
 	}
 
-	t->x += t_xDelta;
-	t->y += t_yDelta;
-	t->velocity.changeAngle(t_angleDelta);
+	return { false, false, new TankUpdateStruct(t_xDelta, t_yDelta, 0,0, t_angleDelta), nullptr };
 }
 
 bool ReflecktorHazard::reasonableLocation() const {

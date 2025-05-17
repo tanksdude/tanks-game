@@ -238,7 +238,7 @@ public:
 	//bool getModifiesCollisionWithRectHazard(const RectHazard*) const override;
 	//InteractionUpdateHolder<TankUpdateStruct, RectHazardUpdateStruct> modifiedCollisionWithRectHazard(const Tank*, const RectHazard*) override;
 
-	InteractionBoolHolder modifiedDeathHandling(Tank* parent) override;
+	InteractionBoolHolder modifiedDeathHandling(const Tank* parent) override;
 
 	void additionalShooting(Tank* parent, const CannonPoint&, const ExtraCannonPoint&) override;
 
@@ -340,7 +340,7 @@ public:
 	//bool getModifiesCollisionWithRectHazard(const RectHazard*) const override;
 	//InteractionUpdateHolder<BulletUpdateStruct, RectHazardUpdateStruct> modifiedCollisionWithRectHazard(const Bullet*, const RectHazard*) override;
 
-	InteractionBoolHolder modifiedDeathHandling(Bullet* parent) override;
+	InteractionBoolHolder modifiedDeathHandling(const Bullet* parent) override;
 
 	float  getBulletSpeedMultiplier() const override { return this->bulletSpeedMultiplier; }
 	double getBulletRadiusMultiplier() const override { return this->bulletRadiusMultiplier; }

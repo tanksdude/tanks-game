@@ -36,23 +36,21 @@ private:
 
 	static void finalizeScores(); //ResetThings calls this
 
-public: //note: these kill tanks and bullets
-	static InteractionBoolHolder determineWinner(Tank*, Bullet*);
-	static InteractionBoolHolder determineWinner(Tank*, Tank*);
-	static InteractionBoolHolder determineWinner(Bullet*, Bullet*);
-	static InteractionBoolHolder determineWinner(Tank*, CircleHazard*);
-	static InteractionBoolHolder determineWinner(Tank*, RectHazard*);
-	static InteractionBoolHolder determineWinner(Bullet*, CircleHazard*);
-	static InteractionBoolHolder determineWinner(Bullet*, RectHazard*);
-	static InteractionBoolHolder determineWinner(Tank*, Wall*, bool tankDies); //temporary
-	static InteractionBoolHolder determineWinner(Bullet*, Wall*, bool bulletDies); //temporary
-	//TODO: rewrite these functions to be more of a "handleCollisionEvent" thing
+public: //note: these kill tanks and bullets (but do not change positions)
+	static InteractionBoolHolder                                                 determineWinner(Tank*, Bullet*);
+	static InteractionUpdateHolder<TankUpdateStruct, TankUpdateStruct>           determineWinner(Tank*, Tank*);
+	static InteractionBoolHolder                                                 determineWinner(Bullet*, Bullet*);
+	static InteractionUpdateHolder<TankUpdateStruct, CircleHazardUpdateStruct>   determineWinner(Tank*, CircleHazard*);
+	static InteractionUpdateHolder<TankUpdateStruct, RectHazardUpdateStruct>     determineWinner(Tank*, RectHazard*);
+	static InteractionUpdateHolder<BulletUpdateStruct, CircleHazardUpdateStruct> determineWinner(Bullet*, CircleHazard*);
+	static InteractionUpdateHolder<BulletUpdateStruct, RectHazardUpdateStruct>   determineWinner(Bullet*, RectHazard*);
+	static InteractionUpdateHolder<TankUpdateStruct, WallUpdateStruct>           determineWinner(Tank*, Wall*, bool tankDies); //temporary
 
 	//just for GameMainLoop and EndGameHandler
 	static void killTank(Tank*); //suicide (does not get an extra life)
-	static bool killTank(Tank*, GameThing* killer); //returns whether the tank is dead
+	static bool killTank(Tank*, const GameThing* killer); //returns whether the tank is dead
 	static void killBullet(Bullet*);
-	static bool killBullet(Bullet*, GameThing* killer);
+	static bool killBullet(Bullet*, const GameThing* killer);
 
 	static bool shouldGameEnd();
 
