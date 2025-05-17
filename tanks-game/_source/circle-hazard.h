@@ -57,16 +57,12 @@ public:
 	virtual CircleHazardCollisionType getCollisionType() const = 0; // { return CircleHazardCollisionType::solid; }
 
 	virtual bool actuallyCollided(const Tank*) const { return true; }
-	bool modifiesTankCollision = false;
-	virtual InteractionUpdateHolder<TankUpdateStruct, CircleHazardUpdateStruct> modifiedTankCollision(const Tank*) const;
-	bool hasSpecialEffectTankCollision = false;
 	virtual void specialEffectTankCollision(const Tank*) { return; } //always activated before modifiedTankCollision
+	virtual InteractionUpdateHolder<TankUpdateStruct, CircleHazardUpdateStruct> modifiedTankCollision(const Tank*) const;
 
 	virtual bool actuallyCollided(const Bullet*) const { return true; }
-	bool modifiesBulletCollision = false;
-	virtual InteractionUpdateHolder<BulletUpdateStruct, CircleHazardUpdateStruct> modifiedBulletCollision(const Bullet*) const;
-	bool hasSpecialEffectBulletCollision = false;
 	virtual void specialEffectBulletCollision(const Bullet*) { return; } //always activated before modifiedBulletCollision
+	virtual InteractionUpdateHolder<BulletUpdateStruct, CircleHazardUpdateStruct> modifiedBulletCollision(const Bullet*) const;
 
 	virtual float getOffenseTier() const = 0;
 	virtual float getDefenseTier() const = 0;

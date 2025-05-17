@@ -30,9 +30,6 @@ RectangularNoBulletZoneHazard::RectangularNoBulletZoneHazard(double xpos, double
 	h = height;
 
 	//canAcceptPowers = false;
-
-	modifiesTankCollision = true;
-	modifiesBulletCollision = true;
 }
 
 RectangularNoBulletZoneHazard::~RectangularNoBulletZoneHazard() {

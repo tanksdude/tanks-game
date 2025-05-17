@@ -16,11 +16,9 @@ public:
 	virtual CircleHazardCollisionType getCollisionType() const override { return CircleHazardCollisionType::under; } //not too sure
 
 	virtual bool actuallyCollided(const Tank*) const override { return false; }
-	//bool modifiesTankCollision = true;
 	virtual InteractionUpdateHolder<TankUpdateStruct, CircleHazardUpdateStruct> modifiedTankCollision(const Tank*) const override { return { false, false, nullptr, nullptr }; }
 
 	virtual bool actuallyCollided(const Bullet*) const override { return true; }
-	//bool modifiesBulletCollision = true;
 	virtual InteractionUpdateHolder<BulletUpdateStruct, CircleHazardUpdateStruct> modifiedBulletCollision(const Bullet*) const override { return { false, false, nullptr, nullptr }; } //TODO: should the bullet be destroyed here?
 
 	virtual float getOffenseTier() const override { return HIGH_TIER; }

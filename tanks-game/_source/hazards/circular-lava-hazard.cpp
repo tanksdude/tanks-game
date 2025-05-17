@@ -41,9 +41,6 @@ CircularLavaHazard::CircularLavaHazard(double xpos, double ypos, double radius) 
 
 	//canAcceptPowers = false;
 
-	modifiesTankCollision = true;
-	modifiesBulletCollision = true;
-
 	initializeVertices();
 }
 

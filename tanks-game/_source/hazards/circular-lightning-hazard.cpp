@@ -52,11 +52,6 @@ CircularLightningHazard::CircularLightningHazard(double xpos, double ypos, doubl
 
 	//canAcceptPowers = false;
 
-	modifiesTankCollision = true;
-	hasSpecialEffectTankCollision = true;
-	modifiesBulletCollision = true;
-	hasSpecialEffectBulletCollision = true;
-
 	initializeVertices();
 }
 

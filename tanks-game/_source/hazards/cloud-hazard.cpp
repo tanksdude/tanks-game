@@ -47,9 +47,6 @@ CloudHazard::CloudHazard(double xpos, double ypos, double radius, double speed, 
 
 	//canAcceptPowers = false;
 
-	modifiesTankCollision = true;
-	modifiesBulletCollision = true;
-
 	initializeVertices();
 }
 
@@ -71,9 +68,6 @@ CloudHazard::CloudHazard(double xpos, double ypos, double radius, double speed, 
 	powerupsVelocity = std::vector<SimpleVector2D>();
 
 	//canAcceptPowers = false;
-
-	modifiesTankCollision = true;
-	modifiesBulletCollision = true;
 
 	initializeVertices();
 }

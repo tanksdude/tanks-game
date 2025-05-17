@@ -55,17 +55,13 @@ public:
 
 	virtual RectHazardCollisionType getCollisionType() const = 0; // { return RectHazardCollisionType::solid; }
 
-	virtual bool actuallyCollided(const Tank*) const { return true; } //precondition: currently and partially collided with tank
-	bool modifiesTankCollision = false;
-	virtual InteractionUpdateHolder<TankUpdateStruct, RectHazardUpdateStruct> modifiedTankCollision(const Tank*) const;
-	bool hasSpecialEffectTankCollision = false;
+	virtual bool actuallyCollided(const Tank*) const { return true; }
 	virtual void specialEffectTankCollision(const Tank*) { return; } //always activated before modifiedTankCollision
+	virtual InteractionUpdateHolder<TankUpdateStruct, RectHazardUpdateStruct> modifiedTankCollision(const Tank*) const;
 
-	virtual bool actuallyCollided(const Bullet*) const { return true; } //precondition: currently and partially collided with bullet
-	bool modifiesBulletCollision = false;
-	virtual InteractionUpdateHolder<BulletUpdateStruct, RectHazardUpdateStruct> modifiedBulletCollision(const Bullet*) const;
-	bool hasSpecialEffectBulletCollision = false;
+	virtual bool actuallyCollided(const Bullet*) const { return true; }
 	virtual void specialEffectBulletCollision(const Bullet*) { return; } //always activated before modifiedBulletCollision
+	virtual InteractionUpdateHolder<BulletUpdateStruct, RectHazardUpdateStruct> modifiedBulletCollision(const Bullet*) const;
 
 	virtual float getOffenseTier() const = 0;
 	virtual float getDefenseTier() const = 0;

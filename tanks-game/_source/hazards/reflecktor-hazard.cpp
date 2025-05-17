@@ -32,8 +32,6 @@ ReflecktorHazard::ReflecktorHazard(double xpos, double ypos, double width, doubl
 	color = ColorValueHolder(.95f, .95f, .95f);
 
 	//canAcceptPowers = false;
-
-	modifiesTankCollision = true;
 }
 
 ReflecktorHazard::~ReflecktorHazard() {

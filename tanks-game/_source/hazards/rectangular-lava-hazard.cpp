@@ -42,9 +42,6 @@ RectangularLavaHazard::RectangularLavaHazard(double xpos, double ypos, double wi
 
 	//canAcceptPowers = false;
 
-	modifiesTankCollision = true;
-	modifiesBulletCollision = true;
-
 	initializeVertices();
 }
 

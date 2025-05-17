@@ -46,11 +46,6 @@ RectangularLightningHazard::RectangularLightningHazard(double xpos, double ypos,
 	boltsNeeded = false;
 
 	//canAcceptPowers = false;
-
-	modifiesTankCollision = true;
-	hasSpecialEffectTankCollision = true;
-	modifiesBulletCollision = true;
-	hasSpecialEffectBulletCollision = true;
 }
 
 inline Circle* RectangularLightningHazard::getCenterPoint() const {

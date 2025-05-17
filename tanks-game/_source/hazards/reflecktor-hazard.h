@@ -17,7 +17,6 @@ public:
 
 	virtual RectHazardCollisionType getCollisionType() const override { return RectHazardCollisionType::solid; }
 
-	//bool modifiesTankCollision = true;
 	virtual InteractionUpdateHolder<TankUpdateStruct, RectHazardUpdateStruct> modifiedTankCollision(const Tank*) const override;
 
 	virtual float getOffenseTier() const override { return 0; }

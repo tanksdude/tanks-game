@@ -18,11 +18,9 @@ public:
 	virtual RectHazardCollisionType getCollisionType() const override { return RectHazardCollisionType::under; }
 
 	//virtual bool actuallyCollided(const Tank*) const override { return true; }
-	//bool modifiesTankCollision = true;
 	virtual InteractionUpdateHolder<TankUpdateStruct, RectHazardUpdateStruct> modifiedTankCollision(const Tank*) const override { return { false, false, nullptr, nullptr }; }
 
 	virtual bool actuallyCollided(const Bullet* b) const override { return (b->velocity.getMagnitude() == 0); }
-	//bool modifiesBulletCollision = true;
 	virtual InteractionUpdateHolder<BulletUpdateStruct, RectHazardUpdateStruct> modifiedBulletCollision(const Bullet*) const override { return { false, false, nullptr, nullptr }; }
 
 	virtual float getOffenseTier() const override { return .5; }

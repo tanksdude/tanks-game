@@ -24,16 +24,12 @@ public:
 	virtual CircleHazardCollisionType getCollisionType() const override { return CircleHazardCollisionType::under; }
 
 	virtual bool actuallyCollided(const Tank*) const override { return currentlyActive; }
-	//bool modifiesTankCollision = true;
-	virtual InteractionUpdateHolder<TankUpdateStruct, CircleHazardUpdateStruct> modifiedTankCollision(const Tank*) const override { return { false, false, nullptr, nullptr }; }
-	//bool hasSpecialEffectTankCollision = true;
 	virtual void specialEffectTankCollision(const Tank*) override;
+	virtual InteractionUpdateHolder<TankUpdateStruct, CircleHazardUpdateStruct> modifiedTankCollision(const Tank*) const override { return { false, false, nullptr, nullptr }; }
 
 	virtual bool actuallyCollided(const Bullet*) const override { return currentlyActive; }
-	//bool modifiesBulletCollision = true;
-	virtual InteractionUpdateHolder<BulletUpdateStruct, CircleHazardUpdateStruct> modifiedBulletCollision(const Bullet*) const override { return { false, false, nullptr, nullptr }; }
-	//bool hasSpecialEffectBulletCollision = true;
 	virtual void specialEffectBulletCollision(const Bullet*) override;
+	virtual InteractionUpdateHolder<BulletUpdateStruct, CircleHazardUpdateStruct> modifiedBulletCollision(const Bullet*) const override { return { false, false, nullptr, nullptr }; }
 
 	virtual float getOffenseTier() const override { return .5; } //1.5?
 	virtual float getDefenseTier() const override { return HIGH_TIER; }

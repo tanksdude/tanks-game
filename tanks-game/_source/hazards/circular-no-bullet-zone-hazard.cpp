@@ -39,9 +39,6 @@ CircularNoBulletZoneHazard::CircularNoBulletZoneHazard(double xpos, double ypos,
 
 	//canAcceptPowers = false;
 
-	modifiesTankCollision = true;
-	modifiesBulletCollision = true;
-
 	initializeVertices();
 }
 

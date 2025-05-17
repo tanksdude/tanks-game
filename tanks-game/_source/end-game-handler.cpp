@@ -210,30 +210,21 @@ InteractionUpdateHolder<TankUpdateStruct, CircleHazardUpdateStruct> EndGameHandl
 			tankDies = true;
 			circleHazardDies = true;
 			break;
-		case PriorityResult::neitherDie:
-			if (ch->hasSpecialEffectTankCollision) {
-				ch->specialEffectTankCollision(t);
+		case PriorityResult::neitherDie: {
+			ch->specialEffectTankCollision(t);
+			InteractionUpdateHolder<TankUpdateStruct, CircleHazardUpdateStruct> modifiedCollisionResult = ch->modifiedTankCollision(t);
+			if (modifiedCollisionResult.deaths.firstShouldDie) {
+				tankDies = true;
 			}
-			if (ch->modifiesTankCollision) {
-				InteractionUpdateHolder<TankUpdateStruct, CircleHazardUpdateStruct> modifiedCollisionResult = ch->modifiedTankCollision(t);
-				if (modifiedCollisionResult.deaths.firstShouldDie) {
-					tankDies = true;
-				}
-				if (modifiedCollisionResult.deaths.secondShouldDie) {
-					circleHazardDies = true;
-				}
-				update_t = modifiedCollisionResult.firstUpdate;
-				update_ch = modifiedCollisionResult.secondUpdate;
-				usedModifiedCollision = true;
-			} else {
-				vec_t = CollisionHandler::pushMovableAwayFromImmovable_vecOnly(t, ch);
-				usedModifiedCollision = false;
+			if (modifiedCollisionResult.deaths.secondShouldDie) {
+				circleHazardDies = true;
 			}
-			break;
+			update_t = modifiedCollisionResult.firstUpdate;
+			update_ch = modifiedCollisionResult.secondUpdate;
+			usedModifiedCollision = true;
+			} break;
 		case PriorityResult::firstDies:
-			if (ch->hasSpecialEffectTankCollision) {
-				ch->specialEffectTankCollision(t);
-			}
+			ch->specialEffectTankCollision(t);
 			tankDies = true;
 			break;
 		case PriorityResult::secondDies:
@@ -266,30 +257,21 @@ InteractionUpdateHolder<TankUpdateStruct, RectHazardUpdateStruct> EndGameHandler
 			tankDies = true;
 			rectHazardDies = true;
 			break;
-		case PriorityResult::neitherDie:
-			if (rh->hasSpecialEffectTankCollision) {
-				rh->specialEffectTankCollision(t);
+		case PriorityResult::neitherDie: {
+			rh->specialEffectTankCollision(t);
+			InteractionUpdateHolder<TankUpdateStruct, RectHazardUpdateStruct> modifiedCollisionResult = rh->modifiedTankCollision(t);
+			if (modifiedCollisionResult.deaths.firstShouldDie) {
+				tankDies = true;
 			}
-			if (rh->modifiesTankCollision) {
-				InteractionUpdateHolder<TankUpdateStruct, RectHazardUpdateStruct> modifiedCollisionResult = rh->modifiedTankCollision(t);
-				if (modifiedCollisionResult.deaths.firstShouldDie) {
-					tankDies = true;
-				}
-				if (modifiedCollisionResult.deaths.secondShouldDie) {
-					rectHazardDies = true;
-				}
-				update_t = modifiedCollisionResult.firstUpdate;
-				update_rh = modifiedCollisionResult.secondUpdate;
-				usedModifiedCollision = true;
-			} else {
-				vec_t = CollisionHandler::pushMovableAwayFromImmovable_vecOnly(t, rh);
-				usedModifiedCollision = false;
+			if (modifiedCollisionResult.deaths.secondShouldDie) {
+				rectHazardDies = true;
 			}
-			break;
+			update_t = modifiedCollisionResult.firstUpdate;
+			update_rh = modifiedCollisionResult.secondUpdate;
+			usedModifiedCollision = true;
+			} break;
 		case PriorityResult::firstDies:
-			if (rh->hasSpecialEffectTankCollision) {
-				rh->specialEffectTankCollision(t);
-			}
+			rh->specialEffectTankCollision(t);
 			tankDies = true;
 			break;
 		case PriorityResult::secondDies:
@@ -322,30 +304,21 @@ InteractionUpdateHolder<BulletUpdateStruct, CircleHazardUpdateStruct> EndGameHan
 			bulletDies = true;
 			circleHazardDies = true;
 			break;
-		case PriorityResult::neitherDie:
-			if (ch->hasSpecialEffectBulletCollision) {
-				ch->specialEffectBulletCollision(b);
+		case PriorityResult::neitherDie: {
+			ch->specialEffectBulletCollision(b);
+			InteractionUpdateHolder<BulletUpdateStruct, CircleHazardUpdateStruct> modifiedCollisionResult = ch->modifiedBulletCollision(b);
+			if (modifiedCollisionResult.deaths.firstShouldDie) {
+				bulletDies = true;
 			}
-			if (ch->modifiesBulletCollision) {
-				InteractionUpdateHolder<BulletUpdateStruct, CircleHazardUpdateStruct> modifiedCollisionResult = ch->modifiedBulletCollision(b);
-				if (modifiedCollisionResult.deaths.firstShouldDie) {
-					bulletDies = true;
-				}
-				if (modifiedCollisionResult.deaths.secondShouldDie) {
-					circleHazardDies = true;
-				}
-				update_b = modifiedCollisionResult.firstUpdate;
-				update_ch = modifiedCollisionResult.secondUpdate;
-				usedModifiedCollision = true;
-			} else {
-				vec_b = CollisionHandler::pushMovableAwayFromImmovable_vecOnly(b, ch);
-				usedModifiedCollision = false;
+			if (modifiedCollisionResult.deaths.secondShouldDie) {
+				circleHazardDies = true;
 			}
-			break;
+			update_b = modifiedCollisionResult.firstUpdate;
+			update_ch = modifiedCollisionResult.secondUpdate;
+			usedModifiedCollision = true;
+			} break;
 		case PriorityResult::firstDies:
-			if (ch->hasSpecialEffectBulletCollision) {
-				ch->specialEffectBulletCollision(b);
-			}
+			ch->specialEffectBulletCollision(b);
 			bulletDies = true;
 			break;
 		case PriorityResult::secondDies:
@@ -378,30 +351,21 @@ InteractionUpdateHolder<BulletUpdateStruct, RectHazardUpdateStruct> EndGameHandl
 			bulletDies = true;
 			rectHazardDies = true;
 			break;
-		case PriorityResult::neitherDie:
-			if (rh->hasSpecialEffectBulletCollision) {
-				rh->specialEffectBulletCollision(b);
+		case PriorityResult::neitherDie: {
+			rh->specialEffectBulletCollision(b);
+			InteractionUpdateHolder<BulletUpdateStruct, RectHazardUpdateStruct> modifiedCollisionResult = rh->modifiedBulletCollision(b);
+			if (modifiedCollisionResult.deaths.firstShouldDie) {
+				bulletDies = true;
 			}
-			if (rh->modifiesBulletCollision) {
-				InteractionUpdateHolder<BulletUpdateStruct, RectHazardUpdateStruct> modifiedCollisionResult = rh->modifiedBulletCollision(b);
-				if (modifiedCollisionResult.deaths.firstShouldDie) {
-					bulletDies = true;
-				}
-				if (modifiedCollisionResult.deaths.secondShouldDie) {
-					rectHazardDies = true;
-				}
-				update_b = modifiedCollisionResult.firstUpdate;
-				update_rh = modifiedCollisionResult.secondUpdate;
-				usedModifiedCollision = true;
-			} else {
-				vec_b = CollisionHandler::pushMovableAwayFromImmovable_vecOnly(b, rh);
-				usedModifiedCollision = false;
+			if (modifiedCollisionResult.deaths.secondShouldDie) {
+				rectHazardDies = true;
 			}
-			break;
+			update_b = modifiedCollisionResult.firstUpdate;
+			update_rh = modifiedCollisionResult.secondUpdate;
+			usedModifiedCollision = true;
+			} break;
 		case PriorityResult::firstDies:
-			if (rh->hasSpecialEffectBulletCollision) {
-				rh->specialEffectBulletCollision(b);
-			}
+			rh->specialEffectBulletCollision(b);
 			bulletDies = true;
 			break;
 		case PriorityResult::secondDies:

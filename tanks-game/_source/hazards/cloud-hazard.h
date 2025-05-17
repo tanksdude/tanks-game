@@ -30,11 +30,9 @@ public:
 	virtual CircleHazardCollisionType getCollisionType() const override { return CircleHazardCollisionType::under; } //if anything, "over"
 
 	virtual bool actuallyCollided(const Tank*) const override { return false; }
-	//bool modifiesTankCollision = true;
 	virtual InteractionUpdateHolder<TankUpdateStruct, CircleHazardUpdateStruct> modifiedTankCollision(const Tank*) const override { return { false, false, nullptr, nullptr }; }
 
 	virtual bool actuallyCollided(const Bullet*) const override { return false; }
-	//bool modifiesBulletCollision = true;
 	virtual InteractionUpdateHolder<BulletUpdateStruct, CircleHazardUpdateStruct> modifiedBulletCollision(const Bullet*) const override { return { false, false, nullptr, nullptr }; }
 
 	virtual float getOffenseTier() const override { return 0; }
