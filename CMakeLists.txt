@@ -36,6 +36,14 @@ set(CMAKE_C_FLAGS     "${CMAKE_C_FLAGS} -Wno-narrowing -Wno-int-to-pointer-cast"
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-narrowing -Wno-int-to-pointer-cast -Wno-delete-incomplete")
 #add_compile_options(-lpthread) #does not seem to be necessary
 
+if(NOT CMAKE_CXX_FLAGS MATCHES "-march")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=x86-64-v2") #SSE4.2
+endif()
+if(NOT CMAKE_C_FLAGS MATCHES "-march")
+	# feels super unnecessary when there's literally only one C file
+	set(CMAKE_C_FLAGS     "${CMAKE_C_FLAGS} -march=x86-64-v2") #SSE4.2
+endif()
+
 SET_SOURCE_FILES_PROPERTIES(Dependencies/enkiTS/TaskScheduler.cpp PROPERTIES COMPILE_FLAGS "-Wno-deprecated-declarations")
 
 add_executable(${PROJECT_NAME}
