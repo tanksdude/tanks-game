@@ -159,7 +159,7 @@ void TightPatrollingCorridorLevel::initialize() {
 	patrolRoute1 = std::shared_ptr<double[]>(new double[2*2]{
 		GAME_WIDTH/2 - ((60+20 + 40) + 80 - 20), 20,
 		GAME_WIDTH/2 - ((60+20 + 40) + 80 - 20), GAME_HEIGHT/2 - (20+40)
-	}), GenericFactoryConstructionData::deleteArrFunc;
+	}, GenericFactoryConstructionData::deleteArrFunc);
 	patrolRoute2 = std::shared_ptr<double[]>(new double[2*2]{
 		GAME_WIDTH/2 + ((60+20 + 40) + 80 - 20), 20,
 		GAME_WIDTH/2 + ((60+20 + 40) + 80 - 20), GAME_HEIGHT/2 - (20+40)

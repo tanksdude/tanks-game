@@ -19,7 +19,7 @@ constexpr bool XOR(bool a, bool b) {
 //from: https://github.com/nicolausYes/iterator-template-sort-library/blob/master/src/InsertionSort.h
 template< class RandomAccessIterator >
 inline void InsertionSort( RandomAccessIterator first, RandomAccessIterator last ) {
-	InsertionSort( first, last, std::less< std::iterator_traits<RandomAccessIterator>::value_type >() );
+	InsertionSort( first, last, std::less< typename std::iterator_traits<RandomAccessIterator>::value_type >() );
 }
 template< class RandomAccessIterator, class Compare >
 void InsertionSort( RandomAccessIterator first, RandomAccessIterator last, Compare comp ) {

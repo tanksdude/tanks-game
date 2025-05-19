@@ -11,8 +11,8 @@ public:
 	OpenGLVertexArray();
 	~OpenGLVertexArray();
 
-	void Bind() const;
-	void Unbind() const;
+	void Bind() const override;
+	void Unbind() const override;
 
 	void AddVertexBuffer(const VertexBuffer* vb) override;
 	void SetIndexBuffer(const IndexBuffer* ib) override;
@@ -20,5 +20,5 @@ public:
 	const std::vector<const VertexBuffer*>& GetVertexBuffers() const override { return vertexBuffers; }
 	const IndexBuffer* GetIndexBuffer() const override { return indexBuffer; }
 
-	unsigned int getRendererID() const { return rendererID; }
+	unsigned int getRendererID() const override { return rendererID; }
 };

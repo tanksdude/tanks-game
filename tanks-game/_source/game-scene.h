@@ -11,6 +11,8 @@ public:
 	virtual void Tick() = 0;
 	virtual void Draw() const = 0;
 
+	virtual ~GameScene() {}
+
 protected:
 	GameScene();
 

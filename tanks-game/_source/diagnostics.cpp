@@ -62,13 +62,13 @@ void Diagnostics::clearTimes() {
 }
 
 void Diagnostics::printTimings() {
-	for (int i = 0; i < times.size()/2, i < timeNames.size(); i++) {
+	for (int i = 0; i < times.size()/2 && i < timeNames.size(); i++) {
 		std::cout << timeNames[i] << ": " << (long long)getDiff(times[i*2], times[i*2+1]) << "ms" << std::endl;
 	}
 }
 
 void Diagnostics::printPreciseTimings() {
-	for (int i = 0; i < times.size()/2, i < timeNames.size(); i++) {
+	for (int i = 0; i < times.size()/2 && i < timeNames.size(); i++) {
 		std::cout << timeNames[i] << ": " << getDiff(times[i*2], times[i*2+1]) << "ms" << std::endl;
 	}
 }

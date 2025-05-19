@@ -1,6 +1,18 @@
 cmake_minimum_required(VERSION 3.16)
 project(tanks-game VERSION 0.2.6)
 
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+	#nothing
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+	# maybe MATCHES would be better than STREQUAL as there are several Clang derivatives: https://cmake.org/cmake/help/latest/variable/CMAKE_LANG_COMPILER_ID.html
+	add_compile_options(-Wno-switch)
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+	message(SEND_ERROR "You are compiling with MSVC. CMake & MSVC compilation is unsupported, use the .sln project instead.\n"
+	                   "You might be able to build successfully, however MSVC uses '/' for flags instead of '-', not to mention the flags being completely different, thus there may be complications.")
+else()
+	message(WARNING "Unknown compiler, assuming it's fine...")
+endif()
+
 #note: when changing these defaults, you have to delete CMakeCache.txt
 #option(USE_SYSTEM_GLEW "Use the system GLEW package" ON) #currently does nothing
 #option(USE_SYSTEM_GLFW "Use the system GLFW package" ON) #currently does nothing
@@ -23,6 +35,8 @@ find_package(glfw3 REQUIRED)
 set(CMAKE_C_FLAGS     "${CMAKE_C_FLAGS} -Wno-narrowing -Wno-int-to-pointer-cast")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-narrowing -Wno-int-to-pointer-cast -Wno-delete-incomplete")
 #add_compile_options(-lpthread) #does not seem to be necessary
+
+SET_SOURCE_FILES_PROPERTIES(Dependencies/enkiTS/TaskScheduler.cpp PROPERTIES COMPILE_FLAGS "-Wno-deprecated-declarations")
 
 add_executable(${PROJECT_NAME}
 	Dependencies/enkiTS/TaskScheduler.cpp

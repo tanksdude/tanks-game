@@ -52,7 +52,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glfw\include;$(SolutionDir)Dependencies\glew\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\enkiTS;$(SolutionDir)Dependencies\rpmalloc;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\_misc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <DisableSpecificWarnings>4244;4267;4305;4838;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <PreprocessorDefinitions>GLEW_STATIC;_SILENCE_CXX20_IS_POD_DEPRECATION_WARNING;%(PreprocessorDefinitions);</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLEW_STATIC;%(PreprocessorDefinitions);</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -74,7 +74,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glfw\include;$(SolutionDir)Dependencies\glew\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\enkiTS;$(SolutionDir)Dependencies\rpmalloc;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\_misc;</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <DisableSpecificWarnings>4244;4267;4305;4838;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <PreprocessorDefinitions>GLEW_STATIC;_SILENCE_CXX20_IS_POD_DEPRECATION_WARNING;%(PreprocessorDefinitions);NDEBUG</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLEW_STATIC;%(PreprocessorDefinitions);NDEBUG</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -88,7 +88,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\Dependencies\enkiTS\TaskScheduler.cpp" />
+    <ClCompile Include="..\Dependencies\enkiTS\TaskScheduler.cpp">
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">_SILENCE_CXX20_IS_POD_DEPRECATION_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">_SILENCE_CXX20_IS_POD_DEPRECATION_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
     <ClCompile Include="..\Dependencies\rpmalloc\rpmalloc.c" />
     <ClCompile Include="_source\aaa_first.cpp" />
     <ClCompile Include="_source\background-rect.cpp" />
