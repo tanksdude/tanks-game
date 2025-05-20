@@ -92,7 +92,6 @@ bool Tank::initializeVertices() {
 void Tank::update(const TankUpdateStruct* up) {
 	this->x += up->x;
 	this->y += up->y;
-	this->r += up->r;
 	this->velocity = SimpleVector2D(velocity.getAngle() + up->angle, velocity.getMagnitude() + up->speed, true);
 }
 
@@ -1194,11 +1193,10 @@ float Tank::getDefenseTier() const {
 	return getHighestDefenseTier(getHighestDefenseImportance());
 }
 
-TankUpdateStruct::TankUpdateStruct(double x, double y, double r, float speed, float angle) {
+TankUpdateStruct::TankUpdateStruct(double x, double y, float speed, float angle) {
 	//add acceleration?
 	this->x = x;
 	this->y = y;
-	this->r = r;
 	this->speed = speed;
 	this->angle = angle;
 }
@@ -1206,7 +1204,6 @@ TankUpdateStruct::TankUpdateStruct(double x, double y, double r, float speed, fl
 void TankUpdateStruct::add(const TankUpdateStruct& other) {
 	this->x += other.x;
 	this->y += other.y;
-	this->r += other.r;
 	this->speed += other.speed;
 	this->angle += other.angle;
 }

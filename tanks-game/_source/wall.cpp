@@ -23,8 +23,6 @@ Wall::~Wall() {
 void Wall::update(const WallUpdateStruct* up) {
 	this->x += up->x;
 	this->y += up->y;
-	this->w += up->w;
-	this->h += up->h;
 }
 
 void Wall::draw() const {
@@ -137,16 +135,12 @@ void Wall::ghostDraw(DrawingLayers layer, float alpha) const {
 	}
 }
 
-WallUpdateStruct::WallUpdateStruct(double x, double y, double w, double h) {
+WallUpdateStruct::WallUpdateStruct(double x, double y) {
 	this->x = x;
 	this->y = y;
-	this->w = w;
-	this->h = h;
 }
 
 void WallUpdateStruct::add(const WallUpdateStruct& other) {
 	this->x += other.x;
 	this->y += other.y;
-	this->w += other.w;
-	this->h += other.h;
 }

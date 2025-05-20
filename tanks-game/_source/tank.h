@@ -125,12 +125,11 @@ struct TankUpdateStruct {
 	//deltas:
 	double x;
 	double y;
-	double r;
 	float speed;
 	float angle;
 
 	void add(const TankUpdateStruct& other);
 
-	TankUpdateStruct(double x, double y, double r, float speed, float angle);
-	TankUpdateStruct() : TankUpdateStruct(0, 0, 0, 0, 0) {}
+	TankUpdateStruct(double x, double y, float speed, float angle);
+	TankUpdateStruct() : TankUpdateStruct(0, 0, 0, 0) {}
 };

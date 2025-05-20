@@ -100,12 +100,9 @@ struct CircleHazardUpdateStruct {
 	//deltas:
 	double x;
 	double y;
-	double r;
-	//float speed;
-	//float angle;
 
 	void add(const CircleHazardUpdateStruct& other);
 
-	CircleHazardUpdateStruct(double x, double y, double r);
-	CircleHazardUpdateStruct() : CircleHazardUpdateStruct(0, 0, 0) {}
+	CircleHazardUpdateStruct(double x, double y);
+	CircleHazardUpdateStruct() : CircleHazardUpdateStruct(0, 0) {}
 };

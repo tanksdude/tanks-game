@@ -72,7 +72,7 @@ TankPower* AnnoyingBulletPower::makeTankPower() const {
 
 InteractionUpdateHolder<BulletUpdateStruct, TankUpdateStruct> AnnoyingBulletPower::modifiedCollisionWithTank(const Bullet* parent, const Tank* t) {
 	std::pair<std::pair<double, double>, std::pair<double, double>> vecs = CollisionHandler::pushMovableAwayFromMovable_vecOnly(parent, t);
-	return { false, false, new BulletUpdateStruct(vecs.first.first, vecs.first.second, 0,0,0,0), new TankUpdateStruct(vecs.second.first, vecs.second.second, 0,0,0) };
+	return { false, false, new BulletUpdateStruct(vecs.first.first, vecs.first.second, 0,0,0), new TankUpdateStruct(vecs.second.first, vecs.second.second, 0,0) };
 }
 
 //has very low offense, very high defense; can't kill, can't be killed

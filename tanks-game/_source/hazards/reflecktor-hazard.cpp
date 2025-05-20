@@ -83,7 +83,7 @@ InteractionUpdateHolder<TankUpdateStruct, RectHazardUpdateStruct> ReflecktorHaza
 		}
 	}
 
-	return { false, false, new TankUpdateStruct(t_xDelta, t_yDelta, 0,0, t_angleDelta), nullptr };
+	return { false, false, new TankUpdateStruct(t_xDelta, t_yDelta, 0, t_angleDelta), nullptr };
 }
 
 bool ReflecktorHazard::reasonableLocation() const {

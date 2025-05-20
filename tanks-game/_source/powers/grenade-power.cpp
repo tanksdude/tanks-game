@@ -50,10 +50,10 @@ GrenadeTankPower::GrenadeTankPower() {
 
 InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> GrenadeBulletPower::modifiedCollisionWithWall(const Bullet* b, const Wall* w) {
 	if (b->velocity.getMagnitude() == 0) {
-		return { b->isDead(), false, new BulletUpdateStruct(0,0,0,0,0, -GrenadePower::degradeAmount), nullptr };
+		return { b->isDead(), false, new BulletUpdateStruct(0,0,0,0, -GrenadePower::degradeAmount), nullptr };
 	} else {
 		if (b->acceleration < 0) {
-			return { false, false, new BulletUpdateStruct(0,0,0, b->acceleration, 0,0), nullptr };
+			return { false, false, new BulletUpdateStruct(0,0, b->acceleration, 0,0), nullptr };
 		}
 		return { false, false, nullptr, nullptr };
 	}

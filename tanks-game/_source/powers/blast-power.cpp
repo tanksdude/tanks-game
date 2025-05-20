@@ -69,7 +69,7 @@ BlastTankPower::BlastTankPower() {
 
 InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> BlastBulletPower::modifiedCollisionWithWall(const Bullet* b, const Wall* w) {
 	std::pair<double, double> vec = CollisionHandler::pushMovableAwayFromImmovable_vecOnly(b, w);
-	return { false, false, new BulletUpdateStruct(vec.first, vec.second, 0, -1024*b->velocity.getMagnitude(), 0,0), nullptr };
+	return { false, false, new BulletUpdateStruct(vec.first, vec.second, -1024*b->velocity.getMagnitude(), 0,0), nullptr };
 }
 
 bool BlastBulletPower::getModifiesCollisionWithCircleHazard(const CircleHazard* ch) const {
@@ -82,12 +82,12 @@ bool BlastBulletPower::getModifiesCollisionWithRectHazard(const RectHazard* rh) 
 
 InteractionUpdateHolder<BulletUpdateStruct, CircleHazardUpdateStruct> BlastBulletPower::modifiedCollisionWithCircleHazard(const Bullet* b, const CircleHazard* ch) {
 	std::pair<double, double> vec = CollisionHandler::pushMovableAwayFromImmovable_vecOnly(b, ch);
-	return { false, false, new BulletUpdateStruct(vec.first, vec.second, 0, -1024*b->velocity.getMagnitude(), 0,0), nullptr };
+	return { false, false, new BulletUpdateStruct(vec.first, vec.second, -1024*b->velocity.getMagnitude(), 0,0), nullptr };
 }
 
 InteractionUpdateHolder<BulletUpdateStruct, RectHazardUpdateStruct> BlastBulletPower::modifiedCollisionWithRectHazard(const Bullet* b, const RectHazard* rh) {
 	std::pair<double, double> vec = CollisionHandler::pushMovableAwayFromImmovable_vecOnly(b, rh);
-	return { false, false, new BulletUpdateStruct(vec.first, vec.second, 0, -1024*b->velocity.getMagnitude(), 0,0), nullptr };
+	return { false, false, new BulletUpdateStruct(vec.first, vec.second, -1024*b->velocity.getMagnitude(), 0,0), nullptr };
 }
 
 BulletPower* BlastBulletPower::makeDuplicate() const {

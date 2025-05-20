@@ -99,11 +99,9 @@ struct RectHazardUpdateStruct {
 	//deltas:
 	double x;
 	double y;
-	double w;
-	double h;
 
 	void add(const RectHazardUpdateStruct& other);
 
-	RectHazardUpdateStruct(double x, double y, double w, double h);
-	RectHazardUpdateStruct() : RectHazardUpdateStruct(0, 0, 0, 0) {}
+	RectHazardUpdateStruct(double x, double y);
+	RectHazardUpdateStruct() : RectHazardUpdateStruct(0, 0) {}
 };

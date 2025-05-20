@@ -164,7 +164,7 @@ InteractionUpdateHolder<TankUpdateStruct, TankUpdateStruct> EndGameHandler::dete
 	if (secondTankDies) {
 		secondTankDies = killTank(t2, t1);
 	}
-	return { firstTankDies, secondTankDies, new TankUpdateStruct(vecs.first.first, vecs.first.second, 0,0,0), new TankUpdateStruct(vecs.second.first, vecs.second.second, 0,0,0) };
+	return { firstTankDies, secondTankDies, new TankUpdateStruct(vecs.first.first, vecs.first.second, 0,0), new TankUpdateStruct(vecs.second.first, vecs.second.second, 0,0) };
 }
 
 InteractionBoolHolder EndGameHandler::determineWinner(Bullet* b1, Bullet* b2) {
@@ -241,7 +241,7 @@ InteractionUpdateHolder<TankUpdateStruct, CircleHazardUpdateStruct> EndGameHandl
 	if (usedModifiedCollision) {
 		return { tankDies, circleHazardDies, update_t, update_ch };
 	} else {
-		return { tankDies, circleHazardDies, new TankUpdateStruct(vec_t.first, vec_t.second, 0,0,0), nullptr };
+		return { tankDies, circleHazardDies, new TankUpdateStruct(vec_t.first, vec_t.second, 0,0), nullptr };
 	}
 }
 
@@ -288,7 +288,7 @@ InteractionUpdateHolder<TankUpdateStruct, RectHazardUpdateStruct> EndGameHandler
 	if (usedModifiedCollision) {
 		return { tankDies, rectHazardDies, update_t, update_rh };
 	} else {
-		return { tankDies, rectHazardDies, new TankUpdateStruct(vec_t.first, vec_t.second, 0,0,0), nullptr };
+		return { tankDies, rectHazardDies, new TankUpdateStruct(vec_t.first, vec_t.second, 0,0), nullptr };
 	}
 }
 
@@ -335,7 +335,7 @@ InteractionUpdateHolder<BulletUpdateStruct, CircleHazardUpdateStruct> EndGameHan
 	if (usedModifiedCollision) {
 		return { bulletDies, circleHazardDies, update_b, update_ch };
 	} else {
-		return { bulletDies, circleHazardDies, new BulletUpdateStruct(vec_b.first, vec_b.second, 0,0,0,0), nullptr };
+		return { bulletDies, circleHazardDies, new BulletUpdateStruct(vec_b.first, vec_b.second, 0,0,0), nullptr };
 	}
 }
 
@@ -382,7 +382,7 @@ InteractionUpdateHolder<BulletUpdateStruct, RectHazardUpdateStruct> EndGameHandl
 	if (usedModifiedCollision) {
 		return { bulletDies, rectHazardDies, update_b, update_rh };
 	} else {
-		return { bulletDies, rectHazardDies, new BulletUpdateStruct(vec_b.first, vec_b.second, 0,0,0,0), nullptr };
+		return { bulletDies, rectHazardDies, new BulletUpdateStruct(vec_b.first, vec_b.second, 0,0,0), nullptr };
 	}
 }
 
@@ -391,5 +391,5 @@ InteractionUpdateHolder<TankUpdateStruct, WallUpdateStruct> EndGameHandler::dete
 	if (tankDies) {
 		tankDies = killTank(t, w);
 	}
-	return { tankDies, false, new TankUpdateStruct(vec.first, vec.second, 0,0,0), nullptr};
+	return { tankDies, false, new TankUpdateStruct(vec.first, vec.second, 0,0), nullptr};
 }

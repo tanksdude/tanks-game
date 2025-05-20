@@ -119,7 +119,6 @@ struct BulletUpdateStruct {
 	//deltas:
 	double x;
 	double y;
-	double r;
 	float speed;
 	float angle;
 	float alpha;
@@ -129,7 +128,7 @@ struct BulletUpdateStruct {
 
 	void add(const BulletUpdateStruct& other);
 
-	//BulletUpdateStruct(double x, double y, double r, float speed, float angle, float alpha, const std::vector<Bullet*>& newBullets);
-	BulletUpdateStruct(double x, double y, double r, float speed, float angle, float alpha);
-	BulletUpdateStruct() : BulletUpdateStruct(0, 0, 0, 0, 0, 0) {}
+	//BulletUpdateStruct(double x, double y, float speed, float angle, float alpha, const std::vector<Bullet*>& newBullets);
+	BulletUpdateStruct(double x, double y, float speed, float angle, float alpha);
+	BulletUpdateStruct() : BulletUpdateStruct(0, 0, 0, 0, 0) {}
 };

@@ -38,7 +38,7 @@ std::pair<bool, InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct>> P
 		}
 	}
 
-	return { true, { false, false, new BulletUpdateStruct(b_xDelta, b_yDelta, 0,0, b_angleDelta, 0), new WallUpdateStruct(w_xDelta, w_yDelta, 0,0) } };
+	return { true, { false, false, new BulletUpdateStruct(b_xDelta, b_yDelta, 0, b_angleDelta, 0), new WallUpdateStruct(w_xDelta, w_yDelta) } };
 }
 
 std::pair<bool, InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct>> PowerFunctionHelper::superbounceGenericWithCorners(const Bullet* b, const Wall* w, double strength) { //not the default because bullets move too quickly on average
@@ -85,7 +85,7 @@ std::pair<bool, InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct>> P
 	w_yDelta = std::sin(angle) * strength;
 	w_xDelta = std::cos(angle) * strength;
 
-	return { true, { false, false, new BulletUpdateStruct(b_xDelta, b_yDelta, 0,0, b_angleDelta, 0), new WallUpdateStruct(w_xDelta, w_yDelta, 0,0) } };
+	return { true, { false, false, new BulletUpdateStruct(b_xDelta, b_yDelta, 0, b_angleDelta, 0), new WallUpdateStruct(w_xDelta, w_yDelta) } };
 }
 
 std::pair<bool, BulletUpdateStruct> PowerFunctionHelper::bounceEdgeGenericX(const Bullet* b) {
@@ -106,7 +106,7 @@ std::pair<bool, BulletUpdateStruct> PowerFunctionHelper::bounceEdgeGenericX(cons
 		b_angleDelta = 0;
 	}
 
-	return { bounced, BulletUpdateStruct(b_xDelta, 0, 0,0, b_angleDelta, 0) };
+	return { bounced, BulletUpdateStruct(b_xDelta, 0, 0, b_angleDelta, 0) };
 }
 
 std::pair<bool, BulletUpdateStruct> PowerFunctionHelper::bounceEdgeGenericY(const Bullet* b) {
@@ -127,7 +127,7 @@ std::pair<bool, BulletUpdateStruct> PowerFunctionHelper::bounceEdgeGenericY(cons
 		b_angleDelta = 0;
 	}
 
-	return { bounced, BulletUpdateStruct(0, b_yDelta, 0,0, b_angleDelta, 0) };
+	return { bounced, BulletUpdateStruct(0, b_yDelta, 0, b_angleDelta, 0) };
 }
 
 std::vector<float>* PowerFunctionHelper::equallySpacedCannonPoints(int count) {

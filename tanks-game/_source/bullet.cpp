@@ -141,7 +141,6 @@ bool Bullet::canCollideWith(const Bullet* b_other) const {
 void Bullet::update(const BulletUpdateStruct* up) {
 	this->x += up->x;
 	this->y += up->y;
-	this->r += up->r;
 	this->velocity = SimpleVector2D(velocity.getAngle() + up->angle, velocity.getMagnitude() + up->speed, true);
 	this->lifeValue = std::min(this->lifeValue + up->alpha, 100.0f);
 }
@@ -809,10 +808,9 @@ float Bullet::getDefenseTier() const {
 	return getHighestDefenseTier(getHighestDefenseImportance());
 }
 
-BulletUpdateStruct::BulletUpdateStruct(double x, double y, double r, float speed, float angle, float alpha) {
+BulletUpdateStruct::BulletUpdateStruct(double x, double y, float speed, float angle, float alpha) {
 	this->x = x;
 	this->y = y;
-	this->r = r;
 	this->speed = speed;
 	this->angle = angle;
 	this->alpha = alpha;
@@ -823,7 +821,6 @@ BulletUpdateStruct::BulletUpdateStruct(double x, double y, double r, float speed
 void BulletUpdateStruct::add(const BulletUpdateStruct& other) {
 	this->x += other.x;
 	this->y += other.y;
-	this->r += other.r;
 	this->speed += other.speed;
 	this->angle += other.angle;
 	this->alpha += other.alpha;

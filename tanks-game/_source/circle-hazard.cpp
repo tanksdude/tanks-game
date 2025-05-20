@@ -20,29 +20,26 @@ std::unordered_map<std::string, float> CircleHazard::getWeights() const {
 void CircleHazard::update(const CircleHazardUpdateStruct* up) {
 	this->x += up->x;
 	this->y += up->y;
-	this->r += up->r;
 }
 
 InteractionUpdateHolder<TankUpdateStruct, CircleHazardUpdateStruct> CircleHazard::modifiedTankCollision(const Tank* t) const {
 	std::pair<double, double> vec = CollisionHandler::pushMovableAwayFromImmovable_vecOnly(t, this);
-	return { false, false, new TankUpdateStruct(vec.first, vec.second, 0,0,0), nullptr };
+	return { false, false, new TankUpdateStruct(vec.first, vec.second, 0,0), nullptr };
 }
 
 InteractionUpdateHolder<BulletUpdateStruct, CircleHazardUpdateStruct> CircleHazard::modifiedBulletCollision(const Bullet* b) const {
 	std::pair<double, double> vec = CollisionHandler::pushMovableAwayFromImmovable_vecOnly(b, this);
-	return { false, false, new BulletUpdateStruct(vec.first, vec.second, 0,0,0,0), nullptr };
+	return { false, false, new BulletUpdateStruct(vec.first, vec.second, 0,0,0), nullptr };
 }
 
-CircleHazardUpdateStruct::CircleHazardUpdateStruct(double x, double y, double r) {
+CircleHazardUpdateStruct::CircleHazardUpdateStruct(double x, double y) {
 	this->x = x;
 	this->y = y;
-	this->r = r;
 }
 
 void CircleHazardUpdateStruct::add(const CircleHazardUpdateStruct& other) {
 	this->x += other.x;
 	this->y += other.y;
-	this->r += other.r;
 }
 
 //hazard notes:
@@ -65,6 +62,6 @@ stationary turret, horizontal lightning, lava, rectangular lightning, vertical l
 random fun facts:
 in JS, one day I got the idea for a turret, so I set about to implement it, but then got stuck because there was nowhere to add it; many hours later, the targeting turret finally made its first appearance
 when I first showed off horizontal lightning to others (in JS), they thought it was made from drawing an image because of its grayer background
-surprisingly, I don't think I got the idea for JS to have circular lightning, lava, or no bullet zones
+surprisingly, I don't think I got the idea for JS to have circular lightning, lava, or no bullet zones; maybe I subconciously blocked the idea because that would've been more work
 
 */
