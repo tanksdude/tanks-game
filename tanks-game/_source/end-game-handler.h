@@ -36,15 +36,15 @@ private:
 
 	static void finalizeScores(); //ResetThings calls this
 
-public: //note: these kill tanks and bullets (but do not change positions)
-	static InteractionBoolHolder                                                 determineWinner(Tank*, Bullet*);
-	static InteractionUpdateHolder<TankUpdateStruct, TankUpdateStruct>           determineWinner(Tank*, Tank*);
-	static InteractionBoolHolder                                                 determineWinner(Bullet*, Bullet*);
-	static InteractionUpdateHolder<TankUpdateStruct, CircleHazardUpdateStruct>   determineWinner(Tank*, CircleHazard*);
-	static InteractionUpdateHolder<TankUpdateStruct, RectHazardUpdateStruct>     determineWinner(Tank*, RectHazard*);
-	static InteractionUpdateHolder<BulletUpdateStruct, CircleHazardUpdateStruct> determineWinner(Bullet*, CircleHazard*);
-	static InteractionUpdateHolder<BulletUpdateStruct, RectHazardUpdateStruct>   determineWinner(Bullet*, RectHazard*);
-	static InteractionUpdateHolder<TankUpdateStruct, WallUpdateStruct>           determineWinner(Tank*, Wall*, bool tankDies); //temporary
+public: //note: these kill tanks and bullets; const pointers only to prevent position changes, but killing isn't const, so const_cast is used
+	static InteractionBoolHolder                                                 determineWinner(const Tank*,   const Bullet*,       bool attemptTankDeath,    bool attemptBulletDeath);
+	static InteractionUpdateHolder<TankUpdateStruct, TankUpdateStruct>           determineWinner(const Tank*,   const Tank*,         bool attemptTank1Death,   bool attemptTank2Death);
+	static InteractionBoolHolder                                                 determineWinner(const Bullet*, const Bullet*,       bool attemptBullet1Death, bool attemptBullet2Death);
+	static InteractionUpdateHolder<TankUpdateStruct, CircleHazardUpdateStruct>   determineWinner(const Tank*,   const CircleHazard*, bool attemptTankDeath,    bool attemptCircleHazardDeath);
+	static InteractionUpdateHolder<TankUpdateStruct, RectHazardUpdateStruct>     determineWinner(const Tank*,   const RectHazard*,   bool attemptTankDeath,    bool attemptRectHazardDeath);
+	static InteractionUpdateHolder<BulletUpdateStruct, CircleHazardUpdateStruct> determineWinner(const Bullet*, const CircleHazard*, bool attemptBulletDeath,  bool attemptCircleHazardDeath);
+	static InteractionUpdateHolder<BulletUpdateStruct, RectHazardUpdateStruct>   determineWinner(const Bullet*, const RectHazard*,   bool attemptBulletDeath,  bool attemptRectHazardDeath);
+	static InteractionUpdateHolder<TankUpdateStruct, WallUpdateStruct>           determineWinner(const Tank*,   const Wall*,         bool attemptTankDeath,    bool attemptWallDeath); //temporary?
 
 	//just for GameMainLoop and EndGameHandler
 	static void killTank(Tank*); //suicide (does not get an extra life)

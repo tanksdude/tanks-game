@@ -151,6 +151,7 @@ void GameMainLoop::everythingToEverything() {
 
 	//for multithreaded collision: probably have to add a "try to die" flag to the update structs, as killing is currently very sequential
 	//what about a barrier powerup that also gives invincibility?... that's complicated, worry about it later
+	//or how about a barrier that changes the tank's size?! that's even worse, because now the size change will change the resulting position
 	//multithreaded RNG: currently thinking loop every object, give it a pointer to the start of its requested RNG (there's a list of like 10K RNG calls stored), increment that pointer by the number of RNG calls requested by the object
 	//bulletpowers are still sequential, so that approach needs a mutex for each object, but even then it's still non-deterministic
 	//as that is very complicated and needs a sizeable rewrite, that is a future problem to solve
@@ -159,6 +160,8 @@ void GameMainLoop::everythingToEverything() {
 	//while I strive to make things as deterministic as possible, uh, oh well on that
 	//not impossible, but it means splitting the kill event from the collision functions, which means a lot of code moving (not really rewriting)
 	//that is a later problem, because it would need a re-architecture of the killing system, and may as well put that off until fully multithreaded collision
+	//as a temporary solution, maybe make a "kill events" list, handle those afterwards
+	//(note: technically this same problem could happen in previous versions, including the 2-phase system in v0.2.5 and the naïve way for everything before)
 
 	for (int i = 0; i < collisionList->size(); i++) {
 		int collisionPairFirst = collisionList->data()[i].first;
@@ -385,7 +388,7 @@ void GameMainLoop::everythingToEverything_tank_tank(int i, int j, std::unordered
 		}
 
 		if (!overridedTankCollision) {
-			InteractionUpdateHolder<TankUpdateStruct, TankUpdateStruct> result = EndGameHandler::determineWinner(t_first, t_second);
+			InteractionUpdateHolder<TankUpdateStruct, TankUpdateStruct> result = EndGameHandler::determineWinner(t_first, t_second, t_firstShouldDie, t_secondShouldDie);
 			t_firstShouldDie = result.deaths.firstShouldDie;
 			t_secondShouldDie = result.deaths.secondShouldDie;
 
@@ -458,7 +461,7 @@ void GameMainLoop::everythingToEverything_tank_wall(int i, int j, std::unordered
 		}
 
 		if (!overridedWallCollision) {
-			InteractionUpdateHolder<TankUpdateStruct, WallUpdateStruct> result = EndGameHandler::determineWinner(t, w, killTank);
+			InteractionUpdateHolder<TankUpdateStruct, WallUpdateStruct> result = EndGameHandler::determineWinner(t, w, killTank, killWall);
 			if (result.deaths.firstShouldDie) {
 				killTank = true;
 			}
@@ -536,7 +539,7 @@ void GameMainLoop::everythingToEverything_tank_circlehazard(int i, int j, std::u
 
 		if (!overridedCircleHazardCollision) {
 			if (ch->actuallyCollided(t)) {
-				InteractionUpdateHolder<TankUpdateStruct, CircleHazardUpdateStruct> result = EndGameHandler::determineWinner(t, ch);
+				InteractionUpdateHolder<TankUpdateStruct, CircleHazardUpdateStruct> result = EndGameHandler::determineWinner(t, ch, killTank, killCircleHazard);
 				if (result.deaths.firstShouldDie) {
 					killTank = true;
 				}
@@ -615,7 +618,7 @@ void GameMainLoop::everythingToEverything_tank_recthazard(int i, int j, std::uno
 
 		if (!overridedRectHazardCollision) {
 			if (rh->actuallyCollided(t)) {
-				InteractionUpdateHolder<TankUpdateStruct, RectHazardUpdateStruct> result = EndGameHandler::determineWinner(t, rh);
+				InteractionUpdateHolder<TankUpdateStruct, RectHazardUpdateStruct> result = EndGameHandler::determineWinner(t, rh, killTank, killRectHazard);
 				if (result.deaths.firstShouldDie) {
 					killTank = true;
 				}
@@ -697,7 +700,7 @@ void GameMainLoop::everythingToEverything_bullet_tank(int i, int j, std::vector<
 		}
 
 		if (!overridedTankCollision) {
-			InteractionBoolHolder result = EndGameHandler::determineWinner(t, b);
+			InteractionBoolHolder result = EndGameHandler::determineWinner(t, b, killTank, killBullet);
 			//note: the tank and bullet inputs are switched (compared to above)
 			if (result.firstShouldDie) {
 				killTank = true;
@@ -727,7 +730,7 @@ void GameMainLoop::everythingToEverything_bullet_bullet(int i, int j, std::vecto
 		return;
 	}
 	if (CollisionHandler::partiallyCollided(b_first, b_second)) {
-		InteractionBoolHolder result = EndGameHandler::determineWinner(b_first, b_second);
+		InteractionBoolHolder result = EndGameHandler::determineWinner(b_first, b_second, b_firstShouldDie, b_secondShouldDie);
 		b_firstShouldDie = result.firstShouldDie;
 		b_secondShouldDie = result.secondShouldDie;
 
@@ -748,6 +751,7 @@ void GameMainLoop::everythingToEverything_bullet_wall(int i, int j, std::vector<
 	bool overridedWallCollision = false;
 
 	//TODO: ignore edge? bounce is basically the only thing that might care, for blast it's just unnecessary computation
+	//idea: bulletpower can set wall collision mode (and hazard)
 	if (CollisionHandler::partiallyCollided(b, w)) {
 		for (int k = 0; k < b->bulletPowers.size(); k++) {
 			if (b->bulletPowers[k]->modifiesCollisionWithWall) {
@@ -847,7 +851,7 @@ void GameMainLoop::everythingToEverything_bullet_circlehazard(int i, int j, std:
 
 		if (!overridedCircleHazardCollision) {
 			if (ch->actuallyCollided(b)) {
-				InteractionUpdateHolder<BulletUpdateStruct, CircleHazardUpdateStruct> result = EndGameHandler::determineWinner(b, ch);
+				InteractionUpdateHolder<BulletUpdateStruct, CircleHazardUpdateStruct> result = EndGameHandler::determineWinner(b, ch, killBullet, killCircleHazard);
 				if (result.deaths.firstShouldDie) {
 					killBullet = true;
 				}
@@ -929,7 +933,7 @@ void GameMainLoop::everythingToEverything_bullet_recthazard(int i, int j, std::v
 
 		if (!overridedRectHazardCollision) {
 			if (rh->actuallyCollided(b)) {
-				InteractionUpdateHolder<BulletUpdateStruct, RectHazardUpdateStruct> result = EndGameHandler::determineWinner(b, rh);
+				InteractionUpdateHolder<BulletUpdateStruct, RectHazardUpdateStruct> result = EndGameHandler::determineWinner(b, rh, killBullet, killRectHazard);
 				if (result.deaths.firstShouldDie) {
 					killBullet = true;
 				}
