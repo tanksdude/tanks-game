@@ -15,6 +15,7 @@ GameThing::GameThing(Team_ID t_id, ObjectType type) {
 	this->gameID = GameManager::getNextID();
 	this->teamID = t_id;
 	this->objectType = type;
+	//does not initialize xStart/xEnd
 }
 
 void GameThing::updateAABB() noexcept {
@@ -24,59 +25,41 @@ void GameThing::updateAABB() noexcept {
 	switch (objectType) {
 		default: [[fallthrough]];
 		case ObjectType::None:
-			xStart = 0; xEnd = 0;
+			xStart = xEnd = 0;
 			break;
 
 		case ObjectType::Tank:
-			{
-				Tank* t = static_cast<Tank*>(this);
-				self_c = static_cast<Circle*>(t);
-			}
+			self_c = static_cast<Circle*>(static_cast<Tank*>(this));
 			xStart = self_c->getX() - self_c->getR();
 			xEnd   = self_c->getX() + self_c->getR();
 			break;
 
 		case ObjectType::Bullet:
-			{
-				Bullet* b = static_cast<Bullet*>(this);
-				self_c = static_cast<Circle*>(b);
-			}
+			self_c = static_cast<Circle*>(static_cast<Bullet*>(this));
 			xStart = self_c->getX() - self_c->getR();
 			xEnd   = self_c->getX() + self_c->getR();
 			break;
 
 		case ObjectType::Wall:
-			{
-				Wall* w = static_cast<Wall*>(this);
-				self_r = static_cast<Rect*>(w);
-			}
+			self_r = static_cast<Rect*>(static_cast<Wall*>(this));
 			xStart = self_r->getX();
 			xEnd   = self_r->getX() + self_r->getW();
 			break;
 
 		case ObjectType::Powerup:
-			{
-				PowerSquare* p = static_cast<PowerSquare*>(this);
-				self_r = static_cast<Rect*>(p);
-			}
+			self_r = static_cast<Rect*>(static_cast<PowerSquare*>(this));
 			xStart = self_r->getX();
 			xEnd   = self_r->getX() + self_r->getW();
 			break;
 
 		case ObjectType::Hazard_C:
-			{
-				CircleHazard* ch = static_cast<CircleHazard*>(this);
-				self_c = static_cast<Circle*>(ch);
-			}
+			self_c = static_cast<Circle*>(static_cast<CircleHazard*>(this));
 			xStart = self_c->getX() - self_c->getR();
 			xEnd   = self_c->getX() + self_c->getR();
 			break;
 
 		case ObjectType::Hazard_R:
-			{
-				RectHazard* rh = static_cast<RectHazard*>(this);
-				self_r = static_cast<Rect*>(rh);
-			}
+			self_r = static_cast<Rect*>(static_cast<RectHazard*>(this));
 			xStart = self_r->getX();
 			xEnd   = self_r->getX() + self_r->getW();
 			break;

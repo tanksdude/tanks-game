@@ -44,12 +44,12 @@ PhysicsHandler::SweepAndPruneTask::~SweepAndPruneTask() {
 
 void PhysicsHandler::SweepAndPruneTask::ExecuteRange(enki::TaskSetPartition range_, uint32_t threadnum_) {
 	std::vector<PhysicsHandler::ObjectIntervalInfo> iteratingObjects; iteratingObjects.reserve(range_.end - range_.start); //possible a resize will be needed, it's okay
-	for (int i = range_.start; i < m_objectIntervals->size(); i++) {
+	for (unsigned int i = range_.start; i < m_objectIntervals->size(); i++) {
 		//NOTE: this goes past the range end because there are objects on the boundary; if it goes to the range end, collision pairs will be missed
 
 		const PhysicsHandler::ObjectIntervalInfo& currentObject = m_objectIntervals->data()[i];
 		bool everyObjectIsOutOfRange = true;
-		for (int j = 0; j < iteratingObjects.size(); j++) {
+		for (unsigned int j = 0; j < iteratingObjects.size(); j++) {
 			//prune if not in active interval
 			if (iteratingObjects[j].xEnd < currentObject.xStart) {
 				iteratingObjects.erase(iteratingObjects.begin() + j);
@@ -73,8 +73,8 @@ void PhysicsHandler::SweepAndPruneTask::ExecuteRange(enki::TaskSetPartition rang
 	}
 }
 
-PhysicsHandler::SweepAndPruneTaskGroup::SweepAndPruneTaskGroup(PhysicsHandler::SweepAndPruneTask* testTask_ ) : m_Dependency(testTask_, this) {
-	m_testTasks = testTask_;
+PhysicsHandler::SweepAndPruneTaskGroup::SweepAndPruneTaskGroup(PhysicsHandler::SweepAndPruneTask* mergeTasks_) : m_Dependency(mergeTasks_, this) {
+	m_mergeTasks = mergeTasks_;
 	final_collisionList = new std::vector<std::pair<int, int>>;
 }
 
@@ -84,14 +84,14 @@ PhysicsHandler::SweepAndPruneTaskGroup::~SweepAndPruneTaskGroup() {
 
 void PhysicsHandler::SweepAndPruneTaskGroup::ExecuteRange(enki::TaskSetPartition range, uint32_t threadnum) {
 	size_t size = 0;
-	for (int i = 0; i < m_testTasks->num_threads; i++) {
-		size += m_testTasks->m_collisionLists[i]->size();
+	for (int i = 0; i < m_mergeTasks->num_threads; i++) {
+		size += m_mergeTasks->m_collisionLists[i]->size();
 	}
 
 	final_collisionList->reserve(size);
-	for (int i = 0; i < m_testTasks->num_threads; i++) {
-		final_collisionList->insert(final_collisionList->end(), m_testTasks->m_collisionLists[i]->begin(), m_testTasks->m_collisionLists[i]->end());
-		m_testTasks->m_collisionLists[i]->clear();
+	for (int i = 0; i < m_mergeTasks->num_threads; i++) {
+		final_collisionList->insert(final_collisionList->end(), m_mergeTasks->m_collisionLists[i]->begin(), m_mergeTasks->m_collisionLists[i]->end());
+		m_mergeTasks->m_collisionLists[i]->clear();
 	}
 }
 

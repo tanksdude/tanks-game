@@ -36,13 +36,13 @@ protected:
 	};
 
 	struct SweepAndPruneTaskGroup : public enki::ITaskSet {
-		SweepAndPruneTask*                m_testTasks;
+		SweepAndPruneTask*                m_mergeTasks;
 		enki::Dependency                  m_Dependency;
 		std::vector<std::pair<int, int>>* final_collisionList;
 
 		void ExecuteRange(enki::TaskSetPartition range, uint32_t threadnum) override;
 
-		SweepAndPruneTaskGroup(SweepAndPruneTask* testTask_);
+		SweepAndPruneTaskGroup(SweepAndPruneTask* mergeTasks_);
 		~SweepAndPruneTaskGroup() override;
 	};
 

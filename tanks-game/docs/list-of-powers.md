@@ -628,7 +628,6 @@ These are the types custom powers are not allowed to have, unless `[MODS] ModSaf
 * Inversion
 * Annoying
 * Ultra Bounce
-* Color Changing
 * Other Stuff is Poison
 * Backwards Movement
 * Wall Sparks
@@ -649,7 +648,6 @@ These are the types custom powers are not allowed to have, unless `[MODS] ModSaf
 * Inversion
 * Annoying
 * Ultra Bounce
-* Color Changing
 * Other Stuff is Poison
 * Backwards Movement
 * Wall Sparks

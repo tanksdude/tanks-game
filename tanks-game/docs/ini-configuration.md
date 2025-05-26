@@ -9,7 +9,7 @@ Since I don't have the expertise or willingness to add advanced features like "a
 * `GameMode` (default 0): options are 0 (normal), 1 (superfast shooting), and 2 (infinite world). Except that only normal mode is supported (and superfast shooting doesn't need its own "game mode")...
 * `GraphicsContext` (default "OpenGL"): options are "OpenGL", "software", and "NULL". Only "OpenGL" is supported...
 * `RNGSeed`: Set the seed for RNG, or blank for random.
-* `ThreadCount` (default 1): The number of total threads to use for multithreading (counting the main thread); <=0 is all cores on your system minus the number (so -2 is all but two cores). Unfortunately, performance is about the same or worse when using extra threads... granted, the extra threads are only used for the broad phase of collision, but that's the largest timesink. :(
+* `ThreadCount` (default 1): The number of total threads to use for multithreading (counting the main thread); <=0 is all cores on your system minus the number (so -2 is all but two cores). Performance is only somewhat better when using extra threads, as the extra threads are only used for the broad phase of collision.
 * `ThreadTaskSize` (default 256): The minimum number of items to be worked on by each thread. If this is too low, then the overhead in spinning up a new thread will greatly outweigh the work it could do; too high and not all threads will do anything.
 
 ## MODS
@@ -29,7 +29,7 @@ Since I don't have the expertise or willingness to add advanced features like "a
 
 * `Position.StartX` (default 120): Sets the window's starting x-position.
 * `Position.StartY` (default 120): Sets the window's starting y-position. Remember that this is counted from the top left of your primary monitor.
-* `Position.SizeMultiplier` (default 2.5): Controls the sizing of the window. The actual game's size is 640×320, so this setting scales it up to 1600×800.
+* `Position.SizeMultiplier` (default 2.5): Controls the sizing of the window. The actual game's size is 640×320, so by default the window is scaled to 1600×800.
 * `Bullet.PerformanceMode` (default 0): Controls whether to draw a circular outline around the bullet to represent its transparency or whether to draw a bar underneath it (no option for actual transparency because that is hard on performance).
 
 Note: Press F11 to toggle fullscreen. (Well, it's borderless fullscreen, but it still fills the whole screen.)
@@ -44,9 +44,9 @@ Note: Press F11 to toggle fullscreen. (Well, it's borderless fullscreen, but it 
 * `MaxBullets` (default 8192): Controls the maximum number of bullets, assuming `LimitBullets` is true.
 * `FewerExtraShootingBullets` (default 0): Controls whether something like Triple + Fire shoots 7 or 12 bullets. Keeping this setting off is a significant change (and performance hit), so that's why this is an option instead of always doing more bullets. Remember, Shotgun + Blast goes from 4+16 to 5×16 bullets; that's a lot!
 * `ShootingCooldown` (default 100): Controls the tanks' shooting cooldown. Set to 0 for superfast shooting.
-* `PowerupDurationBaseTime` (default 500): Controls the base time of powerups. Currently does nothing.
+* `PowerupDurationBaseTime` (default 500): Controls the base time of powerups.
 * `DisableTraps` (default 1): Prevents traps from activating. Does nothing since traps don't exist but might in the future. (They existed in JS Tanks.)
-* `RestrictTankTurning` (default 0): Prevent the tanks from turning while moving. A stupid option, but maybe you like it, I won't judge.
+* `RestrictTankTurning` (default 0): Prevent the tanks from turning while moving. A strange option, but maybe you like it, I won't judge.
 * `NoTankAcceleration` (default 0): Tanks no longer accelerate. Only added because JS Tanks had this option (which only had the option because there was a time before tank acceleration existed).
 
 ## CONTROLS

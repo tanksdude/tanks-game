@@ -141,6 +141,8 @@ std::vector<float>* PowerFunctionHelper::equallySpacedCannonPoints(int count) {
 
 Game_ID PowerFunctionHelper::homingGenericTarget(const Bullet* b, bool targetUsingAngleDiff) {
 	int targetTankIndex = -1; //only targets tanks for now
+	//idea for targeting multiple tanks: generate a single RNG value per frame, use that for tie-breaking stuff
+	//games typically use port priority for tie-breaking, so I guess it will depend on how lazy I want to be
 
 	if (targetUsingAngleDiff) {
 		float minAngleDiff = (2*PI) * 2; //is way more than enough
