@@ -25,7 +25,7 @@ PhysicsHandler::SweepAndPruneTask::SweepAndPruneTask(int num_threads_) {
 		#if _DEBUG
 		//performance seems about the same with or without reserving //TODO: check again
 		#else
-		m_collisionLists[i]->reserve(1024 * 1024); //random guess for what should be enough
+		m_collisionLists[i]->reserve(1024 * 1024 / 4); //random guess for what should be enough
 		#endif
 	}
 }
@@ -33,6 +33,9 @@ PhysicsHandler::SweepAndPruneTask::SweepAndPruneTask(int num_threads_) {
 void PhysicsHandler::SweepAndPruneTask::Init(const std::vector<PhysicsHandler::ObjectIntervalInfo>* objectIntervals, int task_size) {
 	m_objectIntervals = objectIntervals;
 	m_SetSize = task_size;
+	for (int i = 0; i < num_threads; i++) {
+		m_collisionLists[i]->clear();
+	}
 }
 
 PhysicsHandler::SweepAndPruneTask::~SweepAndPruneTask() {
@@ -73,29 +76,7 @@ void PhysicsHandler::SweepAndPruneTask::ExecuteRange(enki::TaskSetPartition rang
 	}
 }
 
-PhysicsHandler::SweepAndPruneTaskGroup::SweepAndPruneTaskGroup(PhysicsHandler::SweepAndPruneTask* mergeTasks_) : m_Dependency(mergeTasks_, this) {
-	m_mergeTasks = mergeTasks_;
-	final_collisionList = new std::vector<std::pair<int, int>>;
-}
-
-PhysicsHandler::SweepAndPruneTaskGroup::~SweepAndPruneTaskGroup() {
-	//don't delete final_collisionList
-}
-
-void PhysicsHandler::SweepAndPruneTaskGroup::ExecuteRange(enki::TaskSetPartition range, uint32_t threadnum) {
-	size_t size = 0;
-	for (int i = 0; i < m_mergeTasks->num_threads; i++) {
-		size += m_mergeTasks->m_collisionLists[i]->size();
-	}
-
-	final_collisionList->reserve(size);
-	for (int i = 0; i < m_mergeTasks->num_threads; i++) {
-		final_collisionList->insert(final_collisionList->end(), m_mergeTasks->m_collisionLists[i]->begin(), m_mergeTasks->m_collisionLists[i]->end());
-		m_mergeTasks->m_collisionLists[i]->clear();
-	}
-}
-
-std::vector<std::pair<int, int>>* PhysicsHandler::sweepAndPrune(const std::vector<GameThing*>& collisionObjects) {
+std::vector<std::vector<std::pair<int, int>>*> PhysicsHandler::sweepAndPrune(const std::vector<GameThing*>& collisionObjects) {
 	//find object intervals
 	std::vector<ObjectIntervalInfo> objectIntervals; objectIntervals.reserve(collisionObjects.size());
 	for (int i = 0; i < collisionObjects.size(); i++) {
@@ -105,10 +86,9 @@ std::vector<std::pair<int, int>>* PhysicsHandler::sweepAndPrune(const std::vecto
 
 	//sweep through
 	s_physicsTask->Init(&objectIntervals, collisionObjects.size());
-	SweepAndPruneTaskGroup physicsTaskGroup(s_physicsTask);
 
 	g_TS.AddTaskSetToPipe(s_physicsTask);
-	g_TS.WaitforTask(&physicsTaskGroup);
+	g_TS.WaitforTask(s_physicsTask);
 
-	return physicsTaskGroup.final_collisionList;
+	return std::vector<std::vector<std::pair<int, int>>*>(s_physicsTask->m_collisionLists, s_physicsTask->m_collisionLists + s_physicsTask->num_threads);
 }

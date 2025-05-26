@@ -134,7 +134,7 @@ void GameMainLoop::Tick() {
 void GameMainLoop::everythingToEverything() {
 	//broad phase
 
-	std::vector<std::pair<int, int>>* collisionList = PhysicsHandler::sweepAndPrune(GameManager::getObjectCollisionList());
+	std::vector<std::vector<std::pair<int, int>>*> collisionLists = PhysicsHandler::sweepAndPrune(GameManager::getObjectCollisionList());
 
 	//narrow phase (and resolve some collision)
 
@@ -156,113 +156,115 @@ void GameMainLoop::everythingToEverything() {
 	//bulletpowers are still sequential, so that approach needs a mutex for each object, but even then it's still non-deterministic
 	//as that is very complicated and needs a sizeable rewrite, that is a future problem to solve
 
-	//TODO: things can get killed in these functions, thus the results can change depending on the number of threads
+	//TODO: things can get killed in these functions, thus the results can change depending on the number of threads and how the work is distributed
 	//while I strive to make things as deterministic as possible, uh, oh well on that
 	//not impossible, but it means splitting the kill event from the collision functions, which means a lot of code moving (not really rewriting)
 	//that is a later problem, because it would need a re-architecture of the killing system, and may as well put that off until fully multithreaded collision
 	//as a temporary solution, maybe make a "kill events" list, handle those afterwards
 	//(note: technically this same problem could happen in previous versions, including the 2-phase system in v0.2.5 and the naïve way for everything before)
 
-	for (int i = 0; i < collisionList->size(); i++) {
-		int collisionPairFirst = collisionList->data()[i].first;
-		int collisionPairSecond = collisionList->data()[i].second;
+	for (std::vector<std::pair<int, int>>* collisionList : collisionLists) {
+		for (int i = 0; i < collisionList->size(); i++) {
+			int collisionPairFirst = collisionList->data()[i].first;
+			int collisionPairSecond = collisionList->data()[i].second;
 
-		switch (GameManager::getObject(collisionPairFirst)->getObjectType()) {
-			default: [[fallthrough]];
-			case ObjectType::None:
-				break;
+			switch (GameManager::getObject(collisionPairFirst)->getObjectType()) {
+				default: [[fallthrough]];
+				case ObjectType::None:
+					break;
 
-			case ObjectType::Tank:
-				switch (GameManager::getObject(collisionPairSecond)->getObjectType()) {
-					default: [[fallthrough]];
-					case ObjectType::None:
-						break;
-					case ObjectType::Tank:     everythingToEverything_tank_tank(collisionPairFirst, collisionPairSecond, tankUpdates);
-						break;
-					case ObjectType::Bullet:   everythingToEverything_bullet_tank(collisionPairSecond, collisionPairFirst, bulletDeletionList, bulletUpdates, tankUpdates);
-						break;
-					case ObjectType::Wall:     everythingToEverything_tank_wall(collisionPairFirst, collisionPairSecond, tankUpdates, wallDeletionList, wallUpdates);
-						break;
-					case ObjectType::Powerup:  //handled earlier
-						break;
-					case ObjectType::Hazard_C: everythingToEverything_tank_circlehazard(collisionPairFirst, collisionPairSecond, tankUpdates, circleHazardDeletionList, circleHazardUpdates);
-						break;
-					case ObjectType::Hazard_R: everythingToEverything_tank_recthazard(collisionPairFirst, collisionPairSecond, tankUpdates, rectHazardDeletionList, rectHazardUpdates);
-						break;
-				}
-				break;
+				case ObjectType::Tank:
+					switch (GameManager::getObject(collisionPairSecond)->getObjectType()) {
+						default: [[fallthrough]];
+						case ObjectType::None:
+							break;
+						case ObjectType::Tank:     everythingToEverything_tank_tank(collisionPairFirst, collisionPairSecond, tankUpdates);
+							break;
+						case ObjectType::Bullet:   everythingToEverything_bullet_tank(collisionPairSecond, collisionPairFirst, bulletDeletionList, bulletUpdates, tankUpdates);
+							break;
+						case ObjectType::Wall:     everythingToEverything_tank_wall(collisionPairFirst, collisionPairSecond, tankUpdates, wallDeletionList, wallUpdates);
+							break;
+						case ObjectType::Powerup:  //handled earlier
+							break;
+						case ObjectType::Hazard_C: everythingToEverything_tank_circlehazard(collisionPairFirst, collisionPairSecond, tankUpdates, circleHazardDeletionList, circleHazardUpdates);
+							break;
+						case ObjectType::Hazard_R: everythingToEverything_tank_recthazard(collisionPairFirst, collisionPairSecond, tankUpdates, rectHazardDeletionList, rectHazardUpdates);
+							break;
+					}
+					break;
 
-			case ObjectType::Bullet:
-				switch (GameManager::getObject(collisionPairSecond)->getObjectType()) {
-					default: [[fallthrough]];
-					case ObjectType::None:
-						break;
-					case ObjectType::Tank:     everythingToEverything_bullet_tank(collisionPairFirst, collisionPairSecond, bulletDeletionList, bulletUpdates, tankUpdates);
-						break;
-					case ObjectType::Bullet:   everythingToEverything_bullet_bullet(collisionPairFirst, collisionPairSecond, bulletDeletionList, bulletUpdates);
-						break;
-					case ObjectType::Wall:     everythingToEverything_bullet_wall(collisionPairFirst, collisionPairSecond, bulletDeletionList, bulletUpdates, wallDeletionList, wallUpdates);
-						break;
-					case ObjectType::Powerup:
-						break;
-					case ObjectType::Hazard_C: everythingToEverything_bullet_circlehazard(collisionPairFirst, collisionPairSecond, bulletDeletionList, bulletUpdates, circleHazardDeletionList, circleHazardUpdates);
-						break;
-					case ObjectType::Hazard_R: everythingToEverything_bullet_recthazard(collisionPairFirst, collisionPairSecond, bulletDeletionList, bulletUpdates, rectHazardDeletionList, rectHazardUpdates);
-						break;
-				}
-				break;
+				case ObjectType::Bullet:
+					switch (GameManager::getObject(collisionPairSecond)->getObjectType()) {
+						default: [[fallthrough]];
+						case ObjectType::None:
+							break;
+						case ObjectType::Tank:     everythingToEverything_bullet_tank(collisionPairFirst, collisionPairSecond, bulletDeletionList, bulletUpdates, tankUpdates);
+							break;
+						case ObjectType::Bullet:   everythingToEverything_bullet_bullet(collisionPairFirst, collisionPairSecond, bulletDeletionList, bulletUpdates);
+							break;
+						case ObjectType::Wall:     everythingToEverything_bullet_wall(collisionPairFirst, collisionPairSecond, bulletDeletionList, bulletUpdates, wallDeletionList, wallUpdates);
+							break;
+						case ObjectType::Powerup:
+							break;
+						case ObjectType::Hazard_C: everythingToEverything_bullet_circlehazard(collisionPairFirst, collisionPairSecond, bulletDeletionList, bulletUpdates, circleHazardDeletionList, circleHazardUpdates);
+							break;
+						case ObjectType::Hazard_R: everythingToEverything_bullet_recthazard(collisionPairFirst, collisionPairSecond, bulletDeletionList, bulletUpdates, rectHazardDeletionList, rectHazardUpdates);
+							break;
+					}
+					break;
 
-			case ObjectType::Wall:
-				switch (GameManager::getObject(collisionPairSecond)->getObjectType()) {
-					default: [[fallthrough]];
-					case ObjectType::None:
-						break;
-					case ObjectType::Tank:     everythingToEverything_tank_wall(collisionPairSecond, collisionPairFirst, tankUpdates, wallDeletionList, wallUpdates);
-						break;
-					case ObjectType::Bullet:   everythingToEverything_bullet_wall(collisionPairSecond, collisionPairFirst, bulletDeletionList, bulletUpdates, wallDeletionList, wallUpdates);
-						break;
-					case ObjectType::Wall:     break;
-					case ObjectType::Powerup:  break;
-					case ObjectType::Hazard_C: break;
-					case ObjectType::Hazard_R: break;
-				}
-				break;
+				case ObjectType::Wall:
+					switch (GameManager::getObject(collisionPairSecond)->getObjectType()) {
+						default: [[fallthrough]];
+						case ObjectType::None:
+							break;
+						case ObjectType::Tank:     everythingToEverything_tank_wall(collisionPairSecond, collisionPairFirst, tankUpdates, wallDeletionList, wallUpdates);
+							break;
+						case ObjectType::Bullet:   everythingToEverything_bullet_wall(collisionPairSecond, collisionPairFirst, bulletDeletionList, bulletUpdates, wallDeletionList, wallUpdates);
+							break;
+						case ObjectType::Wall:     break;
+						case ObjectType::Powerup:  break;
+						case ObjectType::Hazard_C: break;
+						case ObjectType::Hazard_R: break;
+					}
+					break;
 
-			case ObjectType::Powerup:
-				//nothing
-				break;
+				case ObjectType::Powerup:
+					//nothing
+					break;
 
-			case ObjectType::Hazard_C:
-				switch (GameManager::getObject(collisionPairSecond)->getObjectType()) {
-					default: [[fallthrough]];
-					case ObjectType::None:
-						break;
-					case ObjectType::Tank:     everythingToEverything_tank_circlehazard(collisionPairSecond, collisionPairFirst, tankUpdates, circleHazardDeletionList, circleHazardUpdates);
-						break;
-					case ObjectType::Bullet:   everythingToEverything_bullet_circlehazard(collisionPairSecond, collisionPairFirst, bulletDeletionList, bulletUpdates, circleHazardDeletionList, circleHazardUpdates);
-						break;
-					case ObjectType::Wall:     break;
-					case ObjectType::Powerup:  break;
-					case ObjectType::Hazard_C: break;
-					case ObjectType::Hazard_R: break;
-				}
-				break;
+				case ObjectType::Hazard_C:
+					switch (GameManager::getObject(collisionPairSecond)->getObjectType()) {
+						default: [[fallthrough]];
+						case ObjectType::None:
+							break;
+						case ObjectType::Tank:     everythingToEverything_tank_circlehazard(collisionPairSecond, collisionPairFirst, tankUpdates, circleHazardDeletionList, circleHazardUpdates);
+							break;
+						case ObjectType::Bullet:   everythingToEverything_bullet_circlehazard(collisionPairSecond, collisionPairFirst, bulletDeletionList, bulletUpdates, circleHazardDeletionList, circleHazardUpdates);
+							break;
+						case ObjectType::Wall:     break;
+						case ObjectType::Powerup:  break;
+						case ObjectType::Hazard_C: break;
+						case ObjectType::Hazard_R: break;
+					}
+					break;
 
-			case ObjectType::Hazard_R:
-				switch (GameManager::getObject(collisionPairSecond)->getObjectType()) {
-					default: [[fallthrough]];
-					case ObjectType::None:
-						break;
-					case ObjectType::Tank:     everythingToEverything_tank_recthazard(collisionPairSecond, collisionPairFirst, tankUpdates, rectHazardDeletionList, rectHazardUpdates);
-						break;
-					case ObjectType::Bullet:   everythingToEverything_bullet_recthazard(collisionPairSecond, collisionPairFirst, bulletDeletionList, bulletUpdates, rectHazardDeletionList, rectHazardUpdates);
-						break;
-					case ObjectType::Wall:     break;
-					case ObjectType::Powerup:  break;
-					case ObjectType::Hazard_C: break;
-					case ObjectType::Hazard_R: break;
-				}
-				break;
+				case ObjectType::Hazard_R:
+					switch (GameManager::getObject(collisionPairSecond)->getObjectType()) {
+						default: [[fallthrough]];
+						case ObjectType::None:
+							break;
+						case ObjectType::Tank:     everythingToEverything_tank_recthazard(collisionPairSecond, collisionPairFirst, tankUpdates, rectHazardDeletionList, rectHazardUpdates);
+							break;
+						case ObjectType::Bullet:   everythingToEverything_bullet_recthazard(collisionPairSecond, collisionPairFirst, bulletDeletionList, bulletUpdates, rectHazardDeletionList, rectHazardUpdates);
+							break;
+						case ObjectType::Wall:     break;
+						case ObjectType::Powerup:  break;
+						case ObjectType::Hazard_C: break;
+						case ObjectType::Hazard_R: break;
+					}
+					break;
+			}
 		}
 	}
 
@@ -301,8 +303,6 @@ void GameMainLoop::everythingToEverything() {
 	for (int i = rectHazardDeletionList.size() - 1; i >= 0; i--) {
 		HazardManager::deleteRectHazardByID(rectHazardDeletionList[i]);
 	}
-
-	delete collisionList;
 }
 
 void GameMainLoop::everythingToEverything_tank_tank(int i, int j, std::unordered_map<Game_ID, TankUpdateStruct>& tankUpdates) {

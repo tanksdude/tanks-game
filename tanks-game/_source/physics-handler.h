@@ -35,17 +35,6 @@ protected:
 		~SweepAndPruneTask() override;
 	};
 
-	struct SweepAndPruneTaskGroup : public enki::ITaskSet {
-		SweepAndPruneTask*                m_mergeTasks;
-		enki::Dependency                  m_Dependency;
-		std::vector<std::pair<int, int>>* final_collisionList;
-
-		void ExecuteRange(enki::TaskSetPartition range, uint32_t threadnum) override;
-
-		SweepAndPruneTaskGroup(SweepAndPruneTask* mergeTasks_);
-		~SweepAndPruneTaskGroup() override;
-	};
-
 	static uint32_t MinTaskSize;
 	static SweepAndPruneTask* s_physicsTask;
 
@@ -54,7 +43,7 @@ public:
 	static void Initialize(uint32_t MinTaskSize);
 	static void Uninitialize();
 
-	static std::vector<std::pair<int, int>>* sweepAndPrune(const std::vector<GameThing*>& list);
+	static std::vector<std::vector<std::pair<int, int>>*> sweepAndPrune(const std::vector<GameThing*>& list);
 
 private:
 	PhysicsHandler() = delete;
