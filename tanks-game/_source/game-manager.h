@@ -12,6 +12,7 @@ class GameManager {
 
 private:
 	static std::vector<GameThing*> objectsInGame;
+	static size_t objectsInGame_previousSize;
 	static void clearObjects(); //for ResetThings
 
 public:

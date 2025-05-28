@@ -3,9 +3,9 @@
 #include "mylib.h"
 #include <stdexcept>
 #include <iostream>
-//#include <execution>
 
 std::vector<GameThing*> GameManager::objectsInGame;
+size_t GameManager::objectsInGame_previousSize = 0;
 
 void GameManager::initializeObjectList() {
 	//nothing
@@ -46,15 +46,31 @@ void GameManager::deleteObjectByID(Game_ID gameID) {
 void GameManager::clearObjects() {
 	//TODO?
 	objectsInGame.clear();
+	objectsInGame_previousSize = 0;
 }
 
 void GameManager::updateEveryAABB() {
 	for (int i = 0; i < objectsInGame.size(); i++) {
 		objectsInGame[i]->updateAABB();
 	}
-	InsertionSort(objectsInGame.begin(), objectsInGame.end(), [](const GameThing* lhs, const GameThing* rhs) { return lhs->get_xStart() < rhs->get_xStart(); });
-	//std::sort(std::execution::par, objectsInGame.begin(), objectsInGame.end(), [](const GameThing* lhs, const GameThing* rhs) { return lhs->get_xStart() < rhs->get_xStart(); });
-	//as expected, that ^^^ is faster for banana spikes, otherwise slightly slower; in the future, try insertion on old stuff, quicksort on new stuff, then merge together
+
+	static const auto sortFunc = [](const GameThing* lhs, const GameThing* rhs) { return lhs->get_xStart() < rhs->get_xStart(); };
+	constexpr size_t extraObjectSortNum = 63; //arbitrarily chosen
+	if (objectsInGame.size() > objectsInGame_previousSize + extraObjectSortNum) [[unlikely]] {
+		//"significant" amount of new objects; technically the InsertionSort can sort new objects due to deletions not being tracked, but it's fine
+		//(if 1 object is removed and 100 are added, this check thinks there is 99 new objects, meaning the insertion sort would include 1 new object while quicksort works on 99)
+
+		InsertionSort(objectsInGame.begin(), objectsInGame.begin() + objectsInGame_previousSize, sortFunc);
+		std::sort(objectsInGame.begin() + objectsInGame_previousSize, objectsInGame.end(), sortFunc);
+
+		//the merge takes about as long as the quicksort, however this is still faster than insertion sort on the whole thing
+		std::inplace_merge(objectsInGame.begin(), objectsInGame.begin() + objectsInGame_previousSize, objectsInGame.end(), sortFunc);
+	} else {
+		//"regular" amount of new objects (which could be negative)
+		InsertionSort(objectsInGame.begin(), objectsInGame.end(), sortFunc);
+	}
+
+	objectsInGame_previousSize = objectsInGame.size();
 }
 
 Game_ID GameManager::nextID = -1;
