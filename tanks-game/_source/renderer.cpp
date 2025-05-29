@@ -53,8 +53,8 @@ std::vector<std::string> Renderer::sceneList;
 std::string Renderer::currentSceneName = "";
 std::vector<float>* Renderer::currentVerticesData;
 std::vector<unsigned int>* Renderer::currentIndicesData;
-const int Renderer::maxVerticesDataLength = (1 << 24) / sizeof(float);
-const int Renderer::maxIndicesDataLength = (1 << 24) / sizeof(unsigned int); //TODO: size (fills up faster)
+const int Renderer::maxVerticesDataLength = (1 << 16) / sizeof(float); //2^16 - 2^18 have basically identical performance; lower results in problems, higher results in stuttering/spikes with worse performance
+const int Renderer::maxIndicesDataLength = (1 << 16) / sizeof(unsigned int); //TODO: size (fills up faster)
 
 void Renderer::windowResizeFunc(GLFWwindow*, int w, int h) {
 	//note: this function also gets called when moving the window between monitors (when the scale is different)
@@ -512,7 +512,7 @@ void Renderer::ActuallyFlush() {
 		}
 		sceneDrawCalls.clear();
 	}
-	sceneList.clear();
+	sceneList.clear(); //TODO: this is a surprising area for CPU time (_Tidy from reallocating) (or is it the line above?)
 	auto end = Diagnostics::getTime();
 
 	Diagnostics::pushGraphTime("draw", Diagnostics::getDiff(start, end));
