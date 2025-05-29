@@ -14,30 +14,22 @@ bool Diagnostics::currentlyTiming = false;
 std::vector<Diagnostics::GraphData> Diagnostics::graphTimes;
 std::unordered_map<std::string, int> Diagnostics::graphNameToIndex;
 int Diagnostics::maxGraphTimes = 200;
-double Diagnostics::graphLength = GAME_WIDTH/4;
-double Diagnostics::graphHeight = GAME_HEIGHT/4;
-double Diagnostics::graphXOffset = 0;
-double Diagnostics::graphYOffset = 0;
+float Diagnostics::graphLength = GAME_WIDTH/4;
+float Diagnostics::graphHeight = GAME_HEIGHT/4;
+float Diagnostics::graphXOffset = 0;
+float Diagnostics::graphYOffset = 0;
 
 Diagnostics::GraphData::GraphData(std::string n, const ColorValueHolder& c) {
 	this->name = n;
 	this->color = c;
 }
 
-void Diagnostics::setGraphYOffset(double y) {
+void Diagnostics::setGraphYOffset(float y) {
 	graphYOffset = y;
 }
 
 void Diagnostics::Initialize() {
 	//nothing
-}
-
-std::chrono::time_point<std::chrono::steady_clock> Diagnostics::getTime() {
-	return std::chrono::steady_clock::now();
-}
-
-long double Diagnostics::getDiff(std::chrono::time_point<std::chrono::steady_clock> start, std::chrono::time_point<std::chrono::steady_clock> end) {
-	return std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() / 1000.0; //milliseconds
 }
 
 void Diagnostics::startTiming(std::string s) {
@@ -78,8 +70,8 @@ void Diagnostics::declareGraph(std::string name, const ColorValueHolder& color) 
 	graphTimes.push_back(GraphData(name, color));
 }
 
-void Diagnostics::pushGraphTime(std::string name, long double time) {
-	std::vector<long double>& currentGraph = graphTimes[graphNameToIndex[name]].data;
+void Diagnostics::pushGraphTime(std::string name, time_float time) {
+	std::vector<time_float>& currentGraph = graphTimes[graphNameToIndex[name]].data;
 
 	currentGraph.push_back(time);
 	if (currentGraph.size() > maxGraphTimes) {
@@ -92,7 +84,7 @@ void Diagnostics::pushGraphTime(std::string name, long double time) {
 	} else if (maxGraphTimes >= 2000) {
 		graphLength = GAME_WIDTH/2;
 	} else {
-		graphLength = (maxGraphTimes-200)/2000.0 * (GAME_WIDTH/4) + GAME_WIDTH/4;
+		graphLength = (maxGraphTimes-200)/2000.0f * float(GAME_WIDTH/4) + float(GAME_WIDTH/4);
 	}
 }
 
@@ -107,7 +99,7 @@ void Diagnostics::clearGraph() {
 }
 
 void Diagnostics::pushGraphSumTime(std::string name) {
-	long double sum = 0;
+	time_float sum = 0;
 	for (int i = 0; i < graphTimes.size(); i++) {
 		if ((graphTimes[i].name == name) || (graphTimes[i].data.size() == 0)) {
 			continue;
@@ -169,7 +161,7 @@ void Diagnostics::drawGraphTimes_graph() {
 }
 
 void Diagnostics::drawGraphTimes_data(std::string name) {
-	std::vector<long double>& graphData = graphTimes[graphNameToIndex[name]].data;
+	const std::vector<time_float>& graphData = graphTimes[graphNameToIndex[name]].data;
 	if (graphData.size() < 2) [[unlikely]] {
 		return;
 	}
@@ -180,7 +172,7 @@ void Diagnostics::drawGraphTimes_data(std::string name) {
 	std::vector<float> positions; positions.reserve(graphData.size()*2);
 	for (int i = 0; i < graphData.size(); i++) {
 		positions.push_back(graphLength * (float(i)/float(maxGraphTimes-1)));
-		positions.push_back(graphHeight * (graphData[i] * (1.0 / 10))); //==1 means it took a full frame (10ms)
+		positions.push_back(graphHeight * (float(graphData[i]) * (1.0f / 10))); //==1 means it took a full frame (10ms)
 	}
 
 	float* coordsAndColor = new float[(graphData.size()-1)*4*(2+4)];
