@@ -197,12 +197,12 @@ void Tank::shoot(bool shooting) {
 						for (int s2 = extraShootingPoints.size() - 1; s2 >= 1; s2--) {
 							defaultMakeBullet(velocity.getAngle() + shootingPoints[i].angleFromCenter + extraShootingPoints[s2].angleFromCenter, extraShootingPoints[s2].angleFromEdge);
 						}
-						tankPowers[j]->additionalShooting(this, shootingPoints.at(i), extraShootingPoints.at(0));
+						tankPowers[j]->additionalShooting(this, shootingPoints[i], extraShootingPoints[0]);
 					}
 				} else {
 					for (int i = shootingPoints.size() - 1; i >= 0; i--) {
 						for (int s2 = extraShootingPoints.size() - 1; s2 >= 0; s2--) {
-							tankPowers[j]->additionalShooting(this, shootingPoints.at(i), extraShootingPoints.at(s2));
+							tankPowers[j]->additionalShooting(this, shootingPoints[i], extraShootingPoints[s2]);
 						}
 					}
 				}

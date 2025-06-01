@@ -15,14 +15,14 @@ Color_ID ColorCacheBullet::getColorID(const std::string& identifier) {
 		identifierToID.insert({ identifier, ++nextFreeID });
 		return nextFreeID;
 	}
-	return identifierToID.at(identifier);
+	return identifierToID[identifier];
 }
 
 const ColorValueHolder& ColorCacheBullet::insertColor(Color_ID id, const ColorValueHolder* colors, int num) {
 	cachedColors.insert({ id, ColorMixer::mix(colors, num) });
-	return cachedColors.at(id);
+	return cachedColors[id];
 }
 
 const ColorValueHolder& ColorCacheBullet::getColor(Color_ID id) {
-	return cachedColors.at(id);
+	return cachedColors[id];
 }
