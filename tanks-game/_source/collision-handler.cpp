@@ -109,18 +109,12 @@ bool CollisionHandler::partiallyCollided(const Rect* a, const Circle* b) {
 //bool CollisionHandler::partiallyCollided(const Circle* a, const Rect* b);
 
 bool CollisionHandler::partiallyCollided(const Circle* a, const Circle* b) {
-	if ((std::abs(a->x - b->x) <= a->r + b->r) && (std::abs(a->y - b->y) <= (a->r + b->r))) {
-		return (((a->x - b->x)*(a->x - b->x) + (a->y - b->y)*(a->y - b->y)) <= (a->r + b->r)*(a->r + b->r));
-	}
-	return false;
+	return (((a->x - b->x)*(a->x - b->x) + (a->y - b->y)*(a->y - b->y)) <= (a->r + b->r)*(a->r + b->r));
 }
 
 bool CollisionHandler::cornerCollided(const Circle* a, double x, double y) { //effectively C-C but C2->r = 0
-	if ((std::abs(x - a->x) <= a->r) && (std::abs(y - a->y) <= a->r)) {
-		double dSquared = (x - a->x)*(x - a->x) + (y - a->y)*(y - a->y);
-		return (dSquared <= a->r * a->r);
-	}
-	return false;
+	double dSquared = (x - a->x)*(x - a->x) + (y - a->y)*(y - a->y);
+	return (dSquared <= a->r * a->r);
 }
 
 //IgnoreEdge variant: code is near-identical to non IgnoreEdge version
@@ -144,41 +138,29 @@ bool CollisionHandler::partiallyCollidedIgnoreEdge(const Rect* a, const Circle* 
 //bool CollisionHandler::partiallyCollidedIgnoreEdge(const Circle* a, const Rect* b);
 
 bool CollisionHandler::partiallyCollidedIgnoreEdge(const Circle* a, const Circle* b) {
-	if ((std::abs(a->x - b->x) < a->r + b->r) && (std::abs(a->y - b->y) < (a->r + b->r))) {
-		return (((a->x - b->x)*(a->x - b->x) + (a->y - b->y)*(a->y - b->y)) < (a->r + b->r)*(a->r + b->r));
-	}
-	return false;
+	return (((a->x - b->x)*(a->x - b->x) + (a->y - b->y)*(a->y - b->y)) < (a->r + b->r)*(a->r + b->r));
 }
 
 bool CollisionHandler::cornerCollidedIgnoreEdge(const Circle* a, double x, double y) {
-	if ((std::abs(x - a->x) < a->r) && (std::abs(y - a->y) < a->r)) {
-		double dSquared = (x - a->x)*(x - a->x) + (y - a->y)*(y - a->y);
-		return (dSquared < a->r * a->r);
-	}
-	return false;
+	double dSquared = (x - a->x)*(x - a->x) + (y - a->y)*(y - a->y);
+	return (dSquared < a->r * a->r);
 }
 
 bool CollisionHandler::fullyCollided(const Rect* a, const Rect* b) { //a inside b
 	return ((a->x >= b->x) && ((a->x + a->w) <= (b->x + b->w)) && (a->y >= b->y) && ((a->y + a->h) <= (b->y + b->h)));
 }
 bool CollisionHandler::fullyCollided(const Rect* a, const Circle* b) { //rectangle inside circle
-	if ((a->x >= (b->x - b->r)) && ((a->x + a->w) <= (b->x + b->r)) && (a->y >= (b->y - b->r)) && ((a->y + a->h) <= (b->y + b->r))) { //check R-R collision
-		//check distance between each corner to circle center
-		return (((( a->x         - b->x)*( a->x         - b->x) + ( a->y         - b->y)*( a->y         - b->y)) <= b->r * b->r) &&
-		        ((( a->x         - b->x)*( a->x         - b->x) + ((a->y + a->h) - b->y)*((a->y + a->h) - b->y)) <= b->r * b->r) &&
-		        ((((a->x + a->w) - b->x)*((a->x + a->w) - b->x) + ( a->y         - b->y)*( a->y         - b->y)) <= b->r * b->r) &&
-		        ((((a->x + a->w) - b->x)*((a->x + a->w) - b->x) + ((a->y + a->h) - b->y)*((a->y + a->h) - b->y)) <= b->r * b->r));
-	}
-	return false;
+	//check distance between each corner to circle center
+	return (((( a->x         - b->x)*( a->x         - b->x) + ( a->y         - b->y)*( a->y         - b->y)) <= b->r * b->r) &&
+	        ((( a->x         - b->x)*( a->x         - b->x) + ((a->y + a->h) - b->y)*((a->y + a->h) - b->y)) <= b->r * b->r) &&
+	        ((((a->x + a->w) - b->x)*((a->x + a->w) - b->x) + ( a->y         - b->y)*( a->y         - b->y)) <= b->r * b->r) &&
+	        ((((a->x + a->w) - b->x)*((a->x + a->w) - b->x) + ((a->y + a->h) - b->y)*((a->y + a->h) - b->y)) <= b->r * b->r));
 }
 bool CollisionHandler::fullyCollided(const Circle* a, const Rect* b) { //circle inside rectangle
 	return (((a->x - a->r) >= b->x) && ((a->x + a->r) <= (b->x + b->w)) && ((a->y - a->r) >= b->y) && ((a->y + a->r) <= (b->y + b->h)));
 }
 bool CollisionHandler::fullyCollided(const Circle* a, const Circle* b) { //a inside b
-	if (((a->x - a->r) >= (b->x - b->r)) && ((a->x + a->r) <= (b->x + b->r)) && ((a->y - a->r) >= (b->y - b->r)) && ((a->y + a->r) <= (b->y + b->r))) { //check R-R collision
-		return (((a->x - b->x)*(a->x - b->x) + (a->y - b->y)*(a->y - b->y)) <= (b->r - a->r)*(b->r - a->r));
-	}
-	return false;
+	return (((a->x - b->x)*(a->x - b->x) + (a->y - b->y)*(a->y - b->y)) <= (b->r - a->r)*(b->r - a->r));
 }
 
 
