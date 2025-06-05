@@ -117,7 +117,7 @@ InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> BounceBulletPower:
 	std::shared_ptr<BulletUpdateStruct> b_update;
 	std::shared_ptr<WallUpdateStruct> w_update;
 
-	if (b->velocity.getMagnitude() * (Bullet::default_radius/b->r) <= .5) {
+	if (b->velocity.getMagnitude() * float(Bullet::default_radius/b->r) <= .5f) {
 		auto result = PowerFunctionHelper::bounceGenericWithCorners(b, w);
 		b_update = result.second.firstUpdate;
 		w_update = result.second.secondUpdate;

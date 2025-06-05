@@ -110,15 +110,15 @@ bool CollisionHandler::partiallyCollided(const Rect* a, const Circle* b) {
 
 bool CollisionHandler::partiallyCollided(const Circle* a, const Circle* b) {
 	if ((std::abs(a->x - b->x) <= a->r + b->r) && (std::abs(a->y - b->y) <= (a->r + b->r))) {
-		return (std::sqrt((a->x - b->x)*(a->x - b->x) + (a->y - b->y)*(a->y - b->y)) <= (a->r + b->r));
+		return (((a->x - b->x)*(a->x - b->x) + (a->y - b->y)*(a->y - b->y)) <= (a->r + b->r)*(a->r + b->r));
 	}
 	return false;
 }
 
 bool CollisionHandler::cornerCollided(const Circle* a, double x, double y) { //effectively C-C but C2->r = 0
 	if ((std::abs(x - a->x) <= a->r) && (std::abs(y - a->y) <= a->r)) {
-		double d = std::sqrt((x - a->x)*(x - a->x) + (y - a->y)*(y - a->y));
-		return (d <= a->r);
+		double dSquared = (x - a->x)*(x - a->x) + (y - a->y)*(y - a->y);
+		return (dSquared <= a->r * a->r);
 	}
 	return false;
 }
@@ -145,15 +145,15 @@ bool CollisionHandler::partiallyCollidedIgnoreEdge(const Rect* a, const Circle* 
 
 bool CollisionHandler::partiallyCollidedIgnoreEdge(const Circle* a, const Circle* b) {
 	if ((std::abs(a->x - b->x) < a->r + b->r) && (std::abs(a->y - b->y) < (a->r + b->r))) {
-		return (std::sqrt((a->x - b->x)*(a->x - b->x) + (a->y - b->y)*(a->y - b->y)) < (a->r + b->r));
+		return (((a->x - b->x)*(a->x - b->x) + (a->y - b->y)*(a->y - b->y)) < (a->r + b->r)*(a->r + b->r));
 	}
 	return false;
 }
 
 bool CollisionHandler::cornerCollidedIgnoreEdge(const Circle* a, double x, double y) {
 	if ((std::abs(x - a->x) < a->r) && (std::abs(y - a->y) < a->r)) {
-		double d = std::sqrt((x - a->x)*(x - a->x) + (y - a->y)*(y - a->y));
-		return (d < a->r);
+		double dSquared = (x - a->x)*(x - a->x) + (y - a->y)*(y - a->y);
+		return (dSquared < a->r * a->r);
 	}
 	return false;
 }
@@ -164,10 +164,10 @@ bool CollisionHandler::fullyCollided(const Rect* a, const Rect* b) { //a inside 
 bool CollisionHandler::fullyCollided(const Rect* a, const Circle* b) { //rectangle inside circle
 	if ((a->x >= (b->x - b->r)) && ((a->x + a->w) <= (b->x + b->r)) && (a->y >= (b->y - b->r)) && ((a->y + a->h) <= (b->y + b->r))) { //check R-R collision
 		//check distance between each corner to circle center
-		return ((std::sqrt(( a->x         - b->x)*( a->x         - b->x) + ( a->y         - b->y)*( a->y         - b->y)) <= b->r) &&
-		        (std::sqrt(( a->x         - b->x)*( a->x         - b->x) + ((a->y + a->h) - b->y)*((a->y + a->h) - b->y)) <= b->r) &&
-		        (std::sqrt(((a->x + a->w) - b->x)*((a->x + a->w) - b->x) + ( a->y         - b->y)*( a->y         - b->y)) <= b->r) &&
-		        (std::sqrt(((a->x + a->w) - b->x)*((a->x + a->w) - b->x) + ((a->y + a->h) - b->y)*((a->y + a->h) - b->y)) <= b->r));
+		return (((( a->x         - b->x)*( a->x         - b->x) + ( a->y         - b->y)*( a->y         - b->y)) <= b->r * b->r) &&
+		        ((( a->x         - b->x)*( a->x         - b->x) + ((a->y + a->h) - b->y)*((a->y + a->h) - b->y)) <= b->r * b->r) &&
+		        ((((a->x + a->w) - b->x)*((a->x + a->w) - b->x) + ( a->y         - b->y)*( a->y         - b->y)) <= b->r * b->r) &&
+		        ((((a->x + a->w) - b->x)*((a->x + a->w) - b->x) + ((a->y + a->h) - b->y)*((a->y + a->h) - b->y)) <= b->r * b->r));
 	}
 	return false;
 }
@@ -176,7 +176,7 @@ bool CollisionHandler::fullyCollided(const Circle* a, const Rect* b) { //circle 
 }
 bool CollisionHandler::fullyCollided(const Circle* a, const Circle* b) { //a inside b
 	if (((a->x - a->r) >= (b->x - b->r)) && ((a->x + a->r) <= (b->x + b->r)) && ((a->y - a->r) >= (b->y - b->r)) && ((a->y + a->r) <= (b->y + b->r))) { //check R-R collision
-		return (std::sqrt((a->x - b->x)*(a->x - b->x) + (a->y - b->y)*(a->y - b->y)) <= (b->r - a->r));
+		return (((a->x - b->x)*(a->x - b->x) + (a->y - b->y)*(a->y - b->y)) <= (b->r - a->r)*(b->r - a->r));
 	}
 	return false;
 }
@@ -224,8 +224,6 @@ void CollisionHandler::pushMovableAwayFromMovable(Rect* movable1, Rect* movable2
 }
 
 void CollisionHandler::pushMovableAwayFromImmovable(Circle* movable, Rect* immovable) {
-	//typically Tank-Wall collision
-
 	bool cornerCollided = false;
 	if ((movable->x < immovable->x) && (movable->y < immovable->y)) { //circle in bottom left
 		cornerPushMovableAwayFromImmovable(movable, immovable->x, immovable->y);
@@ -420,7 +418,6 @@ std::pair<std::pair<double, double>, std::pair<double, double>> CollisionHandler
 
 std::pair<double, double> CollisionHandler::pushMovableAwayFromImmovable_vecOnly(const Circle* movable, const Rect* immovable) {
 	//MODIFIED: only one corner collision
-	//typically Tank-Wall collision
 
 	if ((movable->x < immovable->x) && (movable->y < immovable->y)) { //circle in bottom left
 		return cornerPushMovableAwayFromImmovable_vecOnly(movable, immovable->x, immovable->y);
@@ -554,15 +551,15 @@ std::optional<std::pair<PositionHolder, PositionHolder>> CollisionHandler::circl
 	double x1 = lineX1 - c->x, x2 = lineX2 - c->x;
 	double y1 = lineY1 - c->y, y2 = lineY2 - c->y;
 	double dx = x2-x1, dy = y2-y1;
-	double dr = std::sqrt(dx*dx + dy*dy);
+	double drSquared = (dx*dx + dy*dy);
 	double D = x1*y2 - x2*y1;
 
-	double discriminant = (c->r*c->r) * (dr*dr) - (D*D);
+	double discriminant = (c->r*c->r) * drSquared - (D*D);
 	if (discriminant >= 0) {
-		double intersectionX1 = (D*dy - (dy<0 ? -1 : 1) * dx * std::sqrt((c->r*c->r) * (dr*dr) - (D*D))) / (dr*dr);
-		double intersectionX2 = (D*dy + (dy<0 ? -1 : 1) * dx * std::sqrt((c->r*c->r) * (dr*dr) - (D*D))) / (dr*dr);
-		double intersectionY1 = (-D*dx - std::abs(dy)        * std::sqrt((c->r*c->r) * (dr*dr) - (D*D))) / (dr*dr);
-		double intersectionY2 = (-D*dx + std::abs(dy)        * std::sqrt((c->r*c->r) * (dr*dr) - (D*D))) / (dr*dr);
+		double intersectionX1 = (D*dy - (dy<0 ? -1 : 1) * dx * std::sqrt((c->r*c->r) * drSquared - (D*D))) / drSquared;
+		double intersectionX2 = (D*dy + (dy<0 ? -1 : 1) * dx * std::sqrt((c->r*c->r) * drSquared - (D*D))) / drSquared;
+		double intersectionY1 = (-D*dx - std::abs(dy)        * std::sqrt((c->r*c->r) * drSquared - (D*D))) / drSquared;
+		double intersectionY2 = (-D*dx + std::abs(dy)        * std::sqrt((c->r*c->r) * drSquared - (D*D))) / drSquared;
 
 		return std::pair<PositionHolder, PositionHolder>{ {intersectionX1 + c->x, intersectionY1 + c->y}, {intersectionX2 + c->x, intersectionY2 + c->y} };
 	} else {
@@ -574,10 +571,10 @@ bool CollisionHandler::circleLineIntersectionHappens(const Circle* c, double lin
 	double x1 = lineX1 - c->x, x2 = lineX2 - c->x;
 	double y1 = lineY1 - c->y, y2 = lineY2 - c->y;
 	double dx = x2-x1, dy = y2-y1;
-	double dr = std::sqrt(dx*dx + dy*dy);
+	double drSquared = (dx*dx + dy*dy);
 	double D = x1*y2 - x2*y1;
 
-	double discriminant = (c->r*c->r) * (dr*dr) - (D*D);
+	double discriminant = (c->r*c->r) * drSquared - (D*D);
 	return (discriminant >= 0);
 }
 
@@ -586,13 +583,13 @@ std::pair<PositionHolder, PositionHolder> CollisionHandler::circleLineIntersecti
 	double x1 = lineX1 - c->x, x2 = lineX2 - c->x;
 	double y1 = lineY1 - c->y, y2 = lineY2 - c->y;
 	double dx = x2-x1, dy = y2-y1;
-	double dr = std::sqrt(dx*dx + dy*dy);
+	double drSquared = (dx*dx + dy*dy);
 	double D = x1*y2 - x2*y1; //I spent about an hour debugging this, only to find out I did x1*y2 - x1*y1. Don't make the same mistake.
 
-	double intersectionX1 = (D*dy - (dy<0 ? -1 : 1) * dx * std::sqrt((c->r*c->r) * (dr*dr) - (D*D))) / (dr*dr);
-	double intersectionX2 = (D*dy + (dy<0 ? -1 : 1) * dx * std::sqrt((c->r*c->r) * (dr*dr) - (D*D))) / (dr*dr);
-	double intersectionY1 = (-D*dx - std::abs(dy)        * std::sqrt((c->r*c->r) * (dr*dr) - (D*D))) / (dr*dr);
-	double intersectionY2 = (-D*dx + std::abs(dy)        * std::sqrt((c->r*c->r) * (dr*dr) - (D*D))) / (dr*dr);
+	double intersectionX1 = (D*dy - (dy<0 ? -1 : 1) * dx * std::sqrt((c->r*c->r) * drSquared - (D*D))) / drSquared;
+	double intersectionX2 = (D*dy + (dy<0 ? -1 : 1) * dx * std::sqrt((c->r*c->r) * drSquared - (D*D))) / drSquared;
+	double intersectionY1 = (-D*dx - std::abs(dy)        * std::sqrt((c->r*c->r) * drSquared - (D*D))) / drSquared;
+	double intersectionY2 = (-D*dx + std::abs(dy)        * std::sqrt((c->r*c->r) * drSquared - (D*D))) / drSquared;
 
 	return std::pair<PositionHolder, PositionHolder>{ {intersectionX1 + c->x, intersectionY1 + c->y}, {intersectionX2 + c->x, intersectionY2 + c->y} };
 }

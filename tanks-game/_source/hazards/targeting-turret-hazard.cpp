@@ -129,26 +129,26 @@ void TargetingTurretHazard::tick_lookForNewTarget() {
 	//targetingCount = 0;
 
 	std::vector<bool> tankVisibility; tankVisibility.reserve(TankManager::getNumTanks()); //not using regular arrays so people (including future me) can actually read this
-	std::vector<double> distancesToTank; distancesToTank.reserve(TankManager::getNumTanks()); //TODO: option for angle-based selection (look at homing in PowerFunctionHelper)
+	std::vector<double> distancesSquaredToTank; distancesSquaredToTank.reserve(TankManager::getNumTanks()); //TODO: option for angle-based selection (look at homing in PowerFunctionHelper)
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
 		const Tank* t = TankManager::getTank(i);
 		tankVisibility.push_back(canSeeTank(t));
-		if (tankVisibility.at(i)) {
-			distancesToTank.push_back(std::sqrt((t->x - x)*(t->x - x) + (t->y - y)*(t->y - y)));
+		if (tankVisibility[i]) {
+			distancesSquaredToTank.push_back((t->x - x)*(t->x - x) + (t->y - y)*(t->y - y));
 		} else {
-			distancesToTank.push_back(GAME_WIDTH*2 + GAME_HEIGHT*2);
+			distancesSquaredToTank.push_back(GAME_WIDTH*GAME_WIDTH*4 + GAME_HEIGHT*GAME_HEIGHT*4);
 		}
 	}
 
-	double minDist = GAME_WIDTH*2 + GAME_HEIGHT*2;
+	double minDist = GAME_WIDTH*GAME_WIDTH*4 + GAME_HEIGHT*GAME_HEIGHT*4;
 	std::vector<int> tankIndices; tankIndices.reserve(TankManager::getNumTanks()); //multiple tanks can have same distance
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
-		if (distancesToTank[i] == minDist) {
+		if (distancesSquaredToTank[i] == minDist) {
 			tankIndices.push_back(i);
-		} else if (distancesToTank[i] < minDist) {
+		} else if (distancesSquaredToTank[i] < minDist) {
 			tankIndices.clear();
 			tankIndices.push_back(i);
-			minDist = distancesToTank[i];
+			minDist = distancesSquaredToTank[i];
 		}
 	}
 
