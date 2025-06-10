@@ -3,9 +3,9 @@
 
 class OpenGLVertexArray : public VertexArray {
 protected:
-	unsigned int rendererID;
 	std::vector<const VertexBuffer*> vertexBuffers;
 	const IndexBuffer* indexBuffer;
+	unsigned int vertexBufferIndex;
 
 public:
 	OpenGLVertexArray();
@@ -19,6 +19,4 @@ public:
 
 	const std::vector<const VertexBuffer*>& GetVertexBuffers() const override { return vertexBuffers; }
 	const IndexBuffer* GetIndexBuffer() const override { return indexBuffer; }
-
-	unsigned int getRendererID() const override { return rendererID; }
 };

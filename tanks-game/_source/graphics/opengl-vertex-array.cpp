@@ -1,6 +1,6 @@
 #include "opengl-vertex-array.h"
 
-//#include <stdexcept>
+#include <stdexcept>
 
 #include <GL/glew.h>
 #include "opengl-vertex-buffer.h"
@@ -9,6 +9,7 @@
 OpenGLVertexArray::OpenGLVertexArray() {
 	glGenVertexArrays(1, &rendererID);
 	indexBuffer = nullptr;
+	vertexBufferIndex = 0;
 }
 
 OpenGLVertexArray::~OpenGLVertexArray() {
@@ -29,23 +30,60 @@ void OpenGLVertexArray::AddVertexBuffer(const VertexBuffer* vb) {
 	vertexBuffers.push_back(vb);
 
 	const VertexBufferLayout& layout = vb->GetLayout();
-	for (int i = 0; i < layout.getElements().size(); i++) {
-		const VertexBufferElement& element = layout.getElements()[i];
-		glEnableVertexAttribArray(i);
-		glVertexAttribPointer(i,
-			element.getComponentCount(element.type),
-			OpenGLVertexBuffer::ShaderDataTypeToGLenum(element.type),
-			element.normalized ? GL_TRUE : GL_FALSE,
-			layout.getStride(),
-			(const void*) element.offset);
+	for (const VertexBufferElement& element : layout.getElements()) {
+		switch (element.type) {
+			default:
+				throw std::domain_error("ERROR: Unknown VBO element type!");
+
+			case ShaderDataType::Float:  [[fallthrough]];
+			case ShaderDataType::Float2: [[fallthrough]];
+			case ShaderDataType::Float3: [[fallthrough]];
+			case ShaderDataType::Float4:
+				glEnableVertexAttribArray(vertexBufferIndex);
+				glVertexAttribPointer(vertexBufferIndex,
+					element.getComponentCount(),
+					OpenGLVertexBuffer::ShaderDataTypeToGLenum(element.type),
+					element.normalized ? GL_TRUE : GL_FALSE,
+					layout.getStride(),
+					(const void*) element.offset);
+				vertexBufferIndex++;
+				break;
+
+			case ShaderDataType::Int:  [[fallthrough]];
+			case ShaderDataType::Int2: [[fallthrough]];
+			case ShaderDataType::Int3: [[fallthrough]];
+			case ShaderDataType::Int4:
+				//glVertexAttribPointer() and glVertexAttribIPointer() are different functions; thank you, OpenGL, for your intuitive API
+				glEnableVertexAttribArray(vertexBufferIndex);
+				glVertexAttribIPointer(vertexBufferIndex,
+					element.getComponentCount(),
+					OpenGLVertexBuffer::ShaderDataTypeToGLenum(element.type),
+					layout.getStride(),
+					(const void*) element.offset);
+				vertexBufferIndex++;
+				break;
+
+			case ShaderDataType::Mat4: {
+				//it's not possible to directly set a mat4 as an attribute, because the limit is a vec4
+				unsigned int count = element.getComponentCount();
+				for (unsigned int i = 0; i < count; i++) {
+					glEnableVertexAttribArray(vertexBufferIndex);
+					glVertexAttribPointer(vertexBufferIndex,
+						count,
+						OpenGLVertexBuffer::ShaderDataTypeToGLenum(element.type),
+						element.normalized ? GL_TRUE : GL_FALSE,
+						layout.getStride(),
+						(const void*) (element.offset + i * count * sizeof(float)));
+					glVertexAttribDivisor(vertexBufferIndex, 1);
+					vertexBufferIndex++;
+				}
+				} break;
+		}
 	}
 }
 
 void OpenGLVertexArray::SetIndexBuffer(const IndexBuffer* ib) {
 	glBindVertexArray(rendererID);
 	ib->Bind();
-	if (indexBuffer != nullptr) [[likely]] {
-		delete indexBuffer;
-	}
 	indexBuffer = ib;
 }
