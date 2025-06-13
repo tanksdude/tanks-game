@@ -135,6 +135,7 @@ public:
 	static bool isDebugDrawingEnabled(std::string name); //should this really be here?
 
 	static glm::mat4 GenerateModelMatrix(float scaleX, float scaleY, float rotateAngle, float transX, float transY);
+	static glm::mat4 GenerateModelMatrix_NoRotate(float scaleX, float scaleY, float transX, float transY);
 	static void SetViewMatrix(float cameraX, float cameraY, float cameraZ, float targetX, float targetY, float targetZ);
 	//static void SetProjectionMatrix(float left, float right, float bottom, float top/*, float near, float far*/); //orthographic
 	static void SetProjectionMatrix(); //should this be public?
