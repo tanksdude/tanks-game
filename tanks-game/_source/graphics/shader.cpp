@@ -54,6 +54,23 @@ GLuint Shader::load_and_compile_shader(const char* fname, GLenum shaderType) {
 	// Check the result of the compilation
 	GLint test;
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &test);
+
+	//this part from https://www.khronos.org/opengl/wiki/Example/GLSL_Shader_Compile_Error_Testing
+	if (test == GL_FALSE) [[unlikely]] {
+		GLint maxLength = 0;
+		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength);
+
+		// The maxLength includes the NULL character
+		std::vector<GLchar> errorLog(maxLength);
+		glGetShaderInfoLog(shader, maxLength, &maxLength, &errorLog[0]);
+
+		// Provide the infolog in whatever manor you deem best.
+		std::cout << std::string(errorLog.begin(), errorLog.end()) << std::endl;
+		// Exit with failure.
+		//glDeleteShader(shader); // Don't leak the shader.
+		//return;
+	}
+
 	return shader;
 }
 // Create a program from two shaders
