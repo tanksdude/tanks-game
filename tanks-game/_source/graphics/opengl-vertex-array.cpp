@@ -46,6 +46,9 @@ void OpenGLVertexArray::AddVertexBuffer(const VertexBuffer* vb) {
 					element.normalized ? GL_TRUE : GL_FALSE,
 					layout.getStride(),
 					(const void*) element.offset);
+				if (element.instanced) [[unlikely]] {
+					glVertexAttribDivisor(vertexBufferIndex, 1);
+				}
 				vertexBufferIndex++;
 				break;
 
@@ -60,6 +63,9 @@ void OpenGLVertexArray::AddVertexBuffer(const VertexBuffer* vb) {
 					OpenGLVertexBuffer::ShaderDataTypeToGLenum(element.type),
 					layout.getStride(),
 					(const void*) element.offset);
+				if (element.instanced) [[unlikely]] {
+					glVertexAttribDivisor(vertexBufferIndex, 1);
+				}
 				vertexBufferIndex++;
 				break;
 
@@ -74,7 +80,7 @@ void OpenGLVertexArray::AddVertexBuffer(const VertexBuffer* vb) {
 						element.normalized ? GL_TRUE : GL_FALSE,
 						layout.getStride(),
 						(const void*) (element.offset + i * count * sizeof(float)));
-					glVertexAttribDivisor(vertexBufferIndex, 1);
+					glVertexAttribDivisor(vertexBufferIndex, 1); //matrices should only be instanced
 					vertexBufferIndex++;
 				}
 				} break;

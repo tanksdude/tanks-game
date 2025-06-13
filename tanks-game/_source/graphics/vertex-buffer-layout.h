@@ -16,6 +16,7 @@ struct VertexBufferElement {
 	unsigned int size;
 	unsigned int offset;
 	bool normalized;
+	bool instanced;
 
 	static unsigned int getSize(ShaderDataType type) {
 		switch (type) {
@@ -47,12 +48,13 @@ struct VertexBufferElement {
 		return 0;
 	}
 
-	VertexBufferElement(ShaderDataType type, std::string name, bool normalized = false) {
+	VertexBufferElement(ShaderDataType type, std::string name, bool normalized = false, bool instanced = false) {
 		this->name = name;
 		this->type = type;
 		this->size = getSize(type);
 		this->offset = 0;
 		this->normalized = normalized;
+		this->instanced = instanced;
 	}
 };
 
