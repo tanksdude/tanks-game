@@ -2,10 +2,7 @@
 
 #include <iostream>
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-
-#include "renderer.h"
+#include "window-initializer.h"
 #include "tank-manager.h"
 #include "powerup-manager.h"
 #include "wall-manager.h"
@@ -76,7 +73,7 @@ void DeveloperManager::mouseScrollCallbackFunc(GLFWwindow*, double xOffset, doub
 }
 
 void DeveloperManager::mouseCursorPosCallbackFunc(GLFWwindow*, double xPos, double yPos) {
-	Renderer::windowCoordsToGameCoords(xPos, yPos, mousePosX, mousePosY);
+	WindowInitializer::windowCoordsToGameCoords(xPos, yPos, mousePosX, mousePosY);
 	if (leftMouse) {
 		if (!rightMouse) {
 			TankManager::getTank(0)->x = mousePosX;

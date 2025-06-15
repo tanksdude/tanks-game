@@ -1,5 +1,6 @@
 #include "game-scene-manager.h"
 
+#include "window-initializer.h"
 #include "renderer.h"
 #include "diagnostics.h"
 
@@ -31,7 +32,7 @@ void GameSceneManager::TickScenes() {
 }
 
 void GameSceneManager::DrawScenes() {
-	Renderer::BeginningStuff();
+	WindowInitializer::BeginningStuff();
 	Renderer::Clear();
 	for (int i = 0; i < scenes.size(); i++) {
 		scenes[i].first->Draw();
@@ -40,7 +41,7 @@ void GameSceneManager::DrawScenes() {
 }
 
 void GameSceneManager::DrawScenes_WindowResize() {
-	//Renderer::BeginningStuff(); //this is the only difference
+	//WindowInitializer::BeginningStuff(); //this is the only difference
 	Renderer::Clear();
 	for (int i = 0; i < scenes.size(); i++) {
 		scenes[i].first->Draw();

@@ -5,36 +5,20 @@
 #include <iostream>
 #include <gtc/matrix_transform.hpp>
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#include <stb_image.h>
 #include "graphics/opengl-rendering-context.h"
 #include "graphics/software-rendering-context.h"
 #include "graphics/null-rendering-context.h"
 
 #include "diagnostics.h"
-#include "keypress-manager.h"
 #include "game-manager.h" //for isDebugDrawingEnabled()
-#include "game-scene-manager.h" //to refresh the graphics when the window size changes
 
 //std::mutex Renderer::drawingDataLock;
 //std::thread Renderer::graphicsThread;
 //std::atomic_bool Renderer::thread_keepRunning;
 //std::atomic_bool Renderer::thread_workExists;
 
-GLFWwindow* Renderer::glfw_window = nullptr;
-bool Renderer::currently_fullscreen = false;
-int Renderer::old_window_width;
-int Renderer::old_window_height;
-int Renderer::old_window_xpos;
-int Renderer::old_window_ypos;
-
 glm::mat4 Renderer::proj = glm::ortho(0.0f, (float)GAME_WIDTH, 0.0f, (float)GAME_HEIGHT);
 glm::mat4 Renderer::getProj() { return proj; }
-int Renderer::window_width;
-int Renderer::window_height;
-int Renderer::gamewindow_width;
-int Renderer::gamewindow_height;
 RenderingContext* Renderer::renderingMethod = nullptr;
 AvailableRenderingContexts Renderer::renderingMethodType;
 
@@ -56,128 +40,10 @@ std::vector<unsigned int>* Renderer::currentIndicesData;
 const int Renderer::maxVerticesDataLength = (1 << 16) / sizeof(float); //2^16 - 2^18 have basically identical performance; lower results in problems, higher results in stuttering/spikes with worse performance
 const int Renderer::maxIndicesDataLength = (1 << 16) / sizeof(unsigned int); //TODO: size (fills up faster)
 
-void Renderer::windowResizeFunc(GLFWwindow*, int w, int h) {
-	//note: this function also gets called when moving the window between monitors (when the scale is different)
-	Renderer::window_width = w;
-	Renderer::window_height = h;
-
-	// Define x-axis and y-axis range
-	const float appXmin = 0.0;
-	const float appXmax = GAME_WIDTH;
-	const float appYmin = 0.0;
-	const float appYmax = GAME_HEIGHT;
-
-	// Define that OpenGL should use the whole window for rendering
-	glViewport(0, 0, w, h);
-
-	if ((appXmax - appXmin) / w < (appYmax - appYmin) / h) { //too wide
-		float scale = ((appYmax - appYmin) / h) / ((appXmax - appXmin) / w);
-		Renderer::proj = glm::ortho(float(GAME_WIDTH/2) - float(GAME_WIDTH/2)*scale, float(GAME_WIDTH/2) + float(GAME_WIDTH/2)*scale, 0.0f, (float)GAME_HEIGHT);
-		Renderer::gamewindow_width = Renderer::window_height * (GAME_WIDTH/GAME_HEIGHT);
-		Renderer::gamewindow_height = Renderer::window_height;
-	} else { //too tall
-		float scale = ((appXmax - appXmin) / w) / ((appYmax - appYmin) / h);
-		Renderer::proj = glm::ortho(0.0f, (float)GAME_WIDTH, float(GAME_HEIGHT/2) - float(GAME_HEIGHT/2)*scale, float(GAME_HEIGHT/2) + float(GAME_HEIGHT/2)*scale);
-		Renderer::gamewindow_width = Renderer::window_width;
-		Renderer::gamewindow_height = Renderer::window_width * (GAME_HEIGHT/GAME_WIDTH);
-	}
-
-	//Windows does not do any updates when the window is being held or resized, so force a redraw:
-	#ifdef _WIN32
-	Diagnostics::pushGraphTime("tick", 0); //HACK: since tick will never happen when the window is being resized, add it here; will not double-add when the game is over because that still does a tick
-	GameSceneManager::DrawScenes_WindowResize();
-	#endif
-}
-
-void Renderer::windowCoordsToGameCoords(double inputX, double inputY, int& actualX, int& actualY) {
-	//basically subtract out the black bars (just left/top), convert to a percent of the window, scale to game size
-	//when the window is too wide, Renderer::window_height = Renderer::gamewindow_height; same when too tall for width
-	//therefore this can handle both cases
-	actualX =      (inputX - (Renderer::window_width  - Renderer::gamewindow_width)/2)  / Renderer::gamewindow_width   * GAME_WIDTH;
-	actualY = (1 - (inputY - (Renderer::window_height - Renderer::gamewindow_height)/2) / Renderer::gamewindow_height) * GAME_HEIGHT;
-}
-
-//from: https://stackoverflow.com/questions/21421074/how-to-create-a-full-screen-window-on-the-current-monitor-with-glfw#31526753
-GLFWmonitor* Renderer::get_current_monitor(GLFWwindow* window) {
-	int nmonitors, i;
-	int wx, wy, ww, wh;
-	int mx, my, mw, mh;
-	int overlap, bestoverlap;
-	GLFWmonitor* bestmonitor;
-	GLFWmonitor** monitors;
-	const GLFWvidmode* mode;
-
-	bestoverlap = 0;
-	bestmonitor = NULL;
-
-	glfwGetWindowPos(window, &wx, &wy);
-	glfwGetWindowSize(window, &ww, &wh);
-	monitors = glfwGetMonitors(&nmonitors);
-
-	for (i = 0; i < nmonitors; i++) {
-		mode = glfwGetVideoMode(monitors[i]);
-		glfwGetMonitorPos(monitors[i], &mx, &my);
-		mw = mode->width;
-		mh = mode->height;
-
-		overlap =
-			std::max(0, std::min(wx + ww, mx + mw) - std::max(wx, mx)) *
-			std::max(0, std::min(wy + wh, my + mh) - std::max(wy, my));
-
-		if (bestoverlap < overlap) {
-			bestoverlap = overlap;
-			bestmonitor = monitors[i];
-		}
-	}
-
-	return bestmonitor;
-}
-
-//actual renderer code:
-
 std::unordered_map<std::string, Shader*> Renderer::shaderCache;
 unsigned int Renderer::currentShader = -1;
 unsigned int Renderer::currentVertexArray = -1;
 unsigned int Renderer::currentIndexBuffer = -1;
-
-void Renderer::BeginningStuff() {
-	//while (thread_workExists.load()) {
-	//	//spin
-	//	std::cout << "thread1 waiting\n";
-	//}
-	//drawingDataLock.lock();
-
-	if (KeypressManager::getKeyState("F11")) [[unlikely]] {
-		if (currently_fullscreen) {
-			//it's possible for the number of monitors to change, so these positions could be wrong, but whatever
-
-			glfwSetWindowAttrib(Renderer::glfw_window, GLFW_DECORATED, GLFW_TRUE);
-			glfwSetWindowAttrib(Renderer::glfw_window, GLFW_RESIZABLE, GLFW_TRUE); //this is *very needed* on Linux
-			glfwSetWindowSize(Renderer::glfw_window, Renderer::old_window_width, Renderer::old_window_height);
-			glfwSetWindowPos(Renderer::glfw_window, Renderer::old_window_xpos, Renderer::old_window_ypos); //pos should be set after size
-
-			currently_fullscreen = false;
-		} else {
-			GLFWmonitor* monitor = get_current_monitor(Renderer::glfw_window);
-			const GLFWvidmode* mode = glfwGetVideoMode(monitor);
-			//doesn't need glfwGetMonitorContentScale to work properly
-
-			int monitor_xpos, monitor_ypos;
-			glfwGetMonitorPos(monitor, &monitor_xpos, &monitor_ypos);
-			glfwGetWindowPos(Renderer::glfw_window, &Renderer::old_window_xpos, &Renderer::old_window_ypos);
-			glfwGetWindowSize(Renderer::glfw_window, &Renderer::old_window_width, &Renderer::old_window_height);
-
-			glfwSetWindowAttrib(Renderer::glfw_window, GLFW_DECORATED, GLFW_FALSE); //this is not stated to be required for proper fullscreen
-			glfwSetWindowAttrib(Renderer::glfw_window, GLFW_RESIZABLE, GLFW_FALSE);
-			glfwSetWindowPos(Renderer::glfw_window, monitor_xpos, monitor_ypos);
-			glfwSetWindowSize(Renderer::glfw_window, mode->width, mode->height); //note: on Ubuntu, this will force the window to the largest monitor, unless auto-hide dock is enabled
-
-			currently_fullscreen = true;
-		}
-
-		KeypressManager::unsetKeyState("F11");
-	}
-}
 
 void Renderer::SetContext(AvailableRenderingContexts API) {
 	if (renderingMethod != nullptr) {
@@ -219,75 +85,6 @@ void Renderer::SetContext(std::string API) {
 	SetContext(context);
 }
 
-void Renderer::PreInitialize(int* argc, char** argv, std::string windowName) {
-	Renderer::PreInitialize(argc, argv, windowName, 120, 120);
-}
-
-void Renderer::PreInitialize(int* argc, char** argv, std::string windowName, int startX, int startY) {
-	Renderer::PreInitialize(argc, argv, windowName, startX, startY, 2.5);
-}
-
-void Renderer::PreInitialize(int* argc, char** argv, std::string windowName, int startX, int startY, double sizeMultiplier) {
-	// Initialize GLFW
-	if (!glfwInit()) {
-		throw "glfw failed";
-	}
-
-	// Setup window position, size, and title
-	GLFWwindow* window;
-	Renderer::window_width = GAME_WIDTH*sizeMultiplier; Renderer::window_height = GAME_HEIGHT*sizeMultiplier;
-	glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_FALSE);
-	//glfwWindowHint(GLFW_SAMPLES, 64); //TODO: doesn't seem to work
-	glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_TRUE);
-	//glfwWindowHint(GLFW_DECORATED, GLFW_TRUE); //unnecessary
-	window = glfwCreateWindow(Renderer::window_width, Renderer::window_height, windowName.c_str(), NULL, NULL);
-	int primary_monitor_xpos, primary_monitor_ypos;
-	glfwGetMonitorPos(glfwGetPrimaryMonitor(), &primary_monitor_xpos, &primary_monitor_ypos); //does not seem to do anything on Windows
-	glfwSetWindowPos(window, primary_monitor_xpos + startX, primary_monitor_ypos + startY); //this sets the position of the inner window part, not the OS window position
-	Renderer::glfw_window = window;
-	//glEnable(GL_POLYGON_SMOOTH);
-	//glEnable(GL_MULTISAMPLE);
-
-	glfwGetWindowPos(Renderer::glfw_window, &Renderer::old_window_xpos, &Renderer::old_window_ypos);
-	glfwGetWindowSize(Renderer::glfw_window, &Renderer::old_window_width, &Renderer::old_window_height); //required for monitor content scaling
-	Renderer::window_width = Renderer::old_window_width; Renderer::window_height = Renderer::old_window_height;
-	Renderer::gamewindow_width = Renderer::window_width; Renderer::gamewindow_height = Renderer::window_height;
-	//glfwGetMonitorContentScale(glfwGetPrimaryMonitor(), &xscale, &yscale);
-	SetWindowIcon("res/favicon-64.png"); //TODO: 32x32
-
-	glfwMakeContextCurrent(window);
-
-	//thanks to https://community.khronos.org/t/wglmakecurrent-issues/62656/3 for solving why a draw call would take ~15ms for no reason (it's just the V-sync time)
-	//glfwSwapInterval(0);
-
-	glDisable(GL_DEPTH_TEST); //technically not required, but not all drivers implement the OpenGL spec correctly
-	//transparency:
-	//glEnable(GL_BLEND);
-	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	//initialize glew
-	glewExperimental = GL_TRUE;
-	GLenum res = glewInit();
-	if (res != GLEW_OK) {
-		fprintf(stderr, "Error: '%s'\n", glewGetErrorString(res));
-		throw "glew failed";
-	}
-}
-
-//from: https://stackoverflow.com/questions/44321902/load-icon-function-for-glfwsetwindowicon/64783512#64783512
-void Renderer::SetWindowIcon(const char* image_path) {
-	GLFWimage images[1];
-	auto ret = stbi_load(image_path, &images[0].width, &images[0].height, NULL, 4);
-	if (ret == NULL) {
-		//Windows doesn't care, but Linux does
-		std::cerr << "Could not load \"" << image_path << "\": " << stbi_failure_reason() << std::endl;
-	} else {
-		images[0].pixels = ret;
-		glfwSetWindowIcon(Renderer::glfw_window, 1, images);
-		stbi_image_free(images[0].pixels);
-	}
-}
-
 void Renderer::Initialize() {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
@@ -310,7 +107,6 @@ void Renderer::Uninitialize() {
 	//thread_workExists.store(true);
 	//graphicsThread.join();
 	////uninitializeGPU();
-	glfwTerminate();
 }
 
 /*
@@ -527,7 +323,7 @@ void Renderer::ActuallyFlush() {
 	//for single framebuffer, use glFlush; for double framebuffer, swap the buffers
 	//swapping buffers is limited to monitor refresh rate, so I use glFlush
 	glFlush();
-	//glfwSwapBuffers(glfw_window);
+	//glfwSwapBuffers(WindowInitializer::glfw_window);
 
 	UnbindAll();
 }

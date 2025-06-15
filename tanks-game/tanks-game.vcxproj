@@ -268,6 +268,7 @@
     <ClCompile Include="_source\tank.cpp" />
     <ClCompile Include="_source\wall-manager.cpp" />
     <ClCompile Include="_source\wall.cpp" />
+    <ClCompile Include="_source\window-initializer.cpp" />
     <ClCompile Include="_source\main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -457,6 +458,7 @@
     <ClInclude Include="_source\tank.h" />
     <ClInclude Include="_source\wall-manager.h" />
     <ClInclude Include="_source\wall.h" />
+    <ClInclude Include="_source\window-initializer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

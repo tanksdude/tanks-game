@@ -14,6 +14,7 @@
 #include "reset-things.h"
 #include "developer-manager.h"
 #include "keypress-manager.h"
+#include "window-initializer.h"
 //other:
 #include "diagnostics.h"
 #include "basic-ini-parser.h"
@@ -244,12 +245,12 @@ int main(int argc, char** argv) {
 			int startY = std::stoi(ini_data.get("GRAPHICS_SETTINGS", "Position.StartY"));
 			if (ini_data.exists("GRAPHICS_SETTINGS", "Position.SizeMultiplier")) {
 				double sizeMultiplier = std::stod(ini_data.get("GRAPHICS_SETTINGS", "Position.SizeMultiplier"));
-				Renderer::PreInitialize(&argc, argv, name, startX, startY, sizeMultiplier);
+				WindowInitializer::WindowInitialize(&argc, argv, name, startX, startY, sizeMultiplier);
 			} else {
-				Renderer::PreInitialize(&argc, argv, name, startX, startY);
+				WindowInitializer::WindowInitialize(&argc, argv, name, startX, startY);
 			}
 		} else {
-			Renderer::PreInitialize(&argc, argv, name);
+			WindowInitializer::WindowInitialize(&argc, argv, name);
 		}
 	}
 	catch (const std::exception& e) {
@@ -266,12 +267,12 @@ int main(int argc, char** argv) {
 	}
 
 	//callbacks
-	glfwSetFramebufferSizeCallback(Renderer::glfw_window, Renderer::windowResizeFunc);
-	glfwSetKeyCallback(Renderer::glfw_window, KeypressManager::keyCallbackFunc);
-	glfwSetMouseButtonCallback(Renderer::glfw_window, DeveloperManager::mouseButtonCallbackFunc);
-	glfwSetCursorPosCallback(Renderer::glfw_window, DeveloperManager::mouseCursorPosCallbackFunc);
-	glfwSetScrollCallback(Renderer::glfw_window, DeveloperManager::mouseScrollCallbackFunc);
-	glfwSetWindowCloseCallback(Renderer::glfw_window, StatisticsHandler::DumpData);
+	glfwSetFramebufferSizeCallback(WindowInitializer::glfw_window, WindowInitializer::windowResizeFunc);
+	glfwSetKeyCallback(WindowInitializer::glfw_window, KeypressManager::keyCallbackFunc);
+	glfwSetMouseButtonCallback(WindowInitializer::glfw_window, DeveloperManager::mouseButtonCallbackFunc);
+	glfwSetCursorPosCallback(WindowInitializer::glfw_window, DeveloperManager::mouseCursorPosCallbackFunc);
+	glfwSetScrollCallback(WindowInitializer::glfw_window, DeveloperManager::mouseScrollCallbackFunc);
+	glfwSetWindowCloseCallback(WindowInitializer::glfw_window, StatisticsHandler::DumpData);
 
 	//prepare for incoming data:
 	PowerupDataGovernor::initialize();
@@ -483,7 +484,7 @@ int main(int argc, char** argv) {
 
 	//main loop:
 	double startTime = glfwGetTime();
-	while (!glfwWindowShouldClose(Renderer::glfw_window)) {
+	while (!glfwWindowShouldClose(WindowInitializer::glfw_window)) {
 		//do the frame:
 
 		glfwPollEvents();
@@ -526,6 +527,7 @@ int main(int argc, char** argv) {
 
 	PhysicsHandler::Uninitialize();
 	Renderer::Uninitialize();
+	WindowInitializer::UninitializeWindow();
 
 	rpmalloc_finalize();
 	return 0;

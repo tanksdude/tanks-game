@@ -222,6 +222,7 @@ add_executable(${PROJECT_NAME}
 	tanks-game/_source/tank.cpp
 	tanks-game/_source/wall-manager.cpp
 	tanks-game/_source/wall.cpp
+	tanks-game/_source/window-initializer.cpp
 	tanks-game/_source/main.cpp
 )
 
