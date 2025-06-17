@@ -1,15 +1,15 @@
 #pragma once
-#include "vertex-array.h"
+#include "vertex-array-object.h"
 
-class OpenGLVertexArray : public VertexArray {
+class OpenGLVertexArrayObject : public VertexArrayObject {
 protected:
 	std::vector<const VertexBuffer*> vertexBuffers;
 	const IndexBuffer* indexBuffer;
 	unsigned int vertexBufferIndex;
 
 public:
-	OpenGLVertexArray();
-	~OpenGLVertexArray();
+	OpenGLVertexArrayObject();
+	~OpenGLVertexArrayObject();
 
 	void Bind() const override;
 	void Unbind() const override;

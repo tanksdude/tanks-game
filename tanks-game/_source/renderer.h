@@ -7,7 +7,7 @@
 #include "color-value-holder.h" //for bullets
 
 #include "graphics/rendering-context.h"
-#include "graphics/vertex-array.h"
+#include "graphics/vertex-array-object.h"
 #include "graphics/vertex-buffer.h"
 #include "graphics/index-buffer.h"
 #include "graphics/shader.h"
@@ -35,7 +35,7 @@ private:
 	static void SetViewMatrix(float cameraX, float cameraY, float cameraZ, float targetX, float targetY, float targetZ);
 	static void SetProjectionMatrix();
 	static inline void bindShader(Shader*);
-	static inline void bindVertexArray(const VertexArray*);
+	static inline void bindVertexArrayObject(const VertexArrayObject*);
 	static inline void bindIndexBuffer(const IndexBuffer*);
 
 	static void UnbindAll();
@@ -79,10 +79,10 @@ private:
 	static void BatchedFlush(const MainBatched_VertexData* drawData);
 	static void BulletFlush(const Bullet_VertexData* drawData);
 
-	static VertexArray* batched_va;
+	static VertexArrayObject* batched_vao;
 	static VertexBuffer* batched_vb;
 	static IndexBuffer* batched_ib;
-	static VertexArray* instanced_va;
+	static VertexArrayObject* instanced_vao;
 	static VertexBuffer* instanced_vb_pos;
 	static VertexBuffer* instanced_vb_color;
 	static VertexBuffer* instanced_vb_life;

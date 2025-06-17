@@ -1,4 +1,4 @@
-#include "opengl-vertex-array.h"
+#include "opengl-vertex-array-object.h"
 
 #include <stdexcept>
 
@@ -6,25 +6,25 @@
 #include "opengl-vertex-buffer.h"
 #include "opengl-index-buffer.h"
 
-OpenGLVertexArray::OpenGLVertexArray() {
+OpenGLVertexArrayObject::OpenGLVertexArrayObject() {
 	glGenVertexArrays(1, &rendererID);
 	indexBuffer = nullptr;
 	vertexBufferIndex = 0;
 }
 
-OpenGLVertexArray::~OpenGLVertexArray() {
+OpenGLVertexArrayObject::~OpenGLVertexArrayObject() {
 	glDeleteVertexArrays(1, &rendererID);
 }
 
-void OpenGLVertexArray::Bind() const {
+void OpenGLVertexArrayObject::Bind() const {
 	glBindVertexArray(rendererID);
 }
 
-void OpenGLVertexArray::Unbind() const {
+void OpenGLVertexArrayObject::Unbind() const {
 	glBindVertexArray(0);
 }
 
-void OpenGLVertexArray::AddVertexBuffer(const VertexBuffer* vb) {
+void OpenGLVertexArrayObject::AddVertexBuffer(const VertexBuffer* vb) {
 	glBindVertexArray(rendererID);
 	vb->Bind();
 	vertexBuffers.push_back(vb);
@@ -33,7 +33,7 @@ void OpenGLVertexArray::AddVertexBuffer(const VertexBuffer* vb) {
 	for (const VertexBufferElement& element : layout.getElements()) {
 		switch (element.type) {
 			default:
-				throw std::domain_error("ERROR: Unknown VBO element type!");
+				throw std::domain_error("ERROR: Unknown VB element type!");
 
 			case ShaderDataType::Float:  [[fallthrough]];
 			case ShaderDataType::Float2: [[fallthrough]];
@@ -88,7 +88,7 @@ void OpenGLVertexArray::AddVertexBuffer(const VertexBuffer* vb) {
 	}
 }
 
-void OpenGLVertexArray::SetIndexBuffer(const IndexBuffer* ib) {
+void OpenGLVertexArrayObject::SetIndexBuffer(const IndexBuffer* ib) {
 	glBindVertexArray(rendererID);
 	ib->Bind();
 	indexBuffer = ib;

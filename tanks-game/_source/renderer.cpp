@@ -22,10 +22,10 @@ AvailableRenderingContexts Renderer::renderingMethodType;
 std::unordered_map<std::string, Shader*> Renderer::shaderStorage;
 Shader* Renderer::boundShader = nullptr;
 
-VertexArray* Renderer::batched_va;
+VertexArrayObject* Renderer::batched_vao;
 VertexBuffer* Renderer::batched_vb;
 IndexBuffer* Renderer::batched_ib;
-VertexArray* Renderer::instanced_va;
+VertexArrayObject* Renderer::instanced_vao;
 VertexBuffer* Renderer::instanced_vb_pos;
 VertexBuffer* Renderer::instanced_vb_color;
 VertexBuffer* Renderer::instanced_vb_life;
@@ -164,8 +164,8 @@ inline void Renderer::bindShader(Shader* shader) {
 	SetProjectionMatrix();
 }
 
-inline void Renderer::bindVertexArray(const VertexArray* va) {
-	va->Bind();
+inline void Renderer::bindVertexArrayObject(const VertexArrayObject* vao) {
+	vao->Bind();
 }
 
 inline void Renderer::bindIndexBuffer(const IndexBuffer* ib) {
@@ -192,7 +192,7 @@ Shader* Renderer::getShader(const std::string& s) {
 }
 
 void Renderer::UnbindAll() {
-	glBindVertexArray(0); //vertex array
+	glBindVertexArray(0); //vertex array object
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); //index buffer
 	glUseProgram(0); //shader
 
@@ -242,14 +242,14 @@ void Renderer::ActuallyFlush() {
 			if (sceneDrawCalls[j]->m_shaderName != currentShaderName) {
 				if (sceneDrawCalls[j]->m_shaderName == "main") {
 					bindShader(Renderer::getShader("main"));
-					bindVertexArray(batched_va);
+					bindVertexArrayObject(batched_vao);
 					//bindIndexBuffer(batched_ib); //TODO: is this necessary?
 				} else if (sceneDrawCalls[j]->m_shaderName == "bullet") {
 					instanced_vb_pos->modifyData(Bullet::instanced_vertices, sizeof(Bullet::instanced_vertices));
 					instanced_ib->modifyData(Bullet::instanced_indices, sizeof(Bullet::instanced_indices));
 
 					bindShader(Renderer::getShader("bullet"));
-					bindVertexArray(instanced_va);
+					bindVertexArrayObject(instanced_vao);
 					//bindIndexBuffer(instanced_ib); //TODO: is this necessary?
 				} else {
 					//oh no
@@ -320,9 +320,9 @@ bool Renderer::initializeGPU() {
 
 	batched_ib = IndexBuffer::MakeIndexBuffer(indices, MainBatched_VertexData::maxIndicesDataLength);
 
-	batched_va = VertexArray::MakeVertexArray();
-	batched_va->AddVertexBuffer(batched_vb);
-	batched_va->SetIndexBuffer(batched_ib);
+	batched_vao = VertexArrayObject::MakeVertexArrayObject();
+	batched_vao->AddVertexBuffer(batched_vb);
+	batched_vao->SetIndexBuffer(batched_ib);
 
 	delete[] positions;
 	delete[] indices;
@@ -359,12 +359,12 @@ bool Renderer::initializeGPU() {
 
 	instanced_ib = IndexBuffer::MakeIndexBuffer(indices_instanced, MainBatched_VertexData::maxIndicesDataLength);
 
-	instanced_va = VertexArray::MakeVertexArray();
-	instanced_va->AddVertexBuffer(instanced_vb_pos);
-	instanced_va->AddVertexBuffer(instanced_vb_color);
-	instanced_va->AddVertexBuffer(instanced_vb_life);
-	instanced_va->AddVertexBuffer(instanced_vb_mat);
-	instanced_va->SetIndexBuffer(instanced_ib);
+	instanced_vao = VertexArrayObject::MakeVertexArrayObject();
+	instanced_vao->AddVertexBuffer(instanced_vb_pos);
+	instanced_vao->AddVertexBuffer(instanced_vb_color);
+	instanced_vao->AddVertexBuffer(instanced_vb_life);
+	instanced_vao->AddVertexBuffer(instanced_vb_mat);
+	instanced_vao->SetIndexBuffer(instanced_ib);
 
 	delete[] positions_instanced;
 	delete[] indices_instanced;
@@ -378,10 +378,10 @@ bool Renderer::uninitializeGPU() {
 		return false;
 	}
 
-	delete batched_va;
+	delete batched_vao;
 	delete batched_vb;
 	delete batched_ib;
-	delete instanced_va;
+	delete instanced_vao;
 	delete instanced_vb_pos;
 	delete instanced_vb_color;
 	delete instanced_vb_life;
@@ -467,7 +467,7 @@ void Renderer::BatchedFlush(const MainBatched_VertexData* drawData) {
 	batched_vb->modifyData(drawData->m_vertices.data(), drawData->m_vertices.size() * sizeof(float));
 	batched_ib->modifyData(drawData->m_indices.data(), drawData->m_indices.size() * sizeof(unsigned int));
 
-	glDrawElements(GL_TRIANGLES, batched_va->GetIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
+	glDrawElements(GL_TRIANGLES, batched_vao->GetIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
 	//glDrawElements(GL_TRIANGLES, drawData->m_indices.size(), GL_UNSIGNED_INT, nullptr);
 }
 

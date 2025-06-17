@@ -1,19 +1,19 @@
-#include "vertex-array.h"
+#include "vertex-array-object.h"
 
 #include <stdexcept>
 
 #include "../renderer.h"
-#include "opengl-vertex-array.h"
+#include "opengl-vertex-array-object.h"
 
-VertexArray* VertexArray::MakeVertexArray() {
+VertexArrayObject* VertexArrayObject::MakeVertexArrayObject() {
 	AvailableRenderingContexts API = Renderer::GetContext();
 	switch (API) {
 		case AvailableRenderingContexts::OpenGL:
-			return new OpenGLVertexArray();
+			return new OpenGLVertexArrayObject();
 		case AvailableRenderingContexts::software:
-			//return new SoftwareVertexArray();
+			//return new SoftwareVertexArrayObject();
 		case AvailableRenderingContexts::null_rendering:
-			//return new NullVertexArray();
+			//return new NullVertexArrayObject();
 		default:
 			throw std::invalid_argument("ERROR: Unknown rendering API!");
 	}

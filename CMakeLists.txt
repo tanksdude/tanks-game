@@ -79,10 +79,10 @@ add_executable(${PROJECT_NAME}
 	tanks-game/_source/graphics/opengl-index-buffer.cpp
 	tanks-game/_source/graphics/opengl-rendering-context.cpp
 	tanks-game/_source/graphics/opengl-shader.cpp
-	tanks-game/_source/graphics/opengl-vertex-array.cpp
+	tanks-game/_source/graphics/opengl-vertex-array-object.cpp
 	tanks-game/_source/graphics/opengl-vertex-buffer.cpp
 	tanks-game/_source/graphics/shader.cpp
-	tanks-game/_source/graphics/vertex-array.cpp
+	tanks-game/_source/graphics/vertex-array-object.cpp
 	tanks-game/_source/graphics/vertex-buffer.cpp
 	tanks-game/_source/hazard-data-governor.cpp
 	tanks-game/_source/hazard-manager.cpp

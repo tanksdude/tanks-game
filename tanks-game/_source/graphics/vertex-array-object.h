@@ -2,7 +2,7 @@
 #include "vertex-buffer.h"
 #include "index-buffer.h"
 
-class VertexArray {
+class VertexArrayObject {
 protected:
 	unsigned int rendererID;
 
@@ -18,6 +18,6 @@ public:
 
 	unsigned int getRendererID() const { return rendererID; }
 
-	static VertexArray* MakeVertexArray();
-	virtual ~VertexArray() { return; }
+	static VertexArrayObject* MakeVertexArrayObject();
+	virtual ~VertexArrayObject() { return; }
 };
