@@ -78,6 +78,7 @@ add_executable(${PROJECT_NAME}
 	tanks-game/_source/graphics/index-buffer.cpp
 	tanks-game/_source/graphics/opengl-index-buffer.cpp
 	tanks-game/_source/graphics/opengl-rendering-context.cpp
+	tanks-game/_source/graphics/opengl-shader.cpp
 	tanks-game/_source/graphics/opengl-vertex-array.cpp
 	tanks-game/_source/graphics/opengl-vertex-buffer.cpp
 	tanks-game/_source/graphics/shader.cpp

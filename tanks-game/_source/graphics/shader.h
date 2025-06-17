@@ -1,32 +1,22 @@
 #pragma once
 #include <string>
-#include <vector>
-#include <unordered_map>
 #include <glm.hpp>
-#include <GL/glew.h>
 
 class Shader {
-private:
+protected:
 	std::string vert_filepath;
 	std::string frag_filepath;
 	unsigned int rendererID;
-	std::unordered_map<std::string, int> uniformLocationCache;
-
-	int getUniformLocation(const std::string& name);
-
-	static void read_shader_src(const char* fname, std::vector<char>& buffer);
-	static GLuint load_and_compile_shader(const char* fname, GLenum shaderType);
-	static GLuint create_program(const char* path_vert_shader, const char* path_frag_shader);
 
 public:
-	Shader(const std::string& vert_filepath, const std::string& frag_filepath);
-	~Shader();
+	virtual void setUniform4f(const std::string& name, float v0, float v1, float v2, float v3) = 0;
+	virtual void setUniformMat4f(const std::string& name, const glm::mat4& matrix) = 0;
 
-	void Bind() const;
-	void Unbind() const;
-
-	void setUniform4f(const std::string& name, float v0, float v1, float v2, float v3);
-	void setUniformMat4f(const std::string& name, const glm::mat4& matrix);
+	virtual void Bind() const = 0;
+	virtual void Unbind() const = 0;
 
 	unsigned int getRendererID() const { return rendererID; }
+
+	static Shader* MakeShader(const std::string& vert_filepath, const std::string& frag_filepath);
+	virtual ~Shader() { return; }
 };

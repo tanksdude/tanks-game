@@ -13,6 +13,8 @@
 #include "diagnostics.h"
 #include "game-manager.h" //for isDebugDrawingEnabled()
 
+#include <GL/glew.h>
+
 glm::mat4 Renderer::proj = glm::ortho(0.0f, (float)GAME_WIDTH, 0.0f, (float)GAME_HEIGHT);
 RenderingContext* Renderer::renderingMethod = nullptr;
 AvailableRenderingContexts Renderer::renderingMethodType;
@@ -81,13 +83,13 @@ void Renderer::SetContext(const std::string& API) {
 void Renderer::Initialize() {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-	Shader* shader = new Shader("res/shaders/main.vert", "res/shaders/main.frag");
+	Shader* shader = Shader::MakeShader("res/shaders/OpenGL/main.vert", "res/shaders/OpenGL/main.frag");
 	shaderStorage.insert({ "main", shader });
 
-	//shader = new Shader("res/shaders/default.vert", "res/shaders/default.frag");
+	//shader = Shader::MakeShader("res/shaders/OpenGL/default.vert", "res/shaders/OpenGL/default.frag");
 	//shaderStorage.insert({ "default", shader });
 
-	shader = new Shader("res/shaders/bullet.vert", "res/shaders/bullet.frag");
+	shader = Shader::MakeShader("res/shaders/OpenGL/bullet.vert", "res/shaders/OpenGL/bullet.frag");
 	shaderStorage.insert({ "bullet", shader });
 
 	initializeGPU();

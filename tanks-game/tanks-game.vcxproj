@@ -124,6 +124,7 @@
     <ClCompile Include="_source\graphics\index-buffer.cpp" />
     <ClCompile Include="_source\graphics\opengl-index-buffer.cpp" />
     <ClCompile Include="_source\graphics\opengl-rendering-context.cpp" />
+    <ClCompile Include="_source\graphics\opengl-shader.cpp" />
     <ClCompile Include="_source\graphics\opengl-vertex-array.cpp" />
     <ClCompile Include="_source\graphics\opengl-vertex-buffer.cpp" />
     <ClCompile Include="_source\graphics\shader.cpp" />
@@ -306,6 +307,7 @@
     <ClInclude Include="_source\graphics\null-rendering-context.h" />
     <ClInclude Include="_source\graphics\opengl-index-buffer.h" />
     <ClInclude Include="_source\graphics\opengl-rendering-context.h" />
+    <ClInclude Include="_source\graphics\opengl-shader.h" />
     <ClInclude Include="_source\graphics\opengl-vertex-array.h" />
     <ClInclude Include="_source\graphics\opengl-vertex-buffer.h" />
     <ClInclude Include="_source\graphics\rendering-context.h" />
