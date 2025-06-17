@@ -15,6 +15,10 @@
 SimpleVector2D Bullet::body_vertices[Bullet::BulletSideCount + 1];
 unsigned int Bullet::body_indices[Bullet::BulletSideCount * 3];
 unsigned int Bullet::outline_indices[Bullet::BulletSideCount * 2*3];
+float Bullet::instanced_vertices[2 * ((Bullet::BulletSideCount + 2) + (Bullet::BulletSideCount + 1) + (Bullet::BulletSideCount * 2))];
+unsigned int Bullet::instanced_indices[Bullet::BulletSideCount * 3 * (1+1+2)];
+const float Bullet::outline_width_multiplier = 1.0 / 16;
+const float Bullet::death_circle_multiplier = 1.25;
 bool Bullet::initialized_vertices = false;
 
 const ColorValueHolder Bullet::default_color = ColorValueHolder(0.5f, 0.5f, 0.5f);
@@ -108,6 +112,54 @@ bool Bullet::initializeVertices() {
 		outline_indices[i*6+3] = (i*2+3) % (Bullet::BulletSideCount*2);
 		outline_indices[i*6+4] = (i*2+2) % (Bullet::BulletSideCount*2);
 		outline_indices[i*6+5] =  i*2;
+	}
+
+	instanced_vertices[0] = 0;
+	instanced_vertices[1] = 0;
+	for (int i = 0; i < (Bullet::BulletSideCount + 2) - 1; i++) {
+		const unsigned int startIdx = 2;
+		instanced_vertices[startIdx + i*2]   = Bullet::death_circle_multiplier * static_cast<float>(std::cos(i * (2*PI / Bullet::BulletSideCount) + PI/2));
+		instanced_vertices[startIdx + i*2+1] = Bullet::death_circle_multiplier * static_cast<float>(std::sin(i * (2*PI / Bullet::BulletSideCount) + PI/2));
+	}
+
+	instanced_vertices[2*(Bullet::BulletSideCount + 2)]     = 0;
+	instanced_vertices[2*(Bullet::BulletSideCount + 2) + 1] = 0;
+	for (int i = 0; i < (Bullet::BulletSideCount + 1) - 1; i++) {
+		const unsigned int startIdx = 2 * ((Bullet::BulletSideCount + 2) + 1);
+		instanced_vertices[startIdx + i*2]   = std::cos(i * (2*PI / Bullet::BulletSideCount));
+		instanced_vertices[startIdx + i*2+1] = std::sin(i * (2*PI / Bullet::BulletSideCount));
+	}
+
+	for (int i = 0; i < Bullet::BulletSideCount; i++) {
+		const unsigned int startIdx = 2 * ((Bullet::BulletSideCount + 2) + (Bullet::BulletSideCount + 1));
+		instanced_vertices[startIdx + i*4]   = (1.0f + Bullet::outline_width_multiplier) * static_cast<float>(std::cos(i * (2*PI / Bullet::BulletSideCount)));
+		instanced_vertices[startIdx + i*4+1] = (1.0f + Bullet::outline_width_multiplier) * static_cast<float>(std::sin(i * (2*PI / Bullet::BulletSideCount)));
+		instanced_vertices[startIdx + i*4+2] = (1.0f - Bullet::outline_width_multiplier) * static_cast<float>(std::cos(i * (2*PI / Bullet::BulletSideCount)));
+		instanced_vertices[startIdx + i*4+3] = (1.0f - Bullet::outline_width_multiplier) * static_cast<float>(std::sin(i * (2*PI / Bullet::BulletSideCount)));
+	}
+
+	//death circle
+	for (int i = 0; i < Bullet::BulletSideCount; i++) {
+		instanced_indices[i*3]   = 0;
+		instanced_indices[i*3+1] = (i+1);
+		instanced_indices[i*3+2] = (i+2);
+	}
+	//body
+	for (int i = 0; i < Bullet::BulletSideCount; i++) {
+		const unsigned int startPos = (Bullet::BulletSideCount + 2);
+		instanced_indices[Bullet::BulletSideCount*3 + i*3]   = startPos + 0;
+		instanced_indices[Bullet::BulletSideCount*3 + i*3+1] = startPos + (i+1);
+		instanced_indices[Bullet::BulletSideCount*3 + i*3+2] = startPos + (i+1) % Bullet::BulletSideCount + 1;
+	}
+	//outline
+	for (int i = 0; i < Bullet::BulletSideCount; i++) {
+		const unsigned int startPos = (Bullet::BulletSideCount + 2) + (Bullet::BulletSideCount + 1);
+		instanced_indices[Bullet::BulletSideCount*2*3 + i*6]   = startPos +  i*2;
+		instanced_indices[Bullet::BulletSideCount*2*3 + i*6+1] = startPos +  i*2+1;
+		instanced_indices[Bullet::BulletSideCount*2*3 + i*6+2] = startPos + (i*2+3) % (Bullet::BulletSideCount*2);
+		instanced_indices[Bullet::BulletSideCount*2*3 + i*6+3] = startPos + (i*2+3) % (Bullet::BulletSideCount*2);
+		instanced_indices[Bullet::BulletSideCount*2*3 + i*6+4] = startPos + (i*2+2) % (Bullet::BulletSideCount*2);
+		instanced_indices[Bullet::BulletSideCount*2*3 + i*6+5] = startPos +  i*2;
 	}
 
 	initialized_vertices = true;
@@ -436,6 +488,9 @@ const ColorValueHolder& Bullet::getColor() const {
 }
 
 void Bullet::draw() const {
+	drawEverythingNew();
+
+	/*
 	const GameSettings& game_settings = GameManager::get_settings();
 
 	if (game_settings.Bullet_PerformanceMode) {
@@ -446,6 +501,7 @@ void Bullet::draw() const {
 		drawBody();
 		drawOutline();
 	}
+	*/
 }
 
 void Bullet::draw(DrawingLayers layer) const {
@@ -546,6 +602,19 @@ void Bullet::ghostDraw(DrawingLayers layer, float alpha) const {
 			//later
 			break;
 	}
+}
+
+inline void Bullet::drawEverythingNew(float alpha) const {
+	alpha = std::clamp<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
+
+	ColorValueHolder color = getColor();
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
+
+	//TODO: see if passing a a_BulletRadius and/or a_BulletPos would be faster
+	glm::mat4 modelMatrix = Renderer::GenerateModelMatrix_NoRotate(this->r, this->r, this->x, this->y);
+
+	Renderer::SubmitBulletDrawCall(this->lifeValue / 100.0f, color, modelMatrix);
 }
 
 inline void Bullet::drawBody(float alpha) const {

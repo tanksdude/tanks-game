@@ -4,6 +4,7 @@
 #include <vector>
 #include <unordered_map>
 #include <glm.hpp>
+#include "color-value-holder.h" //for bullets
 
 #include "graphics/rendering-context.h"
 #include "graphics/vertex-array.h"
@@ -54,7 +55,7 @@ private:
 	//static std::atomic_bool thread_keepRunning;
 
 private:
-	static std::unordered_map<std::string, Shader*> shaderCache;
+	static std::unordered_map<std::string, Shader*> shaderStorage;
 	static unsigned int currentShader;
 	static unsigned int currentVertexArray;
 	static unsigned int currentIndexBuffer;
@@ -74,22 +75,55 @@ private:
 	static std::string getErrorString(GLenum err);
 
 private:
-	static std::unordered_map<std::string, std::vector<std::pair<std::vector<float>, std::vector<unsigned int>>>> sceneData; //<vertices, indices>
+	struct VertexDrawingData {
+		std::string m_shaderName;
+		virtual ~VertexDrawingData() {} //TODO
+	};
+
+	struct MainBatched_VertexData final : public VertexDrawingData {
+		std::vector<float> m_vertices;
+		std::vector<unsigned int> m_indices;
+		//static const unsigned int maxVerticesDataLength; //TODO
+		//static const unsigned int maxIndicesDataLength; //TODO
+		bool enoughRoomForMoreVertices(unsigned int pushLength);
+		bool enoughRoomForMoreIndices(unsigned int pushLength);
+		MainBatched_VertexData();
+	};
+
+	struct Bullet_VertexData final : public VertexDrawingData {
+		std::vector<float> m_colors;
+		std::vector<float> m_lifeValues;
+		std::vector<float> m_modelMatrices;
+		bool enoughRoomForMoreColors(unsigned int pushLength);
+		bool enoughRoomForMoreLifeValues(unsigned int pushLength);
+		bool enoughRoomForMoreMatrices(unsigned int pushLength);
+		Bullet_VertexData();
+	};
+
+	static std::unordered_map<std::string, std::vector<VertexDrawingData*>> sceneData; //TODO: store the vectors somewhere, move them there at end of frame, pull them out as needed
 	static std::vector<std::string> sceneList;
 	static std::string currentSceneName;
-	static std::vector<float>* currentVerticesData;
-	static std::vector<unsigned int>* currentIndicesData;
-	static const int maxVerticesDataLength;
-	static const int maxIndicesDataLength;
-	static inline bool enoughRoomForMoreVertices(int pushLength);
-	static inline bool enoughRoomForMoreIndices(int pushLength);
-	static inline void pushAnotherDataList();
+	//static std::vector<float>* currentVerticesData;
+	//static std::vector<unsigned int>* currentIndicesData;
+	static const unsigned int maxVerticesDataLength;
+	static const unsigned int maxIndicesDataLength;
+	//static inline bool enoughRoomForMoreVertices(int pushLength);
+	//static inline bool enoughRoomForMoreIndices(int pushLength);
+	//static inline void pushAnotherDataList();
 	static void ActuallyFlush();
-	static void BatchedFlush(std::vector<float>& vertices, std::vector<unsigned int>& indices);
+	//static void BatchedFlush(std::vector<float>& vertices, std::vector<unsigned int>& indices);
+	static void BatchedFlush_New(MainBatched_VertexData* drawData);
+	static void BulletFlush(Bullet_VertexData* drawData);
 
 	static VertexArray* batched_va;
 	static VertexBuffer* batched_vb;
 	static IndexBuffer* batched_ib;
+	static VertexArray* instanced_va;
+	static VertexBuffer* instanced_vb_pos;
+	static VertexBuffer* instanced_vb_color;
+	static VertexBuffer* instanced_vb_life;
+	static VertexBuffer* instanced_vb_mat;
+	static IndexBuffer* instanced_ib;
 	static bool initialized_GPU;
 
 	static bool initializeGPU();
@@ -106,7 +140,8 @@ public:
 
 	static void Clear();
 	static void BeginScene(std::string name); //name of scene, to push timing to diagnostics
-	static void SubmitBatchedDraw(const float* posAndColor, int posAndColorLength, const unsigned int* indices, int indicesLength);
+	static void SubmitBatchedDraw(const float* posAndColor, unsigned int posAndColorLength, const unsigned int* indices, unsigned int indicesLength);
+	static void SubmitBulletDrawCall(float bulletLife, const ColorValueHolder& color, const glm::mat4& modelMatrix);
 	static void EndScene();
 	static void Flush();
 	static bool isDebugDrawingEnabled(std::string name); //should this really be here?

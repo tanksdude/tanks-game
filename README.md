@@ -11,7 +11,7 @@ The C++ upgrade of my [JavaScript game](https://uncreativeusername.neocities.org
 ### Requirements
 
 * OpenGL 3.3 or later
-    * Earlier versions almost certainly work if you update the shaders (change `#version 330 core` to `#version 150 core` or [whatever](https://en.wikipedia.org/wiki/OpenGL_Shading_Language#Versions))
+    * Earlier versions not supported; 3.3+ is required for instanced rendering of the bullets, allowing far better performance
     * Your GPU almost certainly supports this (yes, even if it's an ancient Thinkpad)
         * Apparently there are some Windows ARM laptops that only support DirectX, so those aren't supported
 * 3GHz+ CPU recommended

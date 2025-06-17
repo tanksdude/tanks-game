@@ -24,6 +24,7 @@
     * rewrote collision to be single-pass across the various object types
     * multithreading option for broad phase of collision
         * performance improvement is decent, not amazing
+    * instanced rendering for bullets: much more efficient, should have been doing this the whole time
     * countless small things adding up, like better cache alignment
 * render game in center of window (instead of bottom/left)
 * added a window icon

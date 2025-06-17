@@ -24,6 +24,7 @@ class Bullet : public GameThing, public Circle, public DrawableThing {
 	friend class ResetThings;
 	friend class PowerFunctionHelper;
 	friend class EndGameHandler;
+	friend class Renderer; //only to access the vertices
 
 public: //hopefully temporary
 	SimpleVector2D velocity;
@@ -92,6 +93,7 @@ protected:
 	inline void drawOutline(float alpha = 1.0f) const;
 	inline void drawDeathCooldown(float alpha = 1.0f) const;
 	inline void drawDeathBar(float alpha = 1.0f) const;
+	inline void drawEverythingNew(float alpha = 1.0f) const;
 
 private:
 	//NOTE: bullets have half the normal circle vertices
@@ -99,6 +101,11 @@ private:
 	static SimpleVector2D body_vertices[BulletSideCount + 1];
 	static unsigned int body_indices[BulletSideCount * 3];
 	static unsigned int outline_indices[BulletSideCount * 2*3];
+
+	static float instanced_vertices[2 * ((BulletSideCount + 2) + (BulletSideCount + 1) + (BulletSideCount * 2))];
+	static unsigned int instanced_indices[BulletSideCount * 3 * (1+1+2)];
+	static const float outline_width_multiplier;
+	static const float death_circle_multiplier;
 	static bool initialized_vertices;
 public:
 	static bool initializeVertices(); //initialized in main()
