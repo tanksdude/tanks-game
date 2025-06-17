@@ -128,7 +128,7 @@ void GameMainLoop::Tick() {
 	Diagnostics::clearTimes();
 
 	//std::cout << BulletManager::getNumBullets() << std::endl;
-	//std::cout << "tick: " << (long long)Diagnostics::getDiff(start, end) << "ms" << std::endl << std::endl;
+	//std::cout << "tick: " << Diagnostics::getDiff(start, end) << "ms" << std::endl;
 }
 
 void GameMainLoop::everythingToEverything() {
@@ -1256,7 +1256,7 @@ void GameMainLoop::drawMain() const {
 	//Diagnostics::printPreciseTimings();
 	Diagnostics::clearTimes();
 
-	//std::cout << "entire: " << (long long)Diagnostics::getDiff(start, end) << "ms" << std::endl << std::endl;
+	//std::cout << "entire: " << Diagnostics::getDiff(start, end) << "ms" << std::endl << std::endl;
 }
 
 void GameMainLoop::drawLayer(DrawingLayers layer) const {
@@ -1311,7 +1311,7 @@ void GameMainLoop::drawLayer(DrawingLayers layer) const {
 	//Diagnostics::printPreciseTimings();
 	//Diagnostics::clearTimes();
 
-	//std::cout << "entire: " << (long long)Diagnostics::getDiff(start, end) << "ms" << std::endl << std::endl;
+	//std::cout << "entire: " << Diagnostics::getDiff(start, end) << "ms" << std::endl << std::endl;
 }
 
 void GameMainLoop::drawAllLayers() const {

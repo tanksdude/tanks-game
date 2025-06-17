@@ -88,20 +88,9 @@ public:
 	void ghostDraw(float alpha) const override;
 	void ghostDraw(DrawingLayers, float alpha) const override;
 
-protected:
-	inline void drawBody(float alpha = 1.0f) const;
-	inline void drawOutline(float alpha = 1.0f) const;
-	inline void drawDeathCooldown(float alpha = 1.0f) const;
-	inline void drawDeathBar(float alpha = 1.0f) const;
-	inline void drawEverythingNew(float alpha = 1.0f) const;
-
 private:
 	//NOTE: bullets have half the normal circle vertices
 	static constexpr unsigned int BulletSideCount = Circle::NumOfSides / 2;
-	static SimpleVector2D body_vertices[BulletSideCount + 1];
-	static unsigned int body_indices[BulletSideCount * 3];
-	static unsigned int outline_indices[BulletSideCount * 2*3];
-
 	static float instanced_vertices[2 * ((BulletSideCount + 2) + (BulletSideCount + 1) + (BulletSideCount * 2))];
 	static unsigned int instanced_indices[BulletSideCount * 3 * (1+1+2)];
 	static const float outline_width_multiplier;

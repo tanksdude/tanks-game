@@ -10,11 +10,6 @@
 #include "color-mixer.h"
 #include "background-rect.h"
 
-#include "game-manager.h" //settings file
-
-SimpleVector2D Bullet::body_vertices[Bullet::BulletSideCount + 1];
-unsigned int Bullet::body_indices[Bullet::BulletSideCount * 3];
-unsigned int Bullet::outline_indices[Bullet::BulletSideCount * 2*3];
 float Bullet::instanced_vertices[2 * ((Bullet::BulletSideCount + 2) + (Bullet::BulletSideCount + 1) + (Bullet::BulletSideCount * 2))];
 unsigned int Bullet::instanced_indices[Bullet::BulletSideCount * 3 * (1+1+2)];
 const float Bullet::outline_width_multiplier = 1.0 / 16;
@@ -92,26 +87,6 @@ Bullet::~Bullet() {
 bool Bullet::initializeVertices() {
 	if (initialized_vertices) [[likely]] {
 		return false;
-	}
-
-	body_vertices[0] = SimpleVector2D(0, 0);
-	for (int i = 1; i < Bullet::BulletSideCount+1; i++) {
-		body_vertices[i] = SimpleVector2D(std::cos((i-1) * (2*PI / Bullet::BulletSideCount) + PI/2), std::sin((i-1) * (2*PI / Bullet::BulletSideCount) + PI/2));
-	}
-
-	for (int i = 0; i < Bullet::BulletSideCount; i++) {
-		body_indices[i*3]   = 0;
-		body_indices[i*3+1] = i+1;
-		body_indices[i*3+2] = (i+1) % Bullet::BulletSideCount + 1;
-	}
-
-	for (int i = 0; i < Bullet::BulletSideCount; i++) {
-		outline_indices[i*6]   =  i*2;
-		outline_indices[i*6+1] =  i*2+1;
-		outline_indices[i*6+2] = (i*2+3) % (Bullet::BulletSideCount*2);
-		outline_indices[i*6+3] = (i*2+3) % (Bullet::BulletSideCount*2);
-		outline_indices[i*6+4] = (i*2+2) % (Bullet::BulletSideCount*2);
-		outline_indices[i*6+5] =  i*2;
 	}
 
 	instanced_vertices[0] = 0;
@@ -488,20 +463,7 @@ const ColorValueHolder& Bullet::getColor() const {
 }
 
 void Bullet::draw() const {
-	drawEverythingNew();
-
-	/*
-	const GameSettings& game_settings = GameManager::get_settings();
-
-	if (game_settings.Bullet_PerformanceMode) {
-		drawDeathBar();
-		drawBody();
-	} else {
-		drawDeathCooldown();
-		drawBody();
-		drawOutline();
-	}
-	*/
+	ghostDraw(1.0f);
 }
 
 void Bullet::draw(DrawingLayers layer) const {
@@ -532,9 +494,7 @@ void Bullet::draw(DrawingLayers layer) const {
 }
 
 void Bullet::poseDraw() const {
-	//don't bother checking for Bullet.PerformanceMode
-	drawBody();
-	drawOutline();
+	draw();
 }
 
 void Bullet::poseDraw(DrawingLayers layer) const {
@@ -565,16 +525,16 @@ void Bullet::poseDraw(DrawingLayers layer) const {
 }
 
 void Bullet::ghostDraw(float alpha) const {
-	const GameSettings& game_settings = GameManager::get_settings();
+	alpha = std::clamp<float>(alpha, 0, 1);
+	alpha = alpha * alpha;
 
-	if (game_settings.Bullet_PerformanceMode) {
-		drawDeathBar(alpha);
-		drawBody(alpha);
-	} else {
-		drawDeathCooldown(alpha);
-		drawBody(alpha);
-		drawOutline(alpha);
-	}
+	ColorValueHolder color = getColor();
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
+
+	//TODO: see if passing a_BulletRadius and/or a_BulletPos would be faster
+	glm::mat4 modelMatrix = Renderer::GenerateModelMatrix_NoRotate(this->r, this->r, this->x, this->y);
+
+	Renderer::SubmitBulletDrawCall(this->lifeValue / 100.0f, color, modelMatrix);
 }
 
 void Bullet::ghostDraw(DrawingLayers layer, float alpha) const {
@@ -601,190 +561,6 @@ void Bullet::ghostDraw(DrawingLayers layer, float alpha) const {
 		case DrawingLayers::debug:
 			//later
 			break;
-	}
-}
-
-inline void Bullet::drawEverythingNew(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
-	alpha = alpha * alpha;
-
-	ColorValueHolder color = getColor();
-	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-
-	//TODO: see if passing a a_BulletRadius and/or a_BulletPos would be faster
-	glm::mat4 modelMatrix = Renderer::GenerateModelMatrix_NoRotate(this->r, this->r, this->x, this->y);
-
-	Renderer::SubmitBulletDrawCall(this->lifeValue / 100.0f, color, modelMatrix);
-}
-
-inline void Bullet::drawBody(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
-	alpha = alpha * alpha;
-
-	ColorValueHolder color = getColor();
-	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-
-	float coordsAndColor[(Bullet::BulletSideCount+1)*(2+4)];
-	coordsAndColor[0] = x;
-	coordsAndColor[1] = y;
-	coordsAndColor[2] = color.getRf();
-	coordsAndColor[3] = color.getGf();
-	coordsAndColor[4] = color.getBf();
-	coordsAndColor[5] = color.getAf();
-	for (int i = 1; i < Bullet::BulletSideCount+1; i++) {
-		coordsAndColor[i*6]   = static_cast<float>(x) + static_cast<float>(r) * body_vertices[i].getXComp();
-		coordsAndColor[i*6+1] = static_cast<float>(y) + static_cast<float>(r) * body_vertices[i].getYComp();
-		coordsAndColor[i*6+2] = color.getRf();
-		coordsAndColor[i*6+3] = color.getGf();
-		coordsAndColor[i*6+4] = color.getBf();
-		coordsAndColor[i*6+5] = color.getAf();
-	}
-
-	Renderer::SubmitBatchedDraw(coordsAndColor, (Bullet::BulletSideCount+1)*(2+4), body_indices, Bullet::BulletSideCount*3);
-}
-
-inline void Bullet::drawOutline(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
-	alpha = alpha * alpha;
-
-	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
-	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	const float lineWidth = 0.5f;
-
-	float coordsAndColor[(Bullet::BulletSideCount*2)*(2+4)];
-	for (int i = 0; i < Bullet::BulletSideCount; i++) {
-		coordsAndColor[(i*2)  *6]   = static_cast<float>(x) + (static_cast<float>(r)-lineWidth) * body_vertices[i+1].getXComp();
-		coordsAndColor[(i*2)  *6+1] = static_cast<float>(y) + (static_cast<float>(r)-lineWidth) * body_vertices[i+1].getYComp();
-		coordsAndColor[(i*2+1)*6]   = static_cast<float>(x) + (static_cast<float>(r)+lineWidth) * body_vertices[i+1].getXComp();
-		coordsAndColor[(i*2+1)*6+1] = static_cast<float>(y) + (static_cast<float>(r)+lineWidth) * body_vertices[i+1].getYComp();
-
-		coordsAndColor[(i*2)  *6+2] = color.getRf();
-		coordsAndColor[(i*2)  *6+3] = color.getGf();
-		coordsAndColor[(i*2)  *6+4] = color.getBf();
-		coordsAndColor[(i*2)  *6+5] = color.getAf();
-		coordsAndColor[(i*2+1)*6+2] = color.getRf();
-		coordsAndColor[(i*2+1)*6+3] = color.getGf();
-		coordsAndColor[(i*2+1)*6+4] = color.getBf();
-		coordsAndColor[(i*2+1)*6+5] = color.getAf();
-	}
-
-	Renderer::SubmitBatchedDraw(coordsAndColor, (Bullet::BulletSideCount*2)*(2+4), outline_indices, Bullet::BulletSideCount*6);
-}
-
-inline void Bullet::drawDeathCooldown(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
-	alpha = alpha * alpha;
-
-	//checking glIsEnabled(GL_BLEND) to skip is an option (though the result should be stored somewhere to avoid GL calls)
-
-	if (this->lifeValue < 100) {
-		float deathPercent = std::max(this->lifeValue/100, 0.0f);
-		unsigned int deathTriangles = Bullet::BulletSideCount * deathPercent;
-
-		if (deathTriangles > 0) {
-			ColorValueHolder color = ColorValueHolder(1.0f, 1.0f, 1.0f);
-			color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-
-			float coordsAndColor[(Bullet::BulletSideCount+1)*(2+4)];
-			coordsAndColor[0] = x;
-			coordsAndColor[1] = y;
-			coordsAndColor[2] = color.getRf();
-			coordsAndColor[3] = color.getGf();
-			coordsAndColor[4] = color.getBf();
-			coordsAndColor[5] = color.getAf();
-			for (unsigned int i = 0; i <= deathTriangles && i < Bullet::BulletSideCount; i++) {
-				//the final triangle shares its last vertex with the first triangle, which is why this loop condition is a bit strange (second conditional only false for that last triangle)
-				//with wrong condition: two verts on an old bullet's death outline to the center of a new bullet's center body or death outline, though sometimes even a tank or rarely the bottom left corner (why)
-				//to be more specific: with the old conditional, think it was happening when deathTriangles==1, leading to pushing only two total verts but pushing three indices; but that would mean it was always pushing insufficient verts for the indices, why wasn't it showing up before?
-
-				SimpleVector2D vertex = SimpleVector2D(body_vertices[i+1]);
-				//this is a way to hide the lack of vertices: rotate the last vertex to the exact percent it should be
-				//requires std::ceil for deathTriangles, and to look correct it requires an additional vertex when nearly full (since it's shared with the last vertex)
-				/*
-				if (i == deathTriangles) {
-					float lastTriangleAngleDelta = float(2*PI) * std::fmod(1-deathPercent, 1.0f/Bullet::BulletSideCount);
-					vertex.scaleAndRotate((static_cast<float>(r)+2)*(9.0f/8.0f), -1 * lastTriangleAngleDelta);
-				} else {
-					vertex.multiplyMagnitude((static_cast<float>(r)+2)*(9.0f/8.0f));
-				}
-				*/
-
-				coordsAndColor[(i+1)*6]   = static_cast<float>(x) + vertex.getXComp() * (static_cast<float>(r)+2)*(9.0f/8.0f);
-				coordsAndColor[(i+1)*6+1] = static_cast<float>(y) + vertex.getYComp() * (static_cast<float>(r)+2)*(9.0f/8.0f);
-				coordsAndColor[(i+1)*6+2] = color.getRf();
-				coordsAndColor[(i+1)*6+3] = color.getGf();
-				coordsAndColor[(i+1)*6+4] = color.getBf();
-				coordsAndColor[(i+1)*6+5] = color.getAf();
-			}
-
-			Renderer::SubmitBatchedDraw(coordsAndColor, (deathTriangles < Bullet::BulletSideCount ? (deathTriangles+2)*(2+4) : (deathTriangles+1)*(2+4)), body_indices, deathTriangles*3);
-		}
-	}
-}
-
-inline void Bullet::drawDeathBar(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
-	alpha = alpha * alpha;
-
-	if (this->lifeValue < 100) {
-		float deathPercent = std::max(this->lifeValue/100, 0.0f);
-
-		//fill:
-
-		ColorValueHolder color_extra = ColorValueHolder(1.0f, 1.0f, 1.0f);
-		color_extra = ColorMixer::mix(BackgroundRect::getBackColor(), color_extra, alpha);
-
-		float coordsAndColor_extra[] = {
-			(this->x - this->r),                            (this->y - this->r*(6.0/4)),   color_extra.getRf(), color_extra.getGf(), color_extra.getBf(), color_extra.getAf(), //0
-			(this->x - this->r + deathPercent*(2*this->r)), (this->y - this->r*(6.0/4)),   color_extra.getRf(), color_extra.getGf(), color_extra.getBf(), color_extra.getAf(), //1
-			(this->x - this->r + deathPercent*(2*this->r)), (this->y - this->r*(5.0/4)),   color_extra.getRf(), color_extra.getGf(), color_extra.getBf(), color_extra.getAf(), //2
-			(this->x - this->r),                            (this->y - this->r*(5.0/4)),   color_extra.getRf(), color_extra.getGf(), color_extra.getBf(), color_extra.getAf()  //3
-		};
-		unsigned int indices_extra[] = {
-			0, 1, 2,
-			2, 3, 0,
-		};
-
-		Renderer::SubmitBatchedDraw(coordsAndColor_extra, 4 * (2+4), indices_extra, 2 * 3);
-
-		//outline (from Diagnostics):
-
-		ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
-		color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-		const float lineWidth = 0.5f;
-
-		float coordsAndColor[] = {
-			//outer
-			(this->x - this->r) - lineWidth, (this->y - this->r*(6.0/4)) - lineWidth,   color.getRf(), color.getGf(), color.getBf(), color.getAf(), //0
-			(this->x + this->r) + lineWidth, (this->y - this->r*(6.0/4)) - lineWidth,   color.getRf(), color.getGf(), color.getBf(), color.getAf(), //1
-			(this->x + this->r) + lineWidth, (this->y - this->r*(5.0/4)) + lineWidth,   color.getRf(), color.getGf(), color.getBf(), color.getAf(), //2
-			(this->x - this->r) - lineWidth, (this->y - this->r*(5.0/4)) + lineWidth,   color.getRf(), color.getGf(), color.getBf(), color.getAf(), //3
-
-			//inner
-			(this->x - this->r),             (this->y - this->r*(6.0/4)),               color.getRf(), color.getGf(), color.getBf(), color.getAf(), //4
-			(this->x + this->r),             (this->y - this->r*(6.0/4)),               color.getRf(), color.getGf(), color.getBf(), color.getAf(), //5
-			(this->x + this->r),             (this->y - this->r*(5.0/4)),               color.getRf(), color.getGf(), color.getBf(), color.getAf(), //6
-			(this->x - this->r),             (this->y - this->r*(5.0/4)),               color.getRf(), color.getGf(), color.getBf(), color.getAf()  //7
-		};
-		unsigned int indices[] = { //trapezoids
-			//bottom
-			0, 1, 5,
-			5, 4, 0,
-
-			//right
-			1, 2, 6,
-			6, 5, 1,
-
-			//left
-			4, 7, 3,
-			3, 0, 4,
-
-			//top
-			2, 3, 7,
-			7, 6, 2
-		};
-
-		Renderer::SubmitBatchedDraw(coordsAndColor, (4+4) * (2+4), indices, (4*2) * 3);
 	}
 }
 

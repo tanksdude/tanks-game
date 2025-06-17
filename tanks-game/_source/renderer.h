@@ -12,63 +12,32 @@
 #include "graphics/index-buffer.h"
 #include "graphics/shader.h"
 
-//#include <thread>
-//#include <atomic>
-//#include <mutex>
-
 enum class AvailableRenderingContexts {
 	OpenGL,
 	software,
 	null_rendering
 };
 
-/*
-enum class RenderingDrawTypes {
-	triangles, //main
-	line_loop,
-	line_strip,
-	lines,
-	points, //unused
-};
-*/
-
 class Renderer {
 	friend class WindowInitializer; //only to set the projection matrix
 
-public:
-	//static void thread_func();
-	//static std::mutex drawingDataLock;
-	//static std::atomic_bool thread_workExists;
-
 private:
 	static glm::mat4 proj;
-	static glm::mat4 getProj();
-
-	static float current_cameraX, current_cameraY, current_cameraZ, current_targetX, current_targetY, current_targetZ; //view matrix
-	static bool viewMatBound;
-	static bool projectionMatBound;
 
 	static AvailableRenderingContexts renderingMethodType;
 	static RenderingContext* renderingMethod;
 
-	//static std::thread graphicsThread;
-	//static std::atomic_bool thread_keepRunning;
-
 private:
 	static std::unordered_map<std::string, Shader*> shaderStorage;
-	static unsigned int currentShader;
-	static unsigned int currentVertexArray;
-	static unsigned int currentIndexBuffer;
+	static Shader* getShader(const std::string&); //does not bind the shader
 	static Shader* boundShader;
-	static inline void bindShader(Shader*);
-	static inline void bindShader(const Shader&);
-	static inline void bindVertexArray(const VertexArray&);
-	static inline void bindIndexBuffer(const IndexBuffer&);
-	static Shader* getShader(std::string);
 
-	static void Unbind(const VertexArray&);
-	static void Unbind(const IndexBuffer&);
-	static void Unbind(const Shader&);
+	static void SetViewMatrix(float cameraX, float cameraY, float cameraZ, float targetX, float targetY, float targetZ);
+	static void SetProjectionMatrix();
+	static inline void bindShader(Shader*);
+	static inline void bindVertexArray(const VertexArray*);
+	static inline void bindIndexBuffer(const IndexBuffer*);
+
 	static void UnbindAll();
 	static void Cleanup();
 
@@ -77,14 +46,16 @@ private:
 private:
 	struct VertexDrawingData {
 		std::string m_shaderName;
-		virtual ~VertexDrawingData() {} //TODO
+		//NOTE: normally a virtual destructor would be required (to avoid an enormous memory leak)
+		//however, the pointer is cast to the derived class before deleting, thus avoiding this requirement
+		//virtual ~VertexDrawingData() {}
 	};
 
 	struct MainBatched_VertexData final : public VertexDrawingData {
 		std::vector<float> m_vertices;
 		std::vector<unsigned int> m_indices;
-		//static const unsigned int maxVerticesDataLength; //TODO
-		//static const unsigned int maxIndicesDataLength; //TODO
+		static const unsigned int maxVerticesDataLength;
+		static const unsigned int maxIndicesDataLength;
 		bool enoughRoomForMoreVertices(unsigned int pushLength);
 		bool enoughRoomForMoreIndices(unsigned int pushLength);
 		MainBatched_VertexData();
@@ -94,6 +65,7 @@ private:
 		std::vector<float> m_colors;
 		std::vector<float> m_lifeValues;
 		std::vector<float> m_modelMatrices;
+		static const unsigned int maxDataLength; //TODO
 		bool enoughRoomForMoreColors(unsigned int pushLength);
 		bool enoughRoomForMoreLifeValues(unsigned int pushLength);
 		bool enoughRoomForMoreMatrices(unsigned int pushLength);
@@ -103,17 +75,9 @@ private:
 	static std::unordered_map<std::string, std::vector<VertexDrawingData*>> sceneData; //TODO: store the vectors somewhere, move them there at end of frame, pull them out as needed
 	static std::vector<std::string> sceneList;
 	static std::string currentSceneName;
-	//static std::vector<float>* currentVerticesData;
-	//static std::vector<unsigned int>* currentIndicesData;
-	static const unsigned int maxVerticesDataLength;
-	static const unsigned int maxIndicesDataLength;
-	//static inline bool enoughRoomForMoreVertices(int pushLength);
-	//static inline bool enoughRoomForMoreIndices(int pushLength);
-	//static inline void pushAnotherDataList();
 	static void ActuallyFlush();
-	//static void BatchedFlush(std::vector<float>& vertices, std::vector<unsigned int>& indices);
-	static void BatchedFlush_New(MainBatched_VertexData* drawData);
-	static void BulletFlush(Bullet_VertexData* drawData);
+	static void BatchedFlush(const MainBatched_VertexData* drawData);
+	static void BulletFlush(const Bullet_VertexData* drawData);
 
 	static VertexArray* batched_va;
 	static VertexBuffer* batched_vb;
@@ -132,25 +96,22 @@ private:
 public:
 	//TODO: because window creation depends on the context being used, maybe these functions should go to WindowInitializer
 	static void SetContext(AvailableRenderingContexts);
-	static void SetContext(std::string);
+	static void SetContext(const std::string&);
 	static AvailableRenderingContexts GetContext() { return renderingMethodType; }
 
 	static void Initialize();
 	static void Uninitialize();
 
 	static void Clear();
-	static void BeginScene(std::string name); //name of scene, to push timing to diagnostics
+	static void BeginScene(const std::string& name); //name of scene, to push timing to diagnostics
 	static void SubmitBatchedDraw(const float* posAndColor, unsigned int posAndColorLength, const unsigned int* indices, unsigned int indicesLength);
 	static void SubmitBulletDrawCall(float bulletLife, const ColorValueHolder& color, const glm::mat4& modelMatrix);
 	static void EndScene();
 	static void Flush();
-	static bool isDebugDrawingEnabled(std::string name); //should this really be here?
+	static bool isDebugDrawingEnabled(const std::string& name); //should this really be here?
 
 	static glm::mat4 GenerateModelMatrix(float scaleX, float scaleY, float rotateAngle, float transX, float transY);
 	static glm::mat4 GenerateModelMatrix_NoRotate(float scaleX, float scaleY, float transX, float transY);
-	static void SetViewMatrix(float cameraX, float cameraY, float cameraZ, float targetX, float targetY, float targetZ);
-	//static void SetProjectionMatrix(float left, float right, float bottom, float top/*, float near, float far*/); //orthographic
-	static void SetProjectionMatrix(); //should this be public?
 
 	static void printGLError();
 

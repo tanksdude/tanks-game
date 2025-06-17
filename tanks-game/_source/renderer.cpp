@@ -13,19 +13,11 @@
 #include "diagnostics.h"
 #include "game-manager.h" //for isDebugDrawingEnabled()
 
-//std::mutex Renderer::drawingDataLock;
-//std::thread Renderer::graphicsThread;
-//std::atomic_bool Renderer::thread_keepRunning;
-//std::atomic_bool Renderer::thread_workExists;
-
 glm::mat4 Renderer::proj = glm::ortho(0.0f, (float)GAME_WIDTH, 0.0f, (float)GAME_HEIGHT);
-glm::mat4 Renderer::getProj() { return proj; }
 RenderingContext* Renderer::renderingMethod = nullptr;
 AvailableRenderingContexts Renderer::renderingMethodType;
 
-float Renderer::current_cameraX = 0, Renderer::current_cameraY = 0, Renderer::current_cameraZ = -1;
-float Renderer::current_targetX = 0, Renderer::current_targetY = 0, Renderer::current_targetZ = 0;
-bool Renderer::viewMatBound = false, Renderer::projectionMatBound = false;
+std::unordered_map<std::string, Shader*> Renderer::shaderStorage;
 Shader* Renderer::boundShader = nullptr;
 
 VertexArray* Renderer::batched_va;
@@ -42,15 +34,9 @@ bool Renderer::initialized_GPU = false;
 std::unordered_map<std::string, std::vector<Renderer::VertexDrawingData*>> Renderer::sceneData;
 std::vector<std::string> Renderer::sceneList;
 std::string Renderer::currentSceneName = "";
-//std::vector<float>* Renderer::currentVerticesData;
-//std::vector<unsigned int>* Renderer::currentIndicesData;
-const unsigned int Renderer::maxVerticesDataLength = (1 << 16) / sizeof(float); //2^16 - 2^18 have basically identical performance; lower results in problems, higher results in stuttering/spikes with worse performance
-const unsigned int Renderer::maxIndicesDataLength = (1 << 16) / sizeof(unsigned int); //TODO: size (fills up faster)
-
-std::unordered_map<std::string, Shader*> Renderer::shaderStorage;
-unsigned int Renderer::currentShader = -1;
-unsigned int Renderer::currentVertexArray = -1;
-unsigned int Renderer::currentIndexBuffer = -1;
+const unsigned int Renderer::MainBatched_VertexData::maxVerticesDataLength = (1 << 16) / sizeof(float); //2^16 - 2^18 have basically identical performance; lower results in problems, higher results in stuttering/spikes with worse performance
+const unsigned int Renderer::MainBatched_VertexData::maxIndicesDataLength = (1 << 16) / sizeof(unsigned int); //TODO: size (fills up faster)
+const unsigned int Renderer::Bullet_VertexData::maxDataLength = (1 << 16) / sizeof(float);
 
 void Renderer::SetContext(AvailableRenderingContexts API) {
 	if (renderingMethod != nullptr) {
@@ -76,7 +62,7 @@ void Renderer::SetContext(AvailableRenderingContexts API) {
 	}
 }
 
-void Renderer::SetContext(std::string API) {
+void Renderer::SetContext(const std::string& API) {
 	AvailableRenderingContexts context;
 	if (API == "OpenGL") {
 		context = AvailableRenderingContexts::OpenGL;
@@ -105,59 +91,27 @@ void Renderer::Initialize() {
 	shaderStorage.insert({ "bullet", shader });
 
 	initializeGPU();
-
-	//thread_keepRunning.store(true);
-	//thread_workExists.store(false);
-	//graphicsThread = std::thread(thread_func);
 }
 
 void Renderer::Uninitialize() {
-	//thread_keepRunning.store(false);
-	//thread_workExists.store(true);
-	//graphicsThread.join();
-	////uninitializeGPU();
+	//uninitializeGPU();
 }
-
-/*
-void Renderer::thread_func() {
-	while (thread_keepRunning.load()) {
-		while (!thread_workExists.load()) {
-			//spin
-			//std::cout << "thread2 waiting\n";
-		}
-		drawingDataLock.lock();
-
-		if (!thread_keepRunning.load()) {
-			drawingDataLock.unlock();
-			break;
-		}
-
-		Renderer::ActuallyFlush();
-		//std::cout << "thread2 did work\n";
-		thread_workExists.store(false);
-		drawingDataLock.unlock();
-	}
-}
-*/
 
 bool Renderer::MainBatched_VertexData::enoughRoomForMoreVertices(unsigned int pushLength) {
-	return (m_vertices.size() + pushLength <= Renderer::maxVerticesDataLength);
+	return (m_vertices.size() + pushLength <= Renderer::MainBatched_VertexData::maxVerticesDataLength);
 }
 bool Renderer::MainBatched_VertexData::enoughRoomForMoreIndices(unsigned int pushLength) {
-	return (m_indices.size() + pushLength <= Renderer::maxIndicesDataLength);
+	return (m_indices.size() + pushLength <= Renderer::MainBatched_VertexData::maxIndicesDataLength);
 }
 
 bool Renderer::Bullet_VertexData::enoughRoomForMoreColors(unsigned int pushLength) {
-	//TODO: maxVerticesDataLength
-	return (m_colors.size() + pushLength <= Renderer::maxVerticesDataLength);
+	return (m_colors.size() + pushLength <= Renderer::Bullet_VertexData::maxDataLength);
 }
 bool Renderer::Bullet_VertexData::enoughRoomForMoreLifeValues(unsigned int pushLength) {
-	//TODO: maxVerticesDataLength
-	return (m_lifeValues.size() + pushLength <= Renderer::maxVerticesDataLength);
+	return (m_lifeValues.size() + pushLength <= Renderer::Bullet_VertexData::maxDataLength);
 }
 bool Renderer::Bullet_VertexData::enoughRoomForMoreMatrices(unsigned int pushLength) {
-	//TODO: maxVerticesDataLength
-	return (m_modelMatrices.size() + pushLength <= Renderer::maxVerticesDataLength);
+	return (m_modelMatrices.size() + pushLength <= Renderer::Bullet_VertexData::maxDataLength);
 }
 
 Renderer::MainBatched_VertexData::MainBatched_VertexData() {
@@ -165,8 +119,8 @@ Renderer::MainBatched_VertexData::MainBatched_VertexData() {
 	#if _DEBUG
 	//performance is awful //TODO: check again
 	#else
-	m_vertices.reserve(maxVerticesDataLength);
-	m_indices.reserve(maxIndicesDataLength);
+	m_vertices.reserve(MainBatched_VertexData::maxVerticesDataLength);
+	m_indices.reserve(MainBatched_VertexData::maxIndicesDataLength);
 	#endif
 }
 
@@ -175,9 +129,9 @@ Renderer::Bullet_VertexData::Bullet_VertexData() {
 	#if _DEBUG
 	//performance is awful //TODO: check again
 	#else
-	m_colors.reserve(maxVerticesDataLength);
-	m_lifeValues.reserve(maxVerticesDataLength);
-	m_modelMatrices.reserve(maxVerticesDataLength);
+	m_colors.reserve(Bullet_VertexData::maxDataLength);
+	m_lifeValues.reserve(Bullet_VertexData::maxDataLength);
+	m_modelMatrices.reserve(Bullet_VertexData::maxDataLength);
 	#endif
 }
 
@@ -193,77 +147,33 @@ glm::mat4 Renderer::GenerateModelMatrix_NoRotate(float scaleX, float scaleY, flo
 }
 
 void Renderer::SetViewMatrix(float cameraX, float cameraY, float cameraZ, float targetX, float targetY, float targetZ) {
-	/*
-	if ((!viewMatBound) ||
-	    ((cameraX != current_cameraX || cameraY != current_cameraY || cameraZ != current_cameraZ) &&
-	    (targetX != current_targetX || targetY != current_targetY || targetZ != current_targetZ))) {
-			current_cameraX = cameraX;
-			current_cameraY = cameraY;
-			current_cameraZ = cameraZ;
-			current_targetX = targetX;
-			current_targetY = targetY;
-			current_targetZ = targetZ;
-			boundShader->setUniformMat4f("u_ViewMatrix", glm::lookAt(glm::vec3(cameraX, cameraY, cameraZ), glm::vec3(targetX, targetY, targetZ), glm::vec3(0, 1, 0)));
-			viewMatBound = true;
-	}
-	*/
-	if (!viewMatBound) {
-		boundShader->setUniformMat4f("u_ViewMatrix", glm::mat4(1.0f));
-		//note: glm::mat4() is *not* an identity matrix
-		viewMatBound = true;
-	}
+	boundShader->setUniformMat4f("u_ViewMatrix", glm::lookAt(glm::vec3(cameraX, cameraY, cameraZ), glm::vec3(targetX, targetY, targetZ), glm::vec3(0, 1, 0)));
+	//boundShader->setUniformMat4f("u_ViewMatrix", glm::mat4(1.0f));
 }
 
 void Renderer::SetProjectionMatrix() {
-	if (!projectionMatBound) {
-		boundShader->setUniformMat4f("u_ProjectionMatrix", Renderer::proj);
-		projectionMatBound = true;
-	}
+	boundShader->setUniformMat4f("u_ProjectionMatrix", Renderer::proj);
 }
 
 inline void Renderer::bindShader(Shader* shader) {
-	if (currentShader != shader->getRendererID()) {
-		shader->Bind();
-		currentShader = shader->getRendererID();
-		boundShader = shader;
-
-		viewMatBound = false;
-		projectionMatBound = false;
-
-		Renderer::SetViewMatrix(0, 0, -1, 0, 0, 0);
-		Renderer::SetProjectionMatrix();
-	}
+	shader->Bind();
+	boundShader = shader;
+	SetViewMatrix(0, 0, 1, 0, 0, 0);
+	SetProjectionMatrix();
 }
 
-inline void Renderer::bindShader(const Shader& shader) {
-	if (currentShader != shader.getRendererID()) {
-		shader.Bind();
-		currentShader = shader.getRendererID();
-	}
+inline void Renderer::bindVertexArray(const VertexArray* va) {
+	va->Bind();
 }
 
-inline void Renderer::bindVertexArray(const VertexArray& va) {
-	if (currentVertexArray != va.getRendererID()) {
-		va.Bind();
-		currentVertexArray = va.getRendererID();
-	}
+inline void Renderer::bindIndexBuffer(const IndexBuffer* ib) {
+	ib->Bind();
 }
 
-inline void Renderer::bindIndexBuffer(const IndexBuffer& ib) {
-	if (currentIndexBuffer != ib.getRendererID()) {
-		ib.Bind();
-		currentIndexBuffer = ib.getRendererID();
-	}
-}
-
-Shader* Renderer::getShader(std::string s) {
-	//return shaderCache[s];
-
+Shader* Renderer::getShader(const std::string& s) {
 	auto get = shaderStorage.find(s);
 	if (get != shaderStorage.end()) {
-		Shader* shader = shaderStorage[s];
-		bindShader(shader);
-		return shader;
+		return get->second;
 	}
 	//else shader wasn't found
 	std::cerr << "Could not find '" << s << "' shader!" << std::endl;
@@ -271,9 +181,7 @@ Shader* Renderer::getShader(std::string s) {
 	//return the magenta shader, just so there's something
 	get = shaderStorage.find("default");
 	if (get != shaderStorage.end()) {
-		Shader* shader = shaderStorage[s];
-		bindShader(shader);
-		return shader;
+		return get->second;
 	}
 	//else big uh-oh
 	std::cerr << "Could not find the default shader!" << std::endl;
@@ -281,37 +189,12 @@ Shader* Renderer::getShader(std::string s) {
 	return nullptr; //default magenta shader is missing
 }
 
-void Renderer::Unbind(const VertexArray& va) {
-	if (currentVertexArray == va.getRendererID()) {
-		va.Unbind();
-		currentVertexArray = -1;
-	}
-}
-
-void Renderer::Unbind(const IndexBuffer& ib) {
-	//if (currentVertexArray == ib.getRendererID()) {
-	if (currentIndexBuffer == ib.getRendererID()) {
-		ib.Unbind();
-		currentIndexBuffer = -1;
-	}
-}
-
-void Renderer::Unbind(const Shader& s) {
-	//if (currentVertexArray == s.getRendererID()) {
-	if (currentShader == s.getRendererID()) {
-		s.Unbind();
-		currentShader = -1;
-	}
-}
-
 void Renderer::UnbindAll() {
 	glBindVertexArray(0); //vertex array
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); //index buffer
 	glUseProgram(0); //shader
 
-	currentVertexArray = -1;
-	currentIndexBuffer = -1;
-	currentShader = -1;
+	boundShader = nullptr;
 }
 
 std::string Renderer::getErrorString(GLenum err) {
@@ -332,7 +215,7 @@ void Renderer::printGLError() {
 	bool error = false;
 	while (true) {
 		const GLenum err = glGetError();
-		if (GL_NO_ERROR == err)
+		if (err == GL_NO_ERROR)
 			break;
 
 		std::cout << "GL Error: " << getErrorString(err) << std::endl;
@@ -357,19 +240,15 @@ void Renderer::ActuallyFlush() {
 			if (sceneDrawCalls[j]->m_shaderName != currentShaderName) {
 				if (sceneDrawCalls[j]->m_shaderName == "main") {
 					bindShader(Renderer::getShader("main"));
-					Renderer::getShader("main")->setUniformMat4f("u_ModelMatrix", glm::mat4(1.0f));
-					bindVertexArray(*batched_va);
-					bindIndexBuffer(*batched_ib);
-					SetProjectionMatrix();
+					bindVertexArray(batched_va);
+					//bindIndexBuffer(batched_ib); //TODO: is this necessary?
 				} else if (sceneDrawCalls[j]->m_shaderName == "bullet") {
 					instanced_vb_pos->modifyData(Bullet::instanced_vertices, sizeof(Bullet::instanced_vertices));
 					instanced_ib->modifyData(Bullet::instanced_indices, sizeof(Bullet::instanced_indices));
 
-					Shader* shader = Renderer::getShader("bullet");
-					bindShader(shader);
-					bindVertexArray(*instanced_va);
-					bindIndexBuffer(*instanced_ib);
-					SetProjectionMatrix();
+					bindShader(Renderer::getShader("bullet"));
+					bindVertexArray(instanced_va);
+					//bindIndexBuffer(instanced_ib); //TODO: is this necessary?
 				} else {
 					//oh no
 				}
@@ -377,16 +256,15 @@ void Renderer::ActuallyFlush() {
 			}
 
 			if (currentShaderName == "main") {
-				BatchedFlush_New(static_cast<MainBatched_VertexData*>(sceneDrawCalls[j]));
-				//TODO: move the delete here
+				BatchedFlush(static_cast<MainBatched_VertexData*>(sceneDrawCalls[j]));
+				delete static_cast<MainBatched_VertexData*>(sceneDrawCalls[j]);
 			} else if (currentShaderName == "bullet") {
 				BulletFlush(static_cast<Bullet_VertexData*>(sceneDrawCalls[j]));
-				//TODO: move the delete here
+				delete static_cast<Bullet_VertexData*>(sceneDrawCalls[j]);
 			} else {
 				//oh no
+				delete sceneDrawCalls[j]; //TODO
 			}
-
-			delete sceneDrawCalls[j]; //TODO
 		}
 		sceneDrawCalls.clear();
 	}
@@ -407,46 +285,17 @@ void Renderer::ActuallyFlush() {
 	//glfwSwapBuffers(glfw_window);
 
 	UnbindAll();
-
-	#if 0
-	auto start = Diagnostics::getTime();
-	for (int i = 0; i < sceneList.size(); i++) {
-		const std::string& name = sceneList[i];
-		std::vector<std::pair<std::vector<float>, std::vector<unsigned int>>>& sceneDrawCalls = sceneData[name];
-		for (int j = 0; j < sceneDrawCalls.size(); j++) {
-			BatchedFlush(sceneDrawCalls[j].first, sceneDrawCalls[j].second);
-		}
-		sceneDrawCalls.clear();
-	}
-	sceneList.clear(); //TODO: this is a surprising area for CPU time (_Tidy from reallocating) (or is it the line above?)
-	auto end = Diagnostics::getTime();
-
-	Diagnostics::pushGraphTime("draw", Diagnostics::getDiff(start, end));
-	Diagnostics::pushGraphSumTime("all");
-
-	const GameSettings& game_settings = GameManager::get_settings();
-	if (game_settings.PerformanceGraphEnable) {
-		Diagnostics::drawGraphTimes();
-	}
-
-	//for single framebuffer, use glFlush; for double framebuffer, swap the buffers
-	//swapping buffers is limited to monitor refresh rate, so I use glFlush
-	glFlush();
-	//glfwSwapBuffers(WindowInitializer::glfw_window);
-
-	UnbindAll();
-	#endif
 }
 
 void Renderer::Flush() {
-	//thread_workExists.store(true);
+	//TODO: this function is separate in case graphics will be put on a separate thread
+	//(which wouldn't be particularly useful, as rendering is typically <1ms in worst case scenarios)
 
 	ActuallyFlush();
-	//drawingDataLock.unlock();
 }
 
 void Renderer::Cleanup() {
-	//glDisableVertexAttribArray(0); //disable vertex attribute to avoid issues
+	//TODO?
 }
 
 bool Renderer::initializeGPU() {
@@ -454,20 +303,20 @@ bool Renderer::initializeGPU() {
 		return false;
 	}
 
-	float* positions = new float[maxVerticesDataLength];
-	std::fill(positions, positions + maxVerticesDataLength, 0);
+	float* positions = new float[MainBatched_VertexData::maxVerticesDataLength];
+	std::fill(positions, positions + MainBatched_VertexData::maxVerticesDataLength, 0);
 
-	unsigned int* indices = new unsigned int[maxIndicesDataLength];
-	std::fill(indices, indices + maxIndicesDataLength, 0);
+	unsigned int* indices = new unsigned int[MainBatched_VertexData::maxIndicesDataLength];
+	std::fill(indices, indices + MainBatched_VertexData::maxIndicesDataLength, 0);
 
-	batched_vb = VertexBuffer::MakeVertexBuffer(positions, maxVerticesDataLength * sizeof(float), RenderingHints::stream_draw);
+	batched_vb = VertexBuffer::MakeVertexBuffer(positions, MainBatched_VertexData::maxVerticesDataLength * sizeof(float), RenderingHints::stream_draw);
 	VertexBufferLayout layout = {
 		{ ShaderDataType::Float2, "a_Position" },
 		{ ShaderDataType::Float4, "a_Color" }
 	};
 	batched_vb->SetLayout(layout);
 
-	batched_ib = IndexBuffer::MakeIndexBuffer(indices, maxIndicesDataLength);
+	batched_ib = IndexBuffer::MakeIndexBuffer(indices, MainBatched_VertexData::maxIndicesDataLength);
 
 	batched_va = VertexArray::MakeVertexArray();
 	batched_va->AddVertexBuffer(batched_vb);
@@ -476,37 +325,37 @@ bool Renderer::initializeGPU() {
 	delete[] positions;
 	delete[] indices;
 
-	float* positions_instanced = new float[maxVerticesDataLength];
-	std::fill(positions_instanced, positions_instanced + maxVerticesDataLength, 0);
+	float* positions_instanced = new float[Bullet_VertexData::maxDataLength];
+	std::fill(positions_instanced, positions_instanced + Bullet_VertexData::maxDataLength, 0);
 
-	unsigned int* indices_instanced = new unsigned int[maxIndicesDataLength];
-	std::fill(indices_instanced, indices_instanced + maxIndicesDataLength, 0);
+	unsigned int* indices_instanced = new unsigned int[MainBatched_VertexData::maxIndicesDataLength]; //TODO: might want a better size
+	std::fill(indices_instanced, indices_instanced + MainBatched_VertexData::maxIndicesDataLength, 0);
 
-	instanced_vb_pos = VertexBuffer::MakeVertexBuffer(positions_instanced, maxVerticesDataLength * sizeof(float), RenderingHints::stream_draw);
+	instanced_vb_pos = VertexBuffer::MakeVertexBuffer(positions_instanced, Bullet_VertexData::maxDataLength * sizeof(float), RenderingHints::stream_draw);
 	VertexBufferLayout layout_instanced_pos = {
 		{ ShaderDataType::Float2, "a_Position" }
 	};
 	instanced_vb_pos->SetLayout(layout_instanced_pos);
 
-	instanced_vb_color = VertexBuffer::MakeVertexBuffer(positions_instanced, maxVerticesDataLength * sizeof(float), RenderingHints::stream_draw);
+	instanced_vb_color = VertexBuffer::MakeVertexBuffer(positions_instanced, Bullet_VertexData::maxDataLength * sizeof(float), RenderingHints::stream_draw);
 	VertexBufferLayout layout_instanced_color = {
 		{ ShaderDataType::Float4, "a_ColorInstanced", false, true }
 	};
 	instanced_vb_color->SetLayout(layout_instanced_color);
 
-	instanced_vb_life = VertexBuffer::MakeVertexBuffer(positions_instanced, maxVerticesDataLength * sizeof(float), RenderingHints::stream_draw);
+	instanced_vb_life = VertexBuffer::MakeVertexBuffer(positions_instanced, Bullet_VertexData::maxDataLength * sizeof(float), RenderingHints::stream_draw);
 	VertexBufferLayout layout_instanced_life = {
 		{ ShaderDataType::Float, "a_BulletLifeInstanced", false, true }
 	};
 	instanced_vb_life->SetLayout(layout_instanced_life);
 
-	instanced_vb_mat = VertexBuffer::MakeVertexBuffer(positions_instanced, maxVerticesDataLength * sizeof(float), RenderingHints::stream_draw);
+	instanced_vb_mat = VertexBuffer::MakeVertexBuffer(positions_instanced, Bullet_VertexData::maxDataLength * sizeof(float), RenderingHints::stream_draw);
 	VertexBufferLayout layout_instanced_mat = {
 		{ ShaderDataType::Mat4, "a_ModelMatrixInstanced" }
 	};
 	instanced_vb_mat->SetLayout(layout_instanced_mat);
 
-	instanced_ib = IndexBuffer::MakeIndexBuffer(indices_instanced, maxIndicesDataLength);
+	instanced_ib = IndexBuffer::MakeIndexBuffer(indices_instanced, MainBatched_VertexData::maxIndicesDataLength);
 
 	instanced_va = VertexArray::MakeVertexArray();
 	instanced_va->AddVertexBuffer(instanced_vb_pos);
@@ -541,37 +390,13 @@ bool Renderer::uninitializeGPU() {
 	return true;
 }
 
-#if 0
-inline bool Renderer::enoughRoomForMoreVertices(int pushLength) {
-	//const std::pair<std::vector<float>, std::vector<unsigned int>>& currentSceneData = sceneData[currentSceneName][sceneData[currentSceneName].size()-1];
-	return (currentVerticesData->size() + pushLength <= maxVerticesDataLength);
-}
-inline bool Renderer::enoughRoomForMoreIndices(int pushLength) {
-	//const std::pair<std::vector<float>, std::vector<unsigned int>>& currentSceneData = sceneData[currentSceneName][sceneData[currentSceneName].size()-1];
-	return (currentIndicesData->size() + pushLength <= maxIndicesDataLength);
-}
-
-inline void Renderer::pushAnotherDataList() {
-	sceneData[currentSceneName].push_back({});
-
-	#if _DEBUG
-	//performance is awful
-	#else
-	sceneData[currentSceneName][sceneData[currentSceneName].size()-1].first.reserve(maxVerticesDataLength);
-	sceneData[currentSceneName][sceneData[currentSceneName].size()-1].second.reserve(maxIndicesDataLength);
-	#endif
-	currentVerticesData = &sceneData[currentSceneName][sceneData[currentSceneName].size()-1].first;
-	currentIndicesData  = &sceneData[currentSceneName][sceneData[currentSceneName].size()-1].second;
-}
-#endif
-
 void Renderer::SubmitBatchedDraw(const float* posAndColor, unsigned int posAndColorLength, const unsigned int* indices, unsigned int indicesLength) {
 	if (currentSceneName == "") [[unlikely]] {
 		//only happens for Diagnostics
 		MainBatched_VertexData* tempVertexDataGroup = new MainBatched_VertexData();
 		tempVertexDataGroup->m_vertices.insert(tempVertexDataGroup->m_vertices.end(), posAndColor, posAndColor + posAndColorLength);
 		tempVertexDataGroup->m_indices.insert(tempVertexDataGroup->m_indices.end(), indices, indices + indicesLength);
-		BatchedFlush_New(tempVertexDataGroup);
+		BatchedFlush(tempVertexDataGroup);
 		delete tempVertexDataGroup;
 	} else {
 		MainBatched_VertexData* currentVertexDataGroup;
@@ -585,7 +410,7 @@ void Renderer::SubmitBatchedDraw(const float* posAndColor, unsigned int posAndCo
 				currentVertexDataGroup = new MainBatched_VertexData();
 				sceneDrawGroup.push_back(static_cast<VertexDrawingData*>(currentVertexDataGroup));
 
-				if (posAndColorLength > maxVerticesDataLength || indicesLength > maxIndicesDataLength) [[unlikely]] {
+				if (posAndColorLength > MainBatched_VertexData::maxVerticesDataLength || indicesLength > MainBatched_VertexData::maxIndicesDataLength) [[unlikely]] {
 					std::cerr << "GPU buffer overrun!" << std::endl;
 				}
 			}
@@ -604,36 +429,6 @@ void Renderer::SubmitBatchedDraw(const float* posAndColor, unsigned int posAndCo
 			//could glDrawElementsBaseVertex() be usable to avoid fixing indices?
 		}
 	}
-
-	#if 0
-	if (currentSceneName == "") [[unlikely]] {
-		//only happens for Diagnostics
-		std::vector<float> verticesData = std::vector<float>(posAndColor, posAndColor + posAndColorLength);
-		std::vector<unsigned int> indicesData = std::vector<unsigned int>(indices, indices + indicesLength);
-		BatchedFlush(verticesData, indicesData);
-	} else {
-		if (!enoughRoomForMoreVertices(posAndColorLength) || !enoughRoomForMoreIndices(indicesLength)) {
-			//std::cout << enoughRoomForMoreVertices(posAndColorLength) << enoughRoomForMoreIndices(indicesLength);
-			pushAnotherDataList();
-			if (posAndColorLength > maxVerticesDataLength || indicesLength > maxIndicesDataLength) [[unlikely]] {
-				std::cerr << "GPU buffer overrun!" << std::endl;
-			}
-		}
-
-		//std::pair<std::vector<float>, std::vector<unsigned int>>& currentSceneData = sceneData[currentSceneName][sceneData[currentSceneName].size()-1];
-		std::vector<float>& verticesData = *currentVerticesData;
-		std::vector<unsigned int>& indicesData = *currentIndicesData;
-
-		unsigned int currVerticesLength = verticesData.size();
-		verticesData.insert(verticesData.end(), posAndColor, posAndColor + posAndColorLength);
-
-		unsigned int currIndicesLength = indicesData.size();
-		indicesData.insert(indicesData.end(), indices, indices + indicesLength);
-		for (unsigned int i = currIndicesLength; i < indicesData.size(); i++) {
-			indicesData[i] += currVerticesLength/(2+4);
-		}
-	}
-	#endif
 }
 
 void Renderer::SubmitBulletDrawCall(float bulletLife, const ColorValueHolder& color, const glm::mat4& modelMatrix) {
@@ -664,29 +459,7 @@ void Renderer::SubmitBulletDrawCall(float bulletLife, const ColorValueHolder& co
 	}
 }
 
-#if 0
-void Renderer::BatchedFlush(std::vector<float>& verticesData, std::vector<unsigned int>& indicesData) {
-	if (verticesData.empty()) [[unlikely]] {
-		return;
-	}
-
-	batched_vb->modifyData(verticesData.data(), verticesData.size() * sizeof(float));
-	batched_ib->modifyData(indicesData.data(), indicesData.size() * sizeof(unsigned int));
-
-	bindShader(Renderer::getShader("main"));
-	Renderer::getShader("main")->setUniformMat4f("u_ModelMatrix", glm::mat4(1.0f));
-	bindVertexArray(*batched_va);
-	bindIndexBuffer(*batched_ib);
-
-	glDrawElements(GL_TRIANGLES, batched_va->GetIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
-	//glDrawElements(GL_TRIANGLES, indicesData.size(), GL_UNSIGNED_INT, nullptr);
-
-	verticesData.clear();
-	indicesData.clear();
-}
-#endif
-
-void Renderer::BatchedFlush_New(MainBatched_VertexData* drawData) {
+void Renderer::BatchedFlush(const MainBatched_VertexData* drawData) {
 	//TODO: check if there's nothing?
 
 	batched_vb->modifyData(drawData->m_vertices.data(), drawData->m_vertices.size() * sizeof(float));
@@ -696,7 +469,7 @@ void Renderer::BatchedFlush_New(MainBatched_VertexData* drawData) {
 	//glDrawElements(GL_TRIANGLES, drawData->m_indices.size(), GL_UNSIGNED_INT, nullptr);
 }
 
-void Renderer::BulletFlush(Bullet_VertexData* drawData) {
+void Renderer::BulletFlush(const Bullet_VertexData* drawData) {
 	//TODO: check if there's nothing?
 
 	instanced_vb_color->modifyData(drawData->m_colors.data(), drawData->m_colors.size() * sizeof(float));
@@ -707,10 +480,9 @@ void Renderer::BulletFlush(Bullet_VertexData* drawData) {
 	glDrawElementsInstanced(GL_TRIANGLES, sizeof(Bullet::instanced_indices)/sizeof(*Bullet::instanced_indices), GL_UNSIGNED_INT, nullptr, bulletCount);
 }
 
-void Renderer::BeginScene(std::string name) {
+void Renderer::BeginScene(const std::string& name) {
 	currentSceneName = name;
 	sceneList.push_back(name);
-	//pushAnotherDataList();
 }
 
 void Renderer::EndScene() {
@@ -718,7 +490,7 @@ void Renderer::EndScene() {
 	//not sure what to put...
 }
 
-bool Renderer::isDebugDrawingEnabled(std::string name) {
+bool Renderer::isDebugDrawingEnabled(const std::string& name) {
 	const BasicINIParser::BasicINIData& ini_data = GameManager::get_INI();
 
 	bool drawingEnabled = false;
