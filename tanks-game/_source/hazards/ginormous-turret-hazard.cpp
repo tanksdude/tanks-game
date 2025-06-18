@@ -2,7 +2,7 @@
 
 #include "../constants.h"
 #include <cmath>
-#include <algorithm> //std::clamp
+//#include <algorithm> //nothing
 #include <iostream>
 #include "../rng.h"
 
@@ -240,9 +240,7 @@ void GinormousTurretHazard::tick_stopChildren() {
 }
 
 void GinormousTurretHazard::drawOutline(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	const float lineWidth = 2.0f;
@@ -268,9 +266,7 @@ void GinormousTurretHazard::drawOutline(float alpha) const {
 }
 
 void GinormousTurretHazard::drawBarrel(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	const float lineWidth = 3.0f;

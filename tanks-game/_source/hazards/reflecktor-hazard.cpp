@@ -2,7 +2,7 @@
 
 #include "../constants.h"
 #include <cmath>
-#include <algorithm> //std::clamp
+//#include <algorithm> //nothing
 #include <iostream>
 #include "../rng.h"
 
@@ -174,9 +174,7 @@ void ReflecktorHazard::poseDraw(DrawingLayers layer) const {
 }
 
 void ReflecktorHazard::ghostDraw(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-
 	ColorValueHolder c = this->color;
 	c = ColorMixer::mix(BackgroundRect::getBackColor(), c, alpha);
 

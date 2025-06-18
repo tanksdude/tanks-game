@@ -2,7 +2,7 @@
 
 #include "../constants.h"
 #include <cmath>
-#include <algorithm> //std::clamp
+//#include <algorithm> //nothing
 #include <iostream>
 #include "../rng.h"
 
@@ -271,9 +271,7 @@ void CloudHazard::poseDraw(DrawingLayers layer) const {
 void CloudHazard::ghostDraw(float alpha) const {
 	//TODO: multiple circles
 
-	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-
 	ColorValueHolder cloudColor = color;
 	cloudColor = ColorMixer::mix(BackgroundRect::getBackColor(), cloudColor, alpha);
 

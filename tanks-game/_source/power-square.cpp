@@ -1,7 +1,6 @@
 #include "power-square.h"
 
 #include "constants.h"
-#include <algorithm> //std::clamp
 
 #include "renderer.h"
 #include "color-mixer.h"
@@ -185,9 +184,7 @@ void PowerSquare::ghostDraw(DrawingLayers layer, float alpha) const {
 }
 
 inline void PowerSquare::drawMain(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-
 	ColorValueHolder color = getColor();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 
@@ -226,10 +223,8 @@ inline void PowerSquare::drawMain(float alpha) const {
 }
 
 inline void PowerSquare::drawOutlineThing(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
-	alpha = alpha * alpha;
-
 	if (numOfPowers > 1) {
+		alpha = alpha * alpha;
 		const float extendingMultiplier = PowerSquare::POWER_LINE_WIDTH * (PowerSquare::POWER_OUTLINE_MULTIPLIER - 1);
 		ColorValueHolder backgroundMix = ColorMixer::mix(getColor(), BackgroundRect::getBackColor());
 		backgroundMix = ColorMixer::mix(BackgroundRect::getBackColor(), backgroundMix, alpha);

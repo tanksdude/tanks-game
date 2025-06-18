@@ -283,9 +283,7 @@ void StationaryTurretHazard::ghostDraw(DrawingLayers layer, float alpha) const {
 }
 
 void StationaryTurretHazard::drawBody(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-
 	ColorValueHolder color = getColor();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 
@@ -309,9 +307,7 @@ void StationaryTurretHazard::drawBody(float alpha) const {
 }
 
 void StationaryTurretHazard::drawOutline(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	const float lineWidth = 0.5f;
@@ -337,9 +333,7 @@ void StationaryTurretHazard::drawOutline(float alpha) const {
 }
 
 void StationaryTurretHazard::drawBarrel(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	const float lineWidth = 0.75f;

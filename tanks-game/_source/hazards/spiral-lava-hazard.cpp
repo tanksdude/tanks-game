@@ -2,7 +2,7 @@
 
 #include "../constants.h"
 #include <cmath> //sin, cos
-#include <algorithm> //std::clamp, std::min
+#include <algorithm> //std::min
 #include <iostream>
 #include "../rng.h"
 
@@ -281,9 +281,7 @@ void SpiralLavaHazard::poseDraw(DrawingLayers layer) const {
 }
 
 void SpiralLavaHazard::ghostDraw(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-
 	ColorValueHolder c = getColor();
 	c = ColorMixer::mix(BackgroundRect::getBackColor(), c, alpha);
 

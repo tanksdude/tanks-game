@@ -2,7 +2,7 @@
 
 #include "../constants.h"
 #include <cmath>
-#include <algorithm> //std::copy, std::fill, std::clamp
+#include <algorithm> //std::copy, std::fill
 #include <iostream>
 #include "../rng.h"
 #include "../mylib.h" //pointInPolygon, weightedSelect
@@ -384,9 +384,7 @@ void PatrollingTurretHazard::ghostDraw(DrawingLayers layer, float alpha) const {
 }
 
 void PatrollingTurretHazard::drawPath(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	const float radius = this->r / 2;

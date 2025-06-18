@@ -2,7 +2,7 @@
 
 #include "constants.h"
 #include <cmath>
-#include <algorithm> //std::clamp, std::min, std::max
+#include <algorithm> //std::min, std::max
 #include <iostream>
 
 #include "renderer.h"
@@ -525,9 +525,7 @@ void Bullet::poseDraw(DrawingLayers layer) const {
 }
 
 void Bullet::ghostDraw(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-
 	ColorValueHolder color = getColor();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 

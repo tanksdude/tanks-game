@@ -2,7 +2,7 @@
 
 #include "../constants.h"
 #include <cmath>
-#include <algorithm> //std::clamp, std::copy
+#include <algorithm> //std::copy
 #include <iostream>
 #include "../rng.h"
 
@@ -317,9 +317,7 @@ void GravityWellHazard::ghostDraw(DrawingLayers layer, float alpha) const {
 }
 
 void GravityWellHazard::drawBody(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-
 	ColorValueHolder cloudColor = color;
 	cloudColor = ColorMixer::mix(BackgroundRect::getBackColor(), cloudColor, alpha);
 
@@ -343,9 +341,7 @@ void GravityWellHazard::drawBody(float alpha) const {
 }
 
 void GravityWellHazard::drawOutline(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	const float lineWidth = 0.5f;
@@ -371,9 +367,7 @@ void GravityWellHazard::drawOutline(float alpha) const {
 }
 
 void GravityWellHazard::drawGravityCircle(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-
 	ColorValueHolder c = ColorMixer::mix(BackgroundRect::getBackColor(), this->color, .25);
 	c = ColorMixer::mix(BackgroundRect::getBackColor(), c, alpha);
 	const float lineWidth = this->r / 4;
@@ -399,7 +393,8 @@ void GravityWellHazard::drawGravityCircle(float alpha) const {
 }
 
 void GravityWellHazard::drawGravityArrows(float alpha) const {
-	ColorValueHolder color = ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(0.0f, 0.0f, 0.0f));
+	alpha = alpha * alpha;
+	ColorValueHolder color = ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(0.375f, 0.375f, 0.375f), alpha);
 	const float arrowScale = this->r / 2; //x-coords are in [-1,1]
 
 	float coordsAndColor_arrow[7*(2+4)];

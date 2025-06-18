@@ -3,7 +3,7 @@
 #include "../constants.h"
 #include <cmath>
 #include <stdexcept>
-#include <algorithm> //std::find, std::copy, std::clamp
+#include <algorithm> //std::find, std::copy
 #include <iostream>
 #include "../rng.h"
 #include "../mylib.h" //pointInPolygon
@@ -351,8 +351,10 @@ void CircularLightningHazard::ghostDraw(DrawingLayers layer, float alpha) const 
 }
 
 void CircularLightningHazard::drawBackground(bool pose, float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
+	//ColorValueHolder color = (pose ? getBackgroundColor_Pose() : getBackgroundColor());
+	ColorValueHolder color = getBackgroundColor_Pose();
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 
 	float scale;
 	if (pose || currentlyActive) {
@@ -361,10 +363,6 @@ void CircularLightningHazard::drawBackground(bool pose, float alpha) const {
 		scale = tickCount / (tickCycle * stateMultiplier[currentlyActive]);
 	}
 	scale = scale * scale;
-
-	//ColorValueHolder color = (pose ? getBackgroundColor_Pose() : getBackgroundColor());
-	ColorValueHolder color = getBackgroundColor_Pose();
-	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 
 	float coordsAndColor[(Circle::NumOfSides+1)*(2+4)];
 	coordsAndColor[0] = x;
@@ -420,9 +418,7 @@ void CircularLightningHazard::drawBolts(float alpha) const {
 		return;
 	}
 
-	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-
 	ColorValueHolder color = getBoltColor();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	const float lineWidth = 0.75f;
@@ -468,7 +464,6 @@ void CircularLightningHazard::drawBolts(float alpha) const {
 }
 
 void CircularLightningHazard::drawBolts_Pose(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	//generate bolts

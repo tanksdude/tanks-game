@@ -2,7 +2,7 @@
 
 #include "../constants.h"
 #include <cmath>
-#include <algorithm> //std::sort, std::clamp
+#include <algorithm> //std::sort
 #include <iostream>
 #include "../rng.h"
 
@@ -234,9 +234,7 @@ void RectangularLavaHazard::ghostDraw(DrawingLayers layer, float alpha) const {
 }
 
 void RectangularLavaHazard::drawBackground(bool pose, float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-
 	ColorValueHolder color = (pose ? getBackgroundColor_Pose() : getBackgroundColor());
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 
@@ -259,7 +257,6 @@ void RectangularLavaHazard::drawBubbles(bool pose, float alpha) const {
 		return;
 	}
 
-	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	//first, sort by alpha: lowest to highest (this makes the bubbles less weird-looking when drawn over each other, because the alpha isn't real transparency)

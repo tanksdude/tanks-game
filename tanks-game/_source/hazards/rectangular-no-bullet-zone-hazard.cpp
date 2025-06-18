@@ -1,7 +1,6 @@
 #include "rectangular-no-bullet-zone-hazard.h"
 
 #include <cmath>
-#include <algorithm> //std::clamp
 #include <iostream>
 #include "../rng.h"
 
@@ -141,7 +140,6 @@ void RectangularNoBulletZoneHazard::poseDraw(DrawingLayers layer) const {
 }
 
 void RectangularNoBulletZoneHazard::ghostDraw(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	//background:

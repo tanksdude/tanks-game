@@ -1,7 +1,6 @@
 #include "wall.h"
 
 #include "constants.h"
-#include <algorithm> //std::clamp
 #include <iostream>
 
 #include "renderer.h"
@@ -88,9 +87,7 @@ void Wall::poseDraw(DrawingLayers layer) const {
 }
 
 void Wall::ghostDraw(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-
 	ColorValueHolder c = this->color;
 	c = ColorMixer::mix(BackgroundRect::getBackColor(), c, alpha);
 

@@ -2,7 +2,7 @@
 
 #include "../constants.h"
 #include <cmath>
-#include <algorithm> //std::clamp, std::copy
+#include <algorithm> //std::copy
 #include <iostream>
 #include "../rng.h"
 
@@ -216,7 +216,6 @@ void CircularNoBulletZoneHazard::poseDraw(DrawingLayers layer) const {
 }
 
 void CircularNoBulletZoneHazard::ghostDraw(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	//background:

@@ -282,8 +282,10 @@ void HorizontalLightningHazard::refreshBolt(LightningBolt* l) const {
 }
 
 void HorizontalLightningHazard::drawBackground(bool pose, float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
+	//ColorValueHolder color = (pose ? getBackgroundColor_Pose() : getBackgroundColor());
+	ColorValueHolder color = getBackgroundColor_Pose();
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 
 	double scale;
 	if (pose || currentlyActive) {
@@ -292,10 +294,6 @@ void HorizontalLightningHazard::drawBackground(bool pose, float alpha) const {
 		scale = tickCount / (tickCycle * stateMultiplier[currentlyActive]);
 	}
 	//scale = scale * scale;
-
-	//ColorValueHolder color = (pose ? getBackgroundColor_Pose() : getBackgroundColor());
-	ColorValueHolder color = getBackgroundColor_Pose();
-	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 
 	float coordsAndColor[] = {
 		x+(w/2) - (w/2)*scale, y,     color.getRf(), color.getGf(), color.getBf(), color.getAf(),
@@ -348,7 +346,6 @@ void HorizontalLightningHazard::drawBackgroundOutline(float alpha) const {
 }
 
 void HorizontalLightningHazard::drawBolts_Pose(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	//generate bolts

@@ -457,7 +457,6 @@ void MotherTurretHazard::drawShootingTimer(float alpha) const {
 		return;
 	}
 
-	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	float shootingOutlinePercent;
@@ -497,9 +496,7 @@ void MotherTurretHazard::drawShootingTimer(float alpha) const {
 }
 
 void MotherTurretHazard::drawChildTurretLocations(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 

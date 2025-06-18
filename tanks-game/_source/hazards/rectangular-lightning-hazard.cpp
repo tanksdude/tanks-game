@@ -3,7 +3,7 @@
 #include "../constants.h"
 #include <cmath>
 #include <stdexcept>
-#include <algorithm> //std::find, std::copy, std::clamp
+#include <algorithm> //std::find, std::copy
 #include <iostream>
 #include "../rng.h"
 #include "../mylib.h" //pointInPolygon
@@ -363,8 +363,10 @@ void RectangularLightningHazard::ghostDraw(DrawingLayers layer, float alpha) con
 }
 
 void RectangularLightningHazard::drawBackground(bool pose, float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
+	//ColorValueHolder color = (pose ? getBackgroundColor_Pose() : getBackgroundColor());
+	ColorValueHolder color = getBackgroundColor_Pose();
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 
 	double scale;
 	if (pose || currentlyActive) {
@@ -373,10 +375,6 @@ void RectangularLightningHazard::drawBackground(bool pose, float alpha) const {
 		scale = tickCount / (tickCycle * stateMultiplier[currentlyActive]);
 	}
 	scale = scale * scale;
-
-	//ColorValueHolder color = (pose ? getBackgroundColor_Pose() : getBackgroundColor());
-	ColorValueHolder color = getBackgroundColor_Pose();
-	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 
 	float coordsAndColor[] = {
 		x+(w/2) - (w/2)*scale, y+(h/2) - (h/2)*scale,   color.getRf(), color.getGf(), color.getBf(), color.getAf(),
@@ -441,9 +439,7 @@ void RectangularLightningHazard::drawBolts(float alpha) const {
 		return;
 	}
 
-	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-
 	ColorValueHolder color = getBoltColor();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	const float lineWidth = 0.75f;
@@ -489,7 +485,6 @@ void RectangularLightningHazard::drawBolts(float alpha) const {
 }
 
 void RectangularLightningHazard::drawBolts_Pose(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	//generate bolts
