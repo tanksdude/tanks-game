@@ -98,6 +98,7 @@ public:
 	static void SetContext(AvailableRenderingContexts);
 	static void SetContext(const std::string&);
 	static AvailableRenderingContexts GetContext() { return renderingMethodType; }
+	static void PrintRendererInfo(); //only valid after window initialization
 
 	static void Initialize();
 	static void Uninitialize();

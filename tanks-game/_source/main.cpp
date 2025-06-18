@@ -16,7 +16,6 @@
 //needed for callbacks and stuff:
 #include "renderer.h"
 #include "rng.h"
-#include "color-value-holder.h"
 #include "reset-things.h"
 #include "developer-manager.h"
 #include "keypress-manager.h"
@@ -172,9 +171,6 @@
 #include "powers/mine-layer-power.h" //lays down a bullet every so often
 
 #include "game-main-loop.h"
-
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
 
 const std::string GameWindowName = "PowerTanks Battle post-v0.2.5.1 DEV"; //this is not guaranteed to be correct every commit but likely will be
 const std::string INIFilePath = "tanks.ini";
@@ -479,9 +475,7 @@ int main(int argc, char** argv) {
 	ResetThings::firstLevelPush();
 	ResetThings::firstReset();
 
-	std::cout << "OpenGL renderer: " << glGetString(GL_RENDERER) << std::endl;
-	std::cout << "OpenGL vendor: " << glGetString(GL_VENDOR) << std::endl;
-	std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl << std::endl;
+	Renderer::PrintRendererInfo();
 
 	//main loop:
 	double startTime = glfwGetTime();

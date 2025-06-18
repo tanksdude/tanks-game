@@ -80,6 +80,12 @@ void Renderer::SetContext(const std::string& API) {
 	SetContext(context);
 }
 
+void Renderer::PrintRendererInfo() {
+	std::cout << "OpenGL renderer: " << glGetString(GL_RENDERER) << std::endl;
+	std::cout << "OpenGL vendor: " << glGetString(GL_VENDOR) << std::endl;
+	std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl << std::endl;
+}
+
 void Renderer::Initialize() {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
