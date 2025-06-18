@@ -48,6 +48,7 @@ Note: Press F11 to toggle fullscreen. (Well, it's borderless fullscreen, but it 
 * `DisableTraps` (default 1): Prevents traps from activating. Does nothing since traps don't exist but might in the future. (They existed in JS Tanks.)
 * `RestrictTankTurning` (default 0): Prevent the tanks from turning while moving. A strange option, but maybe you like it, I won't judge.
 * `NoTankAcceleration` (default 0): Tanks no longer accelerate. Only added because JS Tanks had this option (which only had the option because there was a time before tank acceleration existed).
+* `AlwaysShootingMode` (default 0): Tanks are always firing. Intended as a debug option.
 
 ## CONTROLS
 

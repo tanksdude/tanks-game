@@ -32,6 +32,7 @@ public: //safe to be public because a const reference is used, and I don't want 
 
 	bool RestrictTankTurning;
 	bool NoTankAcceleration;
+	bool AlwaysShootingMode;
 
 	//[SPECIFIC_ADJUSTMENTS]
 	//int BananaPower_ExplodeCount;

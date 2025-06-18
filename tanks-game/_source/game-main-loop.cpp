@@ -1066,6 +1066,8 @@ void GameMainLoop::bulletPowerTick() {
 }
 
 void GameMainLoop::tankShoot() {
+	const GameSettings& game_settings = GameManager::get_settings();
+
 	/*
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
 		TankManager::getTank(i)->shoot();
@@ -1073,8 +1075,8 @@ void GameMainLoop::tankShoot() {
 	*/
 
 	//TODO: loop
-	TankManager::getTank(0)->shoot(tank1Inputs[3].getKeyState());
-	TankManager::getTank(1)->shoot(tank2Inputs[3].getKeyState());
+	TankManager::getTank(0)->shoot(game_settings.AlwaysShootingMode || tank1Inputs[3].getKeyState());
+	TankManager::getTank(1)->shoot(game_settings.AlwaysShootingMode || tank2Inputs[3].getKeyState());
 }
 
 void GameMainLoop::tankToEdge() {

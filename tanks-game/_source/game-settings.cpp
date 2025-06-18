@@ -63,6 +63,7 @@ void GameSettings::Initialize(const BasicINIParser::BasicINIData& ini_data) {
 
 	RestrictTankTurning = ini_data.exists("GAME_OPTIONS", "RestrictTankTurning") && std::stoi(ini_data.get("GAME_OPTIONS", "RestrictTankTurning"));
 	NoTankAcceleration = ini_data.exists("GAME_OPTIONS", "NoTankAcceleration") && std::stoi(ini_data.get("GAME_OPTIONS", "NoTankAcceleration"));
+	AlwaysShootingMode = ini_data.exists("GAME_OPTIONS", "AlwaysShootingMode") && std::stoi(ini_data.get("GAME_OPTIONS", "AlwaysShootingMode"));
 
 	//[SPECIFIC_ADJUSTMENTS]
 	//BananaPower_ExplodeCount;
