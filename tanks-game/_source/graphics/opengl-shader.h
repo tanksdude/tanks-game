@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include <GL/glew.h>
 
-class OpenGLShader : public Shader {
+class OpenGLShader final : public Shader {
 protected:
 	static void read_shader_src(const char* fname, std::vector<char>& buffer);
 	static GLuint load_and_compile_shader(const char* fname, GLenum shaderType);
@@ -17,9 +17,9 @@ public:
 	void setUniform4f(const std::string& name, float v0, float v1, float v2, float v3) override;
 	void setUniformMat4f(const std::string& name, const glm::mat4& matrix) override;
 
-	OpenGLShader(const std::string& vert_filepath, const std::string& frag_filepath);
-	~OpenGLShader();
-
 	void Bind() const override;
 	void Unbind() const override;
+
+	OpenGLShader(const std::string& vert_filepath, const std::string& frag_filepath);
+	~OpenGLShader();
 };

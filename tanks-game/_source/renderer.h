@@ -11,6 +11,7 @@
 #include "graphics/vertex-buffer.h"
 #include "graphics/index-buffer.h"
 #include "graphics/shader.h"
+#include <GL/glew.h> //only for GLenum for getErrorString()
 
 enum class AvailableRenderingContexts {
 	OpenGL,

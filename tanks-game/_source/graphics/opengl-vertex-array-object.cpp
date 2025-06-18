@@ -3,8 +3,22 @@
 #include <stdexcept>
 
 #include <GL/glew.h>
-#include "opengl-vertex-buffer.h"
-#include "opengl-index-buffer.h"
+
+//"static" here means to not allow this function outside of this file
+static GLenum ShaderDataTypeToGLenum(ShaderDataType type) {
+	switch (type) {
+		case ShaderDataType::Float:  return GL_FLOAT;
+		case ShaderDataType::Float2: return GL_FLOAT;
+		case ShaderDataType::Float3: return GL_FLOAT;
+		case ShaderDataType::Float4: return GL_FLOAT;
+		case ShaderDataType::Mat4:   return GL_FLOAT;
+		case ShaderDataType::Int:    return GL_INT;
+		case ShaderDataType::Int2:   return GL_INT;
+		case ShaderDataType::Int3:   return GL_INT;
+		case ShaderDataType::Int4:   return GL_INT;
+	}
+	return 0;
+}
 
 OpenGLVertexArrayObject::OpenGLVertexArrayObject() {
 	glGenVertexArrays(1, &rendererID);
@@ -42,7 +56,7 @@ void OpenGLVertexArrayObject::AddVertexBuffer(const VertexBuffer* vb) {
 				glEnableVertexAttribArray(vertexBufferIndex);
 				glVertexAttribPointer(vertexBufferIndex,
 					element.getComponentCount(),
-					OpenGLVertexBuffer::ShaderDataTypeToGLenum(element.type),
+					ShaderDataTypeToGLenum(element.type),
 					element.normalized ? GL_TRUE : GL_FALSE,
 					layout.getStride(),
 					(const void*) element.offset);
@@ -60,7 +74,7 @@ void OpenGLVertexArrayObject::AddVertexBuffer(const VertexBuffer* vb) {
 				glEnableVertexAttribArray(vertexBufferIndex);
 				glVertexAttribIPointer(vertexBufferIndex,
 					element.getComponentCount(),
-					OpenGLVertexBuffer::ShaderDataTypeToGLenum(element.type),
+					ShaderDataTypeToGLenum(element.type),
 					layout.getStride(),
 					(const void*) element.offset);
 				if (element.instanced) [[unlikely]] {
@@ -76,7 +90,7 @@ void OpenGLVertexArrayObject::AddVertexBuffer(const VertexBuffer* vb) {
 					glEnableVertexAttribArray(vertexBufferIndex);
 					glVertexAttribPointer(vertexBufferIndex,
 						count,
-						OpenGLVertexBuffer::ShaderDataTypeToGLenum(element.type),
+						ShaderDataTypeToGLenum(element.type),
 						element.normalized ? GL_TRUE : GL_FALSE,
 						layout.getStride(),
 						(const void*) (element.offset + i * count * sizeof(float)));

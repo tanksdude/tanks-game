@@ -1,13 +1,15 @@
 #pragma once
 #include "vertex-buffer-layout.h"
 
-enum class RenderingHints {
-	static_draw, //useless until I figure out framebuffers
-	dynamic_draw, //default
-	stream_draw
-};
-
 class VertexBuffer {
+public:
+	//same as IndexBuffer
+	enum class RenderingHints {
+		stream_draw, //"The data store contents will be modified once and used at most a few times."
+		static_draw, //"The data store contents will be modified once and used many times."
+		dynamic_draw //"The data store contents will be modified repeatedly and used many times."
+	};
+
 protected:
 	unsigned int rendererID;
 	VertexBufferLayout layout;

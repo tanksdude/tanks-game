@@ -9,11 +9,11 @@ VertexBuffer* VertexBuffer::MakeVertexBuffer(const void* data, unsigned int size
 	AvailableRenderingContexts API = Renderer::GetContext();
 	switch (API) {
 		case AvailableRenderingContexts::OpenGL:
-			return new OpenGLVertexBuffer(data, size);
+			return new OpenGLVertexBuffer(data, size, hint);
 		case AvailableRenderingContexts::software:
-			//return new SoftwareVertexBuffer(data, size);
+			//return new SoftwareVertexBuffer(data, size, hint);
 		case AvailableRenderingContexts::null_rendering:
-			//return new NullVertexBuffer(data, size);
+			//return new NullVertexBuffer(data, size, hint);
 		default:
 			throw std::invalid_argument("ERROR: Unknown rendering API!");
 	}

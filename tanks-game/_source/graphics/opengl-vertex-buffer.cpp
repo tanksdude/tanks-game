@@ -4,23 +4,19 @@
 
 #include <GL/glew.h>
 
-OpenGLVertexBuffer::OpenGLVertexBuffer(const void* data, unsigned int size) : OpenGLVertexBuffer(data, size, RenderingHints::stream_draw) {
-	//nothing
-}
-
 OpenGLVertexBuffer::OpenGLVertexBuffer(const void* data, unsigned int size, RenderingHints hint) {
 	glGenBuffers(1, &rendererID);
 	glBindBuffer(GL_ARRAY_BUFFER, rendererID);
 	switch (hint) {
-		case RenderingHints::static_draw:
-			glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
-			return;
-		case RenderingHints::dynamic_draw:
-			glBufferData(GL_ARRAY_BUFFER, size, data, GL_DYNAMIC_DRAW);
-			return;
 		case RenderingHints::stream_draw:
 			glBufferData(GL_ARRAY_BUFFER, size, data, GL_STREAM_DRAW);
-			return;
+			break;
+		case RenderingHints::static_draw:
+			glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
+			break;
+		case RenderingHints::dynamic_draw:
+			glBufferData(GL_ARRAY_BUFFER, size, data, GL_DYNAMIC_DRAW);
+			break;
 		default:
 			throw std::invalid_argument("ERROR: Unknown rendering hint!");
 	}
@@ -42,19 +38,4 @@ void OpenGLVertexBuffer::Bind() const {
 
 void OpenGLVertexBuffer::Unbind() const {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
-
-GLenum OpenGLVertexBuffer::ShaderDataTypeToGLenum(ShaderDataType type) {
-	switch (type) {
-		case ShaderDataType::Float:  return GL_FLOAT;
-		case ShaderDataType::Float2: return GL_FLOAT;
-		case ShaderDataType::Float3: return GL_FLOAT;
-		case ShaderDataType::Float4: return GL_FLOAT;
-		case ShaderDataType::Mat4:   return GL_FLOAT;
-		case ShaderDataType::Int:    return GL_INT;
-		case ShaderDataType::Int2:   return GL_INT;
-		case ShaderDataType::Int3:   return GL_INT;
-		case ShaderDataType::Int4:   return GL_INT;
-	}
-	return 0;
 }

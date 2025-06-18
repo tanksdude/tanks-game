@@ -317,14 +317,14 @@ bool Renderer::initializeGPU() {
 	unsigned int* indices = new unsigned int[MainBatched_VertexData::maxIndicesDataLength];
 	std::fill(indices, indices + MainBatched_VertexData::maxIndicesDataLength, 0);
 
-	batched_vb = VertexBuffer::MakeVertexBuffer(positions, MainBatched_VertexData::maxVerticesDataLength * sizeof(float), RenderingHints::stream_draw);
+	batched_vb = VertexBuffer::MakeVertexBuffer(positions, MainBatched_VertexData::maxVerticesDataLength * sizeof(float), VertexBuffer::RenderingHints::dynamic_draw);
 	VertexBufferLayout layout = {
 		{ ShaderDataType::Float2, "a_Position" },
 		{ ShaderDataType::Float4, "a_Color" }
 	};
 	batched_vb->SetLayout(layout);
 
-	batched_ib = IndexBuffer::MakeIndexBuffer(indices, MainBatched_VertexData::maxIndicesDataLength);
+	batched_ib = IndexBuffer::MakeIndexBuffer(indices, MainBatched_VertexData::maxIndicesDataLength, IndexBuffer::RenderingHints::dynamic_draw);
 
 	batched_vao = VertexArrayObject::MakeVertexArrayObject();
 	batched_vao->AddVertexBuffer(batched_vb);
@@ -339,31 +339,31 @@ bool Renderer::initializeGPU() {
 	unsigned int* indices_instanced = new unsigned int[MainBatched_VertexData::maxIndicesDataLength]; //TODO: might want a better size
 	std::fill(indices_instanced, indices_instanced + MainBatched_VertexData::maxIndicesDataLength, 0);
 
-	instanced_vb_pos = VertexBuffer::MakeVertexBuffer(positions_instanced, Bullet_VertexData::maxDataLength * sizeof(float), RenderingHints::stream_draw);
+	instanced_vb_pos = VertexBuffer::MakeVertexBuffer(positions_instanced, Bullet_VertexData::maxDataLength * sizeof(float), VertexBuffer::RenderingHints::stream_draw);
 	VertexBufferLayout layout_instanced_pos = {
 		{ ShaderDataType::Float2, "a_Position" }
 	};
 	instanced_vb_pos->SetLayout(layout_instanced_pos);
 
-	instanced_vb_color = VertexBuffer::MakeVertexBuffer(positions_instanced, Bullet_VertexData::maxDataLength * sizeof(float), RenderingHints::stream_draw);
+	instanced_vb_color = VertexBuffer::MakeVertexBuffer(positions_instanced, Bullet_VertexData::maxDataLength * sizeof(float), VertexBuffer::RenderingHints::dynamic_draw);
 	VertexBufferLayout layout_instanced_color = {
 		{ ShaderDataType::Float4, "a_ColorInstanced", false, true }
 	};
 	instanced_vb_color->SetLayout(layout_instanced_color);
 
-	instanced_vb_life = VertexBuffer::MakeVertexBuffer(positions_instanced, Bullet_VertexData::maxDataLength * sizeof(float), RenderingHints::stream_draw);
+	instanced_vb_life = VertexBuffer::MakeVertexBuffer(positions_instanced, Bullet_VertexData::maxDataLength * sizeof(float), VertexBuffer::RenderingHints::dynamic_draw);
 	VertexBufferLayout layout_instanced_life = {
 		{ ShaderDataType::Float, "a_BulletLifeInstanced", false, true }
 	};
 	instanced_vb_life->SetLayout(layout_instanced_life);
 
-	instanced_vb_mat = VertexBuffer::MakeVertexBuffer(positions_instanced, Bullet_VertexData::maxDataLength * sizeof(float), RenderingHints::stream_draw);
+	instanced_vb_mat = VertexBuffer::MakeVertexBuffer(positions_instanced, Bullet_VertexData::maxDataLength * sizeof(float), VertexBuffer::RenderingHints::dynamic_draw);
 	VertexBufferLayout layout_instanced_mat = {
 		{ ShaderDataType::Mat4, "a_ModelMatrixInstanced" }
 	};
 	instanced_vb_mat->SetLayout(layout_instanced_mat);
 
-	instanced_ib = IndexBuffer::MakeIndexBuffer(indices_instanced, MainBatched_VertexData::maxIndicesDataLength);
+	instanced_ib = IndexBuffer::MakeIndexBuffer(indices_instanced, MainBatched_VertexData::maxIndicesDataLength, IndexBuffer::RenderingHints::stream_draw);
 
 	instanced_vao = VertexArrayObject::MakeVertexArrayObject();
 	instanced_vao->AddVertexBuffer(instanced_vb_pos);
