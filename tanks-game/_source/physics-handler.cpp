@@ -15,7 +15,7 @@ void PhysicsHandler::Uninitialize() {
 	delete s_physicsTask;
 }
 
-PhysicsHandler::SweepAndPruneTask::SweepAndPruneTask(int num_threads_) {
+PhysicsHandler::SweepAndPruneTask::SweepAndPruneTask(uint32_t num_threads_) {
 	(void) m_objectIntervals; (void) m_SetSize;
 	num_threads = num_threads_;
 	m_MinRange = PhysicsHandler::MinTaskSize;
@@ -30,7 +30,7 @@ PhysicsHandler::SweepAndPruneTask::SweepAndPruneTask(int num_threads_) {
 	}
 }
 
-void PhysicsHandler::SweepAndPruneTask::Init(const std::vector<PhysicsHandler::ObjectIntervalInfo>* objectIntervals, int task_size) {
+void PhysicsHandler::SweepAndPruneTask::Init(const std::vector<PhysicsHandler::ObjectIntervalInfo>* objectIntervals, uint32_t task_size) {
 	m_objectIntervals = objectIntervals;
 	m_SetSize = task_size;
 	for (int i = 0; i < num_threads; i++) {
@@ -64,7 +64,7 @@ void PhysicsHandler::SweepAndPruneTask::ExecuteRange(enki::TaskSetPartition rang
 				//NOTE: this check only works because listIndex refers to the actual index in the list
 				//(does not work when the list is sorted before calling this function)
 
-				m_collisionLists[threadnum_]->push_back(std::pair<int, int>(currentObject.listIndex, iteratingObjects[j].listIndex));
+				m_collisionLists[threadnum_]->push_back({ currentObject.listIndex, iteratingObjects[j].listIndex });
 				everyObjectIsOutOfRange = false;
 			}
 		}

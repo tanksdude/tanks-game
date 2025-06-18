@@ -140,7 +140,7 @@ inline float GravityWellHazard::getGravityStrength(double dist) const {
 
 inline float GravityWellHazard::getInnerGravityCircleRadius() const {
 	if (isGravityReversed()) {
-		return ((tickCount/tickCycle))     * (gravityRange - r) + r;
+		return     ((tickCount/tickCycle)) * (gravityRange - r) + r;
 	} else {
 		return (1 - (tickCount/tickCycle)) * (gravityRange - r) + r;
 	}

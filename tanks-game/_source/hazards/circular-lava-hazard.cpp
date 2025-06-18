@@ -37,7 +37,7 @@ CircularLavaHazard::CircularLavaHazard(double xpos, double ypos, double radius) 
 	tickCount = 0;
 	tickCycle = 2400;
 	bubbles.reserve(maxBubbles);
-	bubbleChance = 1.0/400;
+	bubbleChance = 1.0f/400;
 
 	//canAcceptPowers = false;
 

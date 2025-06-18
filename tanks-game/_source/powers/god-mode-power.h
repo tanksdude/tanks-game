@@ -3,7 +3,7 @@
 
 class GodmodePower : public Power {
 public:
-	static inline int getHueValue();
+	static inline unsigned int getHueValue();
 
 public:
 	virtual std::vector<std::string> getPowerTypes() const override {

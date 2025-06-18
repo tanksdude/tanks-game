@@ -166,7 +166,7 @@ void MotherTurretHazard::pushInitialChildren(int childCount) {
 	const float workingAngle = float(2*PI) / angleSplit;
 	for (int i = 0; i < angleSplit; i++) {
 		for (int j = 1; j <= currentInitialChildren; j++) {
-			pushChild(i*currentMaxChildren + std::round((j * workingAngle/float(currentInitialChildren+1)) / turretAngleDiff));
+			pushChild(i*currentMaxChildren + static_cast<int>(std::round((j * workingAngle/float(currentInitialChildren+1)) / turretAngleDiff)));
 		}
 	}
 }

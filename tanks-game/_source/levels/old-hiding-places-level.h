@@ -4,7 +4,7 @@
 class OldHidingPlacesLevel : public Level {
 public:
 	virtual std::string getName() const override { return "old_hiding_places"; }
-	virtual ColorValueHolder getDefaultColor() const override { return ColorValueHolder(0x66/255.0, 0xAA/255.0, 0x22/255.5); }
+	virtual ColorValueHolder getDefaultColor() const override { return ColorValueHolder(0x66/255.0, 0xAA/255.0, 0x22/255.0); }
 	virtual std::vector<std::string> getLevelTypes() const override {
 		std::vector<std::string> types = std::vector<std::string>{ "old", "random-old" };
 		return types;

@@ -813,7 +813,7 @@ BulletPower* CustomTankPower::makeBulletPower() const {
 BulletPower* CustomBulletPower::makeDuplicate() const {
 	return new CustomBulletPower(name, color, colorImportance, tankDuration,
 		initializationActions_tank, initializationActions_bullet,
-		bulletSpeedMultiplier, bulletRadiusMultiplier, bulletAcceleration, modifiedCollision_BouncesLeft);
+		bulletRadiusMultiplier, bulletSpeedMultiplier, bulletAcceleration, modifiedCollision_BouncesLeft);
 }
 
 TankPower* CustomBulletPower::makeTankPower() const {

@@ -51,7 +51,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glfw\include;$(SolutionDir)Dependencies\glew\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\enkiTS;$(SolutionDir)Dependencies\rpmalloc;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\_misc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <DisableSpecificWarnings>4244;4267;4305;4838;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4018;4244;4267;4305;4312;4838;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <PreprocessorDefinitions>GLEW_STATIC;%(PreprocessorDefinitions);</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>/arch:SSE4.2 %(AdditionalOptions)</AdditionalOptions>
@@ -74,7 +74,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glfw\include;$(SolutionDir)Dependencies\glew\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\enkiTS;$(SolutionDir)Dependencies\rpmalloc;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\_misc;</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <DisableSpecificWarnings>4244;4267;4305;4838;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4018;4244;4267;4305;4312;4838;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <PreprocessorDefinitions>GLEW_STATIC;%(PreprocessorDefinitions);NDEBUG</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>/arch:SSE4.2 %(AdditionalOptions)</AdditionalOptions>

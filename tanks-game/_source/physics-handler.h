@@ -26,12 +26,12 @@ protected:
 	struct SweepAndPruneTask : public enki::ITaskSet {
 		std::vector<std::pair<int, int>>** m_collisionLists;
 		const std::vector<PhysicsHandler::ObjectIntervalInfo>* m_objectIntervals;
-		int num_threads;
+		uint32_t num_threads;
 
-		void Init(const std::vector<PhysicsHandler::ObjectIntervalInfo>* objectIntervals, int task_size);
+		void Init(const std::vector<PhysicsHandler::ObjectIntervalInfo>* objectIntervals, uint32_t task_size);
 		void ExecuteRange(enki::TaskSetPartition range_, uint32_t threadnum_) override;
 
-		SweepAndPruneTask(int num_threads);
+		SweepAndPruneTask(uint32_t num_threads);
 		~SweepAndPruneTask() override;
 	};
 

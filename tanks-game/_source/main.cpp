@@ -7,6 +7,12 @@
 #include <thread> //std::this_thread::yield(), std::thread::hardware_concurrency()
 #include <stdexcept>
 
+//globals and random libraries:
+#include "aaa_first.h" //for the thread manager, because I didn't want to make a new "globals" file or put it in constants.h
+#include <rpmalloc.h> //rest of rpmalloc stuff is in aaa_first.cpp
+#include <win32/usleep-windows.h> //has the platform check in the file, don't worry
+#include <posix/usleep-posix.h> //same (though it really check for not Windows)
+
 //needed for callbacks and stuff:
 #include "renderer.h"
 #include "rng.h"
@@ -169,11 +175,6 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-
-#include "aaa_first.h" //for the thread manager, because I didn't want to make a new "globals" file or put it in constants.h
-#include <rpmalloc.h> //rest of rpmalloc stuff is in aaa_first.cpp
-#include <win32/usleep-windows.h> //has the platform check in the file, don't worry
-#include <posix/usleep-posix.h> //same (though it really check for not Windows)
 
 const std::string GameWindowName = "PowerTanks Battle post-v0.2.5.1 DEV"; //this is not guaranteed to be correct every commit but likely will be
 const std::string INIFilePath = "tanks.ini";

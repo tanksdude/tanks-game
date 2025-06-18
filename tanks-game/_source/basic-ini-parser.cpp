@@ -23,7 +23,7 @@ bool BasicINIParser::BasicINIData::exists(std::string section, std::string prope
 	return true;
 }
 
-int BasicINIParser::BasicINIData::length(std::string section, std::string property) const noexcept {
+unsigned int BasicINIParser::BasicINIData::length(std::string section, std::string property) const noexcept {
 	return this->data.at(section).at(property).size();
 }
 

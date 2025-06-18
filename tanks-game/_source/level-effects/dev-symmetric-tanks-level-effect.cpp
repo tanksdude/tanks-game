@@ -15,7 +15,7 @@ void DevSymmetricTanksLevelEffect::tick(const Level* parent) {
 	TankManager::getTank(1)->x = GAME_WIDTH - TankManager::getTank(0)->x;
 	TankManager::getTank(1)->y = GAME_HEIGHT - TankManager::getTank(0)->y;
 	if (mirrorAngle) {
-		TankManager::getTank(1)->velocity.setAngle(TankManager::getTank(0)->velocity.getAngle() + PI);
+		TankManager::getTank(1)->velocity.setAngle(TankManager::getTank(0)->velocity.getAngle() + float(PI));
 	}
 }
 
