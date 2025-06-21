@@ -91,32 +91,22 @@ void GameMainLoop::Tick() {
 	levelTick();
 
 	moveTanks();
-
-	Diagnostics::startTiming("tank-powerups");
 	tankToPowerup();
-	Diagnostics::endTiming();
-
 	tickHazards();
 
 	moveBullets();
 
-	Diagnostics::startTiming("power calculate and tank shoot");
 	tankShoot();
 	tankPowerTickAndCalculate();
 	bulletPowerTick();
-	Diagnostics::endTiming();
 
 	tankToEdge();
 	bulletToEdge(); //TODO: it would be better to somehow put this in everythingToEverything
 
-	Diagnostics::startTiming("update AABBs");
 	GameManager::updateEveryAABB();
-	Diagnostics::endTiming();
-	Diagnostics::startTiming("everything-everything");
 	everythingToEverything();
 	//TODO: it's now impossible for a tank to shoot a bullet the exact frame an enemy bullet hits it and lives; worth the effort to adjust?
 	//maybe bullet-tank collision pairs could be pushed to a list to check later; update everything, then check bullet-tank, then update again
-	Diagnostics::endTiming();
 
 	//finish up by incrementing the tick count
 	GameManager::Tick();
@@ -1156,55 +1146,48 @@ void GameMainLoop::drawMain() const {
 	auto start = Diagnostics::getTime();
 	Renderer::BeginScene("draw");
 
-	Diagnostics::startTiming("background rect");
+	//background rect
 	BackgroundRect::draw();
-	Diagnostics::endTiming();
 
-	Diagnostics::startTiming("hazards under");
+	//hazards under
 	for (int i = 0; i < HazardManager::getNumCircleHazards(); i++) {
 		HazardManager::getCircleHazard(i)->draw(DrawingLayers::under);
 	}
 	for (int i = 0; i < HazardManager::getNumRectHazards(); i++) {
 		HazardManager::getRectHazard(i)->draw(DrawingLayers::under);
 	}
-	Diagnostics::endTiming();
 
-	Diagnostics::startTiming("level under");
+	//level under
 	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
 		LevelManager::getLevel(i)->draw(DrawingLayers::under);
 	}
 	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
 		LevelManager::getLevel(i)->drawLevelEffects(DrawingLayers::under);
 	}
-	Diagnostics::endTiming();
 
-	Diagnostics::startTiming("powerups");
+	//powerups
 	for (int i = 0; i < PowerupManager::getNumPowerups(); i++) {
 		PowerupManager::getPowerup(i)->draw(DrawingLayers::normal);
 	}
-	Diagnostics::endTiming();
 
-	Diagnostics::startTiming("hazards");
+	//hazards
 	for (int i = 0; i < HazardManager::getNumCircleHazards(); i++) {
 		HazardManager::getCircleHazard(i)->draw(DrawingLayers::normal);
 	}
 	for (int i = 0; i < HazardManager::getNumRectHazards(); i++) {
 		HazardManager::getRectHazard(i)->draw(DrawingLayers::normal);
 	}
-	Diagnostics::endTiming();
 
-	Diagnostics::startTiming("walls");
+	//walls
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		WallManager::getWall(i)->draw(DrawingLayers::normal);
 	}
-	Diagnostics::endTiming();
 
-	Diagnostics::startTiming("bullets");
+	//bullets
 	ColorCacheBullet::invalidateCachedColors();
 	for (int i = 0; i < BulletManager::getNumBullets(); i++) {
 		BulletManager::getBullet(i)->draw(DrawingLayers::normal);
 	}
-	Diagnostics::endTiming();
 
 	//drawing text on the GPU will need a library, so names don't get drawn anymore //TODO: https://github.com/nothings/stb
 	/*
@@ -1213,35 +1196,31 @@ void GameMainLoop::drawMain() const {
 	}
 	*/
 
-	Diagnostics::startTiming("tanks");
+	//tanks
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
 		TankManager::getTank(i)->draw(DrawingLayers::normal);
 	}
-	Diagnostics::endTiming();
 
-	Diagnostics::startTiming("hazards effects");
+	//hazards effects
 	for (int i = 0; i < HazardManager::getNumCircleHazards(); i++) {
 		HazardManager::getCircleHazard(i)->draw(DrawingLayers::effects);
 	}
 	for (int i = 0; i < HazardManager::getNumRectHazards(); i++) {
 		HazardManager::getRectHazard(i)->draw(DrawingLayers::effects);
 	}
-	Diagnostics::endTiming();
 
-	Diagnostics::startTiming("level effects");
+	//level effects
 	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
 		LevelManager::getLevel(i)->draw(DrawingLayers::effects);
 	}
 	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
 		LevelManager::getLevel(i)->drawLevelEffects(DrawingLayers::effects);
 	}
-	Diagnostics::endTiming();
 
-	Diagnostics::startTiming("tanks dead");
+	//tanks dead
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
 		TankManager::getTank(i)->draw(DrawingLayers::top);
 	}
-	Diagnostics::endTiming();
 
 	auto end = Diagnostics::getTime();
 	Diagnostics::pushGraphTime("upload", Diagnostics::getDiff(start, end));
@@ -1255,65 +1234,49 @@ void GameMainLoop::drawMain() const {
 
 	//end = Diagnostics::getTime();
 
-	//Diagnostics::printPreciseTimings();
-	Diagnostics::clearTimes();
-
-	//std::cout << "entire: " << Diagnostics::getDiff(start, end) << "ms" << std::endl << std::endl;
+	//std::cout << "draw all: " << Diagnostics::getDiff(start, end) << "ms" << std::endl << std::endl;
 }
 
 void GameMainLoop::drawLayer(DrawingLayers layer) const {
-	//auto start = Diagnostics::getTime();
 	Renderer::BeginScene("drawLayer" + std::to_string((int)layer));
 
-	//Diagnostics::startTiming("powerups");
+	//powerups
 	for (int i = 0; i < PowerupManager::getNumPowerups(); i++) {
 		PowerupManager::getPowerup(i)->draw(layer);
 	}
-	//Diagnostics::endTiming();
 
-	//Diagnostics::startTiming("hazards");
+	//hazards
 	for (int i = 0; i < HazardManager::getNumCircleHazards(); i++) {
 		HazardManager::getCircleHazard(i)->draw(layer);
 	}
 	for (int i = 0; i < HazardManager::getNumRectHazards(); i++) {
 		HazardManager::getRectHazard(i)->draw(layer);
 	}
-	//Diagnostics::endTiming();
 
-	//Diagnostics::startTiming("walls");
+	//walls
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		WallManager::getWall(i)->draw(layer);
 	}
-	//Diagnostics::endTiming();
 
-	//Diagnostics::startTiming("bullets");
+	//bullets
 	for (int i = 0; i < BulletManager::getNumBullets(); i++) {
 		BulletManager::getBullet(i)->draw(layer);
 	}
-	//Diagnostics::endTiming();
 
-	//Diagnostics::startTiming("tanks");
+	//tanks
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
 		TankManager::getTank(i)->draw(layer);
 	}
-	//Diagnostics::endTiming();
 
-	//Diagnostics::startTiming("level");
+	//level
 	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
 		LevelManager::getLevel(i)->draw(layer);
 	}
 	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
 		LevelManager::getLevel(i)->drawLevelEffects(layer);
 	}
-	//Diagnostics::endTiming();
 
 	Renderer::EndScene();
-	//auto end = Diagnostics::getTime();
-
-	//Diagnostics::printPreciseTimings();
-	//Diagnostics::clearTimes();
-
-	//std::cout << "entire: " << Diagnostics::getDiff(start, end) << "ms" << std::endl << std::endl;
 }
 
 void GameMainLoop::drawAllLayers() const {
