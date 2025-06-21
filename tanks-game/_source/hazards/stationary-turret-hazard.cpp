@@ -2,7 +2,7 @@
 
 #include "../constants.h"
 #include <cmath>
-#include <algorithm> //std::clamp
+#include <algorithm> //std::copy, std::clamp
 #include <iostream>
 #include "../rng.h"
 
@@ -23,6 +23,8 @@ unsigned int StationaryTurretHazard::body_indices[Circle::NumOfSides*3];
 unsigned int StationaryTurretHazard::outline_indices[Circle::NumOfSides*2*3];
 bool StationaryTurretHazard::initialized_vertices = false;
 
+const ColorValueHolder StationaryTurretHazard::stateColors[maxState] = { {0.5f, 0.5f, 0.5f}, {1.0f, 0x22/255.0, 0x11/255.0}, {0.0f, 0.5f, 1.0f} };
+
 std::unordered_map<std::string, float> StationaryTurretHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", 1.0f });
@@ -42,9 +44,8 @@ StationaryTurretHazard::StationaryTurretHazard(double xpos, double ypos, double 
 	tickCount = 0;
 	tickCycle = 100; //100 is JS default (because of shooting speed)
 	currentState = 0;
-	maxState = 3;
-	stateMultiplier = new double[3]{ 2, 1, 2 };
-	stateColors = new ColorValueHolder[3]{ {0.5f, 0.5f, 0.5f}, {1.0f, 0x22/255.0, 0x11/255.0}, {0.0f, 0.5f, 1.0f} };
+	double temp[maxState] = { 2, 1, 2 };
+	std::copy(temp, temp + maxState, stateMultiplier);
 
 	//canAcceptPowers = false;
 
@@ -52,8 +53,7 @@ StationaryTurretHazard::StationaryTurretHazard(double xpos, double ypos, double 
 }
 
 StationaryTurretHazard::~StationaryTurretHazard() {
-	delete[] stateMultiplier;
-	delete[] stateColors;
+	//nothing
 }
 
 bool StationaryTurretHazard::initializeVertices() {
@@ -176,7 +176,7 @@ bool StationaryTurretHazard::reasonableLocation() const {
 }
 
 ColorValueHolder StationaryTurretHazard::getColor() const {
-	return ColorMixer::mix(stateColors[currentState], stateColors[(currentState+1)%maxState], std::clamp<double>(tickCount/(tickCycle*stateMultiplier[currentState]), 0, 1));
+	return ColorMixer::mix(stateColors[currentState], stateColors[(currentState+1)%maxState], std::clamp<float>(tickCount/(tickCycle*stateMultiplier[currentState]), 0, 1));
 }
 
 ColorValueHolder StationaryTurretHazard::getColor(unsigned int state) const {

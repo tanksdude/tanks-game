@@ -2,7 +2,7 @@
 
 #include "../constants.h"
 #include <cmath>
-#include <algorithm> //std::copy, std::clamp
+#include <algorithm> //std::clamp
 #include <iostream>
 #include "../rng.h"
 
@@ -16,6 +16,8 @@
 #include "../bullet-manager.h"
 #include "../wall-manager.h"
 #include "../hazard-manager.h"
+
+const ColorValueHolder TargetingTurretHazard::reticuleColors[2] = { {1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f} };
 
 std::unordered_map<std::string, float> TargetingTurretHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -35,8 +37,6 @@ TargetingTurretHazard::TargetingTurretHazard(double xpos, double ypos, double an
 	targetingY = ypos;
 	targetingCount = 0;
 	trackingID = this->getGameID();
-	ColorValueHolder temp[2] = { {1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f} };
-	std::copy(temp, temp+2, reticuleColors);
 
 	//canAcceptPowers = false; //... true?
 }
@@ -128,11 +128,11 @@ void TargetingTurretHazard::tick_continueTracking() {
 void TargetingTurretHazard::tick_lookForNewTarget() {
 	//targetingCount = 0;
 
-	std::vector<bool> tankVisibility; tankVisibility.reserve(TankManager::getNumTanks()); //not using regular arrays so people (including future me) can actually read this
+	std::vector<char> tankVisibility; tankVisibility.reserve(TankManager::getNumTanks()); //not using regular arrays so people (including future me) can actually read this
 	std::vector<double> distancesSquaredToTank; distancesSquaredToTank.reserve(TankManager::getNumTanks()); //TODO: option for angle-based selection (look at homing in PowerFunctionHelper)
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
 		const Tank* t = TankManager::getTank(i);
-		tankVisibility.push_back(canSeeTank(t));
+		tankVisibility.push_back((char)canSeeTank(t));
 		if (tankVisibility[i]) {
 			distancesSquaredToTank.push_back((t->x - x)*(t->x - x) + (t->y - y)*(t->y - y));
 		} else {
@@ -246,7 +246,7 @@ bool TargetingTurretHazard::reasonableLocation() const {
 }
 
 ColorValueHolder TargetingTurretHazard::getColor() const {
-	return ColorMixer::mix(stateColors[currentState], stateColors[(currentState+1)%maxState], std::clamp<double>(targetingCount/(tickCycle*stateMultiplier[currentState]), 0, 1));
+	return ColorMixer::mix(stateColors[currentState], stateColors[(currentState+1)%maxState], std::clamp<float>(targetingCount/(tickCycle*stateMultiplier[currentState]), 0, 1));
 }
 
 ColorValueHolder TargetingTurretHazard::getReticuleColor() const {

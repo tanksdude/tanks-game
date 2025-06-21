@@ -5,7 +5,7 @@ class MotherTurretHazard : public TargetingTurretHazard {
 protected:
 	int maxChildTurrets; //treated as constant
 	std::vector<Game_ID> childTurretIDs; //length = maxChildTurrets (vector for ease of use, can't use std::array)
-	std::vector<bool> childTurretAlive;
+	std::vector<char> childTurretAlive; //not bool because std::vector<bool> is a completely different object; they would function identically, but std::vector<char> is smaller and filesize is a little smaller without std::vector<bool> existing
 	int targetingNum; //[0, maxChildTurrets)
 	bool targetingChild; //basically the targeting bool, but the distinction allows GinormousTurretHazard to work correctly
 

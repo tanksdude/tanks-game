@@ -246,8 +246,7 @@ void CircularLightningHazard::refreshBolt(LightningBolt* l) const {
 			randTemp = maxVariance * (VisualRNG::randFuncf()*2-1);
 			testX = l->positions[j*2 - 2] + (boltDeltaX/(l->length-1)) - randTemp * sinAngle;
 			testY = l->positions[j*2 - 1] + (boltDeltaY/(l->length-1)) + randTemp * cosAngle;
-		} while (((testX*testX + testY*testY) > static_cast<float>(r) * static_cast<float>(r)) || !pointInPolygon(6, polygonX, polygonY, testX, testY));
-		//the first case is rare, but I'm fairly certain it's a useless check if pointInPolygon is checked first
+		} while (!pointInPolygon(6, polygonX, polygonY, testX, testY));
 		l->positions[j*2]   = testX;
 		l->positions[j*2+1] = testY;
 	}

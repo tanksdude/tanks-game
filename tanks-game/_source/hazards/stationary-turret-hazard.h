@@ -11,10 +11,11 @@ protected:
 	SimpleVector2D velocity; //for stationary and targeting turrets, the magnitude will obviously be 0
 	double tickCount;
 	double tickCycle;
+
+	static constexpr unsigned int maxState = 3;
+	static const ColorValueHolder stateColors[maxState];
+	double stateMultiplier[maxState]; //can't be static due to other turrets modifying this
 	unsigned int currentState;
-	unsigned int maxState;
-	double* stateMultiplier;
-	ColorValueHolder* stateColors;
 
 protected:
 	virtual bool canSeeTank(const Tank*) const; //true if pointing at tank with no wall obstructions

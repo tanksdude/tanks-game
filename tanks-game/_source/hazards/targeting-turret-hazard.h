@@ -7,9 +7,10 @@ protected:
 	float turningIncrement = 128;
 	bool targeting;
 	float targetingX, targetingY; //not the x and y of the targeted tank; it's the x and y of the targeting reticule
-	ColorValueHolder reticuleColors[2];
 	double targetingCount;
 	Game_ID trackingID; //if ==this->getGameID(), then it's not tracking
+
+	static const ColorValueHolder reticuleColors[2];
 
 protected:
 	inline void updateTrackingPos(const Tank*, bool pointedAt);

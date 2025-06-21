@@ -89,12 +89,12 @@ ColorValueHolder GeneralizedLava::getBackgroundColor_Pose() const {
 	return ColorValueHolder(1.0f, 0.25f, 0.0f);
 }
 
-ColorValueHolder GeneralizedLava::getBubbleColor(LavaBubble* bubble) const {
+ColorValueHolder GeneralizedLava::getBubbleColor(const LavaBubble* bubble) const {
 	//a bubble's natural color is white, but with an alpha of .5, but blending is expensive so it's just mixed with the lava background
 	return ColorMixer::mix(ColorValueHolder(1.0f, 1.0f, 1.0f), getBackgroundColor(), 1.0f - bubble->getAlpha());
 }
 
-ColorValueHolder GeneralizedLava::getBubbleColor_Pose(LavaBubble* bubble) const {
+ColorValueHolder GeneralizedLava::getBubbleColor_Pose(const LavaBubble* bubble) const {
 	return ColorMixer::mix(ColorValueHolder(1.0f, 1.0f, 1.0f), getBackgroundColor(), .5f); //TODO: allow getting the base alpha from a bubble
 }
 

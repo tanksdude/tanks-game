@@ -40,7 +40,7 @@ MotherTurretHazard::MotherTurretHazard(double xpos, double ypos, double angle, i
 	targetingChild = false;
 
 	childTurretIDs = std::vector<Game_ID>(maxChildTurrets, -1);
-	childTurretAlive = std::vector<bool>(maxChildTurrets, false);
+	childTurretAlive = std::vector<char>(maxChildTurrets, (char)false);
 	initialChildren = startChildren;
 
 	//canAcceptPowers = false; //not sure
@@ -275,7 +275,7 @@ void MotherTurretHazard::tick_chargeUp() {
 }
 
 int MotherTurretHazard::getChildCount() const {
-	return std::count(childTurretAlive.begin(), childTurretAlive.end(), true);
+	return std::count(childTurretAlive.begin(), childTurretAlive.end(), (char)true);
 }
 
 int MotherTurretHazard::updateChildCount() {

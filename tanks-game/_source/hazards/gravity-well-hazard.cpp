@@ -318,23 +318,23 @@ void GravityWellHazard::ghostDraw(DrawingLayers layer, float alpha) const {
 
 void GravityWellHazard::drawBody(float alpha) const {
 	alpha = alpha * alpha;
-	ColorValueHolder cloudColor = color;
-	cloudColor = ColorMixer::mix(BackgroundRect::getBackColor(), cloudColor, alpha);
+	ColorValueHolder bodyColor = color;
+	bodyColor = ColorMixer::mix(BackgroundRect::getBackColor(), bodyColor, alpha);
 
 	float coordsAndColor[(Circle::NumOfSides+1)*(2+4)];
 	coordsAndColor[0] = x;
 	coordsAndColor[1] = y;
-	coordsAndColor[2] = cloudColor.getRf();
-	coordsAndColor[3] = cloudColor.getGf();
-	coordsAndColor[4] = cloudColor.getBf();
-	coordsAndColor[5] = cloudColor.getAf();
+	coordsAndColor[2] = bodyColor.getRf();
+	coordsAndColor[3] = bodyColor.getGf();
+	coordsAndColor[4] = bodyColor.getBf();
+	coordsAndColor[5] = bodyColor.getAf();
 	for (int i = 1; i < Circle::NumOfSides+1; i++) {
 		coordsAndColor[i*6]   = static_cast<float>(x) + static_cast<float>(r) * body_vertices[i].getXComp();
 		coordsAndColor[i*6+1] = static_cast<float>(y) + static_cast<float>(r) * body_vertices[i].getYComp();
-		coordsAndColor[i*6+2] = cloudColor.getRf();
-		coordsAndColor[i*6+3] = cloudColor.getGf();
-		coordsAndColor[i*6+4] = cloudColor.getBf();
-		coordsAndColor[i*6+5] = cloudColor.getAf();
+		coordsAndColor[i*6+2] = bodyColor.getRf();
+		coordsAndColor[i*6+3] = bodyColor.getGf();
+		coordsAndColor[i*6+4] = bodyColor.getBf();
+		coordsAndColor[i*6+5] = bodyColor.getAf();
 	}
 
 	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::NumOfSides+1)*(2+4), body_indices, Circle::NumOfSides*3);
@@ -368,8 +368,8 @@ void GravityWellHazard::drawOutline(float alpha) const {
 
 void GravityWellHazard::drawGravityCircle(float alpha) const {
 	alpha = alpha * alpha;
-	ColorValueHolder c = ColorMixer::mix(BackgroundRect::getBackColor(), this->color, .25);
-	c = ColorMixer::mix(BackgroundRect::getBackColor(), c, alpha);
+	ColorValueHolder color = ColorMixer::mix(BackgroundRect::getBackColor(), this->color, .25f);
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	const float lineWidth = this->r / 4;
 
 	float coordsAndColor[(Circle::NumOfSides*2)*(2+4)];
@@ -379,14 +379,14 @@ void GravityWellHazard::drawGravityCircle(float alpha) const {
 		coordsAndColor[(i*2+1)*6]   = static_cast<float>(x) + (getInnerGravityCircleRadius())           * body_vertices[i+1].getXComp();
 		coordsAndColor[(i*2+1)*6+1] = static_cast<float>(y) + (getInnerGravityCircleRadius())           * body_vertices[i+1].getYComp();
 
-		coordsAndColor[(i*2)  *6+2] = c.getRf();
-		coordsAndColor[(i*2)  *6+3] = c.getGf();
-		coordsAndColor[(i*2)  *6+4] = c.getBf();
-		coordsAndColor[(i*2)  *6+5] = c.getAf();
-		coordsAndColor[(i*2+1)*6+2] = c.getRf();
-		coordsAndColor[(i*2+1)*6+3] = c.getGf();
-		coordsAndColor[(i*2+1)*6+4] = c.getBf();
-		coordsAndColor[(i*2+1)*6+5] = c.getAf();
+		coordsAndColor[(i*2)  *6+2] = color.getRf();
+		coordsAndColor[(i*2)  *6+3] = color.getGf();
+		coordsAndColor[(i*2)  *6+4] = color.getBf();
+		coordsAndColor[(i*2)  *6+5] = color.getAf();
+		coordsAndColor[(i*2+1)*6+2] = color.getRf();
+		coordsAndColor[(i*2+1)*6+3] = color.getGf();
+		coordsAndColor[(i*2+1)*6+4] = color.getBf();
+		coordsAndColor[(i*2+1)*6+5] = color.getAf();
 	}
 
 	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::NumOfSides*2)*(2+4), outline_indices, Circle::NumOfSides*6);
@@ -394,7 +394,8 @@ void GravityWellHazard::drawGravityCircle(float alpha) const {
 
 void GravityWellHazard::drawGravityArrows(float alpha) const {
 	alpha = alpha * alpha;
-	ColorValueHolder color = ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(0.375f, 0.375f, 0.375f), alpha);
+	ColorValueHolder color = ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(0.0f, 0.0f, 0.0f));
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	const float arrowScale = this->r / 2; //x-coords are in [-1,1]
 
 	float coordsAndColor_arrow[7*(2+4)];
