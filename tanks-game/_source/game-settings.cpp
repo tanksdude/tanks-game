@@ -7,11 +7,8 @@
 
 void GameSettings::Initialize(const BasicINIParser::BasicINIData& ini_data) {
 	//[DEBUG]
-	PerformanceGraphEnable = ini_data.exists("DEBUG", "PerformanceGraphEnable") && std::stoi(ini_data.get("DEBUG", "PerformanceGraphEnable"));
-	EnableDebugDrawing = ini_data.exists("DEBUG", "EnableDebugDrawing") && std::stoi(ini_data.get("DEBUG", "EnableDebugDrawing"));
-
-	//[GRAPHICS_SETTINGS]
-	Bullet_PerformanceMode = ini_data.exists("GRAPHICS_SETTINGS", "Bullet.PerformanceMode") && std::stoi(ini_data.get("GRAPHICS_SETTINGS", "Bullet.PerformanceMode"));
+	PerformanceGraphEnable = ini_data.exists("DEBUG", "PerformanceGraphEnable") ? std::stoi(ini_data.get("DEBUG", "PerformanceGraphEnable")) : false;
+	EnableDebugDrawing = ini_data.exists("DEBUG", "EnableDebugDrawing") ? std::stoi(ini_data.get("DEBUG", "EnableDebugDrawing")) : false;
 
 	//[GAME_OPTIONS]
 	GameLevelPlaylist = ini_data.exists("GAME_OPTIONS", "GameLevelPlaylist")
@@ -50,20 +47,20 @@ void GameSettings::Initialize(const BasicINIParser::BasicINIData& ini_data) {
 	} else {
 		CustomLevelPlaylist = {};
 	}
-	ReportCurrentLevel = ini_data.exists("GAME_OPTIONS", "ReportCurrentLevel") && std::stoi(ini_data.get("GAME_OPTIONS", "ReportCurrentLevel"));
+	ReportCurrentLevel = ini_data.exists("GAME_OPTIONS", "ReportCurrentLevel") ? std::stoi(ini_data.get("GAME_OPTIONS", "ReportCurrentLevel")) : true;
 
-	LimitBullets = ini_data.exists("GAME_OPTIONS", "LimitBullets") && std::stoi(ini_data.get("GAME_OPTIONS", "LimitBullets"));
+	LimitBullets = ini_data.exists("GAME_OPTIONS", "LimitBullets") ? std::stoi(ini_data.get("GAME_OPTIONS", "LimitBullets")) : true;
 	MaxBullets = ini_data.exists("GAME_OPTIONS", "MaxBullets")
-		? std::stoi(ini_data.get("GAME_OPTIONS", "MaxBullets")) : -1; //-1 does not mean infinite
-	FewerExtraShootingBullets = ini_data.exists("GAME_OPTIONS", "FewerExtraShootingBullets") && std::stoi(ini_data.get("GAME_OPTIONS", "FewerExtraShootingBullets"));
+		? std::stoi(ini_data.get("GAME_OPTIONS", "MaxBullets")) : -1; //-1 does not mean infinite, it means use the default in BulletManager
+	FewerExtraShootingBullets = ini_data.exists("GAME_OPTIONS", "FewerExtraShootingBullets") ? std::stoi(ini_data.get("GAME_OPTIONS", "FewerExtraShootingBullets")) : false;
 	ShootingCooldown = ini_data.exists("GAME_OPTIONS", "ShootingCooldown")
 		? std::stod(ini_data.get("GAME_OPTIONS", "ShootingCooldown")) : SHOOT_COOLDOWN;
 	PowerupDurationBaseTime = ini_data.exists("GAME_OPTIONS", "PowerupDurationBaseTime")
 		? std::stod(ini_data.get("GAME_OPTIONS", "PowerupDurationBaseTime")) : POWER_COOLDOWN;
 
-	RestrictTankTurning = ini_data.exists("GAME_OPTIONS", "RestrictTankTurning") && std::stoi(ini_data.get("GAME_OPTIONS", "RestrictTankTurning"));
-	NoTankAcceleration = ini_data.exists("GAME_OPTIONS", "NoTankAcceleration") && std::stoi(ini_data.get("GAME_OPTIONS", "NoTankAcceleration"));
-	AlwaysShootingMode = ini_data.exists("GAME_OPTIONS", "AlwaysShootingMode") && std::stoi(ini_data.get("GAME_OPTIONS", "AlwaysShootingMode"));
+	RestrictTankTurning = ini_data.exists("GAME_OPTIONS", "RestrictTankTurning") ? std::stoi(ini_data.get("GAME_OPTIONS", "RestrictTankTurning")) : false;
+	NoTankAcceleration = ini_data.exists("GAME_OPTIONS", "NoTankAcceleration") ? std::stoi(ini_data.get("GAME_OPTIONS", "NoTankAcceleration")) : false;
+	AlwaysShootingMode = ini_data.exists("GAME_OPTIONS", "AlwaysShootingMode") ? std::stoi(ini_data.get("GAME_OPTIONS", "AlwaysShootingMode")) : false;
 
 	//[SPECIFIC_ADJUSTMENTS]
 	//BananaPower_ExplodeCount;

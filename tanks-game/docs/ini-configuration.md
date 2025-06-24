@@ -6,23 +6,22 @@ Since I don't have the expertise or willingness to add advanced features like "a
 
 ## UNIVERSAL
 
-* `GameMode` (default 0): options are 0 (normal), 1 (superfast shooting), and 2 (infinite world). Except that only normal mode is supported (and superfast shooting doesn't need its own "game mode")...
 * `GraphicsContext` (default "OpenGL"): options are "OpenGL", "software", and "NULL". Only "OpenGL" is supported...
 * `RNGSeed`: Set the seed for RNG, or blank for random.
-* `ThreadCount` (default 1): The number of total threads to use for multithreading (counting the main thread); <=0 is all cores on your system minus the number (so -2 is all but two cores). Performance is only somewhat better when using extra threads, as the extra threads are only used for the broad phase of collision.
+* `ThreadCount` (default 4): The number of total threads to use for multithreading (counting the main thread); <=0 is all cores on your system minus the number (so -2 is all but two cores). Performance is only somewhat better when using extra threads, as the extra threads are only used for the broad phase of collision, though ~20% should be possible. Too many threads will ruin the cache for the narrow phase, thus lower performance.
 * `ThreadTaskSize` (default 256): The minimum number of items to be worked on by each thread. If this is too low, then the overhead in spinning up a new thread will greatly outweigh the work it could do; too high and not all threads will do anything.
 
 ## MODS
 
 * `LoadMods` (default 1): Controls whether to load mods or not.
-* `ModSafetyChecks` (default 1): Controls whether to force checks on mods' types. For example, "vanilla" is reserved thanks to this setting. If this is set to true, playing on regular and custom levels at the same time is challenging.
+* `ModSafetyChecks` (default 1): Controls whether to force checks on mods' types. For example, "vanilla" is reserved thanks to this setting. If this is turned on, playing on regular and custom levels at the same time is challenging.
 
 ## DEBUG
 
-* `PerformanceGraphEnable` (default 1): Controls whether to draw the performance graph.
-* `PerformanceGraphOffset` (default 0.0): Controls the performance graph's y-offset. 0 keeps it at the bottom of the screen, 1 puts it above the screen.
+* `PerformanceGraphEnable` (default 0): Controls whether to draw the performance graph.
+* `PerformanceGraphOffsetMultiplier` (default 0.0): Controls the performance graph's y-offset multiplier. 0 keeps it at the bottom of the screen, 1 puts it above the screen.
 * `EnableDebugDrawing` (default 0): Controls whether to draw "debug drawings" on some objects.
-* `EnableDebugDrawingObjects` (default "patrolling_turret" "mother_turret"): Sets which objects to enable debug drawing for.
+* `EnableDebugDrawingObjects` (default "patrolling_turret" "mother_turret" "ginormous_turret"): Sets which objects to enable debug drawing for.
 * `DeveloperInsertMenuPowerAdditions` (default "special bounce" "dev" "ultrabounce" "special triple" "dev" "triple_spread" "testpower2" "testmod1" "test-power-2"): Adds certain powerups to the developer "menu". In groups of 3, supply the item's identifier, the power's type, and the power's name.
 
 ## GRAPHICS_SETTINGS
@@ -30,7 +29,6 @@ Since I don't have the expertise or willingness to add advanced features like "a
 * `Position.StartX` (default 120): Sets the window's starting x-position.
 * `Position.StartY` (default 120): Sets the window's starting y-position. Remember that this is counted from the top left of your primary monitor.
 * `Position.SizeMultiplier` (default 2.5): Controls the sizing of the window. The actual game's size is 640×320, so by default the window is scaled to 1600×800.
-* `Bullet.PerformanceMode` (default 0): Controls whether to draw a circular outline around the bullet to represent its transparency or whether to draw a bar underneath it (no option for actual transparency because that is hard on performance).
 
 Note: Press F11 to toggle fullscreen. (Well, it's borderless fullscreen, but it still fills the whole screen.)
 
@@ -40,10 +38,11 @@ Note: Press F11 to toggle fullscreen. (Well, it's borderless fullscreen, but it 
 * `GameLevelPlaylist` (default "random-vanilla"): Controls which level playlist to choose from once the game has started.
 * `GameForceSameLevel`: Forces the game to only play on the same level, which is useful for testing new levels. Set to the name of the level to enable (for example, "vanilla" "default_random").
 * `CustomLevelPlaylist`: Creates a level playlist with levels of your choosing. In groups of 3, supply the level's type, name, and weight. Overrides `GameLevelPlaylist` if set.
+* `ReportCurrentLevel` (default 1): Prints the level being played when a new game is started.
 * `LimitBullets` (default 1): Controls whether to limit the number of bullets on screen. Look, your computer has a limit at some point.
 * `MaxBullets` (default 8192): Controls the maximum number of bullets, assuming `LimitBullets` is true.
 * `FewerExtraShootingBullets` (default 0): Controls whether something like Triple + Fire shoots 7 or 12 bullets. Keeping this setting off is a significant change (and performance hit), so that's why this is an option instead of always doing more bullets. Remember, Shotgun + Blast goes from 4+16 to 5×16 bullets; that's a lot!
-* `ShootingCooldown` (default 100): Controls the tanks' shooting cooldown. Set to 0 for superfast shooting.
+* `ShootingCooldown` (default 100): Controls the tanks' shooting cooldown. Set to 0 for superfast shooting (very fun!).
 * `PowerupDurationBaseTime` (default 500): Controls the base time of powerups.
 * `DisableTraps` (default 1): Prevents traps from activating. Does nothing since traps don't exist but might in the future. (They existed in JS Tanks.)
 * `RestrictTankTurning` (default 0): Prevent the tanks from turning while moving. A strange option, but maybe you like it, I won't judge.

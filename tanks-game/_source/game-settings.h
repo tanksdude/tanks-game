@@ -14,9 +14,6 @@ public: //safe to be public because a const reference is used, and I don't want 
 	bool PerformanceGraphEnable;
 	bool EnableDebugDrawing;
 
-	//[GRAPHICS_SETTINGS]
-	bool Bullet_PerformanceMode;
-
 	//[GAME_OPTIONS]
 	std::string GameLevelPlaylist;
 	bool GameForceSameLevel;

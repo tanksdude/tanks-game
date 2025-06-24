@@ -172,7 +172,7 @@
 
 #include "game-main-loop.h"
 
-const std::string GameWindowName = "PowerTanks Battle post-v0.2.5.1 DEV"; //this is not guaranteed to be correct every commit but likely will be
+const std::string GameWindowName = "PowerTanks Battle v0.3.0 EARLY WIP DEV"; //this is not guaranteed to be correct every commit but likely will be
 const std::string INIFilePath = "tanks.ini";
 
 
@@ -437,36 +437,14 @@ int main(int argc, char** argv) {
 	Diagnostics::declareGraph("draw", ColorValueHolder(0.0f, 0.0f, 1.0f));
 	Diagnostics::declareGraph("all", ColorValueHolder(1.0f, 1.0f, 1.0f));
 
-	if (ini_data.exists("DEBUG", "PerformanceGraphOffset")) {
-		Diagnostics::setGraphYOffset(GAME_HEIGHT * std::stod(ini_data.get("DEBUG", "PerformanceGraphOffset")));
+	if (ini_data.exists("DEBUG", "PerformanceGraphOffsetMultiplier")) {
+		Diagnostics::setGraphYOffset(GAME_HEIGHT * std::stod(ini_data.get("DEBUG", "PerformanceGraphOffsetMultiplier")));
 	} else {
 		Diagnostics::setGraphYOffset(GAME_HEIGHT);
 	}
 
 	//game mode:
-	GameMainLoop* game;
-	if (ini_data.exists("UNIVERSAL", "GameMode")) {
-		int mode = std::stoi(ini_data.get("UNIVERSAL", "GameMode"));
-		switch (mode) {
-			default:
-				std::cerr << "Unknown GameMode \"" << mode << "\"!" << std::endl;
-				[[fallthrough]];
-			case 0:
-				//normal
-				game = new GameMainLoop();
-				break;
-			case 1:
-				//superfast shooting
-				game = new GameMainLoop();
-				break;
-			case 2:
-				//infinite world
-				game = new GameMainLoop();
-				break;
-		}
-	} else {
-		game = new GameMainLoop();
-	}
+	GameMainLoop* game = new GameMainLoop();
 	GameSceneManager::pushScene(game);
 
 	//main game code initialization stuff:
