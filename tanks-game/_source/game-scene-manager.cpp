@@ -7,6 +7,8 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include <tracy/Tracy.hpp>
+
 std::vector<std::pair<GameScene*, Scene_ID>> GameSceneManager::scenes;
 int GameSceneManager::nextSceneID = 0;
 
@@ -15,6 +17,7 @@ void GameSceneManager::Initialize() {
 }
 
 void GameSceneManager::TickScenes() {
+	ZoneScoped;
 	/*
 	auto start = Diagnostics::getTime();
 	*/
@@ -29,6 +32,8 @@ void GameSceneManager::TickScenes() {
 	auto timeTakenMS = Diagnostics::getDiff(start, end);
 	auto sleepTimeMS = (100.0 - timeTakenMS);
 	*/
+
+	FrameMark;
 }
 
 void GameSceneManager::DrawScenes() {

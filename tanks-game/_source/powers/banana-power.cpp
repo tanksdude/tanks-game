@@ -52,8 +52,10 @@ BananaTankPower::BananaTankPower() {
 #include "../rng.h"
 
 #include "../bullet-manager.h"
+//#include <tracy/Tracy.hpp>
 
 void BananaBulletPower::bananaExplode(const Bullet* b) {
+	//ZoneScoped;
 	for (int i = 0; i < BananaPower::bananaCount; i++) {
 		std::vector<BulletPower*>* bp = new std::vector<BulletPower*>;
 		bp->reserve(b->bulletPowers.size()-1);

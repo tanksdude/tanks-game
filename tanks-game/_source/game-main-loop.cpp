@@ -34,6 +34,8 @@
 //#include <GL/glew.h>
 //#include <GLFW/glfw3.h>
 
+#include <tracy/Tracy.hpp>
+
 void doThing() {
 	return;
 }
@@ -55,6 +57,7 @@ GameMainLoop::GameMainLoop() : GameScene() {
 }
 
 void GameMainLoop::Tick() {
+	ZoneScoped;
 	if (EndGameHandler::shouldGameEnd()) {
 		waitCount++;
 		if (waitCount >= maxWaitCount) {
@@ -122,11 +125,11 @@ void GameMainLoop::Tick() {
 }
 
 void GameMainLoop::everythingToEverything() {
-	//broad phase
+	ZoneScoped;
 
+	FrameMarkStart("broad phase");
 	std::vector<std::vector<std::pair<int, int>>*> collisionLists = PhysicsHandler::sweepAndPrune(GameManager::getObjectCollisionList());
-
-	//narrow phase (and resolve some collision)
+	FrameMarkEnd("broad phase");
 
 	std::vector<Game_ID> bulletDeletionList;
 	std::vector<Game_ID> wallDeletionList;
@@ -153,6 +156,7 @@ void GameMainLoop::everythingToEverything() {
 	//as a temporary solution, maybe make a "kill events" list, handle those afterwards
 	//(note: technically this same problem could happen in previous versions, including the 2-phase system in v0.2.5 and the naïve way for everything before)
 
+	FrameMarkStart("narrow phase");
 	for (std::vector<std::pair<int, int>>* collisionList : collisionLists) {
 		for (int i = 0; i < collisionList->size(); i++) {
 			int collisionPairFirst = collisionList->data()[i].first;
@@ -257,9 +261,11 @@ void GameMainLoop::everythingToEverything() {
 			}
 		}
 	}
+	FrameMarkEnd("narrow phase");
 
 	//resolve the rest of collision
 
+	//FrameMarkStart("resolve updates");
 	for (auto i = tankUpdates.begin(); i != tankUpdates.end(); i++) {
 		Tank* t = TankManager::getTankByID(i->first);
 		t->update(&(i->second));
@@ -280,7 +286,9 @@ void GameMainLoop::everythingToEverything() {
 		RectHazard* rh = HazardManager::getRectHazardByID(i->first);
 		rh->update(&(i->second));
 	}
+	//FrameMarkEnd("resolve updates");
 
+	//FrameMarkStart("resolve deletions");
 	for (int i = bulletDeletionList.size() - 1; i >= 0; i--) {
 		BulletManager::deleteBulletByID(bulletDeletionList[i]);
 	}
@@ -293,6 +301,7 @@ void GameMainLoop::everythingToEverything() {
 	for (int i = rectHazardDeletionList.size() - 1; i >= 0; i--) {
 		HazardManager::deleteRectHazardByID(rectHazardDeletionList[i]);
 	}
+	//FrameMarkEnd("resolve deletions");
 }
 
 void GameMainLoop::everythingToEverything_tank_tank(int i, int j, std::unordered_map<Game_ID, TankUpdateStruct>& tankUpdates) {
@@ -1023,6 +1032,7 @@ void GameMainLoop::tickHazards() {
 }
 
 void GameMainLoop::moveBullets() {
+	ZoneScoped;
 	for (int i = BulletManager::getNumBullets() - 1; i >= 0; i--) {
 		Bullet* b = BulletManager::getBullet(i);
 		bool shouldBeKilled = b->move();
@@ -1044,6 +1054,7 @@ void GameMainLoop::tankPowerTickAndCalculate() {
 }
 
 void GameMainLoop::bulletPowerTick() {
+	ZoneScoped;
 	for (int i = BulletManager::getNumBullets() - 1; i >= 0; i--) {
 		Bullet* b = BulletManager::getBullet(i);
 		b->powerTick();
@@ -1105,6 +1116,7 @@ void GameMainLoop::tankToEdge() {
 }
 
 void GameMainLoop::bulletToEdge() {
+	ZoneScoped;
 	for (int i = BulletManager::getNumBullets() - 1; i >= 0; i--) {
 		Bullet* b = BulletManager::getBullet(i);
 		bool shouldBeKilled = false;
@@ -1143,6 +1155,7 @@ void GameMainLoop::bulletToEdge() {
 }
 
 void GameMainLoop::drawMain() const {
+	ZoneScoped;
 	auto start = Diagnostics::getTime();
 	Renderer::BeginScene("draw");
 

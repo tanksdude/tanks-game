@@ -10,6 +10,8 @@
 #include "color-mixer.h"
 #include "background-rect.h"
 
+//#include <tracy/Tracy.hpp>
+
 float Bullet::instanced_vertices[2 * ((Bullet::BulletSideCount + 2) + (Bullet::BulletSideCount + 1) + (Bullet::BulletSideCount * 2))];
 unsigned int Bullet::instanced_indices[Bullet::BulletSideCount * 3 * (1+1+2)];
 const float Bullet::outline_width_multiplier = 1.0 / 16;
@@ -525,6 +527,7 @@ void Bullet::poseDraw(DrawingLayers layer) const {
 }
 
 void Bullet::ghostDraw(float alpha) const {
+	//ZoneScoped;
 	alpha = alpha * alpha;
 	ColorValueHolder color = getColor();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);

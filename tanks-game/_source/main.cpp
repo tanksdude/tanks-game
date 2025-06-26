@@ -175,6 +175,21 @@
 const std::string GameWindowName = "PowerTanks Battle v0.3.0 EARLY WIP DEV"; //this is not guaranteed to be correct every commit but likely will be
 const std::string INIFilePath = "tanks.ini";
 
+#include <tracy/Tracy.hpp>
+//memory profiling (copied straight from the user manual):
+//(requires disabling rpmalloc (not Tracy's internal rpmalloc, this project's rpmalloc))
+#if 0
+void* operator new(size_t count) {
+	auto ptr = malloc(count);
+	TracyAlloc(ptr, count);
+	return ptr;
+}
+void operator delete (void* ptr) noexcept {
+	TracyFree(ptr);
+	free(ptr);
+}
+#endif
+
 
 
 int main(int argc, char** argv) {
@@ -456,6 +471,7 @@ int main(int argc, char** argv) {
 	Renderer::PrintRendererInfo();
 
 	//main loop:
+	FrameMark;
 	double startTime = glfwGetTime();
 	while (!glfwWindowShouldClose(WindowInitializer::glfw_window)) {
 		//do the frame:

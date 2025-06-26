@@ -26,6 +26,7 @@ include_directories(glm      PRIVATE Dependencies/glm)
 include_directories(rpmalloc PRIVATE Dependencies/rpmalloc)
 include_directories(stb      PRIVATE Dependencies/stb)
 include_directories(misc     PRIVATE Dependencies/_misc)
+include_directories(tracy    PRIVATE Externals/tracy/public)
 
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
@@ -35,6 +36,8 @@ find_package(glfw3 REQUIRED)
 set(CMAKE_C_FLAGS     "${CMAKE_C_FLAGS} -Wno-narrowing -Wno-int-to-pointer-cast")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-narrowing -Wno-int-to-pointer-cast -Wno-delete-incomplete")
 #add_compile_options(-lpthread) #does not seem to be necessary
+
+#add_compile_definitions(TRACY_ENABLE)
 
 if(NOT CMAKE_CXX_FLAGS MATCHES "-march")
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=x86-64-v2") #SSE4.2
@@ -49,6 +52,7 @@ SET_SOURCE_FILES_PROPERTIES(Dependencies/enkiTS/TaskScheduler.cpp PROPERTIES COM
 add_executable(${PROJECT_NAME}
 	Dependencies/enkiTS/TaskScheduler.cpp
 	Dependencies/rpmalloc/rpmalloc.c
+	Externals/tracy/public/TracyClient.cpp
 	tanks-game/_source/aaa_first.cpp
 	tanks-game/_source/background-rect.cpp
 	tanks-game/_source/basic-ini-parser.cpp

@@ -3,6 +3,8 @@
 #include <algorithm>
 #include "aaa_first.h"
 
+#include <tracy/Tracy.hpp>
+
 uint32_t PhysicsHandler::MinTaskSize;
 PhysicsHandler::SweepAndPruneTask* PhysicsHandler::s_physicsTask;
 
@@ -46,6 +48,7 @@ PhysicsHandler::SweepAndPruneTask::~SweepAndPruneTask() {
 }
 
 void PhysicsHandler::SweepAndPruneTask::ExecuteRange(enki::TaskSetPartition range_, uint32_t threadnum_) {
+	ZoneScoped;
 	std::vector<PhysicsHandler::ObjectIntervalInfo> iteratingObjects; iteratingObjects.reserve(range_.end - range_.start); //possible a resize will be needed, it's okay
 	for (unsigned int i = range_.start; i < m_objectIntervals->size(); i++) {
 		//NOTE: this goes past the range end because there are objects on the boundary; if it goes to the range end, collision pairs will be missed
@@ -77,6 +80,8 @@ void PhysicsHandler::SweepAndPruneTask::ExecuteRange(enki::TaskSetPartition rang
 }
 
 std::vector<std::vector<std::pair<int, int>>*> PhysicsHandler::sweepAndPrune(const std::vector<GameThing*>& collisionObjects) {
+	ZoneScoped;
+
 	//find object intervals
 	std::vector<ObjectIntervalInfo> objectIntervals; objectIntervals.reserve(collisionObjects.size());
 	for (int i = 0; i < collisionObjects.size(); i++) {

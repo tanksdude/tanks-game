@@ -94,6 +94,7 @@ I didn't find a good way to easily build documentation, so... the documentation 
 * [enkiTS](https://github.com/dougbinks/enkiTS) - Thread scheduler for easily managing multithreading
 * [rpmalloc](https://github.com/mjansson/rpmalloc) - Memory allocator, for some extra performance
 * [stb_image](https://github.com/nothings/stb) - Image loader for loading the window icon
+* [Tracy](https://github.com/wolfpld/tracy) - Performance profiler (note: only used in development, not used in builds meant to be used by users for obvious reasons)
 
 ## Contributing
 

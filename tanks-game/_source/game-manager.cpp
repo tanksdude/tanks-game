@@ -4,6 +4,8 @@
 #include <stdexcept>
 #include <iostream>
 
+#include <tracy/Tracy.hpp>
+
 std::vector<GameThing*> GameManager::objectsInGame;
 size_t GameManager::objectsInGame_previousSize = 0;
 
@@ -50,6 +52,7 @@ void GameManager::clearObjects() {
 }
 
 void GameManager::updateEveryAABB() {
+	ZoneScoped;
 	for (int i = 0; i < objectsInGame.size(); i++) {
 		objectsInGame[i]->updateAABB();
 	}

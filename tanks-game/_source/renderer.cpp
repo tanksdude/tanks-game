@@ -14,6 +14,7 @@
 #include "game-manager.h" //for isDebugDrawingEnabled()
 
 #include <GL/glew.h>
+#include <tracy/Tracy.hpp>
 
 glm::mat4 Renderer::proj = glm::ortho(0.0f, (float)GAME_WIDTH, 0.0f, (float)GAME_HEIGHT);
 RenderingContext* Renderer::renderingMethod = nullptr;
@@ -296,6 +297,7 @@ void Renderer::ActuallyFlush() {
 }
 
 void Renderer::Flush() {
+	ZoneScoped;
 	//TODO: this function is separate in case graphics will be put on a separate thread
 	//(which wouldn't be particularly useful, as rendering is typically <1ms in worst case scenarios)
 
@@ -468,6 +470,7 @@ void Renderer::SubmitBulletDrawCall(float bulletLife, const ColorValueHolder& co
 }
 
 void Renderer::BatchedFlush(const MainBatched_VertexData* drawData) {
+	ZoneScoped;
 	//TODO: check if there's nothing?
 
 	batched_vb->modifyData(drawData->m_vertices.data(), drawData->m_vertices.size() * sizeof(float));
@@ -478,6 +481,7 @@ void Renderer::BatchedFlush(const MainBatched_VertexData* drawData) {
 }
 
 void Renderer::BulletFlush(const Bullet_VertexData* drawData) {
+	ZoneScoped;
 	//TODO: check if there's nothing?
 
 	instanced_vb_color->modifyData(drawData->m_colors.data(), drawData->m_colors.size() * sizeof(float));
