@@ -181,7 +181,7 @@ inline void Renderer::bindIndexBuffer(const IndexBuffer* ib) {
 
 Shader* Renderer::getShader(const std::string& s) {
 	auto get = shaderStorage.find(s);
-	if (get != shaderStorage.end()) {
+	if (get != shaderStorage.end()) [[likely]] {
 		return get->second;
 	}
 	//else shader wasn't found
@@ -189,7 +189,7 @@ Shader* Renderer::getShader(const std::string& s) {
 
 	//return the magenta shader, just so there's something
 	get = shaderStorage.find("default");
-	if (get != shaderStorage.end()) {
+	if (get != shaderStorage.end()) [[likely]] {
 		return get->second;
 	}
 	//else big uh-oh
@@ -200,7 +200,6 @@ Shader* Renderer::getShader(const std::string& s) {
 
 void Renderer::UnbindAll() {
 	glBindVertexArray(0); //vertex array object
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); //index buffer
 	glUseProgram(0); //shader
 
 	boundShader = nullptr;
@@ -250,14 +249,12 @@ void Renderer::ActuallyFlush() {
 				if (sceneDrawCalls[j]->m_shaderName == "main") {
 					bindShader(Renderer::getShader("main"));
 					bindVertexArrayObject(batched_vao);
-					//bindIndexBuffer(batched_ib); //TODO: is this necessary?
 				} else if (sceneDrawCalls[j]->m_shaderName == "bullet") {
-					instanced_vb_pos->modifyData(Bullet::instanced_vertices, sizeof(Bullet::instanced_vertices));
-					instanced_ib->modifyData(Bullet::instanced_indices, sizeof(Bullet::instanced_indices));
-
 					bindShader(Renderer::getShader("bullet"));
 					bindVertexArrayObject(instanced_vao);
-					//bindIndexBuffer(instanced_ib); //TODO: is this necessary?
+
+					instanced_vb_pos->modifyData(Bullet::instanced_vertices, sizeof(Bullet::instanced_vertices));
+					instanced_ib->modifyData(Bullet::instanced_indices, sizeof(Bullet::instanced_indices));
 				} else {
 					//oh no
 				}
@@ -403,6 +400,8 @@ bool Renderer::uninitializeGPU() {
 void Renderer::SubmitBatchedDraw(const float* posAndColor, unsigned int posAndColorLength, const unsigned int* indices, unsigned int indicesLength) {
 	if (currentSceneName == "") [[unlikely]] {
 		//only happens for Diagnostics
+		Renderer::bindShader(Renderer::getShader("main"));
+		bindVertexArrayObject(batched_vao);
 		MainBatched_VertexData* tempVertexDataGroup = new MainBatched_VertexData();
 		tempVertexDataGroup->m_vertices.insert(tempVertexDataGroup->m_vertices.end(), posAndColor, posAndColor + posAndColorLength);
 		tempVertexDataGroup->m_indices.insert(tempVertexDataGroup->m_indices.end(), indices, indices + indicesLength);
