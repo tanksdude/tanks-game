@@ -81,7 +81,7 @@ void ResetThings::reset() {
 	}
 
 	GameManager::Reset();
-	Diagnostics::clearGraph();
+	Diagnostics::clearGraphs();
 }
 
 void ResetThings::firstReset() {

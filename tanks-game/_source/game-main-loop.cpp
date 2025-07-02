@@ -114,9 +114,6 @@ void GameMainLoop::Tick() {
 	auto end = Diagnostics::getTime();
 	Diagnostics::pushGraphTime("tick", Diagnostics::getDiff(start, end));
 
-	//Diagnostics::printPreciseTimings();
-	Diagnostics::clearTimes();
-
 	//std::cout << BulletManager::getNumBullets() << std::endl;
 	//std::cout << "tick: " << Diagnostics::getDiff(start, end) << "ms" << std::endl;
 }
@@ -1194,10 +1191,12 @@ void GameMainLoop::drawMain() const {
 	}
 
 	//bullets
+	FrameMarkStart("bullet draw");
 	ColorCacheBullet::invalidateCachedColors();
 	for (int i = 0; i < BulletManager::getNumBullets(); i++) {
 		BulletManager::getBullet(i)->draw(DrawingLayers::normal);
 	}
+	FrameMarkEnd("bullet draw");
 
 	//drawing text on the GPU will need a library, so names don't get drawn anymore //TODO: https://github.com/nothings/stb
 	/*

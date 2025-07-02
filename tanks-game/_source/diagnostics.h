@@ -43,16 +43,10 @@ public:
 		return std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() / time_float(1000.0f); //milliseconds
 	}
 
-	static void startTiming(std::string);
-	static void endTiming();
-	static void clearTimes(); //(and names)
-	static void printTimings(); //plain milliseconds
-	static void printPreciseTimings(); //microsecond accuracy
-
 	static void declareGraph(std::string name, const ColorValueHolder& color);
 	static void pushGraphTime(std::string name, time_float time);
 	static void clearGraph(std::string name);
-	static void clearGraph(); //all graphs
+	static void clearGraphs(); //all graphs
 	static void drawGraphTimes(std::string name);
 	static void drawGraphTimes(); //all graphs
 

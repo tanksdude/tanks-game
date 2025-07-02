@@ -32,39 +32,6 @@ void Diagnostics::Initialize() {
 	//nothing
 }
 
-void Diagnostics::startTiming(std::string s) {
-	if (!currentlyTiming) {
-		times.push_back(std::chrono::steady_clock::now());
-		timeNames.push_back(s);
-	}
-	currentlyTiming = true;
-}
-
-void Diagnostics::endTiming() {
-	if (currentlyTiming) {
-		times.push_back(std::chrono::steady_clock::now());
-	}
-	currentlyTiming = false;
-}
-
-void Diagnostics::clearTimes() {
-	times.clear();
-	currentlyTiming = false;
-	timeNames.clear();
-}
-
-void Diagnostics::printTimings() {
-	for (int i = 0; i < times.size()/2 && i < timeNames.size(); i++) {
-		std::cout << timeNames[i] << ": " << (long long)getDiff(times[i*2], times[i*2+1]) << "ms" << std::endl;
-	}
-}
-
-void Diagnostics::printPreciseTimings() {
-	for (int i = 0; i < times.size()/2 && i < timeNames.size(); i++) {
-		std::cout << timeNames[i] << ": " << getDiff(times[i*2], times[i*2+1]) << "ms" << std::endl;
-	}
-}
-
 void Diagnostics::declareGraph(std::string name, const ColorValueHolder& color) {
 	graphNameToIndex.insert({ name, graphTimes.size() });
 	graphTimes.push_back(GraphData(name, color));
@@ -92,7 +59,7 @@ void Diagnostics::clearGraph(std::string name) {
 	graphTimes[graphNameToIndex[name]].data.clear();
 }
 
-void Diagnostics::clearGraph() {
+void Diagnostics::clearGraphs() {
 	for (int i = 0; i < graphTimes.size(); i++) {
 		graphTimes[i].data.clear();
 	}
