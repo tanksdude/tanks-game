@@ -11,7 +11,6 @@
 #include "graphics/vertex-buffer.h"
 #include "graphics/index-buffer.h"
 #include "graphics/shader.h"
-#include <GL/glew.h> //only for GLenum for getErrorString()
 
 enum class AvailableRenderingContexts {
 	OpenGL,
@@ -41,8 +40,6 @@ private:
 
 	static void UnbindAll();
 	static void Cleanup();
-
-	static std::string getErrorString(GLenum err);
 
 private:
 	struct VertexDrawingData {
@@ -114,8 +111,6 @@ public:
 
 	static glm::mat4 GenerateModelMatrix(float scaleX, float scaleY, float rotateAngle, float transX, float transY);
 	static glm::mat4 GenerateModelMatrix_NoRotate(float scaleX, float scaleY, float transX, float transY);
-
-	static void printGLError();
 
 private:
 	Renderer() = delete;

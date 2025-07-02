@@ -31,9 +31,6 @@
 #include "end-game-handler.h"
 #include "physics-handler.h"
 
-//#include <GL/glew.h>
-//#include <GLFW/glfw3.h>
-
 #include <tracy/Tracy.hpp>
 
 void doThing() {

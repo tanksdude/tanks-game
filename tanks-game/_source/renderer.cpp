@@ -41,6 +41,35 @@ const unsigned int Renderer::MainBatched_VertexData::maxVerticesDataLength = (1 
 const unsigned int Renderer::MainBatched_VertexData::maxIndicesDataLength = (1 << 16) / sizeof(unsigned int); //TODO: size (fills up faster)
 const unsigned int Renderer::Bullet_VertexData::maxDataLength = (1 << 16) / sizeof(float);
 
+static std::string getGLErrorString(GLenum err) {
+	//gotten from https://codeyarns.com/2015/09/14/how-to-check-error-in-opengl/
+	switch (err) {
+		case GL_NO_ERROR:          return "No error";
+		case GL_INVALID_ENUM:      return "Invalid enum";
+		case GL_INVALID_VALUE:     return "Invalid value";
+		case GL_INVALID_OPERATION: return "Invalid operation";
+		case GL_STACK_OVERFLOW:    return "Stack overflow";
+		case GL_STACK_UNDERFLOW:   return "Stack underflow";
+		case GL_OUT_OF_MEMORY:     return "Out of memory";
+		default:                   return "Unknown error";
+	}
+}
+
+static void printGLError() {
+	bool error = false;
+	while (true) {
+		const GLenum err = glGetError();
+		if (err == GL_NO_ERROR)
+			break;
+
+		std::cout << "GL Error: " << getGLErrorString(err) << std::endl;
+		error = true; //set breakpoint to here when debugging!
+	}
+	if (!error) {
+		std::cout << "no error" << std::endl;
+	}
+}
+
 void Renderer::SetContext(AvailableRenderingContexts API) {
 	if (renderingMethod != nullptr) {
 		throw std::logic_error("ERROR: Cannot change rendering context!");
@@ -203,35 +232,6 @@ void Renderer::UnbindAll() {
 	glUseProgram(0); //shader
 
 	boundShader = nullptr;
-}
-
-std::string Renderer::getErrorString(GLenum err) {
-	//gotten from https://codeyarns.com/2015/09/14/how-to-check-error-in-opengl/
-	switch (err) {
-		case GL_NO_ERROR:          return "No error";
-		case GL_INVALID_ENUM:      return "Invalid enum";
-		case GL_INVALID_VALUE:     return "Invalid value";
-		case GL_INVALID_OPERATION: return "Invalid operation";
-		case GL_STACK_OVERFLOW:    return "Stack overflow";
-		case GL_STACK_UNDERFLOW:   return "Stack underflow";
-		case GL_OUT_OF_MEMORY:     return "Out of memory";
-		default:                   return "Unknown error";
-	}
-}
-
-void Renderer::printGLError() {
-	bool error = false;
-	while (true) {
-		const GLenum err = glGetError();
-		if (err == GL_NO_ERROR)
-			break;
-
-		std::cout << "GL Error: " << getErrorString(err) << std::endl;
-		error = true; //set breakpoint to here when debugging!
-	}
-	if (!error) {
-		std::cout << "no error" << std::endl;
-	}
 }
 
 void Renderer::Clear() {

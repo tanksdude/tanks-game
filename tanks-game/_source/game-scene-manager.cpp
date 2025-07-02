@@ -4,9 +4,6 @@
 #include "renderer.h"
 #include "diagnostics.h"
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-
 #include <tracy/Tracy.hpp>
 
 std::vector<std::pair<GameScene*, Scene_ID>> GameSceneManager::scenes;
