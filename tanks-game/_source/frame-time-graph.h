@@ -6,12 +6,8 @@
 
 #include "color-value-holder.h"
 
-class Diagnostics {
+class FrameTimeGraph {
 private:
-	static std::vector<std::chrono::time_point<std::chrono::steady_clock>> times;
-	static std::vector<std::string> timeNames;
-	static bool currentlyTiming;
-
 	typedef double time_float;
 	struct GraphData {
 		std::vector<time_float> data; //should use a linked list but iterators are messy
@@ -54,6 +50,6 @@ public:
 	static void pushGraphSumTime(std::string name);
 
 private:
-	Diagnostics() = delete;
-	Diagnostics(const Diagnostics&) = delete;
+	FrameTimeGraph() = delete;
+	FrameTimeGraph(const FrameTimeGraph&) = delete;
 };

@@ -15,7 +15,7 @@
 
 #include "game-manager.h"
 #include "end-game-handler.h"
-#include "diagnostics.h"
+#include "frame-time-graph.h"
 
 const int ResetThings::default_tankStartingYCount = 5;
 const double ResetThings::default_tankToEdgeDist = 20;
@@ -81,7 +81,7 @@ void ResetThings::reset() {
 	}
 
 	GameManager::Reset();
-	Diagnostics::clearGraphs();
+	FrameTimeGraph::clearGraphs();
 }
 
 void ResetThings::firstReset() {

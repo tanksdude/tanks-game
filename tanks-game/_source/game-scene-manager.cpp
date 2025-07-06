@@ -2,7 +2,7 @@
 
 #include "window-initializer.h"
 #include "renderer.h"
-#include "diagnostics.h"
+#include "frame-time-graph.h"
 
 #include <tracy/Tracy.hpp>
 
@@ -16,7 +16,7 @@ void GameSceneManager::Initialize() {
 void GameSceneManager::TickScenes() {
 	ZoneScoped;
 	/*
-	auto start = Diagnostics::getTime();
+	auto start = FrameTimeGraph::getTime();
 	*/
 
 	for (int i = 0; i < scenes.size(); i++) {
@@ -25,8 +25,8 @@ void GameSceneManager::TickScenes() {
 	DrawScenes();
 
 	/*
-	auto end = Diagnostics::getTime();
-	auto timeTakenMS = Diagnostics::getDiff(start, end);
+	auto end = FrameTimeGraph::getTime();
+	auto timeTakenMS = FrameTimeGraph::getDiff(start, end);
 	auto sleepTimeMS = (100.0 - timeTakenMS);
 	*/
 

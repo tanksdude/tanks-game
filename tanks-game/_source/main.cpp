@@ -21,7 +21,7 @@
 #include "keypress-manager.h"
 #include "window-initializer.h"
 //other:
-#include "diagnostics.h"
+#include "frame-time-graph.h"
 #include "basic-ini-parser.h"
 #include "game-settings.h"
 #include "physics-handler.h"
@@ -440,22 +440,22 @@ int main(int argc, char** argv) {
 	WallManager::initialize();
 	HazardManager::initialize();
 	LevelManager::initialize();
-	Diagnostics::Initialize();
+	FrameTimeGraph::Initialize();
 	GameSceneManager::Initialize();
 	Renderer::Initialize();
 	Bullet::initializeVertices(); //so bullet constructors don't have to call this every time
 
 	ModProcessor::ProcessMods();
 
-	Diagnostics::declareGraph("tick", ColorValueHolder(1.0f, 0.0f, 0.0f));
-	Diagnostics::declareGraph("upload", ColorValueHolder(0.0f, 1.0f, 0.0f));
-	Diagnostics::declareGraph("draw", ColorValueHolder(0.0f, 0.0f, 1.0f));
-	Diagnostics::declareGraph("all", ColorValueHolder(1.0f, 1.0f, 1.0f));
+	FrameTimeGraph::declareGraph("tick", ColorValueHolder(1.0f, 0.0f, 0.0f));
+	FrameTimeGraph::declareGraph("upload", ColorValueHolder(0.0f, 1.0f, 0.0f));
+	FrameTimeGraph::declareGraph("draw", ColorValueHolder(0.0f, 0.0f, 1.0f));
+	FrameTimeGraph::declareGraph("all", ColorValueHolder(1.0f, 1.0f, 1.0f));
 
 	if (ini_data.exists("DEBUG", "PerformanceGraphOffsetMultiplier")) {
-		Diagnostics::setGraphYOffset(GAME_HEIGHT * std::stod(ini_data.get("DEBUG", "PerformanceGraphOffsetMultiplier")));
+		FrameTimeGraph::setGraphYOffset(GAME_HEIGHT * std::stod(ini_data.get("DEBUG", "PerformanceGraphOffsetMultiplier")));
 	} else {
-		Diagnostics::setGraphYOffset(GAME_HEIGHT);
+		FrameTimeGraph::setGraphYOffset(GAME_HEIGHT);
 	}
 
 	//game mode:

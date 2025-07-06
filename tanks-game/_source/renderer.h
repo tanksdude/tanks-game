@@ -102,7 +102,7 @@ public:
 	static void Uninitialize();
 
 	static void Clear();
-	static void BeginScene(const std::string& name); //name of scene, to push timing to diagnostics
+	static void BeginScene(const std::string& name); //name of scene, intended for FrameTimeGraph, but drawing is so fast that there's little point
 	static void SubmitBatchedDraw(const float* posAndColor, unsigned int posAndColorLength, const unsigned int* indices, unsigned int indicesLength);
 	static void SubmitBulletDrawCall(float bulletLife, const ColorValueHolder& color, const glm::mat4& modelMatrix);
 	static void EndScene();

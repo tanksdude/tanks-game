@@ -10,7 +10,7 @@
 #include "graphics/software-rendering-context.h"
 #include "graphics/null-rendering-context.h"
 
-#include "diagnostics.h"
+#include "frame-time-graph.h"
 #include "game-manager.h" //for isDebugDrawingEnabled()
 
 #include <GL/glew.h>
@@ -239,7 +239,7 @@ void Renderer::Clear() {
 }
 
 void Renderer::ActuallyFlush() {
-	auto start = Diagnostics::getTime();
+	auto start = FrameTimeGraph::getTime();
 	std::string currentShaderName = "";
 	for (int i = 0; i < sceneList.size(); i++) {
 		const std::string& sceneName = sceneList[i];
@@ -275,14 +275,14 @@ void Renderer::ActuallyFlush() {
 		sceneDrawCalls.clear();
 	}
 	sceneList.clear(); //TODO: this is a surprising area for CPU time (_Tidy from reallocating) (or is it the line above?)
-	auto end = Diagnostics::getTime();
+	auto end = FrameTimeGraph::getTime();
 
-	Diagnostics::pushGraphTime("draw", Diagnostics::getDiff(start, end));
-	Diagnostics::pushGraphSumTime("all");
+	FrameTimeGraph::pushGraphTime("draw", FrameTimeGraph::getDiff(start, end));
+	FrameTimeGraph::pushGraphSumTime("all");
 
 	const GameSettings& game_settings = GameManager::get_settings();
 	if (game_settings.PerformanceGraphEnable) {
-		Diagnostics::drawGraphTimes();
+		FrameTimeGraph::drawGraphTimes();
 	}
 
 	//for single framebuffer, use glFlush; for double framebuffer, swap the buffers
@@ -399,7 +399,7 @@ bool Renderer::uninitializeGPU() {
 
 void Renderer::SubmitBatchedDraw(const float* posAndColor, unsigned int posAndColorLength, const unsigned int* indices, unsigned int indicesLength) {
 	if (currentSceneName == "") [[unlikely]] {
-		//only happens for Diagnostics
+		//only happens for FrameTimeGraph
 		Renderer::bindShader(Renderer::getShader("main"));
 		bindVertexArrayObject(batched_vao);
 		MainBatched_VertexData* tempVertexDataGroup = new MainBatched_VertexData();

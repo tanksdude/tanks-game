@@ -14,7 +14,7 @@
 #include "keypress-manager.h"
 //other:
 #include "background-rect.h"
-#include "diagnostics.h"
+#include "frame-time-graph.h"
 #include "color-cache.h"
 
 //managers:
@@ -61,7 +61,7 @@ void GameMainLoop::Tick() {
 			waitCount = 0;
 			ResetThings::reset();
 		}
-		Diagnostics::pushGraphTime("tick", 0); //goes after ResetThings::reset() because a draw call will still happen after this
+		FrameTimeGraph::pushGraphTime("tick", 0); //goes after ResetThings::reset() because a draw call will still happen after this
 		return;
 	}
 
@@ -85,7 +85,7 @@ void GameMainLoop::Tick() {
 	 * bulletToTank();
 	 */
 
-	auto start = Diagnostics::getTime();
+	auto start = FrameTimeGraph::getTime();
 	doThing();
 
 	levelTick();
@@ -111,11 +111,11 @@ void GameMainLoop::Tick() {
 	//finish up by incrementing the tick count
 	GameManager::Tick();
 
-	auto end = Diagnostics::getTime();
-	Diagnostics::pushGraphTime("tick", Diagnostics::getDiff(start, end));
+	auto end = FrameTimeGraph::getTime();
+	FrameTimeGraph::pushGraphTime("tick", FrameTimeGraph::getDiff(start, end));
 
 	//std::cout << BulletManager::getNumBullets() << std::endl;
-	//std::cout << "tick: " << Diagnostics::getDiff(start, end) << "ms" << std::endl;
+	//std::cout << "tick: " << FrameTimeGraph::getDiff(start, end) << "ms" << std::endl;
 }
 
 void GameMainLoop::everythingToEverything() {
@@ -1150,7 +1150,7 @@ void GameMainLoop::bulletToEdge() {
 
 void GameMainLoop::drawMain() const {
 	ZoneScoped;
-	auto start = Diagnostics::getTime();
+	auto start = FrameTimeGraph::getTime();
 	Renderer::BeginScene("draw");
 
 	//background rect
@@ -1231,8 +1231,8 @@ void GameMainLoop::drawMain() const {
 		TankManager::getTank(i)->draw(DrawingLayers::top);
 	}
 
-	auto end = Diagnostics::getTime();
-	Diagnostics::pushGraphTime("upload", Diagnostics::getDiff(start, end));
+	auto end = FrameTimeGraph::getTime();
+	FrameTimeGraph::pushGraphTime("upload", FrameTimeGraph::getDiff(start, end));
 	Renderer::EndScene();
 
 	const GameSettings& game_settings = GameManager::get_settings();
@@ -1241,9 +1241,9 @@ void GameMainLoop::drawMain() const {
 		//TODO: levels should be able to debug draw their starting tank positions (color: white?)
 	}
 
-	//end = Diagnostics::getTime();
+	//end = FrameTimeGraph::getTime();
 
-	//std::cout << "draw all: " << Diagnostics::getDiff(start, end) << "ms" << std::endl << std::endl;
+	//std::cout << "draw all: " << FrameTimeGraph::getDiff(start, end) << "ms" << std::endl << std::endl;
 }
 
 void GameMainLoop::drawLayer(DrawingLayers layer) const {

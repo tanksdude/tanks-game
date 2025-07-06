@@ -67,8 +67,8 @@ add_executable(${PROJECT_NAME}
 	tanks-game/_source/custom-level-interpreter.cpp
 	tanks-game/_source/custom-power-interpreter.cpp
 	tanks-game/_source/developer-manager.cpp
-	tanks-game/_source/diagnostics.cpp
 	tanks-game/_source/end-game-handler.cpp
+	tanks-game/_source/frame-time-graph.cpp
 	tanks-game/_source/game-main-loop.cpp
 	tanks-game/_source/game-manager.cpp
 	tanks-game/_source/game-scene-manager.cpp

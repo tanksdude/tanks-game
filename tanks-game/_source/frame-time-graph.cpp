@@ -1,4 +1,4 @@
-#include "diagnostics.h"
+#include "frame-time-graph.h"
 
 #include "constants.h"
 #include <algorithm> //std::min, std::max
@@ -7,37 +7,33 @@
 #include "renderer.h"
 #include "simple-vector-2d.h"
 
-std::vector<std::chrono::time_point<std::chrono::steady_clock>> Diagnostics::times;
-std::vector<std::string> Diagnostics::timeNames;
-bool Diagnostics::currentlyTiming = false;
+std::vector<FrameTimeGraph::GraphData> FrameTimeGraph::graphTimes;
+std::unordered_map<std::string, int> FrameTimeGraph::graphNameToIndex;
+int FrameTimeGraph::maxGraphTimes = 200;
+float FrameTimeGraph::graphLength = GAME_WIDTH/4;
+float FrameTimeGraph::graphHeight = GAME_HEIGHT/4;
+float FrameTimeGraph::graphXOffset = 0;
+float FrameTimeGraph::graphYOffset = 0;
 
-std::vector<Diagnostics::GraphData> Diagnostics::graphTimes;
-std::unordered_map<std::string, int> Diagnostics::graphNameToIndex;
-int Diagnostics::maxGraphTimes = 200;
-float Diagnostics::graphLength = GAME_WIDTH/4;
-float Diagnostics::graphHeight = GAME_HEIGHT/4;
-float Diagnostics::graphXOffset = 0;
-float Diagnostics::graphYOffset = 0;
-
-Diagnostics::GraphData::GraphData(std::string n, const ColorValueHolder& c) {
+FrameTimeGraph::GraphData::GraphData(std::string n, const ColorValueHolder& c) {
 	this->name = n;
 	this->color = c;
 }
 
-void Diagnostics::setGraphYOffset(float y) {
+void FrameTimeGraph::setGraphYOffset(float y) {
 	graphYOffset = y;
 }
 
-void Diagnostics::Initialize() {
+void FrameTimeGraph::Initialize() {
 	//nothing
 }
 
-void Diagnostics::declareGraph(std::string name, const ColorValueHolder& color) {
+void FrameTimeGraph::declareGraph(std::string name, const ColorValueHolder& color) {
 	graphNameToIndex.insert({ name, graphTimes.size() });
 	graphTimes.push_back(GraphData(name, color));
 }
 
-void Diagnostics::pushGraphTime(std::string name, time_float time) {
+void FrameTimeGraph::pushGraphTime(std::string name, time_float time) {
 	std::vector<time_float>& currentGraph = graphTimes[graphNameToIndex[name]].data;
 
 	currentGraph.push_back(time);
@@ -55,17 +51,17 @@ void Diagnostics::pushGraphTime(std::string name, time_float time) {
 	}
 }
 
-void Diagnostics::clearGraph(std::string name) {
+void FrameTimeGraph::clearGraph(std::string name) {
 	graphTimes[graphNameToIndex[name]].data.clear();
 }
 
-void Diagnostics::clearGraphs() {
+void FrameTimeGraph::clearGraphs() {
 	for (int i = 0; i < graphTimes.size(); i++) {
 		graphTimes[i].data.clear();
 	}
 }
 
-void Diagnostics::pushGraphSumTime(std::string name) {
+void FrameTimeGraph::pushGraphSumTime(std::string name) {
 	time_float sum = 0;
 	for (int i = 0; i < graphTimes.size(); i++) {
 		if ((graphTimes[i].name == name) || (graphTimes[i].data.size() == 0)) {
@@ -78,17 +74,17 @@ void Diagnostics::pushGraphSumTime(std::string name) {
 	pushGraphTime(name, sum);
 }
 
-void Diagnostics::drawGraphTimes() {
+void FrameTimeGraph::drawGraphTimes() {
 	drawGraphTimes_graph();
 	drawGraphTimes_data();
 }
 
-void Diagnostics::drawGraphTimes(std::string name) {
+void FrameTimeGraph::drawGraphTimes(std::string name) {
 	drawGraphTimes_graph();
 	drawGraphTimes_data(name);
 }
 
-void Diagnostics::drawGraphTimes_graph() {
+void FrameTimeGraph::drawGraphTimes_graph() {
 	ColorValueHolder color = ColorValueHolder(0.75f, 0.75f, 0.75f);
 	const float lineWidth = 1.0f;
 
@@ -127,7 +123,7 @@ void Diagnostics::drawGraphTimes_graph() {
 	//would look better using rectangles but it's fine
 }
 
-void Diagnostics::drawGraphTimes_data(std::string name) {
+void FrameTimeGraph::drawGraphTimes_data(std::string name) {
 	const std::vector<time_float>& graphData = graphTimes[graphNameToIndex[name]].data;
 	if (graphData.size() < 2) [[unlikely]] {
 		return;
@@ -182,7 +178,7 @@ void Diagnostics::drawGraphTimes_data(std::string name) {
 	//IMPORTANT: delete is the same: https://stackoverflow.com/questions/3037655/c-delete-syntax/3037675#3037675
 }
 
-void Diagnostics::drawGraphTimes_data() {
+void FrameTimeGraph::drawGraphTimes_data() {
 	for (int i = 0; i < graphTimes.size(); i++) {
 		drawGraphTimes_data(graphTimes[i].name);
 	}

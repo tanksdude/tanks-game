@@ -90,7 +90,7 @@
     <ClCompile Include="_source\graphics\shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="_source\diagnostics.cpp">
+    <ClCompile Include="_source\frame-time-graph.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="_source\background-rect.cpp">
@@ -650,7 +650,7 @@
     <ClInclude Include="_source\graphics\shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="_source\diagnostics.h">
+    <ClInclude Include="_source\frame-time-graph.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="_source\background-rect.h">
