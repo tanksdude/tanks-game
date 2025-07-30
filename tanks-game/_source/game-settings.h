@@ -11,6 +11,7 @@ public:
 
 public: //safe to be public because a const reference is used, and I don't want to write getters
 	//[DEBUG]
+	bool DevMouseControls;
 	bool PerformanceGraphEnable;
 	bool EnableDebugDrawing;
 

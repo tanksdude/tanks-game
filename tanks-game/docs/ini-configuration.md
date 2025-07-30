@@ -18,11 +18,12 @@ Since I don't have the expertise or willingness to add advanced features like "a
 
 ## DEBUG
 
+* `DevMouseControls` (default 0): Moves the tanks using the mouse: left click to move, right click to toggle which one. Also enables middle mouse clicking for inserting things (scroll wheel to change which item).
 * `PerformanceGraphEnable` (default 0): Controls whether to draw the performance graph.
 * `PerformanceGraphOffsetMultiplier` (default 0.0): Controls the performance graph's y-offset multiplier. 0 keeps it at the bottom of the screen, 1 puts it above the screen.
 * `EnableDebugDrawing` (default 0): Controls whether to draw "debug drawings" on some objects.
 * `EnableDebugDrawingObjects` (default "patrolling_turret" "mother_turret" "ginormous_turret"): Sets which objects to enable debug drawing for.
-* `DeveloperInsertMenuPowerAdditions` (default "special bounce" "dev" "ultrabounce" "special triple" "dev" "triple_spread" "testpower2" "testmod1" "test-power-2"): Adds certain powerups to the developer "menu". In groups of 3, supply the item's identifier, the power's type, and the power's name.
+* `DeveloperInsertMenuPowerAdditions` (default "special bounce" "dev" "ultrabounce" "special triple" "dev" "triple_spread" "testpower2" "testmod1" "test-power-2"): Adds certain powerups to the developer "menu". In groups of 3, supply the item's identifier, the power's type, and the power's name. Requires `DevMouseControls` to be on.
 
 ## GRAPHICS_SETTINGS
 

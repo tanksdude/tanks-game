@@ -7,6 +7,7 @@
 
 void GameSettings::Initialize(const BasicINIParser::BasicINIData& ini_data) {
 	//[DEBUG]
+	DevMouseControls = ini_data.exists("DEBUG", "DevMouseControls") ? std::stoi(ini_data.get("DEBUG", "DevMouseControls")) : false;
 	PerformanceGraphEnable = ini_data.exists("DEBUG", "PerformanceGraphEnable") ? std::stoi(ini_data.get("DEBUG", "PerformanceGraphEnable")) : false;
 	EnableDebugDrawing = ini_data.exists("DEBUG", "EnableDebugDrawing") ? std::stoi(ini_data.get("DEBUG", "EnableDebugDrawing")) : false;
 

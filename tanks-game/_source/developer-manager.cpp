@@ -43,6 +43,11 @@ void DeveloperManager::mouseButtonCallbackFunc(GLFWwindow*, int button, int acti
 }
 
 void DeveloperManager::mouseScrollCallbackFunc(GLFWwindow*, double xOffset, double yOffset) {
+	const GameSettings& game_settings = GameManager::get_settings();
+	if (!game_settings.DevMouseControls) {
+		return;
+	}
+
 	(void)xOffset;
 	if (yOffset == 0) {
 		//left/right scrolling happened
@@ -74,6 +79,12 @@ void DeveloperManager::mouseScrollCallbackFunc(GLFWwindow*, double xOffset, doub
 
 void DeveloperManager::mouseCursorPosCallbackFunc(GLFWwindow*, double xPos, double yPos) {
 	WindowInitializer::windowCoordsToGameCoords(xPos, yPos, mousePosX, mousePosY);
+
+	const GameSettings& game_settings = GameManager::get_settings();
+	if (!game_settings.DevMouseControls) {
+		return;
+	}
+
 	if (leftMouse) {
 		if (!rightMouse) {
 			TankManager::getTank(0)->x = mousePosX;
@@ -88,6 +99,11 @@ void DeveloperManager::mouseCursorPosCallbackFunc(GLFWwindow*, double xPos, doub
 std::vector<std::string> DeveloperManager::insertListIdentifiers = { "longinvincible", "temp", "banana", "homing", "barrier", "bounce", "mines", "multishot", "grenade", "blast", "godmode", "big", "inversion", "annoying", "stationary_turret", "vert_wall", "horz_wall" };
 int DeveloperManager::insertListIdentifiers_normalSize = insertListIdentifiers.size();
 void DeveloperManager::devInsert(int x, int y) {
+	const GameSettings& game_settings = GameManager::get_settings();
+	if (!game_settings.DevMouseControls) {
+		return;
+	}
+
 	GenericFactoryConstructionData constructionData;
 	double* posArr;
 	switch (insertIndex) {
