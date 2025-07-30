@@ -43,6 +43,7 @@ private:
 	static GameSettings settings_file;
 
 public:
+	static void CreateDefaultINIFileIfNeeded(std::string path);
 	static void initializeINI(std::string path);
 	static void initializeSettings();
 	static const BasicINIParser::BasicINIData& get_INI();

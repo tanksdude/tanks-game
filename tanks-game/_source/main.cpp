@@ -198,6 +198,7 @@ int main(int argc, char** argv) {
 	usleep_windows_init();
 	#endif
 
+	GameManager::CreateDefaultINIFileIfNeeded(INIFilePath);
 	GameManager::initializeINI(INIFilePath);
 	GameManager::initializeSettings();
 	const BasicINIParser::BasicINIData& ini_data = GameManager::get_INI();

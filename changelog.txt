@@ -30,6 +30,7 @@
 * added a window icon
 * minor things:
     * bumped instruction set to x86-64-v2 (SSE4.2)
+    * create a default ini file if it doesn't exist on startup
     * custom level playlist option
     * allow swarm bullets to exist a little bit out of bounds
     * gave spiral lava hazard a better color

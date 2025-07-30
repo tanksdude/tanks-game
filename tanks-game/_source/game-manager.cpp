@@ -1,6 +1,8 @@
 #include "game-manager.h"
 
 #include "mylib.h"
+#include <fstream>
+#include <filesystem>
 #include <stdexcept>
 #include <iostream>
 
@@ -125,4 +127,91 @@ Game_ID GameManager::getNextID() {
 
 double GameManager::getTickCount() {
 	return tickCount;
+}
+
+void GameManager::CreateDefaultINIFileIfNeeded(std::string path) {
+	if (std::filesystem::exists(path)) {
+		return;
+	}
+
+	static const std::string ini_string =
+
+	"[UNIVERSAL]\n"
+	"; options: OpenGL, software (not supported), NULL (not supported)\n"
+	"GraphicsContext = OpenGL\n"
+	"; blank = random\n"
+	"RNGSeed = \n"
+	"; number of total threads to use for multithreading; 1 is single-threaded, <=0 is all cores on your system minus the number (so -2 is all but two cores)\n"
+	"ThreadCount = 4\n"
+	"; task size for each thread\n"
+	"ThreadTaskSize = 256\n"
+	"\n"
+
+	"[MODS]\n"
+	"LoadMods = 1\n"
+	"ModSafetyChecks = 1 ; forces checks on mods' types (for example, \"vanilla\" is reserved thanks to this setting)\n"
+	"\n"
+
+	"[DEBUG]\n"
+	"DevMouseControls = 0\n"
+	"PerformanceGraphEnable = 0\n"
+	"PerformanceGraphOffsetMultiplier = 0.0 ; range: [0,1]\n"
+	"EnableDebugDrawing = 0\n"
+	"EnableDebugDrawingObjects = \"patrolling_turret\" \"mother_turret\" \"ginormous_turret\"\n"
+	"DeveloperInsertMenuPowerAdditions = \"special bounce\" \"dev\" \"ultrabounce\" \"different triple\" \"dev\" \"triple_spread\" \"testpower2\" \"testmod1\" \"test-power-2\"\n"
+	"\n"
+
+	"[GRAPHICS_SETTINGS]\n"
+	"Position.StartX = 120\n"
+	"Position.StartY = 120\n"
+	"Position.SizeMultiplier = ;2.5\n"
+	"Bullet.PerformanceMode = 0 ; no outline and bar for a death indication ; TODO: does nothing since new shader, maybe remove\n"
+	"\n"
+
+	"[GAME_OPTIONS]\n"
+	"GameFirstLevel = \"vanilla\" \"default_random\"\n"
+	"GameLevelPlaylist = \"random-vanilla\"\n"
+	"GameForceSameLevel = ;\"vanilla\" \"default_random\"\n"
+	"CustomLevelPlaylist = ;\"vanilla\" \"bigfun\" 0.5 \"random-vanilla\" \"default_random\" 1.0 \"dev\" \"dev0\" 0.25 ; overrides GameLevelPlaylist if set\n"
+	"ReportCurrentLevel = 1 ; prints the level being played\n"
+	"; global config\n"
+	"LimitBullets = 1\n"
+	"MaxBullets = 8192\n"
+	"FewerExtraShootingBullets = 0 ; determines whether something like triple + fire shoots 7 or 12 bullets\n"
+	"ShootingCooldown = 100\n"
+	"PowerupDurationBaseTime = 500\n"
+	"; other options\n"
+	"DisableTraps = 1 ; does nothing since traps don't exist\n"
+	"RestrictTankTurning = 0\n"
+	"NoTankAcceleration = 0\n"
+	"AlwaysShootingMode = 0\n"
+	"\n"
+
+	"[CONTROLS]\n"
+	"; names\n"
+	"Tank1.Name = WASD\n"
+	"Tank2.Name = Arrow Keys\n"
+	"Tank1.TeamName = \"\\\"WASD 4 Life\\\"\"\n"
+	"Tank2.TeamName = \"\\\"Arrow Keys R WINZ\\\"\"\n"
+	"; actual controls, key names from AHK: https://www.autohotkey.com/docs/commands/Send.htm#keynames\n"
+	"Tank1.Forward = w\n"
+	"Tank1.Left = a\n"
+	"Tank1.Right = d\n"
+	"Tank1.Shoot = s\n"
+	"Tank1.Special = e\n"
+	"Tank2.Forward = Up\n"
+	"Tank2.Left = Left\n"
+	"Tank2.Right = Right\n"
+	"Tank2.Shoot = Down\n"
+	"Tank2.Special = /\n"
+	;
+
+	std::ofstream ini_file;
+	ini_file.open(path);
+	if (ini_file.is_open()) {
+		ini_file << ini_string;
+		ini_file.close();
+	} else {
+		throw std::runtime_error("Could not create file \"" + path + "\"");
+	}
 }
