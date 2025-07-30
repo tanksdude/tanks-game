@@ -42,7 +42,7 @@ Note: Press F11 to toggle fullscreen. (Well, it's borderless fullscreen, but it 
 * `ReportCurrentLevel` (default 1): Prints the level being played when a new game is started.
 * `LimitBullets` (default 1): Controls whether to limit the number of bullets on screen. Look, your computer has a limit at some point.
 * `MaxBullets` (default 8192): Controls the maximum number of bullets, assuming `LimitBullets` is true.
-* `FewerExtraShootingBullets` (default 0): Controls whether something like Triple + Fire shoots 7 or 12 bullets. Keeping this setting off is a significant change (and performance hit), so that's why this is an option instead of always doing more bullets. Remember, Shotgun + Blast goes from 4+16 to 5×16 bullets; that's a lot!
+* `FewerExtraShootingBullets` (default 1): Controls whether something like Triple + Fire shoots 7 or 12 bullets. Keeping this setting off is a significant change (and performance hit), so that's why this is an option instead of always doing more bullets. Remember, Shotgun + Blast goes from 4+16 to 5×16 bullets; that's a lot!
 * `ShootingCooldown` (default 100): Controls the tanks' shooting cooldown. Set to 0 for superfast shooting (very fun!).
 * `PowerupDurationBaseTime` (default 500): Controls the base time of powerups.
 * `DisableTraps` (default 1): Prevents traps from activating. Does nothing since traps don't exist but might in the future. (They existed in JS Tanks.)
