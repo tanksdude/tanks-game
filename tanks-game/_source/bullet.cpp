@@ -531,11 +531,13 @@ void Bullet::ghostDraw(float alpha) const {
 	alpha = alpha * alpha;
 	ColorValueHolder color = getColor();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
+	//*(reinterpret_cast<float*>(&color)+3) = std::sqrt(this->lifeValue/100.0f);
+	float bullet_alpha = std::sqrt(this->lifeValue/100.0f); //TODO: probably not worth it to check if alpha is enabled
 
 	//TODO: see if passing a_BulletRadius and/or a_BulletPos would be faster
 	glm::mat4 modelMatrix = Renderer::GenerateModelMatrix_NoRotate(this->r, this->r, this->x, this->y);
 
-	Renderer::SubmitBulletDrawCall(this->lifeValue / 100.0f, color, modelMatrix);
+	Renderer::SubmitBulletDrawCall(this->lifeValue / 100.0f, ColorValueHolder(color.getRf(), color.getGf(), color.getBf(), bullet_alpha), modelMatrix);
 }
 
 void Bullet::ghostDraw(DrawingLayers layer, float alpha) const {

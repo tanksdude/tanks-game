@@ -11,7 +11,7 @@
 #include "graphics/null-rendering-context.h"
 
 #include "frame-time-graph.h"
-#include "game-manager.h" //for isDebugDrawingEnabled()
+#include "game-manager.h" //for isDebugDrawingEnabled(), also settings (bullet alpha draw)
 
 #include <GL/glew.h>
 #include <tracy/Tracy.hpp>
@@ -251,10 +251,12 @@ void Renderer::ActuallyFlush() {
 					bindVertexArrayObject(batched_vao);
 				} else if (sceneDrawCalls[j]->m_shaderName == "bullet") {
 					bindShader(Renderer::getShader("bullet"));
+					boundShader->setUniform1i("u_DrawTransparency", (int)GameManager::get_settings().Bullet_DrawAlpha);
 					bindVertexArrayObject(instanced_vao);
 
 					instanced_vb_pos->modifyData(Bullet::instanced_vertices, sizeof(Bullet::instanced_vertices));
 					instanced_ib->modifyData(Bullet::instanced_indices, sizeof(Bullet::instanced_indices));
+					//TODO: could use a different IB when alpha is enabled to avoid the death circle altogether
 				} else {
 					//oh no
 				}

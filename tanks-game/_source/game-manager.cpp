@@ -165,7 +165,7 @@ void GameManager::CreateDefaultINIFileIfNeeded(std::string path) {
 	"Position.StartX = 120\n"
 	"Position.StartY = 120\n"
 	"Position.SizeMultiplier = ;2.5\n"
-	"Bullet.PerformanceMode = 0 ; no outline and bar for a death indication ; TODO: does nothing since new shader, maybe remove\n"
+	"Bullet.DrawAlpha = 0 ; draws transparency rather than a circle outline\n"
 	"\n"
 
 	"[GAME_OPTIONS]\n"
@@ -177,7 +177,7 @@ void GameManager::CreateDefaultINIFileIfNeeded(std::string path) {
 	"; global config\n"
 	"LimitBullets = 1\n"
 	"MaxBullets = 8192\n"
-	"FewerExtraShootingBullets = 0 ; determines whether something like triple + fire shoots 7 or 12 bullets\n"
+	"FewerExtraShootingBullets = 1 ; determines whether something like triple + fire shoots 7 or 12 bullets\n"
 	"ShootingCooldown = 100\n"
 	"PowerupDurationBaseTime = 500\n"
 	"; other options\n"

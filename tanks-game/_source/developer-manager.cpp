@@ -8,6 +8,7 @@
 #include "wall-manager.h"
 #include "hazard-manager.h"
 #include "level-manager.h"
+#include "game-manager.h" //settings
 
 bool DeveloperManager::leftMouse = false;
 bool DeveloperManager::rightMouse = false;

@@ -30,6 +30,7 @@ Since I don't have the expertise or willingness to add advanced features like "a
 * `Position.StartX` (default 120): Sets the window's starting x-position.
 * `Position.StartY` (default 120): Sets the window's starting y-position. Remember that this is counted from the top left of your primary monitor.
 * `Position.SizeMultiplier` (default 2.5): Controls the sizing of the window. The actual game's size is 640×320, so by default the window is scaled to 1600×800.
+* `Bullet.DrawAlpha` (default 0): Draws bullets as partially transparent to represent their remaining life, rather than a circle outline. Because this enables transparency, there will be a performance hit to drawing, but it's very minimal.
 
 Note: Press F11 to toggle fullscreen. (Well, it's borderless fullscreen, but it still fills the whole screen.)
 

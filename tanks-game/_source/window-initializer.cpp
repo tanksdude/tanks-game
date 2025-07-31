@@ -11,6 +11,7 @@
 #include "frame-time-graph.h"
 #include "keypress-manager.h"
 #include "game-scene-manager.h" //to refresh the graphics when the window size changes
+#include "game-manager.h" //settings (enable alpha)
 
 GLFWwindow* WindowInitializer::glfw_window = nullptr;
 bool WindowInitializer::currently_fullscreen = false;
@@ -182,8 +183,11 @@ void WindowInitializer::WindowInitialize(int* argc, char** argv, std::string win
 
 	glDisable(GL_DEPTH_TEST); //technically not required, but not all drivers implement the OpenGL spec correctly
 	//transparency:
-	//glEnable(GL_BLEND);
-	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	const GameSettings& game_settings = GameManager::get_settings();
+	if (game_settings.Bullet_DrawAlpha) {
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	}
 
 	//initialize glew
 	glewExperimental = GL_TRUE;

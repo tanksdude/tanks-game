@@ -11,6 +11,9 @@ void GameSettings::Initialize(const BasicINIParser::BasicINIData& ini_data) {
 	PerformanceGraphEnable = ini_data.exists("DEBUG", "PerformanceGraphEnable") ? std::stoi(ini_data.get("DEBUG", "PerformanceGraphEnable")) : false;
 	EnableDebugDrawing = ini_data.exists("DEBUG", "EnableDebugDrawing") ? std::stoi(ini_data.get("DEBUG", "EnableDebugDrawing")) : false;
 
+	//[GRAPHICS_SETTINGS]
+	Bullet_DrawAlpha = ini_data.exists("GRAPHICS_SETTINGS", "Bullet.DrawAlpha") ? std::stoi(ini_data.get("GRAPHICS_SETTINGS", "Bullet.DrawAlpha")) : false;
+
 	//[GAME_OPTIONS]
 	GameLevelPlaylist = ini_data.exists("GAME_OPTIONS", "GameLevelPlaylist")
 		? ini_data.get("GAME_OPTIONS", "GameLevelPlaylist") : "random-vanilla";

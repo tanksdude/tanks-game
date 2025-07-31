@@ -28,6 +28,7 @@
     * countless small things adding up, like better cache alignment
 * render game in center of window (instead of bottom/left)
 * added a window icon
+* optional transparency drawing for bullets
 * minor things:
     * bumped instruction set to x86-64-v2 (SSE4.2)
     * create a default ini file if it doesn't exist on startup
