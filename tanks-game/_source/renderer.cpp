@@ -13,12 +13,11 @@
 #include "frame-time-graph.h"
 #include "game-manager.h" //for isDebugDrawingEnabled(), also settings (bullet alpha draw)
 
-#include <GL/glew.h>
 #include <tracy/Tracy.hpp>
 
 glm::mat4 Renderer::proj = glm::ortho(0.0f, (float)GAME_WIDTH, 0.0f, (float)GAME_HEIGHT);
-RenderingContext* Renderer::renderingMethod = nullptr;
-AvailableRenderingContexts Renderer::renderingMethodType;
+RenderingContext* Renderer::renderingBackend = nullptr;
+AvailableRenderingContexts Renderer::renderingBackendType;
 
 std::unordered_map<std::string, Shader*> Renderer::shaderStorage;
 Shader* Renderer::boundShader = nullptr;
@@ -41,37 +40,8 @@ const unsigned int Renderer::MainBatched_VertexData::maxVerticesDataLength = (1 
 const unsigned int Renderer::MainBatched_VertexData::maxIndicesDataLength = (1 << 16) / sizeof(unsigned int); //TODO: size (fills up faster)
 const unsigned int Renderer::Bullet_VertexData::maxDataLength = (1 << 16) / sizeof(float);
 
-static std::string getGLErrorString(GLenum err) {
-	//gotten from https://codeyarns.com/2015/09/14/how-to-check-error-in-opengl/
-	switch (err) {
-		case GL_NO_ERROR:          return "No error";
-		case GL_INVALID_ENUM:      return "Invalid enum";
-		case GL_INVALID_VALUE:     return "Invalid value";
-		case GL_INVALID_OPERATION: return "Invalid operation";
-		case GL_STACK_OVERFLOW:    return "Stack overflow";
-		case GL_STACK_UNDERFLOW:   return "Stack underflow";
-		case GL_OUT_OF_MEMORY:     return "Out of memory";
-		default:                   return "Unknown error";
-	}
-}
-
-static void printGLError() {
-	bool error = false;
-	while (true) {
-		const GLenum err = glGetError();
-		if (err == GL_NO_ERROR)
-			break;
-
-		std::cout << "GL Error: " << getGLErrorString(err) << std::endl;
-		error = true; //set breakpoint to here when debugging!
-	}
-	if (!error) {
-		std::cout << "no error" << std::endl;
-	}
-}
-
 void Renderer::SetContext(AvailableRenderingContexts API) {
-	if (renderingMethod != nullptr) {
+	if (renderingBackend != nullptr) {
 		throw std::logic_error("ERROR: Cannot change rendering context!");
 	}
 
@@ -80,16 +50,16 @@ void Renderer::SetContext(AvailableRenderingContexts API) {
 			std::cerr << "Rendering context unknown! Defaulting to OpenGL..." << std::endl;
 			[[fallthrough]];
 		case AvailableRenderingContexts::OpenGL:
-			renderingMethod = new OpenGLRenderingContext();
-			renderingMethodType = AvailableRenderingContexts::OpenGL;
+			renderingBackend = new OpenGLRenderingContext();
+			renderingBackendType = AvailableRenderingContexts::OpenGL;
 			break;
 		case AvailableRenderingContexts::software:
-			renderingMethod = new SoftwareRenderingContext();
-			renderingMethodType = AvailableRenderingContexts::software;
+			renderingBackend = new SoftwareRenderingContext();
+			renderingBackendType = AvailableRenderingContexts::software;
 			break;
 		case AvailableRenderingContexts::null_rendering:
-			renderingMethod = new NullRenderingContext();
-			renderingMethodType = AvailableRenderingContexts::null_rendering;
+			renderingBackend = new NullRenderingContext();
+			renderingBackendType = AvailableRenderingContexts::null_rendering;
 			break;
 	}
 }
@@ -111,13 +81,13 @@ void Renderer::SetContext(const std::string& API) {
 }
 
 void Renderer::PrintRendererInfo() {
-	std::cout << "OpenGL renderer: " << glGetString(GL_RENDERER) << std::endl;
-	std::cout << "OpenGL vendor: " << glGetString(GL_VENDOR) << std::endl;
-	std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl << std::endl;
+	renderingBackend->PrintRendererInfo();
 }
 
 void Renderer::Initialize() {
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	renderingBackend->Initialize();
+
+	//TODO: need to move shader initialization to renderingBackend
 
 	Shader* shader = Shader::MakeShader("res/shaders/OpenGL/main.vert", "res/shaders/OpenGL/main.frag");
 	shaderStorage.insert({ "main", shader });
@@ -228,14 +198,14 @@ Shader* Renderer::getShader(const std::string& s) {
 }
 
 void Renderer::UnbindAll() {
-	glBindVertexArray(0); //vertex array object
-	glUseProgram(0); //shader
+	batched_vao->Unbind(); //doesn't matter which one because they call the same thing
+	boundShader->Unbind();
 
 	boundShader = nullptr;
 }
 
 void Renderer::Clear() {
-	glClear(GL_COLOR_BUFFER_BIT);
+	renderingBackend->Clear();
 }
 
 void Renderer::ActuallyFlush() {
@@ -287,10 +257,7 @@ void Renderer::ActuallyFlush() {
 		FrameTimeGraph::drawGraphTimes();
 	}
 
-	//for single framebuffer, use glFlush; for double framebuffer, swap the buffers
-	//swapping buffers is limited to monitor refresh rate, so I use glFlush
-	glFlush();
-	//glfwSwapBuffers(glfw_window);
+	renderingBackend->Flush();
 
 	UnbindAll();
 }
@@ -402,7 +369,7 @@ bool Renderer::uninitializeGPU() {
 void Renderer::SubmitBatchedDraw(const float* posAndColor, unsigned int posAndColorLength, const unsigned int* indices, unsigned int indicesLength) {
 	if (currentSceneName == "") [[unlikely]] {
 		//only happens for FrameTimeGraph
-		Renderer::bindShader(Renderer::getShader("main"));
+		bindShader(Renderer::getShader("main"));
 		bindVertexArrayObject(batched_vao);
 		MainBatched_VertexData* tempVertexDataGroup = new MainBatched_VertexData();
 		tempVertexDataGroup->m_vertices.insert(tempVertexDataGroup->m_vertices.end(), posAndColor, posAndColor + posAndColorLength);
@@ -477,8 +444,8 @@ void Renderer::BatchedFlush(const MainBatched_VertexData* drawData) {
 	batched_vb->modifyData(drawData->m_vertices.data(), drawData->m_vertices.size() * sizeof(float));
 	batched_ib->modifyData(drawData->m_indices.data(), drawData->m_indices.size() * sizeof(unsigned int));
 
-	glDrawElements(GL_TRIANGLES, batched_vao->GetIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
-	//glDrawElements(GL_TRIANGLES, drawData->m_indices.size(), GL_UNSIGNED_INT, nullptr);
+	renderingBackend->DrawUsingIndices(batched_vao->GetIndexBuffer()->getCount());
+	//renderingBackend->DrawUsingIndices(drawData->m_indices.size());
 }
 
 void Renderer::BulletFlush(const Bullet_VertexData* drawData) {
@@ -490,7 +457,7 @@ void Renderer::BulletFlush(const Bullet_VertexData* drawData) {
 	instanced_vb_mat->modifyData(drawData->m_modelMatrices.data(), drawData->m_modelMatrices.size() * sizeof(float));
 
 	const unsigned int bulletCount = drawData->m_lifeValues.size();
-	glDrawElementsInstanced(GL_TRIANGLES, sizeof(Bullet::instanced_indices)/sizeof(*Bullet::instanced_indices), GL_UNSIGNED_INT, nullptr, bulletCount);
+	renderingBackend->DrawInstanced(sizeof(Bullet::instanced_indices)/sizeof(*Bullet::instanced_indices), bulletCount);
 }
 
 void Renderer::BeginScene(const std::string& name) {

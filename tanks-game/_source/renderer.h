@@ -24,8 +24,8 @@ class Renderer {
 private:
 	static glm::mat4 proj;
 
-	static AvailableRenderingContexts renderingMethodType;
-	static RenderingContext* renderingMethod;
+	static AvailableRenderingContexts renderingBackendType;
+	static RenderingContext* renderingBackend;
 
 private:
 	static std::unordered_map<std::string, Shader*> shaderStorage;
@@ -95,7 +95,7 @@ public:
 	//TODO: because window creation depends on the context being used, maybe these functions should go to WindowInitializer
 	static void SetContext(AvailableRenderingContexts);
 	static void SetContext(const std::string&);
-	static AvailableRenderingContexts GetContext() { return renderingMethodType; }
+	static AvailableRenderingContexts GetContext() { return renderingBackendType; }
 	static void PrintRendererInfo(); //only valid after window initialization
 
 	static void Initialize();
