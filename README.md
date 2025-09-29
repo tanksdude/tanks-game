@@ -33,16 +33,48 @@ The C++ upgrade of my [JavaScript game](https://uncreativeusername.neocities.org
 
 ### Building (Linux)
 
-1. Prerequisites: a compiler and CMake: `sudo apt install build-essential cmake`
-1. GLFW and GLEW: `sudo apt install libglfw3-dev libglew-dev`
-    * non-Debian systems currently untested
-    * compiling these from source is currently unsupported, sorry
-        * Alpine (an extremely lightweight distro probably intended for embedded work), Gentoo (a distro known for compiling everything yourself), ChromeOS (known for being ChromeOS (and did you know it's [based on Gentoo?](https://en.wikipedia.org/wiki/ChromeOS#Architecture_2))), and even the non-Linux [Haiku](https://www.haiku-os.org/) (which I only heard about by reading other projects' CMake files) have prebuilt packages for GLFW and GLEW, so you really should be okay on your distro of choice
+1. Prerequisites: a compiler, Make, CMake, GLFW, GLEW
+    * Ubuntu/Mint: `sudo apt install build-essential cmake libglfw3-dev libglew-dev`
+    * Fedora: `sudo dnf install gcc-g++ make cmake glfw-devel glew-devel`
+    * Arch/Manjaro: `sudo pacman -S gcc make cmake glfw glew`
+    * compiling GLFW & GLEW from source is currently unsupported, sorry
+        * Alpine (an extremely lightweight distro probably intended for embedded work), Gentoo (a distro known for compiling everything yourself), ChromeOS (known for being ChromeOS (and did you know it's [based on Gentoo](https://en.wikipedia.org/wiki/ChromeOS#Architecture_2)?)), and even the non-Linux [Haiku](https://www.haiku-os.org/) (which I only heard about by reading other projects' CMake files) have prebuilt packages for GLFW and GLEW, so you really should be okay on your distro of choice
 1. `mkdir build && cd build`
 1. `cmake .. -DCMAKE_BUILD_TYPE=Release` (optional and recommended: `-DCMAKE_CXX_FLAGS=-march=native -DCMAKE_C_FLAGS=-march=native`)
 1. `make -j$(nproc)`
 1. TODO: also needs `res/` and `tanks.ini` copied to the build dir
 1. Note: On Ubuntu, going fullscreen seems to force the window to the largest monitor, unless "Auto-hide the Dock" is enabled. It appears that Ubuntu forces windows that are too large for the current screen (which means full height is too much due to the dock) to the largest screen.
+
+### Linux display issues
+
+After *extensive* testing, I have found that not all distributions and desktop environments play nicely. Nearly all can compile and run the game, however they will not necessarily display anything. Usually they initialize "something" but don't render anything (basically an application gets recognized, but the window isn't created) (note: actually that only happens when GLEW fails to initialize but the program is allowed to keep going, which requires you to remove the thrown exception), and only sometimes do they actually work. Some of them only work under X11, maybe due to incorrect environment parameters getting passed on to GLFW (I really don't know, I'm not a Linux display system expert). Here's what I've found:
+
+Works without issue:
+
+* Ubuntu 22.04/24.04 GNOME
+* Linux Mint 21/22 Cinnamon & Xfce
+* Fedora Xfce
+* Arch Xfce
+* Manjaro Plasma & GNOME & Xfce & Cinnamon
+
+Works with workarounds:
+
+* Ubuntu 25.04: switch to X11 (*first* select your user, *then* click the gear in the bottom right)
+    * Why does 24.04 work just fine but 25.04 doesn't? Did the GLFW library version bump (3.3.10 to 3.4) really change that much?
+* Fedora Plasma: switch to X11 (select the text in the bottom left), requires `sudo dnf install plasma-workspace-x11`
+
+Doesn't work but might (I tested all of these in a virtual machine, so bare metal might fare differently):
+
+* Arch Plasma & GNOME
+
+Doesn't work:
+
+* Fedora GNOME (no X11 option)
+
+Untested:
+
+* Gentoo
+* Alpine
 
 ![superfast shooting video](readme-video-other.gif)
 
