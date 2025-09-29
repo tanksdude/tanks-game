@@ -146,7 +146,7 @@ void WindowInitializer::WindowInitialize(int* argc, char** argv, std::string win
 void WindowInitializer::WindowInitialize(int* argc, char** argv, std::string windowName, int startX, int startY, double sizeMultiplier) {
 	// Initialize GLFW
 	if (!glfwInit()) {
-		throw "glfw failed";
+		throw std::runtime_error("glfw failed");
 	}
 
 	// Setup window position, size, and title
@@ -193,8 +193,13 @@ void WindowInitializer::WindowInitialize(int* argc, char** argv, std::string win
 	glewExperimental = GL_TRUE;
 	GLenum res = glewInit();
 	if (res != GLEW_OK) {
-		fprintf(stderr, "Error: '%s'\n", glewGetErrorString(res));
-		throw "glew failed";
+		if (res == GLEW_ERROR_NO_GLX_DISPLAY) {
+			fprintf(stderr, "Error: '%s'\n", "No GLX display"); //glew 2.2.0 has the error but not the associated message
+		} else {
+			fprintf(stderr, "Error: '%s'\n", glewGetErrorString(res));
+		}
+		throw std::runtime_error("glew failed");
+		//note: glew failing isn't fatal, however the application will not render anything and mess with GLFW, really confusing the poor OS
 	}
 }
 

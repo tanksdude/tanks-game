@@ -1,6 +1,7 @@
 #pragma once
 #include <algorithm> //std::min_element, std::max_element, std::find
 #include <concepts>
+#include <functional> //std::less
 
 template<typename T>
 inline T findMin(const T* arr, int len) { return *std::min_element(arr, arr + len); }
