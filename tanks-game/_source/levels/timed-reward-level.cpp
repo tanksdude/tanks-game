@@ -8,6 +8,7 @@
 #include "../wall-manager.h"
 #include "../powerup-manager.h"
 #include "../hazard-manager.h"
+#include "../simple-vector-2d.h"
 
 #include "../game-manager.h" //getTickCount()
 

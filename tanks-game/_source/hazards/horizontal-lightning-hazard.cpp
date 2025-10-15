@@ -12,6 +12,7 @@
 #include "../background-rect.h"
 
 #include "../collision-handler.h"
+#include "../simple-vector-2d.h"
 #include "../point.h"
 #include "../wall-manager.h"
 #include "../hazard-manager.h"

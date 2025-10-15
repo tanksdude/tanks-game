@@ -3,6 +3,7 @@
 #include "../generalized-no-bullet-zone.h"
 
 #include "../constants.h"
+#include "../simple-vector-2d.h"
 
 class CircularNoBulletZoneHazard : public CircleHazard, public GeneralizedNoBulletZone {
 public:

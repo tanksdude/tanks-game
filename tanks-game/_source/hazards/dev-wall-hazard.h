@@ -2,6 +2,7 @@
 #include "../rect-hazard.h"
 
 #include "../constants.h"
+#include "../color-value-holder.h"
 
 class DevWallHazard : public RectHazard {
 	//it's just a rectangular hazard with solid collision

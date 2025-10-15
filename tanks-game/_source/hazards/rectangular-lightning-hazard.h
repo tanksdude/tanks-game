@@ -3,6 +3,7 @@
 #include "../generalized-lightning.h"
 
 #include "../constants.h"
+#include "../circle.h"
 
 class RectangularLightningHazard : public RectHazard, public GeneralizedLightning {
 	//called LightningZone in JS Tanks

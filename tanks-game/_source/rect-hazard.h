@@ -9,7 +9,6 @@ struct RectHazardUpdateStruct;
 #include "game-thing.h"
 #include "rect.h"
 #include "drawable-thing.h"
-//#include "rect-hazard-power.h"
 
 #include "tank.h"
 #include "bullet.h"

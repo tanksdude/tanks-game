@@ -2,6 +2,8 @@
 #include "../rect-hazard.h"
 
 #include "../constants.h"
+#include "../color-value-holder.h"
+#include "../circle-hazard.h"
 
 class SpiralLavaHazard : public RectHazard {
 	//the base part is just a wall

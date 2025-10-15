@@ -3,6 +3,7 @@
 
 #include "../constants.h"
 
+#include "../color-value-holder.h"
 #include "../simple-vector-2d.h"
 
 class StationaryTurretHazard : public CircleHazard {

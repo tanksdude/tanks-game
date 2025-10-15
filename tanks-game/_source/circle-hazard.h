@@ -9,7 +9,6 @@ struct CircleHazardUpdateStruct;
 #include "game-thing.h"
 #include "circle.h"
 #include "drawable-thing.h"
-//#include "circle-hazard-power.h"
 
 #include "tank.h"
 #include "bullet.h"

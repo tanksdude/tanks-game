@@ -2,7 +2,6 @@
 
 #include "constants.h"
 #include <algorithm> //std::min, std::max
-#include <iostream>
 
 #include "renderer.h"
 #include "simple-vector-2d.h"

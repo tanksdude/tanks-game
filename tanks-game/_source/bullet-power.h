@@ -3,6 +3,7 @@ class BulletPower;
 
 #include "interaction-bool-holder.h"
 #include "color-value-holder.h"
+#include <string>
 
 #include "tank.h"
 #include "bullet.h"

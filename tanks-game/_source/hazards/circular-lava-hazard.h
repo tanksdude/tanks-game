@@ -3,6 +3,7 @@
 #include "../generalized-lava.h"
 
 #include "../constants.h"
+#include "../simple-vector-2d.h"
 
 class CircularLavaHazard : public CircleHazard, public GeneralizedLava {
 protected:

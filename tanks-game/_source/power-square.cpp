@@ -1,6 +1,7 @@
 #include "power-square.h"
 
 #include "constants.h"
+#include <iostream>
 
 #include "renderer.h"
 #include "color-mixer.h"

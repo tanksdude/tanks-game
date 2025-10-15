@@ -2,6 +2,8 @@
 #include "../circle-hazard.h"
 
 #include "../constants.h"
+#include "../color-value-holder.h"
+#include "../simple-vector-2d.h"
 #include "../power-square.h"
 
 class CloudHazard : public CircleHazard {

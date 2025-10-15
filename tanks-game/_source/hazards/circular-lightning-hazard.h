@@ -3,6 +3,7 @@
 #include "../generalized-lightning.h"
 
 #include "../constants.h"
+#include "../simple-vector-2d.h"
 
 class CircularLightningHazard : public CircleHazard, public GeneralizedLightning {
 protected:

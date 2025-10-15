@@ -1,5 +1,7 @@
 #pragma once
 #include <string>
+#include <vector>
+#include <unordered_map>
 
 #include "game-scene.h"
 #include "drawable-thing.h" //for DrawingLayers

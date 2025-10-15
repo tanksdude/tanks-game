@@ -2,6 +2,8 @@
 
 #include "../powerup-manager.h"
 
+#include <iostream>
+
 std::unordered_map<std::string, float> RespawningPowerupsLevelEffect::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", 2.0f });

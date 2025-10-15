@@ -2,6 +2,7 @@
 #include "../rect-hazard.h"
 
 #include "../constants.h"
+#include "../color-value-holder.h"
 
 class ReflecktorHazard : public RectHazard {
 	//it's basically a wall with some special properties

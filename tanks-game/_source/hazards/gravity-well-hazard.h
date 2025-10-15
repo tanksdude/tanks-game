@@ -2,6 +2,8 @@
 #include "../circle-hazard.h"
 
 #include "../constants.h"
+#include "../color-value-holder.h"
+#include "../simple-vector-2d.h"
 
 class GravityWellHazard : public CircleHazard {
 protected:
