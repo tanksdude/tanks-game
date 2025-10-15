@@ -4,7 +4,6 @@
 #include <vector>
 #include <unordered_map>
 #include <glm.hpp>
-#include "color-value-holder.h" //for bullets
 
 #include "graphics/rendering-context.h"
 #include "graphics/vertex-array-object.h"
@@ -61,11 +60,9 @@ private:
 
 	struct Bullet_VertexData final : public VertexDrawingData {
 		std::vector<float> m_colors;
-		std::vector<float> m_lifeValues;
 		std::vector<float> m_modelMatrices;
 		static const unsigned int maxDataLength; //TODO
 		bool enoughRoomForMoreColors(unsigned int pushLength);
-		bool enoughRoomForMoreLifeValues(unsigned int pushLength);
 		bool enoughRoomForMoreMatrices(unsigned int pushLength);
 		Bullet_VertexData();
 	};
@@ -83,7 +80,6 @@ private:
 	static VertexArrayObject* instanced_vao;
 	static VertexBuffer* instanced_vb_pos;
 	static VertexBuffer* instanced_vb_color;
-	static VertexBuffer* instanced_vb_life;
 	static VertexBuffer* instanced_vb_mat;
 	static IndexBuffer* instanced_ib;
 	static bool initialized_GPU;
@@ -104,7 +100,7 @@ public:
 	static void Clear();
 	static void BeginScene(const std::string& name); //name of scene, intended for FrameTimeGraph, but drawing is so fast that there's little point
 	static void SubmitBatchedDraw(const float* posAndColor, unsigned int posAndColorLength, const unsigned int* indices, unsigned int indicesLength);
-	static void SubmitBulletDrawCall(float bulletLife, const ColorValueHolder& color, const glm::mat4& modelMatrix);
+	static void SubmitBulletDrawCall(float r, float g, float b, float bulletLife, const glm::mat4& modelMatrix);
 	static void EndScene();
 	static void Flush();
 	static bool isDebugDrawingEnabled(const std::string& name); //should this really be here?
