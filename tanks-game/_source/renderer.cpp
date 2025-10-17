@@ -27,8 +27,8 @@ VertexBuffer* Renderer::batched_vb;
 IndexBuffer* Renderer::batched_ib;
 VertexArrayObject* Renderer::instanced_vao;
 VertexBuffer* Renderer::instanced_vb_pos;
+VertexBuffer* Renderer::instanced_vb_bvalues;
 VertexBuffer* Renderer::instanced_vb_color;
-VertexBuffer* Renderer::instanced_vb_mat;
 IndexBuffer* Renderer::instanced_ib;
 bool Renderer::initialized_GPU = false;
 
@@ -111,11 +111,11 @@ bool Renderer::MainBatched_VertexData::enoughRoomForMoreIndices(unsigned int pus
 	return (m_indices.size() + pushLength <= Renderer::MainBatched_VertexData::maxIndicesDataLength);
 }
 
+bool Renderer::Bullet_VertexData::enoughRoomForMoreBulletValues(unsigned int pushLength) {
+	return (m_bulletValues.size() + pushLength <= Renderer::Bullet_VertexData::maxDataLength);
+}
 bool Renderer::Bullet_VertexData::enoughRoomForMoreColors(unsigned int pushLength) {
 	return (m_colors.size() + pushLength <= Renderer::Bullet_VertexData::maxDataLength);
-}
-bool Renderer::Bullet_VertexData::enoughRoomForMoreMatrices(unsigned int pushLength) {
-	return (m_modelMatrices.size() + pushLength <= Renderer::Bullet_VertexData::maxDataLength);
 }
 
 Renderer::MainBatched_VertexData::MainBatched_VertexData() {
@@ -133,8 +133,8 @@ Renderer::Bullet_VertexData::Bullet_VertexData() {
 	#if _DEBUG
 	//performance is awful //TODO: check again
 	#else
+	m_bulletValues.reserve(Bullet_VertexData::maxDataLength);
 	m_colors.reserve(Bullet_VertexData::maxDataLength);
-	m_modelMatrices.reserve(Bullet_VertexData::maxDataLength);
 	#endif
 }
 
@@ -308,24 +308,24 @@ bool Renderer::initializeGPU() {
 	};
 	instanced_vb_pos->SetLayout(layout_instanced_pos);
 
+	instanced_vb_bvalues = VertexBuffer::MakeVertexBuffer(positions_instanced, Bullet_VertexData::maxDataLength * sizeof(float), VertexBuffer::RenderingHints::dynamic_draw);
+	VertexBufferLayout layout_instanced_mat = {
+		{ ShaderDataType::Float3, "a_BulletValues", false, true }
+	};
+	instanced_vb_bvalues->SetLayout(layout_instanced_mat);
+
 	instanced_vb_color = VertexBuffer::MakeVertexBuffer(positions_instanced, Bullet_VertexData::maxDataLength * sizeof(float), VertexBuffer::RenderingHints::dynamic_draw);
 	VertexBufferLayout layout_instanced_color = {
 		{ ShaderDataType::Float4, "a_ColorInstanced", false, true }
 	};
 	instanced_vb_color->SetLayout(layout_instanced_color);
 
-	instanced_vb_mat = VertexBuffer::MakeVertexBuffer(positions_instanced, Bullet_VertexData::maxDataLength * sizeof(float), VertexBuffer::RenderingHints::dynamic_draw);
-	VertexBufferLayout layout_instanced_mat = {
-		{ ShaderDataType::Mat4, "a_ModelMatrixInstanced" }
-	};
-	instanced_vb_mat->SetLayout(layout_instanced_mat);
-
 	instanced_ib = IndexBuffer::MakeIndexBuffer(indices_instanced, MainBatched_VertexData::maxIndicesDataLength, IndexBuffer::RenderingHints::stream_draw);
 
 	instanced_vao = VertexArrayObject::MakeVertexArrayObject();
 	instanced_vao->AddVertexBuffer(instanced_vb_pos);
+	instanced_vao->AddVertexBuffer(instanced_vb_bvalues);
 	instanced_vao->AddVertexBuffer(instanced_vb_color);
-	instanced_vao->AddVertexBuffer(instanced_vb_mat);
 	instanced_vao->SetIndexBuffer(instanced_ib);
 
 	delete[] positions_instanced;
@@ -345,8 +345,8 @@ bool Renderer::uninitializeGPU() {
 	delete batched_ib;
 	delete instanced_vao;
 	delete instanced_vb_pos;
+	delete instanced_vb_bvalues;
 	delete instanced_vb_color;
-	delete instanced_vb_mat;
 	delete instanced_ib;
 
 	initialized_GPU = false;
@@ -396,7 +396,7 @@ void Renderer::SubmitBatchedDraw(const float* posAndColor, unsigned int posAndCo
 	}
 }
 
-void Renderer::SubmitBulletDrawCall(float r, float g, float b, float bulletLife, const glm::mat4& modelMatrix) {
+void Renderer::SubmitBulletDrawCall(float x, float y, float radius, float red, float green, float blue, float bulletLife) {
 	if (currentSceneName == "") [[unlikely]] {
 		//TODO
 	} else {
@@ -407,17 +407,17 @@ void Renderer::SubmitBulletDrawCall(float r, float g, float b, float bulletLife,
 			sceneDrawGroup.push_back(static_cast<VertexDrawingData*>(currentVertexDataGroup));
 		} else {
 			currentVertexDataGroup = static_cast<Bullet_VertexData*>(sceneDrawGroup[sceneDrawGroup.size()-1]);
-			if (!currentVertexDataGroup->enoughRoomForMoreColors(4) || !currentVertexDataGroup->enoughRoomForMoreMatrices(4*4)) {
+			if (!currentVertexDataGroup->enoughRoomForMoreBulletValues(3) || !currentVertexDataGroup->enoughRoomForMoreColors(4)) {
 				currentVertexDataGroup = new Bullet_VertexData();
 				sceneDrawGroup.push_back(static_cast<VertexDrawingData*>(currentVertexDataGroup));
 			}
 		}
 
+		std::vector<float>& bulletValuesData = currentVertexDataGroup->m_bulletValues;
 		std::vector<float>& colorsData = currentVertexDataGroup->m_colors;
-		std::vector<float>& modelMatricesData = currentVertexDataGroup->m_modelMatrices;
 
-		colorsData.insert(colorsData.end(), { r, g, b, bulletLife });
-		modelMatricesData.insert(modelMatricesData.end(), &modelMatrix[0][0], &modelMatrix[0][0] + 4*4);
+		bulletValuesData.insert(bulletValuesData.end(), { x, y, radius });
+		colorsData.insert(colorsData.end(), { red, green, blue, bulletLife });
 	}
 }
 
@@ -436,8 +436,8 @@ void Renderer::BulletFlush(const Bullet_VertexData* drawData) {
 	ZoneScoped;
 	//TODO: check if there's nothing?
 
+	instanced_vb_bvalues->modifyData(drawData->m_bulletValues.data(), drawData->m_bulletValues.size() * sizeof(float));
 	instanced_vb_color->modifyData(drawData->m_colors.data(), drawData->m_colors.size() * sizeof(float));
-	instanced_vb_mat->modifyData(drawData->m_modelMatrices.data(), drawData->m_modelMatrices.size() * sizeof(float));
 
 	const unsigned int bulletCount = drawData->m_colors.size() / 4;
 	renderingBackend->DrawInstanced(sizeof(Bullet::instanced_indices)/sizeof(*Bullet::instanced_indices), bulletCount);

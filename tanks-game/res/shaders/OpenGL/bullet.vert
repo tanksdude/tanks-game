@@ -1,8 +1,8 @@
 #version 330 core
 
 layout(location = 0) in vec2 a_VertexPosition;
-layout(location = 1) in vec4 a_ColorInstanced;
-layout(location = 2) in mat4 a_ModelMatrixInstanced;
+layout(location = 1) in vec3 a_BulletValues;
+layout(location = 2) in vec4 a_ColorInstanced;
 
 out vec4 v_Color;
 
@@ -49,5 +49,15 @@ void main() {
 		v_Color = vec4(0.0, 0.0, 0.0, 1.0);
 	}
 
-	gl_Position = u_ProjectionMatrix * u_ViewMatrix * a_ModelMatrixInstanced * vec4(pos, 0.0, 1.0);
+	mat4 translationMatrix = mat4(1.0);
+	translationMatrix[3] = vec4(a_BulletValues[0], a_BulletValues[1], 0.0, 1.0);
+
+	mat4 scaleMatrix = mat4(1.0);
+	scaleMatrix[0][0] = a_BulletValues[2];
+	scaleMatrix[1][1] = a_BulletValues[2];
+	//scaleMatrix[2][2] = 1.0;
+
+	mat4 modelMatrix = translationMatrix * scaleMatrix;
+
+	gl_Position = u_ProjectionMatrix * u_ViewMatrix * modelMatrix * vec4(pos, 0.0, 1.0);
 }

@@ -532,10 +532,7 @@ void Bullet::ghostDraw(float alpha) const {
 	ColorValueHolder color = getColor();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 
-	//TODO: see if passing a_BulletRadius and/or a_BulletPos would be faster
-	glm::mat4 modelMatrix = Renderer::GenerateModelMatrix_NoRotate(this->r, this->r, this->x, this->y);
-
-	Renderer::SubmitBulletDrawCall(color.getRf(), color.getGf(), color.getBf(), this->lifeValue / 100.0f, modelMatrix);
+	Renderer::SubmitBulletDrawCall(this->x, this->y, this->r, color.getRf(), color.getGf(), color.getBf(), this->lifeValue / 100.0f);
 }
 
 void Bullet::ghostDraw(DrawingLayers layer, float alpha) const {
