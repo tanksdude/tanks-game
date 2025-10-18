@@ -59,11 +59,10 @@ private:
 	};
 
 	struct Bullet_VertexData final : public VertexDrawingData {
-		std::vector<float> m_bulletValues; //x, y, r
-		std::vector<float> m_colors;
+		std::vector<float> m_bulletValues; //x, y, r, rgba
+		//packing 8-bit color into a float does slightly improve rendering times, but only slightly
 		static const unsigned int maxDataLength; //TODO
 		bool enoughRoomForMoreBulletValues(unsigned int pushLength);
-		bool enoughRoomForMoreColors(unsigned int pushLength);
 		Bullet_VertexData();
 	};
 
@@ -80,7 +79,6 @@ private:
 	static VertexArrayObject* instanced_vao;
 	static VertexBuffer* instanced_vb_pos;
 	static VertexBuffer* instanced_vb_bvalues;
-	static VertexBuffer* instanced_vb_color;
 	static IndexBuffer* instanced_ib;
 	static bool initialized_GPU;
 
