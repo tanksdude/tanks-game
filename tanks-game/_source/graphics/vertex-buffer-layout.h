@@ -4,9 +4,10 @@
 
 enum class ShaderDataType {
 	None,
+	UByte, UByte2, UByte3, UByte4,
+	Int,   Int2,   Int3,   Int4,
 	Float, Float2, Float3, Float4,
-	Mat4,
-	Int, Int2, Int3, Int4
+	Mat4, //matrices only hold floats
 };
 
 struct VertexBufferElement {
@@ -19,30 +20,38 @@ struct VertexBufferElement {
 
 	static unsigned int getSize(ShaderDataType type) {
 		switch (type) {
+			case ShaderDataType::UByte:  return sizeof(unsigned char);
+			case ShaderDataType::UByte2: return sizeof(unsigned char) * 2;
+			case ShaderDataType::UByte3: return sizeof(unsigned char) * 3;
+			case ShaderDataType::UByte4: return sizeof(unsigned char) * 4;
+			case ShaderDataType::Int:    return sizeof(int);
+			case ShaderDataType::Int2:   return sizeof(int)   * 2;
+			case ShaderDataType::Int3:   return sizeof(int)   * 3;
+			case ShaderDataType::Int4:   return sizeof(int)   * 4;
 			case ShaderDataType::Float:  return sizeof(float);
 			case ShaderDataType::Float2: return sizeof(float) * 2;
 			case ShaderDataType::Float3: return sizeof(float) * 3;
 			case ShaderDataType::Float4: return sizeof(float) * 4;
 			case ShaderDataType::Mat4:   return sizeof(float) * 4*4;
-			case ShaderDataType::Int:    return sizeof(int);
-			case ShaderDataType::Int2:   return sizeof(int)   * 2;
-			case ShaderDataType::Int3:   return sizeof(int)   * 3;
-			case ShaderDataType::Int4:   return sizeof(int)   * 4;
 		}
 		return 0;
 	}
 
 	unsigned int getComponentCount() const {
 		switch (this->type) {
+			case ShaderDataType::UByte:  return 1;
+			case ShaderDataType::UByte2: return 2;
+			case ShaderDataType::UByte3: return 3;
+			case ShaderDataType::UByte4: return 4;
+			case ShaderDataType::Int:    return 1;
+			case ShaderDataType::Int2:   return 2;
+			case ShaderDataType::Int3:   return 3;
+			case ShaderDataType::Int4:   return 4;
 			case ShaderDataType::Float:  return 1;
 			case ShaderDataType::Float2: return 2;
 			case ShaderDataType::Float3: return 3;
 			case ShaderDataType::Float4: return 4;
 			case ShaderDataType::Mat4:   return 4; //4 vec4
-			case ShaderDataType::Int:    return 1;
-			case ShaderDataType::Int2:   return 2;
-			case ShaderDataType::Int3:   return 3;
-			case ShaderDataType::Int4:   return 4;
 		}
 		return 0;
 	}
