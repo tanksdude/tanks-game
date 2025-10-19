@@ -305,8 +305,8 @@ bool Renderer::initializeGPU() {
 
 	instanced_vb_bvalues = VertexBuffer::MakeVertexBuffer(positions_instanced, Bullet_VertexData::maxDataLength * sizeof(float), VertexBuffer::RenderingHints::dynamic_draw);
 	VertexBufferLayout layout_instanced_mat = {
-		{ ShaderDataType::Float3, "a_BulletValues", false, true },
-		{ ShaderDataType::Float4, "a_ColorInstanced", false, true }
+		{ ShaderDataType::Float3, "a_BulletValuesInstanced", false, true },
+		{ ShaderDataType::Float4, "a_ColorInstanced",        false, true }
 	};
 	instanced_vb_bvalues->SetLayout(layout_instanced_mat);
 

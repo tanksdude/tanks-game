@@ -14,8 +14,6 @@
 
 float Bullet::instanced_vertices[2 * ((Bullet::BulletSideCount + 2) + (Bullet::BulletSideCount + 1) + (Bullet::BulletSideCount * 2))];
 unsigned int Bullet::instanced_indices[Bullet::BulletSideCount * 3 * (1+1+2)];
-const float Bullet::outline_width_multiplier = 1.0 / 16;
-const float Bullet::death_circle_multiplier = 1.25;
 bool Bullet::initialized_vertices = false;
 
 const ColorValueHolder Bullet::default_color = ColorValueHolder(0.5f, 0.5f, 0.5f);
@@ -91,14 +89,16 @@ bool Bullet::initializeVertices() {
 		return false;
 	}
 
+	//death circle:
 	instanced_vertices[0] = 0;
 	instanced_vertices[1] = 0;
 	for (int i = 0; i < (Bullet::BulletSideCount + 2) - 1; i++) {
 		const unsigned int startIdx = 2;
-		instanced_vertices[startIdx + i*2]   = Bullet::death_circle_multiplier * static_cast<float>(std::cos(i * (2*PI / Bullet::BulletSideCount) + PI/2));
-		instanced_vertices[startIdx + i*2+1] = Bullet::death_circle_multiplier * static_cast<float>(std::sin(i * (2*PI / Bullet::BulletSideCount) + PI/2));
+		instanced_vertices[startIdx + i*2]   = std::cos(i * (2*PI / Bullet::BulletSideCount) + PI/2);
+		instanced_vertices[startIdx + i*2+1] = std::sin(i * (2*PI / Bullet::BulletSideCount) + PI/2);
 	}
 
+	//body:
 	instanced_vertices[2*(Bullet::BulletSideCount + 2)]     = 0;
 	instanced_vertices[2*(Bullet::BulletSideCount + 2) + 1] = 0;
 	for (int i = 0; i < (Bullet::BulletSideCount + 1) - 1; i++) {
@@ -107,28 +107,29 @@ bool Bullet::initializeVertices() {
 		instanced_vertices[startIdx + i*2+1] = std::sin(i * (2*PI / Bullet::BulletSideCount));
 	}
 
+	//outline:
 	for (int i = 0; i < Bullet::BulletSideCount; i++) {
 		const unsigned int startIdx = 2 * ((Bullet::BulletSideCount + 2) + (Bullet::BulletSideCount + 1));
-		instanced_vertices[startIdx + i*4]   = (1.0f + Bullet::outline_width_multiplier) * static_cast<float>(std::cos(i * (2*PI / Bullet::BulletSideCount)));
-		instanced_vertices[startIdx + i*4+1] = (1.0f + Bullet::outline_width_multiplier) * static_cast<float>(std::sin(i * (2*PI / Bullet::BulletSideCount)));
-		instanced_vertices[startIdx + i*4+2] = (1.0f - Bullet::outline_width_multiplier) * static_cast<float>(std::cos(i * (2*PI / Bullet::BulletSideCount)));
-		instanced_vertices[startIdx + i*4+3] = (1.0f - Bullet::outline_width_multiplier) * static_cast<float>(std::sin(i * (2*PI / Bullet::BulletSideCount)));
+		instanced_vertices[startIdx + i*4]   = std::cos(i * (2*PI / Bullet::BulletSideCount));
+		instanced_vertices[startIdx + i*4+1] = std::sin(i * (2*PI / Bullet::BulletSideCount));
+		instanced_vertices[startIdx + i*4+2] = std::cos(i * (2*PI / Bullet::BulletSideCount));
+		instanced_vertices[startIdx + i*4+3] = std::sin(i * (2*PI / Bullet::BulletSideCount));
 	}
 
-	//death circle
+	//death circle:
 	for (int i = 0; i < Bullet::BulletSideCount; i++) {
 		instanced_indices[i*3]   = 0;
 		instanced_indices[i*3+1] = (i+1);
 		instanced_indices[i*3+2] = (i+2);
 	}
-	//body
+	//body:
 	for (int i = 0; i < Bullet::BulletSideCount; i++) {
 		const unsigned int startPos = (Bullet::BulletSideCount + 2);
 		instanced_indices[Bullet::BulletSideCount*3 + i*3]   = startPos + 0;
 		instanced_indices[Bullet::BulletSideCount*3 + i*3+1] = startPos + (i+1);
 		instanced_indices[Bullet::BulletSideCount*3 + i*3+2] = startPos + (i+1) % Bullet::BulletSideCount + 1;
 	}
-	//outline
+	//outline:
 	for (int i = 0; i < Bullet::BulletSideCount; i++) {
 		const unsigned int startPos = (Bullet::BulletSideCount + 2) + (Bullet::BulletSideCount + 1);
 		instanced_indices[Bullet::BulletSideCount*2*3 + i*6]   = startPos +  i*2;

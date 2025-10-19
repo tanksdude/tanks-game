@@ -93,8 +93,6 @@ private:
 	static constexpr unsigned int BulletSideCount = Circle::NumOfSides / 2;
 	static float instanced_vertices[2 * ((BulletSideCount + 2) + (BulletSideCount + 1) + (BulletSideCount * 2))];
 	static unsigned int instanced_indices[BulletSideCount * 3 * (1+1+2)];
-	static const float outline_width_multiplier;
-	static const float death_circle_multiplier;
 	static bool initialized_vertices;
 public:
 	static bool initializeVertices(); //initialized in main()
