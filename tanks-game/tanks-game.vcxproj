@@ -503,6 +503,9 @@
     <ClInclude Include="_source\wall.h" />
     <ClInclude Include="_source\window-initializer.h" />
   </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="tanks.rc" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
