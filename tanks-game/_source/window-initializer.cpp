@@ -174,7 +174,7 @@ void WindowInitializer::WindowInitialize(int* argc, char** argv, std::string win
 	WindowInitializer::window_width = WindowInitializer::old_window_width; WindowInitializer::window_height = WindowInitializer::old_window_height;
 	WindowInitializer::gamewindow_width = WindowInitializer::window_width; WindowInitializer::gamewindow_height = WindowInitializer::window_height;
 	//glfwGetMonitorContentScale(glfwGetPrimaryMonitor(), &xscale, &yscale);
-	WindowInitializer::SetWindowIcon("res/favicon-64.png"); //TODO: 32x32
+	WindowInitializer::SetWindowIcon("res/favicon-64.png"); //if the OS doesn't like 64x64, boo hoo, no window icon then
 
 	glfwMakeContextCurrent(window);
 
