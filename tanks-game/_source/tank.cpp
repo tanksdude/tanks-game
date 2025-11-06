@@ -993,15 +993,16 @@ inline void Tank::drawExtraBarrels(float alpha) const {
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	const float lineWidth = 0.375f; //TODO: unsure what to put this at; .25 too thin, .5 too thick, .375 looks a bit off from aliasing
 
-	float* coordsAndColor = new float[(shootingPoints.size()-1)*4*(2+4)];
-	unsigned int* indices = new unsigned int[(shootingPoints.size()-1)*6];
+	constexpr unsigned int batchSize = 64;
+	float coordsAndColor[batchSize*4 * (2+4)];
+	unsigned int indices[batchSize * 6];
 
-	for (int i = 0; i < shootingPoints.size()-1; i++) {
-		const int startVertex = (i*4) * 6;
-		const int startIndex = i*6;
+	for (int i = 1; i < shootingPoints.size(); i++) {
+		const int startVertex = (((i-1) % batchSize)*4) * (2+4);
+		const int startIndex = ((i-1) % batchSize)*6;
 
-		SimpleVector2D dist = SimpleVector2D(getEvaluatedCannonAngle(i+1), r, true);
-		SimpleVector2D distCW = SimpleVector2D(getEvaluatedCannonAngle(i+1) - float(PI/2), lineWidth, true);
+		SimpleVector2D dist = SimpleVector2D(getEvaluatedCannonAngle(i), r, true);
+		SimpleVector2D distCW = SimpleVector2D(getEvaluatedCannonAngle(i) - float(PI/2), lineWidth, true);
 
 		coordsAndColor[startVertex + 0*6]   = static_cast<float>(x)                   + distCW.getXComp();
 		coordsAndColor[startVertex + 0*6+1] = static_cast<float>(y)                   + distCW.getYComp();
@@ -1025,10 +1026,16 @@ inline void Tank::drawExtraBarrels(float alpha) const {
 		indices[startIndex + 3] = startVertex/6 + 2;
 		indices[startIndex + 4] = startVertex/6 + 3;
 		indices[startIndex + 5] = startVertex/6 + 0;
+
+		if ((i-1) % batchSize == batchSize-1) {
+			Renderer::SubmitBatchedDraw(coordsAndColor, batchSize*4 * (2+4), indices, batchSize * 6);
+		}
 	}
 
-	Renderer::SubmitBatchedDraw(coordsAndColor, (shootingPoints.size()-1)*4*(2+4), indices, (shootingPoints.size()-1)*6);
-	delete[] coordsAndColor; delete[] indices;
+	const unsigned int leftover_points = (shootingPoints.size()-1) % batchSize;
+	if (leftover_points > 0) [[likely]] {
+		Renderer::SubmitBatchedDraw(coordsAndColor, leftover_points*4 * (2+4), indices, leftover_points * 6);
+	}
 }
 
 inline void Tank::drawExtraExtraBarrels(float alpha) const {
