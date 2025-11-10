@@ -573,7 +573,7 @@ inline float Tank::getEvaluatedCannonAngle(unsigned int i, unsigned int j) const
 }
 
 inline float Tank::getEvaluatedCannonAngleWithEdge(unsigned int i, unsigned int j) const {
-	return velocity.getAngle() + shootingPoints[i].angleFromCenter + extraShootingPoints[j].angleFromCenter + extraShootingPoints[j].angleFromEdge;
+	return (velocity.getAngle() + shootingPoints[i].angleFromCenter) + (extraShootingPoints[j].angleFromCenter + extraShootingPoints[j].angleFromEdge);
 }
 
 void Tank::draw() const {
@@ -745,43 +745,45 @@ inline void Tank::drawBody(float alpha) const {
 		//main color split:
 
 		ColorValueHolder color;
+		float coordsAndColor[(Circle::NumOfSides+1)*(2+4)];
+
 		for (int i = 0; i < tankPowers.size(); i++) {
-			if (tankPowers[i]->getColorImportance() < 0) {
+			if (tankPowers[i]->getColorImportance() < 0) [[unlikely]] {
 				continue;
 			}
-			std::vector<float> coordsAndColor_colorSplit;
-			std::vector<unsigned int> indices_colorSplit;
-			//could just use an array, since the size should be easy to calculate, but that's effort
-			//could push everything to an array then only submit one batched draw call, but that's more effort
 
 			color = tankPowers[i]->getColor();
 			color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 
 			float rotatePercent = std::floor((float(i) / visiblePowerCount) * Circle::NumOfSides) / Circle::NumOfSides;
 			float nextRotatePercent = std::floor((float(i+1) / visiblePowerCount) * Circle::NumOfSides) / Circle::NumOfSides;
-			//unsigned int rotateVertices = (nextRotatePercent - rotatePercent) * Circle::NumOfSides;
 			unsigned int rotateVertexStart = rotatePercent * Circle::NumOfSides;
 			unsigned int rotateVertexEnd = nextRotatePercent * Circle::NumOfSides;
 
-			coordsAndColor_colorSplit.push_back(x);
-			coordsAndColor_colorSplit.push_back(y);
-			coordsAndColor_colorSplit.push_back(color.getRf());
-			coordsAndColor_colorSplit.push_back(color.getGf());
-			coordsAndColor_colorSplit.push_back(color.getBf());
-			coordsAndColor_colorSplit.push_back(color.getAf());
+			if (rotateVertexStart == rotateVertexEnd) [[unlikely]] {
+				//only happens when there are way too many powers
+				continue;
+			}
+
+			coordsAndColor[0] = x;
+			coordsAndColor[1] = y;
+			coordsAndColor[2] = color.getRf();
+			coordsAndColor[3] = color.getGf();
+			coordsAndColor[4] = color.getBf();
+			coordsAndColor[5] = color.getAf();
 			for (unsigned int j = rotateVertexStart; j <= rotateVertexEnd; j++) {
 				SimpleVector2D vertex = SimpleVector2D(body_vertices[j % Circle::NumOfSides + 1]);
 				vertex.scaleAndRotate(r, velocity.getAngle());
 
-				coordsAndColor_colorSplit.push_back(static_cast<float>(x) + vertex.getXComp());
-				coordsAndColor_colorSplit.push_back(static_cast<float>(y) + vertex.getYComp());
-				coordsAndColor_colorSplit.push_back(color.getRf());
-				coordsAndColor_colorSplit.push_back(color.getGf());
-				coordsAndColor_colorSplit.push_back(color.getBf());
-				coordsAndColor_colorSplit.push_back(color.getAf());
+				coordsAndColor[(j - rotateVertexStart + 1)*6]     = static_cast<float>(x) + vertex.getXComp();
+				coordsAndColor[(j - rotateVertexStart + 1)*6 + 1] = static_cast<float>(y) + vertex.getYComp();
+				coordsAndColor[(j - rotateVertexStart + 1)*6 + 2] = color.getRf();
+				coordsAndColor[(j - rotateVertexStart + 1)*6 + 3] = color.getGf();
+				coordsAndColor[(j - rotateVertexStart + 1)*6 + 4] = color.getBf();
+				coordsAndColor[(j - rotateVertexStart + 1)*6 + 5] = color.getAf();
 			}
 
-			Renderer::SubmitBatchedDraw(coordsAndColor_colorSplit.data(), coordsAndColor_colorSplit.size(), body_indices, (rotateVertexEnd - rotateVertexStart)*3);
+			Renderer::SubmitBatchedDraw(coordsAndColor, (rotateVertexEnd - rotateVertexStart + 2) * (2+4), body_indices, (rotateVertexEnd - rotateVertexStart) * 3);
 		}
 
 		//center colors mix:
@@ -789,7 +791,6 @@ inline void Tank::drawBody(float alpha) const {
 		color = getBodyColor();
 		color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 
-		float coordsAndColor[(Circle::NumOfSides+1)*(2+4)];
 		coordsAndColor[0] = x;
 		coordsAndColor[1] = y;
 		coordsAndColor[2] = color.getRf();
@@ -930,7 +931,7 @@ inline void Tank::drawPowerCooldown(float alpha) const {
 			coordsAndColor[5] = color.getAf();
 			for (unsigned int j = 0; j <= powerOutlineTriangles && j < Circle::NumOfSides; j++) {
 				SimpleVector2D vertex = SimpleVector2D(body_vertices[j % Circle::NumOfSides + 1]);
-				vertex.scaleAndRotate(static_cast<float>(r)*(9.0f/8.0f), velocity.getAngle());
+				vertex.scaleAndRotate(static_cast<float>(r)*(9.0f/8.0f), velocity.getAngle()); //most of this function's time is spent here
 
 				coordsAndColor[(j+1)*6]   = static_cast<float>(x) + vertex.getXComp();
 				coordsAndColor[(j+1)*6+1] = static_cast<float>(y) + vertex.getYComp();
@@ -942,6 +943,9 @@ inline void Tank::drawPowerCooldown(float alpha) const {
 
 			Renderer::SubmitBatchedDraw(coordsAndColor, (powerOutlineTriangles < Circle::NumOfSides ? (powerOutlineTriangles+2)*(2+4) : (powerOutlineTriangles+1)*(2+4)), body_indices, powerOutlineTriangles*3);
 		}
+
+		//idea: instead of drawing the full arc, draw just the part not covered by next power
+		//reduces memory bandwidth at the cost of more complicated logic
 	}
 }
 
@@ -984,7 +988,7 @@ inline void Tank::drawMainBarrel(float alpha) const {
 }
 
 inline void Tank::drawExtraBarrels(float alpha) const {
-	if (shootingPoints.size() <= 1) {
+	if (shootingPoints.size() <= 1) [[unlikely]] {
 		return;
 	}
 
@@ -1048,18 +1052,19 @@ inline void Tank::drawExtraExtraBarrels(float alpha) const {
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	const float lineWidth = 0.375f;
 
-	float* coordsAndColor = new float[(extraShootingPoints.size()-1)*4*(2+4)];
-	unsigned int* indices = new unsigned int[(extraShootingPoints.size()-1)*6];
+	constexpr unsigned int batchSize = 64;
+	float coordsAndColor[batchSize*4 * (2+4)];
+	unsigned int indices[batchSize * 6];
 
-	for (int i = 0; i < extraShootingPoints.size()-1; i++) {
-		const int startVertex = (i*4) * 6;
-		const int startIndex = i*6;
+	for (int i = 1; i < extraShootingPoints.size(); i++) {
+		const int startVertex = (((i-1) % batchSize)*4) * (2+4);
+		const int startIndex = ((i-1) % batchSize)*6;
 
-		SimpleVector2D distFromCenter = SimpleVector2D(getEvaluatedCannonAngle(0, i+1), r, true);
-		const float computedAngle = shootingPoints[0].angleFromCenter + extraShootingPoints[i+1].angleFromCenter;
+		SimpleVector2D distFromCenter = SimpleVector2D(getEvaluatedCannonAngle(0, i), r, true);
+		const float computedAngle = shootingPoints[0].angleFromCenter + extraShootingPoints[i].angleFromCenter;
 		const float extraCannonLength = static_cast<float>(r) * (std::sin(computedAngle)*std::sin(computedAngle) * .25f + .25f); //.25 at main cannon, .5 at 90deg //x^2 instead of abs because 45deg cannon was too long
-		SimpleVector2D dist = SimpleVector2D(getEvaluatedCannonAngleWithEdge(0, i+1), extraCannonLength, true);
-		SimpleVector2D distCW = SimpleVector2D(getEvaluatedCannonAngleWithEdge(0, i+1) - float(PI/2), lineWidth, true);
+		SimpleVector2D dist = SimpleVector2D(getEvaluatedCannonAngleWithEdge(0, i), extraCannonLength, true);
+		SimpleVector2D distCW = SimpleVector2D(getEvaluatedCannonAngleWithEdge(0, i) - float(PI/2), lineWidth, true);
 
 		coordsAndColor[startVertex + 0*6]   = static_cast<float>(x) + distFromCenter.getXComp()                   + distCW.getXComp();
 		coordsAndColor[startVertex + 0*6+1] = static_cast<float>(y) + distFromCenter.getYComp()                   + distCW.getYComp();
@@ -1083,10 +1088,16 @@ inline void Tank::drawExtraExtraBarrels(float alpha) const {
 		indices[startIndex + 3] = startVertex/6 + 2;
 		indices[startIndex + 4] = startVertex/6 + 3;
 		indices[startIndex + 5] = startVertex/6 + 0;
+
+		if ((i-1) % batchSize == batchSize-1) {
+			Renderer::SubmitBatchedDraw(coordsAndColor, batchSize*4 * (2+4), indices, batchSize * 6);
+		}
 	}
 
-	Renderer::SubmitBatchedDraw(coordsAndColor, (extraShootingPoints.size()-1)*4*(2+4), indices, (extraShootingPoints.size()-1)*6);
-	delete[] coordsAndColor; delete[] indices;
+	const unsigned int leftover_points = (extraShootingPoints.size()-1) % batchSize;
+	if (leftover_points > 0) [[likely]] {
+		Renderer::SubmitBatchedDraw(coordsAndColor, leftover_points*4 * (2+4), indices, leftover_points * 6);
+	}
 }
 
 bool Tank::kill() {
