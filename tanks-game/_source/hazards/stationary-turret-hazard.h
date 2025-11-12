@@ -54,6 +54,8 @@ protected:
 	virtual void drawBody(float alpha = 1.0f) const;
 	virtual void drawOutline(float alpha = 1.0f) const;
 	virtual void drawBarrel(float alpha = 1.0f) const;
+	virtual void drawOutline(float alpha, float lineWidth) const;
+	virtual void drawBarrel(float alpha, float lineWidth) const;
 
 protected:
 	static SimpleVector2D body_vertices[Circle::NumOfSides+1];

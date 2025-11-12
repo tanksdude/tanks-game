@@ -307,10 +307,12 @@ void StationaryTurretHazard::drawBody(float alpha) const {
 }
 
 void StationaryTurretHazard::drawOutline(float alpha) const {
+	drawOutline(alpha, 0.5f);
+}
+void StationaryTurretHazard::drawOutline(float alpha, float lineWidth) const {
 	alpha = alpha * alpha;
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	const float lineWidth = 0.5f;
 
 	float coordsAndColor[(Circle::NumOfSides*2)*(2+4)];
 	for (int i = 0; i < Circle::NumOfSides; i++) {
@@ -333,10 +335,12 @@ void StationaryTurretHazard::drawOutline(float alpha) const {
 }
 
 void StationaryTurretHazard::drawBarrel(float alpha) const {
+	drawBarrel(alpha, 0.75f);
+}
+void StationaryTurretHazard::drawBarrel(float alpha, float lineWidth) const {
 	alpha = alpha * alpha;
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	const float lineWidth = 0.75f;
 
 	float coordsAndColor[4*(2+4)];
 	unsigned int indices[6];

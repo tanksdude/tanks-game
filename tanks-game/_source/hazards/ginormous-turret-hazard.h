@@ -68,7 +68,7 @@ protected:
 	virtual void tick_stopChildren();
 
 protected:
-	//same as StationaryTurretHazard but with a thicker outline
+	//thicker outline compared to StationaryTurretHazard
 	virtual void drawOutline(float alpha = 1.0f) const override;
 	virtual void drawBarrel(float alpha = 1.0f) const override;
 

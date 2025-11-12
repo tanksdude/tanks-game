@@ -240,67 +240,11 @@ void GinormousTurretHazard::tick_stopChildren() {
 }
 
 void GinormousTurretHazard::drawOutline(float alpha) const {
-	alpha = alpha * alpha;
-	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
-	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	const float lineWidth = 2.0f;
-
-	float coordsAndColor[(Circle::NumOfSides*2)*(2+4)];
-	for (int i = 0; i < Circle::NumOfSides; i++) {
-		coordsAndColor[(i*2)  *6]   = static_cast<float>(x) + (static_cast<float>(r)-lineWidth) * body_vertices[i+1].getXComp();
-		coordsAndColor[(i*2)  *6+1] = static_cast<float>(y) + (static_cast<float>(r)-lineWidth) * body_vertices[i+1].getYComp();
-		coordsAndColor[(i*2+1)*6]   = static_cast<float>(x) + (static_cast<float>(r)+lineWidth) * body_vertices[i+1].getXComp();
-		coordsAndColor[(i*2+1)*6+1] = static_cast<float>(y) + (static_cast<float>(r)+lineWidth) * body_vertices[i+1].getYComp();
-
-		coordsAndColor[(i*2)  *6+2] = color.getRf();
-		coordsAndColor[(i*2)  *6+3] = color.getGf();
-		coordsAndColor[(i*2)  *6+4] = color.getBf();
-		coordsAndColor[(i*2)  *6+5] = color.getAf();
-		coordsAndColor[(i*2+1)*6+2] = color.getRf();
-		coordsAndColor[(i*2+1)*6+3] = color.getGf();
-		coordsAndColor[(i*2+1)*6+4] = color.getBf();
-		coordsAndColor[(i*2+1)*6+5] = color.getAf();
-	}
-
-	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::NumOfSides*2)*(2+4), outline_indices, Circle::NumOfSides*6);
+	StationaryTurretHazard::drawOutline(alpha, 2.0f);
 }
 
 void GinormousTurretHazard::drawBarrel(float alpha) const {
-	alpha = alpha * alpha;
-	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
-	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	const float lineWidth = 3.0f;
-
-	float coordsAndColor[4*(2+4)];
-	unsigned int indices[6];
-
-	SimpleVector2D dist = SimpleVector2D(velocity.getAngle(), r, true);
-	SimpleVector2D distCW = SimpleVector2D(velocity.getAngle() - float(PI/2), lineWidth, true);
-
-	coordsAndColor[0*6]   = static_cast<float>(x)                   + distCW.getXComp();
-	coordsAndColor[0*6+1] = static_cast<float>(y)                   + distCW.getYComp();
-	coordsAndColor[1*6]   = static_cast<float>(x) + dist.getXComp() + distCW.getXComp();
-	coordsAndColor[1*6+1] = static_cast<float>(y) + dist.getYComp() + distCW.getYComp();
-	coordsAndColor[2*6]   = static_cast<float>(x) + dist.getXComp() - distCW.getXComp();
-	coordsAndColor[2*6+1] = static_cast<float>(y) + dist.getYComp() - distCW.getYComp();
-	coordsAndColor[3*6]   = static_cast<float>(x)                   - distCW.getXComp();
-	coordsAndColor[3*6+1] = static_cast<float>(y)                   - distCW.getYComp();
-
-	for (int i = 0; i < 4; i++) {
-		coordsAndColor[i*6+2] = color.getRf();
-		coordsAndColor[i*6+3] = color.getGf();
-		coordsAndColor[i*6+4] = color.getBf();
-		coordsAndColor[i*6+5] = color.getAf();
-	}
-
-	indices[0] = 0;
-	indices[1] = 1;
-	indices[2] = 2;
-	indices[3] = 2;
-	indices[4] = 3;
-	indices[5] = 0;
-
-	Renderer::SubmitBatchedDraw(coordsAndColor, 4*(2+4), indices, 6);
+	StationaryTurretHazard::drawBarrel(alpha, 3.0f);
 }
 
 CircleHazard* GinormousTurretHazard::randomizingFactory(double x_start, double y_start, double area_width, double area_height, const GenericFactoryConstructionData& args) {
