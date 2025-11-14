@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(tanks-game VERSION 0.2.6)
+project(tanks-game VERSION 0.3.0)
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 	#nothing
@@ -7,8 +7,7 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 	# maybe MATCHES would be better than STREQUAL as there are several Clang derivatives: https://cmake.org/cmake/help/latest/variable/CMAKE_LANG_COMPILER_ID.html
 	add_compile_options(-Wno-switch)
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-	message(SEND_ERROR "You are compiling with MSVC. CMake & MSVC compilation is unsupported, use the .sln project instead.\n"
-	                   "You might be able to build successfully, however MSVC uses '/' for flags instead of '-', not to mention the flags being completely different, thus there may be complications.")
+	message(SEND_ERROR "You are compiling with MSVC. CMake & MSVC compilation is unsupported, use the .sln project instead.\n")
 else()
 	message(WARNING "Unknown compiler, assuming it's fine...")
 endif()
@@ -21,6 +20,14 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED False)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+if(NOT CMAKE_BUILD_TYPE)
+	#options: Debug, Release, RelWithDebInfo, MinSizeRel
+	set(CMAKE_BUILD_TYPE "Release")
+	add_compile_definitions(RELEASE_DISTRIBUTION) #turns off a few things to feel more like an end-user product
+endif()
+
+#add_compile_definitions(TRACY_ENABLE)
+
 include_directories(enkiTS   PRIVATE Dependencies/enkiTS)
 include_directories(glm      PRIVATE Dependencies/glm)
 include_directories(rpmalloc PRIVATE Dependencies/rpmalloc)
@@ -32,12 +39,8 @@ find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(glfw3 REQUIRED)
 
-#set(CMAKE_BUILD_TYPE "Release") #options: Debug, Release, RelWithDebInfo, MinSizeRel
 set(CMAKE_C_FLAGS     "${CMAKE_C_FLAGS} -Wno-narrowing -Wno-int-to-pointer-cast")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-narrowing -Wno-int-to-pointer-cast -Wno-delete-incomplete")
-#add_compile_options(-lpthread) #does not seem to be necessary
-
-#add_compile_definitions(TRACY_ENABLE)
 
 if(NOT CMAKE_CXX_FLAGS MATCHES "-march")
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=x86-64-v2") #SSE4.2

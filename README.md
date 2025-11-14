@@ -28,7 +28,7 @@ The C++ upgrade of my [JavaScript game](https://uncreativeusername.neocities.org
 ### Building (Windows)
 
 1. Install Visual Studio 2022
-1. Build x64 Release (on the solution, not project)
+1. Build ReleaseDistribution (on the solution, not project)
 1. **[Pre-compiled executables](https://github.com/tanksdude/tanks-game/releases)** are provided if this isn't an option for you
 
 ### Building (Linux)
@@ -38,9 +38,10 @@ The C++ upgrade of my [JavaScript game](https://uncreativeusername.neocities.org
     * Fedora: `sudo dnf install gcc-g++ make cmake glfw-devel glew-devel`
     * Arch/Manjaro: `sudo pacman -S gcc make cmake glfw glew`
     * compiling GLFW & GLEW from source is currently unsupported, sorry
-        * Alpine (an extremely lightweight distro probably intended for embedded work), Gentoo (a distro known for compiling everything yourself), ChromeOS (known for being ChromeOS (and did you know it's [based on Gentoo](https://en.wikipedia.org/wiki/ChromeOS#Architecture_2)?)), and even the non-Linux [Haiku](https://www.haiku-os.org/) (which I only heard about by reading other projects' CMake files) have prebuilt packages for GLFW and GLEW, so you really should be okay on your distro of choice
+        * Alpine (an extremely lightweight distro probably intended for embedded work), Gentoo (a distro known for compiling everything yourself), ChromeOS (known for being ChromeOS (and did you know it's [based on Gentoo](https://en.wikipedia.org/wiki/ChromeOS#Architecture_2)?)), and even the non-Linux [Haiku](https://www.haiku-os.org/) and FreeBSD have prebuilt packages for GLFW and GLEW, so you really should be okay on your distro of choice
 1. `mkdir build && cd build`
-1. `cmake .. -DCMAKE_BUILD_TYPE=Release` (optional and recommended: `-DCMAKE_CXX_FLAGS=-march=native -DCMAKE_C_FLAGS=-march=native`)
+1. `cmake ..` (optional and recommended: `-DCMAKE_CXX_FLAGS=-march=native -DCMAKE_C_FLAGS=-march=native`)
+    * If you are interested in testing things out yourself, specify `-DCMAKE_BUILD_TYPE=[Release|Debug]`, because by default a few things are modified to act like an end-user product (by "a few" I mean just the dev mouse controls are always enabled if you specify the build type)
 1. `make -j$(nproc)`
 1. TODO: also needs `res/` and `tanks.ini` copied to the build dir
 1. Note: On Ubuntu, going fullscreen seems to force the window to the largest monitor, unless "Auto-hide the Dock" is enabled. It appears that Ubuntu forces windows that are too large for the current screen (which means full height is too much due to the dock) to the largest screen.

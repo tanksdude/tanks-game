@@ -45,9 +45,11 @@ void DeveloperManager::mouseButtonCallbackFunc(GLFWwindow*, int button, int acti
 
 void DeveloperManager::mouseScrollCallbackFunc(GLFWwindow*, double xOffset, double yOffset) {
 	const GameSettings& game_settings = GameManager::get_settings();
+	#ifdef RELEASE_DISTRIBUTION
 	if (!game_settings.DevMouseControls) {
 		return;
 	}
+	#endif
 
 	(void)xOffset;
 	if (yOffset == 0) {
@@ -82,9 +84,11 @@ void DeveloperManager::mouseCursorPosCallbackFunc(GLFWwindow*, double xPos, doub
 	WindowInitializer::windowCoordsToGameCoords(xPos, yPos, mousePosX, mousePosY);
 
 	const GameSettings& game_settings = GameManager::get_settings();
+	#ifdef RELEASE_DISTRIBUTION
 	if (!game_settings.DevMouseControls) {
 		return;
 	}
+	#endif
 
 	if (leftMouse) {
 		if (!rightMouse) {
@@ -101,9 +105,11 @@ std::vector<std::string> DeveloperManager::insertListIdentifiers = { "longinvinc
 int DeveloperManager::insertListIdentifiers_normalSize = insertListIdentifiers.size();
 void DeveloperManager::devInsert(int x, int y) {
 	const GameSettings& game_settings = GameManager::get_settings();
+	#ifdef RELEASE_DISTRIBUTION
 	if (!game_settings.DevMouseControls) {
 		return;
 	}
+	#endif
 
 	GenericFactoryConstructionData constructionData;
 	double* posArr;
