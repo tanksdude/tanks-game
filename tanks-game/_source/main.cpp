@@ -495,15 +495,18 @@ int main(int argc, char** argv) {
 
 			const double timeDelayUS = (startTime - currTime) * 1000000;
 			//sleeping on a modern OS is unreliable for <10ms, so use platform-specific methods: Windows timers and POSIX nanosleep
+			//sleep duration from https://github.com/dolphin-emu/dolphin/pull/13426
 			#ifdef _WIN32
-			const long long sleepTimeUS = static_cast<long long>(timeDelayUS) - 1000; //1ms of buffer time should be enough
+			const long long sleepTimeUS = static_cast<long long>(timeDelayUS) - 1020; //1ms+20us
 			if (sleepTimeUS > 0) {
 				usleep_windows(sleepTimeUS);
 			}
 			#else
-			const long sleepTimeUS = static_cast<long>(timeDelayUS) - 2000; //wake up 2ms early
+			const long sleepTimeUS = static_cast<long>(timeDelayUS) - 1020; //1ms+20us
 			if (sleepTimeUS > 0) {
-				SleepInUs_posix(sleepTimeUS);
+				//for some reason, using std thread sleep is fine now...
+				//if it's not fine for you, use SleepInUs_posix(sleepTimeUS) instead
+				std::this_thread::sleep_for(std::chrono::microseconds(sleepTimeUS));
 			}
 			#endif
 			//spin for the rest
