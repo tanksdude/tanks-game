@@ -47,8 +47,6 @@ BounceTankPower::BounceTankPower() {
 #include "../collision-handler.h"
 #include "../power-function-helper.h"
 
-//#include "../statistics-handler.h"
-
 InteractionBoolHolder BounceBulletPower::modifiedEdgeCollision(Bullet* b) {
 	//the bullet can bounce off of edges twice in a single tick
 	//therefore, it can lose 2 bounces at once
@@ -67,7 +65,6 @@ InteractionBoolHolder BounceBulletPower::modifiedEdgeCollision(Bullet* b) {
 		if (result.first) {
 			bouncesLeft--;
 			bouncedY = true;
-			//StatisticsHandler::addData("bounce_edge", 1);
 		}
 		//TODO: update modifiedEdgeCollision to also use update structs
 		b->update(&result.second);
@@ -83,7 +80,6 @@ InteractionBoolHolder BounceBulletPower::modifiedEdgeCollision(Bullet* b) {
 		if (result.first) {
 			bouncesLeft--;
 			//bouncedX = true;
-			//StatisticsHandler::addData("bounce_edge", 1);
 		}
 		//TODO: update modifiedEdgeCollision to also use update structs
 		b->update(&result.second);
@@ -99,7 +95,6 @@ InteractionBoolHolder BounceBulletPower::modifiedEdgeCollision(Bullet* b) {
 		if (result.first) {
 			bouncesLeft--;
 			//bouncedY = true;
-			//StatisticsHandler::addData("bounce_edge", 1);
 		}
 		//TODO: update modifiedEdgeCollision to also use update structs
 		b->update(&result.second);
@@ -123,7 +118,6 @@ InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> BounceBulletPower:
 		w_update = result.second.secondUpdate;
 		if (result.first) {
 			bouncesLeft--;
-			//StatisticsHandler::addData("bounce_wall", 1);
 		}
 	} else {
 		auto result = PowerFunctionHelper::bounceGeneric(b, w);
@@ -131,7 +125,6 @@ InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> BounceBulletPower:
 		w_update = result.second.secondUpdate;
 		if (result.first) {
 			bouncesLeft--;
-			//StatisticsHandler::addData("bounce_wall", 1);
 		}
 	}
 

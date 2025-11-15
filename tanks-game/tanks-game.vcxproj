@@ -345,7 +345,6 @@
     <ClCompile Include="_source\reset-things.cpp" />
     <ClCompile Include="_source\rng.cpp" />
     <ClCompile Include="_source\simple-vector-2d.cpp" />
-    <ClCompile Include="_source\statistics-handler.cpp" />
     <ClCompile Include="_source\tank-manager.cpp" />
     <ClCompile Include="_source\tank.cpp" />
     <ClCompile Include="_source\wall-manager.cpp" />
@@ -535,7 +534,6 @@
     <ClInclude Include="_source\reset-things.h" />
     <ClInclude Include="_source\rng.h" />
     <ClInclude Include="_source\simple-vector-2d.h" />
-    <ClInclude Include="_source\statistics-handler.h" />
     <ClInclude Include="_source\tank-manager.h" />
     <ClInclude Include="_source\tank-power.h" />
     <ClInclude Include="_source\tank.h" />

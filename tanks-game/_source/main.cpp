@@ -26,7 +26,6 @@
 #include "game-settings.h"
 #include "physics-handler.h"
 #include "mod-processor.h"
-#include "statistics-handler.h"
 
 //managers:
 #include "game-scene-manager.h"
@@ -285,7 +284,7 @@ int main(int argc, char** argv) {
 	glfwSetMouseButtonCallback(WindowInitializer::glfw_window, DeveloperManager::mouseButtonCallbackFunc);
 	glfwSetCursorPosCallback(WindowInitializer::glfw_window, DeveloperManager::mouseCursorPosCallbackFunc);
 	glfwSetScrollCallback(WindowInitializer::glfw_window, DeveloperManager::mouseScrollCallbackFunc);
-	glfwSetWindowCloseCallback(WindowInitializer::glfw_window, StatisticsHandler::DumpData);
+	//glfwSetWindowCloseCallback(WindowInitializer::glfw_window, );
 
 	//prepare for incoming data:
 	PowerupDataGovernor::initialize();

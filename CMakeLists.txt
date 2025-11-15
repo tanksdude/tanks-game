@@ -225,7 +225,6 @@ add_executable(${PROJECT_NAME}
 	tanks-game/_source/reset-things.cpp
 	tanks-game/_source/rng.cpp
 	tanks-game/_source/simple-vector-2d.cpp
-	tanks-game/_source/statistics-handler.cpp
 	tanks-game/_source/tank-manager.cpp
 	tanks-game/_source/tank.cpp
 	tanks-game/_source/wall-manager.cpp
