@@ -181,14 +181,6 @@ void WindowInitializer::WindowInitialize(int* argc, char** argv, std::string win
 	//thanks to https://community.khronos.org/t/wglmakecurrent-issues/62656/3 for solving why a draw call would take ~15ms for no reason (it's just the V-sync time)
 	//glfwSwapInterval(0);
 
-	glDisable(GL_DEPTH_TEST); //technically not required, but not all drivers implement the OpenGL spec correctly
-	//transparency:
-	const GameSettings& game_settings = GameManager::get_settings();
-	if (game_settings.Bullet_DrawAlpha) {
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	}
-
 	//initialize glew
 	glewExperimental = GL_TRUE;
 	GLenum res = glewInit();
@@ -200,6 +192,14 @@ void WindowInitializer::WindowInitialize(int* argc, char** argv, std::string win
 		}
 		throw std::runtime_error("glew failed");
 		//note: glew failing isn't fatal, however the application will not render anything and mess with GLFW, really confusing the poor OS
+	}
+
+	glDisable(GL_DEPTH_TEST); //technically not required, but not all drivers implement the OpenGL spec correctly
+	//transparency:
+	const GameSettings& game_settings = GameManager::get_settings();
+	if (game_settings.Bullet_DrawAlpha) {
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 }
 

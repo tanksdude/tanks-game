@@ -65,26 +65,6 @@ void GameMainLoop::Tick() {
 		return;
 	}
 
-	/* old order:
-	 * levelTick();
-	 * moveTanks();
-	 * tankToPowerup();
-	 * tickHazards();
-	 * moveBullets();
-	 * tankShoot();
-	 * tankPowerTickAndCalculate();
-	 * bulletPowerTick();
-	 * tankToWall();
-	 * tankToHazard();
-	 * tankToTank();
-	 * tankToEdge();
-	 * bulletToEdge();
-	 * bulletToWall();
-	 * bulletToHazard();
-	 * bulletToBullet();
-	 * bulletToTank();
-	 */
-
 	auto start = FrameTimeGraph::getTime();
 	doThing();
 
@@ -720,6 +700,7 @@ void GameMainLoop::everythingToEverything_bullet_bullet(int i, int j, std::vecto
 	bool b_secondShouldDie = false;
 
 	if (!b_first->canCollideWith(b_second)) {
+		//TODO: doing this check in the narrow phase actually kinda improves performance, but memory bandwidth is still the limiting factor; keep the check here for simplicity
 		return;
 	}
 	if (CollisionHandler::partiallyCollided(b_first, b_second)) {

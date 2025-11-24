@@ -56,6 +56,8 @@ InteractionBoolHolder BounceBulletPower::modifiedEdgeCollision(Bullet* b) {
 	//TODO: this system will only bounce off one edge if it's on the corner and has one bounce left; should be changed to actually bounce off the corner, may as well count it as one bounce
 	//TODO: should store "max bounces" to implement that
 
+	//TODO: only bounce when moving?
+
 	bool bouncedY = false;
 	//bool bouncedX = false;
 	BulletUpdateStruct b_update;
@@ -109,6 +111,8 @@ InteractionBoolHolder BounceBulletPower::modifiedEdgeCollision(Bullet* b) {
 }
 
 InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> BounceBulletPower::modifiedCollisionWithWall(const Bullet* b, const Wall* w) {
+	//TODO: only bounce when moving?
+
 	std::shared_ptr<BulletUpdateStruct> b_update;
 	std::shared_ptr<WallUpdateStruct> w_update;
 

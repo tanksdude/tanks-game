@@ -1,8 +1,9 @@
 #pragma once
 #include "rendering-context.h"
 
-//uses OpenGL software rendering
+//uses OpenGL software rendering (TODO)
 class SoftwareRenderingContext : public RenderingContext {
+public:
 	void Initialize() override {}
 	void Clear() const override {}
 	void Flush() const override {}

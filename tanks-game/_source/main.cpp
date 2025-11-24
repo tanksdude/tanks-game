@@ -171,7 +171,7 @@
 
 #include "game-main-loop.h"
 
-const std::string GameWindowName = "PowerTanks Battle v0.3.0 EARLY WIP DEV"; //this is not guaranteed to be correct every commit but likely will be
+const std::string GameWindowName = "PowerTanks Battle v0.3.0 EARLY WIP DEV"; //not guaranteed to be correct every commit
 const std::string INIFilePath = "tanks.ini";
 
 #include <tracy/Tracy.hpp>
@@ -290,6 +290,7 @@ int main(int argc, char** argv) {
 	PowerupDataGovernor::initialize();
 	HazardDataGovernor::initialize();
 	LevelDataGovernor::initialize();
+	//idea: "chaos mode": randomly generates a bunch of custom powers with different abilities (probably a setting in GAME_OPTIONS)
 
 	//powers
 	//vanilla (some are also "old"):
@@ -475,6 +476,8 @@ int main(int argc, char** argv) {
 	double startTime = glfwGetTime();
 	while (!glfwWindowShouldClose(WindowInitializer::glfw_window)) {
 		//do the frame:
+
+		//TODO: should the last frame flush here instead? would give better frame pacing
 
 		glfwPollEvents();
 		GameSceneManager::TickScenes();

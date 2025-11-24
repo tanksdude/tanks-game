@@ -134,6 +134,9 @@ void GameManager::CreateDefaultINIFileIfNeeded(std::string path) {
 		return;
 	}
 
+	//note: this uses LF as the line ending while CRLF is the default (to make sure the parsers handle that case)
+	//can't be bothered to change it
+
 	static const std::string ini_string =
 
 	"[UNIVERSAL]\n"

@@ -129,8 +129,8 @@ bool StationaryTurretHazard::canSeeTank(const Tank* t) const {
 	//line of sight
 	float angleDiff = SimpleVector2D::angleBetween(distToTank, this->velocity);
 	float projMag = distToTank.getMagnitude() * std::cos(angleDiff);
-	float distSquaredToLineOfSight = distToTank.getMagnitude()*distToTank.getMagnitude() - projMag*projMag;
-	if (distSquaredToLineOfSight > t->r * t->r) {
+	float distToLineOfSightSquared = distToTank.getMagnitude()*distToTank.getMagnitude() - projMag*projMag;
+	if (distToLineOfSightSquared > t->r * t->r) {
 		return false;
 	}
 

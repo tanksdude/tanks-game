@@ -714,7 +714,7 @@ void Tank::ghostDraw(DrawingLayers layer, float alpha) const {
 	}
 }
 
-inline void Tank::drawBody(float alpha) const {
+void Tank::drawBody(float alpha) const {
 	alpha = alpha * alpha;
 
 	const int visiblePowerCount = std::count_if(tankPowers.begin(), tankPowers.end(),
@@ -810,7 +810,7 @@ inline void Tank::drawBody(float alpha) const {
 	}
 }
 
-inline void Tank::drawBodyDead(float alpha) const {
+void Tank::drawBodyDead(float alpha) const {
 	alpha = alpha * alpha;
 	ColorValueHolder deadColor = ColorValueHolder(0.0f, 0.0f, 0.0f);
 	ColorValueHolder outerColor = ColorValueHolder(1.0f, 1.0f, 1.0f);
@@ -836,7 +836,7 @@ inline void Tank::drawBodyDead(float alpha) const {
 	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::NumOfSides+1)*(2+4), body_indices, Circle::NumOfSides*3);
 }
 
-inline void Tank::drawOutline(float alpha) const {
+void Tank::drawOutline(float alpha) const {
 	alpha = alpha * alpha;
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
@@ -862,7 +862,7 @@ inline void Tank::drawOutline(float alpha) const {
 	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::NumOfSides*2)*(2+4), outline_indices, Circle::NumOfSides*6);
 }
 
-inline void Tank::drawShootingCooldown(float alpha) const {
+void Tank::drawShootingCooldown(float alpha) const {
 	alpha = alpha * alpha;
 
 	float shootingOutlinePercent;
@@ -900,7 +900,7 @@ inline void Tank::drawShootingCooldown(float alpha) const {
 	}
 }
 
-inline void Tank::drawPowerCooldown(float alpha) const {
+void Tank::drawPowerCooldown(float alpha) const {
 	alpha = alpha * alpha;
 
 	//first, sort by timeLeft/maxTime
@@ -949,7 +949,7 @@ inline void Tank::drawPowerCooldown(float alpha) const {
 	}
 }
 
-inline void Tank::drawMainBarrel(float alpha) const {
+void Tank::drawMainBarrel(float alpha) const {
 	alpha = alpha * alpha;
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
@@ -987,7 +987,7 @@ inline void Tank::drawMainBarrel(float alpha) const {
 	Renderer::SubmitBatchedDraw(coordsAndColor, 4*(2+4), indices, 6);
 }
 
-inline void Tank::drawExtraBarrels(float alpha) const {
+void Tank::drawExtraBarrels(float alpha) const {
 	if (shootingPoints.size() <= 1) [[unlikely]] {
 		return;
 	}
@@ -1042,7 +1042,7 @@ inline void Tank::drawExtraBarrels(float alpha) const {
 	}
 }
 
-inline void Tank::drawExtraExtraBarrels(float alpha) const {
+void Tank::drawExtraExtraBarrels(float alpha) const {
 	if (extraShootingPoints.size() <= 1) {
 		return;
 	}

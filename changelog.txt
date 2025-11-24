@@ -26,7 +26,7 @@
         * performance improvement is decent, not amazing
     * instanced rendering for bullets: much more efficient, should have been doing this the whole time
     * countless small things adding up, like better cache alignment
-* render game in center of window (instead of bottom/left)
+* render game in center of window (instead of bottom left)
 * added a window icon
 * optional transparency drawing for bullets
 * minor things:

@@ -12,7 +12,7 @@ The C++ upgrade of my [JavaScript game](https://uncreativeusername.neocities.org
 
 * OpenGL 3.3 or later
     * Earlier versions not supported; 3.3+ is required for instanced rendering of the bullets, allowing far better performance
-    * Your GPU almost certainly supports this (yes, even if it's an ancient Thinkpad)
+    * Your GPU almost certainly supports this
         * Apparently there are some Windows ARM laptops that only support DirectX, so those aren't supported
 * 3GHz+ CPU recommended
     * Faster CPU -> more bullets on screen
@@ -22,12 +22,14 @@ The C++ upgrade of my [JavaScript game](https://uncreativeusername.neocities.org
 * OS: Windows x64 or Linux x64
     * Mac OS dropped support for OpenGL when they switched to ARM, also I don't have a Mac to test on; if you want to try your luck, look into [ANGLE](https://en.wikipedia.org/wiki/ANGLE_(software))
     * ARM should be possible to support but I don't have an ARM device to test on, and RISC-V has extremely few consumer devices
+    * If using the pre-built Windows binaries, a CPU with SSE4.2 is required (which is satisfied by nearly 100% of CPUs in active use today)
 
 [Download here](https://github.com/tanksdude/tanks-game/releases) (Windows-only build; Linux has to compile from source, see below)
 
 ### Building (Windows)
 
 1. Install Visual Studio 2022
+    * Note: Compiling profiling builds requires Windows SDK >10.0.19041.0, [probably >=10.0.20348.0](https://github.com/MicrosoftDocs/sdk-api/commit/55f67ad9d9f2f863b8efd41863920707658218fb), due to not having `RelationProcessorDie` in `LOGICAL_PROCESSOR_RELATIONSHIP` from `<winnt.h>`; might be avoidable by dropping to Tracy <0.12
 1. Build ReleaseDistribution (on the solution, not project)
 1. **[Pre-compiled executables](https://github.com/tanksdude/tanks-game/releases)** are provided if this isn't an option for you
 
@@ -43,25 +45,31 @@ The C++ upgrade of my [JavaScript game](https://uncreativeusername.neocities.org
 1. `cmake ..` (optional and recommended: `-DCMAKE_CXX_FLAGS=-march=native -DCMAKE_C_FLAGS=-march=native`)
     * If you are interested in testing things out yourself, specify `-DCMAKE_BUILD_TYPE=[Release|Debug]`, because by default a few things are modified to act like an end-user product (by "a few" I mean just the dev mouse controls are always enabled if you specify the build type)
 1. `make -j$(nproc)`
-1. TODO: also needs `res/` and `tanks.ini` copied to the build dir
+1. TODO: also needs `res/` (and `mods/`) copied to the build dir
 1. Note: On Ubuntu, going fullscreen seems to force the window to the largest monitor, unless "Auto-hide the Dock" is enabled. It appears that Ubuntu forces windows that are too large for the current screen (which means full height is too much due to the dock) to the largest screen.
+
+### Performance profiling using [Tracy](https://github.com/wolfpld/tracy)
+
+Windows: build on ReleaseProfiling
+
+Linux: uncomment `add_compile_definitions(TRACY_ENABLE)`
 
 ### Linux display issues
 
-After *extensive* testing, I have found that not all distributions and desktop environments play nicely. Nearly all can compile and run the game, however they will not necessarily display anything. Usually they initialize "something" but don't render anything (basically an application gets recognized, but the window isn't created) (note: actually that only happens when GLEW fails to initialize but the program is allowed to keep going, which requires you to remove the thrown exception), and only sometimes do they actually work. Some of them only work under X11, maybe due to incorrect environment parameters getting passed on to GLFW (I really don't know, I'm not a Linux display system expert). Here's what I've found:
+After *extensive* testing, I have found that not all distributions and desktop environments play nicely. Nearly all can compile and run the game, however they will not necessarily display anything. Some of them only work under X11, maybe due to incorrect environment parameters getting passed on to GLFW (I really don't know, I'm not a Linux display system expert). Here's what I've found:
 
 Works without issue:
 
 * Ubuntu 22.04/24.04 GNOME
 * Linux Mint 21/22 Cinnamon & Xfce
 * Fedora Xfce
-* Arch Xfce
+* Arch Xfce & MATE
 * Manjaro Plasma & GNOME & Xfce & Cinnamon
 
 Works with workarounds:
 
 * Ubuntu 25.04: switch to X11 (*first* select your user, *then* click the gear in the bottom right)
-    * Why does 24.04 work just fine but 25.04 doesn't? Did the GLFW library version bump (3.3.10 to 3.4) really change that much?
+    * 24.04 works just fine but 25.04 doesn't because the GLFW library version bump (3.3.10 to 3.4) made Wayland preferred, and it seems GLFW isn't ready for Wayland yet
 * Fedora Plasma: switch to X11 (select the text in the bottom left), requires `sudo dnf install plasma-workspace-x11`
 
 Doesn't work but might (I tested all of these in a virtual machine, so bare metal might fare differently):
@@ -89,11 +97,11 @@ Making your own levels is now a thing! (Although the levels are very simple, and
 1. Add some text files and make your custom levels!
 1. Several fields need to be given. I suggest looking at one of the pre-made custom levels and copying it and modifying it.
 1. Every level needs a `Name` (string), `Color` (3 floats in range [0,1] for RGB), `LevelTypes` (at least one string; recommended "modname" and "random-modname"), and `LevelWeights` (1 float for each type; recommended 1.0 is the base weight).
-1. Optionally, levels can contain a `RandomStartPositionCount` (int, default = 5, for number of starting positions), `RandomStartPositionXValue` (float, default = 20, x-distance from edge), and `RandomStartPositionYRange` (float, default = 256=320-2*32, y-range for starting positions).
+1. Optionally, levels can contain a `RandomStartPositionCount` (int, default = 5, for number of starting positions), `RandomStartPositionXValue` (float, default = 20, x-distance from edge), and `RandomStartPositionYRange` (float, default = 256=320-2\*32, y-range for starting positions).
 1. Once the assignments have been set, `[LEVEL_START]` needs to appear, then you can start adding walls and powers and stuff.
 1. Look at `docs/custom-levels.md` for more information.
 
-The custom level interpreter is very simple and barebones, so if you want to put something at the center, you have to put the coordinates as `320 160` instead of `GAME_WIDTH/2 GAME_HEIGHT/2`. Also you can't do any math to your numbers; they need to be the raw numbers (no "sqrt(3)" or "20*8", just "5" or whatever). I know this sucks but adding an expression parser is annoying [(although there is a popular library for this task)](https://github.com/ArashPartow/exprtk) and adding Lua (or maybe Python?) would've been a much larger hurdle [(although this Wikipedia list is much larger than the last time I looked at it so maybe it's easier than I thought?)](https://en.wikipedia.org/wiki/List_of_applications_using_Lua).
+The custom level interpreter is very simple and barebones, so if you want to put something at the center, you have to put the coordinates as `320 160` instead of `GAME_WIDTH/2 GAME_HEIGHT/2`. Also you can't do any math to your numbers; they need to be the raw numbers (no "sqrt(3)" or "20\*8", just "5" or whatever). I know this sucks but adding an expression parser is annoying [(although there is a popular library for this task)](https://github.com/ArashPartow/exprtk) and adding Lua (or maybe Python?) would've been a much larger hurdle [(although this Wikipedia list is much larger than the last time I looked at it so maybe it's easier than I thought?)](https://en.wikipedia.org/wiki/List_of_applications_using_Lua).
 
 ## Making custom powers
 
@@ -121,7 +129,8 @@ I didn't find a good way to easily build documentation, so... the documentation 
 ## Built With
 
 * [Visual Studio (2022)](https://visualstudio.microsoft.com/) - C++ IDE from Microsoft
-* [GFLW](https://www.glfw.org/) - OpenGL Framework (or Graphics Library Framework); cross-platform way to make windows and get inputs
+* [Visual Studio Code](https://code.visualstudio.com/) - Code editor when not on Windows
+* [GLFW](https://www.glfw.org/) - OpenGL Framework (or Graphics Library Framework); cross-platform way to make windows and get inputs
 * [GLEW](https://glew.sourceforge.net/) - OpenGL Extension Wrangler Library; for getting the latest OpenGL commands (where "latest" is >1.1)
 * [OpenGL Mathematics (GLM)](https://github.com/g-truc/glm) - OpenGL-happy matrix and vector math library
 * [enkiTS](https://github.com/dougbinks/enkiTS) - Thread scheduler for easily managing multithreading

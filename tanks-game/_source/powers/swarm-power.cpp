@@ -69,8 +69,8 @@ InteractionBoolHolder SwarmBulletPower::modifiedMovement(Bullet* b) {
 	const Tank* parentTank = TankManager::getTankByID(b->getParentID());
 	const float interiorRadius = parentTank->r * 2;
 	//const SimpleVector2D distToTank = SimpleVector2D(parentTank->x - b->x, parentTank->y - b->y);
-	const float distSquaredToTank = (parentTank->x - b->x)*(parentTank->x - b->x) + (parentTank->y - b->y)*(parentTank->y - b->y);
-	if (distSquaredToTank <= interiorRadius*interiorRadius) {
+	const float distToTankSquared = (parentTank->x - b->x)*(parentTank->x - b->x) + (parentTank->y - b->y)*(parentTank->y - b->y);
+	if (distToTankSquared <= interiorRadius*interiorRadius) {
 		//don't do anything
 		return { false };
 	}
@@ -81,7 +81,7 @@ InteractionBoolHolder SwarmBulletPower::modifiedMovement(Bullet* b) {
 	//from: https://en.wikipedia.org/wiki/Tangent_lines_to_circles#With_analytic_geometry
 
 	const float r = interiorRadius;
-	const float d0Squared = distSquaredToTank;
+	const float d0Squared = distToTankSquared;
 	const float x0 = b->x - parentTank->x;
 	const float y0 = b->y - parentTank->y;
 

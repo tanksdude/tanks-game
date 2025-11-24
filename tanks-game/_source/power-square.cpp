@@ -184,7 +184,7 @@ void PowerSquare::ghostDraw(DrawingLayers layer, float alpha) const {
 	}
 }
 
-inline void PowerSquare::drawMain(float alpha) const {
+void PowerSquare::drawMain(float alpha) const {
 	alpha = alpha * alpha;
 	ColorValueHolder color = getColor();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
@@ -223,7 +223,7 @@ inline void PowerSquare::drawMain(float alpha) const {
 	Renderer::SubmitBatchedDraw(coordsAndColor_main, (4+4) * (2+4), indices_main, (4*2) * 3);
 }
 
-inline void PowerSquare::drawOutlineThing(float alpha) const {
+void PowerSquare::drawOutlineThing(float alpha) const {
 	if (numOfPowers == 1) {
 		return;
 	}

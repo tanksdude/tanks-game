@@ -31,6 +31,8 @@ void ManyHazardsLevel::initialize() {
 	LevelHelper::pushClassicWalls(color);
 	const PositionHolder* wallArray = LevelHelper::getClassicWallPositions();
 
+	//TODO: this level could use a homing powerup, possibly where the "useless traps" are
+
 	posArr = new double[4]{ GAME_WIDTH/2 - 10, 128, 10*2, GAME_HEIGHT - 128*2 };
 	constructionData = GenericFactoryConstructionData(4, posArr);
 	HazardManager::pushRectHazard("vanilla", "no_bullet_zone", constructionData);

@@ -99,14 +99,14 @@ public:
 	void ghostDraw(DrawingLayers, float alpha) const override;
 
 protected:
-	inline void drawBody(float alpha = 1.0f) const;
-	inline void drawBodyDead(float alpha = 1.0f) const; //probably doesn't need alpha
-	inline void drawOutline(float alpha = 1.0f) const;
-	inline void drawShootingCooldown(float alpha = 1.0f) const;
-	inline void drawPowerCooldown(float alpha = 1.0f) const;
-	inline void drawMainBarrel(float alpha = 1.0f) const;
-	inline void drawExtraBarrels(float alpha = 1.0f) const;
-	inline void drawExtraExtraBarrels(float alpha = 1.0f) const;
+	void drawBody(float alpha = 1.0f) const;
+	void drawBodyDead(float alpha = 1.0f) const; //probably doesn't need alpha
+	void drawOutline(float alpha = 1.0f) const;
+	void drawShootingCooldown(float alpha = 1.0f) const;
+	void drawPowerCooldown(float alpha = 1.0f) const;
+	void drawMainBarrel(float alpha = 1.0f) const;
+	void drawExtraBarrels(float alpha = 1.0f) const;
+	void drawExtraExtraBarrels(float alpha = 1.0f) const;
 
 private:
 	static SimpleVector2D body_vertices[Circle::NumOfSides+1];

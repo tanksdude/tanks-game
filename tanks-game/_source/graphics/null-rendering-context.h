@@ -3,6 +3,7 @@
 
 //draws nothing
 class NullRenderingContext : public RenderingContext {
+public:
 	void Initialize() override {}
 	void Clear() const override {}
 	void Flush() const override {}

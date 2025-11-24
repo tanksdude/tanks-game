@@ -101,7 +101,7 @@ void DeveloperManager::mouseCursorPosCallbackFunc(GLFWwindow*, double xPos, doub
 	}
 }
 
-std::vector<std::string> DeveloperManager::insertListIdentifiers = { "longinvincible", "temp", "banana", "homing", "barrier", "bounce", "mines", "multishot", "grenade", "blast", "godmode", "big", "inversion", "annoying", "stationary_turret", "vert_wall", "horz_wall" };
+std::vector<std::string> DeveloperManager::insertListIdentifiers = { "longinvincible", "temp", "banana", "homing", "barrier", "bounce", "mines", "multishot", "grenade", "blast", "godmode", "big", "inversion", "annoying", "swarm", "stationary_turret", "vert_wall", "horz_wall" };
 int DeveloperManager::insertListIdentifiers_normalSize = insertListIdentifiers.size();
 void DeveloperManager::devInsert(int x, int y) {
 	const GameSettings& game_settings = GameManager::get_settings();
@@ -124,8 +124,7 @@ void DeveloperManager::devInsert(int x, int y) {
 		case 1:
 			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla", "megadeath"));
 			//PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla-extra", "shotgun"));
-			//PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "banana_split"));
-			//PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla-extra", "swarm"));
+			//PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "other_stuff_is_poison"));
 			break;
 		case 2:
 			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla", "banana"));
@@ -164,14 +163,17 @@ void DeveloperManager::devInsert(int x, int y) {
 			PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "annoying"));
 			break;
 		case 14:
+			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla-extra", "swarm"));
+			break;
+		case 15:
 			posArr = new double[3]{ double(x), double(y), 0 };
 			constructionData = GenericFactoryConstructionData(3, posArr);
 			HazardManager::pushCircleHazard("vanilla", "stationary_turret", constructionData);
 			break;
-		case 15:
+		case 16:
 			WallManager::pushWall(new Wall(x, y, 20, 60, LevelManager::getLevel(0)->getDefaultColor()));
 			break;
-		case 16:
+		case 17:
 			WallManager::pushWall(new Wall(x, y, 60, 20, LevelManager::getLevel(0)->getDefaultColor()));
 			break;
 		default:

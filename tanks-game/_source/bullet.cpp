@@ -19,8 +19,6 @@ bool Bullet::initialized_vertices = false;
 const ColorValueHolder Bullet::default_color = ColorValueHolder(0.5f, 0.5f, 0.5f);
 const double Bullet::default_radius = 4;
 
-//TODO: bitset for powers' bools? possibly more cache-friendly but initialization might take longer
-
 Bullet::Bullet(double x_, double y_, float angle, Team_ID teamID, BulletParentType parentType, Game_ID parentID) : GameThing(teamID, ObjectType::Bullet) { //every bullet constructor does this stuff
 	this->x = x_;
 	this->y = y_;
@@ -41,11 +39,12 @@ Bullet::Bullet(double x_, double y_, float angle, Team_ID teamID, BulletParentTy
 	for (int i = 0; i < bulletPowers.size(); i++) {
 		bulletPowers[i]->initialize(this);
 	}
-	updateColorIdentifier(); //TODO: regenerating this each time is not optimal, but oh well
+	updateColorIdentifier(); //TODO: regenerating this each time is not optimal, but oh well; the tank could make it once for the many bullets it makes, but that needs a new parameter to the constructor
 	//bp not deleted
 }
 
 //probably just for banana bullet creation:
+//TODO: make a special constructor for banana (and wallspark/edgespark) that does the duplication in there? reduces code duplication, that's about it
 Bullet::Bullet(double x_, double y_, double r_, float angle, float vel, Team_ID teamID, BulletParentType parentType, Game_ID parentID, const std::vector<BulletPower*>* bp, bool) : Bullet(x_,y_,angle,teamID,parentType,parentID,bp) {
 	this->r = r_;
 	this->velocity.setMagnitude(vel); // * getBulletSpeedMultiplier(); //not wanted
@@ -328,7 +327,7 @@ float Bullet::getBulletAcceleration() const {
 			}
 		}
 	}
-	return highest + lowest;
+	return highest + lowest; //idea: / getBulletSpeedMultiplier()
 }
 
 float Bullet::getBulletDegradeAmount() const {
@@ -533,6 +532,8 @@ void Bullet::ghostDraw(float alpha) const {
 	ColorValueHolder color = getColor();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 
+	//note: technically the alpha is separate from the bullet life, especially noticeable on minefield level effects...
+	//oh well, not a big deal; maybe it's a good thing because ghost bullets should probably have their outline fully visible
 	Renderer::SubmitBulletDrawCall(this->x, this->y, this->r, color.getRf(), color.getGf(), color.getBf(), this->lifeValue / 100.0f);
 }
 
