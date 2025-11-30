@@ -2,7 +2,7 @@
 
 #include <stdexcept>
 
-#include <GL/glew.h>
+#include <glad/gl.h>
 
 //"static" here means to not allow this function outside of this file
 static GLenum ShaderDataTypeToGLenum(ShaderDataType type) {

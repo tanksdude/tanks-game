@@ -2,7 +2,7 @@
 
 #include <stdexcept>
 
-#include <GL/glew.h>
+#include <glad/gl.h>
 
 OpenGLVertexBuffer::OpenGLVertexBuffer(const void* data, unsigned int size, RenderingHints hint) {
 	glGenBuffers(1, &rendererID);

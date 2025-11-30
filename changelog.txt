@@ -19,7 +19,7 @@
 
 0.3.0 (WIP)
 * cross-platform!
-* switched to GLFW from FreeGLUT
+* switched to GLFW from FreeGLUT, also Glad2 from GLEW
 * many performance optimizations:
     * rewrote collision to be single-pass across the various object types
     * multithreading option for broad phase of collision

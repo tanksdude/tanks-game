@@ -2,7 +2,7 @@
 
 #include <stdexcept>
 
-#include <GL/glew.h>
+#include <glad/gl.h>
 
 OpenGLIndexBuffer::OpenGLIndexBuffer(const unsigned int* data, unsigned int count, RenderingHints hint) {
 	this->count = count;

@@ -6,7 +6,7 @@
 #include "circle.h"
 #include "rect.h"
 
-#include <GL/glew.h>
+#include <glad/gl.h>
 #include <GLFW/glfw3.h>
 
 class DeveloperManager { //interpret as "developer testing manager" or "developer menu manager"

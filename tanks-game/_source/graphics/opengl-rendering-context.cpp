@@ -1,6 +1,6 @@
 #include "opengl-rendering-context.h"
 
-#include <GL/glew.h>
+#include <glad/gl.h>
 #include <iostream>
 
 static std::string getGLErrorString(GLenum err) {

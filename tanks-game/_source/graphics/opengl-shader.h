@@ -2,7 +2,7 @@
 #include "shader.h"
 #include <vector>
 #include <unordered_map>
-#include <GL/glew.h>
+#include <glad/gl.h>
 
 class OpenGLShader final : public Shader {
 protected:

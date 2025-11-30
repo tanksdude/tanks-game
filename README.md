@@ -35,12 +35,12 @@ The C++ upgrade of my [JavaScript game](https://uncreativeusername.neocities.org
 
 ### Building (Linux)
 
-1. Prerequisites: a compiler, Make, CMake, GLFW, GLEW
-    * Ubuntu/Mint: `sudo apt install build-essential cmake libglfw3-dev libglew-dev`
-    * Fedora: `sudo dnf install gcc-g++ make cmake glfw-devel glew-devel`
-    * Arch/Manjaro: `sudo pacman -S gcc make cmake glfw glew`
-    * compiling GLFW & GLEW from source is currently unsupported, sorry
-        * Alpine (an extremely lightweight distro probably intended for embedded work), Gentoo (a distro known for compiling everything yourself), ChromeOS (known for being ChromeOS (and did you know it's [based on Gentoo](https://en.wikipedia.org/wiki/ChromeOS#Architecture_2)?)), and even the non-Linux [Haiku](https://www.haiku-os.org/) and FreeBSD have prebuilt packages for GLFW and GLEW, so you really should be okay on your distro of choice
+1. Prerequisites: a compiler, Make, CMake, GLFW
+    * Ubuntu/Mint: `sudo apt install build-essential cmake libglfw3-dev`
+    * Fedora: `sudo dnf install gcc-g++ make cmake glfw-devel`
+    * Arch/Manjaro: `sudo pacman -S gcc make cmake glfw`
+    * compiling GLFW from source is currently unsupported, sorry
+        * Alpine (an extremely lightweight distro probably intended for embedded work), Gentoo (a distro known for compiling everything yourself), ChromeOS (known for being ChromeOS (and did you know it's [based on Gentoo](https://en.wikipedia.org/wiki/ChromeOS#Architecture_2)?)), and even the non-Linux [Haiku](https://www.haiku-os.org/) and FreeBSD have prebuilt packages for GLFW, so you really should be okay on your distro of choice
 1. `mkdir build && cd build`
 1. `cmake ..` (optional and recommended: `-DCMAKE_CXX_FLAGS=-march=native -DCMAKE_C_FLAGS=-march=native`)
     * If you are interested in testing things out yourself, specify `-DCMAKE_BUILD_TYPE=[Release|Debug]`, because by default a few things are modified to act like an end-user product (by "a few" I mean just the dev mouse controls are always enabled if you specify the build type)
@@ -131,7 +131,7 @@ I didn't find a good way to easily build documentation, so... the documentation 
 * [Visual Studio (2022)](https://visualstudio.microsoft.com/) - C++ IDE from Microsoft
 * [Visual Studio Code](https://code.visualstudio.com/) - Code editor when not on Windows
 * [GLFW](https://www.glfw.org/) - OpenGL Framework (or Graphics Library Framework); cross-platform way to make windows and get inputs
-* [GLEW](https://glew.sourceforge.net/) - OpenGL Extension Wrangler Library; for getting the latest OpenGL commands (where "latest" is >1.1)
+* [Glad2](https://gen.glad.sh/) - OpenGL Loader-Generator; for getting the latest OpenGL commands (where "latest" is >1.1)
 * [OpenGL Mathematics (GLM)](https://github.com/g-truc/glm) - OpenGL-happy matrix and vector math library
 * [enkiTS](https://github.com/dougbinks/enkiTS) - Thread scheduler for easily managing multithreading
 * [rpmalloc](https://github.com/mjansson/rpmalloc) - Memory allocator, for some extra performance

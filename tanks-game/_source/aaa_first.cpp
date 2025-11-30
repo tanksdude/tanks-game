@@ -6,8 +6,8 @@
 //compiling rpmalloc with malloc/free replacement *and automatic thread initialization* (ENABLE_OVERRIDE=1):
 
 //current version (1.4.5):
-//Windows: C/C++ > Code Generation > Runtime Library to static (the non-DLL one) *and non-debug* (because of glew?), use glfw3_mt.lib, add ENABLE_PRELOAD=1
-//Linux: remove the rpnew.h include, add ENABLE_PRELOAD=1, if using GCC then also add _GNU_SOURCE
+//Windows: C/C++ > Code Generation > Runtime Library to static (the non-DLL one), use glfw3_mt.lib, add ENABLE_PRELOAD=1
+//Linux: remove the rpnew.h include, add _GNU_SOURCE (even if you're using Clang!), add ENABLE_PRELOAD=1
 //Windows continued: it's not possible to use enkiTS and rpmalloc together this way (Linux unaffected)
 
 //latest develop branch (which will presumably become 2.0.0) (ENABLE_OVERRIDE is on by default):

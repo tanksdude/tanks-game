@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 
-#include <GL/glew.h>
+#include <glad/gl.h>
 #include <GLFW/glfw3.h>
 
 class WindowInitializer {
@@ -24,7 +24,7 @@ private:
 	static int old_window_ypos;
 
 public:
-	static void WindowInitialize(int* argc, char** argv, std::string windowName); //initialize GLFW and GLEW
+	static void WindowInitialize(int* argc, char** argv, std::string windowName); //initialize GLFW and Glad
 	static void WindowInitialize(int* argc, char** argv, std::string windowName, int startX, int startY);
 	static void WindowInitialize(int* argc, char** argv, std::string windowName, int startX, int startY, double sizeMultiplier);
 	static void SetWindowIcon(const char* image_path); //called during WindowInitialize; 32x32 seems to be the size OSes like the most

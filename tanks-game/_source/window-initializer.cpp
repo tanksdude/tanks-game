@@ -181,18 +181,15 @@ void WindowInitializer::WindowInitialize(int* argc, char** argv, std::string win
 	//thanks to https://community.khronos.org/t/wglmakecurrent-issues/62656/3 for solving why a draw call would take ~15ms for no reason (it's just the V-sync time)
 	//glfwSwapInterval(0);
 
-	//initialize glew
-	glewExperimental = GL_TRUE;
-	GLenum res = glewInit();
-	if (res != GLEW_OK) {
-		if (res == GLEW_ERROR_NO_GLX_DISPLAY) {
-			fprintf(stderr, "Error: '%s'\n", "No GLX display"); //glew 2.2.0 has the error but not the associated message
-		} else {
-			fprintf(stderr, "Error: '%s'\n", glewGetErrorString(res));
-		}
-		throw std::runtime_error("glew failed");
-		//note: glew failing isn't fatal, however the application will not render anything and mess with GLFW, really confusing the poor OS
+	//initialize glad2
+	int version = gladLoadGL(glfwGetProcAddress);
+	if (version == 0) {
+		printf("Failed to initialize OpenGL context\n");
+		throw std::runtime_error("glad failed");
 	}
+
+	// Successfully loaded OpenGL
+	//printf("Loaded OpenGL %d.%d\n", GLAD_VERSION_MAJOR(version), GLAD_VERSION_MINOR(version));
 
 	glDisable(GL_DEPTH_TEST); //technically not required, but not all drivers implement the OpenGL spec correctly
 	//transparency:

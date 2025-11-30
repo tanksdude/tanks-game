@@ -13,7 +13,6 @@ else()
 endif()
 
 #note: when changing these defaults, you have to delete CMakeCache.txt
-#option(USE_SYSTEM_GLEW "Use the system GLEW package" ON) #currently does nothing
 #option(USE_SYSTEM_GLFW "Use the system GLFW package" ON) #currently does nothing
 
 set(CMAKE_CXX_STANDARD 20)
@@ -29,6 +28,7 @@ endif()
 #add_compile_definitions(TRACY_ENABLE)
 
 include_directories(enkiTS   PRIVATE Dependencies/enkiTS)
+include_directories(glad2    PRIVATE Dependencies/glad2/include)
 include_directories(glm      PRIVATE Dependencies/glm)
 include_directories(rpmalloc PRIVATE Dependencies/rpmalloc)
 include_directories(stb      PRIVATE Dependencies/stb)
@@ -36,7 +36,6 @@ include_directories(misc     PRIVATE Dependencies/_misc)
 include_directories(tracy    PRIVATE Externals/tracy/public)
 
 find_package(OpenGL REQUIRED)
-find_package(GLEW REQUIRED)
 find_package(glfw3 REQUIRED)
 
 set(CMAKE_C_FLAGS     "${CMAKE_C_FLAGS} -Wno-narrowing -Wno-int-to-pointer-cast")
@@ -49,7 +48,7 @@ if(NOT CMAKE_CXX_FLAGS MATCHES "-march")
 	# alternatively, use "-march=native"
 endif()
 if(NOT CMAKE_C_FLAGS MATCHES "-march")
-	# feels super unnecessary when there's literally only one C file
+	# feels super unnecessary when there's literally only two C files
 	set(CMAKE_C_FLAGS     "${CMAKE_C_FLAGS} -march=x86-64-v2") #SSE4.2
 endif()
 
@@ -58,6 +57,7 @@ SET_SOURCE_FILES_PROPERTIES(Externals/tracy/public/TracyClient.cpp PROPERTIES CO
 
 add_executable(${PROJECT_NAME}
 	Dependencies/enkiTS/TaskScheduler.cpp
+	Dependencies/glad2/src/gl.c
 	Dependencies/rpmalloc/rpmalloc.c
 	Externals/tracy/public/TracyClient.cpp
 	tanks-game/_source/aaa_first.cpp
@@ -238,5 +238,4 @@ add_executable(${PROJECT_NAME}
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE GL)
-target_link_libraries(${PROJECT_NAME} PRIVATE GLEW::glew)
-target_link_libraries(${PROJECT_NAME} PRIVATE glfw ${GLEW_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
