@@ -153,21 +153,19 @@ void WindowInitializer::WindowInitialize(int* argc, char** argv, std::string win
 	GLFWwindow* window;
 	WindowInitializer::window_width = GAME_WIDTH*sizeMultiplier; WindowInitializer::window_height = GAME_HEIGHT*sizeMultiplier;
 	glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_FALSE);
-	//glfwWindowHint(GLFW_SAMPLES, 64); //TODO: doesn't seem to work
 	glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_TRUE);
-	//glfwWindowHint(GLFW_DECORATED, GLFW_TRUE); //unnecessary
 
-	//glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); //this forces the OpenGL version (though I doubt it makes a difference)
-	//glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); //recommended for 3.2+, I think
 	window = glfwCreateWindow(WindowInitializer::window_width, WindowInitializer::window_height, windowName.c_str(), NULL, NULL);
+	if (window == NULL) {
+		const char* msg;
+		glfwGetError(&msg);
+		throw std::runtime_error("GLFW could not create the window: " + std::string(msg));
+	}
 
 	int primary_monitor_xpos, primary_monitor_ypos;
 	glfwGetMonitorPos(glfwGetPrimaryMonitor(), &primary_monitor_xpos, &primary_monitor_ypos); //does not seem to do anything on Windows
 	glfwSetWindowPos(window, primary_monitor_xpos + startX, primary_monitor_ypos + startY); //this sets the position of the inner window part, not the OS window position
 	WindowInitializer::glfw_window = window;
-	//glEnable(GL_POLYGON_SMOOTH);
-	//glEnable(GL_MULTISAMPLE);
 
 	glfwGetWindowPos(WindowInitializer::glfw_window, &WindowInitializer::old_window_xpos, &WindowInitializer::old_window_ypos);
 	glfwGetWindowSize(WindowInitializer::glfw_window, &WindowInitializer::old_window_width, &WindowInitializer::old_window_height); //required for monitor content scaling
@@ -187,7 +185,6 @@ void WindowInitializer::WindowInitialize(int* argc, char** argv, std::string win
 		printf("Failed to initialize OpenGL context\n");
 		throw std::runtime_error("glad failed");
 	}
-
 	// Successfully loaded OpenGL
 	//printf("Loaded OpenGL %d.%d\n", GLAD_VERSION_MAJOR(version), GLAD_VERSION_MINOR(version));
 

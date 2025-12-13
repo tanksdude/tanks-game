@@ -43,7 +43,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-narrowing -Wno-int-to-pointer-cast 
 
 if(NOT CMAKE_CXX_FLAGS MATCHES "-march")
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=x86-64-v2") #SSE4.2
-	# NOTE: if your compiler does not support x86-64 feature levels (which were defined in 2020), then use "-msse4.2 -mpopcnt" instead
+	# NOTE: if your compiler does not support x86-64 feature levels (which were defined in 2020), then use "-msse4.2 -mpopcnt" or "-march=nehalem" instead
 	# "-mpopcnt" shouldn't be required because all CPUs that have SSE4.2 also have POPCNT, but some compilers don't enable it, however I don't even know if this project would use the instruction
 	# alternatively, use "-march=native"
 endif()

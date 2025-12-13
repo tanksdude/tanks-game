@@ -273,7 +273,7 @@ float Bullet::getBulletSpeedMultiplier() const {
 		value *= stackList[i];
 	}
 
-	return highest * lowest * value;
+	return highest * lowest * value; //TODO: should bullets be able to set a minimum speed? fire + big doesn't behave very well
 }
 
 double Bullet::getBulletRadiusMultiplier() const {

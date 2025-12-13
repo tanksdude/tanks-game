@@ -33,6 +33,14 @@ The C++ upgrade of my [JavaScript game](https://uncreativeusername.neocities.org
 1. Build ReleaseDistribution (on the solution, not project)
 1. **[Pre-compiled executables](https://github.com/tanksdude/tanks-game/releases)** are provided if this isn't an option for you
 
+I tried to compile on MSYS2 but had no luck. This is what I tried:
+
+1. Prerequisites: `pacman -S mingw-w64-x86_64-gcc mingw-w64-x86_64-make mingw-w64-x86_64-glfw mingw-w64-x86_64-cmake`
+1. `mkdir build && cd build`
+1. (doesn't work) `/mingw64/bin/cmake.exe .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_MAKE_PROGRAM=mingw32-make -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++`
+1. `mingw32-make -j$(nproc)`
+1. TODO: also needs `res/` (and `mods/`) copied to the build dir
+
 ### Building (Linux)
 
 1. Prerequisites: a compiler, Make, CMake, GLFW
@@ -41,6 +49,7 @@ The C++ upgrade of my [JavaScript game](https://uncreativeusername.neocities.org
     * Arch/Manjaro: `sudo pacman -S gcc make cmake glfw`
     * compiling GLFW from source is currently unsupported, sorry
         * Alpine (an extremely lightweight distro probably intended for embedded work), Gentoo (a distro known for compiling everything yourself), ChromeOS (known for being ChromeOS (and did you know it's [based on Gentoo](https://en.wikipedia.org/wiki/ChromeOS#Architecture_2)?)), and even the non-Linux [Haiku](https://www.haiku-os.org/) and FreeBSD have prebuilt packages for GLFW, so you really should be okay on your distro of choice
+    * NOTE: some distros have problems with rpmalloc. You may have to disable it to get things working. A proper fix will come later, but for now this requires removing the rpmalloc references in `CMakeLists.txt`, `Dependencies/enkiTS/TaskScheduler.cpp`, `aaa_first.cpp`, and `main.cpp`.
 1. `mkdir build && cd build`
 1. `cmake ..` (optional and recommended: `-DCMAKE_CXX_FLAGS=-march=native -DCMAKE_C_FLAGS=-march=native`)
     * If you are interested in testing things out yourself, specify `-DCMAKE_BUILD_TYPE=[Release|Debug]`, because by default a few things are modified to act like an end-user product (by "a few" I mean just the dev mouse controls are always enabled if you specify the build type)
@@ -86,6 +95,18 @@ Untested:
 * Alpine
 
 ![superfast shooting video](readme-video-other.gif)
+
+## Features
+
+Everyone loves marketing! Enjoy these bullet points and let them compel you to purchase this game for the low price of $0! And it's on sale, or something.
+
+* Unlimited power mixing: grab a powerup, grab another, and keep going, because you can stack as many as you like!
+* Non-stop action: Stay on your toes as you dodge hazards to collect a hidden powerup! Respawning is fast and frequent, with many levels to play on.
+* Customizability: Several options are available to change! Try setting `ShootingCooldown` to 0 and play a few rounds!
+* Custom levels and powers: Bring out your creativity with custom levels and powers!
+* Lots of content: ~22 powers, 12 hazards, ~17 levels, 6 level effects
+
+It's free. Play it if you want, don't if you don't want to.
 
 ## Making custom levels
 
@@ -161,7 +182,6 @@ GNU General Public License v3.0
 * [Super Smash Bros.](https://www.smashbros.com/en_US/index.html) for being a very fun game
     * (Smash Bros the *party* game, not the competitive fighting game; use items!)
 * [The Cherno](https://www.youtube.com/@TheCherno/videos) is very helpful for OpenGL
-* [Solarian Programmer](https://solarianprogrammer.com/) has good starter code for hardware rendering
 * [Factorio](https://www.factorio.com/)'s Friday Fun Facts are amazing and got me interested in low-level C++ optimizations
 * [Nitronic Rush](https://nitronic-rush.com/) is the other game that made me want to learn C++ in the first place
 * [Dolphin emulator's Progress Reports](https://dolphin-emu.org/blog/) for being very in-depth and good reading material

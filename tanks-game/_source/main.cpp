@@ -171,7 +171,7 @@
 
 #include "game-main-loop.h"
 
-const std::string GameWindowName = "PowerTanks Battle v0.3.0 EARLY WIP DEV"; //not guaranteed to be correct every commit
+const std::string GameWindowName = "PowerTanks Battle v0.3.0"; //not guaranteed to be correct every commit
 const std::string INIFilePath = "tanks.ini";
 
 #include <tracy/Tracy.hpp>

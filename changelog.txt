@@ -1,38 +1,20 @@
-"complete" (wishlist, likely won't get here though)
-* new game mode: infinite world!
-    * single-player only
-    * the point is just to explore
-    * have fun!
-* some unit tests?
-* finish overhauling collision
-    * maybe multithreading?
-* lots of new stuff
-* more random levels
-* powerups:
-    * sword
-    * hazard powers?
-    * megadeath update?
-    * bouncing rework
-        * something like bool applyBounceUpdate() to bulletpower?
-    * fix respawning powerups working with magnetism level effect
-        * level effects need a generic "do action on powerup/hazard/whatever"
-
-0.3.0 (WIP)
+0.3.0
 * cross-platform!
 * switched to GLFW from FreeGLUT, also Glad2 from GLEW
 * many performance optimizations:
     * rewrote collision to be single-pass across the various object types
     * multithreading option for broad phase of collision
-        * performance improvement is decent, not amazing
     * instanced rendering for bullets: much more efficient, should have been doing this the whole time
     * countless small things adding up, like better cache alignment
 * render game in center of window (instead of bottom left)
 * added a window icon
 * optional transparency drawing for bullets
+* changed "extra cannons" to not behave like real cannons by default
 * minor things:
     * bumped instruction set to x86-64-v2 (SSE4.2)
     * create a default ini file if it doesn't exist on startup
     * custom level playlist option
+    * homing angle change dependent on speed
     * allow swarm bullets to exist a little bit out of bounds
     * gave spiral lava hazard a better color
     * as usual, enormous cleanup
