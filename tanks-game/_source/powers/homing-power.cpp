@@ -3,7 +3,7 @@
 
 #include "../constants.h"
 
-const double HomingPower::homingStrength = (2*PI) / 512;
+const float HomingPower::homingStrength = (2*PI) / 512;
 
 std::unordered_map<std::string, float> HomingPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -53,9 +53,15 @@ HomingTankPower::HomingTankPower() {
 #include "../power-function-helper.h"
 
 InteractionBoolHolder HomingBulletPower::modifiedMovement(Bullet* b) {
+	if (b->velocity.getMagnitude() == 0) {
+		return { false };
+	}
+
 	Game_ID targetID = PowerFunctionHelper::homingGenericTarget(b, true);
 	if (targetID != -1) {
-		PowerFunctionHelper::homingGenericMove(b, targetID, HomingPower::homingStrength);
+		float angleChange = HomingPower::homingStrength * (b->velocity.getMagnitude() / b->getInitialVelocity());
+		//TODO: should this be capped? (and handle a probably impossible initial velocity = 0)
+		PowerFunctionHelper::homingGenericMove(b, targetID, angleChange);
 	} else {
 		//do another targeting round, but on hazards/"targetables" instead
 		//this will only occur for some sort of "team mode" or single-player campaign
@@ -65,7 +71,7 @@ InteractionBoolHolder HomingBulletPower::modifiedMovement(Bullet* b) {
 
 InteractionBoolHolder HomingBulletPower::modifiedEdgeCollision(Bullet* b) {
 	return { ((b->x + b->r <= 0) || (b->x - b->r >= GAME_WIDTH) ||
-	         ((b->velocity.getMagnitude() <= 0) && ((b->y - b->r >= GAME_HEIGHT*2) || (b->y + b->r <= -GAME_HEIGHT)))) };
+	         ((b->velocity.getMagnitude() == 0) && ((b->y - b->r >= GAME_HEIGHT*2) || (b->y + b->r <= -GAME_HEIGHT)))) };
 	//TODO: wanted?
 }
 
@@ -74,9 +80,6 @@ TankPower* HomingBulletPower::makeTankPower() const {
 }
 
 HomingBulletPower::HomingBulletPower() {
-	timeLeft = 0;
-	maxTime = -1;
-
 	modifiesMovement = true;
 	modifiesEdgeCollision = true;
 }

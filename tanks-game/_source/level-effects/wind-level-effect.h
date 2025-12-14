@@ -12,7 +12,7 @@ protected:
 	double* stateMultiplier;
 	SimpleVector2D pushDirection;
 
-	virtual double getWindStrengthMultiplier() const;
+	virtual float getWindStrengthMultiplier() const;
 
 private:
 	static SimpleVector2D vertices_spike[3];

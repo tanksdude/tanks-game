@@ -25,7 +25,7 @@ public:
 	static std::pair<bool, InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct>> superbounceGeneric(const Bullet*, const Wall*, double strength = 0);
 	static std::pair<bool, InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct>> superbounceGenericWithCorners(const Bullet*, const Wall*, double strength = 0);
 
-	static std::vector<double>* equallySpacedCannonPoints(int count);
+	static std::vector<float>* equallySpacedCannonPoints(int count);
 
 private:
 	PowerFunctionHelper() = delete;

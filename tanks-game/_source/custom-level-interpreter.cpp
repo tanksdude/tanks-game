@@ -1,7 +1,7 @@
 #include "custom-level-interpreter.h"
 
 #include <stdexcept>
-#include <algorithm> //std::find
+#include <algorithm> //std::find, std::remove
 #include <filesystem> //only for catching ModProcessor's exceptions
 #include <fstream>
 #include <iostream>
@@ -50,7 +50,7 @@ std::vector<CustomLevelAction*>* actions) {
 
 	this->initializationActions = std::shared_ptr<std::vector<CustomLevelAction*>>(actions, [](std::vector<CustomLevelAction*>* p) {
 		for (int i = 0; i < p->size(); i++) {
-			delete p->at(i);
+			delete p->data()[i];
 		}
 	});
 }
@@ -143,9 +143,9 @@ void CustomLevel::initialize() {
 	ColorValueHolder color = getDefaultColor();
 
 	for (int i = 0; i < initializationActions->size(); i++) {
-		GenericFactoryConstructionData& data = initializationActions->at(i)->data;
+		GenericFactoryConstructionData& data = initializationActions->data()[i]->data;
 
-		switch (initializationActions->at(i)->command) {
+		switch (initializationActions->data()[i]->command) {
 			case CustomLevelCommands::WALL:
 				initialization_WALL(data, color);
 				break;
@@ -573,6 +573,8 @@ CustomLevel* CustomLevelInterpreter::processCustomLevel(std::string path) {
 		std::string error_string = ""; //when an exception is generated, this is set and the loop below is broken out of (so the file can get closed)
 
 		while (std::getline(level_file, line)) {
+			line.erase(std::remove(line.begin(), line.end(), '\r'), line.end());
+			line.erase(std::remove(line.begin(), line.end(), '\n'), line.end());
 			lineNum++;
 			BasicINIParser::removeLeftWhitespace(line);
 			BasicINIParser::removeComments(line);

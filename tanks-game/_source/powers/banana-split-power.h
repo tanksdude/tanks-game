@@ -5,7 +5,7 @@ class BananaSplitPower : public BananaPower {
 	//note: not named after the dessert with the same name; "cluster split" is more accurate, but it's too late to change banana's name
 public: //bullet stuff
 	static const int bananaSplitCount;
-	static const double bananaSplitAngleDeviation;
+	static const float bananaSplitAngleDeviation;
 
 public:
 	virtual std::vector<std::string> getPowerTypes() const override {
@@ -46,6 +46,7 @@ protected:
 
 public:
 	virtual ColorValueHolder getColor() const override { return BananaSplitPower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return BananaSplitPower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new BananaSplitBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

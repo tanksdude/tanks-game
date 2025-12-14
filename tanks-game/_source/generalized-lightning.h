@@ -32,29 +32,29 @@ protected:
 protected:
 	double tickCount;
 	double tickCycle;
-	bool currentlyActive;
 	double stateMultiplier[2]; //length = 2 because bool bolt action
+	bool currentlyActive;
 
+	bool boltsNeeded; //= false; //if the lightning hits something, this is changed, and no random bolts will be made; resets every boltCycle ticks
 	unsigned int maxBolts; //this is maximum amount of normal bolts; the lightning can make any number of bolts when it has to destroy a bullet or tank
-	double lengthOfBolt;
+	float lengthOfBolt;
 	std::vector<LightningBolt*> bolts;
 	virtual void clearBolts();
 	double boltTick;
 	double boltCycle; //= 4; //how often bolts get refreshed
-	bool boltsNeeded; //= false; //if the lightning hits something, this is changed, and no random bolts will be made; resets every boltCycle ticks
 
 	virtual void refreshBolt(LightningBolt*) const = 0; //"redraw" a bolt //this is the hardest thing to generalize, so... copy and paste
-	virtual int getDefaultNumBoltPoints(double horzDist) const; //number of points that make up a bolt
+	virtual int getDefaultNumBoltPoints(float horzDist) const; //number of points that make up a bolt
 	virtual void pushBolt(LightningBolt*) = 0;
 	virtual void pushDefaultBolt(int num, bool randomize) = 0; //randomize should be true all of the time
 	std::vector<Game_ID> targetedObjects;
 
 public:
-	virtual ColorValueHolder getBackgroundColor() const;
-	virtual ColorValueHolder getBackgroundColor_Pose() const;
-	virtual ColorValueHolder getBoltColor() const;
+	ColorValueHolder getBackgroundColor() const;
+	ColorValueHolder getBackgroundColor_Pose() const;
+	ColorValueHolder getBoltColor() const;
 
-	virtual bool validLocation() const = 0;
+	virtual bool validLocation() const = 0; //forces lightnings to overwrite this
 	virtual void tick();
 
 	virtual ~GeneralizedLightning();

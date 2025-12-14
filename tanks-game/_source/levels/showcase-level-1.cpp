@@ -1,6 +1,7 @@
 #include "showcase-level-1.h"
 
 #include "../constants.h"
+#include <cmath> //floor
 #include <iostream>
 #include "../rng.h"
 
@@ -31,7 +32,7 @@ void ShowcaseLevel1::initialize() {
 
 	//simply a test level showing how the old ginormous turret would have worked (its old behavior was so lame (unfinished) it had to be changed)
 
-	posArr = new double[3]{ GAME_WIDTH/2, GAME_HEIGHT/2, PI/2 * (floor(LevelRNG::randFunc()*2)*2-1) };
+	posArr = new double[3]{ GAME_WIDTH/2, GAME_HEIGHT/2, PI/2 * (std::floor(LevelRNG::randFunc()*2)*2-1) };
 	constructionData = GenericFactoryConstructionData(3, posArr);
 	HazardManager::pushCircleHazard("vanilla", "ginormous_turret", constructionData);
 

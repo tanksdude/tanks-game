@@ -5,7 +5,6 @@
 #include <algorithm> //std::copy, std::count, std::clamp
 #include <iostream>
 #include "../rng.h"
-#include "../mylib.h" //findMaxIndex
 
 #include "../renderer.h"
 #include "../color-mixer.h"
@@ -41,7 +40,7 @@ MotherTurretHazard::MotherTurretHazard(double xpos, double ypos, double angle, i
 	targetingChild = false;
 
 	childTurretIDs = std::vector<Game_ID>(maxChildTurrets, -1);
-	childTurretAlive = std::vector<bool>(maxChildTurrets, false);
+	childTurretAlive = std::vector<char>(maxChildTurrets, (char)false);
 	initialChildren = startChildren;
 
 	//canAcceptPowers = false; //not sure
@@ -163,19 +162,19 @@ void MotherTurretHazard::pushInitialChildren(int childCount) {
 		currentInitialChildren /= 2;
 	}
 
-	const double turretAngleDiff = (2*PI) / maxChildTurrets;
-	const double workingAngle = (2*PI) / angleSplit;
+	const float turretAngleDiff = float(2*PI) / maxChildTurrets;
+	const float workingAngle = float(2*PI) / angleSplit;
 	for (int i = 0; i < angleSplit; i++) {
 		for (int j = 1; j <= currentInitialChildren; j++) {
-			pushChild(i*currentMaxChildren + round((j * workingAngle/double(currentInitialChildren+1)) / turretAngleDiff));
+			pushChild(i*currentMaxChildren + static_cast<int>(std::round((j * workingAngle/float(currentInitialChildren+1)) / turretAngleDiff)));
 		}
 	}
 }
 
 CircleHazard* MotherTurretHazard::makeTurret(int turretNum) const {
 	GenericFactoryConstructionData constructionData;
-	const double angle = getChildTurretAngle(turretNum);
-	double* posArr = new double[3]{ this->x + (this->r+childDistFromMother) * cos(angle), this->y + (this->r+childDistFromMother) * sin(angle), angle };
+	const float angle = getChildTurretAngle(turretNum);
+	double* posArr = new double[3]{ this->x + (this->r+childDistFromMother) * std::cos(angle), this->y + (this->r+childDistFromMother) * std::sin(angle), double(angle) };
 	constructionData = GenericFactoryConstructionData(3, posArr);
 	CircleHazard* childTurret = HazardDataGovernor::getCircleHazardFactory("vanilla", "targeting_turret")(constructionData);
 	return childTurret;
@@ -193,8 +192,8 @@ void MotherTurretHazard::pushChild(int turretNum) {
 	HazardManager::pushCircleHazard(childTurret);
 }
 
-inline double MotherTurretHazard::getChildTurretAngle(int turretNum) const {
-	const double turretAngleDiff = (2*PI) / maxChildTurrets;
+float MotherTurretHazard::getChildTurretAngle(int turretNum) const {
+	const float turretAngleDiff = float(2*PI) / maxChildTurrets;
 	return initialAngle + turretNum * turretAngleDiff;
 }
 
@@ -227,28 +226,28 @@ void MotherTurretHazard::tick() {
 	//maxState is 3; not using else in case tickCycle is zero
 }
 
-inline void MotherTurretHazard::tick_chooseSpot() {
+void MotherTurretHazard::tick_chooseSpot() {
 	//choose the spot that will result in the most time spent turning
 	if (getChildCount() < maxChildTurrets) {
-		const float childAngleDiff = (2*PI) / maxChildTurrets;
-		float* angleDiff = new float[maxChildTurrets];
+		const float childAngleDiff = float(2*PI) / maxChildTurrets;
+		float maxAngleDiff = -2*PI;
 		for (int i = 0; i < maxChildTurrets; i++) {
-			if (childTurretAlive[i]) {
-				angleDiff[i] = -2*PI;
-			} else {
-				angleDiff[i] = abs(SimpleVector2D::angleBetween(this->velocity, SimpleVector2D(getChildTurretAngle(i), 0, true)));
+			if (!childTurretAlive[i]) {
+				float a = std::abs(SimpleVector2D::angleBetween(this->velocity, SimpleVector2D(getChildTurretAngle(i), 0, true)));
+				if (a > maxAngleDiff) {
+					maxAngleDiff = a;
+					targetingNum = i;
+				}
 			}
 		}
-		targetingNum = findMaxIndex(angleDiff, maxChildTurrets);
 		targetingChild = true;
-		delete[] angleDiff;
 	} else {
 		targetingChild = false;
 		targetingCount = 0;
 	}
 }
 
-inline void MotherTurretHazard::tick_trackSpot() {
+void MotherTurretHazard::tick_trackSpot() {
 	turnTowardsPoint(targetingNum);
 	if (isPointedAt(targetingNum)) {
 		targetingCount++;
@@ -264,7 +263,7 @@ inline void MotherTurretHazard::tick_trackSpot() {
 	}
 }
 
-inline void MotherTurretHazard::tick_chargeUp() {
+void MotherTurretHazard::tick_chargeUp() {
 	targetingCount++;
 	if (targetingCount >= stateMultiplier[1] * tickCycle) {
 		pushChild(targetingNum);
@@ -275,8 +274,8 @@ inline void MotherTurretHazard::tick_chargeUp() {
 	}
 }
 
-inline int MotherTurretHazard::getChildCount() const {
-	return std::count(childTurretAlive.begin(), childTurretAlive.end(), true);
+int MotherTurretHazard::getChildCount() const {
+	return std::count(childTurretAlive.begin(), childTurretAlive.end(), (char)true);
 }
 
 int MotherTurretHazard::updateChildCount() {
@@ -304,21 +303,21 @@ void MotherTurretHazard::turnTowardsPoint(int turretNum) {
 	//see TargetingTurretHazard::turnTowardsTank
 	SimpleVector2D distToChild = SimpleVector2D(getChildTurretAngle(turretNum), this->r+childDistFromMother, true);
 	float theta = SimpleVector2D::angleBetween(distToChild, velocity);
-	if (abs(theta) < PI/turningIncrement) {
+	if (std::abs(theta) < float(PI)/turningIncrement) {
 		//too small to adjust angle
 	} else {
 		//large angle adjustment needed
 		if (theta < 0) {
-			this->velocity.changeAngle(PI/turningIncrement);
+			this->velocity.changeAngle(float(PI)/turningIncrement);
 		} else {
-			this->velocity.changeAngle(-PI/turningIncrement);
+			this->velocity.changeAngle(float(-PI)/turningIncrement);
 		}
 	}
 }
 
 bool MotherTurretHazard::isPointedAt(int turretNum) const {
 	float angle = getChildTurretAngle(turretNum);
-	return (abs(SimpleVector2D::angleBetween(velocity, SimpleVector2D(angle, 0, true))) < PI/turningIncrement);
+	return (std::abs(SimpleVector2D::angleBetween(velocity, SimpleVector2D(angle, 0, true))) < float(PI)/turningIncrement);
 }
 
 bool MotherTurretHazard::reasonableLocation() const {
@@ -453,26 +452,25 @@ void MotherTurretHazard::ghostDraw(DrawingLayers layer, float alpha) const {
 	}
 }
 
-inline void MotherTurretHazard::drawShootingTimer(float alpha) const {
+void MotherTurretHazard::drawShootingTimer(float alpha) const {
 	if (currentState != 1) {
 		return;
 	}
 
-	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
-	double shootingOutlinePercent;
+	float shootingOutlinePercent;
 	if (tickCycle <= 0) {
 		shootingOutlinePercent = 0;
 	} else {
-		shootingOutlinePercent = std::clamp<double>(targetingCount / (stateMultiplier[1] * tickCycle), 0, 1);
+		shootingOutlinePercent = std::clamp<float>(targetingCount / (stateMultiplier[1] * tickCycle), 0, 1);
 	}
 	unsigned int shootingOutlineTriangles = Circle::NumOfSides * shootingOutlinePercent;
 
 	if (shootingOutlineTriangles > 0) {
 		ColorValueHolder color = ColorValueHolder(1.0f, 1.0f, 1.0f);
 		color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-		const double rotateAngle = velocity.getAngle() + (2*PI)*(1 - double(shootingOutlineTriangles)/Circle::NumOfSides)/2;
+		const float rotateAngle = velocity.getAngle() + float(2*PI)*(1 - float(shootingOutlineTriangles)/Circle::NumOfSides)/2;
 
 		float coordsAndColor[(Circle::NumOfSides+1)*(2+4)];
 		coordsAndColor[0] = x;
@@ -483,7 +481,7 @@ inline void MotherTurretHazard::drawShootingTimer(float alpha) const {
 		coordsAndColor[5] = color.getAf();
 		for (unsigned int i = 0; i <= shootingOutlineTriangles && i < Circle::NumOfSides; i++) {
 			SimpleVector2D vertex = SimpleVector2D(body_vertices[i % Circle::NumOfSides + 1]);
-			vertex.scaleAndRotate(r*(5.0/4.0), rotateAngle);
+			vertex.scaleAndRotate(static_cast<float>(r)*(5.0f/4.0f), rotateAngle);
 
 			coordsAndColor[(i+1)*6]   = static_cast<float>(x) + vertex.getXComp();
 			coordsAndColor[(i+1)*6+1] = static_cast<float>(y) + vertex.getYComp();
@@ -497,10 +495,8 @@ inline void MotherTurretHazard::drawShootingTimer(float alpha) const {
 	}
 }
 
-inline void MotherTurretHazard::drawChildTurretLocations(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
+void MotherTurretHazard::drawChildTurretLocations(float alpha) const {
 	alpha = alpha * alpha;
-
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 
@@ -524,8 +520,8 @@ inline void MotherTurretHazard::drawChildTurretLocations(float alpha) const {
 		coordsAndColor[4] = color.getBf();
 		coordsAndColor[5] = color.getAf();
 		for (int j = 1; j < Circle::NumOfSides+1; j++) {
-			coordsAndColor[j*6]   = testChild->x + radius * body_vertices[j].getXComp();
-			coordsAndColor[j*6+1] = testChild->y + radius * body_vertices[j].getYComp();
+			coordsAndColor[j*6]   = static_cast<float>(testChild->x) + radius * body_vertices[j].getXComp();
+			coordsAndColor[j*6+1] = static_cast<float>(testChild->y) + radius * body_vertices[j].getYComp();
 			coordsAndColor[j*6+2] = color.getRf();
 			coordsAndColor[j*6+3] = color.getGf();
 			coordsAndColor[j*6+4] = color.getBf();

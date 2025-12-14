@@ -31,7 +31,7 @@ public:
 	virtual BulletPower* makeBulletPower() const override;
 
 	//bool addsExtraShootingPoints = true;
-	virtual std::vector<std::pair<double, double>>* addExtraShootingPoints() const override;
+	virtual std::vector<std::pair<float, float>>* addExtraShootingPoints() const override;
 
 	TripleSpreadNamedTankPower();
 };
@@ -41,6 +41,7 @@ public:
 class TripleSpreadNamedBulletPower : public TripleNamedBulletPower {
 public:
 	virtual ColorValueHolder getColor() const override { return TripleSpreadNamedPower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return TripleSpreadNamedPower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new TripleSpreadNamedBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

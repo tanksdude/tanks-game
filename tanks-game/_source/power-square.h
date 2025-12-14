@@ -34,8 +34,8 @@ public:
 	void ghostDraw(DrawingLayers, float alpha) const override;
 
 protected:
-	inline void drawMain(float alpha = 1.0f) const;
-	inline void drawOutlineThing(float alpha = 1.0f) const;
+	void drawMain(float alpha = 1.0f) const;
+	void drawOutlineThing(float alpha = 1.0f) const;
 
 private:
 	PowerSquare(double x, double y); //common

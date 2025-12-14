@@ -3,21 +3,29 @@
 #include <string>
 #include <vector>
 #include <chrono>
+#include <algorithm> //std::max
+#include <thread> //std::this_thread::yield(), std::thread::hardware_concurrency()
 #include <stdexcept>
+
+//globals and random libraries:
+#include "aaa_first.h" //for the thread manager, because I didn't want to make a new "globals" file or put it in constants.h
+#include <rpmalloc.h> //rest of rpmalloc stuff is in aaa_first.cpp
+#include <win32/usleep-windows.h> //has the platform check in the file, don't worry
+#include <posix/usleep-posix.h> //same (though it really check for not Windows)
 
 //needed for callbacks and stuff:
 #include "renderer.h"
 #include "rng.h"
-#include "color-value-holder.h"
 #include "reset-things.h"
 #include "developer-manager.h"
 #include "keypress-manager.h"
+#include "window-initializer.h"
 //other:
-#include "diagnostics.h"
+#include "frame-time-graph.h"
 #include "basic-ini-parser.h"
 #include "game-settings.h"
+#include "physics-handler.h"
 #include "mod-processor.h"
-#include "statistics-handler.h"
 
 //managers:
 #include "game-scene-manager.h"
@@ -146,7 +154,6 @@
 #include "powers/inversion-power.h" //flips left and right turning
 #include "powers/annoying-power.h" //bullet doesn't hurt tank, merely pushes away
 #include "powers/ultra-bounce-power.h" //pushes wall away when it bounces
-#include "powers/dev-color-changing-power.h" //color changes based on tank proximity
 #include "powers/dev-other-stuff-is-poison-power.h" //kills tank when touching normally-safe stuff
 #include "powers/dev-backwards-movement-power.h" //self-explanatory
 #include "powers/wall-sparks-power.h" //create some extra bullets when hitting a wall
@@ -164,22 +171,67 @@
 
 #include "game-main-loop.h"
 
-#include <GL/glew.h>
-#include <GL/freeglut.h>
-
-#include <rpmalloc.h> //rest of rpmalloc stuff is in aaa_first.cpp
-
-const std::string GameWindowName = "PowerTanks Battle v0.2.5.1"; //this is not guaranteed to be correct every commit but likely will be
+const std::string GameWindowName = "PowerTanks Battle v0.3.0"; //not guaranteed to be correct every commit
 const std::string INIFilePath = "tanks.ini";
+
+#include <tracy/Tracy.hpp>
+//memory profiling (copied straight from the user manual):
+//(requires disabling rpmalloc (not Tracy's internal rpmalloc, this project's rpmalloc))
+#if 0
+void* operator new(size_t count) {
+	auto ptr = malloc(count);
+	TracyAlloc(ptr, count);
+	return ptr;
+}
+void operator delete (void* ptr) noexcept {
+	TracyFree(ptr);
+	free(ptr);
+}
+#endif
 
 
 
 int main(int argc, char** argv) {
 	//rpmalloc initialization has to happen before main, so it's not called here
+	#ifdef _WIN32
+	usleep_windows_init();
+	#endif
 
+	GameManager::CreateDefaultINIFileIfNeeded(INIFilePath);
 	GameManager::initializeINI(INIFilePath);
 	GameManager::initializeSettings();
 	const BasicINIParser::BasicINIData& ini_data = GameManager::get_INI();
+
+	if (ini_data.exists("UNIVERSAL", "ThreadCount")) {
+		int threadCount = std::stoi(ini_data.get("UNIVERSAL", "ThreadCount"));
+		if (threadCount <= 0) {
+			threadCount = std::max(1, static_cast<signed>(std::thread::hardware_concurrency()) - threadCount);
+		}
+
+		enki::TaskSchedulerConfig config;
+		config.numTaskThreadsToCreate = threadCount - 1; //initializing with a config does not account for the main thread
+		//not required to set config.customAllocator
+		/*
+		static enki::AllocFunc rpmalloc_alloc_wrapper = [](size_t align_, size_t size_, void* userData_, const char* file_, int line_) {
+			return rpaligned_alloc(align_, size_);
+		};
+		static enki::FreeFunc rpmalloc_free_wrapper = [](void* ptr_, size_t size_, void* userData_, const char* file_, int line_) {
+			rpfree(ptr_);
+		};
+		config.customAllocator.alloc = rpmalloc_alloc_wrapper;
+		config.customAllocator.free  = rpmalloc_free_wrapper;
+		*/
+
+		g_TS.Initialize(config);
+	} else {
+		g_TS.Initialize(1);
+	}
+
+	if (ini_data.exists("UNIVERSAL", "ThreadTaskSize")) {
+		PhysicsHandler::Initialize(std::max(1, std::stoi(ini_data.get("UNIVERSAL", "ThreadTaskSize"))));
+	} else {
+		PhysicsHandler::Initialize();
+	}
 
 	if (ini_data.exists("UNIVERSAL", "RNGSeed")) {
 		long long seed = std::stoll(ini_data.get("UNIVERSAL", "RNGSeed"));
@@ -205,12 +257,12 @@ int main(int argc, char** argv) {
 			int startY = std::stoi(ini_data.get("GRAPHICS_SETTINGS", "Position.StartY"));
 			if (ini_data.exists("GRAPHICS_SETTINGS", "Position.SizeMultiplier")) {
 				double sizeMultiplier = std::stod(ini_data.get("GRAPHICS_SETTINGS", "Position.SizeMultiplier"));
-				Renderer::PreInitialize(&argc, argv, name, startX, startY, sizeMultiplier);
+				WindowInitializer::WindowInitialize(&argc, argv, name, startX, startY, sizeMultiplier);
 			} else {
-				Renderer::PreInitialize(&argc, argv, name, startX, startY);
+				WindowInitializer::WindowInitialize(&argc, argv, name, startX, startY);
 			}
 		} else {
-			Renderer::PreInitialize(&argc, argv, name);
+			WindowInitializer::WindowInitialize(&argc, argv, name);
 		}
 	}
 	catch (const std::exception& e) {
@@ -226,40 +278,19 @@ int main(int argc, char** argv) {
 		}
 	}
 
-	// Set callback for drawing the scene
-	glutDisplayFunc(GameSceneManager::DrawScenes);
-
-	// Set callback for resizing the window
-	glutReshapeFunc(Renderer::windowResizeFunc);
-
-	//mouse clicking
-	glutMouseFunc(DeveloperManager::mouseClickFunc);
-
-	// Set callback to handle mouse dragging
-	glutMotionFunc(DeveloperManager::mouseDragFunc);
-
-	// Set callback to handle keyboard events
-	glutKeyboardFunc(KeypressManager::setNormalKey);
-
-	//callback for keyboard up events
-	glutKeyboardUpFunc(KeypressManager::unsetNormalKey);
-
-	//special keyboard down
-	glutSpecialFunc(KeypressManager::setSpecialKey);
-
-	//special keyboard up
-	glutSpecialUpFunc(KeypressManager::unsetSpecialKey);
-
-	//mousewheel
-	glutMouseWheelFunc(DeveloperManager::mouseWheelFunc);
-
-	//window close
-	glutCloseFunc(StatisticsHandler::DumpData);
+	//callbacks
+	glfwSetFramebufferSizeCallback(WindowInitializer::glfw_window, WindowInitializer::windowResizeFunc);
+	glfwSetKeyCallback(WindowInitializer::glfw_window, KeypressManager::keyCallbackFunc);
+	glfwSetMouseButtonCallback(WindowInitializer::glfw_window, DeveloperManager::mouseButtonCallbackFunc);
+	glfwSetCursorPosCallback(WindowInitializer::glfw_window, DeveloperManager::mouseCursorPosCallbackFunc);
+	glfwSetScrollCallback(WindowInitializer::glfw_window, DeveloperManager::mouseScrollCallbackFunc);
+	//glfwSetWindowCloseCallback(WindowInitializer::glfw_window, );
 
 	//prepare for incoming data:
 	PowerupDataGovernor::initialize();
 	HazardDataGovernor::initialize();
 	LevelDataGovernor::initialize();
+	//idea: "chaos mode": randomly generates a bunch of custom powers with different abilities (probably a setting in GAME_OPTIONS)
 
 	//powers
 	//vanilla (some are also "old"):
@@ -297,7 +328,6 @@ int main(int argc, char** argv) {
 	PowerupDataGovernor::addPowerFactory(InversionPower::factory);
 	PowerupDataGovernor::addPowerFactory(AnnoyingPower::factory);
 	PowerupDataGovernor::addPowerFactory(UltraBouncePower::factory);
-	PowerupDataGovernor::addPowerFactory(DevColorChangingPower::factory);
 	PowerupDataGovernor::addPowerFactory(DevOtherStuffIsPoisonPower::factory);
 	PowerupDataGovernor::addPowerFactory(DevBackwardsMovementPower::factory);
 	PowerupDataGovernor::addPowerFactory(WallSparksPower::factory);
@@ -402,55 +432,35 @@ int main(int argc, char** argv) {
 	LevelDataGovernor::addLevelFactory(TerrifyingChaosLevel::factory);
 
 	//initialize managers and stuff:
-	GameManager::Initialize();
 	KeypressManager::Initialize();
+	GameManager::Initialize();
+	GameManager::initializeObjectList();
 	TankManager::initialize();
 	BulletManager::initialize();
 	PowerupManager::initialize();
 	WallManager::initialize();
 	HazardManager::initialize();
 	LevelManager::initialize();
-	Diagnostics::Initialize();
+	FrameTimeGraph::Initialize();
 	GameSceneManager::Initialize();
 	Renderer::Initialize();
+	Bullet::initializeVertices(); //so bullet constructors don't have to call this every time
 
 	ModProcessor::ProcessMods();
 
-	Diagnostics::declareGraph("tick", ColorValueHolder(1.0f, 0.0f, 0.0f));
-	Diagnostics::declareGraph("upload", ColorValueHolder(0.0f, 1.0f, 0.0f));
-	Diagnostics::declareGraph("draw", ColorValueHolder(0.0f, 0.0f, 1.0f));
-	Diagnostics::declareGraph("all", ColorValueHolder(1.0f, 1.0f, 1.0f));
+	FrameTimeGraph::declareGraph("tick", ColorValueHolder(1.0f, 0.0f, 0.0f));
+	FrameTimeGraph::declareGraph("upload", ColorValueHolder(0.0f, 1.0f, 0.0f));
+	FrameTimeGraph::declareGraph("draw", ColorValueHolder(0.0f, 0.0f, 1.0f));
+	FrameTimeGraph::declareGraph("all", ColorValueHolder(1.0f, 1.0f, 1.0f));
 
-	if (ini_data.exists("DEBUG", "PerformanceGraphOffset")) {
-		Diagnostics::setGraphYOffset(GAME_HEIGHT * std::stod(ini_data.get("DEBUG", "PerformanceGraphOffset")));
+	if (ini_data.exists("DEBUG", "PerformanceGraphOffsetMultiplier")) {
+		FrameTimeGraph::setGraphYOffset(GAME_HEIGHT * std::stod(ini_data.get("DEBUG", "PerformanceGraphOffsetMultiplier")));
 	} else {
-		Diagnostics::setGraphYOffset(GAME_HEIGHT);
+		FrameTimeGraph::setGraphYOffset(GAME_HEIGHT);
 	}
 
 	//game mode:
-	GameMainLoop* game;
-	if (ini_data.exists("UNIVERAL", "GameMode")) {
-		int mode = std::stoi(ini_data.get("UNIVERSAL", "GameMode"));
-		switch (mode) {
-			default:
-				std::cerr << "Unknown GameMode \"" << mode << "\"!" << std::endl;
-				[[fallthrough]];
-			case 0:
-				//normal
-				game = new GameMainLoop();
-				break;
-			case 1:
-				//superfast shooting
-				game = new GameMainLoop();
-				break;
-			case 2:
-				//infinite world
-				game = new GameMainLoop();
-				break;
-		}
-	} else {
-		game = new GameMainLoop();
-	}
+	GameMainLoop* game = new GameMainLoop();
 	GameSceneManager::pushScene(game);
 
 	//main game code initialization stuff:
@@ -459,18 +469,60 @@ int main(int argc, char** argv) {
 	ResetThings::firstLevelPush();
 	ResetThings::firstReset();
 
-	std::cout << "OpenGL renderer: " << glGetString(GL_RENDERER) << std::endl;
-	std::cout << "OpenGL vendor: " << glGetString(GL_VENDOR) << std::endl;
-	std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl << std::endl;
+	Renderer::PrintRendererInfo();
 
-	//framelimiter
-	//glutTimerFunc(1000/physicsRate, tick, physicsRate); //see GameMainLoop
-	GameSceneManager::TickScenes(100);
+	//main loop:
+	FrameMark;
+	double startTime = glfwGetTime();
+	while (!glfwWindowShouldClose(WindowInitializer::glfw_window)) {
+		//do the frame:
 
-	// Start the main loop
-	glutMainLoop();
+		//TODO: should the last frame flush here instead? would give better frame pacing
 
+		glfwPollEvents();
+		GameSceneManager::TickScenes();
+
+		//wait until it's time to start the next frame:
+
+		double currTime = glfwGetTime();
+		//const double timeDiffMS = (currTime - startTime) * 1000;
+		//std::cout << "time took: " << timeDiffMS << "ms" << std::endl;
+
+		if (currTime - startTime > 10.0/1000) {
+			//lagging
+			startTime = currTime;
+		} else {
+			//need to wait
+			startTime += 10.0/1000;
+
+			const double timeDelayUS = (startTime - currTime) * 1000000;
+			//sleeping on a modern OS is unreliable for <10ms, so use platform-specific methods: Windows timers and POSIX nanosleep
+			//sleep duration from https://github.com/dolphin-emu/dolphin/pull/13426
+			#ifdef _WIN32
+			const long long sleepTimeUS = static_cast<long long>(timeDelayUS) - 1020; //1ms+20us
+			if (sleepTimeUS > 0) {
+				usleep_windows(sleepTimeUS);
+			}
+			#else
+			const long sleepTimeUS = static_cast<long>(timeDelayUS) - 1020; //1ms+20us
+			if (sleepTimeUS > 0) {
+				//for some reason, using std thread sleep is fine now...
+				//if it's not fine for you, use SleepInUs_posix(sleepTimeUS) instead
+				std::this_thread::sleep_for(std::chrono::microseconds(sleepTimeUS));
+			}
+			#endif
+			//spin for the rest
+			double temp = glfwGetTime();
+			while (temp - startTime < 0) {
+				std::this_thread::yield(); //better than raw spinning...
+				temp = glfwGetTime();
+			}
+		}
+	}
+
+	PhysicsHandler::Uninitialize();
 	Renderer::Uninitialize();
+	WindowInitializer::UninitializeWindow();
 
 	rpmalloc_finalize();
 	return 0;

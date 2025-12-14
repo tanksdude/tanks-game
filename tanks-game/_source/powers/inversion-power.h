@@ -30,7 +30,7 @@ public:
 	virtual TankPower* makeDuplicate() const override { return new InversionTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
 
-	virtual double getTankTurningIncrementMultiplier() const override { return -1; }
+	virtual float getTankTurningIncrementMultiplier() const override { return -1; }
 	//bool tankTurningIncrementStacks = true;
 
 	InversionTankPower();
@@ -41,6 +41,7 @@ public:
 class InversionBulletPower : public BulletPower {
 public:
 	virtual ColorValueHolder getColor() const override { return InversionPower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return InversionPower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new InversionBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

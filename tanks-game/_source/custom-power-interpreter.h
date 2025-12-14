@@ -23,7 +23,7 @@ public:
 		addExtraShootingPoints_Enable,
 		addExtraShootingPoints_Raw,
 
-		modifiedCollisionWithEdge_Enable,
+		modifiedCollisionWithEdge_Enable, //not modifiedEdgeCollision for consistency with bulletpowers
 		modifiedCollisionWithEdge_AdditionalBoundary,
 
 		//modifiedCollisionWithTank_Enable,
@@ -35,7 +35,7 @@ public:
 		//modifiedCollisionWithRectHazard_Enable,
 
 		modifiedDeathHandling_Enable,
-		modifiedDeathHandling_DurationSubtract,
+		modifiedDeathHandling_DurationSubtractPercent,
 
 		tankMaxSpeedMultiplier,
 		tankMaxSpeedStacks,
@@ -58,7 +58,7 @@ public:
 	enum class CustomPowerCommands_BulletPower {
 		modifiedCollision_BounceCount,
 
-		modifiedCollisionWithEdge_EnableBounce,
+		modifiedCollisionWithEdge_EnableBounce, //not modifiedEdgeCollision for consistency with wall collision
 
 		//modifiedCollisionWithTank_Enable,
 
@@ -160,27 +160,27 @@ protected:
 	std::shared_ptr<std::vector<CustomPower::CustomPowerAction_Tank*>> initializationActions_tank;
 	std::shared_ptr<std::vector<CustomPower::CustomPowerAction_Bullet*>> initializationActions_bullet;
 
-	double tankMaxSpeedMultiplier;
-	double tankAccelerationMultiplier;
+	float  tankMaxSpeedMultiplier;
+	float  tankAccelerationMultiplier;
 	double tankRadiusMultiplier;
 	double tankFiringRateMultiplier;
-	double tankTurningIncrementMultiplier;
+	float  tankTurningIncrementMultiplier;
 
 	float offenseImportance;
 	float offenseTier;
 	float defenseImportance;
 	float defenseTier;
 
-	double additionalShooting_AngleRelativeToTank;
-	double additionalShooting_AngleRelativeToCannon;
+	float additionalShooting_AngleRelativeToTank;
+	float additionalShooting_AngleRelativeToCannon;
 	int additionalShooting_BulletCount;
 
-	std::vector<double> addShootingPoints_AngleList;
-	std::vector<std::pair<double, double>> addExtraShootingPoints_AngleList;
+	std::vector<float> addShootingPoints_AngleList;
+	std::vector<std::pair<float, float>> addExtraShootingPoints_AngleList;
 
 	double modifiedCollisionWithEdge_AdditionalBoundaryAmount;
 
-	double modifiedDeathHandling_DurationSubtractAmount;
+	double modifiedDeathHandling_DurationSubtractPercent;
 
 protected:
 	inline void initialization_helper_Enable(bool& thingToUpdate, const GenericFactoryConstructionData&) noexcept;
@@ -201,7 +201,7 @@ protected:
 	inline void initialization_modifiedCollisionWithEdge_AdditionalBoundary(const GenericFactoryConstructionData&) noexcept;
 
 	inline void initialization_modifiedDeathHandling_Enable_tank(const GenericFactoryConstructionData&) noexcept;
-	inline void initialization_modifiedDeathHandling_DurationSubtract_tank(const GenericFactoryConstructionData&) noexcept;
+	inline void initialization_modifiedDeathHandling_DurationSubtractPercent_tank(const GenericFactoryConstructionData&) noexcept;
 
 	inline void initialization_tankMaxSpeedMultiplier(const GenericFactoryConstructionData&) noexcept;
 	inline void initialization_tankMaxSpeedStacks(const GenericFactoryConstructionData&) noexcept;
@@ -228,29 +228,29 @@ public:
 
 	InteractionBoolHolder modifiedEdgeCollision(Tank*) override;
 
-	//InteractionBoolHolder modifiedCollisionWithTank(Tank* parent, Tank* other) override;
+	//InteractionUpdateHolder<TankUpdateStruct, TankUpdateStruct> modifiedCollisionWithTank(const Tank* parent, const Tank* other) override;
 
-	//InteractionBoolHolder modifiedCollisionWithWall(Tank*, Wall*) override;
+	//InteractionUpdateHolder<TankUpdateStruct, WallUpdateStruct> modifiedCollisionWithWall(const Tank*, const Wall*) override;
 
 	//bool getModifiesCollisionWithCircleHazard(const CircleHazard*) const override;
-	//InteractionBoolHolder modifiedCollisionWithCircleHazard(Tank*, CircleHazard*) override;
+	//InteractionUpdateHolder<TankUpdateStruct, CircleHazardUpdateStruct> modifiedCollisionWithCircleHazard(const Tank*, const CircleHazard*) override;
 
 	//bool getModifiesCollisionWithRectHazard(const RectHazard*) const override;
-	//InteractionBoolHolder modifiedCollisionWithRectHazard(Tank*, RectHazard*) override;
+	//InteractionUpdateHolder<TankUpdateStruct, RectHazardUpdateStruct> modifiedCollisionWithRectHazard(const Tank*, const RectHazard*) override;
 
-	InteractionBoolHolder modifiedDeathHandling(Tank* parent) override;
+	InteractionBoolHolder modifiedDeathHandling(const Tank* parent) override;
 
 	void additionalShooting(Tank* parent, const CannonPoint&, const ExtraCannonPoint&) override;
 
-	std::vector<double>* addShootingPoints() const override;
+	std::vector<float>* addShootingPoints() const override;
 
-	std::vector<std::pair<double, double>>* addExtraShootingPoints() const override;
+	std::vector<std::pair<float, float>>* addExtraShootingPoints() const override;
 
-	double getTankMaxSpeedMultiplier() const override { return this->tankMaxSpeedMultiplier; }
-	double getTankAccelerationMultiplier() const override { return this->tankAccelerationMultiplier; }
+	float  getTankMaxSpeedMultiplier() const override { return this->tankMaxSpeedMultiplier; }
+	float  getTankAccelerationMultiplier() const override { return this->tankAccelerationMultiplier; }
 	double getTankRadiusMultiplier() const override { return this->tankRadiusMultiplier; }
 	double getTankFiringRateMultiplier() const override { return this->tankFiringRateMultiplier; }
-	double getTankTurningIncrementMultiplier() const override { return this->tankTurningIncrementMultiplier; }
+	float  getTankTurningIncrementMultiplier() const override { return this->tankTurningIncrementMultiplier; }
 
 	float getOffenseImportance() const override { return this->offenseImportance; }
 	float getOffenseTier(const Tank*) const override { return this->offenseTier; }
@@ -278,11 +278,11 @@ protected:
 	std::shared_ptr<std::vector<CustomPower::CustomPowerAction_Tank*>> initializationActions_tank;
 	std::shared_ptr<std::vector<CustomPower::CustomPowerAction_Bullet*>> initializationActions_bullet;
 
-	double bulletSpeedMultiplier;
+	float  bulletSpeedMultiplier;
 	double bulletRadiusMultiplier;
-	double bulletAcceleration;
-	float bulletAccelerationImportance;
-	double bulletDeceleration_DegradeAmount;
+	float  bulletAcceleration;
+	float  bulletAccelerationImportance;
+	float  bulletDeceleration_DegradeAmount;
 
 	float offenseImportance;
 	float offenseTier;
@@ -323,6 +323,7 @@ protected:
 public:
 	ColorValueHolder getColor() const override { return this->color; }
 	float getColorImportance() const override { return this->colorImportance; }
+	std::string getColorIdentifier() const override { return this->name; }
 
 	BulletPower* makeDuplicate() const override;
 	TankPower* makeTankPower() const override;
@@ -334,18 +335,18 @@ public:
 	InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> modifiedCollisionWithWall(const Bullet*, const Wall*) override;
 
 	//bool getModifiesCollisionWithCircleHazard(const CircleHazard*) const override;
-	//InteractionBoolHolder modifiedCollisionWithCircleHazard(Bullet*, CircleHazard*) override;
+	//InteractionUpdateHolder<BulletUpdateStruct, CircleHazardUpdateStruct> modifiedCollisionWithCircleHazard(const Bullet*, const CircleHazard*) override;
 
 	//bool getModifiesCollisionWithRectHazard(const RectHazard*) const override;
-	//InteractionBoolHolder modifiedCollisionWithRectHazard(Bullet*, RectHazard*) override;
+	//InteractionUpdateHolder<BulletUpdateStruct, RectHazardUpdateStruct> modifiedCollisionWithRectHazard(const Bullet*, const RectHazard*) override;
 
-	InteractionBoolHolder modifiedDeathHandling(Bullet* parent) override;
+	InteractionBoolHolder modifiedDeathHandling(const Bullet* parent) override;
 
-	double getBulletSpeedMultiplier() const override { return this->bulletSpeedMultiplier; }
+	float  getBulletSpeedMultiplier() const override { return this->bulletSpeedMultiplier; }
 	double getBulletRadiusMultiplier() const override { return this->bulletRadiusMultiplier; }
-	double getBulletAcceleration() const override { return this->bulletAcceleration; }
-	float getBulletAccelerationImportance() const override { return this->bulletAccelerationImportance; }
-	double getBulletDegradeAmount() const override { return this->bulletDeceleration_DegradeAmount; }
+	float  getBulletAcceleration() const override { return this->bulletAcceleration; }
+	float  getBulletAccelerationImportance() const override { return this->bulletAccelerationImportance; }
+	float  getBulletDegradeAmount() const override { return this->bulletDeceleration_DegradeAmount; }
 
 	float getOffenseImportance() const override { return this->offenseImportance; }
 	float getOffenseTier(const Bullet*) const override { return this->offenseTier; }
@@ -359,7 +360,7 @@ public:
 	CustomBulletPower(std::string name, const ColorValueHolder& color, float colorImportance, double tankDuration,
 		std::shared_ptr<std::vector<CustomPower::CustomPowerAction_Tank*>> initializationActions_tank,
 		std::shared_ptr<std::vector<CustomPower::CustomPowerAction_Bullet*>> initializationActions_bullet,
-		double speedMultiplier, double radiusMultiplier, double acceleration, int bouncesLeft); //for makeDuplicate() to pass on things that can vary in a range and bounces left
+		double radiusMultiplier, float speedMultiplier, float acceleration, int bouncesLeft); //for makeDuplicate() to pass on things that can vary in a range and bounces left
 };
 
 
@@ -406,7 +407,7 @@ protected: //tank
 	//static inline void stringToAction_modifiedCollisionWithEdge_AdditionalBoundary(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData);
 
 	//static inline void stringToAction_modifiedDeathHandling_Enable(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData);
-	//static inline void stringToAction_modifiedDeathHandling_DurationSubtract(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData);
+	//static inline void stringToAction_modifiedDeathHandling_DurationSubtractPercent(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData);
 
 	//static inline void stringToAction_tankMaxSpeedMultiplier(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData);
 	//static inline void stringToAction_tankMaxSpeedStacks(const std::vector<std::string>& words, GenericFactoryConstructionData& constructionData);

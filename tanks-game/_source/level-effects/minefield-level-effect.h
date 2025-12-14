@@ -20,7 +20,7 @@ protected:
 	std::vector<Game_ID> aliveMinesPushed;
 	void updateMineCount();
 	[[nodiscard]] virtual Bullet* genMine() const;
-	virtual inline void pushRandomMine();
+	virtual void pushRandomMine();
 	inline void pushMine();
 
 public:

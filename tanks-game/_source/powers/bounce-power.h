@@ -1,7 +1,7 @@
 #pragma once
 #include "../power.h"
 
-//TOOD: wall/edge bouncing should probably be a built-in feature, since multiple powers bounce, but they can "double bounce" off stuff which is very wrong
+//TODO: wall/edge bouncing should probably be a built-in feature, since multiple powers bounce, but they can "double bounce" off stuff which is very wrong
 //wall bounce notes: check if the bulletpower does bounce, do the bounce, apply an update to the bulletpower (to decrease bounce count), check if the other bulletpowers want to do something
 //if the other bulletpowers do want to do something, then only the first one can do anything to the wall (so ultrabounce doesn't push twice)
 //should something like wall sparks create twice as many sparks, or should it only be allowed once? could this whole thing be solved by not letting the same power type go twice?
@@ -46,7 +46,7 @@ public:
 	virtual TankPower* makeDuplicate() const override { return new BounceTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
 
-	//virtual double getTankAccelerationMultiplier() const override { return .5; } //JS
+	//virtual float  getTankAccelerationMultiplier() const override { return .5; } //JS
 	//virtual double getTankRadiusMultiplier() const override { return .5; } //JS
 	//virtual double getTankFiringRateMultiplier() const override { return .5; } //JS
 
@@ -61,17 +61,18 @@ protected:
 
 public:
 	virtual ColorValueHolder getColor() const override { return BouncePower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return BouncePower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override;
 	virtual TankPower* makeTankPower() const override;
 
+	//bool modifiesEdgeCollision = true;
+	virtual InteractionBoolHolder modifiedEdgeCollision(Bullet*) override;
+
 	//bool modifiesCollisionWithWall = true;
 	virtual InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> modifiedCollisionWithWall(const Bullet*, const Wall*) override;
 
-	//bool modifiesCollisionWithEdge = true;
-	virtual InteractionBoolHolder modifiedEdgeCollision(Bullet*) override;
-
-	virtual double getBulletSpeedMultiplier() const override { return .5; } //JS: .25
+	virtual float getBulletSpeedMultiplier() const override { return .5; } //JS: .25
 
 	BounceBulletPower();
 	BounceBulletPower(int bounces);

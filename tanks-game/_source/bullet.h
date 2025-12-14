@@ -2,6 +2,7 @@
 class Bullet;
 struct BulletUpdateStruct;
 
+#include "constants.h"
 #include <vector>
 
 #include "game-thing.h"
@@ -23,15 +24,17 @@ class Bullet : public GameThing, public Circle, public DrawableThing {
 	friend class ResetThings;
 	friend class PowerFunctionHelper;
 	friend class EndGameHandler;
+	friend class Renderer; //only to access the vertices
 
 public: //hopefully temporary
 	SimpleVector2D velocity;
-	double initial_velocity;
-	double acceleration;
+	float initial_velocity;
+	float acceleration;
 	Game_ID parentID; //may not be used, depends on parentType
 	BulletParentType parentType;
 	std::vector<BulletPower*> bulletPowers; //change eventually?
-	double lifeValue; //[0,100], controls transparency (0=nothing, 100=opaque)
+	float lifeValue; //[0,100], controls transparency (0=nothing, 100=opaque)
+	Color_ID m_colorIdentifier;
 
 public:
 	float getOffenseTier() const;
@@ -44,17 +47,14 @@ protected:
 	float getHighestDefenseTier(float importance) const;
 
 public:
-	double getBulletSpeedMultiplier() const;
+	float  getBulletSpeedMultiplier() const;
 	double getBulletRadiusMultiplier() const;
-	double getBulletAcceleration() const;
-	double getBulletDegradeAmount() const;
-	double getBulletRadiusGrowNumber_StationaryAdditive() const;
-	double getBulletRadiusGrowNumber_StationaryMultiplier() const;
-	double getBulletRadiusGrowNumber_MovingAdditive() const;
-	double getBulletRadiusGrowNumber_MovingMultiplier() const;
+	float  getBulletAcceleration() const;
+	float  getBulletDegradeAmount() const;
+	std::pair<double, double> getBulletRadiusGrowNumber_Stationary() const; //{additive, multiplier}
+	std::pair<double, double> getBulletRadiusGrowNumber_Moving() const;     //{additive, multiplier}
 
 protected:
-	ColorValueHolder defaultColor = ColorValueHolder(0.5f, 0.5f, 0.5f);
 	bool kill(); //allows for custom death (a.k.a. something saving the bullet from death)
 	inline void move_base();
 	inline void degradeHandle();
@@ -62,18 +62,20 @@ protected:
 
 public:
 	//helper functions:
-	ColorValueHolder getColor() const;
-	double getInitialVelocity() const { return initial_velocity; }
+	const ColorValueHolder& getColor() const;
+	inline float getInitialVelocity() const { return initial_velocity; }
 	Game_ID getParentID() const { return parentID; }
 	BulletParentType getParentIDType() const { return parentType; }
 	bool isDead() const { return (lifeValue <= 0); }
 
+	static const ColorValueHolder default_color;
 	static const double default_radius;
 
 public:
 	bool move();
-	void powerCalculate();
+	void powerTick();
 	void removePower(int index);
+	void updateColorIdentifier();
 
 	bool canCollideWith(const GameThing*) const;
 	bool canCollideWith(const Bullet*) const;
@@ -86,31 +88,24 @@ public:
 	void ghostDraw(float alpha) const override;
 	void ghostDraw(DrawingLayers, float alpha) const override;
 
-protected:
-	inline void drawBody(float alpha = 1.0f) const;
-	inline void drawOutline(float alpha = 1.0f) const;
-	inline void drawDeathCooldown(float alpha = 1.0f) const;
-	inline void drawDeathBar(float alpha = 1.0f) const;
-
 private:
 	//NOTE: bullets have half the normal circle vertices
 	static constexpr unsigned int BulletSideCount = Circle::NumOfSides / 2;
-	static SimpleVector2D body_vertices[BulletSideCount + 1];
-	static unsigned int body_indices[BulletSideCount * 3];
-	static unsigned int outline_indices[BulletSideCount * 2*3];
+	static float instanced_vertices[2 * ((BulletSideCount + 2) + (BulletSideCount + 1) + (BulletSideCount * 2))];
+	static unsigned int instanced_indices[BulletSideCount * 3 * (1+1+2)];
 	static bool initialized_vertices;
-
-	static bool initializeVertices();
+public:
+	static bool initializeVertices(); //initialized in main()
 
 private:
-	Bullet(double x, double y, double angle, Team_ID teamID, BulletParentType parentType, Game_ID parentID); //every bullet uses this
-	Bullet(double x, double y, double angle, Team_ID teamID, BulletParentType parentType, Game_ID parentID, const std::vector<BulletPower*>* bp); //most bullets use this
+	Bullet(double x, double y, float angle, Team_ID teamID, BulletParentType parentType, Game_ID parentID); //every bullet uses this
+	Bullet(double x, double y, float angle, Team_ID teamID, BulletParentType parentType, Game_ID parentID, const std::vector<BulletPower*>* bp); //most bullets use this
 public:
-	Bullet(double x, double y, double r, double angle, double vel, Team_ID teamID, BulletParentType parentType, Game_ID parentID, const std::vector<BulletPower*>* bp, bool lessOverriding); //basically just for banana
-	Bullet(double x, double y, double r, double angle, double vel, double acc, Team_ID teamID, BulletParentType parentType, Game_ID parentID, const std::vector<BulletPower*>* bp, bool manualAcceleration); //avoid using
+	Bullet(double x, double y, double r, float angle, float vel, Team_ID teamID, BulletParentType parentType, Game_ID parentID, const std::vector<BulletPower*>* bp, bool lessOverriding); //basically just for banana
+	Bullet(double x, double y, double r, float angle, float vel, float acc, Team_ID teamID, BulletParentType parentType, Game_ID parentID, const std::vector<BulletPower*>* bp, bool manualAcceleration); //avoid using
 public:
-	Bullet(double x, double y, double r, double angle, double vel, Team_ID teamID, BulletParentType parentType, Game_ID parentID);
-	Bullet(double x, double y, double r, double angle, double vel, Team_ID teamID, BulletParentType parentType, Game_ID parentID, const std::vector<BulletPower*>* bp);
+	Bullet(double x, double y, double r, float angle, float vel, Team_ID teamID, BulletParentType parentType, Game_ID parentID);
+	Bullet(double x, double y, double r, float angle, float vel, Team_ID teamID, BulletParentType parentType, Game_ID parentID, const std::vector<BulletPower*>* bp);
 	~Bullet();
 };
 
@@ -118,17 +113,16 @@ struct BulletUpdateStruct {
 	//deltas:
 	double x;
 	double y;
-	double r;
-	double speed;
-	double angle;
-	double alpha;
-	//absolutes:
-	//double acceleration;
-	std::vector<Bullet*> newBullets; //not implemented, don't use
+	float speed;
+	float angle;
+	float alpha;
+	//float acceleration;
+	//others:
+	//std::vector<Bullet*> newBullets; //not implemented, don't use
 
 	void add(const BulletUpdateStruct& other);
 
-	BulletUpdateStruct(double x, double y, double r, double speed, double angle, double alpha, const std::vector<Bullet*>& newBullets);
-	BulletUpdateStruct(double x, double y, double r, double speed, double angle, double alpha);
-	BulletUpdateStruct() : BulletUpdateStruct(0, 0, 0, 0, 0, 0) {}
+	//BulletUpdateStruct(double x, double y, float speed, float angle, float alpha, const std::vector<Bullet*>& newBullets);
+	BulletUpdateStruct(double x, double y, float speed, float angle, float alpha);
+	BulletUpdateStruct() : BulletUpdateStruct(0, 0, 0, 0, 0) {}
 };

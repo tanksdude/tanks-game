@@ -14,7 +14,8 @@
 #include "keypress-manager.h"
 //other:
 #include "background-rect.h"
-#include "diagnostics.h"
+#include "frame-time-graph.h"
+#include "color-cache.h"
 
 //managers:
 #include "game-manager.h"
@@ -30,8 +31,7 @@
 #include "end-game-handler.h"
 #include "physics-handler.h"
 
-//#include <GL/glew.h>
-//#include <GL/freeglut.h>
+#include <tracy/Tracy.hpp>
 
 void doThing() {
 	return;
@@ -39,324 +39,906 @@ void doThing() {
 
 TankInputChar::TankInputChar(std::string key_input) {
 	key = key_input;
-	if (KeypressManager::keyIsSpecialFromString(key_input)) {
-		isSpecial = true;
-		key_num = KeypressManager::specialKeyFromString(key_input);
-	} else {
-		isSpecial = false;
-		key_num = KeypressManager::normalKeyFromString(key_input);
-	}
 }
 TankInputChar::TankInputChar() {
 	key = "`";
-	isSpecial = false;
-	key_num = '`';
 }
 
 bool TankInputChar::getKeyState() const {
-	if (isSpecial) {
-		return KeypressManager::getSpecialKey(key_num);
-	}
-	return KeypressManager::getNormalKey(key_num);
+	return KeypressManager::getKeyState(key);
 }
-
-GameMainLoop::ThreadJob::ThreadJob(ThreadJobType j, void* list, void* values, void** newArr, int start, int end) {
-	jobType = j;
-	updateList = list;
-	updateValues = values;
-	newArrayPointer = newArr;
-	arrayStart = start;
-	arrayEnd = end;
-}
-
-GameMainLoop::ThreadJob::ThreadJob(ThreadJobType j, void* list, void* values, int start, int end)
-: GameMainLoop::ThreadJob::ThreadJob(j, list, values, nullptr, start, end) {}
-
-std::atomic_bool GameMainLoop::keepRunning;
-std::queue<GameMainLoop::ThreadJob*> GameMainLoop::workQueue; //TODO: real asynchronous consumer-producer queue
-std::condition_variable GameMainLoop::queueCV;
-std::mutex GameMainLoop::queueMutex;
-std::atomic_bool* GameMainLoop::thread_isWorking;
 
 GameMainLoop::GameMainLoop() : GameScene() {
-	const BasicINIParser::BasicINIData& ini_data = GameManager::get_INI();
-
-	helperThreadCount = 0;
-	if (ini_data.exists("UNIVERSAL", "ThreadCount")) {
-		helperThreadCount = -1 + std::stoi(ini_data.get("UNIVERSAL", "ThreadCount")); //the ini lists total thread count, this only generates the extra threads
-		helperThreadCount = std::max(helperThreadCount, 0);
-	}
-
-	thread_isWorking = new std::atomic_bool[helperThreadCount];
-	thread_arr = new std::thread[helperThreadCount];
-	for (int i = 0; i < helperThreadCount; i++) {
-		thread_isWorking[i].store(false);
-		thread_arr[i] = std::thread(thread_func, i, helperThreadCount+1);
-	}
-
-	physicsRate = 100;
 	waitCount = 0;
-	maxWaitCount = 1000/physicsRate * 10;
+	maxWaitCount = 100;
 }
 
-GameMainLoop::~GameMainLoop() {
-	keepRunning.store(false);
-	queueCV.notify_all();
-
-	for (int i = 0; i < helperThreadCount; i++) {
-		thread_arr[i].join();
-	}
-	delete[] thread_arr;
-	delete[] thread_isWorking;
-
-	while (!workQueue.empty()) {
-		delete workQueue.front();
-		workQueue.pop();
-	}
-}
-
-void GameMainLoop::thread_func(int thread_id, int numThreads) {
-	while (keepRunning.load()) {
-		std::unique_lock<std::mutex> lock(queueMutex);
-		while (keepRunning.load()) {
-			queueCV.wait(lock);
-		}
-		if (!keepRunning) {
-			//notify_all was called, thread needs to die
-			//TODO: is the mutex supposed to be unlocked?
-			break;
-		}
-		if (workQueue.size() == 0) {
-			//thread accidentally woken up
-			queueMutex.unlock();
-			//std::this_thread::yield();
-			continue;
-		}
-
-		GameMainLoop::ThreadJob* job = workQueue.front();
-		workQueue.pop();
-		thread_isWorking[thread_id].store(true);
-		queueMutex.unlock();
-
-		bool didWork = true;
-		switch (job->jobType) {
-			default:
-				std::cerr << "unsupported job type " << int(job->jobType) << std::endl;
-				[[fallthrough]];
-			case ThreadJobType::nothing:
-				didWork = false;
-				break;
-
-			case ThreadJobType::update_bullets:
-				thread_updateBulletsFunc(job->updateList, job->updateValues, job->arrayStart, job->arrayEnd);
-				break;
-			case ThreadJobType::update_walls:
-				thread_updateWallsFunc(job->updateList, job->updateValues, job->arrayStart, job->arrayEnd);
-				break;
-			case ThreadJobType::update_circleHazards:
-				thread_updateCircleHazardsFunc(job->updateList, job->updateValues, job->arrayStart, job->arrayEnd);
-				break;
-			case ThreadJobType::update_rectHazards:
-				thread_updateRectHazardsFunc(job->updateList, job->updateValues, job->arrayStart, job->arrayEnd);
-				break;
-
-			case ThreadJobType::broad_bulletToWall:
-				thread_broadBulletToWall(job->updateList, job->updateValues, job->newArrayPointer);
-				break;
-			case ThreadJobType::broad_bulletToCircleHazard:
-				thread_broadBulletToCircleHazard(job->updateList, job->updateValues, job->newArrayPointer);
-				break;
-			case ThreadJobType::broad_bulletToRectHazard:
-				thread_broadBulletToRectHazard(job->updateList, job->updateValues, job->newArrayPointer);
-				break;
-			case ThreadJobType::broad_bulletToBullet:
-				thread_broadBulletToBullet(job->updateList, job->newArrayPointer);
-				break;
-			case ThreadJobType::broad_bulletToTank:
-				thread_broadBulletToTank(job->updateList, job->updateValues, job->newArrayPointer);
-				break;
-		}
-
-		delete job;
-		if (didWork) {
-			thread_isWorking[thread_id].store(false);
-		} else {
-			continue;
-		}
-	}
-	//make sure to join() to properly end the thread
-}
-
-inline void GameMainLoop::thread_broadBulletToWall(void* bulletCollisionList, void* wallCollisionList, void** collisionPairList) {
-	*collisionPairList = PhysicsHandler::sweepAndPrune<Circle*, Rect*>(*((std::vector<Circle*>*) bulletCollisionList), *((std::vector<Rect*>*) wallCollisionList));
-}
-
-inline void GameMainLoop::thread_broadBulletToCircleHazard(void* bulletCollisionList, void* circleHazardCollisionList, void** collisionPairList) {
-	*collisionPairList = PhysicsHandler::sweepAndPrune<Circle*, Circle*>(*((std::vector<Circle*>*) bulletCollisionList), *((std::vector<Circle*>*) circleHazardCollisionList));
-}
-
-inline void GameMainLoop::thread_broadBulletToRectHazard(void* bulletCollisionList, void* rectHazardCollisionList, void** collisionPairList) {
-	*collisionPairList = PhysicsHandler::sweepAndPrune<Circle*, Rect*>(*((std::vector<Circle*>*) bulletCollisionList), *((std::vector<Rect*>*) rectHazardCollisionList));
-}
-
-inline void GameMainLoop::thread_broadBulletToBullet(void* bulletCollisionList, void** collisionPairList) {
-	*collisionPairList = PhysicsHandler::sweepAndPrune<Circle*>(*((std::vector<Circle*>*) bulletCollisionList));
-}
-
-inline void GameMainLoop::thread_broadBulletToTank(void* bulletCollisionList, void* tankCollisionList, void** collisionPairList) {
-	*collisionPairList = PhysicsHandler::sweepAndPrune<Circle*, Circle*>(*((std::vector<Circle*>*) bulletCollisionList), *((std::vector<Circle*>*) tankCollisionList));
-}
-
-inline void GameMainLoop::thread_updateBulletsFunc(void* updateBulletList, void* updateBulletValues, int start, int end) {
-	std::unordered_map<Game_ID, BulletUpdateStruct>* bulletUpdates = (std::unordered_map<Game_ID, BulletUpdateStruct>*) updateBulletValues;
-	std::vector<Game_ID>* bulletUpdateList = (std::vector<Game_ID>*) updateBulletList;
-
-	for (int i = start; i < end; i++) {
-		Bullet* b = BulletManager::getBulletByID(bulletUpdateList->at(i));
-		b->update(&bulletUpdates->at(bulletUpdateList->at(i)));
-	}
-}
-
-inline void GameMainLoop::thread_updateWallsFunc(void* updateWallList, void* updateWallValues, int start, int end) {
-	std::unordered_map<Game_ID, WallUpdateStruct>* wallUpdates = (std::unordered_map<Game_ID, WallUpdateStruct>*) updateWallValues;
-	std::vector<Game_ID>* wallUpdateList = (std::vector<Game_ID>*) updateWallList;
-	
-	for (int i = start; i < end; i++) {
-		Wall* w = WallManager::getWallByID(wallUpdateList->at(i));
-		w->update(&wallUpdates->at(wallUpdateList->at(i)));
-		//TODO: is there still a unordered_map invalid key error here?
-	}
-}
-
-inline void GameMainLoop::thread_updateCircleHazardsFunc(void* updateCircleHazardList, void* updateCircleHazardValues, int start, int end) {
-	/*
-	std::unordered_map<Game_ID, CircleHazardUpdateStruct>* wallUpdates = (std::unordered_map<Game_ID, CircleHazardUpdateStruct>*) updateCircleHazardValues;
-	std::vector<Game_ID>* circleHazardUpdateList = (std::vector<Game_ID>*) updateCircleHazardList;
-
-	for (int i = start; i < end; i++) {
-		CircleHazard* ch = HazardManager::getCircleHazardByID(circleHazardUpdateList->at(i));
-		ch->update(&circleHazardUpdates->at(circleHazardUpdateList->at(i)));
-	}
-	*/
-}
-
-inline void GameMainLoop::thread_updateRectHazardsFunc(void* updateRectHazardsList, void* updateRectHazardValues, int start, int end) {
-	/*
-	std::unordered_map<Game_ID, RectHazardUpdateStruct>* wallUpdates = (std::unordered_map<Game_ID, RectHazardUpdateStruct>*) updateRectHazardValues;
-	std::vector<Game_ID>* rectHazardUpdateList = (std::vector<Game_ID>*) updateRectHazardList;
-
-	for (int i = start; i < end; i++) {
-		RectHazard* rh = HazardManager::getRectHazardByID(rectHazardUpdateList->at(i));
-		rh->update(&rectHazardUpdates->at(rectHazardUpdateList->at(i)));
-	}
-	*/
-}
-
-void GameMainLoop::Tick(int UPS) {
+void GameMainLoop::Tick() {
+	ZoneScoped;
 	if (EndGameHandler::shouldGameEnd()) {
 		waitCount++;
 		if (waitCount >= maxWaitCount) {
 			waitCount = 0;
 			ResetThings::reset();
 		}
-		Diagnostics::pushGraphTime("tick", 0); //goes after ResetThings::reset() because a draw call will still happen after this
+		FrameTimeGraph::pushGraphTime("tick", 0); //goes after ResetThings::reset() because a draw call will still happen after this
 		return;
 	}
 
-	//big problem: I currently don't have the brainpower or willingness to parallelize the broad phase of collision, but I need to multithread something
-	//solution: parallelize the various broad phases!
-	//bonus: this is how all collision will be able to be done simultaneously
-
-	auto start = Diagnostics::getTime();
+	auto start = FrameTimeGraph::getTime();
 	doThing();
 
-	//level stuff:
 	levelTick();
 
-	//move tanks:
 	moveTanks();
-
-	//collide tanks with powerups:
-	Diagnostics::startTiming("tank-powerups");
 	tankToPowerup();
-	Diagnostics::endTiming();
-
-	//tick hazards:
 	tickHazards();
 
-	//move bullets:
 	moveBullets();
 
-	//powerCalculate on tanks and bullets, then tank shoot:
-	Diagnostics::startTiming("power calculate and tank shoot");
 	tankShoot();
-	tankPowerCalculate();
-	bulletPowerCalculate();
-	Diagnostics::endTiming();
+	tankPowerTickAndCalculate();
+	bulletPowerTick();
 
-	//collide tanks with walls:
-	//this comes before powerCalculate stuff in JS Tanks; TODO: should this be changed?
-	Diagnostics::startTiming("tank-walls");
-	tankToWall();
-	Diagnostics::endTiming();
-
-	//collide tanks with hazards:
-	Diagnostics::startTiming("tank-hazards");
-	tankToHazard();
-	Diagnostics::endTiming();
-
-	//collide tanks with tanks:
-	Diagnostics::startTiming("tank-tank");
-	tankToTank();
-	Diagnostics::endTiming();
-
-	//collide tanks against edges:
 	tankToEdge();
+	bulletToEdge(); //TODO: it would be better to somehow put this in everythingToEverything
 
-	//collide bullets against edges:
-	Diagnostics::startTiming("bullet-edge");
-	bulletToEdge();
-	Diagnostics::endTiming();
-
-	//collide bullets with walls:
-	Diagnostics::startTiming("bullet-wall");
-	bulletToWall();
-	Diagnostics::endTiming();
-
-	//collide bullets with hazards:
-	Diagnostics::startTiming("bullet-hazards");
-	bulletToHazard();
-	Diagnostics::endTiming();
-
-	//collide bullets with bullets:
-	Diagnostics::startTiming("bullet-bullet");
-	bulletToBullet();
-	Diagnostics::endTiming();
-	//add another shader: main uses proj, modify doesn't
-
-	//collide bullets with tanks:
-	Diagnostics::startTiming("bullet-tank");
-	bulletToTank();
-	Diagnostics::endTiming();
-	//don't bother edge constraining tanks again in case bullet decided to move tank
+	GameManager::updateEveryAABB();
+	everythingToEverything();
+	//TODO: it's now impossible for a tank to shoot a bullet the exact frame an enemy bullet hits it and lives; worth the effort to adjust?
+	//maybe bullet-tank collision pairs could be pushed to a list to check later; update everything, then check bullet-tank, then update again
 
 	//finish up by incrementing the tick count
 	GameManager::Tick();
 
-	auto end = Diagnostics::getTime();
-	Diagnostics::pushGraphTime("tick", Diagnostics::getDiff(start, end));
-
-	//Diagnostics::printPreciseTimings();
-	Diagnostics::clearTimes();
+	auto end = FrameTimeGraph::getTime();
+	FrameTimeGraph::pushGraphTime("tick", FrameTimeGraph::getDiff(start, end));
 
 	//std::cout << BulletManager::getNumBullets() << std::endl;
-	//std::cout << "tick: " << (long long)Diagnostics::getDiff(start, end) << "ms" << std::endl << std::endl;
+	//std::cout << "tick: " << FrameTimeGraph::getDiff(start, end) << "ms" << std::endl;
+}
 
-	//largest timesinks:
-	//1. bullet-bullet
-	//2. bullet-hazard
-	//2. bullet-wall (really depends on how many hazards/walls)
-	//3. power calculate and tank shoot
+void GameMainLoop::everythingToEverything() {
+	ZoneScoped;
+
+	FrameMarkStart("broad phase");
+	std::vector<std::vector<std::pair<int, int>>*> collisionLists = PhysicsHandler::sweepAndPrune(GameManager::getObjectCollisionList());
+	FrameMarkEnd("broad phase");
+
+	std::vector<Game_ID> bulletDeletionList;
+	std::vector<Game_ID> wallDeletionList;
+	std::vector<Game_ID> circleHazardDeletionList;
+	std::vector<Game_ID> rectHazardDeletionList;
+
+	std::unordered_map<Game_ID, TankUpdateStruct> tankUpdates;
+	std::unordered_map<Game_ID, BulletUpdateStruct> bulletUpdates;
+	std::unordered_map<Game_ID, WallUpdateStruct> wallUpdates;
+	std::unordered_map<Game_ID, CircleHazardUpdateStruct> circleHazardUpdates;
+	std::unordered_map<Game_ID, RectHazardUpdateStruct> rectHazardUpdates;
+
+	//for multithreaded collision: probably have to add a "try to die" flag to the update structs, as killing is currently very sequential
+	//what about a barrier powerup that also gives invincibility?... that's complicated, worry about it later
+	//or how about a barrier that changes the tank's size?! that's even worse, because now the size change will change the resulting position
+	//multithreaded RNG: currently thinking loop every object, give it a pointer to the start of its requested RNG (there's a list of like 10K RNG calls stored), increment that pointer by the number of RNG calls requested by the object
+	//bulletpowers are still sequential, so that approach needs a mutex for each object, but even then it's still non-deterministic
+	//as that is very complicated and needs a sizeable rewrite, that is a future problem to solve
+
+	//TODO: things can get killed in these functions, thus the results can change depending on the number of threads and how the work is distributed
+	//while I strive to make things as deterministic as possible, uh, oh well on that
+	//not impossible, but it means splitting the kill event from the collision functions, which means a lot of code moving (not really rewriting)
+	//that is a later problem, because it would need a re-architecture of the killing system, and may as well put that off until fully multithreaded collision
+	//as a temporary solution, maybe make a "kill events" list, handle those afterwards
+	//(note: technically this same problem could happen in previous versions, including the 2-phase system in v0.2.5 and the naïve way for everything before)
+
+	FrameMarkStart("narrow phase");
+	for (std::vector<std::pair<int, int>>* collisionList : collisionLists) {
+		for (int i = 0; i < collisionList->size(); i++) {
+			int collisionPairFirst = collisionList->data()[i].first;
+			int collisionPairSecond = collisionList->data()[i].second;
+
+			switch (GameManager::getObject(collisionPairFirst)->getObjectType()) {
+				default: [[fallthrough]];
+				case ObjectType::None:
+					break;
+
+				case ObjectType::Tank:
+					switch (GameManager::getObject(collisionPairSecond)->getObjectType()) {
+						default: [[fallthrough]];
+						case ObjectType::None:
+							break;
+						case ObjectType::Tank:     everythingToEverything_tank_tank(collisionPairFirst, collisionPairSecond, tankUpdates);
+							break;
+						case ObjectType::Bullet:   everythingToEverything_bullet_tank(collisionPairSecond, collisionPairFirst, bulletDeletionList, bulletUpdates, tankUpdates);
+							break;
+						case ObjectType::Wall:     everythingToEverything_tank_wall(collisionPairFirst, collisionPairSecond, tankUpdates, wallDeletionList, wallUpdates);
+							break;
+						case ObjectType::Powerup:  //handled earlier
+							break;
+						case ObjectType::Hazard_C: everythingToEverything_tank_circlehazard(collisionPairFirst, collisionPairSecond, tankUpdates, circleHazardDeletionList, circleHazardUpdates);
+							break;
+						case ObjectType::Hazard_R: everythingToEverything_tank_recthazard(collisionPairFirst, collisionPairSecond, tankUpdates, rectHazardDeletionList, rectHazardUpdates);
+							break;
+					}
+					break;
+
+				case ObjectType::Bullet:
+					switch (GameManager::getObject(collisionPairSecond)->getObjectType()) {
+						default: [[fallthrough]];
+						case ObjectType::None:
+							break;
+						case ObjectType::Tank:     everythingToEverything_bullet_tank(collisionPairFirst, collisionPairSecond, bulletDeletionList, bulletUpdates, tankUpdates);
+							break;
+						case ObjectType::Bullet:   everythingToEverything_bullet_bullet(collisionPairFirst, collisionPairSecond, bulletDeletionList, bulletUpdates);
+							break;
+						case ObjectType::Wall:     everythingToEverything_bullet_wall(collisionPairFirst, collisionPairSecond, bulletDeletionList, bulletUpdates, wallDeletionList, wallUpdates);
+							break;
+						case ObjectType::Powerup:
+							break;
+						case ObjectType::Hazard_C: everythingToEverything_bullet_circlehazard(collisionPairFirst, collisionPairSecond, bulletDeletionList, bulletUpdates, circleHazardDeletionList, circleHazardUpdates);
+							break;
+						case ObjectType::Hazard_R: everythingToEverything_bullet_recthazard(collisionPairFirst, collisionPairSecond, bulletDeletionList, bulletUpdates, rectHazardDeletionList, rectHazardUpdates);
+							break;
+					}
+					break;
+
+				case ObjectType::Wall:
+					switch (GameManager::getObject(collisionPairSecond)->getObjectType()) {
+						default: [[fallthrough]];
+						case ObjectType::None:
+							break;
+						case ObjectType::Tank:     everythingToEverything_tank_wall(collisionPairSecond, collisionPairFirst, tankUpdates, wallDeletionList, wallUpdates);
+							break;
+						case ObjectType::Bullet:   everythingToEverything_bullet_wall(collisionPairSecond, collisionPairFirst, bulletDeletionList, bulletUpdates, wallDeletionList, wallUpdates);
+							break;
+						case ObjectType::Wall:     break;
+						case ObjectType::Powerup:  break;
+						case ObjectType::Hazard_C: break;
+						case ObjectType::Hazard_R: break;
+					}
+					break;
+
+				case ObjectType::Powerup:
+					//nothing
+					break;
+
+				case ObjectType::Hazard_C:
+					switch (GameManager::getObject(collisionPairSecond)->getObjectType()) {
+						default: [[fallthrough]];
+						case ObjectType::None:
+							break;
+						case ObjectType::Tank:     everythingToEverything_tank_circlehazard(collisionPairSecond, collisionPairFirst, tankUpdates, circleHazardDeletionList, circleHazardUpdates);
+							break;
+						case ObjectType::Bullet:   everythingToEverything_bullet_circlehazard(collisionPairSecond, collisionPairFirst, bulletDeletionList, bulletUpdates, circleHazardDeletionList, circleHazardUpdates);
+							break;
+						case ObjectType::Wall:     break;
+						case ObjectType::Powerup:  break;
+						case ObjectType::Hazard_C: break;
+						case ObjectType::Hazard_R: break;
+					}
+					break;
+
+				case ObjectType::Hazard_R:
+					switch (GameManager::getObject(collisionPairSecond)->getObjectType()) {
+						default: [[fallthrough]];
+						case ObjectType::None:
+							break;
+						case ObjectType::Tank:     everythingToEverything_tank_recthazard(collisionPairSecond, collisionPairFirst, tankUpdates, rectHazardDeletionList, rectHazardUpdates);
+							break;
+						case ObjectType::Bullet:   everythingToEverything_bullet_recthazard(collisionPairSecond, collisionPairFirst, bulletDeletionList, bulletUpdates, rectHazardDeletionList, rectHazardUpdates);
+							break;
+						case ObjectType::Wall:     break;
+						case ObjectType::Powerup:  break;
+						case ObjectType::Hazard_C: break;
+						case ObjectType::Hazard_R: break;
+					}
+					break;
+			}
+		}
+	}
+	FrameMarkEnd("narrow phase");
+
+	//resolve the rest of collision
+
+	//FrameMarkStart("resolve updates");
+	for (auto i = tankUpdates.begin(); i != tankUpdates.end(); i++) {
+		Tank* t = TankManager::getTankByID(i->first);
+		t->update(&(i->second));
+	}
+	for (auto i = bulletUpdates.begin(); i != bulletUpdates.end(); i++) {
+		Bullet* b = BulletManager::getBulletByID(i->first);
+		b->update(&(i->second));
+	}
+	for (auto i = wallUpdates.begin(); i != wallUpdates.end(); i++) {
+		Wall* w = WallManager::getWallByID(i->first);
+		w->update(&(i->second));
+	}
+	for (auto i = circleHazardUpdates.begin(); i != circleHazardUpdates.end(); i++) {
+		CircleHazard* ch = HazardManager::getCircleHazardByID(i->first);
+		ch->update(&(i->second));
+	}
+	for (auto i = rectHazardUpdates.begin(); i != rectHazardUpdates.end(); i++) {
+		RectHazard* rh = HazardManager::getRectHazardByID(i->first);
+		rh->update(&(i->second));
+	}
+	//FrameMarkEnd("resolve updates");
+
+	//FrameMarkStart("resolve deletions");
+	for (int i = bulletDeletionList.size() - 1; i >= 0; i--) {
+		BulletManager::deleteBulletByID(bulletDeletionList[i]);
+	}
+	for (int i = wallDeletionList.size() - 1; i >= 0; i--) {
+		WallManager::deleteWallByID(wallDeletionList[i]);
+	}
+	for (int i = circleHazardDeletionList.size() - 1; i >= 0; i--) {
+		HazardManager::deleteCircleHazardByID(circleHazardDeletionList[i]);
+	}
+	for (int i = rectHazardDeletionList.size() - 1; i >= 0; i--) {
+		HazardManager::deleteRectHazardByID(rectHazardDeletionList[i]);
+	}
+	//FrameMarkEnd("resolve deletions");
+}
+
+void GameMainLoop::everythingToEverything_tank_tank(int i, int j, std::unordered_map<Game_ID, TankUpdateStruct>& tankUpdates) {
+	Tank* t_first = static_cast<Tank*>(GameManager::getObject(i));
+	Tank* t_second = static_cast<Tank*>(GameManager::getObject(j));
+	bool t_firstShouldDie = false;
+	bool t_secondShouldDie = false;
+	bool overridedTankCollision = false;
+
+	if (CollisionHandler::partiallyCollided(t_first, t_second)) {
+		for (int k = 0; k < t_first->tankPowers.size(); k++) {
+			if (t_first->tankPowers[k]->modifiesCollisionWithTank) {
+				if (t_first->tankPowers[k]->overridesCollisionWithTank) {
+					overridedTankCollision = true;
+				}
+
+				InteractionUpdateHolder<TankUpdateStruct, TankUpdateStruct> check_temp = t_first->tankPowers[k]->modifiedCollisionWithTank(t_first, t_second);
+				if (t_first->getTeamID() != t_second->getTeamID()) {
+					if (check_temp.deaths.firstShouldDie) {
+						t_firstShouldDie = true;
+					}
+					if (check_temp.deaths.secondShouldDie) {
+						t_secondShouldDie = true;
+					}
+				}
+
+				if (check_temp.firstUpdate != nullptr) {
+					if (tankUpdates.find(t_first->getGameID()) == tankUpdates.end()) {
+						tankUpdates.insert({ t_first->getGameID(), TankUpdateStruct(*check_temp.firstUpdate) });
+					} else {
+						tankUpdates[t_first->getGameID()].add(TankUpdateStruct(*check_temp.firstUpdate));
+					}
+				}
+				if (check_temp.secondUpdate != nullptr) {
+					if (tankUpdates.find(t_second->getGameID()) == tankUpdates.end()) {
+						tankUpdates.insert({ t_second->getGameID(), TankUpdateStruct(*check_temp.secondUpdate) });
+					} else {
+						tankUpdates[t_second->getGameID()].add(TankUpdateStruct(*check_temp.secondUpdate));
+					}
+				}
+
+				if (!t_first->tankPowers[k]->modifiedCollisionWithTankCanWorkWithOthers) {
+					break;
+				}
+			}
+		}
+
+		for (int k = 0; k < t_second->tankPowers.size(); k++) {
+			if (t_second->tankPowers[k]->modifiesCollisionWithTank) {
+				if (t_second->tankPowers[k]->overridesCollisionWithTank) {
+					overridedTankCollision = true;
+				}
+
+				InteractionUpdateHolder<TankUpdateStruct, TankUpdateStruct> check_temp = t_second->tankPowers[k]->modifiedCollisionWithTank(t_second, t_first);
+				if (t_first->getTeamID() != t_second->getTeamID()) {
+					if (check_temp.deaths.firstShouldDie) {
+						t_secondShouldDie = true;
+					}
+					if (check_temp.deaths.secondShouldDie) {
+						t_firstShouldDie = true;
+					}
+				}
+
+				if (check_temp.firstUpdate != nullptr) {
+					if (tankUpdates.find(t_second->getGameID()) == tankUpdates.end()) {
+						tankUpdates.insert({ t_second->getGameID(), TankUpdateStruct(*check_temp.firstUpdate) });
+					} else {
+						tankUpdates[t_second->getGameID()].add(TankUpdateStruct(*check_temp.firstUpdate));
+					}
+				}
+				if (check_temp.secondUpdate != nullptr) {
+					if (tankUpdates.find(t_first->getGameID()) == tankUpdates.end()) {
+						tankUpdates.insert({ t_first->getGameID(), TankUpdateStruct(*check_temp.secondUpdate) });
+					} else {
+						tankUpdates[t_first->getGameID()].add(TankUpdateStruct(*check_temp.secondUpdate));
+					}
+				}
+
+				if (!t_second->tankPowers[k]->modifiedCollisionWithTankCanWorkWithOthers) {
+					break;
+				}
+			}
+		}
+
+		if (!overridedTankCollision) {
+			InteractionUpdateHolder<TankUpdateStruct, TankUpdateStruct> result = EndGameHandler::determineWinner(t_first, t_second, t_firstShouldDie, t_secondShouldDie);
+			t_firstShouldDie = result.deaths.firstShouldDie;
+			t_secondShouldDie = result.deaths.secondShouldDie;
+
+			if (result.firstUpdate != nullptr) {
+				if (tankUpdates.find(t_first->getGameID()) == tankUpdates.end()) {
+					tankUpdates.insert({ t_first->getGameID(), TankUpdateStruct(*result.firstUpdate) });
+				} else {
+					tankUpdates[t_first->getGameID()].add(TankUpdateStruct(*result.firstUpdate));
+				}
+			}
+			if (result.secondUpdate != nullptr) {
+				if (tankUpdates.find(t_second->getGameID()) == tankUpdates.end()) {
+					tankUpdates.insert({ t_second->getGameID(), TankUpdateStruct(*result.secondUpdate) });
+				} else {
+					tankUpdates[t_second->getGameID()].add(TankUpdateStruct(*result.secondUpdate));
+				}
+			}
+		}
+
+		if (t_firstShouldDie) {
+			//TODO: proper implementation?
+		}
+		if (t_secondShouldDie) {
+			//TODO: proper implementation?
+		}
+	}
+}
+
+void GameMainLoop::everythingToEverything_tank_wall(int i, int j, std::unordered_map<Game_ID, TankUpdateStruct>& tankUpdates, std::vector<Game_ID>& wallDeletionList, std::unordered_map<Game_ID, WallUpdateStruct>& wallUpdates) {
+	Tank* t = static_cast<Tank*>(GameManager::getObject(i));
+	Wall* w = static_cast<Wall*>(GameManager::getObject(j));
+	bool killTank = false; //unlikely to be set
+	bool killWall = false;
+	bool overridedWallCollision = false;
+
+	if (CollisionHandler::partiallyCollided(t, w)) {
+		for (int k = 0; k < t->tankPowers.size(); k++) {
+			if (t->tankPowers[k]->modifiesCollisionWithWall) {
+				if (t->tankPowers[k]->overridesCollisionWithWall) {
+					overridedWallCollision = true;
+				}
+
+				InteractionUpdateHolder<TankUpdateStruct, WallUpdateStruct> check_temp = t->tankPowers[k]->modifiedCollisionWithWall(t, w);
+				if (check_temp.deaths.firstShouldDie) {
+					killTank = true;
+				}
+				if (check_temp.deaths.secondShouldDie) {
+					killWall = true;
+				}
+
+				if (check_temp.firstUpdate != nullptr) {
+					if (tankUpdates.find(t->getGameID()) == tankUpdates.end()) {
+						tankUpdates.insert({ t->getGameID(), TankUpdateStruct(*check_temp.firstUpdate) });
+					} else {
+						tankUpdates[t->getGameID()].add(TankUpdateStruct(*check_temp.firstUpdate));
+					}
+				}
+				if (check_temp.secondUpdate != nullptr) {
+					if (wallUpdates.find(w->getGameID()) == wallUpdates.end()) {
+						wallUpdates.insert({ w->getGameID(), WallUpdateStruct(*check_temp.secondUpdate) });
+					} else {
+						wallUpdates[w->getGameID()].add(WallUpdateStruct(*check_temp.secondUpdate));
+					}
+				}
+
+				if (!t->tankPowers[k]->modifiedEdgeCollisionCanWorkWithOthers) {
+					break;
+				}
+			}
+		}
+
+		if (!overridedWallCollision) {
+			InteractionUpdateHolder<TankUpdateStruct, WallUpdateStruct> result = EndGameHandler::determineWinner(t, w, killTank, killWall);
+			if (result.deaths.firstShouldDie) {
+				killTank = true;
+			}
+			if (result.deaths.secondShouldDie) {
+				killWall = true;
+			}
+
+			if (result.firstUpdate != nullptr) {
+				if (tankUpdates.find(t->getGameID()) == tankUpdates.end()) {
+					tankUpdates.insert({ t->getGameID(), TankUpdateStruct(*result.firstUpdate) });
+				} else {
+					tankUpdates[t->getGameID()].add(TankUpdateStruct(*result.firstUpdate));
+				}
+			}
+			if (result.secondUpdate != nullptr) {
+				if (wallUpdates.find(w->getGameID()) == wallUpdates.end()) {
+					wallUpdates.insert({ w->getGameID(), WallUpdateStruct(*result.secondUpdate) });
+				} else {
+					wallUpdates[w->getGameID()].add(WallUpdateStruct(*result.secondUpdate));
+				}
+			}
+		}
+
+		if (killTank) {
+			//TODO: proper implementation?
+		}
+		if (killWall) {
+			wallDeletionList.push_back(w->getGameID());
+		}
+	}
+}
+
+void GameMainLoop::everythingToEverything_tank_circlehazard(int i, int j, std::unordered_map<Game_ID, TankUpdateStruct>& tankUpdates, std::vector<Game_ID>& circleHazardDeletionList, std::unordered_map<Game_ID, CircleHazardUpdateStruct>& circleHazardUpdates) {
+	Tank* t = static_cast<Tank*>(GameManager::getObject(i));
+	CircleHazard* ch = static_cast<CircleHazard*>(GameManager::getObject(j));
+	bool killTank = false;
+	bool killCircleHazard = false;
+	bool overridedCircleHazardCollision = false;
+
+	if (CollisionHandler::partiallyCollided(t, ch)) {
+		for (int k = 0; k < t->tankPowers.size(); k++) {
+			if (t->tankPowers[k]->getModifiesCollisionWithCircleHazard(ch)) {
+				if (t->tankPowers[k]->overridesCollisionWithCircleHazard) {
+					overridedCircleHazardCollision = true;
+				}
+
+				InteractionUpdateHolder<TankUpdateStruct, CircleHazardUpdateStruct> check_temp = t->tankPowers[k]->modifiedCollisionWithCircleHazard(t, ch);
+				if (check_temp.deaths.firstShouldDie) {
+					killTank = true;
+				}
+				if (check_temp.deaths.secondShouldDie) {
+					killCircleHazard = true;
+				}
+
+				if (check_temp.firstUpdate != nullptr) {
+					if (tankUpdates.find(t->getGameID()) == tankUpdates.end()) {
+						tankUpdates.insert({ t->getGameID(), TankUpdateStruct(*check_temp.firstUpdate) });
+					} else {
+						tankUpdates[t->getGameID()].add(TankUpdateStruct(*check_temp.firstUpdate));
+					}
+				}
+				if (check_temp.secondUpdate != nullptr) {
+					if (circleHazardUpdates.find(ch->getGameID()) == circleHazardUpdates.end()) {
+						circleHazardUpdates.insert({ ch->getGameID(), CircleHazardUpdateStruct(*check_temp.secondUpdate) });
+					} else {
+						circleHazardUpdates[ch->getGameID()].add(CircleHazardUpdateStruct(*check_temp.secondUpdate));
+					}
+				}
+
+				if (!t->tankPowers[k]->modifiedCollisionWithCircleHazardCanWorkWithOthers) {
+					break;
+				}
+			}
+		}
+
+		if (!overridedCircleHazardCollision) {
+			if (ch->actuallyCollided(t)) {
+				InteractionUpdateHolder<TankUpdateStruct, CircleHazardUpdateStruct> result = EndGameHandler::determineWinner(t, ch, killTank, killCircleHazard);
+				if (result.deaths.firstShouldDie) {
+					killTank = true;
+				}
+				if (result.deaths.secondShouldDie) {
+					killCircleHazard = true;
+				}
+
+				if (result.firstUpdate != nullptr) {
+					if (tankUpdates.find(t->getGameID()) == tankUpdates.end()) {
+						tankUpdates.insert({ t->getGameID(), TankUpdateStruct(*result.firstUpdate) });
+					} else {
+						tankUpdates[t->getGameID()].add(TankUpdateStruct(*result.firstUpdate));
+					}
+				}
+				if (result.secondUpdate != nullptr) {
+					if (circleHazardUpdates.find(ch->getGameID()) == circleHazardUpdates.end()) {
+						circleHazardUpdates.insert({ ch->getGameID(), CircleHazardUpdateStruct(*result.secondUpdate) });
+					} else {
+						circleHazardUpdates[ch->getGameID()].add(CircleHazardUpdateStruct(*result.secondUpdate));
+					}
+				}
+			}
+		}
+
+		if (killTank) {
+			//TODO: proper implementation?
+		}
+		if (killCircleHazard) {
+			circleHazardDeletionList.push_back(ch->getGameID());
+		}
+	}
+}
+
+void GameMainLoop::everythingToEverything_tank_recthazard(int i, int j, std::unordered_map<Game_ID, TankUpdateStruct>& tankUpdates, std::vector<Game_ID>& rectHazardDeletionList, std::unordered_map<Game_ID, RectHazardUpdateStruct>& rectHazardUpdates) {
+	Tank* t = static_cast<Tank*>(GameManager::getObject(i));
+	RectHazard* rh = static_cast<RectHazard*>(GameManager::getObject(j));
+	bool killTank = false;
+	bool killRectHazard = false;
+	bool overridedRectHazardCollision = false;
+
+	if (CollisionHandler::partiallyCollided(t, rh)) {
+		for (int k = 0; k < t->tankPowers.size(); k++) {
+			if (t->tankPowers[k]->getModifiesCollisionWithRectHazard(rh)) {
+				if (t->tankPowers[k]->overridesCollisionWithRectHazard) {
+					overridedRectHazardCollision = true;
+				}
+
+				InteractionUpdateHolder<TankUpdateStruct, RectHazardUpdateStruct> check_temp = t->tankPowers[k]->modifiedCollisionWithRectHazard(t, rh);
+				if (check_temp.deaths.firstShouldDie) {
+					killTank = true;
+				}
+				if (check_temp.deaths.secondShouldDie) {
+					killRectHazard = true;
+				}
+
+				if (check_temp.firstUpdate != nullptr) {
+					if (tankUpdates.find(t->getGameID()) == tankUpdates.end()) {
+						tankUpdates.insert({ t->getGameID(), TankUpdateStruct(*check_temp.firstUpdate) });
+					} else {
+						tankUpdates[t->getGameID()].add(TankUpdateStruct(*check_temp.firstUpdate));
+					}
+				}
+				if (check_temp.secondUpdate != nullptr) {
+					if (rectHazardUpdates.find(rh->getGameID()) == rectHazardUpdates.end()) {
+						rectHazardUpdates.insert({ rh->getGameID(), RectHazardUpdateStruct(*check_temp.secondUpdate) });
+					} else {
+						rectHazardUpdates[rh->getGameID()].add(RectHazardUpdateStruct(*check_temp.secondUpdate));
+					}
+				}
+
+				if (!t->tankPowers[k]->modifiedCollisionWithRectHazardCanWorkWithOthers) {
+					break;
+				}
+			}
+		}
+
+		if (!overridedRectHazardCollision) {
+			if (rh->actuallyCollided(t)) {
+				InteractionUpdateHolder<TankUpdateStruct, RectHazardUpdateStruct> result = EndGameHandler::determineWinner(t, rh, killTank, killRectHazard);
+				if (result.deaths.firstShouldDie) {
+					killTank = true;
+				}
+				if (result.deaths.secondShouldDie) {
+					killRectHazard = true;
+				}
+
+				if (result.firstUpdate != nullptr) {
+					if (tankUpdates.find(t->getGameID()) == tankUpdates.end()) {
+						tankUpdates.insert({ t->getGameID(), TankUpdateStruct(*result.firstUpdate) });
+					} else {
+						tankUpdates[t->getGameID()].add(TankUpdateStruct(*result.firstUpdate));
+					}
+				}
+				if (result.secondUpdate != nullptr) {
+					if (rectHazardUpdates.find(rh->getGameID()) == rectHazardUpdates.end()) {
+						rectHazardUpdates.insert({ rh->getGameID(), RectHazardUpdateStruct(*result.secondUpdate) });
+					} else {
+						rectHazardUpdates[rh->getGameID()].add(RectHazardUpdateStruct(*result.secondUpdate));
+					}
+				}
+			}
+		}
+
+		if (killTank) {
+			//TODO: proper implementation?
+		}
+		if (killRectHazard) {
+			rectHazardDeletionList.push_back(rh->getGameID());
+		}
+	}
+}
+
+void GameMainLoop::everythingToEverything_bullet_tank(int i, int j, std::vector<Game_ID>& bulletDeletionList, std::unordered_map<Game_ID, BulletUpdateStruct>& bulletUpdates, std::unordered_map<Game_ID, TankUpdateStruct>& tankUpdates) {
+	//bullets can have custom collision with tanks but not vice versa; does it really matter? probably not
+	Bullet* b = static_cast<Bullet*>(GameManager::getObject(i));
+	Tank* t = static_cast<Tank*>(GameManager::getObject(j));
+	bool killBullet = false;
+	bool killTank = false;
+	bool overridedTankCollision = false;
+
+	if (!b->canCollideWith(t)) {
+		return;
+	}
+	if (CollisionHandler::partiallyCollided(b, t)) {
+		for (int k = 0; k < b->bulletPowers.size(); k++) {
+			if (b->bulletPowers[k]->modifiesCollisionWithTank) {
+				if (b->bulletPowers[k]->overridesCollisionWithTank) {
+					overridedTankCollision = true;
+				}
+
+				InteractionUpdateHolder<BulletUpdateStruct, TankUpdateStruct> check_temp = b->bulletPowers[k]->modifiedCollisionWithTank(b, t);
+				if (check_temp.deaths.firstShouldDie) {
+					killBullet = true;
+				}
+				if (check_temp.deaths.secondShouldDie) {
+					killTank = true;
+				}
+
+				if (check_temp.firstUpdate != nullptr) {
+					if (bulletUpdates.find(b->getGameID()) == bulletUpdates.end()) {
+						bulletUpdates.insert({ b->getGameID(), BulletUpdateStruct(*check_temp.firstUpdate) });
+					} else {
+						bulletUpdates[b->getGameID()].add(BulletUpdateStruct(*check_temp.firstUpdate));
+					}
+				}
+				if (check_temp.secondUpdate != nullptr) {
+					if (tankUpdates.find(t->getGameID()) == tankUpdates.end()) {
+						tankUpdates.insert({ t->getGameID(), TankUpdateStruct(*check_temp.secondUpdate) });
+					} else {
+						tankUpdates[t->getGameID()].add(TankUpdateStruct(*check_temp.secondUpdate));
+					}
+				}
+
+				if (!b->bulletPowers[k]->modifiedCollisionWithTankCanWorkWithOthers) {
+					break;
+				}
+			}
+		}
+
+		if (!overridedTankCollision) {
+			InteractionBoolHolder result = EndGameHandler::determineWinner(t, b, killTank, killBullet);
+			//note: the tank and bullet inputs are switched (compared to above)
+			if (result.firstShouldDie) {
+				killTank = true;
+			}
+			if (result.secondShouldDie) {
+				killBullet = true;
+			}
+		}
+
+		if (killBullet) {
+			bulletDeletionList.push_back(b->getGameID());
+		}
+		if (killTank) {
+			//TODO: proper implementation?
+		}
+	}
+}
+
+void GameMainLoop::everythingToEverything_bullet_bullet(int i, int j, std::vector<Game_ID>& bulletDeletionList, std::unordered_map<Game_ID, BulletUpdateStruct>& bulletUpdates) {
+	//bullets do not get custom collision with other bullets
+	Bullet* b_first = static_cast<Bullet*>(GameManager::getObject(i));
+	Bullet* b_second = static_cast<Bullet*>(GameManager::getObject(j));
+	bool b_firstShouldDie = false;
+	bool b_secondShouldDie = false;
+
+	if (!b_first->canCollideWith(b_second)) {
+		//TODO: doing this check in the narrow phase actually kinda improves performance, but memory bandwidth is still the limiting factor; keep the check here for simplicity
+		return;
+	}
+	if (CollisionHandler::partiallyCollided(b_first, b_second)) {
+		InteractionBoolHolder result = EndGameHandler::determineWinner(b_first, b_second, b_firstShouldDie, b_secondShouldDie);
+		b_firstShouldDie = result.firstShouldDie;
+		b_secondShouldDie = result.secondShouldDie;
+
+		if (b_firstShouldDie) {
+			bulletDeletionList.push_back(b_first->getGameID());
+		}
+		if (b_secondShouldDie) {
+			bulletDeletionList.push_back(b_second->getGameID());
+		}
+	}
+}
+
+void GameMainLoop::everythingToEverything_bullet_wall(int i, int j, std::vector<Game_ID>& bulletDeletionList, std::unordered_map<Game_ID, BulletUpdateStruct>& bulletUpdates, std::vector<Game_ID>& wallDeletionList, std::unordered_map<Game_ID, WallUpdateStruct>& wallUpdates) {
+	Bullet* b = static_cast<Bullet*>(GameManager::getObject(i));
+	Wall* w = static_cast<Wall*>(GameManager::getObject(j));
+	bool killBullet = false;
+	bool killWall = false;
+	bool overridedWallCollision = false;
+
+	//TODO: ignore edge? bounce is basically the only thing that might care, for blast it's just unnecessary computation
+	//idea: bulletpower can set wall collision mode (and hazard)
+	if (CollisionHandler::partiallyCollided(b, w)) {
+		for (int k = 0; k < b->bulletPowers.size(); k++) {
+			if (b->bulletPowers[k]->modifiesCollisionWithWall) {
+				if (b->bulletPowers[k]->overridesCollisionWithWall) {
+					overridedWallCollision = true;
+				}
+
+				InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> check_temp = b->bulletPowers[k]->modifiedCollisionWithWall(b, w);
+				if (check_temp.deaths.firstShouldDie) {
+					killBullet = true;
+				}
+				if (check_temp.deaths.secondShouldDie) {
+					killWall = true;
+				}
+
+				if (check_temp.firstUpdate != nullptr) {
+					if (bulletUpdates.find(b->getGameID()) == bulletUpdates.end()) {
+						bulletUpdates.insert({ b->getGameID(), BulletUpdateStruct(*check_temp.firstUpdate) });
+					} else {
+						bulletUpdates[b->getGameID()].add(BulletUpdateStruct(*check_temp.firstUpdate));
+					}
+				}
+				if (check_temp.secondUpdate != nullptr) {
+					if (wallUpdates.find(w->getGameID()) == wallUpdates.end()) {
+						wallUpdates.insert({ w->getGameID(), WallUpdateStruct(*check_temp.secondUpdate) });
+					} else {
+						wallUpdates[w->getGameID()].add(WallUpdateStruct(*check_temp.secondUpdate));
+					}
+				}
+
+				if (!b->bulletPowers[k]->modifiedCollisionWithWallCanWorkWithOthers) {
+					break;
+				}
+			}
+		}
+
+		if (!overridedWallCollision) {
+			if (CollisionHandler::partiallyCollided(b, w)) {
+				killBullet = true;
+			}
+		}
+
+		if (killBullet) {
+			bulletDeletionList.push_back(b->getGameID());
+		}
+		if (killWall) {
+			wallDeletionList.push_back(w->getGameID());
+		}
+	}
+}
+
+void GameMainLoop::everythingToEverything_bullet_circlehazard(int i, int j, std::vector<Game_ID>& bulletDeletionList, std::unordered_map<Game_ID, BulletUpdateStruct>& bulletUpdates, std::vector<Game_ID>& circleHazardDeletionList, std::unordered_map<Game_ID, CircleHazardUpdateStruct>& circleHazardUpdates) {
+	Bullet* b = static_cast<Bullet*>(GameManager::getObject(i));
+	CircleHazard* ch = static_cast<CircleHazard*>(GameManager::getObject(j));
+	bool killBullet = false;
+	bool killCircleHazard = false;
+	bool overridedCircleHazardCollision = false;
+
+	if (!b->canCollideWith(ch)) {
+		return;
+	}
+	if (CollisionHandler::partiallyCollided(b, ch)) {
+		for (int k = 0; k < b->bulletPowers.size(); k++) {
+			if (b->bulletPowers[k]->getModifiesCollisionWithCircleHazard(ch)) {
+				if (b->bulletPowers[k]->overridesCollisionWithCircleHazard) {
+					overridedCircleHazardCollision = true;
+				}
+
+				InteractionUpdateHolder<BulletUpdateStruct, CircleHazardUpdateStruct> check_temp = b->bulletPowers[k]->modifiedCollisionWithCircleHazard(b, ch);
+				if (check_temp.deaths.firstShouldDie) {
+					killBullet = true;
+				}
+				if (check_temp.deaths.secondShouldDie) {
+					killCircleHazard = true;
+				}
+
+				if (check_temp.firstUpdate != nullptr) {
+					if (bulletUpdates.find(b->getGameID()) == bulletUpdates.end()) {
+						bulletUpdates.insert({ b->getGameID(), BulletUpdateStruct(*check_temp.firstUpdate) });
+					} else {
+						bulletUpdates[b->getGameID()].add(BulletUpdateStruct(*check_temp.firstUpdate));
+					}
+				}
+				if (check_temp.secondUpdate != nullptr) {
+					if (circleHazardUpdates.find(ch->getGameID()) == circleHazardUpdates.end()) {
+						circleHazardUpdates.insert({ ch->getGameID(), CircleHazardUpdateStruct(*check_temp.secondUpdate) });
+					} else {
+						circleHazardUpdates[ch->getGameID()].add(CircleHazardUpdateStruct(*check_temp.secondUpdate));
+					}
+				}
+
+				if (!b->bulletPowers[k]->modifiedCollisionWithCircleHazardCanWorkWithOthers) {
+					break;
+				}
+			}
+		}
+
+		if (!overridedCircleHazardCollision) {
+			if (ch->actuallyCollided(b)) {
+				InteractionUpdateHolder<BulletUpdateStruct, CircleHazardUpdateStruct> result = EndGameHandler::determineWinner(b, ch, killBullet, killCircleHazard);
+				if (result.deaths.firstShouldDie) {
+					killBullet = true;
+				}
+				if (result.deaths.secondShouldDie) {
+					killCircleHazard = true;
+				}
+
+				if (result.firstUpdate != nullptr) {
+					if (bulletUpdates.find(b->getGameID()) == bulletUpdates.end()) {
+						bulletUpdates.insert({ b->getGameID(), BulletUpdateStruct(*result.firstUpdate) });
+					} else {
+						bulletUpdates[b->getGameID()].add(BulletUpdateStruct(*result.firstUpdate));
+					}
+				}
+				if (result.secondUpdate != nullptr) {
+					if (circleHazardUpdates.find(ch->getGameID()) == circleHazardUpdates.end()) {
+						circleHazardUpdates.insert({ ch->getGameID(), CircleHazardUpdateStruct(*result.secondUpdate) });
+					} else {
+						circleHazardUpdates[ch->getGameID()].add(CircleHazardUpdateStruct(*result.secondUpdate));
+					}
+				}
+			}
+		}
+
+		if (killBullet) {
+			bulletDeletionList.push_back(b->getGameID());
+		}
+		if (killCircleHazard) {
+			circleHazardDeletionList.push_back(ch->getGameID());
+		}
+	}
+}
+
+void GameMainLoop::everythingToEverything_bullet_recthazard(int i, int j, std::vector<Game_ID>& bulletDeletionList, std::unordered_map<Game_ID, BulletUpdateStruct>& bulletUpdates, std::vector<Game_ID>& rectHazardDeletionList, std::unordered_map<Game_ID, RectHazardUpdateStruct>& rectHazardUpdates) {
+	Bullet* b = static_cast<Bullet*>(GameManager::getObject(i));
+	RectHazard* rh = static_cast<RectHazard*>(GameManager::getObject(j));
+	bool killBullet = false;
+	bool killRectHazard = false;
+	bool overridedRectHazardCollision = false;
+
+	if (!b->canCollideWith(rh)) {
+		return;
+	}
+	if (CollisionHandler::partiallyCollided(b, rh)) {
+		for (int k = 0; k < b->bulletPowers.size(); k++) {
+			if (b->bulletPowers[k]->getModifiesCollisionWithRectHazard(rh)) {
+				if (b->bulletPowers[k]->overridesCollisionWithRectHazard) {
+					overridedRectHazardCollision = true;
+				}
+
+				InteractionUpdateHolder<BulletUpdateStruct, RectHazardUpdateStruct> check_temp = b->bulletPowers[k]->modifiedCollisionWithRectHazard(b, rh);
+				if (check_temp.deaths.firstShouldDie) {
+					killBullet = true;
+				}
+				if (check_temp.deaths.secondShouldDie) {
+					killRectHazard = true;
+				}
+
+				if (check_temp.firstUpdate != nullptr) {
+					if (bulletUpdates.find(b->getGameID()) == bulletUpdates.end()) {
+						bulletUpdates.insert({ b->getGameID(), BulletUpdateStruct(*check_temp.firstUpdate) });
+					} else {
+						bulletUpdates[b->getGameID()].add(BulletUpdateStruct(*check_temp.firstUpdate));
+					}
+				}
+				if (check_temp.secondUpdate != nullptr) {
+					if (rectHazardUpdates.find(rh->getGameID()) == rectHazardUpdates.end()) {
+						rectHazardUpdates.insert({ rh->getGameID(), RectHazardUpdateStruct(*check_temp.secondUpdate) });
+					} else {
+						rectHazardUpdates[rh->getGameID()].add(RectHazardUpdateStruct(*check_temp.secondUpdate));
+					}
+				}
+
+				if (!b->bulletPowers[k]->modifiedCollisionWithRectHazardCanWorkWithOthers) {
+					break;
+				}
+			}
+		}
+
+		if (!overridedRectHazardCollision) {
+			if (rh->actuallyCollided(b)) {
+				InteractionUpdateHolder<BulletUpdateStruct, RectHazardUpdateStruct> result = EndGameHandler::determineWinner(b, rh, killBullet, killRectHazard);
+				if (result.deaths.firstShouldDie) {
+					killBullet = true;
+				}
+				if (result.deaths.secondShouldDie) {
+					killRectHazard = true;
+				}
+
+				if (result.firstUpdate != nullptr) {
+					if (bulletUpdates.find(b->getGameID()) == bulletUpdates.end()) {
+						bulletUpdates.insert({ b->getGameID(), BulletUpdateStruct(*result.firstUpdate) });
+					} else {
+						bulletUpdates[b->getGameID()].add(BulletUpdateStruct(*result.firstUpdate));
+					}
+				}
+				if (result.secondUpdate != nullptr) {
+					if (rectHazardUpdates.find(rh->getGameID()) == rectHazardUpdates.end()) {
+						rectHazardUpdates.insert({ rh->getGameID(), RectHazardUpdateStruct(*result.secondUpdate) });
+					} else {
+						rectHazardUpdates[rh->getGameID()].add(RectHazardUpdateStruct(*result.secondUpdate));
+					}
+				}
+			}
+		}
+
+		if (killBullet) {
+			bulletDeletionList.push_back(b->getGameID());
+		}
+		if (killRectHazard) {
+			rectHazardDeletionList.push_back(rh->getGameID());
+		}
+	}
 }
 
 void GameMainLoop::levelTick() {
@@ -394,29 +976,25 @@ void GameMainLoop::moveTanks() {
 }
 
 void GameMainLoop::tankToPowerup() {
-	//broad phase
-	std::vector<std::pair<int, int>>* collisionList = PhysicsHandler::sweepAndPrune<Circle*, Rect*>(TankManager::getTankCollisionList(), PowerupManager::getPowerupCollisionList());
+	//don't separate into broad/narrow phases, it's not necessary
+	//if there were more than two tanks, then yes it might be necessary (which would kinda require another update AABBs and S&P for the rest of collision)
 
-	//narrow phase and resolve collision
-	//std::vector<Game_ID> tankDeletionList; //custom tank-powerup collision doesn't exist
-	std::vector<Game_ID> powerupDeletionList;
-	for (int i = 0; i < collisionList->size(); i++) {
-		std::pair<int, int> collisionPair = collisionList->at(i);
-		Tank* t = TankManager::getTank(collisionPair.first);
-		PowerSquare* p = PowerupManager::getPowerup(collisionPair.second);
-
-		if (CollisionHandler::partiallyCollided(p, t)) {
-			p->givePower(t);
-			powerupDeletionList.push_back(p->getGameID());
+	std::vector<int> powerupDeletionList;
+	for (int i = 0; i < TankManager::getNumTanks(); i++) {
+		Tank* t = TankManager::getTank(i);
+		for (int j = 0; j < PowerupManager::getNumPowerups(); j++) {
+			PowerSquare* p = PowerupManager::getPowerup(j);
+			if (CollisionHandler::partiallyCollided(p, t)) {
+				p->givePower(t);
+				powerupDeletionList.push_back(j);
+			}
 		}
 	}
 
 	//clear deaths
 	for (int i = powerupDeletionList.size() - 1; i >= 0; i--) {
-		PowerupManager::deletePowerupByID(powerupDeletionList[i]);
+		PowerupManager::deletePowerup(powerupDeletionList[i]);
 	}
-
-	delete collisionList;
 }
 
 void GameMainLoop::tickHazards() {
@@ -429,10 +1007,11 @@ void GameMainLoop::tickHazards() {
 }
 
 void GameMainLoop::moveBullets() {
+	ZoneScoped;
 	for (int i = BulletManager::getNumBullets() - 1; i >= 0; i--) {
 		Bullet* b = BulletManager::getBullet(i);
 		bool shouldBeKilled = b->move();
-		if (shouldBeKilled) {
+		if (shouldBeKilled) [[unlikely]] {
 			EndGameHandler::killBullet(b);
 			BulletManager::deleteBullet(i);
 			continue;
@@ -443,17 +1022,19 @@ void GameMainLoop::moveBullets() {
 	BulletManager::forceLimitBullets();
 }
 
-void GameMainLoop::tankPowerCalculate() {
+void GameMainLoop::tankPowerTickAndCalculate() {
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
-		TankManager::getTank(i)->powerCalculate();
+		TankManager::getTank(i)->powerTickAndCalculate();
 	}
 }
 
-void GameMainLoop::bulletPowerCalculate() {
+void GameMainLoop::bulletPowerTick() {
+	ZoneScoped;
 	for (int i = BulletManager::getNumBullets() - 1; i >= 0; i--) {
 		Bullet* b = BulletManager::getBullet(i);
-		b->powerCalculate();
-		if (b->isDead()) {
+		b->powerTick();
+		if (b->isDead()) [[unlikely]] {
+			//what power would do this?
 			BulletManager::deleteBullet(i);
 			continue;
 		}
@@ -461,6 +1042,8 @@ void GameMainLoop::bulletPowerCalculate() {
 }
 
 void GameMainLoop::tankShoot() {
+	const GameSettings& game_settings = GameManager::get_settings();
+
 	/*
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
 		TankManager::getTank(i)->shoot();
@@ -468,269 +1051,8 @@ void GameMainLoop::tankShoot() {
 	*/
 
 	//TODO: loop
-	TankManager::getTank(0)->shoot(tank1Inputs[3].getKeyState());
-	TankManager::getTank(1)->shoot(tank2Inputs[3].getKeyState());
-}
-
-void GameMainLoop::tankToWall() {
-	//broad phase
-	std::vector<std::pair<int, int>>* collisionList = PhysicsHandler::sweepAndPrune<Circle*, Rect*>(TankManager::getTankCollisionList(), WallManager::getWallCollisionList());
-
-	//narrow phase and resolve collision
-	//std::vector<Game_ID> tankDeletionList;
-	std::vector<Game_ID> wallDeletionList;
-	for (int i = 0; i < collisionList->size(); i++) {
-		std::pair<int, int> collisionPair = collisionList->at(i);
-		Tank* t = TankManager::getTank(collisionPair.first);
-		bool shouldBeKilled = false; //unlikely to be set
-
-		Wall* w = WallManager::getWall(collisionPair.second);
-		bool killWall = false;
-		bool overridedWallCollision = false;
-
-		if (CollisionHandler::partiallyCollided(t, w)) {
-			for (int k = 0; k < t->tankPowers.size(); k++) {
-				if (t->tankPowers[k]->modifiesCollisionWithWall) {
-					if (t->tankPowers[k]->overridesCollisionWithWall) {
-						overridedWallCollision = true;
-					}
-
-					InteractionBoolHolder check_temp = t->tankPowers[k]->modifiedCollisionWithWall(t, w);
-					if (check_temp.shouldDie) {
-						shouldBeKilled = true;
-					}
-					if (check_temp.otherShouldDie) {
-						killWall = true;
-					}
-
-					if (!t->tankPowers[k]->modifiedEdgeCollisionCanWorkWithOthers) {
-						break;
-					}
-				}
-			}
-
-			if (!overridedWallCollision) {
-				if (CollisionHandler::partiallyCollided(t, w)) {
-					InteractionBoolHolder result = EndGameHandler::determineWinner(t, w, shouldBeKilled);
-					if (result.shouldDie) {
-						shouldBeKilled = true;
-					}
-					if (result.otherShouldDie) {
-						killWall = true;
-					}
-				}
-			}
-		}
-
-		if (killWall) {
-			wallDeletionList.push_back(w->getGameID());
-		}
-
-		if (shouldBeKilled) {
-			//TODO: proper implementation?
-		}
-	}
-
-	//clear deaths
-	for (int i = wallDeletionList.size() - 1; i >= 0; i--) {
-		WallManager::deleteWallByID(wallDeletionList[i]);
-	}
-
-	delete collisionList;
-}
-
-void GameMainLoop::tankToHazard() {
-	//broad phase
-	std::vector<std::pair<int, int>>* collisionList = PhysicsHandler::sweepAndPrune<Circle*, Circle*>(TankManager::getTankCollisionList(), HazardManager::getCircleHazardCollisionList());
-
-	//narrow phase and resolve collision
-	//std::vector<Game_ID> tankDeletionList;
-	std::vector<Game_ID> circleHazardDeletionList;
-	for (int i = 0; i < collisionList->size(); i++) {
-		std::pair<int, int> collisionPair = collisionList->at(i);
-		Tank* t = TankManager::getTank(collisionPair.first);
-		bool shouldBeKilled = false;
-
-		//circles:
-		CircleHazard* ch = HazardManager::getCircleHazard(collisionPair.second);
-		bool killCircleHazard = false;
-		bool overridedCircleHazardCollision = false;
-
-		if (CollisionHandler::partiallyCollided(t, ch)) {
-			//tankpower decides whether to use the partial collision or the true collision
-			for (int k = 0; k < t->tankPowers.size(); k++) {
-				if (t->tankPowers[k]->getModifiesCollisionWithCircleHazard(ch)) {
-					if (t->tankPowers[k]->overridesCollisionWithCircleHazard) {
-						overridedCircleHazardCollision = true;
-					}
-
-					//TODO: this doesn't kill the tank but it should
-					InteractionBoolHolder check_temp = t->tankPowers[k]->modifiedCollisionWithCircleHazard(t, ch);
-					if (check_temp.shouldDie) {
-						shouldBeKilled = true;
-					}
-					if (check_temp.otherShouldDie) {
-						killCircleHazard = true;
-					}
-
-					if (!t->tankPowers[k]->modifiedCollisionWithCircleHazardCanWorkWithOthers) {
-						break;
-					}
-				}
-			}
-
-			if (!overridedCircleHazardCollision) {
-				if (CollisionHandler::partiallyCollided(t, ch)) {
-					if (ch->actuallyCollided(t)) {
-						InteractionBoolHolder result = EndGameHandler::determineWinner(t, ch);
-						if (result.shouldDie) {
-							shouldBeKilled = true;
-						}
-						if (result.otherShouldDie) {
-							killCircleHazard = true;
-						}
-					}
-				}
-			}
-		}
-
-		if (killCircleHazard) {
-			circleHazardDeletionList.push_back(ch->getGameID());
-		}
-
-		if (shouldBeKilled) {
-			//TODO: proper implementation?
-		}
-	}
-
-	delete collisionList;
-
-	//broad phase
-	collisionList = PhysicsHandler::sweepAndPrune<Circle*, Rect*>(TankManager::getTankCollisionList(), HazardManager::getRectHazardCollisionList());
-
-	//narrow phase and resolve collision
-	std::vector<Game_ID> rectHazardDeletionList;
-	for (int i = 0; i < collisionList->size(); i++) {
-		std::pair<int, int> collisionPair = collisionList->at(i);
-		Tank* t = TankManager::getTank(collisionPair.first);
-		bool shouldBeKilled = false;
-
-		//rectangles:
-		RectHazard* rh = HazardManager::getRectHazard(collisionPair.second);
-		bool killRectHazard = false;
-		bool overridedRectHazardCollision = false;
-
-		if (CollisionHandler::partiallyCollided(t, rh)) {
-			for (int k = 0; k < t->tankPowers.size(); k++) {
-				if (t->tankPowers[k]->getModifiesCollisionWithRectHazard(rh)) {
-					if (t->tankPowers[k]->overridesCollisionWithRectHazard) {
-						overridedRectHazardCollision = true;
-					}
-
-					//TODO: this doesn't kill the tank but it should
-					InteractionBoolHolder check_temp = t->tankPowers[k]->modifiedCollisionWithRectHazard(t, rh);
-					if (check_temp.shouldDie) {
-						shouldBeKilled = true;
-					}
-					if (check_temp.otherShouldDie) {
-						killRectHazard = true;
-					}
-
-					if (!t->tankPowers[k]->modifiedCollisionWithRectHazardCanWorkWithOthers) {
-						break;
-					}
-				}
-			}
-
-			if (!overridedRectHazardCollision) {
-				if (CollisionHandler::partiallyCollided(t, rh)) {
-					if (rh->actuallyCollided(t)) {
-						InteractionBoolHolder result = EndGameHandler::determineWinner(t, rh);
-						if (result.shouldDie) {
-							shouldBeKilled = true;
-						}
-						if (result.otherShouldDie) {
-							killRectHazard = true;
-						}
-					}
-				}
-			}
-		}
-
-		if (killRectHazard) {
-			rectHazardDeletionList.push_back(rh->getGameID());
-		}
-
-		if (shouldBeKilled) {
-			//TODO: proper implementation?
-		}
-	}
-
-	//clear deaths
-	for (int i = circleHazardDeletionList.size() - 1; i >= 0; i--) {
-		HazardManager::deleteCircleHazardByID(circleHazardDeletionList[i]);
-	}
-	for (int i = rectHazardDeletionList.size() - 1; i >= 0; i--) {
-		HazardManager::deleteRectHazardByID(rectHazardDeletionList[i]);
-	}
-
-	delete collisionList;
-}
-
-void GameMainLoop::tankToTank() {
-	//doesn't really need sweep and prune, but will need to be updated to avoid one tank getting preference over the other
-	for (int i = 0; i < TankManager::getNumTanks(); i++) {
-		Tank* t_outer = TankManager::getTank(i);
-		bool t_outerShouldDie = false;
-
-		for (int j = 0; j < TankManager::getNumTanks(); j++) {
-			if (i == j) {
-				continue;
-			}
-
-			Tank* t_inner = TankManager::getTank(j);
-			bool t_innerShouldDie = false;
-			bool overridedTankCollision = false;
-
-			if (CollisionHandler::partiallyCollided(t_outer, t_inner)) {
-				for (int k = 0; k < t_outer->tankPowers.size(); k++) {
-					if (t_outer->tankPowers[k]->modifiesCollisionWithWall) {
-						if (t_outer->tankPowers[k]->overridesCollisionWithTank) {
-							overridedTankCollision = true;
-						}
-
-						InteractionBoolHolder check_temp = t_outer->tankPowers[k]->modifiedCollisionWithTank(t_outer, t_inner);
-						if (check_temp.shouldDie) {
-							t_outerShouldDie = true;
-						}
-						if (check_temp.otherShouldDie) {
-							if (t_outer->getTeamID() != t_inner->getTeamID()) {
-								t_innerShouldDie = true;
-							}
-						}
-
-						if (!t_outer->tankPowers[k]->modifiedCollisionWithTankCanWorkWithOthers) {
-							break;
-						}
-					}
-				}
-
-				if (!overridedTankCollision) {
-					InteractionBoolHolder result = EndGameHandler::determineWinner(t_outer, t_inner);
-					t_outerShouldDie = result.shouldDie;
-					t_innerShouldDie = result.otherShouldDie;
-				}
-			}
-
-			if (t_innerShouldDie) {
-				//TODO: proper implementation?
-			}
-		}
-
-		if (t_outerShouldDie) {
-			//TODO: proper implementation?
-		}
-	}
+	TankManager::getTank(0)->shoot(game_settings.AlwaysShootingMode || tank1Inputs[3].getKeyState());
+	TankManager::getTank(1)->shoot(game_settings.AlwaysShootingMode || tank2Inputs[3].getKeyState());
 }
 
 void GameMainLoop::tankToEdge() {
@@ -747,7 +1069,7 @@ void GameMainLoop::tankToEdge() {
 					}
 
 					InteractionBoolHolder check_temp = t->tankPowers[k]->modifiedEdgeCollision(t);
-					if (check_temp.shouldDie) {
+					if (check_temp.firstShouldDie) {
 						shouldBeKilled = true;
 					}
 
@@ -760,15 +1082,16 @@ void GameMainLoop::tankToEdge() {
 			if (!overridedEdgeCollision) {
 				CollisionHandler::edgeConstrain(t);
 			}
-		}
 
-		if (shouldBeKilled) {
-			//TODO: proper implementation?
+			if (shouldBeKilled) {
+				//TODO: proper implementation?
+			}
 		}
 	}
 }
 
 void GameMainLoop::bulletToEdge() {
+	ZoneScoped;
 	for (int i = BulletManager::getNumBullets() - 1; i >= 0; i--) {
 		Bullet* b = BulletManager::getBullet(i);
 		bool shouldBeKilled = false;
@@ -782,7 +1105,7 @@ void GameMainLoop::bulletToEdge() {
 					}
 
 					InteractionBoolHolder check_temp = b->bulletPowers[k]->modifiedEdgeCollision(b);
-					if (check_temp.shouldDie) {
+					if (check_temp.firstShouldDie) {
 						shouldBeKilled = true;
 					}
 
@@ -797,493 +1120,100 @@ void GameMainLoop::bulletToEdge() {
 					shouldBeKilled = true;
 				}
 			}
-		}
 
-		if (shouldBeKilled) {
-			BulletManager::deleteBullet(i);
-			continue;
-		}
-	}
-}
-
-void GameMainLoop::bulletToWall() {
-	//broad phase
-	std::vector<std::pair<int, int>>* collisionList = PhysicsHandler::sweepAndPrune<Circle*, Rect*>(BulletManager::getBulletCollisionList(), WallManager::getWallCollisionList());
-
-	//narrow phase and resolve collision
-	std::vector<Game_ID> bulletDeletionList;
-	std::vector<Game_ID> wallDeletionList;
-
-	std::unordered_map<Game_ID, BulletUpdateStruct> bulletUpdates;
-	std::vector<Game_ID> bulletUpdateList;
-	std::unordered_map<Game_ID, WallUpdateStruct> wallUpdates;
-	std::vector<Game_ID> wallUpdateList;
-
-	for (int i = 0; i < collisionList->size(); i++) {
-		std::pair<int, int> collisionPair = collisionList->at(i);
-		Bullet* b = BulletManager::getBullet(collisionPair.first);
-		bool shouldBeKilled = false;
-
-		Wall* w = WallManager::getWall(collisionPair.second);
-		bool killWall = false;
-		bool overridedWallCollision = false;
-
-		if (CollisionHandler::partiallyCollided(b, w)) {
-			for (int k = 0; k < b->bulletPowers.size(); k++) {
-				if (b->bulletPowers[k]->modifiesCollisionWithWall) {
-					if (b->bulletPowers[k]->overridesCollisionWithWall) {
-						overridedWallCollision = true;
-					}
-
-					InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> check_temp = b->bulletPowers[k]->modifiedCollisionWithWall(b, w);
-					if (check_temp.deaths.shouldDie) {
-						shouldBeKilled = true;
-					}
-					if (check_temp.deaths.otherShouldDie) {
-						killWall = true;
-					}
-
-					//TODO: maybe package all the updates together, then do this upsert
-					if (check_temp.firstUpdate != nullptr) {
-						if (bulletUpdates.find(b->getGameID()) == bulletUpdates.end()) {
-							bulletUpdates.insert({ b->getGameID(), BulletUpdateStruct(*check_temp.firstUpdate) });
-							bulletUpdateList.push_back(b->getGameID());
-						} else {
-							bulletUpdates[b->getGameID()].add(BulletUpdateStruct(*check_temp.firstUpdate));
-						}
-					}
-					if (check_temp.secondUpdate != nullptr) {
-						if (wallUpdates.find(w->getGameID()) == wallUpdates.end()) {
-							wallUpdates.insert({ w->getGameID(), WallUpdateStruct(*check_temp.secondUpdate) });
-							wallUpdateList.push_back(w->getGameID());
-						} else {
-							wallUpdates[w->getGameID()].add(WallUpdateStruct(*check_temp.secondUpdate));
-						}
-					}
-
-					if (!b->bulletPowers[k]->modifiedCollisionWithWallCanWorkWithOthers) {
-						break;
-					}
-				}
-			}
-
-			if (!overridedWallCollision) {
-				if (CollisionHandler::partiallyCollided(b, w)) {
-					shouldBeKilled = true;
-				}
+			if (shouldBeKilled) {
+				BulletManager::deleteBullet(i);
+				continue;
 			}
 		}
-
-		if (killWall) {
-			//wallDeletionList.push_back(collisionPair.second);
-			wallDeletionList.push_back(w->getGameID());
-		}
-
-		if (shouldBeKilled) {
-			//bulletDeletionList.push_back(collisionPair.first);
-			bulletDeletionList.push_back(b->getGameID());
-		}
 	}
-
-	/*
-	//this is not demanding enough to multithread
-	for (int i = 0; i < GameMainLoop::helperThreadCount; i++) {
-		int start =   i * bulletUpdateList.size() / (helperThreadCount+1);
-		int end = (i+1) * bulletUpdateList.size() / (helperThreadCount+1);
-		queueMutex.lock();
-		GameMainLoop::ThreadJob* job = new GameMainLoop::ThreadJob(ThreadJobType::update_bullets, &bulletUpdateList, &bulletUpdates, start, end);
-		workQueue.push(job);
-		queueCV.notify_one();
-		queueMutex.unlock();
-	}
-	thread_updateBulletsFunc(&bulletUpdateList, &bulletUpdates, (helperThreadCount-1) * bulletUpdateList.size() / (helperThreadCount+1), bulletUpdates.size());
-	*/
-
-	thread_updateBulletsFunc(&bulletUpdateList, &bulletUpdates, 0, bulletUpdates.size());
-	thread_updateWallsFunc(&wallUpdateList, &wallUpdates, 0, wallUpdateList.size()); //should go below for "clean code" but should stay here for thread scheduling reasons
-
-	/*
-	for (int i = 0; i < GameMainLoop::helperThreadCount; i++) {
-		while (thread_isWorking[i].load()) {} //if you don't join, this is how you wait for the thread to finish
-	}
-	*/
-
-	//clear deaths
-	//std::sort(bulletDeletionList.begin(), bulletDeletionList.end());
-	for (int i = bulletDeletionList.size() - 1; i >= 0; i--) {
-		//BulletManager::deleteBullet(bulletDeletionList[i]);
-		BulletManager::deleteBulletByID(bulletDeletionList[i]);
-	}
-	//std::sort(wallDeletionList.begin(), wallDeletionList.end());
-	for (int i = wallDeletionList.size() - 1; i >= 0; i--) {
-		WallManager::deleteWallByID(wallDeletionList[i]);
-	}
-
-	delete collisionList;
-}
-
-void GameMainLoop::bulletToHazard() {
-	//broad phase
-	std::vector<std::pair<int, int>>* collisionList = PhysicsHandler::sweepAndPrune<Circle*, Circle*>(BulletManager::getBulletCollisionList(), HazardManager::getCircleHazardCollisionList());
-
-	//narrow phase and resolve collision
-	std::vector<Game_ID> bulletDeletionList;
-	std::vector<Game_ID> circleHazardDeletionList;
-	for (int i = 0; i < collisionList->size(); i++) {
-		std::pair<int, int> collisionPair = collisionList->at(i);
-		Bullet* b = BulletManager::getBullet(collisionPair.first);
-		bool shouldBeKilled = false;
-
-		//circles:
-		CircleHazard* ch = HazardManager::getCircleHazard(collisionPair.second);
-		bool killCircleHazard = false;
-		bool overridedCircleHazardCollision = false;
-
-		if (!b->canCollideWith(ch)) {
-			continue;
-		}
-		if (CollisionHandler::partiallyCollided(b, ch)) {
-			for (int k = 0; k < b->bulletPowers.size(); k++) {
-				if (b->bulletPowers[k]->getModifiesCollisionWithCircleHazard(ch)) {
-					if (b->bulletPowers[k]->overridesCollisionWithCircleHazard) {
-						overridedCircleHazardCollision = true;
-					}
-
-					InteractionBoolHolder check_temp = b->bulletPowers[k]->modifiedCollisionWithCircleHazard(b, ch);
-					if (check_temp.shouldDie) {
-						shouldBeKilled = true;
-					}
-					if (check_temp.otherShouldDie) {
-						killCircleHazard = true;
-					}
-
-					if (!b->bulletPowers[k]->modifiedCollisionWithCircleHazardCanWorkWithOthers) {
-						break;
-					}
-				}
-			}
-
-			if (!overridedCircleHazardCollision) {
-				if (CollisionHandler::partiallyCollided(b, ch)) {
-					if (ch->actuallyCollided(b)) {
-						InteractionBoolHolder result = EndGameHandler::determineWinner(b, ch);
-						if (result.shouldDie) {
-							shouldBeKilled = true;
-						}
-						if (result.otherShouldDie) {
-							killCircleHazard = true;
-						}
-					}
-				}
-			}
-		}
-
-		if (killCircleHazard) {
-			circleHazardDeletionList.push_back(ch->getGameID());
-		}
-
-		if (shouldBeKilled) {
-			bulletDeletionList.push_back(b->getGameID());
-			//it's possible to add the same bullet twice, but deleting by ID doesn't care about that
-		}
-	}
-
-	delete collisionList;
-
-	//broad phase
-	collisionList = PhysicsHandler::sweepAndPrune<Circle*, Rect*>(BulletManager::getBulletCollisionList(), HazardManager::getRectHazardCollisionList());
-
-	//narrow phase and resolve collision
-	std::vector<Game_ID> rectHazardDeletionList;
-	for (int i = 0; i < collisionList->size(); i++) {
-		std::pair<int, int> collisionPair = collisionList->at(i);
-		Bullet* b = BulletManager::getBullet(collisionPair.first);
-		bool shouldBeKilled = false;
-
-		//rectangles:
-		RectHazard* rh = HazardManager::getRectHazard(collisionPair.second);
-		bool killRectHazard = false;
-		bool overridedRectHazardCollision = false;
-
-		if (!b->canCollideWith(rh)) {
-			continue;
-		}
-		if (CollisionHandler::partiallyCollided(b, rh)) {
-			for (int k = 0; k < b->bulletPowers.size(); k++) {
-				if (b->bulletPowers[k]->getModifiesCollisionWithRectHazard(rh)) {
-					if (b->bulletPowers[k]->overridesCollisionWithRectHazard) {
-						overridedRectHazardCollision = true;
-					}
-
-					InteractionBoolHolder check_temp = b->bulletPowers[k]->modifiedCollisionWithRectHazard(b, rh);
-					if (check_temp.shouldDie) {
-						shouldBeKilled = true;
-					}
-					if (check_temp.otherShouldDie) {
-						killRectHazard = true;
-					}
-
-					if (!b->bulletPowers[k]->modifiedCollisionWithRectHazardCanWorkWithOthers) {
-						break;
-					}
-				}
-			}
-
-			if (!overridedRectHazardCollision) {
-				if (CollisionHandler::partiallyCollided(b, rh)) {
-					if (rh->actuallyCollided(b)) {
-						InteractionBoolHolder result = EndGameHandler::determineWinner(b, rh);
-						if (result.shouldDie) {
-							shouldBeKilled = true;
-						}
-						if (result.otherShouldDie) {
-							killRectHazard = true;
-						}
-					}
-				}
-			}
-		}
-
-		if (killRectHazard) {
-			rectHazardDeletionList.push_back(rh->getGameID());
-		}
-
-		if (shouldBeKilled) {
-			bulletDeletionList.push_back(b->getGameID());
-			//it's possible to add the same bullet twice, but deleting by ID doesn't care about that
-		}
-	}
-
-	//clear deaths
-	for (int i = bulletDeletionList.size() - 1; i >= 0; i--) {
-		BulletManager::deleteBulletByID(bulletDeletionList[i]);
-	}
-	for (int i = circleHazardDeletionList.size() - 1; i >= 0; i--) {
-		HazardManager::deleteCircleHazardByID(circleHazardDeletionList[i]);
-	}
-	for (int i = rectHazardDeletionList.size() - 1; i >= 0; i--) {
-		HazardManager::deleteRectHazardByID(rectHazardDeletionList[i]);
-	}
-
-	//TODO: hazard "unitialization" would have to happen before deletion
-
-	delete collisionList;
-}
-
-void GameMainLoop::bulletToBullet() {
-	//TODO: modernize (add default vs custom collision stuff)
-	//broad phase
-	std::vector<std::pair<int, int>>* collisionList = PhysicsHandler::sweepAndPrune<Circle*>(BulletManager::getBulletCollisionList());
-	//std::cout << "old: " << (BulletManager::getNumBullets() * BulletManager::getNumBullets()) << ", new: " << collisionList.size() << std::endl;
-	//this is the largest timesink
-	//TODO: this returns a large list only to get destroyed when the function ends; any way to reduce this memory footprint?
-
-	//narrow phase and resolve collision
-	std::vector<Game_ID> bulletDeletionList;
-
-	std::unordered_map<Game_ID, BulletUpdateStruct> bulletUpdates; //yeah, this is unused...
-	std::vector<Game_ID> bulletUpdateList;
-
-	for (int i = 0; i < collisionList->size(); i++) {
-		std::pair<int, int> collisionPair = collisionList->at(i);
-		Bullet* b_outer = BulletManager::getBullet(collisionPair.first);
-		bool b_outerShouldDie = false;
-
-		Bullet* b_inner = BulletManager::getBullet(collisionPair.second);
-		bool b_innerShouldDie = false;
-
-		if (b_outer == b_inner) {
-			continue;
-		}
-		if (!b_outer->canCollideWith(b_inner)) {
-			continue;
-		}
-		if (CollisionHandler::partiallyCollided(b_outer, b_inner)) {
-			InteractionBoolHolder result = EndGameHandler::determineWinner(b_outer, b_inner);
-			//if (!b_outerShouldDie) {
-				b_outerShouldDie = result.shouldDie; //TODO: does this need to go in the conditional?
-			//}
-			b_innerShouldDie = result.otherShouldDie;
-
-			if (b_innerShouldDie) {
-				bulletDeletionList.push_back(b_inner->getGameID());
-			}
-		}
-
-		if (b_outerShouldDie) {
-			bulletDeletionList.push_back(b_outer->getGameID());
-		}
-	}
-
-	//clear deaths
-	//std::sort(bulletDeletionList.begin(), bulletDeletionList.end());
-	for (int i = bulletDeletionList.size() - 1; i >= 0; i--) {
-		//BulletManager::deleteBullet(bulletDeletionList[i]);
-		BulletManager::deleteBulletByID(bulletDeletionList[i]);
-	}
-
-	delete collisionList;
-}
-
-void GameMainLoop::bulletToTank() {
-	//TODO: tanks and bullets both have powers, so which one gets custom collision priority? (tanks, probably)
-	//broad phase
-	std::vector<std::pair<int, int>>* collisionList = PhysicsHandler::sweepAndPrune<Circle*, Circle*>(BulletManager::getBulletCollisionList(), TankManager::getTankCollisionList());
-
-	//narrow phase and resolve collision
-	std::vector<Game_ID> bulletDeletionList;
-	for (int i = 0; i < collisionList->size(); i++) {
-		std::pair<int, int> collisionPair = collisionList->at(i);
-		Bullet* b = BulletManager::getBullet(collisionPair.first);
-		bool shouldBeKilled = false;
-
-		Tank* t = TankManager::getTank(collisionPair.second);
-		bool killTank = false;
-		bool overridedTankCollision = false;
-
-		if (b->canCollideWith(t)) {
-			for (int k = 0; k < b->bulletPowers.size(); k++) {
-				if (b->bulletPowers[k]->modifiesCollisionWithTank) {
-					if (b->bulletPowers[k]->overridesCollisionWithTank) {
-						overridedTankCollision = true;
-					}
-
-					InteractionBoolHolder check_temp = b->bulletPowers[k]->modifiedCollisionWithTank(b, t);
-					if (check_temp.shouldDie) {
-						shouldBeKilled = true;
-					}
-					if (check_temp.otherShouldDie) {
-						killTank = true;
-					}
-
-					if (!b->bulletPowers[k]->modifiedCollisionWithTankCanWorkWithOthers) {
-						break;
-					}
-				}
-			}
-
-			if (!overridedTankCollision) {
-				if (CollisionHandler::partiallyCollided(t, b)) {
-					InteractionBoolHolder result = EndGameHandler::determineWinner(t, b);
-					if (result.shouldDie) {
-						killTank = true;
-					}
-					if (result.otherShouldDie) {
-						shouldBeKilled = true;
-					}
-				}
-			}
-		}
-
-		if (killTank) {
-			//TODO: proper implementation?
-		}
-
-		if (shouldBeKilled) {
-			bulletDeletionList.push_back(b->getGameID());
-		}
-	}
-
-	//clear deaths
-	for (int i = bulletDeletionList.size() - 1; i >= 0; i--) {
-		BulletManager::deleteBulletByID(bulletDeletionList[i]);
-	}
-
-	delete collisionList;
 }
 
 void GameMainLoop::drawMain() const {
-	auto start = Diagnostics::getTime();
+	ZoneScoped;
+	auto start = FrameTimeGraph::getTime();
 	Renderer::BeginScene("draw");
 
-	Diagnostics::startTiming("background rect");
+	//background rect
 	BackgroundRect::draw();
-	Diagnostics::endTiming();
 
-	Diagnostics::startTiming("hazards under");
+	//hazards under
 	for (int i = 0; i < HazardManager::getNumCircleHazards(); i++) {
 		HazardManager::getCircleHazard(i)->draw(DrawingLayers::under);
 	}
 	for (int i = 0; i < HazardManager::getNumRectHazards(); i++) {
 		HazardManager::getRectHazard(i)->draw(DrawingLayers::under);
 	}
-	Diagnostics::endTiming();
 
-	Diagnostics::startTiming("level under");
+	//level under
 	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
 		LevelManager::getLevel(i)->draw(DrawingLayers::under);
 	}
 	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
 		LevelManager::getLevel(i)->drawLevelEffects(DrawingLayers::under);
 	}
-	Diagnostics::endTiming();
 
-	Diagnostics::startTiming("powerups");
+	//powerups
 	for (int i = 0; i < PowerupManager::getNumPowerups(); i++) {
 		PowerupManager::getPowerup(i)->draw(DrawingLayers::normal);
 	}
-	Diagnostics::endTiming();
 
-	Diagnostics::startTiming("hazards");
+	//hazards
 	for (int i = 0; i < HazardManager::getNumCircleHazards(); i++) {
 		HazardManager::getCircleHazard(i)->draw(DrawingLayers::normal);
 	}
 	for (int i = 0; i < HazardManager::getNumRectHazards(); i++) {
 		HazardManager::getRectHazard(i)->draw(DrawingLayers::normal);
 	}
-	Diagnostics::endTiming();
 
-	Diagnostics::startTiming("walls");
+	//walls
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		WallManager::getWall(i)->draw(DrawingLayers::normal);
 	}
-	Diagnostics::endTiming();
 
-	Diagnostics::startTiming("bullets");
+	//bullets
+	FrameMarkStart("bullet draw");
+	ColorCacheBullet::invalidateCachedColors();
 	for (int i = 0; i < BulletManager::getNumBullets(); i++) {
 		BulletManager::getBullet(i)->draw(DrawingLayers::normal);
 	}
-	Diagnostics::endTiming();
+	FrameMarkEnd("bullet draw");
 
-	//drawing text on the GPU will need a library, so names don't get drawn anymore
+	//drawing text on the GPU will need a library, so names don't get drawn anymore //TODO: https://github.com/nothings/stb
 	/*
 	for (int i = 0; i < tanks.size(); i++) {
 		tanks[i]->drawName();
 	}
 	*/
 
-	Diagnostics::startTiming("tanks");
+	//tanks
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
 		TankManager::getTank(i)->draw(DrawingLayers::normal);
 	}
-	Diagnostics::endTiming();
 
-	Diagnostics::startTiming("hazards effects");
+	//hazards effects
 	for (int i = 0; i < HazardManager::getNumCircleHazards(); i++) {
 		HazardManager::getCircleHazard(i)->draw(DrawingLayers::effects);
 	}
 	for (int i = 0; i < HazardManager::getNumRectHazards(); i++) {
 		HazardManager::getRectHazard(i)->draw(DrawingLayers::effects);
 	}
-	Diagnostics::endTiming();
 
-	Diagnostics::startTiming("level effects");
+	//level effects
 	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
 		LevelManager::getLevel(i)->draw(DrawingLayers::effects);
 	}
 	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
 		LevelManager::getLevel(i)->drawLevelEffects(DrawingLayers::effects);
 	}
-	Diagnostics::endTiming();
 
-	Diagnostics::startTiming("tanks dead");
+	//tanks dead
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
 		TankManager::getTank(i)->draw(DrawingLayers::top);
 	}
-	Diagnostics::endTiming();
 
-	auto end = Diagnostics::getTime();
-	Diagnostics::pushGraphTime("upload", Diagnostics::getDiff(start, end));
+	auto end = FrameTimeGraph::getTime();
+	FrameTimeGraph::pushGraphTime("upload", FrameTimeGraph::getDiff(start, end));
 	Renderer::EndScene();
 
 	const GameSettings& game_settings = GameManager::get_settings();
@@ -1292,67 +1222,51 @@ void GameMainLoop::drawMain() const {
 		//TODO: levels should be able to debug draw their starting tank positions (color: white?)
 	}
 
-	//end = Diagnostics::getTime();
+	//end = FrameTimeGraph::getTime();
 
-	//Diagnostics::printPreciseTimings();
-	Diagnostics::clearTimes();
-
-	//std::cout << "entire: " << (long long)Diagnostics::getDiff(start, end) << "ms" << std::endl << std::endl;
+	//std::cout << "draw all: " << FrameTimeGraph::getDiff(start, end) << "ms" << std::endl << std::endl;
 }
 
 void GameMainLoop::drawLayer(DrawingLayers layer) const {
-	//auto start = Diagnostics::getTime();
 	Renderer::BeginScene("drawLayer" + std::to_string((int)layer));
 
-	//Diagnostics::startTiming("powerups");
+	//powerups
 	for (int i = 0; i < PowerupManager::getNumPowerups(); i++) {
 		PowerupManager::getPowerup(i)->draw(layer);
 	}
-	//Diagnostics::endTiming();
 
-	//Diagnostics::startTiming("hazards");
+	//hazards
 	for (int i = 0; i < HazardManager::getNumCircleHazards(); i++) {
 		HazardManager::getCircleHazard(i)->draw(layer);
 	}
 	for (int i = 0; i < HazardManager::getNumRectHazards(); i++) {
 		HazardManager::getRectHazard(i)->draw(layer);
 	}
-	//Diagnostics::endTiming();
 
-	//Diagnostics::startTiming("walls");
+	//walls
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		WallManager::getWall(i)->draw(layer);
 	}
-	//Diagnostics::endTiming();
 
-	//Diagnostics::startTiming("bullets");
+	//bullets
 	for (int i = 0; i < BulletManager::getNumBullets(); i++) {
 		BulletManager::getBullet(i)->draw(layer);
 	}
-	//Diagnostics::endTiming();
 
-	//Diagnostics::startTiming("tanks");
+	//tanks
 	for (int i = 0; i < TankManager::getNumTanks(); i++) {
 		TankManager::getTank(i)->draw(layer);
 	}
-	//Diagnostics::endTiming();
 
-	//Diagnostics::startTiming("level");
+	//level
 	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
 		LevelManager::getLevel(i)->draw(layer);
 	}
 	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
 		LevelManager::getLevel(i)->drawLevelEffects(layer);
 	}
-	//Diagnostics::endTiming();
 
 	Renderer::EndScene();
-	//auto end = Diagnostics::getTime();
-
-	//Diagnostics::printPreciseTimings();
-	//Diagnostics::clearTimes();
-
-	//std::cout << "entire: " << (long long)Diagnostics::getDiff(start, end) << "ms" << std::endl << std::endl;
 }
 
 void GameMainLoop::drawAllLayers() const {

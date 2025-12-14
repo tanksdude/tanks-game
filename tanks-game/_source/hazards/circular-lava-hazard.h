@@ -3,10 +3,11 @@
 #include "../generalized-lava.h"
 
 #include "../constants.h"
+#include "../simple-vector-2d.h"
 
 class CircularLavaHazard : public CircleHazard, public GeneralizedLava {
 protected:
-	virtual void pushNewBubble(double radius) override;
+	virtual void pushNewBubble(float bubbleRadius) override;
 
 public:
 	virtual std::vector<std::string> getHazardTypes() const override {
@@ -19,16 +20,13 @@ public:
 	virtual CircleHazardCollisionType getCollisionType() const override { return CircleHazardCollisionType::under; }
 
 	//virtual bool actuallyCollided(const Tank*) const override { return true; }
-	//bool modifiesTankCollision = true;
-	virtual void modifiedTankCollision(Tank*) override { return; }
+	virtual InteractionUpdateHolder<TankUpdateStruct, CircleHazardUpdateStruct> modifiedTankCollision(const Tank*) const override { return { false, false, nullptr, nullptr }; }
 
 	virtual bool actuallyCollided(const Bullet* b) const override { return (b->velocity.getMagnitude() == 0); }
-	//bool modifiesBulletCollision = true;
-	virtual void modifiedBulletCollision(Bullet*) override { return; }
+	virtual InteractionUpdateHolder<BulletUpdateStruct, CircleHazardUpdateStruct> modifiedBulletCollision(const Bullet*) const override { return { false, false, nullptr, nullptr }; }
 
-protected:
-	virtual float getDefaultOffense() const override { return .5; }
-	virtual float getDefaultDefense() const override { return HIGH_TIER; }
+	virtual float getOffenseTier() const override { return .5; }
+	virtual float getDefenseTier() const override { return HIGH_TIER; }
 
 public:
 	//virtual bool validLocation() const override { return true; }
@@ -46,11 +44,11 @@ public:
 	virtual void ghostDraw(DrawingLayers, float alpha) const override;
 
 protected:
-	virtual inline void drawBackground(bool pose, float alpha = 1.0f) const;
-	virtual inline void drawBubbles(bool pose, float alpha = 1.0f) const;
+	virtual void drawBackground(bool pose, float alpha = 1.0f) const;
+	virtual void drawBubbles(bool pose, float alpha = 1.0f) const;
 
 protected:
-	//NOTE: bubbles have half the normal circle vertices
+	//NOTE: bubbles (and the lava) have half the normal circle vertices
 	static constexpr unsigned int BubbleSideCount = Circle::NumOfSides / 2;
 	static SimpleVector2D bubble_vertices[BubbleSideCount + 1];
 	static unsigned int bubble_indices[BubbleSideCount * 3];

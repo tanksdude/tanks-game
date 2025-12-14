@@ -33,7 +33,7 @@ public:
 	virtual BulletPower* makeBulletPower() const override;
 
 	//bool modifiesDeathHandling = true;
-	virtual InteractionBoolHolder modifiedDeathHandling(Tank* parent) override;
+	virtual InteractionBoolHolder modifiedDeathHandling(const Tank* parent) override;
 
 	BarrierTankPower();
 };
@@ -43,12 +43,13 @@ public:
 class BarrierBulletPower : public BulletPower {
 public:
 	virtual ColorValueHolder getColor() const override { return BarrierPower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return BarrierPower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new BarrierBulletPower(); }
 	virtual TankPower* makeTankPower() const override;
 
 	//bool modifiesDeathHandling = true;
-	virtual InteractionBoolHolder modifiedDeathHandling(Bullet* parent) override;
+	virtual InteractionBoolHolder modifiedDeathHandling(const Bullet* parent) override;
 
 	BarrierBulletPower();
 };

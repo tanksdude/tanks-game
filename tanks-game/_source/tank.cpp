@@ -19,16 +19,16 @@ unsigned int Tank::body_indices[Circle::NumOfSides*3];
 unsigned int Tank::outline_indices[Circle::NumOfSides*2*3];
 bool Tank::initialized_vertices = false;
 
-const double Tank::default_maxSpeed = 1;
-const double Tank::default_acceleration = 1.0/16;
-const double Tank::default_turningIncrement = 64;
+const float Tank::default_maxSpeed = 1;
+const float Tank::default_acceleration = 1.0/16;
+const float Tank::default_turningIncrement = 64;
 
-Tank::Tank(double x_, double y_, double angle, Team_ID teamID, std::string name_, double shootCooldown) : GameThing(teamID) {
+Tank::Tank(double x_, double y_, float angle, Team_ID teamID, std::string name_, double shootCooldown) : GameThing(teamID, ObjectType::Tank) {
 	x = x_;
 	y = y_;
 	velocity = SimpleVector2D(angle, 0, true);
 	r = TANK_RADIUS;
-	name = name_;
+	//name = name_;
 	this->dead = false;
 
 	maxSpeed = default_maxSpeed;
@@ -47,7 +47,7 @@ Tank::Tank(double x_, double y_, double angle, Team_ID teamID, std::string name_
 		//shiny tank (yes, 1/8192 is the chance before Sword/Shield)
 		defaultColor = ColorValueHolder(0.75f, 0.75f, 0.75f);
 	} else {
-		defaultColor = ColorValueHolder(0.5f, 0.5f, 0.5f);
+		defaultColor = ColorValueHolder(0.5f, 0.5f, 0.5f); //JS: #888888
 	}
 
 	initializeVertices();
@@ -67,7 +67,7 @@ bool Tank::initializeVertices() {
 
 	body_vertices[0] = SimpleVector2D(0, 0);
 	for (int i = 1; i < Circle::NumOfSides+1; i++) {
-		body_vertices[i] = SimpleVector2D(cos((i-1) * (2*PI / Circle::NumOfSides)), sin((i-1) * (2*PI / Circle::NumOfSides)));
+		body_vertices[i] = SimpleVector2D(std::cos((i-1) * (2*PI / Circle::NumOfSides)), std::sin((i-1) * (2*PI / Circle::NumOfSides)));
 	}
 
 	for (int i = 0; i < Circle::NumOfSides; i++) {
@@ -89,6 +89,12 @@ bool Tank::initializeVertices() {
 	return true;
 }
 
+void Tank::update(const TankUpdateStruct* up) {
+	this->x += up->x;
+	this->y += up->y;
+	this->velocity = SimpleVector2D(velocity.getAngle() + up->angle, velocity.getMagnitude() + up->speed, true);
+}
+
 bool Tank::move(bool forward, bool turnL, bool turnR, bool specialKey) {
 	bool shouldBeKilled = false;
 	bool overridedMovement = false;
@@ -101,7 +107,7 @@ bool Tank::move(bool forward, bool turnL, bool turnR, bool specialKey) {
 			}
 
 			InteractionBoolHolder check_temp = tankPowers[k]->modifiedMovement(this, forward, turnL, turnR, specialKey);
-			if (check_temp.shouldDie) {
+			if (check_temp.firstShouldDie) {
 				shouldBeKilled = true;
 				overridedMovement = true;
 				break;
@@ -126,18 +132,18 @@ inline void Tank::move_base(bool forward, bool turnL, bool turnR) {
 	if (game_settings.RestrictTankTurning) {
 		if (!forward) {
 			if (turnL) {
-				velocity.changeAngle(PI/turningIncrement);
+				velocity.changeAngle(float(PI)/turningIncrement);
 			}
 			if (turnR) {
-				velocity.changeAngle(-PI/turningIncrement);
+				velocity.changeAngle(float(-PI)/turningIncrement);
 			}
 		}
 	} else [[likely]] {
 		if (turnL) {
-			velocity.changeAngle(PI/turningIncrement);
+			velocity.changeAngle(float(PI)/turningIncrement);
 		}
 		if (turnR) {
-			velocity.changeAngle(-PI/turningIncrement);
+			velocity.changeAngle(float(-PI)/turningIncrement);
 		}
 	}
 
@@ -191,12 +197,12 @@ void Tank::shoot(bool shooting) {
 						for (int s2 = extraShootingPoints.size() - 1; s2 >= 1; s2--) {
 							defaultMakeBullet(velocity.getAngle() + shootingPoints[i].angleFromCenter + extraShootingPoints[s2].angleFromCenter, extraShootingPoints[s2].angleFromEdge);
 						}
-						tankPowers[j]->additionalShooting(this, shootingPoints.at(i), extraShootingPoints.at(0));
+						tankPowers[j]->additionalShooting(this, shootingPoints[i], extraShootingPoints[0]);
 					}
 				} else {
 					for (int i = shootingPoints.size() - 1; i >= 0; i--) {
 						for (int s2 = extraShootingPoints.size() - 1; s2 >= 0; s2--) {
-							tankPowers[j]->additionalShooting(this, shootingPoints.at(i), extraShootingPoints.at(s2));
+							tankPowers[j]->additionalShooting(this, shootingPoints[i], extraShootingPoints[s2]);
 						}
 					}
 				}
@@ -215,11 +221,11 @@ void Tank::shoot(bool shooting) {
 			}
 		}
 
-		shootCount = maxShootCount * getShootingSpeedMultiplier();
+		shootCount = maxShootCount * getFiringRateMultiplier();
 	}
 }
 
-void Tank::makeBulletCommon(double x, double y, double angle, double radius, double speed) {
+void Tank::makeBulletCommon(double x, double y, double radius, float angle, float speed) {
 	std::vector<BulletPower*>* bp = new std::vector<BulletPower*>;
 	bp->reserve(tankPowers.size());
 	for (int k = 0; k < tankPowers.size(); k++) {
@@ -232,7 +238,7 @@ void Tank::makeBulletCommon(double x, double y, double angle, double radius, dou
 	delete bp;
 }
 
-void Tank::makeBullet(double x, double y, double angle, double radius, double speed, double acc) {
+void Tank::makeBullet(double x, double y, double radius, float angle, float speed, float acc) {
 	std::vector<BulletPower*>* bp = new std::vector<BulletPower*>;
 	bp->reserve(tankPowers.size());
 	for (int k = 0; k < tankPowers.size(); k++) {
@@ -245,16 +251,16 @@ void Tank::makeBullet(double x, double y, double angle, double radius, double sp
 	delete bp;
 }
 
-void Tank::defaultMakeBullet(double angle) {
-	makeBulletCommon(x + r*cos(angle), y + r*sin(angle), angle, r*BULLET_TO_TANK_RADIUS_RATIO, maxSpeed*BULLET_TO_TANK_SPEED_RATIO);
+void Tank::defaultMakeBullet(float angle) {
+	makeBulletCommon(x + r*std::cos(angle), y + r*std::sin(angle), r*BULLET_TO_TANK_RADIUS_RATIO, angle, maxSpeed*BULLET_TO_TANK_SPEED_RATIO);
 }
 
-void Tank::defaultMakeBullet(double angle, double edgeAngleOffset) {
-	makeBulletCommon(x + r*cos(angle), y + r*sin(angle), angle + edgeAngleOffset, r*BULLET_TO_TANK_RADIUS_RATIO, maxSpeed*BULLET_TO_TANK_SPEED_RATIO);
+void Tank::defaultMakeBullet(float angle, float edgeAngleOffset) {
+	makeBulletCommon(x + r*std::cos(angle), y + r*std::sin(angle), r*BULLET_TO_TANK_RADIUS_RATIO, angle + edgeAngleOffset, maxSpeed*BULLET_TO_TANK_SPEED_RATIO);
 }
 
-void Tank::preciseMakeBullet(double x, double y, double angle) {
-	makeBulletCommon(this->x + x, this->y + y, angle, r*BULLET_TO_TANK_RADIUS_RATIO, maxSpeed*BULLET_TO_TANK_SPEED_RATIO);
+void Tank::preciseMakeBullet(double x, double y, float angle) {
+	makeBulletCommon(this->x + x, this->y + y, r*BULLET_TO_TANK_RADIUS_RATIO, angle, maxSpeed*BULLET_TO_TANK_SPEED_RATIO);
 }
 
 void Tank::determineShootingAngles() {
@@ -267,7 +273,7 @@ void Tank::determineShootingAngles() {
 		if (tankPowers[i]->addsShootingPoints) {
 			determineShootingAngles_helper(tankPowers[i]->addShootingPoints());
 
-			if (!tankPowers[i]->addExtraShootingPointsCanWorkWithOthers) {
+			if (!tankPowers[i]->addShootingPointsCanWorkWithOthers) {
 				break;
 			}
 		}
@@ -275,9 +281,9 @@ void Tank::determineShootingAngles() {
 
 	for (int i = 0; i < tankPowers.size(); i++) {
 		if (tankPowers[i]->addsExtraShootingPoints) {
-			std::vector<std::pair<double, double>>* extraCannons = tankPowers[i]->addExtraShootingPoints();
+			std::vector<std::pair<float, float>>* extraCannons = tankPowers[i]->addExtraShootingPoints();
 			for (int j = 0; j < extraCannons->size(); j++) {
-				extraShootingPoints.push_back({ extraCannons->at(j).first, extraCannons->at(j).second });
+				extraShootingPoints.push_back({ extraCannons->data()[j].first, extraCannons->data()[j].second });
 			}
 			delete extraCannons;
 
@@ -288,15 +294,15 @@ void Tank::determineShootingAngles() {
 	}
 }
 
-inline void Tank::determineShootingAngles_helper(std::vector<double>* newCannonPoints) {
+inline void Tank::determineShootingAngles_helper(std::vector<float>* newCannonPoints) {
 	for (int i = shootingPoints.size() - 1; i >= 0; i--) {
 		const int end = (i + 1) % shootingPoints.size();
-		const double angle_diff = end == 0 ?
-		                          2*PI - (shootingPoints[i].angleFromCenter - shootingPoints[end].angleFromCenter) :
-		                          shootingPoints[end].angleFromCenter - shootingPoints[i].angleFromCenter;
+		const float angle_diff = end == 0 ?
+		                         float(2*PI) - (shootingPoints[i].angleFromCenter - shootingPoints[end].angleFromCenter) :
+		                         shootingPoints[end].angleFromCenter - shootingPoints[i].angleFromCenter;
 
 		for (int j = 0; j < newCannonPoints->size(); j++) {
-			const double newAngle = angle_diff * newCannonPoints->at(j);
+			const float newAngle = angle_diff * newCannonPoints->data()[j];
 			CannonPoint temp = CannonPoint(newAngle + shootingPoints[i].angleFromCenter);
 			shootingPoints.insert(shootingPoints.begin() + i + j + 1, temp);
 		}
@@ -305,7 +311,7 @@ inline void Tank::determineShootingAngles_helper(std::vector<double>* newCannonP
 	delete newCannonPoints;
 }
 
-double Tank::getShootingSpeedMultiplier() const {
+double Tank::getFiringRateMultiplier() const {
 	//so this function will look at the firing rate multipliers provided by the tankpowers
 	//(0-1] range: use lowest; (1-inf) range: use highest
 	//if there are values in each range, then there are three options:
@@ -354,14 +360,14 @@ void Tank::updateAllValues() {
 }
 
 void Tank::updateMaxSpeed() {
-	//look at getShootingSpeedMultiplier()
+	//look at getFiringRateMultiplier()
 
-	double highest = 1;
-	double lowest = 1;
-	std::vector<double> stackList;
+	float highest = 1;
+	float lowest = 1;
+	std::vector<float> stackList;
 
 	for (int i = 0; i < tankPowers.size(); i++) {
-		double value = tankPowers[i]->getTankMaxSpeedMultiplier();
+		float value = tankPowers[i]->getTankMaxSpeedMultiplier();
 		if (tankPowers[i]->tankMaxSpeedStacks) {
 			stackList.push_back(value);
 		} else {
@@ -373,12 +379,12 @@ void Tank::updateMaxSpeed() {
 		}
 	}
 
-	double value = 1;
+	float value = 1;
 	for (int i = 0; i < stackList.size(); i++) {
 		value *= stackList[i];
 	}
 
-	double level_amount = 1;
+	float level_amount = 1;
 	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
 		Level* l = LevelManager::getLevel(i);
 		for (int j = 0; j < l->getNumEffects(); j++) {
@@ -391,14 +397,14 @@ void Tank::updateMaxSpeed() {
 }
 
 void Tank::updateAcceleration() {
-	//look at getShootingSpeedMultiplier()
+	//look at getFiringRateMultiplier()
 
-	double highest = 1;
-	double lowest = 1;
-	std::vector<double> stackList;
+	float highest = 1;
+	float lowest = 1;
+	std::vector<float> stackList;
 
 	for (int i = 0; i < tankPowers.size(); i++) {
-		double value = tankPowers[i]->getTankAccelerationMultiplier();
+		float value = tankPowers[i]->getTankAccelerationMultiplier();
 		if (tankPowers[i]->tankAccelerationStacks) {
 			stackList.push_back(value);
 		} else {
@@ -410,12 +416,12 @@ void Tank::updateAcceleration() {
 		}
 	}
 
-	double value = 1;
+	float value = 1;
 	for (int i = 0; i < stackList.size(); i++) {
 		value *= stackList[i];
 	}
 
-	double level_amount = 1;
+	float level_amount = 1;
 	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
 		Level* l = LevelManager::getLevel(i);
 		for (int j = 0; j < l->getNumEffects(); j++) {
@@ -428,7 +434,7 @@ void Tank::updateAcceleration() {
 }
 
 void Tank::updateRadius() {
-	//look at getShootingSpeedMultiplier()
+	//look at getFiringRateMultiplier()
 
 	double highest = 1;
 	double lowest = 1;
@@ -465,15 +471,15 @@ void Tank::updateRadius() {
 }
 
 void Tank::updateTurningIncrement() {
-	//look at getShootingSpeedMultiplier()
+	//look at getFiringRateMultiplier()
 
-	double highest = 1;
-	double lowest = 1;
-	std::vector<double> stackList;
+	float highest = 1;
+	float lowest = 1;
+	std::vector<float> stackList;
 	int negativeCount = 0;
 
 	for (int i = 0; i < tankPowers.size(); i++) {
-		double value = tankPowers[i]->getTankTurningIncrementMultiplier();
+		float value = tankPowers[i]->getTankTurningIncrementMultiplier();
 		if (value < 0) {
 			negativeCount++;
 			value = value * -1;
@@ -489,12 +495,12 @@ void Tank::updateTurningIncrement() {
 		}
 	}
 
-	double value = 1;
+	float value = 1;
 	for (int i = 0; i < stackList.size(); i++) {
 		value *= stackList[i];
 	}
 
-	double level_amount = 1;
+	float level_amount = 1;
 	for (int i = 0; i < LevelManager::getNumLevels(); i++) {
 		Level* l = LevelManager::getLevel(i);
 		for (int j = 0; j < l->getNumEffects(); j++) {
@@ -504,11 +510,13 @@ void Tank::updateTurningIncrement() {
 	}
 
 	turningIncrement = highest * lowest * value * level_amount * default_turningIncrement * (negativeCount%2 == 0 ? 1 : -1);
-	velocity.setAngle(round(velocity.getAngle() / (PI / turningIncrement)) * (PI / turningIncrement));
+	velocity.setAngle(std::round(velocity.getAngle() / (float(PI) / turningIncrement)) * (float(PI) / turningIncrement));
 }
 
-void Tank::powerCalculate() {
-	//TODO: separate into power tick and power count down
+void Tank::powerTickAndCalculate() {
+	//should this be separated into power tick and power count down?
+	//for now, no because laziness and memory bandwidth (which doesn't really matter when there's only two tanks, matters a lot more for bullets)
+	//the only power that might care is mines, because it checks whether it needs to modify additional shooting based on other powers
 	for (int i = tankPowers.size() - 1; i >= 0; i--) {
 		tankPowers[i]->tick(this); //I don't think any power will use this, but whatever
 		if (tankPowers[i]->isDone()) [[unlikely]] {
@@ -556,16 +564,16 @@ ColorValueHolder Tank::getBodyColor() const {
 	}
 }
 
-inline double Tank::getEvaluatedCannonAngle(unsigned int i) const {
+inline float Tank::getEvaluatedCannonAngle(unsigned int i) const {
 	return velocity.getAngle() + shootingPoints[i].angleFromCenter;
 }
 
-inline double Tank::getEvaluatedCannonAngle(unsigned int i, unsigned int j) const {
+inline float Tank::getEvaluatedCannonAngle(unsigned int i, unsigned int j) const {
 	return velocity.getAngle() + shootingPoints[i].angleFromCenter + extraShootingPoints[j].angleFromCenter;
 }
 
-inline double Tank::getEvaluatedCannonAngleWithEdge(unsigned int i, unsigned int j) const {
-	return velocity.getAngle() + shootingPoints[i].angleFromCenter + extraShootingPoints[j].angleFromCenter + extraShootingPoints[j].angleFromEdge;
+inline float Tank::getEvaluatedCannonAngleWithEdge(unsigned int i, unsigned int j) const {
+	return (velocity.getAngle() + shootingPoints[i].angleFromCenter) + (extraShootingPoints[j].angleFromCenter + extraShootingPoints[j].angleFromEdge);
 }
 
 void Tank::draw() const {
@@ -706,8 +714,7 @@ void Tank::ghostDraw(DrawingLayers layer, float alpha) const {
 	}
 }
 
-inline void Tank::drawBody(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
+void Tank::drawBody(float alpha) const {
 	alpha = alpha * alpha;
 
 	const int visiblePowerCount = std::count_if(tankPowers.begin(), tankPowers.end(),
@@ -725,8 +732,8 @@ inline void Tank::drawBody(float alpha) const {
 		coordsAndColor[4] = color.getBf();
 		coordsAndColor[5] = color.getAf();
 		for (int i = 1; i < Circle::NumOfSides+1; i++) {
-			coordsAndColor[i*6]   = x + r * body_vertices[i].getXComp();
-			coordsAndColor[i*6+1] = y + r * body_vertices[i].getYComp();
+			coordsAndColor[i*6]   = static_cast<float>(x) + static_cast<float>(r) * body_vertices[i].getXComp();
+			coordsAndColor[i*6+1] = static_cast<float>(y) + static_cast<float>(r) * body_vertices[i].getYComp();
 			coordsAndColor[i*6+2] = color.getRf();
 			coordsAndColor[i*6+3] = color.getGf();
 			coordsAndColor[i*6+4] = color.getBf();
@@ -738,43 +745,45 @@ inline void Tank::drawBody(float alpha) const {
 		//main color split:
 
 		ColorValueHolder color;
+		float coordsAndColor[(Circle::NumOfSides+1)*(2+4)];
+
 		for (int i = 0; i < tankPowers.size(); i++) {
-			if (tankPowers[i]->getColorImportance() < 0) {
+			if (tankPowers[i]->getColorImportance() < 0) [[unlikely]] {
 				continue;
 			}
-			std::vector<float> coordsAndColor_colorSplit;
-			std::vector<unsigned int> indices_colorSplit;
-			//could just use an array, since the size should be easy to calculate, but that's effort
-			//could push everything to an array then only submit one batched draw call, but that's more effort
 
 			color = tankPowers[i]->getColor();
 			color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 
-			float rotatePercent = floor((float(i) / visiblePowerCount) * Circle::NumOfSides) / Circle::NumOfSides;
-			float nextRotatePercent = floor((float(i+1) / visiblePowerCount) * Circle::NumOfSides) / Circle::NumOfSides;
-			//unsigned int rotateVertices = floor((nextRotatePercent - rotatePercent) * Circle::NumOfSides);
-			unsigned int rotateVertexStart = floor(rotatePercent * Circle::NumOfSides);
-			unsigned int rotateVertexEnd = floor(nextRotatePercent * Circle::NumOfSides);
+			float rotatePercent = std::floor((float(i) / visiblePowerCount) * Circle::NumOfSides) / Circle::NumOfSides;
+			float nextRotatePercent = std::floor((float(i+1) / visiblePowerCount) * Circle::NumOfSides) / Circle::NumOfSides;
+			unsigned int rotateVertexStart = rotatePercent * Circle::NumOfSides;
+			unsigned int rotateVertexEnd = nextRotatePercent * Circle::NumOfSides;
 
-			coordsAndColor_colorSplit.push_back(x);
-			coordsAndColor_colorSplit.push_back(y);
-			coordsAndColor_colorSplit.push_back(color.getRf());
-			coordsAndColor_colorSplit.push_back(color.getGf());
-			coordsAndColor_colorSplit.push_back(color.getBf());
-			coordsAndColor_colorSplit.push_back(color.getAf());
+			if (rotateVertexStart == rotateVertexEnd) [[unlikely]] {
+				//only happens when there are way too many powers
+				continue;
+			}
+
+			coordsAndColor[0] = x;
+			coordsAndColor[1] = y;
+			coordsAndColor[2] = color.getRf();
+			coordsAndColor[3] = color.getGf();
+			coordsAndColor[4] = color.getBf();
+			coordsAndColor[5] = color.getAf();
 			for (unsigned int j = rotateVertexStart; j <= rotateVertexEnd; j++) {
 				SimpleVector2D vertex = SimpleVector2D(body_vertices[j % Circle::NumOfSides + 1]);
 				vertex.scaleAndRotate(r, velocity.getAngle());
 
-				coordsAndColor_colorSplit.push_back(static_cast<float>(x) + vertex.getXComp());
-				coordsAndColor_colorSplit.push_back(static_cast<float>(y) + vertex.getYComp());
-				coordsAndColor_colorSplit.push_back(color.getRf());
-				coordsAndColor_colorSplit.push_back(color.getGf());
-				coordsAndColor_colorSplit.push_back(color.getBf());
-				coordsAndColor_colorSplit.push_back(color.getAf());
+				coordsAndColor[(j - rotateVertexStart + 1)*6]     = static_cast<float>(x) + vertex.getXComp();
+				coordsAndColor[(j - rotateVertexStart + 1)*6 + 1] = static_cast<float>(y) + vertex.getYComp();
+				coordsAndColor[(j - rotateVertexStart + 1)*6 + 2] = color.getRf();
+				coordsAndColor[(j - rotateVertexStart + 1)*6 + 3] = color.getGf();
+				coordsAndColor[(j - rotateVertexStart + 1)*6 + 4] = color.getBf();
+				coordsAndColor[(j - rotateVertexStart + 1)*6 + 5] = color.getAf();
 			}
 
-			Renderer::SubmitBatchedDraw(coordsAndColor_colorSplit.data(), coordsAndColor_colorSplit.size(), body_indices, (rotateVertexEnd - rotateVertexStart)*3);
+			Renderer::SubmitBatchedDraw(coordsAndColor, (rotateVertexEnd - rotateVertexStart + 2) * (2+4), body_indices, (rotateVertexEnd - rotateVertexStart) * 3);
 		}
 
 		//center colors mix:
@@ -782,7 +791,6 @@ inline void Tank::drawBody(float alpha) const {
 		color = getBodyColor();
 		color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 
-		float coordsAndColor[(Circle::NumOfSides+1)*(2+4)];
 		coordsAndColor[0] = x;
 		coordsAndColor[1] = y;
 		coordsAndColor[2] = color.getRf();
@@ -790,8 +798,8 @@ inline void Tank::drawBody(float alpha) const {
 		coordsAndColor[4] = color.getBf();
 		coordsAndColor[5] = color.getAf();
 		for (int i = 1; i < Circle::NumOfSides+1; i++) {
-			coordsAndColor[i*6]   = x + (r*.75) * body_vertices[i].getXComp();
-			coordsAndColor[i*6+1] = y + (r*.75) * body_vertices[i].getYComp();
+			coordsAndColor[i*6]   = static_cast<float>(x) + (static_cast<float>(r)*.75f) * body_vertices[i].getXComp();
+			coordsAndColor[i*6+1] = static_cast<float>(y) + (static_cast<float>(r)*.75f) * body_vertices[i].getYComp();
 			coordsAndColor[i*6+2] = color.getRf();
 			coordsAndColor[i*6+3] = color.getGf();
 			coordsAndColor[i*6+4] = color.getBf();
@@ -802,10 +810,8 @@ inline void Tank::drawBody(float alpha) const {
 	}
 }
 
-inline void Tank::drawBodyDead(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
+void Tank::drawBodyDead(float alpha) const {
 	alpha = alpha * alpha;
-
 	ColorValueHolder deadColor = ColorValueHolder(0.0f, 0.0f, 0.0f);
 	ColorValueHolder outerColor = ColorValueHolder(1.0f, 1.0f, 1.0f);
 	deadColor = ColorMixer::mix(BackgroundRect::getBackColor(), deadColor, alpha);
@@ -819,8 +825,8 @@ inline void Tank::drawBodyDead(float alpha) const {
 	coordsAndColor[4] = deadColor.getBf();
 	coordsAndColor[5] = deadColor.getAf();
 	for (int i = 1; i < Circle::NumOfSides+1; i++) {
-		coordsAndColor[i*6]   = x + r * body_vertices[i].getXComp();
-		coordsAndColor[i*6+1] = y + r * body_vertices[i].getYComp();
+		coordsAndColor[i*6]   = static_cast<float>(x) + static_cast<float>(r) * body_vertices[i].getXComp();
+		coordsAndColor[i*6+1] = static_cast<float>(y) + static_cast<float>(r) * body_vertices[i].getYComp();
 		coordsAndColor[i*6+2] = outerColor.getRf();
 		coordsAndColor[i*6+3] = outerColor.getGf();
 		coordsAndColor[i*6+4] = outerColor.getBf();
@@ -830,20 +836,18 @@ inline void Tank::drawBodyDead(float alpha) const {
 	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::NumOfSides+1)*(2+4), body_indices, Circle::NumOfSides*3);
 }
 
-inline void Tank::drawOutline(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
+void Tank::drawOutline(float alpha) const {
 	alpha = alpha * alpha;
-
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	const float lineWidth = 0.5f;
 
 	float coordsAndColor[(Circle::NumOfSides*2)*(2+4)];
 	for (int i = 0; i < Circle::NumOfSides; i++) {
-		coordsAndColor[(i*2)  *6]   = x + (r-lineWidth) * body_vertices[i+1].getXComp();
-		coordsAndColor[(i*2)  *6+1] = y + (r-lineWidth) * body_vertices[i+1].getYComp();
-		coordsAndColor[(i*2+1)*6]   = x + (r+lineWidth) * body_vertices[i+1].getXComp();
-		coordsAndColor[(i*2+1)*6+1] = y + (r+lineWidth) * body_vertices[i+1].getYComp();
+		coordsAndColor[(i*2)  *6]   = static_cast<float>(x) + (static_cast<float>(r)-lineWidth) * body_vertices[i+1].getXComp();
+		coordsAndColor[(i*2)  *6+1] = static_cast<float>(y) + (static_cast<float>(r)-lineWidth) * body_vertices[i+1].getYComp();
+		coordsAndColor[(i*2+1)*6]   = static_cast<float>(x) + (static_cast<float>(r)+lineWidth) * body_vertices[i+1].getXComp();
+		coordsAndColor[(i*2+1)*6+1] = static_cast<float>(y) + (static_cast<float>(r)+lineWidth) * body_vertices[i+1].getYComp();
 
 		coordsAndColor[(i*2)  *6+2] = color.getRf();
 		coordsAndColor[(i*2)  *6+3] = color.getGf();
@@ -858,15 +862,14 @@ inline void Tank::drawOutline(float alpha) const {
 	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::NumOfSides*2)*(2+4), outline_indices, Circle::NumOfSides*6);
 }
 
-inline void Tank::drawShootingCooldown(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
+void Tank::drawShootingCooldown(float alpha) const {
 	alpha = alpha * alpha;
 
-	double shootingOutlinePercent;
-	if (maxShootCount*getShootingSpeedMultiplier() <= 0 || maxShootCount <= 0) {
+	float shootingOutlinePercent;
+	if (maxShootCount*getFiringRateMultiplier() <= 0 || maxShootCount <= 0) {
 		shootingOutlinePercent = 0;
 	} else {
-		shootingOutlinePercent = std::clamp<double>(shootCount/(maxShootCount*getShootingSpeedMultiplier()), 0, 1);
+		shootingOutlinePercent = std::clamp<float>(shootCount/(maxShootCount*getFiringRateMultiplier()), 0, 1);
 	}
 	unsigned int shootingOutlineTriangles = Circle::NumOfSides * shootingOutlinePercent;
 
@@ -883,7 +886,7 @@ inline void Tank::drawShootingCooldown(float alpha) const {
 		coordsAndColor[5] = color.getAf();
 		for (unsigned int i = 0; i <= shootingOutlineTriangles && i < Circle::NumOfSides; i++) {
 			SimpleVector2D vertex = SimpleVector2D(body_vertices[i % Circle::NumOfSides + 1]);
-			vertex.scaleAndRotate(r*(5.0/4.0), velocity.getAngle());
+			vertex.scaleAndRotate(static_cast<float>(r)*(5.0f/4.0f), velocity.getAngle());
 
 			coordsAndColor[(i+1)*6]   = static_cast<float>(x) + vertex.getXComp();
 			coordsAndColor[(i+1)*6+1] = static_cast<float>(y) + vertex.getYComp();
@@ -897,8 +900,7 @@ inline void Tank::drawShootingCooldown(float alpha) const {
 	}
 }
 
-inline void Tank::drawPowerCooldown(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
+void Tank::drawPowerCooldown(float alpha) const {
 	alpha = alpha * alpha;
 
 	//first, sort by timeLeft/maxTime
@@ -908,11 +910,11 @@ inline void Tank::drawPowerCooldown(float alpha) const {
 
 	//second, actually draw them
 	for (int i = 0; i < sortedTankPowers.size(); i++) {
-		double powerOutlinePercent;
+		float powerOutlinePercent;
 		if (sortedTankPowers[i]->maxTime <= 0) [[unlikely]] {
 			powerOutlinePercent = 0;
 		} else {
-			powerOutlinePercent = std::clamp<double>(sortedTankPowers[i]->timeLeft/sortedTankPowers[i]->maxTime, 0, 1);
+			powerOutlinePercent = std::clamp<float>(sortedTankPowers[i]->timeLeft/sortedTankPowers[i]->maxTime, 0, 1);
 		}
 		unsigned int powerOutlineTriangles = Circle::NumOfSides * powerOutlinePercent;
 
@@ -929,7 +931,7 @@ inline void Tank::drawPowerCooldown(float alpha) const {
 			coordsAndColor[5] = color.getAf();
 			for (unsigned int j = 0; j <= powerOutlineTriangles && j < Circle::NumOfSides; j++) {
 				SimpleVector2D vertex = SimpleVector2D(body_vertices[j % Circle::NumOfSides + 1]);
-				vertex.scaleAndRotate(r*(9.0/8.0), velocity.getAngle());
+				vertex.scaleAndRotate(static_cast<float>(r)*(9.0f/8.0f), velocity.getAngle()); //most of this function's time is spent here
 
 				coordsAndColor[(j+1)*6]   = static_cast<float>(x) + vertex.getXComp();
 				coordsAndColor[(j+1)*6+1] = static_cast<float>(y) + vertex.getYComp();
@@ -941,13 +943,14 @@ inline void Tank::drawPowerCooldown(float alpha) const {
 
 			Renderer::SubmitBatchedDraw(coordsAndColor, (powerOutlineTriangles < Circle::NumOfSides ? (powerOutlineTriangles+2)*(2+4) : (powerOutlineTriangles+1)*(2+4)), body_indices, powerOutlineTriangles*3);
 		}
+
+		//idea: instead of drawing the full arc, draw just the part not covered by next power
+		//reduces memory bandwidth at the cost of more complicated logic
 	}
 }
 
-inline void Tank::drawMainBarrel(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
+void Tank::drawMainBarrel(float alpha) const {
 	alpha = alpha * alpha;
-
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	const float lineWidth = 0.75f;
@@ -956,7 +959,7 @@ inline void Tank::drawMainBarrel(float alpha) const {
 	unsigned int indices[6];
 
 	SimpleVector2D dist = SimpleVector2D(velocity.getAngle(), r, true);
-	SimpleVector2D distCW = SimpleVector2D(velocity.getAngle() - PI/2, lineWidth, true);
+	SimpleVector2D distCW = SimpleVector2D(velocity.getAngle() - float(PI/2), lineWidth, true);
 
 	coordsAndColor[0*6]   = static_cast<float>(x)                   + distCW.getXComp();
 	coordsAndColor[0*6+1] = static_cast<float>(y)                   + distCW.getYComp();
@@ -984,27 +987,26 @@ inline void Tank::drawMainBarrel(float alpha) const {
 	Renderer::SubmitBatchedDraw(coordsAndColor, 4*(2+4), indices, 6);
 }
 
-inline void Tank::drawExtraBarrels(float alpha) const {
-	if (shootingPoints.size() <= 1) {
+void Tank::drawExtraBarrels(float alpha) const {
+	if (shootingPoints.size() <= 1) [[unlikely]] {
 		return;
 	}
 
-	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-
 	ColorValueHolder color = ColorValueHolder(0.75f, 0.75f, 0.75f);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	const float lineWidth = 0.375f; //TODO: unsure what to put this at; .25 too thin, .5 too thick, .375 looks a bit off from aliasing
 
-	float* coordsAndColor = new float[(shootingPoints.size()-1)*4*(2+4)];
-	unsigned int* indices = new unsigned int[(shootingPoints.size()-1)*6];
+	constexpr unsigned int batchSize = 64;
+	float coordsAndColor[batchSize*4 * (2+4)];
+	unsigned int indices[batchSize * 6];
 
-	for (int i = 0; i < shootingPoints.size()-1; i++) {
-		const int startVertex = (i*4) * 6;
-		const int startIndex = i*6;
+	for (int i = 1; i < shootingPoints.size(); i++) {
+		const int startVertex = (((i-1) % batchSize)*4) * (2+4);
+		const int startIndex = ((i-1) % batchSize)*6;
 
-		SimpleVector2D dist = SimpleVector2D(getEvaluatedCannonAngle(i+1), r, true);
-		SimpleVector2D distCW = SimpleVector2D(getEvaluatedCannonAngle(i+1) - PI/2, lineWidth, true);
+		SimpleVector2D dist = SimpleVector2D(getEvaluatedCannonAngle(i), r, true);
+		SimpleVector2D distCW = SimpleVector2D(getEvaluatedCannonAngle(i) - float(PI/2), lineWidth, true);
 
 		coordsAndColor[startVertex + 0*6]   = static_cast<float>(x)                   + distCW.getXComp();
 		coordsAndColor[startVertex + 0*6+1] = static_cast<float>(y)                   + distCW.getYComp();
@@ -1028,36 +1030,41 @@ inline void Tank::drawExtraBarrels(float alpha) const {
 		indices[startIndex + 3] = startVertex/6 + 2;
 		indices[startIndex + 4] = startVertex/6 + 3;
 		indices[startIndex + 5] = startVertex/6 + 0;
+
+		if ((i-1) % batchSize == batchSize-1) {
+			Renderer::SubmitBatchedDraw(coordsAndColor, batchSize*4 * (2+4), indices, batchSize * 6);
+		}
 	}
 
-	Renderer::SubmitBatchedDraw(coordsAndColor, (shootingPoints.size()-1)*4*(2+4), indices, (shootingPoints.size()-1)*6);
-	delete[] coordsAndColor; delete[] indices;
+	const unsigned int leftover_points = (shootingPoints.size()-1) % batchSize;
+	if (leftover_points > 0) [[likely]] {
+		Renderer::SubmitBatchedDraw(coordsAndColor, leftover_points*4 * (2+4), indices, leftover_points * 6);
+	}
 }
 
-inline void Tank::drawExtraExtraBarrels(float alpha) const {
+void Tank::drawExtraExtraBarrels(float alpha) const {
 	if (extraShootingPoints.size() <= 1) {
 		return;
 	}
 
-	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-
 	ColorValueHolder color = ColorValueHolder(0.25f, 0.25f, 0.25f);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	const float lineWidth = 0.375f;
 
-	float* coordsAndColor = new float[(extraShootingPoints.size()-1)*4*(2+4)];
-	unsigned int* indices = new unsigned int[(extraShootingPoints.size()-1)*6];
+	constexpr unsigned int batchSize = 64;
+	float coordsAndColor[batchSize*4 * (2+4)];
+	unsigned int indices[batchSize * 6];
 
-	for (int i = 0; i < extraShootingPoints.size()-1; i++) {
-		const int startVertex = (i*4) * 6;
-		const int startIndex = i*6;
+	for (int i = 1; i < extraShootingPoints.size(); i++) {
+		const int startVertex = (((i-1) % batchSize)*4) * (2+4);
+		const int startIndex = ((i-1) % batchSize)*6;
 
-		SimpleVector2D distFromCenter = SimpleVector2D(getEvaluatedCannonAngle(0, i+1), r, true);
-		const double computedAngle = shootingPoints[0].angleFromCenter + extraShootingPoints[i+1].angleFromCenter;
-		const float extraCannonLength = r * (sin(computedAngle)*sin(computedAngle) * .25 + .25); //.25 at main cannon, .5 at 90deg //x^2 instead of abs because 45deg cannon was too long
-		SimpleVector2D dist = SimpleVector2D(getEvaluatedCannonAngleWithEdge(0, i+1), extraCannonLength, true);
-		SimpleVector2D distCW = SimpleVector2D(getEvaluatedCannonAngleWithEdge(0, i+1) - PI/2, lineWidth, true);
+		SimpleVector2D distFromCenter = SimpleVector2D(getEvaluatedCannonAngle(0, i), r, true);
+		const float computedAngle = shootingPoints[0].angleFromCenter + extraShootingPoints[i].angleFromCenter;
+		const float extraCannonLength = static_cast<float>(r) * (std::sin(computedAngle)*std::sin(computedAngle) * .25f + .25f); //.25 at main cannon, .5 at 90deg //x^2 instead of abs because 45deg cannon was too long
+		SimpleVector2D dist = SimpleVector2D(getEvaluatedCannonAngleWithEdge(0, i), extraCannonLength, true);
+		SimpleVector2D distCW = SimpleVector2D(getEvaluatedCannonAngleWithEdge(0, i) - float(PI/2), lineWidth, true);
 
 		coordsAndColor[startVertex + 0*6]   = static_cast<float>(x) + distFromCenter.getXComp()                   + distCW.getXComp();
 		coordsAndColor[startVertex + 0*6+1] = static_cast<float>(y) + distFromCenter.getYComp()                   + distCW.getYComp();
@@ -1081,10 +1088,16 @@ inline void Tank::drawExtraExtraBarrels(float alpha) const {
 		indices[startIndex + 3] = startVertex/6 + 2;
 		indices[startIndex + 4] = startVertex/6 + 3;
 		indices[startIndex + 5] = startVertex/6 + 0;
+
+		if ((i-1) % batchSize == batchSize-1) {
+			Renderer::SubmitBatchedDraw(coordsAndColor, batchSize*4 * (2+4), indices, batchSize * 6);
+		}
 	}
 
-	Renderer::SubmitBatchedDraw(coordsAndColor, (extraShootingPoints.size()-1)*4*(2+4), indices, (extraShootingPoints.size()-1)*6);
-	delete[] coordsAndColor; delete[] indices;
+	const unsigned int leftover_points = (extraShootingPoints.size()-1) % batchSize;
+	if (leftover_points > 0) [[likely]] {
+		Renderer::SubmitBatchedDraw(coordsAndColor, leftover_points*4 * (2+4), indices, leftover_points * 6);
+	}
 }
 
 bool Tank::kill() {
@@ -1098,10 +1111,10 @@ bool Tank::kill() {
 
 		if (tankPowers[i]->modifiesDeathHandling) {
 			InteractionBoolHolder check_temp = tankPowers[i]->modifiedDeathHandling(this);
-			if (!check_temp.shouldDie) {
+			if (!check_temp.firstShouldDie) {
 				shouldBeKilled = false;
 			}
-			if (check_temp.otherShouldDie) {
+			if (check_temp.secondShouldDie) {
 				killTankPower = true;
 			}
 		}
@@ -1183,4 +1196,19 @@ float Tank::getHighestDefenseTier(float importance) const {
 
 float Tank::getDefenseTier() const {
 	return getHighestDefenseTier(getHighestDefenseImportance());
+}
+
+TankUpdateStruct::TankUpdateStruct(double x, double y, float speed, float angle) {
+	//add acceleration?
+	this->x = x;
+	this->y = y;
+	this->speed = speed;
+	this->angle = angle;
+}
+
+void TankUpdateStruct::add(const TankUpdateStruct& other) {
+	this->x += other.x;
+	this->y += other.y;
+	this->speed += other.speed;
+	this->angle += other.angle;
 }

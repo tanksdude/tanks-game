@@ -1,6 +1,5 @@
 #include "color-mixer.h"
 
-#include "constants.h"
 #include <cmath> //abs, fmod
 #include <iostream>
 
@@ -12,9 +11,9 @@ ColorValueHolder ColorMixer::mix(const ColorValueHolder& a, const ColorValueHold
 	return ColorValueHolder((a.getRf() + (b.getRf() - a.getRf())*amt), (a.getGf() + (b.getGf() - a.getGf())*amt), (a.getBf() + (b.getBf() - a.getBf())*amt));
 }
 
-ColorValueHolder ColorMixer::mix(const ColorValueHolder* c, int num) {
+ColorValueHolder ColorMixer::mix(const ColorValueHolder* c, unsigned int num) {
 	float colors[3] = { 0, 0, 0 };
-	for (int i = 0; i < num; i++) {
+	for (unsigned int i = 0; i < num; i++) {
 		colors[0] += c[i].getRf();
 		colors[1] += c[i].getGf();
 		colors[2] += c[i].getBf();
@@ -27,7 +26,7 @@ ColorValueHolder ColorMixer::HSVtoRGB(float hue, float saturation, float value) 
 	//got this from https://en.wikipedia.org/wiki/HSL_and_HSV#HSV_to_RGB
 	float c = saturation * value;
 	float hPrime = hue / 60;
-	float x = c * (1 - abs(fmod(hPrime,2) - 1));
+	float x = c * (1 - std::abs(std::fmod(hPrime,2.0f) - 1));
 	float R, G, B;
 	if (hPrime < 1) {
 		R=c, G=x, B=0;
@@ -46,10 +45,10 @@ ColorValueHolder ColorMixer::HSVtoRGB(float hue, float saturation, float value) 
 	return ColorValueHolder(R+m, G+m, B+m);
 }
 
-ColorValueHolder ColorMixer::HSVtoRGB_int(int hue, float saturation, float value) {
+ColorValueHolder ColorMixer::HSVtoRGB_int(unsigned int hue, float saturation, float value) {
 	float c = saturation * value;
-	int hPrime = hue / 60;
-	float x = c * (1 - abs(static_cast<float>(hue % 120) / 60 - 1));
+	unsigned int hPrime = hue / 60;
+	float x = c * (1 - std::abs(static_cast<float>(hue % 120) / 60 - 1));
 	float R, G, B;
 	switch (hPrime) {
 		case 0:
@@ -71,9 +70,9 @@ ColorValueHolder ColorMixer::HSVtoRGB_int(int hue, float saturation, float value
 
 ColorValueHolder ColorMixer::HSLtoRGB(float hue, float saturation, float light) {
 	//got this from https://en.wikipedia.org/wiki/HSL_and_HSV#HSL_to_RGB
-	float c = (1 - abs(2*light - 1)) * saturation;
+	float c = (1 - std::abs(2*light - 1)) * saturation;
 	float hPrime = hue / 60;
-	float x = c * (1 - abs(fmod(hPrime,2) - 1));
+	float x = c * (1 - std::abs(std::fmod(hPrime,2.0f) - 1));
 	float R, G, B;
 	if (hPrime < 1) {
 		R=c, G=x, B=0;

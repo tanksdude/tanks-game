@@ -1,7 +1,7 @@
 #include "wind-level-effect.h"
 
 #include "../constants.h"
-#include <cmath>
+#include <cmath> //sqrt
 #include <algorithm> //std::copy
 #include <iostream>
 #include "../rng.h"
@@ -29,7 +29,7 @@ std::unordered_map<std::string, float> WindLevelEffect::getWeights() const {
 	return weights;
 }
 
-double WindLevelEffect::getWindStrengthMultiplier() const {
+float WindLevelEffect::getWindStrengthMultiplier() const {
 	switch (currentState) {
 		case 0: return 0;
 		case 1: return tickCount / (tickCycle * stateMultiplier[1]);
@@ -61,7 +61,7 @@ void WindLevelEffect::tick(const Level* parent) {
 	}
 	if (changeWind) {
 		//pushDirection = SimpleVector2D(GameRNG::randFunc() * (2*PI), GameRNG::randFunc(), true); //JS, I think (~90% sure)
-		pushDirection = SimpleVector2D(GameRNG::randFunc() * (2*PI), GameRNG::randFloatInRange(.125, 1.0), true);
+		pushDirection = SimpleVector2D(GameRNG::randFuncf() * float(2*PI), GameRNG::randFloatInRange(.125, 1.0), true);
 	}
 }
 
@@ -90,11 +90,11 @@ void WindLevelEffect::draw() const {
 
 	ColorValueHolder color = ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(0.0f, 0.0f, 0.0f));
 
-	const double length = 16 * (pushDirection.getMagnitude() * getWindStrengthMultiplier()); //normal
-	//const double length = 16 * sqrt(pushDirection.getMagnitude() * getWindStrengthMultiplier()); //ez way to make small values more visible
+	const float length = 16 * (pushDirection.getMagnitude() * getWindStrengthMultiplier()); //normal
+	//const float length = 16 * std::sqrt(pushDirection.getMagnitude() * getWindStrengthMultiplier()); //ez way to make small values more visible
 	//sqrt is not a big deal to compute: https://stackoverflow.com/questions/41582376/fast-approximation-of-square-rootx-with-known-0-x-1
-	const double x_offset = 64; //JS x offset: (528-112)/7 (it's the distance between the main walls) = 59.42857
-	const double y_offset = 64; //JS y offset: (320)/5 = 64
+	const float x_offset = 64; //JS x offset: (528-112)/7 (it's the distance between the main walls) = 59.42857
+	const float y_offset = 64; //JS y offset: (320)/5 = 64
 	for (int i = -3; i <= 3; i++) {
 		for (int j = -2; j <= 2; j++) {
 			if (i == 0 && j == 0) {
@@ -102,8 +102,8 @@ void WindLevelEffect::draw() const {
 				for (int k = 0; k < 7; k++) {
 					SimpleVector2D vertex = SimpleVector2D(vertices_arrow[k]);
 					vertex.scaleAndRotate(length, pushDirection.getAngle());
-					coordsAndColor_arrow[k*6]   = (GAME_WIDTH/2  + i*x_offset) + vertex.getXComp();
-					coordsAndColor_arrow[k*6+1] = (GAME_HEIGHT/2 + j*y_offset) + vertex.getYComp();
+					coordsAndColor_arrow[k*6]   = (static_cast<float>(GAME_WIDTH/2)  + i*x_offset) + vertex.getXComp();
+					coordsAndColor_arrow[k*6+1] = (static_cast<float>(GAME_HEIGHT/2) + j*y_offset) + vertex.getYComp();
 					coordsAndColor_arrow[k*6+2] = color.getRf();
 					coordsAndColor_arrow[k*6+3] = color.getGf();
 					coordsAndColor_arrow[k*6+4] = color.getBf();
@@ -116,8 +116,8 @@ void WindLevelEffect::draw() const {
 				for (int k = 0; k < 3; k++) {
 					SimpleVector2D vertex = SimpleVector2D(vertices_spike[k]);
 					vertex.scaleAndRotate(length, pushDirection.getAngle());
-					coordsAndColor_spike[k*6]   = (GAME_WIDTH/2  + i*x_offset) + vertex.getXComp();
-					coordsAndColor_spike[k*6+1] = (GAME_HEIGHT/2 + j*y_offset) + vertex.getYComp();
+					coordsAndColor_spike[k*6]   = (static_cast<float>(GAME_WIDTH/2)  + i*x_offset) + vertex.getXComp();
+					coordsAndColor_spike[k*6+1] = (static_cast<float>(GAME_HEIGHT/2) + j*y_offset) + vertex.getYComp();
 					coordsAndColor_spike[k*6+2] = color.getRf();
 					coordsAndColor_spike[k*6+3] = color.getGf();
 					coordsAndColor_spike[k*6+4] = color.getBf();
@@ -193,10 +193,11 @@ void WindLevelEffect::ghostDraw(float alpha) const {
 	//7 x 5 arrows
 
 	ColorValueHolder color = ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(0.0f, 0.0f, 0.0f));
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 
-	const double length = 16 * pushDirection.getMagnitude();
-	const double x_offset = 64;
-	const double y_offset = 64;
+	const float length = 16 * pushDirection.getMagnitude();
+	const float x_offset = 64;
+	const float y_offset = 64;
 	for (int i = -3; i <= 3; i++) {
 		for (int j = -2; j <= 2; j++) {
 			if (i == -j) {
@@ -216,8 +217,8 @@ void WindLevelEffect::ghostDraw(float alpha) const {
 			for (int k = 0; k < 3; k++) {
 				SimpleVector2D vertex = SimpleVector2D(vertices_spike[k]);
 				vertex.scaleAndRotate(length, pushDirection.getAngle());
-				coordsAndColor_spike[k*6]   = (GAME_WIDTH/2  + i*x_offset) + vertex.getXComp();
-				coordsAndColor_spike[k*6+1] = (GAME_HEIGHT/2 + j*y_offset) + vertex.getYComp();
+				coordsAndColor_spike[k*6]   = (static_cast<float>(GAME_WIDTH/2)  + i*x_offset) + vertex.getXComp();
+				coordsAndColor_spike[k*6+1] = (static_cast<float>(GAME_HEIGHT/2) + j*y_offset) + vertex.getYComp();
 				coordsAndColor_spike[k*6+2] = color.getRf();
 				coordsAndColor_spike[k*6+3] = color.getGf();
 				coordsAndColor_spike[k*6+4] = color.getBf();

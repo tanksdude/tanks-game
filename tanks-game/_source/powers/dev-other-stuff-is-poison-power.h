@@ -39,22 +39,22 @@ public:
 	//bool overridesEdgeCollision = false;
 
 	//bool modifiesCollisionWithTank = true; //maybe...
-	//virtual InteractionBoolHolder modifiedCollisionWithTank(Tank* parent, Tank* other) override { return { true, false }; }
+	//virtual InteractionUpdateHolder<TankUpdateStruct, TankUpdateStruct> modifiedCollisionWithTank(const Tank* parent, const Tank* other) override { return { true, false, nullptr, nullptr }; }
 	//bool overridesCollisionWithTank = false;
 
 	//bool modifiesCollisionWithWall = true;
-	virtual InteractionBoolHolder modifiedCollisionWithWall(Tank*, Wall*) override { return { true, false }; }
+	virtual InteractionUpdateHolder<TankUpdateStruct, WallUpdateStruct> modifiedCollisionWithWall(const Tank*, const Wall*) override { return { true, false, nullptr, nullptr }; }
 	//bool overridesCollisionWithWall = false;
 
 	virtual bool getModifiesCollisionWithCircleHazard(const CircleHazard*) const override { return true; }
-	virtual InteractionBoolHolder modifiedCollisionWithCircleHazard(Tank*, CircleHazard*) override { return { true, false }; }
+	virtual InteractionUpdateHolder<TankUpdateStruct, CircleHazardUpdateStruct> modifiedCollisionWithCircleHazard(const Tank*, const CircleHazard*) override { return { true, false, nullptr, nullptr }; }
 	//bool overridesCollisionWithCircleHazard = false;
 
 	virtual bool getModifiesCollisionWithRectHazard(const RectHazard*) const override { return true; }
-	virtual InteractionBoolHolder modifiedCollisionWithRectHazard(Tank*, RectHazard*) override { return { true, false }; }
+	virtual InteractionUpdateHolder<TankUpdateStruct, RectHazardUpdateStruct> modifiedCollisionWithRectHazard(const Tank*, const RectHazard*) override { return { true, false, nullptr, nullptr }; }
 	//bool overridesCollisionWithRectHazard = false;
 
-	virtual double getTankAccelerationMultiplier() const override { return .5; }
+	virtual float getTankAccelerationMultiplier() const override { return .5; }
 
 	DevOtherStuffIsPoisonTankPower();
 };
@@ -64,6 +64,7 @@ public:
 class DevOtherStuffIsPoisonBulletPower : public BulletPower {
 public:
 	virtual ColorValueHolder getColor() const override { return DevOtherStuffIsPoisonPower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return DevOtherStuffIsPoisonPower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new DevOtherStuffIsPoisonBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

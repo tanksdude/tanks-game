@@ -2,11 +2,12 @@
 #include "../rect-hazard.h"
 
 #include "../constants.h"
+#include "../color-value-holder.h"
 
 class ReflecktorHazard : public RectHazard {
 	//it's basically a wall with some special properties
 protected:
-	ColorValueHolder color; //set by the hazard, not the level
+	ColorValueHolder color; //set by the hazard, not the level; not static in case someone wants to change it
 
 public:
 	virtual std::vector<std::string> getHazardTypes() const override {
@@ -17,12 +18,10 @@ public:
 
 	virtual RectHazardCollisionType getCollisionType() const override { return RectHazardCollisionType::solid; }
 
-	//bool modifiesTankCollision = true;
-	virtual void modifiedTankCollision(Tank*) override;
+	virtual InteractionUpdateHolder<TankUpdateStruct, RectHazardUpdateStruct> modifiedTankCollision(const Tank*) const override;
 
-protected:
-	virtual float getDefaultOffense() const override { return 0; }
-	virtual float getDefaultDefense() const override { return DESTRUCTION_TIER; }
+	virtual float getOffenseTier() const override { return 0; }
+	virtual float getDefenseTier() const override { return DESTRUCTION_TIER; }
 
 public:
 	//virtual bool validLocation() const override { return true; }

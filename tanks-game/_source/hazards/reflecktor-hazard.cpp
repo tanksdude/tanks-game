@@ -2,7 +2,7 @@
 
 #include "../constants.h"
 #include <cmath>
-#include <algorithm> //std::clamp
+//#include <algorithm> //nothing
 #include <iostream>
 #include "../rng.h"
 
@@ -32,8 +32,6 @@ ReflecktorHazard::ReflecktorHazard(double xpos, double ypos, double width, doubl
 	color = ColorValueHolder(.95f, .95f, .95f);
 
 	//canAcceptPowers = false;
-
-	modifiesTankCollision = true;
 }
 
 ReflecktorHazard::~ReflecktorHazard() {
@@ -57,14 +55,11 @@ RectHazard* ReflecktorHazard::factory(const GenericFactoryConstructionData& args
 	return new ReflecktorHazard(0, 0, 0, 0);
 }
 
-void ReflecktorHazard::modifiedTankCollision(Tank* t) {
+InteractionUpdateHolder<TankUpdateStruct, RectHazardUpdateStruct> ReflecktorHazard::modifiedTankCollision(const Tank* t) const {
 	//copied from PowerFunctionHelper::superbounceGeneric()
 
-	if (!CollisionHandler::partiallyCollided(t, this)) {
-		return;
-	}
-
-	double t_xDelta, t_yDelta, t_angleDelta;
+	double t_xDelta, t_yDelta;
+	float  t_angleDelta;
 
 	if (t->y - this->y <= (this->h / this->w) * (t->x - this->x)) {
 		if (t->y - (this->y + this->h) <= (-this->h / this->w) * (t->x - this->x)) { //bottom
@@ -73,13 +68,13 @@ void ReflecktorHazard::modifiedTankCollision(Tank* t) {
 			t_xDelta = 0;
 		} else { //right
 			t_xDelta = (this->x + this->w - (t->x - t->r)) * 2;
-			t_angleDelta = PI - 2*t->velocity.getAngle();
+			t_angleDelta = float(PI) - 2*t->velocity.getAngle();
 			t_yDelta = 0;
 		}
 	} else {
 		if (t->y - (this->y + this->h) <= (-this->h / this->w) * (t->x - this->x)) { //left
 			t_xDelta = -1 * ((t->x + t->r - this->x) * 2);
-			t_angleDelta = PI - 2*t->velocity.getAngle();
+			t_angleDelta = float(PI) - 2*t->velocity.getAngle();
 			t_yDelta = 0;
 		} else { //top
 			t_yDelta = (this->y + this->h - (t->y - t->r)) * 2;
@@ -88,9 +83,7 @@ void ReflecktorHazard::modifiedTankCollision(Tank* t) {
 		}
 	}
 
-	t->x += t_xDelta;
-	t->y += t_yDelta;
-	t->velocity.changeAngle(t_angleDelta);
+	return { false, false, new TankUpdateStruct(t_xDelta, t_yDelta, 0, t_angleDelta), nullptr };
 }
 
 bool ReflecktorHazard::reasonableLocation() const {
@@ -181,9 +174,7 @@ void ReflecktorHazard::poseDraw(DrawingLayers layer) const {
 }
 
 void ReflecktorHazard::ghostDraw(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-
 	ColorValueHolder c = this->color;
 	c = ColorMixer::mix(BackgroundRect::getBackColor(), c, alpha);
 

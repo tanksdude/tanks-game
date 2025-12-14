@@ -6,10 +6,16 @@
 #include "circle.h"
 #include "rect.h"
 
+#include <glad/gl.h>
+#include <GLFW/glfw3.h>
+
 class DeveloperManager { //interpret as "developer testing manager" or "developer menu manager"
 private:
 	static bool leftMouse;
 	static bool rightMouse;
+	static int mousePosX;
+	static int mousePosY;
+
 	static int insertIndex;
 	static std::vector<std::string> insertListIdentifiers;
 	static int insertListIdentifiers_normalSize; //before addInsertPower()
@@ -26,9 +32,9 @@ public:
 	static void setW(Rect*, double);
 	static void setH(Rect*, double);
 
-	static void mouseDragFunc(int x, int y);
-	static void mouseClickFunc(int button, int state, int x, int y);
-	static void mouseWheelFunc(int wheel, int dir, int x, int y);
+	static void mouseButtonCallbackFunc(GLFWwindow* window, int button, int action, int mods);
+	static void mouseScrollCallbackFunc(GLFWwindow* window, double xOffset, double yOffset);
+	static void mouseCursorPosCallbackFunc(GLFWwindow* window, double xPos, double yPos);
 
 	static void addInsertPower(std::string identifier, std::string type, std::string name);
 

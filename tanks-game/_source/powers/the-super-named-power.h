@@ -56,6 +56,7 @@ class TheSuperNamedBulletPower : public BulletPower {
 public:
 	virtual ColorValueHolder getColor() const override { return TheSuperNamedPower::getClassColor(); }
 	virtual float getColorImportance() const override { return TheSuperNamedPower::getClassColorImportance(); }
+	virtual std::string getColorIdentifier() const override { return TheSuperNamedPower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new TheSuperNamedBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

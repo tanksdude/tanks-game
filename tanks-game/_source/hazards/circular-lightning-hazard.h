@@ -3,6 +3,7 @@
 #include "../generalized-lightning.h"
 
 #include "../constants.h"
+#include "../simple-vector-2d.h"
 
 class CircularLightningHazard : public CircleHazard, public GeneralizedLightning {
 protected:
@@ -24,22 +25,18 @@ public:
 	virtual CircleHazardCollisionType getCollisionType() const override { return CircleHazardCollisionType::under; }
 
 	virtual bool actuallyCollided(const Tank*) const override { return currentlyActive; }
-	//bool modifiesTankCollision = true;
-	virtual void modifiedTankCollision(Tank*) override { return; }
-	//bool hasSpecialEffectTankCollision = true;
 	virtual void specialEffectTankCollision(const Tank*) override;
+	virtual InteractionUpdateHolder<TankUpdateStruct, CircleHazardUpdateStruct> modifiedTankCollision(const Tank*) const override { return { false, false, nullptr, nullptr }; }
 
 	virtual bool actuallyCollided(const Bullet*) const override { return currentlyActive; }
-	//bool modifiesBulletCollision = true;
-	virtual void modifiedBulletCollision(Bullet*) override { return; }
-	//bool hasSpecialEffectBulletCollision = true;
 	virtual void specialEffectBulletCollision(const Bullet*) override;
-protected:
-	virtual void specialEffectCircleCollision(const Circle*); //tanks and bullets are both circles, so calculating the bolt positions would be the same
+	virtual InteractionUpdateHolder<BulletUpdateStruct, CircleHazardUpdateStruct> modifiedBulletCollision(const Bullet*) const override { return { false, false, nullptr, nullptr }; }
+
+	virtual float getOffenseTier() const override { return .5; } //1.5?
+	virtual float getDefenseTier() const override { return HIGH_TIER; }
 
 protected:
-	virtual float getDefaultOffense() const override { return .5; } //1.5?
-	virtual float getDefaultDefense() const override { return HIGH_TIER; }
+	virtual void specialEffectCircleCollision(const Circle*); //tanks and bullets are both circles, so calculating the bolt positions would be the same
 
 public:
 	virtual bool validLocation() const override;
@@ -57,10 +54,10 @@ public:
 	virtual void ghostDraw(DrawingLayers, float alpha) const override;
 
 protected:
-	virtual inline void drawBackground(bool pose, float alpha = 1.0f) const;
-	virtual inline void drawBackgroundOutline(float alpha) const; //called by drawBackground()
-	virtual inline void drawBolts(float alpha = 1.0f) const;
-	virtual inline void drawBolts_Pose(float alpha = 1.0f) const;
+	virtual void drawBackground(bool pose, float alpha = 1.0f) const;
+	virtual void drawBackgroundOutline(float alpha) const; //called by drawBackground()
+	virtual void drawBolts(float alpha = 1.0f) const;
+	virtual void drawBolts_Pose(float alpha = 1.0f) const;
 
 protected:
 	static SimpleVector2D body_vertices[Circle::NumOfSides+1];

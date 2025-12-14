@@ -1,5 +1,7 @@
 #include "hazard-data-governor.h"
 
+#include <stdexcept>
+
 std::unordered_map<std::string, std::unordered_map<std::string, CircleHazardFactoryGroup>> HazardDataGovernor::circleHazardLookup;
 std::unordered_map<std::string, std::unordered_map<std::string, RectHazardFactoryGroup>> HazardDataGovernor::rectHazardLookup;
 std::unordered_map<std::string, std::vector<std::string>> HazardDataGovernor::circleHazardNameList;

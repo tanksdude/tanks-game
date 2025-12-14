@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <utility>
+#include <vector>
 
 #include "basic-ini-parser.h"
 
@@ -10,16 +11,18 @@ public:
 
 public: //safe to be public because a const reference is used, and I don't want to write getters
 	//[DEBUG]
+	bool DevMouseControls;
 	bool PerformanceGraphEnable;
 	bool EnableDebugDrawing;
 
 	//[GRAPHICS_SETTINGS]
-	bool Bullet_PerformanceMode;
+	bool Bullet_DrawAlpha; //not supposed to change during runtime
 
 	//[GAME_OPTIONS]
 	std::string GameLevelPlaylist;
 	bool GameForceSameLevel;
 	std::pair<std::string, std::string> GameForceSameLevel_identifier;
+	std::vector<std::pair<std::pair<std::string, std::string>, float>> CustomLevelPlaylist;
 	bool ReportCurrentLevel;
 
 	bool LimitBullets;
@@ -30,6 +33,7 @@ public: //safe to be public because a const reference is used, and I don't want 
 
 	bool RestrictTankTurning;
 	bool NoTankAcceleration;
+	bool AlwaysShootingMode;
 
 	//[SPECIFIC_ADJUSTMENTS]
 	//int BananaPower_ExplodeCount;

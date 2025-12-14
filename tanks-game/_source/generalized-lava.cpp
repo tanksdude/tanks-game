@@ -1,7 +1,7 @@
 #include "generalized-lava.h"
 
 #include "constants.h"
-#include <cmath>
+#include <cmath> //sin, cos, sqrt
 #include <algorithm> //std::copy
 #include <limits> //std::numeric_limits<float>::infinity();
 #include "rng.h"
@@ -29,20 +29,12 @@ GeneralizedLava::LavaBubble::LavaBubble(float radius, float x0, float y0, float 
 	std::copy(tickMultiplier, tickMultiplier + 3, stateMultiplier); //the last one isn't supposed to be modified (or used)
 }
 
-GeneralizedLava::LavaBubble::~LavaBubble() {
-	//nothing
-}
-
 void GeneralizedLava::LavaBubble::tick() {
 	tickCount++;
 	while ((tickCount >= tickMax * stateMultiplier[state]) && (state < 3)) {
 		tickCount -= tickMax * stateMultiplier[state];
 		state++;
 	}
-}
-
-bool GeneralizedLava::LavaBubble::isDead() const noexcept {
-	return (state >= 3);
 }
 
 float GeneralizedLava::LavaBubble::getAlpha() const noexcept {
@@ -74,6 +66,14 @@ float GeneralizedLava::LavaBubble::getY() const noexcept {
 
 float GeneralizedLava::LavaBubble::getR() const noexcept {
 	return r;
+	/*
+	switch (state) {
+		case 0: return std::sqrt(tickCount / (tickMax * stateMultiplier[0])) * (r/2) + (r/2);
+		case 1: return r;
+		case 2: return std::sqrt(1.0f - tickCount / (tickMax * stateMultiplier[2])) * (r/2) + (r/2);
+		default: return 0;
+	}
+	*/
 }
 
 
@@ -81,7 +81,7 @@ float GeneralizedLava::LavaBubble::getR() const noexcept {
 ColorValueHolder GeneralizedLava::getBackgroundColor() const {
 	//colors: red (#FF0000) and orange-red (#FFAA00) mixed
 	return ColorMixer::mix(ColorValueHolder(1.0f, 0.0f, 0.0f), ColorValueHolder(1.0f, 0.875f, 0.0f),
-	                       .625 + sin((2*PI) * (tickCount/tickCycle))/8 + cos((2*PI) * (tickCount/tickCycle) * 8)/8);
+	                       .625f + std::sin(float(2*PI) * static_cast<float>(tickCount/tickCycle))/8 + std::cos(float(2*PI) * 8 * static_cast<float>(tickCount/tickCycle))/8);
 }
 
 ColorValueHolder GeneralizedLava::getBackgroundColor_Pose() const {
@@ -89,12 +89,12 @@ ColorValueHolder GeneralizedLava::getBackgroundColor_Pose() const {
 	return ColorValueHolder(1.0f, 0.25f, 0.0f);
 }
 
-ColorValueHolder GeneralizedLava::getBubbleColor(LavaBubble* bubble) const {
+ColorValueHolder GeneralizedLava::getBubbleColor(const LavaBubble* bubble) const {
 	//a bubble's natural color is white, but with an alpha of .5, but blending is expensive so it's just mixed with the lava background
 	return ColorMixer::mix(ColorValueHolder(1.0f, 1.0f, 1.0f), getBackgroundColor(), 1.0f - bubble->getAlpha());
 }
 
-ColorValueHolder GeneralizedLava::getBubbleColor_Pose(LavaBubble* bubble) const {
+ColorValueHolder GeneralizedLava::getBubbleColor_Pose(const LavaBubble* bubble) const {
 	return ColorMixer::mix(ColorValueHolder(1.0f, 1.0f, 1.0f), getBackgroundColor(), .5f); //TODO: allow getting the base alpha from a bubble
 }
 
@@ -103,8 +103,8 @@ void GeneralizedLava::tick() {
 		tickCount = 0;
 	}
 
-	if ((bubbles.size() < maxBubbles) && (VisualRNG::randFunc() < bubbleChance)) {
-		pushNewBubble(4); //possible radius: sqrt(w * h * 2)/50 or sqrt(r * r * 2)/50
+	if ((bubbles.size() < maxBubbles) && (VisualRNG::randFuncf() < bubbleChance)) {
+		pushNewBubble(4.0f); //possible radius: sqrt(w * h * 2)/50 or sqrt(r * r * 2)/50
 	}
 
 	for (int i = bubbles.size()-1; i >= 0; i--) {

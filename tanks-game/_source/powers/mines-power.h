@@ -63,13 +63,14 @@ class MinesBulletPower : public BulletPower {
 public:
 	virtual ColorValueHolder getColor() const override { return MinesPower::getClassColor(); }
 	virtual float getColorImportance() const override { return MinesPower::getClassColorImportance(); }
+	virtual std::string getColorIdentifier() const override { return MinesPower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new MinesBulletPower(); }
 	virtual TankPower* makeTankPower() const override;
 
-	virtual double getBulletSpeedMultiplier() const override { return 0; }
+	virtual float getBulletSpeedMultiplier() const override { return 0; }
 	//bool bulletSpeedStacks = false; //true?
-	virtual double getBulletAcceleration() const override { return 0; }
+	virtual float getBulletAcceleration() const override { return 0; }
 	virtual float getBulletAccelerationImportance() const override { return .5; }
 
 	MinesBulletPower();

@@ -3,10 +3,10 @@
 
 class SwarmPower : public Power {
 public: //tank stuff
-	static const double initialAngleDiff;
+	static const float initialAngleDiff;
 
 public: //bullet stuff
-	static const double homingStrength;
+	static const float homingStrength;
 
 public:
 	virtual std::vector<std::string> getPowerTypes() const override {
@@ -58,6 +58,7 @@ public:
 class SwarmBulletPower : public BulletPower {
 public:
 	virtual ColorValueHolder getColor() const override { return SwarmPower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return SwarmPower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new SwarmBulletPower(); }
 	virtual TankPower* makeTankPower() const override;
@@ -65,9 +66,10 @@ public:
 	//bool modifiesMovement = true;
 	virtual InteractionBoolHolder modifiedMovement(Bullet*) override;
 
-	//TODO: not sure if it should be allowed to go a bit out of bounds
+	//bool modifiesEdgeCollision = true;
+	virtual InteractionBoolHolder modifiedEdgeCollision(Bullet*) override;
 
-	virtual double getBulletSpeedMultiplier() const override { return .5; }
+	virtual float getBulletSpeedMultiplier() const override { return .5; }
 
 	SwarmBulletPower();
 };

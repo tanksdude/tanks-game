@@ -47,6 +47,7 @@ public:
 class AncientMegaDeathBulletPower : public BulletPower {
 public:
 	virtual ColorValueHolder getColor() const override { return AncientMegaDeathPower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return AncientMegaDeathPower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new AncientMegaDeathBulletPower(); }
 	virtual TankPower* makeTankPower() const override;
@@ -58,8 +59,8 @@ public:
 	virtual InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> modifiedCollisionWithWall(const Bullet*, const Wall*) override;
 	//bool modifiedCollisionWithWallCanWorkWithOthers = false;
 
-	virtual double getBulletSpeedMultiplier() const override { return 1.0/64; }
-	virtual double getBulletAcceleration() const override { return 1.0/64; } //I think the original had multiplicative or increasing acceleration, because it was a lot more aggressive than this
+	virtual float getBulletSpeedMultiplier() const override { return 1.0/64; }
+	virtual float getBulletAcceleration() const override { return 1.0/64; } //I think the original had multiplicative or increasing acceleration, because it was a lot more aggressive than this
 
 	virtual float getOffenseTier(const Bullet*) const override { return DESTRUCTION_TIER; } //maybe damage could increase with distance like the Staff from Smash Bros Ultimate
 	virtual float getDefenseTier(const Bullet*) const override { return DESTRUCTION_TIER; } //no really, that's its name, I looked it up: https://www.ssbwiki.com/Staff

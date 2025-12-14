@@ -2,7 +2,7 @@
 
 #include "../constants.h"
 #include <cmath>
-#include <algorithm> //std::clamp, std::copy
+#include <algorithm> //std::copy
 #include <iostream>
 #include "../rng.h"
 
@@ -24,6 +24,8 @@ SimpleVector2D GravityWellHazard::vertices_arrow[7];
 unsigned int GravityWellHazard::indices_arrow[3*3];
 bool GravityWellHazard::initialized_vertices = false;
 
+const ColorValueHolder GravityWellHazard::color = ColorValueHolder(0.25f, 0.25f, 0.25f);
+
 std::unordered_map<std::string, float> GravityWellHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla-extra", 1.0f });
@@ -37,7 +39,6 @@ GravityWellHazard::GravityWellHazard(double xpos, double ypos, double radius, do
 	y = ypos;
 	r = radius;
 
-	color = ColorValueHolder(0.25f, 0.25f, 0.25f);
 	gravityRange = range;
 	minGravityStrength = minGravity;
 	maxGravityStrength = maxGravity;
@@ -65,7 +66,7 @@ bool GravityWellHazard::initializeVertices() {
 
 	body_vertices[0] = SimpleVector2D(0, 0);
 	for (int i = 1; i < Circle::NumOfSides+1; i++) {
-		body_vertices[i] = SimpleVector2D(cos((i-1) * (2*PI / Circle::NumOfSides)), sin((i-1) * (2*PI / Circle::NumOfSides)));
+		body_vertices[i] = SimpleVector2D(std::cos((i-1) * (2*PI / Circle::NumOfSides)), std::sin((i-1) * (2*PI / Circle::NumOfSides)));
 	}
 
 	for (int i = 0; i < Circle::NumOfSides; i++) {
@@ -133,13 +134,13 @@ CircleHazard* GravityWellHazard::factory(const GenericFactoryConstructionData& a
 	return new GravityWellHazard(0, 0, 0);
 }
 
-inline double GravityWellHazard::getGravityStrength(double dist) const {
+inline float GravityWellHazard::getGravityStrength(double dist) const {
 	return (1 - dist/(this->gravityRange - this->r)) * (maxGravityStrength - minGravityStrength) + minGravityStrength;
 }
 
 inline float GravityWellHazard::getInnerGravityCircleRadius() const {
 	if (isGravityReversed()) {
-		return ((tickCount/tickCycle))     * (gravityRange - r) + r;
+		return     ((tickCount/tickCycle)) * (gravityRange - r) + r;
 	} else {
 		return (1 - (tickCount/tickCycle)) * (gravityRange - r) + r;
 	}
@@ -315,46 +316,42 @@ void GravityWellHazard::ghostDraw(DrawingLayers layer, float alpha) const {
 	}
 }
 
-inline void GravityWellHazard::drawBody(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
+void GravityWellHazard::drawBody(float alpha) const {
 	alpha = alpha * alpha;
-
-	ColorValueHolder cloudColor = color;
-	cloudColor = ColorMixer::mix(BackgroundRect::getBackColor(), cloudColor, alpha);
+	ColorValueHolder bodyColor = color;
+	bodyColor = ColorMixer::mix(BackgroundRect::getBackColor(), bodyColor, alpha);
 
 	float coordsAndColor[(Circle::NumOfSides+1)*(2+4)];
 	coordsAndColor[0] = x;
 	coordsAndColor[1] = y;
-	coordsAndColor[2] = cloudColor.getRf();
-	coordsAndColor[3] = cloudColor.getGf();
-	coordsAndColor[4] = cloudColor.getBf();
-	coordsAndColor[5] = cloudColor.getAf();
+	coordsAndColor[2] = bodyColor.getRf();
+	coordsAndColor[3] = bodyColor.getGf();
+	coordsAndColor[4] = bodyColor.getBf();
+	coordsAndColor[5] = bodyColor.getAf();
 	for (int i = 1; i < Circle::NumOfSides+1; i++) {
-		coordsAndColor[i*6]   = x + r * body_vertices[i].getXComp();
-		coordsAndColor[i*6+1] = y + r * body_vertices[i].getYComp();
-		coordsAndColor[i*6+2] = cloudColor.getRf();
-		coordsAndColor[i*6+3] = cloudColor.getGf();
-		coordsAndColor[i*6+4] = cloudColor.getBf();
-		coordsAndColor[i*6+5] = cloudColor.getAf();
+		coordsAndColor[i*6]   = static_cast<float>(x) + static_cast<float>(r) * body_vertices[i].getXComp();
+		coordsAndColor[i*6+1] = static_cast<float>(y) + static_cast<float>(r) * body_vertices[i].getYComp();
+		coordsAndColor[i*6+2] = bodyColor.getRf();
+		coordsAndColor[i*6+3] = bodyColor.getGf();
+		coordsAndColor[i*6+4] = bodyColor.getBf();
+		coordsAndColor[i*6+5] = bodyColor.getAf();
 	}
 
 	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::NumOfSides+1)*(2+4), body_indices, Circle::NumOfSides*3);
 }
 
-inline void GravityWellHazard::drawOutline(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
+void GravityWellHazard::drawOutline(float alpha) const {
 	alpha = alpha * alpha;
-
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	const float lineWidth = 0.5f;
 
 	float coordsAndColor[(Circle::NumOfSides*2)*(2+4)];
 	for (int i = 0; i < Circle::NumOfSides; i++) {
-		coordsAndColor[(i*2)  *6]   = x + (gravityRange-lineWidth) * body_vertices[i+1].getXComp();
-		coordsAndColor[(i*2)  *6+1] = y + (gravityRange-lineWidth) * body_vertices[i+1].getYComp();
-		coordsAndColor[(i*2+1)*6]   = x + (gravityRange+lineWidth) * body_vertices[i+1].getXComp();
-		coordsAndColor[(i*2+1)*6+1] = y + (gravityRange+lineWidth) * body_vertices[i+1].getYComp();
+		coordsAndColor[(i*2)  *6]   = static_cast<float>(x) + (static_cast<float>(gravityRange)-lineWidth) * body_vertices[i+1].getXComp();
+		coordsAndColor[(i*2)  *6+1] = static_cast<float>(y) + (static_cast<float>(gravityRange)-lineWidth) * body_vertices[i+1].getYComp();
+		coordsAndColor[(i*2+1)*6]   = static_cast<float>(x) + (static_cast<float>(gravityRange)+lineWidth) * body_vertices[i+1].getXComp();
+		coordsAndColor[(i*2+1)*6+1] = static_cast<float>(y) + (static_cast<float>(gravityRange)+lineWidth) * body_vertices[i+1].getYComp();
 
 		coordsAndColor[(i*2)  *6+2] = color.getRf();
 		coordsAndColor[(i*2)  *6+3] = color.getGf();
@@ -369,12 +366,10 @@ inline void GravityWellHazard::drawOutline(float alpha) const {
 	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::NumOfSides*2)*(2+4), outline_indices, Circle::NumOfSides*6);
 }
 
-inline void GravityWellHazard::drawGravityCircle(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
+void GravityWellHazard::drawGravityCircle(float alpha) const {
 	alpha = alpha * alpha;
-
-	ColorValueHolder c = ColorMixer::mix(BackgroundRect::getBackColor(), this->color, .25);
-	c = ColorMixer::mix(BackgroundRect::getBackColor(), c, alpha);
+	ColorValueHolder color = ColorMixer::mix(BackgroundRect::getBackColor(), this->color, .25f);
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	const float lineWidth = this->r / 4;
 
 	float coordsAndColor[(Circle::NumOfSides*2)*(2+4)];
@@ -384,33 +379,35 @@ inline void GravityWellHazard::drawGravityCircle(float alpha) const {
 		coordsAndColor[(i*2+1)*6]   = static_cast<float>(x) + (getInnerGravityCircleRadius())           * body_vertices[i+1].getXComp();
 		coordsAndColor[(i*2+1)*6+1] = static_cast<float>(y) + (getInnerGravityCircleRadius())           * body_vertices[i+1].getYComp();
 
-		coordsAndColor[(i*2)  *6+2] = c.getRf();
-		coordsAndColor[(i*2)  *6+3] = c.getGf();
-		coordsAndColor[(i*2)  *6+4] = c.getBf();
-		coordsAndColor[(i*2)  *6+5] = c.getAf();
-		coordsAndColor[(i*2+1)*6+2] = c.getRf();
-		coordsAndColor[(i*2+1)*6+3] = c.getGf();
-		coordsAndColor[(i*2+1)*6+4] = c.getBf();
-		coordsAndColor[(i*2+1)*6+5] = c.getAf();
+		coordsAndColor[(i*2)  *6+2] = color.getRf();
+		coordsAndColor[(i*2)  *6+3] = color.getGf();
+		coordsAndColor[(i*2)  *6+4] = color.getBf();
+		coordsAndColor[(i*2)  *6+5] = color.getAf();
+		coordsAndColor[(i*2+1)*6+2] = color.getRf();
+		coordsAndColor[(i*2+1)*6+3] = color.getGf();
+		coordsAndColor[(i*2+1)*6+4] = color.getBf();
+		coordsAndColor[(i*2+1)*6+5] = color.getAf();
 	}
 
 	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::NumOfSides*2)*(2+4), outline_indices, Circle::NumOfSides*6);
 }
 
-inline void GravityWellHazard::drawGravityArrows(float alpha) const {
+void GravityWellHazard::drawGravityArrows(float alpha) const {
+	alpha = alpha * alpha;
 	ColorValueHolder color = ColorMixer::mix(BackgroundRect::getBackColor(), ColorValueHolder(0.0f, 0.0f, 0.0f));
-	const double arrowScale = this->r / 2; //x-coords are in [-1,1]
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
+	const float arrowScale = this->r / 2; //x-coords are in [-1,1]
 
 	float coordsAndColor_arrow[7*(2+4)];
 	for (int i = 0; i < 4; i++) {
-		const double rotateAngle = i*(PI/2) + PI/4;
+		const float rotateAngle = i*(PI/2) + PI/4;
 		SimpleVector2D translateAmount = SimpleVector2D(rotateAngle, -arrowScale + getInnerGravityCircleRadius(), true);
 		for (int j = 0; j < 7; j++) {
 			SimpleVector2D vertex = SimpleVector2D(vertices_arrow[j]);
 			if (isGravityReversed()) {
 				vertex.scaleAndRotate(arrowScale, rotateAngle);
 			} else {
-				vertex.scaleAndRotate(arrowScale, rotateAngle + PI); //flip arrow direction
+				vertex.scaleAndRotate(arrowScale, rotateAngle + float(PI)); //flip arrow direction
 			}
 
 			coordsAndColor_arrow[j*6]   = static_cast<float>(this->x) + translateAmount.getXComp() + vertex.getXComp();

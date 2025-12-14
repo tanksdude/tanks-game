@@ -40,9 +40,6 @@ MineLayerTankPower::MineLayerTankPower() {
 
 
 
-#include "../constants.h"
-#include <cmath>
-
 #include "../bullet-manager.h"
 
 void MineLayerBulletPower::initialize(Bullet* parent) {
@@ -87,9 +84,6 @@ TankPower* MineLayerBulletPower::makeTankPower() const {
 }
 
 MineLayerBulletPower::MineLayerBulletPower() {
-	timeLeft = 0;
-	maxTime = -1;
-
 	modifiesMovement = true;
 
 	tickCount = 0;

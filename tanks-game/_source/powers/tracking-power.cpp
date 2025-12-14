@@ -63,9 +63,6 @@ TankPower* TrackingBulletPower::makeTankPower() const {
 }
 
 TrackingBulletPower::TrackingBulletPower() {
-	timeLeft = 0;
-	maxTime = -1;
-
 	modifiesMovement = true;
 	modifiesCollisionWithWall = true;
 	modifiedCollisionWithWallCanWorkWithOthers = false;

@@ -1,7 +1,7 @@
 #include "power-square.h"
 
 #include "constants.h"
-#include <algorithm> //std::clamp
+#include <iostream>
 
 #include "renderer.h"
 #include "color-mixer.h"
@@ -14,7 +14,7 @@ const double PowerSquare::POWER_HEIGHT = 6;
 const double PowerSquare::POWER_LINE_WIDTH = 1.0/3.0;
 const double PowerSquare::POWER_OUTLINE_MULTIPLIER = 1.5;
 
-PowerSquare::PowerSquare(double x_, double y_) : GameThing(DEFAULT_TEAM) {
+PowerSquare::PowerSquare(double x_, double y_) : GameThing(DEFAULT_TEAM, ObjectType::Powerup) {
 	x = x_ - PowerSquare::POWER_WIDTH/2;
 	y = y_ - PowerSquare::POWER_HEIGHT/2;
 	w = PowerSquare::POWER_WIDTH;
@@ -184,10 +184,8 @@ void PowerSquare::ghostDraw(DrawingLayers layer, float alpha) const {
 	}
 }
 
-inline void PowerSquare::drawMain(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
+void PowerSquare::drawMain(float alpha) const {
 	alpha = alpha * alpha;
-
 	ColorValueHolder color = getColor();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 
@@ -225,46 +223,46 @@ inline void PowerSquare::drawMain(float alpha) const {
 	Renderer::SubmitBatchedDraw(coordsAndColor_main, (4+4) * (2+4), indices_main, (4*2) * 3);
 }
 
-inline void PowerSquare::drawOutlineThing(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
-	alpha = alpha * alpha;
-
-	if (numOfPowers > 1) {
-		const float extendingMultiplier = PowerSquare::POWER_LINE_WIDTH * (PowerSquare::POWER_OUTLINE_MULTIPLIER - 1);
-		ColorValueHolder backgroundMix = ColorMixer::mix(getColor(), BackgroundRect::getBackColor());
-		backgroundMix = ColorMixer::mix(BackgroundRect::getBackColor(), backgroundMix, alpha);
-
-		float coordsAndColor_outline[] = {
-			//outer ring
-			(x)   - (w * extendingMultiplier), (y)   - (h * extendingMultiplier),   backgroundMix.getRf(), backgroundMix.getGf(), backgroundMix.getBf(), backgroundMix.getAf(), //0
-			(x+w) + (w * extendingMultiplier), (y)   - (h * extendingMultiplier),   backgroundMix.getRf(), backgroundMix.getGf(), backgroundMix.getBf(), backgroundMix.getAf(), //1
-			(x+w) + (w * extendingMultiplier), (y+h) + (h * extendingMultiplier),   backgroundMix.getRf(), backgroundMix.getGf(), backgroundMix.getBf(), backgroundMix.getAf(), //2
-			(x)   - (w * extendingMultiplier), (y+h) + (h * extendingMultiplier),   backgroundMix.getRf(), backgroundMix.getGf(), backgroundMix.getBf(), backgroundMix.getAf(), //3
-
-			//main ring
-			x,   y,     backgroundMix.getRf(), backgroundMix.getGf(), backgroundMix.getBf(), backgroundMix.getAf(), //4
-			x+w, y,     backgroundMix.getRf(), backgroundMix.getGf(), backgroundMix.getBf(), backgroundMix.getAf(), //5
-			x+w, y+h,   backgroundMix.getRf(), backgroundMix.getGf(), backgroundMix.getBf(), backgroundMix.getAf(), //6
-			x,   y+h,   backgroundMix.getRf(), backgroundMix.getGf(), backgroundMix.getBf(), backgroundMix.getAf()  //7
-		};
-		unsigned int indices_outline[] = { //trapezoids
-			//bottom
-			0, 1, 5,
-			5, 4, 0,
-
-			//right
-			1, 2, 6,
-			6, 5, 1,
-
-			//left
-			4, 7, 3,
-			3, 0, 4,
-
-			//top
-			2, 3, 7,
-			7, 6, 2
-		};
-
-		Renderer::SubmitBatchedDraw(coordsAndColor_outline, (4+4) * (2+4), indices_outline, (4*2) * 3);
+void PowerSquare::drawOutlineThing(float alpha) const {
+	if (numOfPowers == 1) {
+		return;
 	}
+
+	alpha = alpha * alpha;
+	const float extendingMultiplier = PowerSquare::POWER_LINE_WIDTH * (PowerSquare::POWER_OUTLINE_MULTIPLIER - 1);
+	ColorValueHolder backgroundMix = ColorMixer::mix(getColor(), BackgroundRect::getBackColor());
+	backgroundMix = ColorMixer::mix(BackgroundRect::getBackColor(), backgroundMix, alpha);
+
+	float coordsAndColor_outline[] = {
+		//outer ring
+		(x)   - (w * extendingMultiplier), (y)   - (h * extendingMultiplier),   backgroundMix.getRf(), backgroundMix.getGf(), backgroundMix.getBf(), backgroundMix.getAf(), //0
+		(x+w) + (w * extendingMultiplier), (y)   - (h * extendingMultiplier),   backgroundMix.getRf(), backgroundMix.getGf(), backgroundMix.getBf(), backgroundMix.getAf(), //1
+		(x+w) + (w * extendingMultiplier), (y+h) + (h * extendingMultiplier),   backgroundMix.getRf(), backgroundMix.getGf(), backgroundMix.getBf(), backgroundMix.getAf(), //2
+		(x)   - (w * extendingMultiplier), (y+h) + (h * extendingMultiplier),   backgroundMix.getRf(), backgroundMix.getGf(), backgroundMix.getBf(), backgroundMix.getAf(), //3
+
+		//main ring
+		x,   y,     backgroundMix.getRf(), backgroundMix.getGf(), backgroundMix.getBf(), backgroundMix.getAf(), //4
+		x+w, y,     backgroundMix.getRf(), backgroundMix.getGf(), backgroundMix.getBf(), backgroundMix.getAf(), //5
+		x+w, y+h,   backgroundMix.getRf(), backgroundMix.getGf(), backgroundMix.getBf(), backgroundMix.getAf(), //6
+		x,   y+h,   backgroundMix.getRf(), backgroundMix.getGf(), backgroundMix.getBf(), backgroundMix.getAf()  //7
+	};
+	unsigned int indices_outline[] = { //trapezoids
+		//bottom
+		0, 1, 5,
+		5, 4, 0,
+
+		//right
+		1, 2, 6,
+		6, 5, 1,
+
+		//left
+		4, 7, 3,
+		3, 0, 4,
+
+		//top
+		2, 3, 7,
+		7, 6, 2
+	};
+
+	Renderer::SubmitBatchedDraw(coordsAndColor_outline, (4+4) * (2+4), indices_outline, (4*2) * 3);
 }

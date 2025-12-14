@@ -30,8 +30,8 @@ BulletPower* DevWeirdExtraCannonsTankPower::makeBulletPower() const {
 	return new DevWeirdExtraCannonsBulletPower();
 }
 
-std::vector<double>* DevWeirdExtraCannonsTankPower::addShootingPoints() const {
-	std::vector<double>* newCannonPoints = new std::vector<double>;
+std::vector<float>* DevWeirdExtraCannonsTankPower::addShootingPoints() const {
+	std::vector<float>* newCannonPoints = new std::vector<float>;
 	newCannonPoints->push_back(1.0/4); //90deg
 	newCannonPoints->push_back(5.0/8); //180+45deg
 	return newCannonPoints;
@@ -52,6 +52,5 @@ TankPower* DevWeirdExtraCannonsBulletPower::makeTankPower() const {
 }
 
 DevWeirdExtraCannonsBulletPower::DevWeirdExtraCannonsBulletPower() {
-	timeLeft = 0;
-	maxTime = -1;
+	//nothing
 }

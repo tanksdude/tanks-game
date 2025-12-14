@@ -34,8 +34,8 @@ BulletPower* WallhackTankPower::makeBulletPower() const {
 	return new WallhackBulletPower();
 }
 
-InteractionBoolHolder WallhackTankPower::modifiedCollisionWithWall(Tank* t, Wall* w) {
-	return { false, false };
+InteractionUpdateHolder<TankUpdateStruct, WallUpdateStruct> WallhackTankPower::modifiedCollisionWithWall(const Tank* t, const Wall* w) {
+	return { false, false, nullptr, nullptr };
 }
 
 WallhackTankPower::WallhackTankPower() {
@@ -58,9 +58,6 @@ InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> WallhackBulletPowe
 }
 
 WallhackBulletPower::WallhackBulletPower() {
-	timeLeft = 0;
-	maxTime = -1;
-
 	modifiesCollisionWithWall = true;
 	modifiedCollisionWithWallCanWorkWithOthers = false;
 }

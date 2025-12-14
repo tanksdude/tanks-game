@@ -10,7 +10,7 @@
 std::unordered_map<std::string, float> FewObstaclesLevel::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", 0.25f });
-	weights.insert({ "random-vanilla", 0.25f });
+	weights.insert({ "random-vanilla", 0.375f });
 	weights.insert({ "old", 0.5f }); //shared with OldFewObstaclesLevel
 	weights.insert({ "random-old", 0.0f }); //OldFewObstaclesLevel used instead
 	weights.insert({ "random", 0.125f });

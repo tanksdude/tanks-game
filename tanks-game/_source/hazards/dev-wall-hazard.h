@@ -2,6 +2,7 @@
 #include "../rect-hazard.h"
 
 #include "../constants.h"
+#include "../color-value-holder.h"
 
 class DevWallHazard : public RectHazard {
 	//it's just a rectangular hazard with solid collision
@@ -17,9 +18,8 @@ public:
 
 	virtual RectHazardCollisionType getCollisionType() const override { return RectHazardCollisionType::solid; }
 
-protected:
-	virtual float getDefaultOffense() const override { return 0; }
-	virtual float getDefaultDefense() const override { return DESTRUCTION_TIER; }
+	virtual float getOffenseTier() const override { return 0; }
+	virtual float getDefenseTier() const override { return DESTRUCTION_TIER; }
 
 public:
 	//virtual bool validLocation() const override { return true; }

@@ -6,14 +6,10 @@
 #include <glm.hpp>
 
 #include "graphics/rendering-context.h"
-#include "graphics/vertex-array.h"
+#include "graphics/vertex-array-object.h"
 #include "graphics/vertex-buffer.h"
 #include "graphics/index-buffer.h"
 #include "graphics/shader.h"
-
-//#include <thread>
-//#include <atomic>
-//#include <mutex>
 
 enum class AvailableRenderingContexts {
 	OpenGL,
@@ -21,110 +17,94 @@ enum class AvailableRenderingContexts {
 	null_rendering
 };
 
-/*
-enum class RenderingDrawTypes {
-	triangles, //main
-	line_loop,
-	line_strip,
-	lines,
-	points, //unused
-};
-*/
-
 class Renderer {
-	friend class DeveloperManager;
-
-public:
-	static void windowResizeFunc(int w, int h);
-	//static void thread_func();
-
-	//static std::mutex drawingDataLock;
-	//static std::atomic_bool thread_workExists;
+	friend class WindowInitializer; //only to set the projection matrix
 
 private:
 	static glm::mat4 proj;
-	static glm::mat4 getProj();
 
-	static float current_cameraX, current_cameraY, current_cameraZ, current_targetX, current_targetY, current_targetZ; //view matrix
-	static bool viewMatBound;
-	static bool projectionMatBound;
-
-	static int window_width;
-	static int window_height;
-	static int gamewindow_width; //width of game inside window
-	static int gamewindow_height;
-
-	static AvailableRenderingContexts renderingMethodType;
-	static RenderingContext* renderingMethod;
-
-	//static std::thread graphicsThread;
-	//static std::atomic_bool thread_keepRunning;
+	static AvailableRenderingContexts renderingBackendType;
+	static RenderingContext* renderingBackend;
 
 private:
-	static std::unordered_map<std::string, Shader*> shaderCache;
-	static unsigned int currentShader;
-	static unsigned int currentVertexArray;
-	static unsigned int currentIndexBuffer;
+	static std::unordered_map<std::string, Shader*> shaderStorage;
+	static Shader* getShader(const std::string&); //does not bind the shader
 	static Shader* boundShader;
-	static inline void bindShader(Shader*);
-	static inline void bindShader(const Shader&);
-	static inline void bindVertexArray(const VertexArray&);
-	static inline void bindIndexBuffer(const IndexBuffer&);
-	static Shader* getShader(std::string);
 
-	static void Unbind(const VertexArray&);
-	static void Unbind(const IndexBuffer&);
-	static void Unbind(const Shader&);
+	static void SetViewMatrix(float cameraX, float cameraY, float cameraZ, float targetX, float targetY, float targetZ);
+	static void SetProjectionMatrix();
+	static inline void bindShader(Shader*);
+	static inline void bindVertexArrayObject(const VertexArrayObject*);
+	static inline void bindIndexBuffer(const IndexBuffer*);
+
 	static void UnbindAll();
 	static void Cleanup();
 
-	static std::string getErrorString(GLenum err);
-
 private:
-	static std::unordered_map<std::string, std::vector<std::pair<std::vector<float>, std::vector<unsigned int>>>> sceneData; //<vertices, indices>
+	struct VertexDrawingData {
+		std::string m_shaderName;
+		//NOTE: normally a virtual destructor would be required (to avoid an enormous memory leak)
+		//however, the pointer is cast to the derived class before deleting, thus avoiding this requirement
+		//virtual ~VertexDrawingData() {}
+	};
+
+	struct MainBatched_VertexData final : public VertexDrawingData {
+		std::vector<float> m_vertices;
+		std::vector<unsigned int> m_indices;
+		static const unsigned int maxVerticesDataLength;
+		static const unsigned int maxIndicesDataLength;
+		bool enoughRoomForMoreVertices(unsigned int pushLength);
+		bool enoughRoomForMoreIndices(unsigned int pushLength);
+		MainBatched_VertexData();
+	};
+
+	struct Bullet_VertexData final : public VertexDrawingData {
+		std::vector<float> m_bulletValues; //x, y, r, rgba
+		//packing 8-bit color into a float does slightly improve rendering times, but only slightly
+		static const unsigned int maxDataLength; //TODO
+		bool enoughRoomForMoreBulletValues(unsigned int pushLength);
+		Bullet_VertexData();
+	};
+
+	static std::unordered_map<std::string, std::vector<VertexDrawingData*>> sceneData; //TODO: store the vectors somewhere, move them there at end of frame, pull them out as needed
 	static std::vector<std::string> sceneList;
 	static std::string currentSceneName;
-	static const int maxVerticesDataLength;
-	static const int maxIndicesDataLength;
-	static inline bool enoughRoomForMoreVertices(int pushLength);
-	static inline bool enoughRoomForMoreIndices(int pushLength);
-	static inline void pushAnotherDataList();
 	static void ActuallyFlush();
-	static void BatchedFlush(std::vector<float>& vertices, std::vector<unsigned int>& indices);
+	static void BatchedFlush(const MainBatched_VertexData* drawData);
+	static void BulletFlush(const Bullet_VertexData* drawData);
 
-	static VertexArray* batched_va;
+	static VertexArrayObject* batched_vao;
 	static VertexBuffer* batched_vb;
 	static IndexBuffer* batched_ib;
+	static VertexArrayObject* instanced_vao;
+	static VertexBuffer* instanced_vb_pos;
+	static VertexBuffer* instanced_vb_bvalues;
+	static IndexBuffer* instanced_ib;
 	static bool initialized_GPU;
 
 	static bool initializeGPU();
 	static bool uninitializeGPU();
 
 public:
+	//TODO: because window creation depends on the context being used, maybe these functions should go to WindowInitializer
 	static void SetContext(AvailableRenderingContexts);
-	static void SetContext(std::string);
-	static AvailableRenderingContexts GetContext() { return renderingMethodType; }
+	static void SetContext(const std::string&);
+	static AvailableRenderingContexts GetContext() { return renderingBackendType; }
+	static void PrintRendererInfo(); //only valid after window initialization
 
-	static void PreInitialize(int* argc, char** argv, std::string windowName); //initialize FreeGLUT and GLEW
-	static void PreInitialize(int* argc, char** argv, std::string windowName, int startX, int startY);
-	static void PreInitialize(int* argc, char** argv, std::string windowName, int startX, int startY, double sizeMultiplier);
 	static void Initialize();
 	static void Uninitialize();
 
-	static void BeginningStuff();
 	static void Clear();
-	static void BeginScene(std::string name); //name of scene, to push timing to diagnostics
-	static void SubmitBatchedDraw(const float* posAndColor, int posAndColorLength, const unsigned int* indices, int indicesLength);
+	static void BeginScene(const std::string& name); //name of scene, intended for FrameTimeGraph, but drawing is so fast that there's little point
+	static void SubmitBatchedDraw(const float* posAndColor, unsigned int posAndColorLength, const unsigned int* indices, unsigned int indicesLength);
+	static void SubmitBulletDrawCall(float x, float y, float radius, float red, float green, float blue, float bulletLife);
 	static void EndScene();
 	static void Flush();
-	static bool isDebugDrawingEnabled(std::string name); //should this really be here?
+	static bool isDebugDrawingEnabled(const std::string& name); //should this really be here?
 
 	static glm::mat4 GenerateModelMatrix(float scaleX, float scaleY, float rotateAngle, float transX, float transY);
-	static void SetViewMatrix(float cameraX, float cameraY, float cameraZ, float targetX, float targetY, float targetZ);
-	//static void SetProjectionMatrix(float left, float right, float bottom, float top/*, float near, float far*/); //orthographic
-	static void SetProjectionMatrix(); //should this be public?
-
-	static void printGLError();
+	static glm::mat4 GenerateModelMatrix_NoRotate(float scaleX, float scaleY, float transX, float transY);
 
 private:
 	Renderer() = delete;

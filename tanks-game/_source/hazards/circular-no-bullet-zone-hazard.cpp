@@ -2,7 +2,7 @@
 
 #include "../constants.h"
 #include <cmath>
-#include <algorithm> //std::clamp, std::copy
+#include <algorithm> //std::copy
 #include <iostream>
 #include "../rng.h"
 
@@ -39,9 +39,6 @@ CircularNoBulletZoneHazard::CircularNoBulletZoneHazard(double xpos, double ypos,
 
 	//canAcceptPowers = false;
 
-	modifiesTankCollision = true;
-	modifiesBulletCollision = true;
-
 	initializeVertices();
 }
 
@@ -56,7 +53,7 @@ bool CircularNoBulletZoneHazard::initializeVertices() {
 
 	body_vertices[0] = SimpleVector2D(0, 0);
 	for (int i = 1; i < Circle::NumOfSides+1; i++) {
-		body_vertices[i] = SimpleVector2D(cos((i-1) * (2*PI / Circle::NumOfSides)), sin((i-1) * (2*PI / Circle::NumOfSides)));
+		body_vertices[i] = SimpleVector2D(std::cos((i-1) * (2*PI / Circle::NumOfSides)), std::sin((i-1) * (2*PI / Circle::NumOfSides)));
 	}
 
 	for (int i = 0; i < Circle::NumOfSides; i++) {
@@ -65,7 +62,7 @@ bool CircularNoBulletZoneHazard::initializeVertices() {
 		body_indices[i*3+2] = (i+1) % Circle::NumOfSides + 1;
 	}
 
-	const int num_vertices_fromSlashCenter = floor(Circle::NumOfSides/4 * X_WIDTH); //vertices from the center of a slash
+	const int num_vertices_fromSlashCenter = std::floor(Circle::NumOfSides/4 * X_WIDTH); //vertices from the center of a slash
 	const int num_vertices_outside = (2*num_vertices_fromSlashCenter + 1) * 4; //all the vertices on the outside
 	std::vector<float> coords_extra;
 	std::vector<unsigned int> indices_extra;
@@ -76,8 +73,8 @@ bool CircularNoBulletZoneHazard::initializeVertices() {
 	for (int k = 0; k < 4; k++) {
 		for (int i = -1*num_vertices_fromSlashCenter; i <= num_vertices_fromSlashCenter; i++) {
 			int val = (k*Circle::NumOfSides/4 + Circle::NumOfSides/8) + i;
-			coords_extra.push_back(cos(val * (2*PI / Circle::NumOfSides)));
-			coords_extra.push_back(sin(val * (2*PI / Circle::NumOfSides)));
+			coords_extra.push_back(std::cos(val * (2*PI / Circle::NumOfSides)));
+			coords_extra.push_back(std::sin(val * (2*PI / Circle::NumOfSides)));
 		}
 
 		for (int i = 0; i < num_vertices_outside/4-1; i++) {
@@ -219,7 +216,6 @@ void CircularNoBulletZoneHazard::poseDraw(DrawingLayers layer) const {
 }
 
 void CircularNoBulletZoneHazard::ghostDraw(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	//background:
@@ -234,8 +230,8 @@ void CircularNoBulletZoneHazard::ghostDraw(float alpha) const {
 	coordsAndColor_background[4] = color_background.getBf();
 	coordsAndColor_background[5] = color_background.getAf();
 	for (int i = 1; i < Circle::NumOfSides+1; i++) {
-		coordsAndColor_background[i*6]   = x + r * body_vertices[i].getXComp();
-		coordsAndColor_background[i*6+1] = y + r * body_vertices[i].getYComp();
+		coordsAndColor_background[i*6]   = static_cast<float>(x) + static_cast<float>(r) * body_vertices[i].getXComp();
+		coordsAndColor_background[i*6+1] = static_cast<float>(y) + static_cast<float>(r) * body_vertices[i].getYComp();
 		coordsAndColor_background[i*6+2] = color_background.getRf();
 		coordsAndColor_background[i*6+3] = color_background.getGf();
 		coordsAndColor_background[i*6+4] = color_background.getBf();
@@ -256,8 +252,8 @@ void CircularNoBulletZoneHazard::ghostDraw(float alpha) const {
 	coordsAndColor_extra[4] = color_extra.getBf();
 	coordsAndColor_extra[5] = color_extra.getAf();
 	for (int i = 1; i < redX_vertices_count; i++) {
-		coordsAndColor_extra[i*6]   = x + r * redX_vertices[i].getXComp();
-		coordsAndColor_extra[i*6+1] = y + r * redX_vertices[i].getYComp();
+		coordsAndColor_extra[i*6]   = static_cast<float>(x) + static_cast<float>(r) * redX_vertices[i].getXComp();
+		coordsAndColor_extra[i*6+1] = static_cast<float>(y) + static_cast<float>(r) * redX_vertices[i].getYComp();
 		coordsAndColor_extra[i*6+2] = color_extra.getRf();
 		coordsAndColor_extra[i*6+3] = color_extra.getGf();
 		coordsAndColor_extra[i*6+4] = color_extra.getBf();

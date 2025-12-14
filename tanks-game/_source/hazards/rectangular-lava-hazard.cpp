@@ -2,7 +2,7 @@
 
 #include "../constants.h"
 #include <cmath>
-#include <algorithm> //std::sort, std::clamp
+#include <algorithm> //std::sort
 #include <iostream>
 #include "../rng.h"
 
@@ -38,12 +38,9 @@ RectangularLavaHazard::RectangularLavaHazard(double xpos, double ypos, double wi
 	tickCount = 0;
 	tickCycle = 2400;
 	bubbles.reserve(maxBubbles);
-	bubbleChance = 1.0/400;
+	bubbleChance = 1.0f/400;
 
 	//canAcceptPowers = false;
-
-	modifiesTankCollision = true;
-	modifiesBulletCollision = true;
 
 	initializeVertices();
 }
@@ -59,7 +56,7 @@ bool RectangularLavaHazard::initializeVertices() {
 
 	bubble_vertices[0] = SimpleVector2D(0, 0);
 	for (int i = 1; i < RectangularLavaHazard::BubbleSideCount+1; i++) {
-		bubble_vertices[i] = SimpleVector2D(cos((i-1) * (2*PI / RectangularLavaHazard::BubbleSideCount)), sin((i-1) * (2*PI / RectangularLavaHazard::BubbleSideCount)));
+		bubble_vertices[i] = SimpleVector2D(std::cos((i-1) * (2*PI / RectangularLavaHazard::BubbleSideCount)), std::sin((i-1) * (2*PI / RectangularLavaHazard::BubbleSideCount)));
 	}
 
 	for (int i = 0; i < RectangularLavaHazard::BubbleSideCount; i++) {
@@ -98,21 +95,21 @@ RectHazard* RectangularLavaHazard::factory(const GenericFactoryConstructionData&
 	return new RectangularLavaHazard(0, 0, 0, 0);
 }
 
-void RectangularLavaHazard::pushNewBubble(double radius) {
+void RectangularLavaHazard::pushNewBubble(float bubbleRadius) {
 	float x0, y0, x1, y1;
 	int attempts = 0;
 
-	x0 = VisualRNG::randFloatInRange(radius, w - radius);
-	y0 = VisualRNG::randFloatInRange(radius, h - radius);
+	x0 = VisualRNG::randFloatInRange(bubbleRadius, float(w) - bubbleRadius);
+	y0 = VisualRNG::randFloatInRange(bubbleRadius, float(h) - bubbleRadius);
 	do {
-		x1 = VisualRNG::randFloatInRange(radius, w - radius);
-		y1 = VisualRNG::randFloatInRange(radius, h - radius);
+		x1 = VisualRNG::randFloatInRange(bubbleRadius, float(w) - bubbleRadius);
+		y1 = VisualRNG::randFloatInRange(bubbleRadius, float(h) - bubbleRadius);
 		attempts++;
-	} while ((attempts < 8) && (abs(x0-x1) < w/16 || abs(y0-y1) < h/16)); //JS Tanks used w/8 and h/8
+	} while ((attempts < 8) && (std::abs(x0-x1) < float(w)/16 || std::abs(y0-y1) < float(h)/16)); //JS Tanks used w/8 and h/8
 
 	if (attempts < 8) {
-		float maxTick = floor(VisualRNG::randFloatInRange(200, 300+1));
-		bubbles.push_back(new LavaBubble(radius, x0/float(w), y0/float(h), x1/float(w), y1/float(h), maxTick));
+		float maxTick = std::floor(VisualRNG::randFloatInRange(200, 300+1));
+		bubbles.push_back(new LavaBubble(bubbleRadius, x0/float(w), y0/float(h), x1/float(w), y1/float(h), maxTick));
 	}
 }
 
@@ -236,10 +233,8 @@ void RectangularLavaHazard::ghostDraw(DrawingLayers layer, float alpha) const {
 	}
 }
 
-inline void RectangularLavaHazard::drawBackground(bool pose, float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
+void RectangularLavaHazard::drawBackground(bool pose, float alpha) const {
 	alpha = alpha * alpha;
-
 	ColorValueHolder color = (pose ? getBackgroundColor_Pose() : getBackgroundColor());
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 
@@ -257,12 +252,11 @@ inline void RectangularLavaHazard::drawBackground(bool pose, float alpha) const 
 	Renderer::SubmitBatchedDraw(coordsAndColor, 4 * (2+4), indices, 2 * 3);
 }
 
-inline void RectangularLavaHazard::drawBubbles(bool pose, float alpha) const {
+void RectangularLavaHazard::drawBubbles(bool pose, float alpha) const {
 	if (bubbles.size() == 0) {
 		return;
 	}
 
-	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	//first, sort by alpha: lowest to highest (this makes the bubbles less weird-looking when drawn over each other, because the alpha isn't real transparency)
@@ -278,10 +272,10 @@ inline void RectangularLavaHazard::drawBubbles(bool pose, float alpha) const {
 
 		float coordsAndColor[(RectangularLavaHazard::BubbleSideCount*2)*(2+4)];
 		for (int i = 0; i < RectangularLavaHazard::BubbleSideCount; i++) {
-			coordsAndColor[(i*2)  *6]   = (sortedBubbles[j]->getX()*this->w + this->x) + (sortedBubbles[j]->getR() - lineWidth) * bubble_vertices[i+1].getXComp();
-			coordsAndColor[(i*2)  *6+1] = (sortedBubbles[j]->getY()*this->h + this->y) + (sortedBubbles[j]->getR() - lineWidth) * bubble_vertices[i+1].getYComp();
-			coordsAndColor[(i*2+1)*6]   = (sortedBubbles[j]->getX()*this->w + this->x) + (sortedBubbles[j]->getR() + lineWidth) * bubble_vertices[i+1].getXComp();
-			coordsAndColor[(i*2+1)*6+1] = (sortedBubbles[j]->getY()*this->h + this->y) + (sortedBubbles[j]->getR() + lineWidth) * bubble_vertices[i+1].getYComp();
+			coordsAndColor[(i*2)  *6]   = (sortedBubbles[j]->getX()*static_cast<float>(this->w) + static_cast<float>(this->x)) + (sortedBubbles[j]->getR() - lineWidth) * bubble_vertices[i+1].getXComp();
+			coordsAndColor[(i*2)  *6+1] = (sortedBubbles[j]->getY()*static_cast<float>(this->h) + static_cast<float>(this->y)) + (sortedBubbles[j]->getR() - lineWidth) * bubble_vertices[i+1].getYComp();
+			coordsAndColor[(i*2+1)*6]   = (sortedBubbles[j]->getX()*static_cast<float>(this->w) + static_cast<float>(this->x)) + (sortedBubbles[j]->getR() + lineWidth) * bubble_vertices[i+1].getXComp();
+			coordsAndColor[(i*2+1)*6+1] = (sortedBubbles[j]->getY()*static_cast<float>(this->h) + static_cast<float>(this->y)) + (sortedBubbles[j]->getR() + lineWidth) * bubble_vertices[i+1].getYComp();
 
 			coordsAndColor[(i*2)  *6+2] = color.getRf();
 			coordsAndColor[(i*2)  *6+3] = color.getGf();

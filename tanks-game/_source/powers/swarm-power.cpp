@@ -2,10 +2,11 @@
 #include "../game-manager.h" //settings
 
 #include "../constants.h"
+#include <cmath> //abs, sqrt
 
-const double SwarmPower::initialAngleDiff = 15 * (PI/180);
+const float SwarmPower::initialAngleDiff = 15 * (PI/180);
 
-const double SwarmPower::homingStrength = (2*PI) / 32;
+const float SwarmPower::homingStrength = (2*PI) / 32;
 
 std::unordered_map<std::string, float> SwarmPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -67,8 +68,9 @@ SwarmTankPower::SwarmTankPower() {
 InteractionBoolHolder SwarmBulletPower::modifiedMovement(Bullet* b) {
 	const Tank* parentTank = TankManager::getTankByID(b->getParentID());
 	const float interiorRadius = parentTank->r * 2;
-	const SimpleVector2D distToTank = SimpleVector2D(parentTank->x - b->x, parentTank->y - b->y);
-	if (distToTank.getMagnitude() <= interiorRadius) {
+	//const SimpleVector2D distToTank = SimpleVector2D(parentTank->x - b->x, parentTank->y - b->y);
+	const float distToTankSquared = (parentTank->x - b->x)*(parentTank->x - b->x) + (parentTank->y - b->y)*(parentTank->y - b->y);
+	if (distToTankSquared <= interiorRadius*interiorRadius) {
 		//don't do anything
 		return { false };
 	}
@@ -79,14 +81,14 @@ InteractionBoolHolder SwarmBulletPower::modifiedMovement(Bullet* b) {
 	//from: https://en.wikipedia.org/wiki/Tangent_lines_to_circles#With_analytic_geometry
 
 	const float r = interiorRadius;
-	const float d0Squared = distToTank.getMagnitude() * distToTank.getMagnitude();
+	const float d0Squared = distToTankSquared;
 	const float x0 = b->x - parentTank->x;
 	const float y0 = b->y - parentTank->y;
 
-	const float point1XFromTank = ((r*r) / d0Squared) * x0   +   (r / d0Squared * sqrt(d0Squared - (r*r))) * -y0;
-	const float point1YFromTank = ((r*r) / d0Squared) * y0   +   (r / d0Squared * sqrt(d0Squared - (r*r))) * x0;
-	const float point2XFromTank = ((r*r) / d0Squared) * x0   -   (r / d0Squared * sqrt(d0Squared - (r*r))) * -y0;
-	const float point2YFromTank = ((r*r) / d0Squared) * y0   -   (r / d0Squared * sqrt(d0Squared - (r*r))) * x0;
+	const float point1XFromTank = ((r*r) / d0Squared) * x0   +   (r / d0Squared * std::sqrt(d0Squared - (r*r))) * -y0;
+	const float point1YFromTank = ((r*r) / d0Squared) * y0   +   (r / d0Squared * std::sqrt(d0Squared - (r*r))) * x0;
+	const float point2XFromTank = ((r*r) / d0Squared) * x0   -   (r / d0Squared * std::sqrt(d0Squared - (r*r))) * -y0;
+	const float point2YFromTank = ((r*r) / d0Squared) * y0   -   (r / d0Squared * std::sqrt(d0Squared - (r*r))) * x0;
 
 	const SimpleVector2D distToPoint1 = SimpleVector2D(point1XFromTank - x0, point1YFromTank - y0); //SimpleVector2D((parentTank->x + point1XFromTank) - b->x, (parentTank->y + point1YFromTank) - b->y);
 	const SimpleVector2D distToPoint2 = SimpleVector2D(point2XFromTank - x0, point2YFromTank - y0); //SimpleVector2D((parentTank->x + point2XFromTank) - b->x, (parentTank->y + point2YFromTank) - b->y);
@@ -94,8 +96,8 @@ InteractionBoolHolder SwarmBulletPower::modifiedMovement(Bullet* b) {
 	const float angleToPoint2 = SimpleVector2D::angleBetween(distToPoint2, b->velocity);
 
 	//copied from PowerFunctionHelper::homingGenericMove()
-	if (abs(angleToPoint1) < abs(angleToPoint2)) {
-		if (abs(angleToPoint1) < SwarmPower::homingStrength) {
+	if (std::abs(angleToPoint1) < std::abs(angleToPoint2)) {
+		if (std::abs(angleToPoint1) < SwarmPower::homingStrength) {
 			//small angle adjustment needed
 			b->velocity.setAngle(distToPoint1.getAngle());
 		} else {
@@ -107,7 +109,7 @@ InteractionBoolHolder SwarmBulletPower::modifiedMovement(Bullet* b) {
 			}
 		}
 	} else {
-		if (abs(angleToPoint2) < SwarmPower::homingStrength) {
+		if (std::abs(angleToPoint2) < SwarmPower::homingStrength) {
 			//small angle adjustment needed
 			b->velocity.setAngle(distToPoint2.getAngle());
 		} else {
@@ -123,13 +125,22 @@ InteractionBoolHolder SwarmBulletPower::modifiedMovement(Bullet* b) {
 	return { false };
 }
 
+InteractionBoolHolder SwarmBulletPower::modifiedEdgeCollision(Bullet* b) {
+	//in the event the tank's size changes while the bullet is out of bounds, the "safe area" would change
+	//therefore, allow double the circling radius, because that should be plenty
+	const Tank* parentTank = TankManager::getTankByID(b->getParentID());
+	const double interiorRadius = parentTank->r * 4; //changed here
+
+	return { ((b->velocity.getMagnitude() == 0) && ((b->x + b->r <= 0) || (b->x - b->r >= GAME_WIDTH) || (b->y + b->r <= 0) || (b->y - b->r >= GAME_HEIGHT))) ||
+	         ((b->x - b->r >= GAME_WIDTH+interiorRadius)  || (b->x + b->r <= -interiorRadius) ||
+	         ((b->y - b->r >= GAME_HEIGHT+interiorRadius) || (b->y + b->r <= -interiorRadius))) };
+}
+
 TankPower* SwarmBulletPower::makeTankPower() const {
 	return new SwarmTankPower();
 }
 
 SwarmBulletPower::SwarmBulletPower() {
-	timeLeft = 0;
-	maxTime = -1;
-
 	modifiesMovement = true;
+	modifiesEdgeCollision = true;
 }

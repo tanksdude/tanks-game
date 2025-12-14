@@ -5,6 +5,14 @@
       <Configuration>Debug</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="ReleaseDistribution|x64">
+      <Configuration>ReleaseDistribution</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="ReleaseProfiling|x64">
+      <Configuration>ReleaseProfiling</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
       <Platform>x64</Platform>
@@ -30,6 +38,20 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDistribution|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseProfiling|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
@@ -41,6 +63,12 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDistribution|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseProfiling|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup />
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -49,15 +77,18 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\freeglut\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\glew\include;$(SolutionDir)Dependencies\rpmalloc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glfw\include;$(SolutionDir)Dependencies\glad2\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\enkiTS;$(SolutionDir)Dependencies\rpmalloc;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\_misc;$(SolutionDir)Externals\tracy\public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <DisableSpecificWarnings>4244;4267;4305;4838;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <PreprocessorDefinitions>ARCH_64BIT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DisableSpecificWarnings>4018;4244;4267;4305;4312;4838;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/arch:SSE4.2 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\freeglut\lib;$(SolutionDir)Dependencies\glew\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>freeglut.lib;glew32.lib;advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\glfw\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>msvcrt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -68,20 +99,77 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\freeglut\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\glew\include;$(SolutionDir)Dependencies\rpmalloc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glfw\include;$(SolutionDir)Dependencies\glad2\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\enkiTS;$(SolutionDir)Dependencies\rpmalloc;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\_misc;$(SolutionDir)Externals\tracy\public;</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <DisableSpecificWarnings>4244;4267;4305;4838;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <PreprocessorDefinitions>NDEBUG;ARCH_64BIT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DisableSpecificWarnings>4018;4244;4267;4305;4312;4838;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);NDEBUG</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/arch:SSE4.2 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\freeglut\lib;$(SolutionDir)Dependencies\glew\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>freeglut.lib;glew32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\glfw\lib-vc2022;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDistribution|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glfw\include;$(SolutionDir)Dependencies\glad2\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\enkiTS;$(SolutionDir)Dependencies\rpmalloc;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\_misc;$(SolutionDir)Externals\tracy\public;</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <DisableSpecificWarnings>4018;4244;4267;4305;4312;4838;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <PreprocessorDefinitions>RELEASE_DISTRIBUTION;%(PreprocessorDefinitions);NDEBUG</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/arch:SSE4.2 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\glfw\lib-vc2022;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseProfiling|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glfw\include;$(SolutionDir)Dependencies\glad2\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\enkiTS;$(SolutionDir)Dependencies\rpmalloc;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\_misc;$(SolutionDir)Externals\tracy\public;</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <DisableSpecificWarnings>4018;4244;4267;4305;4312;4838;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <PreprocessorDefinitions>TRACY_ENABLE;%(PreprocessorDefinitions);NDEBUG</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/arch:SSE4.2 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\glfw\lib-vc2022;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Dependencies\enkiTS\TaskScheduler.cpp">
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">_SILENCE_CXX20_IS_POD_DEPRECATION_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">_SILENCE_CXX20_IS_POD_DEPRECATION_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='ReleaseDistribution|x64'">_SILENCE_CXX20_IS_POD_DEPRECATION_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='ReleaseProfiling|x64'">_SILENCE_CXX20_IS_POD_DEPRECATION_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <ClCompile Include="..\Dependencies\glad2\src\gl.c" />
+    <ClCompile Include="..\Dependencies\rpmalloc\rpmalloc.c" />
+    <ClCompile Include="..\Externals\tracy\public\TracyClient.cpp" />
     <ClCompile Include="_source\aaa_first.cpp" />
     <ClCompile Include="_source\background-rect.cpp" />
     <ClCompile Include="_source\basic-ini-parser.cpp" />
@@ -89,14 +177,15 @@
     <ClCompile Include="_source\bullet.cpp" />
     <ClCompile Include="_source\circle-hazard.cpp" />
     <ClCompile Include="_source\collision-handler.cpp" />
+    <ClCompile Include="_source\color-cache.cpp" />
     <ClCompile Include="_source\color-mixer.cpp" />
     <ClCompile Include="_source\color-value-holder.cpp" />
     <ClCompile Include="_source\constants.cpp" />
     <ClCompile Include="_source\custom-level-interpreter.cpp" />
     <ClCompile Include="_source\custom-power-interpreter.cpp" />
     <ClCompile Include="_source\developer-manager.cpp" />
-    <ClCompile Include="_source\diagnostics.cpp" />
     <ClCompile Include="_source\end-game-handler.cpp" />
+    <ClCompile Include="_source\frame-time-graph.cpp" />
     <ClCompile Include="_source\game-main-loop.cpp" />
     <ClCompile Include="_source\game-manager.cpp" />
     <ClCompile Include="_source\game-scene-manager.cpp" />
@@ -110,10 +199,11 @@
     <ClCompile Include="_source\graphics\index-buffer.cpp" />
     <ClCompile Include="_source\graphics\opengl-index-buffer.cpp" />
     <ClCompile Include="_source\graphics\opengl-rendering-context.cpp" />
-    <ClCompile Include="_source\graphics\opengl-vertex-array.cpp" />
+    <ClCompile Include="_source\graphics\opengl-shader.cpp" />
+    <ClCompile Include="_source\graphics\opengl-vertex-array-object.cpp" />
     <ClCompile Include="_source\graphics\opengl-vertex-buffer.cpp" />
     <ClCompile Include="_source\graphics\shader.cpp" />
-    <ClCompile Include="_source\graphics\vertex-array.cpp" />
+    <ClCompile Include="_source\graphics\vertex-array-object.cpp" />
     <ClCompile Include="_source\graphics\vertex-buffer.cpp" />
     <ClCompile Include="_source\hazard-data-governor.cpp" />
     <ClCompile Include="_source\hazard-manager.cpp" />
@@ -207,7 +297,6 @@
     <ClCompile Include="_source\powers\blast-power.cpp" />
     <ClCompile Include="_source\powers\bounce-power.cpp" />
     <ClCompile Include="_source\powers\dev-backwards-movement-power.cpp" />
-    <ClCompile Include="_source\powers\dev-color-changing-power.cpp" />
     <ClCompile Include="_source\powers\dev-colorless-long-invincible-named-power.cpp" />
     <ClCompile Include="_source\powers\dev-long-invincible-named-power.cpp" />
     <ClCompile Include="_source\powers\dev-movement-restarter-power.cpp" />
@@ -250,11 +339,11 @@
     <ClCompile Include="_source\reset-things.cpp" />
     <ClCompile Include="_source\rng.cpp" />
     <ClCompile Include="_source\simple-vector-2d.cpp" />
-    <ClCompile Include="_source\statistics-handler.cpp" />
     <ClCompile Include="_source\tank-manager.cpp" />
     <ClCompile Include="_source\tank.cpp" />
     <ClCompile Include="_source\wall-manager.cpp" />
     <ClCompile Include="_source\wall.cpp" />
+    <ClCompile Include="_source\window-initializer.cpp" />
     <ClCompile Include="_source\main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -268,15 +357,16 @@
     <ClInclude Include="_source\circle-hazard.h" />
     <ClInclude Include="_source\circle.h" />
     <ClInclude Include="_source\collision-handler.h" />
+    <ClInclude Include="_source\color-cache.h" />
     <ClInclude Include="_source\color-mixer.h" />
     <ClInclude Include="_source\color-value-holder.h" />
     <ClInclude Include="_source\constants.h" />
     <ClInclude Include="_source\custom-level-interpreter.h" />
     <ClInclude Include="_source\custom-power-interpreter.h" />
     <ClInclude Include="_source\developer-manager.h" />
-    <ClInclude Include="_source\diagnostics.h" />
     <ClInclude Include="_source\drawable-thing.h" />
     <ClInclude Include="_source\end-game-handler.h" />
+    <ClInclude Include="_source\frame-time-graph.h" />
     <ClInclude Include="_source\game-main-loop.h" />
     <ClInclude Include="_source\game-manager.h" />
     <ClInclude Include="_source\game-scene-manager.h" />
@@ -291,12 +381,13 @@
     <ClInclude Include="_source\graphics\null-rendering-context.h" />
     <ClInclude Include="_source\graphics\opengl-index-buffer.h" />
     <ClInclude Include="_source\graphics\opengl-rendering-context.h" />
-    <ClInclude Include="_source\graphics\opengl-vertex-array.h" />
+    <ClInclude Include="_source\graphics\opengl-shader.h" />
+    <ClInclude Include="_source\graphics\opengl-vertex-array-object.h" />
     <ClInclude Include="_source\graphics\opengl-vertex-buffer.h" />
     <ClInclude Include="_source\graphics\rendering-context.h" />
     <ClInclude Include="_source\graphics\shader.h" />
     <ClInclude Include="_source\graphics\software-rendering-context.h" />
-    <ClInclude Include="_source\graphics\vertex-array.h" />
+    <ClInclude Include="_source\graphics\vertex-array-object.h" />
     <ClInclude Include="_source\graphics\vertex-buffer-layout.h" />
     <ClInclude Include="_source\graphics\vertex-buffer.h" />
     <ClInclude Include="_source\hazard-data-governor.h" />
@@ -394,7 +485,6 @@
     <ClInclude Include="_source\powers\blast-power.h" />
     <ClInclude Include="_source\powers\bounce-power.h" />
     <ClInclude Include="_source\powers\dev-backwards-movement-power.h" />
-    <ClInclude Include="_source\powers\dev-color-changing-power.h" />
     <ClInclude Include="_source\powers\dev-colorless-long-invincible-named-power.h" />
     <ClInclude Include="_source\powers\dev-long-invincible-named-power.h" />
     <ClInclude Include="_source\powers\dev-movement-restarter-power.h" />
@@ -438,16 +528,15 @@
     <ClInclude Include="_source\reset-things.h" />
     <ClInclude Include="_source\rng.h" />
     <ClInclude Include="_source\simple-vector-2d.h" />
-    <ClInclude Include="_source\statistics-handler.h" />
     <ClInclude Include="_source\tank-manager.h" />
     <ClInclude Include="_source\tank-power.h" />
     <ClInclude Include="_source\tank.h" />
     <ClInclude Include="_source\wall-manager.h" />
     <ClInclude Include="_source\wall.h" />
+    <ClInclude Include="_source\window-initializer.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="freeglut.dll" />
-    <None Include="glew32.dll" />
+    <ResourceCompile Include="tanks.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

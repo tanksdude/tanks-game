@@ -5,7 +5,7 @@ PowerTypes = "testmod1"   "random-testmod1"
 PowerWeights = 1.0   1.0
 
 ; optional
-PowerTankDuration = 500 ; default
+PowerTankDurationMultiplier = 1.0 ; default
 PowerAttributes = "stack" "mix" ; this doesn't stack but that's not the point
 
 

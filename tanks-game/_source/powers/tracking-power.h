@@ -35,8 +35,8 @@ public:
 	virtual TankPower* makeDuplicate() const override { return new TrackingTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
 
-	virtual double getTankMaxSpeedMultiplier() const override { return .5; }
-	virtual double getTankAccelerationMultiplier() const override { return .5; }
+	virtual float  getTankMaxSpeedMultiplier() const override { return .5; }
+	virtual float  getTankAccelerationMultiplier() const override { return .5; }
 	virtual double getTankFiringRateMultiplier() const override { return 2; }
 
 	TrackingTankPower();
@@ -47,6 +47,7 @@ public:
 class TrackingBulletPower : public BulletPower {
 public:
 	virtual ColorValueHolder getColor() const override { return TrackingPower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return TrackingPower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new TrackingBulletPower(); }
 	virtual TankPower* makeTankPower() const override;
@@ -58,7 +59,7 @@ public:
 	virtual InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> modifiedCollisionWithWall(const Bullet*, const Wall*) override;
 	//bool modifiedCollisionWithWallCanWorkWithOthers = false;
 
-	virtual double getBulletSpeedMultiplier() const override { return .25; }
+	virtual float getBulletSpeedMultiplier() const override { return .25; }
 
 	TrackingBulletPower();
 };

@@ -2,7 +2,7 @@
 
 #include "../constants.h"
 #include <cmath>
-#include <algorithm> //std::clamp
+//#include <algorithm> //nothing
 #include <iostream>
 #include "../rng.h"
 
@@ -20,6 +20,8 @@ SimpleVector2D CloudHazard::body_vertices[Circle::NumOfSides+1];
 unsigned int CloudHazard::body_indices[Circle::NumOfSides*3];
 bool CloudHazard::initialized_vertices = false;
 
+const ColorValueHolder CloudHazard::color = ColorValueHolder(1.0f, 1.0f, 1.0f);
+
 std::unordered_map<std::string, float> CloudHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "dev", 1.0f });
@@ -34,7 +36,6 @@ CloudHazard::CloudHazard(double xpos, double ypos, double radius, double speed, 
 	y = ypos;
 	r = radius;
 
-	color = ColorValueHolder(1.0f, 1.0f, 1.0f);
 	powerChoices = { {"vanilla", "speed"} }; //TODO: pull from the level?
 	initialSpeed = speed;
 	acceleration = acc;
@@ -45,9 +46,6 @@ CloudHazard::CloudHazard(double xpos, double ypos, double radius, double speed, 
 	powerupsVelocity = std::vector<SimpleVector2D>();
 
 	//canAcceptPowers = false;
-
-	modifiesTankCollision = true;
-	modifiesBulletCollision = true;
 
 	initializeVertices();
 }
@@ -60,7 +58,6 @@ CloudHazard::CloudHazard(double xpos, double ypos, double radius, double speed, 
 	y = ypos;
 	r = radius;
 
-	color = ColorValueHolder(1.0f, 1.0f, 1.0f);
 	powerChoices = std::vector<std::vector<std::string>>(powerList);
 	initialSpeed = speed;
 	acceleration = acc;
@@ -71,9 +68,6 @@ CloudHazard::CloudHazard(double xpos, double ypos, double radius, double speed, 
 	powerupsVelocity = std::vector<SimpleVector2D>();
 
 	//canAcceptPowers = false;
-
-	modifiesTankCollision = true;
-	modifiesBulletCollision = true;
 
 	initializeVertices();
 }
@@ -89,7 +83,7 @@ bool CloudHazard::initializeVertices() {
 
 	body_vertices[0] = SimpleVector2D(0, 0);
 	for (int i = 1; i < Circle::NumOfSides+1; i++) {
-		body_vertices[i] = SimpleVector2D(cos((i-1) * (2*PI / Circle::NumOfSides)), sin((i-1) * (2*PI / Circle::NumOfSides)));
+		body_vertices[i] = SimpleVector2D(std::cos((i-1) * (2*PI / Circle::NumOfSides)), std::sin((i-1) * (2*PI / Circle::NumOfSides)));
 	}
 
 	for (int i = 0; i < Circle::NumOfSides; i++) {
@@ -151,7 +145,7 @@ void CloudHazard::pushPowerup() {
 	int powerupIndex = GameRNG::randFunc() * powerChoices.size();
 	PowerSquare* powerup = makePowerup(powerupIndex);
 	powerupsToMove.push_back(powerup->getGameID());
-	powerupsVelocity.push_back(SimpleVector2D((2*PI) * GameRNG::randFunc(), this->initialSpeed, true));
+	powerupsVelocity.push_back(SimpleVector2D(float(2*PI) * GameRNG::randFuncf(), this->initialSpeed, true));
 	PowerupManager::pushPowerup(powerup);
 }
 
@@ -277,9 +271,7 @@ void CloudHazard::poseDraw(DrawingLayers layer) const {
 void CloudHazard::ghostDraw(float alpha) const {
 	//TODO: multiple circles
 
-	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-
 	ColorValueHolder cloudColor = color;
 	cloudColor = ColorMixer::mix(BackgroundRect::getBackColor(), cloudColor, alpha);
 
@@ -291,8 +283,8 @@ void CloudHazard::ghostDraw(float alpha) const {
 	coordsAndColor[4] = cloudColor.getBf();
 	coordsAndColor[5] = cloudColor.getAf();
 	for (int i = 1; i < Circle::NumOfSides+1; i++) {
-		coordsAndColor[i*6]   = x + r * body_vertices[i].getXComp();
-		coordsAndColor[i*6+1] = y + r * body_vertices[i].getYComp();
+		coordsAndColor[i*6]   = static_cast<float>(x) + static_cast<float>(r) * body_vertices[i].getXComp();
+		coordsAndColor[i*6+1] = static_cast<float>(y) + static_cast<float>(r) * body_vertices[i].getYComp();
 		coordsAndColor[i*6+2] = cloudColor.getRf();
 		coordsAndColor[i*6+3] = cloudColor.getGf();
 		coordsAndColor[i*6+4] = cloudColor.getBf();

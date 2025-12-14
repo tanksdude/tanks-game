@@ -5,9 +5,9 @@ class WallSparksPower : public Power {
 public: //bullet stuff
 	static const int extraBulletsCount;
 	static const int maxBounces;
-	static const double maxNewBulletVelocity;
-	static const double minNewBulletVelocity;
-	static const double bulletAngleDeviation;
+	static const float maxNewBulletVelocity;
+	static const float minNewBulletVelocity;
+	static const float bulletAngleDeviation;
 
 public:
 	virtual std::vector<std::string> getPowerTypes() const override {
@@ -55,15 +55,16 @@ protected:
 
 public:
 	virtual ColorValueHolder getColor() const override { return WallSparksPower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return WallSparksPower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new WallSparksBulletPower(); }
 	virtual TankPower* makeTankPower() const override;
 
+	//bool modifiesEdgeCollision = false; //important: not intended for this power; defined so edge sparks can use it
+	virtual InteractionBoolHolder modifiedEdgeCollision(Bullet*) override;
+
 	//bool modifiesCollisionWithWall = true;
 	virtual InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> modifiedCollisionWithWall(const Bullet*, const Wall*) override;
-
-	//bool modifiesCollisionWithEdge = false; //important: not intended for this power; defined so edge sparks can use it
-	virtual InteractionBoolHolder modifiedEdgeCollision(Bullet*) override;
 
 	WallSparksBulletPower();
 	WallSparksBulletPower(int bounces);

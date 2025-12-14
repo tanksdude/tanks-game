@@ -49,7 +49,7 @@ InteractionBoolHolder AnnoyingTankPower::modifiedEdgeCollision(Tank* parent) {
 	return { false };
 }
 
-double AnnoyingTankPower::getTankAccelerationMultiplier() const {
+float AnnoyingTankPower::getTankAccelerationMultiplier() const {
 	//might change this
 	return .5;
 }
@@ -70,11 +70,9 @@ TankPower* AnnoyingBulletPower::makeTankPower() const {
 	return new AnnoyingTankPower();
 }
 
-InteractionBoolHolder AnnoyingBulletPower::modifiedCollisionWithTank(Bullet* parent, Tank* t) {
-	if (CollisionHandler::partiallyCollided(parent, t)) {
-		CollisionHandler::pushMovableAwayFromMovable(parent, t);
-	}
-	return { false, false };
+InteractionUpdateHolder<BulletUpdateStruct, TankUpdateStruct> AnnoyingBulletPower::modifiedCollisionWithTank(const Bullet* parent, const Tank* t) {
+	std::pair<std::pair<double, double>, std::pair<double, double>> vecs = CollisionHandler::pushMovableAwayFromMovable_vecOnly(parent, t);
+	return { false, false, new BulletUpdateStruct(vecs.first.first, vecs.first.second, 0,0,0), new TankUpdateStruct(vecs.second.first, vecs.second.second, 0,0) };
 }
 
 //has very low offense, very high defense; can't kill, can't be killed
@@ -97,9 +95,6 @@ float AnnoyingBulletPower::getDefenseTier(const Bullet*) const {
 }
 
 AnnoyingBulletPower::AnnoyingBulletPower() {
-	timeLeft = 0;
-	maxTime = -1;
-
 	modifiesCollisionWithTank = true;
 	//modifiedCollisionWithTankCanWorkWithOthers = false; //TODO: should this be set?
 }

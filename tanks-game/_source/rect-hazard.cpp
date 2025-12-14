@@ -1,7 +1,5 @@
 #include "rect-hazard.h"
 
-#include "constants.h"
-
 #include "collision-handler.h"
 
 /*
@@ -19,84 +17,29 @@ std::unordered_map<std::string, float> RectHazard::getWeights() const {
 }
 */
 
-void RectHazard::modifiedTankCollision(Tank* t) {
-	CollisionHandler::pushMovableAwayFromImmovable(t, this);
+void RectHazard::update(const RectHazardUpdateStruct* up) {
+	this->x += up->x;
+	this->y += up->y;
 }
 
-void RectHazard::modifiedBulletCollision(Bullet* b) {
-	CollisionHandler::pushMovableAwayFromImmovable(b, this);
+InteractionUpdateHolder<TankUpdateStruct, RectHazardUpdateStruct> RectHazard::modifiedTankCollision(const Tank* t) const {
+	std::pair<double, double> vec = CollisionHandler::pushMovableAwayFromImmovable_vecOnly(t, this);
+	return { false, false, new TankUpdateStruct(vec.first, vec.second, 0,0), nullptr };
 }
 
-float RectHazard::getHighestOffenseImportance() const {
-	float highest = LOW_IMPORTANCE;
-	/*
-	for (int i = 0; i < hazardPowers.size(); i++) {
-		if (hazardPowers[i]->getOffenseImportance() > highest) {
-			highest = hazardPowers[i]->getOffenseImportance();
-		}
-	}
-	*/
-	return highest;
+InteractionUpdateHolder<BulletUpdateStruct, RectHazardUpdateStruct> RectHazard::modifiedBulletCollision(const Bullet* b) const {
+	std::pair<double, double> vec = CollisionHandler::pushMovableAwayFromImmovable_vecOnly(b, this);
+	return { false, false, new BulletUpdateStruct(vec.first, vec.second, 0,0,0), nullptr };
 }
 
-float RectHazard::getHighestOffenseTier(float importance) const {
-	float highest = LOW_TIER;
-	/*
-	if (hazardPowers.size() == 0) {
-		return 0;
-	}
-	for (int i = 0; i < hazardPowers.size(); i++) {
-		if (hazardPowers[i]->getOffenseImportance() == importance) {
-			if (hazardPowers[i]->getOffenseTier(this) > highest) {
-				highest = hazardPowers[i]->getOffenseTier(this);
-			}
-		}
-	}
-	*/
-	if (importance <= 0) {
-		return (highest > getDefaultOffense() ? highest : getDefaultOffense());
-	}
-	return highest;
+RectHazardUpdateStruct::RectHazardUpdateStruct(double x, double y) {
+	this->x = x;
+	this->y = y;
 }
 
-float RectHazard::getOffenseTier() const {
-	return getHighestOffenseTier(getHighestOffenseImportance());
-}
-
-float RectHazard::getHighestDefenseImportance() const {
-	float highest = LOW_IMPORTANCE;
-	/*
-	for (int i = 0; i < hazardPowers.size(); i++) {
-		if (hazardPowers[i]->getDefenseImportance() > highest) {
-			highest = hazardPowers[i]->getDefenseImportance();
-		}
-	}
-	*/
-	return highest;
-}
-
-float RectHazard::getHighestDefenseTier(float importance) const {
-	float highest = LOW_TIER;
-	/*
-	if (hazardPowers.size() == 0) {
-		return 0;
-	}
-	for (int i = 0; i < hazardPowers.size(); i++) {
-		if (hazardPowers[i]->getDefenseImportance() == importance) {
-			if (hazardPowers[i]->getDefenseTier(this) > highest) {
-				highest = hazardPowers[i]->getDefenseTier(this);
-			}
-		}
-	}
-	*/
-	if (importance <= 0) {
-		return (highest > getDefaultDefense() ? highest : getDefaultDefense());
-	}
-	return highest;
-}
-
-float RectHazard::getDefenseTier() const {
-	return getHighestDefenseTier(getHighestDefenseImportance());
+void RectHazardUpdateStruct::add(const RectHazardUpdateStruct& other) {
+	this->x += other.x;
+	this->y += other.y;
 }
 
 //see circle-hazard.cpp for hazard notes

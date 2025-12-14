@@ -1,97 +1,61 @@
 #include "physics-handler.h"
 
 #include <algorithm>
-#include <iostream>
+#include "aaa_first.h"
 
-#include "diagnostics.h"
+#include <tracy/Tracy.hpp>
 
-template<typename T, typename U>
-std::vector<std::pair<int, int>>* PhysicsHandler::sweepAndPrune(const std::vector<T>& collider, const std::vector<U>& collidee) {
-	std::vector<std::pair<int, int>>* collisionList = new std::vector<std::pair<int, int>>;
+uint32_t PhysicsHandler::MinTaskSize;
+PhysicsHandler::SweepAndPruneTask* PhysicsHandler::s_physicsTask;
 
-	//find object intervals
-	std::vector<ObjectIntervalInfo> objectIntervals; objectIntervals.reserve(collider.size() + collidee.size());
-	for (int i = 0; i < collider.size(); i++) {
-		T o = collider[i];
-		objectIntervals.push_back(ObjectIntervalInfo(o, i, true));
-	}
-	for (int j = 0; j < collidee.size(); j++) {
-		U o = collidee[j];
-		objectIntervals.push_back(ObjectIntervalInfo(o, j, false));
-	}
-	std::sort(objectIntervals.begin(), objectIntervals.end(),
-		[](const ObjectIntervalInfo& lhs, const ObjectIntervalInfo& rhs) { return (lhs.xStart < rhs.xStart); });
-
-	//sweep through
-	std::vector<ObjectIntervalInfo> iteratingObjects; iteratingObjects.reserve(objectIntervals.size());
-	#if _DEBUG
-	//performance seems about the same with or without reserving
-	#else
-	collisionList->reserve(collider.size()*collidee.size() / 2); //half just to save memory in the very likely scenario everything is not touching everything
-	#endif
-	for (int i = 0; i < objectIntervals.size(); i++) {
-		const ObjectIntervalInfo& currentObject = objectIntervals[i];
-		for (int j = 0; j < iteratingObjects.size(); j++) {
-			//remove if not in active interval
-			if (iteratingObjects[j].xEnd < currentObject.xStart) {
-				iteratingObjects.erase(iteratingObjects.begin() + j);
-				j--;
-				continue;
-			}
-			//push possible collision
-			if (iteratingObjects[j].collider && !currentObject.collider) {
-				collisionList->push_back(std::pair<int, int>(iteratingObjects[j].listIndex, currentObject.listIndex));
-			} else if (currentObject.collider && !iteratingObjects[j].collider) {
-				collisionList->push_back(std::pair<int, int>(currentObject.listIndex, iteratingObjects[j].listIndex));
-			}
-		}
-
-		iteratingObjects.push_back(currentObject);
-	}
-
-	return collisionList;
+void PhysicsHandler::Initialize(uint32_t MinTaskSize_) {
+	MinTaskSize = MinTaskSize_;
+	s_physicsTask = new SweepAndPruneTask(g_TS.GetNumTaskThreads());
 }
 
-template std::vector<std::pair<int, int>>* PhysicsHandler::sweepAndPrune<Rect*, Rect*>
-(const std::vector<Rect*>& collider, const std::vector<Rect*>& collidee);
-template std::vector<std::pair<int, int>>* PhysicsHandler::sweepAndPrune<Rect*, Circle*>
-(const std::vector<Rect*>& collider, const std::vector<Circle*>& collidee);
-template std::vector<std::pair<int, int>>* PhysicsHandler::sweepAndPrune<Circle*, Rect*>
-(const std::vector<Circle*>& collider, const std::vector<Rect*>& collidee);
-template std::vector<std::pair<int, int>>* PhysicsHandler::sweepAndPrune<Circle*, Circle*>
-(const std::vector<Circle*>& collider, const std::vector<Circle*>& collidee);
+void PhysicsHandler::Uninitialize() {
+	delete s_physicsTask;
+}
 
-template<typename T>
-std::vector<std::pair<int, int>>* PhysicsHandler::sweepAndPrune(const std::vector<T>& collider) {
-	//pretty sure that can be multithreaded, as long as there's a mutex when pushing to the list; also, should do chunking since bullets with nearby indices probably have similar locations (spatial locality, kinda)
-
-	std::vector<std::pair<int, int>>* collisionList = new std::vector<std::pair<int, int>>;
-
-	//find object intervals
-	//TODO: so this step isn't supposed to be computed every time; information should be stored, then insertion sort can be used to fix the new data
-	//auto start = Diagnostics::getTime();
-	std::vector<ObjectIntervalInfo> objectIntervals; objectIntervals.reserve(collider.size());
-	for (int i = 0; i < collider.size(); i++) {
-		T o = collider[i];
-		objectIntervals.push_back(ObjectIntervalInfo(o, i, true));
+PhysicsHandler::SweepAndPruneTask::SweepAndPruneTask(uint32_t num_threads_) {
+	(void) m_objectIntervals; (void) m_SetSize;
+	num_threads = num_threads_;
+	m_MinRange = PhysicsHandler::MinTaskSize;
+	m_collisionLists = new std::vector<std::pair<int, int>>*[num_threads_];
+	for (int i = 0; i < num_threads_; i++) {
+		m_collisionLists[i] = new std::vector<std::pair<int, int>>;
+		#if _DEBUG
+		//performance seems about the same with or without reserving //TODO: check again
+		#else
+		m_collisionLists[i]->reserve(1024 * 1024 / 4); //random guess for what should be enough
+		#endif
 	}
-	std::sort(objectIntervals.begin(), objectIntervals.end(),
-		[](const ObjectIntervalInfo& lhs, const ObjectIntervalInfo& rhs) { return (lhs.xStart < rhs.xStart); });
-	//auto end = Diagnostics::getTime();
-	//std::cout << "intervals: " << (long double)Diagnostics::getDiff(start, end) << "ms" << std::endl;
+}
 
-	//sweep through
-	//BIG TODO: is it possible to multithread this? because it's the biggest timesink (maybe the inner loop can be parallelized?)
-	//start = Diagnostics::getTime();
-	std::vector<ObjectIntervalInfo> iteratingObjects; iteratingObjects.reserve(objectIntervals.size());
-	#if _DEBUG
-	//performance seems about the same with or without reserving
-	#else
-	collisionList->reserve(objectIntervals.size()*objectIntervals.size() / 2); //half just to save memory in the very likely scenario everything is not touching everything
-	#endif
-	for (int i = 0; i < objectIntervals.size(); i++) {
-		const ObjectIntervalInfo& currentObject = objectIntervals[i];
-		for (int j = 0; j < iteratingObjects.size(); j++) {
+void PhysicsHandler::SweepAndPruneTask::Init(const std::vector<PhysicsHandler::ObjectIntervalInfo>* objectIntervals, uint32_t task_size) {
+	m_objectIntervals = objectIntervals;
+	m_SetSize = task_size;
+	for (int i = 0; i < num_threads; i++) {
+		m_collisionLists[i]->clear();
+	}
+}
+
+PhysicsHandler::SweepAndPruneTask::~SweepAndPruneTask() {
+	for (int i = 0; i < num_threads; i++) {
+		delete m_collisionLists[i];
+	}
+	delete[] m_collisionLists;
+}
+
+void PhysicsHandler::SweepAndPruneTask::ExecuteRange(enki::TaskSetPartition range_, uint32_t threadnum_) {
+	ZoneScoped;
+	std::vector<PhysicsHandler::ObjectIntervalInfo> iteratingObjects; iteratingObjects.reserve(range_.end - range_.start); //possible a resize will be needed, it's okay
+	for (unsigned int i = range_.start; i < m_objectIntervals->size(); i++) {
+		//NOTE: this goes past the range end because there are objects on the boundary; if it goes to the range end, collision pairs will be missed
+
+		const PhysicsHandler::ObjectIntervalInfo& currentObject = m_objectIntervals->data()[i];
+		bool everyObjectIsOutOfRange = true;
+		for (unsigned int j = 0; j < iteratingObjects.size(); j++) {
 			//prune if not in active interval
 			if (iteratingObjects[j].xEnd < currentObject.xStart) {
 				iteratingObjects.erase(iteratingObjects.begin() + j);
@@ -99,19 +63,37 @@ std::vector<std::pair<int, int>>* PhysicsHandler::sweepAndPrune(const std::vecto
 				continue;
 			}
 			//push possible collision
-			collisionList->push_back(std::pair<int, int>(currentObject.listIndex, iteratingObjects[j].listIndex));
+			if (iteratingObjects[j].listIndex < range_.end) [[likely]] {
+				//NOTE: this check only works because listIndex refers to the actual index in the list
+				//(does not work when the list is sorted before calling this function)
+
+				m_collisionLists[threadnum_]->push_back({ currentObject.listIndex, iteratingObjects[j].listIndex });
+				everyObjectIsOutOfRange = false;
+			}
+		}
+		if (i >= range_.end && everyObjectIsOutOfRange) [[unlikely]] {
+			return;
 		}
 
 		iteratingObjects.push_back(currentObject);
 	}
-	//end = Diagnostics::getTime();
-	//std::cout << "sweep: " << (long double)Diagnostics::getDiff(start, end) << "ms" << std::endl << std::endl;
-
-	return collisionList;
-	//TODO: this algorithm is somewhat simple; how difficult would it be to do it on the GPU?
 }
 
-template std::vector<std::pair<int, int>>* PhysicsHandler::sweepAndPrune<Rect*>
-(const std::vector<Rect*>& collider);
-template std::vector<std::pair<int, int>>* PhysicsHandler::sweepAndPrune<Circle*>
-(const std::vector<Circle*>& collider);
+std::vector<std::vector<std::pair<int, int>>*> PhysicsHandler::sweepAndPrune(const std::vector<GameThing*>& collisionObjects) {
+	ZoneScoped;
+
+	//find object intervals
+	std::vector<ObjectIntervalInfo> objectIntervals; objectIntervals.reserve(collisionObjects.size());
+	for (int i = 0; i < collisionObjects.size(); i++) {
+		GameThing* o = collisionObjects[i];
+		objectIntervals.push_back(ObjectIntervalInfo(o->get_xStart(), o->get_xEnd(), i));
+	}
+
+	//sweep through
+	s_physicsTask->Init(&objectIntervals, collisionObjects.size());
+
+	g_TS.AddTaskSetToPipe(s_physicsTask);
+	g_TS.WaitforTask(s_physicsTask);
+
+	return std::vector<std::vector<std::pair<int, int>>*>(s_physicsTask->m_collisionLists, s_physicsTask->m_collisionLists + s_physicsTask->num_threads);
+}

@@ -2,11 +2,14 @@
 #include "../rect-hazard.h"
 
 #include "../constants.h"
+#include "../color-value-holder.h"
+#include "../circle-hazard.h"
 
 class SpiralLavaHazard : public RectHazard {
 	//the base part is just a wall
 protected:
-	ColorValueHolder color;
+	static const ColorValueHolder lightColor;
+	static const ColorValueHolder darkColor;
 
 	int maxLavaBlobs; //don't know what else to call them...
 	std::vector<Game_ID> lavaBlobIDs;
@@ -15,16 +18,17 @@ protected:
 	double tickCycle;
 	bool currentlyActive;
 	bool moveClockwise;
+	float lavaAngleRotate; //default 180deg
 	double maxLavaDist;
-	double lavaAngleRotate; //default 180deg
 
 protected:
+	virtual ColorValueHolder getColor() const;
 	virtual CircleHazard* makeLavaBlob(int blobNum) const;
 	void pushLavaBlob(int blobNum); //shouldn't need to be virtual
 
-	virtual inline double getLavaBlobAngle(int blobNum, double tickValue) const;
-	virtual inline double getLavaBlobDist(double tickValue) const;
-	virtual inline double getLavaBlobRadius() const;
+	virtual float getLavaBlobAngle(int blobNum, double tickValue) const;
+	virtual double getLavaBlobDist(double tickValue) const;
+	inline double getLavaBlobRadius() const;
 
 	virtual bool canReachTanks() const; //used during randomization factory (in reasonableLocation())
 
@@ -37,9 +41,8 @@ public:
 
 	virtual RectHazardCollisionType getCollisionType() const override { return RectHazardCollisionType::solid; }
 
-protected:
-	virtual float getDefaultOffense() const override { return 0; }
-	virtual float getDefaultDefense() const override { return DESTRUCTION_TIER; }
+	virtual float getOffenseTier() const override { return 0; }
+	virtual float getDefenseTier() const override { return DESTRUCTION_TIER; }
 
 public:
 	//virtual bool validLocation() const override { return true; }

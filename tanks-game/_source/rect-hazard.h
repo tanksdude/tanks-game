@@ -1,5 +1,6 @@
 #pragma once
 class RectHazard;
+struct RectHazardUpdateStruct;
 
 #include <string>
 #include <vector>
@@ -8,7 +9,6 @@ class RectHazard;
 #include "game-thing.h"
 #include "rect.h"
 #include "drawable-thing.h"
-//#include "rect-hazard-power.h"
 
 #include "tank.h"
 #include "bullet.h"
@@ -48,48 +48,29 @@ enum class RectHazardCollisionType {
 };
 
 class RectHazard : public GameThing, public Rect, public DrawableThing {
-public: //protected?
-	//std::vector<RectHazardPower*> hazardPowers;
-	//bool canAcceptPowers;
-	//virtual bool getCanAcceptPowers();
-
-public:
-	float getOffenseTier() const;
-	float getDefenseTier() const;
-
-protected:
-	float getHighestOffenseImportance() const;
-	float getHighestOffenseTier(float importance) const;
-	float getHighestDefenseImportance() const;
-	float getHighestDefenseTier(float importance) const;
-
 public:
 	virtual std::vector<std::string> getHazardTypes() const = 0;
 	virtual std::unordered_map<std::string, float> getWeights() const = 0; //intended range: (0,1]
 
 	virtual RectHazardCollisionType getCollisionType() const = 0; // { return RectHazardCollisionType::solid; }
 
-	virtual bool actuallyCollided(const Tank*) const { return true; } //precondition: currently and partially collided with tank
-	bool modifiesTankCollision = false;
-	virtual void modifiedTankCollision(Tank*);
-	bool hasSpecialEffectTankCollision = false;
+	virtual bool actuallyCollided(const Tank*) const { return true; }
 	virtual void specialEffectTankCollision(const Tank*) { return; } //always activated before modifiedTankCollision
+	virtual InteractionUpdateHolder<TankUpdateStruct, RectHazardUpdateStruct> modifiedTankCollision(const Tank*) const;
 
-	virtual bool actuallyCollided(const Bullet*) const { return true; } //precondition: currently and partially collided with bullet
-	bool modifiesBulletCollision = false;
-	virtual void modifiedBulletCollision(Bullet*);
-	bool hasSpecialEffectBulletCollision = false;
+	virtual bool actuallyCollided(const Bullet*) const { return true; }
 	virtual void specialEffectBulletCollision(const Bullet*) { return; } //always activated before modifiedBulletCollision
+	virtual InteractionUpdateHolder<BulletUpdateStruct, RectHazardUpdateStruct> modifiedBulletCollision(const Bullet*) const;
 
-protected:
-	virtual float getDefaultOffense() const = 0;
-	virtual float getDefaultDefense() const = 0;
+	virtual float getOffenseTier() const = 0;
+	virtual float getDefenseTier() const = 0;
 
 public:
 	virtual bool validLocation() const { return true; }
 	virtual bool reasonableLocation() const = 0;
 	virtual void initialize() { return; } //called when recthazard is pushed for the first time
 	//virtual void uninitialize() { return; } //called when recthazard is destroyed (TODO)
+	void update(const RectHazardUpdateStruct*);
 
 	virtual std::string getName() const = 0;
 	//static std::string getClassName();
@@ -110,5 +91,16 @@ public:
 	virtual RectFactoryInformation getFactoryInformation() const = 0;
 
 protected:
-	RectHazard(Team_ID t_id) : GameThing(t_id) {}
+	RectHazard(Team_ID t_id) : GameThing(t_id, ObjectType::Hazard_R) {}
+};
+
+struct RectHazardUpdateStruct {
+	//deltas:
+	double x;
+	double y;
+
+	void add(const RectHazardUpdateStruct& other);
+
+	RectHazardUpdateStruct(double x, double y);
+	RectHazardUpdateStruct() : RectHazardUpdateStruct(0, 0) {}
 };

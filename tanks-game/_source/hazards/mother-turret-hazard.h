@@ -5,22 +5,22 @@ class MotherTurretHazard : public TargetingTurretHazard {
 protected:
 	int maxChildTurrets; //treated as constant
 	std::vector<Game_ID> childTurretIDs; //length = maxChildTurrets (vector for ease of use, can't use std::array)
-	std::vector<bool> childTurretAlive;
+	std::vector<char> childTurretAlive; //not bool because std::vector<bool> is a completely different object; they would function identically, but std::vector<char> is smaller and filesize is a little smaller without std::vector<bool> existing
 	int targetingNum; //[0, maxChildTurrets)
 	bool targetingChild; //basically the targeting bool, but the distinction allows GinormousTurretHazard to work correctly
 
 	double childDistFromMother;
-	double initialAngle;
+	float initialAngle;
 	int initialChildren;
 
 protected:
 	virtual void pushInitialChildren(int count);
 
-	inline int getChildCount() const; //update child count before using this!
+	int getChildCount() const; //update child count before using this!
 	int updateChildCount(); //returns alive children
 	virtual CircleHazard* makeTurret(int turretNum) const;
 	void pushChild(int turretNum); //shouldn't need to be virtual
-	inline double getChildTurretAngle(int turretNum) const; //same
+	float getChildTurretAngle(int turretNum) const; //same
 
 	virtual void turnTowardsPoint(int turretNum);
 	virtual bool isPointedAt(int turretNum) const;
@@ -32,9 +32,8 @@ public:
 	}
 	virtual std::unordered_map<std::string, float> getWeights() const override;
 
-protected:
-	virtual float getDefaultOffense() const override { return 0; }
-	virtual float getDefaultDefense() const override { return DESTRUCTION_TIER + .5f; } //TODO: double big bullets should be able to destroy this
+	virtual float getOffenseTier() const override { return 0; }
+	virtual float getDefenseTier() const override { return DESTRUCTION_TIER + .5f; } //TODO: double big bullets should be able to destroy this
 
 public:
 	virtual bool reasonableLocation() const override;
@@ -52,13 +51,13 @@ public:
 	virtual void ghostDraw(DrawingLayers, float alpha) const override;
 
 protected:
-	virtual inline void tick_chooseSpot();
-	virtual inline void tick_trackSpot();
-	virtual inline void tick_chargeUp() override;
+	virtual void tick_chooseSpot();
+	virtual void tick_trackSpot();
+	virtual void tick_chargeUp() override;
 
 protected:
-	virtual inline void drawShootingTimer(float alpha = 1.0f) const;
-	virtual inline void drawChildTurretLocations(float alpha = 1.0f) const; //debug
+	virtual void drawShootingTimer(float alpha = 1.0f) const;
+	virtual void drawChildTurretLocations(float alpha = 1.0f) const; //debug
 
 public:
 	MotherTurretHazard(double xpos, double ypos, double angle);

@@ -2,14 +2,16 @@
 #include "../circle-hazard.h"
 
 #include "../constants.h"
+#include "../color-value-holder.h"
+#include "../simple-vector-2d.h"
 #include "../power-square.h"
 
 class CloudHazard : public CircleHazard {
 protected:
-	ColorValueHolder color;
+	static const ColorValueHolder color;
 	std::vector<std::vector<std::string>> powerChoices;
-	double initialSpeed;
-	double acceleration;
+	float initialSpeed;
+	float acceleration;
 	double tickCount;
 	double tickCycle;
 
@@ -30,16 +32,13 @@ public:
 	virtual CircleHazardCollisionType getCollisionType() const override { return CircleHazardCollisionType::under; } //if anything, "over"
 
 	virtual bool actuallyCollided(const Tank*) const override { return false; }
-	//bool modifiesTankCollision = true;
-	virtual void modifiedTankCollision(Tank*) override { return; }
+	virtual InteractionUpdateHolder<TankUpdateStruct, CircleHazardUpdateStruct> modifiedTankCollision(const Tank*) const override { return { false, false, nullptr, nullptr }; }
 
 	virtual bool actuallyCollided(const Bullet*) const override { return false; }
-	//bool modifiesBulletCollision = true;
-	virtual void modifiedBulletCollision(Bullet*) override { return; }
+	virtual InteractionUpdateHolder<BulletUpdateStruct, CircleHazardUpdateStruct> modifiedBulletCollision(const Bullet*) const override { return { false, false, nullptr, nullptr }; }
 
-protected:
-	virtual float getDefaultOffense() const override { return 0; }
-	virtual float getDefaultDefense() const override { return HIGH_TIER; }
+	virtual float getOffenseTier() const override { return 0; }
+	virtual float getDefenseTier() const override { return HIGH_TIER; }
 
 public:
 	//virtual bool validLocation() const override { return true; } //maybe change

@@ -1,0 +1,33 @@
+root = true
+
+[*]
+charset = utf-8
+#indent_size = 4
+#trim_trailing_whitespace = true
+
+[*.{c,cpp,h,hpp}]
+indent_style = tab
+insert_final_newline = true
+#max_line_length = 100
+
+[{CMakeLists.txt,*.cmake}]
+indent_style = tab
+
+[.editorconfig]
+insert_final_newline = true
+
+[**/shaders/OpenGL/*.{vert, frag}]
+end_of_line = lf
+indent_style = tab
+insert_final_newline = true
+
+[**/docs/**.md]
+end_of_line = lf
+[**/mods/**.txt]
+end_of_line = crlf
+[**.ini]
+end_of_line = crlf
+[changelog.txt]
+end_of_line = lf
+indent_style = space
+indent_size = 4

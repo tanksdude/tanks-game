@@ -3,6 +3,7 @@
 
 #include "../constants.h"
 
+#include "../color-value-holder.h"
 #include "../simple-vector-2d.h"
 
 class StationaryTurretHazard : public CircleHazard {
@@ -11,10 +12,11 @@ protected:
 	SimpleVector2D velocity; //for stationary and targeting turrets, the magnitude will obviously be 0
 	double tickCount;
 	double tickCycle;
+
+	static constexpr unsigned int maxState = 3;
+	static const ColorValueHolder stateColors[maxState];
+	double stateMultiplier[maxState]; //can't be static due to other turrets modifying this
 	unsigned int currentState;
-	unsigned int maxState;
-	double* stateMultiplier;
-	ColorValueHolder* stateColors;
 
 protected:
 	virtual bool canSeeTank(const Tank*) const; //true if pointing at tank with no wall obstructions
@@ -30,9 +32,8 @@ public:
 
 	virtual CircleHazardCollisionType getCollisionType() const override { return CircleHazardCollisionType::solid; }
 
-protected:
-	virtual float getDefaultOffense() const override { return 0; }
-	virtual float getDefaultDefense() const override { return DESTRUCTION_TIER; }
+	virtual float getOffenseTier() const override { return 0; }
+	virtual float getDefenseTier() const override { return DESTRUCTION_TIER; }
 
 public:
 	//virtual bool validLocation() const override { return true; }
@@ -50,9 +51,11 @@ public:
 	virtual void ghostDraw(DrawingLayers, float alpha) const override;
 
 protected:
-	virtual inline void drawBody(float alpha = 1.0f) const;
-	virtual inline void drawOutline(float alpha = 1.0f) const;
-	virtual inline void drawBarrel(float alpha = 1.0f) const;
+	virtual void drawBody(float alpha = 1.0f) const;
+	virtual void drawOutline(float alpha = 1.0f) const;
+	virtual void drawBarrel(float alpha = 1.0f) const;
+	virtual void drawOutline(float alpha, float lineWidth) const;
+	virtual void drawBarrel(float alpha, float lineWidth) const;
 
 protected:
 	static SimpleVector2D body_vertices[Circle::NumOfSides+1];

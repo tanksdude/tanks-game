@@ -12,6 +12,7 @@
 #include "../background-rect.h"
 
 #include "../collision-handler.h"
+#include "../simple-vector-2d.h"
 #include "../point.h"
 #include "../wall-manager.h"
 #include "../hazard-manager.h"
@@ -116,7 +117,7 @@ void VerticalLightningHazard::specialEffectCircleCollision(const Circle* c) {
 			std::cerr << "WARNING: vertical lightning endpoint Y (bottom half) out of range!" << std::endl;
 			intersectionYD = std::clamp<double>(intersectionYD, y, y+h);
 		}
-		boltPointsD = getDefaultNumBoltPoints(sqrt((intersectionXD - bottomPoint->x)*(intersectionXD - bottomPoint->x) + (intersectionYD - bottomPoint->y)*(intersectionYD - bottomPoint->y)));
+		boltPointsD = getDefaultNumBoltPoints(std::sqrt((intersectionXD - bottomPoint->x)*(intersectionXD - bottomPoint->x) + (intersectionYD - bottomPoint->y)*(intersectionYD - bottomPoint->y)));
 	}
 
 	if (CollisionHandler::fullyCollided(topPoint, c)) {
@@ -140,7 +141,7 @@ void VerticalLightningHazard::specialEffectCircleCollision(const Circle* c) {
 			std::cerr << "WARNING: vertical lightning endpoint Y (top half) out of range!" << std::endl;
 			intersectionYU = std::clamp<double>(intersectionYU, y, y+h);
 		}
-		boltPointsU = getDefaultNumBoltPoints(sqrt((intersectionXU - topPoint->x)*(intersectionXU - topPoint->x) + (intersectionYU - topPoint->y)*(intersectionYU - topPoint->y)));
+		boltPointsU = getDefaultNumBoltPoints(std::sqrt((intersectionXU - topPoint->x)*(intersectionXU - topPoint->x) + (intersectionYU - topPoint->y)*(intersectionYU - topPoint->y)));
 	}
 
 	pushBolt(new LightningBolt(w/2, 0, intersectionXD-x, intersectionYD-y, boltPointsD), false);
@@ -260,21 +261,21 @@ void VerticalLightningHazard::simpleRefreshBolt(LightningBolt* l) const {
 	 * the region is (from bottom to top) 1/4 triangle, 1/2 rectangle, then 1/4 triangle
 	 */
 
-	float deltaY = (l->positions[l->length*2-1] - l->positions[1]) / (l->length - 1);
+	const float deltaY = (l->positions[l->length*2-1] - l->positions[1]) / (l->length - 1);
 	for (int j = 1; j < l->length-1; j++) {
 		float xRangeLower = l->positions[j*2 - 2] - maxVariance;
 		float xRangeUpper = l->positions[j*2 - 2] + maxVariance;
 		float xMin, xMax;
 		if (j < l->length/4) { //bottom quarter
 			//instead of y=ax+b, use x=(y-b)/a
-			xMin = ((deltaY * j) - h/4) / (-.5*(h/w));
-			xMax = ((deltaY * j) + h/4) / ( .5*(h/w));
-		} else if (j < l->length * (3.0/4.0)) { //middle half
+			xMin = ((deltaY * j) - static_cast<float>(h)/4) / (-.5f*static_cast<float>(h/w));
+			xMax = ((deltaY * j) + static_cast<float>(h)/4) / ( .5f*static_cast<float>(h/w));
+		} else if (j < 3 * l->length / 4) { //middle half
 			xMin = 0;
 			xMax = w;
 		} else { //top quarter
-			xMin = ((deltaY * j) - (3.0/4.0)*h) / ( .5*(h/w));
-			xMax = ((deltaY * j) - (5.0/4.0)*h) / (-.5*(h/w));
+			xMin = ((deltaY * j) - (3.0f/4.0f)*static_cast<float>(h)) / ( .5f*static_cast<float>(h/w));
+			xMax = ((deltaY * j) - (5.0f/4.0f)*static_cast<float>(h)) / (-.5f*static_cast<float>(h/w));
 		}
 		xRangeLower = (xRangeLower < xMin ? xMin : xRangeLower);
 		xRangeUpper = (xRangeUpper > xMax ? xMax : xRangeUpper);
@@ -286,9 +287,11 @@ void VerticalLightningHazard::refreshBolt(LightningBolt* l) const {
 	RectangularLightningHazard::refreshBolt(l, this->w, this->h);
 }
 
-inline void VerticalLightningHazard::drawBackground(bool pose, float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
+void VerticalLightningHazard::drawBackground(bool pose, float alpha) const {
 	alpha = alpha * alpha;
+	//ColorValueHolder color = (pose ? getBackgroundColor_Pose() : getBackgroundColor());
+	ColorValueHolder color = getBackgroundColor_Pose();
+	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 
 	double scale;
 	if (pose || currentlyActive) {
@@ -297,10 +300,6 @@ inline void VerticalLightningHazard::drawBackground(bool pose, float alpha) cons
 		scale = tickCount / (tickCycle * stateMultiplier[currentlyActive]);
 	}
 	//scale = scale * scale;
-
-	//ColorValueHolder color = (pose ? getBackgroundColor_Pose() : getBackgroundColor());
-	ColorValueHolder color = getBackgroundColor_Pose();
-	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 
 	float coordsAndColor[] = {
 		x,   y+(h/2) - (h/2)*scale,   color.getRf(), color.getGf(), color.getBf(), color.getAf(),
@@ -318,7 +317,7 @@ inline void VerticalLightningHazard::drawBackground(bool pose, float alpha) cons
 	drawBackgroundOutline(alpha);
 }
 
-inline void VerticalLightningHazard::drawBackgroundOutline(float alpha) const {
+void VerticalLightningHazard::drawBackgroundOutline(float alpha) const {
 	//alpha set by drawBackground()
 
 	ColorValueHolder color_outline = ColorValueHolder(0.5f, 0.5f, 0.5f); //use gray; black is a bit too strong for a lightning's outline
@@ -352,8 +351,7 @@ inline void VerticalLightningHazard::drawBackgroundOutline(float alpha) const {
 	Renderer::SubmitBatchedDraw(coordsAndColor_outline, (4+4) * (2+4), indices_outline, (2*2) * 3);
 }
 
-inline void VerticalLightningHazard::drawBolts_Pose(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
+void VerticalLightningHazard::drawBolts_Pose(float alpha) const {
 	alpha = alpha * alpha;
 
 	//generate bolts
@@ -378,7 +376,7 @@ inline void VerticalLightningHazard::drawBolts_Pose(float alpha) const {
 			const int startIndex = j*6;
 
 			SimpleVector2D dist = SimpleVector2D(poseBolts[i]->positions[(j+1)*2] - poseBolts[i]->positions[j*2], poseBolts[i]->positions[(j+1)*2+1] - poseBolts[i]->positions[j*2+1]);
-			SimpleVector2D distCW = SimpleVector2D(dist.getAngle() - PI/2, lineWidth, true);
+			SimpleVector2D distCW = SimpleVector2D(dist.getAngle() - float(PI/2), lineWidth, true);
 
 			coordsAndColor[startVertex + 0*6]   = static_cast<float>(x) + poseBolts[i]->positions[j*2]                     + distCW.getXComp();
 			coordsAndColor[startVertex + 0*6+1] = static_cast<float>(y) + poseBolts[i]->positions[j*2+1]                   + distCW.getYComp();

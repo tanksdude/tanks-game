@@ -32,12 +32,12 @@ BulletPower* RingShooterTankPower::makeBulletPower() const {
 	return new RingShooterBulletPower();
 }
 
-std::vector<std::pair<double, double>>* RingShooterTankPower::addExtraShootingPoints() const {
+std::vector<std::pair<float, float>>* RingShooterTankPower::addExtraShootingPoints() const {
 	//see PowerFunctionHelper::equallySpacedCannonPoints
-	std::vector<std::pair<double, double>>* newExtraCannonPoints = new std::vector<std::pair<double, double>>;
+	std::vector<std::pair<float, float>>* newExtraCannonPoints = new std::vector<std::pair<float, float>>;
 	newExtraCannonPoints->reserve(RingShooterPower::bulletCount-1);
 	for (int i = 1; i < RingShooterPower::bulletCount; i++) {
-		newExtraCannonPoints->push_back({ (2*PI) * (i / double(RingShooterPower::bulletCount)), (2*PI) * (-i / double(RingShooterPower::bulletCount)) });
+		newExtraCannonPoints->push_back({ float(2*PI) * (i / float(RingShooterPower::bulletCount)), float(2*PI) * (-i / float(RingShooterPower::bulletCount)) });
 	}
 	return newExtraCannonPoints;
 }
@@ -57,6 +57,5 @@ TankPower* RingShooterBulletPower::makeTankPower() const {
 }
 
 RingShooterBulletPower::RingShooterBulletPower() {
-	timeLeft = 0;
-	maxTime = -1;
+	//nothing
 }

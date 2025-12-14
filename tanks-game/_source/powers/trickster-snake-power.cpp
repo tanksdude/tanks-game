@@ -45,11 +45,11 @@ TricksterSnakeTankPower::TricksterSnakeTankPower() {
 #include <cmath>
 
 InteractionBoolHolder TricksterSnakeBulletPower::modifiedMovement(Bullet* b) {
-	//ypos = TricksterSnakePower::movementAmplitude * sin((2*PI) * (tickCount / TricksterSnakePower::timePeriod))
-	//ydiff = A * (2*PI) * cos((2*PI) * tick)
+	//ypos = TricksterSnakePower::movementAmplitude * std::sin((2*PI) * (tickCount / TricksterSnakePower::timePeriod))
+	//ydiff = A * (2*PI) * std::cos((2*PI) * tick)
 
-	const float moveDiff = (TricksterSnakePower::movementAmplitude * (2*PI)) * cos((2*PI) * (tickCount / TricksterSnakePower::timePeriod));
-	const SimpleVector2D perpendicularMoveDiff = SimpleVector2D(b->velocity.getAngle() + PI/2, moveDiff, true);
+	const float moveDiff = (TricksterSnakePower::movementAmplitude * (2*PI)) * std::cos((2*PI) * (tickCount / TricksterSnakePower::timePeriod));
+	const SimpleVector2D perpendicularMoveDiff = SimpleVector2D(b->velocity.getAngle() + float(PI/2), moveDiff, true);
 
 	b->x += perpendicularMoveDiff.getXComp();
 	b->y += perpendicularMoveDiff.getYComp();
@@ -63,9 +63,6 @@ TankPower* TricksterSnakeBulletPower::makeTankPower() const {
 }
 
 TricksterSnakeBulletPower::TricksterSnakeBulletPower() {
-	timeLeft = 0;
-	maxTime = -1;
-
 	modifiesMovement = true;
 
 	tickCount = 0;

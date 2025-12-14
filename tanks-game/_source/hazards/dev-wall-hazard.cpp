@@ -1,8 +1,5 @@
 #include "dev-wall-hazard.h"
 
-#include "../constants.h"
-#include <cmath>
-#include <algorithm> //std::clamp
 #include <iostream>
 #include "../rng.h"
 
@@ -149,9 +146,7 @@ void DevWallHazard::poseDraw(DrawingLayers layer) const {
 }
 
 void DevWallHazard::ghostDraw(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-
 	ColorValueHolder c = this->color;
 	c = ColorMixer::mix(BackgroundRect::getBackColor(), c, alpha);
 

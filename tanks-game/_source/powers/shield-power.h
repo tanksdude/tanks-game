@@ -3,7 +3,7 @@
 
 class ShieldPower : public Power {
 public: //tank and bullet stuff
-	static const double barrierStrength; //amount of time to subtract when harming the shield
+	static const double barrierStrengthPercentDrain; //percent of full time to subtract when harming the shield
 
 public:
 	virtual std::vector<std::string> getPowerTypes() const override {
@@ -39,7 +39,7 @@ public:
 	virtual BulletPower* makeBulletPower() const override;
 
 	//bool modifiesDeathHandling = true;
-	virtual InteractionBoolHolder modifiedDeathHandling(Tank* parent) override;
+	virtual InteractionBoolHolder modifiedDeathHandling(const Tank* parent) override;
 
 	ShieldTankPower();
 	ShieldTankPower(double life);
@@ -50,12 +50,13 @@ public:
 class ShieldBulletPower : public BulletPower {
 public:
 	virtual ColorValueHolder getColor() const override { return ShieldPower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return ShieldPower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override;
 	virtual TankPower* makeTankPower() const override;
 
 	//bool modifiesDeathHandling = true;
-	virtual InteractionBoolHolder modifiedDeathHandling(Bullet* parent) override;
+	virtual InteractionBoolHolder modifiedDeathHandling(const Bullet* parent) override;
 
 	ShieldBulletPower();
 	//ShieldBulletPower(double life);

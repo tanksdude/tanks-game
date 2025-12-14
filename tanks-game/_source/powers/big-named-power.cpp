@@ -49,9 +49,6 @@ TankPower* BigNamedBulletPower::makeTankPower() const {
 }
 
 BigNamedBulletPower::BigNamedBulletPower() {
-	timeLeft = 0;
-	maxTime = -1;
-
 	modifiesCollisionWithWall = true;
 	modifiedCollisionWithWallCanWorkWithOthers = false;
 

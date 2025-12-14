@@ -15,13 +15,13 @@
 
 #include "game-manager.h"
 #include "end-game-handler.h"
-#include "diagnostics.h"
+#include "frame-time-graph.h"
 
 const int ResetThings::default_tankStartingYCount = 5;
 const double ResetThings::default_tankToEdgeDist = 20;
 const double ResetThings::default_tankStartingYRange = (4.0/5) * GAME_HEIGHT;
 
-void ResetThings::reset(int) {
+void ResetThings::reset() {
 	EndGameHandler::finalizeScores();
 	//TODO: this good?
 	for (int i = 0; i < EndGameHandler::teamsParticipating.size(); i++) {
@@ -41,6 +41,7 @@ void ResetThings::reset(int) {
 	HazardManager::clearRectHazards();
 	LevelManager::clearLevels();
 	TankManager::clearTanks();
+	GameManager::clearObjects();
 
 	//TODO: maybe GameMainLoop should hold the shooting cooldown? (but the tank still needs to get initialized with it...)
 	const GameSettings& game_settings = GameManager::get_settings();
@@ -52,8 +53,14 @@ void ResetThings::reset(int) {
 	if (game_settings.GameForceSameLevel) {
 		LevelManager::pushLevel(game_settings.GameForceSameLevel_identifier.first, game_settings.GameForceSameLevel_identifier.second);
 	} else [[likely]] {
-		const std::string levelPlaylist = game_settings.GameLevelPlaylist;
-		LevelManager::pushLevel(levelPlaylist, LevelManager::levelWeightedSelect(levelPlaylist));
+		if (game_settings.CustomLevelPlaylist.empty()) {
+			const std::string levelPlaylist = game_settings.GameLevelPlaylist;
+			LevelManager::pushLevel(levelPlaylist, LevelManager::levelWeightedSelect(levelPlaylist));
+		} else {
+			int levelIndex = LevelManager::customLevelWeightedSelect(game_settings.CustomLevelPlaylist);
+			const auto& levelIdentifier = game_settings.CustomLevelPlaylist[levelIndex];
+			LevelManager::pushLevel(levelIdentifier.first.first, levelIdentifier.first.second);
+		}
 	}
 
 	//initialize levels from LevelManager level list
@@ -74,7 +81,7 @@ void ResetThings::reset(int) {
 	}
 
 	GameManager::Reset();
-	Diagnostics::clearGraph();
+	FrameTimeGraph::clearGraphs();
 }
 
 void ResetThings::firstReset() {

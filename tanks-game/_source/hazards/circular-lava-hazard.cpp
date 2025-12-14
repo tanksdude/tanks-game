@@ -2,7 +2,7 @@
 
 #include "../constants.h"
 #include <cmath>
-#include <algorithm> //std::sort, std::clamp
+#include <algorithm> //std::sort
 #include <iostream>
 #include "../rng.h"
 
@@ -37,12 +37,9 @@ CircularLavaHazard::CircularLavaHazard(double xpos, double ypos, double radius) 
 	tickCount = 0;
 	tickCycle = 2400;
 	bubbles.reserve(maxBubbles);
-	bubbleChance = 1.0/400;
+	bubbleChance = 1.0f/400;
 
 	//canAcceptPowers = false;
-
-	modifiesTankCollision = true;
-	modifiesBulletCollision = true;
 
 	initializeVertices();
 }
@@ -58,7 +55,7 @@ bool CircularLavaHazard::initializeVertices() {
 
 	bubble_vertices[0] = SimpleVector2D(0, 0);
 	for (int i = 1; i < CircularLavaHazard::BubbleSideCount+1; i++) {
-		bubble_vertices[i] = SimpleVector2D(cos((i-1) * (2*PI / CircularLavaHazard::BubbleSideCount)), sin((i-1) * (2*PI / CircularLavaHazard::BubbleSideCount)));
+		bubble_vertices[i] = SimpleVector2D(std::cos((i-1) * (2*PI / CircularLavaHazard::BubbleSideCount)), std::sin((i-1) * (2*PI / CircularLavaHazard::BubbleSideCount)));
 	}
 
 	for (int i = 0; i < CircularLavaHazard::BubbleSideCount; i++) {
@@ -96,26 +93,26 @@ CircleHazard* CircularLavaHazard::factory(const GenericFactoryConstructionData& 
 	return new CircularLavaHazard(0, 0, 0);
 }
 
-void CircularLavaHazard::pushNewBubble(double radius) {
+void CircularLavaHazard::pushNewBubble(float bubbleRadius) {
 	float x0, y0, x1, y1;
 	int attempts = 0;
 
 	float r0, a0, r1, a1;
-	r0 = VisualRNG::randFunc() * (r - radius);
-	a0 = VisualRNG::randFunc() * (2*PI);
-	x0 = r0 * cos(a0);
-	y0 = r0 * sin(a0);
+	a0 = VisualRNG::randFuncf() * float(2*PI);
+	r0 = VisualRNG::randFuncf() * (float(r) - bubbleRadius);
+	x0 = r0 * std::cos(a0);
+	y0 = r0 * std::sin(a0);
 	do {
-		r1 = VisualRNG::randFunc() * (r - radius);
-		a1 = VisualRNG::randFunc() * (2*PI);
-		x1 = r1 * cos(a1);
-		y1 = r1 * sin(a1);
+		a1 = VisualRNG::randFuncf() * float(2*PI);
+		r1 = VisualRNG::randFuncf() * (float(r) - bubbleRadius);
+		x1 = r1 * std::cos(a1);
+		y1 = r1 * std::sin(a1);
 		attempts++;
-	} while ((attempts < 8) && (abs(x0-x1) < r/16 || abs(y0-y1) < r/16));
+	} while ((attempts < 8) && (std::abs(x0-x1) < float(r)/16 || std::abs(y0-y1) < float(r)/16));
 
 	if (attempts < 8) {
-		float maxTick = floor(VisualRNG::randFloatInRange(200, 300+1));
-		bubbles.push_back(new LavaBubble(radius, x0/float(r), y0/float(r), x1/float(r), y1/float(r), maxTick));
+		float maxTick = std::floor(VisualRNG::randFloatInRange(200, 300+1));
+		bubbles.push_back(new LavaBubble(bubbleRadius, x0/float(r), y0/float(r), x1/float(r), y1/float(r), maxTick));
 	}
 }
 
@@ -239,10 +236,8 @@ void CircularLavaHazard::ghostDraw(DrawingLayers layer, float alpha) const {
 	}
 }
 
-inline void CircularLavaHazard::drawBackground(bool pose, float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
+void CircularLavaHazard::drawBackground(bool pose, float alpha) const {
 	alpha = alpha * alpha;
-
 	ColorValueHolder color = (pose ? getBackgroundColor_Pose() : getBackgroundColor());
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 
@@ -254,8 +249,8 @@ inline void CircularLavaHazard::drawBackground(bool pose, float alpha) const {
 	coordsAndColor[4] = color.getBf();
 	coordsAndColor[5] = color.getAf();
 	for (int i = 1; i < CircularLavaHazard::BubbleSideCount+1; i++) {
-		coordsAndColor[i*6]   = x + r * bubble_vertices[i].getXComp();
-		coordsAndColor[i*6+1] = y + r * bubble_vertices[i].getYComp();
+		coordsAndColor[i*6]   = static_cast<float>(x) + static_cast<float>(r) * bubble_vertices[i].getXComp();
+		coordsAndColor[i*6+1] = static_cast<float>(y) + static_cast<float>(r) * bubble_vertices[i].getYComp();
 		coordsAndColor[i*6+2] = color.getRf();
 		coordsAndColor[i*6+3] = color.getGf();
 		coordsAndColor[i*6+4] = color.getBf();
@@ -265,12 +260,11 @@ inline void CircularLavaHazard::drawBackground(bool pose, float alpha) const {
 	Renderer::SubmitBatchedDraw(coordsAndColor, (CircularLavaHazard::BubbleSideCount+1)*(2+4), bubble_indices, CircularLavaHazard::BubbleSideCount*3);
 }
 
-inline void CircularLavaHazard::drawBubbles(bool pose, float alpha) const {
+void CircularLavaHazard::drawBubbles(bool pose, float alpha) const {
 	if (bubbles.size() == 0) {
 		return;
 	}
 
-	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	//first, sort by alpha: lowest to highest (this makes the bubbles less weird-looking when drawn over each other, because the alpha isn't real transparency)
@@ -286,10 +280,10 @@ inline void CircularLavaHazard::drawBubbles(bool pose, float alpha) const {
 
 		float coordsAndColor[(CircularLavaHazard::BubbleSideCount*2)*(2+4)];
 		for (int i = 0; i < CircularLavaHazard::BubbleSideCount; i++) {
-			coordsAndColor[(i*2)  *6]   = (sortedBubbles[j]->getX()*this->r + this->x) + (sortedBubbles[j]->getR() - lineWidth) * bubble_vertices[i+1].getXComp();
-			coordsAndColor[(i*2)  *6+1] = (sortedBubbles[j]->getY()*this->r + this->y) + (sortedBubbles[j]->getR() - lineWidth) * bubble_vertices[i+1].getYComp();
-			coordsAndColor[(i*2+1)*6]   = (sortedBubbles[j]->getX()*this->r + this->x) + (sortedBubbles[j]->getR() + lineWidth) * bubble_vertices[i+1].getXComp();
-			coordsAndColor[(i*2+1)*6+1] = (sortedBubbles[j]->getY()*this->r + this->y) + (sortedBubbles[j]->getR() + lineWidth) * bubble_vertices[i+1].getYComp();
+			coordsAndColor[(i*2)  *6]   = (sortedBubbles[j]->getX()*static_cast<float>(this->r) + static_cast<float>(this->x)) + (sortedBubbles[j]->getR() - lineWidth) * bubble_vertices[i+1].getXComp();
+			coordsAndColor[(i*2)  *6+1] = (sortedBubbles[j]->getY()*static_cast<float>(this->r) + static_cast<float>(this->y)) + (sortedBubbles[j]->getR() - lineWidth) * bubble_vertices[i+1].getYComp();
+			coordsAndColor[(i*2+1)*6]   = (sortedBubbles[j]->getX()*static_cast<float>(this->r) + static_cast<float>(this->x)) + (sortedBubbles[j]->getR() + lineWidth) * bubble_vertices[i+1].getXComp();
+			coordsAndColor[(i*2+1)*6+1] = (sortedBubbles[j]->getY()*static_cast<float>(this->r) + static_cast<float>(this->y)) + (sortedBubbles[j]->getR() + lineWidth) * bubble_vertices[i+1].getYComp();
 
 			coordsAndColor[(i*2)  *6+2] = color.getRf();
 			coordsAndColor[(i*2)  *6+3] = color.getGf();

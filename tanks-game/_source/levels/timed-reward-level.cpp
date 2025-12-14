@@ -1,13 +1,14 @@
 #include "timed-reward-level.h"
 
 #include "../constants.h"
-#include <cmath>
+#include <cmath> //sin, cos
 
 #include "../reset-things.h"
 #include "../level-helper.h"
 #include "../wall-manager.h"
 #include "../powerup-manager.h"
 #include "../hazard-manager.h"
+#include "../simple-vector-2d.h"
 
 #include "../game-manager.h" //getTickCount()
 
@@ -34,8 +35,8 @@ void TimedRewardLevel::tick() {
 	for (int i = 0; i < 4; i++) {
 		Wall* tempWall = WallManager::getWallByID(movingWalls[i]);
 		if (tempWall != nullptr) {
-			//tempWall->y += (10 * sin((2*PI) * GameManager::getTickCount() / 200)) * ((i/2 == 0)*2-1);
-			tempWall->y += ((2*PI)/200 * 10 * cos(2*PI * GameManager::getTickCount() / 200)) * ((i/2 == 0)*2-1); //derivative
+			//tempWall->y += (10 * std::sin((2*PI) * GameManager::getTickCount() / 200)) * ((i/2 == 0)*2-1);
+			tempWall->y += ((2*PI)/200 * 10 * std::cos(2*PI * GameManager::getTickCount() / 200)) * ((i/2 == 0)*2-1); //derivative
 			//std::cout << tempWall->y << std::endl;
 		}
 	}

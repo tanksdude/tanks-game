@@ -1,8 +1,6 @@
 #include "rectangular-no-bullet-zone-hazard.h"
 
-#include "../constants.h"
 #include <cmath>
-#include <algorithm> //std::clamp
 #include <iostream>
 #include "../rng.h"
 
@@ -31,9 +29,6 @@ RectangularNoBulletZoneHazard::RectangularNoBulletZoneHazard(double xpos, double
 	h = height;
 
 	//canAcceptPowers = false;
-
-	modifiesTankCollision = true;
-	modifiesBulletCollision = true;
 }
 
 RectangularNoBulletZoneHazard::~RectangularNoBulletZoneHazard() {
@@ -145,7 +140,6 @@ void RectangularNoBulletZoneHazard::poseDraw(DrawingLayers layer) const {
 }
 
 void RectangularNoBulletZoneHazard::ghostDraw(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
 
 	//background:

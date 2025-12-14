@@ -1,7 +1,5 @@
 #include "circle-hazard.h"
 
-#include "constants.h"
-
 #include "collision-handler.h"
 
 /*
@@ -19,84 +17,29 @@ std::unordered_map<std::string, float> CircleHazard::getWeights() const {
 }
 */
 
-void CircleHazard::modifiedTankCollision(Tank* t) {
-	CollisionHandler::pushMovableAwayFromImmovable(t, this);
+void CircleHazard::update(const CircleHazardUpdateStruct* up) {
+	this->x += up->x;
+	this->y += up->y;
 }
 
-void CircleHazard::modifiedBulletCollision(Bullet* b) {
-	CollisionHandler::pushMovableAwayFromImmovable(b, this);
+InteractionUpdateHolder<TankUpdateStruct, CircleHazardUpdateStruct> CircleHazard::modifiedTankCollision(const Tank* t) const {
+	std::pair<double, double> vec = CollisionHandler::pushMovableAwayFromImmovable_vecOnly(t, this);
+	return { false, false, new TankUpdateStruct(vec.first, vec.second, 0,0), nullptr };
 }
 
-float CircleHazard::getHighestOffenseImportance() const {
-	float highest = LOW_IMPORTANCE;
-	/*
-	for (int i = 0; i < hazardPowers.size(); i++) {
-		if (hazardPowers[i]->getOffenseImportance() > highest) {
-			highest = hazardPowers[i]->getOffenseImportance();
-		}
-	}
-	*/
-	return highest;
+InteractionUpdateHolder<BulletUpdateStruct, CircleHazardUpdateStruct> CircleHazard::modifiedBulletCollision(const Bullet* b) const {
+	std::pair<double, double> vec = CollisionHandler::pushMovableAwayFromImmovable_vecOnly(b, this);
+	return { false, false, new BulletUpdateStruct(vec.first, vec.second, 0,0,0), nullptr };
 }
 
-float CircleHazard::getHighestOffenseTier(float importance) const {
-	float highest = LOW_TIER;
-	/*
-	if (hazardPowers.size() == 0) {
-		return 0;
-	}
-	for (int i = 0; i < hazardPowers.size(); i++) {
-		if (hazardPowers[i]->getOffenseImportance() == importance) {
-			if (hazardPowers[i]->getOffenseTier(this) > highest) {
-				highest = hazardPowers[i]->getOffenseTier(this);
-			}
-		}
-	}
-	*/
-	if (importance <= 0) {
-		return (highest > getDefaultOffense() ? highest : getDefaultOffense());
-	}
-	return highest;
+CircleHazardUpdateStruct::CircleHazardUpdateStruct(double x, double y) {
+	this->x = x;
+	this->y = y;
 }
 
-float CircleHazard::getOffenseTier() const {
-	return getHighestOffenseTier(getHighestOffenseImportance());
-}
-
-float CircleHazard::getHighestDefenseImportance() const {
-	float highest = LOW_IMPORTANCE;
-	/*
-	for (int i = 0; i < hazardPowers.size(); i++) {
-		if (hazardPowers[i]->getDefenseImportance() > highest) {
-			highest = hazardPowers[i]->getDefenseImportance();
-		}
-	}
-	*/
-	return highest;
-}
-
-float CircleHazard::getHighestDefenseTier(float importance) const {
-	float highest = LOW_TIER;
-	/*
-	if (hazardPowers.size() == 0) {
-		return 0;
-	}
-	for (int i = 0; i < hazardPowers.size(); i++) {
-		if (hazardPowers[i]->getDefenseImportance() == importance) {
-			if (hazardPowers[i]->getDefenseTier(this) > highest) {
-				highest = hazardPowers[i]->getDefenseTier(this);
-			}
-		}
-	}
-	*/
-	if (importance <= 0) {
-		return (highest > getDefaultDefense() ? highest : getDefaultDefense());
-	}
-	return highest;
-}
-
-float CircleHazard::getDefenseTier() const {
-	return getHighestDefenseTier(getHighestDefenseImportance());
+void CircleHazardUpdateStruct::add(const CircleHazardUpdateStruct& other) {
+	this->x += other.x;
+	this->y += other.y;
 }
 
 //hazard notes:
@@ -119,6 +62,6 @@ stationary turret, horizontal lightning, lava, rectangular lightning, vertical l
 random fun facts:
 in JS, one day I got the idea for a turret, so I set about to implement it, but then got stuck because there was nowhere to add it; many hours later, the targeting turret finally made its first appearance
 when I first showed off horizontal lightning to others (in JS), they thought it was made from drawing an image because of its grayer background
-surprisingly, I don't think I got the idea for JS to have circular lightning, lava, or no bullet zones
+surprisingly, I don't think I got the idea for JS to have circular lightning, lava, or no bullet zones; maybe I subconciously blocked the idea because that would've been more work
 
 */

@@ -81,7 +81,7 @@ void EndGameHandler::killTank(Tank* t) {
 	killEvents.push_back({ DEFAULT_TEAM, t->getTeamID() }); //TODO: which team should get this point?
 }
 
-bool EndGameHandler::killTank(Tank* t, GameThing* thing) {
+bool EndGameHandler::killTank(Tank* t, const GameThing* thing) {
 	bool tankDies = t->kill();
 	if (tankDies) {
 		killEvents.push_back({ thing->getTeamID(), t->getTeamID() });
@@ -93,7 +93,7 @@ void EndGameHandler::killBullet(Bullet* b) {
 	//something?
 }
 
-bool EndGameHandler::killBullet(Bullet* b, GameThing* thing) {
+bool EndGameHandler::killBullet(Bullet* b, const GameThing* thing) {
 	bool bulletDies = b->kill();
 	if (bulletDies) {
 		//something?
@@ -102,9 +102,9 @@ bool EndGameHandler::killBullet(Bullet* b, GameThing* thing) {
 	return bulletDies;
 }
 
-InteractionBoolHolder EndGameHandler::determineWinner(Tank* t, Bullet* b) {
+InteractionBoolHolder EndGameHandler::determineWinner(const Tank* t, const Bullet* b, bool attemptTankDeath, bool attemptBulletDeath) {
 	PriorityResult result = PriorityHandler::determinePriority(t, b);
-	bool tankDies = false, bulletDies = false;
+	bool tankDies = attemptTankDeath, bulletDies = attemptBulletDeath;
 	switch (result) {
 		case PriorityResult::bothDie:
 			tankDies = true;
@@ -125,26 +125,27 @@ InteractionBoolHolder EndGameHandler::determineWinner(Tank* t, Bullet* b) {
 			break;
 	}
 	if (bulletDies && !tankDies) {
-		bulletDies = killBullet(b, t);
+		bulletDies = killBullet(const_cast<Bullet*>(b), t);
 	}
 	if (tankDies) {
 		//if the bullet wants to kill the tank, the bullet must die
 		bulletDies = true;
-		tankDies = killTank(t, b);
+		tankDies = killTank(const_cast<Tank*>(t), b);
 	}
 	return { tankDies, bulletDies };
 }
 
-InteractionBoolHolder EndGameHandler::determineWinner(Tank* t1, Tank* t2) {
+InteractionUpdateHolder<TankUpdateStruct, TankUpdateStruct> EndGameHandler::determineWinner(const Tank* t1, const Tank* t2, bool attemptTank1Death, bool attemptTank2Death) {
 	PriorityResult result = PriorityHandler::determinePriority(t1, t2);
-	bool firstTankDies = false, secondTankDies = false;
+	bool firstTankDies = attemptTank1Death, secondTankDies = attemptTank2Death;
+	std::pair<std::pair<double, double>, std::pair<double, double>> vecs = { {0,0}, {0,0} };
 	switch (result) {
 		case PriorityResult::bothDie:
 			firstTankDies = true;
 			secondTankDies = true;
 			break;
 		case PriorityResult::neitherDie: //normal result
-			CollisionHandler::pushMovableAwayFromMovable(t1, t2);
+			vecs = CollisionHandler::pushMovableAwayFromMovable_vecOnly(t1, t2);
 			break;
 		case PriorityResult::firstDies:
 			firstTankDies = true;
@@ -158,17 +159,17 @@ InteractionBoolHolder EndGameHandler::determineWinner(Tank* t1, Tank* t2) {
 			break;
 	}
 	if (firstTankDies) {
-		firstTankDies = killTank(t1, t2);
+		firstTankDies = killTank(const_cast<Tank*>(t1), t2);
 	}
 	if (secondTankDies) {
-		secondTankDies = killTank(t2, t1);
+		secondTankDies = killTank(const_cast<Tank*>(t2), t1);
 	}
-	return { firstTankDies, secondTankDies };
+	return { firstTankDies, secondTankDies, new TankUpdateStruct(vecs.first.first, vecs.first.second, 0,0), new TankUpdateStruct(vecs.second.first, vecs.second.second, 0,0) };
 }
 
-InteractionBoolHolder EndGameHandler::determineWinner(Bullet* b1, Bullet* b2) {
+InteractionBoolHolder EndGameHandler::determineWinner(const Bullet* b1, const Bullet* b2, bool attemptBullet1Death, bool attemptBullet2Death) {
 	PriorityResult result = PriorityHandler::determinePriority(b1, b2);
-	bool firstBulletDies = false, secondBulletDies = false;
+	bool firstBulletDies = attemptBullet1Death, secondBulletDies = attemptBullet2Death;
 	switch (result) {
 		case PriorityResult::bothDie:
 			firstBulletDies = true;
@@ -189,39 +190,41 @@ InteractionBoolHolder EndGameHandler::determineWinner(Bullet* b1, Bullet* b2) {
 			break;
 	}
 	if (firstBulletDies) {
-		firstBulletDies = killBullet(b1, b2);
+		firstBulletDies = killBullet(const_cast<Bullet*>(b1), b2);
 	}
 	if (secondBulletDies) {
-		secondBulletDies = killBullet(b2, b1);
+		secondBulletDies = killBullet(const_cast<Bullet*>(b2), b1);
 	}
 	return { firstBulletDies, secondBulletDies };
 }
 
-InteractionBoolHolder EndGameHandler::determineWinner(Tank* t, CircleHazard* ch) {
+InteractionUpdateHolder<TankUpdateStruct, CircleHazardUpdateStruct> EndGameHandler::determineWinner(const Tank* t, const CircleHazard* ch, bool attemptTankDeath, bool attemptCircleHazardDeath) {
 	PriorityResult result = PriorityHandler::determinePriority(t, ch);
-	bool tankDies = false, circleHazardDies = false;
+	bool tankDies = attemptTankDeath, circleHazardDies = attemptCircleHazardDeath;
+	bool usedModifiedCollision = false;
+	std::shared_ptr<TankUpdateStruct> update_t = nullptr;
+	std::shared_ptr<CircleHazardUpdateStruct> update_ch = nullptr;
+	std::pair<double, double> vec_t  = {0,0};
 	switch (result) {
 		case PriorityResult::bothDie:
 			tankDies = true;
 			circleHazardDies = true;
 			break;
-		case PriorityResult::neitherDie:
-			if (ch->modifiesTankCollision) {
-				if (ch->hasSpecialEffectTankCollision) {
-					ch->specialEffectTankCollision(t);
-				}
-				ch->modifiedTankCollision(t);
-			} else {
-				if (ch->hasSpecialEffectTankCollision) {
-					ch->specialEffectTankCollision(t);
-				}
-				CollisionHandler::pushMovableAwayFromImmovable(t, ch);
+		case PriorityResult::neitherDie: {
+			const_cast<CircleHazard*>(ch)->specialEffectTankCollision(t);
+			InteractionUpdateHolder<TankUpdateStruct, CircleHazardUpdateStruct> modifiedCollisionResult = ch->modifiedTankCollision(t);
+			if (modifiedCollisionResult.deaths.firstShouldDie) {
+				tankDies = true;
 			}
-			break;
+			if (modifiedCollisionResult.deaths.secondShouldDie) {
+				circleHazardDies = true;
+			}
+			update_t = modifiedCollisionResult.firstUpdate;
+			update_ch = modifiedCollisionResult.secondUpdate;
+			usedModifiedCollision = true;
+			} break;
 		case PriorityResult::firstDies:
-			if (ch->hasSpecialEffectTankCollision) {
-				ch->specialEffectTankCollision(t);
-			}
+			const_cast<CircleHazard*>(ch)->specialEffectTankCollision(t);
 			tankDies = true;
 			break;
 		case PriorityResult::secondDies:
@@ -233,36 +236,42 @@ InteractionBoolHolder EndGameHandler::determineWinner(Tank* t, CircleHazard* ch)
 			break;
 	}
 	if (tankDies) {
-		tankDies = killTank(t, ch);
+		tankDies = killTank(const_cast<Tank*>(t), ch);
 	}
-	return { tankDies, circleHazardDies };
+	if (usedModifiedCollision) {
+		return { tankDies, circleHazardDies, update_t, update_ch };
+	} else {
+		return { tankDies, circleHazardDies, new TankUpdateStruct(vec_t.first, vec_t.second, 0,0), nullptr };
+	}
 }
 
-InteractionBoolHolder EndGameHandler::determineWinner(Tank* t, RectHazard* rh) {
+InteractionUpdateHolder<TankUpdateStruct, RectHazardUpdateStruct> EndGameHandler::determineWinner(const Tank* t, const RectHazard* rh, bool attemptTankDeath, bool attemptRectHazardDeath) {
 	PriorityResult result = PriorityHandler::determinePriority(t, rh);
-	bool tankDies = false, rectHazardDies = false;
+	bool tankDies = attemptTankDeath, rectHazardDies = attemptRectHazardDeath;
+	bool usedModifiedCollision = false;
+	std::shared_ptr<TankUpdateStruct> update_t = nullptr;
+	std::shared_ptr<RectHazardUpdateStruct> update_rh = nullptr;
+	std::pair<double, double> vec_t  = {0,0};
 	switch (result) {
 		case PriorityResult::bothDie:
 			tankDies = true;
 			rectHazardDies = true;
 			break;
-		case PriorityResult::neitherDie:
-			if (rh->modifiesTankCollision) {
-				if (rh->hasSpecialEffectTankCollision) {
-					rh->specialEffectTankCollision(t);
-				}
-				rh->modifiedTankCollision(t);
-			} else {
-				if (rh->hasSpecialEffectTankCollision) {
-					rh->specialEffectTankCollision(t);
-				}
-				CollisionHandler::pushMovableAwayFromImmovable(t, rh);
+		case PriorityResult::neitherDie: {
+			const_cast<RectHazard*>(rh)->specialEffectTankCollision(t);
+			InteractionUpdateHolder<TankUpdateStruct, RectHazardUpdateStruct> modifiedCollisionResult = rh->modifiedTankCollision(t);
+			if (modifiedCollisionResult.deaths.firstShouldDie) {
+				tankDies = true;
 			}
-			break;
+			if (modifiedCollisionResult.deaths.secondShouldDie) {
+				rectHazardDies = true;
+			}
+			update_t = modifiedCollisionResult.firstUpdate;
+			update_rh = modifiedCollisionResult.secondUpdate;
+			usedModifiedCollision = true;
+			} break;
 		case PriorityResult::firstDies:
-			if (rh->hasSpecialEffectTankCollision) {
-				rh->specialEffectTankCollision(t);
-			}
+			const_cast<RectHazard*>(rh)->specialEffectTankCollision(t);
 			tankDies = true;
 			break;
 		case PriorityResult::secondDies:
@@ -274,36 +283,42 @@ InteractionBoolHolder EndGameHandler::determineWinner(Tank* t, RectHazard* rh) {
 			break;
 	}
 	if (tankDies) {
-		tankDies = killTank(t, rh);
+		tankDies = killTank(const_cast<Tank*>(t), rh);
 	}
-	return { tankDies, rectHazardDies };
+	if (usedModifiedCollision) {
+		return { tankDies, rectHazardDies, update_t, update_rh };
+	} else {
+		return { tankDies, rectHazardDies, new TankUpdateStruct(vec_t.first, vec_t.second, 0,0), nullptr };
+	}
 }
 
-InteractionBoolHolder EndGameHandler::determineWinner(Bullet* b, CircleHazard* ch) {
+InteractionUpdateHolder<BulletUpdateStruct, CircleHazardUpdateStruct> EndGameHandler::determineWinner(const Bullet* b, const CircleHazard* ch, bool attemptBulletDeath, bool attemptCircleHazardDeath) {
 	PriorityResult result = PriorityHandler::determinePriority(b, ch);
-	bool bulletDies = false, circleHazardDies = false;
+	bool bulletDies = attemptBulletDeath, circleHazardDies = attemptCircleHazardDeath;
+	bool usedModifiedCollision = false;
+	std::shared_ptr<BulletUpdateStruct> update_b = nullptr;
+	std::shared_ptr<CircleHazardUpdateStruct> update_ch = nullptr;
+	std::pair<double, double> vec_b  = {0,0};
 	switch (result) {
 		case PriorityResult::bothDie:
 			bulletDies = true;
 			circleHazardDies = true;
 			break;
-		case PriorityResult::neitherDie:
-			if (ch->modifiesBulletCollision) {
-				if (ch->hasSpecialEffectBulletCollision) {
-					ch->specialEffectBulletCollision(b);
-				}
-				ch->modifiedBulletCollision(b);
-			} else {
-				if (ch->hasSpecialEffectBulletCollision) {
-					ch->specialEffectBulletCollision(b);
-				}
-				CollisionHandler::pushMovableAwayFromImmovable(b, ch);
+		case PriorityResult::neitherDie: {
+			const_cast<CircleHazard*>(ch)->specialEffectBulletCollision(b);
+			InteractionUpdateHolder<BulletUpdateStruct, CircleHazardUpdateStruct> modifiedCollisionResult = ch->modifiedBulletCollision(b);
+			if (modifiedCollisionResult.deaths.firstShouldDie) {
+				bulletDies = true;
 			}
-			break;
+			if (modifiedCollisionResult.deaths.secondShouldDie) {
+				circleHazardDies = true;
+			}
+			update_b = modifiedCollisionResult.firstUpdate;
+			update_ch = modifiedCollisionResult.secondUpdate;
+			usedModifiedCollision = true;
+			} break;
 		case PriorityResult::firstDies:
-			if (ch->hasSpecialEffectBulletCollision) {
-				ch->specialEffectBulletCollision(b);
-			}
+			const_cast<CircleHazard*>(ch)->specialEffectBulletCollision(b);
 			bulletDies = true;
 			break;
 		case PriorityResult::secondDies:
@@ -315,36 +330,42 @@ InteractionBoolHolder EndGameHandler::determineWinner(Bullet* b, CircleHazard* c
 			break;
 	}
 	if (bulletDies && (ch->getCollisionType() != CircleHazardCollisionType::solid)) {
-		bulletDies = killBullet(b, ch);
+		bulletDies = killBullet(const_cast<Bullet*>(b), ch);
 	}
-	return { bulletDies, circleHazardDies };
+	if (usedModifiedCollision) {
+		return { bulletDies, circleHazardDies, update_b, update_ch };
+	} else {
+		return { bulletDies, circleHazardDies, new BulletUpdateStruct(vec_b.first, vec_b.second, 0,0,0), nullptr };
+	}
 }
 
-InteractionBoolHolder EndGameHandler::determineWinner(Bullet* b, RectHazard* rh) {
+InteractionUpdateHolder<BulletUpdateStruct, RectHazardUpdateStruct> EndGameHandler::determineWinner(const Bullet* b, const RectHazard* rh, bool attemptBulletDeath, bool attemptRectHazardDeath) {
 	PriorityResult result = PriorityHandler::determinePriority(b, rh);
-	bool bulletDies = false, rectHazardDies = false;
+	bool bulletDies = attemptBulletDeath, rectHazardDies = attemptRectHazardDeath;
+	bool usedModifiedCollision = false;
+	std::shared_ptr<BulletUpdateStruct> update_b = nullptr;
+	std::shared_ptr<RectHazardUpdateStruct> update_rh = nullptr;
+	std::pair<double, double> vec_b  = {0,0};
 	switch (result) {
 		case PriorityResult::bothDie:
 			bulletDies = true;
 			rectHazardDies = true;
 			break;
-		case PriorityResult::neitherDie:
-			if (rh->modifiesBulletCollision) {
-				if (rh->hasSpecialEffectBulletCollision) {
-					rh->specialEffectBulletCollision(b);
-				}
-				rh->modifiedBulletCollision(b);
-			} else {
-				if (rh->hasSpecialEffectBulletCollision) {
-					rh->specialEffectBulletCollision(b);
-				}
-				CollisionHandler::pushMovableAwayFromImmovable(b, rh);
+		case PriorityResult::neitherDie: {
+			const_cast<RectHazard*>(rh)->specialEffectBulletCollision(b);
+			InteractionUpdateHolder<BulletUpdateStruct, RectHazardUpdateStruct> modifiedCollisionResult = rh->modifiedBulletCollision(b);
+			if (modifiedCollisionResult.deaths.firstShouldDie) {
+				bulletDies = true;
 			}
-			break;
+			if (modifiedCollisionResult.deaths.secondShouldDie) {
+				rectHazardDies = true;
+			}
+			update_b = modifiedCollisionResult.firstUpdate;
+			update_rh = modifiedCollisionResult.secondUpdate;
+			usedModifiedCollision = true;
+			} break;
 		case PriorityResult::firstDies:
-			if (rh->hasSpecialEffectBulletCollision) {
-				rh->specialEffectBulletCollision(b);
-			}
+			const_cast<RectHazard*>(rh)->specialEffectBulletCollision(b);
 			bulletDies = true;
 			break;
 		case PriorityResult::secondDies:
@@ -356,20 +377,20 @@ InteractionBoolHolder EndGameHandler::determineWinner(Bullet* b, RectHazard* rh)
 			break;
 	}
 	if (bulletDies && (rh->getCollisionType() != RectHazardCollisionType::solid)) {
-		bulletDies = killBullet(b, rh);
+		bulletDies = killBullet(const_cast<Bullet*>(b), rh);
 	}
-	return { bulletDies, rectHazardDies };
+	if (usedModifiedCollision) {
+		return { bulletDies, rectHazardDies, update_b, update_rh };
+	} else {
+		return { bulletDies, rectHazardDies, new BulletUpdateStruct(vec_b.first, vec_b.second, 0,0,0), nullptr };
+	}
 }
 
-InteractionBoolHolder EndGameHandler::determineWinner(Tank* t, Wall* w, bool tankDies) {
-	CollisionHandler::pushMovableAwayFromImmovable(t, w);
+InteractionUpdateHolder<TankUpdateStruct, WallUpdateStruct> EndGameHandler::determineWinner(const Tank* t, const Wall* w, bool attemptTankDeath, bool attemptWallDeath) {
+	std::pair<double, double> vec = CollisionHandler::pushMovableAwayFromImmovable_vecOnly(t, w);
+	bool tankDies = attemptTankDeath;
 	if (tankDies) {
-		tankDies = killTank(t, w);
+		tankDies = killTank(const_cast<Tank*>(t), w);
 	}
-	return { tankDies, false };
-}
-
-InteractionBoolHolder EndGameHandler::determineWinner(Bullet* b, Wall* w, bool bulletDies) {
-	//don't check for extra lives
-	return { bulletDies, false };
+	return { tankDies, false, new TankUpdateStruct(vec.first, vec.second, 0,0), nullptr};
 }

@@ -31,7 +31,7 @@ public:
 	virtual BulletPower* makeBulletPower() const override;
 
 	//bool addsShootingPoints = true;
-	virtual std::vector<double>* addShootingPoints() const override;
+	virtual std::vector<float>* addShootingPoints() const override;
 
 	virtual double getTankFiringRateMultiplier() const override { return .5; }
 
@@ -43,6 +43,7 @@ public:
 class DevWeirdExtraCannonsBulletPower : public BulletPower {
 public:
 	virtual ColorValueHolder getColor() const override { return DevWeirdExtraCannonsPower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return DevWeirdExtraCannonsPower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new DevWeirdExtraCannonsBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

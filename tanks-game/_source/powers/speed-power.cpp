@@ -50,6 +50,5 @@ TankPower* SpeedBulletPower::makeTankPower() const {
 }
 
 SpeedBulletPower::SpeedBulletPower() {
-	timeLeft = 0;
-	maxTime = -1;
+	//nothing
 }

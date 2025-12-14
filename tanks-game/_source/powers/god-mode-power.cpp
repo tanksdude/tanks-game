@@ -3,8 +3,8 @@
 
 #include "../color-mixer.h"
 
-inline int GodmodePower::getHueValue() {
-	return static_cast<int>(GameManager::getTickCount()) % 360;
+inline unsigned int GodmodePower::getHueValue() {
+	return static_cast<unsigned int>(GameManager::getTickCount()) % 360;
 }
 
 std::unordered_map<std::string, float> GodmodePower::getWeights() const {
@@ -77,6 +77,5 @@ TankPower* GodmodeBulletPower::makeTankPower() const {
 }
 
 GodmodeBulletPower::GodmodeBulletPower() {
-	timeLeft = 0;
-	maxTime = -1;
+	//nothing
 }

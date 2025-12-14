@@ -22,6 +22,7 @@ gravity/magnet (which is it?)
 respawning walls?
 moving walls... of some sort
 darkness? (what the heck does this mean? apart from reduced visibility)
+"death lava": there's a lava blob that chases the tank when it's in a predefined area
 
 
 JS level effect numbers (with names updated):

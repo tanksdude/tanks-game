@@ -3,12 +3,12 @@
 
 #include "../constants.h"
 
-const double BlastPower::bulletAngleDeviation = PI/3;
+const float BlastPower::bulletAngleDeviation = PI/3;
 const int BlastPower::bulletAmount = 16;
 
-const double BlastPower::maxBulletAcceleration = 3/16.0;
-const double BlastPower::minBulletAcceleration = 1/16.0;
-const double BlastPower::degradeAmount = .25;
+const float BlastPower::maxBulletAcceleration = 3/16.0;
+const float BlastPower::minBulletAcceleration = 1/16.0;
+const float BlastPower::degradeAmount = .25;
 
 std::unordered_map<std::string, float> BlastPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -42,7 +42,7 @@ BlastPower::BlastPower() {
 
 void BlastTankPower::additionalShooting(Tank* t, const CannonPoint& c, const ExtraCannonPoint& c2) {
 	for (int i = 0; i < BlastPower::bulletAmount; i++) {
-		double tempAngle = (GameRNG::randFunc()*2 - 1) * BlastPower::bulletAngleDeviation; //[-1,1) * deviation
+		float tempAngle = (GameRNG::randFuncf()*2 - 1) * BlastPower::bulletAngleDeviation; //[-1,1) * deviation
 		t->defaultMakeBullet(t->velocity.getAngle() + c.angleFromCenter + c2.angleFromCenter + tempAngle, c2.angleFromEdge);
 	}
 }
@@ -68,19 +68,8 @@ BlastTankPower::BlastTankPower() {
 #include "../collision-handler.h"
 
 InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> BlastBulletPower::modifiedCollisionWithWall(const Bullet* b, const Wall* w) {
-	if (b->velocity.getMagnitude() <= 0) {
-		return { b->isDead(), false, new BulletUpdateStruct(0,0,0,0,0, -BlastPower::degradeAmount), nullptr };
-	} else {
-		if (CollisionHandler::partiallyCollided(b, w)) {
-			//CollisionHandler::pushMovableAwayFromImmovable(b, w);
-			//TODO: add an absolute bool to BulletUpdateStruct to constrain it
-
-			//b->acceleration = 0;
-			//b->velocity.setMagnitude(0);
-			return { false, false, new BulletUpdateStruct(0,0,0,0,0,0), nullptr };
-		}
-		return { false, false, nullptr, nullptr };
-	}
+	std::pair<double, double> vec = CollisionHandler::pushMovableAwayFromImmovable_vecOnly(b, w);
+	return { false, false, new BulletUpdateStruct(vec.first, vec.second, -1024*b->velocity.getMagnitude(), 0,0), nullptr };
 }
 
 bool BlastBulletPower::getModifiesCollisionWithCircleHazard(const CircleHazard* ch) const {
@@ -91,18 +80,14 @@ bool BlastBulletPower::getModifiesCollisionWithRectHazard(const RectHazard* rh) 
 	return (rh->getCollisionType() == RectHazardCollisionType::solid);
 }
 
-InteractionBoolHolder BlastBulletPower::modifiedCollisionWithCircleHazard(Bullet* b, CircleHazard* ch) {
-	CollisionHandler::pushMovableAwayFromImmovable(b, ch);
-	b->acceleration = 0;
-	b->velocity.setMagnitude(0);
-	return { false, false };
+InteractionUpdateHolder<BulletUpdateStruct, CircleHazardUpdateStruct> BlastBulletPower::modifiedCollisionWithCircleHazard(const Bullet* b, const CircleHazard* ch) {
+	std::pair<double, double> vec = CollisionHandler::pushMovableAwayFromImmovable_vecOnly(b, ch);
+	return { false, false, new BulletUpdateStruct(vec.first, vec.second, -1024*b->velocity.getMagnitude(), 0,0), nullptr };
 }
 
-InteractionBoolHolder BlastBulletPower::modifiedCollisionWithRectHazard(Bullet* b, RectHazard* rh) {
-	CollisionHandler::pushMovableAwayFromImmovable(b, rh);
-	b->acceleration = 0;
-	b->velocity.setMagnitude(0);
-	return { false, false };
+InteractionUpdateHolder<BulletUpdateStruct, RectHazardUpdateStruct> BlastBulletPower::modifiedCollisionWithRectHazard(const Bullet* b, const RectHazard* rh) {
+	std::pair<double, double> vec = CollisionHandler::pushMovableAwayFromImmovable_vecOnly(b, rh);
+	return { false, false, new BulletUpdateStruct(vec.first, vec.second, -1024*b->velocity.getMagnitude(), 0,0), nullptr };
 }
 
 BulletPower* BlastBulletPower::makeDuplicate() const {
@@ -114,14 +99,12 @@ TankPower* BlastBulletPower::makeTankPower() const {
 }
 
 BlastBulletPower::BlastBulletPower()
-: BlastBulletPower(-1 * ((GameRNG::randFunc()+GameRNG::randFunc())/2 * (BlastPower::maxBulletAcceleration - BlastPower::minBulletAcceleration) + BlastPower::minBulletAcceleration)) {}
+: BlastBulletPower(-1 * ((GameRNG::randFuncf()+GameRNG::randFuncf())/2 * (BlastPower::maxBulletAcceleration - BlastPower::minBulletAcceleration) + BlastPower::minBulletAcceleration)) {}
 //acceleration: [0,1) * accDiff + min
 
-BlastBulletPower::BlastBulletPower(double acceleration) {
-	timeLeft = 0;
-	maxTime = -1;
-
+BlastBulletPower::BlastBulletPower(float acceleration) {
 	accelerationAmount = acceleration;
 
 	modifiesCollisionWithWall = true;
+	modifiedCollisionWithWallCanWorkWithOthers = false; //TODO: not sure on this one
 }

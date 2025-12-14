@@ -32,7 +32,7 @@ protected:
 		virtual void tick() override;
 
 	protected:
-		virtual inline void drawReticule(float alpha = 1.0f) const;
+		virtual void drawReticule(float alpha = 1.0f) const override;
 
 	public:
 		MinionTurret(double xpos, double ypos, double angle, Game_ID parentID);
@@ -52,9 +52,8 @@ public:
 	}
 	virtual std::unordered_map<std::string, float> getWeights() const override;
 
-protected:
-	virtual float getDefaultOffense() const override { return 0; }
-	virtual float getDefaultDefense() const override { return DESTRUCTION_TIER + 1.0f; }
+	virtual float getOffenseTier() const override { return 0; }
+	virtual float getDefenseTier() const override { return DESTRUCTION_TIER + 1.0f; }
 
 public:
 	//virtual void uninitialize() override; //tells children to stop targeting
@@ -65,13 +64,13 @@ public:
 	virtual void tick() override;
 
 protected:
-	virtual inline void tick_notifyChildren(Game_ID id);
-	virtual inline void tick_stopChildren();
+	virtual void tick_notifyChildren(Game_ID id);
+	virtual void tick_stopChildren();
 
 protected:
-	//same as StationaryTurretHazard but with a thicker outline
-	virtual inline void drawOutline(float alpha = 1.0f) const;
-	virtual inline void drawBarrel(float alpha = 1.0f) const;
+	//thicker outline compared to StationaryTurretHazard
+	virtual void drawOutline(float alpha = 1.0f) const override;
+	virtual void drawBarrel(float alpha = 1.0f) const override;
 
 public:
 	GinormousTurretHazard(double xpos, double ypos, double angle);

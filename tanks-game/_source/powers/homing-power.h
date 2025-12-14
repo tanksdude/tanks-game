@@ -3,7 +3,7 @@
 
 class HomingPower : public Power {
 public: //bullet stuff
-	static const double homingStrength;
+	static const float homingStrength;
 
 public:
 	virtual std::vector<std::string> getPowerTypes() const override {
@@ -42,6 +42,7 @@ public:
 class HomingBulletPower : public BulletPower {
 public:
 	virtual ColorValueHolder getColor() const override { return HomingPower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return HomingPower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new HomingBulletPower(); }
 	virtual TankPower* makeTankPower() const override;
@@ -49,10 +50,10 @@ public:
 	//bool modifiesMovement = true;
 	virtual InteractionBoolHolder modifiedMovement(Bullet*) override;
 
-	//bool modifiesCollisionWithEdge = true;
+	//bool modifiesEdgeCollision = true;
 	virtual InteractionBoolHolder modifiedEdgeCollision(Bullet*) override;
 
-	virtual double getBulletSpeedMultiplier() const override { return .5; }
+	virtual float getBulletSpeedMultiplier() const override { return .5; }
 
 	HomingBulletPower();
 };

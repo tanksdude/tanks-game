@@ -30,8 +30,8 @@ public:
 	virtual TankPower* makeDuplicate() const override { return new DevLongInvincibleNamedTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
 
-	virtual double getTankMaxSpeedMultiplier() const override { return 1; }
-	virtual double getTankAccelerationMultiplier() const override { return 1; }
+	virtual float getTankMaxSpeedMultiplier() const override { return 1; }
+	virtual float getTankAccelerationMultiplier() const override { return 1; }
 
 	DevLongInvincibleNamedTankPower();
 };
@@ -41,6 +41,7 @@ public:
 class DevLongInvincibleNamedBulletPower : public InvincibleNamedBulletPower {
 public:
 	virtual ColorValueHolder getColor() const override { return DevLongInvincibleNamedPower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return DevLongInvincibleNamedPower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new DevLongInvincibleNamedBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

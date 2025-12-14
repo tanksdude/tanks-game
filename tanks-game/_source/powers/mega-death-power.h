@@ -53,6 +53,7 @@ public:
 	virtual void tick(Bullet* b) override; //for updating wall collision bools based on size
 
 	virtual ColorValueHolder getColor() const override { return MegaDeathPower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return MegaDeathPower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new MegaDeathBulletPower(); } //should current size be passed on?
 	virtual TankPower* makeTankPower() const override;
@@ -61,11 +62,11 @@ public:
 	virtual InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> modifiedCollisionWithWall(const Bullet*, const Wall*) override;
 	//bool modifiedCollisionWithWallCanWorkWithOthers = false;
 
-	virtual double getBulletSpeedMultiplier() const override { return 1.0/4; }
+	virtual float  getBulletSpeedMultiplier() const override { return 1.0/4; }
 	//with bulletSizeMultiplierPerTick = 257.0/256.0, 1.0/128 or 1.0/64 might be closer to what I originally thought of
 	//virtual double getBulletRadiusMultiplier() const override { return 1; }
-	virtual double getBulletAcceleration() const override { return 1.0/64; }
-	//with bulletSizeMultiplierPerTick = 257.0/256.0, 1.0/512 or 1.0/1024 (with a smaller radius multiplier per tick) might be closer to what I orignially thought of
+	virtual float  getBulletAcceleration() const override { return 1.0/64; }
+	//with bulletSizeMultiplierPerTick = 257.0/256.0, 1.0/512 or 1.0/1024 (with a smaller radius multiplier per tick) might be closer to what I originally thought of
 	virtual double getBulletRadiusGrowNumber_Stationary() const override { return MegaDeathPower::bulletSizeMultiplierPerTick; }
 	//bool bulletRadiusGrowMultiplies_Stationary = true;
 	virtual double getBulletRadiusGrowNumber_Moving() const override { return MegaDeathPower::bulletSizeMultiplierPerTick; }

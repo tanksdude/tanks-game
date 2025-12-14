@@ -1,7 +1,7 @@
 #include "shield-power.h"
 #include "../game-manager.h" //settings
 
-const double ShieldPower::barrierStrength = 50; //TODO: depend on global power duration
+const double ShieldPower::barrierStrengthPercentDrain = 0.1;
 
 std::unordered_map<std::string, float> ShieldPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -53,14 +53,14 @@ BulletPower* ShieldTankPower::makeBulletPower() const {
 	return new ShieldBulletPower();
 }
 
-InteractionBoolHolder ShieldTankPower::modifiedDeathHandling(Tank* parent) {
+InteractionBoolHolder ShieldTankPower::modifiedDeathHandling(const Tank* parent) {
 	if (this->maxTime < 0) {
 		return { false, false };
 	}
-	if (this->timeLeft <= ShieldPower::barrierStrength) {
+	if (this->timeLeft <= ShieldPower::barrierStrengthPercentDrain * GameManager::get_settings().PowerupDurationBaseTime) {
 		return { false, true };
 	}
-	this->timeLeft -= ShieldPower::barrierStrength;
+	this->timeLeft -= ShieldPower::barrierStrengthPercentDrain * GameManager::get_settings().PowerupDurationBaseTime;
 	return { false, false };
 }
 
@@ -83,13 +83,10 @@ TankPower* ShieldBulletPower::makeTankPower() const {
 	return new ShieldTankPower();
 }
 
-InteractionBoolHolder ShieldBulletPower::modifiedDeathHandling(Bullet* parent) {
+InteractionBoolHolder ShieldBulletPower::modifiedDeathHandling(const Bullet* parent) {
 	return { false, true };
 }
 
 ShieldBulletPower::ShieldBulletPower() {
-	timeLeft = 0;
-	maxTime = -1;
-
 	modifiesDeathHandling = true;
 }

@@ -28,17 +28,16 @@ protected:
 		// 3 = dead (don't use)
 
 	public:
-		virtual void tick();
-		bool isDead() const noexcept;
-		virtual float getAlpha() const noexcept;
-		virtual float getX() const noexcept;
-		virtual float getY() const noexcept;
-		virtual float getR() const noexcept; //I don't know what would extend these functions, but whatever
+		inline bool isDead() const noexcept { return (state >= 3); }
+		void tick();
+		float getAlpha() const noexcept;
+		float getX() const noexcept;
+		float getY() const noexcept;
+		float getR() const noexcept;
 
 		LavaBubble(float radius, float x0, float y0, float x1, float y1, float tickStart);
 		LavaBubble(float radius, float x0, float y0, float x1, float y1, float tickStart, const float* tickMultiplier); //tickMultiplier length = 3
 		//LavaBubble(const LavaBubble&); //no need
-		virtual ~LavaBubble();
 
 	private:
 		LavaBubble() = delete;
@@ -48,16 +47,16 @@ protected:
 	double tickCount;
 	double tickCycle; //this is used to make the brightness of the lava vary sinusoidally
 
-	const unsigned int maxBubbles = 8; //there wasn't a limit in JS Tanks because the bubbles were rare (1/400 per tick, 100Hz), but there should be, whether it's met or not
+	unsigned int maxBubbles = 8; //there wasn't a limit in JS Tanks because the bubbles were rare (1/400 per tick, 100Hz), but there should be, whether it's met or not
+	float bubbleChance; //= 1.0/400 (chance to spawn bubble this tick)
 	std::vector<LavaBubble*> bubbles;
-	double bubbleChance; //= 1.0/400 (chance to spawn bubble this tick)
-	virtual void pushNewBubble(double radius) = 0;
+	virtual void pushNewBubble(float bubbleRadius) = 0;
 
 public:
-	virtual ColorValueHolder getBackgroundColor() const;
-	virtual ColorValueHolder getBackgroundColor_Pose() const;
-	virtual ColorValueHolder getBubbleColor(LavaBubble* bubble) const;
-	virtual ColorValueHolder getBubbleColor_Pose(LavaBubble* bubble) const;
+	ColorValueHolder getBackgroundColor() const;
+	ColorValueHolder getBackgroundColor_Pose() const;
+	ColorValueHolder getBubbleColor(const LavaBubble* bubble) const;
+	ColorValueHolder getBubbleColor_Pose(const LavaBubble* bubble) const;
 
 	virtual void tick();
 

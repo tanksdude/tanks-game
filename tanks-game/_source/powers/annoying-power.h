@@ -43,7 +43,7 @@ public:
 	//bool modifiesEdgeCollision = true;
 	virtual InteractionBoolHolder modifiedEdgeCollision(Tank*) override;
 
-	virtual double getTankAccelerationMultiplier() const override;
+	virtual float getTankAccelerationMultiplier() const override;
 
 	AnnoyingTankPower();
 };
@@ -53,14 +53,15 @@ public:
 class AnnoyingBulletPower : public BulletPower {
 public:
 	virtual ColorValueHolder getColor() const override { return AnnoyingPower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return AnnoyingPower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new AnnoyingBulletPower(); }
 	virtual TankPower* makeTankPower() const override;
 
 	//bool modifiesCollisionWithTank = true;
-	virtual InteractionBoolHolder modifiedCollisionWithTank(Bullet*, Tank*) override;
+	virtual InteractionUpdateHolder<BulletUpdateStruct, TankUpdateStruct> modifiedCollisionWithTank(const Bullet*, const Tank*) override;
 
-	virtual double getBulletSpeedMultiplier() const override { return .5; }
+	virtual float getBulletSpeedMultiplier() const override { return .5; }
 
 	virtual float getOffenseImportance() const override;
 	virtual float getOffenseTier(const Bullet*) const override;

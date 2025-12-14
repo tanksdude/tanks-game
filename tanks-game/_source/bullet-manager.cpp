@@ -36,6 +36,7 @@ Bullet* BulletManager::getBulletByID(Game_ID gameID) {
 
 void BulletManager::pushBullet(Bullet* b) {
 	bullets.push_back(b);
+	GameManager::pushObject(b);
 	if (autoLimitBullets && limitBullets) {
 		while (bullets.size() > maxBullets) {
 			deleteBullet(0);
@@ -52,11 +53,14 @@ void BulletManager::forceLimitBullets() {
 }
 
 void BulletManager::deleteBullet(unsigned int index) {
+	Bullet* b = bullets[index];
+	GameManager::deleteObjectByID(b->getGameID());
 	delete bullets[index];
 	bullets.erase(bullets.begin() + index);
 }
 
 void BulletManager::deleteBulletByID(Game_ID gameID) {
+	GameManager::deleteObjectByID(gameID);
 	for (int i = 0; i < bullets.size(); i++) {
 		if (bullets[i]->getGameID() == gameID) {
 			deleteBullet(i);
@@ -70,8 +74,4 @@ void BulletManager::clearBullets() {
 		delete bullets[i];
 	}
 	bullets.clear();
-}
-
-std::vector<Circle*> BulletManager::getBulletCollisionList() {
-	return std::vector<Circle*>(bullets.begin(), bullets.end());
 }

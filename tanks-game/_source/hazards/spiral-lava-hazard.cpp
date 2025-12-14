@@ -1,8 +1,8 @@
 #include "spiral-lava-hazard.h"
 
 #include "../constants.h"
-#include <cmath>
-#include <algorithm> //std::clamp, std::min
+#include <cmath> //sin, cos
+#include <algorithm> //std::min
 #include <iostream>
 #include "../rng.h"
 
@@ -18,6 +18,9 @@
 #include "../level-manager.h"
 #include "circular-lava-hazard.h"
 
+const ColorValueHolder SpiralLavaHazard::lightColor = ColorValueHolder(185/255.0,  66/255.0, 240/255.0); //light-ish purple
+const ColorValueHolder SpiralLavaHazard::darkColor  = ColorValueHolder(137/255.0,  10/255.0, 166/255.0); //dark purple
+
 std::unordered_map<std::string, float> SpiralLavaHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla-extra", 0.5f });
@@ -30,12 +33,6 @@ SpiralLavaHazard::SpiralLavaHazard(double xpos, double ypos, double width, int c
 	x = xpos;
 	y = ypos;
 	w = h = width;
-	if (LevelManager::getNumLevels() > 0) [[likely]] {
-		color = LevelManager::getLevel(0)->getDefaultColor();
-		//TODO: should this really be the same color as walls? feels a bit evil
-	} else {
-		color = ColorValueHolder(0, 0, 0);
-	}
 
 	maxLavaBlobs = count;
 	lavaBlobIDs = std::vector<Game_ID>(maxLavaBlobs, -1);
@@ -92,7 +89,26 @@ void SpiralLavaHazard::initialize() {
 	for (int i = 0; i < maxLavaBlobs; i++) {
 		pushLavaBlob(i);
 	}
-	//TODO: this should delete its lava blobs when it dies
+}
+
+/*
+void SpiralLavaHazard::uninitialize() {
+	for (int i = 0; i < lavaBlobIDs.size(); i++) {
+		CircleHazard* ch = HazardManager::getCircleHazardByID(lavaBlobIDs[i]);
+		if (ch != nullptr) [[likely]] {
+			HazardManager::deleteCircleHazardByID(lavaBlobIDs[i]);
+		}
+	}
+}
+*/
+
+ColorValueHolder SpiralLavaHazard::getColor() const {
+	const float mixVal = .5f * (1.0f + std::sin(float(PI) * static_cast<float>(tickCount/tickCycle)));
+	if (currentlyActive) {
+		return ColorMixer::mix(SpiralLavaHazard::darkColor, SpiralLavaHazard::lightColor, mixVal);
+	} else {
+		return ColorMixer::mix(SpiralLavaHazard::lightColor, SpiralLavaHazard::darkColor, mixVal);
+	}
 }
 
 CircleHazard* SpiralLavaHazard::makeLavaBlob(int blobNum) const {
@@ -109,12 +125,12 @@ void SpiralLavaHazard::pushLavaBlob(int blobNum) {
 	HazardManager::pushCircleHazard(lavaBlob);
 }
 
-inline double SpiralLavaHazard::getLavaBlobAngle(int blobNum, double tickValue) const {
-	return (2*PI) * (blobNum / double(maxLavaBlobs)) + (tickValue / tickCycle) * (lavaAngleRotate * (moveClockwise ? 1 : -1));
+float SpiralLavaHazard::getLavaBlobAngle(int blobNum, double tickValue) const {
+	return float(2*PI) * (blobNum / float(maxLavaBlobs)) + float(tickValue / tickCycle) * (lavaAngleRotate * (moveClockwise ? 1 : -1));
 }
 
-inline double SpiralLavaHazard::getLavaBlobDist(double tickValue) const {
-	return maxLavaDist * sin(PI * (tickValue / tickCycle)); //not 2*PI because only the >0 part is wanted
+double SpiralLavaHazard::getLavaBlobDist(double tickValue) const {
+	return maxLavaDist * std::sin(PI * (tickValue / tickCycle)); //not 2*PI because only the >0 part is wanted
 }
 
 inline double SpiralLavaHazard::getLavaBlobRadius() const {
@@ -160,9 +176,9 @@ void SpiralLavaHazard::tick() {
 
 		CircularLavaHazard* blob = static_cast<CircularLavaHazard*>(ch);
 		const double lavaDist = getLavaBlobDist(tickValue);
-		const double lavaAngle = getLavaBlobAngle(i, tickValue);
-		blob->x = (this->x + this->w/2) + lavaDist * cos(lavaAngle);
-		blob->y = (this->y + this->h/2) + lavaDist * sin(lavaAngle);
+		const float lavaAngle = getLavaBlobAngle(i, tickValue);
+		blob->x = (this->x + this->w/2) + lavaDist * std::cos(lavaAngle);
+		blob->y = (this->y + this->h/2) + lavaDist * std::sin(lavaAngle);
 		//I would prefer to use deltas instead of absolutes, but this is way easier
 		if (tickValue == 0) {
 			//hack to allow touching the hazard without dying
@@ -265,10 +281,8 @@ void SpiralLavaHazard::poseDraw(DrawingLayers layer) const {
 }
 
 void SpiralLavaHazard::ghostDraw(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-
-	ColorValueHolder c = this->color;
+	ColorValueHolder c = getColor();
 	c = ColorMixer::mix(BackgroundRect::getBackColor(), c, alpha);
 
 	float coordsAndColor[] = {

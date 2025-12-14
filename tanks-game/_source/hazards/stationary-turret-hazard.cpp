@@ -2,7 +2,7 @@
 
 #include "../constants.h"
 #include <cmath>
-#include <algorithm> //std::clamp
+#include <algorithm> //std::copy, std::clamp
 #include <iostream>
 #include "../rng.h"
 
@@ -23,6 +23,8 @@ unsigned int StationaryTurretHazard::body_indices[Circle::NumOfSides*3];
 unsigned int StationaryTurretHazard::outline_indices[Circle::NumOfSides*2*3];
 bool StationaryTurretHazard::initialized_vertices = false;
 
+const ColorValueHolder StationaryTurretHazard::stateColors[maxState] = { {0.5f, 0.5f, 0.5f}, {1.0f, 0x22/255.0, 0x11/255.0}, {0.0f, 0.5f, 1.0f} };
+
 std::unordered_map<std::string, float> StationaryTurretHazard::getWeights() const {
 	std::unordered_map<std::string, float> weights;
 	weights.insert({ "vanilla", 1.0f });
@@ -42,9 +44,8 @@ StationaryTurretHazard::StationaryTurretHazard(double xpos, double ypos, double 
 	tickCount = 0;
 	tickCycle = 100; //100 is JS default (because of shooting speed)
 	currentState = 0;
-	maxState = 3;
-	stateMultiplier = new double[3]{ 2, 1, 2 };
-	stateColors = new ColorValueHolder[3]{ {0.5f, 0.5f, 0.5f}, {1.0f, 0x22/255.0, 0x11/255.0}, {0.0f, 0.5f, 1.0f} };
+	double temp[maxState] = { 2, 1, 2 };
+	std::copy(temp, temp + maxState, stateMultiplier);
 
 	//canAcceptPowers = false;
 
@@ -52,8 +53,7 @@ StationaryTurretHazard::StationaryTurretHazard(double xpos, double ypos, double 
 }
 
 StationaryTurretHazard::~StationaryTurretHazard() {
-	delete[] stateMultiplier;
-	delete[] stateColors;
+	//nothing
 }
 
 bool StationaryTurretHazard::initializeVertices() {
@@ -63,7 +63,7 @@ bool StationaryTurretHazard::initializeVertices() {
 
 	body_vertices[0] = SimpleVector2D(0, 0);
 	for (int i = 1; i < Circle::NumOfSides+1; i++) {
-		body_vertices[i] = SimpleVector2D(cos((i-1) * (2*PI / Circle::NumOfSides)), sin((i-1) * (2*PI / Circle::NumOfSides)));
+		body_vertices[i] = SimpleVector2D(std::cos((i-1) * (2*PI / Circle::NumOfSides)), std::sin((i-1) * (2*PI / Circle::NumOfSides)));
 	}
 
 	for (int i = 0; i < Circle::NumOfSides; i++) {
@@ -119,7 +119,7 @@ void StationaryTurretHazard::tick() {
 		}
 	}
 	if (mustShoot) {
-		BulletManager::pushBullet(new Bullet(x + r*cos(velocity.getAngle()), y + r*sin(velocity.getAngle()), r*(BULLET_TO_TANK_RADIUS_RATIO*2), velocity.getAngle(), Tank::default_maxSpeed*BULLET_TO_TANK_SPEED_RATIO, this->getTeamID(), BulletParentType::individual, this->getGameID()));
+		BulletManager::pushBullet(new Bullet(x + r*std::cos(velocity.getAngle()), y + r*std::sin(velocity.getAngle()), r*(BULLET_TO_TANK_RADIUS_RATIO*2), velocity.getAngle(), Tank::default_maxSpeed*BULLET_TO_TANK_SPEED_RATIO, this->getTeamID(), BulletParentType::individual, this->getGameID()));
 	}
 }
 
@@ -128,16 +128,16 @@ bool StationaryTurretHazard::canSeeTank(const Tank* t) const {
 
 	//line of sight
 	float angleDiff = SimpleVector2D::angleBetween(distToTank, this->velocity);
-	float projMag = distToTank.getMagnitude() * cos(angleDiff);
-	float distToLineOfSight = sqrt(distToTank.getMagnitude()*distToTank.getMagnitude() - projMag*projMag);
-	if (distToLineOfSight > t->r) {
+	float projMag = distToTank.getMagnitude() * std::cos(angleDiff);
+	float distToLineOfSightSquared = distToTank.getMagnitude()*distToTank.getMagnitude() - projMag*projMag;
+	if (distToLineOfSightSquared > t->r * t->r) {
 		return false;
 	}
 
 	//check walls
 	for (int i = 0; i < WallManager::getNumWalls(); i++) {
 		const Wall* wa = WallManager::getWall(i);
-		if (CollisionHandler::lineRectCollision(x, y, x + distToTank.getMagnitude()*cos(this->velocity.getAngle()), y + distToTank.getMagnitude()*sin(this->velocity.getAngle()), wa)) {
+		if (CollisionHandler::lineRectCollision(x, y, x + distToTank.getMagnitude()*std::cos(this->velocity.getAngle()), y + distToTank.getMagnitude()*std::sin(this->velocity.getAngle()), wa)) {
 			return false;
 		}
 	}
@@ -176,7 +176,7 @@ bool StationaryTurretHazard::reasonableLocation() const {
 }
 
 ColorValueHolder StationaryTurretHazard::getColor() const {
-	return ColorMixer::mix(stateColors[currentState], stateColors[(currentState+1)%maxState], std::clamp<double>(tickCount/(tickCycle*stateMultiplier[currentState]), 0, 1));
+	return ColorMixer::mix(stateColors[currentState], stateColors[(currentState+1)%maxState], std::clamp<float>(tickCount/(tickCycle*stateMultiplier[currentState]), 0, 1));
 }
 
 ColorValueHolder StationaryTurretHazard::getColor(unsigned int state) const {
@@ -282,10 +282,8 @@ void StationaryTurretHazard::ghostDraw(DrawingLayers layer, float alpha) const {
 	}
 }
 
-inline void StationaryTurretHazard::drawBody(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
+void StationaryTurretHazard::drawBody(float alpha) const {
 	alpha = alpha * alpha;
-
 	ColorValueHolder color = getColor();
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 
@@ -297,8 +295,8 @@ inline void StationaryTurretHazard::drawBody(float alpha) const {
 	coordsAndColor[4] = color.getBf();
 	coordsAndColor[5] = color.getAf();
 	for (int i = 1; i < Circle::NumOfSides+1; i++) {
-		coordsAndColor[i*6]   = x + r * body_vertices[i].getXComp();
-		coordsAndColor[i*6+1] = y + r * body_vertices[i].getYComp();
+		coordsAndColor[i*6]   = static_cast<float>(x) + static_cast<float>(r) * body_vertices[i].getXComp();
+		coordsAndColor[i*6+1] = static_cast<float>(y) + static_cast<float>(r) * body_vertices[i].getYComp();
 		coordsAndColor[i*6+2] = color.getRf();
 		coordsAndColor[i*6+3] = color.getGf();
 		coordsAndColor[i*6+4] = color.getBf();
@@ -308,20 +306,20 @@ inline void StationaryTurretHazard::drawBody(float alpha) const {
 	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::NumOfSides+1)*(2+4), body_indices, Circle::NumOfSides*3);
 }
 
-inline void StationaryTurretHazard::drawOutline(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
+void StationaryTurretHazard::drawOutline(float alpha) const {
+	drawOutline(alpha, 0.5f);
+}
+void StationaryTurretHazard::drawOutline(float alpha, float lineWidth) const {
 	alpha = alpha * alpha;
-
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	const float lineWidth = 0.5f;
 
 	float coordsAndColor[(Circle::NumOfSides*2)*(2+4)];
 	for (int i = 0; i < Circle::NumOfSides; i++) {
-		coordsAndColor[(i*2)  *6]   = x + (r-lineWidth) * body_vertices[i+1].getXComp();
-		coordsAndColor[(i*2)  *6+1] = y + (r-lineWidth) * body_vertices[i+1].getYComp();
-		coordsAndColor[(i*2+1)*6]   = x + (r+lineWidth) * body_vertices[i+1].getXComp();
-		coordsAndColor[(i*2+1)*6+1] = y + (r+lineWidth) * body_vertices[i+1].getYComp();
+		coordsAndColor[(i*2)  *6]   = static_cast<float>(x) + (static_cast<float>(r)-lineWidth) * body_vertices[i+1].getXComp();
+		coordsAndColor[(i*2)  *6+1] = static_cast<float>(y) + (static_cast<float>(r)-lineWidth) * body_vertices[i+1].getYComp();
+		coordsAndColor[(i*2+1)*6]   = static_cast<float>(x) + (static_cast<float>(r)+lineWidth) * body_vertices[i+1].getXComp();
+		coordsAndColor[(i*2+1)*6+1] = static_cast<float>(y) + (static_cast<float>(r)+lineWidth) * body_vertices[i+1].getYComp();
 
 		coordsAndColor[(i*2)  *6+2] = color.getRf();
 		coordsAndColor[(i*2)  *6+3] = color.getGf();
@@ -336,19 +334,19 @@ inline void StationaryTurretHazard::drawOutline(float alpha) const {
 	Renderer::SubmitBatchedDraw(coordsAndColor, (Circle::NumOfSides*2)*(2+4), outline_indices, Circle::NumOfSides*6);
 }
 
-inline void StationaryTurretHazard::drawBarrel(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
+void StationaryTurretHazard::drawBarrel(float alpha) const {
+	drawBarrel(alpha, 0.75f);
+}
+void StationaryTurretHazard::drawBarrel(float alpha, float lineWidth) const {
 	alpha = alpha * alpha;
-
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
-	const float lineWidth = 0.75f;
 
 	float coordsAndColor[4*(2+4)];
 	unsigned int indices[6];
 
 	SimpleVector2D dist = SimpleVector2D(velocity.getAngle(), r, true);
-	SimpleVector2D distCW = SimpleVector2D(velocity.getAngle() - PI/2, lineWidth, true);
+	SimpleVector2D distCW = SimpleVector2D(velocity.getAngle() - float(PI/2), lineWidth, true);
 
 	coordsAndColor[0*6]   = static_cast<float>(x)                   + distCW.getXComp();
 	coordsAndColor[0*6+1] = static_cast<float>(y)                   + distCW.getYComp();

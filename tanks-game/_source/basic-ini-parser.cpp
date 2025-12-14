@@ -1,6 +1,7 @@
 #include "basic-ini-parser.h"
 
 #include <stdexcept>
+#include <algorithm> //std::remove
 #include <fstream>
 #include <iostream>
 
@@ -22,7 +23,7 @@ bool BasicINIParser::BasicINIData::exists(std::string section, std::string prope
 	return true;
 }
 
-int BasicINIParser::BasicINIData::length(std::string section, std::string property) const noexcept {
+unsigned int BasicINIParser::BasicINIData::length(std::string section, std::string property) const noexcept {
 	return this->data.at(section).at(property).size();
 }
 
@@ -224,6 +225,8 @@ BasicINIParser::BasicINIData BasicINIParser::ReadFile(std::string path) {
 		std::string line;
 		std::string current_section = "";
 		while (std::getline(ini_file, line)) {
+			line.erase(std::remove(line.begin(), line.end(), '\r'), line.end());
+			line.erase(std::remove(line.begin(), line.end(), '\n'), line.end());
 			removeLeftWhitespace(line);
 			removeComments(line);
 			removeRightWhitespace(line);

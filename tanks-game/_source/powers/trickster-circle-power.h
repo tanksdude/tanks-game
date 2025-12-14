@@ -49,6 +49,7 @@ protected:
 
 public:
 	virtual ColorValueHolder getColor() const override { return TricksterCirclePower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return TricksterCirclePower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new TricksterCircleBulletPower(); }
 	virtual TankPower* makeTankPower() const override;
@@ -56,7 +57,7 @@ public:
 	//bool modifiesMovement = true;
 	virtual InteractionBoolHolder modifiedMovement(Bullet*) override;
 
-	virtual double getBulletSpeedMultiplier() const override { return .25; }
+	virtual float getBulletSpeedMultiplier() const override { return .25; }
 
 	TricksterCircleBulletPower();
 };

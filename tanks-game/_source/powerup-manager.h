@@ -18,8 +18,6 @@ public:
 	static void deletePowerup(unsigned int index);
 	static void deletePowerupByID(Game_ID);
 
-	static std::vector<Rect*> getPowerupCollisionList();
-
 private:
 	PowerupManager() = delete;
 	PowerupManager(const PowerupManager&) = delete;

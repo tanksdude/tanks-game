@@ -1,20 +1,19 @@
 #include "developer-manager.h"
 
-#include "constants.h"
 #include <iostream>
 
-#include <GL/glew.h>
-#include <GL/freeglut.h>
-
-#include "renderer.h"
+#include "window-initializer.h"
 #include "tank-manager.h"
 #include "powerup-manager.h"
 #include "wall-manager.h"
 #include "hazard-manager.h"
 #include "level-manager.h"
+#include "game-manager.h" //settings
 
 bool DeveloperManager::leftMouse = false;
 bool DeveloperManager::rightMouse = false;
+int DeveloperManager::mousePosX = 0;
+int DeveloperManager::mousePosY = 0;
 int DeveloperManager::insertIndex = 0;
 
 void DeveloperManager::setX(Circle* c, double x) { c->x = x; }
@@ -26,63 +25,92 @@ void DeveloperManager::setY(Rect* r, double y) { r->y = y; }
 void DeveloperManager::setW(Rect* r, double w) { r->w = w; }
 void DeveloperManager::setH(Rect* r, double h) { r->h = h; }
 
-void DeveloperManager::mouseDragFunc(int x, int y) {
-	//dev tools
-	const int real_x = x;
-	const int real_y = y - (Renderer::window_height - Renderer::gamewindow_height);
+void DeveloperManager::mouseButtonCallbackFunc(GLFWwindow*, int button, int action, int mods) {
+	switch (button) {
+		case GLFW_MOUSE_BUTTON_1:
+			leftMouse = (action == GLFW_PRESS);
+			break;
+		case GLFW_MOUSE_BUTTON_2:
+			if (action == GLFW_PRESS) {
+				rightMouse = !rightMouse; //bad name but whatever
+			}
+			break;
+		case GLFW_MOUSE_BUTTON_3:
+			if (action == GLFW_PRESS) {
+				devInsert(mousePosX, mousePosY);
+			}
+			break;
+	}
+}
+
+void DeveloperManager::mouseScrollCallbackFunc(GLFWwindow*, double xOffset, double yOffset) {
+	const GameSettings& game_settings = GameManager::get_settings();
+	#ifdef RELEASE_DISTRIBUTION
+	if (!game_settings.DevMouseControls) {
+		return;
+	}
+	#endif
+
+	(void)xOffset;
+	if (yOffset == 0) {
+		//left/right scrolling happened
+		return;
+	}
+
+	int scrollAmount;
+	if (yOffset > 0) {
+		scrollAmount = std::max(static_cast<int>(yOffset), 1);
+	} else {
+		scrollAmount = std::min(static_cast<int>(yOffset), -1);
+	}
+
+	const unsigned int insertIndexMax = insertListIdentifiers.size();
+	if (insertIndexMax > 0) {
+		insertIndex += scrollAmount;
+		do {
+			insertIndex += insertIndexMax;
+			//modulo on a negative int is implementation-defined, so this is just about the only solution
+			//compilers are very smart, so they should be able to recognize what this is trying to do and replace it with something simpler if possible
+		} while (insertIndex < 0);
+		insertIndex %= insertIndexMax;
+	} else [[unlikely]] {
+		insertIndex = 0;
+	}
+
+	std::cout << "DeveloperManager insert identifier: " << insertListIdentifiers[insertIndex] << std::endl;
+}
+
+void DeveloperManager::mouseCursorPosCallbackFunc(GLFWwindow*, double xPos, double yPos) {
+	WindowInitializer::windowCoordsToGameCoords(xPos, yPos, mousePosX, mousePosY);
+
+	const GameSettings& game_settings = GameManager::get_settings();
+	#ifdef RELEASE_DISTRIBUTION
+	if (!game_settings.DevMouseControls) {
+		return;
+	}
+	#endif
+
 	if (leftMouse) {
 		if (!rightMouse) {
-			TankManager::getTank(0)->x = (real_x / double(Renderer::gamewindow_width)) * GAME_WIDTH;
-			TankManager::getTank(0)->y = (1 - real_y / double(Renderer::gamewindow_height)) * GAME_HEIGHT;
+			TankManager::getTank(0)->x = mousePosX;
+			TankManager::getTank(0)->y = mousePosY;
 		} else {
-			TankManager::getTank(1)->x = (real_x / double(Renderer::gamewindow_width)) * GAME_WIDTH;
-			TankManager::getTank(1)->y = (1 - real_y / double(Renderer::gamewindow_height)) * GAME_HEIGHT;
+			TankManager::getTank(1)->x = mousePosX;
+			TankManager::getTank(1)->y = mousePosY;
 		}
 	}
 }
 
-void DeveloperManager::mouseClickFunc(int button, int state, int x, int y) {
-	const int real_x = x;
-	const int real_y = y - (Renderer::window_height - Renderer::gamewindow_height);
-	if (state == GLUT_DOWN) {
-		if (button == GLUT_LEFT_BUTTON) {
-			leftMouse = true;
-		} else if (button == GLUT_RIGHT_BUTTON) {
-			rightMouse = !rightMouse;
-		} else { //button == GLUT_MIDDLE_BUTTON
-			double true_x = (real_x / double(Renderer::gamewindow_width)) * GAME_WIDTH;
-			double true_y = (1 - real_y / double(Renderer::gamewindow_height)) * GAME_HEIGHT;
-			devInsert(true_x, true_y);
-		}
-	} else {
-		if (button == GLUT_LEFT_BUTTON) {
-			leftMouse = false;
-		}
-	}
-}
-
-void DeveloperManager::mouseWheelFunc(int wheel, int dir, int x, int y) {
-	const int insertIndexMax = insertListIdentifiers.size();
-	if (dir == 1) { //scroll up
-		if (insertIndexMax > 0) {
-			insertIndex = ((insertIndex % insertIndexMax) + 1 + insertIndexMax) % insertIndexMax; //accounting for potential mistakes/trolls
-		} else {
-			insertIndex = 0;
-		}
-	} else { //scroll down
-		if (insertIndexMax > 0) {
-			insertIndex = ((insertIndex % insertIndexMax) - 1 + insertIndexMax) % insertIndexMax; //accounting for potential mistakes/trolls
-		} else {
-			insertIndex = 0;
-		}
-	}
-
-	std::cout << "DeveloperManager insertIdentifier: " << insertListIdentifiers[insertIndex] << std::endl;
-}
-
-std::vector<std::string> DeveloperManager::insertListIdentifiers = { "longinvincible", "temp", "banana", "homing", "barrier", "bounce", "mines", "multishot", "grenade", "blast", "godmode", "big", "inversion", "annoying", "stationary_turret", "vert_wall", "horz_wall" };
+std::vector<std::string> DeveloperManager::insertListIdentifiers = { "longinvincible", "temp", "banana", "homing", "barrier", "bounce", "mines", "multishot", "grenade", "blast", "godmode", "big", "inversion", "annoying", "swarm", "stationary_turret", "vert_wall", "horz_wall" };
 int DeveloperManager::insertListIdentifiers_normalSize = insertListIdentifiers.size();
 void DeveloperManager::devInsert(int x, int y) {
+	const GameSettings& game_settings = GameManager::get_settings();
+	#ifdef RELEASE_DISTRIBUTION
+	if (!game_settings.DevMouseControls) {
+		return;
+	}
+	#endif
+
 	GenericFactoryConstructionData constructionData;
 	double* posArr;
 	switch (insertIndex) {
@@ -94,10 +122,9 @@ void DeveloperManager::devInsert(int x, int y) {
 			#endif
 			break;
 		case 1:
-			//PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla", "megadeath"));
+			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla", "megadeath"));
 			//PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla-extra", "shotgun"));
-			//PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "banana_split"));
-			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla-extra", "swarm"));
+			//PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "other_stuff_is_poison"));
 			break;
 		case 2:
 			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla", "banana"));
@@ -136,14 +163,17 @@ void DeveloperManager::devInsert(int x, int y) {
 			PowerupManager::pushPowerup(new PowerSquare(x, y, "dev", "annoying"));
 			break;
 		case 14:
+			PowerupManager::pushPowerup(new PowerSquare(x, y, "vanilla-extra", "swarm"));
+			break;
+		case 15:
 			posArr = new double[3]{ double(x), double(y), 0 };
 			constructionData = GenericFactoryConstructionData(3, posArr);
 			HazardManager::pushCircleHazard("vanilla", "stationary_turret", constructionData);
 			break;
-		case 15:
+		case 16:
 			WallManager::pushWall(new Wall(x, y, 20, 60, LevelManager::getLevel(0)->getDefaultColor()));
 			break;
-		case 16:
+		case 17:
 			WallManager::pushWall(new Wall(x, y, 60, 20, LevelManager::getLevel(0)->getDefaultColor()));
 			break;
 		default:

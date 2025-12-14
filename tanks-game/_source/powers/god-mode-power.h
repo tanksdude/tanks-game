@@ -3,7 +3,7 @@
 
 class GodmodePower : public Power {
 public:
-	static inline int getHueValue();
+	static inline unsigned int getHueValue();
 
 public:
 	virtual std::vector<std::string> getPowerTypes() const override {
@@ -52,6 +52,7 @@ class GodmodeBulletPower : public BulletPower {
 public:
 	virtual ColorValueHolder getColor() const override { return GodmodePower::getClassColor(); }
 	virtual float getColorImportance() const override { return GodmodePower::getClassColorImportance(); }
+	virtual std::string getColorIdentifier() const override { return GodmodePower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new GodmodeBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

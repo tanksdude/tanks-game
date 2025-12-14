@@ -4,15 +4,16 @@
 class TargetingTurretHazard : public StationaryTurretHazard {
 	//just called Turret in JS Tanks
 protected:
-	double turningIncrement = 128;
+	float turningIncrement = 128;
 	bool targeting;
 	float targetingX, targetingY; //not the x and y of the targeted tank; it's the x and y of the targeting reticule
-	ColorValueHolder reticuleColors[2];
 	double targetingCount;
 	Game_ID trackingID; //if ==this->getGameID(), then it's not tracking
 
+	static const ColorValueHolder reticuleColors[2];
+
 protected:
-	virtual inline void updateTrackingPos(const Tank*, bool pointedAt);
+	inline void updateTrackingPos(const Tank*, bool pointedAt);
 
 	virtual void turnTowardsTank(const Tank*);
 	virtual bool canSeeTank(const Tank*) const override; //true if no walls obstruct any line of sight to tank
@@ -39,13 +40,13 @@ public:
 	virtual void ghostDraw(DrawingLayers, float alpha) const override;
 
 protected:
-	virtual inline void tick_continueTracking();
-	virtual inline void tick_lookForNewTarget();
-	virtual inline void tick_chargeUp();
-	virtual inline void tick_cooldown();
+	virtual void tick_continueTracking();
+	virtual void tick_lookForNewTarget();
+	virtual void tick_chargeUp();
+	virtual void tick_cooldown();
 
 protected:
-	virtual inline void drawReticule(float alpha = 1.0f) const;
+	virtual void drawReticule(float alpha = 1.0f) const;
 
 public:
 	TargetingTurretHazard(double xpos, double ypos, double angle);

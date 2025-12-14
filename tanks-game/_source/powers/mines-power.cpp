@@ -28,7 +28,6 @@ MinesPower::MinesPower() {
 
 
 
-#include "../constants.h"
 #include <cmath>
 
 void MinesTankPower::tick(Tank* t) {
@@ -47,8 +46,8 @@ void MinesTankPower::tick(Tank* t) {
 }
 
 void MinesTankPower::additionalShooting(Tank* t, const CannonPoint& c, const ExtraCannonPoint& c2) {
-	t->preciseMakeBullet((t->r * MinesPower::bulletDistance) * cos(t->velocity.getAngle() + c.angleFromCenter + c2.angleFromCenter),
-	                     (t->r * MinesPower::bulletDistance) * sin(t->velocity.getAngle() + c.angleFromCenter + c2.angleFromCenter),
+	t->preciseMakeBullet((t->r * MinesPower::bulletDistance) * std::cos(t->velocity.getAngle() + c.angleFromCenter + c2.angleFromCenter),
+	                     (t->r * MinesPower::bulletDistance) * std::sin(t->velocity.getAngle() + c.angleFromCenter + c2.angleFromCenter),
 	                     t->velocity.getAngle() + c.angleFromCenter + c2.angleFromCenter + c2.angleFromEdge);
 }
 
@@ -73,6 +72,5 @@ TankPower* MinesBulletPower::makeTankPower() const {
 }
 
 MinesBulletPower::MinesBulletPower() {
-	timeLeft = 0;
-	maxTime = -1;
+	//nothing
 }

@@ -18,7 +18,7 @@ public:
 
 	public:
 		bool exists(std::string section, std::string property) const noexcept;
-		int length(std::string section, std::string property) const noexcept;
+		unsigned int length(std::string section, std::string property) const noexcept;
 		std::string get(std::string section, std::string property) const;
 		std::string get(std::string section, std::string property, int index) const;
 	};

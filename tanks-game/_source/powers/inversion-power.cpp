@@ -45,6 +45,5 @@ TankPower* InversionBulletPower::makeTankPower() const {
 }
 
 InversionBulletPower::InversionBulletPower() {
-	timeLeft = 0;
-	maxTime = -1;
+	//nothing
 }

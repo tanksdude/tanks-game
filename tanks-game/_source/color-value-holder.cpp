@@ -5,6 +5,7 @@
 ColorValueHolder::ColorValueHolder(float r, float g, float b) : ColorValueHolder(r, g, b, 1) {}
 
 ColorValueHolder::ColorValueHolder(float r, float g, float b, float a) {
+	//performance is basically the same without clamping
 	R = std::clamp<float>(r, 0.0f, 1.0f);
 	G = std::clamp<float>(g, 0.0f, 1.0f);
 	B = std::clamp<float>(b, 0.0f, 1.0f);

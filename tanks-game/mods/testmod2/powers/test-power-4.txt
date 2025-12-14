@@ -5,7 +5,7 @@ PowerTypes = "testmod2"   "random-testmod2"
 PowerWeights = 1.0   1.0
 
 ; optional
-PowerTankDuration = 1000
+PowerTankDurationMultiplier = 2.0
 
 
 

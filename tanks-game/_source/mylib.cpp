@@ -47,7 +47,7 @@ bool pointInPolygon(int vertNum, const float* vertX, const float* vertY, float t
 }
 
 //algorithm from https://forum.unity.com/threads/weighted-random-selection.221890/ and https://forum.unity.com/threads/randomising-shuffling-library.29977/
-template<typename T>
+template<std::floating_point T>
 int weightedSelect(const T* weights, int num) {
 	//TODO: unit tests
 	T weightTotal = 0;

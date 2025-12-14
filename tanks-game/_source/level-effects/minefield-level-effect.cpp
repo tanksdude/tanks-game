@@ -21,11 +21,11 @@ Bullet* MinefieldLevelEffect::genMine() const {
 	const double r = TANK_RADIUS * BULLET_TO_TANK_RADIUS_RATIO;
 	double x = GameRNG::randNumInRange(minefield_startX + r, minefield_startX + minefield_areaWidth - r);
 	double y = GameRNG::randNumInRange(minefield_startY + r, minefield_startY + minefield_areaHeight - r);
-	Bullet* mine = new Bullet(x, y, r, GameRNG::randFunc() * (2*PI), 0, HAZARD_TEAM, BulletParentType::team, NO_PARENT, &bp);
+	Bullet* mine = new Bullet(x, y, r, GameRNG::randFuncf() * float(2*PI), 0, HAZARD_TEAM, BulletParentType::team, NO_PARENT, &bp);
 	return mine;
 }
 
-inline void MinefieldLevelEffect::pushRandomMine() {
+void MinefieldLevelEffect::pushRandomMine() {
 	Bullet* b = genMine();
 	BulletManager::pushBullet(b);
 	aliveMinesPushed.push_back(b->getGameID());

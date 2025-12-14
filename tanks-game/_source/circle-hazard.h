@@ -1,5 +1,6 @@
 #pragma once
 class CircleHazard;
+struct CircleHazardUpdateStruct;
 
 #include <string>
 #include <vector>
@@ -8,7 +9,6 @@ class CircleHazard;
 #include "game-thing.h"
 #include "circle.h"
 #include "drawable-thing.h"
-//#include "circle-hazard-power.h"
 
 #include "tank.h"
 #include "bullet.h"
@@ -49,48 +49,29 @@ enum class CircleHazardCollisionType {
 };
 
 class CircleHazard : public GameThing, public Circle, public DrawableThing {
-public: //protected?
-	//std::vector<CircleHazardPower*> hazardPowers;
-	//bool canAcceptPowers;
-	//virtual bool getCanAcceptPowers();
-
-public:
-	float getOffenseTier() const;
-	float getDefenseTier() const;
-
-protected:
-	float getHighestOffenseImportance() const;
-	float getHighestOffenseTier(float importance) const;
-	float getHighestDefenseImportance() const;
-	float getHighestDefenseTier(float importance) const;
-
 public:
 	virtual std::vector<std::string> getHazardTypes() const = 0;
 	virtual std::unordered_map<std::string, float> getWeights() const = 0; //intended range: (0,1]
 
 	virtual CircleHazardCollisionType getCollisionType() const = 0; // { return CircleHazardCollisionType::solid; }
 
-	virtual bool actuallyCollided(const Tank*) const { return true; } //precondition: currently and partially collided with tank
-	bool modifiesTankCollision = false;
-	virtual void modifiedTankCollision(Tank*);
-	bool hasSpecialEffectTankCollision = false;
+	virtual bool actuallyCollided(const Tank*) const { return true; }
 	virtual void specialEffectTankCollision(const Tank*) { return; } //always activated before modifiedTankCollision
+	virtual InteractionUpdateHolder<TankUpdateStruct, CircleHazardUpdateStruct> modifiedTankCollision(const Tank*) const;
 
-	virtual bool actuallyCollided(const Bullet*) const { return true; } //precondition: currently and partially collided with bullet
-	bool modifiesBulletCollision = false;
-	virtual void modifiedBulletCollision(Bullet*);
-	bool hasSpecialEffectBulletCollision = false;
+	virtual bool actuallyCollided(const Bullet*) const { return true; }
 	virtual void specialEffectBulletCollision(const Bullet*) { return; } //always activated before modifiedBulletCollision
+	virtual InteractionUpdateHolder<BulletUpdateStruct, CircleHazardUpdateStruct> modifiedBulletCollision(const Bullet*) const;
 
-protected:
-	virtual float getDefaultOffense() const = 0;
-	virtual float getDefaultDefense() const = 0;
+	virtual float getOffenseTier() const = 0;
+	virtual float getDefenseTier() const = 0;
 
 public:
 	virtual bool validLocation() const { return true; }
 	virtual bool reasonableLocation() const = 0;
 	virtual void initialize() { return; } //called when circlehazard is pushed for the first time
 	//virtual void uninitialize() { return; } //called when circlehazard is destroyed (TODO)
+	void update(const CircleHazardUpdateStruct*);
 
 	virtual std::string getName() const = 0;
 	//static std::string getClassName();
@@ -111,5 +92,16 @@ public:
 	virtual CircleFactoryInformation getFactoryInformation() const = 0;
 
 protected:
-	CircleHazard(Team_ID t_id) : GameThing(t_id) {}
+	CircleHazard(Team_ID t_id) : GameThing(t_id, ObjectType::Hazard_C) {}
+};
+
+struct CircleHazardUpdateStruct {
+	//deltas:
+	double x;
+	double y;
+
+	void add(const CircleHazardUpdateStruct& other);
+
+	CircleHazardUpdateStruct(double x, double y);
+	CircleHazardUpdateStruct() : CircleHazardUpdateStruct(0, 0) {}
 };

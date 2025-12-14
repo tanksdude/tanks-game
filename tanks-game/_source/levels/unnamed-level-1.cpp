@@ -38,7 +38,7 @@ void UnnamedLevel1::initialize() {
 
 	LevelHelper::pushSymmetricPowerups_Corners(GAME_WIDTH/2, GAME_HEIGHT/2, 20+160-20-20, 20+20+20, "vanilla", "speed");
 
-	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "vanilla-extra", "tracking")); //TOOD: maybe wall sparks instead?
+	PowerupManager::pushPowerup(new PowerSquare(GAME_WIDTH/2, GAME_HEIGHT/2, "vanilla-extra", "tracking")); //TODO: maybe wall sparks instead?
 
 	//this level is basically a combination of hiding places, evened corridors, and winning path...
 

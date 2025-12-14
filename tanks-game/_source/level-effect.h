@@ -22,11 +22,11 @@ public:
 	virtual void tick(const Level* parent) = 0; //update variables and stuff
 	virtual void doEffects(Level* parent) const = 0; //do what needs to be done
 
-	virtual double getTankMaxSpeedMultiplier() const { return 1; }
-	virtual double getTankAccelerationMultiplier() const { return 1; }
+	virtual float  getTankMaxSpeedMultiplier() const { return 1; }
+	virtual float  getTankAccelerationMultiplier() const { return 1; }
 	virtual double getTankRadiusMultiplier() const { return 1; }
 	virtual double getTankFiringRateMultiplier() const { return 1; }
-	virtual double getTankTurningIncrementMultiplier() const { return 1; }
+	virtual float  getTankTurningIncrementMultiplier() const { return 1; }
 	//they all stack because you shouldn't have too many
 
 	virtual void draw() const override { return; }

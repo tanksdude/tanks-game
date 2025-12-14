@@ -1,5 +1,7 @@
 #include "tank-manager.h"
 
+#include "game-manager.h"
+
 std::vector<Tank*> TankManager::tanks;
 
 void TankManager::initialize() {
@@ -21,30 +23,12 @@ Tank* TankManager::getTankByID(Game_ID gameID) {
 
 void TankManager::pushTank(Tank* t) {
 	tanks.push_back(t);
+	GameManager::pushObject(t);
 }
-
-/*
-void TankManager::deleteTank(unsigned int index) {
-	delete tanks[index];
-	tanks.erase(tanks.begin() + index);
-}
-
-void TankManager::deleteTankByID(Game_ID gameID) {
-	for (int i = 0; i < tanks.size(); i++) {
-		if (tanks[i]->getGameID() == gameID) {
-			deleteTank(i);
-		}
-	}
-}
-*/
 
 void TankManager::clearTanks() {
 	for (int i = 0; i < tanks.size(); i++) {
 		delete tanks[i];
 	}
 	tanks.clear();
-}
-
-std::vector<Circle*> TankManager::getTankCollisionList() {
-	return std::vector<Circle*>(tanks.begin(), tanks.end());
 }

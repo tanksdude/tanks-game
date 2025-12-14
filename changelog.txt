@@ -1,26 +1,23 @@
-"complete" (wishlist, likely won't get here though)
-* new game mode: infinite world!
-    * single-player only
-    * the point is just to explore
-    * have fun!
-* some unit tests?
-* finish overhauling collision
-    * maybe multithreading?
-* lots of new stuff
-* more random levels
-* powerups:
-    * sword
-    * hazard powers?
-    * megadeath update?
-    * bouncing rework
-        * something like bool applyBounceUpdate() to bulletpower?
-    * fix respawning powerups working with magnetism level effect
-        * level effects need a generic "do action on powerup/hazard/whatever"
-
-0.2.6 (future)
+0.3.0
 * cross-platform!
-* switched to GLFW from FreeGLUT
-    * fullscreen toggle removed because of that
+* switched to GLFW from FreeGLUT, also Glad2 from GLEW
+* many performance optimizations:
+    * rewrote collision to be single-pass across the various object types
+    * multithreading option for broad phase of collision
+    * instanced rendering for bullets: much more efficient, should have been doing this the whole time
+    * countless small things adding up, like better cache alignment
+* render game in center of window (instead of bottom left)
+* added a window icon
+* optional transparency drawing for bullets
+* changed "extra cannons" to not behave like real cannons by default
+* minor things:
+    * bumped instruction set to x86-64-v2 (SSE4.2)
+    * create a default ini file if it doesn't exist on startup
+    * custom level playlist option
+    * homing angle change dependent on speed
+    * allow swarm bullets to exist a little bit out of bounds
+    * gave spiral lava hazard a better color
+    * as usual, enormous cleanup
 
 0.2.5.1
 * updated dependencies
@@ -35,16 +32,16 @@
 * ini file
     * allows for some customization
     * now it's possible to view certain levels/whatever that exist but aren't playable
-* diagnostics graph: red for collision, green for vertex upload, blue for drawing, white for combined
-* some documentation: very minimal, but at least there's now an easy-to-read list of everything in the game
+* overhaul collision: broad phase vs narrow phase for collision, more efficient
 * graphics: batched rendering
     * still not very efficient, but it's something
+* some documentation: very minimal, but at least there's now an easy-to-read list of everything in the game
+* diagnostics graph: red for collision, green for vertex upload, blue for drawing, white for combined
 * mild QoL improvements to displaying things
     * tank multi-powers are more obvious
     * old tank death graphic (black to white gradient)
     * lightning hazards and no bullet zones are significantly easier to spot
     * sorry colorblind people, but powerups are still distinguishable by color only; would make sense to use an image instead, but that'll happen in a sequel
-* overhaul collision: two passes for collision, more efficient
 * correct delay between frames: previously 10ms from end of previous frame to start of new frame, now 10ms between start of frames (oops)
 * powerups:
     * custom powers exist!
@@ -161,14 +158,12 @@
 * complete priority handling overhaul
 * minor things:
     * levels and powerups can be grouped
-    * a start towards a "game manager"
     * misc cleanup
 
 0.2.1
 * switched back to static vertex buffers
     * batching probably not possible in this state but I'll save that for another day
 * better system for tankpowers adjusting tank values
-* a few things moved out of main.cpp (mostly event handlers)
 * big (and megadeath) bullet can destroy turrets
 
 0.2.0
@@ -191,7 +186,7 @@
 0.1.3
 * hazards (no hazard powers yet)
 * stationary turret mostly implemented
-    * doesn't display its shooting angle 
+    * doesn't display its shooting angle
 
 0.1.2.1
 * added a fun level: only has simple powerups and big (fun with superfast shooting)

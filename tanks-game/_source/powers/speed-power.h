@@ -30,7 +30,7 @@ public:
 	virtual TankPower* makeDuplicate() const override { return new SpeedTankPower(); }
 	virtual BulletPower* makeBulletPower() const override;
 
-	virtual double getTankMaxSpeedMultiplier() const override { return 2; }
+	virtual float getTankMaxSpeedMultiplier() const override { return 2; }
 	//bool tankMaxSpeedStacks = true;
 
 	SpeedTankPower();
@@ -41,6 +41,7 @@ public:
 class SpeedBulletPower : public BulletPower {
 public:
 	virtual ColorValueHolder getColor() const override { return SpeedPower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return SpeedPower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new SpeedBulletPower(); }
 	virtual TankPower* makeTankPower() const override;

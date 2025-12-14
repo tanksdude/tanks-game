@@ -3,10 +3,10 @@
 #include <iostream>
 
 PriorityResult PriorityHandler::determinePriority(const Bullet* a, const Bullet* b) {
-	double a_offense = a->getOffenseTier();
-	double a_defense = a->getDefenseTier();
-	double b_offense = b->getOffenseTier();
-	double b_defense = b->getDefenseTier();
+	float a_offense = a->getOffenseTier();
+	float a_defense = a->getDefenseTier();
+	float b_offense = b->getOffenseTier();
+	float b_defense = b->getDefenseTier();
 
 	bool a_dies = false, b_dies = false;
 
@@ -30,10 +30,10 @@ PriorityResult PriorityHandler::determinePriority(const Bullet* a, const Bullet*
 }
 
 PriorityResult PriorityHandler::determinePriority(const Tank* a, const Bullet* b) {
-	double a_offense = a->getOffenseTier();
-	double a_defense = a->getDefenseTier();
-	double b_offense = b->getOffenseTier();
-	double b_defense = b->getDefenseTier();
+	float a_offense = a->getOffenseTier();
+	float a_defense = a->getDefenseTier();
+	float b_offense = b->getOffenseTier();
+	float b_defense = b->getDefenseTier();
 
 	bool a_dies = false, b_dies = false;
 
@@ -57,10 +57,10 @@ PriorityResult PriorityHandler::determinePriority(const Tank* a, const Bullet* b
 }
 
 PriorityResult PriorityHandler::determinePriority(const Tank* a, const Tank* b) {
-	double a_offense = a->getOffenseTier();
-	double a_defense = a->getDefenseTier();
-	double b_offense = b->getOffenseTier();
-	double b_defense = b->getDefenseTier();
+	float a_offense = a->getOffenseTier();
+	float a_defense = a->getDefenseTier();
+	float b_offense = b->getOffenseTier();
+	float b_defense = b->getDefenseTier();
 
 	bool a_dies = false, b_dies = false;
 
@@ -84,10 +84,10 @@ PriorityResult PriorityHandler::determinePriority(const Tank* a, const Tank* b) 
 }
 
 PriorityResult PriorityHandler::determinePriority(const Bullet* a, const CircleHazard* b) {
-	double a_offense = a->getOffenseTier();
-	double a_defense = a->getDefenseTier();
-	double b_offense = b->getOffenseTier();
-	double b_defense = b->getDefenseTier();
+	float a_offense = a->getOffenseTier();
+	float a_defense = a->getDefenseTier();
+	float b_offense = b->getOffenseTier();
+	float b_defense = b->getDefenseTier();
 
 	bool a_dies = false, b_dies = false;
 
@@ -123,10 +123,10 @@ PriorityResult PriorityHandler::determinePriority(const Bullet* a, const CircleH
 }
 
 PriorityResult PriorityHandler::determinePriority(const Bullet* a, const RectHazard* b) {
-	double a_offense = a->getOffenseTier();
-	double a_defense = a->getDefenseTier();
-	double b_offense = b->getOffenseTier();
-	double b_defense = b->getDefenseTier();
+	float a_offense = a->getOffenseTier();
+	float a_defense = a->getDefenseTier();
+	float b_offense = b->getOffenseTier();
+	float b_defense = b->getDefenseTier();
 
 	bool a_dies = false, b_dies = false;
 
@@ -162,10 +162,10 @@ PriorityResult PriorityHandler::determinePriority(const Bullet* a, const RectHaz
 }
 
 PriorityResult PriorityHandler::determinePriority(const Tank* a, const CircleHazard* b) {
-	double a_offense = a->getOffenseTier();
-	double a_defense = a->getDefenseTier();
-	double b_offense = b->getOffenseTier();
-	double b_defense = b->getDefenseTier();
+	float a_offense = a->getOffenseTier();
+	float a_defense = a->getDefenseTier();
+	float b_offense = b->getOffenseTier();
+	float b_defense = b->getDefenseTier();
 
 	bool a_dies = false, b_dies = false;
 
@@ -189,10 +189,10 @@ PriorityResult PriorityHandler::determinePriority(const Tank* a, const CircleHaz
 }
 
 PriorityResult PriorityHandler::determinePriority(const Tank* a, const RectHazard* b) {
-	double a_offense = a->getOffenseTier();
-	double a_defense = a->getDefenseTier();
-	double b_offense = b->getOffenseTier();
-	double b_defense = b->getDefenseTier();
+	float a_offense = a->getOffenseTier();
+	float a_defense = a->getDefenseTier();
+	float b_offense = b->getOffenseTier();
+	float b_defense = b->getDefenseTier();
 
 	bool a_dies = false, b_dies = false;
 

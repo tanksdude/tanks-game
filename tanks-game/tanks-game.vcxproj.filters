@@ -84,13 +84,13 @@
     <ClCompile Include="_source\graphics\vertex-buffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="_source\graphics\vertex-array.cpp">
+    <ClCompile Include="_source\graphics\vertex-array-object.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="_source\graphics\shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="_source\diagnostics.cpp">
+    <ClCompile Include="_source\frame-time-graph.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="_source\background-rect.cpp">
@@ -267,7 +267,7 @@
     <ClCompile Include="_source\graphics\opengl-vertex-buffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="_source\graphics\opengl-vertex-array.cpp">
+    <ClCompile Include="_source\graphics\opengl-vertex-array-object.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="_source\graphics\opengl-index-buffer.cpp">
@@ -343,9 +343,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="_source\level-effects\dev-symmetric-tanks-level-effect.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="_source\powers\dev-color-changing-power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="_source\physics-handler.cpp">
@@ -424,9 +421,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="_source\custom-power-interpreter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="_source\statistics-handler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="_source\powers\triple-spread-named-power.cpp">
@@ -537,6 +531,27 @@
     <ClCompile Include="_source\aaa_first.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\Dependencies\rpmalloc\rpmalloc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="_source\color-cache.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Dependencies\enkiTS\TaskScheduler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="_source\window-initializer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="_source\graphics\opengl-shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Externals\tracy\public\TracyClient.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Dependencies\glad2\src\gl.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="_source\bullet.h">
@@ -626,7 +641,7 @@
     <ClInclude Include="_source\graphics\vertex-buffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="_source\graphics\vertex-array.h">
+    <ClInclude Include="_source\graphics\vertex-array-object.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="_source\graphics\vertex-buffer-layout.h">
@@ -635,7 +650,7 @@
     <ClInclude Include="_source\graphics\shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="_source\diagnostics.h">
+    <ClInclude Include="_source\frame-time-graph.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="_source\background-rect.h">
@@ -830,7 +845,7 @@
     <ClInclude Include="_source\graphics\opengl-vertex-buffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="_source\graphics\opengl-vertex-array.h">
+    <ClInclude Include="_source\graphics\opengl-vertex-array-object.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="_source\graphics\opengl-index-buffer.h">
@@ -908,9 +923,6 @@
     <ClInclude Include="_source\level-effects\dev-symmetric-tanks-level-effect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="_source\powers\dev-color-changing-power.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="_source\physics-handler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -984,9 +996,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="_source\custom-power-interpreter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="_source\statistics-handler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="_source\powers\triple-spread-named-power.h">
@@ -1097,9 +1106,19 @@
     <ClInclude Include="_source\aaa_first.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="_source\color-cache.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="_source\window-initializer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="_source\graphics\opengl-shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="freeglut.dll" />
-    <None Include="glew32.dll" />
+    <ResourceCompile Include="tanks.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

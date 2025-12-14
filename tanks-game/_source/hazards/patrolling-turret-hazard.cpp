@@ -2,7 +2,7 @@
 
 #include "../constants.h"
 #include <cmath>
-#include <algorithm> //std::copy, std::fill, std::clamp
+#include <algorithm> //std::copy, std::fill
 #include <iostream>
 #include "../rng.h"
 #include "../mylib.h" //pointInPolygon, weightedSelect
@@ -104,7 +104,7 @@ void PatrollingTurretHazard::tick() {
 	//overrides tick_lookForNewTarget to do patrolling and stuff
 }
 
-inline void PatrollingTurretHazard::tick_lookForNewTarget() {
+void PatrollingTurretHazard::tick_lookForNewTarget() {
 	targetingCount = 0;
 	TargetingTurretHazard::tick_lookForNewTarget();
 
@@ -115,7 +115,7 @@ inline void PatrollingTurretHazard::tick_lookForNewTarget() {
 	tick_patrol();
 }
 
-inline void PatrollingTurretHazard::tick_patrol() {
+void PatrollingTurretHazard::tick_patrol() {
 	if (isWaitingAtPoint()) {
 		tick_patrolWait();
 	} else {
@@ -126,12 +126,12 @@ inline void PatrollingTurretHazard::tick_patrol() {
 	}
 }
 
-inline void PatrollingTurretHazard::tick_moveForward() {
+void PatrollingTurretHazard::tick_moveForward() {
 	this->x += velocity.getXComp();
 	this->y += velocity.getYComp();
 }
 
-inline void PatrollingTurretHazard::tick_patrolWait() {
+void PatrollingTurretHazard::tick_patrolWait() {
 	if (waitCount >= routeWaitCount[currentPatrolTarget]) {
 		waitCount = 0;
 		currentPatrolTarget = (currentPatrolTarget+1) % routePosPairNum;
@@ -145,7 +145,7 @@ bool PatrollingTurretHazard::isCloseAsPossibleToCurrentPoint() const {
 	//if distance is less than current velocity, not close enough
 	double xDist = this->x - getRoutePosX(currentPatrolTarget);
 	double yDist = this->y - getRoutePosY(currentPatrolTarget);
-	float dist = sqrt(xDist*xDist + yDist*yDist);
+	float dist = std::sqrt(xDist*xDist + yDist*yDist);
 	return (dist < velocity.getMagnitude());
 }
 
@@ -157,14 +157,14 @@ void PatrollingTurretHazard::turnTowardsPoint() {
 	//see TargetingTurretHazard::turnTowardsTank
 	SimpleVector2D distToPoint = SimpleVector2D(getRoutePosX(currentPatrolTarget) - this->x, getRoutePosY(currentPatrolTarget) - this->y);
 	float theta = SimpleVector2D::angleBetween(distToPoint, velocity);
-	if (abs(theta) < PI/turningIncrement) {
+	if (std::abs(theta) < float(PI)/turningIncrement) {
 		//too small to adjust angle
 	} else {
 		//large angle adjustment needed
 		if (theta < 0) {
-			this->velocity.changeAngle(PI/turningIncrement);
+			this->velocity.changeAngle(float(PI)/turningIncrement);
 		} else {
-			this->velocity.changeAngle(-PI/turningIncrement);
+			this->velocity.changeAngle(float(-PI)/turningIncrement);
 		}
 	}
 }
@@ -172,7 +172,7 @@ void PatrollingTurretHazard::turnTowardsPoint() {
 bool PatrollingTurretHazard::isPointedAtPoint() const {
 	SimpleVector2D distToPoint = SimpleVector2D(getRoutePosX(currentPatrolTarget) - this->x, getRoutePosY(currentPatrolTarget) - this->y);
 	float theta = SimpleVector2D::angleBetween(distToPoint, velocity);
-	return (abs(theta) < PI/turningIncrement);
+	return (std::abs(theta) < float(PI)/turningIncrement);
 }
 
 bool PatrollingTurretHazard::reasonableLocation() const {
@@ -190,14 +190,14 @@ bool PatrollingTurretHazard::reasonableLocation() const {
 
 		const SimpleVector2D path = SimpleVector2D(getRoutePosX(end_pos) - getRoutePosX(start_pos), getRoutePosY(end_pos), getRoutePosY(start_pos));
 		double outerPath[4] = {
-			getRoutePosX(start_pos) + getR() * cos(path.getAngle() - PI/2), getRoutePosY(start_pos) + getR() * sin(path.getAngle() - PI/2),
-			getRoutePosX(end_pos)   + getR() * cos(path.getAngle() - PI/2), getRoutePosY(end_pos)   + getR() * sin(path.getAngle() - PI/2) };
+			getRoutePosX(start_pos) + getR() * std::cos(path.getAngle() - float(PI/2)), getRoutePosY(start_pos) + getR() * std::sin(path.getAngle() - float(PI/2)),
+			getRoutePosX(end_pos)   + getR() * std::cos(path.getAngle() - float(PI/2)), getRoutePosY(end_pos)   + getR() * std::sin(path.getAngle() - float(PI/2)) };
 		double mainPath[4] = {
 			getRoutePosX(start_pos), getRoutePosY(start_pos),
 			getRoutePosX(end_pos), getRoutePosY(end_pos) };
 		double innerPath[4] = {
-			getRoutePosX(start_pos) + getR() * cos(path.getAngle() + PI/2), getRoutePosY(start_pos) + getR() * sin(path.getAngle() + PI/2),
-			getRoutePosX(end_pos)   + getR() * cos(path.getAngle() + PI/2), getRoutePosY(end_pos)   + getR() * sin(path.getAngle() + PI/2) };
+			getRoutePosX(start_pos) + getR() * std::cos(path.getAngle() + float(PI/2)), getRoutePosY(start_pos) + getR() * std::sin(path.getAngle() + float(PI/2)),
+			getRoutePosX(end_pos)   + getR() * std::cos(path.getAngle() + float(PI/2)), getRoutePosY(end_pos)   + getR() * std::sin(path.getAngle() + float(PI/2)) };
 
 		for (int j = 0; j < WallManager::getNumWalls(); j++) {
 			if (CollisionHandler::lineRectCollision(outerPath[0], outerPath[1], outerPath[2], outerPath[3], WallManager::getWall(j))) {
@@ -383,10 +383,8 @@ void PatrollingTurretHazard::ghostDraw(DrawingLayers layer, float alpha) const {
 	}
 }
 
-inline void PatrollingTurretHazard::drawPath(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
+void PatrollingTurretHazard::drawPath(float alpha) const {
 	alpha = alpha * alpha;
-
 	ColorValueHolder color = ColorValueHolder(0.0f, 0.0f, 0.0f);
 	color = ColorMixer::mix(BackgroundRect::getBackColor(), color, alpha);
 	const float radius = this->r / 2;
@@ -417,7 +415,7 @@ inline void PatrollingTurretHazard::drawPath(float alpha) const {
 
 		//line
 		SimpleVector2D dist = SimpleVector2D(getRoutePosX((i+1) % routePosPairNum) - getRoutePosX(i), getRoutePosY((i+1) % routePosPairNum) - getRoutePosY(i));
-		SimpleVector2D distCW  = SimpleVector2D(dist.getAngle() - PI/2, lineWidth, true);
+		SimpleVector2D distCW  = SimpleVector2D(dist.getAngle() - float(PI/2), lineWidth, true);
 		//SimpleVector2D distCCW = SimpleVector2D(dist.getAngle() + PI/2, lineWidth, true);
 
 		coordsAndColor_line[0*6]   = static_cast<float>(getRoutePosX(i))                   + distCW.getXComp();
@@ -472,7 +470,7 @@ CircleHazard* PatrollingTurretHazard::randomizingFactory(double x_start, double 
 		double* stoppingLocations = new double[stoppingLocationCount*2];
 		double* waitTimes = new double[stoppingLocationCount];
 
-		waitTimes[0] = floor(LevelRNG::randNumInRange(150, 200+1));
+		waitTimes[0] = std::floor(LevelRNG::randNumInRange(150, 200+1));
 		if (count >= 3) {
 			stoppingLocations[0] = static_cast<const double*>(args.getDataPortion(0).get())[1];
 			stoppingLocations[1] = static_cast<const double*>(args.getDataPortion(0).get())[2];
@@ -502,7 +500,7 @@ CircleHazard* PatrollingTurretHazard::randomizingFactory(double x_start, double 
 
 		bool outOfBounds;
 		for (int i = 1; i < stoppingLocationCount; i++) {
-			waitTimes[i] = floor(LevelRNG::randNumInRange(150, 200+1));
+			waitTimes[i] = std::floor(LevelRNG::randNumInRange(150, 200+1));
 			int location_attempts = 0;
 			bool blockedPosition;
 			do {

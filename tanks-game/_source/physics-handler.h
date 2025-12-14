@@ -5,6 +5,9 @@
 
 #include "circle.h"
 #include "rect.h"
+#include "game-thing.h"
+
+#include <TaskScheduler.h>
 
 class PhysicsHandler {
 protected:
@@ -12,35 +15,35 @@ protected:
 		double xStart;
 		double xEnd;
 		int listIndex;
-		bool collider;
-		ObjectIntervalInfo() : ObjectIntervalInfo(0, 0, 0, false) {}
-		ObjectIntervalInfo(const Rect* r, int i, bool col) : ObjectIntervalInfo(r->getX(), r->getX() + r->getW(), i, col) {}
-		ObjectIntervalInfo(const Circle* c, int i, bool col) : ObjectIntervalInfo(c->getX() - c->getR(), c->getX() + c->getR(), i, col) {}
-		ObjectIntervalInfo(double x1, double x2, int i, bool c) {
+		ObjectIntervalInfo() : ObjectIntervalInfo(0, 0, 0) {}
+		ObjectIntervalInfo(double x1, double x2, int i) {
 			xStart = x1;
 			xEnd = x2;
 			listIndex = i;
-			collider = c;
 		}
 	};
 
+	struct SweepAndPruneTask : public enki::ITaskSet {
+		std::vector<std::pair<int, int>>** m_collisionLists;
+		const std::vector<PhysicsHandler::ObjectIntervalInfo>* m_objectIntervals;
+		uint32_t num_threads;
+
+		void Init(const std::vector<PhysicsHandler::ObjectIntervalInfo>* objectIntervals, uint32_t task_size);
+		void ExecuteRange(enki::TaskSetPartition range_, uint32_t threadnum_) override;
+
+		SweepAndPruneTask(uint32_t num_threads);
+		~SweepAndPruneTask() override;
+	};
+
+	static uint32_t MinTaskSize;
+	static SweepAndPruneTask* s_physicsTask;
+
 public:
-	template<typename T, typename U>
-	static std::vector<std::pair<int, int>>* sweepAndPrune(const std::vector<T>& collider, const std::vector<U>& collidee);
-	template<typename T>
-	static std::vector<std::pair<int, int>>* sweepAndPrune(const std::vector<T>& collider);
+	static inline void Initialize() { Initialize(256); }
+	static void Initialize(uint32_t MinTaskSize);
+	static void Uninitialize();
 
-	//template<typename T>
-	//static std::unordered_map<std::pair<int, int>, std::vector<T>>* bucketPlacement(const std::vector<T>& collider, double leftBound, double rightBound, double downBound, double upBound, int lrBuckets, int udBuckets);
-	////since bucket sort is a real thing this shouldn't call be called that https://en.wikipedia.org/wiki/Bucket_sort
-	//problem: can't do the bucket thing (spatial partitioning is its official name, I think) because individual elements can't be larger than a cell
-	//solution: quadtrees (I put this off for so long)
-	//idea: quadtree fast path for small stuff, sweep and prune backup for larger stuff
-
-	//template<typename T> /* TODO return type; probably a new class */
-	//static std::unordered_map<std::pair<int, int>, std::vector<T>>* generateQuadtree(const std::vector<T>& collider, double leftBound, double rightBound, double downBound, double upBound, int lrBuckets, int udBuckets);
-	////https://stackoverflow.com/a/48355534
-	////https://stackoverflow.com/a/48384354
+	static std::vector<std::vector<std::pair<int, int>>*> sweepAndPrune(const std::vector<GameThing*>& list);
 
 private:
 	PhysicsHandler() = delete;

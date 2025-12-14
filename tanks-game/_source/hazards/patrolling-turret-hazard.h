@@ -41,14 +41,14 @@ public:
 	virtual void ghostDraw(DrawingLayers, float alpha) const override;
 
 protected:
-	virtual inline void tick_lookForNewTarget() override;
+	virtual void tick_lookForNewTarget() override;
 
-	virtual inline void tick_patrol();
-	virtual inline void tick_moveForward();
-	virtual inline void tick_patrolWait();
+	virtual void tick_patrol();
+	virtual void tick_moveForward();
+	virtual void tick_patrolWait();
 
 protected:
-	virtual inline void drawPath(float alpha = 1.0f) const; //debug
+	virtual void drawPath(float alpha = 1.0f) const; //debug
 
 public:
 	PatrollingTurretHazard(double xpos, double ypos, double angle, int pairNum, const double* posList, const double* waitList);

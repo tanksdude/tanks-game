@@ -7,9 +7,9 @@
 
 const int WallSparksPower::extraBulletsCount = 4;
 const int WallSparksPower::maxBounces = BouncePower::maxBounces;
-const double WallSparksPower::maxNewBulletVelocity = 1.25;
-const double WallSparksPower::minNewBulletVelocity =  .75;
-const double WallSparksPower::bulletAngleDeviation = PI/8;
+const float WallSparksPower::maxNewBulletVelocity = 1.25;
+const float WallSparksPower::minNewBulletVelocity =  .75;
+const float WallSparksPower::bulletAngleDeviation = PI/8;
 
 std::unordered_map<std::string, float> WallSparksPower::getWeights() const {
 	std::unordered_map<std::string, float> weights;
@@ -65,43 +65,15 @@ void WallSparksBulletPower::sparkExplode(const Bullet* b, const BulletUpdateStru
 				bp->push_back(b->bulletPowers[i]->makeDuplicate());
 			}
 		}
-		double newVelocity = b->getInitialVelocity();
+		float newVelocity = b->getInitialVelocity();
 		if (newVelocity == 0) {
 			newVelocity = Tank::default_maxSpeed*BULLET_TO_TANK_SPEED_RATIO; //if bullet's initial speed is zero, it should still explode (TODO: what should the initial speed be?)
 		}
-		newVelocity = newVelocity * ((GameRNG::randFunc()+GameRNG::randFunc())/2 * (WallSparksPower::maxNewBulletVelocity - WallSparksPower::minNewBulletVelocity) + WallSparksPower::minNewBulletVelocity);
-		double newAngle = (b->velocity.getAngle() + b_update->angle) + (GameRNG::randFunc()+GameRNG::randFunc() - 1) * WallSparksPower::bulletAngleDeviation;
+		newVelocity = newVelocity * ((GameRNG::randFuncf()+GameRNG::randFuncf())/2 * (WallSparksPower::maxNewBulletVelocity - WallSparksPower::minNewBulletVelocity) + WallSparksPower::minNewBulletVelocity);
+		float newAngle = (b->velocity.getAngle() + b_update->angle) + (GameRNG::randFuncf()+GameRNG::randFuncf() - 1) * WallSparksPower::bulletAngleDeviation;
 		BulletManager::pushBullet(new Bullet(b->x + b_update->x, b->y + b_update->y, b->r, newAngle, newVelocity, b->getTeamID(), b->getParentIDType(), b->getParentID(), bp, true));
 		delete bp;
 	}
-}
-
-InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> WallSparksBulletPower::modifiedCollisionWithWall(const Bullet* b, const Wall* w) {
-	//see BounceBulletPower::modifiedWallCollision()
-
-	std::shared_ptr<BulletUpdateStruct> b_update;
-	std::shared_ptr<WallUpdateStruct> w_update;
-
-	//first, bounce off wall
-
-	auto result = PowerFunctionHelper::bounceGeneric(b, w);
-	b_update = result.second.firstUpdate;
-	w_update = result.second.secondUpdate;
-	if (result.first) {
-		bouncesLeft--;
-	}
-
-	if (bouncesLeft <= 0) {
-		modifiesCollisionWithWall = false;
-		modifiesEdgeCollision = false; //for edge sparks
-	}
-
-	//second, create more bullets (they lose this power, just like banana)
-
-	sparkExplode(b, b_update.get());
-
-	return { (bouncesLeft < 0), false, b_update, w_update };
-	//feels a little overpowered to let the bullet bounce and live...
 }
 
 InteractionBoolHolder WallSparksBulletPower::modifiedEdgeCollision(Bullet* b) {
@@ -162,6 +134,34 @@ InteractionBoolHolder WallSparksBulletPower::modifiedEdgeCollision(Bullet* b) {
 	return { CollisionHandler::fullyOutOfBounds(b) };
 }
 
+InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> WallSparksBulletPower::modifiedCollisionWithWall(const Bullet* b, const Wall* w) {
+	//see BounceBulletPower::modifiedWallCollision()
+
+	std::shared_ptr<BulletUpdateStruct> b_update;
+	std::shared_ptr<WallUpdateStruct> w_update;
+
+	//first, bounce off wall
+
+	auto result = PowerFunctionHelper::bounceGeneric(b, w);
+	b_update = result.second.firstUpdate;
+	w_update = result.second.secondUpdate;
+	if (result.first) {
+		bouncesLeft--;
+	}
+
+	if (bouncesLeft <= 0) {
+		modifiesCollisionWithWall = false;
+		modifiesEdgeCollision = false; //for edge sparks
+	}
+
+	//second, create more bullets (they lose this power, just like banana)
+
+	sparkExplode(b, b_update.get());
+
+	return { (bouncesLeft < 0), false, b_update, w_update };
+	//feels a little overpowered to let the bullet bounce and live...
+}
+
 TankPower* WallSparksBulletPower::makeTankPower() const {
 	return new WallSparksTankPower();
 }
@@ -169,9 +169,6 @@ TankPower* WallSparksBulletPower::makeTankPower() const {
 WallSparksBulletPower::WallSparksBulletPower() : WallSparksBulletPower(WallSparksPower::maxBounces) {}
 
 WallSparksBulletPower::WallSparksBulletPower(int bounces) {
-	timeLeft = 0;
-	maxTime = -1;
-
 	bouncesLeft = bounces;
 	if (bounces > 0) [[likely]] {
 		modifiesCollisionWithWall = true;

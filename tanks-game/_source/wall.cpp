@@ -1,14 +1,13 @@
 #include "wall.h"
 
 #include "constants.h"
-#include <algorithm> //std::clamp
 #include <iostream>
 
 #include "renderer.h"
 #include "color-mixer.h"
 #include "background-rect.h"
 
-Wall::Wall(double x_, double y_, double w_, double h_, const ColorValueHolder& c) : GameThing(DEFAULT_TEAM) {
+Wall::Wall(double x_, double y_, double w_, double h_, const ColorValueHolder& c) : GameThing(DEFAULT_TEAM, ObjectType::Wall) {
 	this->x = x_;
 	this->y = y_;
 	this->w = w_;
@@ -23,8 +22,6 @@ Wall::~Wall() {
 void Wall::update(const WallUpdateStruct* up) {
 	this->x += up->x;
 	this->y += up->y;
-	this->w += up->w;
-	this->h += up->h;
 }
 
 void Wall::draw() const {
@@ -90,9 +87,7 @@ void Wall::poseDraw(DrawingLayers layer) const {
 }
 
 void Wall::ghostDraw(float alpha) const {
-	alpha = std::clamp<float>(alpha, 0, 1);
 	alpha = alpha * alpha;
-
 	ColorValueHolder c = this->color;
 	c = ColorMixer::mix(BackgroundRect::getBackColor(), c, alpha);
 
@@ -137,16 +132,12 @@ void Wall::ghostDraw(DrawingLayers layer, float alpha) const {
 	}
 }
 
-WallUpdateStruct::WallUpdateStruct(double x, double y, double w, double h) {
+WallUpdateStruct::WallUpdateStruct(double x, double y) {
 	this->x = x;
 	this->y = y;
-	this->w = w;
-	this->h = h;
 }
 
 void WallUpdateStruct::add(const WallUpdateStruct& other) {
 	this->x += other.x;
 	this->y += other.y;
-	this->w += other.w;
-	this->h += other.h;
 }

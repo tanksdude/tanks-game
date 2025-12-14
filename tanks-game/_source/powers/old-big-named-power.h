@@ -38,11 +38,12 @@ public:
 class OldBigNamedBulletPower : public BigNamedBulletPower {
 public:
 	virtual ColorValueHolder getColor() const override { return OldBigNamedPower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return OldBigNamedPower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override { return new OldBigNamedBulletPower(); }
 	virtual TankPower* makeTankPower() const override;
 
-	virtual double getBulletSpeedMultiplier() const override { return .5; }
+	virtual float getBulletSpeedMultiplier() const override { return .5; }
 	//bool bulletSpeedStacks = true;
 
 	OldBigNamedBulletPower();

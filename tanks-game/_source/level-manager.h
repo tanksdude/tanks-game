@@ -23,6 +23,7 @@ public:
 	//static void deleteLevel(unsigned int index);
 	//static void deleteLevelEffect(unsigned int level_index, unsigned int index);
 	static std::string levelWeightedSelect(std::string type);
+	static int customLevelWeightedSelect(const std::vector<std::pair<std::pair<std::string, std::string>, float>>& customLevelList); //requires at least one level to have a weight >0
 
 	//[[nodiscard]] static Level* makeLevel(std::string type, std::string name); //no point
 	[[nodiscard]] static LevelEffect* makeLevelEffect(std::string type, std::string name, const GenericFactoryConstructionData& data);

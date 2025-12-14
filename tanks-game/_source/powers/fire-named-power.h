@@ -3,13 +3,13 @@
 
 class FireNamedPower : public Power {
 public: //tank stuff
-	static const double bulletAngleDeviation;
+	static const float bulletAngleDeviation;
 	static const int bulletAmount;
 
 public: //bullet stuff
-	static const double maxBulletAcceleration;
-	static const double minBulletAcceleration;
-	static const double degradeAmount;
+	static const float  maxBulletAcceleration;
+	static const float  minBulletAcceleration;
+	static const float  degradeAmount;
 	static const double growAmount;
 
 public:
@@ -48,10 +48,10 @@ public:
 	virtual void additionalShooting(Tank* parent, const CannonPoint&, const ExtraCannonPoint&) override;
 	//bool overridesAdditionalShooting = true;
 
-	//virtual double getTankMaxSpeedMultiplier() const override { return .75; } //JS
-	//virtual double getTankAccelerationMultiplier() const override { return .75; } //JS
+	//virtual float  getTankMaxSpeedMultiplier() const override { return .75; } //JS
+	//virtual float  getTankAccelerationMultiplier() const override { return .75; } //JS
 	virtual double getTankFiringRateMultiplier() const override { return .5; } //JS: .25
-	virtual double getTankTurningIncrementMultiplier() const override { return 2; }
+	virtual float  getTankTurningIncrementMultiplier() const override { return 2; }
 
 	FireNamedTankPower();
 };
@@ -60,10 +60,11 @@ public:
 
 class FireNamedBulletPower : public BulletPower {
 protected:
-	double accelerationAmount;
+	float accelerationAmount;
 
 public:
 	virtual ColorValueHolder getColor() const override { return FireNamedPower::getClassColor(); }
+	virtual std::string getColorIdentifier() const override { return FireNamedPower::getClassName(); }
 
 	virtual BulletPower* makeDuplicate() const override;
 	virtual TankPower* makeTankPower() const override;
@@ -71,12 +72,12 @@ public:
 	//bool modifiesCollisionWithWall = true;
 	virtual InteractionUpdateHolder<BulletUpdateStruct, WallUpdateStruct> modifiedCollisionWithWall(const Bullet*, const Wall*) override;
 
-	virtual double getBulletSpeedMultiplier() const override { return .5; }
-	virtual double getBulletAcceleration() const override { return accelerationAmount; }
-	virtual double getBulletDegradeAmount() const override { return FireNamedPower::degradeAmount; }
+	virtual float  getBulletSpeedMultiplier() const override { return .5; }
+	virtual float  getBulletAcceleration() const override { return accelerationAmount; }
+	virtual float  getBulletDegradeAmount() const override { return FireNamedPower::degradeAmount; }
 	virtual double getBulletRadiusGrowNumber_Moving() const override { return FireNamedPower::growAmount; }
 	//bool bulletRadiusGrowMultiplies_Moving = false;
 
 	FireNamedBulletPower();
-	FireNamedBulletPower(double acceleration); //protected?
+	FireNamedBulletPower(float acceleration); //protected?
 };
